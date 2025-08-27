@@ -7,10 +7,13 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
-import '../packages/charts/src/theme_light.scss';
+import '../packages/charts/src/styles/theme_light.scss';
 
 import { Playground } from './playground';
 
-ReactDOM.render(<Playground />, document.getElementById('root') as HTMLElement);
+const container = document.getElementById('root')!;
+const root = createRoot(container);
+
+root.render(<Playground />);

@@ -9,8 +9,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import type { CustomLegendProps } from '../../specs';
-import { CustomLegend as CustomLegendComponent } from '../../specs';
+import type { CustomLegendProps, CustomLegend as CustomLegendComponent } from '../../specs';
 import type { GlobalChartState } from '../../state/chart_state';
 import { getPointerValueSelector } from '../../state/selectors/get_pointer_value';
 
@@ -18,11 +17,11 @@ interface Props extends CustomLegendProps {
   component: CustomLegendComponent;
 }
 
-const CustomLegendComponent: React.FC<Props> = ({ component: Component, ...props }) => <Component {...props} />;
+const CustomLegendWrapper: React.FC<Props> = ({ component: Component, ...props }) => <Component {...props} />;
 
 const mapStateToProps = (state: GlobalChartState) => ({
   pointerValue: getPointerValueSelector(state),
 });
 
 /** @internal */
-export const CustomLegend = connect(mapStateToProps)(CustomLegendComponent);
+export const CustomLegend = connect(mapStateToProps)(CustomLegendWrapper);

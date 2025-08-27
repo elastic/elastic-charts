@@ -1,0 +1,234 @@
+/* atkinson-hyperlegible-regular - latin */
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-weight: 400;
+  src:
+    local(''),
+    url('../public/fonts/atkinson-hyperlegible-v1-latin-regular.woff2') format('woff2'),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */ url('../public/fonts/atkinson-hyperlegible-v1-latin-regular.woff')
+      format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* atkinson-hyperlegible-700 - latin */
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-weight: 700;
+  src:
+    local(''),
+    url('../public/fonts/atkinson-hyperlegible-v1-latin-700.woff2') format('woff2'),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */ url('../public/fonts/atkinson-hyperlegible-v1-latin-700.woff')
+      format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+html {
+  font-size: 14px !important;
+
+  &:not(.legacy) {
+    &.light-theme {
+      @import '@elastic/charts/src/styles/theme_only_light';
+
+      body,
+      .echChart {
+        background: #ffffff !important;
+      }
+
+      .euiText {
+        color: $euiTitleColor;
+      }
+    }
+
+    &.dark-theme {
+      @import '@elastic/charts/src/styles/theme_only_dark';
+
+      body,
+      .echChart {
+        background: #0b1628 !important;
+      }
+
+      .euiText {
+        color: $euiTitleColor;
+      }
+    }
+  }
+
+  &.legacy {
+    &.light-theme {
+      @import '@elastic/charts/src/styles/legacy/theme_only_light';
+
+      body,
+      .echChart {
+        background: white !important;
+      }
+
+      &.amsterdam {
+        @import '@elastic/eui/src/themes/amsterdam/colors_light';
+
+        body,
+        .echChart {
+          background: $euiColorEmptyShade !important;
+        }
+
+        .euiText {
+          color: $euiTitleColor;
+        }
+      }
+    }
+
+    &.dark-theme {
+      @import '@elastic/charts/src/styles/legacy/theme_only_dark';
+
+      body,
+      .echChart {
+        background: black !important;
+      }
+
+      &.amsterdam {
+        @import '@elastic/eui/src/themes/amsterdam/colors_dark';
+
+        body,
+        .echChart {
+          background: $euiColorEmptyShade !important;
+        }
+
+        .euiText {
+          color: $euiTitleColor;
+        }
+      }
+    }
+  }
+
+  &.disable-animations {
+    *,
+    *::after,
+    *::before {
+      transition-delay: 0s !important;
+      transition-duration: 0s !important;
+      animation-delay: -0.0001s !important;
+      animation-duration: 0s !important;
+      animation-play-state: paused !important;
+      caret-color: transparent !important;
+    }
+
+    .echLegend .echLegendListContainer :focus {
+      animation-duration: 0s !important; // remove focus animation but keep border
+    }
+
+    .euiSaturation:focus .euiSaturation__indicator {
+      animation: none !important; // fix color picker dot
+    }
+  }
+
+  &.echVisualTesting {
+    &,
+    body,
+    #storybook-root {
+      background: blanchedalmond !important;
+    }
+
+    .story-header {
+      display: none;
+    }
+
+    #storybook-root {
+      // This is meant to provide space above and below the chart for tooltip placement
+      width: 785px;
+      height: 1000px;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+body {
+  min-height: 100%;
+}
+
+#storybook-root {
+  z-index: 200;
+  position: relative;
+}
+
+#story-root {
+  padding: 20px;
+  // This allows for the resize stories to grow inside the story-root
+  min-width: 100%;
+  min-height: 400px;
+  position: relative;
+  z-index: 500;
+  box-sizing: border-box;
+
+  &.showChartBoundary {
+    background-color: blanchedalmond;
+  }
+
+  &.resizeHeight {
+    // This is to trigger the non-resize stories to fill the story-root
+    height: 0;
+  }
+}
+
+#story-resize-wrapper {
+  resize: both;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  max-width: 100%;
+  max-height: 80vh;
+
+  &.e2e-server {
+    // The resize on the bullet-as-metric causes slight shift and consistent flakiness
+    resize: none;
+  }
+}
+
+.story-header {
+  padding: 20px 40px 16px !important;
+}
+
+.sb-show-main {
+  padding: 0 !important;
+}
+
+.echChart {
+  box-sizing: border-box;
+}
+
+.echInvisible {
+  visibility: hidden;
+}
+
+.markdown {
+  padding: 24px !important;
+}
+
+#story-root + div table {
+  border: 1px solid gray;
+}
+
+#story-root + div table th {
+  border: 1px solid gray;
+  padding: 5px;
+}
+
+#story-root + div table td {
+  border: 1px solid gray;
+  padding: 5px;
+}
+
+.Pane.vertical.Pane1 {
+  background: red;
+}
+
+// for using EuiWrappingPopover in stories
+.euiPopover__anchor {
+  width: 100%;
+}
+
+.resizable {
+  resize: both;
+  overflow: auto;
+  width: 500px;
+  height: 600px;
+}
