@@ -8,7 +8,7 @@
 
 import type { Store } from 'redux';
 
-import { getScreenReaderDataSelector } from './get_screen_reader_data';
+import { getPartitionScreenReaderDataSelector } from './get_screen_reader_data';
 import { MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store';
 import type { GlobalChartState } from '../../../../state/chart_state';
@@ -65,7 +65,7 @@ describe('Get screen reader data', () => {
 
   it('should test defaults', () => {
     MockStore.addSpecs([spec1], store);
-    const expected = getScreenReaderDataSelector(store.getState());
+    const expected = getPartitionScreenReaderDataSelector(store.getState());
     expect(expected).toEqual({
       data: [
         { depth: 1, label: 'aaa', panelTitle: '', parentName: 'none', percentage: '100%', value: 3, valueText: '3' },
@@ -81,7 +81,7 @@ describe('Get screen reader data', () => {
   });
   it('should compute screen reader data for no slices in pie', () => {
     MockStore.addSpecs([specNoSlice], store);
-    const expected = getScreenReaderDataSelector(store.getState());
+    const expected = getPartitionScreenReaderDataSelector(store.getState());
     expect(expected).toEqual({
       data: [],
       hasMultipleLayers: true,
