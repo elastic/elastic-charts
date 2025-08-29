@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { ReactWrapper } from 'enzyme';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 
 import type { DebugState } from './types';
@@ -16,10 +15,10 @@ import { Chart } from '../components/chart';
 import { MockSeriesSpec } from '../mocks/specs/specs';
 import { Settings } from '../specs/settings';
 
-function getDebugState(wrapper: ReactWrapper): DebugState {
-  const statusComponent = wrapper.find('.echChartStatus');
-  const debugState = statusComponent.getDOMNode().getAttribute('data-ech-debug-state');
-  const parsedDebugState = JSON.parse(debugState || '');
+function getDebugState(container: HTMLElement): DebugState {
+  const statusEl = container.querySelector('.echChartStatus');
+  const raw = statusEl?.getAttribute('data-ech-debug-state') ?? 'null';
+  const parsedDebugState = JSON.parse(raw);
   return parsedDebugState as DebugState;
 }
 
@@ -28,52 +27,46 @@ describe('Spec factory', () => {
   const spec2 = MockSeriesSpec.bar({ id: 'spec2', data: [{ x: 0, y: 2 }] });
 
   it('We can switch specs props between react component', () => {
-    const wrapper = mount(
+    const { container, rerender } = render(
       <Chart size={[100, 100]} id="chart1">
         <Settings debugState />
         <BarSeries {...spec1} />;
         <BarSeries {...spec2} />;
       </Chart>,
     );
-    let debugState = getDebugState(wrapper);
-    expect(debugState.bars).toHaveLength(2);
-    wrapper.setProps({
-      children: (
-        <>
-          <Settings debugState />
-          <BarSeries {...spec2} />;
-          <BarSeries {...spec1} />;
-        </>
-      ),
-    });
-    debugState = getDebugState(wrapper);
-    expect(debugState.bars).toHaveLength(2);
+
+    expect(getDebugState(container).bars).toHaveLength(2);
+
+    rerender(
+      <Chart size={[100, 100]} id="chart1">
+        <Settings debugState />
+        <BarSeries {...spec2} />;
+        <BarSeries {...spec1} />;
+      </Chart>,
+    );
+    expect(getDebugState(container).bars).toHaveLength(2);
   });
 
   it('We can switch specs ids between react component', () => {
-    const wrapper = mount(
+    const { container, rerender } = render(
       <Chart size={[100, 100]} id="chart1">
         <Settings debugState />
         <BarSeries {...spec1} />;
         <BarSeries {...spec2} />;
       </Chart>,
     );
-    let debugState = getDebugState(wrapper);
-    expect(debugState.bars).toHaveLength(2);
-    wrapper.setProps({
-      children: (
-        <>
-          <Settings debugState />
-          <BarSeries {...spec1} id={spec2.id} />;
-          <BarSeries {...spec2} id={spec1.id} />;
-        </>
-      ),
-    });
-    debugState = getDebugState(wrapper);
-
-    expect(debugState.bars).toHaveLength(2);
+    expect(getDebugState(container).bars).toHaveLength(2);
+    rerender(
+      <Chart size={[100, 100]} id="chart1">
+        <Settings debugState />
+        <BarSeries {...spec1} id={spec2.id} />;
+        <BarSeries {...spec2} id={spec1.id} />;
+      </Chart>,
+    );
+    expect(getDebugState(container).bars).toHaveLength(2);
 
     // different id same y
+    const debugState = getDebugState(container);
     expect(debugState.bars?.[0]?.name).toBe('spec2');
     expect(debugState.bars?.[0]?.bars[0]?.y).toBe(1);
 

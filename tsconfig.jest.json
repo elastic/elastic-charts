@@ -1,4 +1,12 @@
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "jest",
+      "jest-extended",
+      "@testing-library/jest-dom",
+      "node"
+    ]
+  },
   "include": ["packages/charts/src", "scripts", "declarations"]
 }
