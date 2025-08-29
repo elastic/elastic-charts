@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { mount } from 'enzyme';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import type { AnnotationLineProps } from './types';
@@ -28,8 +28,8 @@ import type { AnnotationDimensions } from '../types';
 
 describe('Annotation tooltips', () => {
   describe('Line annotation tooltips', () => {
-    test('should show tooltip on mouseenter', () => {
-      const wrapper = mount(
+    test('should show tooltip on mouseenter', async () => {
+      const { container } = render(
         <Chart size={[100, 100]}>
           <Settings
             theme={{
@@ -56,20 +56,23 @@ describe('Annotation tooltips', () => {
           />
         </Chart>,
       );
-      const annotation = wrapper.find('.echAnnotation__marker');
-      expect(annotation).toHaveLength(1);
-      expect(wrapper.find('.echAnnotation')).toHaveLength(0);
-      annotation.simulate('mouseenter');
-      const header = wrapper.find('.echTooltipHeader');
-      expect(header).toHaveLength(1);
-      expect(header.text()).toEqual('2');
-      expect(wrapper.find('.echAnnotation__details').text()).toEqual('foo');
-      annotation.simulate('mouseleave');
-      expect(annotation.find('.echTooltipHeader')).toHaveLength(0);
+
+      await waitFor(() => expect(container.querySelector('.echAnnotation__marker')).not.toBeNull());
+      const marker = container.querySelector('.echAnnotation__marker');
+      expect(document.querySelectorAll('.echAnnotation').length).toBe(0);
+
+      if (marker) fireEvent.mouseEnter(marker);
+
+      await waitFor(() => expect(document.querySelector('.echTooltipHeader')).not.toBeNull());
+      expect((document.querySelector('.echTooltipHeader') as HTMLElement).textContent).toBe('2');
+      expect((document.querySelector('.echAnnotation__details') as HTMLElement).textContent).toBe('foo');
+
+      if (marker) fireEvent.mouseLeave(marker);
+      await waitFor(() => expect(document.querySelector('.echTooltipHeader')).toBeNull());
     });
 
-    test('should now show tooltip if hidden', () => {
-      const wrapper = mount(
+    test('should now show tooltip if hidden', async () => {
+      const { container } = render(
         <Chart size={[100, 100]}>
           <Settings
             theme={{
@@ -97,10 +100,14 @@ describe('Annotation tooltips', () => {
           />
         </Chart>,
       );
-      const annotation = wrapper.find('.echAnnotation__marker');
-      expect(wrapper.find('.echAnnotation')).toHaveLength(0);
-      annotation.simulate('mouseenter');
-      expect(wrapper.find('.echTooltip__header')).toHaveLength(0);
+
+      expect(container.querySelectorAll('.echAnnotation').length).toBe(0);
+      const marker = container.querySelector('.echAnnotation__marker');
+      if (marker) fireEvent.mouseEnter(marker);
+
+      // Tooltip should not show when hideTooltips is true
+      // Use the actual class used by the tooltip header
+      await waitFor(() => expect(document.querySelector('.echTooltipHeader')).toBeNull());
     });
   });
 
