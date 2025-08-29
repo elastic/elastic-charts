@@ -7,7 +7,7 @@
  */
 
 import { mount } from 'enzyme';
-import React from 'react';
+import React, { act } from 'react';
 import { Provider } from 'react-redux';
 
 import { DEFAULT_SETTINGS_SPEC } from './default_settings_spec';
@@ -195,18 +195,32 @@ describe('Specs parser', () => {
         <ChartContainer getChartContainerRef={getChartContainerRef} forwardStageRef={chartStageRef} />
       </Provider>
     );
-    mount(component);
+    const wrapper = mount(component);
     const state = chartStore.getState();
     expect(state.specsInitialized).toBe(true);
     expect(state.parentDimensions).toEqual({ width: 0, height: 0, top: 0, left: 0 });
-    chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
+    act(() => {
+      chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
+    });
+    wrapper.update();
     expect(chartStore.getState().parentDimensions).toEqual({ width: 100, height: 100, top: 0, left: 0 });
-    // passing the same parent dimmesion again can be triggered by the ResizeObserver
-    chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
     expect(chartStore.getState().chartRendered).toBe(true);
+    expect(chartStore.getState().chartRenderedCount).toBe(1);
+
+    // passing the same parent dimmesion again can be triggered by the ResizeObserver
+    act(() => {
+      chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
+    });
+    wrapper.update();
+    expect(chartStore.getState().chartRendered).toBe(true);
+    expect(chartStore.getState().chartRenderedCount).toBe(1);
 
     // trigger also with just differences in top/left
-    chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 1, left: 1 }));
+    act(() => {
+      chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 1, left: 1 }));
+    });
+    wrapper.update();
     expect(chartStore.getState().chartRendered).toBe(true);
+    expect(chartStore.getState().chartRenderedCount).toBe(2);
   });
 });

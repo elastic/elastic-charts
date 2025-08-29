@@ -16,7 +16,6 @@ import type { Optional } from 'utility-types';
 import type { OptionalKeys } from 'utility-types';
 import type { PropsWithChildren as PropsWithChildren_2 } from 'react';
 import { default as React_2 } from 'react';
-import type { ReactChild } from 'react';
 import type { ReactElement } from 'react';
 import type { ReactNode } from 'react';
 import type { Required as Required_2 } from 'utility-types';
@@ -2848,7 +2847,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
     externalPointerEvents: ExternalPointerEventsSettings;
     locale: string;
     minBrushDelta?: number;
-    noResults?: ComponentType | ReactChild;
+    noResults?: ComponentType | ReactNode;
     onAnnotationClick?: AnnotationClickListener;
     // (undocumented)
     onBrushEnd?: BrushEndListener;

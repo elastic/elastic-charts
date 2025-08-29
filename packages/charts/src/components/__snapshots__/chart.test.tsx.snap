@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Chart should render the legend name test 1`] = `
 "<Chart size={{...}} id="chart1" renderer="canvas">
@@ -30,7 +30,7 @@ exports[`Chart should render the legend name test 1`] = `
                     <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="test">
                       <div className="background" />
                       <div className="echLegend__colorWrapper">
-                        <ForwardRef color="#16C5C0" seriesName="test" isSeriesHidden={false} hasColorPicker={false} onClick={[undefined]} pointStyle={[undefined]}>
+                        <Color color="#16C5C0" seriesName="test" isSeriesHidden={false} hasColorPicker={false} onClick={[undefined]} pointStyle={[undefined]}>
                           <div className="echLegendItem__color" title="series color">
                             <LegendIcon pointStyle={[undefined]} color="#16C5C0" ariaLabel="series color: #16C5C0">
                               <svg width={16} height={16} aria-label="series color: #16C5C0">
@@ -40,7 +40,7 @@ exports[`Chart should render the legend name test 1`] = `
                               </svg>
                             </LegendIcon>
                           </div>
-                        </ForwardRef>
+                        </Color>
                       </div>
                       <Label label="test" options={{...}} isToggleable={false} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={1} hiddenSeriesCount={0}>
                         <div dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="test" style={{...}}>
