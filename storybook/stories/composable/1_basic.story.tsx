@@ -84,6 +84,8 @@ const Measurement = (props: { text: string; horizontal: boolean; dims: CSSProper
 const HTML_CHART_PADDING = 20;
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  // Needed to create a state diff to remount the chart after Measurements are rendered
+  const [count, setCount] = useState(0);
   const legendEnabled = boolean('show legend', true);
   const axisYEnabled = boolean('show y axis', true);
   const axisXEnabled = boolean('show x axis', true);
@@ -95,6 +97,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const onAreaChangeHandler = (areas: { projection: Dimensions; parent: Dimensions }) => {
     onAreaChangeAction(areas);
     setDimensions(areas);
+    setCount((c) => c + 1);
   };
 
   return (
@@ -178,7 +181,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         )}
         {axisYEnabled && <Axis id="quantity" position={Position.Left} ticks={5} />}
         <BarSeries
-          id="data"
+          id={`data=${count}`}
           xScaleType={ScaleType.Ordinal}
           yScaleType={ScaleType.Linear}
           xAccessor={0}
