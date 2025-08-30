@@ -182,6 +182,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         {axisYEnabled && <Axis id="quantity" position={Position.Left} ticks={5} />}
         <BarSeries
           id={`data=${count}`}
+          name="data"
           xScaleType={ScaleType.Ordinal}
           yScaleType={ScaleType.Linear}
           xAccessor={0}
