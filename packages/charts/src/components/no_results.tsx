@@ -17,7 +17,9 @@ interface NoResultsProps {
 
 /** @internal */
 export const NoResults: FC<NoResultsProps> = ({ renderFn }) => (
-  <Suspense fallback={() => null}>
-    <div className="echReactiveChart_noResults">{renderFn ?? <p>No data to display</p>}</div>
+  <Suspense fallback={null}>
+    <div className="echReactiveChart_noResults">
+      {typeof renderFn === 'function' ? React.createElement(renderFn) : renderFn ?? <p>No data to display</p>}
+    </div>
   </Suspense>
 );

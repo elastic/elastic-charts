@@ -213,7 +213,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
               width: sizes.valuePartFontSize,
               height: sizes.valuePartFontSize,
               color: datum.valueColor ?? colors.highContrast,
-              verticalAlign: 'middle',
+              verticalAlign: 'middle' as const,
             })}
           </p>
         )}

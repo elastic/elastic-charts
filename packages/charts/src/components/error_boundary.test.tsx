@@ -6,12 +6,18 @@
  * Side Public License, v 1.
  */
 
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import type { PropsWithChildren } from 'react';
 import React from 'react';
 
 import { Chart } from './chart';
 
-class SimpleErrorBoundary extends React.Component<{ onError?: (error: Error) => void }, { hasError: boolean }> {
+type Props = PropsWithChildren<{ onError?: (error: Error) => void }>;
+type State = { hasError: boolean };
+
+const ERROR_TEXT = 'Error occurred';
+
+class SimpleErrorBoundary extends React.Component<Props, State> {
   onError?: (error: Error) => void;
   constructor(props: { onError: (error: Error) => void }) {
     super(props);
@@ -29,7 +35,7 @@ class SimpleErrorBoundary extends React.Component<{ onError?: (error: Error) => 
 
   render() {
     if (this.state.hasError) {
-      return <div id="simple-error">Error occurred</div>;
+      return <div id="simple-error">{ERROR_TEXT}</div>;
     }
 
     return this.props.children;
@@ -43,18 +49,18 @@ describe('Error boundary', () => {
       throw new Error('What happened???');
     };
 
-    const wrapper = mount(
+    const { container } = render(
       <SimpleErrorBoundary onError={onError}>
         <Chart size={[100, 100]} id="chart1">
           <Series />
         </Chart>
       </SimpleErrorBoundary>,
     );
-    const errorEl = wrapper.find('#simple-error');
-    const chartEl = wrapper.find('.echChart');
+    const errorEl = screen.getByText(ERROR_TEXT);
+    const chartEl = container.querySelector('.echChart');
 
-    expect(errorEl.exists()).toBe(true);
-    expect(chartEl.exists()).toBe(false);
+    expect(errorEl).toBeTruthy();
+    expect(chartEl).toBeNull();
     expect(onError).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'What happened???',

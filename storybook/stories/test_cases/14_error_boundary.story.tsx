@@ -8,14 +8,17 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
-import React from 'react';
+import React, { type PropsWithChildren } from 'react';
 
 import { Chart, Settings, Axis, Position, BarSeries, ScaleType } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-class SimpleErrorBoundary extends React.Component<{ onError?: (error: Error) => void }, { hasError: boolean }> {
+type Props = PropsWithChildren<{ onError?: (error: Error) => void }>;
+type State = { hasError: boolean };
+
+class SimpleErrorBoundary extends React.Component<Props, State> {
   onError?: (error: Error) => void;
   constructor(props: { onError: (error: Error) => void }) {
     super(props);

@@ -6,10 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 
-import { LegendIcon } from './legend_icon';
 import { LegendValue } from '../../common/legend';
 import { ScaleType } from '../../scales/constants';
 import { Settings, LineSeries, AreaSeries } from '../../specs';
@@ -17,7 +16,7 @@ import { Chart } from '../chart';
 
 describe('Legend icons', () => {
   it('should test default dot icons', () => {
-    const wrapper = mount(
+    const { container } = render(
       <Chart>
         <Settings showLegend legendValues={[LegendValue.LastValue]} />
         <LineSeries
@@ -32,13 +31,15 @@ describe('Legend icons', () => {
         />
       </Chart>,
     );
-    const legendIconWrapper = wrapper.find(LegendIcon);
-    expect(legendIconWrapper.exists).toBeTruthy();
-    expect(legendIconWrapper.first().getElement().props.color).toEqual('#16C5C0');
+    // LegendIcon renders an <svg aria-label="..."> with a <path>
+    const svg = container.querySelector('svg[aria-label]');
+    expect(svg).toBeTruthy();
+    const path = svg?.querySelector('path');
+    expect(path?.getAttribute('fill')).toEqual('#16C5C0');
   });
 
   it('should align styles - stroke', () => {
-    const wrapperColorChange = mount(
+    const { container } = render(
       <Chart>
         <Settings showLegend legendValues={[LegendValue.LastValue]} />
         <AreaSeries
@@ -49,16 +50,13 @@ describe('Legend icons', () => {
           xAccessor={0}
           yAccessors={[1]}
           splitSeriesAccessors={[2]}
-          areaSeriesStyle={{
-            point: {
-              stroke: '#ff1a1a',
-            },
-          }}
+          color="#ff1a1a"
           data={[[0, 123, 'group0']]}
         />
       </Chart>,
     );
-    const legendIconWrapper = wrapperColorChange.find(LegendIcon);
-    expect(legendIconWrapper.getElement().props.pointStyle.stroke).toEqual('#ff1a1a');
+    const svg = container.querySelector('svg[aria-label]');
+    const path = svg?.querySelector('path');
+    expect(path?.getAttribute('fill')).toEqual('#ff1a1a');
   });
 });

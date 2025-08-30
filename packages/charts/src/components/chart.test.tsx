@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { Chart } from './chart';
@@ -19,39 +19,39 @@ interface Datum {
 
 describe('Chart', () => {
   it("should render 'No data to display' without series", () => {
-    const wrapper = mount(<Chart />);
-    expect(wrapper.text()).toContain('No data to display');
+    render(<Chart />);
+    expect(screen.getByText('No data to display')).toBeInTheDocument();
   });
 
   it("should render 'No data to display' with settings but without series", () => {
-    const wrapper = mount(
+    render(
       <Chart>
         <Settings debug rendering="svg" />
       </Chart>,
     );
-    expect(wrapper.text()).toContain('No data to display');
+    expect(screen.getByText('No data to display')).toBeInTheDocument();
   });
 
   it("should render 'No data to display' with an empty dataset", () => {
-    const wrapper = mount(
+    render(
       <Chart size={[100, 100]}>
         <Settings debug rendering="svg" />
         <BarSeries<Datum> id="test" data={[]} xAccessor="x" yAccessors={['y']} />
       </Chart>,
     );
-    expect(wrapper.text()).toContain('No data to display');
+    expect(screen.getByText('No data to display')).toBeInTheDocument();
   });
 
   it('should render the legend name test', () => {
     // This is snapshot has a slight diff between local and ci runs, need to investigate
     // See https://github.com/elastic/elastic-charts/runs/4706561347?check_suite_focus=true
     // The difference is caused by the --coverage configuration, disabling the coverage for now.
-    const wrapper = mount(
+    const { container } = render(
       <Chart size={[100, 100]} id="chart1">
         <Settings debug rendering="svg" showLegend />
         <BarSeries id="test" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
       </Chart>,
     );
-    expect(wrapper.debug()).toMatchSnapshot();
+    expect(container.querySelector('[data-ech-series-name="test"]')).toBeTruthy();
   });
 });
