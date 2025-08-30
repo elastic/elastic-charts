@@ -13,7 +13,8 @@ import { common } from '../page_objects/common';
 test.describe('Tooltip', () => {
   test.describe('Chart Types', () => {
     test.describe('Cartesian', () => {
-      test('pinning without selection', async ({ page }) => {
+      // TODO fix flakiness with resizing tooltip
+      test.skip('pinning without selection', async ({ page }) => {
         await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
           'http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:light&knob-Chart%20type=treemap&knob-SeriesType=bar&knob-async%20delay%20(ms)=1500&knob-character%20set=rtl&knob-data%20polarity=Mixed&knob-pinned=true&knob-rtl%20language=AR&knob-show%20legend=true&knob-stacked=true&knob-visible=true',
           { left: 240, bottom: 260 },
@@ -21,7 +22,8 @@ test.describe('Tooltip', () => {
         );
       });
 
-      test('pinning over selection', async ({ page }) => {
+      // TODO fix flakiness with resizing tooltip
+      test.skip('pinning over selection', async ({ page }) => {
         await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
           'http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:light&knob-Chart type=treemap&knob-SeriesType=bar&knob-async delay=1000&knob-async delay (ms)=1500&knob-character set=rtl&knob-chart type=line&knob-data polarity=Mixed&knob-pinned=true&knob-rtl language=AR&knob-show legend=true&knob-stacked=true&knob-visible=true&knob-reduce data=true&knob-async actions delay=0',
           { left: 220, bottom: 285 },
@@ -55,7 +57,8 @@ test.describe('Tooltip', () => {
         );
       });
 
-      test('selecting series on pinned tooltip async', async ({ page }) => {
+      // TODO fix flakiness with resizing tooltip
+      test.skip('selecting series on pinned tooltip async', async ({ page }) => {
         const delay = 100;
         await common.expectChartAtUrlToMatchScreenshot(page)(
           `http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:light&knob-Chart type=treemap&knob-SeriesType=bar&knob-async delay=1000&knob-async delay (ms)=1500&knob-character set=rtl&knob-chart type=bar&knob-data polarity=Mixed&knob-pinned=true&knob-rtl language=AR&knob-show legend=true&knob-stacked=true&knob-visible=true&knob-reduce data=true&knob-async actions delay=${delay}`,

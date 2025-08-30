@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { select } from '@storybook/addon-knobs';
 import React, { useEffect, useRef, useState } from 'react';
 
 import type { Font } from '@elastic/charts/src/common/text_utils';
@@ -27,6 +28,15 @@ const defaultText =
   'Bacon ipsum dolor amet mongoloadgendecoblue58d844d55c-9c24dtip flank kielbasa. Pork strip steak jowl chuck filet mignon, burgdoggen kevin tail.';
 
 export const Example = () => {
+  const granularity = select(
+    'Segmenter Granularity',
+    {
+      character: 'grapheme',
+      word: 'word',
+      sentence: 'sentence',
+    },
+    'word',
+  );
   const [maxLineWidth, setMaxLineWidth] = useState(250);
   const [maxLines, setMaxLines] = useState(3);
   const [text, setText] = useState(defaultText);
@@ -48,13 +58,13 @@ export const Example = () => {
       ctx.fillStyle = 'black';
       ctx.strokeRect(0, 0, maxLineWidth, fontSize * maxLines);
       withTextMeasure((measure) => {
-        const lines = wrapText(text, font, fontSize, maxLineWidth, maxLines, measure, 'en');
+        const lines = wrapText(text, font, fontSize, maxLineWidth, maxLines, measure, 'en', granularity);
         lines.forEach((line, i) => {
           ctx.fillText(line, 0, i * fontSize);
         });
       });
     });
-  }, [text, maxLineWidth, maxLines]);
+  }, [text, maxLineWidth, maxLines, granularity]);
   const width = 500;
   const height = 500;
   return (
@@ -123,4 +133,5 @@ export const Example = () => {
 
 Example.parameters = {
   showHeader: true,
+  resize: true,
 };

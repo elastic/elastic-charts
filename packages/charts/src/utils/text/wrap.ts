@@ -18,6 +18,8 @@ interface WrapTextLines extends Array<string> {
   };
 }
 
+type Granularity = 'grapheme' | 'word' | 'sentence';
+
 /** @internal */
 export function wrapText(
   text: string,
@@ -27,6 +29,7 @@ export function wrapText(
   maxLines: number,
   measure: TextMeasure,
   locale: string,
+  granularity: Granularity = 'word',
 ): WrapTextLines {
   const lines: WrapTextLines = [] as any;
   lines.meta = {
@@ -36,7 +39,7 @@ export function wrapText(
   if (maxLines <= 0) {
     return lines;
   }
-  const segmenter = textSegmenter(locale);
+  const segmenter = textSegmenter(locale, granularity);
   // remove new lines and multi-spaces.
   const cleanedText = text.replaceAll('\n', ' ').replaceAll(/ +(?= )/g, '');
 
@@ -68,12 +71,14 @@ export function wrapText(
   if (lines.length > maxLines) {
     lines.meta.truncated = true;
     const lastLineMaxLineWidth = maxLineWidth - ellipsisWidth;
-    const lastLine = clipTextToWidth(lines[maxLines - 1] ?? '', font, fontSize, lastLineMaxLineWidth, measure);
+    const lineToTruncate = lines[maxLines - 1] ?? '';
+    const lastLine = clipTextToWidth(lineToTruncate, font, fontSize, lastLineMaxLineWidth, measure);
     if (lastLine.length > 0) {
       lines.splice(maxLines - 1, Infinity, `${lastLine}${ELLIPSIS}`);
     } else {
       if (lastLineMaxLineWidth > 0) {
-        lines.splice(maxLines - 1, Infinity, ELLIPSIS);
+        // Not enough space for both a character and ellipsis; if 1 line → first char; if >1 lines → only ellipsis
+        lines.splice(maxLines - 1, Infinity, maxLines > 1 ? ELLIPSIS : lineToTruncate.slice(0, 1));
       } else {
         lines.splice(maxLines, Infinity);
       }
@@ -82,11 +87,14 @@ export function wrapText(
   return lines;
 }
 
-function textSegmenter(locale: string): (text: string) => { segment: string; index: number; isWordLike?: boolean }[] {
+function textSegmenter(
+  locale: string,
+  granularity: Granularity,
+): (text: string) => { segment: string; index: number; isWordLike?: boolean }[] {
   if ('Segmenter' in Intl) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    const fn = new Intl.Segmenter(locale, { granularity: 'word' });
+    const fn = new Intl.Segmenter(locale, { granularity });
     return (text: string) => Array.from(fn.segment(text));
   } else {
     return (text: string) => {
