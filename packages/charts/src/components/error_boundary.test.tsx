@@ -7,11 +7,15 @@
  */
 
 import { mount } from 'enzyme';
+import type { PropsWithChildren } from 'react';
 import React from 'react';
 
 import { Chart } from './chart';
 
-class SimpleErrorBoundary extends React.Component<{ onError?: (error: Error) => void }, { hasError: boolean }> {
+type Props = PropsWithChildren<{ onError?: (error: Error) => void }>;
+type State = { hasError: boolean };
+
+class SimpleErrorBoundary extends React.Component<Props, State> {
   onError?: (error: Error) => void;
   constructor(props: { onError: (error: Error) => void }) {
     super(props);
