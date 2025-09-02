@@ -67,14 +67,16 @@ export type Step = CustomGroupStep | CustomCommandStep;
 const IS_ELASTIC_BUILDKITE_INFRA = !!process.env.ELASTIC_BUILDKITE_INFRA?.match(/^(1|true)$/);
 
 export const commandStepDefaults: Partial<CustomCommandStep> = {
-  agents: IS_ELASTIC_BUILDKITE_INFRA ? {
-    provider: 'gcp',
-    image: 'family/kibana-ubuntu-2404',
-    imageProject: 'elastic-images-prod',
-    machineType: 'n2-standard-2'
-  }: {
-    queue: 'datavis-n2-2',
-  },
+  agents: IS_ELASTIC_BUILDKITE_INFRA
+    ? {
+        provider: 'gcp',
+        image: 'family/kibana-ubuntu-2404',
+        imageProject: 'elastic-images-prod',
+        machineType: 'n2-standard-2',
+      }
+    : {
+        queue: 'datavis-n2-2',
+      },
   skip: false,
   priority: 10,
   plugins: [Plugins.docker.node()],
