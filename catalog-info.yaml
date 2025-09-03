@@ -20,7 +20,7 @@ spec:
       env:
         ELASTIC_SLACK_NOTIFICATIONS_ENABLED: "false"
         ELASTIC_BUILDKITE_INFRA: "true"
-      repository: elastic/kibana
+      repository: elastic/elastic-charts
       provider_settings:
         trigger_mode: none
       pipeline_file: ".buildkite/pipelines/pull_request/pipeline.sh"
