@@ -12,6 +12,7 @@ import { bkEnv } from '../buildkite';
 import type { ChangeContext } from '../github';
 
 /**
+ * @deprecated
  * Available agents from kibana buildkite instance
  * See [full list](https://github.com/elastic/kibana-buildkite/blob/dab1058885036ac23e8371e40dcd3e0fedb4c49c/agents.json#L19-L165)
  */
@@ -39,7 +40,13 @@ export type CustomCommandStep = Omit<CommandStep, 'agents'> & {
    */
   ignoreForced?: boolean;
   agents?: {
-    queue: AgentQueue;
+    /** @deprecated - image queues are no longer supported outside of the Kibana-Buildkite infra */
+    queue?: AgentQueue;
+    imageProject?: 'elastic-images-qa' | 'elastic-images-prod' | string;
+    image?: string;
+    diskSizeGb?: number;
+    provider?: 'gcp' | string;
+    machineType?: string;
   };
 };
 
@@ -57,10 +64,19 @@ export type CustomGroupStep = Omit<GroupStep, 'steps'> & {
 // Only current supported steps
 export type Step = CustomGroupStep | CustomCommandStep;
 
+const IS_ELASTIC_BUILDKITE_INFRA = !!process.env.ELASTIC_BUILDKITE_INFRA?.match(/^(1|true)$/);
+
 export const commandStepDefaults: Partial<CustomCommandStep> = {
-  agents: {
-    queue: 'datavis-n2-2' as AgentQueue,
-  },
+  agents: IS_ELASTIC_BUILDKITE_INFRA
+    ? {
+        provider: 'gcp',
+        image: 'family/kibana-ubuntu-2404',
+        imageProject: 'elastic-images-prod',
+        machineType: 'n2-standard-2',
+      }
+    : {
+        queue: 'datavis-n2-2',
+      },
   skip: false,
   priority: 10,
   plugins: [Plugins.docker.node()],
