@@ -102,7 +102,7 @@ test.describe('Axis stories', () => {
 
   test('tooltip subcategory color should match parent category color', async ({ page }) => {
     await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-      `http://localhost:9001/?path=/story/sunburst--with-three-layers-and-same-categories&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light`,
+      `http://localhost:9001/?path=/story/sunburst--with-three-layers-and-same-nested-layers&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light`,
       { left: 300, top: 100 },
     );
   });

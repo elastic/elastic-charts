@@ -47,4 +47,4 @@ export { Example as largestCircle } from './30_largest_circle.story';
 export { Example as boldLinkValue } from './31_bold_link_value.story';
 export { Example as customTooltip } from './32_custom_tooltip.story';
 export { Example as orderedSlices } from './33_ordered_slices.story';
-export { Example as withThreeLayersAndSameCategories } from './34_three_layers_same_categories.story';
+export { Example as withThreeLayersAndSameNestedLayers } from './34_three_layers_same_nested.story';
