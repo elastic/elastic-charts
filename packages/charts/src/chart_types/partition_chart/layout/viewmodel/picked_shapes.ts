@@ -128,10 +128,16 @@ function getTooltipValueFromNode(
 ): TooltipValue {
   const depth = node[DEPTH_KEY];
   const value = node[AGGREGATE_KEY];
+  const path = node[PATH_KEY];
   const dataName = getNodeName(node);
   const formatter = labelFormatters[depth - 1];
   const model = shapeViewModel.quadViewModel.find(
-    (d) => d.depth === depth && d.dataName === dataName && d.value === value,
+    (d) =>
+      d.depth === depth &&
+      d.dataName === dataName &&
+      d.value === value &&
+      d.path.length === path.length &&
+      d.path.every((el, i) => el === path[i]),
   );
   return {
     label: formatter ? formatter(dataName) : dataName,
