@@ -6,6 +6,13 @@
  * Side Public License, v 1.
  */
 
-/* @internal */
-export { ScreenReaderSummary } from './screen_reader_summary';
-export type { ChartLabelData } from './types';
+/**
+ * Generic interface for chart label data
+ * @internal
+ */
+export interface ChartLabelData {
+  /** Primary label for the chart */
+  majorLabel?: string;
+  /** Secondary label for additional context */
+  minorLabel?: string;
+}
