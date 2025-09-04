@@ -22,7 +22,11 @@ export type TooltipHeaderProps<D extends BaseDatum = Datum> = PropsOrChildrenWit
 
 const TooltipHeaderInner = <D extends BaseDatum = Datum>(props: TooltipHeaderProps<D>) => {
   if ('children' in props) {
-    return <div className="echTooltipHeader">{renderComplexChildren(props.children)}</div>;
+    return (
+      <div className="echTooltipHeader" data-testid="echTooltipHeader">
+        {renderComplexChildren(props.children)}
+      </div>
+    );
   }
 
   const { header, formatter } = props;
@@ -33,7 +37,11 @@ const TooltipHeaderInner = <D extends BaseDatum = Datum>(props: TooltipHeaderPro
 
   if (!formattedValue) return null;
 
-  return <div className="echTooltipHeader">{formattedValue}</div>;
+  return (
+    <div className="echTooltipHeader" data-testid="echTooltipHeader">
+      {formattedValue}
+    </div>
+  );
 };
 
 /** @public */

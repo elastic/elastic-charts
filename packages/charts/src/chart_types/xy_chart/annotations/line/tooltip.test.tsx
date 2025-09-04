@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { mount } from 'enzyme';
+import { render, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 
 import type { AnnotationLineProps } from './types';
@@ -29,7 +29,7 @@ import type { AnnotationDimensions } from '../types';
 describe('Annotation tooltips', () => {
   describe('Line annotation tooltips', () => {
     test('should show tooltip on mouseenter', () => {
-      const wrapper = mount(
+      render(
         <Chart size={[100, 100]}>
           <Settings
             theme={{
@@ -56,20 +56,23 @@ describe('Annotation tooltips', () => {
           />
         </Chart>,
       );
-      const annotation = wrapper.find('.echAnnotation__marker');
-      expect(annotation).toHaveLength(1);
-      expect(wrapper.find('.echAnnotation')).toHaveLength(0);
-      annotation.simulate('mouseenter');
-      const header = wrapper.find('.echTooltipHeader');
-      expect(header).toHaveLength(1);
-      expect(header.text()).toEqual('2');
-      expect(wrapper.find('.echAnnotation__details').text()).toEqual('foo');
-      annotation.simulate('mouseleave');
-      expect(annotation.find('.echTooltipHeader')).toHaveLength(0);
+
+      expect(screen.queryByTestId('echAnnotationMarker')).not.toBeNull();
+      const marker = screen.getByTestId('echAnnotationMarker');
+      expect(screen.queryAllByTestId('echAnnotation')).toHaveLength(0);
+
+      if (marker) fireEvent.mouseEnter(marker);
+
+      expect(screen.queryByTestId('echTooltip')).not.toBeNull();
+      expect(screen.getByTestId('echTooltipHeader').textContent).toBe('2');
+      expect(screen.getByTestId('echAnnotationDetails').textContent).toBe('foo');
+
+      if (marker) fireEvent.mouseLeave(marker);
+      expect(screen.queryByTestId('echTooltipHeader')).toBeNull();
     });
 
-    test('should now show tooltip if hidden', () => {
-      const wrapper = mount(
+    test('should not show tooltip when using hideTooltips', () => {
+      render(
         <Chart size={[100, 100]}>
           <Settings
             theme={{
@@ -97,10 +100,12 @@ describe('Annotation tooltips', () => {
           />
         </Chart>,
       );
-      const annotation = wrapper.find('.echAnnotation__marker');
-      expect(wrapper.find('.echAnnotation')).toHaveLength(0);
-      annotation.simulate('mouseenter');
-      expect(wrapper.find('.echTooltip__header')).toHaveLength(0);
+
+      expect(screen.queryAllByTestId('echAnnotation')).toHaveLength(0);
+      const marker = screen.getByTestId('echAnnotationMarker');
+      if (marker) fireEvent.mouseEnter(marker);
+
+      expect(screen.queryByTestId('echTooltip')).toBeNull();
     });
   });
 

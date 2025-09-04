@@ -37,7 +37,7 @@ const ScreenReaderSummaryComponent = ({
   goalChartLabels,
 }: ScreenReaderSummaryStateProps) => {
   return (
-    <div className="echScreenReaderOnly">
+    <div className="echScreenReaderOnly" data-testid="echScreenReaderSummary">
       <ScreenReaderLabel {...a11ySettings} goalChartLabels={goalChartLabels} />
       <ScreenReaderDescription {...a11ySettings} />
       <ScreenReaderTypes {...a11ySettings} chartTypeDescription={chartTypeDescription} goalChartData={goalChartData} />

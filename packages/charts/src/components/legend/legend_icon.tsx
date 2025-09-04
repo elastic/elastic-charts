@@ -16,14 +16,13 @@ import { PointShape } from '../../utils/themes/theme';
 
 interface LegendIconProps {
   pointStyle?: PointStyle;
-  ariaLabel: string;
   color: Color;
 }
 
 const MARKER_SIZE = 8;
 
 /** @internal */
-export const LegendIcon = ({ pointStyle, color, ariaLabel }: LegendIconProps) => {
+export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
   const {
     shape = PointShape.Circle,
     stroke = color,
@@ -34,7 +33,7 @@ export const LegendIcon = ({ pointStyle, color, ariaLabel }: LegendIconProps) =>
 
   const adjustedSize = MARKER_SIZE - (strokeWidth ?? 0);
   return (
-    <svg width={MARKER_SIZE * 2} height={MARKER_SIZE * 2} aria-label={ariaLabel}>
+    <svg width={MARKER_SIZE * 2} height={MARKER_SIZE * 2}>
       <g
         transform={`
           translate(${MARKER_SIZE}, ${MARKER_SIZE})
@@ -47,6 +46,7 @@ export const LegendIcon = ({ pointStyle, color, ariaLabel }: LegendIconProps) =>
           strokeWidth={strokeWidth}
           fill={color}
           opacity={opacity}
+          data-testid="echLegendIconPath"
         />
       </g>
     </svg>

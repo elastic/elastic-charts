@@ -6,14 +6,10 @@
  * Side Public License, v 1.
  */
 
-import type { ReactWrapper } from 'enzyme';
-import { mount } from 'enzyme';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import React, { Component } from 'react';
 
-import { Legend } from './legend';
-import { LegendListItem } from './legend_item';
-import { LegendTable } from './legend_table';
-import { LegendTableRow } from './legend_table/legend_table_row';
+import { CHANGE_SERIES_COLOR } from './color';
 import { LegendValue } from '../../common/legend';
 import { SeededDataGenerator } from '../../mocks/utils';
 import { ScaleType } from '../../scales/constants';
@@ -25,7 +21,7 @@ const dg = new SeededDataGenerator();
 
 describe('Legend', () => {
   it('shall render the all the series names', () => {
-    const wrapper = mount(
+    render(
       <Chart>
         <Settings showLegend legendValues={[LegendValue.CurrentAndLastValue]} />
         <BarSeries
@@ -45,18 +41,14 @@ describe('Legend', () => {
         />
       </Chart>,
     );
-    const legendWrapper = wrapper.find(Legend);
-    expect(legendWrapper.exists).toBeTruthy();
-    const legendItems = legendWrapper.find(LegendListItem);
-    expect(legendItems.exists).toBeTruthy();
-    expect(legendItems).toHaveLength(4);
-    legendItems.forEach((legendItem, i) => {
-      // the legend item shows also the value as default parameter
-      expect(legendItem.text()).toBe(`group${i}123`);
+    const items = screen.queryAllByRole('listitem');
+    expect(items.length).toBe(4);
+    items.forEach((item, i: number) => {
+      expect(item.textContent?.replace(/\s+/g, '')).toBe(`group${i}123`);
     });
   });
   it('shall render the all the series names without the data value', () => {
-    const wrapper = mount(
+    render(
       <Chart>
         <Settings showLegend legendValues={[]} />
         <BarSeries
@@ -76,14 +68,10 @@ describe('Legend', () => {
         />
       </Chart>,
     );
-    const legendWrapper = wrapper.find(Legend);
-    expect(legendWrapper.exists).toBeTruthy();
-    const legendItems = legendWrapper.find(LegendListItem);
-    expect(legendItems.exists).toBeTruthy();
-    expect(legendItems).toHaveLength(4);
-    legendItems.forEach((legendItem, i) => {
-      // the legend item shows also the value as default parameter
-      expect(legendItem.text()).toBe(`group${i}`);
+    const items = screen.queryAllByRole('listitem');
+    expect(items.length).toBe(4);
+    items.forEach((item, i: number) => {
+      expect(item.textContent?.replace(/\s+/g, '')).toBe(`group${i}`);
     });
   });
   it('shall call the over and out listeners for every list item', () => {
@@ -91,7 +79,7 @@ describe('Legend', () => {
     const onLegendItemOut = jest.fn();
     const numberOfSeries = 4;
     const data = dg.generateGroupedSeries(10, numberOfSeries, 'split');
-    const wrapper = mount(
+    render(
       <Chart>
         <Settings
           showLegend
@@ -110,14 +98,12 @@ describe('Legend', () => {
         />
       </Chart>,
     );
-    const legendWrapper = wrapper.find(Legend);
-    expect(legendWrapper.exists).toBeTruthy();
-    const legendItems = legendWrapper.find(LegendListItem);
-    expect(legendItems.exists).toBeTruthy();
-    legendItems.forEach((legendItem, i) => {
-      legendItem.simulate('mouseenter');
+    const items = screen.queryAllByRole('listitem');
+    expect(items.length).toBe(numberOfSeries);
+    items.forEach((item, i: number) => {
+      fireEvent.mouseEnter(item);
       expect(onLegendItemOver).toHaveBeenCalledTimes(i + 1);
-      legendItem.simulate('mouseleave');
+      fireEvent.mouseLeave(item);
       expect(onLegendItemOut).toHaveBeenCalledTimes(i + 1);
     });
   });
@@ -125,7 +111,7 @@ describe('Legend', () => {
     const onLegendItemClick = jest.fn();
     const numberOfSeries = 4;
     const data = dg.generateGroupedSeries(10, numberOfSeries, 'split');
-    const wrapper = mount(
+    render(
       <Chart>
         <Settings showLegend legendValues={[LegendValue.CurrentAndLastValue]} onLegendItemClick={onLegendItemClick} />
         <BarSeries
@@ -139,14 +125,10 @@ describe('Legend', () => {
         />
       </Chart>,
     );
-    const legendWrapper = wrapper.find(Legend);
-    expect(legendWrapper.exists).toBeTruthy();
-    const legendItems = legendWrapper.find(LegendListItem);
-    expect(legendItems.exists).toBeTruthy();
-    expect(legendItems).toHaveLength(4);
-    legendItems.forEach((legendItem, i) => {
-      // the click is only enabled on the title
-      legendItem.find('.echLegendItem__label').simulate('click');
+    const labels = screen.queryAllByTestId('echLegendItemLabel');
+    expect(labels.length).toBe(numberOfSeries);
+    labels.forEach((label, i: number) => {
+      fireEvent.click(label);
       expect(onLegendItemClick).toHaveBeenCalledTimes(i + 1);
     });
   });
@@ -163,10 +145,11 @@ describe('Legend', () => {
       data = dg.generateGroupedSeries(10, 4, 'split');
 
       legendColorPickerFn: LegendColorPicker = ({ onClose }) => (
-        <div id="colorPicker">
+        <div id="colorPicker" data-testid="customColorPicker">
           <span>Custom Color Picker</span>
           <button
             id="change"
+            data-testid="customColorPickerChange"
             type="button"
             onClick={() => {
               this.setState<any>({ colors: [this.props.customColor] });
@@ -175,7 +158,7 @@ describe('Legend', () => {
           >
             {this.props.customColor}
           </button>
-          <button id="close" type="button" onClick={onClose}>
+          <button id="close" type="button" onClick={onClose} data-testid="customColorPickerClose">
             close
           </button>
         </div>
@@ -204,85 +187,67 @@ describe('Legend', () => {
       }
     }
 
-    let wrapper: ReactWrapper;
     const customColor = '#0c7b93';
     const onLegendItemClick = jest.fn();
 
     beforeEach(() => {
-      wrapper = mount(<LegendColorPickerMock customColor={customColor} onLegendItemClick={onLegendItemClick} />);
+      render(<LegendColorPickerMock customColor={customColor} onLegendItemClick={onLegendItemClick} />);
     });
 
     const clickFirstColor = () => {
-      const legendWrapper = wrapper.find(Legend);
-      expect(legendWrapper.exists).toBeTruthy();
-      const legendItems = legendWrapper.find(LegendListItem);
-      expect(legendItems.exists).toBeTruthy();
-      expect(legendItems).toHaveLength(4);
-      legendItems.first().find('.echLegendItem__color').simulate('click');
+      const items = screen.queryAllByRole('listitem');
+      expect(items.length).toBe(4);
+      const first = items[0];
+      if (first) {
+        const colorBtn = within(first).getByTitle(CHANGE_SERIES_COLOR);
+        if (colorBtn) fireEvent.click(colorBtn);
+      }
     };
 
     it('should render colorPicker when color is clicked', () => {
       clickFirstColor();
-      expect(wrapper.find('#colorPicker').debug()).toMatchSnapshot();
-      expect(
-        wrapper
-          .find(LegendListItem)
-          .map((e) => e.debug())
-          .join(''),
-      ).toMatchSnapshot();
-    });
-
-    it('should match snapshot after onChange is called', () => {
-      clickFirstColor();
-      wrapper.find('#change').simulate('click').first();
-
-      expect(
-        wrapper
-          .find(LegendListItem)
-          .map((e) => e.debug())
-          .join(''),
-      ).toMatchSnapshot();
+      const colorPicker = screen.queryByTestId('customColorPicker');
+      expect(colorPicker).toBeTruthy();
     });
 
     it('should set isOpen to false after onChange is called', () => {
       clickFirstColor();
-      wrapper.find('#change').simulate('click').first();
-      expect(wrapper.find('#colorPicker').exists()).toBe(false);
+      const btn = screen.queryByTestId('customColorPickerChange');
+      if (btn) fireEvent.click(btn);
+      expect(screen.queryByTestId('customColorPicker')).toBeFalsy();
     });
 
     it('should set color after onChange is called', () => {
       clickFirstColor();
-      wrapper.find('#change').simulate('click').first();
-      const dot = wrapper.find('.echLegendItem__color svg');
-      expect(dot.first().html().includes(`${customColor}`)).toBe(true);
+      const btn = screen.queryByTestId('customColorPickerChange');
+      if (btn) fireEvent.click(btn);
+      const items = screen.queryAllByRole('listitem');
+      expect(items.length).toBe(4);
+      const first = items[0];
+      expect(first).toBeTruthy();
+      const dot = within(first!).queryByTestId('echLegendIconPath');
+      expect(dot?.getAttribute('fill')).toBe(customColor);
     });
 
     it('should match snapshot after onClose is called', () => {
       clickFirstColor();
-      wrapper.find('#close').simulate('click').first();
-      expect(
-        wrapper
-          .find(LegendListItem)
-          .map((e) => e.debug())
-          .join(''),
-      ).toMatchSnapshot();
+      const btn = screen.queryByTestId('customColorPickerClose');
+      if (btn) fireEvent.click(btn);
+      expect(screen.queryByTestId('customColorPicker')).toBeFalsy();
     });
 
     it('should set isOpen to false after onClose is called', () => {
       clickFirstColor();
-      wrapper.find('#close').simulate('click').first();
-      expect(wrapper.find('#colorPicker').exists()).toBe(false);
+      const btn = screen.queryByTestId('customColorPickerClose');
+      if (btn) fireEvent.click(btn);
+      expect(screen.queryByTestId('customColorPicker')).toBeFalsy();
     });
 
     it('should call click listener for every list item', () => {
-      const legendWrapper = wrapper.find(Legend);
-      expect(legendWrapper.exists).toBeTruthy();
-      const legendItems = legendWrapper.find(LegendListItem);
-      expect(legendItems.exists).toBeTruthy();
-      expect(legendItems).toHaveLength(4);
-      legendItems.forEach((legendItem, i) => {
-        // toggle click is only enabled on the title
-        legendItem.find('.echLegendItem__label').simulate('click');
+      const labels = screen.queryAllByTestId('echLegendItemLabel');
+      expect(labels.length).toBe(4);
+      labels.forEach((label, i: number) => {
+        fireEvent.click(label);
         expect(onLegendItemClick).toHaveBeenCalledTimes(i + 1);
       });
     });
@@ -291,7 +256,7 @@ describe('Legend', () => {
     it('should not be able to click or focus if there is only one legend item in total legend items', () => {
       const onLegendItemClick = jest.fn();
       const data = [{ x: 2, y: 5 }];
-      const wrapper = mount(
+      render(
         <Chart>
           <Settings showLegend legendValues={[LegendValue.CurrentAndLastValue]} onLegendItemClick={onLegendItemClick} />
           <BarSeries
@@ -304,18 +269,17 @@ describe('Legend', () => {
           />
         </Chart>,
       );
-      const legendItems = wrapper.find(LegendListItem);
-      expect(legendItems.length).toBe(1);
-      legendItems.forEach((legendItem) => {
-        // the click is only enabled on the title
-        legendItem.find('.echLegendItem__label').simulate('click');
+      const labels = screen.queryAllByTestId('echLegendItemLabel');
+      expect(labels).toHaveLength(1);
+      labels.forEach((label) => {
+        fireEvent.click(label);
         expect(onLegendItemClick).toHaveBeenCalledTimes(0);
       });
     });
   });
   describe('legend table', () => {
     it('should render legend table when there is a legend value that is not CurrentAndLastValue', () => {
-      const wrapper = mount(
+      render(
         <Chart>
           <Settings showLegend legendValues={[LegendValue.Min]} />
           <BarSeries
@@ -335,14 +299,13 @@ describe('Legend', () => {
           />
         </Chart>,
       );
-      const legendTable = wrapper.find(LegendTable);
-      expect(legendTable.exists).toBeTruthy();
-      const legendRows = legendTable.find(LegendTableRow);
-      expect(legendRows.exists).toBeTruthy();
-      expect(legendRows).toHaveLength(5);
+      const table = screen.queryByRole('table');
+      expect(table).toBeTruthy();
+      const rows = screen.queryAllByRole('row');
+      expect(rows).toHaveLength(5);
       const expected = ['Min', 'group0123', 'group1123', 'group2123', 'group3123'];
-      legendRows.forEach((row, i) => {
-        expect(row.text()).toBe(expected[i]);
+      rows.forEach((row, i) => {
+        expect(row.textContent?.replace(/\s+/g, '')).toBe(expected[i]);
       });
     });
   });

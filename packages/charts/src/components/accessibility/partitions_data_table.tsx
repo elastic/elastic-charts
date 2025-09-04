@@ -58,7 +58,10 @@ const ScreenReaderPartitionTableComponent = ({
         : countOfCol;
 
   return (
-    <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
+    <div
+      className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
+      data-testid="echScreenReaderTable"
+    >
       <table>
         <caption>
           {isNil(tableCaption)
