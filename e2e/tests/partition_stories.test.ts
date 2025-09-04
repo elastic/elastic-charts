@@ -99,4 +99,11 @@ test.describe('Axis stories', () => {
     },
     (theme) => `should render link labels with fallback text color for ${theme} theme`,
   );
+
+  test('tooltip subcategory color should match parent category color', async ({ page }) => {
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+      `http://localhost:9001/?path=/story/sunburst--with-three-layers-and-same-nested-layers&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light`,
+      { left: 300, top: 100 },
+    );
+  });
 });
