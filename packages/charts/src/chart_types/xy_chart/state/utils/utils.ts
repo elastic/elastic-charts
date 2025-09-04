@@ -21,7 +21,7 @@ import { isFiniteNumber, isNil, isUniqueArray, mergePartial } from '../../../../
 import { CurveType } from '../../../../utils/curves';
 import type { Dimensions, Size } from '../../../../utils/dimensions';
 import type { AreaGeometry, BarGeometry, BubbleGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
-import type { GroupId, SpecId } from '../../../../utils/ids';
+import type { AxisId, GroupId, SpecId } from '../../../../utils/ids';
 import type { SeriesCompareFn } from '../../../../utils/series_sort';
 import type { ColorConfig, Theme } from '../../../../utils/themes/theme';
 import type { XDomain } from '../../domains/types';
@@ -32,6 +32,7 @@ import { renderBars } from '../../rendering/bars';
 import { renderBubble } from '../../rendering/bubble';
 import { renderLine } from '../../rendering/line';
 import { getAreaSeriesStyles, getLineSeriesStyles } from '../../rendering/line_area_style';
+import { isXDomain } from '../../utils/axis_utils';
 import { defaultXYSeriesSort } from '../../utils/default_series_sort_fn';
 import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
@@ -51,6 +52,7 @@ import {
   isLineSeriesSpec,
 } from '../../utils/specs';
 import type { ScaleConfigs } from '../selectors/get_api_scale_configs';
+import type { Projection } from '../selectors/visible_ticks';
 
 /**
  * Return map association between `seriesKey` and only the custom colors string
@@ -175,10 +177,24 @@ export function computeSeriesGeometries(
   { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
+  visibleTicksSet: Map<AxisId, Projection>,
   enableHistogramMode: boolean,
   fallbackTickFormatter: TickFormatter,
   measureText: TextMeasure,
 ): ComputedGeometries {
+  const adaptedTickCountMap = axesSpecs.reduce<{ x?: number; y: Map<GroupId, number> }>(
+    (acc, axis) => {
+      const ticks = (visibleTicksSet.get(axis.id)?.ticks.length ?? NaN) - 1;
+      if (isNaN(ticks)) return acc;
+      if (isXDomain(axis.position, chartRotation)) {
+        acc.x = ticks;
+      } else {
+        acc.y.set(axis.groupId, ticks);
+      }
+      return acc;
+    },
+    { y: new Map() },
+  );
   const chartColors: ColorConfig = chartTheme.colors;
   const formattedDataSeries = nonFilteredDataSeries.filter(({ isFiltered }) => !isFiltered);
   const barDataSeries = formattedDataSeries.filter(({ spec }) => isBarSeriesSpec(spec));
@@ -197,15 +213,22 @@ export function computeSeriesGeometries(
   }, {});
 
   const { horizontal, vertical } = smallMultiplesScales;
-
+  const adaptedXDomain = {
+    ...xDomain,
+    desiredTickCount: adaptedTickCountMap.x ?? xDomain.desiredTickCount,
+  };
+  const adaptedYDomains = yDomains.map((d) => ({
+    ...d,
+    desiredTickCount: adaptedTickCountMap.y.get(d.groupId) ?? d.desiredTickCount,
+  }));
   const yScales = computeYScales({
-    yDomains,
+    yDomains: adaptedYDomains,
     range: [isHorizontalRotation(chartRotation) ? vertical.bandwidth : horizontal.bandwidth, 0],
   });
 
   const computedGeoms = renderGeometries(
     formattedDataSeries,
-    xDomain,
+    adaptedXDomain,
     yScales,
     vertical,
     horizontal,
@@ -224,7 +247,7 @@ export function computeSeriesGeometries(
   const totalBarsInCluster = Object.values(barIndexByPanel).reduce((acc, curr) => Math.max(acc, curr.length), 0);
 
   const xScale = computeXScale({
-    xDomain,
+    xDomain: adaptedXDomain,
     totalBarsInCluster,
     range: [0, isHorizontalRotation(chartRotation) ? horizontal.bandwidth : vertical.bandwidth],
     barsPadding: enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding,
