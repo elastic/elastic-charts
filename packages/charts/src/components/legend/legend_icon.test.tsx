@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { LegendValue } from '../../common/legend';
@@ -16,7 +16,7 @@ import { Chart } from '../chart';
 
 describe('Legend icons', () => {
   it('should test default dot icons', () => {
-    const { container } = render(
+    render(
       <Chart>
         <Settings showLegend legendValues={[LegendValue.LastValue]} />
         <LineSeries
@@ -31,15 +31,14 @@ describe('Legend icons', () => {
         />
       </Chart>,
     );
-    // LegendIcon renders an <svg aria-label="..."> with a <path>
-    const svg = container.querySelector('svg[aria-label]');
-    expect(svg).toBeTruthy();
-    const path = svg?.querySelector('path');
-    expect(path?.getAttribute('fill')).toEqual('#16C5C0');
+
+    const items = screen.queryAllByTestId('echLegendIconPath');
+    expect(items).toHaveLength(1);
+    expect(items[0]?.getAttribute('fill')).toEqual('#16C5C0');
   });
 
   it('should align styles - stroke', () => {
-    const { container } = render(
+    render(
       <Chart>
         <Settings showLegend legendValues={[LegendValue.LastValue]} />
         <AreaSeries
@@ -55,8 +54,8 @@ describe('Legend icons', () => {
         />
       </Chart>,
     );
-    const svg = container.querySelector('svg[aria-label]');
-    const path = svg?.querySelector('path');
-    expect(path?.getAttribute('fill')).toEqual('#ff1a1a');
+    const items = screen.queryAllByTestId('echLegendIconPath');
+    expect(items).toHaveLength(1);
+    expect(items[0]?.getAttribute('fill')).toEqual('#ff1a1a');
   });
 });

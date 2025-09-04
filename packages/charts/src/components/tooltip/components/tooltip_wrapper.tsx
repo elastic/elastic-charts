@@ -67,6 +67,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   return (
     <div
       className={classNames('echTooltip', className, { 'echTooltip--pinned': pinned })}
+      data-testid="echTooltip"
       dir={dir}
       ref={tooltipRef}
       style={{ minWidth }}

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { ScaleType } from '../../../scales/constants';
@@ -38,10 +38,10 @@ describe('Legend', () => {
     return utils;
   };
   it('shall render the all the series names', () => {
-    const { container } = renderChartWithLegendTable();
-    const table = container.querySelector('.echLegendTable');
+    renderChartWithLegendTable();
+    const table = screen.getByRole('table');
     expect(table).toBeTruthy();
-    const rows = container.querySelectorAll('.echLegendTable__row');
+    const rows = screen.getAllByRole('row');
     // 4 split series + header row
     expect(rows.length).toBe(5);
     const rowTexts = Array.from(rows).map((r) => r.textContent?.replace(/\s+/g, '') ?? '');

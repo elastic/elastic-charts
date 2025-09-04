@@ -27,7 +27,7 @@ export const TooltipContent = ({
       <>
         <TooltipHeader>{header}</TooltipHeader>
         <TooltipDivider />
-        <div className="echAnnotation__details">
+        <div className="echAnnotation__details" data-testId="echAnnotationDetails">
           {customTooltipDetails ? renderWithProps(customTooltipDetails, { details }) : details}
         </div>
       </>
@@ -41,7 +41,11 @@ export const TooltipContent = ({
       return null;
     }
 
-    return <div className="echAnnotation__details">{tooltipContent}</div>;
+    return (
+      <div className="echAnnotation__details" data-testId="echAnnotationDetails">
+        {tooltipContent}
+      </div>
+    );
   }, [datum, customTooltipDetails]);
 
   if (CustomTooltip) {

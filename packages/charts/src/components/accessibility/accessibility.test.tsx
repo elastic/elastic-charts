@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { render } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import React from 'react';
 
 import { Goal } from '../../chart_types/goal_chart/specs';
@@ -23,23 +23,25 @@ import { Chart } from '../chart';
 describe('Accessibility', () => {
   describe('Screen reader summary xy charts', () => {
     it('should include the series types if one type of series', () => {
-      const { container } = render(
+      render(
         <Chart size={[100, 100]} id="chart1">
           <Settings debug rendering="svg" showLegend />
           <BarSeries id="test" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
         </Chart>,
       );
-      expect((container.querySelector('dd') as HTMLElement).textContent).toBe('bar chart');
+      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Chart type:bar chart');
     });
     it('should include the series types if multiple types of series', () => {
-      const { container } = render(
+      render(
         <Chart size={[100, 100]} id="chart1">
           <Settings debug rendering="svg" showLegend />
           <BarSeries id="test" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
           <LineSeries id="test2" data={[{ x: 3, y: 5 }]} xAccessor="x" yAccessors={['y']} />
         </Chart>,
       );
-      expect((container.querySelector('dd') as HTMLElement).textContent).toBe('Mixed chart: bar and line chart');
+      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe(
+        'Chart type:Mixed chart: bar and line chart',
+      );
     });
   });
 
@@ -48,7 +50,7 @@ describe('Accessibility', () => {
     type TestDatum = { cat1: string; cat2: string; val: number };
 
     it('should include the series type if partition chart', () => {
-      const { container } = render(
+      render(
         <Chart size={[100, 100]} id="chart1">
           <Partition
             id="spec_1"
@@ -64,10 +66,10 @@ describe('Accessibility', () => {
           />
         </Chart>,
       );
-      expect((container.querySelector('dd') as HTMLElement).textContent).toBe('sunburst chart');
+      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Chart type:sunburst chart');
     });
     it('should include series type if treemap type', () => {
-      const { container } = render(
+      render(
         <Chart size={[100, 100]} id="chart1">
           <Partition
             id="spec_1"
@@ -84,10 +86,10 @@ describe('Accessibility', () => {
           />
         </Chart>,
       );
-      expect((container.querySelector('dd') as HTMLElement).textContent).toBe('treemap chart');
+      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Chart type:treemap chart');
     });
     it('should test defaults for screen reader data  table', () => {
-      const { container } = render(
+      render(
         <Chart size={[100, 100]} id="chart1">
           <Partition
             id="spec_1"
@@ -103,10 +105,11 @@ describe('Accessibility', () => {
           />
         </Chart>,
       );
-      expect((container.querySelector('tr') as HTMLElement).textContent).toBe('LabelValuePercentage');
+      const firstRow = within(screen.getByTestId('echScreenReaderTable')).queryAllByRole('row')[0];
+      expect(firstRow?.textContent).toEqual('LabelValuePercentage');
     });
     it('should  include additional columns if a multilayer pie chart', () => {
-      const { container } = render(
+      render(
         <Chart>
           <Settings showLegend flatLegend={false} legendMaxDepth={2} />
           <Partition
@@ -131,7 +134,8 @@ describe('Accessibility', () => {
           />
         </Chart>,
       );
-      expect((container.querySelector('tr') as HTMLElement).textContent).toBe('DepthLabelParentValuePercentage');
+      const firstRow = within(screen.getByTestId('echScreenReaderTable')).queryAllByRole('row')[0];
+      expect(firstRow?.textContent).toEqual('DepthLabelParentValuePercentage');
     });
   });
 
@@ -140,7 +144,7 @@ describe('Accessibility', () => {
     const bandsAscending = [200, 250, 300];
 
     it('should test defaults for goal charts', () => {
-      const { container } = render(
+      render(
         <Chart>
           <Goal
             id="spec_1"
@@ -160,12 +164,12 @@ describe('Accessibility', () => {
           />
         </Chart>,
       );
-      expect((container.querySelector('.echScreenReaderOnly') as HTMLElement).textContent).toBe(
+      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe(
         'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:260Value:170',
       );
     });
     it('should correctly render ascending semantic values', () => {
-      const { container } = render(
+      render(
         <Chart className="story-chart">
           <Goal
             id="spec_1"
@@ -186,7 +190,8 @@ describe('Accessibility', () => {
           />
         </Chart>,
       );
-      expect((container.querySelector('.echGoalDescription') as HTMLElement).textContent).toBe(
+
+      expect(screen.getByTestId('echGoalScreenReaderDescription').textContent).toBe(
         '0 - 200freezing200 - 250chilly250 - 300brisk',
       );
     });

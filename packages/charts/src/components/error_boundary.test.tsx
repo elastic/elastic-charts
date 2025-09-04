@@ -42,25 +42,23 @@ class SimpleErrorBoundary extends React.Component<Props, State> {
   }
 }
 
+const Series = () => {
+  throw new Error('What happened???');
+};
+
 describe('Error boundary', () => {
   it('should render error boundary when error thrown inside chart', () => {
     const onError = jest.fn();
-    const Series = () => {
-      throw new Error('What happened???');
-    };
 
-    const { container } = render(
+    render(
       <SimpleErrorBoundary onError={onError}>
         <Chart size={[100, 100]} id="chart1">
           <Series />
         </Chart>
       </SimpleErrorBoundary>,
     );
-    const errorEl = screen.getByText(ERROR_TEXT);
-    const chartEl = container.querySelector('.echChart');
-
-    expect(errorEl).toBeTruthy();
-    expect(chartEl).toBeNull();
+    expect(screen.getByText(ERROR_TEXT)).toBeTruthy();
+    expect(screen.queryByTestId('echChart')).toBeNull();
     expect(onError).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'What happened???',
