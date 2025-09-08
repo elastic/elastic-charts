@@ -22,6 +22,9 @@ interface ColorProps {
   onClick?: MouseEventHandler;
 }
 
+/** @internal */
+export const CHANGE_SERIES_COLOR = 'Change the series color';
+
 /**
  * Color component used by the legend item
  * @internal
@@ -31,9 +34,9 @@ export const Color = memo(
     ({ color, seriesName, isSeriesHidden = false, hasColorPicker, onClick, pointStyle }, ref) => {
       if (isSeriesHidden) {
         return (
-          <div className="echLegendItem__color" title="series hidden">
+          <div className="echLegendItem__color" title="series hidden" aria-label={`series ${seriesName} is hidden`}>
             {/* changing the default viewBox for the eyeClosed icon to keep the same dimensions */}
-            <Icon type="eyeClosed" viewBox="-3 -3 22 22" aria-label={`series ${seriesName} is hidden`} />
+            <Icon type="eyeClosed" viewBox="-3 -3 22 22" aria-hidden="true" />
           </div>
         );
       }
@@ -44,17 +47,18 @@ export const Color = memo(
             type="button"
             onClick={onClick}
             className="echLegendItem__color echLegendItem__color--changable"
-            title="change series color"
+            title={CHANGE_SERIES_COLOR}
             ref={ref}
+            aria-label={`Change series color, currently ${color}`}
           >
-            <LegendIcon pointStyle={pointStyle} color={color} ariaLabel={`Change series color, currently ${color}`} />
+            <LegendIcon pointStyle={pointStyle} color={color} />
           </button>
         );
       }
 
       return (
-        <div className="echLegendItem__color" title="series color">
-          <LegendIcon pointStyle={pointStyle} color={color} ariaLabel={`series color: ${color}`} />
+        <div className="echLegendItem__color" title="series color" aria-label={`series color: ${color}`}>
+          <LegendIcon pointStyle={pointStyle} color={color} />
         </div>
       );
     },

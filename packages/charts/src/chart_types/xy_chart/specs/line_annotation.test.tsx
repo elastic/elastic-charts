@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import type { Store } from 'redux';
@@ -45,9 +45,9 @@ function LineAnnotationChart(props: { chartStore: Store<GlobalChartState> }) {
 describe('Line annotation', () => {
   it('Should always be available on the on every render', () => {
     const chartStore = createChartStore('chart_id');
-    const wrapper = mount(<LineAnnotationChart chartStore={chartStore} />);
+    const { rerender } = render(<LineAnnotationChart chartStore={chartStore} />);
     expect(chartStore.getState().specs.threshold).toBeDefined();
-    wrapper.setProps({});
+    rerender(<LineAnnotationChart chartStore={chartStore} />);
     expect(chartStore.getState().specs.threshold).toBeDefined();
   });
 });
