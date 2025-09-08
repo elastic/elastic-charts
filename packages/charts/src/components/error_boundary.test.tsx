@@ -48,6 +48,7 @@ const Series = () => {
 
 describe('Error boundary', () => {
   it('should render error boundary when error thrown inside chart', () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {}); // suppress React error boundary logs
     const onError = jest.fn();
 
     render(

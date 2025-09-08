@@ -43,15 +43,12 @@ describe('Chart', () => {
   });
 
   it('should render the legend name test', () => {
-    // This is snapshot has a slight diff between local and ci runs, need to investigate
-    // See https://github.com/elastic/elastic-charts/runs/4706561347?check_suite_focus=true
-    // The difference is caused by the --coverage configuration, disabling the coverage for now.
-    const { container } = render(
+    render(
       <Chart size={[100, 100]} id="chart1">
         <Settings debug rendering="svg" showLegend />
-        <BarSeries id="test" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
+        <BarSeries id="tests the series name in legend" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
       </Chart>,
     );
-    expect(container.querySelector('[data-ech-series-name="test"]')).toBeTruthy();
+    expect(screen.getByText('tests the series name in legend')).toBeInTheDocument();
   });
 });
