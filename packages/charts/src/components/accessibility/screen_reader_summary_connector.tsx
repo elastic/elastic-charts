@@ -6,6 +6,13 @@
  * Side Public License, v 1.
  */
 
-/* @internal */
-export { ScreenReaderSummary } from './screen_reader_summary';
-export type { ChartLabelData } from './types';
+import type { GlobalChartState } from '../../state/chart_state';
+import {
+  getScreenReaderSummarySelector,
+  type ScreenReaderSummaryData,
+} from '../../state/selectors/get_screen_reader_summary';
+
+/** @internal */
+export const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryData => {
+  return getScreenReaderSummarySelector(state);
+};
