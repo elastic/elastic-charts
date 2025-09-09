@@ -500,4 +500,10 @@ export const DARK_THEME: Theme = {
     fill: '#98A2B3',
     stroke: '#98A2B3',
   },
+  brush: {
+    fill: DARK_BACKGROUND_COLORS.backgroundFilledPrimary,
+    opacity: 0.1,
+    stroke: DARK_BORDER_COLORS.borderStrongPrimary,
+    strokeWidth: 1,
+  },
 };

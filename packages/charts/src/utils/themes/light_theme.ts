@@ -498,4 +498,10 @@ export const LIGHT_THEME: Theme = {
     fill: '#69707D',
     stroke: '#69707D',
   },
+  brush: {
+    fill: LIGHT_BACKGROUND_COLORS.backgroundFilledPrimary,
+    opacity: 0.1,
+    stroke: LIGHT_BORDER_COLORS.borderStrongPrimary,
+    strokeWidth: 1,
+  },
 };
