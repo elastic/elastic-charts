@@ -14,21 +14,21 @@ test.describe('Goal Chart Accessibility', () => {
   test('should generate correct a11y summary for goal chart', async ({ page }) => {
     await common.testA11ySummary(page)(
       'http://localhost:9001/?path=/story/goal-alpha--minimal-goal',
-      'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:260Value:280',
+      'Chart type:goal chartMajor label:Revenue 2020 YTD  Minor label:(thousand USD)  Minimum:0Maximum:300Target:260Value:280',
     );
   });
 
   test('should generate correct a11y summary for gauge chart', async ({ page }) => {
     await common.testA11ySummary(page)(
       'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target',
-      'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:260Value:170',
+      'Chart type:goal chartMajor label:Revenue 2020 YTD  Minor label:(thousand USD)  Minimum:0Maximum:300Target:260Value:170',
     );
   });
 
   test('should generate correct a11y summary for goal chart without target', async ({ page }) => {
     await common.testA11ySummary(page)(
       'http://localhost:9001/?path=/story/goal-alpha--gaps',
-      'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:260Value:280',
+      'Chart type:goal chartMajor label:Revenue 2020 YTD  Minor label:(thousand USD)  Minimum:0Maximum:300Target:260Value:280',
     );
   });
 
