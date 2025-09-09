@@ -6,12 +6,18 @@
  * Side Public License, v 1.
  */
 
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import type { PropsWithChildren } from 'react';
 import React from 'react';
 
 import { Chart } from './chart';
 
-class SimpleErrorBoundary extends React.Component<{ onError?: (error: Error) => void }, { hasError: boolean }> {
+type Props = PropsWithChildren<{ onError?: (error: Error) => void }>;
+type State = { hasError: boolean };
+
+const ERROR_TEXT = 'Error occurred';
+
+class SimpleErrorBoundary extends React.Component<Props, State> {
   onError?: (error: Error) => void;
   constructor(props: { onError: (error: Error) => void }) {
     super(props);
@@ -29,32 +35,31 @@ class SimpleErrorBoundary extends React.Component<{ onError?: (error: Error) => 
 
   render() {
     if (this.state.hasError) {
-      return <div id="simple-error">Error occurred</div>;
+      return <div id="simple-error">{ERROR_TEXT}</div>;
     }
 
     return this.props.children;
   }
 }
 
+const Series = () => {
+  throw new Error('What happened???');
+};
+
 describe('Error boundary', () => {
   it('should render error boundary when error thrown inside chart', () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {}); // suppress React error boundary logs
     const onError = jest.fn();
-    const Series = () => {
-      throw new Error('What happened???');
-    };
 
-    const wrapper = mount(
+    render(
       <SimpleErrorBoundary onError={onError}>
         <Chart size={[100, 100]} id="chart1">
           <Series />
         </Chart>
       </SimpleErrorBoundary>,
     );
-    const errorEl = wrapper.find('#simple-error');
-    const chartEl = wrapper.find('.echChart');
-
-    expect(errorEl.exists()).toBe(true);
-    expect(chartEl.exists()).toBe(false);
+    expect(screen.getByText(ERROR_TEXT)).toBeTruthy();
+    expect(screen.queryByTestId('echChart')).toBeNull();
     expect(onError).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'What happened???',

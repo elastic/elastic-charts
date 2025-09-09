@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { mount } from 'enzyme';
-import React from 'react';
+import { render } from '@testing-library/react';
+import React, { act } from 'react';
 import { Provider } from 'react-redux';
 
 import { DEFAULT_SETTINGS_SPEC } from './default_settings_spec';
@@ -32,7 +32,7 @@ describe('Specs parser', () => {
         <SpecsParser />
       </Provider>
     );
-    mount(component);
+    render(component);
     expect(chartStore.getState().specsInitialized).toBe(true);
   });
   test('can parse few components', () => {
@@ -72,7 +72,7 @@ describe('Specs parser', () => {
         </SpecsParser>
       </Provider>
     );
-    mount(component);
+    render(component);
     const state = chartStore.getState();
     expect(state.specsInitialized).toBe(true);
     expect(Object.keys(state.specs)).toEqual([DEFAULT_SETTINGS_SPEC.id, 'bars', 'bars2']);
@@ -98,10 +98,10 @@ describe('Specs parser', () => {
         </SpecsParser>
       </Provider>
     );
-    const wrapper = mount(component);
+    const { rerender } = render(component);
 
-    wrapper.setProps({
-      children: (
+    rerender(
+      <Provider store={chartStore}>
         <SpecsParser>
           <BarSeries
             id="bars"
@@ -113,8 +113,8 @@ describe('Specs parser', () => {
             ]}
           />
         </SpecsParser>
-      ),
-    });
+      </Provider>,
+    );
     const state = chartStore.getState();
     expect((state.specs.bars as BarSeriesSpec).xAccessor).toBe(1);
   });
@@ -137,12 +137,12 @@ describe('Specs parser', () => {
         </SpecsParser>
       </Provider>
     );
-    const wrapper = mount(component);
+    const { rerender } = render(component);
 
     expect(chartStore.getState().specs.one).toBeDefined();
 
-    wrapper.setProps({
-      children: (
+    rerender(
+      <Provider store={chartStore}>
         <SpecsParser>
           <BarSeries
             id="two"
@@ -154,20 +154,20 @@ describe('Specs parser', () => {
             ]}
           />
         </SpecsParser>
-      ),
-    });
+      </Provider>,
+    );
     const state = chartStore.getState();
     expect(state.specs.one).toBeUndefined();
     expect(state.specs.two).toBeDefined();
   });
   test('set initialization to false on unmount', () => {
     const chartStore = createChartStore('chart_id');
-    const component = mount(
+    const { unmount } = render(
       <Provider store={chartStore}>
         <SpecsParser />
       </Provider>,
     );
-    component.unmount();
+    unmount();
     expect(chartStore.getState().specsInitialized).toBe(false);
   });
 
@@ -195,18 +195,32 @@ describe('Specs parser', () => {
         <ChartContainer getChartContainerRef={getChartContainerRef} forwardStageRef={chartStageRef} />
       </Provider>
     );
-    mount(component);
+    const { rerender } = render(component);
     const state = chartStore.getState();
     expect(state.specsInitialized).toBe(true);
     expect(state.parentDimensions).toEqual({ width: 0, height: 0, top: 0, left: 0 });
-    chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
+    act(() => {
+      chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
+    });
+    rerender(component);
     expect(chartStore.getState().parentDimensions).toEqual({ width: 100, height: 100, top: 0, left: 0 });
-    // passing the same parent dimmesion again can be triggered by the ResizeObserver
-    chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
     expect(chartStore.getState().chartRendered).toBe(true);
+    expect(chartStore.getState().chartRenderedCount).toBe(1);
+
+    // passing the same parent dimmesion again can be triggered by the ResizeObserver
+    act(() => {
+      chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
+    });
+    rerender(component);
+    expect(chartStore.getState().chartRendered).toBe(true);
+    expect(chartStore.getState().chartRenderedCount).toBe(1);
 
     // trigger also with just differences in top/left
-    chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 1, left: 1 }));
+    act(() => {
+      chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 1, left: 1 }));
+    });
+    rerender(component);
     expect(chartStore.getState().chartRendered).toBe(true);
+    expect(chartStore.getState().chartRenderedCount).toBe(2);
   });
 });

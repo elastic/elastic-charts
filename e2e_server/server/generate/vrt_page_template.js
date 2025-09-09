@@ -16,7 +16,7 @@ function indexTemplate() {
   return `
 import '../../storybook/style.scss';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { VRTPage } from './vrt_page';
 import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon';
 
@@ -35,7 +35,11 @@ appendIconComponentCache({
 
 const path = new URL(window.location.toString()).searchParams.get('path');
 document.getElementsByTagName('body')[0].style.overflow = path ? 'hidden' : 'scroll';
-ReactDOM.render(<VRTPage />, document.getElementById('root') as HTMLElement);
+
+const container = document.getElementById('root')!;
+const root = createRoot(container);
+
+root.render(<VRTPage />);
 
 `.trim();
 }

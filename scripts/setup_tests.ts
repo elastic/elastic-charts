@@ -6,11 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-
-configure({ adapter: new Adapter() });
-
 process.env.RNG_SEED = 'jest-unit-tests';
 
 /**
@@ -40,10 +35,5 @@ class ResizeObserverMock {
 
 // @ts-ignore - setting mock override
 window.ResizeObserver = ResizeObserverMock;
-
-// Some tests will fail due to undefined Path2D, this mock doesn't create issues on test env
-class Path2D {}
-// @ts-ignore - setting mock override
-window.Path2D = Path2D;
 
 window.HTMLCanvasElement.prototype.getContext = jest.fn();

@@ -18,7 +18,11 @@ import { getScreenReaderSummarySelector } from '../../state/selectors/get_screen
 
 const ScreenReaderSummaryComponent = ({ a11ySettings, screenReaderData }: ScreenReaderSummaryData) => {
   return (
-    <figcaption className="echScreenReaderOnly" id={`${a11ySettings.descriptionId}-summary`}>
+    <figcaption
+      className="echScreenReaderOnly"
+      id={`${a11ySettings.descriptionId}-summary`}
+      data-testid="echScreenReaderSummary"
+    >
       <ScreenReaderLabel {...a11ySettings} chartLabelData={screenReaderData?.labelData} />
       <ScreenReaderDescription {...a11ySettings} />
       <ScreenReaderTypes {...a11ySettings} screenReaderTypes={screenReaderData?.screenReaderTypes} />

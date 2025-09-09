@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { ComponentProps, ComponentType, ReactChild } from 'react';
+import type { ComponentProps, ComponentType, ReactNode } from 'react';
 
 import type { CustomXDomain, GroupByAccessor } from '.';
 import type { BrushAxis } from './brush_axis';
@@ -633,7 +633,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
   /**
    * Render component for no results UI
    */
-  noResults?: ComponentType | ReactChild;
+  noResults?: ComponentType | ReactNode;
   /**
    * User can specify the heading level for the label
    * @defaultValue 'p'
