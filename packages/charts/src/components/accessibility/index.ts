@@ -8,4 +8,3 @@
 
 /* @internal */
 export { ScreenReaderSummary } from './screen_reader_summary';
-export type { ChartLabelData } from './types';

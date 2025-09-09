@@ -10,7 +10,6 @@ import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
 import { ScreenReaderDescription } from './screen_reader_description';
-import { ScreenReaderLabel } from './screen_reader_label';
 import { ScreenReaderTypes } from './screen_reader_types';
 import type { GlobalChartState } from '../../state/chart_state';
 import type { ScreenReaderSummaryData } from '../../state/selectors/get_screen_reader_summary';
@@ -23,7 +22,6 @@ const ScreenReaderSummaryComponent = ({ a11ySettings, screenReaderData }: Screen
       id={`${a11ySettings.descriptionId}-summary`}
       data-testid="echScreenReaderSummary"
     >
-      <ScreenReaderLabel {...a11ySettings} chartLabelData={screenReaderData?.labelData} />
       <ScreenReaderDescription {...a11ySettings} />
       <ScreenReaderTypes {...a11ySettings} screenReaderTypes={screenReaderData?.screenReaderTypes} />
     </figcaption>
