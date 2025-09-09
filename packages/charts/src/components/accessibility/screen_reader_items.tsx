@@ -8,11 +8,11 @@
 
 import React from 'react';
 
-import type { ScreenReaderType } from '../../state/chart_selectors';
+import type { ScreenReaderItem } from '../../state/chart_selectors';
 import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
 interface ScreenReaderItemsProps {
-  screenReaderItems?: ScreenReaderType[];
+  screenReaderItems?: ScreenReaderItem[];
 }
 
 /** @internal */

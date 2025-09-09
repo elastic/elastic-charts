@@ -7,7 +7,7 @@
  */
 
 import { getGoalChartDataSelector, getGoalChartLabelsSelector } from './get_goal_chart_data';
-import type { ChartSpecificScreenReaderData, ScreenReaderType } from '../../../../state/chart_selectors';
+import type { ChartSpecificScreenReaderData, ScreenReaderItem } from '../../../../state/chart_selectors';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
@@ -23,7 +23,7 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     (state: GlobalChartState) => state,
   ],
   (goalChartData, goalChartLabels, internalChartState, a11ySettings, state): ChartSpecificScreenReaderData => {
-    const screenReaderItems: ScreenReaderType[] = [];
+    const screenReaderItems: ScreenReaderItem[] = [];
 
     // Add chart type description first
     const chartTypeDescription = internalChartState?.getChartTypeDescription(state);

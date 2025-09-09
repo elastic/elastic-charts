@@ -23,7 +23,7 @@ import { getA11ySettingsSelector } from '../state/selectors/get_accessibility_co
 import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
-export interface ScreenReaderType {
+export interface ScreenReaderItem {
   /** The label for this part of the summary */
   label: string;
   /** Optional ID for referencing this part */
@@ -35,7 +35,7 @@ export interface ScreenReaderType {
 /** @internal */
 export interface ChartSpecificScreenReaderData {
   /** Custom summary parts to include in the consolidated summary */
-  screenReaderItems?: ScreenReaderType[];
+  screenReaderItems?: ScreenReaderItem[];
 }
 
 /** @internal */
