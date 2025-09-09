@@ -22,12 +22,12 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     (state) => state,
   ],
   (goalChartData, goalChartLabels, internalChartState, a11ySettings, state): ChartSpecificScreenReaderData => {
-    const screenReaderTypes: ScreenReaderType[] = [];
+    const screenReaderItems: ScreenReaderType[] = [];
 
     // Add chart type description first
     const chartTypeDescription = internalChartState?.getChartTypeDescription(state);
     if (chartTypeDescription) {
-      screenReaderTypes.push({
+      screenReaderItems.push({
         label: 'Chart type',
         id: a11ySettings.defaultSummaryId,
         value: chartTypeDescription,
@@ -37,18 +37,18 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     // Add goal chart specific parts
     if (goalChartData && !isNaN(goalChartData.maximum)) {
       if (goalChartLabels.majorLabel) {
-        screenReaderTypes.push({
+        screenReaderItems.push({
           label: 'Major label',
           value: goalChartLabels.majorLabel,
         });
       }
       if (goalChartLabels.minorLabel) {
-        screenReaderTypes.push({
+        screenReaderItems.push({
           label: 'Minor label',
           value: goalChartLabels.minorLabel,
         });
       }
-      screenReaderTypes.push(
+      screenReaderItems.push(
         {
           label: 'Minimum',
           value: goalChartData.minimum.toString(),
@@ -68,6 +68,6 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
       );
     }
 
-    return { screenReaderTypes };
+    return { screenReaderItems };
   },
 );

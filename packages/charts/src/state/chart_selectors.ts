@@ -35,7 +35,7 @@ export interface ScreenReaderType {
 /** @internal */
 export interface ChartSpecificScreenReaderData {
   /** Custom summary parts to include in the consolidated summary */
-  screenReaderTypes?: ScreenReaderType[];
+  screenReaderItems?: ScreenReaderType[];
 }
 
 /** @internal */
@@ -213,7 +213,7 @@ export const createChartSelectorsFactory =
         const a11ySettings = getA11ySettingsSelector(state);
         const chartTypeDescription = chartSelectors.getChartTypeDescription(state);
         return {
-          screenReaderTypes: chartTypeDescription
+          screenReaderItems: chartTypeDescription
             ? [{ label: 'Chart type', id: a11ySettings.defaultSummaryId, value: chartTypeDescription }]
             : [],
         };

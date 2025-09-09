@@ -11,21 +11,21 @@ import React from 'react';
 import type { ScreenReaderType } from '../../state/chart_selectors';
 import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
-interface ScreenReaderTypesProps {
-  screenReaderTypes?: ScreenReaderType[];
+interface ScreenReaderItemsProps {
+  screenReaderItems?: ScreenReaderType[];
 }
 
 /** @internal */
-export function ScreenReaderTypes({ screenReaderTypes }: A11ySettings & ScreenReaderTypesProps) {
-  const hasScreenReaderTypes = screenReaderTypes && screenReaderTypes.length > 0;
+export function ScreenReaderItems({ screenReaderItems }: A11ySettings & ScreenReaderItemsProps) {
+  const hasScreenReaderItems = screenReaderItems && screenReaderItems.length > 0;
 
-  if (!hasScreenReaderTypes) {
+  if (!hasScreenReaderItems) {
     return null;
   }
 
   return (
     <dl>
-      {screenReaderTypes.map((part) => (
+      {screenReaderItems.map((part) => (
         <React.Fragment key={part.id || part.label}>
           <dt>{part.label}:</dt>
           <dd id={part.id}>{part.value}</dd>
