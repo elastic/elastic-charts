@@ -250,17 +250,18 @@ export const LIGHT_THEME: Theme = {
   crosshair: {
     band: {
       visible: true,
-      fill: LIGHT_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
+      fill: LIGHT_BACKGROUND_COLORS.backgroundFilledPrimary,
+      opacity: 0.1,
     },
     line: {
       visible: true,
-      stroke: LIGHT_BORDER_COLORS.borderBasePlain,
+      stroke: LIGHT_BORDER_COLORS.borderStrongPrimary,
       strokeWidth: 1,
       dash: [4, 4],
     },
     crossLine: {
       visible: true,
-      stroke: LIGHT_BORDER_COLORS.borderBasePlain,
+      stroke: LIGHT_BORDER_COLORS.borderStrongPrimary,
       strokeWidth: 1,
       dash: [4, 4],
     },

@@ -251,17 +251,18 @@ export const DARK_THEME: Theme = {
   crosshair: {
     band: {
       visible: true,
-      fill: DARK_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
+      fill: DARK_BACKGROUND_COLORS.backgroundFilledPrimary,
+      opacity: 0.1,
     },
     line: {
       visible: true,
-      stroke: DARK_BORDER_COLORS.borderBasePlain,
+      stroke: DARK_BORDER_COLORS.borderStrongPrimary,
       strokeWidth: 1,
       dash: [4, 4],
     },
     crossLine: {
       visible: true,
-      stroke: DARK_BORDER_COLORS.borderBasePlain,
+      stroke: DARK_BORDER_COLORS.borderStrongPrimary,
       strokeWidth: 1,
       dash: [4, 4],
     },
