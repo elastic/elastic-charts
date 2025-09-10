@@ -251,8 +251,7 @@ export const DARK_THEME: Theme = {
   crosshair: {
     band: {
       visible: true,
-      fill: DARK_BACKGROUND_COLORS.backgroundFilledPrimary,
-      opacity: 0.1,
+      fill: DARK_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
     },
     line: {
       visible: true,

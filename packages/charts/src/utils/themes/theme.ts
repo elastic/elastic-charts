@@ -845,7 +845,7 @@ export interface ArcSeriesStyle {
 
 /** @public */
 export interface CrosshairStyle {
-  band: FillStyle & Visible & Partial<Opacity>;
+  band: FillStyle & Visible;
   line: StrokeStyle & Visible & Partial<StrokeDashArray>;
   crossLine: StrokeStyle & Visible & Partial<StrokeDashArray>;
 }

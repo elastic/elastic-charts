@@ -250,8 +250,7 @@ export const LIGHT_THEME: Theme = {
   crosshair: {
     band: {
       visible: true,
-      fill: LIGHT_BACKGROUND_COLORS.backgroundFilledPrimary,
-      opacity: 0.1,
+      fill: LIGHT_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
     },
     line: {
       visible: true,
