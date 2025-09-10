@@ -78,13 +78,4 @@ export interface Stroke {
    * stroke dash array
    */
   dash?: number[];
-  /**
-   * Stroked sides
-   */
-  strokedSides?: {
-    top?: boolean;
-    right?: boolean;
-    bottom?: boolean;
-    left?: boolean;
-  };
 }

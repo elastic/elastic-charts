@@ -11,33 +11,34 @@ import { RGBATupleToString } from '../../../common/color_library_wrappers';
 import type { Fill, Rect, Stroke } from '../../../geoms/types';
 
 /** @internal */
+export interface StrokedSides {
+  top?: boolean;
+  right?: boolean;
+  bottom?: boolean;
+  left?: boolean;
+}
+
+/** @internal */
 export function renderRect(
   ctx: CanvasRenderingContext2D,
-  rect: Rect,
+  { x, y, width, height }: Rect,
   { color, texture }: Fill,
   stroke: Stroke,
   disableBorderOffset: boolean = false,
 ) {
-  const { x, y, width, height } = normalizeRect(rect);
   const borderOffset = !disableBorderOffset && stroke.width >= MIN_STROKE_WIDTH ? stroke.width : 0;
-  const hasStroke = stroke.width >= MIN_STROKE_WIDTH && height >= borderOffset && width >= borderOffset;
+  if (stroke.width >= MIN_STROKE_WIDTH && height >= borderOffset && width >= borderOffset) {
+    ctx.strokeStyle = RGBATupleToString(stroke.color);
+    ctx.lineWidth = stroke.width;
+    ctx.beginPath();
+    ctx.rect(x + borderOffset / 2, y + borderOffset / 2, width - borderOffset, height - borderOffset);
+    ctx.setLineDash(stroke.dash ?? []); // no dash if stroke.dash is undefined
+    ctx.lineCap = stroke.dash?.length ? 'butt' : 'square';
+    ctx.stroke();
+  }
 
-  const sides = stroke.strokedSides ?? { top: true, right: true, bottom: true, left: true };
-
-  const borderOffsetLeft = sides.left ? borderOffset : 0;
-  const borderOffsetRight = sides.right ? borderOffset : 0;
-  const borderOffsetTop = sides.top ? borderOffset : 0;
-  const borderOffsetBottom = sides.bottom ? borderOffset : 0;
-
-  // Fill the rectangle
   ctx.beginPath();
-  ctx.rect(
-    x + borderOffsetLeft,
-    y + borderOffsetTop,
-    width - borderOffsetLeft - borderOffsetRight,
-    height - borderOffsetTop - borderOffsetBottom,
-  );
-
+  ctx.rect(x + borderOffset, y + borderOffset, width - borderOffset * 2, height - borderOffset * 2);
   ctx.fillStyle = RGBATupleToString(color);
   ctx.fill();
 
@@ -45,11 +46,28 @@ export function renderRect(
     ctx.fillStyle = texture.pattern;
     ctx.fill();
   }
+}
 
-  // No stroke
-  if (!hasStroke) return;
+/** @internal */
+export function renderRectStroke(
+  ctx: CanvasRenderingContext2D,
+  rect: Rect,
+  stroke: Stroke,
+  strokedSides: StrokedSides,
+) {
+  if (
+    stroke.width < MIN_STROKE_WIDTH ||
+    (!strokedSides.left && !strokedSides.right && !strokedSides.top && !strokedSides.bottom)
+  ) {
+    return;
+  }
+  const { x, y, width, height } = normalizeRect(rect);
 
-  // Stroke the rectangle
+  const borderOffsetLeft = strokedSides?.left ? stroke.width : 0;
+  const borderOffsetRight = strokedSides?.right ? stroke.width : 0;
+  const borderOffsetTop = strokedSides?.top ? stroke.width : 0;
+  const borderOffsetBottom = strokedSides?.bottom ? stroke.width : 0;
+
   ctx.strokeStyle = RGBATupleToString(stroke.color);
   ctx.lineWidth = stroke.width;
   ctx.setLineDash(stroke.dash ?? []); // no dash if stroke.dash is undefined
@@ -61,19 +79,19 @@ export function renderRect(
   const y1 = y + height - borderOffsetBottom / 2;
   ctx.beginPath();
 
-  if (sides.top) {
+  if (strokedSides?.top) {
     ctx.moveTo(x0, y0);
     ctx.lineTo(x1, y0);
   }
-  if (sides.right) {
+  if (strokedSides?.right) {
     ctx.moveTo(x1, y0);
     ctx.lineTo(x1, y1);
   }
-  if (sides.bottom) {
+  if (strokedSides?.bottom) {
     ctx.moveTo(x1, y1);
     ctx.lineTo(x0, y1);
   }
-  if (sides.left) {
+  if (strokedSides?.left) {
     ctx.moveTo(x0, y1);
     ctx.lineTo(x0, y0);
   }

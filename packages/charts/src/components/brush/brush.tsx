@@ -15,7 +15,8 @@ import { isVerticalRotation } from '../../chart_types/xy_chart/state/utils/commo
 import { colorToRgba, overrideOpacity } from '../../common/color_library_wrappers';
 import { Colors } from '../../common/colors';
 import { clearCanvas, withContext, withClip } from '../../renderers/canvas';
-import { renderRect } from '../../renderers/canvas/primitives/rect';
+import { renderRectStroke, renderRect } from '../../renderers/canvas/primitives/rect';
+import type { StrokedSides } from '../../renderers/canvas/primitives/rect';
 import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
 import type { GlobalChartState } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
@@ -40,6 +41,12 @@ interface StateProps {
   brushAxis?: BrushAxis;
   chartRotation: Rotation;
 }
+
+const BRUSH_STROKED_SIDES = Object.freeze({
+  TOP_BOTTOM: { top: true, bottom: true } as const,
+  LEFT_RIGHT: { left: true, right: true } as const,
+  ALL: { top: true, right: true, bottom: true, left: true } as const,
+});
 
 class BrushToolComponent extends React.Component<StateProps> {
   static displayName = 'BrushTool';
@@ -123,11 +130,16 @@ class BrushToolComponent extends React.Component<StateProps> {
             ctx,
             { x: left, y: top, width, height },
             { color: overrideOpacity(colorToRgba(style.fill), style.opacity) },
+            { width: 0, color: Colors.Transparent.rgba },
+          );
+          renderRectStroke(
+            ctx,
+            { x: left, y: top, width, height },
             {
               width: style.strokeWidth,
               color: colorToRgba(style.stroke),
-              strokedSides,
             },
+            strokedSides,
           );
         },
       );
@@ -181,19 +193,15 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   };
 };
 
-function getBrushStrokedSides(
-  rotation: Rotation,
-  brushAxis?: BrushAxis,
-): { top?: boolean; right?: boolean; bottom?: boolean; left?: boolean } | undefined {
-  if (!brushAxis) return;
+function getBrushStrokedSides(rotation: Rotation, brushAxis?: BrushAxis): StrokedSides {
   const vertical = isVerticalRotation(rotation);
   switch (brushAxis) {
     case BrushAxis.X:
-      return vertical ? { top: true, bottom: true } : { left: true, right: true };
+      return vertical ? BRUSH_STROKED_SIDES.TOP_BOTTOM : BRUSH_STROKED_SIDES.LEFT_RIGHT;
     case BrushAxis.Y:
-      return vertical ? { left: true, right: true } : { top: true, bottom: true };
+      return vertical ? BRUSH_STROKED_SIDES.LEFT_RIGHT : BRUSH_STROKED_SIDES.TOP_BOTTOM;
     default:
-      return;
+      return BRUSH_STROKED_SIDES.ALL;
   }
 }
 
