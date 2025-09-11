@@ -437,6 +437,18 @@ export type BrushEndListener = (brushAreaEvent: BrushEvent, options?: {
 // @public
 export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 
+// @public (undocumented)
+export interface BrushStyle {
+    // (undocumented)
+    fill: Color;
+    // (undocumented)
+    opacity: Ratio;
+    // (undocumented)
+    stroke: Color;
+    // (undocumented)
+    strokeWidth: Pixels;
+}
+
 // Warning: (ae-forgotten-export) The symbol "buildProps_5" needs to be exported by the entry point index.d.ts
 // Warning: (ae-incompatible-release-tags) The symbol "BubbleSeries" is marked as @public, but its signature references "BubbleSeriesSpec" which is marked as @alpha
 //
@@ -3099,6 +3111,8 @@ export interface Theme {
     axes: AxisStyle;
     background: BackgroundStyle;
     barSeriesStyle: BarSeriesStyle;
+    // (undocumented)
+    brush: BrushStyle;
     bubbleSeriesStyle: BubbleSeriesStyle;
     bulletGraph: BulletStyle;
     chartMargins: Margins;
