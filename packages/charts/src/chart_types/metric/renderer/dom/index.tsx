@@ -154,6 +154,7 @@ function Component({
             textDimensions.textParts,
             style.minValueFontSize,
             datum.valueIcon !== undefined,
+            style.valueFontSize === 'fit',
           );
           acc.fittedValueFontSize = Math.min(acc.fittedValueFontSize, valueFontSize);
 

@@ -142,14 +142,17 @@ const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs
  * @internal
  */
 export function getFitValueFontSize(
-  initialValueFontSize: number,
+  initialValueFontSize: number, // fixed size based on panel height
   totalWidth: number,
   availableHeight: number,
   textParts: TextParts[],
   minValueFontSize: number,
   hasIcon: boolean,
+  isFitMode: boolean,
 ) {
   const maxWidth = (totalWidth - 2 * PADDING) * 0.98; // Buffer to prevent clipping
+  const maxHeight = (availableHeight - 2 * PADDING) * 0.98;
+
   const widthConstrainedSize = withTextMeasure((textMeasure) => {
     const iconMultiplier = hasIcon ? 1 : 0;
     const textWidth = textParts.reduce((sum, { text, emphasis }) => {
@@ -161,10 +164,18 @@ export function getFitValueFontSize(
     return (maxWidth - iconMultiplier * PADDING) / (ratio + iconMultiplier / VALUE_PART_FONT_RATIO);
   });
 
-  const maxHeight = (availableHeight - 2 * PADDING) * 0.98; // Buffer to prevent clipping
-  const heightConstrainedSize = Math.floor(maxHeight / LINE_HEIGHT);
+  let constrainedSize;
 
-  return Math.floor(Math.max(Math.min(widthConstrainedSize, heightConstrainedSize), minValueFontSize));
+  if (isFitMode) {
+    // In fit mode: apply both width and height constraints
+    const heightConstrainedSize = Math.floor(maxHeight / LINE_HEIGHT);
+    constrainedSize = Math.min(widthConstrainedSize, heightConstrainedSize);
+  } else {
+    // In default mode: only apply width constraint
+    constrainedSize = widthConstrainedSize;
+  }
+
+  return Math.floor(Math.max(constrainedSize, minValueFontSize));
 }
 
 /** @internal */
