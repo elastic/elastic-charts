@@ -150,7 +150,7 @@ function Component({
           const valueFontSize = getFitValueFontSize(
             textDimensions.heightBasedSizes.valueFontSize,
             totalWidth,
-            textDimensions.visibility.gapHeight,
+            textDimensions.visibility.availableHeightWithoutValue,
             textDimensions.textParts,
             style.minValueFontSize,
             datum.valueIcon !== undefined,
