@@ -172,7 +172,7 @@ export function getFitValueFontSize(
     constrainedSize = Math.min(widthConstrainedSize, heightConstrainedSize);
   } else {
     // In default mode: only apply width constraint
-    constrainedSize = widthConstrainedSize;
+    constrainedSize = Math.min(initialValueFontSize, widthConstrainedSize);
   }
 
   return Math.floor(Math.max(constrainedSize, minValueFontSize));
