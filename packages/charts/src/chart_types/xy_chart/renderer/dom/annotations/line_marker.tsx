@@ -127,6 +127,7 @@ export function LineMarker({
   return clickable ? (
     <button
       className="echAnnotation__marker"
+      data-testid="echAnnotationMarker"
       onMouseEnter={() => {
         onDOMElementEnter({
           createdBySpecId: specId,
@@ -153,6 +154,7 @@ export function LineMarker({
   ) : (
     <div
       className="echAnnotation__marker"
+      data-testid="echAnnotationMarker"
       onMouseEnter={() => {
         onDOMElementEnter({
           createdBySpecId: specId,
