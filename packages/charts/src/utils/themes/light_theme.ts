@@ -254,13 +254,13 @@ export const LIGHT_THEME: Theme = {
     },
     line: {
       visible: true,
-      stroke: LIGHT_BORDER_COLORS.borderBasePlain,
+      stroke: LIGHT_BORDER_COLORS.borderStrongPrimary,
       strokeWidth: 1,
       dash: [4, 4],
     },
     crossLine: {
       visible: true,
-      stroke: LIGHT_BORDER_COLORS.borderBasePlain,
+      stroke: LIGHT_BORDER_COLORS.borderStrongPrimary,
       strokeWidth: 1,
       dash: [4, 4],
     },
@@ -496,5 +496,11 @@ export const LIGHT_THEME: Theme = {
     opacity: 0.25,
     fill: '#69707D',
     stroke: '#69707D',
+  },
+  brush: {
+    fill: LIGHT_BACKGROUND_COLORS.backgroundFilledPrimary,
+    opacity: 0.1,
+    stroke: LIGHT_BORDER_COLORS.borderStrongPrimary,
+    strokeWidth: 1,
   },
 };

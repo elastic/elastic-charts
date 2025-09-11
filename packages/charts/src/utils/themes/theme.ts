@@ -530,6 +530,8 @@ export interface Theme {
   lineAnnotation: LineAnnotationStyle;
 
   rectAnnotation: RectAnnotationStyle;
+
+  brush: BrushStyle;
 }
 
 /** @public */
@@ -871,4 +873,12 @@ export interface HighlighterStyle {
     opacity: Ratio;
     radius: Pixels;
   };
+}
+
+/** @public */
+export interface BrushStyle {
+  fill: Color;
+  stroke: Color;
+  strokeWidth: Pixels;
+  opacity: Ratio;
 }

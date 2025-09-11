@@ -486,4 +486,10 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     fill: '#69707D',
     stroke: '#69707D',
   },
+  brush: {
+    fill: Colors.Gray.keyword,
+    opacity: 0.6,
+    stroke: Colors.Transparent.keyword,
+    strokeWidth: 0,
+  },
 };

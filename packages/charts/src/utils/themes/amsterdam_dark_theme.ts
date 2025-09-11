@@ -486,4 +486,10 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     fill: '#98A2B3',
     stroke: '#98A2B3',
   },
+  brush: {
+    fill: Colors.Gray.keyword,
+    opacity: 0.6,
+    stroke: Colors.Transparent.keyword,
+    strokeWidth: 0,
+  },
 };
