@@ -12,7 +12,8 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: [
-    '<rootDir>/scripts/setup_enzyme.ts',
+    '<rootDir>/scripts/setup_tests.ts',
+    '@testing-library/jest-dom',
     '<rootDir>/scripts/custom_matchers.mock.ts',
     'jest-extended/all',
   ],
