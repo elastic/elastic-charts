@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Rendering bands - areas Single band area chart Can render two points 1`] = `
 [
@@ -26,20 +26,20 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -84,20 +84,20 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -142,20 +142,20 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -200,20 +200,20 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -263,20 +263,20 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -321,20 +321,20 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -379,20 +379,20 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -437,20 +437,20 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -495,20 +495,20 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -553,20 +553,20 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
