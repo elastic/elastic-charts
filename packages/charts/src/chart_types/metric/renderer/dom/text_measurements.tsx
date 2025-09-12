@@ -136,6 +136,7 @@ const SUBTITLE_FONT: Font = {
   fontWeight: 'normal',
 };
 const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs: 8, s: 8, m: 8, l: 8, xl: 8, xxl: 16 };
+const ELEMENT_PADDING = 5; // Aligned with our CSS in _text.scss
 
 /**
  * Approximate font size to fit given available space
@@ -300,7 +301,7 @@ function getLayoutResult(
   sizes: HeightBasedSizes,
   locale: string,
   fit: boolean,
-  progressBarHeight: number,
+  progressBarHeight: number, // with padding
 ): LayoutResult {
   const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * PADDING;
 
@@ -341,13 +342,13 @@ function getLayoutResult(
         )
       : [];
 
-    const actualTitleHeight = titleLines.length > 0 ? titleLines.length * titleLineHeight + PADDING : 0;
-    const actualSubtitleHeight = subtitleLines.length > 0 ? subtitleLines.length * subtitleLineHeight + PADDING : 0;
-    const actualExtraHeight = breakpoints.extra ? extraHeight : 0;
+    const actualTitleHeight = titleLines.length > 0 ? titleLines.length * titleLineHeight : 0;
+    const actualSubtitleHeight =
+      subtitleLines.length > 0 ? subtitleLines.length * subtitleLineHeight + ELEMENT_PADDING : 0; // Subtitle padding top 5px
+    const actualExtraHeight = breakpoints.extra ? extraHeight + ELEMENT_PADDING : 0; // Extra padding top 5px
 
-    const progressBarTotalHeight = progressBarHeight > 0 ? progressBarHeight + PADDING : 0;
     const nonValueElementsHeight =
-      actualTitleHeight + actualSubtitleHeight + actualExtraHeight + progressBarTotalHeight;
+      actualTitleHeight + actualSubtitleHeight + actualExtraHeight + progressBarHeight + PADDING * 2;
     const totalHeight = nonValueElementsHeight + valueHeight;
 
     return {
@@ -364,7 +365,9 @@ function getLayoutResult(
   /** Determines if the given breakpoint should be considered "visible" for the provided text measurement */
   const isVisible = (breakpoints: ResponsiveBreakpoints, measure: TextMeasure) => {
     const { totalHeight } = getTextLayoutInfo(breakpoints, measure);
-    return totalHeight < panel.height;
+    const bufferHeight = 26;
+    const fits = totalHeight <= panel.height - bufferHeight;
+    return fits;
   };
 
   return withTextMeasure((textMeasure) => {

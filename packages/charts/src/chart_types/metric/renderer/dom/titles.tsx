@@ -22,7 +22,7 @@ function lineClamp(maxLines: number): CSSProperties {
     lineClamp: maxLines,
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
-    whiteSpace: 'pre-wrap',
+    whiteSpace: 'pre-line',
   };
 }
 
@@ -64,7 +64,6 @@ const Title: React.FC<TitleProps> = ({
         <button
           // ".echMetric" displays an outline halo;
           // inline styles protect us from unintended overrides of these styles.
-          style={{ outline: 'none' }}
           onMouseDown={(e) => e.stopPropagation()}
           onMouseUp={(e) => e.stopPropagation()}
           onClick={(e) => {
