@@ -82,7 +82,7 @@ export const DARK_THEME: Theme = {
   areaSeriesStyle: {
     area: {
       visible: true,
-      opacity: 0.3,
+      opacity: 0.2,
       dimmed: {
         fill: DARK_DIMMED_COLORS.areaFill,
         texture: { opacity: 0.25 },

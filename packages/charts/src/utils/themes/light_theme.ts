@@ -81,7 +81,7 @@ export const LIGHT_THEME: Theme = {
   areaSeriesStyle: {
     area: {
       visible: true,
-      opacity: 0.3,
+      opacity: 0.2,
       dimmed: {
         fill: LIGHT_DIMMED_COLORS.areaFill,
         texture: { opacity: 0.25 },
