@@ -30,7 +30,7 @@ export const LIGHT_THEME: Theme = {
   lineSeriesStyle: {
     line: {
       visible: true,
-      strokeWidth: 2,
+      strokeWidth: 1.5,
       opacity: 1,
       focused: { strokeWidth: 2.5 },
       dimmed: {
@@ -89,7 +89,7 @@ export const LIGHT_THEME: Theme = {
     },
     line: {
       visible: true,
-      strokeWidth: 2,
+      strokeWidth: 1.5,
       opacity: 1,
       dimmed: {
         strokeWidth: 1,
