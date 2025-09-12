@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Rendering points - areas Multi series area chart - linear can render first spec points 1`] = `
 [
@@ -26,20 +26,20 @@ exports[`Rendering points - areas Multi series area chart - linear can render fi
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -83,20 +83,20 @@ exports[`Rendering points - areas Multi series area chart - linear can render fi
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -144,8 +144,8 @@ exports[`Rendering points - areas Multi series area chart - linear can render se
     "style": {
       "fill": {
         "color": [
-          0,
-          0,
+          255,
+          255,
           255,
           1,
         ],
@@ -155,10 +155,10 @@ exports[`Rendering points - areas Multi series area chart - linear can render se
         "color": [
           0,
           0,
-          0,
-          0,
+          255,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -201,8 +201,8 @@ exports[`Rendering points - areas Multi series area chart - linear can render se
     "style": {
       "fill": {
         "color": [
-          0,
-          0,
+          255,
+          255,
           255,
           1,
         ],
@@ -212,10 +212,10 @@ exports[`Rendering points - areas Multi series area chart - linear can render se
         "color": [
           0,
           0,
-          0,
-          0,
+          255,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -264,20 +264,20 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render f
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -321,20 +321,20 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render f
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -382,8 +382,8 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render s
     "style": {
       "fill": {
         "color": [
-          0,
-          0,
+          255,
+          255,
           255,
           1,
         ],
@@ -393,10 +393,10 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render s
         "color": [
           0,
           0,
-          0,
-          0,
+          255,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -439,8 +439,8 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render s
     "style": {
       "fill": {
         "color": [
-          0,
-          0,
+          255,
+          255,
           255,
           1,
         ],
@@ -450,10 +450,10 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render s
         "color": [
           0,
           0,
-          0,
-          0,
+          255,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -502,20 +502,20 @@ exports[`Rendering points - areas Multi series area chart - time can render firs
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -559,20 +559,20 @@ exports[`Rendering points - areas Multi series area chart - time can render firs
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -620,8 +620,8 @@ exports[`Rendering points - areas Multi series area chart - time can render seco
     "style": {
       "fill": {
         "color": [
-          0,
-          0,
+          255,
+          255,
           255,
           1,
         ],
@@ -631,10 +631,10 @@ exports[`Rendering points - areas Multi series area chart - time can render seco
         "color": [
           0,
           0,
-          0,
-          0,
+          255,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -677,8 +677,8 @@ exports[`Rendering points - areas Multi series area chart - time can render seco
     "style": {
       "fill": {
         "color": [
-          0,
-          0,
+          255,
+          255,
           255,
           1,
         ],
@@ -688,10 +688,10 @@ exports[`Rendering points - areas Multi series area chart - time can render seco
         "color": [
           0,
           0,
-          0,
-          0,
+          255,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -740,20 +740,20 @@ exports[`Rendering points - areas Single series area chart - linear Can render t
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -797,20 +797,20 @@ exports[`Rendering points - areas Single series area chart - linear Can render t
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -859,20 +859,20 @@ exports[`Rendering points - areas Single series area chart - ordinal Can render 
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -916,20 +916,20 @@ exports[`Rendering points - areas Single series area chart - ordinal Can render 
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -978,20 +978,20 @@ exports[`Rendering points - areas Single series area chart - time Can render two
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -1035,20 +1035,20 @@ exports[`Rendering points - areas Single series area chart - time Can render two
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {

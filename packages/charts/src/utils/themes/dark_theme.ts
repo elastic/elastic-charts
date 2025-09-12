@@ -30,7 +30,7 @@ export const DARK_THEME: Theme = {
   lineSeriesStyle: {
     line: {
       visible: true,
-      strokeWidth: 2,
+      strokeWidth: 1.5,
       opacity: 1,
 
       focused: { strokeWidth: 2.5 },
@@ -41,9 +41,9 @@ export const DARK_THEME: Theme = {
     },
     point: {
       visible: 'auto',
-      strokeWidth: 0,
-      stroke: ColorVariant.None,
-      fill: ColorVariant.Series,
+      strokeWidth: 1.5,
+      stroke: ColorVariant.Series,
+      fill: DARK_BACKGROUND_COLORS.backgroundBasePlain,
       radius: 3,
       opacity: 1,
       dimmed: {
@@ -82,7 +82,7 @@ export const DARK_THEME: Theme = {
   areaSeriesStyle: {
     area: {
       visible: true,
-      opacity: 0.3,
+      opacity: 0.2,
       dimmed: {
         fill: DARK_DIMMED_COLORS.areaFill,
         texture: { opacity: 0.25 },
@@ -90,7 +90,7 @@ export const DARK_THEME: Theme = {
     },
     line: {
       visible: true,
-      strokeWidth: 2,
+      strokeWidth: 1.5,
       opacity: 1,
       dimmed: {
         strokeWidth: 1,
@@ -102,9 +102,9 @@ export const DARK_THEME: Theme = {
     },
     point: {
       visible: 'never',
-      strokeWidth: 0,
-      stroke: ColorVariant.None,
-      fill: ColorVariant.Series,
+      strokeWidth: 1.5,
+      stroke: ColorVariant.Series,
+      fill: DARK_BACKGROUND_COLORS.backgroundBasePlain,
       radius: 3,
       opacity: 1,
       dimmed: {
@@ -479,7 +479,7 @@ export const DARK_THEME: Theme = {
   },
   highlighter: {
     point: {
-      opacity: 0.5,
+      opacity: 1,
       fill: ColorVariant.Series,
       stroke: ColorVariant.None,
       strokeWidth: 0,
