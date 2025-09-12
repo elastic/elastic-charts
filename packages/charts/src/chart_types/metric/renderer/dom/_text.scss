@@ -44,6 +44,7 @@
     display: flex;
     align-items: center;
     overflow: hidden;
+    padding-top: 5px;
 
     &--left {
       justify-content: flex-start;
@@ -80,6 +81,8 @@
 
     button {
       width: 95%;
+      outline: none;
+      display: block;
     }
   }
 

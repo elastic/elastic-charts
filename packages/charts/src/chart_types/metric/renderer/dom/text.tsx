@@ -50,6 +50,11 @@ const getGridTemplateColumnsWithIcon = (iconSize: number) => {
   return `${iconSizeWithPadding} minmax(0, 1fr) ${iconSizeWithPadding}`;
 };
 
+const gridTemplateRows = {
+  bottom: `min-content auto min-content min-content`,
+  top: `min-content min-content auto min-content`,
+};
+
 /** @internal */
 export interface TextColors {
   /**
@@ -95,6 +100,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
   const isIconVisible = !!datum.icon;
 
   const gridTemplateColumns = isIconVisible ? getGridTemplateColumnsWithIcon(sizes.iconSize) : undefined;
+  const currentGridTemplateRows = gridTemplateRows[valuePosition];
 
   const iconGridStyles = isIconVisible ? { gridRow: '1', gridColumn: iconAlign === 'left' ? '1' : '3' } : {};
 
@@ -128,7 +134,10 @@ export const MetricText: React.FC<MetricTextprops> = ({
   }
 
   return (
-    <div className={containerClassName} style={{ color: colors.highContrast, gridTemplateColumns }}>
+    <div
+      className={containerClassName}
+      style={{ color: colors.highContrast, gridTemplateColumns, gridTemplateRows: currentGridTemplateRows }}
+    >
       <TitlesBlock
         metricId={id}
         title={datum.title}
