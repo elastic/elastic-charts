@@ -7,14 +7,12 @@
  */
 
 import { canDisplayChartTitles } from './selectors/can_display_chart_titles';
-import { getScreenReaderDataSelector } from './selectors/get_screen_reader_data';
 import { createChartSelectorsFactory } from '../../../state/chart_selectors';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 
 /** @internal */
 export const chartSelectorsFactory = createChartSelectorsFactory({
   getChartTypeDescription: () => 'Metric chart',
-  getScreenReaderData: getScreenReaderDataSelector,
   isInitialized: () => InitStatus.Initialized,
   isChartEmpty: () => false,
   canDisplayChartTitles,
