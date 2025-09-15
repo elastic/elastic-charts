@@ -8,6 +8,7 @@
 
 import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
 import { getGoalSpecSelector } from './selectors/get_goal_spec';
+import { getScreenReaderDataSelector } from './selectors/get_screen_reader_data';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
@@ -46,6 +47,7 @@ export const chartSelectorsFactory = createChartSelectorsFactory(
     },
 
     getChartTypeDescription: getChartTypeDescriptionSelector,
+    getScreenReaderData: getScreenReaderDataSelector,
 
     // TODO enable for small multiples
     canDisplayChartTitles: () => false,

@@ -9,59 +9,28 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
-import { ScreenReaderDescription } from './description';
-import { ScreenReaderLabel } from './label';
-import { ScreenReaderTypes } from './types';
-import type { GoalChartData, GoalChartLabels } from '../../chart_types/goal_chart/state/selectors/get_goal_chart_data';
-import {
-  getGoalChartDataSelector,
-  getGoalChartLabelsSelector,
-} from '../../chart_types/goal_chart/state/selectors/get_goal_chart_data';
+import { ScreenReaderDescription } from './screen_reader_description';
+import { ScreenReaderItems } from './screen_reader_items';
 import type { GlobalChartState } from '../../state/chart_state';
-import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
-import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
-import { getInternalChartStateSelector } from '../../state/selectors/get_internal_chart_state';
-import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
+import type { ScreenReaderSummaryData } from '../../state/selectors/get_screen_reader_summary';
+import { getScreenReaderSummarySelector } from '../../state/selectors/get_screen_reader_summary';
 
-interface ScreenReaderSummaryStateProps {
-  a11ySettings: A11ySettings;
-  chartTypeDescription: string;
-  goalChartData?: GoalChartData;
-  goalChartLabels?: GoalChartLabels;
-}
-
-const ScreenReaderSummaryComponent = ({
-  a11ySettings,
-  chartTypeDescription,
-  goalChartData,
-  goalChartLabels,
-}: ScreenReaderSummaryStateProps) => {
+const ScreenReaderSummaryComponent = ({ a11ySettings, screenReaderData }: ScreenReaderSummaryData) => {
   return (
-    <div className="echScreenReaderOnly" data-testid="echScreenReaderSummary">
-      <ScreenReaderLabel {...a11ySettings} goalChartLabels={goalChartLabels} />
+    <figcaption
+      className="echScreenReaderOnly"
+      id={`${a11ySettings.descriptionId}-summary`}
+      data-testid="echScreenReaderSummary"
+    >
       <ScreenReaderDescription {...a11ySettings} />
-      <ScreenReaderTypes {...a11ySettings} chartTypeDescription={chartTypeDescription} goalChartData={goalChartData} />
-    </div>
+      <ScreenReaderItems {...a11ySettings} screenReaderItems={screenReaderData?.screenReaderItems} />
+    </figcaption>
   );
 };
 
-const DEFAULT_SCREEN_READER_SUMMARY = {
-  a11ySettings: DEFAULT_A11Y_SETTINGS,
-  chartTypeDescription: '',
-  goalChartData: undefined,
-};
-
-const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryStateProps => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (internalChartState === null || getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
-    return DEFAULT_SCREEN_READER_SUMMARY;
-  }
-  return {
-    chartTypeDescription: internalChartState.getChartTypeDescription(state),
-    a11ySettings: getA11ySettingsSelector(state),
-    goalChartData: getGoalChartDataSelector(state),
-    goalChartLabels: getGoalChartLabelsSelector(state),
-  };
+/** @internal */
+export const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryData => {
+  return getScreenReaderSummarySelector(state);
 };
 
 /** @internal */

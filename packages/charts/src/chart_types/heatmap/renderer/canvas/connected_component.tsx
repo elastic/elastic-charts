@@ -136,9 +136,8 @@ class Component extends React.Component<Props> {
           }}
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
-        >
-          <ScreenReaderSummary />
-        </canvas>
+        />
+        <ScreenReaderSummary />
       </figure>
     );
   }
