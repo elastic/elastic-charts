@@ -19,7 +19,6 @@ import type { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import type { SeriesKey } from '../common/series_id';
 import type { AnchorPosition } from '../components/portal/types';
 import type { TooltipInfo } from '../components/tooltip/types';
-import { getA11ySettingsSelector } from '../state/selectors/get_accessibility_config';
 import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
@@ -36,6 +35,10 @@ export interface ScreenReaderItem {
 export interface ChartSpecificScreenReaderData {
   /** Custom summary parts to include in the consolidated summary */
   screenReaderItems?: ScreenReaderItem[];
+  /** Chart-specific data for screen reader summary */
+  data?: any;
+  /** Custom summary parts to include in the consolidated summary */
+  summaryParts?: string[];
 }
 
 /** @internal */
@@ -209,14 +212,8 @@ export const createChartSelectorsFactory =
       getDebugState: () => ({}),
       getChartTypeDescription: () => '',
       // The default screen reader data returns just the chart type description.
-      getScreenReaderData: (state: GlobalChartState): ChartSpecificScreenReaderData => {
-        const a11ySettings = getA11ySettingsSelector(state);
-        const chartTypeDescription = chartSelectors.getChartTypeDescription(state);
-        return {
-          screenReaderItems: chartTypeDescription
-            ? [{ label: 'Chart type', id: a11ySettings.defaultSummaryId, value: chartTypeDescription }]
-            : [],
-        };
+      getScreenReaderData: (): ChartSpecificScreenReaderData => {
+        return { screenReaderItems: [] };
       },
       getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),
       canDisplayChartTitles: () => true,
