@@ -47,7 +47,7 @@ export interface HeightBasedSizes {
 }
 
 /** @internal */
-export interface LayoutResult extends ResponsiveBreakpoints {
+export interface MetricTextLayout extends ResponsiveBreakpoints {
   /** The actual wrapped lines of title text that will be rendered */
   titleLines: string[];
   /** The actual wrapped lines of subtitle text that will be rendered */
@@ -66,7 +66,7 @@ export interface MetricTextDimensions {
    * We have added the padding into the calculation
    */
   progressBarWidth: number;
-  visibility: LayoutResult;
+  visibility: MetricTextLayout;
   textParts: TextParts[];
   /**
    * This only applies when there is an icon and the value postition is top.
@@ -215,7 +215,7 @@ export function getMetricTextPartDimensions(
     hasProgressBar,
     progressBarDirection,
     progressBarWidth,
-    visibility: getLayoutResult(
+    visibility: computeMetricTextLayout(
       datum,
       panel,
       heightBasedSizes,
@@ -298,14 +298,14 @@ const getResponsiveBreakpoints = (title: boolean, subtitle: boolean, extra: bool
   { titleMaxLines: 1, subtitleMaxLines: 0, title, subtitle: false, extra: false },
 ];
 
-function getLayoutResult(
+function computeMetricTextLayout(
   datum: MetricDatum,
   panel: Size,
   sizes: HeightBasedSizes,
   locale: string,
   fit: boolean,
   progressBarHeight: number, // with padding
-): LayoutResult {
+): MetricTextLayout {
   const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * PADDING;
 
   const titleLineHeight = sizes.titleFontSize * LINE_HEIGHT;
@@ -320,7 +320,7 @@ function getLayoutResult(
 
   const responsiveBreakPoints = getResponsiveBreakpoints(!!datum.title, !!datum.subtitle, !!datum.extra);
 
-  function getTextLayoutInfo(breakpoints: ResponsiveBreakpoints, measure: TextMeasure) {
+  function computeMetricTextSize(breakpoints: ResponsiveBreakpoints, measure: TextMeasure) {
     const titleLines = datum.title
       ? wrapText(
           datum.title,
@@ -367,7 +367,7 @@ function getLayoutResult(
 
   /** Determines if the given breakpoint should be considered "visible" for the provided text measurement */
   const isVisible = (breakpoints: ResponsiveBreakpoints, measure: TextMeasure) => {
-    const { totalHeight } = getTextLayoutInfo(breakpoints, measure);
+    const { totalHeight } = computeMetricTextSize(breakpoints, measure);
     const buffer = panel.height <= SMALL_HEIGHT_THRESHOLD ? LAYOUT_PIXEL_BUFFER : 0;
     const fits = totalHeight <= panel.height - buffer;
     return fits;
@@ -383,7 +383,7 @@ function getLayoutResult(
       visibilityBreakpoint = found ?? responsiveBreakPoints.at(-1)!;
     }
 
-    const layoutInfo = getTextLayoutInfo(visibilityBreakpoint, textMeasure);
+    const layoutInfo = computeMetricTextSize(visibilityBreakpoint, textMeasure);
 
     const availableHeightWithoutValue = Math.max(0, panel.height - layoutInfo.nonValueElementsHeight);
     const gapHeight = Math.max(0, panel.height - layoutInfo.totalHeight);

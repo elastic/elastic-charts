@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import type { CSSProperties } from 'react';
 import React, { useMemo } from 'react';
 
-import type { HeightBasedSizes, LayoutResult } from './text_measurements';
+import type { HeightBasedSizes, MetricTextLayout } from './text_measurements';
 import type { Color } from '../../../../common/colors';
 import type { MetricFontWeight, MetricStyle } from '../../../../utils/themes/theme';
 
@@ -111,7 +111,7 @@ interface TitlesBlockProps {
 
   // Layout & sizing
   sizes: HeightBasedSizes;
-  visibility: LayoutResult;
+  visibility: MetricTextLayout;
 
   // Alignment & icon
   textAlign: MetricStyle['titlesTextAlign'];
