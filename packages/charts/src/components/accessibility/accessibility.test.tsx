@@ -165,7 +165,7 @@ describe('Accessibility', () => {
         </Chart>,
       );
       expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe(
-        'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:260Value:170',
+        'Chart type:goal chartMajor label:Revenue 2020 YTD  Minor label:(thousand USD)  Minimum:0Maximum:300Target:260Value:170',
       );
     });
     it('should correctly render ascending semantic values', () => {
