@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import type { CSSProperties } from 'react';
 import React, { useMemo } from 'react';
 
-import type { HeightBasedSizes, Visibility } from './text_measurements';
+import type { HeightBasedSizes, MetricTextLayout } from './text_measurements';
 import type { Color } from '../../../../common/colors';
 import type { MetricFontWeight, MetricStyle } from '../../../../utils/themes/theme';
 
@@ -22,7 +22,7 @@ function lineClamp(maxLines: number): CSSProperties {
     lineClamp: maxLines,
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
-    whiteSpace: 'pre-wrap',
+    whiteSpace: 'pre-line',
   };
 }
 
@@ -64,7 +64,6 @@ const Title: React.FC<TitleProps> = ({
         <button
           // ".echMetric" displays an outline halo;
           // inline styles protect us from unintended overrides of these styles.
-          style={{ outline: 'none' }}
           onMouseDown={(e) => e.stopPropagation()}
           onMouseUp={(e) => e.stopPropagation()}
           onClick={(e) => {
@@ -112,7 +111,7 @@ interface TitlesBlockProps {
 
   // Layout & sizing
   sizes: HeightBasedSizes;
-  visibility: Visibility;
+  visibility: MetricTextLayout;
 
   // Alignment & icon
   textAlign: MetricStyle['titlesTextAlign'];
