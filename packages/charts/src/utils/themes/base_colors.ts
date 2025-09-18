@@ -107,6 +107,7 @@ export const DARK_BORDER_COLORS = {
   borderBaseSubdued: SEMANTIC_COLORS.shade120,
   borderBasePlain: SEMANTIC_COLORS.shade100,
   borderBasePrimary: SEMANTIC_COLORS.primary120,
+  borderStrongPrimary: SEMANTIC_COLORS.primary60,
 };
 
 /**
@@ -117,6 +118,7 @@ export const LIGHT_BORDER_COLORS = {
   borderBaseSubdued: SEMANTIC_COLORS.shade20,
   borderBasePlain: SEMANTIC_COLORS.shade30,
   borderBasePrimary: SEMANTIC_COLORS.primary30,
+  borderStrongPrimary: SEMANTIC_COLORS.primary90,
 };
 
 /**
