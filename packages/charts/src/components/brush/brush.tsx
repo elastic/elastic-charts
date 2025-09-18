@@ -43,8 +43,8 @@ interface StateProps {
 }
 
 const BRUSH_STROKED_SIDES = Object.freeze({
-  TOP_BOTTOM: { top: true, bottom: true } as const,
-  LEFT_RIGHT: { left: true, right: true } as const,
+  TOP_BOTTOM: { top: true, bottom: true, left: false, right: false } as const,
+  LEFT_RIGHT: { left: true, right: true, top: false, bottom: false } as const,
   ALL: { top: true, right: true, bottom: true, left: true } as const,
 });
 

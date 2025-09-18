@@ -12,10 +12,10 @@ import type { Fill, Rect, Stroke } from '../../../geoms/types';
 
 /** @internal */
 export interface StrokedSides {
-  top?: boolean;
-  right?: boolean;
-  bottom?: boolean;
-  left?: boolean;
+  top: boolean;
+  right: boolean;
+  bottom: boolean;
+  left: boolean;
 }
 
 /** @internal */
@@ -63,10 +63,10 @@ export function renderRectStroke(
   }
   const { x, y, width, height } = normalizeRect(rect);
 
-  const borderOffsetLeft = strokedSides?.left ? stroke.width : 0;
-  const borderOffsetRight = strokedSides?.right ? stroke.width : 0;
-  const borderOffsetTop = strokedSides?.top ? stroke.width : 0;
-  const borderOffsetBottom = strokedSides?.bottom ? stroke.width : 0;
+  const borderOffsetLeft = strokedSides.left ? stroke.width : 0;
+  const borderOffsetRight = strokedSides.right ? stroke.width : 0;
+  const borderOffsetTop = strokedSides.top ? stroke.width : 0;
+  const borderOffsetBottom = strokedSides.bottom ? stroke.width : 0;
 
   ctx.strokeStyle = RGBATupleToString(stroke.color);
   ctx.lineWidth = stroke.width;
@@ -79,19 +79,19 @@ export function renderRectStroke(
   const y1 = y + height - borderOffsetBottom / 2;
   ctx.beginPath();
 
-  if (strokedSides?.top) {
+  if (strokedSides.top) {
     ctx.moveTo(x0, y0);
     ctx.lineTo(x1, y0);
   }
-  if (strokedSides?.right) {
+  if (strokedSides.right) {
     ctx.moveTo(x1, y0);
     ctx.lineTo(x1, y1);
   }
-  if (strokedSides?.bottom) {
+  if (strokedSides.bottom) {
     ctx.moveTo(x1, y1);
     ctx.lineTo(x0, y1);
   }
-  if (strokedSides?.left) {
+  if (strokedSides.left) {
     ctx.moveTo(x0, y1);
     ctx.lineTo(x0, y0);
   }
