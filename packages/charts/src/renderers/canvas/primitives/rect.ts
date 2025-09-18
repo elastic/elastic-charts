@@ -48,7 +48,12 @@ export function renderRect(
   }
 }
 
-/** @internal */
+/**
+ * Render selected sides of a rectangle stroke.
+ *
+ * Each stroked side is drawn so the stroke lies fully inside the original rect box.
+ * @internal
+ */
 export function renderRectStroke(
   ctx: CanvasRenderingContext2D,
   rect: Rect,
