@@ -87,7 +87,23 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   );
   const label = text('Label', 'Last week', secondaryMetricGroup);
   const colorByValue = boolean('Color by value', true, secondaryMetricGroup);
-  const badgeColor = color('Secondary metric value color', 'rgb(93, 191, 149)', secondaryMetricGroup);
+  const dynamicBadgeColor = boolean('Dynamic badge color', true, secondaryMetricGroup);
+  const badgeColor = dynamicBadgeColor
+    ? select(
+        'Secondary metric value color',
+        {
+          compareTo1: '#F6726A',
+          compareTo2: '#ECF1F9',
+          compareTo3: '#24C292',
+          complementary1: '#61a2ff',
+          complementary2: '#f6f9fc',
+          complementary3: '#eaae01',
+        },
+        '#24C292',
+        secondaryMetricGroup,
+      )
+    : color('Secondary metric value color', '#24C292', secondaryMetricGroup);
+
   const secondaryMetricLabelPosition = select(
     'Secondary metric label position',
     { before: 'before', after: 'after' },
@@ -95,6 +111,22 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     secondaryMetricGroup,
   );
   const secondaryMetricAriaDescription = text('Aria description', 'This is a description', secondaryMetricGroup);
+  const badgeBorder = boolean('Badge border', true, secondaryMetricGroup);
+  const badgeBorderSelection = select(
+    'Badge border color',
+    {
+      deafult: 'default',
+      customColor: 'custom color',
+    },
+    'default',
+    secondaryMetricGroup,
+  );
+  const badgeBorderColor = color('Badge border color selector', '#BFDBFF', secondaryMetricGroup);
+  const secondaryBadgeBorderColor = badgeBorder
+    ? badgeBorderSelection === 'default'
+      ? undefined
+      : badgeBorderColor
+    : 'none';
 
   const secondaryProps: SecondaryMetricProps = {
     value: secondaryMetricValue,
@@ -104,6 +136,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     ariaDescription: secondaryMetricAriaDescription,
     icon: secondaryMetricIcon,
     iconPosition: secondaryMetricIconPosition,
+    badgeBorderColor: secondaryBadgeBorderColor,
   };
 
   const dataExtra = showExtra

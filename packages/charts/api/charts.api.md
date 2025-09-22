@@ -2694,7 +2694,7 @@ export type ScaleType = $Values<typeof ScaleType>;
 // @alpha
 export interface SecondaryMetricProps {
     ariaDescription?: string;
-    badgeBorderColor?: Color;
+    badgeBorderColor?: Color | 'none';
     badgeColor?: Color;
     icon?: string;
     iconPosition?: 'before' | 'after';

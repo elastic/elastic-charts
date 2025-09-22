@@ -9,8 +9,9 @@
 import classNames from 'classnames';
 import React from 'react';
 
+import { highContrastColor } from '../../../../common/color_calcs';
+import { colorToRgba } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
-import { fillTextColor } from '../../../../common/fill_text_color';
 
 /** @internal */
 export const BADGE_BORDER = 1;
@@ -42,8 +43,8 @@ export const Badge: React.FC<BadgeProps> = ({
   iconPosition = 'after',
 }) => {
   const classes = classNames('echBadge__content', className);
-  const highContrastColor = fillTextColor(backgroundColor, backgroundColor);
 
+  const color = highContrastColor(colorToRgba(backgroundColor)).color.keyword;
   const iconStyles =
     value !== ''
       ? {
@@ -53,7 +54,7 @@ export const Badge: React.FC<BadgeProps> = ({
   const optionalIcon = icon ? <span style={iconStyles}>{icon}</span> : null;
 
   return (
-    <span className={classes} style={{ backgroundColor, borderColor, color: highContrastColor.color.keyword }}>
+    <span className={classes} style={{ backgroundColor, borderColor, color }}>
       {iconPosition === 'before' && optionalIcon}
       <span className="echBadge__text">{value}</span>
       {iconPosition === 'after' && optionalIcon}

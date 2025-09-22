@@ -43,7 +43,7 @@ export const SecondaryMetric: React.FC<SecondaryMetricProps> = ({
           })}
           value={value}
           backgroundColor={badgeColor}
-          borderColor={badgeBorderColor}
+          {...(badgeBorderColor !== 'none' && { borderColor: badgeBorderColor })}
           icon={icon}
           iconPosition={iconPosition}
         />

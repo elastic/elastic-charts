@@ -114,7 +114,7 @@ const getTextColors = ({
   };
 };
 
-const CONTRAST_THRESHOLD = 3.0;
+const CONTRAST_THRESHOLD = 3.0; // https://www.w3.org/WAI/WCAG22/quickref/?versions=2.1#non-text-contrast
 
 function isColorContrastOptions(options: ColorContrastOptions | TextContrastOptions): options is ColorContrastOptions {
   return !('text' in options);
@@ -211,8 +211,8 @@ export const Metric: React.FunctionComponent<{
     textContrastOptions,
   });
 
-  // Note: Added here the calculation because we have all the metric context and info
-  let badgeBorderColor;
+  // Compute automatic border color based on contrast ratio
+  let badgeBorderColor: Color | undefined;
   if (isSecondaryMetricProps(datum.extra) && !!datum.extra.badgeColor && !datum.extra.badgeBorderColor) {
     const metricBackgroundColor = hasProgressBar ? backgroundColor : blendedColor;
     const borderRecommendation = getContrastRecommendation(metricBackgroundColor, datum.extra.badgeColor, {
