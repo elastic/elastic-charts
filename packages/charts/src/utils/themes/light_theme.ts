@@ -66,7 +66,7 @@ export const LIGHT_THEME: Theme = {
         stroke: ColorVariant.Series,
       },
     },
-    pointVisibilityMinDistance: 40,
+    pointVisibilityMinDistance: 20,
   },
   bubbleSeriesStyle: {
     point: {

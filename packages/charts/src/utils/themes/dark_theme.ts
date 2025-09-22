@@ -67,7 +67,7 @@ export const DARK_THEME: Theme = {
         opacity: 1,
       },
     },
-    pointVisibilityMinDistance: 40,
+    pointVisibilityMinDistance: 20,
   },
   bubbleSeriesStyle: {
     point: {
