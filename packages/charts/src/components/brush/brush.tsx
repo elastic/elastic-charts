@@ -10,14 +10,24 @@ import type { RefObject } from 'react';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import type { RgbaTuple } from '../../common/color_library_wrappers';
+import { BrushAxis } from '../../../src/specs/brush_axis';
+import { isVerticalRotation } from '../../chart_types/xy_chart/state/utils/common';
+import { colorToRgba, overrideOpacity } from '../../common/color_library_wrappers';
 import { Colors } from '../../common/colors';
 import { clearCanvas, withContext, withClip } from '../../renderers/canvas';
-import { renderRect } from '../../renderers/canvas/primitives/rect';
+import { renderRectStroke, renderRect } from '../../renderers/canvas/primitives/rect';
+import type { StrokedSides } from '../../renderers/canvas/primitives/rect';
+import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
 import type { GlobalChartState } from '../../state/chart_state';
+import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
+import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getInternalChartStateSelector } from '../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
+import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
+import type { Rotation } from '../../utils/common';
 import type { Dimensions } from '../../utils/dimensions';
+import { LIGHT_THEME } from '../../utils/themes/light_theme';
+import type { BrushStyle } from '../../utils/themes/theme';
 
 interface StateProps {
   initialized: boolean;
@@ -27,10 +37,16 @@ interface StateProps {
   isBrushAvailable: boolean | undefined;
   brushEvent: Dimensions | null;
   zIndex: number;
+  style: BrushStyle;
+  brushAxis?: BrushAxis;
+  chartRotation: Rotation;
 }
 
-// todo move this to theme
-const DEFAULT_FILL_COLOR: RgbaTuple = [128, 128, 128, 0.6];
+const BRUSH_STROKED_SIDES = Object.freeze({
+  TOP_BOTTOM: { top: true, bottom: true, left: false, right: false } as const,
+  LEFT_RIGHT: { left: true, right: true, top: false, bottom: false } as const,
+  ALL: { top: true, right: true, bottom: true, left: true } as const,
+});
 
 class BrushToolComponent extends React.Component<StateProps> {
   static displayName = 'BrushTool';
@@ -89,12 +105,13 @@ class BrushToolComponent extends React.Component<StateProps> {
   }
 
   private drawCanvas = () => {
-    const { brushEvent, mainProjectionArea } = this.props;
+    const { brushEvent, mainProjectionArea, style, brushAxis, chartRotation } = this.props;
 
     const { ctx } = this;
     if (!ctx || !brushEvent) {
       return;
     }
+    const strokedSides = getBrushStrokedSides(chartRotation, brushAxis);
     const { top, left, width, height } = brushEvent;
     withContext(ctx, () => {
       ctx.scale(this.devicePixelRatio, this.devicePixelRatio);
@@ -112,8 +129,17 @@ class BrushToolComponent extends React.Component<StateProps> {
           renderRect(
             ctx,
             { x: left, y: top, width, height },
-            { color: DEFAULT_FILL_COLOR },
+            { color: overrideOpacity(colorToRgba(style.fill), style.opacity) },
             { width: 0, color: Colors.Transparent.rgba },
+          );
+          renderRectStroke(
+            ctx,
+            { x: left, y: top, width, height },
+            {
+              width: style.strokeWidth,
+              color: colorToRgba(style.stroke),
+            },
+            strokedSides,
           );
         },
       );
@@ -147,8 +173,12 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
       isBrushAvailable: false,
       brushEvent: null,
       zIndex: 0,
+      style: LIGHT_THEME.brush,
+      brushAxis: DEFAULT_SETTINGS_SPEC.brushAxis,
+      chartRotation: DEFAULT_SETTINGS_SPEC.rotation,
     };
   }
+
   return {
     initialized: state.specsInitialized,
     projectionContainer: internalChartState.getProjectionContainerArea(state),
@@ -157,8 +187,23 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     isBrushing: internalChartState.isBrushing(state),
     brushEvent: internalChartState.getBrushArea(state),
     zIndex: state.zIndex,
+    style: getChartThemeSelector(state).brush,
+    brushAxis: getSettingsSpecSelector(state).brushAxis,
+    chartRotation: getChartRotationSelector(state),
   };
 };
+
+function getBrushStrokedSides(rotation: Rotation, brushAxis?: BrushAxis): StrokedSides {
+  const vertical = isVerticalRotation(rotation);
+  switch (brushAxis) {
+    case BrushAxis.X:
+      return vertical ? BRUSH_STROKED_SIDES.TOP_BOTTOM : BRUSH_STROKED_SIDES.LEFT_RIGHT;
+    case BrushAxis.Y:
+      return vertical ? BRUSH_STROKED_SIDES.LEFT_RIGHT : BRUSH_STROKED_SIDES.TOP_BOTTOM;
+    default:
+      return BRUSH_STROKED_SIDES.ALL;
+  }
+}
 
 /** @internal */
 export const BrushTool = connect(mapStateToProps)(BrushToolComponent);

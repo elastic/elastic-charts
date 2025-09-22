@@ -255,13 +255,13 @@ export const DARK_THEME: Theme = {
     },
     line: {
       visible: true,
-      stroke: DARK_BORDER_COLORS.borderBasePlain,
+      stroke: DARK_BORDER_COLORS.borderStrongPrimary,
       strokeWidth: 1,
       dash: [4, 4],
     },
     crossLine: {
       visible: true,
-      stroke: DARK_BORDER_COLORS.borderBasePlain,
+      stroke: DARK_BORDER_COLORS.borderStrongPrimary,
       strokeWidth: 1,
       dash: [4, 4],
     },
@@ -498,5 +498,11 @@ export const DARK_THEME: Theme = {
     opacity: 0.25,
     fill: '#98A2B3',
     stroke: '#98A2B3',
+  },
+  brush: {
+    fill: DARK_BACKGROUND_COLORS.backgroundFilledPrimary,
+    opacity: 0.1,
+    stroke: DARK_BORDER_COLORS.borderStrongPrimary,
+    strokeWidth: 1,
   },
 };

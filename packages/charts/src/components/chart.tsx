@@ -174,7 +174,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
     return (
       <Provider store={this.chartStore}>
-        <div className="echChart" style={containerSizeStyle}>
+        <div className="echChart" style={containerSizeStyle} data-testid="echChart">
           <Titles
             displayTitles={this.state.displayTitles}
             title={this.props.title}

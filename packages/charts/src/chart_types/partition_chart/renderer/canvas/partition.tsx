@@ -17,7 +17,7 @@ import { renderPartitionCanvas2d } from './canvas_renderers';
 import { renderWrappedPartitionCanvas2d } from './canvas_wrapped_renderers';
 import type { Color } from '../../../../common/colors';
 import { Colors } from '../../../../common/colors';
-import { ScreenReaderSummary, ScreenReaderPartitionTable } from '../../../../components/accessibility';
+import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { clearCanvas } from '../../../../renderers/canvas';
 import type { SettingsSpec } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -35,6 +35,7 @@ import { hasMostlyRTLLabels, nullShapeViewModel } from '../../layout/types/viewm
 import { INPUT_KEY } from '../../layout/utils/group_by_rollup';
 import { isSimpleLinear, isWaffle } from '../../layout/viewmodel/viewmodel';
 import { partitionDrilldownFocus, partitionMultiGeometries } from '../../state/selectors/geometries';
+import { ScreenReaderPartitionTable } from '../dom/screen_reader_partition_table';
 
 /** @internal */
 export interface ContinuousDomainFocus {

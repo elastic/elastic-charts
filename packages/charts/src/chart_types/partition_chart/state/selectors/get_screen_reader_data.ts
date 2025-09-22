@@ -59,7 +59,7 @@ const getScreenReaderDataForPartitions = (
 };
 
 /** @internal */
-export const getScreenReaderDataSelector = createCustomCachedSelector(
+export const getPartitionScreenReaderDataSelector = createCustomCachedSelector(
   [getPartitionSpecs, partitionMultiGeometries],
   (specs, shapeViewModel): PartitionData => {
     if (specs.length === 0) {
