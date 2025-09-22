@@ -122,11 +122,11 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     secondaryMetricGroup,
   );
   const badgeBorderColor = color('Badge border color selector', '#BFDBFF', secondaryMetricGroup);
-  const secondaryBadgeBorderColor = badgeBorder
+  const secondaryBadgeBorderColor: SecondaryMetricProps['badgeBorderColor'] = badgeBorder
     ? badgeBorderSelection === 'default'
-      ? undefined
-      : badgeBorderColor
-    : 'none';
+      ? { mode: 'default' }
+      : { mode: 'custom', color: badgeBorderColor }
+    : { mode: 'none' };
 
   const secondaryProps: SecondaryMetricProps = {
     value: secondaryMetricValue,

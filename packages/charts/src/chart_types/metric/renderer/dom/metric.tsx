@@ -212,14 +212,19 @@ export const Metric: React.FunctionComponent<{
   });
 
   // Compute automatic border color based on contrast ratio
-  let badgeBorderColor: Color | undefined;
-  if (isSecondaryMetricProps(datum.extra) && !!datum.extra.badgeColor && !datum.extra.badgeBorderColor) {
+  let defaultBadgeBorderColor: Color | undefined;
+  if (
+    isSecondaryMetricProps(datum.extra) &&
+    !!datum.extra.badgeColor &&
+    datum.extra.badgeBorderColor &&
+    datum.extra.badgeBorderColor.mode === 'default'
+  ) {
     const metricBackgroundColor = hasProgressBar ? backgroundColor : blendedColor;
     const borderRecommendation = getContrastRecommendation(metricBackgroundColor, datum.extra.badgeColor, {
       contrastThreshold: CONTRAST_THRESHOLD,
       borderOptions: textContrastOptions.extra,
     });
-    badgeBorderColor = borderRecommendation.borderColor;
+    defaultBadgeBorderColor = borderRecommendation.borderColor;
     if (hasTrend) {
       const { shade, borderColor, contrastRatio } = getContrastRecommendation(
         getSparkLineColor(blendedColor),
@@ -230,7 +235,7 @@ export const Metric: React.FunctionComponent<{
         },
       );
       if (shade !== borderRecommendation.shade && contrastRatio > borderRecommendation.contrastRatio) {
-        badgeBorderColor = borderColor;
+        defaultBadgeBorderColor = borderColor;
       }
     }
   }
@@ -280,7 +285,7 @@ export const Metric: React.FunctionComponent<{
         progressBarSize={progressBarSize}
         textDimensions={textDimensions}
         colors={textColors}
-        badgeBorderColor={badgeBorderColor}
+        defaultBadgeBorderColor={defaultBadgeBorderColor}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (
