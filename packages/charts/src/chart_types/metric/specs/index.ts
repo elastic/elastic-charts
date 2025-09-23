@@ -36,12 +36,7 @@ export interface SecondaryMetricProps {
   style?: CSSProperties;
   /** Optional aria description */
   ariaDescription?: string;
-  /** Badge border config:
-   * - undefined: no border
-   * - { mode: 'none' }: disable border
-   * - { mode: 'default' }: parent computes contrast-based color
-   * - { mode: 'custom', color }: use provided color
-   */
+  /** Badge border config */
   badgeBorderColor?: { mode: 'none' } | { mode: 'default' } | { mode: 'custom'; color: Color };
   /** Optional icon displayed next to the text */
   icon?: string;
