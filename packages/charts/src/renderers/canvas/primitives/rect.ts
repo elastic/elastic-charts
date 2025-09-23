@@ -11,6 +11,14 @@ import { RGBATupleToString } from '../../../common/color_library_wrappers';
 import type { Fill, Rect, Stroke } from '../../../geoms/types';
 
 /** @internal */
+export interface StrokedSides {
+  top: boolean;
+  right: boolean;
+  bottom: boolean;
+  left: boolean;
+}
+
+/** @internal */
 export function renderRect(
   ctx: CanvasRenderingContext2D,
   { x, y, width, height }: Rect,
@@ -38,4 +46,72 @@ export function renderRect(
     ctx.fillStyle = texture.pattern;
     ctx.fill();
   }
+}
+
+/**
+ * Render selected sides of a rectangle stroke.
+ *
+ * Each stroked side is drawn so the stroke lies fully inside the original rect box.
+ * @internal
+ */
+export function renderRectStroke(
+  ctx: CanvasRenderingContext2D,
+  rect: Rect,
+  stroke: Stroke,
+  strokedSides: StrokedSides,
+) {
+  if (
+    stroke.width < MIN_STROKE_WIDTH ||
+    (!strokedSides.left && !strokedSides.right && !strokedSides.top && !strokedSides.bottom)
+  ) {
+    return;
+  }
+  const { x, y, width, height } = normalizeRect(rect);
+
+  const borderOffsetLeft = strokedSides.left ? stroke.width : 0;
+  const borderOffsetRight = strokedSides.right ? stroke.width : 0;
+  const borderOffsetTop = strokedSides.top ? stroke.width : 0;
+  const borderOffsetBottom = strokedSides.bottom ? stroke.width : 0;
+
+  ctx.strokeStyle = RGBATupleToString(stroke.color);
+  ctx.lineWidth = stroke.width;
+  ctx.setLineDash(stroke.dash ?? []); // no dash if stroke.dash is undefined
+  ctx.lineCap = stroke.dash?.length ? 'butt' : 'square';
+
+  const x0 = x + borderOffsetLeft / 2;
+  const x1 = x + width - borderOffsetRight / 2;
+  const y0 = y + borderOffsetTop / 2;
+  const y1 = y + height - borderOffsetBottom / 2;
+  ctx.beginPath();
+
+  if (strokedSides.top) {
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y0);
+  }
+  if (strokedSides.right) {
+    ctx.moveTo(x1, y0);
+    ctx.lineTo(x1, y1);
+  }
+  if (strokedSides.bottom) {
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x0, y1);
+  }
+  if (strokedSides.left) {
+    ctx.moveTo(x0, y1);
+    ctx.lineTo(x0, y0);
+  }
+  ctx.stroke();
+}
+
+function normalizeRect(rect: Rect): Rect {
+  let { x, y, width, height } = rect;
+  if (width < 0) {
+    x += width;
+    width = -width;
+  }
+  if (height < 0) {
+    y += height;
+    height = -height;
+  }
+  return { x, y, width, height };
 }

@@ -1,3 +1,12 @@
+## [71.0.1](https://github.com/elastic/elastic-charts/compare/v71.0.0...v71.0.1) (2025-09-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @playwright/test to ^1.54.2 ([#2553](https://github.com/elastic/elastic-charts/issues/2553)) ([a75c59c](https://github.com/elastic/elastic-charts/commit/a75c59cdcad2bdf3a3ef43c20132c45085412ed7))
+* **metric:** fix `fit` font size mode ([#2730](https://github.com/elastic/elastic-charts/issues/2730)) ([98b4204](https://github.com/elastic/elastic-charts/commit/98b420485fdb09d64209e3056d206b3fc6733d55))
+* **partition:** fix tooltip nested colors  ([#2717](https://github.com/elastic/elastic-charts/issues/2717)) ([591459e](https://github.com/elastic/elastic-charts/commit/591459ed8e8aa56a4a03914427a65b0e400d7a8a))
+
 # [71.0.0](https://github.com/elastic/elastic-charts/compare/v70.1.3...v71.0.0) (2025-08-11)
 
 

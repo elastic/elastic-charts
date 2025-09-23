@@ -468,4 +468,10 @@ export const LEGACY_LIGHT_THEME: Theme = {
   },
   lineAnnotation: DEFAULT_ANNOTATION_LINE_STYLE,
   rectAnnotation: DEFAULT_ANNOTATION_RECT_STYLE,
+  brush: {
+    fill: Colors.Gray.keyword,
+    opacity: 0.6,
+    stroke: Colors.Transparent.keyword,
+    strokeWidth: 0,
+  },
 };

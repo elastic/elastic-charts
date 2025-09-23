@@ -40,6 +40,7 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, zIndex }
         actionsLoading=""
         noActionsLoaded=""
         className="echAnnotation"
+        data-testid="echAnnotation"
       >
         <TooltipContent {...state} />
       </TooltipWrapper>
