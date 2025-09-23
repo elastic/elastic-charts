@@ -481,7 +481,7 @@ export const LIGHT_THEME: Theme = {
       fill: ColorVariant.Series,
       stroke: ColorVariant.None,
       strokeWidth: 0,
-      radius: 5,
+      radius: 3,
     },
   },
   lineAnnotation: {
