@@ -120,7 +120,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
 
     const { badgeBorderColor: rawBorder = { mode: 'none' }, ...restSecondaryMetricProps } = secondaryMetricProps;
     const resolvedBadgeBorderColor: Color | undefined =
-      rawBorder.mode === 'none' ? undefined : rawBorder.mode === 'default' ? defaultBadgeBorderColor : rawBorder.color;
+      rawBorder.mode === 'none' ? undefined : rawBorder.mode === 'auto' ? defaultBadgeBorderColor : rawBorder.color;
 
     extraElement = (
       <SecondaryMetric

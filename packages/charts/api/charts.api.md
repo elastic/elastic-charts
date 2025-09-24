@@ -2709,7 +2709,7 @@ export interface SecondaryMetricProps {
     badgeBorderColor?: {
         mode: 'none';
     } | {
-        mode: 'default';
+        mode: 'auto';
     } | {
         mode: 'custom';
         color: Color;

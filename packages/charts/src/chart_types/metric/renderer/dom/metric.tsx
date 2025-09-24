@@ -217,7 +217,7 @@ export const Metric: React.FunctionComponent<{
     isSecondaryMetricProps(datum.extra) &&
     !!datum.extra.badgeColor &&
     datum.extra.badgeBorderColor &&
-    datum.extra.badgeBorderColor.mode === 'default'
+    datum.extra.badgeBorderColor.mode === 'auto'
   ) {
     const metricBackgroundColor = hasProgressBar ? backgroundColor : blendedColor;
     const borderRecommendation = getContrastRecommendation(metricBackgroundColor, datum.extra.badgeColor, {

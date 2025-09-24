@@ -115,16 +115,16 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const badgeBorderSelection = select(
     'Badge border color',
     {
-      deafult: 'default',
+      deafult: 'auto',
       customColor: 'custom color',
     },
-    'default',
+    'auto',
     secondaryMetricGroup,
   );
   const badgeBorderColor = color('Badge border color selector', '#BFDBFF', secondaryMetricGroup);
   const secondaryBadgeBorderColor: SecondaryMetricProps['badgeBorderColor'] = badgeBorder
-    ? badgeBorderSelection === 'default'
-      ? { mode: 'default' }
+    ? badgeBorderSelection === 'auto'
+      ? { mode: 'auto' }
       : { mode: 'custom', color: badgeBorderColor }
     : { mode: 'none' };
 
