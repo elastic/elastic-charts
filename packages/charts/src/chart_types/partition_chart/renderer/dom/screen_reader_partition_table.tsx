@@ -16,8 +16,8 @@ import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../stat
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
-import { getPartitionScreenReaderDataSelector } from '../../state/selectors/get_screen_reader_data';
 import type { PartitionData } from '../../state/selectors/get_screen_reader_data';
+import { getPartitionScreenReaderDataSelector } from '../../state/selectors/get_screen_reader_data';
 
 interface ScreenReaderPartitionTableProps {
   a11ySettings: A11ySettings;
@@ -46,8 +46,8 @@ const ScreenReaderPartitionTableComponent = ({
     }
   };
 
-  const { isSmallMultiple, data, hasMultipleLayers } = partitionData;
-  const tableLength = data.length;
+  const { isSmallMultiple, sections, hasMultipleLayers } = partitionData;
+  const tableLength = sections.length;
   const showMoreRows = rowLimit < tableLength;
   let countOfCol: number = 3;
   const totalColumns: number =
@@ -84,7 +84,7 @@ const ScreenReaderPartitionTableComponent = ({
         </thead>
 
         <tbody>
-          {partitionData.data
+          {partitionData.sections
             .slice(0, rowLimit)
             .map(({ panelTitle, depth, label, parentName, valueText, percentage }, index) => {
               return (
@@ -120,7 +120,7 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
   partitionData: {
     isSmallMultiple: false,
     hasMultipleLayers: false,
-    data: [],
+    sections: [],
   },
   debug: false,
 };
