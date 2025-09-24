@@ -1,3 +1,17 @@
+## [69.2.3](https://github.com/elastic/elastic-charts/compare/v69.2.2...v69.2.3) (2025-09-24)
+
+
+### Bug Fixes
+
+* **partition:** fix tooltip nested colors  ([#2717](https://github.com/elastic/elastic-charts/issues/2717)) [69.x] ([#2737](https://github.com/elastic/elastic-charts/issues/2737)) ([429ea2f](https://github.com/elastic/elastic-charts/commit/429ea2fbf2c12614e11dc3af472ad30fc22eaa81))
+* **partition:** fix tooltip nested colors  ([#2717](https://github.com/elastic/elastic-charts/issues/2717)) [69.x] ([#2742](https://github.com/elastic/elastic-charts/issues/2742)) ([0bc7035](https://github.com/elastic/elastic-charts/commit/0bc703501cdbf6c47a9de95a7e5ff9880b3d2db3))
+* Update aria-labelledby for Sparkline svg to not use spaces ([#2654](https://github.com/elastic/elastic-charts/issues/2654)) [69.x] ([#2656](https://github.com/elastic/elastic-charts/issues/2656)) ([1e62c4a](https://github.com/elastic/elastic-charts/commit/1e62c4a4cc843e28a7f87d426b6dba6db985bd49))
+
+
+### Reverts
+
+* **partition:** fix tooltip nested colors [69.x] ([#2740](https://github.com/elastic/elastic-charts/issues/2740)) ([8108a44](https://github.com/elastic/elastic-charts/commit/8108a4485681bbe006b33b35bae78003bac3ca2f)), closes [#2717](https://github.com/elastic/elastic-charts/issues/2717) [#2737](https://github.com/elastic/elastic-charts/issues/2737)
+
 ## [69.2.2](https://github.com/elastic/elastic-charts/compare/v69.2.1...v69.2.2) (2025-04-08)
 
 
