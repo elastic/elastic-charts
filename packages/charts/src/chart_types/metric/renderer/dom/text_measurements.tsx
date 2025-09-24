@@ -136,9 +136,6 @@ const SUBTITLE_FONT: Font = {
 const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs: 8, s: 8, m: 8, l: 8, xl: 8, xxl: 16 };
 const ELEMENT_PADDING = 5; // Aligned with our CSS in _text.scss
 
-const LAYOUT_PIXEL_BUFFER = 26;
-const SMALL_HEIGHT_THRESHOLD = 200;
-
 /**
  * Approximate font size to fit given available space
  * @internal
@@ -366,9 +363,7 @@ function computeMetricTextLayout(
   /** Determines if the given breakpoint should be considered "visible" for the provided text measurement */
   const isVisible = (breakpoints: ResponsiveBreakpoints, measure: TextMeasure) => {
     const { totalHeight } = computeMetricTextSize(breakpoints, measure);
-    const buffer = panel.height <= SMALL_HEIGHT_THRESHOLD ? LAYOUT_PIXEL_BUFFER : 0;
-    const fits = totalHeight <= panel.height - buffer;
-    return fits;
+    return totalHeight <= panel.height;
   };
 
   return withTextMeasure((textMeasure) => {
