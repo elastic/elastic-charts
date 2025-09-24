@@ -36,8 +36,13 @@ export interface SecondaryMetricProps {
   style?: CSSProperties;
   /** Optional aria description */
   ariaDescription?: string;
-  /** Border color applied to the badge */
-  badgeBorderColor?: Color;
+  /** Badge border config:
+   * - undefined: no border
+   * - `{ mode: 'none' }`: explicitly disable border
+   * - `{ mode: 'auto' }`: parent computes a white or black border based on contrast with the badge and metric background colors
+   * - `{ mode: 'custom', color: Color }`: use provided color
+   */
+  badgeBorderColor?: { mode: 'none' } | { mode: 'auto' } | { mode: 'custom'; color: Color };
   /** Optional icon displayed next to the text */
   icon?: string;
   /** Determines whether the icon appears before or after the value */

@@ -17,8 +17,8 @@ import { TitlesBlock } from './titles';
 import type { Color } from '../../../../common/colors';
 import { LayoutDirection, renderWithProps } from '../../../../utils/common';
 import type { MetricStyle } from '../../../../utils/themes/theme';
-import type { MetricDatum } from '../../specs';
 import { isMetricWNumber, isSecondaryMetricProps } from '../../specs';
+import type { MetricDatum } from '../../specs';
 
 const GRID_SPAN_THREE = '1 / span 3';
 
@@ -73,7 +73,7 @@ interface MetricTextprops {
   progressBarSize: ProgressBarSize;
   textDimensions: MetricTextDimensions;
   colors: TextColors;
-  badgeBorderColor?: Color;
+  defaultBadgeBorderColor?: Color;
 }
 
 /** @internal */
@@ -85,7 +85,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
   progressBarSize,
   textDimensions,
   colors,
-  badgeBorderColor,
+  defaultBadgeBorderColor,
 }) => {
   const { heightBasedSizes: sizes, hasProgressBar, progressBarDirection, visibility, textParts } = textDimensions;
   const { extra, body } = datum;
@@ -118,11 +118,15 @@ export const MetricText: React.FC<MetricTextprops> = ({
   if (isSecondaryMetricProps(extra)) {
     const { style: extraStyle = {}, ...secondaryMetricProps } = extra;
 
+    const { badgeBorderColor: rawBorder = { mode: 'none' }, ...restSecondaryMetricProps } = secondaryMetricProps;
+    const resolvedBadgeBorderColor: Color | undefined =
+      rawBorder.mode === 'none' ? undefined : rawBorder.mode === 'auto' ? defaultBadgeBorderColor : rawBorder.color;
+
     extraElement = (
       <SecondaryMetric
         style={{ ...extraStyle, fontSize: sizes.extraFontSize, color: colors.extra }}
-        badgeBorderColor={badgeBorderColor}
-        {...secondaryMetricProps}
+        {...restSecondaryMetricProps}
+        badgeBorderColor={resolvedBadgeBorderColor}
       />
     );
   } else if (React.isValidElement(extra) || typeof extra === 'function') {

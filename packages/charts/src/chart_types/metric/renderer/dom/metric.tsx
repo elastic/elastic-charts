@@ -114,7 +114,7 @@ const getTextColors = ({
   };
 };
 
-const CONTRAST_THRESHOLD = 3.0;
+const CONTRAST_THRESHOLD = 3.0; // https://www.w3.org/WAI/WCAG22/quickref/?versions=2.1#non-text-contrast
 
 function isColorContrastOptions(options: ColorContrastOptions | TextContrastOptions): options is ColorContrastOptions {
   return !('text' in options);
@@ -211,15 +211,20 @@ export const Metric: React.FunctionComponent<{
     textContrastOptions,
   });
 
-  // Note: Added here the calculation because we have all the metric context and info
-  let badgeBorderColor;
-  if (isSecondaryMetricProps(datum.extra) && !!datum.extra.badgeColor && !datum.extra.badgeBorderColor) {
+  // Compute automatic border color based on contrast ratio
+  let defaultBadgeBorderColor: Color | undefined;
+  if (
+    isSecondaryMetricProps(datum.extra) &&
+    !!datum.extra.badgeColor &&
+    datum.extra.badgeBorderColor &&
+    datum.extra.badgeBorderColor.mode === 'auto'
+  ) {
     const metricBackgroundColor = hasProgressBar ? backgroundColor : blendedColor;
     const borderRecommendation = getContrastRecommendation(metricBackgroundColor, datum.extra.badgeColor, {
       contrastThreshold: CONTRAST_THRESHOLD,
       borderOptions: textContrastOptions.extra,
     });
-    badgeBorderColor = borderRecommendation.borderColor;
+    defaultBadgeBorderColor = borderRecommendation.borderColor;
     if (hasTrend) {
       const { shade, borderColor, contrastRatio } = getContrastRecommendation(
         getSparkLineColor(blendedColor),
@@ -230,7 +235,7 @@ export const Metric: React.FunctionComponent<{
         },
       );
       if (shade !== borderRecommendation.shade && contrastRatio > borderRecommendation.contrastRatio) {
-        badgeBorderColor = borderColor;
+        defaultBadgeBorderColor = borderColor;
       }
     }
   }
@@ -280,7 +285,7 @@ export const Metric: React.FunctionComponent<{
         progressBarSize={progressBarSize}
         textDimensions={textDimensions}
         colors={textColors}
-        badgeBorderColor={badgeBorderColor}
+        defaultBadgeBorderColor={defaultBadgeBorderColor}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (
