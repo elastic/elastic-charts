@@ -11,8 +11,8 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import type { OptionalKeys, RequiredKeys } from 'utility-types';
 
+import { upsertSpec, removeSpec } from './actions/specs';
 import type { Spec } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { upsertSpec, removeSpec } from '../state/actions/specs';
 import { stripUndefined } from '../utils/common';
 
 /**

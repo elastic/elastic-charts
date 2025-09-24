@@ -10,13 +10,13 @@ import type { RefObject } from 'react';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { BrushAxis } from '../../../src/specs/brush_axis';
 import { isVerticalRotation } from '../../chart_types/xy_chart/state/utils/common';
 import { colorToRgba, overrideOpacity } from '../../common/color_library_wrappers';
 import { Colors } from '../../common/colors';
 import { clearCanvas, withContext, withClip } from '../../renderers/canvas';
 import { renderRectStroke, renderRect } from '../../renderers/canvas/primitives/rect';
 import type { StrokedSides } from '../../renderers/canvas/primitives/rect';
+import { BrushAxis } from '../../specs/brush_axis';
 import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
 import type { GlobalChartState } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';

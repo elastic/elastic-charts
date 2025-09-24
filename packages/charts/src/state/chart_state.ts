@@ -13,6 +13,7 @@ import { onChartRendered } from './actions/chart';
 import { updateParentDimensions, updateChartTitles } from './actions/chart_settings';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from './actions/colors';
 import { onExternalPointerEvent } from './actions/events';
+import { upsertSpec, removeSpec, specParsed, specUnmounted } from './actions/specs';
 import { onComputedZIndex } from './actions/z_index';
 import type { ChartSliceState } from './chart_slice_state';
 import { chartTypeFromSpecs } from './chart_type_from_specs';
@@ -28,7 +29,6 @@ import { getInitialPointerState } from './utils/get_initial_pointer_state';
 import { getInitialTooltipState } from './utils/get_initial_tooltip_state';
 import type { Color } from '../common/colors';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/default_settings_spec';
-import { upsertSpec, removeSpec, specParsed, specUnmounted } from '../state/actions/specs';
 import { deepEqual } from '../utils/fast_deep_equal';
 
 export type { InteractionsState, TooltipInteractionState } from './interactions_state';

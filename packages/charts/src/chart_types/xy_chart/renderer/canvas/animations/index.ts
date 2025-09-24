@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { Logger } from './../../../../../utils/logger';
 import type { AnimatedValue, AnimationOptions, AnimationState } from './animation';
 import { Animation } from './animation';
 import { debounce } from '../../../../../utils/debounce';
+import { Logger } from '../../../../../utils/logger';
 
 // TODO find a better way to do this when we have an actual build process
 const DISABLE_ANIMATIONS = (typeof process === 'object' && process.env && process.env.VRT) === 'true';

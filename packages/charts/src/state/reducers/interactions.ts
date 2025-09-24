@@ -9,7 +9,6 @@
 import type { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
-import { getTooltipSpecSelector } from './../selectors/get_tooltip_spec';
 import { ChartType } from '../../chart_types';
 import { drilldownActive } from '../../chart_types/partition_chart/state/selectors/drilldown_active';
 import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
@@ -30,6 +29,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../selectors/get_i
 import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipInfoSelector } from '../selectors/get_internal_tooltip_info';
 import { getLegendItemsSelector } from '../selectors/get_legend_items';
+import { getTooltipSpecSelector } from '../selectors/get_tooltip_spec';
 import { getInitialPointerState } from '../utils/get_initial_pointer_state';
 import { getInitialTooltipState } from '../utils/get_initial_tooltip_state';
 
