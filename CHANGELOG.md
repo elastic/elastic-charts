@@ -1,3 +1,16 @@
+## [70.1.4](https://github.com/elastic/elastic-charts/compare/v70.1.3...v70.1.4) (2025-09-24)
+
+
+### Bug Fixes
+
+* **partition:** fix tooltip nested colors  ([#2717](https://github.com/elastic/elastic-charts/issues/2717)) [70.x] ([#2736](https://github.com/elastic/elastic-charts/issues/2736)) ([8caab26](https://github.com/elastic/elastic-charts/commit/8caab26c070f7396b695aade4a0dd62bf00fe46f))
+* **partition:** fix tooltip nested colors  ([#2717](https://github.com/elastic/elastic-charts/issues/2717)) [70.x] ([#2741](https://github.com/elastic/elastic-charts/issues/2741)) ([c888166](https://github.com/elastic/elastic-charts/commit/c888166a883bdc03203c1b3650420a1709db1aee))
+
+
+### Reverts
+
+* **partition:** fix tooltip nested colors [70.x] ([#2739](https://github.com/elastic/elastic-charts/issues/2739)) ([b2b0cba](https://github.com/elastic/elastic-charts/commit/b2b0cba9e3293734a43b7f7d9604c61528657302)), closes [#2717](https://github.com/elastic/elastic-charts/issues/2717) [#2736](https://github.com/elastic/elastic-charts/issues/2736)
+
 ## [70.1.3](https://github.com/elastic/elastic-charts/compare/v70.1.2...v70.1.3) (2025-08-04)
 
 
