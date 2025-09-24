@@ -1,3 +1,10 @@
+## [68.1.1](https://github.com/elastic/elastic-charts/compare/v68.1.0...v68.1.1) (2025-09-24)
+
+
+### Bug Fixes
+
+* **partition:** fix tooltip nested colors  ([#2717](https://github.com/elastic/elastic-charts/issues/2717)) [68.x] ([#2738](https://github.com/elastic/elastic-charts/issues/2738)) ([c9b995f](https://github.com/elastic/elastic-charts/commit/c9b995fd77d4cb1a6a62ae742c13fa24ee9989dd))
+
 # [68.1.0](https://github.com/elastic/elastic-charts/compare/v68.0.4...v68.1.0) (2025-01-13)
 
 
