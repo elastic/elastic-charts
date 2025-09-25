@@ -6,17 +6,17 @@
  * Side Public License, v 1.
  */
 
-import type { TooltipSpec } from './../../../../specs/tooltip';
-import { isFollowTooltipType } from './../../../../specs/tooltip';
-import { getTooltipSpecSelector } from './../../../../state/selectors/get_tooltip_spec';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import type { TooltipAndHighlightedGeoms } from './get_tooltip_values_highlighted_geoms';
 import { getTooltipInfoAndGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 import { isAnnotationTooltipVisibleSelector } from './is_annotation_tooltip_visible';
 import { TooltipType } from '../../../../specs/constants';
+import { isFollowTooltipType } from '../../../../specs/tooltip';
+import type { TooltipSpec } from '../../../../specs/tooltip';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import type { InteractionsState } from '../../../../state/interactions_state';
 import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
+import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
 import { isExternalTooltipVisibleSelector } from '../../../../state/selectors/is_external_tooltip_visible';
 import type { TooltipVisibility } from '../../../../state/tooltip_visibility';
 import type { Point } from '../../../../utils/point';

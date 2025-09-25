@@ -10,10 +10,15 @@ import classNames from 'classnames';
 import React from 'react';
 
 import { Badge } from './badge';
+import type { Color } from '../../../../common/colors';
 import type { SecondaryMetricProps } from '../../specs';
 
+type SecondaryMetricInternalProps = Omit<SecondaryMetricProps, 'badgeBorderColor'> & {
+  badgeBorderColor: Color | undefined;
+};
+
 /** @internal */
-export const SecondaryMetric: React.FC<SecondaryMetricProps> = ({
+export const SecondaryMetric: React.FC<SecondaryMetricInternalProps> = ({
   value,
   label,
   badgeColor,

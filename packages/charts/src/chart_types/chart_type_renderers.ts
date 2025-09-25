@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { ChartType } from '.';
 import { chartRenderer as bulletRenderer } from './bullet_graph/chart_renderer';
 import { FlameWithTooltip as flameRenderer } from './flame_chart/flame_chart';
 import { chartRenderer as goalRenderer } from './goal_chart/state/chart_renderer';
 import { chartRenderer as heatmapRenderer } from './heatmap/state/chart_renderer';
-import { ChartType } from './index';
 import { chartRenderer as metricRenderer } from './metric/state/chart_renderer';
 import { chartRenderer as partitionRenderer } from './partition_chart/renderer/dom/layered_partition_chart';
 import { chartRenderer as timeslipRenderer } from './timeslip/timeslip_chart';
