@@ -23,11 +23,21 @@ describe('Highlight points', () => {
       MockStore.addSpecs(
         [
           MockGlobalSpec.settingsNoMargins(),
+          MockGlobalSpec.yAxis({ id: 'y', domain: { min: 0, max: NaN } }),
           MockSeriesSpec.area({
+            id: 'area1',
             data: [
               { x: 0, y: 2 },
               { x: 1, y: 2 },
               { x: 2, y: 3 },
+            ],
+            xScaleType: ScaleType.Ordinal,
+          }),
+          MockSeriesSpec.area({
+            id: 'area2',
+            data: [
+              { x: 1, y: 4 },
+              { x: 2, y: -5 },
             ],
             xScaleType: ScaleType.Ordinal,
           }),
@@ -40,10 +50,15 @@ describe('Highlight points', () => {
       const { highlightedGeometries } = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(highlightedGeometries).toHaveLength(1);
     });
-    it('On ordinal area chart, it should not highlight points if not within the buffer', () => {
-      store.dispatch(onPointerMove({ position: { x: 5, y: 100 }, time: 0 }));
+    it('On ordinal area chart, it should highlight all area points within the hovered bucket from both series', () => {
+      store.dispatch(onPointerMove({ position: { x: 150, y: 100 }, time: 0 }));
       const { highlightedGeometries } = getHighlightedTooltipTooltipValuesSelector(store.getState());
-      expect(highlightedGeometries).toHaveLength(0);
+      expect(highlightedGeometries).toHaveLength(2);
+    });
+    it('On ordinal area chart, it should not highlight area points that are outside the panel bounds', () => {
+      store.dispatch(onPointerMove({ position: { x: 250, y: 100 }, time: 0 }));
+      const { highlightedGeometries } = getHighlightedTooltipTooltipValuesSelector(store.getState());
+      expect(highlightedGeometries).toHaveLength(1);
     });
   });
 });
