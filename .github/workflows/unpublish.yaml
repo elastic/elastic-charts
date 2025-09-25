@@ -1,0 +1,40 @@
+# TODO move this run to buildkite
+
+name: Unpublish
+
+on:
+  workflow_dispatch
+
+
+env:
+  ECH_NODE_VERSION: '20.11.1'
+
+jobs:
+  Unpublish:
+    name: Unpublish Release
+    runs-on: ubuntu-latest
+    # needs: status # Not working atm
+    # Runs checks when others running on main may be in process
+    # This is likely an edge case unless published shortly following a merge
+    # This also covers a case where main checks did not complete/succeed
+    # if: needs.status.outputs.allSuccess
+    # steps:
+      # - name: Check out repository
+      #   uses: actions/checkout@v4.1.7
+      #   with:
+      #     persist-credentials: false
+      # - name: Setup node
+      #   uses: actions/setup-node@v4.0.2
+      #   with:
+      #     node-version: ${{ env.ECH_NODE_VERSION }}
+    steps:
+      - name: Echo tag from env
+        run: echo "Tag name is: $GITHUB_REF_NAME"
+
+      - name: Echo tag with syntax
+        run: echo "Tag name is: ${{ github.ref_name }}"
+      # - name: Unpublish 
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: npm unpublish --dry-run @elastic/charts@
