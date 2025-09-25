@@ -479,8 +479,8 @@ export const LIGHT_THEME: Theme = {
     point: {
       opacity: 1,
       fill: ColorVariant.Series,
-      stroke: ColorVariant.None,
-      strokeWidth: 0,
+      stroke: ColorVariant.Series,
+      strokeWidth: 1.5,
       radius: 3,
     },
   },
