@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { clamp, clampAll, isBetween, isFiniteNumber, isNil } from './../../../../utils/common';
 import type { Radian } from '../../../../common/geometry';
 import { ScaleContinuous } from '../../../../scales';
+import { clamp, clampAll, isBetween, isFiniteNumber, isNil } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
 import type { Theme } from '../../../../utils/themes/theme';
 import type { GoalSpec } from '../../specs';

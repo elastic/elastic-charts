@@ -6,16 +6,16 @@
  * Side Public License, v 1.
  */
 
+import { shapeViewModel } from './viewmodel';
 import type { ColorScale } from '../../../../common/colors';
 import type { SmallMultipleScales, SmallMultiplesGroupBy } from '../../../../common/panel_utils';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import type { ChartDimensions } from '../../../../utils/dimensions';
 import type { Theme } from '../../../../utils/themes/theme';
-import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import type { HeatmapSpec } from '../../specs';
 import type { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import type { HeatmapTable } from '../../state/selectors/get_heatmap_table';
+import type { ShapeViewModel } from '../types/viewmodel_types';
 
 /** @internal */
 export function computeScenegraph(

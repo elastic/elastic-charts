@@ -9,6 +9,7 @@
 import type { CSSProperties } from 'react';
 
 import type { GlobalChartState } from './chart_state';
+import { getA11ySettingsSelector } from './selectors/get_accessibility_config';
 import { InitStatus } from './selectors/get_internal_is_intialized';
 import type { TooltipVisibility } from './tooltip_visibility';
 import type { DebugState } from './types';
@@ -19,7 +20,6 @@ import type { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import type { SeriesKey } from '../common/series_id';
 import type { AnchorPosition } from '../components/portal/types';
 import type { TooltipInfo } from '../components/tooltip/types';
-import { getA11ySettingsSelector } from '../state/selectors/get_accessibility_config';
 import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */

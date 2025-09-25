@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-import type { BackgroundStyle } from './../../../../utils/themes/theme';
 import { shapeViewModel } from './viewmodel';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Dimensions } from '../../../../utils/dimensions';
 import type { PartitionStyle } from '../../../../utils/themes/partition';
+import type { BackgroundStyle } from '../../../../utils/themes/theme';
 import type { Layer, PartitionSpec } from '../../specs';
 import { VALUE_GETTERS } from '../config';
 import type {

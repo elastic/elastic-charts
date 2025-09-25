@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { getActivePointerPosition } from './../../../../state/selectors/get_active_pointer_position';
 import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import type { DragShape } from '../../layout/types/viewmodel_types';
 
 function getCurrentPointerStates(state: GlobalChartState) {

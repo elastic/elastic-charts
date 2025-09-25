@@ -7,7 +7,7 @@
  */
 
 import { getHierarchyOfArrays } from './hierarchy_of_arrays';
-import { CHILDREN_KEY, entryValue } from '../../layout/utils/group_by_rollup';
+import { CHILDREN_KEY, entryValue } from '../utils/group_by_rollup';
 
 const rawFacts = [
   { sitc1: '7', exportVal: 0 },
