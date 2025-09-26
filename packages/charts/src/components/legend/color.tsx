@@ -31,10 +31,10 @@ export const CHANGE_SERIES_COLOR = 'Change the series color';
  */
 export const Color = memo(
   forwardRef<HTMLButtonElement, ColorProps>(
-    ({ color, seriesName, isSeriesHidden = false, hasColorPicker, onClick, pointStyle }, ref) => {
+    ({ color, isSeriesHidden = false, hasColorPicker, onClick, pointStyle }, ref) => {
       if (isSeriesHidden) {
         return (
-          <div className="echLegendItem__color" title="series hidden" aria-label={`series ${seriesName} is hidden`}>
+          <div className="echLegendItem__color" title="series hidden">
             {/* changing the default viewBox for the eyeClosed icon to keep the same dimensions */}
             <Icon type="eyeClosed" viewBox="-3 -3 22 22" aria-hidden="true" />
           </div>
