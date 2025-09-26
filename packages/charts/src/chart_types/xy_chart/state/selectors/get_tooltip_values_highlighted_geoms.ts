@@ -30,7 +30,7 @@ import { isValidPointerOverEvent } from '../../../../utils/events';
 import type { IndexedGeometry } from '../../../../utils/geometry';
 import type { Point } from '../../../../utils/point';
 import type { SeriesCompareFn } from '../../../../utils/series_sort';
-import { isPointOnGeometry } from '../../rendering/utils';
+import { isLineAreaPointWithinPanel, isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltipHeader, formatTooltipValue } from '../../tooltip/tooltip';
 import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
 import type { DataSeries } from '../../utils/series';
@@ -151,21 +151,22 @@ function getTooltipAndHighlightFromValue(
         return acc;
       }
 
-      // check if the pointer is on the geometry (avoid checking if using external pointer event)
-      let isHighlighted = false;
-      if (
-        (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) &&
-        isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)
-      ) {
-        isHighlighted = true;
-        highlightedGeometries.push(indexedGeometry);
+      // highlight all geometries if pointer is on them and all the line/area points of the hovered bucket (avoid checking if using external pointer event)
+      let isTooltipHighlighted = false;
+      if (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) {
+        if (isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)) {
+          isTooltipHighlighted = true; // highlight tooltip value only if the pointer is on the geometry
+          highlightedGeometries.push(indexedGeometry);
+        } else if (isLineAreaPointWithinPanel(spec.seriesType, indexedGeometry)) {
+          highlightedGeometries.push(indexedGeometry);
+        }
       }
 
       // format the tooltip values
       const formattedTooltip = formatTooltipValue(
         indexedGeometry,
         spec,
-        isHighlighted,
+        isTooltipHighlighted,
         hasSingleSeries,
         isBandedSpec(spec),
         yAxis,

@@ -9,9 +9,9 @@
 import type { LegendItem } from '../../../common/legend';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isLogarithmicScale } from '../../../scales/types';
-import type { MarkBuffer } from '../../../specs';
+import type { MarkBuffer, SeriesType } from '../../../specs';
 import { getDistance, isWithinRange } from '../../../utils/common';
-import type { BarGeometry, ClippedRanges, PointGeometry } from '../../../utils/geometry';
+import type { BarGeometry, ClippedRanges, IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 import { isPointGeometry } from '../../../utils/geometry';
 import type { GeometryStateStyle, SharedGeometryStateStyle } from '../../../utils/themes/theme';
 import type { DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
@@ -134,6 +134,20 @@ export function isPointOnGeometry(
   const { width, height } = indexedGeometry;
   if (!isWithinRange([x, x + width])(xCoordinate)) return false;
   return isWithinRange([y, y + height])(yCoordinate);
+}
+
+/** @internal */
+export function isLineAreaPointWithinPanel(seriesType: SeriesType, indexedGeometry: IndexedGeometry) {
+  const isLineOrAreaPoint = isPointGeometry(indexedGeometry) && (seriesType === 'line' || seriesType === 'area');
+  if (!isLineOrAreaPoint) return false;
+
+  const { x, y, transform } = indexedGeometry;
+  const { width, height } = indexedGeometry.panel;
+  const gx = x + transform.x;
+  const gy = y + transform.y;
+
+  if (!isWithinRange([0, width])(gx)) return false;
+  return isWithinRange([0, height])(gy);
 }
 
 const getScaleTypeValueValidator = (yScale: ScaleContinuous): ((n: number) => boolean) => {
