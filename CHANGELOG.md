@@ -1,3 +1,11 @@
+## [71.1.1](https://github.com/elastic/elastic-charts/compare/v71.1.0...v71.1.1) (2025-09-29)
+
+
+### Bug Fixes
+
+* remove aria-label form div (part 2) ([#2751](https://github.com/elastic/elastic-charts/issues/2751)) ([602c743](https://github.com/elastic/elastic-charts/commit/602c743def7ebc551ce2a56ad6d54d42647c8506))
+* remove aria-label from div ([#2750](https://github.com/elastic/elastic-charts/issues/2750)) ([e8e22d8](https://github.com/elastic/elastic-charts/commit/e8e22d8a2f4e1d7f85b9c1543ba6324bdeb7582a))
+
 # [71.1.0](https://github.com/elastic/elastic-charts/compare/v71.0.1...v71.1.0) (2025-09-25)
 
 
