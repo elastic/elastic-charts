@@ -68,6 +68,8 @@ export interface PointGeometry {
   style: PointGeometryStyle;
   panel: Dimensions;
   isolated: boolean;
+  hovered?: boolean;
+  bucketHighlighted?: boolean;
 }
 /** @internal */
 export interface PointGeometryStyle {

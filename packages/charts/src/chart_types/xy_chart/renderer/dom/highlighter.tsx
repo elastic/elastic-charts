@@ -88,26 +88,61 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           const geomTransform = getTransformForPanel(panel, chartRotation, chartDimensions);
 
           if (isPointGeometry(geom)) {
+            // bucket highlighted points
+            const bucketHighlightedFillColor = getColorFromVariant(
+              RGBATupleToString(geom.style.stroke.color),
+              style.point.bucketHighlighted?.fill,
+            );
+            const bucketHighlightedStrokeColor = getColorFromVariant(
+              RGBATupleToString(geom.style.stroke.color),
+              style.point.bucketHighlighted?.stroke,
+            );
+            const bucketHighlightedRadius = Math.max(geom.radius, style.point.bucketHighlighted?.radius || 0);
+            const { d: bucketHighlightedD, rotate: bucketHighlightedRotate } = renderPath(
+              geom,
+              bucketHighlightedRadius,
+            );
+            // hovered highlighted points
             const fillColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.fill);
             const strokeColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.stroke);
 
             const radius = Math.max(geom.radius, style.point.radius);
             const { d, rotate } = renderPath(geom, radius);
             return (
-              <g
-                key={i}
-                transform={geomTransform}
-                clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}
-              >
-                <path
-                  d={d}
-                  transform={`translate(${x}, ${y}) rotate(${rotate || 0})`}
-                  fill={fillColor}
-                  stroke={strokeColor}
-                  strokeWidth={style.point.strokeWidth}
-                  opacity={style.point.opacity}
-                />
-              </g>
+              <>
+                {geom.bucketHighlighted && (
+                  <g
+                    key={i}
+                    transform={geomTransform}
+                    clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}
+                  >
+                    <path
+                      d={bucketHighlightedD}
+                      transform={`translate(${x}, ${y}) rotate(${bucketHighlightedRotate || 0})`}
+                      fill={bucketHighlightedFillColor}
+                      stroke={bucketHighlightedStrokeColor}
+                      strokeWidth={style.point.bucketHighlighted?.strokeWidth}
+                      opacity={style.point.bucketHighlighted?.opacity}
+                    />
+                  </g>
+                )}
+                {geom.hovered && (
+                  <g
+                    key={i}
+                    transform={geomTransform}
+                    clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}
+                  >
+                    <path
+                      d={d}
+                      transform={`translate(${x}, ${y}) rotate(${rotate || 0})`}
+                      fill={fillColor}
+                      stroke={strokeColor}
+                      strokeWidth={style.point.strokeWidth}
+                      opacity={style.point.opacity}
+                    />
+                  </g>
+                )}
+              </>
             );
           }
 

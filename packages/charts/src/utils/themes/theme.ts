@@ -872,6 +872,13 @@ export interface HighlighterStyle {
     strokeWidth: Pixels;
     opacity: Ratio;
     radius: Pixels;
+    bucketHighlighted?: {
+      fill: Color | ColorVariant;
+      stroke: Color | ColorVariant;
+      strokeWidth: Pixels;
+      opacity: Ratio;
+      radius: Pixels;
+    };
   };
 }
 

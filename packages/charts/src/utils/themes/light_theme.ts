@@ -477,11 +477,18 @@ export const LIGHT_THEME: Theme = {
   },
   highlighter: {
     point: {
-      opacity: 1,
+      opacity: 0.5,
       fill: ColorVariant.Series,
-      stroke: ColorVariant.Series,
-      strokeWidth: 1.5,
-      radius: 3,
+      stroke: ColorVariant.None,
+      strokeWidth: 0,
+      radius: 5,
+      bucketHighlighted: {
+        opacity: 1,
+        fill: ColorVariant.Series,
+        stroke: ColorVariant.Series,
+        strokeWidth: 1.5,
+        radius: 3,
+      },
     },
   },
   lineAnnotation: {

@@ -156,9 +156,9 @@ function getTooltipAndHighlightFromValue(
       if (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) {
         if (isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)) {
           isTooltipHighlighted = true; // highlight tooltip value only if the pointer is on the geometry
-          highlightedGeometries.push(indexedGeometry);
+          highlightedGeometries.push({ ...indexedGeometry, hovered: true });
         } else if (isLineAreaPointWithinPanel(spec.seriesType, indexedGeometry)) {
-          highlightedGeometries.push(indexedGeometry);
+          highlightedGeometries.push({ ...indexedGeometry, bucketHighlighted: true });
         }
       }
 
