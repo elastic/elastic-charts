@@ -57,7 +57,7 @@ export const Color = memo(
       }
 
       return (
-        <div className="echLegendItem__color" title="series color" aria-label={`series color: ${color}`}>
+        <div className="echLegendItem__color" title="series color">
           <LegendIcon pointStyle={pointStyle} color={color} />
         </div>
       );
