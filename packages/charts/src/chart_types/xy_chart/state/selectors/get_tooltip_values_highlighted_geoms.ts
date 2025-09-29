@@ -161,16 +161,16 @@ function getTooltipAndHighlightFromValue(
 
         if (isGeometryHovered && isLineAreaPoint) {
           // Pointer is on geometry and geometry is area/line point -> bucket + hover highlight
-          isTooltipHighlighted = true;
           highlightedGeometries.push({ ...indexedGeometry, bucketHighlighted: true, hovered: true });
         } else if (isLineAreaPoint) {
           // Geometry is area/line point -> bucket highlight
           highlightedGeometries.push({ ...indexedGeometry, bucketHighlighted: true });
         } else if (isGeometryHovered) {
           // Pointer is on geometry -> hover highlight
-          isTooltipHighlighted = true;
           highlightedGeometries.push({ ...indexedGeometry, hovered: true });
         }
+
+        isTooltipHighlighted = isGeometryHovered;
       }
 
       // format the tooltip values
