@@ -13,11 +13,11 @@ import { colorToRgba, overrideOpacity } from '../../../../common/color_library_w
 import type { SeriesKey } from '../../../../common/series_id';
 import type { Circle, Fill, Stroke } from '../../../../geoms/types';
 import type { Rotation } from '../../../../utils/common';
+import { getColorFromVariant } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
 import type { GeometryHighlightState, PointGeometry } from '../../../../utils/geometry';
 import type { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
 import { isolatedPointRadius } from '../../rendering/points';
-
 /**
  * Renders points from single series
  *
@@ -49,7 +49,7 @@ export function renderPoints(
   const dimmedStroke =
     highlightState === 'dimmed' && 'stroke' in pointStyle.dimmed ? colorToRgba(pointStyle.dimmed.stroke) : undefined;
 
-  points.forEach(({ x, y, radius, transform, style, isolated }) => {
+  points.forEach(({ x, y, radius, transform, style, isolated, color }) => {
     if ((isolated && hideIsolatedDataPoints) || (!isolated && hideDataPoints)) {
       return;
     }
@@ -60,10 +60,17 @@ export function renderPoints(
       radius: isolated && useIsolatedPointRadius ? isolatedPointRadius(lineStrokeWidth) : radius,
     };
 
-    const fill = { color: overrideOpacity(dimmedFill ?? style.fill.color, (fillOpacity) => fillOpacity * opacity) };
+    const fillColor =
+      isolated && useIsolatedPointRadius && pointStyle?.stroke
+        ? colorToRgba(getColorFromVariant(color, pointStyle.stroke))
+        : style.fill.color;
+
+    const fill = { color: overrideOpacity(dimmedFill ?? fillColor, (fillOpacity) => fillOpacity * opacity) };
+
     const stroke = {
       ...style.stroke,
       color: overrideOpacity(dimmedStroke ?? style.stroke.color, (fillOpacity) => fillOpacity * opacity),
+      width: isolated && useIsolatedPointRadius ? 0 : style.stroke.width,
     };
     renderShape(ctx, style.shape, coordinates, fill, stroke);
   });
