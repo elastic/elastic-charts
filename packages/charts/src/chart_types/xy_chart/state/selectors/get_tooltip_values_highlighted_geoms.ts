@@ -152,13 +152,24 @@ function getTooltipAndHighlightFromValue(
       }
 
       // highlight all geometries if pointer is on them and all the line/area points of the hovered bucket (avoid checking if using external pointer event)
+      const shouldCheckHighlighting = !externalPointerEvent || isPointerOutEvent(externalPointerEvent);
       let isTooltipHighlighted = false;
-      if (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) {
-        if (isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)) {
-          isTooltipHighlighted = true; // highlight tooltip value only if the pointer is on the geometry
-          highlightedGeometries.push({ ...indexedGeometry, hovered: true });
-        } else if (isLineAreaPointWithinPanel(spec.seriesType, indexedGeometry)) {
+
+      if (shouldCheckHighlighting) {
+        const isGeometryHovered = isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer);
+        const isLineAreaPoint = isLineAreaPointWithinPanel(spec.seriesType, indexedGeometry);
+
+        if (isGeometryHovered && isLineAreaPoint) {
+          // Pointer is on geometry and geometry is area/line point -> bucket + hover highlight
+          isTooltipHighlighted = true;
+          highlightedGeometries.push({ ...indexedGeometry, bucketHighlighted: true, hovered: true });
+        } else if (isLineAreaPoint) {
+          // Geometry is area/line point -> bucket highlight
           highlightedGeometries.push({ ...indexedGeometry, bucketHighlighted: true });
+        } else if (isGeometryHovered) {
+          // Pointer is on geometry -> hover highlight
+          isTooltipHighlighted = true;
+          highlightedGeometries.push({ ...indexedGeometry, hovered: true });
         }
       }
 
