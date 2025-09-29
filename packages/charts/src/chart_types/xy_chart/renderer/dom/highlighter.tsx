@@ -81,11 +81,12 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           </clipPath>
         </defs>
 
-        {highlightedGeometries.map((geom, i) => {
+        {highlightedGeometries.map((geom) => {
           const { panel } = geom;
           const x = geom.x + geom.transform.x;
           const y = geom.y + geom.transform.y;
           const geomTransform = getTransformForPanel(panel, chartRotation, chartDimensions);
+          const baseKey = `${geom.seriesIdentifier.key}-${geom.value.x}-${geom.value.y}`;
 
           if (isPointGeometry(geom)) {
             // bucket highlighted points
@@ -102,17 +103,18 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
               geom,
               bucketHighlightedRadius,
             );
+
             // hovered highlighted points
             const fillColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.fill);
             const strokeColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.stroke);
-
             const radius = Math.max(geom.radius, style.point.radius);
             const { d, rotate } = renderPath(geom, radius);
+
             return (
               <>
                 {geom.bucketHighlighted && (
                   <g
-                    key={i}
+                    key={`${baseKey}-bucket`}
                     transform={geomTransform}
                     clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}
                   >
@@ -128,7 +130,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
                 )}
                 {geom.hovered && (
                   <g
-                    key={i}
+                    key={`${baseKey}-hovered`}
                     transform={geomTransform}
                     clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}
                   >
@@ -148,7 +150,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
 
           return (
             <rect
-              key={i}
+              key={baseKey}
               x={x}
               y={geom.y}
               width={geom.width}
