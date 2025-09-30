@@ -27,7 +27,7 @@ import type { PointerValue } from '../../../../state/types';
 import type { Rotation } from '../../../../utils/common';
 import { isNil } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
-import type { IndexedGeometry } from '../../../../utils/geometry';
+import type { IndexedGeometry, PointGeometry } from '../../../../utils/geometry';
 import type { Point } from '../../../../utils/point';
 import type { SeriesCompareFn } from '../../../../utils/series_sort';
 import { isLineAreaPointWithinPanel, isPointOnGeometry } from '../../rendering/utils';
@@ -45,12 +45,14 @@ const EMPTY_VALUES = Object.freeze({
     values: [],
   },
   highlightedGeometries: [],
+  bucketHighlightedPoints: [],
 });
 
 /** @internal */
 export interface TooltipAndHighlightedGeoms {
   tooltip: TooltipInfo;
   highlightedGeometries: IndexedGeometry[];
+  bucketHighlightedPoints: PointGeometry[];
 }
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
@@ -122,6 +124,7 @@ function getTooltipAndHighlightFromValue(
   // build the tooltip value list
   let header: PointerValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
+  const bucketHighlightedPoints: PointGeometry[] = [];
   const xValues = new Set<any>();
   const hideNullValues = !tooltip.showNullValues;
   const values = matchingGeoms
@@ -159,18 +162,15 @@ function getTooltipAndHighlightFromValue(
         const isGeometryHovered = isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer);
         const isLineAreaPoint = isLineAreaPointWithinPanel(spec.seriesType, indexedGeometry);
 
-        if (isGeometryHovered && isLineAreaPoint) {
-          // Pointer is on geometry and geometry is area/line point -> bucket + hover highlight
-          highlightedGeometries.push({ ...indexedGeometry, bucketHighlighted: true, hovered: true });
-        } else if (isLineAreaPoint) {
-          // Geometry is area/line point -> bucket highlight
-          highlightedGeometries.push({ ...indexedGeometry, bucketHighlighted: true });
-        } else if (isGeometryHovered) {
-          // Pointer is on geometry -> hover highlight
-          highlightedGeometries.push({ ...indexedGeometry, hovered: true });
+        if (isGeometryHovered) {
+          // Pointer is on geometry and geometry is area/line point -> hover highlight
+          isTooltipHighlighted = true;
+          highlightedGeometries.push(indexedGeometry);
         }
-
-        isTooltipHighlighted = isGeometryHovered;
+        if (isLineAreaPoint) {
+          // Geometry is area/line point -> bucket highlight
+          bucketHighlightedPoints.push(indexedGeometry as PointGeometry);
+        }
       }
 
       // format the tooltip values
@@ -216,6 +216,7 @@ function getTooltipAndHighlightFromValue(
       values: sortedTooltipValues,
     },
     highlightedGeometries,
+    bucketHighlightedPoints,
   };
 }
 
@@ -250,4 +251,10 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
 export const getHighlightedGeomsSelector = createCustomCachedSelector(
   [getHighlightedTooltipTooltipValuesSelector],
   ({ highlightedGeometries }): IndexedGeometry[] => highlightedGeometries,
+);
+
+/** @internal */
+export const getBucketHighlightedPointsSelector = createCustomCachedSelector(
+  [getHighlightedTooltipTooltipValuesSelector],
+  ({ bucketHighlightedPoints }): PointGeometry[] => bucketHighlightedPoints,
 );

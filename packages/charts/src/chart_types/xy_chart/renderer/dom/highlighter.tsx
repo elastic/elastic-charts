@@ -24,7 +24,10 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { HighlighterStyle } from '../../../../utils/themes/theme';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
-import { getHighlightedGeomsSelector } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
+import {
+  getHighlightedGeomsSelector,
+  getBucketHighlightedPointsSelector,
+} from '../../state/selectors/get_tooltip_values_highlighted_geoms';
 import type { Transform } from '../../state/utils/types';
 import { computeChartTransform } from '../../state/utils/utils';
 import { ShapeRendererFn } from '../shapes_paths';
@@ -35,6 +38,7 @@ interface HighlighterProps {
   zIndex: number;
   isBrushing: boolean;
   highlightedGeometries: IndexedGeometry[];
+  bucketHighlightedPoints: PointGeometry[];
   chartTransform: Transform;
   chartDimensions: Dimensions;
   chartRotation: Rotation;
@@ -59,7 +63,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
   static displayName = 'Highlighter';
 
   render() {
-    const { chartDimensions, chartRotation, chartId, zIndex, isBrushing, style } = this.props;
+    const { chartDimensions, chartRotation, chartId, zIndex, isBrushing, style, bucketHighlightedPoints } = this.props;
     if (isBrushing) return null;
     const clipWidth = [90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width;
     const clipHeight = [90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height;
@@ -81,70 +85,70 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           </clipPath>
         </defs>
 
+        {bucketHighlightedPoints.map((geom) => {
+          const { panel } = geom;
+          const x = geom.x + geom.transform.x;
+          const y = geom.y + geom.transform.y;
+          const geomTransform = getTransformForPanel(panel, chartRotation, chartDimensions);
+          const baseKey = `${geom.seriesIdentifier.key}-${geom.value.x}-${geom.value.y}-bucket`;
+
+          const bucketHighlightedFillColor = getColorFromVariant(
+            RGBATupleToString(geom.style.stroke.color),
+            style.point.bucketHighlighted?.fill,
+          );
+          const bucketHighlightedStrokeColor = getColorFromVariant(
+            RGBATupleToString(geom.style.stroke.color),
+            style.point.bucketHighlighted?.stroke,
+          );
+          const bucketHighlightedRadius = Math.max(geom.radius, style.point.bucketHighlighted?.radius || 0);
+          const { d: bucketHighlightedD, rotate: bucketHighlightedRotate } = renderPath(geom, bucketHighlightedRadius);
+
+          return (
+            <g
+              key={baseKey}
+              transform={geomTransform}
+              clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}
+            >
+              <path
+                d={bucketHighlightedD}
+                transform={`translate(${x}, ${y}) rotate(${bucketHighlightedRotate || 0})`}
+                fill={bucketHighlightedFillColor}
+                stroke={bucketHighlightedStrokeColor}
+                strokeWidth={style.point.bucketHighlighted?.strokeWidth}
+                opacity={style.point.bucketHighlighted?.opacity}
+              />
+            </g>
+          );
+        })}
+
         {highlightedGeometries.map((geom) => {
           const { panel } = geom;
           const x = geom.x + geom.transform.x;
           const y = geom.y + geom.transform.y;
           const geomTransform = getTransformForPanel(panel, chartRotation, chartDimensions);
-          const baseKey = `${geom.seriesIdentifier.key}-${geom.value.x}-${geom.value.y}`;
+          const baseKey = `${geom.seriesIdentifier.key}-${geom.value.x}-${geom.value.y}-hovered`;
 
           if (isPointGeometry(geom)) {
-            // bucket highlighted points
-            const bucketHighlightedFillColor = getColorFromVariant(
-              RGBATupleToString(geom.style.stroke.color),
-              style.point.bucketHighlighted?.fill,
-            );
-            const bucketHighlightedStrokeColor = getColorFromVariant(
-              RGBATupleToString(geom.style.stroke.color),
-              style.point.bucketHighlighted?.stroke,
-            );
-            const bucketHighlightedRadius = Math.max(geom.radius, style.point.bucketHighlighted?.radius || 0);
-            const { d: bucketHighlightedD, rotate: bucketHighlightedRotate } = renderPath(
-              geom,
-              bucketHighlightedRadius,
-            );
-
-            // hovered highlighted points
             const fillColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.fill);
             const strokeColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.stroke);
             const radius = Math.max(geom.radius, style.point.radius);
             const { d, rotate } = renderPath(geom, radius);
 
             return (
-              <>
-                {geom.bucketHighlighted && (
-                  <g
-                    key={`${baseKey}-bucket`}
-                    transform={geomTransform}
-                    clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}
-                  >
-                    <path
-                      d={bucketHighlightedD}
-                      transform={`translate(${x}, ${y}) rotate(${bucketHighlightedRotate || 0})`}
-                      fill={bucketHighlightedFillColor}
-                      stroke={bucketHighlightedStrokeColor}
-                      strokeWidth={style.point.bucketHighlighted?.strokeWidth}
-                      opacity={style.point.bucketHighlighted?.opacity}
-                    />
-                  </g>
-                )}
-                {geom.hovered && (
-                  <g
-                    key={`${baseKey}-hovered`}
-                    transform={geomTransform}
-                    clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}
-                  >
-                    <path
-                      d={d}
-                      transform={`translate(${x}, ${y}) rotate(${rotate || 0})`}
-                      fill={fillColor}
-                      stroke={strokeColor}
-                      strokeWidth={style.point.strokeWidth}
-                      opacity={style.point.opacity}
-                    />
-                  </g>
-                )}
-              </>
+              <g
+                key={baseKey}
+                transform={geomTransform}
+                clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}
+              >
+                <path
+                  d={d}
+                  transform={`translate(${x}, ${y}) rotate(${rotate || 0})`}
+                  fill={fillColor}
+                  stroke={strokeColor}
+                  strokeWidth={style.point.strokeWidth}
+                  opacity={style.point.opacity}
+                />
+              </g>
             );
           }
 
@@ -175,6 +179,7 @@ const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
       zIndex,
       isBrushing: false,
       highlightedGeometries: [],
+      bucketHighlightedPoints: [],
       chartTransform: {
         x: 0,
         y: 0,
@@ -192,6 +197,7 @@ const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
     zIndex,
     isBrushing: isBrushingSelector(state),
     highlightedGeometries: getHighlightedGeomsSelector(state),
+    bucketHighlightedPoints: getBucketHighlightedPointsSelector(state),
     chartTransform: computeChartTransformSelector(state),
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
     chartRotation: getChartRotationSelector(state),
