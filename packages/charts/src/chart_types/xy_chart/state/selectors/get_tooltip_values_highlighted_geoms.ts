@@ -160,7 +160,7 @@ function getTooltipAndHighlightFromValue(
 
       if (shouldCheckHighlighting) {
         const isGeometryHovered = isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer);
-        const isLineAreaPoint = isLineAreaPointWithinPanel(spec.seriesType, indexedGeometry);
+        const isLineAreaPoint = isLineAreaPointWithinPanel(spec, indexedGeometry);
 
         if (isGeometryHovered) {
           // Pointer is on geometry and geometry is area/line point -> hover highlight

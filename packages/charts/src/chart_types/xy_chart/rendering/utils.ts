@@ -9,7 +9,8 @@
 import type { LegendItem } from '../../../common/legend';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isLogarithmicScale } from '../../../scales/types';
-import type { MarkBuffer, SeriesType } from '../../../specs';
+import type { BasicSeriesSpec, MarkBuffer } from '../../../specs';
+import { isAreaSeriesSpec, isLineSeriesSpec } from '../../../specs';
 import { getDistance, isWithinRange } from '../../../utils/common';
 import type { BarGeometry, ClippedRanges, IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 import { isPointGeometry } from '../../../utils/geometry';
@@ -137,8 +138,8 @@ export function isPointOnGeometry(
 }
 
 /** @internal */
-export function isLineAreaPointWithinPanel(seriesType: SeriesType, indexedGeometry: IndexedGeometry) {
-  const isLineOrAreaPoint = isPointGeometry(indexedGeometry) && (seriesType === 'line' || seriesType === 'area');
+export function isLineAreaPointWithinPanel(spec: BasicSeriesSpec, indexedGeometry: IndexedGeometry) {
+  const isLineOrAreaPoint = isPointGeometry(indexedGeometry) && (isLineSeriesSpec(spec) || isAreaSeriesSpec(spec));
   if (!isLineOrAreaPoint) return false;
 
   const { x, y, transform } = indexedGeometry;
