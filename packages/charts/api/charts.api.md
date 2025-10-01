@@ -2502,6 +2502,9 @@ export interface PointStyle {
         stroke: Color | ColorVariant;
     };
     fill?: Color | ColorVariant;
+    focused?: {
+        strokeWidth: number;
+    };
     opacity: number;
     radius: Pixels;
     shape?: PointShape;
