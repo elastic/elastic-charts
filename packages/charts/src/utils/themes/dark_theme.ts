@@ -107,6 +107,7 @@ export const DARK_THEME: Theme = {
       fill: DARK_BACKGROUND_COLORS.backgroundBasePlain,
       radius: 3,
       opacity: 1,
+      focused: { strokeWidth: 2.5 },
       dimmed: {
         stroke: DARK_DIMMED_COLORS.areaPointStroke,
         fill: DARK_DIMMED_COLORS.areaPointFill,

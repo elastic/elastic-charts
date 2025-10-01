@@ -588,6 +588,10 @@ export interface PointStyle {
   /** shape for the point, default to circle */
   shape?: PointShape;
   /**
+   * The style applied to the point when it is focused relative to other highlighted elements on the chart.
+   */
+  focused?: { strokeWidth: number };
+  /**
    * The style applied to the point when it is dimmed relative to other highlighted elements on the chart.
    * This is typically used to visually de-emphasize the point, for example, when another series is highlighted.
    */

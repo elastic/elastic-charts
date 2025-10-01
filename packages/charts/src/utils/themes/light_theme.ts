@@ -45,6 +45,7 @@ export const LIGHT_THEME: Theme = {
       fill: LIGHT_BACKGROUND_COLORS.backgroundBasePlain,
       radius: 3,
       opacity: 1,
+      focused: { strokeWidth: 2.5 },
       dimmed: {
         stroke: LIGHT_DIMMED_COLORS.linePointStroke,
         fill: LIGHT_DIMMED_COLORS.linePointFill,
@@ -106,6 +107,7 @@ export const LIGHT_THEME: Theme = {
       fill: LIGHT_BACKGROUND_COLORS.backgroundBasePlain,
       radius: 3,
       opacity: 1,
+      focused: { strokeWidth: 2.5 },
       dimmed: {
         stroke: LIGHT_DIMMED_COLORS.areaPointStroke,
         fill: LIGHT_DIMMED_COLORS.areaPointFill,

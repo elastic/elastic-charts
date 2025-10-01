@@ -50,6 +50,9 @@ export function renderPoints(
   const dimmedStroke =
     highlightState === 'dimmed' && 'stroke' in pointStyle.dimmed ? colorToRgba(pointStyle.dimmed.stroke) : undefined;
 
+  const focusedStrokeWidth =
+    highlightState === 'focused' && pointStyle.focused ? pointStyle.focused.strokeWidth : undefined;
+
   points.forEach(({ x, y, radius, transform, style, isolated, color }) => {
     if ((isolated && hideIsolatedDataPoints) || (!isolated && hideDataPoints)) {
       return;
@@ -71,7 +74,7 @@ export function renderPoints(
     const stroke = {
       ...style.stroke,
       color: overrideOpacity(dimmedStroke ?? style.stroke.color, (fillOpacity) => fillOpacity * opacity),
-      width: isolated && useIsolatedPointRadius ? 0 : style.stroke.width,
+      width: isolated && useIsolatedPointRadius ? 0 : focusedStrokeWidth ?? style.stroke.width,
     };
     renderShape(ctx, style.shape, coordinates, fill, stroke);
   });
