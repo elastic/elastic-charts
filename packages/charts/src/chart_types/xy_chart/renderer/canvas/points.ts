@@ -13,11 +13,11 @@ import { colorToRgba, overrideOpacity } from '../../../../common/color_library_w
 import type { SeriesKey } from '../../../../common/series_id';
 import type { Circle, Fill, Stroke } from '../../../../geoms/types';
 import type { Rotation } from '../../../../utils/common';
+import { getColorFromVariant } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
 import type { GeometryHighlightState, PointGeometry } from '../../../../utils/geometry';
 import type { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
 import { isolatedPointRadius } from '../../rendering/points';
-
 /**
  * Renders points from single series
  *
@@ -35,7 +35,8 @@ export function renderPoints(
 ) {
   // seriesMinPointDistance could be Infinity if we don't have points, or we just have a single point per series.
   // In this case the point should be visible if the visibility style is set to `auto`
-  const isHiddenOnAuto = pointStyle.visible === 'auto' && seriesMinPointDistance < pointsDistanceVisibilityThreshold;
+  const isHiddenOnAuto =
+    pointStyle.visible === 'auto' && (seriesMinPointDistance < pointsDistanceVisibilityThreshold || points.length <= 1);
   const hideDataPoints = pointStyle.visible === 'never' || isHiddenOnAuto;
   const hideIsolatedDataPoints = hasConnectingLine && hideDataPoints;
 
@@ -49,7 +50,10 @@ export function renderPoints(
   const dimmedStroke =
     highlightState === 'dimmed' && 'stroke' in pointStyle.dimmed ? colorToRgba(pointStyle.dimmed.stroke) : undefined;
 
-  points.forEach(({ x, y, radius, transform, style, isolated }) => {
+  const focusedStrokeWidth =
+    highlightState === 'focused' && pointStyle.focused ? pointStyle.focused.strokeWidth : undefined;
+
+  points.forEach(({ x, y, radius, transform, style, isolated, color }) => {
     if ((isolated && hideIsolatedDataPoints) || (!isolated && hideDataPoints)) {
       return;
     }
@@ -60,10 +64,17 @@ export function renderPoints(
       radius: isolated && useIsolatedPointRadius ? isolatedPointRadius(lineStrokeWidth) : radius,
     };
 
-    const fill = { color: overrideOpacity(dimmedFill ?? style.fill.color, (fillOpacity) => fillOpacity * opacity) };
+    const fillColor =
+      isolated && useIsolatedPointRadius && pointStyle?.stroke
+        ? colorToRgba(getColorFromVariant(color, pointStyle.stroke))
+        : style.fill.color;
+
+    const fill = { color: overrideOpacity(dimmedFill ?? fillColor, (fillOpacity) => fillOpacity * opacity) };
+
     const stroke = {
       ...style.stroke,
       color: overrideOpacity(dimmedStroke ?? style.stroke.color, (fillOpacity) => fillOpacity * opacity),
+      width: isolated && useIsolatedPointRadius ? 0 : focusedStrokeWidth ?? style.stroke.width,
     };
     renderShape(ctx, style.shape, coordinates, fill, stroke);
   });

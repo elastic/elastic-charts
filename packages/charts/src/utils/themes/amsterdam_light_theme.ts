@@ -34,7 +34,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     point: {
       visible: 'auto',
       strokeWidth: 0,
-      stroke: ColorVariant.None,
+      stroke: ColorVariant.Series,
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
@@ -84,7 +84,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     point: {
       visible: 'never',
       strokeWidth: 0,
-      stroke: ColorVariant.None,
+      stroke: ColorVariant.Series,
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
