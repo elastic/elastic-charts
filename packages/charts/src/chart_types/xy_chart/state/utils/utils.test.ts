@@ -575,6 +575,7 @@ describe('Chart State utils', () => {
         stroke: ColorVariant.Series,
         strokeWidth: 1.5,
         dimmed: LIGHT_THEME.lineSeriesStyle.point.dimmed,
+        focused: { strokeWidth: 2.5 },
       });
     });
     test('can compute area geometries with custom style', () => {
@@ -645,6 +646,7 @@ describe('Chart State utils', () => {
         stroke: ColorVariant.Series,
         strokeWidth: 1.5,
         dimmed: LIGHT_THEME.areaSeriesStyle.point.dimmed,
+        focused: { strokeWidth: 2.5 },
       });
     });
     test('can compute bars geometries counts', () => {
