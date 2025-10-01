@@ -24,12 +24,15 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { HighlighterStyle } from '../../../../utils/themes/theme';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
+import { getSeriesSpecsSelector } from '../../state/selectors/get_specs';
 import {
   getHighlightedGeomsSelector,
   getBucketHighlightedPointsSelector,
 } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
 import type { Transform } from '../../state/utils/types';
 import { computeChartTransform } from '../../state/utils/utils';
+import type { BasicSeriesSpec } from '../../utils/specs';
+import { isBubbleSeriesSpec } from '../../utils/specs';
 import { ShapeRendererFn } from '../shapes_paths';
 
 interface HighlighterProps {
@@ -43,6 +46,7 @@ interface HighlighterProps {
   chartDimensions: Dimensions;
   chartRotation: Rotation;
   style: HighlighterStyle;
+  seriesSpecs: BasicSeriesSpec[];
 }
 
 function getTransformForPanel(panel: Dimensions, rotation: Rotation, { left, top }: Pick<Dimensions, 'top' | 'left'>) {
@@ -63,7 +67,8 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
   static displayName = 'Highlighter';
 
   render() {
-    const { chartDimensions, chartRotation, chartId, zIndex, isBrushing, style, bucketHighlightedPoints } = this.props;
+    const { chartDimensions, chartRotation, chartId, zIndex, isBrushing, style, bucketHighlightedPoints, seriesSpecs } =
+      this.props;
     if (isBrushing) return null;
     const clipWidth = [90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width;
     const clipHeight = [90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height;
@@ -129,7 +134,14 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           const baseKey = `${geom.seriesIdentifier.key}-${geom.value.x}-${geom.value.y}-hovered`;
 
           if (isPointGeometry(geom)) {
-            const fillColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.fill);
+            const seriesSpec = seriesSpecs.find((spec) => spec.id === geom.seriesIdentifier.specId);
+            // Use fill.color for bubbles, stroke.color for line/area
+            const fillColor = getColorFromVariant(
+              RGBATupleToString(
+                seriesSpec && isBubbleSeriesSpec(seriesSpec) ? geom.style.fill.color : geom.style.stroke.color,
+              ),
+              style.point.fill,
+            );
             const strokeColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.stroke);
             const radius = Math.max(geom.radius, style.point.radius);
             const { d, rotate } = renderPath(geom, radius);
@@ -188,6 +200,7 @@ const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
       chartDimensions: { top: 0, left: 0, width: 0, height: 0 },
       chartRotation: 0,
       style: LIGHT_THEME.highlighter,
+      seriesSpecs: [],
     };
   }
 
@@ -202,6 +215,7 @@ const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
     chartRotation: getChartRotationSelector(state),
     style: getChartThemeSelector(state).highlighter,
+    seriesSpecs: getSeriesSpecsSelector(state),
   };
 };
 
