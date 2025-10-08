@@ -7,7 +7,9 @@
  */
 
 import { partitionMultiGeometries } from './geometries';
+import { getChartTypeDescriptionSelector } from './get_chart_type_description';
 import { getPartitionSpecs } from './get_partition_specs';
+import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { STATISTICS_KEY } from '../../layout/utils/group_by_rollup';
@@ -28,7 +30,7 @@ export interface PartitionSectionData {
 export interface PartitionData {
   hasMultipleLayers: boolean;
   isSmallMultiple: boolean;
-  data: PartitionSectionData[];
+  sections: PartitionSectionData[];
 }
 
 /**
@@ -66,13 +68,45 @@ export const getPartitionScreenReaderDataSelector = createCustomCachedSelector(
       return {
         hasMultipleLayers: false,
         isSmallMultiple: false,
-        data: [],
+        sections: [],
       };
     }
     return {
       hasMultipleLayers: (specs[0]?.layers.length ?? NaN) > 1,
       isSmallMultiple: shapeViewModel.length > 1,
-      data: getScreenReaderDataForPartitions(specs, shapeViewModel),
+      sections: getScreenReaderDataForPartitions(specs, shapeViewModel),
+    };
+  },
+);
+
+/** @internal */
+export const getScreenReaderDataSelector = createCustomCachedSelector(
+  [getPartitionScreenReaderDataSelector, getChartTypeDescriptionSelector],
+  (partitionData, chartTypeDescription): ChartSpecificScreenReaderData => {
+    const summaryParts: string[] = [];
+
+    // Add chart type description first
+    if (chartTypeDescription) {
+      summaryParts.push(chartTypeDescription);
+    }
+
+    // Add partition-specific accessibility information
+    if (partitionData.sections.length > 0) {
+      const totalItems = partitionData.sections.length;
+      summaryParts.push(`${totalItems} data ${totalItems === 1 ? 'point' : 'points'}`);
+
+      if (partitionData.hasMultipleLayers) {
+        summaryParts.push('with hierarchical layers');
+      }
+
+      if (partitionData.isSmallMultiple) {
+        summaryParts.push('in small multiples layout');
+      }
+    }
+
+    return {
+      data: partitionData,
+      summaryParts,
     };
   },
 );
