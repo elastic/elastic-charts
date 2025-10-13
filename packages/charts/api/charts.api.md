@@ -1696,7 +1696,7 @@ export interface HighlighterStyle {
         strokeWidth: Pixels;
         opacity: Ratio;
         radius: Pixels;
-        bucketHighlighted?: {
+        onHover: {
             fill: Color | ColorVariant;
             stroke: Color | ColorVariant;
             strokeWidth: Pixels;
