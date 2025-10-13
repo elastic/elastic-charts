@@ -99,13 +99,13 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
 
           const bucketHighlightedFillColor = getColorFromVariant(
             RGBATupleToString(geom.style.stroke.color),
-            style.point.bucketHighlighted?.fill,
+            style.point.fill,
           );
           const bucketHighlightedStrokeColor = getColorFromVariant(
             RGBATupleToString(geom.style.stroke.color),
-            style.point.bucketHighlighted?.stroke,
+            style.point.stroke,
           );
-          const bucketHighlightedRadius = Math.max(geom.radius, style.point.bucketHighlighted?.radius || 0);
+          const bucketHighlightedRadius = Math.max(geom.radius, style.point.radius || 0);
           const { d: bucketHighlightedD, rotate: bucketHighlightedRotate } = renderPath(geom, bucketHighlightedRadius);
 
           return (
@@ -119,8 +119,8 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
                 transform={`translate(${x}, ${y}) rotate(${bucketHighlightedRotate || 0})`}
                 fill={bucketHighlightedFillColor}
                 stroke={bucketHighlightedStrokeColor}
-                strokeWidth={style.point.bucketHighlighted?.strokeWidth}
-                opacity={style.point.bucketHighlighted?.opacity}
+                strokeWidth={style.point.strokeWidth}
+                opacity={style.point.opacity}
               />
             </g>
           );
@@ -140,10 +140,13 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
               RGBATupleToString(
                 seriesSpec && isBubbleSeriesSpec(seriesSpec) ? geom.style.fill.color : geom.style.stroke.color,
               ),
-              style.point.fill,
+              style.point.onHover.fill,
             );
-            const strokeColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.stroke);
-            const radius = Math.max(geom.radius, style.point.radius);
+            const strokeColor = getColorFromVariant(
+              RGBATupleToString(geom.style.stroke.color),
+              style.point.onHover.stroke,
+            );
+            const radius = Math.max(geom.radius, style.point.onHover.radius);
             const { d, rotate } = renderPath(geom, radius);
 
             return (
@@ -157,8 +160,8 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
                   transform={`translate(${x}, ${y}) rotate(${rotate || 0})`}
                   fill={fillColor}
                   stroke={strokeColor}
-                  strokeWidth={style.point.strokeWidth}
-                  opacity={style.point.opacity}
+                  strokeWidth={style.point.onHover.strokeWidth}
+                  opacity={style.point.onHover.opacity}
                 />
               </g>
             );

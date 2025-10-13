@@ -466,11 +466,18 @@ export const AMSTERDAM_DARK_THEME: Theme = {
 
   highlighter: {
     point: {
-      opacity: 0.5,
+      opacity: 1,
       fill: ColorVariant.Series,
-      stroke: ColorVariant.None,
+      stroke: ColorVariant.Series,
       strokeWidth: 0,
-      radius: 5,
+      radius: 3,
+      onHover: {
+        opacity: 0.5,
+        fill: ColorVariant.Series,
+        stroke: ColorVariant.None,
+        strokeWidth: 0,
+        radius: 5,
+      },
     },
   },
   lineAnnotation: {
