@@ -32,7 +32,6 @@ import {
 import type { Transform } from '../../state/utils/types';
 import { computeChartTransform } from '../../state/utils/utils';
 import type { BasicSeriesSpec } from '../../utils/specs';
-import { isBubbleSeriesSpec } from '../../utils/specs';
 import { ShapeRendererFn } from '../shapes_paths';
 
 interface HighlighterProps {
@@ -67,8 +66,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
   static displayName = 'Highlighter';
 
   render() {
-    const { chartDimensions, chartRotation, chartId, zIndex, isBrushing, style, highlightedPoints, seriesSpecs } =
-      this.props;
+    const { chartDimensions, chartRotation, chartId, zIndex, isBrushing, style, highlightedPoints } = this.props;
     if (isBrushing) return null;
     const clipWidth = [90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width;
     const clipHeight = [90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height;
@@ -134,12 +132,9 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           const baseKey = `${geom.seriesIdentifier.key}-${geom.value.x}-${geom.value.y}-hovered`;
 
           if (isPointGeometry(geom)) {
-            const seriesSpec = seriesSpecs.find((spec) => spec.id === geom.seriesIdentifier.specId);
             // Use fill.color for bubbles, stroke.color for line/area
             const fillColor = getColorFromVariant(
-              RGBATupleToString(
-                seriesSpec && isBubbleSeriesSpec(seriesSpec) ? geom.style.fill.color : geom.style.stroke.color,
-              ),
+              RGBATupleToString(geom.seriesType === 'bubble' ? geom.style.fill.color : geom.style.stroke.color),
               style.point.onHover.fill,
             );
             const strokeColor = getColorFromVariant(
