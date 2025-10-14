@@ -27,7 +27,7 @@ import { computeChartTransformSelector } from '../../state/selectors/compute_cha
 import { getSeriesSpecsSelector } from '../../state/selectors/get_specs';
 import {
   getHighlightedGeomsSelector,
-  getBucketHighlightedPointsSelector,
+  getHighlightedPointsSelector,
 } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
 import type { Transform } from '../../state/utils/types';
 import { computeChartTransform } from '../../state/utils/utils';
@@ -41,7 +41,7 @@ interface HighlighterProps {
   zIndex: number;
   isBrushing: boolean;
   highlightedGeometries: IndexedGeometry[];
-  bucketHighlightedPoints: PointGeometry[];
+  highlightedPoints: PointGeometry[];
   chartTransform: Transform;
   chartDimensions: Dimensions;
   chartRotation: Rotation;
@@ -67,7 +67,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
   static displayName = 'Highlighter';
 
   render() {
-    const { chartDimensions, chartRotation, chartId, zIndex, isBrushing, style, bucketHighlightedPoints, seriesSpecs } =
+    const { chartDimensions, chartRotation, chartId, zIndex, isBrushing, style, highlightedPoints, seriesSpecs } =
       this.props;
     if (isBrushing) return null;
     const clipWidth = [90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width;
@@ -90,7 +90,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           </clipPath>
         </defs>
 
-        {bucketHighlightedPoints.map((geom) => {
+        {highlightedPoints.map((geom) => {
           const { panel } = geom;
           const x = geom.x + geom.transform.x;
           const y = geom.y + geom.transform.y;
@@ -194,7 +194,7 @@ const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
       zIndex,
       isBrushing: false,
       highlightedGeometries: [],
-      bucketHighlightedPoints: [],
+      highlightedPoints: [],
       chartTransform: {
         x: 0,
         y: 0,
@@ -213,7 +213,7 @@ const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
     zIndex,
     isBrushing: isBrushingSelector(state),
     highlightedGeometries: getHighlightedGeomsSelector(state),
-    bucketHighlightedPoints: getBucketHighlightedPointsSelector(state),
+    highlightedPoints: getHighlightedPointsSelector(state),
     chartTransform: computeChartTransformSelector(state),
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
     chartRotation: getChartRotationSelector(state),

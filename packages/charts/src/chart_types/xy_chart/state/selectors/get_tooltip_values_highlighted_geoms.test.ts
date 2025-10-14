@@ -47,26 +47,26 @@ describe('Highlight points', () => {
     });
     it('On ordinal area chart, it should bucket highlight area points', () => {
       store.dispatch(onPointerMove({ position: { x: 50, y: 100 }, time: 0 }));
-      const { bucketHighlightedPoints } = getHighlightedTooltipTooltipValuesSelector(store.getState());
+      const { highlightedPoints } = getHighlightedTooltipTooltipValuesSelector(store.getState());
 
       // Area points should be bucket highlighted when cursor is in their bucket
-      expect(bucketHighlightedPoints).toHaveLength(1);
-      expect(bucketHighlightedPoints[0]?.seriesIdentifier.specId).toBe('area1');
+      expect(highlightedPoints).toHaveLength(1);
+      expect(highlightedPoints[0]?.seriesIdentifier.specId).toBe('area1');
     });
     it('On ordinal area chart, it should highlight all area points within the hovered bucket from both series', () => {
       store.dispatch(onPointerMove({ position: { x: 150, y: 100 }, time: 0 }));
-      const { bucketHighlightedPoints } = getHighlightedTooltipTooltipValuesSelector(store.getState());
-      expect(bucketHighlightedPoints).toHaveLength(2);
-      const specIds = bucketHighlightedPoints.map((p) => p?.seriesIdentifier.specId);
+      const { highlightedPoints } = getHighlightedTooltipTooltipValuesSelector(store.getState());
+      expect(highlightedPoints).toHaveLength(2);
+      const specIds = highlightedPoints.map((p) => p?.seriesIdentifier.specId);
       expect(specIds).toContain('area1');
       expect(specIds).toContain('area2');
     });
     it('On ordinal area chart, it should not highlight area points that are outside the panel bounds', () => {
       store.dispatch(onPointerMove({ position: { x: 250, y: 100 }, time: 0 }));
-      const { bucketHighlightedPoints } = getHighlightedTooltipTooltipValuesSelector(store.getState());
+      const { highlightedPoints } = getHighlightedTooltipTooltipValuesSelector(store.getState());
 
-      expect(bucketHighlightedPoints).toHaveLength(1);
-      expect(bucketHighlightedPoints[0]?.seriesIdentifier.specId).toBe('area1');
+      expect(highlightedPoints).toHaveLength(1);
+      expect(highlightedPoints[0]?.seriesIdentifier.specId).toBe('area1');
     });
   });
 
@@ -104,14 +104,12 @@ describe('Highlight points', () => {
     it('On mixed chart, hover should highlight the bar under pointer and bucket should highlight only the area point in the bucket', () => {
       // Move pointer to position that should be on the first bar
       store.dispatch(onPointerMove({ position: { x: 50, y: 200 }, time: 0 }));
-      const { highlightedGeometries, bucketHighlightedPoints } = getHighlightedTooltipTooltipValuesSelector(
-        store.getState(),
-      );
+      const { highlightedGeometries, highlightedPoints } = getHighlightedTooltipTooltipValuesSelector(store.getState());
 
       expect(highlightedGeometries).toHaveLength(1);
-      expect(bucketHighlightedPoints).toHaveLength(1);
+      expect(highlightedPoints).toHaveLength(1);
       expect(highlightedGeometries[0]?.seriesIdentifier.specId).toBe('bar1');
-      expect(bucketHighlightedPoints[0]?.seriesIdentifier.specId).toBe('area1');
+      expect(highlightedPoints[0]?.seriesIdentifier.specId).toBe('area1');
     });
   });
 });

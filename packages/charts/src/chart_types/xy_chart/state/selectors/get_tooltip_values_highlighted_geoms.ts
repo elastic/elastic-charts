@@ -45,14 +45,14 @@ const EMPTY_VALUES = Object.freeze({
     values: [],
   },
   highlightedGeometries: [],
-  bucketHighlightedPoints: [],
+  highlightedPoints: [],
 });
 
 /** @internal */
 export interface TooltipAndHighlightedGeoms {
   tooltip: TooltipInfo;
   highlightedGeometries: IndexedGeometry[];
-  bucketHighlightedPoints: PointGeometry[];
+  highlightedPoints: PointGeometry[];
 }
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
@@ -124,7 +124,7 @@ function getTooltipAndHighlightFromValue(
   // build the tooltip value list
   let header: PointerValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
-  const bucketHighlightedPoints: PointGeometry[] = [];
+  const highlightedPoints: PointGeometry[] = [];
   const xValues = new Set<any>();
   const hideNullValues = !tooltip.showNullValues;
   const values = matchingGeoms
@@ -169,7 +169,7 @@ function getTooltipAndHighlightFromValue(
         }
         if (isLineAreaPoint) {
           // Geometry is area/line point -> bucket highlight
-          bucketHighlightedPoints.push(indexedGeometry as PointGeometry);
+          highlightedPoints.push(indexedGeometry as PointGeometry);
         }
       }
 
@@ -216,7 +216,7 @@ function getTooltipAndHighlightFromValue(
       values: sortedTooltipValues,
     },
     highlightedGeometries,
-    bucketHighlightedPoints,
+    highlightedPoints,
   };
 }
 
@@ -254,7 +254,7 @@ export const getHighlightedGeomsSelector = createCustomCachedSelector(
 );
 
 /** @internal */
-export const getBucketHighlightedPointsSelector = createCustomCachedSelector(
+export const getHighlightedPointsSelector = createCustomCachedSelector(
   [getHighlightedTooltipTooltipValuesSelector],
-  ({ bucketHighlightedPoints }): PointGeometry[] => bucketHighlightedPoints,
+  ({ highlightedPoints }): PointGeometry[] => highlightedPoints,
 );
