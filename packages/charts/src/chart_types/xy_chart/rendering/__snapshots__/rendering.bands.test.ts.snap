@@ -22,6 +22,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "xAccessor": 0,
       "yAccessor": 2,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -80,6 +81,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "xAccessor": 0,
       "yAccessor": 2,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -138,6 +140,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "xAccessor": 0,
       "yAccessor": 2,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -196,6 +199,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "xAccessor": 0,
       "yAccessor": 2,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -259,6 +263,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "xAccessor": 0,
       "yAccessor": 2,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -317,6 +322,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "xAccessor": 0,
       "yAccessor": 2,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -375,6 +381,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "xAccessor": 0,
       "yAccessor": 2,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -433,6 +440,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "xAccessor": 0,
       "yAccessor": 2,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -491,6 +499,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "xAccessor": 0,
       "yAccessor": 2,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -549,6 +558,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "xAccessor": 0,
       "yAccessor": 2,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [

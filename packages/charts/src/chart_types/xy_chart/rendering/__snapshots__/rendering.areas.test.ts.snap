@@ -22,6 +22,7 @@ exports[`Rendering points - areas Multi series area chart - linear can render fi
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -79,6 +80,7 @@ exports[`Rendering points - areas Multi series area chart - linear can render fi
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -141,6 +143,7 @@ exports[`Rendering points - areas Multi series area chart - linear can render se
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -198,6 +201,7 @@ exports[`Rendering points - areas Multi series area chart - linear can render se
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -260,6 +264,7 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render f
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -317,6 +322,7 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render f
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -379,6 +385,7 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render s
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -436,6 +443,7 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render s
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -498,6 +506,7 @@ exports[`Rendering points - areas Multi series area chart - time can render firs
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -555,6 +564,7 @@ exports[`Rendering points - areas Multi series area chart - time can render firs
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -617,6 +627,7 @@ exports[`Rendering points - areas Multi series area chart - time can render seco
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -674,6 +685,7 @@ exports[`Rendering points - areas Multi series area chart - time can render seco
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -736,6 +748,7 @@ exports[`Rendering points - areas Single series area chart - linear Can render t
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -793,6 +806,7 @@ exports[`Rendering points - areas Single series area chart - linear Can render t
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -855,6 +869,7 @@ exports[`Rendering points - areas Single series area chart - ordinal Can render 
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -912,6 +927,7 @@ exports[`Rendering points - areas Single series area chart - ordinal Can render 
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -974,6 +990,7 @@ exports[`Rendering points - areas Single series area chart - time Can render two
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
@@ -1031,6 +1048,7 @@ exports[`Rendering points - areas Single series area chart - time Can render two
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "area",
     "style": {
       "fill": {
         "color": [
