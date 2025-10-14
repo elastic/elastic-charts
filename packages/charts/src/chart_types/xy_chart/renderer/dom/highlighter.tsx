@@ -31,7 +31,7 @@ import {
 } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
 import type { Transform } from '../../state/utils/types';
 import { computeChartTransform } from '../../state/utils/utils';
-import type { BasicSeriesSpec } from '../../utils/specs';
+import { SeriesType, type BasicSeriesSpec } from '../../utils/specs';
 import { ShapeRendererFn } from '../shapes_paths';
 
 interface HighlighterProps {
@@ -134,7 +134,9 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           if (isPointGeometry(geom)) {
             // Use fill.color for bubbles, stroke.color for line/area
             const fillColor = getColorFromVariant(
-              RGBATupleToString(geom.seriesType === 'bubble' ? geom.style.fill.color : geom.style.stroke.color),
+              RGBATupleToString(
+                geom.seriesType === SeriesType.Bubble ? geom.style.fill.color : geom.style.stroke.color,
+              ),
               style.point.onHover.fill,
             );
             const strokeColor = getColorFromVariant(
