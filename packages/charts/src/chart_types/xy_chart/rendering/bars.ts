@@ -47,11 +47,10 @@ export function renderBars(
   styleAccessor?: BarStyleAccessor,
   stackMode?: StackMode,
 ): BarTuple {
-  const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
   const initialBarTuple: BarTuple = { barGeometries: [], indexedGeometryMap: new IndexedGeometryMap() } as BarTuple;
   const y1Fn = getY1ScaledValueFn(yScale);
   const y0Fn = getY0ScaledValueFn(yScale);
-
+  const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
   return dataSeries.data.reduce((barTuple: BarTuple, datum) => {
     const xScaled = xScale.scale(datum.x);
     if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
@@ -77,7 +76,6 @@ export function renderBars(
     // the actual height of the bar
     const height = yDiff + addedMinBarHeight;
 
-    const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
     const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
 
     const maxPixelWidth = clamp(seriesStyle.rect.widthRatio ?? 1, 0, 1) * xScale.bandwidth;
@@ -87,52 +85,19 @@ export function renderBars(
     const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
 
     const y1Value = getDatumYValue(datum, false, isBandedSpec, stackMode);
-    const formattedDisplayValue = displayValueSettings?.valueFormatter?.(y1Value);
-
-    // only show displayValue for even bars if showOverlappingValue
-    const displayValueText =
-      displayValueSettings?.isAlternatingValueLabel && barGeometries.length % 2 ? undefined : formattedDisplayValue;
-
-    const { displayValueWidth, fixedFontScale } = computeBoxWidth(displayValueText ?? '', {
-      padding: PADDING,
-      fontSize,
-      fontFamily,
-      measureText,
-    });
-
-    const isHorizontalRotation = chartRotation % 180 === 0;
-    // Pick the right side of the label's box to use as factor reference
-    const referenceWidth = Math.max(isHorizontalRotation ? displayValueWidth : fixedFontScale, 1);
-
-    const textScalingFactor = getFinalFontScalingFactor(
-      (width * FONT_SIZE_FACTOR) / referenceWidth,
-      fixedFontScale,
-      fontSize,
-    );
-    const overflowConstraints: Set<LabelOverflowConstraint> = new Set(
-      displayValueSettings?.overflowConstraints ?? [
-        LabelOverflowConstraint.ChartEdges,
-        LabelOverflowConstraint.BarGeometry,
-      ],
-    );
-
-    // Based on rotation scale the width of the text box
-    const bboxWidthFactor = isHorizontalRotation ? textScalingFactor : 1;
-
-    const displayValue: BarGeometry['displayValue'] | undefined =
-      displayValueText && displayValueSettings?.showValueLabel
-        ? {
-            fontScale: textScalingFactor,
-            fontSize: fixedFontScale,
-            text: displayValueText,
-            width: bboxWidthFactor * displayValueWidth,
-            height: textScalingFactor * fixedFontScale,
-            overflowConstraints,
-          }
-        : undefined;
 
     const barGeometry: BarGeometry = {
-      displayValue,
+      displayValue: displayValueSettings?.showValueLabel
+        ? computeDisplayValue(
+            y1Value,
+            barGeometries,
+            sharedSeriesStyle,
+            measureText,
+            chartRotation,
+            width,
+            displayValueSettings,
+          )
+        : undefined,
       x,
       y: yScreenSpaceCoord,
       transform: { x: 0, y: 0 },
@@ -169,6 +134,60 @@ export function renderBars(
   }, initialBarTuple);
 }
 
+function computeDisplayValue(
+  y1Value: number | null,
+  barGeometries: BarGeometry[],
+  sharedSeriesStyle: BarSeriesStyle,
+  measureText: TextMeasure,
+  chartRotation: number,
+  width: number,
+  displayValueSettings?: DisplayValueSpec,
+): BarGeometry['displayValue'] | undefined {
+  const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
+  const formattedDisplayValue = displayValueSettings?.valueFormatter?.(y1Value);
+
+  // only show displayValue for even bars if showOverlappingValue
+  const displayValueText =
+    displayValueSettings?.isAlternatingValueLabel && barGeometries.length % 2 ? undefined : formattedDisplayValue;
+
+  const { displayValueWidth, fixedFontScale } = computeBoxWidth(displayValueText ?? '', {
+    padding: PADDING,
+    fontSize,
+    fontFamily,
+    measureText,
+  });
+
+  const isHorizontalRotation = chartRotation % 180 === 0;
+  // Pick the right side of the label's box to use as factor reference
+  const referenceWidth = Math.max(isHorizontalRotation ? displayValueWidth : fixedFontScale, 1);
+
+  const textScalingFactor = getFinalFontScalingFactor(
+    (width * FONT_SIZE_FACTOR) / referenceWidth,
+    fixedFontScale,
+    fontSize,
+  );
+  const overflowConstraints: Set<LabelOverflowConstraint> = new Set(
+    displayValueSettings?.overflowConstraints ?? [
+      LabelOverflowConstraint.ChartEdges,
+      LabelOverflowConstraint.BarGeometry,
+    ],
+  );
+
+  // Based on rotation scale the width of the text box
+  const bboxWidthFactor = isHorizontalRotation ? textScalingFactor : 1;
+
+  return displayValueText && displayValueSettings?.showValueLabel
+    ? {
+        fontScale: textScalingFactor,
+        fontSize: fixedFontScale,
+        text: displayValueText,
+        width: bboxWidthFactor * displayValueWidth,
+        height: textScalingFactor * fixedFontScale,
+        overflowConstraints,
+      }
+    : undefined;
+}
+
 /**
  * Workout the text box size and fixedFontSize based on a collection of options
  * @internal
@@ -188,6 +207,10 @@ function computeBoxWidth(
   },
 ): { fixedFontScale: number; displayValueWidth: number } {
   const fixedFontScale = Math.max(typeof fontSize === 'number' ? fontSize : fontSize.min, 1);
+
+  if (text.length === 0) {
+    return { fixedFontScale, displayValueWidth: 0 };
+  }
 
   const computedDisplayValueWidth = measureText(
     text,

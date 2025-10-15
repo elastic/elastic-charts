@@ -23,14 +23,14 @@ export type TextMeasure = (text: string, font: Omit<Font, 'textColor'>, fontSize
 
 /** @internal */
 export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
-  return (text, font, fontSize, lineHeight = 1) =>
-    withContext(ctx, (ctx): Size => {
-      if (text.length === 0) {
-        // TODO this is a temporary fix to make the multilayer time axis work
-        return { width: 0, height: fontSize * lineHeight };
-      }
+  return (text, font, fontSize, lineHeight = 1) => {
+    if (text.length === 0) {
+      return { width: 0, height: fontSize * lineHeight };
+    }
+    return withContext(ctx, (ctx): Size => {
       ctx.font = cssFontShorthand(font, fontSize);
       const { width } = ctx.measureText(text);
       return { width, height: fontSize * lineHeight };
     });
+  };
 }
