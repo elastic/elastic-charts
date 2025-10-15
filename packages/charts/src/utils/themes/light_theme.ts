@@ -30,7 +30,7 @@ export const LIGHT_THEME: Theme = {
   lineSeriesStyle: {
     line: {
       visible: true,
-      strokeWidth: 2,
+      strokeWidth: 1.5,
       opacity: 1,
       focused: { strokeWidth: 2.5 },
       dimmed: {
@@ -40,11 +40,12 @@ export const LIGHT_THEME: Theme = {
     },
     point: {
       visible: 'auto',
-      strokeWidth: 0,
-      stroke: ColorVariant.None,
-      fill: ColorVariant.Series,
+      strokeWidth: 1.5,
+      stroke: ColorVariant.Series,
+      fill: LIGHT_BACKGROUND_COLORS.backgroundBasePlain,
       radius: 3,
       opacity: 1,
+      focused: { strokeWidth: 2.5 },
       dimmed: {
         stroke: LIGHT_DIMMED_COLORS.linePointStroke,
         fill: LIGHT_DIMMED_COLORS.linePointFill,
@@ -66,7 +67,7 @@ export const LIGHT_THEME: Theme = {
         stroke: ColorVariant.Series,
       },
     },
-    pointVisibilityMinDistance: 40,
+    pointVisibilityMinDistance: 20,
   },
   bubbleSeriesStyle: {
     point: {
@@ -81,7 +82,7 @@ export const LIGHT_THEME: Theme = {
   areaSeriesStyle: {
     area: {
       visible: true,
-      opacity: 0.3,
+      opacity: 0.2,
       dimmed: {
         fill: LIGHT_DIMMED_COLORS.areaFill,
         texture: { opacity: 0.25 },
@@ -89,7 +90,7 @@ export const LIGHT_THEME: Theme = {
     },
     line: {
       visible: true,
-      strokeWidth: 2,
+      strokeWidth: 1.5,
       opacity: 1,
       dimmed: {
         strokeWidth: 1,
@@ -101,11 +102,12 @@ export const LIGHT_THEME: Theme = {
     },
     point: {
       visible: 'never',
-      strokeWidth: 0,
-      stroke: ColorVariant.None,
-      fill: ColorVariant.Series,
+      strokeWidth: 1.5,
+      stroke: ColorVariant.Series,
+      fill: LIGHT_BACKGROUND_COLORS.backgroundBasePlain,
       radius: 3,
       opacity: 1,
+      focused: { strokeWidth: 2.5 },
       dimmed: {
         stroke: LIGHT_DIMMED_COLORS.areaPointStroke,
         fill: LIGHT_DIMMED_COLORS.areaPointFill,
@@ -477,11 +479,18 @@ export const LIGHT_THEME: Theme = {
   },
   highlighter: {
     point: {
-      opacity: 0.5,
+      opacity: 1,
       fill: ColorVariant.Series,
-      stroke: ColorVariant.None,
-      strokeWidth: 0,
-      radius: 5,
+      stroke: ColorVariant.Series,
+      strokeWidth: 1.5,
+      radius: 3,
+      onHover: {
+        opacity: 0.5,
+        fill: ColorVariant.Series,
+        stroke: ColorVariant.None,
+        strokeWidth: 0,
+        radius: 5,
+      },
     },
   },
   lineAnnotation: {

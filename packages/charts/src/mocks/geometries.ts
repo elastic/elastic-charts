@@ -9,6 +9,7 @@
 import { MockSeriesIdentifier } from './series/series_identifiers';
 import { buildPointGeometryStyles } from '../chart_types/xy_chart/rendering/point_style';
 import { Colors } from '../common/colors';
+import { SeriesType } from '../specs';
 import type { RecursivePartial } from '../utils/common';
 import { mergePartial } from '../utils/common';
 import type { AreaGeometry, BarGeometry, BubbleGeometry, LineGeometry, PointGeometry } from '../utils/geometry';
@@ -34,6 +35,7 @@ export class MockPointGeometry {
     transform: { x: 0, y: 0 },
     panel: { width: 100, height: 100, left: 0, top: 0 },
     isolated: false,
+    seriesType: SeriesType.Line,
   };
 
   static default(partial?: RecursivePartial<PointGeometry>) {

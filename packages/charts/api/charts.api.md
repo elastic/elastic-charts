@@ -1696,6 +1696,13 @@ export interface HighlighterStyle {
         strokeWidth: Pixels;
         opacity: Ratio;
         radius: Pixels;
+        onHover: {
+            fill: Color | ColorVariant;
+            stroke: Color | ColorVariant;
+            strokeWidth: Pixels;
+            opacity: Ratio;
+            radius: Pixels;
+        };
     };
 }
 
@@ -2495,6 +2502,9 @@ export interface PointStyle {
         stroke: Color | ColorVariant;
     };
     fill?: Color | ColorVariant;
+    focused?: {
+        strokeWidth: number;
+    };
     opacity: number;
     radius: Pixels;
     shape?: PointShape;

@@ -27,10 +27,10 @@ import type { PointerValue } from '../../../../state/types';
 import type { Rotation } from '../../../../utils/common';
 import { isNil } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
-import type { IndexedGeometry } from '../../../../utils/geometry';
+import type { IndexedGeometry, PointGeometry } from '../../../../utils/geometry';
 import type { Point } from '../../../../utils/point';
 import type { SeriesCompareFn } from '../../../../utils/series_sort';
-import { isPointOnGeometry } from '../../rendering/utils';
+import { isLineAreaPointWithinPanel, isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltipHeader, formatTooltipValue } from '../../tooltip/tooltip';
 import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
 import type { DataSeries } from '../../utils/series';
@@ -45,12 +45,14 @@ const EMPTY_VALUES = Object.freeze({
     values: [],
   },
   highlightedGeometries: [],
+  highlightedPoints: [],
 });
 
 /** @internal */
 export interface TooltipAndHighlightedGeoms {
   tooltip: TooltipInfo;
   highlightedGeometries: IndexedGeometry[];
+  highlightedPoints: PointGeometry[];
 }
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
@@ -122,6 +124,7 @@ function getTooltipAndHighlightFromValue(
   // build the tooltip value list
   let header: PointerValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
+  const highlightedPoints: PointGeometry[] = [];
   const xValues = new Set<any>();
   const hideNullValues = !tooltip.showNullValues;
   const values = matchingGeoms
@@ -151,21 +154,30 @@ function getTooltipAndHighlightFromValue(
         return acc;
       }
 
-      // check if the pointer is on the geometry (avoid checking if using external pointer event)
-      let isHighlighted = false;
-      if (
-        (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) &&
-        isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)
-      ) {
-        isHighlighted = true;
-        highlightedGeometries.push(indexedGeometry);
+      // highlight all geometries if pointer is on them and all the line/area points of the hovered bucket (avoid checking if using external pointer event)
+      const shouldCheckHighlighting = !externalPointerEvent || isPointerOutEvent(externalPointerEvent);
+      let isTooltipHighlighted = false;
+
+      if (shouldCheckHighlighting) {
+        const isGeometryHovered = isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer);
+        const isLineAreaPoint = isLineAreaPointWithinPanel(spec, indexedGeometry);
+
+        if (isGeometryHovered) {
+          // Pointer is on geometry and geometry is area/line point -> hover highlight
+          isTooltipHighlighted = true;
+          highlightedGeometries.push(indexedGeometry);
+        }
+        if (isLineAreaPoint) {
+          // Geometry is area/line point -> bucket highlight
+          highlightedPoints.push(indexedGeometry as PointGeometry);
+        }
       }
 
       // format the tooltip values
       const formattedTooltip = formatTooltipValue(
         indexedGeometry,
         spec,
-        isHighlighted,
+        isTooltipHighlighted,
         hasSingleSeries,
         isBandedSpec(spec),
         yAxis,
@@ -204,6 +216,7 @@ function getTooltipAndHighlightFromValue(
       values: sortedTooltipValues,
     },
     highlightedGeometries,
+    highlightedPoints,
   };
 }
 
@@ -238,4 +251,10 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
 export const getHighlightedGeomsSelector = createCustomCachedSelector(
   [getHighlightedTooltipTooltipValuesSelector],
   ({ highlightedGeometries }): IndexedGeometry[] => highlightedGeometries,
+);
+
+/** @internal */
+export const getHighlightedPointsSelector = createCustomCachedSelector(
+  [getHighlightedTooltipTooltipValuesSelector],
+  ({ highlightedPoints }): PointGeometry[] => highlightedPoints,
 );

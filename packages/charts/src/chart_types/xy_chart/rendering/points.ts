@@ -125,6 +125,7 @@ export function renderPoints(
           seriesIdentifier,
           panel,
           isolated: isPointIsolated,
+          seriesType: dataSeries.seriesType,
         };
         indexedGeometryMap.set(pointGeometry, geometryType);
         // use the geometry only if the yDatum in contained in the current yScale domain
