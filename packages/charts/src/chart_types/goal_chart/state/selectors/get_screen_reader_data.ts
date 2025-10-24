@@ -11,7 +11,7 @@ import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
-import type { ScreenReaderItem } from '../../../../state/selectors/get_screenreader_data';
+import { EMPTY_SCREEN_READER_ITEMS, type ScreenReaderItem } from '../../../../state/selectors/get_screenreader_data';
 
 /** @internal */
 export const getScreenReaderDataSelector = createCustomCachedSelector(
@@ -69,6 +69,6 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
       );
     }
 
-    return screenReaderItems;
+    return screenReaderItems.length > 0 ? screenReaderItems : EMPTY_SCREEN_READER_ITEMS;
   },
 );
