@@ -50,7 +50,7 @@ export function renderBars(
   const initialBarTuple: BarTuple = { barGeometries: [], indexedGeometryMap: new IndexedGeometryMap() } as BarTuple;
   const y1Fn = getY1ScaledValueFn(yScale);
   const y0Fn = getY0ScaledValueFn(yScale);
-  const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
+  const seriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
   return dataSeries.data.reduce((barTuple: BarTuple, datum) => {
     const xScaled = xScale.scale(datum.x);
     if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
