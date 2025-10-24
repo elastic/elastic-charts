@@ -10,6 +10,8 @@ import type { CSSProperties } from 'react';
 
 import type { GlobalChartState } from './chart_state';
 import { InitStatus } from './selectors/get_internal_is_intialized';
+import type { ScreenReaderItem } from './selectors/get_screenreader_data';
+import { getScreenReaderDataSelector } from './selectors/get_screenreader_data';
 import type { TooltipVisibility } from './tooltip_visibility';
 import type { DebugState } from './types';
 import { DEFAULT_CSS_CURSOR } from '../common/constants';
@@ -20,22 +22,6 @@ import type { SeriesKey } from '../common/series_id';
 import type { AnchorPosition } from '../components/portal/types';
 import type { TooltipInfo } from '../components/tooltip/types';
 import type { Dimensions } from '../utils/dimensions';
-
-/** @internal */
-export interface ScreenReaderItem {
-  /** The label for this part of the summary */
-  label: string;
-  /** Optional ID for referencing this part */
-  id?: string;
-  /** The value for this part of the summary */
-  value: string;
-}
-
-/** @internal */
-export interface ChartSpecificScreenReaderData {
-  /** Custom summary parts to include in the consolidated summary */
-  screenReaderItems?: ScreenReaderItem[];
-}
 
 /** @internal */
 export interface LegendItemLabel {
@@ -153,7 +139,7 @@ export interface ChartSelectors {
   /**
    * Get chart-specific data for screen reader accessibility
    */
-  getScreenReaderData?(globalState: GlobalChartState): ChartSpecificScreenReaderData;
+  getScreenReaderData(globalState: GlobalChartState): ScreenReaderItem[];
 
   /**
    * Get the domain of the vertical and horizontal small multiple grids
@@ -179,7 +165,6 @@ const EMPTY_TOOLTIP_VISIBILITY: TooltipVisibility = {
   displayOnly: false,
   isPinnable: false,
 };
-const EMPTY_SCREEN_READER_DATA: ChartSpecificScreenReaderData = { screenReaderItems: [] };
 
 type CallbackCreator = () => (state: GlobalChartState) => void;
 
@@ -209,7 +194,7 @@ export const createChartSelectorsFactory =
       getBrushArea: () => null,
       getDebugState: () => EMPTY_OBJ,
       getChartTypeDescription: () => '',
-      getScreenReaderData: () => EMPTY_SCREEN_READER_DATA,
+      getScreenReaderData: getScreenReaderDataSelector,
       getSmallMultiplesDomains: () => EMPTY_SM_DOMAINS,
       canDisplayChartTitles: () => true,
       ...overrides,
