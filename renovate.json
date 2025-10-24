@@ -16,46 +16,62 @@
   },
   "packageRules": [
     {
-      "matchPackagePatterns": [".*"],
-      "excludePackageNames": ["@elastic/eui", "@elastic/datemath", "prettier", "pretty-quick", "@playwright/test"],
-      "excludePackagePatterns": [
-        ".*typescript.*",
-        "ts-.+",
-        ".*eslint.*",
-        ".*jest.*",
-        "^@typescript-eslint/.+",
-        "^@microsoft/api-.+"
-      ],
-      "enabled": false
+      "enabled": false,
+      "matchPackageNames": [
+        "/.*/",
+        "!@elastic/eui",
+        "!@elastic/datemath",
+        "!prettier",
+        "!pretty-quick",
+        "!@playwright/test",
+        "!/.*typescript.*/",
+        "!/ts-.+/",
+        "!/.*eslint.*/",
+        "!/.*jest.*/",
+        "!/^@typescript-eslint/.+/",
+        "!/^@microsoft/api-.+/"
+      ]
     },
     {
       "groupName": "@elastic/eui",
       "matchPackageNames": ["@elastic/eui", "@elastic/datemath"],
       "matchUpdateTypes": ["major"],
       "schedule": ["every 1 week on monday"],
+      "dependencyDashboardApproval": true,
       "automerge": true,
       "enabled": true
     },
     {
       "groupName": "typescript",
-      "matchPackagePatterns": [".*typescript.*", "ts-.+", "^@typescript-eslint/.+", "^@microsoft/api-.+"],
-      "excludePackageNames": ["ts-jest", "ts-loader", "json-schema-to-typescript"],
       "automerge": true,
-      "enabled": true
+      "enabled": true,
+      "matchPackageNames": [
+        "/.*typescript.*/",
+        "/ts-.+/",
+        "/^@typescript-eslint/.+/",
+        "/^@microsoft/api-.+/",
+        "!ts-jest",
+        "!ts-loader",
+        "!json-schema-to-typescript"
+      ]
     },
     {
       "groupName": "eslint",
-      "matchPackagePatterns": [".*eslint.*"],
-      "matchPackageNames": ["prettier", "pretty-quick"],
-      "excludePackagePatterns": [".*typescript.*", "^@typescript-eslint/.+"],
+      "matchPackageNames": [
+        "prettier",
+        "pretty-quick",
+        "/.*eslint.*/",
+        "!/.*typescript.*/",
+        "!/^@typescript-eslint/.+/"
+      ],
       "automerge": true,
       "enabled": false
     },
     {
       "groupName": "jest",
-      "matchPackagePatterns": [".*jest.*"],
       "automerge": true,
-      "enabled": true
+      "enabled": true,
+      "matchPackageNames": ["/.*jest.*/"]
     },
     {
       "groupName": "playwright",

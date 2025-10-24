@@ -1,36 +1,31 @@
-$padding: 8px;
-
 .echMetricText {
   position: relative;
-  padding: $padding;
-  height: 100%;
   z-index: 1;
   display: grid;
-  grid-template-columns: 100%;
-  grid-template-rows: min-content auto min-content;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: min-content auto min-content min-content;
+  height: 100%;
+  padding: $padding;
   line-height: 1.2;
 
-  &__valuesBlock,
+  &__gap {
+    overflow: hidden;
+  }
+
   &__titlesBlock {
     display: flex;
     flex-direction: column;
+  }
 
+  &__titlesBlock {
     &--left {
       align-items: start;
       text-align: left;
-
-      .echMetricText__valueGroup {
-        justify-content: start;
-      }
     }
 
     &--center {
       align-items: center;
       text-align: center;
-
-      .echMetricText__valueGroup {
-        justify-content: center;
-      }
 
       .echMetricText__title {
         button {
@@ -42,45 +37,52 @@ $padding: 8px;
     &--right {
       align-items: end;
       text-align: right;
-
-      .echMetricText__valueGroup {
-        justify-content: end;
-      }
     }
   }
 
-  &__valueGroup {
+  .echMetricText__extraBlock {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding-top: 5px;
+
+    &--left {
+      justify-content: flex-start;
+    }
+    &--center {
+      justify-content: center;
+    }
+    &--right {
+      justify-content: flex-end;
+    }
+  }
+
+  &__valueBlock {
     width: 100%;
     display: flex;
     flex-direction: row;
-  }
 
-  &__titleGroup {
-    display: flex;
-    flex-direction: row;
+    &--left {
+      justify-content: start;
+    }
+
+    &--center {
+      justify-content: center;
+    }
+
+    &--right {
+      justify-content: end;
+    }
   }
 
   &__title {
-    font-weight: bold;
     word-wrap: break-word;
     width: 100%;
 
     button {
-      font-weight: bold;
       width: 95%;
-    }
-  }
-
-  &__icon {
-    position: absolute;
-    top: $padding;
-
-    &--left {
-      left: $padding;
-    }
-
-    &--right {
-      right: $padding;
+      outline: none;
+      display: block;
     }
   }
 
@@ -109,16 +111,15 @@ $padding: 8px;
     font-weight: bold;
   }
 
-  &__gap {
-    position: relative;
-  }
+  &__icon {
+    display: flex;
 
-  &__body {
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    &--left {
+      justify-content: left;
+    }
+
+    &--right {
+      justify-content: right;
+    }
   }
 }

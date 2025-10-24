@@ -16,6 +16,7 @@ import type { SettingsSpec } from '../../../../specs';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import type { PointerState } from '../../../../state/pointer_states';
+import { getKeyPressedSelector } from '../../../../state/selectors/get_key_pressed';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isClicking } from '../../../../state/utils/is_clicking';
@@ -35,8 +36,8 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.Heatmap) {
       selector = createCustomCachedSelector(
-        [getHeatmapSpecSelector, getLastClickSelector, getSettingsSpecSelector, getPickedShapes],
-        (spec, lastClick: PointerState | null, settings: SettingsSpec, pickedShapes): void => {
+        [getHeatmapSpecSelector, getLastClickSelector, getSettingsSpecSelector, getPickedShapes, getKeyPressedSelector],
+        (spec, lastClick: PointerState | null, settings: SettingsSpec, pickedShapes, keyPressed): void => {
           if (!spec) {
             return;
           }
@@ -55,7 +56,7 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
                 key: `spec{${spec.id}}`,
               },
             ]);
-            settings.onElementClick(elements);
+            settings.onElementClick(elements, { keyPressed });
           }
           prevClick = lastClick;
         },

@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import type { Radian } from './../../../../common/geometry';
 import { normalizeAngles } from './utils';
+import type { Radian } from '../../../../common/geometry';
 
 const normalize = (a: Radian): number => a / Math.PI;
 const denormalize = (a: number): Radian => a * Math.PI;

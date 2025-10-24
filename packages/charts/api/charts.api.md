@@ -16,7 +16,6 @@ import type { Optional } from 'utility-types';
 import type { OptionalKeys } from 'utility-types';
 import type { PropsWithChildren as PropsWithChildren_2 } from 'react';
 import { default as React_2 } from 'react';
-import type { ReactChild } from 'react';
 import type { ReactElement } from 'react';
 import type { ReactNode } from 'react';
 import type { Required as Required_2 } from 'utility-types';
@@ -48,10 +47,10 @@ export const AGGREGATE_KEY = "value";
 // @public (undocumented)
 export function aggregateAccessor(n: ArrayEntry): number;
 
-// @public (undocumented)
+// @public @deprecated
 export const AMSTERDAM_DARK_THEME: Theme;
 
-// @public (undocumented)
+// @public @deprecated
 export const AMSTERDAM_LIGHT_THEME: Theme;
 
 // @public (undocumented)
@@ -209,7 +208,7 @@ export interface AreaSeriesStyle {
     };
     isolatedPoint: {
         enabled: boolean;
-    } & Omit<PointStyle, 'radius'>;
+    } & Omit<PointStyle, 'radius' | 'dimmed'>;
     line: LineStyle;
     point: PointStyle;
     pointVisibilityMinDistance: Pixels;
@@ -217,6 +216,14 @@ export interface AreaSeriesStyle {
 
 // @public (undocumented)
 export interface AreaStyle {
+    dimmed: {
+        opacity: number;
+    } | {
+        fill: Color | ColorVariant;
+        texture: {
+            opacity: number;
+        };
+    };
     fill?: Color | ColorVariant;
     opacity: number;
     texture?: TexturedStyles;
@@ -239,7 +246,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "ticks" | "tickFormat" | "gridLine" | "labelFormat" | "integersOnly" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "tickFormat" | "ticks" | "gridLine" | "labelFormat" | "integersOnly" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -422,11 +429,25 @@ export const BrushAxis: Readonly<{
 // @public (undocumented)
 export type BrushAxis = $Values<typeof BrushAxis>;
 
-// @public (undocumented)
-export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
+// @public
+export type BrushEndListener = (brushAreaEvent: BrushEvent, options?: {
+    keyPressed: KeyPressed;
+}) => void;
+
+// @public
+export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 
 // @public (undocumented)
-export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
+export interface BrushStyle {
+    // (undocumented)
+    fill: Color;
+    // (undocumented)
+    opacity: Ratio;
+    // (undocumented)
+    stroke: Color;
+    // (undocumented)
+    strokeWidth: Pixels;
+}
 
 // Warning: (ae-forgotten-export) The symbol "buildProps_5" needs to be exported by the entry point index.d.ts
 // Warning: (ae-incompatible-release-tags) The symbol "BubbleSeries" is marked as @public, but its signature references "BubbleSeriesSpec" which is marked as @alpha
@@ -1150,8 +1171,10 @@ export interface DomainRange {
     minInterval?: number;
 }
 
-// @public (undocumented)
-export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>) => void;
+// @public
+export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>, options?: {
+    keyPressed: KeyPressed;
+}) => void;
 
 // @public (undocumented)
 export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>) => void;
@@ -1237,7 +1260,7 @@ export type FitConfig = {
 // @public
 export const Flame: <D extends BaseDatum = any>(props: SFProps<FlameSpec<D>, keyof (typeof buildProps_11)["overrides"], keyof (typeof buildProps_11)["defaults"], keyof (typeof buildProps_11)["optionals"], keyof (typeof buildProps_11)["requires"]>) => null;
 
-// @public (undocumented)
+// @public
 export type FlameElementEvent = FlameLayerValue;
 
 // @public
@@ -1458,7 +1481,7 @@ export interface GridLineStyle {
     visible: boolean;
 }
 
-// @public (undocumented)
+// @public
 export interface GroupBrushExtent {
     // (undocumented)
     extent: [number, number];
@@ -1514,7 +1537,7 @@ export interface HeatmapBandsColorScale {
     type: 'bands';
 }
 
-// @public (undocumented)
+// @public
 export interface HeatmapBrushEvent extends SmallMultiplesDatum {
     // (undocumented)
     cells: Cell[];
@@ -1536,7 +1559,7 @@ export interface HeatmapCellDatum extends SmallMultiplesDatum {
     y: NonNullable<PrimitiveValue>;
 }
 
-// @public (undocumented)
+// @public
 export type HeatmapElementEvent = [cell: Cell, seriesIdentifier: SeriesIdentifier];
 
 // @public (undocumented)
@@ -1673,6 +1696,13 @@ export interface HighlighterStyle {
         strokeWidth: Pixels;
         opacity: Ratio;
         radius: Pixels;
+        onHover: {
+            fill: Color | ColorVariant;
+            stroke: Color | ColorVariant;
+            strokeWidth: Pixels;
+            opacity: Ratio;
+            radius: Pixels;
+        };
     };
 }
 
@@ -1735,6 +1765,9 @@ export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, Fal
 
 // @public (undocumented)
 export type Key = CategoryKey;
+
+// @public
+export type KeyPressed = Record<ModifierKeys, boolean>;
 
 // @public (undocumented)
 export type LabelAccessor<T = PrimitiveValue> = (value: T) => string;
@@ -1990,7 +2023,7 @@ export interface LineSeriesStyle {
     };
     isolatedPoint: {
         enabled: boolean;
-    } & Omit<PointStyle, 'radius'>;
+    } & Omit<PointStyle, 'radius' | 'dimmed'>;
     line: LineStyle;
     point: PointStyle;
     pointVisibilityMinDistance: Pixels;
@@ -1999,6 +2032,16 @@ export interface LineSeriesStyle {
 // @public (undocumented)
 export interface LineStyle {
     dash?: number[];
+    dimmed: {
+        opacity: number;
+    } | {
+        stroke: Color | ColorVariant;
+        strokeWidth: number;
+    };
+    // (undocumented)
+    focused: {
+        strokeWidth: number;
+    };
     opacity: number;
     stroke?: Color | ColorVariant;
     strokeWidth: number;
@@ -2042,7 +2085,7 @@ export type MetricBase = {
     extra?: ReactElement | ComponentType<{
         fontSize: number;
         color: string;
-    }>;
+    }> | SecondaryMetricProps;
     icon?: ComponentType<{
         width: number;
         height: number;
@@ -2061,6 +2104,11 @@ export type MetricElementEvent = {
     columnIndex: number;
 };
 
+// Warning: (ae-forgotten-export) The symbol "FontWeight" needs to be exported by the entry point index.d.ts
+//
+// @public
+export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal'>;
+
 // @alpha (undocumented)
 export interface MetricSpec extends Spec {
     // (undocumented)
@@ -2074,7 +2122,7 @@ export interface MetricSpec extends Spec {
 // @alpha @deprecated (undocumented)
 export type MetricSpecProps = ComponentProps<typeof Metric>;
 
-// @public (undocumented)
+// @public
 export interface MetricStyle {
     // (undocumented)
     barBackground: Color;
@@ -2084,7 +2132,9 @@ export interface MetricStyle {
     // (undocumented)
     emptyBackground: Color;
     // (undocumented)
-    iconAlign: 'left' | 'right';
+    extraTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
+    // (undocumented)
+    iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
     // (undocumented)
     minHeight: Pixels;
     // (undocumented)
@@ -2094,13 +2144,27 @@ export interface MetricStyle {
     // (undocumented)
     textDarkColor: Color;
     // (undocumented)
+    textExtraDarkColor: Color;
+    // (undocumented)
+    textExtraLightColor: Color;
+    // (undocumented)
     textLightColor: Color;
     // (undocumented)
-    titlesTextAlign: 'left' | 'center' | 'right';
+    textSubtitleDarkColor: Color;
+    // (undocumented)
+    textSubtitleLightColor: Color;
+    // Warning: (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    titlesTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
+    // (undocumented)
+    titleWeight: MetricFontWeight;
     // (undocumented)
     valueFontSize: 'default' | 'fit' | number;
     // (undocumented)
-    valuesTextAlign: 'left' | 'center' | 'right';
+    valuePosition: 'top' | 'bottom';
+    // (undocumented)
+    valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
 }
 
 // @alpha (undocumented)
@@ -2157,6 +2221,9 @@ export type MetricWTrend = (MetricWNumber | MetricWText | MetricWNumberArrayValu
 
 // @public (undocumented)
 export const MODEL_KEY = "parent";
+
+// @public
+export type ModifierKeys = 'shiftKey' | 'ctrlKey' | 'altKey' | 'metaKey';
 
 // @public
 export type Neverify<T extends Record<string, unknown>> = {
@@ -2236,7 +2303,7 @@ export type PartialTheme = RecursivePartial<Theme>;
 // @public
 export const Partition: <D extends BaseDatum = any>(props: SFProps<PartitionSpec<D>, keyof (typeof buildProps)["overrides"], keyof (typeof buildProps)["defaults"], keyof (typeof buildProps)["optionals"], keyof (typeof buildProps)["requires"]>) => null;
 
-// @public (undocumented)
+// @public
 export type PartitionElementEvent = [layers: Array<LayerValue>, seriesIdentifier: SeriesIdentifier];
 
 // Warning: (ae-forgotten-export) The symbol "LabelConfig" needs to be exported by the entry point index.d.ts
@@ -2428,7 +2495,16 @@ export type PointShape = $Values<typeof PointShape>;
 
 // @public (undocumented)
 export interface PointStyle {
+    dimmed: {
+        opacity: number;
+    } | {
+        fill: Color | ColorVariant;
+        stroke: Color | ColorVariant;
+    };
     fill?: Color | ColorVariant;
+    focused?: {
+        strokeWidth: number;
+    };
     opacity: number;
     radius: Pixels;
     shape?: PointShape;
@@ -2637,6 +2713,26 @@ export const ScaleType: Readonly<{
 // @public
 export type ScaleType = $Values<typeof ScaleType>;
 
+// @alpha
+export interface SecondaryMetricProps {
+    ariaDescription?: string;
+    badgeBorderColor?: {
+        mode: 'none';
+    } | {
+        mode: 'auto';
+    } | {
+        mode: 'custom';
+        color: Color;
+    };
+    badgeColor?: Color;
+    icon?: string;
+    iconPosition?: 'before' | 'after';
+    label?: string;
+    labelPosition?: 'before' | 'after';
+    style?: CSSProperties;
+    value: string;
+}
+
 // @public (undocumented)
 export interface SectorGeomSpecY {
     // (undocumented)
@@ -2780,7 +2876,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
     externalPointerEvents: ExternalPointerEventsSettings;
     locale: string;
     minBrushDelta?: number;
-    noResults?: ComponentType | ReactChild;
+    noResults?: ComponentType | ReactNode;
     onAnnotationClick?: AnnotationClickListener;
     // (undocumented)
     onBrushEnd?: BrushEndListener;
@@ -3032,6 +3128,8 @@ export interface Theme {
     axes: AxisStyle;
     background: BackgroundStyle;
     barSeriesStyle: BarSeriesStyle;
+    // (undocumented)
+    brush: BrushStyle;
     bubbleSeriesStyle: BubbleSeriesStyle;
     bulletGraph: BulletStyle;
     chartMargins: Margins;
@@ -3134,7 +3232,7 @@ export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifi
 };
 
 // @public
-export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "body" | "footer" | "header" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "sort" | "offset" | "unit" | "headerFormatter" | "customTooltip" | "stickTo" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding", never>;
+export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "body" | "footer" | "header" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "sort" | "offset" | "headerFormatter" | "unit" | "customTooltip" | "stickTo" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding", never>;
 
 // @public
 export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
@@ -3471,7 +3569,7 @@ export type WillRenderListener = () => void;
 // @alpha
 export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontStyle" | "fontWeight" | "fontFamily" | "padding" | "minFontSize" | "maxFontSize" | "exponent" | "startAngle" | "endAngle" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
 
-// @public (undocumented)
+// @public
 export type WordCloudElementEvent = [model: WordModel, seriesIdentifier: SeriesIdentifier];
 
 // Warning: (ae-incompatible-release-tags) The symbol "WordcloudProps" is marked as @public, but its signature references "Wordcloud" which is marked as @alpha
@@ -3532,7 +3630,7 @@ export interface WordModel {
 // @public (undocumented)
 export type XScaleType = typeof ScaleType.Ordinal | ScaleContinuousType;
 
-// @public (undocumented)
+// @public
 export interface XYBrushEvent {
     // (undocumented)
     x?: [number, number];
@@ -3540,7 +3638,7 @@ export interface XYBrushEvent {
     y?: Array<GroupBrushExtent>;
 }
 
-// @public (undocumented)
+// @public
 export type XYChartElementEvent = [geometry: GeometryValue, seriesIdentifier: XYChartSeriesIdentifier];
 
 // @public (undocumented)

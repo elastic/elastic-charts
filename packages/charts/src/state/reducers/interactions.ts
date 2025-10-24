@@ -9,13 +9,13 @@
 import type { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
-import { getTooltipSpecSelector } from './../selectors/get_tooltip_spec';
 import { ChartType } from '../../chart_types';
 import { drilldownActive } from '../../chart_types/partition_chart/state/selectors/drilldown_active';
 import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
 import type { LegendItem } from '../../common/legend';
 import type { SeriesIdentifier } from '../../common/series_id';
 import type { TooltipValue } from '../../specs/tooltip';
+import { noModifierKeysPressed } from '../../utils/keys';
 import { getDelta } from '../../utils/point';
 import { onDOMElementEnter, onDOMElementLeave } from '../actions/dom_element';
 import { onKeyPress } from '../actions/key';
@@ -29,6 +29,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../selectors/get_i
 import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipInfoSelector } from '../selectors/get_internal_tooltip_info';
 import { getLegendItemsSelector } from '../selectors/get_legend_items';
+import { getTooltipSpecSelector } from '../selectors/get_tooltip_spec';
 import { getInitialPointerState } from '../utils/get_initial_pointer_state';
 import { getInitialTooltipState } from '../utils/get_initial_tooltip_state';
 
@@ -77,6 +78,7 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
       state.pointer.dragging = dragging;
       state.pointer.current.position = action.payload.position;
       state.pointer.current.time = action.payload.time;
+      // Do not update state.pointer.keyPressed here, only the mouseDown event should store the pressed keys
     })
     .addCase(onMouseDown, (globalState, action) => {
       if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
@@ -90,6 +92,7 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
         position: action.payload.position,
         time: action.payload.time,
       };
+      state.pointer.keyPressed = action.payload.keyPressed ?? noModifierKeysPressed;
     })
     .addCase(onMouseUp, (globalState, action) => {
       if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
@@ -129,6 +132,7 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
         position: action.payload.position,
         time: action.payload.time,
       };
+      // Do not update state.pointer.keyPressed here, only the mouseDown event should store the pressed keys
     });
 };
 

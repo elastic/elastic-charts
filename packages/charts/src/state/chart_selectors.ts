@@ -22,6 +22,22 @@ import type { TooltipInfo } from '../components/tooltip/types';
 import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
+export interface ScreenReaderItem {
+  /** The label for this part of the summary */
+  label: string;
+  /** Optional ID for referencing this part */
+  id?: string;
+  /** The value for this part of the summary */
+  value: string;
+}
+
+/** @internal */
+export interface ChartSpecificScreenReaderData {
+  /** Custom summary parts to include in the consolidated summary */
+  screenReaderItems?: ScreenReaderItem[];
+}
+
+/** @internal */
 export interface LegendItemLabel {
   label: string;
   depth: number;
@@ -135,6 +151,11 @@ export interface ChartSelectors {
   getChartTypeDescription(globalState: GlobalChartState): string;
 
   /**
+   * Get chart-specific data for screen reader accessibility
+   */
+  getScreenReaderData?(globalState: GlobalChartState): ChartSpecificScreenReaderData;
+
+  /**
    * Get the domain of the vertical and horizontal small multiple grids
    */
   getSmallMultiplesDomains(globalState: GlobalChartState): SmallMultiplesSeriesDomains;
@@ -148,16 +169,17 @@ export interface ChartSelectors {
 type ChartSelectorsFactory = () => ChartSelectors;
 
 const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
-const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
-const EMPTY_DIMENSION = Object.freeze({ top: 0, left: 0, width: 0, height: 0 });
-const EMPTY_SM_DOMAINS: SmallMultiplesSeriesDomains = Object.freeze({ smVDomain: [], smHDomain: [] });
-const EMPTY_OBJ = Object.freeze({});
-const EMPTY_TOOLTIP_VISIBILITY: TooltipVisibility = Object.freeze({
+const EMPTY_TOOLTIP = { header: null, values: [] };
+const EMPTY_DIMENSION = { top: 0, left: 0, width: 0, height: 0 };
+const EMPTY_SM_DOMAINS: SmallMultiplesSeriesDomains = { smVDomain: [], smHDomain: [] };
+const EMPTY_OBJ = {};
+const EMPTY_TOOLTIP_VISIBILITY: TooltipVisibility = {
   visible: false,
   isExternal: false,
   displayOnly: false,
   isPinnable: false,
-});
+};
+const EMPTY_SCREEN_READER_DATA: ChartSpecificScreenReaderData = { screenReaderItems: [] };
 
 type CallbackCreator = () => (state: GlobalChartState) => void;
 
@@ -170,7 +192,7 @@ export const createChartSelectorsFactory =
   () => {
     const callbacks = callbacksCreators.map((cb) => cb());
 
-    return {
+    const chartSelectors = {
       isInitialized: () => InitStatus.SpecNotInitialized,
       isBrushAvailable: () => false,
       isBrushing: () => false,
@@ -187,6 +209,7 @@ export const createChartSelectorsFactory =
       getBrushArea: () => null,
       getDebugState: () => EMPTY_OBJ,
       getChartTypeDescription: () => '',
+      getScreenReaderData: () => EMPTY_SCREEN_READER_DATA,
       getSmallMultiplesDomains: () => EMPTY_SM_DOMAINS,
       canDisplayChartTitles: () => true,
       ...overrides,
@@ -194,6 +217,8 @@ export const createChartSelectorsFactory =
         callbacks.forEach((cb) => cb(state));
       },
     };
+
+    return chartSelectors;
   };
 
 /** @internal */

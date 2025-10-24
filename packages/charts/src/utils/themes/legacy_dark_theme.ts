@@ -21,7 +21,7 @@ import { GOLDEN_RATIO, TAU } from '../../common/constants';
 import { ColorVariant } from '../common';
 
 /**
- * Legacy dark chart theme to be removed at some point
+ * Legacy Dark chart theme to be removed in future release
  *
  * @public
  * @deprecated Use new `DARK_THEME`
@@ -34,6 +34,8 @@ export const LEGACY_DARK_THEME: Theme = {
       visible: true,
       strokeWidth: 1,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
+      focused: { strokeWidth: 1 },
     },
     point: {
       visible: 'always',
@@ -42,6 +44,7 @@ export const LEGACY_DARK_THEME: Theme = {
       fill: Colors.Black.keyword,
       radius: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
     isolatedPoint: {
       enabled: true,
@@ -68,17 +71,21 @@ export const LEGACY_DARK_THEME: Theme = {
       fill: Colors.Black.keyword,
       radius: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
   },
   areaSeriesStyle: {
     area: {
       visible: true,
       opacity: 0.3,
+      dimmed: { opacity: 0.25 },
     },
     line: {
       visible: true,
       strokeWidth: 1,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
+      focused: { strokeWidth: 1 },
     },
     point: {
       visible: 'never',
@@ -87,6 +94,7 @@ export const LEGACY_DARK_THEME: Theme = {
       fill: Colors.Black.keyword,
       radius: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
     isolatedPoint: {
       enabled: true,
@@ -414,16 +422,23 @@ export const LEGACY_DARK_THEME: Theme = {
   metric: {
     textLightColor: '#E0E5EE',
     textDarkColor: '#343741',
+    textSubtitleLightColor: '#E0E5EE',
+    textSubtitleDarkColor: '#343741',
+    textExtraLightColor: '#E0E5EE',
+    textExtraDarkColor: '#343741',
     valueFontSize: 'default',
     minValueFontSize: 12,
     titlesTextAlign: 'left',
-    valuesTextAlign: 'right',
+    extraTextAlign: 'right',
+    valueTextAlign: 'right',
+    valuePosition: 'bottom',
     iconAlign: 'right',
     border: '#343741',
     barBackground: '#343741',
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
+    titleWeight: 'bold',
   },
   bulletGraph: DARK_THEME_BULLET_STYLE,
   tooltip: {
@@ -446,12 +461,25 @@ export const LEGACY_DARK_THEME: Theme = {
   highlighter: {
     point: {
       opacity: 1,
-      fill: ColorVariant.None,
+      fill: Colors.Black.keyword,
       stroke: ColorVariant.Series,
-      strokeWidth: 4,
-      radius: 10,
+      strokeWidth: 1,
+      radius: 2,
+      onHover: {
+        opacity: 1,
+        fill: ColorVariant.None,
+        stroke: ColorVariant.Series,
+        strokeWidth: 4,
+        radius: 10,
+      },
     },
   },
   lineAnnotation: DEFAULT_ANNOTATION_LINE_STYLE,
   rectAnnotation: DEFAULT_ANNOTATION_RECT_STYLE,
+  brush: {
+    fill: Colors.Gray.keyword,
+    opacity: 0.6,
+    stroke: Colors.Transparent.keyword,
+    strokeWidth: 0,
+  },
 };

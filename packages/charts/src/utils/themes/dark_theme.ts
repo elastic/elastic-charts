@@ -12,6 +12,7 @@ import {
   DARK_BACKGROUND_COLORS,
   DARK_BACKGROUND_COLORS_CUSTOM,
   LIGHT_TEXT_COLORS,
+  DARK_DIMMED_COLORS,
 } from './base_colors';
 import { BOREALIS_COLORS_PALETTE } from './borealis_colors';
 import type { Theme } from './theme';
@@ -29,16 +30,26 @@ export const DARK_THEME: Theme = {
   lineSeriesStyle: {
     line: {
       visible: true,
-      strokeWidth: 2,
+      strokeWidth: 1.5,
       opacity: 1,
+
+      focused: { strokeWidth: 2.5 },
+      dimmed: {
+        strokeWidth: 1,
+        stroke: DARK_DIMMED_COLORS.lineStroke,
+      },
     },
     point: {
       visible: 'auto',
-      strokeWidth: 0,
-      stroke: ColorVariant.None,
-      fill: ColorVariant.Series,
+      strokeWidth: 1.5,
+      stroke: ColorVariant.Series,
+      fill: DARK_BACKGROUND_COLORS.backgroundBasePlain,
       radius: 3,
       opacity: 1,
+      dimmed: {
+        stroke: DARK_DIMMED_COLORS.linePointStroke,
+        fill: DARK_DIMMED_COLORS.linePointFill,
+      },
     },
     isolatedPoint: {
       enabled: true,
@@ -56,7 +67,7 @@ export const DARK_THEME: Theme = {
         opacity: 1,
       },
     },
-    pointVisibilityMinDistance: 40,
+    pointVisibilityMinDistance: 20,
   },
   bubbleSeriesStyle: {
     point: {
@@ -65,25 +76,42 @@ export const DARK_THEME: Theme = {
       fill: Colors.Black.keyword,
       radius: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
   },
   areaSeriesStyle: {
     area: {
       visible: true,
-      opacity: 0.3,
+      opacity: 0.2,
+      dimmed: {
+        fill: DARK_DIMMED_COLORS.areaFill,
+        texture: { opacity: 0.25 },
+      },
     },
     line: {
       visible: true,
-      strokeWidth: 2,
+      strokeWidth: 1.5,
       opacity: 1,
+      dimmed: {
+        strokeWidth: 1,
+        stroke: DARK_DIMMED_COLORS.areaStroke,
+      },
+      focused: {
+        strokeWidth: 2.5,
+      },
     },
     point: {
       visible: 'never',
-      strokeWidth: 0,
-      stroke: ColorVariant.None,
-      fill: ColorVariant.Series,
+      strokeWidth: 1.5,
+      stroke: ColorVariant.Series,
+      fill: DARK_BACKGROUND_COLORS.backgroundBasePlain,
       radius: 3,
       opacity: 1,
+      focused: { strokeWidth: 2.5 },
+      dimmed: {
+        stroke: DARK_DIMMED_COLORS.areaPointStroke,
+        fill: DARK_DIMMED_COLORS.areaPointFill,
+      },
     },
     isolatedPoint: {
       enabled: true,
@@ -228,13 +256,13 @@ export const DARK_THEME: Theme = {
     },
     line: {
       visible: true,
-      stroke: DARK_BORDER_COLORS.borderBasePlain,
+      stroke: DARK_BORDER_COLORS.borderStrongPrimary,
       strokeWidth: 1,
       dash: [4, 4],
     },
     crossLine: {
       visible: true,
-      stroke: DARK_BORDER_COLORS.borderBasePlain,
+      stroke: DARK_BORDER_COLORS.borderStrongPrimary,
       strokeWidth: 1,
       dash: [4, 4],
     },
@@ -412,17 +440,24 @@ export const DARK_THEME: Theme = {
   },
   metric: {
     textLightColor: DARK_TEXT_COLORS.textHeading,
+    textSubtitleLightColor: DARK_TEXT_COLORS.textParagraph,
+    textExtraLightColor: DARK_TEXT_COLORS.textParagraph,
     textDarkColor: LIGHT_TEXT_COLORS.textHeading,
+    textSubtitleDarkColor: LIGHT_TEXT_COLORS.textParagraph,
+    textExtraDarkColor: LIGHT_TEXT_COLORS.textParagraph,
     valueFontSize: 'default',
     minValueFontSize: 12,
     titlesTextAlign: 'left',
-    valuesTextAlign: 'right',
+    extraTextAlign: 'right',
+    valueTextAlign: 'right',
+    valuePosition: 'bottom',
     iconAlign: 'right',
     border: DARK_BORDER_COLORS.borderBaseSubdued,
     barBackground: DARK_BACKGROUND_COLORS.backgroundBaseDisabled,
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
+    titleWeight: 'bold',
   },
   bulletGraph: DARK_THEME_BULLET_STYLE,
   tooltip: {
@@ -445,11 +480,18 @@ export const DARK_THEME: Theme = {
   },
   highlighter: {
     point: {
-      opacity: 0.5,
+      opacity: 1,
       fill: ColorVariant.Series,
-      stroke: ColorVariant.None,
-      strokeWidth: 0,
-      radius: 5,
+      stroke: ColorVariant.Series,
+      strokeWidth: 1.5,
+      radius: 3,
+      onHover: {
+        opacity: 0.5,
+        fill: ColorVariant.Series,
+        stroke: ColorVariant.None,
+        strokeWidth: 0,
+        radius: 5,
+      },
     },
   },
   lineAnnotation: {
@@ -464,5 +506,11 @@ export const DARK_THEME: Theme = {
     opacity: 0.25,
     fill: '#98A2B3',
     stroke: '#98A2B3',
+  },
+  brush: {
+    fill: DARK_BACKGROUND_COLORS.backgroundFilledPrimary,
+    opacity: 0.2,
+    stroke: DARK_BORDER_COLORS.borderStrongPrimary,
+    strokeWidth: 1,
   },
 };

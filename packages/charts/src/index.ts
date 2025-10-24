@@ -49,7 +49,7 @@ export { GeometryValue, BandedAccessorType } from './utils/geometry';
 export { LegendPath, LegendPathElement } from './state/actions/legend';
 export { LegendItemValue, LegendValue } from './common/legend';
 export { CategoryKey, CategoryLabel } from './common/category';
-export { Layer as PartitionLayer, PartitionProps } from './chart_types/partition_chart/specs/index';
+export { Layer as PartitionLayer, PartitionProps } from './chart_types/partition_chart/specs';
 export { FillLabelConfig as PartitionFillLabel, PartitionStyle } from './utils/themes/partition';
 export { PartitionLayout } from './chart_types/partition_chart/layout/types/config_types';
 

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { BADGE_BORDER } from './badge';
 import type { TextParts } from './text_processing';
 import { getTextParts } from './text_processing';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
@@ -19,31 +20,66 @@ import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricDatum, MetricWNumber } from '../../specs';
 import { isMetricWProgress } from '../../specs';
 
-interface HeightBasedSizes {
+type BreakPoint = 'xxxs' | 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
+
+type ResponsiveBreakpoints = {
+  /** Maximum number of lines allowed for the title text before truncation */
+  titleMaxLines: number;
+  /** Maximum number of lines allowed for the subtitle text before truncation */
+  subtitleMaxLines: number;
+  /** Whether the title element should be visible at this breakpoint (if it exists) */
+  title: boolean;
+  /** Whether the subtitle element should be visible at this breakpoint (if it exists) */
+  subtitle: boolean;
+  /** Whether the extra element (e.g., description, badge) should be visible at this breakpoint (if it exists) */
+  extra: boolean;
+};
+
+/** @internal */
+export interface HeightBasedSizes {
   iconSize: number;
   titleFontSize: number;
   subtitleFontSize: number;
   extraFontSize: number;
   valueFontSize: number;
   valuePartFontSize: number;
+  progressBarThickness: number;
 }
 
-type BreakPoint = 'xxxs' | 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
+/** @internal */
+export interface MetricTextLayout extends ResponsiveBreakpoints {
+  /** The actual wrapped lines of title text that will be rendered */
+  titleLines: string[];
+  /** The actual wrapped lines of subtitle text that will be rendered */
+  subtitleLines: string[];
+  gapHeight: number;
+  availableHeightWithoutValue: number;
+}
 
-type ElementVisibility = {
-  titleMaxLines: number;
-  subtitleMaxLines: number;
-  title: boolean;
-  subtitle: boolean;
-  extra: boolean;
-};
+/** @internal */
+export interface MetricTextDimensions {
+  heightBasedSizes: HeightBasedSizes;
+  hasProgressBar: boolean;
+  progressBarDirection: LayoutDirection | undefined;
+  /**
+   * This only applies when there is a progress bar and is vertical.
+   * We have added the padding into the calculation
+   */
+  progressBarWidth: number;
+  visibility: MetricTextLayout;
+  textParts: TextParts[];
+  /**
+   * This only applies when there is an icon and the value postition is top.
+   * We have added the padding into the calculation
+   */
+  iconGridColumnWidth: number;
+}
 
 /** @internal */
 export const PADDING = 8;
-
-const PROGRESS_BAR_WIDTH = 10; // synced with scss variables
-const PROGRESS_BAR_TARGET_WIDTH = 4;
-const LINE_HEIGHT = 1.2; // aligned with our CSS
+/** @internal */
+export const PROGRESS_BAR_TARGET_SIZE = 8; // Aligned with our CSS in _index.scss
+const LINE_HEIGHT = 1.2; // Aligned with our CSS
 const HEIGHT_BP: [number, number, BreakPoint][] = [
   [100, 200, 'xs'],
   [200, 300, 's'],
@@ -97,46 +133,48 @@ const SUBTITLE_FONT: Font = {
   ...TITLE_FONT,
   fontWeight: 'normal',
 };
+const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs: 8, s: 8, m: 8, l: 8, xl: 8, xxl: 16 };
+const ELEMENT_PADDING = 5; // Aligned with our CSS in _text.scss
 
 /**
  * Approximate font size to fit given available space
  * @internal
  */
 export function getFitValueFontSize(
-  valueFontSize: number,
-  width: number,
-  gapHeight: number,
+  initialValueFontSize: number, // fixed size based on panel height
+  totalWidth: number,
+  availableHeight: number,
   textParts: TextParts[],
   minValueFontSize: number,
   hasIcon: boolean,
-): number {
-  const maxWidth = (width - 2 * PADDING) * 0.98; // small buffer to prevent clipping
+  isFitMode: boolean,
+) {
+  const maxWidth = (totalWidth - 2 * PADDING) * 0.98; // Buffer to prevent clipping
+  const maxHeight = (availableHeight - 2 * PADDING) * 0.98;
+
   const widthConstrainedSize = withTextMeasure((textMeasure) => {
     const iconMultiplier = hasIcon ? 1 : 0;
     const textWidth = textParts.reduce((sum, { text, emphasis }) => {
-      const fontSize = emphasis === 'small' ? Math.floor(valueFontSize / VALUE_PART_FONT_RATIO) : valueFontSize;
+      const fontSize =
+        emphasis === 'small' ? Math.floor(initialValueFontSize / VALUE_PART_FONT_RATIO) : initialValueFontSize;
       return sum + textMeasure(text, VALUE_FONT, fontSize).width;
     }, 0);
-    const ratio = textWidth / valueFontSize;
+    const ratio = textWidth / initialValueFontSize;
     return (maxWidth - iconMultiplier * PADDING) / (ratio + iconMultiplier / VALUE_PART_FONT_RATIO);
   });
-  const heightConstrainedSize = valueFontSize + gapHeight;
 
-  return Math.floor(Math.max(Math.min(heightConstrainedSize, widthConstrainedSize), minValueFontSize));
-}
+  let constrainedSize;
 
-/** @internal */
-export interface MetricTextDimensions {
-  heightBasedSizes: HeightBasedSizes;
-  hasProgressBar: boolean;
-  progressBarDirection: LayoutDirection | undefined;
-  progressBarWidth: number;
-  visibility: ElementVisibility & {
-    titleLines: string[];
-    subtitleLines: string[];
-    gapHeight: number;
-  };
-  textParts: TextParts[];
+  if (isFitMode) {
+    // In fit mode: apply both width and height constraints
+    const heightConstrainedSize = Math.floor(maxHeight / LINE_HEIGHT);
+    constrainedSize = Math.min(widthConstrainedSize, heightConstrainedSize);
+  } else {
+    // In default mode: only apply width constraint
+    constrainedSize = Math.min(initialValueFontSize, widthConstrainedSize);
+  }
+
+  return Math.floor(Math.max(constrainedSize, minValueFontSize));
 }
 
 /** @internal */
@@ -151,20 +189,40 @@ export function getMetricTextPartDimensions(
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
 
+  const hasVerticalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Vertical;
+  const hasHorizontalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Horizontal;
+
+  const { progressBarThickness, iconSize } = heightBasedSizes;
+
+  const progressBarTotalSpace = progressBarThickness + (hasTarget ? PROGRESS_BAR_TARGET_SIZE : 0) + PADDING;
+  const progressBarWidth = hasVerticalProgressBar ? progressBarTotalSpace : 0;
+  const progressBarHeight = hasHorizontalProgressBar ? progressBarTotalSpace : 0;
+
+  const isIconVisible = !!datum.icon && style.valuePosition === 'top';
+  // The width of the icon column, including padding
+  const iconColumnWidth = iconSize + PADDING;
+  // If the value is center-aligned and the icon is visible, add an extra column width for visual centering
+  const needsCenterSpacer = isIconVisible && style.valueTextAlign === 'center';
+  const iconGridColumnWidth = isIconVisible ? iconColumnWidth * (needsCenterSpacer ? 2 : 1) : 0;
+
   return {
     heightBasedSizes,
     hasProgressBar,
     progressBarDirection,
-    progressBarWidth:
-      hasProgressBar && progressBarDirection === LayoutDirection.Vertical
-        ? PROGRESS_BAR_WIDTH + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0)
-        : 0,
-    visibility: elementVisibility(datum, panel, heightBasedSizes, locale, style.valueFontSize === 'fit'),
+    progressBarWidth,
+    visibility: computeMetricTextLayout(
+      datum,
+      panel,
+      heightBasedSizes,
+      locale,
+      style.valueFontSize === 'fit',
+      progressBarHeight,
+    ),
     textParts: getTextParts(datum, style),
+    iconGridColumnWidth,
   };
 }
 
-/** @internal */
 function getHeightBasedFontSizes(
   ranges: [number, number, BreakPoint][],
   value: number,
@@ -182,6 +240,7 @@ function getHeightBasedFontSizes(
     extraFontSize: EXTRA_FONT_SIZE[size],
     valueFontSize,
     valuePartFontSize,
+    progressBarThickness: PROGRESS_BAR_THICKNESS[size],
   };
 }
 
@@ -194,6 +253,7 @@ export function getFittedFontSizes(
     valuePartFontSize: Math.floor(fittedValueFontSize / VALUE_PART_FONT_RATIO),
   };
 }
+
 /** @internal */
 export function getFixedFontSizes(
   fixedFontSize: number,
@@ -223,89 +283,110 @@ export function getSnappedFontSizes(
   };
 }
 
-/** @internal */
-export function elementVisibility(
+const getResponsiveBreakpoints = (title: boolean, subtitle: boolean, extra: boolean): Array<ResponsiveBreakpoints> => [
+  { titleMaxLines: 3, subtitleMaxLines: 2, title, subtitle, extra },
+  { titleMaxLines: 3, subtitleMaxLines: 1, title, subtitle, extra },
+  { titleMaxLines: 2, subtitleMaxLines: 1, title, subtitle, extra },
+  { titleMaxLines: 1, subtitleMaxLines: 1, title, subtitle, extra },
+  { titleMaxLines: 1, subtitleMaxLines: 0, title, subtitle: false, extra },
+  { titleMaxLines: 1, subtitleMaxLines: 0, title, subtitle: false, extra: false },
+  { titleMaxLines: 1, subtitleMaxLines: 0, title, subtitle: false, extra: false },
+];
+
+function computeMetricTextLayout(
   datum: MetricDatum,
   panel: Size,
   sizes: HeightBasedSizes,
   locale: string,
   fit: boolean,
-): ElementVisibility & {
-  titleLines: string[];
-  subtitleLines: string[];
-  gapHeight: number;
-} {
+  progressBarHeight: number, // with padding
+): MetricTextLayout {
   const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * PADDING;
-  const titleHeight = (maxLines: number, textMeasure: TextMeasure) => {
-    return datum.title
-      ? PADDING +
-          wrapText(datum.title, TITLE_FONT, sizes.titleFontSize, maxTitlesWidth, maxLines, textMeasure, locale).length *
-            sizes.titleFontSize *
-            LINE_HEIGHT
-      : 0;
-  };
 
-  const subtitleHeight = (maxLines: number, textMeasure: TextMeasure) => {
-    return datum.subtitle
-      ? PADDING +
-          wrapText(datum.subtitle, SUBTITLE_FONT, sizes.subtitleFontSize, maxTitlesWidth, maxLines, textMeasure, locale)
-            .length *
-            sizes.subtitleFontSize *
-            LINE_HEIGHT
-      : 0;
-  };
+  const titleLineHeight = sizes.titleFontSize * LINE_HEIGHT;
+  const subtitleLineHeight = sizes.subtitleFontSize * LINE_HEIGHT;
 
-  const extraHeight = sizes.extraFontSize * LINE_HEIGHT;
+  // If there is a badge, we add the padding to the extra height
+  const hasBadge = !!(datum?.extra && 'badgeColor' in datum?.extra && datum?.extra?.badgeColor);
+  const badgeHeight = hasBadge ? BADGE_BORDER * 2 : 0;
+  // We assume that the extra element is taking one line
+  const extraHeight = sizes.extraFontSize * LINE_HEIGHT + badgeHeight;
   const valueHeight = sizes.valueFontSize * LINE_HEIGHT;
 
-  const responsiveBreakPoints: Array<ElementVisibility> = [
-    { titleMaxLines: 3, subtitleMaxLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 3, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 2, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
-  ];
+  const responsiveBreakPoints = getResponsiveBreakpoints(!!datum.title, !!datum.subtitle, !!datum.extra);
 
-  const getCombinedHeight = (
-    { titleMaxLines, subtitleMaxLines, title, subtitle, extra }: ElementVisibility,
-    measure: TextMeasure,
-  ) =>
-    (title && titleMaxLines > 0 ? titleHeight(titleMaxLines, measure) : 0) +
-    (subtitle && subtitleMaxLines > 0 ? subtitleHeight(subtitleMaxLines, measure) : 0) +
-    (extra ? extraHeight : 0) +
-    valueHeight +
-    PADDING;
+  function computeMetricTextSize(breakpoints: ResponsiveBreakpoints, measure: TextMeasure) {
+    const titleLines = datum.title
+      ? wrapText(
+          datum.title,
+          TITLE_FONT,
+          sizes.titleFontSize,
+          maxTitlesWidth,
+          breakpoints.titleMaxLines,
+          measure,
+          locale,
+        )
+      : [];
 
-  const isVisible = (ev: ElementVisibility, measure: TextMeasure) => getCombinedHeight(ev, measure) < panel.height;
+    const subtitleLines = datum.subtitle
+      ? wrapText(
+          datum.subtitle,
+          SUBTITLE_FONT,
+          sizes.subtitleFontSize,
+          maxTitlesWidth,
+          breakpoints.subtitleMaxLines,
+          measure,
+          locale,
+        )
+      : [];
+
+    const actualTitleHeight = titleLines.length > 0 ? titleLines.length * titleLineHeight : 0;
+    const actualSubtitleHeight =
+      subtitleLines.length > 0 ? subtitleLines.length * subtitleLineHeight + ELEMENT_PADDING : 0; // Subtitle padding top 5px
+    const actualExtraHeight = breakpoints.extra ? extraHeight + ELEMENT_PADDING : 0; // Extra padding top 5px
+
+    const nonValueElementsHeight =
+      actualTitleHeight + actualSubtitleHeight + actualExtraHeight + progressBarHeight + PADDING * 2;
+    const totalHeight = nonValueElementsHeight + valueHeight;
+
+    return {
+      titleLines,
+      subtitleLines,
+      actualTitleHeight,
+      actualSubtitleHeight,
+      actualExtraHeight,
+      nonValueElementsHeight,
+      totalHeight,
+    };
+  }
+
+  /** Determines if the given breakpoint should be considered "visible" for the provided text measurement */
+  const isVisible = (breakpoints: ResponsiveBreakpoints, measure: TextMeasure) => {
+    const { totalHeight } = computeMetricTextSize(breakpoints, measure);
+    return totalHeight <= panel.height;
+  };
 
   return withTextMeasure((textMeasure) => {
-    const visibilityBreakpoint = fit
-      ? responsiveBreakPoints.at(0)!
-      : responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ?? responsiveBreakPoints.at(-1)!;
+    let visibilityBreakpoint: ResponsiveBreakpoints;
+
+    if (fit) {
+      visibilityBreakpoint = responsiveBreakPoints.at(0)!;
+    } else {
+      const found = responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure));
+      visibilityBreakpoint = found ?? responsiveBreakPoints.at(-1)!;
+    }
+
+    const layoutInfo = computeMetricTextSize(visibilityBreakpoint, textMeasure);
+
+    const availableHeightWithoutValue = Math.max(0, panel.height - layoutInfo.nonValueElementsHeight);
+    const gapHeight = Math.max(0, panel.height - layoutInfo.totalHeight);
 
     return {
       ...visibilityBreakpoint,
-      gapHeight: Math.max(0, panel.height - getCombinedHeight(visibilityBreakpoint, textMeasure)),
-      titleLines: wrapText(
-        datum.title ?? '',
-        TITLE_FONT,
-        sizes.titleFontSize,
-        maxTitlesWidth,
-        visibilityBreakpoint.titleMaxLines,
-        textMeasure,
-        locale,
-      ),
-      subtitleLines: wrapText(
-        datum.subtitle ?? '',
-        SUBTITLE_FONT,
-        sizes.subtitleFontSize,
-        maxTitlesWidth,
-        visibilityBreakpoint.subtitleMaxLines,
-        textMeasure,
-        locale,
-      ),
+      titleLines: layoutInfo.titleLines,
+      subtitleLines: layoutInfo.subtitleLines,
+      gapHeight,
+      availableHeightWithoutValue,
     };
   });
 }

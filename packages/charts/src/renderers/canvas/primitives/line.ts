@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { withContext } from '../';
+import { withContext } from '..';
 import { RGBATupleToString } from '../../../common/color_library_wrappers';
 import type { Line, Stroke } from '../../../geoms/types';
 

@@ -14,7 +14,12 @@ import { TAU } from '../../common/constants';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
 
-/** @public */
+/**
+ * Legacy Amsterdam Dark chart theme to be removed in future release
+ *
+ * @public
+ * @deprecated Use new `DARK_THEME`
+ */
 export const AMSTERDAM_DARK_THEME: Theme = {
   chartPaddings: DEFAULT_CHART_PADDING,
   chartMargins: DEFAULT_CHART_MARGINS,
@@ -23,14 +28,17 @@ export const AMSTERDAM_DARK_THEME: Theme = {
       visible: true,
       strokeWidth: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
+      focused: { strokeWidth: 1 },
     },
     point: {
       visible: 'auto',
       strokeWidth: 0,
-      stroke: ColorVariant.None,
+      stroke: ColorVariant.Series,
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
     isolatedPoint: {
       enabled: true,
@@ -57,25 +65,30 @@ export const AMSTERDAM_DARK_THEME: Theme = {
       fill: Colors.Black.keyword,
       radius: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
   },
   areaSeriesStyle: {
     area: {
       visible: true,
       opacity: 0.3,
+      dimmed: { opacity: 0.25 },
     },
     line: {
       visible: true,
       strokeWidth: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
+      focused: { strokeWidth: 1 },
     },
     point: {
       visible: 'never',
       strokeWidth: 0,
-      stroke: ColorVariant.None,
+      stroke: ColorVariant.Series,
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
     isolatedPoint: {
       enabled: true,
@@ -405,16 +418,23 @@ export const AMSTERDAM_DARK_THEME: Theme = {
   metric: {
     textLightColor: '#E0E5EE',
     textDarkColor: '#343741',
+    textSubtitleLightColor: '#E0E5EE',
+    textSubtitleDarkColor: '#343741',
+    textExtraLightColor: '#E0E5EE',
+    textExtraDarkColor: '#343741',
     valueFontSize: 'default',
     minValueFontSize: 12,
     titlesTextAlign: 'left',
-    valuesTextAlign: 'right',
+    extraTextAlign: 'right',
+    valueTextAlign: 'right',
+    valuePosition: 'bottom',
     iconAlign: 'right',
     border: '#343741',
     barBackground: '#343741',
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
+    titleWeight: 'bold',
   },
   bulletGraph: {
     textColor: '#E0E5EE',
@@ -446,11 +466,18 @@ export const AMSTERDAM_DARK_THEME: Theme = {
 
   highlighter: {
     point: {
-      opacity: 0.5,
+      opacity: 1,
       fill: ColorVariant.Series,
-      stroke: ColorVariant.None,
+      stroke: ColorVariant.Series,
       strokeWidth: 0,
-      radius: 5,
+      radius: 3,
+      onHover: {
+        opacity: 0.5,
+        fill: ColorVariant.Series,
+        stroke: ColorVariant.None,
+        strokeWidth: 0,
+        radius: 5,
+      },
     },
   },
   lineAnnotation: {
@@ -465,5 +492,11 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     opacity: 0.25,
     fill: '#98A2B3',
     stroke: '#98A2B3',
+  },
+  brush: {
+    fill: Colors.Gray.keyword,
+    opacity: 0.6,
+    stroke: Colors.Transparent.keyword,
+    strokeWidth: 0,
   },
 };

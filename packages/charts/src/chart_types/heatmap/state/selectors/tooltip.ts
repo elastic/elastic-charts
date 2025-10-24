@@ -88,7 +88,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
         label: '',
         color: Colors.Transparent.keyword,
         isHighlighted: false,
-        isVisible: true,
+        isVisible: pickedShapes.text.length > 0,
         seriesIdentifier: {
           specId: spec.id,
           key: spec.id,

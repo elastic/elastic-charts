@@ -28,6 +28,7 @@ import { ColorVariant } from '../../../../utils/common';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
 import type { ContinuousDomain, Range } from '../../../../utils/domain';
 import type { SpecId } from '../../../../utils/ids';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { XYChartSeriesIdentifier } from '../../utils/series';
 import { getSeriesIndex } from '../../utils/series';
 import type { BasicSeriesSpec, SeriesColorAccessorFn } from '../../utils/specs';
@@ -563,14 +564,18 @@ describe('Chart State utils', () => {
         visible: true,
         strokeWidth: 100, // the override strokeWidth
         opacity: 1,
+        dimmed: LIGHT_THEME.lineSeriesStyle.line.dimmed,
+        focused: LIGHT_THEME.lineSeriesStyle.line.focused,
       });
       expect(geometries.geometries.lines[0]?.value.style.point).toEqual({
         visible: 'auto',
         fill: 'green', // the override strokeWidth
         opacity: 1,
         radius: 3,
-        stroke: ColorVariant.None,
-        strokeWidth: 0,
+        stroke: ColorVariant.Series,
+        strokeWidth: 1.5,
+        dimmed: LIGHT_THEME.lineSeriesStyle.point.dimmed,
+        focused: { strokeWidth: 2.5 },
       });
     });
     test('can compute area geometries with custom style', () => {
@@ -624,19 +629,24 @@ describe('Chart State utils', () => {
         visible: true,
         fill: 'area-fill-custom-color',
         opacity: 0.2,
+        dimmed: LIGHT_THEME.areaSeriesStyle.area.dimmed,
       });
       expect(geometries.geometries.areas[0]?.value.style.line).toEqual({
         visible: true,
         strokeWidth: 100,
         opacity: 1,
+        dimmed: LIGHT_THEME.areaSeriesStyle.line.dimmed,
+        focused: LIGHT_THEME.areaSeriesStyle.line.focused,
       });
       expect(geometries.geometries.areas[0]?.value.style.point).toEqual({
         visible: 'never',
         fill: 'point-fill-custom-color', // the override strokeWidth
         opacity: 1,
         radius: 3,
-        stroke: ColorVariant.None,
-        strokeWidth: 0,
+        stroke: ColorVariant.Series,
+        strokeWidth: 1.5,
+        dimmed: LIGHT_THEME.areaSeriesStyle.point.dimmed,
+        focused: { strokeWidth: 2.5 },
       });
     });
     test('can compute bars geometries counts', () => {

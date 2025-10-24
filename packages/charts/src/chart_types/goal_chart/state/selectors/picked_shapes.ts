@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { getActivePointerPosition } from './../../../../state/selectors/get_active_pointer_position';
 import { geometries, getPrimitiveGeoms } from './geometries';
 import type { Rectangle } from '../../../../common/geometry';
 import type { LayerValue } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import type { BulletViewModel } from '../../layout/types/viewmodel_types';
 import type { Mark } from '../../layout/viewmodel/geoms';
 import { initialBoundingBox } from '../../layout/viewmodel/geoms';

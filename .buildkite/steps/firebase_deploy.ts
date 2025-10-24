@@ -15,7 +15,13 @@ export const firebaseDeployStep = createStep<CustomCommandStep>(() => {
     label: ':firebase: Deploy - firebase',
     key: 'deploy_fb',
     allow_dependency_failure: true,
-    depends_on: ['build_docs', 'build_storybook', 'build_e2e', 'playwright_merge_and_status'],
+    depends_on: [
+      'build_docs',
+      'build_storybook',
+      'build_e2e',
+      'playwright_vrt_merge_and_status',
+      'playwright_a11y_merge_and_status',
+    ],
     commands: ['npx ts-node .buildkite/scripts/steps/firebase_deploy.ts'],
     env: {
       ECH_CHECK_ID: 'deploy_fb',

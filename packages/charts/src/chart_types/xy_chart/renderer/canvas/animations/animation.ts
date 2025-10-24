@@ -8,9 +8,9 @@
 
 import type { $Keys } from 'utility-types';
 
-import { TimeFunction, TimingFunctions } from './../../../../../utils/time_functions';
 import type { TimeMs } from '../../../../../common/geometry';
 import { clamp, isFiniteNumber } from '../../../../../utils/common';
+import { TimeFunction, TimingFunctions } from '../../../../../utils/time_functions';
 
 /**
  * TODO add logic for other types like colors

@@ -9,15 +9,15 @@
 import { getPanelClipping } from './panel_clipping';
 import { renderShape } from './primitives/shapes';
 import { withPanelTransform } from './utils/panel_transform';
-import { overrideOpacity } from '../../../../common/color_library_wrappers';
+import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
 import type { SeriesKey } from '../../../../common/series_id';
 import type { Circle, Fill, Stroke } from '../../../../geoms/types';
 import type { Rotation } from '../../../../utils/common';
+import { getColorFromVariant } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
-import type { PointGeometry } from '../../../../utils/geometry';
+import type { GeometryHighlightState, PointGeometry } from '../../../../utils/geometry';
 import type { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
 import { isolatedPointRadius } from '../../rendering/points';
-
 /**
  * Renders points from single series
  *
@@ -26,7 +26,7 @@ import { isolatedPointRadius } from '../../rendering/points';
 export function renderPoints(
   ctx: CanvasRenderingContext2D,
   points: PointGeometry[],
-  { opacity }: GeometryStateStyle,
+  highlightState: GeometryHighlightState,
   pointStyle: PointStyle,
   lineStrokeWidth: number,
   seriesMinPointDistance: number,
@@ -35,13 +35,25 @@ export function renderPoints(
 ) {
   // seriesMinPointDistance could be Infinity if we don't have points, or we just have a single point per series.
   // In this case the point should be visible if the visibility style is set to `auto`
-  const isHiddenOnAuto = pointStyle.visible === 'auto' && seriesMinPointDistance < pointsDistanceVisibilityThreshold;
+  const isHiddenOnAuto =
+    pointStyle.visible === 'auto' && (seriesMinPointDistance < pointsDistanceVisibilityThreshold || points.length <= 1);
   const hideDataPoints = pointStyle.visible === 'never' || isHiddenOnAuto;
   const hideIsolatedDataPoints = hasConnectingLine && hideDataPoints;
 
   const useIsolatedPointRadius = hideDataPoints && !hasConnectingLine;
 
-  points.forEach(({ x, y, radius, transform, style, isolated }) => {
+  const opacity =
+    highlightState === 'dimmed' && 'opacity' in pointStyle.dimmed ? pointStyle.dimmed.opacity : pointStyle.opacity;
+
+  const dimmedFill =
+    highlightState === 'dimmed' && 'fill' in pointStyle.dimmed ? colorToRgba(pointStyle.dimmed.fill) : undefined;
+  const dimmedStroke =
+    highlightState === 'dimmed' && 'stroke' in pointStyle.dimmed ? colorToRgba(pointStyle.dimmed.stroke) : undefined;
+
+  const focusedStrokeWidth =
+    highlightState === 'focused' && pointStyle.focused ? pointStyle.focused.strokeWidth : undefined;
+
+  points.forEach(({ x, y, radius, transform, style, isolated, color }) => {
     if ((isolated && hideIsolatedDataPoints) || (!isolated && hideDataPoints)) {
       return;
     }
@@ -49,12 +61,20 @@ export function renderPoints(
     const coordinates = {
       x: x + transform.x,
       y: y + transform.y,
-      radius: isolated ? (useIsolatedPointRadius ? isolatedPointRadius(lineStrokeWidth) : pointStyle.radius) : radius,
+      radius: isolated && useIsolatedPointRadius ? isolatedPointRadius(lineStrokeWidth) : radius,
     };
-    const fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
+
+    const fillColor =
+      isolated && useIsolatedPointRadius && pointStyle?.stroke
+        ? colorToRgba(getColorFromVariant(color, pointStyle.stroke))
+        : style.fill.color;
+
+    const fill = { color: overrideOpacity(dimmedFill ?? fillColor, (fillOpacity) => fillOpacity * opacity) };
+
     const stroke = {
       ...style.stroke,
-      color: overrideOpacity(style.stroke.color, (fillOpacity) => fillOpacity * opacity),
+      color: overrideOpacity(dimmedStroke ?? style.stroke.color, (fillOpacity) => fillOpacity * opacity),
+      width: isolated && useIsolatedPointRadius ? 0 : focusedStrokeWidth ?? style.stroke.width,
     };
     renderShape(ctx, style.shape, coordinates, fill, stroke);
   });

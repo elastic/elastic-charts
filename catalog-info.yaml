@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://gist.githubusercontent.com/elasticmachine/988b80dae436cafea07d9a4a460a011d/raw/rre.schema.json
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: buildkite-pipeline-elastic-charts-build
+  description: Builds Elastic Charts
+  links:
+    - title: Pipeline
+      url: https://buildkite.com/elastic/kibana-elastic-charts-build
+spec:
+  type: buildkite-pipeline
+  owner: group:kibana-visualizations
+  system: buildkite
+  implementation:
+    apiVersion: buildkite.elastic.dev/v1
+    kind: Pipeline
+    metadata:
+      name: kibana / elastic-charts / build
+    spec:
+      env:
+        ELASTIC_SLACK_NOTIFICATIONS_ENABLED: "false"
+        ELASTIC_BUILDKITE_INFRA: "true"
+      repository: elastic/elastic-charts
+      provider_settings:
+        trigger_mode: none
+      pipeline_file: ".buildkite/pipelines/pull_request/pipeline.sh"
+      teams:
+        kibana-visualizations:
+          access_level: MANAGE_BUILD_AND_READ
+        kibana-operations:
+          access_level: MANAGE_BUILD_AND_READ
+        everyone:
+          access_level: READ_ONLY

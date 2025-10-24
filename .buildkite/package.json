@@ -6,7 +6,7 @@
     "build:bk:types": "ts-node scripts/get_buildkite_types.ts",
     "postinstall": "yarn build:bk:types",
     "build:pipeline": "ts-node pipelines/pull_request/pipeline.ts",
-    "print:pipeline": "yarn build:bk:types && TEST_BK_PIPELINE=true ts-node -r dotenv/config pipelines/pull_request/pipeline.ts",
+    "print:pipeline": "yarn -s build:bk:types && TEST_BK_PIPELINE=true ts-node -r dotenv/config pipelines/pull_request/pipeline.ts",
     "run:script": "ts-node -r dotenv/config ",
     "run:script:top": "cd ../ && DOTENV_CONFIG_PATH=.buildkite/.env ts-node -r dotenv/config ",
     "typecheck": "tsc -p ./tsconfig.json --noEmit"

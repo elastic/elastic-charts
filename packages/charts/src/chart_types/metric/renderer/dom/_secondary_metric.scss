@@ -1,0 +1,31 @@
+.echSecondaryMetric {
+  $element-spacing: 4px;
+
+  display: flex;
+  gap: $element-spacing;
+  overflow: hidden;
+  align-items: center;
+  white-space: nowrap;
+
+  &__label {
+    flex: 1 1 auto;
+  }
+
+  &__value {
+    display: inline-flex;
+    flex: 1 0 auto;
+    max-width: calc(100% - $element-spacing);
+
+    &--full {
+      flex: 1 1 auto;
+      max-width: 100%; // override max-width when there is no label
+    }
+  }
+
+  &__truncate {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { withContext } from '../';
+import { withContext } from '..';
 import type { Degrees } from '../../../common/geometry';
 import type { Font, TextAlign, TextBaseline } from '../../../common/text_utils';
 import { cssFontShorthand } from '../../../common/text_utils';

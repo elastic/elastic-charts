@@ -6,13 +6,15 @@
   "scripts": {
     "clean": "./scripts/clean.sh",
     "test": "./scripts/start.sh",
+    "test:a11y": "./scripts/start.sh --a11y",
     "start": "npx http-server ./server --port 9002",
     "test:playwright": "./scripts/test.sh",
+    "test:playwright:a11y": "./scripts/test.sh --a11y",
     "merge:reports": "ts-node ./merge_html_reports.ts",
     "playwright": "playwright"
   },
   "dependencies": {
-    "@playwright/test": "^1.47.2",
+    "@playwright/test": "^1.54.2",
     "@types/node": "^20.10.0",
     "change-case": "^4.1.2",
     "expect-playwright": "^0.8.0",

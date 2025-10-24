@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { ComponentProps, ComponentType, ReactElement, ReactNode } from 'react';
+import type { ComponentProps, ComponentType, CSSProperties, ReactElement, ReactNode } from 'react';
 import type { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
@@ -17,6 +17,37 @@ import { specComponentFactory } from '../../../state/spec_factory';
 import type { LayoutDirection, ValueFormatter } from '../../../utils/common';
 import type { GenericDomain } from '../../../utils/domain';
 import type { BulletValueLabels } from '../../bullet_graph/spec';
+
+/**
+ * Props for displaying a secondary metric value with optional label and badge styling.
+ *
+ * @alpha
+ * */
+export interface SecondaryMetricProps {
+  /** The main value to display */
+  value: string;
+  /** Optional label to display alongside the value */
+  label?: string;
+  /** Optional background color for the value badge. If not provided, no badge is displayed */
+  badgeColor?: Color;
+  /** Determines whether the label appears before or after the value */
+  labelPosition?: 'before' | 'after';
+  /**  Optional CSS properties to apply to the container element */
+  style?: CSSProperties;
+  /** Optional aria description */
+  ariaDescription?: string;
+  /** Badge border config:
+   * - undefined: no border
+   * - `{ mode: 'none' }`: explicitly disable border
+   * - `{ mode: 'auto' }`: parent computes a white or black border based on contrast with the badge and metric background colors
+   * - `{ mode: 'custom', color: Color }`: use provided color
+   */
+  badgeBorderColor?: { mode: 'none' } | { mode: 'auto' } | { mode: 'custom'; color: Color };
+  /** Optional icon displayed next to the text */
+  icon?: string;
+  /** Determines whether the icon appears before or after the value */
+  iconPosition?: 'before' | 'after';
+}
 
 /** @alpha */
 export type MetricBase = {
@@ -29,7 +60,12 @@ export type MetricBase = {
   valueColor?: Color;
   valueIcon?: ComponentType<{ width: number; height: number; color: Color; verticalAlign: 'middle' }>;
   subtitle?: string;
-  extra?: ReactElement | ComponentType<{ fontSize: number; color: string }>;
+  /**
+   * Optional extra content to display below the subtitle.
+   * - Can be a React element, a component type (which will receive `fontSize` and `color` props), or a SecondaryMetricProps object.
+   * - If a SecondaryMetricProps object is provided, it will be rendered using the SecondaryMetric component.
+   */
+  extra?: ReactElement | ComponentType<{ fontSize: number; color: string }> | SecondaryMetricProps;
   icon?: ComponentType<{ width: number; height: number; color: Color }>;
   body?: ReactNode;
 };
@@ -179,3 +215,14 @@ export function isMetricWTrend(datum: MetricDatum): datum is MetricWTrend {
     !datum.hasOwnProperty('domainMax')
   );
 }
+
+/** @internal */
+export const isSecondaryMetricProps = (props: any): props is SecondaryMetricProps => {
+  return (
+    props &&
+    'value' in props &&
+    typeof props.value === 'string' &&
+    (props.label === undefined || typeof props.label === 'string') &&
+    (props.badgeColor === undefined || typeof props.badgeColor === 'string')
+  );
+};

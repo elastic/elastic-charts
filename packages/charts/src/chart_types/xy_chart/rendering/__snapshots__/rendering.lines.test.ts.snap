@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Rendering points - line Multi series line chart - linear can render first spec points 1`] = `
 [
@@ -22,24 +22,25 @@ exports[`Rendering points - line Multi series line chart - linear can render fir
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -79,24 +80,25 @@ exports[`Rendering points - line Multi series line chart - linear can render fir
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -141,11 +143,12 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
-          0,
-          0,
+          255,
+          255,
           255,
           1,
         ],
@@ -155,10 +158,10 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
         "color": [
           0,
           0,
-          0,
-          0,
+          255,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -198,11 +201,12 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
-          0,
-          0,
+          255,
+          255,
           255,
           1,
         ],
@@ -212,10 +216,10 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
         "color": [
           0,
           0,
-          0,
-          0,
+          255,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -260,24 +264,25 @@ exports[`Rendering points - line Multi series line chart - ordinal can render fi
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -317,24 +322,25 @@ exports[`Rendering points - line Multi series line chart - ordinal can render fi
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -379,11 +385,12 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
-          0,
-          0,
+          255,
+          255,
           255,
           1,
         ],
@@ -393,10 +400,10 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
         "color": [
           0,
           0,
-          0,
-          0,
+          255,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -436,11 +443,12 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
-          0,
-          0,
+          255,
+          255,
           255,
           1,
         ],
@@ -450,10 +458,10 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
         "color": [
           0,
           0,
-          0,
-          0,
+          255,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -498,24 +506,25 @@ exports[`Rendering points - line Multi series line chart - time can render first
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -555,24 +564,25 @@ exports[`Rendering points - line Multi series line chart - time can render first
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -617,11 +627,12 @@ exports[`Rendering points - line Multi series line chart - time can render secon
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
-          0,
-          0,
+          255,
+          255,
           255,
           1,
         ],
@@ -631,10 +642,10 @@ exports[`Rendering points - line Multi series line chart - time can render secon
         "color": [
           0,
           0,
-          0,
-          0,
+          255,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -674,11 +685,12 @@ exports[`Rendering points - line Multi series line chart - time can render secon
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
-          0,
-          0,
+          255,
+          255,
           255,
           1,
         ],
@@ -688,10 +700,10 @@ exports[`Rendering points - line Multi series line chart - time can render secon
         "color": [
           0,
           0,
-          0,
-          0,
+          255,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -736,24 +748,25 @@ exports[`Rendering points - line Removing out-of-domain points should render 3 p
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -793,24 +806,25 @@ exports[`Rendering points - line Removing out-of-domain points should render 3 p
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -855,24 +869,25 @@ exports[`Rendering points - line Single series line chart - linear Can render tw
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -912,24 +927,25 @@ exports[`Rendering points - line Single series line chart - linear Can render tw
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -974,24 +990,25 @@ exports[`Rendering points - line Single series line chart - ordinal Can render t
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -1031,24 +1048,25 @@ exports[`Rendering points - line Single series line chart - ordinal Can render t
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -1093,24 +1111,25 @@ exports[`Rendering points - line Single series line chart - time Can render two 
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {
@@ -1150,24 +1169,25 @@ exports[`Rendering points - line Single series line chart - time Can render two 
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "line",
     "style": {
       "fill": {
         "color": [
           255,
-          0,
-          0,
+          255,
+          255,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
+          255,
           0,
           0,
-          0,
-          0,
+          1,
         ],
-        "width": 0,
+        "width": 1.5,
       },
     },
     "transform": {

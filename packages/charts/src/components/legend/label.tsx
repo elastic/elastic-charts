@@ -104,11 +104,12 @@ export function Label({
       aria-pressed={isSeriesHidden}
       style={clampStyles}
       aria-label={`${label}; ${getInteractivityAriaLabel(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount)}`}
+      data-testid="echLegendItemLabel"
     >
       {label}
     </div>
   ) : (
-    <div dir={dir} className={className} title={label} style={clampStyles}>
+    <div dir={dir} className={className} title={label} style={clampStyles} data-testid="echLegendItemLabel">
       {label}
     </div>
   );
@@ -118,7 +119,7 @@ export function Label({
 export function NonInteractiveLabel({ label, options }: { label: string; options: LegendLabelOptions }) {
   const { className, dir, clampStyles } = getSharedProps(label, options);
   return (
-    <div dir={dir} className={className} title={label} style={clampStyles}>
+    <div dir={dir} className={className} title={label} style={clampStyles} data-testid="echLegendItemLabel">
       {label}
     </div>
   );

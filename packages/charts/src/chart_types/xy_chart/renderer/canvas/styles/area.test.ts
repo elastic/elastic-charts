@@ -12,6 +12,7 @@ import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import type { Fill } from '../../../../../geoms/types';
 import { MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
+import type { GeometryHighlightState } from '../../../../../utils/geometry';
 import { getTextureStyles } from '../../../utils/texture';
 
 jest.mock('../../../utils/texture');
@@ -28,16 +29,16 @@ describe('Area styles', () => {
     let result: Fill;
     let baseColor = COLOR;
     let themeAreaStyle = MockStyles.area();
-    let geometryStateStyle = MockStyles.geometryState();
+    let geometryHighlightState: GeometryHighlightState = 'default';
 
     function setDefaults() {
       baseColor = COLOR;
       themeAreaStyle = MockStyles.area();
-      geometryStateStyle = MockStyles.geometryState();
+      geometryHighlightState = 'default';
     }
 
     beforeEach(() => {
-      result = buildAreaStyles(ctx, imgCanvas, baseColor, themeAreaStyle, geometryStateStyle);
+      result = buildAreaStyles(ctx, imgCanvas, baseColor, themeAreaStyle, geometryHighlightState);
     });
 
     it('should call getColorFromVariant with correct args for fill', () => {
@@ -70,7 +71,7 @@ describe('Area styles', () => {
       beforeAll(() => {
         setDefaults();
         themeAreaStyle = MockStyles.area({ opacity: fillOpacity });
-        geometryStateStyle = MockStyles.geometryState({ opacity: geoOpacity });
+        geometryHighlightState = 'dimmed';
         (common.getColorFromVariant as jest.Mock).mockReturnValue(fillColor);
       });
 

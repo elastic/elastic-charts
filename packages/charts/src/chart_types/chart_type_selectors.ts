@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { ChartType } from '.';
 import { chartSelectorsFactory as bulletSelectorsFactory } from './bullet_graph/chart_selectors';
 import { chartSelectorsFactory as flameSelectorsFactory } from './flame_chart/chart_selectors';
 import { chartSelectorsFactory as goalSelectorsFactory } from './goal_chart/state/chart_selectors';
 import { chartSelectorsFactory as heatmapSelectorsFactory } from './heatmap/state/chart_selectors';
-import { ChartType } from './index';
 import { chartSelectorsFactory as metricSelectorsFactory } from './metric/state/chart_selectors';
 import { chartSelectorsFactory as partitionSelectorsFactory } from './partition_chart/state/chart_selectors';
 import { chartSelectorsFactory as timeslipSelectorsFactory } from './timeslip/chart_selectors';

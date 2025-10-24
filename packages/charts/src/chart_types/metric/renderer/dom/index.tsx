@@ -16,6 +16,7 @@ import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
 import { Metric as MetricComponent } from './metric';
+import type { TextContrastOptions } from './metric';
 import type { MetricTextDimensions } from './text_measurements';
 import {
   getFittedFontSizes,
@@ -24,7 +25,6 @@ import {
   getMetricTextPartDimensions,
   getSnappedFontSizes,
 } from './text_measurements';
-import type { ColorContrastOptions } from '../../../../common/color_calcs';
 import { combineColors, highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
@@ -67,6 +67,17 @@ interface DispatchProps {
   onChartRendered: typeof onChartRenderedAction;
 }
 
+function getTextContrastOptions(style: MetricStyle): TextContrastOptions {
+  return {
+    text: { lightColor: colorToRgba(style.textLightColor), darkColor: colorToRgba(style.textDarkColor) },
+    subtitle: {
+      lightColor: colorToRgba(style.textSubtitleLightColor),
+      darkColor: colorToRgba(style.textSubtitleDarkColor),
+    },
+    extra: { lightColor: colorToRgba(style.textExtraLightColor), darkColor: colorToRgba(style.textExtraDarkColor) },
+  };
+}
+
 function Component({
   chartId,
   hasTitles,
@@ -96,14 +107,13 @@ function Component({
   const maxColumns = data.reduce((acc, row) => Math.max(acc, row.length), 0);
 
   const panel = { width: width / maxColumns, height: height / totalRows };
-  const contrastOptions: ColorContrastOptions = {
-    lightColor: colorToRgba(style.textLightColor),
-    darkColor: colorToRgba(style.textDarkColor),
-  };
+
+  const textContrastOptions = getTextContrastOptions(style);
 
   const emptyBackgroundRGBA = combineColors(colorToRgba(style.emptyBackground), colorToRgba(backgroundColor));
   const emptyBackground = RGBATupleToString(emptyBackgroundRGBA);
-  const emptyForegroundColor = highContrastColor(emptyBackgroundRGBA, undefined, contrastOptions).color;
+  // using the text contrast options
+  const emptyForegroundColor = highContrastColor(emptyBackgroundRGBA, undefined, textContrastOptions.text).color;
 
   const metricsConfigs = data.reduce<{
     fittedValueFontSize: number;
@@ -136,16 +146,17 @@ function Component({
             };
           }
           const textDimensions = getMetricTextPartDimensions(datum, panel, style, locale);
-
-          const fontSize = getFitValueFontSize(
+          const totalWidth = panel.width - textDimensions.progressBarWidth - textDimensions.iconGridColumnWidth;
+          const valueFontSize = getFitValueFontSize(
             textDimensions.heightBasedSizes.valueFontSize,
-            panel.width - textDimensions.progressBarWidth,
-            textDimensions.visibility.gapHeight,
+            totalWidth,
+            textDimensions.visibility.availableHeightWithoutValue,
             textDimensions.textParts,
             style.minValueFontSize,
             datum.valueIcon !== undefined,
+            style.valueFontSize === 'fit',
           );
-          acc.fittedValueFontSize = Math.min(acc.fittedValueFontSize, fontSize);
+          acc.fittedValueFontSize = Math.min(acc.fittedValueFontSize, valueFontSize);
 
           return {
             type: 'metric',
@@ -223,7 +234,7 @@ function Component({
               columnIndex={config.columnIndex}
               style={style}
               backgroundColor={backgroundColor}
-              contrastOptions={contrastOptions}
+              contrastOptions={textContrastOptions}
               onElementClick={onElementClick}
               onElementOut={onElementOut}
               onElementOver={onElementOver}

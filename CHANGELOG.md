@@ -1,3 +1,89 @@
+## [71.1.1](https://github.com/elastic/elastic-charts/compare/v71.1.0...v71.1.1) (2025-09-29)
+
+
+### Bug Fixes
+
+* remove aria-label form div (part 2) ([#2751](https://github.com/elastic/elastic-charts/issues/2751)) ([602c743](https://github.com/elastic/elastic-charts/commit/602c743def7ebc551ce2a56ad6d54d42647c8506))
+* remove aria-label from div ([#2750](https://github.com/elastic/elastic-charts/issues/2750)) ([e8e22d8](https://github.com/elastic/elastic-charts/commit/e8e22d8a2f4e1d7f85b9c1543ba6324bdeb7582a))
+
+# [71.1.0](https://github.com/elastic/elastic-charts/compare/v71.0.1...v71.1.0) (2025-09-25)
+
+
+### Bug Fixes
+
+* **metric:** remove support for small responsive breakpoints ([#2743](https://github.com/elastic/elastic-charts/issues/2743)) ([a5132d9](https://github.com/elastic/elastic-charts/commit/a5132d9292f1e135c948dd6adfa1f14a79232d59))
+* remove wrong traversal path in imports ([#2747](https://github.com/elastic/elastic-charts/issues/2747)) ([0f55808](https://github.com/elastic/elastic-charts/commit/0f55808192afe2caef88e03f19841ef2a8a31e17))
+
+
+### Features
+
+* **metric:** add ability to disable secondary metric badge border ([#2734](https://github.com/elastic/elastic-charts/issues/2734)) ([cb04bf5](https://github.com/elastic/elastic-charts/commit/cb04bf5d44d952120e25a3e9528e508c60ec5a56))
+
+## [71.0.1](https://github.com/elastic/elastic-charts/compare/v71.0.0...v71.0.1) (2025-09-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @playwright/test to ^1.54.2 ([#2553](https://github.com/elastic/elastic-charts/issues/2553)) ([a75c59c](https://github.com/elastic/elastic-charts/commit/a75c59cdcad2bdf3a3ef43c20132c45085412ed7))
+* **metric:** fix `fit` font size mode ([#2730](https://github.com/elastic/elastic-charts/issues/2730)) ([98b4204](https://github.com/elastic/elastic-charts/commit/98b420485fdb09d64209e3056d206b3fc6733d55))
+* **partition:** fix tooltip nested colors  ([#2717](https://github.com/elastic/elastic-charts/issues/2717)) ([591459e](https://github.com/elastic/elastic-charts/commit/591459ed8e8aa56a4a03914427a65b0e400d7a8a))
+
+# [71.0.0](https://github.com/elastic/elastic-charts/compare/v70.1.3...v71.0.0) (2025-08-11)
+
+
+### Features
+
+* **metric:** add new layout configurations ([#2666](https://github.com/elastic/elastic-charts/issues/2666)) ([c13409a](https://github.com/elastic/elastic-charts/commit/c13409ad116703584e34111e1a94c98777bb44a5))
+
+
+### BREAKING CHANGES
+
+* **metric:** The `valuesTextAlign` property in `MetricStyle` has been removed. Use the new `valueTextAlign` (for main value alignment) and `extraTextAlign` (for extra/secondary alignment) properties instead.
+
+## [70.1.3](https://github.com/elastic/elastic-charts/compare/v70.1.2...v70.1.3) (2025-08-04)
+
+
+### Bug Fixes
+
+* update css style exports to use Borealis theme tokens ([#2695](https://github.com/elastic/elastic-charts/issues/2695)) ([5619e08](https://github.com/elastic/elastic-charts/commit/5619e0820360c9e75088bba6df04b461840a84a8))
+
+## [70.1.2](https://github.com/elastic/elastic-charts/compare/v70.1.1...v70.1.2) (2025-07-23)
+
+
+### Bug Fixes
+
+* **axis:** disable nice adaptive ticks ([#2689](https://github.com/elastic/elastic-charts/issues/2689)) ([5f9d946](https://github.com/elastic/elastic-charts/commit/5f9d9463ee35ac16ab469778e6a4f493c9ca344f))
+
+## [70.1.1](https://github.com/elastic/elastic-charts/compare/v70.1.0...v70.1.1) (2025-07-14)
+
+
+### Bug Fixes
+
+* **axis:** prevent sticky label in multi-layer time axis ([#2681](https://github.com/elastic/elastic-charts/issues/2681)) ([089c835](https://github.com/elastic/elastic-charts/commit/089c835cf4b77bc837445c5c048cdd74e56f4c27))
+* **highlight:** improve highlight on area/line charts  ([#2676](https://github.com/elastic/elastic-charts/issues/2676)) ([556a21b](https://github.com/elastic/elastic-charts/commit/556a21b2c1616d6ab734f706b1fd1c6493fc874b))
+* **isolatedPoints:** fix visibility and remove custom style for isolated points ([#2665](https://github.com/elastic/elastic-charts/issues/2665)) ([b38059d](https://github.com/elastic/elastic-charts/commit/b38059d16cb162c596d5104f3310f6ec27763e57))
+
+# [70.1.0](https://github.com/elastic/elastic-charts/compare/v70.0.1...v70.1.0) (2025-06-23)
+
+
+### Bug Fixes
+
+* **flame_chart:** fix font size to occupy available space ([#2671](https://github.com/elastic/elastic-charts/issues/2671)) ([2b5d962](https://github.com/elastic/elastic-charts/commit/2b5d962d891cd5257ff3a4f0064ec1b77290c454))
+* **heatmap:** update tooltip visibility logic to handle empty tooltip info ([#2661](https://github.com/elastic/elastic-charts/issues/2661)) ([ff5ff27](https://github.com/elastic/elastic-charts/commit/ff5ff27a968cc87c0717aa070cfec0b8b6af8977))
+
+
+### Features
+
+* **interactions:** add modifier keys pressed information available in the `onElementClick` and `onBrushEnd` listeners ([#2647](https://github.com/elastic/elastic-charts/issues/2647)) ([d632df0](https://github.com/elastic/elastic-charts/commit/d632df093e06d0f870aa60bdccfdb1d925933d52))
+
+## [70.0.1](https://github.com/elastic/elastic-charts/compare/v70.0.0...v70.0.1) (2025-05-02)
+
+
+### Bug Fixes
+
+* **colors:** use borealis colors as default ([#2643](https://github.com/elastic/elastic-charts/issues/2643)) ([b728661](https://github.com/elastic/elastic-charts/commit/b7286613b2b1f6a001751f6a24c3e71b0f235ab8))
+* Update aria-labelledby for Sparkline svg to not use spaces ([#2654](https://github.com/elastic/elastic-charts/issues/2654)) ([19349f3](https://github.com/elastic/elastic-charts/commit/19349f3a9507bf92d23e013c4e3ddf31f8c80bf7))
+
 # [70.0.0](https://github.com/elastic/elastic-charts/compare/v69.2.0...v70.0.0) (2025-03-26)
 
 

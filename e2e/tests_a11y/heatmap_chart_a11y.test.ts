@@ -1,0 +1,43 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+import { test, expect } from '@playwright/test';
+
+import { common } from '../page_objects/common';
+
+test.describe('Heatmap Chart Accessibility', () => {
+  test('should generate correct a11y summary for heatmap chart', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/heatmap-alpha--basic';
+    await common.loadElementFromURL(page)(url, '.echChart');
+
+    // Wait for the chart to load
+    await page.waitForSelector('.echChart', { timeout: 5000 });
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:Heatmap chart');
+  });
+
+  test('should generate correct a11y summary for time heatmap chart', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/heatmap-alpha--time';
+    await common.loadElementFromURL(page)(url, '.echChart');
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:Heatmap chart');
+  });
+
+  test('should generate correct a11y summary for small multiples heatmap', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap';
+    await common.loadElementFromURL(page)(url, '.echChart');
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:Heatmap chart');
+  });
+});
