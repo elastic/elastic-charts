@@ -1,0 +1,1 @@
+(globalThis.webpackChunkelastic_charts_docs=globalThis.webpackChunkelastic_charts_docs||[]).push([[28577],{20549:(s,c,a)=>{"use strict";a.d(c,{A:()=>t});var h=a(58291);const t=h},45741:()=>{}}]);
