@@ -200,12 +200,12 @@ function getTooltipAndHighlightFromValue(
     header = null;
   }
 
-  const baseTooltipSortFn: SeriesCompareFn = (a, b) => {
+  const baseSortFn: SeriesCompareFn = (a, b) => {
     const aDs = seriesIdentifierDataSeriesMap[a.key];
     const bDs = seriesIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);
   };
-  const tooltipSortFn = tooltip.sort ?? settings.legendSort ?? baseTooltipSortFn;
+  const tooltipSortFn = tooltip.sort ?? settings.legendSort ?? baseSortFn;
   const sortedTooltipValues = values.sort((a, b) => {
     return tooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
   });
@@ -215,8 +215,12 @@ function getTooltipAndHighlightFromValue(
       header,
       values: sortedTooltipValues,
     },
-    highlightedGeometries,
-    highlightedPoints,
+    highlightedGeometries: highlightedGeometries.sort((a, b) => {
+      return baseSortFn(a.seriesIdentifier, b.seriesIdentifier);
+    }),
+    highlightedPoints: highlightedPoints.sort((a, b) => {
+      return baseSortFn(a.seriesIdentifier, b.seriesIdentifier);
+    }),
   };
 }
 
