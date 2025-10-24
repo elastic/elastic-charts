@@ -98,15 +98,7 @@ export function renderBars(
       !(displayValueSettings?.isAlternatingValueLabel && barGeometries.length % 2);
     const barGeometry: BarGeometry = {
       displayValue: shouldDisplayValue
-        ? computeDisplayValue(
-            y1Value,
-            barGeometries,
-            sharedSeriesStyle,
-            measureText,
-            chartRotation,
-            width,
-            displayValueSettings,
-          )
+        ? computeDisplayValue(y1Value, sharedSeriesStyle, measureText, chartRotation, width, displayValueSettings)
         : undefined,
       x,
       y: yScreenSpaceCoord,
@@ -146,7 +138,6 @@ export function renderBars(
 
 function computeDisplayValue(
   y1Value: number | null,
-  barGeometries: BarGeometry[],
   sharedSeriesStyle: BarSeriesStyle,
   measureText: TextMeasure,
   chartRotation: number,
