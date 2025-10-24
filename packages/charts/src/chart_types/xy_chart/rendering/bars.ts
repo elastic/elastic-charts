@@ -19,7 +19,7 @@ import type { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/th
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import type { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
 import { getSeriesIdentifierFromDataSeries } from '../utils/series';
-import type { BarStyleAccessor, DisplayValueSpec, StackMode } from '../utils/specs';
+import type { BarStyleAccessor, DisplayValueSpec, StackMode, TickFormatter } from '../utils/specs';
 import { LabelOverflowConstraint } from '../utils/specs';
 
 const PADDING = 1; // default padding for now
@@ -28,6 +28,11 @@ const FONT_SIZE_FACTOR = 0.7; // Take 70% of space for the label text
 type BarTuple = {
   barGeometries: BarGeometry[];
   indexedGeometryMap: IndexedGeometryMap;
+};
+
+/** @internal */
+type DisplayValueSpecWithValueFormatter = Omit<DisplayValueSpec, 'valueFormatter'> & {
+  valueFormatter: TickFormatter;
 };
 
 /** @internal */
@@ -43,7 +48,7 @@ export function renderBars(
   color: Color,
   isBandedSpec: boolean,
   sharedSeriesStyle: BarSeriesStyle,
-  displayValueSettings?: DisplayValueSpec,
+  displayValueSettings?: DisplayValueSpecWithValueFormatter,
   styleAccessor?: BarStyleAccessor,
   stackMode?: StackMode,
 ): BarTuple {
@@ -53,6 +58,7 @@ export function renderBars(
   const seriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
   return dataSeries.data.reduce((barTuple: BarTuple, datum) => {
     const xScaled = xScale.scale(datum.x);
+
     if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
       return barTuple; // don't create a bar if not within the xScale domain
     }
@@ -86,8 +92,12 @@ export function renderBars(
 
     const y1Value = getDatumYValue(datum, false, isBandedSpec, stackMode);
 
+    const shouldDisplayValue =
+      displayValueSettings?.showValueLabel &&
+      // only show displayValue for even bars if isAlternatingValueLabel
+      !(displayValueSettings?.isAlternatingValueLabel && barGeometries.length % 2);
     const barGeometry: BarGeometry = {
-      displayValue: displayValueSettings?.showValueLabel
+      displayValue: shouldDisplayValue
         ? computeDisplayValue(
             y1Value,
             barGeometries,
@@ -141,16 +151,16 @@ function computeDisplayValue(
   measureText: TextMeasure,
   chartRotation: number,
   width: number,
-  displayValueSettings?: DisplayValueSpec,
+  displayValueSettings: DisplayValueSpecWithValueFormatter,
 ): BarGeometry['displayValue'] | undefined {
   const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
-  const formattedDisplayValue = displayValueSettings?.valueFormatter?.(y1Value);
+  const displayValueText = displayValueSettings.valueFormatter(y1Value);
 
-  // only show displayValue for even bars if showOverlappingValue
-  const displayValueText =
-    displayValueSettings?.isAlternatingValueLabel && barGeometries.length % 2 ? undefined : formattedDisplayValue;
+  if (displayValueText.length === 0) {
+    return;
+  }
 
-  const { displayValueWidth, fixedFontScale } = computeBoxWidth(displayValueText ?? '', {
+  const { displayValueWidth, fixedFontScale } = computeBoxWidth(displayValueText, {
     padding: PADDING,
     fontSize,
     fontFamily,
@@ -176,16 +186,14 @@ function computeDisplayValue(
   // Based on rotation scale the width of the text box
   const bboxWidthFactor = isHorizontalRotation ? textScalingFactor : 1;
 
-  return displayValueText && displayValueSettings?.showValueLabel
-    ? {
-        fontScale: textScalingFactor,
-        fontSize: fixedFontScale,
-        text: displayValueText,
-        width: bboxWidthFactor * displayValueWidth,
-        height: textScalingFactor * fixedFontScale,
-        overflowConstraints,
-      }
-    : undefined;
+  return {
+    fontScale: textScalingFactor,
+    fontSize: fixedFontScale,
+    text: displayValueText,
+    width: bboxWidthFactor * displayValueWidth,
+    height: textScalingFactor * fixedFontScale,
+    overflowConstraints,
+  };
 }
 
 /**
