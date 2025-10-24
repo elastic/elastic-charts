@@ -62,7 +62,7 @@ export function renderPoints(
   const needSorting = !markSizeOptions.enabled;
 
   let style = buildPointGeometryStyles(color, pointStyle);
-  const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
+  const seriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
   const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
     pointGeometries: SortedArray<PointGeometry>;
     minDistanceBetweenPoints: number;
