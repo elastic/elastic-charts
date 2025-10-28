@@ -386,7 +386,6 @@ export interface DisplayValueSpec {
   isAlternatingValueLabel?: boolean;
   /**
    * Function for formatting values; will use axis tickFormatter if none specified
-   * @defaultValue false
    */
   valueFormatter?: TickFormatter;
   /**
