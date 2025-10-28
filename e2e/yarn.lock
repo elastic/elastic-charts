@@ -252,10 +252,10 @@ playwright-core@1.56.1:
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.56.1.tgz#24a66481e5cd33a045632230aa2c4f0cb6b1db3d"
   integrity sha512-hutraynyn31F+Bifme+Ps9Vq59hKuUCz7H1kDOcBs+2oGguKkWTU50bBWrtz34OUWmIwpBTWDxaRPXrIXkgvmQ==
 
-playwright-merge-html-reports@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/playwright-merge-html-reports/-/playwright-merge-html-reports-0.2.3.tgz#4979c929f7a8fc7b5a5bb26ab5e99de488424ea4"
-  integrity sha512-YDTTLfRannqy64tSElNQzoj1zDlHzx9zo5nLu0shBOI515CQxOMKyAKY+7Lfv7BRjxQcYOdNA3sPUpf4MwpM+Q==
+playwright-merge-html-reports@^0.2.8:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/playwright-merge-html-reports/-/playwright-merge-html-reports-0.2.8.tgz#9ac4892314bdf1bac5cc79c4b02257f9acdca881"
+  integrity sha512-uiu198+KYq5DeVPso8JIsi8cY7BPpUkCQx8XpCgIBu92k3AY7BNl3vjgq5g1mOp40VcRccun0gd6uykQAlaiWQ==
   dependencies:
     jszip "^3.7.1"
     yazl "^2.5.1"
