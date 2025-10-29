@@ -121,6 +121,12 @@ function getTooltipAndHighlightFromValue(
     return EMPTY_VALUES;
   }
 
+  const legendSeriesSortFn: SeriesCompareFn = (a, b) => {
+    const aDs = seriesIdentifierDataSeriesMap[a.key];
+    const bDs = seriesIdentifierDataSeriesMap[b.key];
+    return defaultXYLegendSeriesSort(aDs, bDs);
+  };
+
   // build the tooltip value list
   let header: PointerValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
@@ -130,8 +136,11 @@ function getTooltipAndHighlightFromValue(
   const values = matchingGeoms
     .slice()
     .sort((a, b) => {
-      // presort matchingGeoms to group by series then y value to prevent flipping
-      return b.seriesIdentifier.key.localeCompare(a.seriesIdentifier.key) || b.value.y - a.value.y;
+      // pre-sort matchingGeoms to group by series and sortingOrder then y value to prevent flipping
+      const seriesSort = legendSeriesSortFn(a.seriesIdentifier, b.seriesIdentifier);
+      if (seriesSort !== 0) return seriesSort;
+      // Within same series, sort by y value (for stability)
+      return b.value.y - a.value.y;
     })
     .reduce<TooltipValue[]>((acc, indexedGeometry) => {
       if (hideNullValues && indexedGeometry.value.y === null) {
@@ -200,12 +209,7 @@ function getTooltipAndHighlightFromValue(
     header = null;
   }
 
-  const baseSortFn: SeriesCompareFn = (a, b) => {
-    const aDs = seriesIdentifierDataSeriesMap[a.key];
-    const bDs = seriesIdentifierDataSeriesMap[b.key];
-    return defaultXYLegendSeriesSort(aDs, bDs);
-  };
-  const tooltipSortFn = tooltip.sort ?? settings.legendSort ?? baseSortFn;
+  const tooltipSortFn = tooltip.sort ?? settings.legendSort ?? legendSeriesSortFn;
   const sortedTooltipValues = values.sort((a, b) => {
     return tooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
   });
@@ -215,12 +219,8 @@ function getTooltipAndHighlightFromValue(
       header,
       values: sortedTooltipValues,
     },
-    highlightedGeometries: highlightedGeometries.sort((a, b) => {
-      return baseSortFn(a.seriesIdentifier, b.seriesIdentifier);
-    }),
-    highlightedPoints: highlightedPoints.sort((a, b) => {
-      return baseSortFn(a.seriesIdentifier, b.seriesIdentifier);
-    }),
+    highlightedGeometries,
+    highlightedPoints,
   };
 }
 
