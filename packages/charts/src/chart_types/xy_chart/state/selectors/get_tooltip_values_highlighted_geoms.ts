@@ -27,7 +27,7 @@ import type { PointerValue } from '../../../../state/types';
 import type { Rotation } from '../../../../utils/common';
 import { isNil } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
-import type { IndexedGeometry, PointGeometry } from '../../../../utils/geometry';
+import { isPointGeometry, type IndexedGeometry, type PointGeometry } from '../../../../utils/geometry';
 import type { Point } from '../../../../utils/point';
 import type { SeriesCompareFn } from '../../../../utils/series_sort';
 import { isLineAreaPointWithinPanel, isPointOnGeometry } from '../../rendering/utils';
@@ -131,6 +131,8 @@ function getTooltipAndHighlightFromValue(
   let header: PointerValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
   const highlightedPoints: PointGeometry[] = [];
+  const hoveredPointsMap = new Map<string, { geom: PointGeometry; index: number }>();
+  const highlightedTooltipMap = new Map<string, TooltipValue>();
   const xValues = new Set<any>();
   const hideNullValues = !tooltip.showNullValues;
   const values = matchingGeoms
@@ -172,9 +174,39 @@ function getTooltipAndHighlightFromValue(
         const isLineAreaPoint = isLineAreaPointWithinPanel(spec, indexedGeometry);
 
         if (isGeometryHovered) {
-          // Pointer is on geometry and geometry is area/line point -> hover highlight
-          isTooltipHighlighted = true;
-          highlightedGeometries.push(indexedGeometry);
+          if (isPointGeometry(indexedGeometry)) {
+            // If Point Geometries overlap, then highlight the one with the highest sortingOrder
+            const key = `${indexedGeometry.x}_${indexedGeometry.y}_${indexedGeometry.radius}`;
+            const existingGeom = hoveredPointsMap.get(key);
+
+            if (!existingGeom) {
+              // No existing geometry -> add the current one
+              hoveredPointsMap.set(key, { geom: indexedGeometry, index: highlightedGeometries.length });
+              isTooltipHighlighted = true;
+              highlightedGeometries.push(indexedGeometry);
+            } else {
+              // Already an existing geometry -> check if the current one has a higher sortingOrder
+              const currentDs = seriesIdentifierDataSeriesMap[indexedGeometry.seriesIdentifier.key];
+              const existingDs = seriesIdentifierDataSeriesMap[existingGeom.geom.seriesIdentifier.key];
+              const shouldReplaceExistingGeometry =
+                currentDs && existingDs && currentDs.sortOrder > existingDs.sortOrder;
+
+              if (shouldReplaceExistingGeometry) {
+                hoveredPointsMap.set(key, { geom: indexedGeometry, index: existingGeom.index });
+                isTooltipHighlighted = true;
+                highlightedGeometries[existingGeom.index] = indexedGeometry;
+
+                // Mark the old tooltip as not highlighted
+                const oldTooltip = highlightedTooltipMap.get(key);
+                if (oldTooltip) {
+                  oldTooltip.isHighlighted = false;
+                }
+              }
+            }
+          } else {
+            isTooltipHighlighted = true;
+            highlightedGeometries.push(indexedGeometry);
+          }
         }
         if (isLineAreaPoint) {
           // Geometry is area/line point -> bucket highlight
@@ -191,6 +223,12 @@ function getTooltipAndHighlightFromValue(
         isBandedSpec(spec),
         yAxis,
       );
+
+      // Store tooltip for point geometries
+      if (isTooltipHighlighted && isPointGeometry(indexedGeometry)) {
+        const key = `${indexedGeometry.x}_${indexedGeometry.y}_${indexedGeometry.radius}`;
+        highlightedTooltipMap.set(key, formattedTooltip);
+      }
 
       // format only one time the x value
       if (!header) {
