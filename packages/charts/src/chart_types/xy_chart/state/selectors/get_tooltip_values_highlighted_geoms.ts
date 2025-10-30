@@ -168,6 +168,7 @@ function getTooltipAndHighlightFromValue(
       // highlight all geometries if pointer is on them and all the line/area points of the hovered bucket (avoid checking if using external pointer event)
       const shouldCheckHighlighting = !externalPointerEvent || isPointerOutEvent(externalPointerEvent);
       let isTooltipHighlighted = false;
+      let hoveredPointKey: string | undefined;
 
       if (shouldCheckHighlighting) {
         const isGeometryHovered = isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer);
@@ -176,12 +177,12 @@ function getTooltipAndHighlightFromValue(
         if (isGeometryHovered) {
           if (isPointGeometry(indexedGeometry)) {
             // If Point Geometries overlap, then highlight the one with the highest sortingOrder
-            const key = `${indexedGeometry.x}_${indexedGeometry.y}_${indexedGeometry.radius}`;
-            const existingGeom = hoveredPointsMap.get(key);
+            hoveredPointKey = `${indexedGeometry.x}_${indexedGeometry.y}_${indexedGeometry.radius}`;
+            const existingGeom = hoveredPointsMap.get(hoveredPointKey);
 
             if (!existingGeom) {
               // No existing geometry -> add the current one
-              hoveredPointsMap.set(key, { geom: indexedGeometry, index: highlightedGeometries.length });
+              hoveredPointsMap.set(hoveredPointKey, { geom: indexedGeometry, index: highlightedGeometries.length });
               isTooltipHighlighted = true;
               highlightedGeometries.push(indexedGeometry);
             } else {
@@ -192,12 +193,12 @@ function getTooltipAndHighlightFromValue(
                 currentDs && existingDs && currentDs.sortOrder > existingDs.sortOrder;
 
               if (shouldReplaceExistingGeometry) {
-                hoveredPointsMap.set(key, { geom: indexedGeometry, index: existingGeom.index });
+                hoveredPointsMap.set(hoveredPointKey, { geom: indexedGeometry, index: existingGeom.index });
                 isTooltipHighlighted = true;
                 highlightedGeometries[existingGeom.index] = indexedGeometry;
 
                 // Mark the old tooltip as not highlighted
-                const oldTooltip = highlightedTooltipMap.get(key);
+                const oldTooltip = highlightedTooltipMap.get(hoveredPointKey);
                 if (oldTooltip) {
                   oldTooltip.isHighlighted = false;
                 }
@@ -225,9 +226,8 @@ function getTooltipAndHighlightFromValue(
       );
 
       // Store tooltip for point geometries
-      if (isTooltipHighlighted && isPointGeometry(indexedGeometry)) {
-        const key = `${indexedGeometry.x}_${indexedGeometry.y}_${indexedGeometry.radius}`;
-        highlightedTooltipMap.set(key, formattedTooltip);
+      if (isTooltipHighlighted && hoveredPointKey) {
+        highlightedTooltipMap.set(hoveredPointKey, formattedTooltip);
       }
 
       // format only one time the x value
