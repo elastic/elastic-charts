@@ -132,7 +132,6 @@ function getTooltipAndHighlightFromValue(
   const highlightedGeometries: IndexedGeometry[] = [];
   const highlightedPoints: PointGeometry[] = [];
   const hoveredPointsMap = new Map<string, { geom: PointGeometry; index: number }>();
-  const highlightedTooltipMap = new Map<string, TooltipValue>();
   const xValues = new Set<any>();
   const hideNullValues = !tooltip.showNullValues;
   const values = matchingGeoms
@@ -168,22 +167,22 @@ function getTooltipAndHighlightFromValue(
       // highlight all geometries if pointer is on them and all the line/area points of the hovered bucket (avoid checking if using external pointer event)
       const shouldCheckHighlighting = !externalPointerEvent || isPointerOutEvent(externalPointerEvent);
       let isTooltipHighlighted = false;
-      let hoveredPointKey: string | undefined;
 
       if (shouldCheckHighlighting) {
         const isGeometryHovered = isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer);
         const isLineAreaPoint = isLineAreaPointWithinPanel(spec, indexedGeometry);
 
         if (isGeometryHovered) {
+          isTooltipHighlighted = true;
+
           if (isPointGeometry(indexedGeometry)) {
             // If Point Geometries overlap, then highlight the one with the highest sortingOrder
-            hoveredPointKey = `${indexedGeometry.x}_${indexedGeometry.y}_${indexedGeometry.radius}`;
+            const hoveredPointKey = `${indexedGeometry.x}_${indexedGeometry.y}_${indexedGeometry.radius}`;
             const existingGeom = hoveredPointsMap.get(hoveredPointKey);
 
             if (!existingGeom) {
               // No existing geometry -> add the current one
               hoveredPointsMap.set(hoveredPointKey, { geom: indexedGeometry, index: highlightedGeometries.length });
-              isTooltipHighlighted = true;
               highlightedGeometries.push(indexedGeometry);
             } else {
               // Already an existing geometry -> check if the current one has a higher sortingOrder
@@ -194,18 +193,10 @@ function getTooltipAndHighlightFromValue(
 
               if (shouldReplaceExistingGeometry) {
                 hoveredPointsMap.set(hoveredPointKey, { geom: indexedGeometry, index: existingGeom.index });
-                isTooltipHighlighted = true;
                 highlightedGeometries[existingGeom.index] = indexedGeometry;
-
-                // Mark the old tooltip as not highlighted
-                const oldTooltip = highlightedTooltipMap.get(hoveredPointKey);
-                if (oldTooltip) {
-                  oldTooltip.isHighlighted = false;
-                }
               }
             }
           } else {
-            isTooltipHighlighted = true;
             highlightedGeometries.push(indexedGeometry);
           }
         }
@@ -224,11 +215,6 @@ function getTooltipAndHighlightFromValue(
         isBandedSpec(spec),
         yAxis,
       );
-
-      // Store tooltip for point geometries
-      if (isTooltipHighlighted && hoveredPointKey) {
-        highlightedTooltipMap.set(hoveredPointKey, formattedTooltip);
-      }
 
       // format only one time the x value
       if (!header) {
