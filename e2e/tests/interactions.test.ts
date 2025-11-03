@@ -420,12 +420,23 @@ test.describe('Interactions', () => {
       (t) => `should show cursor band when background is set with ${t} theme`,
     );
   });
-  // currently wrong due to https://github.com/elastic/elastic-charts/issues/1921
-  test('highlighter zIndex should respect geometry zIndex', async ({ page }) => {
-    await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/test-cases--highlighter-z-index',
-      { left: 247, top: 76 }, // mouse over the second point
-    );
+
+  test.describe('Highlighting', () => {
+    test('highlighter zIndex should respect geometry zIndex', async ({ page }) => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/test-cases--highlighter-z-index',
+        { left: 247, top: 76 }, // mouse over the second point
+      );
+    });
+
+    test('should correctly highlight the points and the tooltip, when hovering over overlapping point geometries', async ({
+      page,
+    }) => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/interactions--series-highlight-style&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Banded=true&knob-Scale%20Type=log&knob-Series%20Type=bar&knob-Show%20positive%20data=true&knob-Split=true&knob-Stacked=true&knob-chart%20type=area&knob-data%20points=50&knob-logMinLimit=1&knob-series=10',
+        { left: 370, top: 180 },
+      );
+    });
   });
 
   // should not disable dragging when returning to origin
