@@ -38,7 +38,7 @@ export const getScreenReaderSummarySelector = createCustomCachedSelector(
       return DEFAULT_SCREEN_READER_SUMMARY;
     }
 
-    // Get chart-specific screen reader data
+    // Get chart-specific screen reader items
     const screenReaderItems = internalChartState.getScreenReaderData(state);
 
     return {

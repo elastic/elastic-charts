@@ -21,7 +21,7 @@ export interface ScreenReaderItem {
 }
 
 /** @internal */
-export const EMPTY_SCREEN_READER_ITEMS = [];
+export const EMPTY_SCREEN_READER_ITEMS: ScreenReaderItem[] = [];
 
 /** @internal */
 export const getScreenReaderDataSelector = createCustomCachedSelector(

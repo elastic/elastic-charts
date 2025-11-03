@@ -155,7 +155,8 @@ export interface ChartSelectors {
 type ChartSelectorsFactory = () => ChartSelectors;
 
 const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
-const EMPTY_TOOLTIP = { header: null, values: [] };
+/** @internal */
+export const EMPTY_TOOLTIP = { header: null, values: [] };
 const EMPTY_DIMENSION = { top: 0, left: 0, width: 0, height: 0 };
 const EMPTY_SM_DOMAINS: SmallMultiplesSeriesDomains = { smVDomain: [], smHDomain: [] };
 const EMPTY_OBJ = {};

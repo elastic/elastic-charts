@@ -10,10 +10,9 @@ import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpec } from './partition_spec';
 import { getPickedShapes } from './picked_shapes';
 import type { TooltipInfo } from '../../../../components/tooltip/types';
+import { EMPTY_TOOLTIP } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { pickShapesTooltipValues } from '../../layout/viewmodel/picked_shapes';
-
-const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
 
 /** @internal */
 export const getTooltipInfoSelector = createCustomCachedSelector(
