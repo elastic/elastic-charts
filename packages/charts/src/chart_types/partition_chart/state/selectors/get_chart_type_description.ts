@@ -8,11 +8,12 @@
 
 import { getPartitionSpec } from './partition_spec';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { capitalizeFirst } from '../../../../utils/text/text_utils';
 
 /** @internal */
 export const getChartTypeDescriptionSelector = createCustomCachedSelector(
   [getPartitionSpec],
   (partitionSpec): string => {
-    return `${partitionSpec?.layout} chart` ?? 'Partition chart';
+    return partitionSpec?.layout ? `${capitalizeFirst(partitionSpec.layout)} chart` : 'Partition chart';
   },
 );
