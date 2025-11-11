@@ -8,16 +8,16 @@
 
 import React from 'react';
 
-import type { ScreenReaderItem } from '../../state/chart_selectors';
 import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
+import type { ScreenReaderItem } from '../../state/selectors/get_screenreader_data';
 
 interface ScreenReaderItemsProps {
-  screenReaderItems?: ScreenReaderItem[];
+  screenReaderItems: ScreenReaderItem[];
 }
 
 /** @internal */
 export function ScreenReaderItems({ screenReaderItems }: A11ySettings & ScreenReaderItemsProps) {
-  const hasScreenReaderItems = screenReaderItems && screenReaderItems.length > 0;
+  const hasScreenReaderItems = screenReaderItems.length > 0;
 
   if (!hasScreenReaderItems) {
     return null;

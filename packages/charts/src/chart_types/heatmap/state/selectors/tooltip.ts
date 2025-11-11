@@ -11,13 +11,8 @@ import { getPickedShapes } from './picked_shapes';
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import type { TooltipInfo } from '../../../../components/tooltip/types';
+import { EMPTY_TOOLTIP } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-
-const EMPTY_TOOLTIP = Object.freeze({
-  header: null,
-  values: [],
-  disableActions: false,
-});
 
 /** @internal */
 export const getTooltipInfoSelector = createCustomCachedSelector(

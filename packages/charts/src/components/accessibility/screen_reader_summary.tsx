@@ -15,7 +15,7 @@ import type { GlobalChartState } from '../../state/chart_state';
 import type { ScreenReaderSummaryData } from '../../state/selectors/get_screen_reader_summary';
 import { getScreenReaderSummarySelector } from '../../state/selectors/get_screen_reader_summary';
 
-const ScreenReaderSummaryComponent = ({ a11ySettings, screenReaderData }: ScreenReaderSummaryData) => {
+const ScreenReaderSummaryComponent = ({ a11ySettings, screenReaderItems }: ScreenReaderSummaryData) => {
   return (
     <figcaption
       className="echScreenReaderOnly"
@@ -23,7 +23,7 @@ const ScreenReaderSummaryComponent = ({ a11ySettings, screenReaderData }: Screen
       data-testid="echScreenReaderSummary"
     >
       <ScreenReaderDescription {...a11ySettings} />
-      <ScreenReaderItems {...a11ySettings} screenReaderItems={screenReaderData?.screenReaderItems} />
+      <ScreenReaderItems {...a11ySettings} screenReaderItems={screenReaderItems} />
     </figcaption>
   );
 };
