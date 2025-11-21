@@ -94,7 +94,6 @@
     "@types/d3-array": "^1.2.6",
     "@types/d3-cloud": "^1.2.5",
     "@types/d3-collection": "^1.0.8",
-    "@types/d3-interpolate": "^3.0.1",
     "@types/d3-scale": "^3.3.0",
     "@types/d3-shape": "^2.0.0",
     "@types/jest": "^30.0.0",
