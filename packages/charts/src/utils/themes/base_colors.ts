@@ -107,6 +107,7 @@ export const DARK_BORDER_COLORS = {
   borderBaseSubdued: SEMANTIC_COLORS.shade120,
   borderBasePlain: SEMANTIC_COLORS.shade100,
   borderBasePrimary: SEMANTIC_COLORS.primary120,
+  borderStrongPrimary: SEMANTIC_COLORS.primary60,
 };
 
 /**
@@ -117,6 +118,7 @@ export const LIGHT_BORDER_COLORS = {
   borderBaseSubdued: SEMANTIC_COLORS.shade20,
   borderBasePlain: SEMANTIC_COLORS.shade30,
   borderBasePrimary: SEMANTIC_COLORS.primary30,
+  borderStrongPrimary: SEMANTIC_COLORS.primary90,
 };
 
 /**
@@ -201,22 +203,22 @@ export const SEVERITY_COLORS = {
 export const LIGHT_DIMMED_COLORS = {
   lineStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
   linePointStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
-  linePointFill: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
+  linePointFill: SEMANTIC_COLORS.plainLight,
 
   areaFill: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
   areaStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha50,
   areaPointStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
-  areaPointFill: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
+  areaPointFill: SEMANTIC_COLORS.plainLight,
 };
 
 /** @internal */
 export const DARK_DIMMED_COLORS = {
   lineStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
   linePointStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
-  linePointFill: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
+  linePointFill: SEMANTIC_COLORS.shade145,
 
   areaFill: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
   areaStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
   areaPointStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
-  areaPointFill: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
+  areaPointFill: SEMANTIC_COLORS.shade145,
 };

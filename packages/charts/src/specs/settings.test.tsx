@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import type { Store } from 'redux';
@@ -44,14 +44,14 @@ describe('Settings spec component', () => {
     SettingsProxy = getProxy(chartStore);
   });
   test('should update store on mount if spec has a chart store', () => {
-    mount(
+    render(
       <Provider store={chartStore}>
         <SpecsParser />
       </Provider>,
     );
     expect(getSettingsSpecSelector(chartStore.getState()).rotation).toBe(0);
 
-    mount(
+    render(
       <Provider store={chartStore}>
         <SpecsParser>
           <Settings rotation={90} />
@@ -62,23 +62,24 @@ describe('Settings spec component', () => {
   });
 
   test('should update store on component update', () => {
-    const component = mount(<SettingsProxy />);
+    const { rerender } = render(<SettingsProxy />);
     let settingSpec = getSettingsSpecSelector(chartStore.getState());
     expect(settingSpec.baseTheme).toEqual(LIGHT_THEME);
     expect(settingSpec.rotation).toBe(0);
-    component.setProps({
-      settings: {
-        baseTheme: DARK_THEME,
-        rotation: 90 as Rotation,
-        rendering: 'svg' as Rendering,
-        animateData: true,
-        showLegend: true,
-        legendPosition: Position.Bottom,
-        showLegendExtra: false,
-        debug: true,
-        xDomain: { min: 0, max: 10 },
-      },
-    });
+    rerender(
+      <SettingsProxy
+        settings={{
+          baseTheme: DARK_THEME,
+          rotation: 90 as Rotation,
+          rendering: 'svg' as Rendering,
+          animateData: true,
+          showLegend: true,
+          legendPosition: Position.Bottom,
+          debug: true,
+          xDomain: { min: 0, max: 10 },
+        }}
+      />,
+    );
     settingSpec = getSettingsSpecSelector(chartStore.getState());
     expect(settingSpec.baseTheme).toEqual(DARK_THEME);
     expect(settingSpec.rotation).toBe(90);
@@ -92,7 +93,7 @@ describe('Settings spec component', () => {
   });
 
   test('should set event listeners on chart store', () => {
-    mount(<SettingsProxy />);
+    render(<SettingsProxy />);
     let settingSpec = getSettingsSpecSelector(chartStore.getState());
 
     expect(settingSpec.onElementClick).toBeUndefined();
@@ -127,7 +128,7 @@ describe('Settings spec component', () => {
       onRenderChange: onRenderChangeEvent,
     };
 
-    mount(<SettingsProxy settings={updatedProps} />);
+    render(<SettingsProxy settings={updatedProps} />);
     settingSpec = getSettingsSpecSelector(chartStore.getState());
 
     expect(settingSpec.onElementClick).toEqual(onElementClick);
@@ -146,7 +147,7 @@ describe('Settings spec component', () => {
   });
 
   test('should allow partial theme', () => {
-    mount(<SettingsProxy />);
+    render(<SettingsProxy />);
     let settingSpec = getSettingsSpecSelector(chartStore.getState());
     expect(settingSpec.baseTheme).toEqual(LIGHT_THEME);
 
@@ -169,7 +170,7 @@ describe('Settings spec component', () => {
       xDomain: { min: 0, max: 10 },
     };
 
-    mount(<SettingsProxy settings={updatedProps} />);
+    render(<SettingsProxy settings={updatedProps} />);
 
     settingSpec = getSettingsSpecSelector(chartStore.getState());
     /*

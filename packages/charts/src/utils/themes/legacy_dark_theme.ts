@@ -461,12 +461,25 @@ export const LEGACY_DARK_THEME: Theme = {
   highlighter: {
     point: {
       opacity: 1,
-      fill: ColorVariant.None,
+      fill: Colors.Black.keyword,
       stroke: ColorVariant.Series,
-      strokeWidth: 4,
-      radius: 10,
+      strokeWidth: 1,
+      radius: 2,
+      onHover: {
+        opacity: 1,
+        fill: ColorVariant.None,
+        stroke: ColorVariant.Series,
+        strokeWidth: 4,
+        radius: 10,
+      },
     },
   },
   lineAnnotation: DEFAULT_ANNOTATION_LINE_STYLE,
   rectAnnotation: DEFAULT_ANNOTATION_RECT_STYLE,
+  brush: {
+    fill: Colors.Gray.keyword,
+    opacity: 0.6,
+    stroke: Colors.Transparent.keyword,
+    strokeWidth: 0,
+  },
 };

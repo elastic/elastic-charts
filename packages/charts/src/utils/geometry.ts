@@ -11,7 +11,7 @@ import type { $Values } from 'utility-types';
 import type { Dimensions } from './dimensions';
 import type { BarSeriesStyle, PointStyle, PointShape, LineSeriesStyle, AreaSeriesStyle } from './themes/theme';
 import type { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
-import type { LabelOverflowConstraint } from '../chart_types/xy_chart/utils/specs';
+import type { LabelOverflowConstraint, SeriesType } from '../chart_types/xy_chart/utils/specs';
 import type { Color } from '../common/colors';
 import type { Pixels } from '../common/geometry';
 import type { LegendItem } from '../common/legend';
@@ -56,6 +56,7 @@ export type ClippedRanges = [number, number][];
 /** @internal */
 export interface PointGeometry {
   seriesIdentifier: XYChartSeriesIdentifier;
+  seriesType: SeriesType;
   x: number;
   y: number;
   radius: number;

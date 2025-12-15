@@ -27,10 +27,10 @@ import type { PointerValue } from '../../../../state/types';
 import type { Rotation } from '../../../../utils/common';
 import { isNil } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
-import type { IndexedGeometry } from '../../../../utils/geometry';
+import { isPointGeometry, type IndexedGeometry, type PointGeometry } from '../../../../utils/geometry';
 import type { Point } from '../../../../utils/point';
 import type { SeriesCompareFn } from '../../../../utils/series_sort';
-import { isPointOnGeometry } from '../../rendering/utils';
+import { isLineAreaPointWithinPanel, isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltipHeader, formatTooltipValue } from '../../tooltip/tooltip';
 import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
 import type { DataSeries } from '../../utils/series';
@@ -45,12 +45,14 @@ const EMPTY_VALUES = Object.freeze({
     values: [],
   },
   highlightedGeometries: [],
+  highlightedPoints: [],
 });
 
 /** @internal */
 export interface TooltipAndHighlightedGeoms {
   tooltip: TooltipInfo;
   highlightedGeometries: IndexedGeometry[];
+  highlightedPoints: PointGeometry[];
 }
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
@@ -119,16 +121,27 @@ function getTooltipAndHighlightFromValue(
     return EMPTY_VALUES;
   }
 
+  const legendSeriesSortFn: SeriesCompareFn = (a, b) => {
+    const aDs = seriesIdentifierDataSeriesMap[a.key];
+    const bDs = seriesIdentifierDataSeriesMap[b.key];
+    return defaultXYLegendSeriesSort(aDs, bDs);
+  };
+
   // build the tooltip value list
   let header: PointerValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
+  const highlightedPoints: PointGeometry[] = [];
+  const hoveredPointsMap = new Map<string, { geom: PointGeometry; index: number }>();
   const xValues = new Set<any>();
   const hideNullValues = !tooltip.showNullValues;
   const values = matchingGeoms
     .slice()
     .sort((a, b) => {
-      // presort matchingGeoms to group by series then y value to prevent flipping
-      return b.seriesIdentifier.key.localeCompare(a.seriesIdentifier.key) || b.value.y - a.value.y;
+      // pre-sort matchingGeoms to group by series and sortingOrder then y value to prevent flipping
+      const seriesSort = legendSeriesSortFn(a.seriesIdentifier, b.seriesIdentifier);
+      if (seriesSort !== 0) return seriesSort;
+      // Within same series, sort by y value (for stability)
+      return b.value.y - a.value.y;
     })
     .reduce<TooltipValue[]>((acc, indexedGeometry) => {
       if (hideNullValues && indexedGeometry.value.y === null) {
@@ -151,21 +164,53 @@ function getTooltipAndHighlightFromValue(
         return acc;
       }
 
-      // check if the pointer is on the geometry (avoid checking if using external pointer event)
-      let isHighlighted = false;
-      if (
-        (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) &&
-        isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)
-      ) {
-        isHighlighted = true;
-        highlightedGeometries.push(indexedGeometry);
+      // highlight all geometries if pointer is on them and all the line/area points of the hovered bucket (avoid checking if using external pointer event)
+      const shouldCheckHighlighting = !externalPointerEvent || isPointerOutEvent(externalPointerEvent);
+      let isTooltipHighlighted = false;
+
+      if (shouldCheckHighlighting) {
+        const isGeometryHovered = isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer);
+        const isLineAreaPoint = isLineAreaPointWithinPanel(spec, indexedGeometry);
+
+        if (isGeometryHovered) {
+          isTooltipHighlighted = true;
+
+          if (isPointGeometry(indexedGeometry)) {
+            // If Point Geometries overlap, then highlight the one with the highest sortingOrder
+            const hoveredPointKey = `${indexedGeometry.x}_${indexedGeometry.y}_${indexedGeometry.radius}`;
+            const existingGeom = hoveredPointsMap.get(hoveredPointKey);
+
+            if (!existingGeom) {
+              // No existing geometry -> add the current one
+              hoveredPointsMap.set(hoveredPointKey, { geom: indexedGeometry, index: highlightedGeometries.length });
+              highlightedGeometries.push(indexedGeometry);
+            } else {
+              // Already an existing geometry -> check if the current one has a higher sortingOrder
+              const currentDs = seriesIdentifierDataSeriesMap[indexedGeometry.seriesIdentifier.key];
+              const existingDs = seriesIdentifierDataSeriesMap[existingGeom.geom.seriesIdentifier.key];
+              const shouldReplaceExistingGeometry =
+                currentDs && existingDs && currentDs.sortOrder > existingDs.sortOrder;
+
+              if (shouldReplaceExistingGeometry) {
+                hoveredPointsMap.set(hoveredPointKey, { geom: indexedGeometry, index: existingGeom.index });
+                highlightedGeometries[existingGeom.index] = indexedGeometry;
+              }
+            }
+          } else {
+            highlightedGeometries.push(indexedGeometry);
+          }
+        }
+        if (isLineAreaPoint) {
+          // Geometry is area/line point -> bucket highlight
+          highlightedPoints.push(indexedGeometry as PointGeometry);
+        }
       }
 
       // format the tooltip values
       const formattedTooltip = formatTooltipValue(
         indexedGeometry,
         spec,
-        isHighlighted,
+        isTooltipHighlighted,
         hasSingleSeries,
         isBandedSpec(spec),
         yAxis,
@@ -188,12 +233,7 @@ function getTooltipAndHighlightFromValue(
     header = null;
   }
 
-  const baseTooltipSortFn: SeriesCompareFn = (a, b) => {
-    const aDs = seriesIdentifierDataSeriesMap[a.key];
-    const bDs = seriesIdentifierDataSeriesMap[b.key];
-    return defaultXYLegendSeriesSort(aDs, bDs);
-  };
-  const tooltipSortFn = tooltip.sort ?? settings.legendSort ?? baseTooltipSortFn;
+  const tooltipSortFn = tooltip.sort ?? settings.legendSort ?? legendSeriesSortFn;
   const sortedTooltipValues = values.sort((a, b) => {
     return tooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
   });
@@ -204,6 +244,7 @@ function getTooltipAndHighlightFromValue(
       values: sortedTooltipValues,
     },
     highlightedGeometries,
+    highlightedPoints,
   };
 }
 
@@ -238,4 +279,10 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
 export const getHighlightedGeomsSelector = createCustomCachedSelector(
   [getHighlightedTooltipTooltipValuesSelector],
   ({ highlightedGeometries }): IndexedGeometry[] => highlightedGeometries,
+);
+
+/** @internal */
+export const getHighlightedPointsSelector = createCustomCachedSelector(
+  [getHighlightedTooltipTooltipValuesSelector],
+  ({ highlightedPoints }): PointGeometry[] => highlightedPoints,
 );

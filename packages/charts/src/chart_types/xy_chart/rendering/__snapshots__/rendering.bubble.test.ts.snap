@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Rendering points - bubble Multi series bubble chart - linear can render first spec points 1`] = `
 [
@@ -22,6 +22,7 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -79,6 +80,7 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -141,6 +143,7 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -198,6 +201,7 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -260,6 +264,7 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -317,6 +322,7 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -379,6 +385,7 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -436,6 +443,7 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -498,6 +506,7 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render f
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -555,6 +564,7 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render f
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -617,6 +627,7 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render s
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -674,6 +685,7 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render s
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -736,6 +748,7 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -793,6 +806,7 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -855,6 +869,7 @@ exports[`Rendering points - bubble Single series bubble chart - linear Can rende
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -912,6 +927,7 @@ exports[`Rendering points - bubble Single series bubble chart - linear Can rende
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -974,6 +990,7 @@ exports[`Rendering points - bubble Single series bubble chart - ordinal Can rend
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -1031,6 +1048,7 @@ exports[`Rendering points - bubble Single series bubble chart - ordinal Can rend
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -1093,6 +1111,7 @@ exports[`Rendering points - bubble Single series bubble chart - time Can render 
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [
@@ -1150,6 +1169,7 @@ exports[`Rendering points - bubble Single series bubble chart - time Can render 
       "xAccessor": 0,
       "yAccessor": 1,
     },
+    "seriesType": "bubble",
     "style": {
       "fill": {
         "color": [

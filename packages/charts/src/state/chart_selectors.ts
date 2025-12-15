@@ -9,6 +9,7 @@
 import type { CSSProperties } from 'react';
 
 import type { GlobalChartState } from './chart_state';
+import { getA11ySettingsSelector } from './selectors/get_accessibility_config';
 import { InitStatus } from './selectors/get_internal_is_intialized';
 import type { TooltipVisibility } from './tooltip_visibility';
 import type { DebugState } from './types';
@@ -20,6 +21,22 @@ import type { SeriesKey } from '../common/series_id';
 import type { AnchorPosition } from '../components/portal/types';
 import type { TooltipInfo } from '../components/tooltip/types';
 import type { Dimensions } from '../utils/dimensions';
+
+/** @internal */
+export interface ScreenReaderItem {
+  /** The label for this part of the summary */
+  label: string;
+  /** Optional ID for referencing this part */
+  id?: string;
+  /** The value for this part of the summary */
+  value: string;
+}
+
+/** @internal */
+export interface ChartSpecificScreenReaderData {
+  /** Custom summary parts to include in the consolidated summary */
+  screenReaderItems?: ScreenReaderItem[];
+}
 
 /** @internal */
 export interface LegendItemLabel {
@@ -138,6 +155,11 @@ export interface ChartSelectors {
   getChartTypeDescription(globalState: GlobalChartState): string;
 
   /**
+   * Get chart-specific data for screen reader accessibility
+   */
+  getScreenReaderData?(globalState: GlobalChartState): ChartSpecificScreenReaderData;
+
+  /**
    * Get the domain of the vertical and horizontal small multiple grids
    */
   getSmallMultiplesDomains(globalState: GlobalChartState): SmallMultiplesSeriesDomains;
@@ -164,7 +186,7 @@ export const createChartSelectorsFactory =
   () => {
     const callbacks = callbacksCreators.map((cb) => cb());
 
-    return {
+    const chartSelectors = {
       isInitialized: () => InitStatus.SpecNotInitialized,
       isBrushAvailable: () => false,
       isBrushing: () => false,
@@ -186,6 +208,16 @@ export const createChartSelectorsFactory =
       getBrushArea: () => null,
       getDebugState: () => ({}),
       getChartTypeDescription: () => '',
+      // The default screen reader data returns just the chart type description.
+      getScreenReaderData: (state: GlobalChartState): ChartSpecificScreenReaderData => {
+        const a11ySettings = getA11ySettingsSelector(state);
+        const chartTypeDescription = chartSelectors.getChartTypeDescription(state);
+        return {
+          screenReaderItems: chartTypeDescription
+            ? [{ label: 'Chart type', id: a11ySettings.defaultSummaryId, value: chartTypeDescription }]
+            : [],
+        };
+      },
       getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),
       canDisplayChartTitles: () => true,
       ...overrides,
@@ -193,6 +225,8 @@ export const createChartSelectorsFactory =
         callbacks.forEach((cb) => cb(state));
       },
     };
+
+    return chartSelectors;
   };
 
 /** @internal */

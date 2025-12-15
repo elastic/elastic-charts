@@ -34,7 +34,7 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     point: {
       visible: 'auto',
       strokeWidth: 0,
-      stroke: ColorVariant.None,
+      stroke: ColorVariant.Series,
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
@@ -84,7 +84,7 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     point: {
       visible: 'never',
       strokeWidth: 0,
-      stroke: ColorVariant.None,
+      stroke: ColorVariant.Series,
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
@@ -466,11 +466,18 @@ export const AMSTERDAM_DARK_THEME: Theme = {
 
   highlighter: {
     point: {
-      opacity: 0.5,
+      opacity: 1,
       fill: ColorVariant.Series,
-      stroke: ColorVariant.None,
+      stroke: ColorVariant.Series,
       strokeWidth: 0,
-      radius: 5,
+      radius: 3,
+      onHover: {
+        opacity: 0.5,
+        fill: ColorVariant.Series,
+        stroke: ColorVariant.None,
+        strokeWidth: 0,
+        radius: 5,
+      },
     },
   },
   lineAnnotation: {
@@ -485,5 +492,11 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     opacity: 0.25,
     fill: '#98A2B3',
     stroke: '#98A2B3',
+  },
+  brush: {
+    fill: Colors.Gray.keyword,
+    opacity: 0.6,
+    stroke: Colors.Transparent.keyword,
+    strokeWidth: 0,
   },
 };

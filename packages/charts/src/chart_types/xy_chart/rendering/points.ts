@@ -62,7 +62,7 @@ export function renderPoints(
   const needSorting = !markSizeOptions.enabled;
 
   let style = buildPointGeometryStyles(color, pointStyle);
-  let styleOverrides: RecursivePartial<PointStyle> | undefined = undefined;
+  const seriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
   const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
     pointGeometries: SortedArray<PointGeometry>;
     minDistanceBetweenPoints: number;
@@ -70,15 +70,14 @@ export function renderPoints(
   }>(
     (acc, datum, dataIndex) => {
       const { x: xValue, mark } = datum;
-      const prev = dataSeries.data[dataIndex - 1];
-      const next = dataSeries.data[dataIndex + 1];
       // don't create the point if not within the xScale domain
       if (!xScale.isValueInDomain(xValue)) return acc;
-
       // don't create the point if it that point was filled
       const x = xScale.scale(xValue);
-
       if (!isFiniteNumber(x)) return acc;
+
+      const prev = dataSeries.data[dataIndex - 1];
+      const next = dataSeries.data[dataIndex + 1];
 
       if (isFiniteNumber(acc.prevX) && !isDatumFilled(datum)) {
         acc.minDistanceBetweenPoints = Math.min(acc.minDistanceBetweenPoints, Math.abs(x - acc.prevX));
@@ -86,11 +85,11 @@ export function renderPoints(
       acc.prevX = x;
 
       const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
-      const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
 
       const isPointIsolated = considerIsolatedPoints
         ? isIsolatedPoint(dataIndex, dataSeries.data.length, datum, isBandedSpec, y1Fn, y0Fn, prev, next)
         : false;
+      let styleOverrides: RecursivePartial<PointStyle> | undefined = undefined;
       if (styleAccessor) {
         styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
         style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
@@ -125,6 +124,7 @@ export function renderPoints(
           seriesIdentifier,
           panel,
           isolated: isPointIsolated,
+          seriesType: dataSeries.seriesType,
         };
         indexedGeometryMap.set(pointGeometry, geometryType);
         // use the geometry only if the yDatum in contained in the current yScale domain

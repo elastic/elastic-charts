@@ -17,8 +17,8 @@ import { TitlesBlock } from './titles';
 import type { Color } from '../../../../common/colors';
 import { LayoutDirection, renderWithProps } from '../../../../utils/common';
 import type { MetricStyle } from '../../../../utils/themes/theme';
-import type { MetricDatum } from '../../specs';
 import { isMetricWNumber, isSecondaryMetricProps } from '../../specs';
+import type { MetricDatum } from '../../specs';
 
 const GRID_SPAN_THREE = '1 / span 3';
 
@@ -50,6 +50,11 @@ const getGridTemplateColumnsWithIcon = (iconSize: number) => {
   return `${iconSizeWithPadding} minmax(0, 1fr) ${iconSizeWithPadding}`;
 };
 
+const gridTemplateRows = {
+  bottom: `min-content auto min-content min-content`,
+  top: `min-content min-content auto min-content`,
+};
+
 /** @internal */
 export interface TextColors {
   /**
@@ -68,7 +73,7 @@ interface MetricTextprops {
   progressBarSize: ProgressBarSize;
   textDimensions: MetricTextDimensions;
   colors: TextColors;
-  badgeBorderColor?: Color;
+  defaultBadgeBorderColor?: Color;
 }
 
 /** @internal */
@@ -80,7 +85,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
   progressBarSize,
   textDimensions,
   colors,
-  badgeBorderColor,
+  defaultBadgeBorderColor,
 }) => {
   const { heightBasedSizes: sizes, hasProgressBar, progressBarDirection, visibility, textParts } = textDimensions;
   const { extra, body } = datum;
@@ -95,6 +100,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
   const isIconVisible = !!datum.icon;
 
   const gridTemplateColumns = isIconVisible ? getGridTemplateColumnsWithIcon(sizes.iconSize) : undefined;
+  const currentGridTemplateRows = gridTemplateRows[valuePosition];
 
   const iconGridStyles = isIconVisible ? { gridRow: '1', gridColumn: iconAlign === 'left' ? '1' : '3' } : {};
 
@@ -112,11 +118,15 @@ export const MetricText: React.FC<MetricTextprops> = ({
   if (isSecondaryMetricProps(extra)) {
     const { style: extraStyle = {}, ...secondaryMetricProps } = extra;
 
+    const { badgeBorderColor: rawBorder = { mode: 'none' }, ...restSecondaryMetricProps } = secondaryMetricProps;
+    const resolvedBadgeBorderColor: Color | undefined =
+      rawBorder.mode === 'none' ? undefined : rawBorder.mode === 'auto' ? defaultBadgeBorderColor : rawBorder.color;
+
     extraElement = (
       <SecondaryMetric
         style={{ ...extraStyle, fontSize: sizes.extraFontSize, color: colors.extra }}
-        badgeBorderColor={badgeBorderColor}
-        {...secondaryMetricProps}
+        {...restSecondaryMetricProps}
+        badgeBorderColor={resolvedBadgeBorderColor}
       />
     );
   } else if (React.isValidElement(extra) || typeof extra === 'function') {
@@ -128,7 +138,10 @@ export const MetricText: React.FC<MetricTextprops> = ({
   }
 
   return (
-    <div className={containerClassName} style={{ color: colors.highContrast, gridTemplateColumns }}>
+    <div
+      className={containerClassName}
+      style={{ color: colors.highContrast, gridTemplateColumns, gridTemplateRows: currentGridTemplateRows }}
+    >
       <TitlesBlock
         metricId={id}
         title={datum.title}

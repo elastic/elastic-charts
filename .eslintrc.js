@@ -368,6 +368,12 @@ module.exports = {
         'elastic-charts/require-tsdocs': 2,
         'elastic-charts/require-documentation': 1,
 
+        'import/no-useless-path-segments': [
+          'error',
+          {
+            noUselessIndex: true,
+          },
+        ],
         /*
          *****************************************
          * Rules with high processing demand

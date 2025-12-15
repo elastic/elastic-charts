@@ -530,6 +530,8 @@ export interface Theme {
   lineAnnotation: LineAnnotationStyle;
 
   rectAnnotation: RectAnnotationStyle;
+
+  brush: BrushStyle;
 }
 
 /** @public */
@@ -585,6 +587,10 @@ export interface PointStyle {
   radius: Pixels;
   /** shape for the point, default to circle */
   shape?: PointShape;
+  /**
+   * The style applied to the point when it is focused relative to other highlighted elements on the chart.
+   */
+  focused?: { strokeWidth: number };
   /**
    * The style applied to the point when it is dimmed relative to other highlighted elements on the chart.
    * This is typically used to visually de-emphasize the point, for example, when another series is highlighted.
@@ -870,5 +876,20 @@ export interface HighlighterStyle {
     strokeWidth: Pixels;
     opacity: Ratio;
     radius: Pixels;
+    onHover: {
+      fill: Color | ColorVariant;
+      stroke: Color | ColorVariant;
+      strokeWidth: Pixels;
+      opacity: Ratio;
+      radius: Pixels;
+    };
   };
+}
+
+/** @public */
+export interface BrushStyle {
+  fill: Color;
+  stroke: Color;
+  strokeWidth: Pixels;
+  opacity: Ratio;
 }

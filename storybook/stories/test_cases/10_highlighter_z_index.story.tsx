@@ -49,7 +49,3 @@ export const Example: ChartsStory = (_, { title, description }) => {
     </Chart>
   );
 };
-
-Example.parameters = {
-  markdown: 'Currently not correctly rendered due to [#1921](https://github.com/elastic/elastic-charts/issues/1921)',
-};

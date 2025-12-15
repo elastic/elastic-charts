@@ -572,9 +572,10 @@ describe('Chart State utils', () => {
         fill: 'green', // the override strokeWidth
         opacity: 1,
         radius: 3,
-        stroke: ColorVariant.None,
-        strokeWidth: 0,
+        stroke: ColorVariant.Series,
+        strokeWidth: 1.5,
         dimmed: LIGHT_THEME.lineSeriesStyle.point.dimmed,
+        focused: { strokeWidth: 2.5 },
       });
     });
     test('can compute area geometries with custom style', () => {
@@ -642,9 +643,10 @@ describe('Chart State utils', () => {
         fill: 'point-fill-custom-color', // the override strokeWidth
         opacity: 1,
         radius: 3,
-        stroke: ColorVariant.None,
-        strokeWidth: 0,
+        stroke: ColorVariant.Series,
+        strokeWidth: 1.5,
         dimmed: LIGHT_THEME.areaSeriesStyle.point.dimmed,
+        focused: { strokeWidth: 2.5 },
       });
     });
     test('can compute bars geometries counts', () => {

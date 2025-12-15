@@ -246,7 +246,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "ticks" | "tickFormat" | "gridLine" | "labelFormat" | "integersOnly" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "tickFormat" | "ticks" | "gridLine" | "labelFormat" | "integersOnly" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -436,6 +436,18 @@ export type BrushEndListener = (brushAreaEvent: BrushEvent, options?: {
 
 // @public
 export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
+
+// @public (undocumented)
+export interface BrushStyle {
+    // (undocumented)
+    fill: Color;
+    // (undocumented)
+    opacity: Ratio;
+    // (undocumented)
+    stroke: Color;
+    // (undocumented)
+    strokeWidth: Pixels;
+}
 
 // Warning: (ae-forgotten-export) The symbol "buildProps_5" needs to be exported by the entry point index.d.ts
 // Warning: (ae-incompatible-release-tags) The symbol "BubbleSeries" is marked as @public, but its signature references "BubbleSeriesSpec" which is marked as @alpha
@@ -1684,6 +1696,13 @@ export interface HighlighterStyle {
         strokeWidth: Pixels;
         opacity: Ratio;
         radius: Pixels;
+        onHover: {
+            fill: Color | ColorVariant;
+            stroke: Color | ColorVariant;
+            strokeWidth: Pixels;
+            opacity: Ratio;
+            radius: Pixels;
+        };
     };
 }
 
@@ -2483,6 +2502,9 @@ export interface PointStyle {
         stroke: Color | ColorVariant;
     };
     fill?: Color | ColorVariant;
+    focused?: {
+        strokeWidth: number;
+    };
     opacity: number;
     radius: Pixels;
     shape?: PointShape;
@@ -2694,7 +2716,14 @@ export type ScaleType = $Values<typeof ScaleType>;
 // @alpha
 export interface SecondaryMetricProps {
     ariaDescription?: string;
-    badgeBorderColor?: Color;
+    badgeBorderColor?: {
+        mode: 'none';
+    } | {
+        mode: 'auto';
+    } | {
+        mode: 'custom';
+        color: Color;
+    };
     badgeColor?: Color;
     icon?: string;
     iconPosition?: 'before' | 'after';
@@ -3099,6 +3128,8 @@ export interface Theme {
     axes: AxisStyle;
     background: BackgroundStyle;
     barSeriesStyle: BarSeriesStyle;
+    // (undocumented)
+    brush: BrushStyle;
     bubbleSeriesStyle: BubbleSeriesStyle;
     bulletGraph: BulletStyle;
     chartMargins: Margins;
@@ -3201,7 +3232,7 @@ export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifi
 };
 
 // @public
-export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "body" | "footer" | "header" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "sort" | "offset" | "unit" | "headerFormatter" | "customTooltip" | "stickTo" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding", never>;
+export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "body" | "footer" | "header" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "sort" | "offset" | "headerFormatter" | "unit" | "customTooltip" | "stickTo" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding", never>;
 
 // @public
 export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;

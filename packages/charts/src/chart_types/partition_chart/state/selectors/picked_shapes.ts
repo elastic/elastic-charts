@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { getActivePointerPosition } from './../../../../state/selectors/get_active_pointer_position';
 import { partitionDrilldownFocus, partitionMultiGeometries } from './geometries';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { pickedShapes, pickShapesLayerValues } from '../../layout/viewmodel/picked_shapes';
 
 /** @internal */

@@ -8,8 +8,8 @@
 
 import React, { Fragment } from 'react';
 
-import type { BandViewModel } from '../../chart_types/goal_chart/layout/types/viewmodel_types';
-import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
+import type { A11ySettings } from '../../../state/selectors/get_accessibility_config';
+import type { BandViewModel } from '../layout/types/viewmodel_types';
 
 interface GoalSemanticDescriptionProps {
   bandLabels: BandViewModel[];
@@ -23,7 +23,11 @@ export const GoalSemanticDescription = ({
   firstValue,
 }: A11ySettings & GoalSemanticDescriptionProps) => {
   return bandLabels[0] && bandLabels[0].text.length > 1 ? (
-    <dl className="echScreenReaderOnly echGoalDescription" key={`goalChart--${labelId}`}>
+    <dl
+      className="echScreenReaderOnly echGoalDescription"
+      key={`goalChart--${labelId}`}
+      data-testid="echGoalScreenReaderDescription"
+    >
       {bandLabels.map(({ value, text }, index) => {
         if (firstValue === value) return;
         const prevValue = bandLabels[index - 1];
