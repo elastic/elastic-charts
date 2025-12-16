@@ -1,0 +1,294 @@
+---
+id: quick-reference
+title: Quick Reference
+sidebar_position: 9
+---
+
+# Quick Reference
+
+Fast lookup for common tasks and patterns.
+
+## Installation
+
+```bash
+yarn add @elastic/charts
+```
+
+```tsx
+import '@elastic/charts/dist/theme.css';
+```
+
+## Basic Chart Structure
+
+```tsx
+import { Chart, Settings, BarSeries, ScaleType } from '@elastic/charts';
+
+<Chart size={{ height: 300 }}>
+  <Settings />
+  <BarSeries
+    id="bars"
+    data={data}
+    xAccessor="x"
+    yAccessors={['y']}
+    xScaleType={ScaleType.Ordinal}
+    yScaleType={ScaleType.Linear}
+  />
+</Chart>
+```
+
+## Common Imports
+
+```tsx
+// Core components
+import {
+  Chart,
+  Settings,
+  BarSeries,
+  LineSeries,
+  AreaSeries,
+  Partition,
+  Axis,
+  Position,
+} from '@elastic/charts';
+
+// Enums and constants
+import {
+  ScaleType,
+  CurveType,
+  PartitionLayout,
+  AnnotationDomainType,
+} from '@elastic/charts';
+
+// Themes
+import {
+  LIGHT_THEME,
+  DARK_THEME,
+} from '@elastic/charts';
+
+// Utilities
+import {
+  timeFormatter,
+  niceTimeFormatter,
+} from '@elastic/charts';
+```
+
+## Chart Types Quick Start
+
+### Bar Chart
+```tsx
+<BarSeries
+  id="bars"
+  data={[{ x: 'A', y: 10 }, { x: 'B', y: 20 }]}
+  xAccessor="x"
+  yAccessors={['y']}
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+### Line Chart
+```tsx
+<LineSeries
+  id="line"
+  data={data}
+  xAccessor="time"
+  yAccessors={['value']}
+  xScaleType={ScaleType.Time}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+### Area Chart
+```tsx
+<AreaSeries
+  id="area"
+  data={data}
+  xAccessor="x"
+  yAccessors={['y']}
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+### Pie Chart
+```tsx
+<Partition
+  id="pie"
+  data={[{ cat: 'A', val: 30 }, { cat: 'B', val: 70 }]}
+  valueAccessor={(d) => d.val}
+  layers={[{ groupByRollup: (d) => d.cat }]}
+  config={{ partitionLayout: PartitionLayout.sunburst }}
+/>
+```
+
+## Common Patterns
+
+### Multiple Series
+```tsx
+<LineSeries id="series1" {...props1} />
+<LineSeries id="series2" {...props2} />
+```
+
+### Stacked Chart
+```tsx
+<BarSeries
+  stackAccessors={['x']}
+  splitSeriesAccessors={['category']}
+  // ... other props
+/>
+```
+
+### Multiple Axes
+```tsx
+<Axis id="left" groupId="group1" position={Position.Left} />
+<Axis id="right" groupId="group2" position={Position.Right} />
+
+<LineSeries id="s1" groupId="group1" {...props} />
+<LineSeries id="s2" groupId="group2" {...props} />
+```
+
+## Settings Shortcuts
+
+### Theme
+```tsx
+<Settings theme={DARK_THEME} />
+
+<Settings
+  baseTheme={LIGHT_THEME}
+  theme={{ colors: { vizColors: ['#FF0000'] } }}
+/>
+```
+
+### Legend
+```tsx
+<Settings
+  showLegend={true}
+  legendPosition="right"
+/>
+```
+
+### Tooltip
+```tsx
+<Settings
+  tooltip={{ type: 'vertical', snap: true }}
+/>
+```
+
+### Interactions
+```tsx
+<Settings
+  onElementClick={(elements) => console.log(elements)}
+  onBrushEnd={(area) => console.log(area)}
+/>
+```
+
+## Formatters
+
+### Time
+```tsx
+import { timeFormatter } from '@elastic/charts';
+
+<Axis tickFormat={timeFormatter('MM/DD HH:mm')} />
+```
+
+### Numbers
+```tsx
+<Axis tickFormat={(d) => `$${d.toLocaleString()}`} />
+<Axis tickFormat={(d) => `${d}%`} />
+```
+
+## Annotations
+
+### Line
+```tsx
+<LineAnnotation
+  id="threshold"
+  domainType={AnnotationDomainType.YDomain}
+  dataValues={[{ dataValue: 50 }]}
+  style={{ line: { stroke: 'red' } }}
+/>
+```
+
+### Rectangle
+```tsx
+<RectAnnotation
+  id="range"
+  dataValues={[{ coordinates: { x0: 5, x1: 10 } }]}
+  style={{ fill: 'rgba(255,0,0,0.1)' }}
+/>
+```
+
+## Scale Types
+
+```tsx
+ScaleType.Linear    // Continuous numeric
+ScaleType.Ordinal   // Categorical
+ScaleType.Time      // Temporal
+ScaleType.Log       // Logarithmic
+ScaleType.Sqrt      // Square root
+```
+
+## Curve Types
+
+```tsx
+CurveType.LINEAR           // Straight lines
+CurveType.CURVE_NATURAL    // Smooth cubic
+CurveType.CURVE_MONOTONE_X // Monotonic
+CurveType.CURVE_STEP       // Step function
+```
+
+## Common Props
+
+### Series Props
+- `id` - Unique identifier (required)
+- `name` - Display name
+- `data` - Data array (required)
+- `xAccessor` - X value accessor (required)
+- `yAccessors` - Y value accessors (required)
+- `xScaleType` - X scale type (required)
+- `yScaleType` - Y scale type (required)
+- `splitSeriesAccessors` - Create multiple series
+- `stackAccessors` - Stack values
+- `color` - Custom color
+
+### Axis Props
+- `id` - Unique identifier (required)
+- `position` - Axis position (required)
+- `title` - Axis title
+- `tickFormat` - Label formatter
+- `showGridLines` - Show/hide grid
+- `domain` - Custom domain
+
+### Settings Props
+- `theme` - Theme object
+- `baseTheme` - Base theme to extend
+- `showLegend` - Show/hide legend
+- `legendPosition` - Legend placement
+- `tooltip` - Tooltip configuration
+- `rotation` - Chart rotation
+- `onElementClick` - Click handler
+- `onBrushEnd` - Brush handler
+
+## Troubleshooting
+
+### Chart Not Rendering
+- Import CSS: `import '@elastic/charts/dist/theme.css'`
+- Set chart height: `<Chart size={{ height: 300 }}>`
+- Check data format matches accessors
+
+### TypeScript Errors
+- Update TypeScript to 3.8+
+- Check peer dependencies
+- Verify import paths
+
+### Performance Issues
+- Use canvas renderer: `<Chart renderer="canvas">`
+- Limit data points or aggregate
+- Debounce interactions
+
+## Resources
+
+- [Full Documentation](./intro)
+- [Storybook Examples](https://elastic.github.io/elastic-charts/storybook/)
+- [GitHub Repository](https://github.com/elastic/elastic-charts)
+- [API Reference](../api)
