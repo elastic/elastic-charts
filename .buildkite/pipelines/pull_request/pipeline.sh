@@ -9,7 +9,9 @@ if [[ "${ELASTIC_BUILDKITE_INFRA:-}" =~ ^(1|true)$ ]]; then
   yarn install 1>&2
 
   # The new infra requires the pipeline to emit the steps
-  yarn -s print:pipeline
+  yarn -s print:pipeline > pipeline.debug.txt
+  buildkite-agent artifact upload pipeline.debug.txt
+  cat pipeline.debug.txt
 else
   # The old infra required pipeline upload
   echo '--- Build pipeline'
