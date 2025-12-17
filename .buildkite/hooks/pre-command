@@ -6,7 +6,7 @@ source .buildkite/scripts/utils.sh
 
 echo '--- Setting job environment variables'
 
-if [ "${BUILDKITE_AGENT_META_DATA_AGENT_MANAGER:-}" == "kibana"]; then # use old paths
+if [[ "${BUILDKITE_AGENT_META_DATA_AGENT_MANAGER:-}" == "kibana" ]]; then # use old paths
     # kibanamachine token to access org
     GITHUB_TOKEN=$(retry 5 5 vault read -field=github_token secret/kibana-issues/dev/kibanamachine)
     export GITHUB_TOKEN
