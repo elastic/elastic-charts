@@ -6,19 +6,35 @@ source .buildkite/scripts/utils.sh
 
 echo '--- Setting job environment variables'
 
-# kibanamachine token to access org
-GITHUB_TOKEN=$(retry 5 5 vault read -field=github_token secret/ci/elastic-elastic-charts/kibanamachine)
-export GITHUB_TOKEN
+if [ "${BUILDKITE_AGENT_META_DATA_QUEUE:-}" == "gobld"]; then # use new paths
+    # kibanamachine token to access org
+    GITHUB_TOKEN=$(retry 5 5 vault read -field=github_token secret/ci/elastic-elastic-charts/kibanamachine)
+    export GITHUB_TOKEN
 
-# charts github app to send checks
-GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/ci/elastic-elastic-charts/github | base64 -d)
-export GITHUB_AUTH
+    # charts github app to send checks
+    GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/ci/elastic-elastic-charts/github | base64 -d)
+    export GITHUB_AUTH
 
-FIREBASE_AUTH=$(retry 5 5 vault read -field=auth secret/ci/elastic-elastic-charts/firebase | base64 -d)
-export FIREBASE_AUTH
+    FIREBASE_AUTH=$(retry 5 5 vault read -field=auth secret/ci/elastic-elastic-charts/firebase | base64 -d)
+    export FIREBASE_AUTH
 
-BUILDKITE_TOKEN=$(retry 5 5 vault read -field=token secret/ci/elastic-elastic-charts/buildkite)
-export BUILDKITE_TOKEN
+    BUILDKITE_TOKEN=$(retry 5 5 vault read -field=token secret/ci/elastic-elastic-charts/buildkite)
+    export BUILDKITE_TOKEN
+else # use old paths
+    # kibanamachine token to access org
+    GITHUB_TOKEN=$(retry 5 5 vault read -field=github_token secret/kibana-issues/dev/kibanamachine)
+    export GITHUB_TOKEN
+
+    # charts github app to send checks
+    GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/github)
+    export GITHUB_AUTH
+
+    FIREBASE_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/firebase)
+    export FIREBASE_AUTH
+
+    BUILDKITE_TOKEN=$(retry 5 5 vault read -field=token secret/datavis/buildkite)
+    export BUILDKITE_TOKEN
+fi
 
 source .buildkite/scripts/node_setup.sh
 
