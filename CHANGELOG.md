@@ -1,3 +1,16 @@
+## [71.1.2](https://github.com/elastic/elastic-charts/compare/v71.1.1...v71.1.2) (2025-11-07)
+
+
+### Bug Fixes
+
+* **bullet:** fix metric breakpoints in bullet chart ([#2759](https://github.com/elastic/elastic-charts/issues/2759)) ([84ad335](https://github.com/elastic/elastic-charts/commit/84ad335316a59955f300d912155421058162ff27))
+* **highlighter:** Fix sorting logic for highlighted geometries ([#2756](https://github.com/elastic/elastic-charts/issues/2756)) ([6054ca1](https://github.com/elastic/elastic-charts/commit/6054ca176cc747c980ce398b99630886188ea942))
+
+
+### Performance Improvements
+
+* **xy:** avoid computing bar value display width ([#2754](https://github.com/elastic/elastic-charts/issues/2754)) ([26b1d65](https://github.com/elastic/elastic-charts/commit/26b1d657cb3db691105b722fe081f0c6145522e0))
+
 ## [71.1.1](https://github.com/elastic/elastic-charts/compare/v71.1.0...v71.1.1) (2025-09-29)
 
 

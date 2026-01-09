@@ -36,7 +36,11 @@ import type { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { MetricStyle } from '../../../../utils/themes/theme';
 import { Metric } from '../../../metric/renderer/dom/metric';
-import { getMetricTextPartDimensions, getSnappedFontSizes } from '../../../metric/renderer/dom/text_measurements';
+import {
+  getFitValueFontSize,
+  getMetricTextPartDimensions,
+  getSnappedFontSizes,
+} from '../../../metric/renderer/dom/text_measurements';
 import type { BulletMetricWProgress } from '../../../metric/specs';
 import type { ActiveValue } from '../../selectors/get_active_values';
 import { getActiveValues } from '../../selectors/get_active_values';
@@ -187,12 +191,12 @@ class Component extends React.Component<Props> {
                   domain: datum.domain,
                   niceDomain: datum.niceDomain,
                   valueLabels,
-                  extra: datum.target ? (
-                    <span>
-                      {valueLabels.target}:{' '}
-                      <strong>{(datum.targetFormatter ?? datum.valueFormatter)(datum.target)}</strong>
-                    </span>
-                  ) : undefined,
+                  extra: datum.target
+                    ? {
+                        value: datum.target.toString(),
+                        label: `${valueLabels.target}:`,
+                      }
+                    : undefined,
                 };
 
                 const bulletToMetricStyle = mergePartial(metricStyle, {
@@ -205,14 +209,20 @@ class Component extends React.Component<Props> {
                   nonFiniteText: 'N/A',
                   valueFontSize: 'default',
                 });
-                const panel = { width: size.width / stats.columns, height: size.height / stats.rows };
 
+                const panel = { width: size.width / stats.columns, height: size.height / stats.rows };
                 const textDimensions = getMetricTextPartDimensions(bulletDatum, panel, bulletToMetricStyle, locale);
-                const sizes = getSnappedFontSizes(
+                const fittedValueFontSize = getFitValueFontSize(
                   textDimensions.heightBasedSizes.valueFontSize,
-                  panel.height,
-                  bulletToMetricStyle,
+                  panel.width - textDimensions.progressBarWidth,
+                  textDimensions.visibility.availableHeightWithoutValue,
+                  textDimensions.textParts,
+                  bulletToMetricStyle.minValueFontSize,
+                  false,
+                  false,
                 );
+                const sizes = getSnappedFontSizes(fittedValueFontSize, panel.height, bulletToMetricStyle);
+
                 textDimensions.heightBasedSizes.valueFontSize = sizes.valueFontSize;
                 textDimensions.heightBasedSizes.valuePartFontSize = sizes.valuePartFontSize;
 

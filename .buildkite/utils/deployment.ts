@@ -31,7 +31,7 @@ export interface UpdateDeploymentCommentOptions {
 export async function createOrUpdateDeploymentComment(options: UpdateDeploymentCommentOptions) {
   const { state, preDeploy, sha = bkEnv.commit! } = options;
   const skipDeployment = await getMetadata(MetaDataKeys.skipDeployment);
-  console.log('MetaDataKeys.skipDeployment', skipDeployment);
+  console.warn('MetaDataKeys.skipDeployment', skipDeployment);
   const deploymentStatus = await getMetadata(MetaDataKeys.deploymentStatus);
   const status = preDeploy ? `${state}-preDeploy` : state;
 
@@ -120,7 +120,7 @@ export async function updatePreviousDeployments(
         return;
       }
 
-      console.log(`Updating deployment ${id} state: ${currentState} -> ${state}`);
+      console.warn(`Updating deployment ${id} state: ${currentState} -> ${state}`);
 
       await octokit.repos.createDeploymentStatus({
         ...defaultGHOptions,
@@ -141,7 +141,7 @@ export const createDeploymentStatus = async (
 
   console.trace('createDeploymentStatus', options.state);
 
-  console.log('MetaDataKeys.skipDeployment', await getMetadata(MetaDataKeys.skipDeployment));
+  console.warn('MetaDataKeys.skipDeployment', await getMetadata(MetaDataKeys.skipDeployment));
 
   if ((await getMetadata(MetaDataKeys.skipDeployment)) === 'true') return;
 
