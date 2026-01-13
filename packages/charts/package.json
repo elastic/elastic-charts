@@ -40,7 +40,6 @@
     "d3-array": "^1.2.4",
     "d3-cloud": "^1.2.5",
     "d3-collection": "^1.0.7",
-    "d3-interpolate": "^3.0.1",
     "d3-scale": "^3.3.0",
     "d3-shape": "^2.0.0",
     "immer": "^9.0.21",
