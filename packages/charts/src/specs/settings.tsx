@@ -479,6 +479,7 @@ export interface LegendSpec {
    * Render slot to render action for legend
    */
   legendAction?: LegendAction;
+  showLegendActionAlways?: boolean;
   legendColorPicker?: LegendColorPicker;
   /**
    * A SeriesSortFn to sort the legend values (top-bottom)

@@ -29,6 +29,7 @@ const getLabelOptionKnobs = (): LegendLabelOptions => {
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const hideActions = boolean('Hide legend action', false, 'Legend');
+  const showLegendActionAlways = boolean('Always show action', false, 'Legend');
   const showLegendExtra = !boolean('Hide legend extra', false, 'Legend');
   const showColorPicker = !boolean('Hide color picker', true, 'Legend');
   const legendPosition = customKnobs.enum.position('Legend position', undefined, { group: 'Legend' });
@@ -51,6 +52,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         legendValues={showLegendExtra ? legendValues : []}
         legendPosition={legendPosition}
         legendAction={hideActions ? undefined : getLegendAction(euiPopoverPosition)}
+        showLegendActionAlways={showLegendActionAlways}
         legendColorPicker={showColorPicker ? getColorPicker(euiPopoverPosition) : undefined}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

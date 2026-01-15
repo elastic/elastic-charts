@@ -50,6 +50,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     legendValues,
     totalItems,
     action: Action,
+    showActionAlways = false,
     positionConfig,
     labelOptions,
     isMostlyRTL,
@@ -126,7 +127,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
             )
           : null}
         {Action && (
-          <div className="echLegendItem__action">
+          <div className={`echLegendItem__action ${showActionAlways ? '' : 'echLegendItem__action--hide'}`}>
             <Action series={seriesIdentifiers} color={color} label={label} />
           </div>
         )}

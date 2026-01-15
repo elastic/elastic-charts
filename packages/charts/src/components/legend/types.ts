@@ -34,6 +34,7 @@ export interface SharedLegendItemProps {
   labelOptions: LegendLabelOptions;
   colorPicker?: LegendColorPicker;
   action?: LegendAction;
+  showActionAlways?: boolean;
   onClick?: LegendItemListener;
   onLegendItemMouseOver: (seriesIdentifiers: SeriesIdentifier[], path: LegendPath) => void;
   onLegendItemMouseOut: BasicListener;

@@ -60,8 +60,11 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     align-items: center;
     height: $legendItemHeight;
     max-width: calc(#{$legendItemHeight} + #{$euiSizeXS * 2});
-    opacity: 0;
-    pointer-events: none;
+
+    &--hide {
+      opacity: 0;
+      pointer-events: none;
+    }
 
     .euiPopover,
     .euiPopover__anchor,
@@ -74,7 +77,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   }
 
   &:hover {
-    .echLegendItem__action {
+    .echLegendItem__action--hide {
       opacity: 1;
       pointer-events: auto;
     }
