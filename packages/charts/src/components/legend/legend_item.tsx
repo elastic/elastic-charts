@@ -8,7 +8,7 @@
 
 import classNames from 'classnames';
 import type { CSSProperties } from 'react';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import { Label as ItemLabel } from './label';
 import { useLegendColorPicker } from './legend_color_picker';
@@ -61,7 +61,6 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     onLegendItemMouseOut,
   } = props;
   const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, depth, path, isToggleable } = item;
-  const [isHovered, setIsHovered] = useState(false);
 
   const itemClassNames = classNames('echLegendItem', {
     'echLegendItem--hidden': isSeriesHidden,
@@ -101,11 +100,9 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
       <li
         className={itemClassNames}
         onMouseEnter={() => {
-          setIsHovered(true);
           onLegendItemMouseOver(seriesIdentifiers, path);
         }}
         onMouseLeave={() => {
-          setIsHovered(false);
           onLegendItemMouseOut();
         }}
         style={style}
@@ -132,7 +129,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
               ) : null,
             )
           : null}
-        {isHovered && Action && (
+        {Action && (
           <div className="echLegendItem__action">
             <Action series={seriesIdentifiers} color={color} label={label} />
           </div>

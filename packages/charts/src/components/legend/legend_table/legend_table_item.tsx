@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import { LegendTableCell } from './legend_table_cell';
 import { LegendTableRow } from './legend_table_row';
@@ -37,7 +37,6 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     hiddenItems,
   } = props;
   const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, path, isToggleable } = item;
-  const [isHovered, setIsHovered] = useState(false);
 
   const itemClassNames = classNames('echLegendTable__item', 'echLegendTable__item--highlightable', {
     'echLegendTable__item--hidden': isSeriesHidden,
@@ -73,14 +72,8 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     <>
       <LegendTableRow
         className={itemClassNames}
-        onMouseEnter={() => {
-          setIsHovered(true);
-          onLegendItemMouseOver(seriesIdentifiers, path);
-        }}
-        onMouseLeave={() => {
-          setIsHovered(false);
-          onLegendItemMouseOut();
-        }}
+        onMouseEnter={() => onLegendItemMouseOver(seriesIdentifiers, path)}
+        onMouseLeave={onLegendItemMouseOut}
         dir={isMostlyRTL ? 'rtl' : 'ltr'}
         data-ech-series-name={label}
       >
@@ -102,14 +95,11 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
         {legendValueItems.map((l, i) => {
           return <LegendTableCell key={l?.type || i}>{l && <LegendValueComponent {...l} />}</LegendTableCell>;
         })}
-        {ActionComponent &&
-          (isHovered ? (
-            <LegendTableCell>
-              <div className="echLegendItem__action">{ActionComponent}</div>
-            </LegendTableCell>
-          ) : (
-            <div></div>
-          ))}
+        {ActionComponent && (
+          <LegendTableCell>
+            <div className="echLegendItem__action">{ActionComponent}</div>
+          </LegendTableCell>
+        )}
       </LegendTableRow>
       {renderColorPickerPopup()}
     </>
