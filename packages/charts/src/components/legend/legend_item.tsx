@@ -99,12 +99,8 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     <>
       <li
         className={itemClassNames}
-        onMouseEnter={() => {
-          onLegendItemMouseOver(seriesIdentifiers, path);
-        }}
-        onMouseLeave={() => {
-          onLegendItemMouseOut();
-        }}
+        onMouseEnter={() => onLegendItemMouseOver(seriesIdentifiers, path)}
+        onMouseLeave={onLegendItemMouseOut}
         style={style}
         dir={isMostlyRTL ? 'rtl' : 'ltr'}
         data-ech-series-name={label}
