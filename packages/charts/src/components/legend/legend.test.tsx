@@ -7,6 +7,7 @@
  */
 
 import { render, screen, fireEvent, within } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import React, { Component } from 'react';
 
 import { CHANGE_SERIES_COLOR } from './color';
@@ -307,6 +308,35 @@ describe('Legend', () => {
       rows.forEach((row, i) => {
         expect(row.textContent?.replace(/\s+/g, '')).toBe(expected[i]);
       });
+    });
+  });
+  describe('showLegendActionAlways', () => {
+    const Action = () => <>Action</>;
+
+    it('should always show the action when showLegendActionAlways is true', () => {
+      render(
+        <Chart>
+          <Settings showLegend showLegendActionAlways legendAction={Action} />
+          <BarSeries id="series" data={[{ x: 1, y: 1 }]} xAccessor="x" yAccessors={['y']} />
+        </Chart>,
+      );
+      const action = screen.getByText('Action');
+      // Expect to not have echLegendItem__action--hide class
+      expect(action).toHaveClass('echLegendItem__action');
+    });
+
+    it('should show the action on hover when showLegendActionAlways is false', () => {
+      render(
+        <Chart>
+          <Settings showLegend legendAction={Action} />
+          <BarSeries id="series" data={[{ x: 1, y: 1 }]} xAccessor="x" yAccessors={['y']} />
+        </Chart>,
+      );
+
+      const action = screen.getByText('Action');
+
+      // Initially has the "hide" class
+      expect(action).toHaveClass('echLegendItem__action echLegendItem__action--hide');
     });
   });
 });
