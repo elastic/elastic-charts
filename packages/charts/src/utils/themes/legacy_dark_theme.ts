@@ -229,6 +229,7 @@ export const LEGACY_DARK_THEME: Theme = {
     margin: 0,
     labelOptions: {
       maxLines: 1,
+      truncationPosition: 'middle',
     },
   },
   crosshair: {

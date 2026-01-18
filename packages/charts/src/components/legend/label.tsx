@@ -7,9 +7,10 @@
  */
 
 import classNames from 'classnames';
-import type { KeyboardEventHandler, MouseEventHandler } from 'react';
+import type { KeyboardEventHandler, MouseEventHandler, CSSProperties } from 'react';
 import React, { useCallback } from 'react';
 
+import { useMiddleTruncatedLabel } from './use_truncated_label';
 import { isRTLString } from '../../utils/common';
 import type { LegendLabelOptions } from '../../utils/themes/theme';
 
@@ -75,6 +76,13 @@ export function Label({
   hiddenSeriesCount,
   totalSeriesCount,
 }: LabelProps) {
+  const shouldTruncateMiddle = options.truncationPosition === 'middle' && options.maxLines > 0;
+  const { labelRef, truncatedLabel } = useMiddleTruncatedLabel({
+    label,
+    maxLines: options.maxLines,
+    shouldTruncate: shouldTruncateMiddle,
+  });
+
   const { className, dir, clampStyles } = getSharedProps(label, options, !!onToggle);
 
   const onClick: MouseEventHandler = useCallback(
@@ -94,6 +102,7 @@ export function Label({
     // This div is required to allow multiline text truncation, all ARIA requirements are still met
     // https://stackoverflow.com/questions/68673034/webkit-line-clamp-does-not-apply-to-buttons
     <div
+      ref={labelRef}
       role="button"
       tabIndex={0}
       dir={dir}
@@ -106,35 +115,61 @@ export function Label({
       aria-label={`${label}; ${getInteractivityAriaLabel(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount)}`}
       data-testid="echLegendItemLabel"
     >
-      {label}
+      {truncatedLabel}
     </div>
   ) : (
-    <div dir={dir} className={className} title={label} style={clampStyles} data-testid="echLegendItemLabel">
-      {label}
+    <div
+      ref={labelRef}
+      dir={dir}
+      className={className}
+      title={label}
+      style={clampStyles}
+      data-testid="echLegendItemLabel"
+    >
+      {truncatedLabel}
     </div>
   );
 }
 
 /** @internal */
 export function NonInteractiveLabel({ label, options }: { label: string; options: LegendLabelOptions }) {
+  const shouldTruncateMiddle = options.truncationPosition === 'middle' && options.maxLines > 0;
+  const { labelRef, truncatedLabel } = useMiddleTruncatedLabel({
+    label,
+    maxLines: options.maxLines,
+    shouldTruncate: shouldTruncateMiddle,
+  });
+
   const { className, dir, clampStyles } = getSharedProps(label, options);
+
   return (
-    <div dir={dir} className={className} title={label} style={clampStyles} data-testid="echLegendItemLabel">
-      {label}
+    <div
+      ref={labelRef}
+      dir={dir}
+      className={className}
+      title={label}
+      style={clampStyles}
+      data-testid="echLegendItemLabel"
+    >
+      {truncatedLabel}
     </div>
   );
 }
 
 function getSharedProps(label: string, options: LegendLabelOptions, isToggleable?: boolean) {
   const maxLines = Math.abs(options.maxLines);
+  const shouldTruncateMiddle = options.truncationPosition === 'middle' && maxLines > 0;
+
   const className = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(isToggleable),
     'echLegendItem__label--singleline': maxLines === 1,
+    'echLegendItem__label--singleline--middle': maxLines === 1 && shouldTruncateMiddle,
     'echLegendItem__label--multiline': maxLines > 1,
+    'echLegendItem__label--multiline--middle': maxLines > 1 && shouldTruncateMiddle,
   });
 
   const dir = isRTLString(label) ? 'rtl' : 'ltr'; // forced for individual labels in case mixed charset
-  const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
+  const clampStyles: CSSProperties = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
 
   return { className, dir, clampStyles };
 }
