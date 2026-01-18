@@ -134,7 +134,7 @@ export function useMiddleTruncatedLabel({
     const element = labelRef.current;
     if (!element) return;
 
-    // Use ResizeObserver to recompute on size changes
+    // Per-element ResizeObserver is necessary since label width varies by rendering mode (list, table, horizontal)
     const resizeObserver = new ResizeObserver(() => {
       computeTruncatedLabel();
     });

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import type { LegendLabelOptions } from '@elastic/charts';
@@ -20,25 +20,34 @@ import { getLegendAction } from '../utils/components/get_legend_action';
 import { customKnobs } from '../utils/knobs';
 
 const getLabelOptionKnobs = (): LegendLabelOptions => {
-  const group = 'Label options';
+  const group = 'Legend options';
 
   return {
     maxLines: number('max label lines', 1, { min: 0, step: 1 }, group),
+    truncationPosition: select(
+      'truncationPosition',
+      {
+        middle: 'middle',
+        end: 'end',
+      },
+      'middle',
+      group,
+    ),
   };
 };
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const hideActions = boolean('Hide legend action', false, 'Legend');
-  const showLegendExtra = !boolean('Hide legend extra', false, 'Legend');
-  const showColorPicker = !boolean('Hide color picker', true, 'Legend');
-  const legendPosition = customKnobs.enum.position('Legend position', undefined, { group: 'Legend' });
-  const euiPopoverPosition = customKnobs.enum.euiPopoverPosition(undefined, undefined, { group: 'Legend' });
+  const hideActions = boolean('Hide legend action', false, 'Legend options');
+  const showLegendExtra = !boolean('Hide legend extra', false, 'Legend options');
+  const showColorPicker = !boolean('Hide color picker', true, 'Legend options');
+  const legendPosition = customKnobs.enum.position('Legend position', undefined, { group: 'Legend options' });
+  const euiPopoverPosition = customKnobs.enum.euiPopoverPosition(undefined, undefined, { group: 'Legend options' });
   const legendValues = customKnobs.multiSelect(
     'Legend Value',
     LegendValue,
     LegendValue.CurrentAndLastValue,
     'multi-select',
-    'Legend',
+    'Legend options',
   );
   const labelOptions = getLabelOptionKnobs();
 
