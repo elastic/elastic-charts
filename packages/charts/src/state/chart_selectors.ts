@@ -9,8 +9,9 @@
 import type { CSSProperties } from 'react';
 
 import type { GlobalChartState } from './chart_state';
-import { getA11ySettingsSelector } from './selectors/get_accessibility_config';
 import { InitStatus } from './selectors/get_internal_is_intialized';
+import type { ScreenReaderItem } from './selectors/get_screenreader_data';
+import { getScreenReaderDataSelector } from './selectors/get_screenreader_data';
 import type { TooltipVisibility } from './tooltip_visibility';
 import type { DebugState } from './types';
 import { DEFAULT_CSS_CURSOR } from '../common/constants';
@@ -23,29 +24,10 @@ import type { TooltipInfo } from '../components/tooltip/types';
 import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
-export interface ScreenReaderItem {
-  /** The label for this part of the summary */
-  label: string;
-  /** Optional ID for referencing this part */
-  id?: string;
-  /** The value for this part of the summary */
-  value: string;
-}
-
-/** @internal */
-export interface ChartSpecificScreenReaderData {
-  /** Custom summary parts to include in the consolidated summary */
-  screenReaderItems?: ScreenReaderItem[];
-}
-
-/** @internal */
 export interface LegendItemLabel {
   label: string;
   depth: number;
 }
-
-/** @internal */
-export const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 
 /**
  * A set of chart-type-dependant functions that are required by all chart types
@@ -157,7 +139,7 @@ export interface ChartSelectors {
   /**
    * Get chart-specific data for screen reader accessibility
    */
-  getScreenReaderData?(globalState: GlobalChartState): ChartSpecificScreenReaderData;
+  getScreenReaderData(globalState: GlobalChartState): ScreenReaderItem[];
 
   /**
    * Get the domain of the vertical and horizontal small multiple grids
@@ -170,10 +152,20 @@ export interface ChartSelectors {
   canDisplayChartTitles(globalState: GlobalChartState): boolean;
 }
 
-/** @internal */
-export type ChartSelectorsFactory = () => ChartSelectors;
+type ChartSelectorsFactory = () => ChartSelectors;
 
-const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
+const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
+/** @internal */
+export const EMPTY_TOOLTIP = { header: null, values: [] };
+const EMPTY_DIMENSION = { top: 0, left: 0, width: 0, height: 0 };
+const EMPTY_SM_DOMAINS: SmallMultiplesSeriesDomains = { smVDomain: [], smHDomain: [] };
+const EMPTY_OBJ = {};
+const EMPTY_TOOLTIP_VISIBILITY: TooltipVisibility = {
+  visible: false,
+  isExternal: false,
+  displayOnly: false,
+  isPinnable: false,
+};
 
 type CallbackCreator = () => (state: GlobalChartState) => void;
 
@@ -195,30 +187,16 @@ export const createChartSelectorsFactory =
       getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
       getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
       getPointerCursor: () => DEFAULT_CSS_CURSOR,
-      isTooltipVisible: () => ({
-        visible: false,
-        isExternal: false,
-        displayOnly: false,
-        isPinnable: false,
-      }),
+      isTooltipVisible: () => EMPTY_TOOLTIP_VISIBILITY,
       getTooltipInfo: () => EMPTY_TOOLTIP,
       getTooltipAnchor: () => null,
-      getProjectionContainerArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
-      getMainProjectionArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
+      getProjectionContainerArea: () => EMPTY_DIMENSION,
+      getMainProjectionArea: () => EMPTY_DIMENSION,
       getBrushArea: () => null,
-      getDebugState: () => ({}),
+      getDebugState: () => EMPTY_OBJ,
       getChartTypeDescription: () => '',
-      // The default screen reader data returns just the chart type description.
-      getScreenReaderData: (state: GlobalChartState): ChartSpecificScreenReaderData => {
-        const a11ySettings = getA11ySettingsSelector(state);
-        const chartTypeDescription = chartSelectors.getChartTypeDescription(state);
-        return {
-          screenReaderItems: chartTypeDescription
-            ? [{ label: 'Chart type', id: a11ySettings.defaultSummaryId, value: chartTypeDescription }]
-            : [],
-        };
-      },
-      getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),
+      getScreenReaderData: getScreenReaderDataSelector,
+      getSmallMultiplesDomains: () => EMPTY_SM_DOMAINS,
       canDisplayChartTitles: () => true,
       ...overrides,
       eventCallbacks: (state: GlobalChartState) => {

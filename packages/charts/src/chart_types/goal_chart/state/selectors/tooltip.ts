@@ -10,13 +10,9 @@ import { getGoalSpecSelector } from './get_goal_spec';
 import { getPickedShapes } from './picked_shapes';
 import { Colors } from '../../../../common/colors';
 import type { TooltipInfo } from '../../../../components/tooltip/types';
+import { EMPTY_TOOLTIP } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import type { BandViewModel } from '../../layout/types/viewmodel_types';
-
-const EMPTY_TOOLTIP = Object.freeze({
-  header: null,
-  values: [],
-});
 
 const getBandColor = (value: number, bands: BandViewModel[]) =>
   bands.find(({ value: v }) => {
