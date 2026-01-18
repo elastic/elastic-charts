@@ -115,7 +115,8 @@ export function useMiddleTruncatedLabel({
       // Use average character width estimation - simple and loop-free
       const avgCharWidth = measure('x', font, fontSize).width;
       const charsPerLine = Math.floor(containerWidth / avgCharWidth);
-      const totalChars = charsPerLine * maxLines;
+      // Apply 4% safety margin to account for browser rendering differences (e.g., Firefox)
+      const totalChars = Math.floor(charsPerLine * maxLines * 0.96);
 
       return truncateMiddle(label, totalChars);
     });
