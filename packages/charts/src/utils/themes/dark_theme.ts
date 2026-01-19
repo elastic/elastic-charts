@@ -139,6 +139,10 @@ export const DARK_THEME: Theme = {
   barSeriesStyle: {
     rect: {
       opacity: 1,
+      dimmed: {
+        fill: DARK_DIMMED_COLORS.barFill,
+        texture: { opacity: 0.25 },
+      },
     },
     rectBorder: {
       visible: false,
@@ -161,6 +165,10 @@ export const DARK_THEME: Theme = {
       stroke: 'white',
       strokeWidth: 1,
       opacity: 1,
+      dimmed: {
+        fill: DARK_DIMMED_COLORS.arcFill,
+        stroke: 'white',
+      },
     },
   },
   sharedStyle: DEFAULT_GEOMETRY_STYLES,

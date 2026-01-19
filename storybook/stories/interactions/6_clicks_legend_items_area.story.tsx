@@ -45,6 +45,18 @@ export const Example: ChartsStory = (_, { title, description }) => (
         { x: 1, y: 5, g: 'b' },
         { x: 2, y: 8, g: 'b' },
         { x: 3, y: 2, g: 'b' },
+        { x: 0, y: 3, g: 'c' },
+        { x: 1, y: 6, g: 'c' },
+        { x: 2, y: 4, g: 'c' },
+        { x: 3, y: 5, g: 'c' },
+        { x: 0, y: 5, g: 'd' },
+        { x: 1, y: 3, g: 'd' },
+        { x: 2, y: 7, g: 'd' },
+        { x: 3, y: 4, g: 'd' },
+        { x: 0, y: 1, g: 'e' },
+        { x: 1, y: 4, g: 'e' },
+        { x: 2, y: 2, g: 'e' },
+        { x: 3, y: 3, g: 'e' },
       ]}
     />
   </Chart>

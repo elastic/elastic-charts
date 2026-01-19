@@ -107,6 +107,9 @@ function renderTaperedBorder(
 ) {
   const X0 = x0 - TAU / 4;
   const X1 = x1 - TAU / 4;
+  // TODO: Apply dimmed colors here when highlight state is available
+  // If this quad is unhighlighted and theme.arcSeriesStyle.arc.dimmed.fill exists,
+  // use the dimmed fill color instead of fillColor
   ctx.fillStyle = fillColor;
   ctx.beginPath();
   // only draw circular arcs if it would be distinguishable from a straight line ie. angle is not very small
@@ -164,6 +167,9 @@ function renderRectangles(ctx: CanvasRenderingContext2D, quadViewModel: QuadView
     quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
       // only draw a shape if it would show up at all
       if (x1 - x0 >= 1 && y1px - y0px >= 1) {
+        // TODO: Apply dimmed colors here when highlight state is available
+        // If this quad is unhighlighted and theme.arcSeriesStyle.arc.dimmed.fill exists,
+        // use the dimmed fill color instead of fillColor
         ctx.fillStyle = fillColor;
         ctx.beginPath();
         ctx.moveTo(x0, y0px);

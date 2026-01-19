@@ -209,6 +209,9 @@ export const LIGHT_DIMMED_COLORS = {
   areaStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha50,
   areaPointStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
   areaPointFill: SEMANTIC_COLORS.plainLight,
+
+  barFill: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
+  arcFill: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
 };
 
 /** @internal */
@@ -221,4 +224,7 @@ export const DARK_DIMMED_COLORS = {
   areaStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
   areaPointStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
   areaPointFill: SEMANTIC_COLORS.shade145,
+
+  barFill: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
+  arcFill: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
 };

@@ -43,7 +43,8 @@ export const Example: ChartsStory = (_, { title, description }) => (
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
     <BarSeries
-      id="bars"
+      id="bars1"
+      name="Bars 1"
       xScaleType={ScaleType.Linear}
       yScaleType={ScaleType.Linear}
       xAccessor="x"
@@ -55,8 +56,37 @@ export const Example: ChartsStory = (_, { title, description }) => (
         { x: 3, y: 8 },
       ]}
     />
+    <BarSeries
+      id="bars2"
+      name="Bars 2"
+      xScaleType={ScaleType.Linear}
+      yScaleType={ScaleType.Linear}
+      xAccessor="x"
+      yAccessors={['y']}
+      data={[
+        { x: 0, y: 3.5 },
+        { x: 1, y: 4 },
+        { x: 2, y: 5 },
+        { x: 3, y: 6 },
+      ]}
+    />
+    <BarSeries
+      id="bars3"
+      name="Bars 3"
+      xScaleType={ScaleType.Linear}
+      yScaleType={ScaleType.Linear}
+      xAccessor="x"
+      yAccessors={['y']}
+      data={[
+        { x: 0, y: 4 },
+        { x: 1, y: 3 },
+        { x: 2, y: 6 },
+        { x: 3, y: 5 },
+      ]}
+    />
     <LineSeries
-      id="line"
+      id="line1"
+      name="Line 1"
       xScaleType={ScaleType.Linear}
       yScaleType={ScaleType.Linear}
       xAccessor="x"
@@ -68,8 +98,23 @@ export const Example: ChartsStory = (_, { title, description }) => (
         { x: 3, y: 6 },
       ]}
     />
+    <LineSeries
+      id="line2"
+      name="Line 2"
+      xScaleType={ScaleType.Linear}
+      yScaleType={ScaleType.Linear}
+      xAccessor="x"
+      yAccessors={['y']}
+      data={[
+        { x: 0, y: 5 },
+        { x: 1, y: 4 },
+        { x: 2, y: 8 },
+        { x: 3, y: 7 },
+      ]}
+    />
     <AreaSeries
       id="area"
+      name="Area"
       xScaleType={ScaleType.Linear}
       yScaleType={ScaleType.Linear}
       xAccessor="x"
