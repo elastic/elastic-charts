@@ -20,7 +20,7 @@ import { getLegendAction } from '../utils/components/get_legend_action';
 import { customKnobs } from '../utils/knobs';
 
 const getLabelOptionKnobs = (): LegendLabelOptions => {
-  const group = 'Legend options';
+  const group = 'Label options';
 
   return {
     maxLines: number('max label lines', 1, { min: 0, step: 1 }, group),
@@ -37,17 +37,17 @@ const getLabelOptionKnobs = (): LegendLabelOptions => {
 };
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const hideActions = boolean('Hide legend action', false, 'Legend options');
-  const showLegendExtra = !boolean('Hide legend extra', false, 'Legend options');
-  const showColorPicker = !boolean('Hide color picker', true, 'Legend options');
-  const legendPosition = customKnobs.enum.position('Legend position', undefined, { group: 'Legend options' });
-  const euiPopoverPosition = customKnobs.enum.euiPopoverPosition(undefined, undefined, { group: 'Legend options' });
+  const hideActions = boolean('Hide legend action', false, 'Legend');
+  const showLegendExtra = !boolean('Hide legend extra', false, 'Legend');
+  const showColorPicker = !boolean('Hide color picker', true, 'Legend');
+  const legendPosition = customKnobs.enum.position('Legend position', undefined, { group: 'Legend' });
+  const euiPopoverPosition = customKnobs.enum.euiPopoverPosition(undefined, undefined, { group: 'Legend' });
   const legendValues = customKnobs.multiSelect(
     'Legend Value',
     LegendValue,
     LegendValue.CurrentAndLastValue,
     'multi-select',
-    'Legend options',
+    'Legend',
   );
   const labelOptions = getLabelOptionKnobs();
 
