@@ -8,9 +8,16 @@
     padding-top: $euiSizeXS / 2;
     max-width: 16px;
     height: $echLegendRowHeight;
+    opacity: 0;
+    pointer-events: none;
     &:empty {
       width: 0;
     }
+  }
+
+  &:hover .echLegendItem__action {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   &:last-child .echLegendTable__cell {
