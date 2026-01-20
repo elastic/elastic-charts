@@ -53,25 +53,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const maxLines = number('max legend label lines', 1, { min: 0, step: 1 });
   const useDimmedColors = boolean('Use dimmed colors on unhighlight', true);
 
-  const shadeOptions = {
-    'shade30 @ 15% (lighter)': 'rgba(202, 211, 226, 0.15)',
-    'shade30 @ 20%': 'rgba(202, 211, 226, 0.20)',
-    'shade30 @ 25%': 'rgba(202, 211, 226, 0.25)',
-    'shade30 @ 30%': 'rgba(202, 211, 226, 0.30)',
-    'shade30 @ 35% (default light)': 'rgba(202, 211, 226, 0.35)',
-    'shade30 @ 40%': 'rgba(202, 211, 226, 0.40)',
-    'shade30 @ 45%': 'rgba(202, 211, 226, 0.45)',
-    'shade30 @ 50% (darker)': 'rgba(202, 211, 226, 0.50)',
-    'shade60 @ 15% (lighter)': 'rgba(142, 159, 188, 0.15)',
-    'shade60 @ 20%': 'rgba(142, 159, 188, 0.20)',
-    'shade60 @ 25%': 'rgba(142, 159, 188, 0.25)',
-    'shade60 @ 30%': 'rgba(142, 159, 188, 0.30)',
-    'shade60 @ 35% (default dark)': 'rgba(142, 159, 188, 0.35)',
-    'shade60 @ 40%': 'rgba(142, 159, 188, 0.40)',
-    'shade60 @ 45%': 'rgba(142, 159, 188, 0.45)',
-    'shade60 @ 50% (darker)': 'rgba(142, 159, 188, 0.50)',
-  };
-
   const legendSortStrategy = select(
     'Custom legend sorting',
     { RegionsFirst: 'regionsFirst', ProductsFirst: 'productsFirst', DefaultSort: 'default' },
@@ -114,27 +95,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
   };
 
   const baseTheme = useBaseTheme();
-  const defaultShade =
-    baseTheme.theme === 'light' ? 'rgba(202, 211, 226, 0.35)' : 'rgba(142, 159, 188, 0.35)';
-
-  const dimmedFillColor = useDimmedColors
-    ? select('Dimmed fill color', shadeOptions, defaultShade)
-    : undefined;
-
   const arcSeriesTheme: PartialTheme['arcSeriesStyle'] = useDimmedColors
-    ? {
-        arc: {
-          dimmed: {
-            fill: dimmedFillColor,
-            stroke: baseTheme.theme === 'light' ? 'black' : 'white',
-          },
-        },
-      }
+    ? baseTheme.arcSeriesStyle  // Use theme's default dimmed colors
     : {
         arc: {
-          dimmed: undefined,
+          dimmed: undefined, // Explicitly disable dimmed colors
         },
-      };
+  };
 
   const isFlatLegendSupported =
     partitionLayout === PartitionLayout.treemap || partitionLayout === PartitionLayout.sunburst;
