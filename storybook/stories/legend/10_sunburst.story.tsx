@@ -96,14 +96,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   const baseTheme = useBaseTheme();
   const arcSeriesTheme: PartialTheme['arcSeriesStyle'] = useDimmedColors
-    ? {
+    ? baseTheme.arcSeriesStyle  // Use theme's default dimmed colors
+    : {
         arc: {
-          dimmed: {
-            fill: baseTheme.theme === 'light' ? 'rgba(202, 211, 226, 0.35)' : 'rgba(142, 159, 188, 0.35)',
-          },
+          dimmed: undefined, // Explicitly disable dimmed colors
         },
-      }
-    : undefined;
+      };
 
   const isFlatLegendSupported =
     partitionLayout === PartitionLayout.treemap || partitionLayout === PartitionLayout.sunburst;

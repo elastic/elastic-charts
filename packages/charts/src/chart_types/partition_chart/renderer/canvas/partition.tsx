@@ -17,6 +17,7 @@ import { renderPartitionCanvas2d } from './canvas_renderers';
 import { renderWrappedPartitionCanvas2d } from './canvas_wrapped_renderers';
 import type { Color } from '../../../../common/colors';
 import { Colors } from '../../../../common/colors';
+import type { LegendPath } from '../../../../common/legend';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { clearCanvas } from '../../../../renderers/canvas';
 import type { SettingsSpec } from '../../../../specs/settings';
@@ -58,6 +59,7 @@ interface ReactiveChartStateProps {
   a11ySettings: A11ySettings;
   debug: SettingsSpec['debug'];
   background: Color;
+  highlightedLegendPath: LegendPath;
 }
 
 interface ReactiveChartDispatchProps {
@@ -187,7 +189,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
           : isWaffle(geometries.layout)
             ? renderWrappedPartitionCanvas2d
             : renderPartitionCanvas2d;
-        renderer(ctx, devicePixelRatio, geometries, focus, this.animationState);
+        renderer(ctx, devicePixelRatio, geometries, focus, this.animationState, props.highlightedLegendPath);
       });
     }
   }
@@ -216,6 +218,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   debug: false,
   background: Colors.Transparent.keyword,
+  highlightedLegendPath: [],
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -234,6 +237,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     a11ySettings: getA11ySettingsSelector(state),
     debug: getSettingsSpecSelector(state).debug,
     background: getChartThemeSelector(state).background.color,
+    highlightedLegendPath: state.interactions.highlightedLegendPath,
   };
 };
 

@@ -10,12 +10,16 @@ import type { RefObject } from 'react';
 import React from 'react';
 
 import { HighlighterFromHover } from './highlighter_hover';
-import { HighlighterFromLegend } from './highlighter_legend';
 import { Tooltip } from '../../../../components/tooltip/tooltip';
 import type { BackwardRef, ChartRenderer } from '../../../../state/internal_chart_renderer';
 import { Partition } from '../canvas/partition';
 
-/** @internal */
+/**
+ * Partition chart renderer
+ * - HighlighterFromHover: SVG overlay for direct slice hover (immediate visual feedback)
+ * - Canvas dimming: Used for legend hover (consistent with bar/line/area charts)
+ * @internal
+ */
 export const chartRenderer: ChartRenderer = (
   containerRef: BackwardRef,
   forwardStageRef: RefObject<HTMLCanvasElement>,
@@ -24,6 +28,5 @@ export const chartRenderer: ChartRenderer = (
     <Tooltip getChartContainerRef={containerRef} />
     <Partition forwardStageRef={forwardStageRef} />
     <HighlighterFromHover />
-    <HighlighterFromLegend />
   </>
 );

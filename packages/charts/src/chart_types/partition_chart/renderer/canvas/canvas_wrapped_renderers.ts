@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import type { LegendPath } from '../../../../common/legend';
 import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
 
 const MAX_PADDING_RATIO = 0.25;
@@ -22,6 +23,9 @@ export function renderWrappedPartitionCanvas2d(
     height: panelHeight,
     chartDimensions: { width: containerWidth, height: containerHeight },
   }: ShapeViewModel,
+  _focus: unknown,
+  _animationState: unknown,
+  _highlightedLegendPath: LegendPath,
 ) {
   const width = containerWidth * panelWidth;
   const height = containerHeight * panelHeight;

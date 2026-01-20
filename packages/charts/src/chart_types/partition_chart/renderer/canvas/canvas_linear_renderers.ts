@@ -8,6 +8,7 @@
 
 import type { AnimationState, ContinuousDomainFocus } from './partition';
 import { Colors } from '../../../../common/colors';
+import type { LegendPath } from '../../../../common/legend';
 import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
 
 const linear = (x: number) => x;
@@ -31,6 +32,7 @@ export function renderLinearPartitionCanvas2d(
   }: ShapeViewModel,
   { currentFocusX0, currentFocusX1, prevFocusX0, prevFocusX1 }: ContinuousDomainFocus,
   animationState: AnimationState,
+  _highlightedLegendPath: LegendPath,
 ) {
   if (animation?.duration) {
     window.cancelAnimationFrame(animationState.rafId);
