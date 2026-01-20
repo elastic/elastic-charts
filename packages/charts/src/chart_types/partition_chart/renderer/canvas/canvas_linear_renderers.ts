@@ -9,6 +9,8 @@
 import type { AnimationState, ContinuousDomainFocus } from './partition';
 import { Colors } from '../../../../common/colors';
 import type { LegendPath } from '../../../../common/legend';
+import type { LegendStrategy } from '../../../../specs/settings';
+import type { ArcSeriesStyle } from '../../../../utils/themes/theme';
 import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
 
 const linear = (x: number) => x;
@@ -33,6 +35,9 @@ export function renderLinearPartitionCanvas2d(
   { currentFocusX0, currentFocusX1, prevFocusX0, prevFocusX1 }: ContinuousDomainFocus,
   animationState: AnimationState,
   _highlightedLegendPath: LegendPath,
+  _legendStrategy: LegendStrategy | undefined,
+  _flatLegend: boolean | undefined,
+  _arcSeriesStyle: ArcSeriesStyle,
 ) {
   if (animation?.duration) {
     window.cancelAnimationFrame(animationState.rafId);

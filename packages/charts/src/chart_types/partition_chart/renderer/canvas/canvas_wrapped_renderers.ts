@@ -7,6 +7,8 @@
  */
 
 import type { LegendPath } from '../../../../common/legend';
+import type { LegendStrategy } from '../../../../specs/settings';
+import type { ArcSeriesStyle } from '../../../../utils/themes/theme';
 import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
 
 const MAX_PADDING_RATIO = 0.25;
@@ -26,6 +28,9 @@ export function renderWrappedPartitionCanvas2d(
   _focus: unknown,
   _animationState: unknown,
   _highlightedLegendPath: LegendPath,
+  _legendStrategy: LegendStrategy | undefined,
+  _flatLegend: boolean | undefined,
+  _arcSeriesStyle: ArcSeriesStyle,
 ) {
   const width = containerWidth * panelWidth;
   const height = containerHeight * panelHeight;

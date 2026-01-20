@@ -30,6 +30,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Dimensions } from '../../../../utils/dimensions';
+import type { ArcSeriesStyle } from '../../../../utils/themes/theme';
 import { MODEL_KEY } from '../../layout/config';
 import type { QuadViewModel, ShapeViewModel, SmallMultiplesDescriptors } from '../../layout/types/viewmodel_types';
 import { hasMostlyRTLLabels, nullShapeViewModel } from '../../layout/types/viewmodel_types';
@@ -60,6 +61,9 @@ interface ReactiveChartStateProps {
   debug: SettingsSpec['debug'];
   background: Color;
   highlightedLegendPath: LegendPath;
+  legendStrategy: SettingsSpec['legendStrategy'];
+  flatLegend: SettingsSpec['flatLegend'];
+  arcSeriesStyle: ArcSeriesStyle;
 }
 
 interface ReactiveChartDispatchProps {
@@ -189,7 +193,17 @@ class PartitionComponent extends React.Component<PartitionProps> {
           : isWaffle(geometries.layout)
             ? renderWrappedPartitionCanvas2d
             : renderPartitionCanvas2d;
-        renderer(ctx, devicePixelRatio, geometries, focus, this.animationState, props.highlightedLegendPath);
+        renderer(
+          ctx,
+          devicePixelRatio,
+          geometries,
+          focus,
+          this.animationState,
+          props.highlightedLegendPath,
+          props.legendStrategy,
+          props.flatLegend,
+          props.arcSeriesStyle,
+        );
       });
     }
   }
@@ -219,6 +233,9 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   debug: false,
   background: Colors.Transparent.keyword,
   highlightedLegendPath: [],
+  legendStrategy: undefined,
+  flatLegend: undefined,
+  arcSeriesStyle: { arc: { visible: true, stroke: Colors.Black.keyword, strokeWidth: 1, opacity: 1 } },
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -226,6 +243,8 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     return DEFAULT_PROPS;
   }
   const multiGeometries = partitionMultiGeometries(state);
+  const settings = getSettingsSpecSelector(state);
+  const theme = getChartThemeSelector(state);
 
   return {
     isRTL: hasMostlyRTLLabels(multiGeometries),
@@ -235,9 +254,12 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     chartDimensions: getChartContainerDimensionsSelector(state),
     geometriesFoci: partitionDrilldownFocus(state),
     a11ySettings: getA11ySettingsSelector(state),
-    debug: getSettingsSpecSelector(state).debug,
-    background: getChartThemeSelector(state).background.color,
+    debug: settings.debug,
+    background: theme.background.color,
     highlightedLegendPath: state.interactions.highlightedLegendPath,
+    legendStrategy: settings.legendStrategy,
+    flatLegend: settings.flatLegend,
+    arcSeriesStyle: theme.arcSeriesStyle,
   };
 };
 

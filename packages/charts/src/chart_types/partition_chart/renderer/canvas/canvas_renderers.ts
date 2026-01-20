@@ -13,6 +13,8 @@ import type { Pixels } from '../../../../common/geometry';
 import type { LegendPath } from '../../../../common/legend';
 import { cssFontShorthand, HorizontalAlignment } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
+import type { LegendStrategy } from '../../../../specs/settings';
+import type { ArcSeriesStyle } from '../../../../utils/themes/theme';
 import { MIN_STROKE_WIDTH } from '../../../../renderers/canvas/primitives/line';
 import type {
   LinkLabelVM,
@@ -155,14 +157,14 @@ function renderSectors(
   ctx: CanvasRenderingContext2D,
   quadViewModel: QuadViewModel[],
   highlightedQuadSet: Set<QuadViewModel>,
-  style: ShapeViewModel['style'],
+  arcSeriesStyle: ArcSeriesStyle,
 ) {
   withContext(ctx, () => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
     quadViewModel.forEach((quad: QuadViewModel) => {
       // Apply dimmed colors for unhighlighted quads
       const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-      const dimmedFill = style.arcSeriesStyle?.arc?.dimmed?.fill;
+      const dimmedFill = arcSeriesStyle.arc.dimmed?.fill;
       const useDimmedColor = isUnhighlighted && dimmedFill;
 
       if (useDimmedColor) {
@@ -182,7 +184,7 @@ function renderRectangles(
   ctx: CanvasRenderingContext2D,
   quadViewModel: QuadViewModel[],
   highlightedQuadSet: Set<QuadViewModel>,
-  style: ShapeViewModel['style'],
+  arcSeriesStyle: ArcSeriesStyle,
 ) {
   withContext(ctx, () => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
@@ -192,7 +194,7 @@ function renderRectangles(
       if (x1 - x0 >= 1 && y1px - y0px >= 1) {
         // Apply dimmed colors for unhighlighted quads
         const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-        const dimmedFill = style.arcSeriesStyle?.arc?.dimmed?.fill;
+        const dimmedFill = arcSeriesStyle.arc.dimmed?.fill;
         const useDimmedColor = isUnhighlighted && dimmedFill;
 
         ctx.fillStyle = useDimmedColor ? dimmedFill : fillColor;
@@ -311,6 +313,9 @@ export function renderPartitionCanvas2d(
   _focus: unknown,
   _animationState: AnimationState,
   highlightedLegendPath: LegendPath,
+  legendStrategy: LegendStrategy | undefined,
+  flatLegend: boolean | undefined,
+  arcSeriesStyle: ArcSeriesStyle,
 ) {
   const { sectorLineWidth, sectorLineStroke, linkLabel } = style;
 
@@ -360,8 +365,7 @@ export function renderPartitionCanvas2d(
     const highlightedQuadSet = new Set<QuadViewModel>();
     if (highlightedLegendPath.length > 0) {
       // Use highlightedGeoms to determine which quads match the legend path
-      // Note: We pass undefined for legendStrategy and flatLegend to use defaults
-      const highlighted = highlightedGeoms(undefined, undefined, quadViewModel, highlightedLegendPath);
+      const highlighted = highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedLegendPath);
       highlighted.forEach((quad) => highlightedQuadSet.add(quad));
     }
 
@@ -373,8 +377,8 @@ export function renderPartitionCanvas2d(
       // bottom layer: sectors (pie slices, ring sectors etc.)
       () =>
         isSunburst(layout)
-          ? renderSectors(ctx, quadViewModel, highlightedQuadSet, style)
-          : renderRectangles(ctx, quadViewModel, highlightedQuadSet, style),
+          ? renderSectors(ctx, quadViewModel, highlightedQuadSet, arcSeriesStyle)
+          : renderRectangles(ctx, quadViewModel, highlightedQuadSet, arcSeriesStyle),
 
       // all the fill-based, potentially multirow text, whether inside or outside the sector
       () => renderRowSets(ctx, rowSets, linkLineColor),
