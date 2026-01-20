@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { LegendTableCell } from './legend_table_cell';
 import { LegendTableRow } from './legend_table_row';
@@ -37,10 +37,24 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     hiddenItems,
   } = props;
   const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, path, isToggleable } = item;
+  const [isActive, setIsActive] = useState(false);
+  const itemRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onPointerDown = (e: PointerEvent) => {
+      if (!itemRef.current?.contains(e.target as Node)) {
+        setIsActive(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, []);
 
   const itemClassNames = classNames('echLegendTable__item', 'echLegendTable__item--highlightable', {
     'echLegendTable__item--hidden': isSeriesHidden,
     'echLegendTable__item--vertical': positionConfig.direction === LayoutDirection.Vertical,
+    'echLegendItem--isActive': isActive,
   });
 
   const legendValueItems = prepareLegendValues(item, legendValues, totalItems, extraValues);
@@ -97,7 +111,9 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
         })}
         {ActionComponent && (
           <LegendTableCell>
-            <div className="echLegendItem__action">{ActionComponent}</div>
+            <div className="echLegendItem__action" ref={itemRef} onPointerDownCapture={() => setIsActive(true)}>
+              {ActionComponent}
+            </div>
           </LegendTableCell>
         )}
       </LegendTableRow>

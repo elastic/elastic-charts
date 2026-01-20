@@ -73,7 +73,9 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     }
   }
 
-  &:hover {
+  &:hover,
+  &--isActive
+  {
     .echLegendItem__action {
       opacity: 1;
       pointer-events: auto;

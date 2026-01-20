@@ -15,9 +15,11 @@
     }
   }
 
-  &:hover .echLegendItem__action {
-    opacity: 1;
-    pointer-events: auto;
+  &:hover, &--isActive {
+    .echLegendItem__action {
+      opacity: 1;
+      pointer-events: auto;
+    }
   }
 
   &:last-child .echLegendTable__cell {

@@ -8,7 +8,7 @@
 
 import classNames from 'classnames';
 import type { CSSProperties } from 'react';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Label as ItemLabel } from './label';
 import { useLegendColorPicker } from './legend_color_picker';
@@ -61,10 +61,24 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     onLegendItemMouseOut,
   } = props;
   const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, depth, path, isToggleable } = item;
+  const [isActive, setIsActive] = useState(false);
+  const itemRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onPointerDown = (e: PointerEvent) => {
+      if (!itemRef.current?.contains(e.target as Node)) {
+        setIsActive(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, []);
 
   const itemClassNames = classNames('echLegendItem', {
     'echLegendItem--hidden': isSeriesHidden,
     'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
+    'echLegendItem--isActive': isActive,
   });
 
   const legendValueItems = prepareLegendValues(item, legendValues, totalItems, extraValues).filter(isDefined);
@@ -126,7 +140,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
             )
           : null}
         {Action && (
-          <div className="echLegendItem__action">
+          <div className="echLegendItem__action" ref={itemRef} onPointerDownCapture={() => setIsActive(true)}>
             <Action series={seriesIdentifiers} color={color} label={label} />
           </div>
         )}
