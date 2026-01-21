@@ -9,7 +9,6 @@
     max-width: 16px;
     height: $echLegendRowHeight;
     opacity: 0;
-    pointer-events: none;
     &:empty {
       width: 0;
     }

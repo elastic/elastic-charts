@@ -61,7 +61,6 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     height: $legendItemHeight;
     max-width: calc(#{$legendItemHeight} + #{$euiSizeXS * 2});
     opacity: 0;
-    pointer-events: none;
 
     .euiPopover,
     .euiPopover__anchor,
