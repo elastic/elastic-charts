@@ -73,6 +73,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   }
 
   &:hover,
+  &:focus-within,
   &--isActive
   {
     .echLegendItem__action {
