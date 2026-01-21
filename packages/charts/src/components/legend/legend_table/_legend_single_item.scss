@@ -14,7 +14,9 @@
     }
   }
 
-  &:hover, &:focus-within, &--isActive {
+  &:hover,
+  &:focus-within,
+  &--isActive {
     .echLegendItem__action {
       opacity: 1;
       pointer-events: auto;
