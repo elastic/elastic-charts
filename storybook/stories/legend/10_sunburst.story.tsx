@@ -51,7 +51,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
   });
   const legendStrategy = select('legendStrategy', LegendStrategy, LegendStrategy.Key as LegendStrategy);
   const maxLines = number('max legend label lines', 1, { min: 0, step: 1 });
-  const useDimmedColors = boolean('Use dimmed colors on unhighlight', true);
 
   const legendSortStrategy = select(
     'Custom legend sorting',
@@ -94,15 +93,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
     circlePadding: 4,
   };
 
-  const baseTheme = useBaseTheme();
-  const arcSeriesTheme: PartialTheme['arcSeriesStyle'] = useDimmedColors
-    ? baseTheme.arcSeriesStyle  // Use theme's default dimmed colors
-    : {
-        arc: {
-          dimmed: undefined, // Explicitly disable dimmed colors
-        },
-  };
-
   const isFlatLegendSupported =
     partitionLayout === PartitionLayout.treemap || partitionLayout === PartitionLayout.sunburst;
 
@@ -115,10 +105,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
         legendStrategy={legendStrategy}
         legendMaxDepth={legendMaxDepth}
         legendSort={legendSortStrategy !== 'default' ? customLegendSort : undefined}
-        baseTheme={baseTheme}
+        baseTheme={useBaseTheme()}
         theme={{
           partition: partitionTheme,
-          arcSeriesStyle: arcSeriesTheme,
+
           legend: { labelOptions: { maxLines } },
         }}
       />

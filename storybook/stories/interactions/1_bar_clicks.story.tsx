@@ -52,8 +52,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id="bars1"
-        name="Series 1"
+        id="bars"
         xScaleType={useObjectAsX ? ScaleType.Ordinal : ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={useObjectAsX ? 'sObj' : 'x'}
@@ -63,48 +62,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           { x: 1, y: 7, obj: { from: 20, to: 30 }, sObj: 'from 20 to 30' },
           { x: 2, y: -3, obj: { from: 30, to: 40 }, sObj: 'from 30 to 40' },
           { x: 3, y: 6, obj: { from: 40, to: 50 }, sObj: 'from 40 to 50' },
-        ]}
-      />
-      <BarSeries
-        id="bars2"
-        name="Series 2"
-        xScaleType={useObjectAsX ? ScaleType.Ordinal : ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor={useObjectAsX ? 'sObj' : 'x'}
-        yAccessors={['y']}
-        data={[
-          { x: 0, y: 3, obj: { from: 10, to: 20 }, sObj: 'from 10 to 20' },
-          { x: 1, y: 5, obj: { from: 20, to: 30 }, sObj: 'from 20 to 30' },
-          { x: 2, y: 4, obj: { from: 30, to: 40 }, sObj: 'from 30 to 40' },
-          { x: 3, y: 8, obj: { from: 40, to: 50 }, sObj: 'from 40 to 50' },
-        ]}
-      />
-      <BarSeries
-        id="bars3"
-        name="Series 3"
-        xScaleType={useObjectAsX ? ScaleType.Ordinal : ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor={useObjectAsX ? 'sObj' : 'x'}
-        yAccessors={['y']}
-        data={[
-          { x: 0, y: 4, obj: { from: 10, to: 20 }, sObj: 'from 10 to 20' },
-          { x: 1, y: 6, obj: { from: 20, to: 30 }, sObj: 'from 20 to 30' },
-          { x: 2, y: 5, obj: { from: 30, to: 40 }, sObj: 'from 30 to 40' },
-          { x: 3, y: 3, obj: { from: 40, to: 50 }, sObj: 'from 40 to 50' },
-        ]}
-      />
-      <BarSeries
-        id="bars4"
-        name="Series 4"
-        xScaleType={useObjectAsX ? ScaleType.Ordinal : ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor={useObjectAsX ? 'sObj' : 'x'}
-        yAccessors={['y']}
-        data={[
-          { x: 0, y: 5, obj: { from: 10, to: 20 }, sObj: 'from 10 to 20' },
-          { x: 1, y: 4, obj: { from: 20, to: 30 }, sObj: 'from 20 to 30' },
-          { x: 2, y: 6, obj: { from: 30, to: 40 }, sObj: 'from 30 to 40' },
-          { x: 3, y: 7, obj: { from: 40, to: 50 }, sObj: 'from 40 to 50' },
         ]}
       />
     </Chart>
