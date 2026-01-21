@@ -140,7 +140,14 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
             )
           : null}
         {Action && (
-          <div className="echLegendItem__action" ref={itemRef} onPointerDownCapture={() => setIsActive(true)}>
+          <div
+            className="echLegendItem__action"
+            ref={itemRef}
+            onPointerDownCapture={() => setIsActive(true)}
+            onKeyDown={() => {
+              setIsActive(true);
+            }}
+          >
             <Action series={seriesIdentifiers} color={color} label={label} />
           </div>
         )}

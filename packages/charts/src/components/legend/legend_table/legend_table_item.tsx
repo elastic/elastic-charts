@@ -111,7 +111,14 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
         })}
         {ActionComponent && (
           <LegendTableCell>
-            <div className="echLegendItem__action" ref={itemRef} onPointerDownCapture={() => setIsActive(true)}>
+            <div
+              className="echLegendItem__action"
+              ref={itemRef}
+              onPointerDownCapture={() => setIsActive(true)}
+              onKeyDown={() => {
+                setIsActive(true);
+              }}
+            >
               {ActionComponent}
             </div>
           </LegendTableCell>
