@@ -10,12 +10,11 @@ import { colorToRgba, RGBATupleToString } from '../../../../common/color_library
 import type { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import type { Pixels } from '../../../../common/geometry';
-import type { LegendPath } from '../../../../common/legend';
 import { cssFontShorthand, HorizontalAlignment } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
-import type { LegendStrategy } from '../../../../specs/settings';
-import type { ArcSeriesStyle } from '../../../../utils/themes/theme';
 import { MIN_STROKE_WIDTH } from '../../../../renderers/canvas/primitives/line';
+import type { LegendPath } from '../../../../state/actions/legend';
+import type { ArcSeriesStyle } from '../../../../utils/themes/theme';
 import type {
   LinkLabelVM,
   OutsideLinksViewModel,
@@ -25,9 +24,11 @@ import type {
   ShapeViewModel,
   TextRow,
 } from '../../layout/types/viewmodel_types';
-import type { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
+import type { LegendStrategy } from '../../layout/utils/highlighted_geoms';
 import { highlightedGeoms } from '../../layout/utils/highlighted_geoms';
+import type { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
+import type { AnimationState } from './partition';
 
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
@@ -164,7 +165,8 @@ function renderSectors(
     quadViewModel.forEach((quad: QuadViewModel) => {
       // Apply dimmed colors for unhighlighted quads
       const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-      const dimmedFill = arcSeriesStyle.arc.dimmed?.fill;
+      const dimmed = arcSeriesStyle.arc.dimmed;
+      const dimmedFill = dimmed && 'fill' in dimmed ? dimmed.fill : undefined;
       const useDimmedColor = isUnhighlighted && dimmedFill;
 
       if (useDimmedColor) {
@@ -194,7 +196,8 @@ function renderRectangles(
       if (x1 - x0 >= 1 && y1px - y0px >= 1) {
         // Apply dimmed colors for unhighlighted quads
         const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-        const dimmedFill = arcSeriesStyle.arc.dimmed?.fill;
+        const dimmed = arcSeriesStyle.arc.dimmed;
+        const dimmedFill = dimmed && 'fill' in dimmed ? dimmed.fill : undefined;
         const useDimmedColor = isUnhighlighted && dimmedFill;
 
         ctx.fillStyle = useDimmedColor ? dimmedFill : fillColor;

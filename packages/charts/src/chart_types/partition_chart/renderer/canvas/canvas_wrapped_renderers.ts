@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import type { LegendPath } from '../../../../common/legend';
-import type { LegendStrategy } from '../../../../specs/settings';
+import type { LegendPath } from '../../../../state/actions/legend';
+import type { LegendStrategy } from '../../layout/utils/highlighted_geoms';
 import type { ArcSeriesStyle } from '../../../../utils/themes/theme';
 import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
 

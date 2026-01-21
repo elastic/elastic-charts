@@ -17,7 +17,7 @@ import { renderPartitionCanvas2d } from './canvas_renderers';
 import { renderWrappedPartitionCanvas2d } from './canvas_wrapped_renderers';
 import type { Color } from '../../../../common/colors';
 import { Colors } from '../../../../common/colors';
-import type { LegendPath } from '../../../../common/legend';
+import type { LegendPath } from '../../../../state/actions/legend';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { clearCanvas } from '../../../../renderers/canvas';
 import type { SettingsSpec } from '../../../../specs/settings';
