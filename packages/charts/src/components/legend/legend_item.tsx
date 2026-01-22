@@ -13,7 +13,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Label as ItemLabel } from './label';
 import { useLegendColorPicker } from './legend_color_picker';
 import type { SharedLegendItemProps } from './types';
-import { getExtra } from './utils';
+import { getExtra, onActionKeyDown } from './utils';
 import type { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { LegendValue } from '../../common/legend';
 import type { SeriesIdentifier } from '../../common/series_id';
@@ -144,9 +144,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
             className="echLegendItem__action"
             ref={itemRef}
             onPointerDownCapture={() => setIsActive(true)}
-            onKeyDown={() => {
-              setIsActive(true);
-            }}
+            onKeyDown={(e) => onActionKeyDown(e, setIsActive)}
           >
             <Action series={seriesIdentifiers} color={color} label={label} />
           </div>

@@ -18,6 +18,7 @@ import { Label as ItemLabel } from '../label';
 import { useLegendColorPicker } from '../legend_color_picker';
 import type { LegendItemProps } from '../legend_item';
 import { prepareLegendValues } from '../legend_item';
+import { onActionKeyDown } from '../utils';
 
 /** @internal */
 export const LegendListItem: React.FC<LegendItemProps> = (props) => {
@@ -115,9 +116,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
               className="echLegendItem__action"
               ref={itemRef}
               onPointerDownCapture={() => setIsActive(true)}
-              onKeyDown={() => {
-                setIsActive(true);
-              }}
+              onKeyDown={(e) => onActionKeyDown(e, setIsActive)}
             >
               {ActionComponent}
             </div>
