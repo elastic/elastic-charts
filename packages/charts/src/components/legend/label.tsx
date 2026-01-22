@@ -76,7 +76,8 @@ export function Label({
   hiddenSeriesCount,
   totalSeriesCount,
 }: LabelProps) {
-  const shouldTruncateMiddle = options.truncationPosition === 'middle' && options.maxLines > 0;
+  // Default to 'middle' truncation when not specified
+  const shouldTruncateMiddle = (options.truncationPosition ?? 'middle') === 'middle' && options.maxLines > 0;
   const { labelRef, truncatedLabel, isComputed } = useMiddleTruncatedLabel({
     label,
     maxLines: options.maxLines,
@@ -135,7 +136,8 @@ export function Label({
 
 /** @internal */
 export function NonInteractiveLabel({ label, options }: { label: string; options: LegendLabelOptions }) {
-  const shouldTruncateMiddle = options.truncationPosition === 'middle' && options.maxLines > 0;
+  // Default to 'middle' truncation when not specified
+  const shouldTruncateMiddle = (options.truncationPosition ?? 'middle') === 'middle' && options.maxLines > 0;
   const { labelRef, truncatedLabel, isComputed } = useMiddleTruncatedLabel({
     label,
     maxLines: options.maxLines,

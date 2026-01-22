@@ -414,7 +414,7 @@ export interface LegendLabelOptions {
    *
    * @defaultValue 'middle'
    */
-  truncationPosition: LegendLabelTruncationPosition;
+  truncationPosition?: LegendLabelTruncationPosition;
 }
 
 /** @public */
