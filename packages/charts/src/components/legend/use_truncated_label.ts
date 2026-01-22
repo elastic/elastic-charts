@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { startTransition as reactStartTransition, useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import type { Font } from '../../common/text_utils';
 import type { TextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
@@ -14,6 +14,9 @@ import { withTextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 
 const ELLIPSIS = '…';
 const MAX_MEASURE_ITERATIONS = 5;
+
+// React 18+ startTransition for low-priority updates, fallback to direct execution for React 16/17
+const startTransition = reactStartTransition ?? ((fn: () => void) => fn());
 
 interface UseMiddleTruncatedLabelProps {
   label: string;
@@ -222,9 +225,15 @@ export function useMiddleTruncatedLabel({
     setTruncatedLabel(label);
     setIsComputed(false);
 
-    // Defer computation to next frame to avoid blocking initial render
-    const rafId = requestAnimationFrame(() => {
-      computeTruncatedLabel();
+    // Track rAF IDs to cancel pending computations
+    let rafId = 0;
+    let resizeRafId = 0;
+
+    // Defer computation to next frame, marked as low-priority transition in React 18+
+    rafId = requestAnimationFrame(() => {
+      startTransition(() => {
+        computeTruncatedLabel();
+      });
     });
 
     const element = labelRef.current;
@@ -235,8 +244,12 @@ export function useMiddleTruncatedLabel({
     // Per-element ResizeObserver is necessary since label width varies by rendering mode (list, table, horizontal)
     const resizeObserver = new ResizeObserver(() => {
       setIsComputed(false);
-      requestAnimationFrame(() => {
-        computeTruncatedLabel();
+      // Cancel any pending resize computation to avoid queuing multiple calls
+      cancelAnimationFrame(resizeRafId);
+      resizeRafId = requestAnimationFrame(() => {
+        startTransition(() => {
+          computeTruncatedLabel();
+        });
       });
     });
 
@@ -244,6 +257,7 @@ export function useMiddleTruncatedLabel({
 
     return () => {
       cancelAnimationFrame(rafId);
+      cancelAnimationFrame(resizeRafId);
       resizeObserver.disconnect();
     };
   }, [computeTruncatedLabel, shouldTruncate, label]);
