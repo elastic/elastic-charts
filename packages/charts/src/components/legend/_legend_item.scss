@@ -102,9 +102,11 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
       -webkit-line-clamp: 2; // number of lines to show, overridden in element styles
     }
 
-    // When using middle truncation, JS handles the ellipsis so disable line-clamp
+    // When using middle truncation, JS handles the ellipsis so disable CSS line-clamp truncation
     &--multiline--middle:is(div) {
-      -webkit-line-clamp: unset;
+      -webkit-line-clamp: none; // Disable CSS truncation, JS handles it
+      line-break: anywhere; // Allow breaking at any point for accurate text fitting
+      word-break: break-all; // Fallback for older browsers
     }
 
     &--clickable:hover {

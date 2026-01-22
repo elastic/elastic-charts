@@ -77,13 +77,15 @@ export function Label({
   totalSeriesCount,
 }: LabelProps) {
   const shouldTruncateMiddle = options.truncationPosition === 'middle' && options.maxLines > 0;
-  const { labelRef, truncatedLabel } = useMiddleTruncatedLabel({
+  const { labelRef, truncatedLabel, isComputed } = useMiddleTruncatedLabel({
     label,
     maxLines: options.maxLines,
     shouldTruncate: shouldTruncateMiddle,
   });
 
-  const { className, dir, clampStyles } = getSharedProps(label, options, !!onToggle);
+  // Only apply middle truncation CSS classes when JS computation is complete
+  const useMiddleClasses = shouldTruncateMiddle && isComputed;
+  const { className, dir, clampStyles } = getSharedProps(label, options, !!onToggle, useMiddleClasses);
 
   const onClick: MouseEventHandler = useCallback(
     ({ metaKey, ctrlKey }) => onToggle?.(isAppleDevice ? metaKey : ctrlKey),
@@ -134,13 +136,15 @@ export function Label({
 /** @internal */
 export function NonInteractiveLabel({ label, options }: { label: string; options: LegendLabelOptions }) {
   const shouldTruncateMiddle = options.truncationPosition === 'middle' && options.maxLines > 0;
-  const { labelRef, truncatedLabel } = useMiddleTruncatedLabel({
+  const { labelRef, truncatedLabel, isComputed } = useMiddleTruncatedLabel({
     label,
     maxLines: options.maxLines,
     shouldTruncate: shouldTruncateMiddle,
   });
 
-  const { className, dir, clampStyles } = getSharedProps(label, options);
+  // Only apply middle truncation CSS classes when JS computation is complete
+  const useMiddleClasses = shouldTruncateMiddle && isComputed;
+  const { className, dir, clampStyles } = getSharedProps(label, options, false, useMiddleClasses);
 
   return (
     <div
@@ -156,16 +160,20 @@ export function NonInteractiveLabel({ label, options }: { label: string; options
   );
 }
 
-function getSharedProps(label: string, options: LegendLabelOptions, isToggleable?: boolean) {
+function getSharedProps(
+  label: string,
+  options: LegendLabelOptions,
+  isToggleable?: boolean,
+  useMiddleClasses?: boolean,
+) {
   const maxLines = Math.abs(options.maxLines);
-  const shouldTruncateMiddle = options.truncationPosition === 'middle' && maxLines > 0;
 
   const className = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(isToggleable),
     'echLegendItem__label--singleline': maxLines === 1,
-    'echLegendItem__label--singleline--middle': maxLines === 1 && shouldTruncateMiddle,
+    'echLegendItem__label--singleline--middle': maxLines === 1 && useMiddleClasses,
     'echLegendItem__label--multiline': maxLines > 1,
-    'echLegendItem__label--multiline--middle': maxLines > 1 && shouldTruncateMiddle,
+    'echLegendItem__label--multiline--middle': maxLines > 1 && useMiddleClasses,
   });
 
   const dir = isRTLString(label) ? 'rtl' : 'ltr'; // forced for individual labels in case mixed charset
