@@ -87,6 +87,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     @include wrapText;
 
     &--singleline {
+      @include resetWrapText;
       @include euiTextTruncate;
 
       // When using middle truncation, JS handles the ellipsis: `clip` will disable euiTextTruncate
