@@ -13,11 +13,11 @@ import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
 import { CustomLegend } from './custom_legend';
-import type { LegendItemProps } from './legend_item';
-import { LegendListItem } from './legend_item';
+import { LegendListItemLegacy } from './legend_item_list_legacy';
 import { LegendTable } from './legend_table';
 import { getLegendPositionConfig, legendPositionStyle } from './position_style';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
+import type { LegendItemProps } from './types';
 import type { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { shouldDisplayTable } from '../../common/legend';
 import type { SeriesIdentifier } from '../../common/series_id';
@@ -167,10 +167,10 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
           <LegendTable items={items} {...itemProps} seriesWidth={size.seriesWidth} />
         </div>
       ) : (
-        <div style={containerStyle} className="echLegendListContainer">
-          <ul style={listStyle} className="echLegendList">
+        <div style={containerStyle} className="echLegendListLegacyContainer">
+          <ul style={listStyle} className="echLegendListLegacy">
             {items.map((item, index) => (
-              <LegendListItem key={`${index}`} item={item} {...itemProps} />
+              <LegendListItemLegacy key={`${index}`} item={item} {...itemProps} />
             ))}
           </ul>
         </div>

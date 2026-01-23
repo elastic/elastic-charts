@@ -3,7 +3,7 @@
 $legendItemVerticalPadding: $echLegendRowGap / 2;
 $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
 
-.echLegendItem {
+.echLegendItemListLegacy {
   color: $euiTextColor;
   display: flex;
   flex-wrap: nowrap;
@@ -21,7 +21,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   &:not([dir='rtl']) > *:not(.background) {
     margin-left: $euiSizeXS;
 
-    &:last-child:not(.echLegendItem__legendValue) {
+    &:last-child:not(.echLegendItemListLegacy__legendValue) {
       margin-right: $euiSizeXS;
     }
   }
@@ -29,13 +29,13 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   &[dir='rtl'] > *:not(.background) {
     margin-right: $euiSizeXS;
 
-    &:last-child:not(.echLegendItem__legendValue) {
+    &:last-child:not(.echLegendItemListLegacy__legendValue) {
       margin-left: $euiSizeXS;
     }
   }
 
   &:not(&--hidden) {
-    .echLegendItem__color--changable {
+    .echLegendItemListLegacy__color--changable {
       cursor: pointer;
     }
   }
@@ -132,7 +132,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   }
 
   &[dir='rtl'] {
-    .echLegendItem {
+    .echLegendItemListLegacy {
       &__label {
         text-align: right;
       }
