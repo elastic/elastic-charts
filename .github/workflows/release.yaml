@@ -43,11 +43,6 @@ jobs:
         with:
           working-directory: .buildkite
           useRollingCache: true
-      - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1.10.9
-        with:
-          working-directory: github_bot
-          useRollingCache: true
 
       # TODO: fix this to avoid requiring build to run linting
       # currently the storybook and others are loosely coupled to @elastic/charts/src
