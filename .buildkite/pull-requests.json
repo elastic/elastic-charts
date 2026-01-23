@@ -3,7 +3,7 @@
     {
       "repoOwner": "elastic",
       "repoName": "elastic-charts",
-      "pipelineSlug": "kibana-elastic-charts-build",
+      "pipelineSlug": "elastic-charts-build",
 
       "enabled": true,
       "allow_org_users": true,
@@ -30,7 +30,7 @@
     {
       "repoOwner": "elastic",
       "repoName": "elastic-charts",
-      "pipelineSlug": "kibana-elastic-charts-build",
+      "pipelineSlug": "elastic-charts-build",
 
       "enabled": true,
       "allow_org_users": true,
