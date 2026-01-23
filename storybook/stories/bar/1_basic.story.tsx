@@ -21,6 +21,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     { x: 1, y: 7 },
     { x: 2, y: 3 },
     { x: 3, y: 6 },
+    { x: 3, y: 10 },
   ];
   const data2 = data1.map((datum) => ({ ...datum, y: datum.y - 1 }));
   const data = toggleSpec ? data1 : data2;
