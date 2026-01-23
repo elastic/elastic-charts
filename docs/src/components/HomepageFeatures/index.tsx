@@ -19,32 +19,56 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    // Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Wide Range of Chart Types',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and used to get your website up and running
-        quickly.
+        Support for XY charts (line, area, bar, bubble), partition charts (pie, donut, sunburst, treemap),
+        heatmaps, goal charts, wordclouds, flame charts, and more.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    // Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Performance Optimized',
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go ahead and move your docs into the{' '}
-        <code>docs</code> directory.
+        Canvas rendering engine optimized for large datasets. Handle thousands of data points with smooth
+        interactions and responsive updates.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    // Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Highly Customizable',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can be extended while reusing the same
-        header and footer.
+        Extensive theming system with granular control over every visual aspect. TypeScript-first with
+        comprehensive type definitions and IntelliSense support.
+      </>
+    ),
+  },
+  {
+    title: 'Interactive & Responsive',
+    description: (
+      <>
+        Rich interactions including tooltips, brushing, clicking, hovering, and zooming. Automatic resizing
+        and adaptive layouts for different screen sizes.
+      </>
+    ),
+  },
+  {
+    title: 'Production Ready',
+    description: (
+      <>
+        Battle-tested in Elastic&apos;s products with extensive test coverage. Semantic versioning and
+        clear upgrade paths for stable production use.
+      </>
+    ),
+  },
+  {
+    title: 'Open Source',
+    description: (
+      <>
+        Apache 2.0 licensed with an active community. Contributions welcome! Check out the{' '}
+        <a href="/docs/contributing">contributing guide</a> to get started.
       </>
     ),
   },
@@ -52,7 +76,7 @@ const FeatureList: FeatureItem[] = [
 
 function Feature({ title, description }: FeatureItem) {
   return (
-    <div className={clsx('col col--4')}>
+    <div className={clsx('col col--4')} style={{ marginBottom: '2rem' }}>
       {/* <div className="text--center">
         <Svg className={styles.featureSvg} role="img" />
       </div> */}

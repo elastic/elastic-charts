@@ -16,7 +16,7 @@ if (!process.env.DOCUSAURUS_URL && process.env.NODE_ENV === 'production') {
 
 const config: Config = {
   title: 'Elastic Charts',
-  tagline: 'Charts are cool!',
+  tagline: 'A powerful, flexible data visualization library for React',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -28,8 +28,8 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'elastic', // Usually your GitHub org/user name.
+  projectName: 'elastic-charts', // Usually your repo name.
 
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
@@ -60,7 +60,7 @@ const config: Config = {
       'classic',
       {
         docs: {
-          routeBasePath: '',
+          routeBasePath: '/',
           sidebarPath: './sidebars.ts',
           editUrl: ({ docPath }) => {
             // auto generated should not have edit on github link
@@ -68,6 +68,8 @@ const config: Config = {
             return 'https://github.com/elastic/elastic-charts/blob/main/docs/';
           },
         },
+        blog: false,
+        pages: false,
         theme: {
           customCss: './src/css/custom.scss',
         },

@@ -1,0 +1,640 @@
+---
+id: contributing
+title: Contributing Guide
+sidebar_position: 8
+---
+
+# Contributing to Elastic Charts
+
+Thank you for your interest in contributing to Elastic Charts! This guide will help you get started with contributing to the project, whether you're fixing bugs, adding features, or improving documentation.
+
+## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Development Setup](#development-setup)
+- [Project Structure](#project-structure)
+- [Development Workflow](#development-workflow)
+- [Code Standards](#code-standards)
+- [Testing](#testing)
+- [Submitting Changes](#submitting-changes)
+- [Documentation](#documentation)
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js**: Version specified in [.nvmrc](https://github.com/elastic/elastic-charts/blob/master/.nvmrc)
+- **Yarn**: Package manager (npm is not supported)
+- **Git**: Version control
+
+### Using nvm (Recommended)
+
+We recommend using [nvm](https://github.com/nvm-sh/nvm) to manage Node.js versions:
+
+```bash
+# Install and use the correct Node version
+nvm install
+nvm use
+```
+
+## Development Setup
+
+### 1. Fork and Clone
+
+```bash
+# Fork the repository on GitHub, then clone your fork
+git clone https://github.com/YOUR_USERNAME/elastic-charts.git
+cd elastic-charts
+
+# Add upstream remote
+git remote add upstream https://github.com/elastic/elastic-charts.git
+```
+
+### 2. Install Dependencies
+
+```bash
+# Install root dependencies
+yarn
+
+# Dependencies for sub-packages are installed automatically via postinstall
+```
+
+### 3. Start Development Server
+
+```bash
+# Start Storybook development server
+yarn start
+
+# Or explicitly
+yarn storybook
+```
+
+This will start Storybook at `http://localhost:9001` where you can see all chart examples and develop new features.
+
+### 4. Build the Library
+
+```bash
+# Build TypeScript and styles
+yarn build
+
+# Watch mode for development
+yarn build:watch
+```
+
+## Project Structure
+
+```
+elastic-charts/
+├── packages/
+│   └── charts/              # Main library package
+│       ├── src/
+│       │   ├── chart_types/ # Chart type implementations
+│       │   │   ├── xy_chart/
+│       │   │   ├── partition_chart/
+│       │   │   ├── heatmap/
+│       │   │   └── ...
+│       │   ├── components/  # React components
+│       │   ├── specs/       # Spec definitions
+│       │   ├── state/       # Redux state management
+│       │   ├── scales/      # Scale utilities
+│       │   ├── utils/       # Utility functions
+│       │   └── styles/      # SCSS styles
+│       ├── api/             # Generated API documentation
+│       └── dist/            # Build output
+├── storybook/
+│   └── stories/             # Storybook examples
+│       ├── bar/
+│       ├── line/
+│       ├── area/
+│       └── ...
+├── e2e/                     # End-to-end tests
+│   ├── tests/               # Visual regression tests
+├── docs/                    # Documentation site
+└── scripts/                 # Build and utility scripts
+```
+
+### Key Directories
+
+- **`packages/charts/src/`**: Core library source code
+- **`storybook/stories/`**: Interactive examples and documentation
+- **`e2e/tests/`**: Playwright visual regression tests
+- **`docs/`**: Docusaurus documentation site
+
+## Development Workflow
+
+### 1. Create a Branch
+
+```bash
+# Update main branch
+git checkout main
+git pull upstream main
+
+# Create feature branch
+git checkout -b feature/my-new-feature
+
+# Or for bug fixes
+git checkout -b fix/issue-123
+```
+
+### 2. Make Changes
+
+Follow these guidelines:
+
+- **Keep changes focused**: One feature or fix per PR
+- **Follow TypeScript best practices**: Use strict typing
+- **Write tests**: Add unit and integration tests
+- **Update documentation**: Keep docs in sync with changes
+- **Add Storybook examples**: Demonstrate new features
+
+### 3. Test Your Changes
+
+```bash
+# Run unit tests
+yarn test
+
+# Run tests in watch mode
+yarn test --watch
+
+# Run specific test file
+yarn test path/to/test.test.ts
+
+# Run visual regression tests
+cd e2e && yarn test
+
+
+```
+
+### 4. Lint and Format
+
+```bash
+# Run ESLint
+yarn lint
+
+# Fix auto-fixable issues
+yarn lint:fix
+
+# Check code formatting
+yarn prettier:check
+
+# Format code
+yarn prettier:fix
+```
+
+### 5. Build and Verify
+
+```bash
+# Build the library
+yarn build
+
+# Check TypeScript types
+yarn build:check
+
+# Verify API surface
+yarn api:check
+```
+
+## Code Standards
+
+### TypeScript
+
+- **Use strict typing**: Avoid `any` types
+- **Export public APIs**: Mark with `@public` JSDoc tag
+- **Document complex types**: Add JSDoc comments
+- **Prefer interfaces over types**: For object shapes
+
+```typescript
+/**
+ * Configuration for bar series
+ * @public
+ */
+export interface BarSeriesConfig {
+  /**
+   * Unique series identifier
+   */
+  id: string;
+  
+  /**
+   * Data array
+   */
+  data: Datum[];
+  
+  /**
+   * X-axis accessor function or key
+   */
+  xAccessor: Accessor;
+}
+```
+
+### React Components
+
+- **Use functional components**: Hooks over class components
+- **Memoize expensive computations**: Use `useMemo` and `useCallback`
+- **Avoid inline objects**: Create constants outside render
+
+```typescript
+// ✅ Good
+const DEFAULT_STYLE = { opacity: 0.8 };
+
+function MyComponent() {
+  return <Chart style={DEFAULT_STYLE} />;
+}
+
+// ❌ Bad
+function MyComponent() {
+  return <Chart style={{ opacity: 0.8 }} />;
+}
+```
+
+### State Management
+
+- **Use Redux Toolkit**: For state slices
+- **Create selectors**: For derived state
+- **Memoize selectors**: Use `createCachedSelector`
+
+```typescript
+import { createCachedSelector } from 're-reselect';
+
+export const getComputedData = createCachedSelector(
+  [getInputData, getSettings],
+  (data, settings) => {
+    // Expensive computation
+    return processData(data, settings);
+  }
+)({
+  keySelector: (state) => state.chartId,
+});
+```
+
+### Naming Conventions
+
+- **Files**: Use `snake_case` for files (e.g., `my_component.tsx`)
+- **Components**: Use `PascalCase` (e.g., `BarSeries`)
+- **Functions**: Use `camelCase` (e.g., `computeScales`)
+- **Constants**: Use `UPPER_CASE` (e.g., `DEFAULT_THEME`)
+- **Interfaces**: Use `PascalCase` without 'I' prefix
+
+### Comments and Documentation
+
+```typescript
+/**
+ * Computes the X and Y scales for the chart
+ * 
+ * @param specs - Array of series specifications
+ * @param dimensions - Chart dimensions
+ * @returns Computed scales object
+ * @internal
+ */
+function computeScales(
+  specs: SeriesSpec[],
+  dimensions: Dimensions,
+): Scales {
+  // Implementation
+}
+```
+
+## Testing
+
+### Unit Tests
+
+Located in `*.test.ts` files next to source files:
+
+```typescript
+// my_function.test.ts
+import { myFunction } from './my_function';
+
+describe('myFunction', () => {
+  it('should return correct value', () => {
+    const result = myFunction(input);
+    expect(result).toBe(expectedOutput);
+  });
+  
+  it('should handle edge cases', () => {
+    expect(myFunction(null)).toBe(undefined);
+  });
+});
+```
+
+### Visual Regression Tests
+
+Located in `e2e/tests/`:
+
+```typescript
+// my_chart.test.ts
+import { test } from '@playwright/test';
+import { common } from '../page_objects';
+
+test.describe('My Chart', () => {
+  test('should render correctly', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/my-chart--basic'
+    );
+  });
+});
+```
+
+
+
+### Test Coverage
+
+```bash
+# Run tests with coverage
+yarn test --coverage
+
+# View coverage report
+open coverage/lcov-report/index.html
+```
+
+## Submitting Changes
+
+### Commit Messages
+
+We use [Conventional Commits](https://www.conventionalcommits.org/):
+
+```bash
+# Format
+<type>(<scope>): <subject>
+
+# Examples
+feat(xy-chart): add support for multi-axis charts
+fix(legend): correct legend item alignment
+docs(readme): update installation instructions
+test(bar-series): add stacking tests
+chore(deps): upgrade d3-scale to v4
+```
+
+**Types:**
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `test`: Test additions or changes
+- `refactor`: Code refactoring
+- `perf`: Performance improvements
+- `chore`: Maintenance tasks
+- `style`: Code style changes (formatting)
+
+### Commit with Commitizen
+
+```bash
+# Install commitizen (one-time)
+yarn global add commitizen
+
+# Make a commit
+yarn cz
+# or
+git cz
+```
+
+### Pull Request Process
+
+1. **Update your branch**:
+```bash
+git fetch upstream
+git rebase upstream/main
+```
+
+2. **Push to your fork**:
+```bash
+git push origin feature/my-new-feature
+```
+
+3. **Create Pull Request**:
+   - Go to the [repository](https://github.com/elastic/elastic-charts)
+   - Click "New Pull Request"
+   - Select your branch
+   - Fill out the PR template
+
+4. **PR Checklist**:
+   - [ ] Tests added/updated
+   - [ ] Documentation updated
+   - [ ] Storybook examples added
+   - [ ] Changelog entry added (if needed)
+   - [ ] No TypeScript errors
+   - [ ] All tests passing
+   - [ ] No lint errors
+
+### Pull Request Template
+
+```markdown
+## Summary
+Brief description of changes
+
+## Checklist
+- [ ] Tests added/updated
+- [ ] Documentation updated
+- [ ] Breaking changes noted
+- [ ] Storybook examples added
+
+## Related Issues
+Closes #123
+
+## Screenshots (if applicable)
+[Add screenshots or GIFs]
+```
+
+### Code Review Process
+
+1. **Automated checks**: CI must pass
+2. **Maintainer review**: At least one approval required
+3. **Address feedback**: Make requested changes
+4. **Squash and merge**: Maintainer will merge when ready
+
+## Documentation
+
+### Inline Documentation
+
+Use JSDoc for all public APIs:
+
+```typescript
+/**
+ * Renders a bar series on the chart
+ * 
+ * @public
+ */
+export const BarSeries: React.FC<BarSeriesSpec> = (props) => {
+  // Implementation
+};
+```
+
+### Storybook Stories
+
+Add examples in `storybook/stories/`:
+
+```typescript
+// my_feature.story.tsx
+import { boolean, number } from '@storybook/addon-knobs';
+import React from 'react';
+import { Chart, Settings, BarSeries, ScaleType } from '@elastic/charts';
+
+export const Example = () => {
+  const showLegend = boolean('Show Legend', true);
+  const barWidth = number('Bar Width', 20);
+  
+  return (
+    <Chart>
+      <Settings showLegend={showLegend} />
+      <BarSeries
+        id="bars"
+        data={data}
+        xAccessor="x"
+        yAccessors={['y']}
+        xScaleType={ScaleType.Ordinal}
+        yScaleType={ScaleType.Linear}
+      />
+    </Chart>
+  );
+};
+
+Example.story = {
+  name: 'My Feature Example',
+};
+```
+
+### Documentation Site
+
+Update docs in `docs/docs/`:
+
+```bash
+# Start docs dev server
+cd docs
+yarn start
+```
+
+## Advanced Topics
+
+### Adding a New Chart Type
+
+1. **Create chart type directory**:
+```
+packages/charts/src/chart_types/my_chart/
+├── state/
+│   ├── chart_state.ts
+│   └── selectors/
+├── renderer/
+│   └── canvas/
+├── specs/
+└── utils/
+```
+
+2. **Implement required interfaces**:
+```typescript
+// state/chart_state.ts
+export const myChartStateSelectors = {
+  isInitialized: (state) => /* ... */,
+  getDebugState: (state) => /* ... */,
+};
+
+// renderer/canvas/renderer.tsx
+export const chartRenderer: ChartRenderer = () => <MyChartRenderer />;
+```
+
+3. **Register chart type**:
+```typescript
+// chart_types/specs.ts
+export const MY_CHART_TYPE = 'my_chart';
+
+// Add to chart type selectors
+```
+
+### API Extractor
+
+Maintain public API surface:
+
+```bash
+# Extract API
+yarn api:extract
+
+# Check for breaking changes
+yarn api:check
+```
+
+### Performance Profiling
+
+```typescript
+// Use React DevTools Profiler
+import { Profiler } from 'react';
+
+<Profiler id="MyChart" onRender={onRenderCallback}>
+  <Chart>
+    {/* Chart content */}
+  </Chart>
+</Profiler>
+```
+
+## Community
+
+### Getting Help
+
+- **GitHub Issues**: [Report bugs or request features](https://github.com/elastic/elastic-charts/issues)
+- **Discussions**: [Ask questions](https://github.com/elastic/elastic-charts/discussions)
+- **Storybook**: [View examples](https://elastic.github.io/elastic-charts/storybook/)
+
+### Code of Conduct
+
+Be respectful and inclusive. Follow the [Elastic Community Code of Conduct](https://www.elastic.co/community/codeofconduct).
+
+### Recognition
+
+Contributors are recognized in:
+- Release notes
+- GitHub contributors page
+- Project documentation
+
+## Release Process
+
+Releases are managed by maintainers using semantic-release:
+
+```bash
+# Releases are automated via CI/CD
+# Version bumps based on conventional commits
+# Changelog generated automatically
+```
+
+## Tips for Success
+
+1. **Start small**: Begin with documentation or small bug fixes
+2. **Ask questions**: Don't hesitate to ask for help
+3. **Be patient**: Reviews may take time
+4. **Stay updated**: Pull from upstream regularly
+5. **Test thoroughly**: Ensure all tests pass
+6. **Document well**: Help others understand your changes
+
+## Common Tasks
+
+### Update Dependencies
+
+```bash
+# Update a specific package
+yarn upgrade package-name
+
+# Update all packages
+yarn upgrade-interactive
+```
+
+### Regenerate Snapshots
+
+```bash
+# Update Jest snapshots
+yarn test -u
+
+# Update visual regression snapshots
+cd e2e && yarn test:update
+```
+
+### Debug Tests
+
+```bash
+# Run specific test with debugging
+node --inspect-brk node_modules/.bin/jest path/to/test.test.ts
+
+# Use Chrome DevTools at chrome://inspect
+```
+
+## Thank You!
+
+Thank you for contributing to Elastic Charts! Your efforts help make data visualization better for everyone.
+
+For questions or help, reach out via:
+- [GitHub Issues](https://github.com/elastic/elastic-charts/issues)
+- [GitHub Discussions](https://github.com/elastic/elastic-charts/discussions)
+
+Happy coding! 🎉

@@ -1,0 +1,769 @@
+---
+id: chart-types
+title: Chart Types Guide
+sidebar_position: 6
+---
+
+# Chart Types Guide
+
+Elastic Charts supports a wide variety of chart types. This guide provides detailed information on each type, when to use them, and how to implement them effectively.
+
+## XY Charts
+
+XY charts plot data on two-dimensional cartesian coordinates. They're the most common chart types.
+
+### Bar Charts
+
+**Use when**: Comparing categorical data, showing distributions, displaying rankings.
+
+#### Vertical Bars
+
+```tsx
+import { Chart, Settings, BarSeries, Axis, Position, ScaleType } from '@elastic/charts';
+
+<Chart size={{ height: 300 }}>
+  <Settings showLegend />
+  <Axis id="bottom" position={Position.Bottom} />
+  <Axis id="left" position={Position.Left} />
+  <BarSeries
+    id="bars"
+    name="Revenue"
+    data={[
+      { category: 'Q1', revenue: 120 },
+      { category: 'Q2', revenue: 150 },
+      { category: 'Q3', revenue: 135 },
+      { category: 'Q4', revenue: 180 },
+    ]}
+    xAccessor="category"
+    yAccessors={['revenue']}
+    xScaleType={ScaleType.Ordinal}
+    yScaleType={ScaleType.Linear}
+  />
+</Chart>
+```
+
+#### Horizontal Bars
+
+```tsx
+<Settings rotation={90} />
+<BarSeries
+  id="horizontal-bars"
+  data={countryData}
+  xAccessor="country"
+  yAccessors={['population']}
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Grouped Bars
+
+```tsx
+const data = [
+  { month: 'Jan', product: 'A', sales: 100 },
+  { month: 'Jan', product: 'B', sales: 120 },
+  { month: 'Feb', product: 'A', sales: 110 },
+  { month: 'Feb', product: 'B', sales: 130 },
+];
+
+<BarSeries
+  id="grouped"
+  data={data}
+  xAccessor="month"
+  yAccessors={['sales']}
+  splitSeriesAccessors={['product']}  // Creates separate bars
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Stacked Bars
+
+```tsx
+<BarSeries
+  id="stacked"
+  data={data}
+  xAccessor="month"
+  yAccessors={['sales']}
+  stackAccessors={['month']}          // Stack at same x position
+  splitSeriesAccessors={['product']}  // Split by product
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Percentage Stacked Bars
+
+```tsx
+<Settings stackMode="percentage" />
+<BarSeries
+  id="percentage-stacked"
+  data={data}
+  xAccessor="category"
+  yAccessors={['value']}
+  stackAccessors={['category']}
+  splitSeriesAccessors={['segment']}
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+### Line Charts
+
+**Use when**: Showing trends over time, continuous data, comparisons across series.
+
+#### Basic Line Chart
+
+```tsx
+import { LineSeries } from '@elastic/charts';
+
+<Chart size={{ height: 300 }}>
+  <Axis id="bottom" position={Position.Bottom} />
+  <Axis id="left" position={Position.Left} />
+  <LineSeries
+    id="line"
+    name="Sales Trend"
+    data={timeSeriesData}
+    xAccessor="timestamp"
+    yAccessors={['sales']}
+    xScaleType={ScaleType.Time}
+    yScaleType={ScaleType.Linear}
+  />
+</Chart>
+```
+
+#### Multi-Line Chart
+
+```tsx
+// Option 1: Multiple series components
+<LineSeries id="series1" name="Product A" data={dataA} {...commonProps} />
+<LineSeries id="series2" name="Product B" data={dataB} {...commonProps} />
+
+// Option 2: Single series with split
+<LineSeries
+  id="multi-line"
+  data={combinedData}
+  xAccessor="date"
+  yAccessors={['value']}
+  splitSeriesAccessors={['product']}  // Creates multiple lines
+  xScaleType={ScaleType.Time}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Smooth Lines
+
+```tsx
+import { CurveType } from '@elastic/charts';
+
+<LineSeries
+  id="smooth"
+  data={data}
+  xAccessor="x"
+  yAccessors={['y']}
+  curve={CurveType.CURVE_NATURAL}  // Smooth curve
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+**Available curve types:**
+- `LINEAR` - Straight lines (default)
+- `CURVE_NATURAL` - Natural cubic spline
+- `CURVE_MONOTONE_X` - Monotonic in X
+- `CURVE_MONOTONE_Y` - Monotonic in Y
+- `CURVE_STEP` - Step function
+- `CURVE_STEP_AFTER` - Step after
+- `CURVE_STEP_BEFORE` - Step before
+
+#### Line with Points
+
+```tsx
+<LineSeries
+  id="line-with-points"
+  data={data}
+  xAccessor="x"
+  yAccessors={['y']}
+  pointStyleAccessor={() => ({
+    visible: true,
+    radius: 4,
+    strokeWidth: 2,
+  })}
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Dashed Lines
+
+```tsx
+<LineSeries
+  id="dashed"
+  data={data}
+  xAccessor="x"
+  yAccessors={['y']}
+  lineSeriesStyle={{
+    line: {
+      strokeWidth: 2,
+      dash: [4, 4],  // Dash pattern
+    },
+  }}
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+### Area Charts
+
+**Use when**: Showing cumulative totals, part-to-whole relationships, magnitude of change.
+
+#### Basic Area Chart
+
+```tsx
+import { AreaSeries } from '@elastic/charts';
+
+<AreaSeries
+  id="area"
+  name="Traffic"
+  data={data}
+  xAccessor="hour"
+  yAccessors={['visitors']}
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Stacked Area Chart
+
+```tsx
+<AreaSeries
+  id="stacked-area"
+  data={data}
+  xAccessor="time"
+  yAccessors={['value']}
+  stackAccessors={['time']}
+  splitSeriesAccessors={['category']}
+  xScaleType={ScaleType.Time}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Percentage Stacked Area
+
+```tsx
+<Settings stackMode="percentage" />
+<AreaSeries
+  id="percentage-area"
+  data={data}
+  xAccessor="date"
+  yAccessors={['value']}
+  stackAccessors={['date']}
+  splitSeriesAccessors={['source']}
+  xScaleType={ScaleType.Time}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Banded Area (Confidence Intervals)
+
+```tsx
+const data = [
+  { x: 1, mean: 10, lower: 8, upper: 12 },
+  { x: 2, mean: 15, lower: 12, upper: 18 },
+  { x: 3, mean: 12, lower: 10, upper: 14 },
+];
+
+// Background band
+<AreaSeries
+  id="confidence-band"
+  data={data}
+  xAccessor="x"
+  yAccessors={['upper']}
+  y0Accessors={['lower']}
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+  areaSeriesStyle={{
+    area: { opacity: 0.3 },
+    line: { visible: false },
+  }}
+/>
+
+// Mean line
+<LineSeries
+  id="mean-line"
+  data={data}
+  xAccessor="x"
+  yAccessors={['mean']}
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+### Bubble Charts
+
+**Use when**: Showing relationships between three variables.
+
+```tsx
+import { BubbleSeries } from '@elastic/charts';
+
+const bubbleData = [
+  { x: 10, y: 20, size: 15, category: 'A' },
+  { x: 25, y: 35, size: 30, category: 'B' },
+  { x: 40, y: 15, size: 45, category: 'C' },
+];
+
+<BubbleSeries
+  id="bubbles"
+  data={bubbleData}
+  xAccessor="x"
+  yAccessors={['y']}
+  markSizeAccessor="size"
+  splitSeriesAccessors={['category']}
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+### Mixed Charts
+
+Combine different series types on the same chart.
+
+```tsx
+<Chart size={{ height: 400 }}>
+  <Axis id="bottom" position={Position.Bottom} />
+  <Axis id="left" position={Position.Left} title="Revenue" />
+  <Axis id="right" position={Position.Right} title="Units" />
+  
+  {/* Bars on left axis */}
+  <BarSeries
+    id="revenue"
+    name="Revenue"
+    groupId="left"
+    data={revenueData}
+    xAccessor="month"
+    yAccessors={['amount']}
+    xScaleType={ScaleType.Ordinal}
+    yScaleType={ScaleType.Linear}
+  />
+  
+  {/* Line on right axis */}
+  <LineSeries
+    id="units"
+    name="Units Sold"
+    groupId="right"
+    data={unitsData}
+    xAccessor="month"
+    yAccessors={['count']}
+    xScaleType={ScaleType.Ordinal}
+    yScaleType={ScaleType.Linear}
+  />
+</Chart>
+```
+
+---
+
+## Partition Charts
+
+Partition charts show hierarchical part-to-whole relationships.
+
+### Pie Chart
+
+**Use when**: Showing proportions of a whole, limited number of categories (< 7).
+
+```tsx
+import { Partition, PartitionLayout } from '@elastic/charts';
+
+<Chart size={{ height: 300 }}>
+  <Partition
+    id="pie"
+    data={[
+      { category: 'Category A', value: 30 },
+      { category: 'Category B', value: 45 },
+      { category: 'Category C', value: 25 },
+    ]}
+    valueAccessor={(d) => d.value}
+    valueFormatter={(d) => `${d}%`}
+    layers={[
+      {
+        groupByRollup: (d) => d.category,
+        nodeLabel: (d) => d,
+        shape: {
+          fillColor: (d) => d.color,
+        },
+      },
+    ]}
+    config={{
+      partitionLayout: PartitionLayout.sunburst,
+      emptySizeRatio: 0,
+      outerSizeRatio: 1,
+    }}
+  />
+</Chart>
+```
+
+### Donut Chart
+
+```tsx
+<Partition
+  id="donut"
+  data={data}
+  valueAccessor={(d) => d.value}
+  layers={[
+    {
+      groupByRollup: (d) => d.category,
+      fillLabel: {
+        valueFormatter: (d) => `${d}`,
+        fontWeight: 600,
+      },
+    },
+  ]}
+  config={{
+    partitionLayout: PartitionLayout.sunburst,
+    emptySizeRatio: 0.4,  // Creates donut hole (0-1)
+  }}
+/>
+```
+
+### Sunburst (Multi-Level Hierarchy)
+
+**Use when**: Visualizing hierarchical data with multiple levels.
+
+```tsx
+const hierarchicalData = [
+  { continent: 'Asia', country: 'China', value: 1400 },
+  { continent: 'Asia', country: 'India', value: 1380 },
+  { continent: 'Europe', country: 'Germany', value: 83 },
+  { continent: 'Europe', country: 'France', value: 67 },
+];
+
+<Partition
+  id="sunburst"
+  data={hierarchicalData}
+  valueAccessor={(d) => d.value}
+  layers={[
+    {
+      groupByRollup: (d) => d.continent,
+      nodeLabel: (d) => `${d}`,
+      fillLabel: {
+        textInvertible: true,
+      },
+    },
+    {
+      groupByRollup: (d) => d.country,
+      nodeLabel: (d) => `${d}`,
+      fillLabel: {
+        textInvertible: true,
+        valueFormatter: (d) => `${d}M`,
+      },
+    },
+  ]}
+  config={{
+    partitionLayout: PartitionLayout.sunburst,
+  }}
+/>
+```
+
+### Treemap
+
+**Use when**: Showing hierarchical data with area encoding, space-efficient visualization.
+
+```tsx
+<Partition
+  id="treemap"
+  data={data}
+  valueAccessor={(d) => d.size}
+  layers={[
+    {
+      groupByRollup: (d) => d.category,
+      fillLabel: {
+        valueFormatter: (d) => `${(d / 1024).toFixed(1)}GB`,
+        textInvertible: false,
+        fontWeight: 600,
+      },
+    },
+  ]}
+  config={{
+    partitionLayout: PartitionLayout.treemap,
+  }}
+/>
+```
+
+### Mosaic/Icicle Chart
+
+```tsx
+<Partition
+  id="icicle"
+  data={hierarchicalData}
+  valueAccessor={(d) => d.value}
+  layers={[
+    { groupByRollup: (d) => d.level1 },
+    { groupByRollup: (d) => d.level2 },
+  ]}
+  config={{
+    partitionLayout: PartitionLayout.icicle,
+  }}
+/>
+```
+
+---
+
+## Heatmap
+
+**Use when**: Showing patterns in two-dimensional data, correlation matrices, time-based patterns.
+
+```tsx
+import { Heatmap } from '@elastic/charts';
+
+const heatmapData = [
+  { x: 'Mon', y: '9am', value: 23 },
+  { x: 'Mon', y: '10am', value: 45 },
+  { x: 'Mon', y: '11am', value: 67 },
+  { x: 'Tue', y: '9am', value: 34 },
+  { x: 'Tue', y: '10am', value: 56 },
+  // ... more data
+];
+
+<Chart size={{ height: 300 }}>
+  <Heatmap
+    id="heatmap"
+    data={heatmapData}
+    xAccessor={(d) => d.x}
+    yAccessor={(d) => d.y}
+    valueAccessor={(d) => d.value}
+    valueFormatter={(value) => `${value}°F`}
+    colorScale={{
+      type: 'bands',
+      bands: [
+        { start: 0, end: 25, color: '#d4e6f5' },
+        { start: 25, end: 50, color: '#6eb5e4' },
+        { start: 50, end: 75, color: '#0b7dc1' },
+        { start: 75, end: 100, color: '#004b7a' },
+      ],
+    }}
+    xSortPredicate="numAsc"
+    ySortPredicate="alphaAsc"
+  />
+</Chart>
+```
+
+### Continuous Color Scale
+
+```tsx
+<Heatmap
+  id="heatmap-continuous"
+  data={data}
+  xAccessor="x"
+  yAccessor="y"
+  valueAccessor="value"
+  colorScale={{
+    type: 'linear',
+    domain: [0, 100],
+    range: ['#ffffff', '#ff0000'],
+  }}
+/>
+```
+
+---
+
+## Goal/Gauge Charts
+
+**Use when**: Showing progress toward a goal, KPI dashboards.
+
+```tsx
+import { Goal } from '@elastic/charts';
+
+<Chart size={{ height: 200 }}>
+  <Goal
+    id="goal"
+    data={[
+      {
+        value: 75,
+        target: 100,
+      },
+    ]}
+    bandFillColor={(value) => {
+      if (value < 50) return 'red';
+      if (value < 75) return 'yellow';
+      return 'green';
+    }}
+    labelMajor="Progress"
+    labelMinor="75 of 100"
+    centralMajor="75%"
+    subtype="horizontalBar"  // or "verticalBar", "circle"
+  />
+</Chart>
+```
+
+### Circular Gauge
+
+```tsx
+<Goal
+  id="circular-gauge"
+  data={[{ value: 72, target: 100 }]}
+  subtype="circle"
+  angleStart={Math.PI}
+  angleEnd={0}
+  bandFillColor={(x) => (x < 70 ? '#ff0000' : '#00ff00')}
+  centralMajor="72%"
+  centralMinor="Completion"
+/>
+```
+
+---
+
+## Bullet Graph
+
+**Use when**: Comparing a metric against targets and qualitative ranges.
+
+```tsx
+import { Bullet } from '@elastic/charts';
+
+<Chart size={{ height: 150 }}>
+  <Bullet
+    id="bullet"
+    data={[
+      {
+        title: 'Revenue',
+        subtitle: 'US $, in thousands',
+        ranges: [150, 225, 300],
+        measures: [220, 270],
+        target: 250,
+      },
+    ]}
+  />
+</Chart>
+```
+
+---
+
+## Wordcloud
+
+**Use when**: Visualizing text frequency, tag clouds.
+
+```tsx
+import { Wordcloud } from '@elastic/charts';
+
+const words = [
+  { text: 'JavaScript', weight: 100 },
+  { text: 'TypeScript', weight: 80 },
+  { text: 'React', weight: 90 },
+  { text: 'Angular', weight: 60 },
+  { text: 'Vue', weight: 70 },
+  // ... more words
+];
+
+<Chart size={{ height: 400 }}>
+  <Wordcloud
+    id="wordcloud"
+    data={words}
+    weightAccessor={(d) => d.weight}
+    textAccessor={(d) => d.text}
+    config={{
+      spiral: 'archimedean',  // or 'rectangular'
+      fontWeight: 'normal',
+      fontFamily: 'Arial',
+      minFontSize: 10,
+      maxFontSize: 100,
+    }}
+  />
+</Chart>
+```
+
+---
+
+## Flame Chart
+
+**Use when**: Visualizing hierarchical time-series data, performance profiling.
+
+```tsx
+import { Flame } from '@elastic/charts';
+
+<Chart size={{ height: 500 }}>
+  <Flame
+    id="flame"
+    data={performanceData}
+    valueAccessor={(d) => d.value}
+    valueFormatter={(d) => `${d}ms`}
+    config={{
+      label: {
+        maxWidth: 200,
+        textColor: '#000',
+      },
+    }}
+  />
+</Chart>
+```
+
+---
+
+## Metric Display
+
+**Use when**: Displaying single or multiple KPIs.
+
+```tsx
+import { Metric } from '@elastic/charts';
+
+<Chart size={{ height: 200 }}>
+  <Metric
+    id="metric"
+    data={[
+      [
+        {
+          value: 24576,
+          title: 'Active Users',
+          valueFormatter: (d) => `${(d / 1000).toFixed(1)}K`,
+          color: '#00BFB3',
+        },
+        {
+          value: 98.5,
+          title: 'Uptime',
+          valueFormatter: (d) => `${d}%`,
+          color: '#F5A700',
+        },
+      ],
+    ]}
+  />
+</Chart>
+```
+
+---
+
+## Best Practices by Chart Type
+
+### Bar Charts
+- ✅ Start Y-axis at zero
+- ✅ Use consistent bar widths
+- ✅ Limit number of categories (< 15)
+- ❌ Don't use 3D effects
+
+### Line Charts
+- ✅ Use for time series
+- ✅ Limit number of lines (< 7)
+- ✅ Use distinct colors
+- ❌ Don't use for categorical comparisons
+
+### Area Charts
+- ✅ Good for cumulative totals
+- ✅ Use transparency for overlaps
+- ❌ Avoid too many stacked layers (> 5)
+
+### Pie Charts
+- ✅ Limit slices (< 7)
+- ✅ Order by size
+- ✅ Use labels for small slices
+- ❌ Don't use for precise comparisons
+- ❌ Avoid 3D pie charts
+
+### Heatmaps
+- ✅ Use sequential colors for continuous data
+- ✅ Use diverging colors for data with meaningful midpoint
+- ✅ Ensure sufficient color contrast
+- ❌ Don't use rainbow color schemes
+
+---
+
+## Next Steps
+
+- [Theming](./theming) - Customize chart appearance
+- [Examples](../examples/intro) - Interactive chart examples
+- [Components Reference](./components) - Detailed API documentation

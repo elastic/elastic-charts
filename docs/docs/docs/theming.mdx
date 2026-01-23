@@ -1,0 +1,913 @@
+---
+id: theming
+title: Theming and Styling
+sidebar_position: 7
+---
+
+# Theming and Styling
+
+Elastic Charts provides a powerful theming system that allows complete customization of chart appearance. This guide covers everything from using built-in themes to creating custom themes.
+
+## Built-in Themes
+
+Elastic Charts includes several production-ready themes:
+
+```tsx
+import {
+  LIGHT_THEME,
+  DARK_THEME,
+  LEGACY_LIGHT_THEME,
+  LEGACY_DARK_THEME,
+} from '@elastic/charts';
+
+<Settings theme={DARK_THEME} />
+```
+
+### Available Themes
+
+- **LIGHT_THEME** - Default light theme (recommended)
+- **DARK_THEME** - Dark mode theme
+- **LEGACY_LIGHT_THEME** - Legacy Elastic light theme
+- **LEGACY_DARK_THEME** - Legacy Elastic dark theme
+
+## Theme Structure
+
+A theme is a comprehensive object controlling all visual aspects:
+
+```typescript
+interface Theme {
+  // Chart background and container
+  background: {
+    color: string;
+    fallbackColor?: string;
+  };
+  
+  // Spacing
+  chartMargins: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
+  
+  chartPaddings: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
+  
+  // Colors
+  colors: {
+    vizColors: string[];           // Data visualization colors
+    defaultVizColor: string;       // Fallback color
+  };
+  
+  // Series styles
+  barSeriesStyle: BarSeriesStyle;
+  lineSeriesStyle: LineSeriesStyle;
+  areaSeriesStyle: AreaSeriesStyle;
+  bubbleSeriesStyle: BubbleSeriesStyle;
+  
+  // Axes
+  axes: {
+    axisTitle: TextStyle;
+    axisLine: StrokeStyle;
+    tickLabel: TextStyle;
+    tickLine: StrokeStyle;
+    gridLine: GridLineStyle;
+  };
+  
+  // Legend
+  legend: {
+    verticalWidth: number;
+    horizontalHeight: number;
+    spacingBuffer: number;
+    labelOptions: LabelOptions;
+  };
+  
+  // Crosshair
+  crosshair: {
+    band: FillStyle;
+    line: StrokeStyle;
+  };
+  
+  // Partition charts
+  partition: PartitionStyle;
+  
+  // And more...
+}
+```
+
+## Using Themes
+
+### Apply a Base Theme
+
+```tsx
+<Settings theme={DARK_THEME} />
+```
+
+### Extend a Base Theme
+
+Create custom themes by extending built-in ones:
+
+```tsx
+<Settings
+  baseTheme={LIGHT_THEME}
+  theme={{
+    colors: {
+      vizColors: ['#FF6B6B', '#4ECDC4', '#45B7D1'],
+    },
+  }}
+/>
+```
+
+### Complete Custom Theme
+
+```tsx
+import { LIGHT_THEME, mergeWithDefaultTheme } from '@elastic/charts';
+
+const myTheme = mergeWithDefaultTheme({
+  background: {
+    color: '#f5f5f5',
+  },
+  colors: {
+    vizColors: [
+      '#1f77b4',
+      '#ff7f0e',
+      '#2ca02c',
+      '#d62728',
+      '#9467bd',
+      '#8c564b',
+    ],
+  },
+  barSeriesStyle: {
+    rect: {
+      opacity: 0.8,
+    },
+  },
+}, LIGHT_THEME);
+
+<Settings theme={myTheme} />
+```
+
+## Color Palettes
+
+### Default Color Palette
+
+```tsx
+// The default palette has 10 colors
+const defaultColors = [
+  '#54B399', // Green
+  '#6092C0', // Blue
+  '#D36086', // Pink
+  '#9170B8', // Purple
+  '#CA8EAE', // Mauve
+  '#D6BF57', // Yellow
+  '#B9A888', // Tan
+  '#DA8B45', // Orange
+  '#AA6556', // Brown
+  '#E7664C', // Red
+];
+```
+
+### Custom Color Palette
+
+```tsx
+<Settings
+  theme={{
+    colors: {
+      vizColors: [
+        '#FF0000',
+        '#00FF00',
+        '#0000FF',
+        '#FFFF00',
+        '#FF00FF',
+      ],
+    },
+  }}
+/>
+```
+
+### Sequential Colors
+
+For data that represents magnitude or progression:
+
+```tsx
+const sequentialPalette = [
+  '#f7fbff',
+  '#deebf7',
+  '#c6dbef',
+  '#9ecae1',
+  '#6baed6',
+  '#4292c6',
+  '#2171b5',
+  '#08519c',
+  '#08306b',
+];
+
+<Settings
+  theme={{
+    colors: {
+      vizColors: sequentialPalette,
+    },
+  }}
+/>
+```
+
+### Diverging Colors
+
+For data with a meaningful midpoint:
+
+```tsx
+const divergingPalette = [
+  '#d73027',
+  '#f46d43',
+  '#fdae61',
+  '#fee08b',
+  '#ffffbf',
+  '#d9ef8b',
+  '#a6d96a',
+  '#66bd63',
+  '#1a9850',
+];
+```
+
+### Categorical Colors
+
+For distinct categories:
+
+```tsx
+const categoricalPalette = [
+  '#e41a1c',
+  '#377eb8',
+  '#4daf4a',
+  '#984ea3',
+  '#ff7f00',
+  '#ffff33',
+  '#a65628',
+  '#f781bf',
+];
+```
+
+## Series-Specific Styling
+
+### Bar Series
+
+```tsx
+<Settings
+  theme={{
+    barSeriesStyle: {
+      rect: {
+        opacity: 0.8,
+        fill: '#FF0000',
+        widthPixel: 20,
+      },
+      rectBorder: {
+        stroke: '#000000',
+        strokeWidth: 1,
+        visible: true,
+      },
+      displayValue: {
+        fontSize: 12,
+        fontFamily: 'Arial',
+        fill: '#000000',
+        alignment: {
+          horizontal: 'center',
+          vertical: 'middle',
+        },
+        offsetX: 0,
+        offsetY: 0,
+      },
+    },
+  }}
+/>
+```
+
+#### Individual Bar Styling
+
+```tsx
+<BarSeries
+  id="bars"
+  data={data}
+  xAccessor="x"
+  yAccessors={['y']}
+  styleAccessor={(datum) => {
+    // Style based on data values
+    return {
+      rect: {
+        fill: datum.y > 50 ? 'green' : 'red',
+      },
+    };
+  }}
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+### Line Series
+
+```tsx
+<Settings
+  theme={{
+    lineSeriesStyle: {
+      line: {
+        stroke: '#FF0000',
+        strokeWidth: 2,
+        opacity: 1,
+        dash: [5, 5],  // Dashed line
+      },
+      point: {
+        visible: true,
+        radius: 4,
+        fill: '#FFFFFF',
+        stroke: '#FF0000',
+        strokeWidth: 2,
+        opacity: 1,
+      },
+    },
+  }}
+/>
+```
+
+#### Per-Series Line Styling
+
+```tsx
+<LineSeries
+  id="line"
+  data={data}
+  xAccessor="x"
+  yAccessors={['y']}
+  lineSeriesStyle={{
+    line: {
+      strokeWidth: 3,
+      dash: [10, 5],
+    },
+  }}
+  pointStyleAccessor={(datum) => ({
+    visible: datum.y > threshold,
+    radius: 6,
+    fill: datum.y > threshold ? 'red' : 'blue',
+  })}
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+### Area Series
+
+```tsx
+<Settings
+  theme={{
+    areaSeriesStyle: {
+      area: {
+        fill: '#FF0000',
+        opacity: 0.3,
+      },
+      line: {
+        stroke: '#FF0000',
+        strokeWidth: 2,
+        visible: true,
+      },
+      point: {
+        visible: false,
+        radius: 3,
+      },
+    },
+  }}
+/>
+```
+
+### Bubble Series
+
+```tsx
+<Settings
+  theme={{
+    bubbleSeriesStyle: {
+      point: {
+        fill: '#FF0000',
+        stroke: '#000000',
+        strokeWidth: 1,
+        opacity: 0.7,
+      },
+    },
+  }}
+/>
+```
+
+## Axis Styling
+
+### Complete Axis Styling
+
+```tsx
+<Settings
+  theme={{
+    axes: {
+      axisTitle: {
+        fontSize: 14,
+        fontFamily: 'Arial',
+        fill: '#333333',
+        padding: 10,
+      },
+      axisLine: {
+        stroke: '#cccccc',
+        strokeWidth: 1,
+      },
+      tickLabel: {
+        fontSize: 12,
+        fontFamily: 'Arial',
+        fill: '#666666',
+        padding: 5,
+      },
+      tickLine: {
+        stroke: '#cccccc',
+        strokeWidth: 1,
+        visible: true,
+      },
+      gridLine: {
+        horizontal: {
+          stroke: '#e0e0e0',
+          strokeWidth: 1,
+          opacity: 1,
+          dash: [4, 4],
+        },
+        vertical: {
+          stroke: '#e0e0e0',
+          strokeWidth: 1,
+          opacity: 1,
+          dash: [4, 4],
+        },
+      },
+    },
+  }}
+/>
+```
+
+### Per-Axis Styling
+
+```tsx
+<Axis
+  id="left"
+  position={Position.Left}
+  style={{
+    tickLabel: {
+      fontSize: 14,
+      fill: '#FF0000',
+      padding: 10,
+    },
+    axisTitle: {
+      fontSize: 16,
+      fill: '#000000',
+      padding: 15,
+    },
+  }}
+/>
+```
+
+## Legend Styling
+
+```tsx
+<Settings
+  theme={{
+    legend: {
+      verticalWidth: 200,
+      horizontalHeight: 64,
+      spacingBuffer: 10,
+      margin: 0,
+      labelOptions: {
+        maxLines: 1,
+      },
+    },
+  }}
+/>
+```
+
+### Legend Position and Layout
+
+```tsx
+<Settings
+  showLegend={true}
+  legendPosition="right"  // 'top', 'bottom', 'left', 'right'
+  legendSize={150}
+  legendMaxDepth={2}
+  flatLegend={false}
+/>
+```
+
+## Partition Chart Styling
+
+### Sunburst/Pie Styling
+
+```tsx
+<Settings
+  theme={{
+    partition: {
+      linkLabel: {
+        maximumSection: 10,
+        fontSize: 12,
+        textColor: '#000000',
+      },
+      fillLabel: {
+        fontSize: 14,
+        fontWeight: 600,
+        textColor: '#FFFFFF',
+        textInvertible: true,
+        valueFont: {
+          fontSize: 12,
+          fontWeight: 400,
+        },
+      },
+      sectorLineStroke: '#FFFFFF',
+      sectorLineWidth: 1,
+      minFontSize: 8,
+      maxFontSize: 64,
+      emptySizeRatio: 0.4,  // Donut hole size
+    },
+  }}
+/>
+```
+
+### Treemap Styling
+
+```tsx
+<Settings
+  theme={{
+    partition: {
+      fillLabel: {
+        fontSize: 14,
+        textColor: '#000000',
+        clipText: true,
+      },
+      sectorLineStroke: '#FFFFFF',
+      sectorLineWidth: 2,
+    },
+  }}
+/>
+```
+
+## Tooltip Styling
+
+```tsx
+<Settings
+  theme={{
+    crosshair: {
+      line: {
+        stroke: '#999999',
+        strokeWidth: 1,
+        dash: [4, 4],
+      },
+      band: {
+        fill: 'rgba(0, 0, 0, 0.05)',
+      },
+    },
+  }}
+  tooltip={{
+    type: 'vertical',
+    snap: true,
+  }}
+/>
+```
+
+### Custom Tooltip Component
+
+```tsx
+const CustomTooltip = ({ header, items }) => (
+  <div style={{
+    background: '#fff',
+    border: '1px solid #ccc',
+    padding: '10px',
+    borderRadius: '4px',
+  }}>
+    <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+      {header}
+    </div>
+    {items.map((item, i) => (
+      <div key={i} style={{ color: item.color }}>
+        {item.label}: {item.value}
+      </div>
+    ))}
+  </div>
+);
+
+<Settings
+  tooltip={{
+    customTooltip: CustomTooltip,
+  }}
+/>
+```
+
+## Annotations Styling
+
+### Line Annotation
+
+```tsx
+<LineAnnotation
+  id="threshold"
+  domainType={AnnotationDomainType.YDomain}
+  dataValues={[{ dataValue: 50 }]}
+  style={{
+    line: {
+      stroke: 'red',
+      strokeWidth: 2,
+      opacity: 0.8,
+      dash: [5, 5],
+    },
+  }}
+  marker={
+    <div style={{
+      background: 'red',
+      color: 'white',
+      padding: '2px 6px',
+      borderRadius: '3px',
+      fontSize: '12px',
+    }}>
+      Target
+    </div>
+  }
+/>
+```
+
+### Rectangle Annotation
+
+```tsx
+<RectAnnotation
+  id="highlight"
+  dataValues={[{
+    coordinates: { x0: 5, x1: 10 },
+  }]}
+  style={{
+    fill: 'rgba(255, 0, 0, 0.1)',
+    stroke: 'red',
+    strokeWidth: 1,
+    opacity: 0.5,
+  }}
+/>
+```
+
+## Responsive Theming
+
+### Media Query-Based Themes
+
+```tsx
+import { useMediaQuery } from 'react-responsive';
+
+function ResponsiveChart() {
+  const isDarkMode = useMediaQuery({ query: '(prefers-color-scheme: dark)' });
+  
+  return (
+    <Chart>
+      <Settings theme={isDarkMode ? DARK_THEME : LIGHT_THEME} />
+      {/* Chart content */}
+    </Chart>
+  );
+}
+```
+
+### Breakpoint-Based Sizing
+
+```tsx
+function ResponsiveChart() {
+  const isSmall = useMediaQuery({ maxWidth: 767 });
+  
+  return (
+    <Chart size={{ height: isSmall ? 200 : 400 }}>
+      <Settings
+        showLegend={!isSmall}
+        theme={{
+          chartMargins: {
+            top: isSmall ? 5 : 10,
+            right: isSmall ? 5 : 10,
+            bottom: isSmall ? 20 : 40,
+            left: isSmall ? 20 : 40,
+          },
+        }}
+      />
+      {/* Chart content */}
+    </Chart>
+  );
+}
+```
+
+## Advanced Theming Techniques
+
+### Dynamic Color Assignment
+
+```tsx
+function DynamicColorChart({ data }) {
+  const colorMap = useMemo(() => {
+    const map = new Map();
+    data.forEach((d, i) => {
+      map.set(d.category, COLORS[i % COLORS.length]);
+    });
+    return map;
+  }, [data]);
+  
+  return (
+    <Chart>
+      <BarSeries
+        id="bars"
+        data={data}
+        xAccessor="category"
+        yAccessors={['value']}
+        color={(series) => colorMap.get(series.splitAccessors.get('category'))}
+      />
+    </Chart>
+  );
+}
+```
+
+### Conditional Styling
+
+```tsx
+<BarSeries
+  id="bars"
+  data={data}
+  xAccessor="x"
+  yAccessors={['y']}
+  styleAccessor={(datum, seriesIdentifier) => {
+    const isAboveThreshold = datum.y > 100;
+    const isHighlighted = seriesIdentifier.key === 'highlighted';
+    
+    return {
+      rect: {
+        fill: isAboveThreshold ? '#00FF00' : '#FF0000',
+        opacity: isHighlighted ? 1 : 0.5,
+      },
+    };
+  }}
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+### Theme Context Provider
+
+Create reusable theme contexts:
+
+```tsx
+import { createContext, useContext } from 'react';
+
+const ChartThemeContext = createContext(LIGHT_THEME);
+
+export function ChartThemeProvider({ theme, children }) {
+  return (
+    <ChartThemeContext.Provider value={theme}>
+      {children}
+    </ChartThemeContext.Provider>
+  );
+}
+
+export function useChartTheme() {
+  return useContext(ChartThemeContext);
+}
+
+// Usage
+function MyChart() {
+  const theme = useChartTheme();
+  
+  return (
+    <Chart>
+      <Settings theme={theme} />
+      {/* Chart content */}
+    </Chart>
+  );
+}
+```
+
+## Color Considerations
+
+### Color Contrast
+
+Ensure sufficient contrast for readability:
+
+```tsx
+// Good contrast example
+const theme = {
+  colors: {
+    vizColors: ['#0066CC', '#CC0000', '#00AA44'],
+  },
+  axes: {
+    tickLabel: {
+      fill: '#333333',  // Dark text on light background
+    },
+  },
+};
+```
+
+### Colorblind-Friendly Palettes
+
+Consider using distinguishable colors:
+
+```tsx
+// Colorblind-friendly palette
+const colorblindFriendlyPalette = [
+  '#000000', // Black
+  '#E69F00', // Orange
+  '#56B4E9', // Sky Blue
+  '#009E73', // Green
+  '#F0E442', // Yellow
+  '#0072B2', // Blue
+  '#D55E00', // Vermillion
+  '#CC79A7', // Purple
+];
+
+<Settings
+  theme={{
+    colors: {
+      vizColors: colorblindSafePalette,
+    },
+  }}
+/>
+```
+
+### Patterns for Additional Encoding
+
+```tsx
+<BarSeries
+  id="bars"
+  data={data}
+  xAccessor="x"
+  yAccessors={['y']}
+  styleAccessor={(datum) => ({
+    rect: {
+      fill: datum.category === 'A' ? '#FF6B6B' : '#4ECDC4',
+    },
+  })}
+/>
+
+
+```
+
+## Performance Optimization
+
+### Memoize Theme Objects
+
+```tsx
+import { useMemo } from 'react';
+
+function OptimizedChart() {
+  const theme = useMemo(() => ({
+    colors: {
+      vizColors: ['#FF0000', '#00FF00', '#0000FF'],
+    },
+    barSeriesStyle: {
+      rect: { opacity: 0.8 },
+    },
+  }), []); // Empty deps = computed once
+  
+  return (
+    <Chart>
+      <Settings baseTheme={LIGHT_THEME} theme={theme} />
+      {/* Chart content */}
+    </Chart>
+  );
+}
+```
+
+### Avoid Inline Objects
+
+```tsx
+// ❌ Bad: Creates new object on every render
+<Settings theme={{ colors: { vizColors: ['#FF0000'] } }} />
+
+// ✅ Good: Reuses same object
+const myTheme = { colors: { vizColors: ['#FF0000'] } };
+<Settings theme={myTheme} />
+```
+
+## Theme Debugging
+
+### Theme Inspector
+
+```tsx
+function ThemeDebugger() {
+  const [theme, setTheme] = useState(LIGHT_THEME);
+  
+  return (
+    <>
+      <pre>{JSON.stringify(theme, null, 2)}</pre>
+      <Chart>
+        <Settings theme={theme} />
+        {/* Chart content */}
+      </Chart>
+    </>
+  );
+}
+```
+
+## Best Practices
+
+1. **Start with base theme**: Always extend LIGHT_THEME or DARK_THEME
+2. **Use semantic colors**: Don't hardcode colors; use theme values
+3. **Test color contrast**: Verify sufficient contrast for readability
+4. **Memoize custom themes**: Prevent unnecessary re-renders
+5. **Consider dark mode**: Support both light and dark themes
+6. **Document custom themes**: Make customizations discoverable
+7. **Test across devices**: Verify appearance on different screens
+8. **Use consistent spacing**: Follow theme spacing values
+
+## Next Steps
+
+- [Examples](../examples/intro) - See themed charts in action
+- [Components Reference](./components) - Detailed styling APIs
+- [Contributing](./contributing) - Contribute theme improvements

@@ -1,10 +1,129 @@
 ---
-id: docs
-title: Docs
-sidebar_label: Docs
-sidebar_position: 0
+id: introduction
+title: Introduction to Elastic Charts
+sidebar_position: 1
 ---
 
-# Docs
+# Introduction to Elastic Charts
 
-Docs here...
+**Elastic Charts** (@elastic/charts) is a powerful, flexible, and highly customizable data visualization library built with TypeScript and React. Designed to provide a consistent charting experience across Elastic's web products, it offers a comprehensive suite of chart types and advanced features for creating interactive, accessible, and visually appealing data visualizations.
+
+## What is Elastic Charts?
+
+Elastic Charts is a React-based charting library that enables developers to create a wide variety of charts and data visualizations with minimal configuration while maintaining complete control over appearance and behavior. The library is built on modern web technologies and follows React best practices, making it an ideal choice for React applications.
+
+### Key Features
+
+- **Wide Range of Chart Types**: Support for XY charts (line, area, bar, bubble), partition charts (pie, donut, sunburst, treemap), heatmaps, bullet graphs, goal charts, wordclouds, flame charts, and more
+- **Highly Customizable**: Extensive theming system with granular control over every visual aspect
+- **Performance Optimized**: Canvas rendering engine optimized for large datasets
+- **Interactive**: Rich interactions including tooltips, brushing, clicking, hovering, and zooming
+- **Responsive**: Automatic resizing and adaptive layouts for different screen sizes
+- **TypeScript First**: Full TypeScript support with comprehensive type definitions
+- **Production Ready**: Battle-tested in Elastic's products with extensive test coverage
+
+## Why Choose Elastic Charts?
+
+### Design Consistency
+Elastic Charts provides a single source of truth for chart visualization across your application. Designers can make changes to look-and-feel directly in the code, ensuring consistency across all visualizations.
+
+### Developer Experience
+- **Declarative API**: Define charts using React components and props
+- **TypeScript Support**: Full type safety and excellent IDE autocomplete
+- **Flexible Data Formats**: Work with various data structures
+- **Comprehensive Documentation**: Extensive examples and API documentation
+
+### Production Quality
+- **Thoroughly Tested**: Comprehensive unit and integration tests
+- **Performance**: Optimized rendering for large datasets
+- **Color Considerations**: Default themes with good contrast ratios
+- **Stable API**: Semantic versioning and clear upgrade paths
+
+## Quick Example
+
+Here's a simple example to get you started:
+
+```tsx
+import { Chart, Settings, BarSeries, ScaleType } from '@elastic/charts';
+
+function MyChart() {
+  const data = [
+    { x: 'A', y: 20 },
+    { x: 'B', y: 45 },
+    { x: 'C', y: 30 },
+    { x: 'D', y: 55 },
+  ];
+
+  return (
+    <Chart size={{ height: 300 }}>
+      <Settings />
+      <BarSeries
+        id="sales"
+        name="Sales"
+        xScaleType={ScaleType.Ordinal}
+        yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
+        data={data}
+      />
+    </Chart>
+  );
+}
+```
+
+This creates a simple bar chart with minimal configuration. The library handles layout, scaling, axes, legends, and interactions automatically.
+
+## Core Concepts
+
+### Component-Based Architecture
+Elastic Charts follows a component-based architecture where you compose charts by combining different React components:
+
+- **Chart**: The root container component
+- **Settings**: Global chart configuration
+- **Series Components**: Visual data representations (BarSeries, LineSeries, AreaSeries, etc.)
+- **Axis**: X and Y axis configuration
+- **Annotations**: Additional visual markers and regions
+
+### Declarative Specification
+You define what you want to visualize, not how to render it. The library handles:
+- Automatic scale computation
+- Layout and positioning
+- Interaction handling
+- Responsive behavior
+- Accessibility features
+
+### Data-Driven
+Charts are driven by your data. Simply provide:
+- Data arrays
+- Accessor functions to map data to visual channels
+- Scale types for different data types (linear, ordinal, time, log)
+
+## Browser Support
+
+Elastic Charts supports all modern browsers:
+- Chrome (last 2 versions)
+- Firefox (last 2 versions)
+- Safari (last 2 versions)
+- Edge (last 2 versions)
+- Internet Explorer 11 (with polyfills)
+
+## License
+
+Elastic Charts is dual-licensed under the Elastic License 2.0 and the Server Side Public License, v 1. See the [LICENSE](https://github.com/elastic/elastic-charts/blob/master/LICENSE.txt) file for details.
+
+## Community & Support
+
+- **GitHub Repository**: [elastic/elastic-charts](https://github.com/elastic/elastic-charts)
+- **Storybook Examples**: [Interactive examples](https://elastic.github.io/elastic-charts/storybook/)
+- **Issues & Bugs**: [GitHub Issues](https://github.com/elastic/elastic-charts/issues)
+- **Contributing**: See our [Contributing Guide](./contributing)
+
+## Next Steps
+
+Ready to start building? Check out these resources:
+
+- [Getting Started](./getting-started) - Installation and first chart
+- [Architecture](./architecture) - Understanding how Elastic Charts works
+- [Core Concepts](./core-concepts) - Deep dive into fundamental concepts
+- [Chart Types](./chart-types) - Explore different visualization types
+- [Examples](../examples/intro) - Browse interactive examples

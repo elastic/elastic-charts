@@ -1,0 +1,1019 @@
+---
+id: components
+title: Components Reference
+sidebar_position: 5
+---
+
+# Components Reference
+
+This reference guide provides detailed documentation for all major components in Elastic Charts.
+
+## Chart
+
+The root container component that wraps all chart elements.
+
+### Props
+
+```typescript
+interface ChartProps {
+  /**
+   * Rendering engine: 'canvas' (default and recommended)
+   */
+  renderer?: 'canvas';
+  
+  /**
+   * Chart size - number, object, or array
+   */
+  size?: ChartSize;
+  
+  /**
+   * CSS class name
+   */
+  className?: string;
+  
+  /**
+   * Unique chart identifier
+   */
+  id?: string;
+  
+  /**
+   * Accessible chart title
+   */
+  title?: string;
+  
+  /**
+   * Accessible chart description
+   */
+  description?: string;
+  
+  /**
+   * Child components (Settings, Series, Axis, etc.)
+   */
+  children?: ReactNode;
+}
+```
+
+### Size Options
+
+```tsx
+// Fixed height, auto width
+<Chart size={{ height: 300 }} />
+
+// Fixed width and height
+<Chart size={{ width: 600, height: 400 }} />
+
+// Percentage-based
+<Chart size={{ width: '100%', height: 400 }} />
+
+// Square chart
+<Chart size={400} />
+
+// Array format [width, height]
+<Chart size={[600, 400]} />
+```
+
+### Example
+
+```tsx
+import { Chart } from '@elastic/charts';
+
+<Chart
+  id="my-chart"
+  size={{ height: 400 }}
+  renderer="canvas"
+  title="Sales Performance"
+  description="Monthly sales data for 2024"
+>
+  {/* Chart components */}
+</Chart>
+```
+
+---
+
+## Settings
+
+Global configuration for chart behavior, interactions, and appearance.
+
+### Props
+
+```typescript
+interface SettingsProps {
+  /**
+   * Base theme to extend
+   */
+  baseTheme?: Theme;
+  
+  /**
+   * Theme overrides
+   */
+  theme?: PartialTheme;
+  
+  /**
+   * Chart rotation: 0, 90, 180, or 270 degrees
+   */
+  rotation?: Rotation;
+  
+  /**
+   * Rendering mode: 'canvas'
+   */
+  rendering?: Rendering;
+  
+  /**
+   * Animation configuration
+   */
+  animateData?: boolean;
+  
+  /**
+   * Show/hide legend
+   */
+  showLegend?: boolean;
+  
+  /**
+   * Legend position
+   */
+  legendPosition?: 'top' | 'right' | 'bottom' | 'left';
+  
+  /**
+   * Tooltip configuration
+   */
+  tooltip?: TooltipProps;
+  
+  /**
+   * Click handler for chart elements
+   */
+  onElementClick?: ElementClickListener;
+  
+  /**
+   * Pointer update handler
+   */
+  onPointerUpdate?: PointerUpdateListener;
+  
+  /**
+   * Brush end handler (selection)
+   */
+  onBrushEnd?: BrushEndListener;
+  
+  /**
+   * Legend click handler
+   */
+  onLegendItemClick?: LegendItemListener;
+  
+  /**
+   * Render complete callback
+   */
+  onRenderChange?: RenderChangeListener;
+  
+  /**
+   * Enable external pointer events
+   */
+  externalPointerEvents?: ExternalPointerEventsSettings;
+  
+  // ... many more settings
+}
+```
+
+### Common Settings
+
+#### Theme
+
+```tsx
+import { LIGHT_THEME, DARK_THEME } from '@elastic/charts';
+
+<Settings
+  baseTheme={DARK_THEME}
+  theme={{
+    background: { color: '#1a1a1a' },
+    colors: { vizColors: ['#FF0000', '#00FF00', '#0000FF'] },
+  }}
+/>
+```
+
+#### Interactions
+
+```tsx
+<Settings
+  onElementClick={(elements) => {
+    console.log('Clicked:', elements);
+  }}
+  onBrushEnd={(area) => {
+    console.log('Selected:', area);
+  }}
+  onPointerUpdate={(event) => {
+    console.log('Pointer at:', event.x, event.y);
+  }}
+/>
+```
+
+#### Legend
+
+```tsx
+<Settings
+  showLegend={true}
+  legendPosition="right"
+  legendMaxDepth={2}
+  flatLegend={false}
+  onLegendItemClick={(item) => console.log(item)}
+/>
+```
+
+#### Tooltip
+
+```tsx
+<Settings
+  tooltip={{
+    type: 'vertical',
+    snap: true,
+    stickTo: 'top',
+    boundary: 'chart',
+    customTooltip: CustomTooltipComponent,
+    headerFormatter: (data) => `Value: ${data.value}`,
+  }}
+/>
+```
+
+---
+
+## BarSeries
+
+Renders bar charts (vertical or horizontal).
+
+### Props
+
+```typescript
+interface BarSeriesProps {
+  /**
+   * Unique series identifier (required)
+   */
+  id: string;
+  
+  /**
+   * Display name for legend and tooltips
+   */
+  name?: string;
+  
+  /**
+   * Data array
+   */
+  data: Datum[];
+  
+  /**
+   * X-axis accessor
+   */
+  xAccessor: Accessor;
+  
+  /**
+   * Y-axis accessors (can be multiple)
+   */
+  yAccessors: Accessor[];
+  
+  /**
+   * X-axis scale type
+   */
+  xScaleType: ScaleType;
+  
+  /**
+   * Y-axis scale type
+   */
+  yScaleType: ScaleType;
+  
+  /**
+   * Split series by these accessors
+   */
+  splitSeriesAccessors?: Accessor[];
+  
+  /**
+   * Stack bars at same x position
+   */
+  stackAccessors?: Accessor[];
+  
+  /**
+   * Color accessor
+   */
+  colorAccessors?: Accessor[];
+  
+  /**
+   * Group ID for multi-axis charts
+   */
+  groupId?: string;
+  
+  /**
+   * Custom color for this series
+   */
+  color?: Color | ColorAccessor;
+  
+  /**
+   * Display values on bars
+   */
+  displayValueSettings?: DisplayValueSettings;
+  
+  /**
+   * Enable histogram mode
+   */
+  enableHistogramMode?: boolean;
+  
+  /**
+   * Custom style overrides
+   */
+  barSeriesStyle?: BarSeriesStyle;
+}
+```
+
+### Examples
+
+#### Basic Bar Chart
+
+```tsx
+<BarSeries
+  id="bars"
+  name="Sales"
+  data={[
+    { month: 'Jan', sales: 100 },
+    { month: 'Feb', sales: 150 },
+    { month: 'Mar', sales: 120 },
+  ]}
+  xAccessor="month"
+  yAccessors={['sales']}
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Stacked Bars
+
+```tsx
+<BarSeries
+  id="stacked-bars"
+  data={data}
+  xAccessor="month"
+  yAccessors={['value']}
+  stackAccessors={['month']}
+  splitSeriesAccessors={['product']}
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Horizontal Bars
+
+```tsx
+<Settings rotation={90} />
+<BarSeries
+  id="horizontal-bars"
+  data={data}
+  xAccessor="category"
+  yAccessors={['value']}
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+---
+
+## LineSeries
+
+Renders line charts.
+
+### Props
+
+```typescript
+interface LineSeriesProps {
+  id: string;
+  name?: string;
+  data: Datum[];
+  xAccessor: Accessor;
+  yAccessors: Accessor[];
+  xScaleType: ScaleType;
+  yScaleType: ScaleType;
+  splitSeriesAccessors?: Accessor[];
+  stackAccessors?: Accessor[];
+  colorAccessors?: Accessor[];
+  groupId?: string;
+  color?: Color | ColorAccessor;
+  
+  /**
+   * Curve type: 'LINEAR', 'CURVE_NATURAL', 'CURVE_MONOTONE_X', etc.
+   */
+  curve?: CurveType;
+  
+  /**
+   * Line style
+   */
+  lineSeriesStyle?: LineSeriesStyle;
+  
+  /**
+   * Point style (markers on data points)
+   */
+  pointStyleAccessor?: PointStyleAccessor;
+  
+  /**
+   * Fit function for missing data
+   */
+  fit?: FitConfig;
+}
+```
+
+### Examples
+
+#### Basic Line Chart
+
+```tsx
+<LineSeries
+  id="line"
+  name="Temperature"
+  data={temperatureData}
+  xAccessor="time"
+  yAccessors={['temp']}
+  xScaleType={ScaleType.Time}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Smooth Curves
+
+```tsx
+import { CurveType } from '@elastic/charts';
+
+<LineSeries
+  id="smooth-line"
+  data={data}
+  xAccessor="x"
+  yAccessors={['y']}
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+  curve={CurveType.CURVE_NATURAL}
+/>
+```
+
+#### Multi-Line Chart
+
+```tsx
+<LineSeries
+  id="multi-line"
+  data={data}
+  xAccessor="date"
+  yAccessors={['value']}
+  splitSeriesAccessors={['region']}
+  xScaleType={ScaleType.Time}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+---
+
+## AreaSeries
+
+Renders area charts (filled line charts).
+
+### Props
+
+```typescript
+interface AreaSeriesProps {
+  id: string;
+  name?: string;
+  data: Datum[];
+  xAccessor: Accessor;
+  yAccessors: Accessor[];
+  y0Accessors?: Accessor[];  // Lower bound for banded areas
+  xScaleType: ScaleType;
+  yScaleType: ScaleType;
+  splitSeriesAccessors?: Accessor[];
+  stackAccessors?: Accessor[];
+  colorAccessors?: Accessor[];
+  groupId?: string;
+  color?: Color | ColorAccessor;
+  curve?: CurveType;
+  areaSeriesStyle?: AreaSeriesStyle;
+  fit?: FitConfig;
+}
+```
+
+### Examples
+
+#### Basic Area Chart
+
+```tsx
+<AreaSeries
+  id="area"
+  name="Usage"
+  data={usageData}
+  xAccessor="hour"
+  yAccessors={['usage']}
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Stacked Areas
+
+```tsx
+<AreaSeries
+  id="stacked-areas"
+  data={data}
+  xAccessor="time"
+  yAccessors={['value']}
+  stackAccessors={['time']}
+  splitSeriesAccessors={['category']}
+  xScaleType={ScaleType.Time}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+#### Banded Area
+
+```tsx
+<AreaSeries
+  id="confidence-band"
+  data={data}
+  xAccessor="x"
+  yAccessors={['upper']}
+  y0Accessors={['lower']}
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+/>
+```
+
+---
+
+## Axis
+
+Configures chart axes (X and Y).
+
+### Props
+
+```typescript
+interface AxisProps {
+  /**
+   * Unique axis identifier (required)
+   */
+  id: string;
+  
+  /**
+   * Axis position
+   */
+  position: Position;
+  
+  /**
+   * Axis title
+   */
+  title?: string;
+  
+  /**
+   * Show grid lines
+   */
+  showGridLines?: boolean;
+  
+  /**
+   * Show overlapping ticks
+   */
+  showOverlappingTicks?: boolean;
+  
+  /**
+   * Show overlapping labels
+   */
+  showOverlappingLabels?: boolean;
+  
+  /**
+   * Tick label formatter
+   */
+  tickFormat?: TickFormatter;
+  
+  /**
+   * Label rotation (degrees)
+   */
+  labelFormat?: LabelFormatter;
+  
+  /**
+   * Custom domain
+   */
+  domain?: DomainRange;
+  
+  /**
+   * Only integer ticks
+   */
+  integersOnly?: boolean;
+  
+  /**
+   * Custom tick values
+   */
+  ticks?: number;
+  
+  /**
+   * Style overrides
+   */
+  style?: AxisStyle;
+  
+  /**
+   * Group ID (for multi-axis charts)
+   */
+  groupId?: string;
+  
+  /**
+   * Hide axis
+   */
+  hide?: boolean;
+}
+```
+
+### Examples
+
+#### Basic Axes
+
+```tsx
+import { Axis, Position } from '@elastic/charts';
+
+<Axis
+  id="bottom"
+  position={Position.Bottom}
+  title="Date"
+  showGridLines={false}
+/>
+<Axis
+  id="left"
+  position={Position.Left}
+  title="Sales ($)"
+  showGridLines={true}
+  tickFormat={(d) => `$${d}`}
+/>
+```
+
+#### Time Axis
+
+```tsx
+import { timeFormatter } from '@elastic/charts';
+
+<Axis
+  id="time-axis"
+  position={Position.Bottom}
+  tickFormat={timeFormatter('MM/DD HH:mm')}
+/>
+```
+
+#### Multiple Y Axes
+
+```tsx
+<Axis
+  id="left"
+  groupId="group1"
+  position={Position.Left}
+  title="Temperature (°C)"
+/>
+<Axis
+  id="right"
+  groupId="group2"
+  position={Position.Right}
+  title="Humidity (%)"
+/>
+
+<LineSeries
+  id="temp"
+  groupId="group1"
+  // ...
+/>
+<LineSeries
+  id="humidity"
+  groupId="group2"
+  // ...
+/>
+```
+
+---
+
+## Partition
+
+Renders partition charts: pie, donut, sunburst, treemap.
+
+### Props
+
+```typescript
+interface PartitionProps {
+  id: string;
+  data: Datum[];
+  
+  /**
+   * Value accessor
+   */
+  valueAccessor: ValueAccessor;
+  
+  /**
+   * Formatting function for values
+   */
+  valueFormatter?: ValueFormatter;
+  
+  /**
+   * Layer configuration
+   */
+  layers: Layer[];
+  
+  /**
+   * Layout type
+   */
+  config?: PartitionConfig;
+}
+
+interface Layer {
+  /**
+   * Grouping function
+   */
+  groupByRollup: GroupByRollup;
+  
+  /**
+   * Node label
+   */
+  nodeLabel?: NodeLabel;
+  
+  /**
+   * Visual configuration
+   */
+  shape?: {
+    fillColor?: Color | ColorAccessor;
+  };
+  
+  /**
+   * Fill label configuration
+   */
+  fillLabel?: FillLabelConfig;
+}
+```
+
+### Examples
+
+#### Pie Chart
+
+```tsx
+import { Partition, PartitionLayout } from '@elastic/charts';
+
+<Partition
+  id="pie"
+  data={[
+    { category: 'A', value: 30 },
+    { category: 'B', value: 45 },
+    { category: 'C', value: 25 },
+  ]}
+  valueAccessor={(d) => d.value}
+  layers={[
+    {
+      groupByRollup: (d) => d.category,
+      nodeLabel: (d) => d,
+    },
+  ]}
+  config={{
+    partitionLayout: PartitionLayout.sunburst,
+    emptySizeRatio: 0,
+  }}
+/>
+```
+
+#### Donut Chart
+
+```tsx
+<Partition
+  id="donut"
+  data={data}
+  valueAccessor={(d) => d.value}
+  layers={[
+    {
+      groupByRollup: (d) => d.category,
+    },
+  ]}
+  config={{
+    partitionLayout: PartitionLayout.sunburst,
+    emptySizeRatio: 0.4,  // Creates donut hole
+  }}
+/>
+```
+
+#### Sunburst (Multi-level)
+
+```tsx
+<Partition
+  id="sunburst"
+  data={hierarchicalData}
+  valueAccessor={(d) => d.value}
+  layers={[
+    {
+      groupByRollup: (d) => d.continent,
+      nodeLabel: (d) => `${d}`,
+    },
+    {
+      groupByRollup: (d) => d.country,
+      nodeLabel: (d) => `${d}`,
+    },
+  ]}
+  config={{
+    partitionLayout: PartitionLayout.sunburst,
+  }}
+/>
+```
+
+#### Treemap
+
+```tsx
+<Partition
+  id="treemap"
+  data={data}
+  valueAccessor={(d) => d.size}
+  layers={[
+    {
+      groupByRollup: (d) => d.category,
+      fillLabel: {
+        valueFormatter: (d) => `${d}MB`,
+      },
+    },
+  ]}
+  config={{
+    partitionLayout: PartitionLayout.treemap,
+  }}
+/>
+```
+
+---
+
+## Annotations
+
+Add contextual markers and regions to charts.
+
+### LineAnnotation
+
+Vertical or horizontal reference lines.
+
+```typescript
+interface LineAnnotationProps {
+  id: string;
+  
+  /**
+   * Domain type
+   */
+  domainType: AnnotationDomainType;
+  
+  /**
+   * Data values to annotate
+   */
+  dataValues: AnnotationValue[];
+  
+  /**
+   * Line style
+   */
+  style?: LineAnnotationStyle;
+  
+  /**
+   * Custom marker
+   */
+  marker?: ReactNode | MarkerComponent;
+  
+  /**
+   * Marker position
+   */
+  markerPosition?: Position;
+  
+  /**
+   * Hide lines (show only markers)
+   */
+  hideLines?: boolean;
+  
+  /**
+   * Hide tooltips
+   */
+  hideTooltips?: boolean;
+}
+```
+
+#### Example
+
+```tsx
+import { LineAnnotation, AnnotationDomainType } from '@elastic/charts';
+
+<LineAnnotation
+  id="threshold"
+  domainType={AnnotationDomainType.YDomain}
+  dataValues={[
+    { dataValue: 50, details: 'Target' },
+  ]}
+  style={{
+    line: {
+      stroke: 'red',
+      strokeWidth: 2,
+      opacity: 0.8,
+      dash: [4, 4],
+    },
+  }}
+  marker={<span>🎯</span>}
+  markerPosition={Position.Right}
+/>
+```
+
+### RectAnnotation
+
+Highlight rectangular regions.
+
+```typescript
+interface RectAnnotationProps {
+  id: string;
+  dataValues: RectAnnotationDatum[];
+  style?: RectAnnotationStyle;
+  hideTooltips?: boolean;
+  renderTooltip?: RenderTooltip;
+}
+
+interface RectAnnotationDatum {
+  coordinates: {
+    x0?: any;
+    x1?: any;
+    y0?: any;
+    y1?: any;
+  };
+  details?: string;
+}
+```
+
+#### Example
+
+```tsx
+import { RectAnnotation } from '@elastic/charts';
+
+<RectAnnotation
+  id="highlighted-period"
+  dataValues={[
+    {
+      coordinates: {
+        x0: new Date('2024-01-01'),
+        x1: new Date('2024-01-15'),
+      },
+      details: 'Holiday Season',
+    },
+  ]}
+  style={{
+    fill: 'rgba(255, 0, 0, 0.1)',
+    stroke: 'red',
+    strokeWidth: 1,
+    opacity: 0.5,
+  }}
+/>
+```
+
+---
+
+## Additional Components
+
+### Heatmap
+
+```tsx
+import { Heatmap } from '@elastic/charts';
+
+<Heatmap
+  id="heatmap"
+  data={heatmapData}
+  xAccessor={(d) => d.x}
+  yAccessor={(d) => d.y}
+  valueAccessor={(d) => d.value}
+  colorScale={{
+    type: 'bands',
+    bands: [
+      { start: 0, end: 25, color: '#d4e6f5' },
+      { start: 25, end: 50, color: '#6eb5e4' },
+      { start: 50, end: 75, color: '#0b7dc1' },
+      { start: 75, end: 100, color: '#004b7a' },
+    ],
+  }}
+/>
+```
+
+### Goal/Gauge
+
+```tsx
+import { Goal } from '@elastic/charts';
+
+<Goal
+  id="gauge"
+  data={[{ value: 75, target: 100 }]}
+  bandFillColor={(x) => (x < 50 ? 'red' : x < 75 ? 'yellow' : 'green')}
+  labelMajor="Completion"
+  labelMinor="75%"
+  centralMajor="75%"
+/>
+```
+
+### Wordcloud
+
+```tsx
+import { Wordcloud } from '@elastic/charts';
+
+<Wordcloud
+  id="wordcloud"
+  data={[
+    { text: 'JavaScript', weight: 100 },
+    { text: 'TypeScript', weight: 80 },
+    { text: 'React', weight: 90 },
+  ]}
+  weightAccessor={(d) => d.weight}
+  textAccessor={(d) => d.text}
+/>
+```
+
+---
+
+## Next Steps
+
+- [Chart Types Guide](./chart-types) - Detailed guides for each chart type
+- [Theming](./theming) - Advanced theming and customization
+- [Examples](../examples/intro) - Interactive component examples
+- [API Documentation](../api) - Full TypeScript API reference
