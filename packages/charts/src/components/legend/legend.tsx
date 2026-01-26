@@ -167,8 +167,8 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
           <LegendTable items={items} {...itemProps} seriesWidth={size.seriesWidth} />
         </div>
       ) : (
-        <div style={containerStyle} className="echLegendListLegacyContainer">
-          <ul style={listStyle} className="echLegendListLegacy">
+        <div style={containerStyle} className="echLegendGridListContainer">
+          <ul style={listStyle} className="echLegendGridList">
             {items.map((item, index) => (
               <LegendListItem key={`${index}`} item={item} {...itemProps} />
             ))}
