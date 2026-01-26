@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Position } from '../utils/common';
+import { LegendLayout, Position } from '../utils/common';
 
 /**
  * Default legend config
@@ -18,5 +18,6 @@ export const DEFAULT_LEGEND_CONFIG = {
   legendValues: [],
   legendMaxDepth: Infinity,
   legendPosition: Position.Right,
+  legendLayout: LegendLayout.List,
   flatLegend: false,
 };

@@ -12,9 +12,18 @@ import type { CategoryKey, CategoryLabel } from './category';
 import type { Color } from './colors';
 import type { SeriesKey, SeriesIdentifier } from './series_id';
 import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import type { SeriesType } from '../specs';
+import type { LegendPositionConfig, SeriesType } from '../specs';
 import type { LegendPath } from '../state/actions/legend';
+import type { Layout, Position } from '../utils/common';
+import { Position as PositionObj } from '../utils/common';
 import type { PointStyle } from '../utils/themes/theme';
+
+/**
+ * @internal
+ */
+export function isPosition(value: Position | LegendPositionConfig): value is Position {
+  return Object.values(PositionObj).includes(value as Position);
+}
 
 /** @internal */
 export type LegendItemChildId = CategoryKey;
@@ -92,8 +101,35 @@ export type LegendItem = {
 export type LegendItemExtraValues = Map<LegendItemChildId, LegendItemValue>;
 
 /** @internal */
-export const shouldDisplayTable = (legendValues: LegendValue[]) =>
-  legendValues.some((v) => v !== LegendValue.CurrentAndLastValue && v !== LegendValue.Value);
+export const shouldDisplayTable = (legendValues: LegendValue[], legendLayout?: Layout) => {
+  if (legendLayout === undefined) {
+    return legendValues.some((v) => v !== LegendValue.CurrentAndLastValue && v !== LegendValue.Value);
+  }
+  return legendLayout === 'table';
+};
+
+/** @internal */
+export const shouldDisplayGridList = (
+  isTableView: boolean,
+  legendPosition: Position | LegendPositionConfig,
+  legendLayout?: Layout,
+) => {
+  console.log('isTableView:', isTableView);
+  console.log('legendPosition:', legendPosition);
+  if (isTableView) {
+    return false;
+  }
+  // For backward compatibility, if legendLayout is undefined, show the gridList
+  if (legendLayout === undefined) {
+    return true;
+  }
+  if (isPosition(legendPosition)) {
+    return legendPosition === PositionObj.Left || legendPosition === PositionObj.Right;
+  }
+
+  return false;
+};
+
 /**
  * todo: i18n
  * @internal

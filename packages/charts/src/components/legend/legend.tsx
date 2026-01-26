@@ -13,12 +13,14 @@ import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
 import { CustomLegend } from './custom_legend';
-import { LegendListItem } from './legend_item';
+import { LegendGridListItem } from './legend_item_grid_list';
+import { LegendListItem } from './legend_item_list';
 import { LegendTable } from './legend_table';
 import { getLegendPositionConfig, legendPositionStyle } from './position_style';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
 import type { LegendItemProps } from './types';
 import type { LegendItem, LegendItemExtraValues } from '../../common/legend';
+import { shouldDisplayGridList } from '../../common/legend';
 import { shouldDisplayTable } from '../../common/legend';
 import type { SeriesIdentifier } from '../../common/series_id';
 import type { LegendSpec } from '../../specs';
@@ -78,7 +80,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     config,
   } = props;
 
-  const { onLegendItemOut, onLegendItemOver } = config;
+  const { onLegendItemOut, onLegendItemOver, legendLayout, legendPosition } = config;
   const { onItemOutAction, onItemOverAction } = props;
 
   const onLegendItemMouseOver = useCallback(
@@ -142,7 +144,8 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   };
 
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
-  const isTableView = shouldDisplayTable(itemProps.legendValues);
+  const isTableView = shouldDisplayTable(itemProps.legendValues, legendLayout);
+  const isGridListView = shouldDisplayGridList(isTableView, getLegendPositionConfig(legendPosition), legendLayout);
 
   return (
     <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
@@ -166,9 +169,17 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
         <div style={containerStyle} className="echLegendTable__container">
           <LegendTable items={items} {...itemProps} seriesWidth={size.seriesWidth} />
         </div>
-      ) : (
+      ) : isGridListView ? (
         <div style={containerStyle} className="echLegendGridListContainer">
           <ul style={listStyle} className="echLegendGridList">
+            {items.map((item, index) => (
+              <LegendGridListItem key={`${index}`} item={item} {...itemProps} />
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div style={containerStyle} className="echLegendListContainer">
+          <ul style={listStyle} className="echLegendList">
             {items.map((item, index) => (
               <LegendListItem key={`${index}`} item={item} {...itemProps} />
             ))}
