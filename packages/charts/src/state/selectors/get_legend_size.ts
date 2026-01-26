@@ -94,12 +94,40 @@ export const getLegendSizeSelector = createCustomCachedSelector(
         position: legendPosition,
       };
     }
-    const isSingleLine = (parentDimensions.width - 20) / 200 > items.length;
+    const availableWidth = parentDimensions.width - 20;
+    // Calculate rows by tracking cumulative width
+    let numRows = 1;
+    let currentRowWidth = 0;
+
+    for (const item of items) {
+      // Calculate width for this specific item
+      const { width: labelWidth } = withTextMeasure((textMeasure) =>
+        textMeasure(
+          `${item.label}${legendValues.length > 0 ? item.values[0]?.label ?? '' : ''}`,
+          { fontFamily: DEFAULT_FONT_FAMILY, fontVariant: 'normal', fontWeight: 400, fontStyle: 'normal' },
+          12,
+          1.5,
+        ),
+      );
+      const thisItemWidth = MARKER_WIDTH + SHARED_MARGIN + labelWidth + spacingBuffer + actionDimension;
+
+      if (currentRowWidth + thisItemWidth > availableWidth && currentRowWidth > 0) {
+        numRows++;
+        currentRowWidth = thisItemWidth;
+      } else {
+        currentRowWidth += thisItemWidth;
+      }
+    }
+
+    const isSingleLine = numRows === 1;
+    const isMoreThanTwoLines = numRows > 2;
     const height = Number.isFinite(legendSize)
       ? Math.min(legendSize, parentDimensions.height * 0.7)
       : isSingleLine
         ? bbox.height + 16
-        : bbox.height * 2 + 24;
+        : isMoreThanTwoLines
+          ? bbox.height * 2.5 + 24
+          : bbox.height * 2 + 24;
 
     return {
       height,

@@ -45,6 +45,16 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'multi-select',
     'Legend',
   );
+  const dataCount = number(
+    'Number of items',
+    TestDatasets.BARCHART_2Y2G.length,
+    {
+      min: 1,
+      max: TestDatasets.BARCHART_2Y2G.length,
+      step: 1,
+    },
+    'Data',
+  );
   const isLineLimit = legendLayout !== 'list' || legendPosition === 'right' || legendPosition === 'left';
   const labelOptions = getLabelOptionKnobs(isLineLimit);
 
@@ -70,7 +80,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         xAccessor="x"
         yAccessors={['y1', 'y2']}
         splitSeriesAccessors={['g1', 'g2']}
-        data={TestDatasets.BARCHART_2Y2G}
+        data={TestDatasets.BARCHART_2Y2G.slice(0, dataCount)}
       />
     </Chart>
   );
