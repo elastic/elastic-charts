@@ -19,28 +19,8 @@ jobs:
       )
     runs-on: ubuntu-latest
     steps:
-      - name: Dump github.event
-        run: echo '${{ toJSON(github.event) }}' | jq
-
-      - name: Debug environment before Buildkite trigger
-        run: |
-          echo "Current working directory: $(pwd)"
-          echo ""
-          echo "Key variables:"
-          echo "  GITHUB_SHA     = ${GITHUB_SHA:-not-set}"
-          echo "  COMMIT_SHA     = ${COMMIT_SHA:-not-set}"
-          echo "  BRANCH         = ${BRANCH:-not-set}"
-          echo "  PR_NUMBER      = ${PR_NUMBER:-not-set}"
-          echo "  TRIGGERED_BY   = ${TRIGGERED_BY:-not-set}"
-          echo "  UPDATE_MODE    = ${UPDATE_MODE:-not-set}"
-          echo ""
-          echo "Full env dump (sorted):"
-          echo "────────────────────────────────────────"
-          env | sort
-          echo "────────────────────────────────────────"
-
       - name: Check elastic org membership
-        id: check-membership
+        id: check-elastic-member
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ADMIN_TOKEN_GH }}
@@ -66,20 +46,44 @@ jobs:
             }
 
       - name: Add 👍 reaction to comment
-        if: steps.check-membership.outputs.is_member == 'true'
+        if: steps.check-elastic-member.outputs.is_member == 'true'
         uses: peter-evans/create-or-update-comment@v4
         with:
           comment-id: ${{ github.event.comment.id }}
           reaction-type: +1
 
+      - name: Fetch PR head commit and branch
+        id: get-pr-info
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ADMIN_TOKEN_GH }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const prNumber = ${{ github.event.issue.number }};
+
+            try {
+              const { data: pr } = await github.rest.pulls.get({
+                owner,
+                repo,
+                pull_number: prNumber
+              });
+
+              core.setOutput('commit_sha', pr.head.sha);
+              core.setOutput('branch', pr.head.ref);
+              core.info(`PR #${prNumber}: ${pr.head.sha} on branch ${pr.head.ref}`);
+            } catch (error) {
+              core.setFailed(`Failed to fetch PR info: ${error.message}`);
+            }
+
       - name: Trigger Buildkite pipeline
-        if: steps.check-membership.outputs.is_member == 'true'
+        if: steps.check-elastic-member.outputs.is_member == 'true'
         env:
           BUILDKITE_API_TOKEN: ${{ secrets.BUILDKITE_API_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
-          COMMIT_SHA: ${{ github.event.issue.pull_request.head.sha }}
-          BRANCH: ${{ github.event.issue.pull_request.head.ref }}
           TRIGGERED_BY: ${{ github.event.comment.user.login }}
+          COMMIT_SHA: ${{ steps.get-pr-info.outputs.commit_sha }}
+          BRANCH: ${{ steps.get-pr-info.outputs.branch }}
         run: |
           curl -s -X POST "https://api.buildkite.com/v2/organizations/elastic/pipelines/kibana-elastic-charts-build/builds" \
             -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
@@ -103,14 +107,14 @@ jobs:
             }' | jq .
 
       - name: Add 😕 reaction to comment
-        if: steps.check-membership.outputs.is_member == 'false'
+        if: steps.check-elastic-member.outputs.is_member == 'false'
         uses: peter-evans/create-or-update-comment@v4
         with:
           comment-id: ${{ github.event.comment.id }}
           reaction-type: confused
 
       - name: Fail if not Elastic org member
-        if: steps.check-membership.outputs.is_member == 'false'
+        if: steps.check-elastic-member.outputs.is_member == 'false'
         run: |
           echo "User ${{ github.event.comment.user.login }} is not a member of elastic organization"
           echo "Aborting Buildkite trigger"
