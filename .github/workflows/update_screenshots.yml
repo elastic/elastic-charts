@@ -19,6 +19,9 @@ jobs:
       )
     runs-on: ubuntu-latest
     steps:
+      - name: Dump github.event
+        run: echo '${{ toJSON(github.event) }}' | jq
+
       - name: Debug environment before Buildkite trigger
         run: |
           echo "Current working directory: $(pwd)"
