@@ -29,6 +29,7 @@ jobs:
         id: check-membership
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.ADMIN_TOKEN_GH }}
           script: |
             const org = 'elastic';
             const username = '${{ github.event.comment.user.login }}';
