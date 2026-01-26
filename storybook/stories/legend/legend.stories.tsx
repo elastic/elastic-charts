@@ -11,6 +11,7 @@ export default {
 };
 
 export { Example as positioning } from './1_legend_positioning.story';
+export { Example as layout } from './2_legend_layout.story';
 export { Example as insideChart } from './13_inside_chart.story';
 export { Example as changingSpecs } from './5_changing_specs.story';
 export { Example as hideLegendItemsBySeries } from './6_hide_legend.story';

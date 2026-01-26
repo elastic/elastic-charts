@@ -13,6 +13,8 @@ import React, { useCallback } from 'react';
 import { isRTLString } from '../../utils/common';
 import type { LegendLabelOptions } from '../../utils/themes/theme';
 
+type TruncationMode = 'line' | 'px';
+
 interface LabelProps {
   label: string;
   isSeriesHidden?: boolean;
@@ -21,6 +23,7 @@ interface LabelProps {
   options: LegendLabelOptions;
   hiddenSeriesCount: number;
   totalSeriesCount: number;
+  truncationMode?: TruncationMode;
 }
 
 const isAppleDevice = typeof window !== 'undefined' && /Mac|iPhone|iPad/.test(window.navigator.userAgent);
@@ -74,8 +77,9 @@ export function Label({
   options,
   hiddenSeriesCount,
   totalSeriesCount,
+  truncationMode,
 }: LabelProps) {
-  const { className, dir, clampStyles } = getSharedProps(label, options, !!onToggle);
+  const { className, dir, clampStyles } = getSharedProps(label, options, !!onToggle, truncationMode);
 
   const onClick: MouseEventHandler = useCallback(
     ({ metaKey, ctrlKey }) => onToggle?.(isAppleDevice ? metaKey : ctrlKey),
@@ -88,7 +92,7 @@ export function Label({
     [onToggle],
   );
 
-  const title = options.maxLines > 0 ? label : ''; // full text already visible
+  const title = options.maxLines ?? 1 > 0 ? label : ''; // full text already visible
 
   return isToggleable ? (
     // This div is required to allow multiline text truncation, all ARIA requirements are still met
@@ -125,16 +129,32 @@ export function NonInteractiveLabel({ label, options }: { label: string; options
   );
 }
 
-function getSharedProps(label: string, options: LegendLabelOptions, isToggleable?: boolean) {
-  const maxLines = Math.abs(options.maxLines);
+function getSharedProps(
+  label: string,
+  options: LegendLabelOptions,
+  isToggleable?: boolean,
+  truncationMode: TruncationMode = 'line',
+) {
+  const maxLines = Math.abs(options.maxLines ?? 1);
+  const widthLimit = Math.abs(options.widthLimit ?? 250);
   const className = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(isToggleable),
     'echLegendItem__label--singleline': maxLines === 1,
-    'echLegendItem__label--multiline': maxLines > 1,
+    'echLegendItem__label--multiline': maxLines > 1 && truncationMode === 'line',
   });
 
   const dir = isRTLString(label) ? 'rtl' : 'ltr'; // forced for individual labels in case mixed charset
-  const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
+  const clampStyles: React.CSSProperties = {};
+
+  if (maxLines > 1) {
+    clampStyles.WebkitLineClamp = maxLines;
+  }
+
+  if (widthLimit > 0) {
+    clampStyles.maxWidth = `${widthLimit}px`;
+    clampStyles.overflow = 'hidden';
+    clampStyles.textOverflow = 'ellipsis';
+  }
 
   return { className, dir, clampStyles };
 }
