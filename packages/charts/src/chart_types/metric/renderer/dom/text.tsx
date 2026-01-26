@@ -24,7 +24,6 @@ const GRID_SPAN_THREE = '1 / span 3';
 
 const gridRows = {
   top: { value: '1', titles: '2', body: '3', extra: '4' },
-  middle: { value: '3', titles: '1', body: '2', extra: '4' },
   bottom: { value: '4', titles: '1', body: '2', extra: '3' },
 };
 
@@ -40,14 +39,8 @@ const gridColumnsValuePositionBottom = {
   right: { value: GRID_SPAN_THREE, titles: '1 / span 2', body: GRID_SPAN_THREE, extra: GRID_SPAN_THREE },
 };
 
-const gridColumnsValuePositionMiddle = {
-  left: { value: GRID_SPAN_THREE, titles: '2 / span 2', body: GRID_SPAN_THREE, extra: GRID_SPAN_THREE },
-  right: { value: GRID_SPAN_THREE, titles: '1 / span 2', body: GRID_SPAN_THREE, extra: GRID_SPAN_THREE },
-};
-
 const gridColumns = {
   top: gridColumnsValuePostitionTop,
-  middle: gridColumnsValuePositionMiddle,
   bottom: gridColumnsValuePositionBottom,
 };
 
@@ -59,7 +52,6 @@ const getGridTemplateColumnsWithIcon = (iconSize: number) => {
 
 const gridTemplateRows = {
   bottom: `min-content auto min-content min-content`,
-  middle: `min-content 1fr min-content min-content 1fr`,
   top: `min-content min-content auto min-content`,
 };
 

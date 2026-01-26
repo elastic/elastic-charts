@@ -63,7 +63,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'default',
   );
   const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
-  const valuePosition = select('value position', { Bottom: 'bottom', Middle: 'middle', Top: 'top' }, 'bottom');
 
   const data: (MetricDatum | undefined)[] = useMemo(
     () => [
@@ -228,7 +227,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
             metric: {
               emptyBackground,
               valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
-              valuePosition,
             },
           }}
           baseTheme={useBaseTheme()}

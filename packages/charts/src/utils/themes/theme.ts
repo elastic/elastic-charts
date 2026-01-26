@@ -326,7 +326,7 @@ export interface MetricStyle {
   titlesTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
   extraTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
   valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
-  valuePosition: 'top' | 'middle' | 'bottom';
+  valuePosition: 'top' | 'bottom';
   iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
 
   titleWeight: MetricFontWeight;
