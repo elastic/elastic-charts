@@ -40,11 +40,10 @@
     }
   }
 
-  .echMetricText__extraBlock {
+  &__extraBlock {
     display: flex;
     align-items: center;
     overflow: hidden;
-    padding-top: 5px;
 
     &--left {
       justify-content: flex-start;

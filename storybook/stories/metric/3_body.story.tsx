@@ -53,6 +53,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const valueIconType = customKnobs.eui.getIconTypeKnob('EUI value icon glyph name', 'sortUp');
   const showBody = boolean('show body contents', true);
   const showBodyArea = boolean('show full body area', false);
+  const valuePosition = select('value position', { Bottom: 'bottom', Middle: 'middle', Top: 'top' }, 'bottom');
   const getIcon =
     (type: string) =>
     ({ width, height, color }: { width: number; height: number; color: string }) => (
@@ -112,6 +113,11 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   return (
     <Chart title={storyTitle} description={description}>
       <Settings
+        theme={{
+          metric: {
+            valuePosition,
+          },
+        }}
         baseTheme={useBaseTheme()}
         onElementClick={([d]) => {
           if (isMetricElementEvent(d)) {
