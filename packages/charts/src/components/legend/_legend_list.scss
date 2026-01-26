@@ -1,0 +1,65 @@
+.echLegend {
+  z-index: 1;
+
+  .echLegendList {
+    display: flex;
+    flex-direction: column;
+    padding-inline-start: 0;
+    padding-inline-end: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+  }
+  &--horizontal {
+    .echLegendList {
+      flex-direction: row;
+      flex-wrap: wrap;
+      column-gap: $echLegendColumnGap;
+      row-gap: $echLegendRowGap;
+      margin-top: $echLegendRowGap;
+      margin-bottom: $echLegendRowGap;
+    }
+
+    .echLegendItem {
+      width: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .echLegendListContainer {
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+  }
+
+  &--top,
+  &--left {
+    order: 0;
+  }
+
+  &--bottom,
+  &--right {
+    order: 1;
+  }
+
+  &--debug {
+    background: rgba(238, 130, 238, 0.2);
+    position: relative;
+  }
+
+  &--inert {
+    pointer-events: none;
+  }
+
+  .echLegendListContainer {
+    @include euiYScrollWithShadows;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    :focus {
+      @include euiFocusRing(null, 1);
+      background-color: $euiFocusBackgroundColor;
+      border-radius: $euiBorderRadius / 2;
+    }
+  }
+}

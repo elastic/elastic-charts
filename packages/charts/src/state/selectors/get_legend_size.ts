@@ -12,7 +12,7 @@ import { getLegendItemsSelector } from './get_legend_items';
 import { getLegendTableSize } from './get_legend_table_size';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { shouldDisplayTable } from '../../common/legend';
-import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
+import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item_list_legacy';
 import { LEGEND_TO_FULL_CONFIG } from '../../components/legend/position_style';
 import type { LegendPositionConfig } from '../../specs';
 import { withTextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';

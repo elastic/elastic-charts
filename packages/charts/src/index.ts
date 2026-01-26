@@ -106,6 +106,7 @@ export {
 // utilities
 export {
   Datum,
+  LegendLayout,
   Position,
   Rendering,
   Rotation,

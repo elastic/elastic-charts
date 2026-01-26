@@ -420,6 +420,11 @@ export interface LegendStyle {
    */
   horizontalHeight: number;
   /**
+   * Max height used for top/bottom legend
+   * @deprecated use `horizontalHeight`
+   */
+  maxLegendHeight?: number;
+  /**
    * Added buffer between label and value.
    *
    * Smaller values render a more compact legend

@@ -13,6 +13,7 @@ import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
 import { CustomLegend } from './custom_legend';
+import { LegendListItem } from './legend_item_list';
 import { LegendListItemLegacy } from './legend_item_list_legacy';
 import { LegendTable } from './legend_table';
 import { getLegendPositionConfig, legendPositionStyle } from './position_style';
@@ -78,7 +79,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     config,
   } = props;
 
-  const { onLegendItemOut, onLegendItemOver } = config;
+  const { onLegendItemOut, onLegendItemOver, legendLayout } = config;
   const { onItemOutAction, onItemOverAction } = props;
 
   const onLegendItemMouseOver = useCallback(
@@ -142,7 +143,8 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   };
 
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
-  const isTableView = shouldDisplayTable(itemProps.legendValues);
+  const isTableView = shouldDisplayTable(itemProps.legendValues, legendLayout);
+  const isLegacyListView = legendLayout === undefined && !isTableView;
 
   return (
     <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
@@ -166,11 +168,19 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
         <div style={containerStyle} className="echLegendTable__container">
           <LegendTable items={items} {...itemProps} seriesWidth={size.seriesWidth} />
         </div>
-      ) : (
+      ) : isLegacyListView ? (
         <div style={containerStyle} className="echLegendListLegacyContainer">
           <ul style={listStyle} className="echLegendListLegacy">
             {items.map((item, index) => (
               <LegendListItemLegacy key={`${index}`} item={item} {...itemProps} />
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div style={containerStyle} className="echLegendListContainer">
+          <ul style={listStyle} className="echLegendList">
+            {items.map((item, index) => (
+              <LegendListItem key={`${index}`} item={item} {...itemProps} />
             ))}
           </ul>
         </div>

@@ -15,6 +15,7 @@ import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils
 import type { SeriesType } from '../specs';
 import type { LegendPath } from '../state/actions/legend';
 import type { PointStyle } from '../utils/themes/theme';
+import type { LegendLayout } from '/@elastic/charts/src/utils/common';
 
 /** @internal */
 export type LegendItemChildId = CategoryKey;
@@ -92,8 +93,13 @@ export type LegendItem = {
 export type LegendItemExtraValues = Map<LegendItemChildId, LegendItemValue>;
 
 /** @internal */
-export const shouldDisplayTable = (legendValues: LegendValue[]) =>
-  legendValues.some((v) => v !== LegendValue.CurrentAndLastValue && v !== LegendValue.Value);
+export const shouldDisplayTable = (legendValues: LegendValue[], legendLayout?: LegendLayout) => {
+  if (legendLayout === undefined) {
+    return legendValues.some((v) => v !== LegendValue.CurrentAndLastValue && v !== LegendValue.Value);
+  }
+  return legendLayout === 'table';
+};
+
 /**
  * todo: i18n
  * @internal

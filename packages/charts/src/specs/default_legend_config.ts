@@ -8,15 +8,18 @@
 
 import { Position } from '../utils/common';
 
+import type { LegendSpec } from '/@elastic/charts/src/specs/settings';
+
 /**
  * Default legend config
  * @internal
  */
-export const DEFAULT_LEGEND_CONFIG = {
+export const DEFAULT_LEGEND_CONFIG: LegendSpec & { flatLegend: boolean } = {
   showLegend: false,
   legendSize: NaN,
   legendValues: [],
   legendMaxDepth: Infinity,
   legendPosition: Position.Right,
+  legendLayout: 'table',
   flatLegend: false,
 };

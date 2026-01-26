@@ -115,6 +115,10 @@ html {
       animation-duration: 0s !important; // remove focus animation but keep border
     }
 
+    .echLegend .echLegendListLegacyContainer :focus {
+      animation-duration: 0s !important; // remove focus animation but keep border
+    }
+
     .euiSaturation:focus .euiSaturation__indicator {
       animation: none !important; // fix color picker dot
     }
