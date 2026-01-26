@@ -13,11 +13,11 @@ import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
 import { CustomLegend } from './custom_legend';
-import type { LegendItemProps } from './legend_item';
 import { LegendListItem } from './legend_item';
 import { LegendTable } from './legend_table';
 import { getLegendPositionConfig, legendPositionStyle } from './position_style';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
+import type { LegendItemProps } from './types';
 import type { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { shouldDisplayTable } from '../../common/legend';
 import type { SeriesIdentifier } from '../../common/series_id';

@@ -10,37 +10,13 @@ import classNames from 'classnames';
 import type { CSSProperties } from 'react';
 import React, { useCallback } from 'react';
 
+import { LEGEND_HIERARCHY_MARGIN } from './constants';
 import { Label as ItemLabel } from './label';
 import { useLegendColorPicker } from './legend_color_picker';
-import type { SharedLegendItemProps } from './types';
-import { getExtra } from './utils';
-import type { LegendItem, LegendItemExtraValues } from '../../common/legend';
-import { LegendValue } from '../../common/legend';
+import { prepareLegendValues } from './legend_item_utils';
+import type { LegendItemProps } from './types';
 import type { SeriesIdentifier } from '../../common/series_id';
 import { LayoutDirection, isDefined } from '../../utils/common';
-
-/** @internal */
-export const LEGEND_HIERARCHY_MARGIN = 10;
-
-/** @internal */
-export interface LegendItemProps extends SharedLegendItemProps {
-  item: LegendItem;
-}
-
-/** @internal */
-export const prepareLegendValues = (
-  item: LegendItem,
-  legendValues: LegendValue[],
-  totalItems: number,
-  extraValues: Map<string, LegendItemExtraValues>,
-) => {
-  return legendValues.map((legendValue) => {
-    if (legendValue === LegendValue.Value || legendValue === LegendValue.CurrentAndLastValue) {
-      return getExtra(extraValues, item, totalItems);
-    }
-    return item.values.find(({ type }) => type === legendValue);
-  });
-};
 
 /** @internal */
 export const LegendListItem: React.FC<LegendItemProps> = (props) => {
