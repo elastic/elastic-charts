@@ -71,7 +71,9 @@ jobs:
 
               core.setOutput('commit_sha', pr.head.sha);
               core.setOutput('branch', pr.head.ref);
+              core.setOutput('prefixed_branch', pr.head.label);
               core.setOutput('base_branch', pr.base.ref);
+              core.setOutput('can_modify', pr.maintainer_can_modify);
               core.info(`PR #${prNumber}: ${pr.head.sha} on branch ${pr.head.ref}`);
             } catch (error) {
               core.setFailed(`Failed to fetch PR info: ${error.message}`);
@@ -86,23 +88,26 @@ jobs:
           COMMIT_SHA: ${{ steps.get-pr-info.outputs.commit_sha }}
           BRANCH: ${{ steps.get-pr-info.outputs.branch }}
           BASE_BRANCH: ${{ steps.get-pr-info.outputs.base_branch }}
+          PREFIXED_BRANCH: ${{ steps.get-pr-info.outputs.prefixed_branch }}
+          CAN_MODIFY: ${{ steps.get-pr-info.outputs.can_modify }}
         run: |
           curl -s -X POST "https://api.buildkite.com/v2/organizations/elastic/pipelines/kibana-elastic-charts-build/builds" \
             -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
+              "message": "Updating screenshots - triggered by @'"${TRIGGERED_BY}"'",
               "commit": "'"$COMMIT_SHA"'",
-              "branch": "'"$BRANCH"'",
+              "branch": "'"$PREFIXED_BRANCH"'",
               "pull_request_id": "'"$PR_NUMBER"'",
               "pull_request_base_branch": "'"$BASE_BRANCH"'",
-              "message": "Update screenshots from PR #'${PR_NUMBER}' (triggered by @'"${TRIGGERED_BY}"')",
               "ignore_pipeline_branch_filters": true,
               "author": {
                 "name": "'"$TRIGGERED_BY"'",
                 "email": "'"$TRIGGERED_BY"'@users.noreply.github.com"
               },
               "env": {
-                "ECH_STEP_PLAYWRIGHT_UPDATE_SCREENSHOTS": "true"
+                "ECH_STEP_PLAYWRIGHT_UPDATE_SCREENSHOTS": "true",
+                "GITHUB_PR_MAINTAINER_CAN_MODIFY": "'"$CAN_MODIFY"'"
               },
               "meta_data": {
                 "github_pr_number": "'"$PR_NUMBER"'",
