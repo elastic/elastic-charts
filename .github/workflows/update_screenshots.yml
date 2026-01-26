@@ -1,0 +1,104 @@
+name: Trigger Buildkite update screenshots build
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: read
+
+jobs:
+  check-and-trigger:
+    if: |
+      github.event.issue.pull_request &&
+      (
+        contains(github.event.comment.body, 'buildkite update screenshots') ||
+        contains(github.event.comment.body, 'buildkite update vrt')
+      )
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug - Log context
+        run: |
+          echo "Commenter: ${{ github.event.comment.user.login }}"
+          echo "PR number: ${{ github.event.issue.number }}"
+          echo "Org: ${{ github.event.organization.login }}"
+
+      - name: Check if user is member of elastic organization
+        id: check-membership
+        uses: actions/github-script@v7
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            const org = 'elastic';
+            const username = '${{ github.event.comment.user.login }}';
+
+            try {
+              const result = await github.rest.orgs.checkMembershipForAuthenticatedUser({
+                org: org,
+                username: username
+              });
+
+              // 204 = is member, 404 = not member
+              core.info(`User ${username} is member: ${result.status === 204}`);
+              core.setOutput('is_member', result.status === 204 ? 'true' : 'false');
+            } catch (error) {
+              if (error.status === 404) {
+                core.info(`User ${username} is NOT a member of ${org}`);
+                core.setOutput('is_member', 'false');
+              } else {
+                core.setFailed(`Failed to check membership: ${error.message}`);
+              }
+            }
+
+      - name: Add 👍 reaction to comment
+        if: steps.check-membership.outputs.is_member == 'true'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          reaction-type: +1
+
+      - name: Trigger Buildkite pipeline
+        if: steps.check-membership.outputs.is_member == 'true'
+        env:
+          BUILDKITE_API_TOKEN: ${{ secrets.BUILDKITE_API_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          COMMIT_SHA: ${{ github.event.issue.pull_request.head.sha }}
+          BRANCH: ${{ github.event.issue.pull_request.head.ref }}
+          TRIGGERED_BY: ${{ github.event.comment.user.login }}
+        run: |
+          curl -s -X POST "https://api.buildkite.com/v2/organizations/elastic/pipelines/kibana-elastic-charts-build/builds" \
+            -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "commit": "'"$COMMIT_SHA"'",
+              "branch": "'"$BRANCH"'",
+              "message": "Update screenshots from PR #'${PR_NUMBER}' (triggered by @'"${TRIGGERED_BY}"')",
+              "author": {
+                "name": "'"$TRIGGERED_BY"'",
+                "email": "'"$TRIGGERED_BY"'@users.noreply.github.com"
+              },
+              "env": {
+                "ECH_STEP_PLAYWRIGHT_UPDATE_SCREENSHOTS": "true"
+              },
+              "meta_data": {
+                "github_pr_number": "'"$PR_NUMBER"'",
+                "triggered_via": "github-comment",
+                "triggered_by": "'"$TRIGGERED_BY"'"
+              }
+            }' | jq .
+
+      - name: Add 😕 reaction to comment
+        if: steps.check-membership.outputs.is_member == 'false'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          reaction-type: confused
+
+      - name: Fail if not Elastic org member
+        if: steps.check-membership.outputs.is_member == 'false'
+        run: |
+          echo "User ${{ github.event.comment.user.login }} is not a member of elastic organization"
+          echo "Aborting Buildkite trigger"
