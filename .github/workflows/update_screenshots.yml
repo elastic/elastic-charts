@@ -19,11 +19,22 @@ jobs:
       )
     runs-on: ubuntu-latest
     steps:
-      - name: Debug - Log context
+      - name: Debug environment before Buildkite trigger
         run: |
-          echo "Commenter: ${{ github.event.comment.user.login }}"
-          echo "PR number: ${{ github.event.issue.number }}"
-          echo "Org: ${{ github.event.organization.login }}"
+          echo "Current working directory: $(pwd)"
+          echo ""
+          echo "Key variables:"
+          echo "  GITHUB_SHA     = ${GITHUB_SHA:-not-set}"
+          echo "  COMMIT_SHA     = ${COMMIT_SHA:-not-set}"
+          echo "  BRANCH         = ${BRANCH:-not-set}"
+          echo "  PR_NUMBER      = ${PR_NUMBER:-not-set}"
+          echo "  TRIGGERED_BY   = ${TRIGGERED_BY:-not-set}"
+          echo "  UPDATE_MODE    = ${UPDATE_MODE:-not-set}"
+          echo ""
+          echo "Full env dump (sorted):"
+          echo "────────────────────────────────────────"
+          env | sort
+          echo "────────────────────────────────────────"
 
       - name: Check elastic org membership
         id: check-membership
