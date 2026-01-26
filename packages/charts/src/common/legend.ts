@@ -114,8 +114,6 @@ export const shouldDisplayGridList = (
   legendPosition: Position | LegendPositionConfig,
   legendLayout?: Layout,
 ) => {
-  console.log('isTableView:', isTableView);
-  console.log('legendPosition:', legendPosition);
   if (isTableView) {
     return false;
   }
