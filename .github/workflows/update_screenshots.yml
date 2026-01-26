@@ -47,10 +47,10 @@ jobs:
 
       - name: Add 👍 reaction to comment
         if: steps.check-elastic-member.outputs.is_member == 'true'
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@v5
         with:
           comment-id: ${{ github.event.comment.id }}
-          reaction-type: +1
+          reactions: '+1'
 
       - name: Fetch PR head commit and branch
         id: get-pr-info
@@ -71,6 +71,7 @@ jobs:
 
               core.setOutput('commit_sha', pr.head.sha);
               core.setOutput('branch', pr.head.ref);
+              core.setOutput('base_branch', pr.base.ref);
               core.info(`PR #${prNumber}: ${pr.head.sha} on branch ${pr.head.ref}`);
             } catch (error) {
               core.setFailed(`Failed to fetch PR info: ${error.message}`);
@@ -84,6 +85,7 @@ jobs:
           TRIGGERED_BY: ${{ github.event.comment.user.login }}
           COMMIT_SHA: ${{ steps.get-pr-info.outputs.commit_sha }}
           BRANCH: ${{ steps.get-pr-info.outputs.branch }}
+          BASE_BRANCH: ${{ steps.get-pr-info.outputs.base_branch }}
         run: |
           curl -s -X POST "https://api.buildkite.com/v2/organizations/elastic/pipelines/kibana-elastic-charts-build/builds" \
             -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
@@ -91,7 +93,10 @@ jobs:
             -d '{
               "commit": "'"$COMMIT_SHA"'",
               "branch": "'"$BRANCH"'",
+              "pull_request_id": "'"$PR_NUMBER"'",
+              "pull_request_base_branch": "'"$BASE_BRANCH"'",
               "message": "Update screenshots from PR #'${PR_NUMBER}' (triggered by @'"${TRIGGERED_BY}"')",
+              "ignore_pipeline_branch_filters": true,
               "author": {
                 "name": "'"$TRIGGERED_BY"'",
                 "email": "'"$TRIGGERED_BY"'@users.noreply.github.com"
@@ -108,10 +113,10 @@ jobs:
 
       - name: Add 😕 reaction to comment
         if: steps.check-elastic-member.outputs.is_member == 'false'
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@v5
         with:
           comment-id: ${{ github.event.comment.id }}
-          reaction-type: confused
+          reactions: 'confused'
 
       - name: Fail if not Elastic org member
         if: steps.check-elastic-member.outputs.is_member == 'false'
