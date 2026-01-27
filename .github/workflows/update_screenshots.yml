@@ -74,6 +74,7 @@ jobs:
               core.setOutput('prefixed_branch', pr.head.label);
               core.setOutput('base_branch', pr.base.ref);
               core.setOutput('can_modify', pr.maintainer_can_modify);
+              core.setOutput('pr_repo', pr.head.repo?.git_url);
               core.info(`PR #${prNumber}: ${pr.head.sha} on branch ${pr.head.ref}`);
             } catch (error) {
               core.setFailed(`Failed to fetch PR info: ${error.message}`);
@@ -89,6 +90,7 @@ jobs:
           BRANCH: ${{ steps.get-pr-info.outputs.branch }}
           BASE_BRANCH: ${{ steps.get-pr-info.outputs.base_branch }}
           PREFIXED_BRANCH: ${{ steps.get-pr-info.outputs.prefixed_branch }}
+          PR_REPO: ${{ steps.get-pr-info.outputs.pr_repo }}
           CAN_MODIFY: ${{ steps.get-pr-info.outputs.can_modify }}
         run: |
           curl -s -X POST "https://api.buildkite.com/v2/organizations/elastic/pipelines/kibana-elastic-charts-build/builds" \
@@ -100,6 +102,7 @@ jobs:
               "branch": "'"$PREFIXED_BRANCH"'",
               "pull_request_id": "'"$PR_NUMBER"'",
               "pull_request_base_branch": "'"$BASE_BRANCH"'",
+              "pull_request_repository": "'"$PR_REPO"'",
               "ignore_pipeline_branch_filters": true,
               "author": {
                 "name": "'"$TRIGGERED_BY"'",
