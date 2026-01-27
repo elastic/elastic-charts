@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import type { AnimationState } from './partition';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
@@ -28,7 +29,6 @@ import type { LegendStrategy } from '../../layout/utils/highlighted_geoms';
 import { highlightedGeoms } from '../../layout/utils/highlighted_geoms';
 import type { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
-import type { AnimationState } from './partition';
 
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate

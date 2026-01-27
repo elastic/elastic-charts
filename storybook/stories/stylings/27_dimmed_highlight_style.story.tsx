@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean, select } from '@storybook/addon-knobs';
+import { select } from '@storybook/addon-knobs';
 import React, { useState, useCallback } from 'react';
 
 import type { PartialTheme, SeriesIdentifier } from '@elastic/charts';
@@ -31,7 +31,7 @@ import { discreteColor, colorBrewerCategoricalPastel12 } from '../utils/utils';
 
 // Helper to convert hex to RGB string for rgba()
 const hexToRgb = (hex: string): string => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  const result = /^#?([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i.exec(hex);
   if (!result) return '0, 0, 0';
   return `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`;
 };
@@ -118,7 +118,7 @@ const sunburstData: Array<SunburstDatum> = [
   ['PK', 43, 'PK', 2],
 ];
 
-export const Example: ChartsStory = (_, { title, description }) => {
+export const Example: ChartsStory = (_, { description }) => {
   const baseTheme = useBaseTheme();
   const isDarkTheme = baseTheme.background.color !== '#FFFFFF';
 
