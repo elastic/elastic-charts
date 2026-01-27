@@ -45,6 +45,19 @@ jobs:
               }
             }
 
+      - name: Add 😕 reaction to comment
+        if: steps.check-elastic-member.outputs.is_member == 'false'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          reactions: 'confused'
+
+      - name: Fail if not Elastic org member
+        if: steps.check-elastic-member.outputs.is_member == 'false'
+        run: |
+          echo "User ${{ github.event.comment.user.login }} is not a member of elastic organization"
+          echo "Aborting Buildkite trigger"
+
       - name: Add 👍 reaction to comment
         if: steps.check-elastic-member.outputs.is_member == 'true'
         uses: peter-evans/create-or-update-comment@v5
@@ -54,6 +67,7 @@ jobs:
 
       - name: Fetch PR head commit and branch
         id: get-pr-info
+        if: steps.check-elastic-member.outputs.is_member == 'true'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ADMIN_TOKEN_GH }}
@@ -118,16 +132,3 @@ jobs:
                 "triggered_by": "'"$TRIGGERED_BY"'"
               }
             }' | jq .
-
-      - name: Add 😕 reaction to comment
-        if: steps.check-elastic-member.outputs.is_member == 'false'
-        uses: peter-evans/create-or-update-comment@v5
-        with:
-          comment-id: ${{ github.event.comment.id }}
-          reactions: 'confused'
-
-      - name: Fail if not Elastic org member
-        if: steps.check-elastic-member.outputs.is_member == 'false'
-        run: |
-          echo "User ${{ github.event.comment.user.login }} is not a member of elastic organization"
-          echo "Aborting Buildkite trigger"
