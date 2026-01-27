@@ -94,10 +94,10 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
           truncationMode="px"
         />
         {!isSeriesHidden
-          ? legendValueItems.map((legendValueItem) =>
+          ? legendValueItems.map((legendValueItem, index) =>
               legendValueItem.label !== '' ? (
                 <div
-                  key={legendValueItem.label}
+                  key={`${legendValueItem.type}-${index}`}
                   className="echLegendItem__legendValue"
                   style={{
                     minWidth: legendValueItem.maxLabel ? `${legendValueItem.maxLabel.length * 7 + 4}px` : undefined,

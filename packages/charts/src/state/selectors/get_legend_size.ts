@@ -31,6 +31,7 @@ const SHARED_MARGIN = 4;
 const VERTICAL_PADDING = 4;
 /** @internal */
 export const TOP_MARGIN = 2;
+const COLUMN_GAP = 24;
 
 /** @internal */
 export type LegendSizing = Size & {
@@ -43,11 +44,11 @@ export type LegendSizing = Size & {
 export const getLegendSizeSelector = createCustomCachedSelector(
   [getLegendConfigSelector, getChartThemeSelector, getParentDimensionSelector, getLegendItemsSelector],
   (config, theme, parentDimensions, items): LegendSizing => {
-    const { showLegend, legendSize, legendValues, legendPosition, legendAction } = config;
+    const { showLegend, legendSize, legendValues, legendPosition, legendAction, legendLayout } = config;
     if (!showLegend) {
       return { width: 0, height: 0, margin: 0, position: LEGEND_TO_FULL_CONFIG[Position.Right] };
     }
-    if (shouldDisplayTable(legendValues)) {
+    if (shouldDisplayTable(legendValues, legendLayout)) {
       return withTextMeasure((textMeasure) => getLegendTableSize(config, theme, parentDimensions, items, textMeasure));
     }
 
@@ -98,18 +99,24 @@ export const getLegendSizeSelector = createCustomCachedSelector(
     // Calculate rows by tracking cumulative width
     let numRows = 1;
     let currentRowWidth = 0;
+    // Calculate width for the max current and last value
+    const maxCurrentAndLastValue = config.legendValues.includes('currentAndLastValue')
+      ? items?.[0]?.values?.[0]?.maxLabel
+      : undefined;
 
     for (const item of items) {
       // Calculate width for this specific item
       const { width: labelWidth } = withTextMeasure((textMeasure) =>
         textMeasure(
-          `${item.label}${legendValues.length > 0 ? item.values[0]?.label ?? '' : ''}`,
+          `${item.label}${legendValues.length > 0 ? item.values[0]?.label ?? '' : ''}${maxCurrentAndLastValue ? ` ${maxCurrentAndLastValue}` : ''}`,
           { fontFamily: DEFAULT_FONT_FAMILY, fontVariant: 'normal', fontWeight: 400, fontStyle: 'normal' },
           12,
           1.5,
         ),
       );
-      const thisItemWidth = MARKER_WIDTH + SHARED_MARGIN + labelWidth + spacingBuffer + actionDimension;
+
+      const gap = currentRowWidth > 0 ? COLUMN_GAP : 0;
+      const thisItemWidth = MARKER_WIDTH + SHARED_MARGIN + labelWidth + spacingBuffer + actionDimension + gap;
 
       if (currentRowWidth + thisItemWidth > availableWidth && currentRowWidth > 0) {
         numRows++;
