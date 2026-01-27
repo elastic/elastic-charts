@@ -14,7 +14,7 @@ import { isDefined, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import type { SeriesCompareFn } from '../../../utils/series_sort';
 import type { PointStyle, Theme } from '../../../utils/themes/theme';
-import type { XDomain } from '../domains/types';
+import type { XDomain, YDomain } from '../domains/types';
 import { isDatumFilled } from '../rendering/utils';
 import { getLegendValues } from '../state/utils/get_legend_values';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
@@ -88,6 +88,7 @@ const y0Accessor =
 /** @internal */
 export function computeLegend(
   xDomain: XDomain,
+  yDomains: YDomain[],
   dataSeries: DataSeries[],
   seriesColors: Map<SeriesKey, Color>,
   specs: BasicSeriesSpec[],
@@ -131,7 +132,14 @@ export function computeLegend(
 
     const pointStyle = getPointStyle(spec, theme);
 
-    const legendValuesItems = getLegendValues(series, xDomain, legendValues, y1Accessor(series.stackMode), formatter);
+    const legendValuesItems = getLegendValues(
+      series,
+      xDomain,
+      yDomains,
+      legendValues,
+      y1Accessor(series.stackMode),
+      formatter,
+    );
 
     legendItems.push({
       depth: 0,
@@ -151,6 +159,7 @@ export function computeLegend(
       const bandedLegendValuesItems = getLegendValues(
         series,
         xDomain,
+        yDomains,
         legendValues,
         y0Accessor(series.stackMode),
         formatter,

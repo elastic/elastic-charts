@@ -96,7 +96,17 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
         {!isSeriesHidden
           ? legendValueItems.map((legendValueItem) =>
               legendValueItem.label !== '' ? (
-                <div key={legendValueItem.label} className="echLegendItem__legendValue">
+                <div
+                  key={legendValueItem.label}
+                  className="echLegendItem__legendValue"
+                  style={
+                    {
+                      '--legend-value-min-width': legendValueItem.maxLabel
+                        ? `${legendValueItem.maxLabel.length * 7 + 8}px`
+                        : 'auto',
+                    } as CSSProperties
+                  }
+                >
                   {legendValueItem.label}
                 </div>
               ) : null,

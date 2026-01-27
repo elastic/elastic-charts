@@ -105,6 +105,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
 
   &__legendValue {
     @include euiFontSizeXS;
+    min-width: var(--legend-value-min-width, auto);
     text-align: right;
     flex: 0 0 auto;
     margin-left: $euiSizeXS;

@@ -32,7 +32,7 @@ export const computeLegendSelector = createCustomCachedSelector(
   ],
   (
     seriesSpecs,
-    { formattedDataSeries, xDomain },
+    { formattedDataSeries, xDomain, yDomains },
     chartTheme,
     seriesColors,
     axesSpecs,
@@ -42,6 +42,7 @@ export const computeLegendSelector = createCustomCachedSelector(
   ): LegendItem[] => {
     return computeLegend(
       xDomain,
+      yDomains,
       formattedDataSeries,
       seriesColors,
       seriesSpecs,
