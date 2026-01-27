@@ -187,7 +187,11 @@ export const MetricText: React.FC<MetricTextprops> = ({
 
       {/* Extra Block */}
       <div
-        className={classNames('echMetricText__extraBlock', `echMetricText__extraBlock--${style.extraTextAlign}`)}
+        className={classNames(
+          'echMetricText__extraBlock',
+          `echMetricText__extraBlock--${style.extraTextAlign}`,
+          `echMetricText__extraBlock--${valuePosition}`,
+        )}
         style={{
           gridRow: currentGridRows.extra,
           gridColumn: currentGridColumns.extra,

@@ -44,6 +44,7 @@
     display: flex;
     align-items: center;
     overflow: hidden;
+    padding-top: 5px;
 
     &--left {
       justify-content: flex-start;
@@ -53,6 +54,11 @@
     }
     &--right {
       justify-content: flex-end;
+    }
+
+    // Vertical position modifiers
+    &--middle {
+      padding-top: 0;
     }
   }
 
