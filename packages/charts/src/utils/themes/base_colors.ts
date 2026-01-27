@@ -29,6 +29,7 @@ export const PRIMITIVE_COLORS = {
   blueGrey90: '#5A6D8C',
   blueGrey95: '#516381',
   blueGrey100: '#485975',
+  blueGrey110: '#384861',
   blueGrey120: '#2B394F',
   blueGrey130: '#1D2A3E',
   blueGrey140: '#111C2C',
@@ -58,6 +59,7 @@ export const SEMANTIC_COLORS = {
   shade90: PRIMITIVE_COLORS.blueGrey90,
   shade95: PRIMITIVE_COLORS.blueGrey95,
   shade100: PRIMITIVE_COLORS.blueGrey100,
+  shade110: PRIMITIVE_COLORS.blueGrey110,
   shade120: PRIMITIVE_COLORS.blueGrey120,
   shade130: PRIMITIVE_COLORS.blueGrey130,
   shade140: PRIMITIVE_COLORS.blueGrey140,
@@ -210,8 +212,8 @@ export const LIGHT_DIMMED_COLORS = {
   areaPointStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
   areaPointFill: SEMANTIC_COLORS.plainLight,
 
-  barFill: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
-  arcFill: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
+  barFill: SEMANTIC_COLORS.shade15,
+  arcFill: SEMANTIC_COLORS.shade15,
 };
 
 /** @internal */
@@ -225,6 +227,6 @@ export const DARK_DIMMED_COLORS = {
   areaPointStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
   areaPointFill: SEMANTIC_COLORS.shade145,
 
-  barFill: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
-  arcFill: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
+  barFill: SEMANTIC_COLORS.shade110,
+  arcFill: SEMANTIC_COLORS.shade110,
 };

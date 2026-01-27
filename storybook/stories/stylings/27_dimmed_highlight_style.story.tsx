@@ -48,6 +48,7 @@ const LIGHT_SHADES: Record<string, string> = {
   [`shade90 (${SEMANTIC_COLORS.shade90})`]: hexToRgb(SEMANTIC_COLORS.shade90),
   [`shade95 (${SEMANTIC_COLORS.shade95})`]: hexToRgb(SEMANTIC_COLORS.shade95),
   [`shade100 (${SEMANTIC_COLORS.shade100})`]: hexToRgb(SEMANTIC_COLORS.shade100),
+  [`shade110 (${SEMANTIC_COLORS.shade110})`]: hexToRgb(SEMANTIC_COLORS.shade110),
   [`shade120 (${SEMANTIC_COLORS.shade120})`]: hexToRgb(SEMANTIC_COLORS.shade120),
   [`shade130 (${SEMANTIC_COLORS.shade130})`]: hexToRgb(SEMANTIC_COLORS.shade130),
   [`shade140 (${SEMANTIC_COLORS.shade140})`]: hexToRgb(SEMANTIC_COLORS.shade140),
@@ -65,7 +66,8 @@ const DARK_SHADES: Record<string, string> = {
   [`shade80 (${SEMANTIC_COLORS.shade80})`]: hexToRgb(SEMANTIC_COLORS.shade80),
   [`shade90 (${SEMANTIC_COLORS.shade90})`]: hexToRgb(SEMANTIC_COLORS.shade90),
   [`shade95 (${SEMANTIC_COLORS.shade95})`]: hexToRgb(SEMANTIC_COLORS.shade95),
-  [`shade100 (${SEMANTIC_COLORS.shade100}) - default`]: hexToRgb(SEMANTIC_COLORS.shade100),
+  [`shade100 (${SEMANTIC_COLORS.shade100})`]: hexToRgb(SEMANTIC_COLORS.shade100),
+  [`shade110 (${SEMANTIC_COLORS.shade110}) - default`]: hexToRgb(SEMANTIC_COLORS.shade110),
   [`shade120 (${SEMANTIC_COLORS.shade120})`]: hexToRgb(SEMANTIC_COLORS.shade120),
   [`shade130 (${SEMANTIC_COLORS.shade130})`]: hexToRgb(SEMANTIC_COLORS.shade130),
   [`shade140 (${SEMANTIC_COLORS.shade140})`]: hexToRgb(SEMANTIC_COLORS.shade140),
@@ -79,7 +81,7 @@ const ALPHA_OPTIONS: Record<string, number> = {
   '20%': 0.2,
   '25%': 0.25,
   '30%': 0.3,
-  '35% - default': 0.35,
+  '35%': 0.35,
   '40%': 0.4,
   '45%': 0.45,
   '50%': 0.5,
@@ -92,7 +94,7 @@ const ALPHA_OPTIONS: Record<string, number> = {
   '85%': 0.85,
   '90%': 0.9,
   '95%': 0.95,
-  '100% (solid)': 1.0,
+  '100% (solid) - default': 1.0,
 };
 
 // Multi-level sunburst data (source -> destination with values)
@@ -141,12 +143,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
   // Shade selector based on theme
   const shadeOptions = isDarkTheme ? DARK_SHADES : LIGHT_SHADES;
   const defaultShadeKey = isDarkTheme
-    ? `shade100 (${SEMANTIC_COLORS.shade100}) - default`
+    ? `shade110 (${SEMANTIC_COLORS.shade110}) - default`
     : `shade15 (${SEMANTIC_COLORS.shade15}) - default`;
   const selectedShadeRGB = select('Shade color', shadeOptions, shadeOptions[defaultShadeKey] ?? '');
 
   // Alpha/opacity selector
-  const selectedAlpha = select('Alpha (opacity)', ALPHA_OPTIONS, ALPHA_OPTIONS['35% - default'] ?? 0.35);
+  const selectedAlpha = select('Alpha (opacity)', ALPHA_OPTIONS, ALPHA_OPTIONS['100% (solid) - default'] ?? 1.0);
 
   // Build dimmed color from shade + alpha
   const selectedDimmedColor = `rgba(${selectedShadeRGB}, ${selectedAlpha})`;
@@ -243,7 +245,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
       </div>
 
       {/* Partition Chart (top half) */}
-      <Chart title={`Dimmed Highlight - ${partitionLayoutLabel}`} description={description} size={{ height: '50%' }} id="partition-chart">
+      <Chart
+        title={`Dimmed Highlight - ${partitionLayoutLabel}`}
+        description={description}
+        size={{ height: '50%' }}
+        id="partition-chart"
+      >
         <Settings
           showLegend
           legendValues={[LegendValue.CurrentAndLastValue]}
@@ -279,7 +286,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
       </Chart>
 
       {/* XY Chart (bottom half) */}
-      <Chart title="Dimmed Highlight - Bar, Line, Area" description={description} size={{ height: '50%' }} id="xy-chart">
+      <Chart
+        title="Dimmed Highlight - Bar, Line, Area"
+        description={description}
+        size={{ height: '50%' }}
+        id="xy-chart"
+      >
         <Settings
           showLegend
           legendValues={[LegendValue.CurrentAndLastValue]}
@@ -394,13 +406,9 @@ This story demonstrates the **dimmed/unhighlighted** styling applied to chart el
 4. Switch between **light** and **dark** themes to see theme-appropriate shade options
 5. Switch **Partition layout** between Sunburst and Treemap
 
-### Available shades
-All 13 shades from the EUI Borealis palette (shade15 through shade145) are available.
-Alpha ranges from 10% to 100% in 5% increments.
-
-**Designer's proposed defaults**:
-- Light mode: \`shade15\` @ 35%
-- Dark mode: \`shade100\` (~shade110) @ 35%
+### Default dim shades
+- Light mode: \`shade15\` @ 100% (solid)
+- Dark mode: \`shade110\` @ 100% (solid)
 
 ### Affected chart elements
 - **Bar charts**: \`barSeriesStyle.rect.dimmed.fill\`
