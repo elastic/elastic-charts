@@ -40,7 +40,7 @@ exports[`Rendering bars Multi series bar chart - ordinal can render first spec b
       },
       "rect": {
         "dimmed": {
-          "fill": "rgba(202, 211, 226, 0.35)",
+          "fill": "#ECF1F9",
           "texture": {
             "opacity": 0.25,
           },
@@ -108,7 +108,7 @@ exports[`Rendering bars Multi series bar chart - ordinal can render first spec b
       },
       "rect": {
         "dimmed": {
-          "fill": "rgba(202, 211, 226, 0.35)",
+          "fill": "#ECF1F9",
           "texture": {
             "opacity": 0.25,
           },
@@ -181,7 +181,7 @@ exports[`Rendering bars Multi series bar chart - ordinal can render second spec 
       },
       "rect": {
         "dimmed": {
-          "fill": "rgba(202, 211, 226, 0.35)",
+          "fill": "#ECF1F9",
           "texture": {
             "opacity": 0.25,
           },
@@ -249,7 +249,7 @@ exports[`Rendering bars Multi series bar chart - ordinal can render second spec 
       },
       "rect": {
         "dimmed": {
-          "fill": "rgba(202, 211, 226, 0.35)",
+          "fill": "#ECF1F9",
           "texture": {
             "opacity": 0.25,
           },
@@ -325,7 +325,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -394,7 +394,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -465,7 +465,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -534,7 +534,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -605,7 +605,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -674,7 +674,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -745,7 +745,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -814,7 +814,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -885,7 +885,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -954,7 +954,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1025,7 +1025,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1094,7 +1094,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1165,7 +1165,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1234,7 +1234,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1305,7 +1305,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1374,7 +1374,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1445,7 +1445,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1514,7 +1514,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1585,7 +1585,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1654,7 +1654,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1725,7 +1725,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1794,7 +1794,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1865,7 +1865,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -1934,7 +1934,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2005,7 +2005,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2074,7 +2074,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2145,7 +2145,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2214,7 +2214,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2285,7 +2285,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2354,7 +2354,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2425,7 +2425,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2494,7 +2494,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2565,7 +2565,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2634,7 +2634,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2705,7 +2705,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2774,7 +2774,7 @@ IndexedGeometryMap {
             },
             "rect": {
               "dimmed": {
-                "fill": "rgba(202, 211, 226, 0.35)",
+                "fill": "#ECF1F9",
                 "texture": {
                   "opacity": 0.25,
                 },
@@ -2858,7 +2858,7 @@ exports[`Rendering bars should render two bars within domain 1`] = `
       },
       "rect": {
         "dimmed": {
-          "fill": "rgba(202, 211, 226, 0.35)",
+          "fill": "#ECF1F9",
           "texture": {
             "opacity": 0.25,
           },
@@ -2926,7 +2926,7 @@ exports[`Rendering bars should render two bars within domain 1`] = `
       },
       "rect": {
         "dimmed": {
-          "fill": "rgba(202, 211, 226, 0.35)",
+          "fill": "#ECF1F9",
           "texture": {
             "opacity": 0.25,
           },

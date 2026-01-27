@@ -640,7 +640,7 @@ exports[`Rendering bands - areas Single series band bar chart - ordinal Can rend
       },
       "rect": {
         "dimmed": {
-          "fill": "rgba(202, 211, 226, 0.35)",
+          "fill": "#ECF1F9",
           "texture": {
             "opacity": 0.25,
           },
@@ -709,7 +709,7 @@ exports[`Rendering bands - areas Single series band bar chart - ordinal Can rend
       },
       "rect": {
         "dimmed": {
-          "fill": "rgba(202, 211, 226, 0.35)",
+          "fill": "#ECF1F9",
           "texture": {
             "opacity": 0.25,
           },
@@ -778,7 +778,7 @@ exports[`Rendering bands - areas Single series band bar chart - ordinal Can rend
       },
       "rect": {
         "dimmed": {
-          "fill": "rgba(202, 211, 226, 0.35)",
+          "fill": "#ECF1F9",
           "texture": {
             "opacity": 0.25,
           },
