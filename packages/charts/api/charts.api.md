@@ -1849,11 +1849,7 @@ export type LegendItemValue = {
 // @public (undocumented)
 export interface LegendLabelOptions {
     maxLines: number;
-    truncationPosition: LegendLabelTruncationPosition;
 }
-
-// @public (undocumented)
-export type LegendLabelTruncationPosition = 'end' | 'middle';
 
 // @public
 export type LegendPath = LegendPathElement[];
@@ -2166,7 +2162,7 @@ export interface MetricStyle {
     // (undocumented)
     valueFontSize: 'default' | 'fit' | number;
     // (undocumented)
-    valuePosition: 'top' | 'bottom';
+    valuePosition: 'top' | 'middle' | 'bottom';
     // (undocumented)
     valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
 }
