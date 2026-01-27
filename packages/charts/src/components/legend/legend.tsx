@@ -13,8 +13,7 @@ import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
 import { CustomLegend } from './custom_legend';
-import { LegendGridListItem } from './legend_item_grid_list';
-import { LegendListItem } from './legend_item_list';
+import { LegendList } from './legend_list';
 import { LegendTable } from './legend_table';
 import { getLegendPositionConfig, legendPositionStyle } from './position_style';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
@@ -173,7 +172,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
         <div style={containerStyle} className="echLegendGridListContainer">
           <ul style={listStyle} className="echLegendGridList">
             {items.map((item, index) => (
-              <LegendGridListItem key={`${index}`} item={item} {...itemProps} />
+              <LegendList key={`${index}`} item={item} {...itemProps} />
             ))}
           </ul>
         </div>
@@ -181,7 +180,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
         <div style={containerStyle} className="echLegendListContainer">
           <ul style={listStyle} className="echLegendList">
             {items.map((item, index) => (
-              <LegendListItem key={`${index}`} item={item} {...itemProps} />
+              <LegendList key={`${index}`} item={item} {...itemProps} truncation="px" />
             ))}
           </ul>
         </div>

@@ -18,8 +18,12 @@ import type { LegendItemProps } from './types';
 import type { SeriesIdentifier } from '../../common/series_id';
 import { LayoutDirection, isDefined } from '../../utils/common';
 
+interface Props extends LegendItemProps {
+  truncation?: 'px';
+}
+
 /** @internal */
-export const LegendGridListItem: React.FC<LegendItemProps> = (props) => {
+export const LegendList: React.FC<Props> = (props) => {
   const {
     extraValues,
     item,
@@ -35,6 +39,7 @@ export const LegendGridListItem: React.FC<LegendItemProps> = (props) => {
     hiddenItems,
     onLegendItemMouseOver,
     onLegendItemMouseOut,
+    truncation,
   } = props;
   const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, depth, path, isToggleable } = item;
 
@@ -91,11 +96,21 @@ export const LegendGridListItem: React.FC<LegendItemProps> = (props) => {
           isSeriesHidden={isSeriesHidden}
           totalSeriesCount={totalItems}
           hiddenSeriesCount={hiddenItems}
+          truncationMode={truncation}
         />
         {!isSeriesHidden
-          ? legendValueItems.map((legendValueItem) =>
+          ? legendValueItems.map((legendValueItem, index) =>
               legendValueItem.label !== '' ? (
-                <div key={legendValueItem.label} className="echLegendItem__legendValue">
+                <div
+                  key={truncation ? `${legendValueItem.type}-${index}` : legendValueItem.label}
+                  className="echLegendItem__legendValue"
+                  style={{
+                    minWidth:
+                      truncation && legendValueItem.maxLabel
+                        ? `${legendValueItem.maxLabel.length * 7 + 4}px`
+                        : undefined,
+                  }}
+                >
                   {legendValueItem.label}
                 </div>
               ) : null,
