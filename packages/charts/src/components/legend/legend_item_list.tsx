@@ -99,13 +99,9 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
                 <div
                   key={legendValueItem.label}
                   className="echLegendItem__legendValue"
-                  style={
-                    {
-                      '--legend-value-min-width': legendValueItem.maxLabel
-                        ? `${legendValueItem.maxLabel.length * 7 + 8}px`
-                        : 'auto',
-                    } as CSSProperties
-                  }
+                  style={{
+                    minWidth: legendValueItem.maxLabel ? `${legendValueItem.maxLabel.length * 7 + 4}px` : undefined,
+                  }}
                 >
                   {legendValueItem.label}
                 </div>
