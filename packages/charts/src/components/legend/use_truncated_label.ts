@@ -14,6 +14,7 @@ import { withTextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 
 const ELLIPSIS = '…';
 const MAX_MEASURE_ITERATIONS = 5;
+const MIN_MIDDLE_TRUNCATION_CHARS = 4; // Minimum chars (available width) to consider middle truncation (2 on each side)
 
 // React 18+ startTransition for low-priority updates, fallback to direct execution for React 16/17
 const startTransition = reactStartTransition ?? ((fn: () => void) => fn());
@@ -99,7 +100,8 @@ function fitMiddleTruncation(
   const usableWidth = targetWidth - ellipsisWidth;
   const estimatedChars = Math.floor(usableWidth / avgCharWidth);
   if (estimatedChars >= label.length) return label;
-  if (estimatedChars < 1) return ELLIPSIS;
+  // If too few characters would fit, let CSS handle end truncation instead. This prevents '...x' effect.
+  if (estimatedChars < MIN_MIDDLE_TRUNCATION_CHARS) return label;
 
   // Split evenly between start and end
   let startChars = Math.ceil(estimatedChars / 2);
