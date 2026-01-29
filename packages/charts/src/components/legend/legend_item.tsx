@@ -8,12 +8,13 @@
 
 import classNames from 'classnames';
 import type { CSSProperties } from 'react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import { Label as ItemLabel } from './label';
 import { useLegendColorPicker } from './legend_color_picker';
 import type { SharedLegendItemProps } from './types';
-import { getExtra, onActionKeyDown } from './utils';
+import { useActionFocusManagement } from './use_action_focus_management';
+import { getExtra } from './utils';
 import type { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { LegendValue } from '../../common/legend';
 import type { SeriesIdentifier } from '../../common/series_id';
@@ -61,19 +62,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     onLegendItemMouseOut,
   } = props;
   const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, depth, path, isToggleable } = item;
-  const [isActive, setIsActive] = useState(false);
-  const itemRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const onPointerDown = (e: PointerEvent) => {
-      if (!itemRef.current?.contains(e.target as Node)) {
-        setIsActive(false);
-      }
-    };
-
-    document.addEventListener('pointerdown', onPointerDown);
-    return () => document.removeEventListener('pointerdown', onPointerDown);
-  }, []);
+  const { isActive, actionRef, handlePointerDown, handleKeyDown } = useActionFocusManagement();
 
   const itemClassNames = classNames('echLegendItem', {
     'echLegendItem--hidden': isSeriesHidden,
@@ -142,9 +131,9 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
         {Action && (
           <div
             className="echLegendItem__action"
-            ref={itemRef}
-            onPointerDownCapture={() => setIsActive(true)}
-            onKeyDown={(e) => onActionKeyDown(e, setIsActive)}
+            ref={actionRef}
+            onPointerDownCapture={handlePointerDown}
+            onKeyDown={handleKeyDown}
           >
             <Action series={seriesIdentifiers} color={color} label={label} />
           </div>

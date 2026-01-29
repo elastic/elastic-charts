@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import { LegendTableCell } from './legend_table_cell';
 import { LegendTableRow } from './legend_table_row';
@@ -18,7 +18,7 @@ import { Label as ItemLabel } from '../label';
 import { useLegendColorPicker } from '../legend_color_picker';
 import type { LegendItemProps } from '../legend_item';
 import { prepareLegendValues } from '../legend_item';
-import { onActionKeyDown } from '../utils';
+import { useActionFocusManagement } from '../use_action_focus_management';
 
 /** @internal */
 export const LegendListItem: React.FC<LegendItemProps> = (props) => {
@@ -38,19 +38,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     hiddenItems,
   } = props;
   const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, path, isToggleable } = item;
-  const [isActive, setIsActive] = useState(false);
-  const itemRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const onPointerDown = (e: PointerEvent) => {
-      if (!itemRef.current?.contains(e.target as Node)) {
-        setIsActive(false);
-      }
-    };
-
-    document.addEventListener('pointerdown', onPointerDown);
-    return () => document.removeEventListener('pointerdown', onPointerDown);
-  }, []);
+  const { isActive, actionRef, handlePointerDown, handleKeyDown } = useActionFocusManagement();
 
   const itemClassNames = classNames('echLegendTable__item', 'echLegendTable__item--highlightable', {
     'echLegendTable__item--hidden': isSeriesHidden,
@@ -114,9 +102,9 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
           <LegendTableCell>
             <div
               className="echLegendItem__action"
-              ref={itemRef}
-              onPointerDownCapture={() => setIsActive(true)}
-              onKeyDown={(e) => onActionKeyDown(e, setIsActive)}
+              ref={actionRef}
+              onPointerDownCapture={handlePointerDown}
+              onKeyDown={handleKeyDown}
             >
               {ActionComponent}
             </div>
