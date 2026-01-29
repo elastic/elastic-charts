@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-import type { KeyboardEvent } from 'react';
-
 import type { LegendItemExtraValues, LegendItem, LegendItemValue } from '../../common/legend';
 import { LegendValue } from '../../common/legend';
 
@@ -31,14 +29,3 @@ export function getExtra(
   const actionExtra = childId !== undefined ? itemExtraValues?.get(childId) : undefined;
   return actionExtra ? actionExtra : extraValues.size === totalItems ? findCurrentValue(values) : undefined;
 }
-
-/** @internal */
-export const onActionKeyDown = (e: KeyboardEvent, setIsActive: (isActive: boolean) => void) => {
-  if (e.key === 'Enter' || e.key === ' ') {
-    setIsActive(true);
-  } else {
-    if (e.currentTarget.contains(e.target as Node)) {
-      setIsActive(false);
-    }
-  }
-};
