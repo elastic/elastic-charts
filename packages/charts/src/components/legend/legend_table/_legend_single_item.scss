@@ -8,14 +8,25 @@
     padding-top: $euiSizeXS / 2;
     max-width: 16px;
     height: $echLegendRowHeight;
-    opacity: 0;
     &:empty {
       width: 0;
     }
   }
 
-  &:hover,
-  &:focus-within,
+  &--actionOnHover {
+    .echLegendItem__action {
+      opacity: 0;
+    }
+
+    &:hover,
+    &:focus-within {
+      .echLegendItem__action {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+  }
+
   &--isActive {
     .echLegendItem__action {
       opacity: 1;

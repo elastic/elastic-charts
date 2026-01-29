@@ -60,7 +60,6 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     align-items: center;
     height: $legendItemHeight;
     max-width: calc(#{$legendItemHeight} + #{$euiSizeXS * 2});
-    opacity: 0;
 
     .euiPopover,
     .euiPopover__anchor,
@@ -72,8 +71,20 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     }
   }
 
-  &:hover,
-  &:focus-within,
+  &--actionOnHover {
+    .echLegendItem__action {
+      opacity: 0;
+    }
+
+    &:hover,
+    &:focus-within {
+      .echLegendItem__action {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+  }
+
   &--isActive {
     .echLegendItem__action {
       opacity: 1;

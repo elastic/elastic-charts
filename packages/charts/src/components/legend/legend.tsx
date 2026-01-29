@@ -136,6 +136,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     toggleDeselectSeriesAction: props.onToggleDeselectSeriesAction,
     colorPicker: config.legendColorPicker,
     action: config.legendAction,
+    legendActionOnHover: config.legendActionOnHover ?? DEFAULT_LEGEND_CONFIG.legendActionOnHover,
     labelOptions: legend.labelOptions,
     flatLegend: config.flatLegend ?? DEFAULT_LEGEND_CONFIG.flatLegend,
     legendTitle: config.legendTitle,

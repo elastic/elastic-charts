@@ -16,6 +16,7 @@ export const getLegendConfigSelector = createCustomCachedSelector(
   ({
     flatLegend,
     legendAction,
+    legendActionOnHover,
     legendColorPicker,
     legendMaxDepth,
     legendSize,
@@ -34,6 +35,7 @@ export const getLegendConfigSelector = createCustomCachedSelector(
     return {
       flatLegend,
       legendAction,
+      legendActionOnHover,
       legendColorPicker,
       legendMaxDepth,
       legendSize,

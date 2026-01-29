@@ -51,6 +51,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     legendValues,
     totalItems,
     action: Action,
+    legendActionOnHover,
     positionConfig,
     labelOptions,
     isMostlyRTL,
@@ -68,6 +69,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     'echLegendItem--hidden': isSeriesHidden,
     'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
     'echLegendItem--isActive': isActive,
+    'echLegendItem--actionOnHover': legendActionOnHover,
   });
 
   const legendValueItems = prepareLegendValues(item, legendValues, totalItems, extraValues).filter(isDefined);
