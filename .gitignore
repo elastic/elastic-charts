@@ -1,4 +1,3 @@
-.idea
 **/node_modules/
 test/spec/screenshots/baseline/**/*.png
 test/spec/screenshots/diff/**/*.png
@@ -13,8 +12,6 @@ reports/
 **/dist/
 coverage/
 .out/
-.idea
-.vscode/
 .DS_Store
 .eslintcache
 .yo-rc.json
@@ -22,6 +19,12 @@ npm-debug.log
 yarn-error.log
 playground/playground.tsx
 .jest-image-snapshot-touched-files
+
+# Editor configs
+.vscode/
+.idea
+.claude
+.cursor
 
 **/__diff_output__/
 .buildkite/buildkite.d.ts
