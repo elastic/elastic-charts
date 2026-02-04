@@ -53,6 +53,9 @@ yarn start
 We use [storybook](https://storybook.js.org) to document API, edge-cases, and the usage of the library.
 A hosted version is available at [https://elastic.github.io/elastic-charts/storybook][docs].
 
+## CI
+We're using the same [build pipeline](https://buildkite.com/elastic/kibana-elastic-charts-build) for building PRs and the main branch. This pipeline is triggered through webhook events hitting the [buildkite-pr-bot](https://github.com/elastic/buildkite-pr-bot). Configuration for the triggered pipelines can be adjusted in [pull-requests.json](./.buildkite/pull-requests.json).
+
 ## Goals
 
 The primary goal of this library is to provide reusable set of chart components that can be used throughout Elastic's web products.
