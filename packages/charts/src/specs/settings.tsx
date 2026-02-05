@@ -443,7 +443,7 @@ export interface LegendSpec {
   legendPosition: Position | LegendPositionConfig;
   /**
    * The layout of the legend
-   * @defaultValue 'list'
+   * @defaultValue undefined
    */
   legendLayout?: Layout;
   /**
