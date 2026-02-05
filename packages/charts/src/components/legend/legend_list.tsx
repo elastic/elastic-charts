@@ -49,7 +49,8 @@ export const LegendList: React.FC<Props> = (props) => {
     'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
   });
 
-  const legendValueItems = prepareLegendValues(item, legendValues, totalItems, extraValues).filter(isDefined);
+  const preparedLegendValues = prepareLegendValues(item, legendValues, totalItems, extraValues);
+  const legendValueItems = preparedLegendValues.filter(isDefined);
 
   const style: CSSProperties = {
     ...(flatLegend
@@ -103,32 +104,52 @@ export const LegendList: React.FC<Props> = (props) => {
           truncationMode={isListLayout ? 'px' : 'line'}
         />
         {!isSeriesHidden
-          ? legendValueItems.map((legendValueItem, index) => {
+          ? (isListLayout
+              ? // In list layout, preserve the `legendValues` order and allow placeholders for CurrentAndLastValue
+                legendValues.map((type, index) => ({ type, legendValueItem: preparedLegendValues[index], index }))
+              : legendValueItems.map((legendValueItem, index) => ({
+                  type: legendValueItem.type,
+                  legendValueItem,
+                  index,
+                }))
+            ).map(({ type, legendValueItem, index }) => {
               const showTitle = isListLayout;
-              const title = showTitle ? legendValueTitlesMap[legendValueItem.type] : '';
+              const title = showTitle ? legendValueTitlesMap[type] : '';
               const titlePrefixLength = showTitle ? title.length + 2 : 0; // +2 for ": "
-              return legendValueItem.label !== '' ? (
+
+              const isCurrentAndLastValue = type === LegendValue.CurrentAndLastValue;
+              const hasValue = Boolean(legendValueItem?.label);
+              const showPlaceholder = Boolean(isListLayout && isCurrentAndLastValue && !hasValue);
+              const displayedLabel = showPlaceholder ? '—' : legendValueItem?.label ?? '';
+
+              if (displayedLabel === '') return null;
+
+              const maxLabel =
+                legendValueItem?.maxLabel ??
+                (isCurrentAndLastValue
+                  ? item.values.find(({ type: t }) => t === LegendValue.CurrentAndLastValue)?.maxLabel
+                  : undefined);
+
+              return (
                 <div
-                  key={isListLayout ? `${legendValueItem.type}-${index}` : legendValueItem.label}
+                  key={isListLayout ? `${type}-${index}` : displayedLabel}
                   className="echLegendItem__legendValue"
                   style={{
                     minWidth:
-                      isListLayout &&
-                      legendValueItem.maxLabel &&
-                      legendValueItem.type === LegendValue.CurrentAndLastValue
-                        ? `${(legendValueItem.maxLabel.length + titlePrefixLength) * 7 + 4}px`
+                      isListLayout && maxLabel && isCurrentAndLastValue
+                        ? `${(maxLabel.length + titlePrefixLength) * 7 + 4}px`
                         : undefined,
                   }}
                 >
                   {showTitle ? (
                     <>
-                      <strong>{title.toUpperCase()}:</strong> {legendValueItem.label}
+                      <strong>{title.toUpperCase()}:</strong> {displayedLabel}
                     </>
                   ) : (
-                    legendValueItem.label
+                    displayedLabel
                   )}
                 </div>
-              ) : null;
+              );
             })
           : null}
         {Action && (
