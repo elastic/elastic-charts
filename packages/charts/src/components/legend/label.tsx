@@ -146,12 +146,15 @@ function getSharedProps(
   const dir = isRTLString(label) ? 'rtl' : 'ltr'; // forced for individual labels in case mixed charset
   const clampStyles: React.CSSProperties = {};
 
-  if (maxLines > 1) {
+  if (truncationMode === 'line' && maxLines > 1) {
     clampStyles.WebkitLineClamp = maxLines;
   }
 
-  if (widthLimit > 0) {
+  if (truncationMode === 'px' && widthLimit > 0) {
     clampStyles.maxWidth = `${widthLimit}px`;
+    clampStyles.flexShrink = 0; // Don't shrink below content width
+    // clampStyles.whiteSpace = 'normal'; // Allow wrapping
+    clampStyles.wordBreak = 'break-word';
     clampStyles.overflow = 'hidden';
     clampStyles.textOverflow = 'ellipsis';
   }

@@ -180,7 +180,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
         <div style={containerStyle} className="echLegendListContainer">
           <ul style={listStyle} className="echLegendList">
             {items.map((item, index) => (
-              <LegendList key={`${index}`} item={item} {...itemProps} truncation="px" />
+              <LegendList key={`${index}`} item={item} {...itemProps} isListLayout />
             ))}
           </ul>
         </div>

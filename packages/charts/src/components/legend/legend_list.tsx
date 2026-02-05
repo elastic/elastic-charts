@@ -15,11 +15,12 @@ import { Label as ItemLabel } from './label';
 import { useLegendColorPicker } from './legend_color_picker';
 import { prepareLegendValues } from './legend_item_utils';
 import type { LegendItemProps } from './types';
+import { legendValueTitlesMap, LegendValue } from '../../common/legend';
 import type { SeriesIdentifier } from '../../common/series_id';
 import { LayoutDirection, isDefined } from '../../utils/common';
 
 interface Props extends LegendItemProps {
-  truncation?: 'px';
+  isListLayout?: boolean;
 }
 
 /** @internal */
@@ -39,7 +40,7 @@ export const LegendList: React.FC<Props> = (props) => {
     hiddenItems,
     onLegendItemMouseOver,
     onLegendItemMouseOut,
-    truncation,
+    isListLayout,
   } = props;
   const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, depth, path, isToggleable } = item;
 
@@ -96,25 +97,36 @@ export const LegendList: React.FC<Props> = (props) => {
           isSeriesHidden={isSeriesHidden}
           totalSeriesCount={totalItems}
           hiddenSeriesCount={hiddenItems}
-          truncationMode={truncation}
+          truncationMode={isListLayout ? 'px' : 'line'}
         />
         {!isSeriesHidden
-          ? legendValueItems.map((legendValueItem, index) =>
-              legendValueItem.label !== '' ? (
+          ? legendValueItems.map((legendValueItem, index) => {
+              const showTitle = isListLayout;
+              const title = showTitle ? legendValueTitlesMap[legendValueItem.type] : '';
+              const titlePrefixLength = showTitle ? title.length + 2 : 0; // +2 for ": "
+              return legendValueItem.label !== '' ? (
                 <div
-                  key={truncation ? `${legendValueItem.type}-${index}` : legendValueItem.label}
+                  key={isListLayout ? `${legendValueItem.type}-${index}` : legendValueItem.label}
                   className="echLegendItem__legendValue"
                   style={{
                     minWidth:
-                      truncation && legendValueItem.maxLabel
-                        ? `${legendValueItem.maxLabel.length * 7 + 4}px`
+                      isListLayout &&
+                      legendValueItem.maxLabel &&
+                      legendValueItem.type === LegendValue.CurrentAndLastValue
+                        ? `${(legendValueItem.maxLabel.length + titlePrefixLength) * 7 + 4}px`
                         : undefined,
                   }}
                 >
-                  {legendValueItem.label}
+                  {showTitle ? (
+                    <>
+                      <strong>{title.toUpperCase()}:</strong> {legendValueItem.label}
+                    </>
+                  ) : (
+                    legendValueItem.label
+                  )}
                 </div>
-              ) : null,
-            )
+              ) : null;
+            })
           : null}
         {Action && (
           <div className="echLegendItem__action">
