@@ -153,7 +153,6 @@ function getSharedProps(
   if (truncationMode === 'px' && widthLimit > 0) {
     clampStyles.maxWidth = `${widthLimit}px`;
     clampStyles.flexShrink = 0; // Don't shrink below content width
-    // clampStyles.whiteSpace = 'normal'; // Allow wrapping
     clampStyles.wordBreak = 'break-word';
     clampStyles.overflow = 'hidden';
     clampStyles.textOverflow = 'ellipsis';
