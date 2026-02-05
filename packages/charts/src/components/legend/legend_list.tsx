@@ -51,11 +51,14 @@ export const LegendList: React.FC<Props> = (props) => {
 
   const legendValueItems = prepareLegendValues(item, legendValues, totalItems, extraValues).filter(isDefined);
 
-  const style: CSSProperties = flatLegend
-    ? {}
-    : {
-        [isMostlyRTL ? 'marginRight' : 'marginLeft']: LEGEND_HIERARCHY_MARGIN * (depth ?? 0),
-      };
+  const style: CSSProperties = {
+    ...(flatLegend
+      ? {}
+      : {
+          [isMostlyRTL ? 'marginRight' : 'marginLeft']: LEGEND_HIERARCHY_MARGIN * (depth ?? 0),
+        }),
+    ...(isListLayout ? { whiteSpace: 'nowrap' } : {}),
+  };
 
   const onLabelToggle = useCallback(
     (legendItemIds: SeriesIdentifier[]) => (negate: boolean) => {

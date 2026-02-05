@@ -177,7 +177,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
           </ul>
         </div>
       ) : (
-        <div style={containerStyle} className="echLegendListContainer">
+        <div style={{ ...containerStyle, overflowX: 'auto' }} className="echLegendListContainer">
           <ul style={listStyle} className="echLegendList">
             {items.map((item, index) => (
               <LegendList key={`${index}`} item={item} {...itemProps} isListLayout />
