@@ -80,7 +80,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         xAccessor="x"
         yAccessors={['y1', 'y2']}
         splitSeriesAccessors={['g1', 'g2']}
-        data={TestDatasets.BARCHART_2Y2G.slice(0, dataCount)}
+        data={TestDatasets.BARCHART_2Y2G_VARIED_LEGEND.slice(0, dataCount)}
       />
     </Chart>
   );
@@ -88,5 +88,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
 Example.parameters = {
   markdown:
-    'The `legendLayout` prop allows you to render the legend in a list or table view.\n\n __Note:__ If this prop is undefined, by default a list view is shown unless there is statistics or CurrentAndLastValue.',
+    'The `legendLayout` prop allows you to render the legend in a list or table view.\n\n` +' +
+    '` __Note:__ When this prop is undefined, the layout is chosen automatically: by default a list view is used unless there is statistics or CurrentAndLastValue.',
 };

@@ -129,6 +129,36 @@ export const BARCHART_2Y2G = [
   { x: 6, g1: 'cloudflare.com', g2: 'indirect-cdn', y1: 6, y2: 4 },
 ];
 
+/** @interrnal */
+export const BARCHART_2Y2G_VARIED_LEGEND = [
+  // x = 0
+  { x: 0, g1: 'a', g2: 'b', y1: 1, y2: 4 },
+  { x: 0, g1: 'a', g2: 'medium_len', y1: 1, y2: 4 },
+  { x: 0, g1: 'longerLabel12', g2: 'medium_len', y1: 3, y2: 6 },
+
+  // x = 1
+  { x: 1, g1: 'a', g2: 'b', y1: 2, y2: 1 },
+  { x: 1, g1: 'a', g2: 'medium_len', y1: 2, y2: 1 },
+  { x: 1, g1: 'longerLabel12', g2: 'b', y1: 2, y2: 5 },
+  { x: 1, g1: 'longerLabel12', g2: 'medium_len', y1: 2, y2: 5 },
+
+  // x = 2
+  { x: 2, g1: 'a', g2: 'b', y1: 10, y2: 5 },
+  { x: 2, g1: 'a', g2: 'medium_len', y1: 10, y2: 5 },
+  { x: 2, g1: 'longerLabel12', g2: 'b', y1: 3, y2: 1 },
+  { x: 2, g1: 'longerLabel12', g2: 'medium_len', y1: 3, y2: 1 },
+
+  // x = 3
+  { x: 3, g1: 'a', g2: 'b', y1: 7, y2: 3 },
+  { x: 3, g1: 'longerLabel12', g2: 'b', y1: 6, y2: 4 },
+  { x: 3, g1: 'longerLabel12', g2: 'medium_len', y1: 6, y2: 4 },
+
+  // x = 4
+  { x: 4, g1: 'a', g2: 'b', y1: 7, y2: 3 },
+  { x: 4, g1: 'a', g2: 'medium_len', y1: 7, y2: 3 },
+  { x: 4, g1: 'longerLabel12', g2: 'b', y1: 6, y2: 4 },
+  { x: 4, g1: 'longerLabel12', g2: 'medium_len', y1: 6, y2: 4 },
+];
 /** @internal */
 export const BARCHART_2Y3G = [
   { x: 0, g1: 'cdn.google.com', g2: 'direct-cdn', y1: 1, y2: 4, g3: 'somevalue' },
