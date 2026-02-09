@@ -58,7 +58,6 @@ export const LegendList: React.FC<Props> = (props) => {
       : {
           [isMostlyRTL ? 'marginRight' : 'marginLeft']: LEGEND_HIERARCHY_MARGIN * (depth ?? 0),
         }),
-    ...(isListLayout ? { whiteSpace: 'nowrap' } : {}),
   };
 
   const onLabelToggle = useCallback(
@@ -81,6 +80,66 @@ export const LegendList: React.FC<Props> = (props) => {
 
   if (isItemHidden) return null;
 
+  // Pre-compute value elements for both layout modes
+  const valueElements: React.ReactNode[] = [];
+  if (!isSeriesHidden) {
+    const valueData = isListLayout
+      ? // In list layout, preserve the `legendValues` order and allow placeholders for CurrentAndLastValue
+        legendValues.map((type, index) => ({ type, legendValueItem: preparedLegendValues[index], index }))
+      : legendValueItems.map((legendValueItem, index) => ({
+          type: legendValueItem.type,
+          legendValueItem,
+          index,
+        }));
+
+    for (const { type, legendValueItem, index } of valueData) {
+      const showTitle = isListLayout;
+      const title = showTitle ? legendValueTitlesMap[type] : '';
+      const titlePrefixLength = showTitle ? title.length + 2 : 0; // +2 for ": "
+
+      const isCurrentAndLastValue = type === LegendValue.CurrentAndLastValue;
+      const hasValue = Boolean(legendValueItem?.label);
+      const showPlaceholder = Boolean(isListLayout && isCurrentAndLastValue && !hasValue);
+      const displayedLabel = showPlaceholder ? '—' : legendValueItem?.label ?? '';
+
+      if (displayedLabel === '') continue;
+
+      const maxLabel =
+        legendValueItem?.maxLabel ??
+        (isCurrentAndLastValue
+          ? item.values.find(({ type: t }) => t === LegendValue.CurrentAndLastValue)?.maxLabel
+          : undefined);
+
+      valueElements.push(
+        <div
+          key={isListLayout ? `${type}-${index}` : displayedLabel}
+          className="echLegendItem__legendValue"
+          style={{
+            textAlign: isListLayout ? 'left' : undefined,
+            minWidth:
+              isListLayout && maxLabel && isCurrentAndLastValue
+                ? `${(maxLabel.length + titlePrefixLength) * 7 + 4}px`
+                : undefined,
+          }}
+        >
+          {showTitle ? (
+            <>
+              <strong>{title.toUpperCase()}:</strong> {displayedLabel}
+            </>
+          ) : (
+            displayedLabel
+          )}
+        </div>,
+      );
+    }
+  }
+
+  const actionElement = Action ? (
+    <div className="echLegendItem__action">
+      <Action series={seriesIdentifiers} color={color} label={label} />
+    </div>
+  ) : null;
+
   return (
     <>
       <li
@@ -92,71 +151,50 @@ export const LegendList: React.FC<Props> = (props) => {
         data-ech-series-name={label}
       >
         <div className="background" />
-        <div className="echLegend__colorWrapper">{renderItemColor()}</div>
-        <ItemLabel
-          label={label}
-          options={labelOptions}
-          isToggleable={totalItems > 1 && item.isToggleable}
-          onToggle={onLabelToggle(seriesIdentifiers)}
-          isSeriesHidden={isSeriesHidden}
-          totalSeriesCount={totalItems}
-          hiddenSeriesCount={hiddenItems}
-          truncationMode={isListLayout ? 'px' : 'line'}
-        />
-        {!isSeriesHidden
-          ? (isListLayout
-              ? // In list layout, preserve the `legendValues` order and allow placeholders for CurrentAndLastValue
-                legendValues.map((type, index) => ({ type, legendValueItem: preparedLegendValues[index], index }))
-              : legendValueItems.map((legendValueItem, index) => ({
-                  type: legendValueItem.type,
-                  legendValueItem,
-                  index,
-                }))
-            ).map(({ type, legendValueItem, index }) => {
-              const showTitle = isListLayout;
-              const title = showTitle ? legendValueTitlesMap[type] : '';
-              const titlePrefixLength = showTitle ? title.length + 2 : 0; // +2 for ": "
-
-              const isCurrentAndLastValue = type === LegendValue.CurrentAndLastValue;
-              const hasValue = Boolean(legendValueItem?.label);
-              const showPlaceholder = Boolean(isListLayout && isCurrentAndLastValue && !hasValue);
-              const displayedLabel = showPlaceholder ? '—' : legendValueItem?.label ?? '';
-
-              if (displayedLabel === '') return null;
-
-              const maxLabel =
-                legendValueItem?.maxLabel ??
-                (isCurrentAndLastValue
-                  ? item.values.find(({ type: t }) => t === LegendValue.CurrentAndLastValue)?.maxLabel
-                  : undefined);
-
-              return (
-                <div
-                  key={isListLayout ? `${type}-${index}` : displayedLabel}
-                  className="echLegendItem__legendValue"
-                  style={{
-                    textAlign: isListLayout ? 'left' : undefined,
-                    minWidth:
-                      isListLayout && maxLabel && isCurrentAndLastValue
-                        ? `${(maxLabel.length + titlePrefixLength) * 7 + 4}px`
-                        : undefined,
-                  }}
-                >
-                  {showTitle ? (
-                    <>
-                      <strong>{title.toUpperCase()}:</strong> {displayedLabel}
-                    </>
-                  ) : (
-                    displayedLabel
-                  )}
-                </div>
-              );
-            })
-          : null}
-        {Action && (
-          <div className="echLegendItem__action">
-            <Action series={seriesIdentifiers} color={color} label={label} />
-          </div>
+        {isListLayout ? (
+          <>
+            <span className="echLegendItem__colorLabel">
+              <div className="echLegend__colorWrapper">{renderItemColor()}</div>
+              <ItemLabel
+                label={label}
+                options={labelOptions}
+                isToggleable={totalItems > 1 && item.isToggleable}
+                onToggle={onLabelToggle(seriesIdentifiers)}
+                isSeriesHidden={isSeriesHidden}
+                totalSeriesCount={totalItems}
+                hiddenSeriesCount={hiddenItems}
+                truncationMode="px"
+              />
+              {actionElement && valueElements.length === 0 && actionElement}
+            </span>
+            {actionElement && valueElements.length > 0 ? (
+              <>
+                {valueElements.slice(0, -1)}
+                <span className="echLegendItem__actionGroup">
+                  {valueElements[valueElements.length - 1]}
+                  {actionElement}
+                </span>
+              </>
+            ) : !actionElement ? (
+              valueElements
+            ) : null}
+          </>
+        ) : (
+          <>
+            <div className="echLegend__colorWrapper">{renderItemColor()}</div>
+            <ItemLabel
+              label={label}
+              options={labelOptions}
+              isToggleable={totalItems > 1 && item.isToggleable}
+              onToggle={onLabelToggle(seriesIdentifiers)}
+              isSeriesHidden={isSeriesHidden}
+              totalSeriesCount={totalItems}
+              hiddenSeriesCount={hiddenItems}
+              truncationMode="line"
+            />
+            {valueElements}
+            {actionElement}
+          </>
         )}
       </li>
       {renderColorPickerPopup()}

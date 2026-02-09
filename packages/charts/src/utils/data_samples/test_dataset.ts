@@ -132,33 +132,129 @@ export const BARCHART_2Y2G = [
 /** @interrnal */
 export const BARCHART_2Y2G_VARIED_LEGEND = [
   // x = 0
-  { x: 0, g1: 'a', g2: 'b', y1: 1, y2: 4 },
-  { x: 0, g1: 'a', g2: 'medium_len', y1: 1, y2: 4 },
-  { x: 0, g1: 'longerLabel12', g2: 'medium_len', y1: 3, y2: 6 },
+  { x: 0, g1: 'Chrome', g2: 'Windows 11', y1: 42, y2: 18 },
+  {
+    x: 0,
+    g1: 'Safari',
+    g2: 'iOS17iPhone15,3AppleWebKit605.1.15',
+    y1: 28,
+    y2: 12,
+  },
+  { x: 0, g1: 'Firefox', g2: 'Linux', y1: 9, y2: 5 },
+  {
+    x: 0,
+    g1: 'ChromeMobileAndroid14Pixel8ProUltraEdition',
+    g2: 'Android 14 • Pixel 8 Pro',
+    y1: 21,
+    y2: 8,
+  },
+  {
+    x: 0,
+    g1: 'Edge',
+    g2: 'Windows 10 (Corporate Managed)',
+    y1: 14,
+    y2: 7,
+  },
 
   // x = 1
-  { x: 1, g1: 'a', g2: 'b', y1: 2, y2: 1 },
-  { x: 1, g1: 'a', g2: 'medium_len', y1: 2, y2: 1 },
-  { x: 1, g1: 'longerLabel12', g2: 'b', y1: 2, y2: 5 },
-  { x: 1, g1: 'longerLabel12', g2: 'medium_len', y1: 2, y2: 5 },
+  {
+    x: 1,
+    g1: 'ChromeMobile',
+    g2: 'Android13SMG998BGalaxyS21International',
+    y1: 17,
+    y2: 7,
+  },
+  { x: 1, g1: 'Safari', g2: 'macOS', y1: 19, y2: 10 },
+  {
+    x: 1,
+    g1: 'Chrome',
+    g2: 'Windows11IntelIrisXeGraphicsEnUS',
+    y1: 7,
+    y2: 2,
+  },
+  { x: 1, g1: 'Firefox', g2: 'Windows 11', y1: 8, y2: 4 },
+  {
+    x: 1,
+    g1: 'SamsungInternet',
+    g2: 'AndroidOneUI',
+    y1: 6,
+    y2: 3,
+  },
+  {
+    x: 1,
+    g1: 'Bot',
+    g2: 'EmbeddedWebViewInternalCrawler',
+    y1: 3,
+    y2: 1,
+  },
 
   // x = 2
-  { x: 2, g1: 'a', g2: 'b', y1: 10, y2: 5 },
-  { x: 2, g1: 'a', g2: 'medium_len', y1: 10, y2: 5 },
-  { x: 2, g1: 'longerLabel12', g2: 'b', y1: 3, y2: 1 },
-  { x: 2, g1: 'longerLabel12', g2: 'medium_len', y1: 3, y2: 1 },
+  { x: 2, g1: 'Edge', g2: 'Windows 10', y1: 12, y2: 6 },
+  {
+    x: 2,
+    g1: 'Safari',
+    g2: 'iPadOS17iPadPro12.9Inch6thGeneration',
+    y1: 9,
+    y2: 4,
+  },
+  { x: 2, g1: 'Chrome', g2: 'Windows 11', y1: 48, y2: 22 },
+  {
+    x: 2,
+    g1: 'Chrome',
+    g2: 'Windows11KHTMLlikeGecko120.0.0.0',
+    y1: 4,
+    y2: 1,
+  },
+  { x: 2, g1: 'Firefox', g2: 'Linux', y1: 10, y2: 6 },
+  { x: 2, g1: 'Safari', g2: 'iOS', y1: 31, y2: 15 },
 
   // x = 3
-  { x: 3, g1: 'a', g2: 'b', y1: 7, y2: 3 },
-  { x: 3, g1: 'longerLabel12', g2: 'b', y1: 6, y2: 4 },
-  { x: 3, g1: 'longerLabel12', g2: 'medium_len', y1: 6, y2: 4 },
+  {
+    x: 3,
+    g1: 'Edge',
+    g2: 'Windows11MicrosoftDefenderForEndpointEnterpriseManaged',
+    y1: 5,
+    y2: 2,
+  },
+  { x: 3, g1: 'Chrome', g2: 'Windows 11', y1: 44, y2: 19 },
+  {
+    x: 3,
+    g1: 'ChromeMobile',
+    g2: 'Android14Pixel8',
+    y1: 20,
+    y2: 9,
+  },
+  {
+    x: 3,
+    g1: 'Bot',
+    g2: 'GooglebotSmartphoneUserAgentString',
+    y1: 2,
+    y2: 1,
+  },
+  { x: 3, g1: 'Safari', g2: 'macOS', y1: 22, y2: 11 },
+  { x: 3, g1: 'Firefox', g2: 'Windows 11', y1: 7, y2: 3 },
 
   // x = 4
-  { x: 4, g1: 'a', g2: 'b', y1: 7, y2: 3 },
-  { x: 4, g1: 'a', g2: 'medium_len', y1: 7, y2: 3 },
-  { x: 4, g1: 'longerLabel12', g2: 'b', y1: 6, y2: 4 },
-  { x: 4, g1: 'longerLabel12', g2: 'medium_len', y1: 6, y2: 4 },
+  { x: 4, g1: 'Safari', g2: 'iOS', y1: 33, y2: 16 },
+  {
+    x: 4,
+    g1: 'Safari',
+    g2: 'iOS17iPhone15,3AppleWebKit605.1.15SafariMobile',
+    y1: 6,
+    y2: 2,
+  },
+  { x: 4, g1: 'Edge', g2: 'Windows 10', y1: 13, y2: 6 },
+  { x: 4, g1: 'Chrome', g2: 'Windows 11', y1: 50, y2: 23 },
+  { x: 4, g1: 'Firefox', g2: 'Linux', y1: 11, y2: 6 },
+  {
+    x: 4,
+    g1: 'Chrome',
+    g2: 'Windows11IntelIrisXeGraphicsDriverVersion31.0.101.5333',
+    y1: 4,
+    y2: 1,
+  },
 ];
+
 /** @internal */
 export const BARCHART_2Y3G = [
   { x: 0, g1: 'cdn.google.com', g2: 'direct-cdn', y1: 1, y2: 4, g3: 'somevalue' },

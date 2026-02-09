@@ -11,10 +11,7 @@
   }
   &--horizontal {
     .echLegendList {
-      flex-direction: row;
-      flex-wrap: wrap;
-      column-gap: $echLegendColumnGap;
-      row-gap: $echLegendRowGap;
+      display: block;
       margin-top: $echLegendRowGap;
       margin-bottom: $echLegendRowGap;
     }
@@ -26,8 +23,44 @@
     }
 
     .echLegendListContainer {
-      overflow-x: auto;
-      overflow-y: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      .echLegendList {
+        line-height: $echLegendRowHeight + $echLegendRowGap;
+      }
+
+      .echLegendItem {
+        display: inline;
+        margin-right: $echLegendColumnGap;
+
+        > .background {
+          display: none;
+        }
+
+        > *:not(.background) {
+          display: inline-block;
+          vertical-align: middle;
+          margin-left: 8px;
+        }
+
+        > .echLegendItem__action {
+          display: inline-flex;
+        }
+
+        > .echLegendItem__colorLabel {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          margin-left: 0; // first visible child, no leading margin
+        }
+
+        > .echLegendItem__actionGroup {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+      }
     }
   }
 
