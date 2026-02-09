@@ -20,6 +20,7 @@ import { isDefined, LayoutDirection, Position } from '../../utils/common';
 import type { Size } from '../../utils/dimensions';
 import type { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
+import { computeHorizontalLegendRowCount } from '../utils/legend_row_count';
 
 const getParentDimensionSelector = (state: GlobalChartState) => state.parentDimensions;
 
@@ -96,35 +97,22 @@ export const getLegendSizeSelector = createCustomCachedSelector(
       };
     }
     const availableWidth = parentDimensions.width - 20;
-    // Calculate rows by tracking cumulative width
-    let numRows = 1;
-    let currentRowWidth = 0;
-    // Calculate width for the max current and last value
-    const maxCurrentAndLastValue = config.legendValues.includes('currentAndLastValue')
-      ? items?.[0]?.values?.[0]?.maxLabel
-      : undefined;
-
-    for (const item of items) {
-      // Calculate width for this specific item
-      const { width: labelWidth } = withTextMeasure((textMeasure) =>
-        textMeasure(
-          `${item.label}${legendValues.length > 0 ? item.values[0]?.label ?? '' : ''}${maxCurrentAndLastValue ? ` ${maxCurrentAndLastValue}` : ''}`,
-          { fontFamily: DEFAULT_FONT_FAMILY, fontVariant: 'normal', fontWeight: 400, fontStyle: 'normal' },
-          12,
-          1.5,
-        ),
-      );
-
-      const gap = currentRowWidth > 0 ? COLUMN_GAP : 0;
-      const thisItemWidth = MARKER_WIDTH + SHARED_MARGIN + labelWidth + spacingBuffer + actionDimension + gap;
-
-      if (currentRowWidth + thisItemWidth > availableWidth && currentRowWidth > 0) {
-        numRows++;
-        currentRowWidth = thisItemWidth;
-      } else {
-        currentRowWidth += thisItemWidth;
-      }
-    }
+    const widthLimit = Math.abs(theme.legend.labelOptions.widthLimit ?? 250);
+    const numRows = withTextMeasure((textMeasure) =>
+      computeHorizontalLegendRowCount({
+        items,
+        legendValues,
+        availableWidth,
+        columnGap: COLUMN_GAP,
+        spacingBuffer,
+        actionDimension,
+        markerWidth: MARKER_WIDTH,
+        sharedMargin: SHARED_MARGIN,
+        widthLimit,
+        showValueTitle: legendLayout === 'list',
+        textMeasure,
+      }),
+    );
 
     const isSingleLine = numRows === 1;
     const isMoreThanTwoLines = numRows > 2;
