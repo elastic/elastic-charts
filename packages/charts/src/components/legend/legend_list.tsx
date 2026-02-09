@@ -135,6 +135,7 @@ export const LegendList: React.FC<Props> = (props) => {
                   key={isListLayout ? `${type}-${index}` : displayedLabel}
                   className="echLegendItem__legendValue"
                   style={{
+                    textAlign: isListLayout ? 'left' : undefined,
                     minWidth:
                       isListLayout && maxLabel && isCurrentAndLastValue
                         ? `${(maxLabel.length + titlePrefixLength) * 7 + 4}px`
