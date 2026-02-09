@@ -171,7 +171,7 @@ export const LegendList: React.FC<Props> = (props) => {
               <>
                 {valueElements.slice(0, -1)}
                 <span className="echLegendItem__actionGroup">
-                  {valueElements[valueElements.length - 1]}
+                  {valueElements.at(-1)}
                   {actionElement}
                 </span>
               </>
