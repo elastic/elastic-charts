@@ -44,7 +44,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
   const itemClassNames = classNames('echLegendTable__item', 'echLegendTable__item--highlightable', {
     'echLegendTable__item--hidden': isSeriesHidden,
     'echLegendTable__item--vertical': positionConfig.direction === LayoutDirection.Vertical,
-    'echLegendItem--isActive': isActive,
+    'echLegendTable__item--isActive': isActive,
     'echLegendTable__item--actionOnHover': legendActionOnHover,
   });
 
