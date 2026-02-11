@@ -31,34 +31,62 @@ const ActionFocusContext = createContext<ActionFocusContextValue | null>(null);
 /**
  * Provider that manages document-level listeners for legend action focus behavior.
  *
- * Instead of each legend item attaching its own pointerdown/focusin listeners (2 per item),
- * this provider attaches 2 listeners (only when enabled) and coordinates which legend action
- * is currently active.
+ * Manages shared pointerdown and focusin document listeners for all legend items,
+ * and tracks which legend action is currently active. Listeners are only attached
+ * when an action is active, and removed when no longer needed.
  *
  * @param enabled - When false, no listeners are attached and the context is null.
- *   Should be false when there is no legend action or legendActionOnHover is disabled.
+ *   Should be false when there is no legend action.
  * @internal
  */
 export function ActionFocusProvider({ children, enabled }: { children: ReactNode; enabled: boolean }) {
   const activeEntryRef = useRef<ActiveEntry | null>(null);
   const lastDeactivatedElementRef = useRef<HTMLDivElement | null>(null);
   const ignoreFocusUntilRef = useRef(0);
+  const focusIgnoreTimeoutIdRef = useRef<number | null>(null);
+  const [hasActive, setHasActive] = useState(false);
+  const [focusIgnoreActive, setFocusIgnoreActive] = useState(false);
 
-  const registerActive = useCallback((entry: ActiveEntry) => {
-    // Deactivate previous active item if it's a different one
-    const current = activeEntryRef.current;
-    if (current && current.ref !== entry.ref) {
-      current.deactivate();
-    }
-    activeEntryRef.current = entry;
-    // Clear any pending ignore window since a new action is now active
+  const clearFocusIgnoreWindow = useCallback(() => {
     ignoreFocusUntilRef.current = 0;
     lastDeactivatedElementRef.current = null;
+    setFocusIgnoreActive(false);
+    if (focusIgnoreTimeoutIdRef.current !== null) {
+      window.clearTimeout(focusIgnoreTimeoutIdRef.current);
+      focusIgnoreTimeoutIdRef.current = null;
+    }
   }, []);
+
+  const startFocusIgnoreWindow = useCallback(() => {
+    ignoreFocusUntilRef.current = Date.now() + FOCUS_IGNORE_WINDOW_MS;
+    setFocusIgnoreActive(true);
+    if (focusIgnoreTimeoutIdRef.current !== null) {
+      window.clearTimeout(focusIgnoreTimeoutIdRef.current);
+    }
+    focusIgnoreTimeoutIdRef.current = window.setTimeout(() => {
+      clearFocusIgnoreWindow();
+    }, FOCUS_IGNORE_WINDOW_MS);
+  }, [clearFocusIgnoreWindow]);
+
+  const registerActive = useCallback(
+    (entry: ActiveEntry) => {
+      // Deactivate previous active item if it's a different one
+      const current = activeEntryRef.current;
+      if (current && current.ref !== entry.ref) {
+        current.deactivate();
+      }
+      activeEntryRef.current = entry;
+      setHasActive(true);
+      // Clear any pending ignore window since a new action is now active
+      clearFocusIgnoreWindow();
+    },
+    [clearFocusIgnoreWindow],
+  );
 
   const unregisterActive = useCallback((ref: RefObject<HTMLDivElement | null>) => {
     if (activeEntryRef.current?.ref === ref) {
       activeEntryRef.current = null;
+      setHasActive(false);
     }
   }, []);
 
@@ -69,10 +97,14 @@ export function ActionFocusProvider({ children, enabled }: { children: ReactNode
         activeEntryRef.current.deactivate();
         activeEntryRef.current = null;
       }
-      ignoreFocusUntilRef.current = 0;
-      lastDeactivatedElementRef.current = null;
+      setHasActive(false);
+      clearFocusIgnoreWindow();
       return;
     }
+  }, [clearFocusIgnoreWindow, enabled]);
+
+  useEffect(() => {
+    if (!enabled || !hasActive) return;
 
     const onPointerDown = (e: PointerEvent) => {
       const entry = activeEntryRef.current;
@@ -83,23 +115,32 @@ export function ActionFocusProvider({ children, enabled }: { children: ReactNode
         entry.deactivate();
         lastDeactivatedElementRef.current = actionElement;
         activeEntryRef.current = null;
+        setHasActive(false);
         // Some popover/modal implementations restore focus to the trigger *after* they close
         // (often on `click`, after our `pointerdown` runs). That can re-trigger `:focus-within`
         // and keep the actions visible. Mark a short window in which we will ignore that
         // restored focus and immediately blur it.
-        ignoreFocusUntilRef.current = Date.now() + FOCUS_IGNORE_WINDOW_MS;
+        startFocusIgnoreWindow();
       } else {
         // Clicking inside should allow normal focus behavior
-        ignoreFocusUntilRef.current = 0;
-        lastDeactivatedElementRef.current = null;
+        clearFocusIgnoreWindow();
       }
     };
+
+    // Use capture phase to intercept events before they bubble
+    document.addEventListener('pointerdown', onPointerDown, true);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown, true);
+    };
+  }, [clearFocusIgnoreWindow, enabled, hasActive, startFocusIgnoreWindow]);
+
+  useEffect(() => {
+    if (!enabled || !focusIgnoreActive) return;
 
     const onFocusIn = (e: FocusEvent) => {
       if (ignoreFocusUntilRef.current === 0) return;
       if (Date.now() > ignoreFocusUntilRef.current) {
-        ignoreFocusUntilRef.current = 0;
-        lastDeactivatedElementRef.current = null;
+        clearFocusIgnoreWindow();
         return;
       }
 
@@ -113,13 +154,11 @@ export function ActionFocusProvider({ children, enabled }: { children: ReactNode
     };
 
     // Use capture phase to intercept events before they bubble
-    document.addEventListener('pointerdown', onPointerDown, true);
     document.addEventListener('focusin', onFocusIn, true);
     return () => {
-      document.removeEventListener('pointerdown', onPointerDown, true);
       document.removeEventListener('focusin', onFocusIn, true);
     };
-  }, [enabled]);
+  }, [clearFocusIgnoreWindow, enabled, focusIgnoreActive]);
 
   const value = useMemo(() => ({ registerActive, unregisterActive }), [registerActive, unregisterActive]);
 
@@ -130,7 +169,7 @@ export function ActionFocusProvider({ children, enabled }: { children: ReactNode
  * Hook to manage focus behavior for legend action items.
  *
  * Must be used within an {@link ActionFocusProvider}. When the provider is
- * disabled (no action or legendActionOnHover is false), the hook is a no-op.
+ * disabled (no action), the hook is a no-op.
  *
  * This also handles the edge case where modals/popovers restore focus to their trigger
  * after closing. Without this, the `:focus-within` CSS would keep the action visible
