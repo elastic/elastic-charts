@@ -144,7 +144,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
 
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
   const isTableView = shouldDisplayTable(itemProps.legendValues, legendLayout);
-  const isGridListView = shouldDisplayGridList(isTableView, getLegendPositionConfig(legendPosition), legendLayout);
+  const isGridListView = shouldDisplayGridList(isTableView, legendPosition, legendLayout);
 
   return (
     <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>

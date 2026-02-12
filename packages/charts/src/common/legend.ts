@@ -15,7 +15,7 @@ import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils
 import type { LegendPositionConfig, SeriesType } from '../specs';
 import type { LegendPath } from '../state/actions/legend';
 import type { Layout, Position } from '../utils/common';
-import { Position as PositionObj } from '../utils/common';
+import { LayoutDirection, Position as PositionObj } from '../utils/common';
 import type { PointStyle } from '../utils/themes/theme';
 
 /**
@@ -125,7 +125,7 @@ export const shouldDisplayGridList = (
     return legendPosition === PositionObj.Left || legendPosition === PositionObj.Right;
   }
 
-  return false;
+  return legendPosition.direction === LayoutDirection.Vertical;
 };
 
 /**
