@@ -39,6 +39,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../state/select
 import { getInternalMainProjectionAreaSelector } from '../../state/selectors/get_internal_main_projection_area';
 import { getLegendConfigSelector } from '../../state/selectors/get_legend_config_selector';
 import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_items_values';
+import { getLegendMaxFormattedValueSelector } from '../../state/selectors/get_legend_max_formatted_value';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { isBrushingSelector } from '../../state/selectors/is_brushing';
@@ -57,6 +58,7 @@ interface LegendStateProps {
   config: LegendSpec;
   items: LegendItem[];
   extraValues: Map<string, LegendItemExtraValues>;
+  maxFormattedValue?: string;
 }
 
 interface LegendDispatchProps {
@@ -78,6 +80,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     chartDimensions,
     containerDimensions,
     config,
+    maxFormattedValue,
   } = props;
 
   const { onLegendItemOut, onLegendItemOver, legendLayout, legendPosition } = config;
@@ -184,7 +187,13 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
           <div style={containerStyle} className="echLegendListContainer">
             <ul style={listStyle} className="echLegendList">
               {items.map((item, index) => (
-                <LegendList key={`${index}`} item={item} {...itemProps} isListLayout />
+                <LegendList
+                  key={`${index}`}
+                  item={item}
+                  {...itemProps}
+                  isListLayout
+                  maxFormattedValue={maxFormattedValue}
+                />
               ))}
             </ul>
           </div>
@@ -238,6 +247,7 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
     size: getLegendSizeSelector(state),
     items: internalChartState.getLegendItems(state),
     extraValues: getLegendExtraValuesSelector(state),
+    maxFormattedValue: getLegendMaxFormattedValueSelector(state),
     config,
   };
 };

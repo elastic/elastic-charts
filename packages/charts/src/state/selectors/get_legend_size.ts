@@ -9,6 +9,7 @@
 import { getChartThemeSelector } from './get_chart_theme';
 import { getLegendConfigSelector } from './get_legend_config_selector';
 import { getLegendItemsSelector } from './get_legend_items';
+import { getLegendMaxFormattedValueSelector } from './get_legend_max_formatted_value';
 import { getLegendTableSize } from './get_legend_table_size';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { shouldDisplayTable } from '../../common/legend';
@@ -43,8 +44,8 @@ export type LegendSizing = Size & {
 
 /** @internal */
 export const getLegendSizeSelector = createCustomCachedSelector(
-  [getLegendConfigSelector, getChartThemeSelector, getParentDimensionSelector, getLegendItemsSelector],
-  (config, theme, parentDimensions, items): LegendSizing => {
+  [getLegendConfigSelector, getChartThemeSelector, getParentDimensionSelector, getLegendItemsSelector, getLegendMaxFormattedValueSelector],
+  (config, theme, parentDimensions, items, maxFormattedValue): LegendSizing => {
     const { showLegend, legendSize, legendValues, legendPosition, legendAction, legendLayout } = config;
     if (!showLegend) {
       return { width: 0, height: 0, margin: 0, position: LEGEND_TO_FULL_CONFIG[Position.Right] };
@@ -111,6 +112,7 @@ export const getLegendSizeSelector = createCustomCachedSelector(
         widthLimit,
         showValueTitle: legendLayout === 'list',
         textMeasure,
+        maxFormattedValue,
       }),
     );
 

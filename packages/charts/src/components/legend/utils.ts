@@ -19,7 +19,6 @@ export function getExtra(
   totalItems: number,
 ): LegendItemValue | undefined {
   const { seriesIdentifiers, values, childId, path } = item;
-  const maxLabel = values?.[0]?.maxLabel ?? '';
   // don't show extra if the legend item is associated with multiple series
   if (extraValues.size === 0 || seriesIdentifiers.length > 1 || !seriesIdentifiers[0]) {
     return findCurrentValue(values);
@@ -28,11 +27,7 @@ export function getExtra(
   const extraValueKey = path.map(({ index }) => index).join('__');
   const itemExtraValues = extraValues.has(extraValueKey) ? extraValues.get(extraValueKey) : extraValues.get(key);
   const actionExtra = childId !== undefined ? itemExtraValues?.get(childId) : undefined;
-  return actionExtra
-    ? { ...actionExtra, maxLabel }
-    : extraValues.size === totalItems
-      ? findCurrentValue(values)
-      : undefined;
+  return actionExtra ?? (extraValues.size === totalItems ? findCurrentValue(values) : undefined);
 }
 
 /** @internal */

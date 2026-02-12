@@ -132,14 +132,7 @@ export function computeLegend(
 
     const pointStyle = getPointStyle(spec, theme);
 
-    const legendValuesItems = getLegendValues(
-      series,
-      xDomain,
-      yDomains,
-      legendValues,
-      y1Accessor(series.stackMode),
-      formatter,
-    );
+    const legendValuesItems = getLegendValues(series, xDomain, legendValues, y1Accessor(series.stackMode), formatter);
 
     legendItems.push({
       depth: 0,
@@ -159,7 +152,6 @@ export function computeLegend(
       const bandedLegendValuesItems = getLegendValues(
         series,
         xDomain,
-        yDomains,
         legendValues,
         y0Accessor(series.stackMode),
         formatter,

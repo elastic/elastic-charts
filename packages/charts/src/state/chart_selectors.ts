@@ -96,6 +96,12 @@ export interface ChartSelectors {
   getLegendExtraValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemExtraValues>;
 
   /**
+   * Returns the formatted max Y domain value used to reserve stable width for CurrentAndLastValue legend values.
+   * @param globalState
+   */
+  getLegendMaxFormattedValue(globalState: GlobalChartState): string | undefined;
+
+  /**
    * Returns the CSS pointer cursor depending on the internal chart state
    * @param globalState
    */
@@ -194,6 +200,7 @@ export const createChartSelectorsFactory =
       getLegendItems: () => EMPTY_LEGEND_LIST,
       getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
       getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
+      getLegendMaxFormattedValue: () => undefined,
       getPointerCursor: () => DEFAULT_CSS_CURSOR,
       isTooltipVisible: () => ({
         visible: false,

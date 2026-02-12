@@ -56,13 +56,13 @@ describe('state utils - computeHorizontalLegendRowCount', () => {
       label,
       isItemHidden: false,
       isSeriesHidden: false,
-      values: [{ type: LegendValue.CurrentAndLastValue, value: 10 as any, label: valueLabel, maxLabel: valueLabel }],
+      values: [{ type: LegendValue.CurrentAndLastValue, value: 10 as any, label: valueLabel }],
       keys: [],
     }) as any;
 
   const mkItemWithValues = (
     label: string,
-    values: Array<{ type: LegendValue; label: string; maxLabel?: string }>,
+    values: Array<{ type: LegendValue; label: string }>,
   ): LegendItem =>
     ({
       seriesIdentifiers: [{ specId: 'spec', key: 'k', splitAccessors: new Map(), yAccessor: 'y' as any }],
@@ -72,11 +72,10 @@ describe('state utils - computeHorizontalLegendRowCount', () => {
       label,
       isItemHidden: false,
       isSeriesHidden: false,
-      values: values.map(({ type, label: valueLabel, maxLabel }) => ({
+      values: values.map(({ type, label: valueLabel }) => ({
         type,
         value: 10 as any,
         label: valueLabel,
-        maxLabel: maxLabel ?? valueLabel,
       })),
       keys: [],
     }) as any;
@@ -115,11 +114,11 @@ describe('state utils - computeHorizontalLegendRowCount', () => {
     ).toBe(2);
   });
 
-  it('reserves CurrentAndLastValue width using the first item max label', () => {
-    // max label length=4 ("9999") is used for every item, even if the current label is shorter.
+  it('reserves CurrentAndLastValue width using maxFormattedValue', () => {
+    // maxFormattedValue length=4 ("9999") is used for every item, even if the current label is shorter.
     const items = [
-      mkItemWithValues('a', [{ type: LegendValue.CurrentAndLastValue, label: '1', maxLabel: '9999' }]),
-      mkItemWithValues('b', [{ type: LegendValue.CurrentAndLastValue, label: '2', maxLabel: '2' }]),
+      mkItemWithValues('a', [{ type: LegendValue.CurrentAndLastValue, label: '1' }]),
+      mkItemWithValues('b', [{ type: LegendValue.CurrentAndLastValue, label: '2' }]),
     ];
 
     expect(
@@ -137,14 +136,15 @@ describe('state utils - computeHorizontalLegendRowCount', () => {
         widthLimit: 0,
         showValueTitle: false,
         textMeasure: measureByCharCount,
+        maxFormattedValue: '9999',
       }),
     ).toBe(2);
   });
 
   it('does not reserve max label width for non-CurrentAndLastValue values', () => {
     const items = [
-      mkItemWithValues('a', [{ type: LegendValue.LastValue, label: '1', maxLabel: '9999' }]),
-      mkItemWithValues('b', [{ type: LegendValue.LastValue, label: '2', maxLabel: '9999' }]),
+      mkItemWithValues('a', [{ type: LegendValue.LastValue, label: '1' }]),
+      mkItemWithValues('b', [{ type: LegendValue.LastValue, label: '2' }]),
     ];
 
     expect(
@@ -162,6 +162,7 @@ describe('state utils - computeHorizontalLegendRowCount', () => {
         widthLimit: 0,
         showValueTitle: false,
         textMeasure: measureByCharCount,
+        maxFormattedValue: '9999',
       }),
     ).toBe(1);
   });

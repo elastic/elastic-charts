@@ -71,6 +71,8 @@ export interface HorizontalLegendRowCountArgs {
   showValueTitle: boolean;
   /** Text measurement function to avoid DOM dependencies */
   textMeasure: TextMeasure;
+  /** Formatted max Y domain value for reserving stable CurrentAndLastValue column width */
+  maxFormattedValue?: string;
 }
 
 /**
@@ -96,6 +98,7 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
     widthLimit,
     showValueTitle,
     textMeasure,
+    maxFormattedValue,
   } = args;
 
   const font = {
@@ -119,10 +122,8 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
         // Only CurrentAndLastValue reserves width even when the current/hover label is empty (placeholder rendered).
         if (type !== LegendValue.CurrentAndLastValue && !v.label) return;
 
-        // Reserve width for CurrentAndLastValue using the max label
-        const maxCurrentAndLastValue = v.maxLabel;
-        const valueLabel =
-          type === LegendValue.CurrentAndLastValue ? maxCurrentAndLastValue ?? v.maxLabel ?? (v.label || '—') : v.label;
+        // Reserve width for CurrentAndLastValue using the legend-level max formatted value
+        const valueLabel = type === LegendValue.CurrentAndLastValue ? maxFormattedValue ?? (v.label || '—') : v.label;
 
         const valueText = (() => {
           if (!showValueTitle) return valueLabel;

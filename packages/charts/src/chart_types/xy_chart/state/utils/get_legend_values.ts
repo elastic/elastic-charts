@@ -24,7 +24,7 @@ import {
 } from '../../../../common/aggregations';
 import { LegendValue } from '../../../../common/legend';
 import { ScaleType } from '../../../../scales/constants';
-import type { XDomain, YDomain } from '../../domains/types';
+import type { XDomain } from '../../domains/types';
 import type { DataSeries, DataSeriesDatum } from '../../utils/series';
 import type { TickFormatter } from '../../utils/specs';
 
@@ -36,7 +36,6 @@ import type { TickFormatter } from '../../utils/specs';
 export function getLegendValues(
   series: DataSeries,
   xDomain: XDomain,
-  yDomains: YDomain[],
   types: LegendValue[],
   valueAccessor: (d: DataSeriesDatum) => number | null,
   tickFormatter: TickFormatter<any> | ((tick: unknown) => string),
@@ -46,14 +45,11 @@ export function getLegendValues(
     const formatter =
       type === LegendValue.Percent || type === LegendValue.DifferencePercent ? percentFormatter : tickFormatter;
 
-    const maxYValue = yDomains?.[0]?.domain?.[1];
     const label = typeof value === 'number' && isFinite(value) ? formatter(value) : '';
-    const maxLabel = typeof maxYValue === 'number' && isFinite(maxYValue) ? formatter(maxYValue) : label;
 
     return {
       type,
       label,
-      maxLabel,
       value,
     };
   });

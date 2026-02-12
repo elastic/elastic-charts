@@ -29,7 +29,7 @@ export function isPosition(value: Position | LegendPositionConfig): value is Pos
 export type LegendItemChildId = CategoryKey;
 
 /** @public */
-export type LegendItemValue = { value: PrimitiveValue; label: string; maxLabel?: string; type: LegendValue };
+export type LegendItemValue = { value: PrimitiveValue; label: string; type: LegendValue };
 
 /** @public */
 export const LegendValue = Object.freeze({
