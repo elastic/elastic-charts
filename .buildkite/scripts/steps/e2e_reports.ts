@@ -224,6 +224,7 @@ void (async () => {
           body: `Your latest commit indicated you would like me to update the vrt screenshots but this PR disallows edits. Please update your PR to allow edits and tell me to \`test this\` again.
           <img width="297" alt="image" src="https://user-images.githubusercontent.com/19007109/175552884-7f8e4bba-3440-444b-b19c-de15d618ac23.png">`,
         });
+        throw new Error('CI run in update mode but PR does not allow edits');
       }
     }
   }
