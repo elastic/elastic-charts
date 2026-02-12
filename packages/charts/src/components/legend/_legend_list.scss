@@ -52,6 +52,7 @@
           display: inline-flex;
           align-items: center;
           gap: 8px;
+          max-width: 100%; // prevent overflow when label + color marker exceeds line width
           margin-left: 0; // first visible child, no leading margin
         }
 
