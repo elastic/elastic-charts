@@ -13,6 +13,7 @@ import React, { useCallback } from 'react';
 import { Label as ItemLabel } from './label';
 import { useLegendColorPicker } from './legend_color_picker';
 import type { SharedLegendItemProps } from './types';
+import { useActionFocusManagement } from './use_action_focus_management';
 import { getExtra } from './utils';
 import type { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { LegendValue } from '../../common/legend';
@@ -50,6 +51,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     legendValues,
     totalItems,
     action: Action,
+    legendActionOnHover,
     positionConfig,
     labelOptions,
     isMostlyRTL,
@@ -61,10 +63,13 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     onLegendItemMouseOut,
   } = props;
   const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, depth, path, isToggleable } = item;
+  const { isActive, actionRef, handlePointerDown, handleKeyDown } = useActionFocusManagement();
 
   const itemClassNames = classNames('echLegendItem', {
     'echLegendItem--hidden': isSeriesHidden,
     'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
+    'echLegendItem--isActive': isActive,
+    'echLegendItem--actionOnHover': legendActionOnHover,
   });
 
   const legendValueItems = prepareLegendValues(item, legendValues, totalItems, extraValues).filter(isDefined);
@@ -126,7 +131,12 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
             )
           : null}
         {Action && (
-          <div className="echLegendItem__action">
+          <div
+            className="echLegendItem__action"
+            ref={actionRef}
+            onPointerDownCapture={handlePointerDown}
+            onKeyDown={handleKeyDown}
+          >
             <Action series={seriesIdentifiers} color={color} label={label} />
           </div>
         )}
