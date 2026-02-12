@@ -15,7 +15,6 @@ import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_datas
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-import { getColorPicker } from '../utils/components/get_color_picker';
 import { getLegendAction } from '../utils/components/get_legend_action';
 import { customKnobs } from '../utils/knobs';
 
@@ -34,7 +33,6 @@ const getLabelOptionKnobs = (isLineLimit: boolean): LegendLabelOptions => {
 export const Example: ChartsStory = (_, { title, description }) => {
   const hideActions = boolean('Hide legend action', false, 'Legend');
   const showLegendExtra = !boolean('Hide legend extra', false, 'Legend');
-  const showColorPicker = !boolean('Hide color picker', true, 'Legend');
   const legendPosition = customKnobs.enum.position('Legend position', 'bottom', { group: 'Legend' });
   const euiPopoverPosition = customKnobs.enum.euiPopoverPosition(undefined, undefined, { group: 'Legend' });
   const legendLayout = customKnobs.enum.layout('Legend Layout', 'list', { group: 'Legend' });
@@ -68,7 +66,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
         legendPosition={legendPosition}
         legendLayout={legendLayout}
         legendAction={hideActions ? undefined : getLegendAction(euiPopoverPosition)}
-        legendColorPicker={showColorPicker ? getColorPicker(euiPopoverPosition) : undefined}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
