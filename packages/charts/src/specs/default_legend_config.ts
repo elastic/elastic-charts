@@ -19,4 +19,5 @@ export const DEFAULT_LEGEND_CONFIG = {
   legendMaxDepth: Infinity,
   legendPosition: Position.Right,
   flatLegend: false,
+  legendActionOnHover: false,
 };
