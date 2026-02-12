@@ -34,3 +34,18 @@ export function getExtra(
       ? findCurrentValue(values)
       : undefined;
 }
+
+/** @internal */
+export const prepareLegendValues = (
+  item: LegendItem,
+  legendValues: LegendValue[],
+  totalItems: number,
+  extraValues: Map<string, LegendItemExtraValues>,
+) => {
+  return legendValues.map((legendValue) => {
+    if (legendValue === LegendValue.Value || legendValue === LegendValue.CurrentAndLastValue) {
+      return getExtra(extraValues, item, totalItems);
+    }
+    return item.values.find(({ type }) => type === legendValue);
+  });
+};

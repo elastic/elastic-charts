@@ -16,8 +16,8 @@ import type { SeriesIdentifier } from '../../../common/series_id';
 import { LayoutDirection } from '../../../utils/common';
 import { Label as ItemLabel } from '../label';
 import { useLegendColorPicker } from '../legend_color_picker';
-import { prepareLegendValues } from '../legend_item_utils';
 import type { LegendItemProps } from '../types';
+import { prepareLegendValues } from '../utils';
 
 /** @internal */
 export const LegendListItem: React.FC<LegendItemProps> = (props) => {
