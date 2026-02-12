@@ -17,6 +17,7 @@ import { LayoutDirection } from '../../../utils/common';
 import { Label as ItemLabel } from '../label';
 import { useLegendColorPicker } from '../legend_color_picker';
 import type { LegendItemProps } from '../types';
+import { useActionFocusManagement } from '../use_action_focus_management';
 import { prepareLegendValues } from '../utils';
 
 /** @internal */
@@ -27,6 +28,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     legendValues,
     totalItems,
     action: Action,
+    legendActionOnHover,
     positionConfig,
     labelOptions,
     isMostlyRTL,
@@ -37,10 +39,13 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     hiddenItems,
   } = props;
   const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, path, isToggleable } = item;
+  const { isActive, actionRef, handlePointerDown, handleKeyDown } = useActionFocusManagement();
 
   const itemClassNames = classNames('echLegendTable__item', 'echLegendTable__item--highlightable', {
     'echLegendTable__item--hidden': isSeriesHidden,
     'echLegendTable__item--vertical': positionConfig.direction === LayoutDirection.Vertical,
+    'echLegendTable__item--isActive': isActive,
+    'echLegendTable__item--actionOnHover': legendActionOnHover,
   });
 
   const legendValueItems = prepareLegendValues(item, legendValues, totalItems, extraValues);
@@ -97,7 +102,14 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
         })}
         {ActionComponent && (
           <LegendTableCell>
-            <div className="echLegendItem__action">{ActionComponent}</div>
+            <div
+              className="echLegendItem__action"
+              ref={actionRef}
+              onPointerDownCapture={handlePointerDown}
+              onKeyDown={handleKeyDown}
+            >
+              {ActionComponent}
+            </div>
           </LegendTableCell>
         )}
       </LegendTableRow>

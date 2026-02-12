@@ -18,6 +18,7 @@ import { LegendTable } from './legend_table';
 import { getLegendPositionConfig, legendPositionStyle } from './position_style';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
 import type { LegendItemProps } from './types';
+import { ActionFocusProvider } from './use_action_focus_management';
 import type { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { shouldDisplayGridList } from '../../common/legend';
 import { shouldDisplayTable } from '../../common/legend';
@@ -137,6 +138,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     toggleDeselectSeriesAction: props.onToggleDeselectSeriesAction,
     colorPicker: config.legendColorPicker,
     action: config.legendAction,
+    legendActionOnHover: config.legendActionOnHover ?? DEFAULT_LEGEND_CONFIG.legendActionOnHover,
     labelOptions: legend.labelOptions,
     flatLegend: config.flatLegend ?? DEFAULT_LEGEND_CONFIG.flatLegend,
     legendTitle: config.legendTitle,
@@ -145,47 +147,50 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
   const isTableView = shouldDisplayTable(itemProps.legendValues, legendLayout);
   const isGridListView = shouldDisplayGridList(isTableView, legendPosition, legendLayout);
+  const actionFocusEnabled = Boolean(config.legendAction);
 
   return (
-    <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
-      {config.customLegend ? (
-        <div style={containerStyle}>
-          <CustomLegend
-            component={config.customLegend}
-            items={items.map(({ seriesIdentifiers, childId, path, ...customProps }) => ({
-              ...customProps,
-              seriesIdentifiers,
-              path,
-              extraValue: itemProps.extraValues.get(seriesIdentifiers[0]?.key ?? '')?.get(childId ?? ''),
-              onItemOutAction,
-              onItemOverActon: () => onItemOverAction(path),
-              onItemClickAction: (negate: boolean) =>
-                itemProps.toggleDeselectSeriesAction({ legendItemIds: seriesIdentifiers, metaKey: negate }),
-            }))}
-          />
-        </div>
-      ) : isTableView ? (
-        <div style={containerStyle} className="echLegendTable__container">
-          <LegendTable items={items} {...itemProps} seriesWidth={size.seriesWidth} />
-        </div>
-      ) : isGridListView ? (
-        <div style={containerStyle} className="echLegendGridListContainer">
-          <ul style={listStyle} className="echLegendGridList">
-            {items.map((item, index) => (
-              <LegendList key={`${index}`} item={item} {...itemProps} />
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <div style={containerStyle} className="echLegendListContainer">
-          <ul style={listStyle} className="echLegendList">
-            {items.map((item, index) => (
-              <LegendList key={`${index}`} item={item} {...itemProps} isListLayout />
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+    <ActionFocusProvider enabled={actionFocusEnabled}>
+      <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
+        {config.customLegend ? (
+          <div style={containerStyle}>
+            <CustomLegend
+              component={config.customLegend}
+              items={items.map(({ seriesIdentifiers, childId, path, ...customProps }) => ({
+                ...customProps,
+                seriesIdentifiers,
+                path,
+                extraValue: itemProps.extraValues.get(seriesIdentifiers[0]?.key ?? '')?.get(childId ?? ''),
+                onItemOutAction,
+                onItemOverActon: () => onItemOverAction(path),
+                onItemClickAction: (negate: boolean) =>
+                  itemProps.toggleDeselectSeriesAction({ legendItemIds: seriesIdentifiers, metaKey: negate }),
+              }))}
+            />
+          </div>
+        ) : isTableView ? (
+          <div style={containerStyle} className="echLegendTable__container">
+            <LegendTable items={items} {...itemProps} seriesWidth={size.seriesWidth} />
+          </div>
+        ) : isGridListView ? (
+          <div style={containerStyle} className="echLegendGridListContainer">
+            <ul style={listStyle} className="echLegendGridList">
+              {items.map((item, index) => (
+                <LegendList key={`${index}`} item={item} {...itemProps} />
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <div style={containerStyle} className="echLegendListContainer">
+            <ul style={listStyle} className="echLegendList">
+              {items.map((item, index) => (
+                <LegendList key={`${index}`} item={item} {...itemProps} isListLayout />
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </ActionFocusProvider>
   );
 }
 
