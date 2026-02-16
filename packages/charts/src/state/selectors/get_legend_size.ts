@@ -33,7 +33,9 @@ const SHARED_MARGIN = 4;
 const VERTICAL_PADDING = 4;
 /** @internal */
 export const TOP_MARGIN = 2;
-const COLUMN_GAP = 24;
+const BETWEEN_ROW_GAP = 24;
+const WITHIN_ROW_GAP = 8;
+const ACTION_WIDTH = 16;
 
 /** @internal */
 export type LegendSizing = Size & {
@@ -44,7 +46,13 @@ export type LegendSizing = Size & {
 
 /** @internal */
 export const getLegendSizeSelector = createCustomCachedSelector(
-  [getLegendConfigSelector, getChartThemeSelector, getParentDimensionSelector, getLegendItemsSelector, getLegendMaxFormattedValueSelector],
+  [
+    getLegendConfigSelector,
+    getChartThemeSelector,
+    getParentDimensionSelector,
+    getLegendItemsSelector,
+    getLegendMaxFormattedValueSelector,
+  ],
   (config, theme, parentDimensions, items, maxFormattedValue): LegendSizing => {
     const { showLegend, legendSize, legendValues, legendPosition, legendAction, legendLayout } = config;
     if (!showLegend) {
@@ -98,33 +106,47 @@ export const getLegendSizeSelector = createCustomCachedSelector(
       };
     }
     const availableWidth = parentDimensions.width - 20;
-    const widthLimit = Math.abs(theme.legend.labelOptions.widthLimit ?? 250);
-    const numRows = withTextMeasure((textMeasure) =>
-      computeHorizontalLegendRowCount({
-        items,
-        legendValues,
-        availableWidth,
-        columnGap: COLUMN_GAP,
-        spacingBuffer,
-        actionDimension,
-        markerWidth: MARKER_WIDTH,
-        sharedMargin: SHARED_MARGIN,
-        widthLimit,
-        showValueTitle: legendLayout === 'list',
-        textMeasure,
-        maxFormattedValue,
-      }),
-    );
+    let height;
 
-    const isSingleLine = numRows === 1;
-    const isMoreThanTwoLines = numRows > 2;
-    const height = Number.isFinite(legendSize)
-      ? Math.min(legendSize, parentDimensions.height * 0.7)
-      : isSingleLine
-        ? bbox.height + 16
-        : isMoreThanTwoLines
-          ? bbox.height * 2.5 + 24
-          : bbox.height * 2 + 24;
+    if (!legendLayout) {
+      const numberOfItemsPerRow = (parentDimensions.width - 20) / 200;
+      const isSingleLine = numberOfItemsPerRow > items.length;
+      const isMoreThanTwoLines = numberOfItemsPerRow * 2 < items.length;
+      height = Number.isFinite(legendSize)
+        ? Math.min(legendSize, parentDimensions.height * 0.7)
+        : isSingleLine
+          ? bbox.height + 16
+          : isMoreThanTwoLines
+            ? bbox.height * 2.5 + 24
+            : bbox.height * 2 + 24;
+    } else {
+      // This section is related to the list layout
+      const widthLimit = Math.abs(theme.legend.labelOptions.widthLimit ?? 250);
+      const { isSingleLine, isMoreThanTwoLines } = withTextMeasure((textMeasure) =>
+        computeHorizontalLegendRowCount({
+          items,
+          legendValues,
+          availableWidth,
+          columnGap: BETWEEN_ROW_GAP,
+          spacingBuffer: WITHIN_ROW_GAP,
+          actionDimension: ACTION_WIDTH,
+          markerWidth: MARKER_WIDTH,
+          sharedMargin: SHARED_MARGIN,
+          widthLimit,
+          showValueTitle: legendLayout === 'list',
+          textMeasure,
+          maxFormattedValue,
+        }),
+      );
+
+      height = Number.isFinite(legendSize)
+        ? Math.min(legendSize, parentDimensions.height * 0.7)
+        : isSingleLine
+          ? bbox.height + 22
+          : isMoreThanTwoLines
+            ? bbox.height * 2.5 + 28
+            : bbox.height * 2 + 28;
+    }
 
     return {
       height,

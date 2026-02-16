@@ -12,38 +12,6 @@ import { LegendValue, legendValueTitlesMap } from '../../common/legend';
 import type { TextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { isDefined } from '../../utils/common';
 
-/**
- * Compute how many rows a wrapping flex container will use.
- *
- * The `column-gap` applies **between** items, not at the beginning of a row.
- *
- * @internal
- */
-export function computeWrappedRowCount(itemWidths: number[], availableWidth: number, columnGap: number): number {
-  if (itemWidths.length === 0) {
-    return 1;
-  }
-
-  let numRows = 1;
-  let currentRowWidth = 0;
-
-  for (const rawItemWidth of itemWidths) {
-    const itemWidth = Math.max(0, rawItemWidth);
-    const nextRowWidth = currentRowWidth === 0 ? itemWidth : currentRowWidth + columnGap + itemWidth;
-
-    // Only wrap when there is already something on the current row.
-    // A single over-wide item still occupies a single row (it can overflow/scroll).
-    if (nextRowWidth > availableWidth && currentRowWidth > 0) {
-      numRows++;
-      currentRowWidth = itemWidth;
-    } else {
-      currentRowWidth = nextRowWidth;
-    }
-  }
-
-  return numRows;
-}
-
 /** @internal */
 export interface HorizontalLegendRowCountArgs {
   /** Legend items being rendered */
@@ -83,9 +51,16 @@ export interface HorizontalLegendRowCountArgs {
  * - the label can be truncated by a pixel width limit
  * - `CurrentAndLastValue` can reserve width using the max label
  *
+ * Items are measured lazily and laid out greedily row-by-row.
+ * The loop short-circuits as soon as a third row is reached, so remaining
+ * items are never measured.
+ *
  * @internal
  */
-export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountArgs): number {
+export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountArgs): {
+  isSingleLine: boolean;
+  isMoreThanTwoLines: boolean;
+} {
   const {
     items,
     legendValues,
@@ -108,21 +83,19 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
     fontStyle: 'normal',
   } as const;
 
-  const itemWidths = items.map((item) => {
+  let rows = 1;
+  let currentRowWidth = 0;
+
+  for (const item of items) {
     const { width: labelOnlyWidth } = textMeasure(item.label, font, 12, 1.5);
-    // Match list-layout px truncation: the label itself is capped at `widthLimit` px (0 means no truncation)
     const cappedLabelWidth = widthLimit > 0 ? Math.min(labelOnlyWidth, widthLimit) : labelOnlyWidth;
 
-    // Compute value widths independently so we can account for per-cell margins and placeholders.
     const valueCellWidths = legendValues
       .map((type) => {
         const v = item.values.find((vv) => vv.type === type);
         if (!v) return;
-
-        // Only CurrentAndLastValue reserves width even when the current/hover label is empty (placeholder rendered).
         if (type !== LegendValue.CurrentAndLastValue && !v.label) return;
 
-        // Reserve width for CurrentAndLastValue using the legend-level max formatted value
         const valueLabel = type === LegendValue.CurrentAndLastValue ? maxFormattedValue ?? (v.label || '—') : v.label;
 
         const valueText = (() => {
@@ -130,25 +103,31 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
           const title = legendValueTitlesMap[type] ?? '';
           return `${title.toUpperCase()}: ${valueLabel}`;
         })();
-
-        return textMeasure(valueText, font, 12, 1.5).width;
+        return valueText.length * 7;
       })
       .filter(isDefined);
 
-    // Add sharedMargin before the label and each rendered value cell (matches list layout spacing).
     const valuesWidth = valueCellWidths.reduce((acc, w) => acc + sharedMargin + w, 0);
-    const labelAndValuesWidth = cappedLabelWidth + valuesWidth;
-    const hasAdditionalValues = valueCellWidths.length > 0;
-    // Add a trailing margin only when the label is the last cell (no action column and no value cells).
-    const trailingMargin = actionDimension || hasAdditionalValues ? 0 : sharedMargin;
-    return (
+    const itemWidth =
       sharedMargin +
       markerWidth +
       spacingBuffer +
-      (sharedMargin + labelAndValuesWidth + trailingMargin) +
-      (actionDimension ? spacingBuffer + actionDimension : 0)
-    );
-  });
+      cappedLabelWidth +
+      spacingBuffer +
+      valuesWidth +
+      (actionDimension ? spacingBuffer + actionDimension : 0) +
+      sharedMargin;
 
-  return computeWrappedRowCount(itemWidths, availableWidth, columnGap);
+    const nextRowWidth = currentRowWidth === 0 ? itemWidth : currentRowWidth + columnGap + itemWidth;
+
+    if (nextRowWidth > availableWidth && currentRowWidth > 0) {
+      rows++;
+      if (rows > 2) return { isSingleLine: false, isMoreThanTwoLines: true };
+      currentRowWidth = itemWidth;
+    } else {
+      currentRowWidth = nextRowWidth;
+    }
+  }
+
+  return { isSingleLine: rows <= 1, isMoreThanTwoLines: false };
 }

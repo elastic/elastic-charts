@@ -119,7 +119,7 @@ export const LegendList: React.FC<Props> = (props) => {
             textAlign: isListLayout ? 'left' : undefined,
             minWidth:
               isListLayout && maxFormattedValue && isCurrentAndLastValue
-                ? `${(maxFormattedValue.length + titlePrefixLength) * 7 + 4}px`
+                ? `${(maxFormattedValue.length + titlePrefixLength) * 7}px`
                 : undefined,
           }}
         >
