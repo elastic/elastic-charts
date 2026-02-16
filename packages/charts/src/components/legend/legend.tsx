@@ -148,7 +148,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   };
 
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
-  const isTableView = shouldDisplayTable(itemProps.legendValues, legendLayout);
+  const isTableView = shouldDisplayTable(itemProps.legendValues, legendPosition, legendLayout);
   const isGridListView = shouldDisplayGridList(isTableView, legendPosition, legendLayout);
   const actionFocusEnabled = Boolean(config.legendAction);
 

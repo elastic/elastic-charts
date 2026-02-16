@@ -58,7 +58,7 @@ export const getLegendSizeSelector = createCustomCachedSelector(
     if (!showLegend) {
       return { width: 0, height: 0, margin: 0, position: LEGEND_TO_FULL_CONFIG[Position.Right] };
     }
-    if (shouldDisplayTable(legendValues, legendLayout)) {
+    if (shouldDisplayTable(legendValues, legendPosition, legendLayout)) {
       return withTextMeasure((textMeasure) => getLegendTableSize(config, theme, parentDimensions, items, textMeasure));
     }
 

@@ -100,12 +100,35 @@ export type LegendItem = {
 /** @internal */
 export type LegendItemExtraValues = Map<LegendItemChildId, LegendItemValue>;
 
-/** @internal */
-export const shouldDisplayTable = (legendValues: LegendValue[], legendLayout?: Layout) => {
+/**
+ * Layout should be legacy when either
+ *   - legendLayout is undefined
+ *   - legendPosition is left or right
+ *   - legendPositionConfig is a vertical position
+ * @internal */
+const shouldUseLegacyLayout = (legendPosition: Position | LegendPositionConfig, legendLayout?: Layout) => {
   if (legendLayout === undefined) {
+    return true;
+  }
+  if (isPosition(legendPosition)) {
+    return legendPosition === PositionObj.Left || legendPosition === PositionObj.Right;
+  }
+
+  return legendPosition.direction === LayoutDirection.Vertical;
+};
+
+/** @internal */
+export const shouldDisplayTable = (
+  legendValues: LegendValue[],
+  legendPosition: Position | LegendPositionConfig,
+  legendLayout?: Layout,
+) => {
+  if (legendLayout === 'table') {
+    return true;
+  } else if (shouldUseLegacyLayout(legendPosition, legendLayout)) {
     return legendValues.some((v) => v !== LegendValue.CurrentAndLastValue && v !== LegendValue.Value);
   }
-  return legendLayout === 'table';
+  return false;
 };
 
 /** @internal */
@@ -117,15 +140,11 @@ export const shouldDisplayGridList = (
   if (isTableView) {
     return false;
   }
-  // For backward compatibility, if legendLayout is undefined, show the gridList
-  if (legendLayout === undefined) {
+  // For backward compatibility, show the gridList layout in the legacy setup
+  if (shouldUseLegacyLayout(legendPosition, legendLayout)) {
     return true;
   }
-  if (isPosition(legendPosition)) {
-    return legendPosition === PositionObj.Left || legendPosition === PositionObj.Right;
-  }
-
-  return legendPosition.direction === LayoutDirection.Vertical;
+  return false;
 };
 
 /**
