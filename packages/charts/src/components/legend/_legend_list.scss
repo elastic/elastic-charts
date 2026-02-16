@@ -16,12 +16,6 @@
       margin-bottom: $echLegendRowGap;
     }
 
-    .echLegendItem {
-      width: auto;
-      display: flex;
-      gap: 8px;
-    }
-
     .echLegendListContainer {
       overflow-x: hidden;
       overflow-y: auto;
@@ -51,7 +45,7 @@
         > .echLegendItem__colorLabel {
           display: inline-flex;
           align-items: center;
-          gap: 8px;
+          gap: 4px;
           max-width: 100%; // prevent overflow when label + color marker exceeds line width
           margin-left: $euiSizeXS; // match the 4px leading margin used in grid-list layout
         }
