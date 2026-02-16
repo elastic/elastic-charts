@@ -107,25 +107,31 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
       })
       .filter(isDefined);
 
-    const valuesWidth = valueCellWidths.reduce((acc, w) => acc + sharedMargin + w, 0);
-    const itemWidth =
+    const valuesWidth = valueCellWidths.map((w) => sharedMargin + w);
+    const itemWidths = [
       sharedMargin +
-      markerWidth +
-      spacingBuffer +
-      cappedLabelWidth +
-      spacingBuffer +
-      valuesWidth +
-      (actionDimension ? spacingBuffer + actionDimension : 0) +
-      sharedMargin;
+        markerWidth +
+        spacingBuffer +
+        cappedLabelWidth +
+        spacingBuffer +
+        (actionDimension ? spacingBuffer + actionDimension : 0) +
+        sharedMargin,
+      ...valuesWidth,
+    ];
 
-    const nextRowWidth = currentRowWidth === 0 ? itemWidth : currentRowWidth + columnGap + itemWidth;
+    for (const [index, itemWidth] of itemWidths.entries()) {
+      const isFirst = index === 0;
+      const nextRowWidth = currentRowWidth === 0 ? itemWidth : currentRowWidth + (isFirst ? columnGap : 0) + itemWidth;
 
-    if (nextRowWidth > availableWidth && currentRowWidth > 0) {
-      rows++;
-      if (rows > 2) return { isSingleLine: false, isMoreThanTwoLines: true };
-      currentRowWidth = itemWidth;
-    } else {
-      currentRowWidth = nextRowWidth;
+      if (nextRowWidth > availableWidth) {
+        if (currentRowWidth > 0) {
+          rows++;
+          if (rows > 2) return { isSingleLine: false, isMoreThanTwoLines: true };
+        }
+        currentRowWidth = availableWidth > 0 ? Math.min(itemWidth, availableWidth) : itemWidth;
+      } else {
+        currentRowWidth = nextRowWidth;
+      }
     }
   }
 
