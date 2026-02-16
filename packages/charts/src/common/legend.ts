@@ -101,12 +101,12 @@ export type LegendItem = {
 export type LegendItemExtraValues = Map<LegendItemChildId, LegendItemValue>;
 
 /**
- * Layout should be legacy when either
+ * Layout should be default implementation when either
  *   - legendLayout is undefined
  *   - legendPosition is left or right
  *   - legendPositionConfig is a vertical position
  * @internal */
-const shouldUseLegacyLayout = (legendPosition: Position | LegendPositionConfig, legendLayout?: Layout) => {
+const shouldUseDefaultLayout = (legendPosition: Position | LegendPositionConfig, legendLayout?: Layout) => {
   if (legendLayout === undefined) {
     return true;
   }
@@ -125,7 +125,7 @@ export const shouldDisplayTable = (
 ) => {
   if (legendLayout === 'table') {
     return true;
-  } else if (shouldUseLegacyLayout(legendPosition, legendLayout)) {
+  } else if (shouldUseDefaultLayout(legendPosition, legendLayout)) {
     return legendValues.some((v) => v !== LegendValue.CurrentAndLastValue && v !== LegendValue.Value);
   }
   return false;
@@ -140,8 +140,8 @@ export const shouldDisplayGridList = (
   if (isTableView) {
     return false;
   }
-  // For backward compatibility, show the gridList layout in the legacy setup
-  if (shouldUseLegacyLayout(legendPosition, legendLayout)) {
+  // For backward compatibility, show the gridList layout in the default setup
+  if (shouldUseDefaultLayout(legendPosition, legendLayout)) {
     return true;
   }
   return false;
