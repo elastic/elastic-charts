@@ -33,6 +33,8 @@ export interface SmallMultipleScales {
 export interface SmallMultiplesGroupBy {
   vertical?: GroupBySpec;
   horizontal?: GroupBySpec;
+  /** When true, each panel computes its own Y-axis domain independently */
+  independentYDomain?: boolean;
 }
 
 /** @internal */

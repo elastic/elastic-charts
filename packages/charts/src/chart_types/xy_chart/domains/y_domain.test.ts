@@ -12,9 +12,12 @@ import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { MockYDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
+import type { Spec } from '../../../specs/spec_type';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import { Position } from '../../../utils/common';
 import { BARCHART_1Y0G } from '../../../utils/data_samples/test_dataset';
 import { Logger } from '../../../utils/logger';
+import { computePerPanelAxesGeomsSelector } from '../state/selectors/compute_per_panel_axes_geoms';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
 import type { BasicSeriesSpec } from '../utils/specs';
 import { SeriesType, DEFAULT_GLOBAL_ID, StackMode } from '../utils/specs';
@@ -517,5 +520,159 @@ describe('Y Domain', () => {
         isBandScale: false,
       }),
     ]);
+  });
+});
+
+describe('mergeYDomainPerPanel', () => {
+  test('should compute independent Y domains per panel with distinct ranges', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.groupBy({
+          id: 'hSplit',
+          by: (_spec: Spec, datum: Record<string, unknown>) => String(datum.category),
+        }),
+        MockGlobalSpec.smallMultiple({
+          splitHorizontally: 'hSplit',
+          independentYDomain: true,
+        }),
+        MockSeriesSpec.bar({
+          id: 'spec1',
+          groupId: DEFAULT_GLOBAL_ID,
+          xAccessor: 'x',
+          yAccessors: ['y'],
+          data: [
+            { x: 1, y: 10, category: 'A' },
+            { x: 2, y: 100, category: 'A' },
+            { x: 1, y: 1000, category: 'B' },
+            { x: 2, y: 10000, category: 'B' },
+          ],
+        }),
+      ],
+      store,
+    );
+    const { yDomains, yDomainsPerPanel } = computeSeriesDomainsSelector(store.getState());
+
+    // Global domain spans 0-10000
+    expect(yDomains[0]?.domain[0]).toBeLessThanOrEqual(0);
+    expect(yDomains[0]?.domain[1]).toBeGreaterThanOrEqual(10000);
+
+    // Per-panel domains must be present with 2 panels (A and B)
+    expect(yDomainsPerPanel).toBeDefined();
+    expect(yDomainsPerPanel!.size).toBe(2);
+
+    // Collect all per-panel domain max values
+    const panelMaxValues: number[] = [];
+    for (const [, domains] of yDomainsPerPanel!) {
+      expect(domains.length).toBeGreaterThan(0);
+      panelMaxValues.push(domains[0]!.domain[1]);
+    }
+
+    // At least one panel must have a max significantly lower than the global max
+    // (panel A maxes at 100, panel B at 10000)
+    const globalMax = yDomains[0]!.domain[1];
+    const hasNarrowerPanel = panelMaxValues.some((max) => max < globalMax * 0.5);
+    expect(hasNarrowerPanel).toBe(true);
+  });
+
+  test('should not compute per-panel Y domains when independentYDomain is not set', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.bar({
+          id: 'spec1',
+          groupId: DEFAULT_GLOBAL_ID,
+          yAccessors: ['y'],
+          data: [
+            { x: 1, y: 10 },
+            { x: 2, y: 100 },
+          ],
+        }),
+      ],
+      store,
+    );
+    const { yDomainsPerPanel } = computeSeriesDomainsSelector(store.getState());
+    expect(yDomainsPerPanel).toBeUndefined();
+  });
+
+  test('should not compute per-panel Y domains when independentYDomain is false', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.groupBy({
+          id: 'hSplit',
+          by: (_spec: Spec, datum: Record<string, unknown>) => String(datum.category),
+        }),
+        MockGlobalSpec.smallMultiple({
+          splitHorizontally: 'hSplit',
+          independentYDomain: false,
+        }),
+        MockSeriesSpec.bar({
+          id: 'spec1',
+          groupId: DEFAULT_GLOBAL_ID,
+          xAccessor: 'x',
+          yAccessors: ['y'],
+          data: [
+            { x: 1, y: 10, category: 'A' },
+            { x: 1, y: 1000, category: 'B' },
+          ],
+        }),
+      ],
+      store,
+    );
+    const { yDomainsPerPanel } = computeSeriesDomainsSelector(store.getState());
+    expect(yDomainsPerPanel).toBeUndefined();
+  });
+
+  test('should produce per-panel axis tick labels matching each panel domain', () => {
+    const store = MockStore.default({ width: 600, height: 300, top: 0, left: 0 });
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settingsNoMargins(),
+        MockGlobalSpec.yAxis({ id: 'y', groupId: DEFAULT_GLOBAL_ID, position: Position.Left }),
+        MockGlobalSpec.groupBy({
+          id: 'hSplit',
+          by: (_spec: Spec, datum: Record<string, unknown>) => String(datum.category),
+        }),
+        MockGlobalSpec.smallMultiple({
+          splitHorizontally: 'hSplit',
+          independentYDomain: true,
+        }),
+        MockSeriesSpec.bar({
+          id: 'spec1',
+          groupId: DEFAULT_GLOBAL_ID,
+          xAccessor: 'x',
+          yAccessors: ['y'],
+          data: [
+            { x: 1, y: 10, category: 'A' },
+            { x: 2, y: 50, category: 'A' },
+            { x: 1, y: 5000, category: 'B' },
+            { x: 2, y: 10000, category: 'B' },
+          ],
+        }),
+      ],
+      store,
+    );
+
+    const perPanelAxesGeoms = computePerPanelAxesGeomsSelector(store.getState());
+
+    // Should have 2 panels (A and B)
+    expect(perPanelAxesGeoms.length).toBe(2);
+
+    // Extract Y-axis tick labels from each panel
+    const panelTickLabels = perPanelAxesGeoms.map((panel) => {
+      const yAxisGeom = panel.axesGeoms.find((g) => g.axis.id === 'y');
+      return yAxisGeom?.visibleTicks.map((t) => t.label) ?? [];
+    });
+
+    // Panels must have non-empty tick labels
+    expect(panelTickLabels[0]!.length).toBeGreaterThan(0);
+    expect(panelTickLabels[1]!.length).toBeGreaterThan(0);
+
+    // The tick labels must differ between panels since domains are vastly different
+    // Panel A: 0-50 range, Panel B: 0-10000 range
+    const labelsA = panelTickLabels[0]!.join(',');
+    const labelsB = panelTickLabels[1]!.join(',');
+    expect(labelsA).not.toEqual(labelsB);
   });
 });

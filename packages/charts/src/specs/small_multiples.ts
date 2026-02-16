@@ -68,6 +68,18 @@ export interface SmallMultiplesSpec extends Spec {
    * Specifies styling and layout properties of the tiling, such as paddings between and outside panels
    */
   style?: Partial<SmallMultiplesStyle>;
+  /**
+   * When true, each small multiples panel computes its own Y-axis domain independently,
+   * fitting the axis scale to the data visible in that specific panel rather than sharing
+   * a global Y-axis domain across all panels.
+   *
+   * This is useful when panels contain data with vastly different value ranges, as it
+   * prevents low-value panels from being visually squashed by high-value panels.
+   *
+   * @defaultValue false
+   * @alpha
+   */
+  independentYDomain?: boolean;
 }
 
 /**

@@ -136,6 +136,49 @@ function computeYDomain(
   return computeContinuousDataDomain([...yValues, ...annotationYValues], scaleType, domainOptions);
 }
 
+/**
+ * Returns a string key uniquely identifying a small multiples panel.
+ * Uses the same stringification as the `barPanelKey` in `renderGeometries()`:
+ * `[smV, smH].join('|')` which converts `undefined` to the string `"undefined"`.
+ * @internal
+ */
+export function getPanelKey(smV: string | number | undefined, smH: string | number | undefined): string {
+  return [smV, smH].join('|');
+}
+
+/**
+ * Compute Y domains independently per small multiples panel.
+ *
+ * Groups `dataSeries` by their panel key (derived from `smVerticalAccessorValue` and
+ * `smHorizontalAccessorValue`), then calls `mergeYDomain()` on each group to produce
+ * panel-specific Y domains. This allows each panel to fit its Y-axis to its own data.
+ *
+ * @internal
+ */
+export function mergeYDomainPerPanel(
+  yScaleAPIConfig: ScaleConfigs['y'],
+  dataSeries: DataSeries[],
+  annotationYValueMap: Map<GroupId, number[]>,
+): Map<string, YDomain[]> {
+  const seriesByPanel = new Map<string, DataSeries[]>();
+
+  for (const ds of dataSeries) {
+    const key = getPanelKey(ds.smVerticalAccessorValue, ds.smHorizontalAccessorValue);
+    const existing = seriesByPanel.get(key);
+    if (existing) {
+      existing.push(ds);
+    } else {
+      seriesByPanel.set(key, [ds]);
+    }
+  }
+
+  const result = new Map<string, YDomain[]>();
+  for (const [panelKey, panelSeries] of seriesByPanel) {
+    result.set(panelKey, mergeYDomain(yScaleAPIConfig, panelSeries, annotationYValueMap));
+  }
+  return result;
+}
+
 /** @internal */
 export function groupSeriesByYGroup(specs: YBasicSeriesSpec[]) {
   const specsByGroupIds = new Map<

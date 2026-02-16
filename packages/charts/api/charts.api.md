@@ -2955,7 +2955,7 @@ export interface SimplePadding {
 }
 
 // @alpha
-export const SmallMultiples: FC<SFProps<SmallMultiplesSpec, "chartType" | "specType", "id", "style" | "splitHorizontally" | "splitVertically" | "splitZigzag", never>>;
+export const SmallMultiples: FC<SFProps<SmallMultiplesSpec, "chartType" | "specType", "id", "style" | "splitHorizontally" | "splitVertically" | "splitZigzag" | "independentYDomain", never>>;
 
 // @public (undocumented)
 export interface SmallMultiplesDatum {
@@ -2972,6 +2972,7 @@ export type SmallMultiplesProps = ComponentProps<typeof SmallMultiples>;
 
 // @alpha (undocumented)
 export interface SmallMultiplesSpec extends Spec {
+    independentYDomain?: boolean;
     splitHorizontally?: string;
     splitVertically?: string;
     splitZigzag?: string;

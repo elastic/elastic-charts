@@ -25,6 +25,7 @@ export const getSmallMultiplesIndexOrderSelector = createCustomCachedSelector(
     return {
       horizontal: groupBySpecs.find((s) => s.id === smallMultiples?.splitHorizontally),
       vertical: groupBySpecs.find((s) => s.id === smallMultiples?.splitVertically),
+      independentYDomain: smallMultiples?.independentYDomain,
     };
   },
 );

@@ -26,7 +26,7 @@ import type { SeriesCompareFn } from '../../../../utils/series_sort';
 import type { ColorConfig, Theme } from '../../../../utils/themes/theme';
 import type { XDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
-import { isStackedSpec, mergeYDomain } from '../../domains/y_domain';
+import { isStackedSpec, mergeYDomain, mergeYDomainPerPanel } from '../../domains/y_domain';
 import { renderArea } from '../../rendering/area';
 import { renderBars } from '../../rendering/bars';
 import { renderBubble } from '../../rendering/bubble';
@@ -36,7 +36,7 @@ import { defaultXYSeriesSort } from '../../utils/default_series_sort_fn';
 import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
-import { computeXScale, computeYScales } from '../../utils/scales';
+import { computeXScale, computeYScales, computeYScalesPerPanel } from '../../utils/scales';
 import type { DataSeries } from '../../utils/series';
 import { getDataSeriesFromSpecs, getFormattedDataSeries, getSeriesKey, isBandedSpec } from '../../utils/series';
 import type { AnnotationSpec, AxisSpec, BasicSeriesSpec, FitConfig, HistogramModeAlignment } from '../../utils/specs';
@@ -133,6 +133,11 @@ export function computeSeriesDomains(
   // let's compute the yDomains after computing all stacked values
   const yDomains = mergeYDomain(scaleConfigs.y, formattedDataSeries, annotationYValueMap);
 
+  // When independentYDomain is enabled, also compute per-panel Y domains
+  const yDomainsPerPanel = smallMultiples?.independentYDomain
+    ? mergeYDomainPerPanel(scaleConfigs.y, formattedDataSeries, annotationYValueMap)
+    : undefined;
+
   // sort small multiples values
   const horizontalPredicate = smallMultiples?.horizontal?.sort ?? Predicate.DataIndex;
   const smHDomain = [...smHValues].sort(getPredicateFn(horizontalPredicate, locale));
@@ -143,6 +148,7 @@ export function computeSeriesDomains(
   return {
     xDomain,
     yDomains,
+    yDomainsPerPanel,
     smHDomain,
     smVDomain,
     formattedDataSeries,
@@ -169,7 +175,7 @@ function getAnnotationYValueMap(
 /** @internal */
 export function computeSeriesGeometries(
   seriesSpecs: BasicSeriesSpec[],
-  { xDomain, yDomains, formattedDataSeries: nonFilteredDataSeries }: SeriesDomainsAndData,
+  { xDomain, yDomains, yDomainsPerPanel, formattedDataSeries: nonFilteredDataSeries }: SeriesDomainsAndData,
   seriesColorMap: Map<SeriesKey, Color>,
   chartTheme: Theme,
   { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
@@ -198,10 +204,20 @@ export function computeSeriesGeometries(
 
   const { horizontal, vertical } = smallMultiplesScales;
 
+  const yScaleRange: [number, number] = [
+    isHorizontalRotation(chartRotation) ? vertical.bandwidth : horizontal.bandwidth,
+    0,
+  ];
+
   const yScales = computeYScales({
     yDomains,
-    range: [isHorizontalRotation(chartRotation) ? vertical.bandwidth : horizontal.bandwidth, 0],
+    range: yScaleRange,
   });
+
+  // Compute per-panel yScales when independentYDomain is enabled
+  const perPanelYScales = yDomainsPerPanel
+    ? computeYScalesPerPanel({ yDomainsPerPanel, range: yScaleRange })
+    : undefined;
 
   const computedGeoms = renderGeometries(
     formattedDataSeries,
@@ -219,6 +235,7 @@ export function computeSeriesGeometries(
     chartRotation,
     fallbackTickFormatter,
     measureText,
+    perPanelYScales,
   );
 
   const totalBarsInCluster = Object.values(barIndexByPanel).reduce((acc, curr) => Math.max(acc, curr.length), 0);
@@ -291,6 +308,7 @@ function renderGeometries(
   chartRotation: Rotation,
   fallBackTickFormatter: TickFormatter,
   measureText: TextMeasure,
+  perPanelYScales?: Map<string, Map<GroupId, ScaleContinuous>>,
 ): Omit<ComputedGeometries, 'scales'> {
   const bars: Array<PerPanel<BarGeometry[]>> = [];
   const areas: Array<PerPanel<AreaGeometry>> = [];
@@ -317,13 +335,16 @@ function renderGeometries(
     if (spec === undefined) {
       return;
     }
-    // compute the y scale
-    const yScale = yScales.get(getSpecDomainGroupId(ds.spec));
+    // compute the panel unique key
+    const barPanelKey = [ds.smVerticalAccessorValue, ds.smHorizontalAccessorValue].join('|');
+
+    // compute the y scale: prefer per-panel scale when available, fall back to global
+    const groupId = getSpecDomainGroupId(ds.spec);
+    const panelYScales = perPanelYScales?.get(barPanelKey);
+    const yScale = panelYScales?.get(groupId) ?? yScales.get(groupId);
     if (!yScale) {
       return;
     }
-    // compute the panel unique key
-    const barPanelKey = [ds.smVerticalAccessorValue, ds.smHorizontalAccessorValue].join('|');
     const barIndexOrder = barIndexOrderPerPanel[barPanelKey] ?? [];
     // compute x scale
     const xScale = computeXScale({

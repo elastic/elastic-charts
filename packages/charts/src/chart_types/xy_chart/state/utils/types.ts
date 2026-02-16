@@ -60,6 +60,11 @@ export interface SeriesDomainsAndData extends SmallMultiplesSeriesDomains {
   xDomain: XDomain;
   yDomains: YDomain[];
   formattedDataSeries: DataSeries[];
+  /**
+   * Per-panel Y domains, keyed by panel key (`${smV}|${smH}`).
+   * Only present when `SmallMultiplesSpec.independentYDomain` is true.
+   */
+  yDomainsPerPanel?: Map<string, YDomain[]>;
 }
 
 /** @internal */

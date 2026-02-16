@@ -140,3 +140,22 @@ export function computeYScales(options: YScaleOptions): Map<GroupId, ScaleContin
     new Map<GroupId, ScaleContinuous>(),
   );
 }
+
+interface PerPanelYScaleOptions {
+  yDomainsPerPanel: Map<string, YDomain[]>;
+  range: Range;
+  maximumFractionDigits?: number;
+}
+
+/**
+ * Compute per-panel y scales. Each panel key maps to its own set of y scales (one per groupId).
+ * @internal
+ */
+export function computeYScalesPerPanel(options: PerPanelYScaleOptions): Map<string, Map<GroupId, ScaleContinuous>> {
+  const { yDomainsPerPanel, range, maximumFractionDigits } = options;
+  const result = new Map<string, Map<GroupId, ScaleContinuous>>();
+  for (const [panelKey, yDomains] of yDomainsPerPanel) {
+    result.set(panelKey, computeYScales({ yDomains, range, maximumFractionDigits }));
+  }
+  return result;
+}
