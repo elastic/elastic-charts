@@ -44,7 +44,6 @@ export function getLegendValues(
     const value = getLegendValue(series, xDomain, type, valueAccessor);
     const formatter =
       type === LegendValue.Percent || type === LegendValue.DifferencePercent ? percentFormatter : tickFormatter;
-
     const label = typeof value === 'number' && isFinite(value) ? formatter(value) : '';
 
     return {

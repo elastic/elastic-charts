@@ -14,7 +14,7 @@ import { isDefined, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import type { SeriesCompareFn } from '../../../utils/series_sort';
 import type { PointStyle, Theme } from '../../../utils/themes/theme';
-import type { XDomain, YDomain } from '../domains/types';
+import type { XDomain } from '../domains/types';
 import { isDatumFilled } from '../rendering/utils';
 import { getLegendValues } from '../state/utils/get_legend_values';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
@@ -88,7 +88,6 @@ const y0Accessor =
 /** @internal */
 export function computeLegend(
   xDomain: XDomain,
-  yDomains: YDomain[],
   dataSeries: DataSeries[],
   seriesColors: Map<SeriesKey, Color>,
   specs: BasicSeriesSpec[],
