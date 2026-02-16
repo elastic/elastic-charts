@@ -121,7 +121,7 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
 
     for (const [index, itemWidth] of itemWidths.entries()) {
       const isFirst = index === 0;
-      const nextRowWidth = currentRowWidth === 0 ? itemWidth : currentRowWidth + (isFirst ? columnGap : 0) + itemWidth;
+      const nextRowWidth = currentRowWidth === 0 ? itemWidth : currentRowWidth + (isFirst ? 0 : columnGap) + itemWidth;
 
       if (nextRowWidth > availableWidth) {
         if (currentRowWidth > 0) {
