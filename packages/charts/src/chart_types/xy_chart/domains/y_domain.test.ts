@@ -624,6 +624,58 @@ describe('mergeYDomainPerPanel', () => {
     expect(yDomainsPerPanel).toBeUndefined();
   });
 
+  test('should preserve custom axis tickFormat with independentYDomain', () => {
+    const store = MockStore.default({ width: 600, height: 300, top: 0, left: 0 });
+    const customFormatter = (v: number) => `$${v}k`;
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settingsNoMargins(),
+        MockGlobalSpec.yAxis({
+          id: 'y',
+          groupId: DEFAULT_GLOBAL_ID,
+          position: Position.Left,
+          tickFormat: customFormatter,
+        }),
+        MockGlobalSpec.groupBy({
+          id: 'hSplit',
+          by: (_spec: Spec, datum: Record<string, unknown>) => String(datum.category),
+        }),
+        MockGlobalSpec.smallMultiple({
+          splitHorizontally: 'hSplit',
+          independentYDomain: true,
+        }),
+        MockSeriesSpec.bar({
+          id: 'spec1',
+          groupId: DEFAULT_GLOBAL_ID,
+          xAccessor: 'x',
+          yAccessors: ['y'],
+          data: [
+            { x: 1, y: 10, category: 'A' },
+            { x: 2, y: 50, category: 'A' },
+            { x: 1, y: 5000, category: 'B' },
+            { x: 2, y: 10000, category: 'B' },
+          ],
+        }),
+      ],
+      store,
+    );
+
+    const perPanelAxesGeoms = computePerPanelAxesGeomsSelector(store.getState());
+    expect(perPanelAxesGeoms.length).toBe(2);
+
+    // All Y-axis tick labels across all panels must use the custom formatter (contain '$' and 'k')
+    for (const panel of perPanelAxesGeoms) {
+      const yAxisGeom = panel.axesGeoms.find((g) => g.axis.id === 'y');
+      expect(yAxisGeom).toBeDefined();
+      const labels = yAxisGeom!.visibleTicks.map((t) => t.label);
+      expect(labels.length).toBeGreaterThan(0);
+      for (const label of labels) {
+        expect(label).toMatch(/^\$/);
+        expect(label).toMatch(/k$/);
+      }
+    }
+  });
+
   test('should produce per-panel axis tick labels matching each panel domain', () => {
     const store = MockStore.default({ width: 600, height: 300, top: 0, left: 0 });
     MockStore.addSpecs(

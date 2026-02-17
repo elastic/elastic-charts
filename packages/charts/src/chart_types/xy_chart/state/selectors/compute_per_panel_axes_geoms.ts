@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import type { AxisLabelFormatter } from './axis_tick_formatter';
+import { getAxisTickLabelFormatter } from './axis_tick_formatter';
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { axisSpecsLookupSelector } from './get_specs';
@@ -23,7 +25,7 @@ import type { YDomain } from '../../domains/types';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import type { AxisGeometry, AxisTick } from '../../utils/axis_utils';
 import { defaultTickFormatter, isXDomain } from '../../utils/axis_utils';
-import type { AxisSpec } from '../../utils/specs';
+import { isHorizontalRotation } from '../utils/common';
 
 /** @internal */
 export type PerPanelAxisGeoms = {
@@ -45,12 +47,11 @@ const isPrimaryRowFn =
  * Creates a new ScaleContinuous from the panel domain and generates tick values/labels.
  */
 function regenerateYAxisTicks(
-  geom: AxisGeometry,
   panelYDomain: YDomain,
-  panelHeight: number,
-  axisSpec: AxisSpec | undefined,
+  panelSize: number,
+  labelFormatter: AxisLabelFormatter,
 ): AxisTick[] {
-  const range: [number, number] = [panelHeight, 0];
+  const range: [number, number] = [panelSize, 0];
   const scale = new ScaleContinuous(
     { type: panelYDomain.type, domain: panelYDomain.domain, range, nice: panelYDomain.nice },
     {
@@ -62,10 +63,7 @@ function regenerateYAxisTicks(
     },
   );
 
-  const ticks = scale.ticks();
-  const labelFormatter = axisSpec?.tickFormat ?? defaultTickFormatter;
-
-  return generateTicks(scale, ticks, 0, labelFormatter, undefined, 0, true, false);
+  return generateTicks(scale, scale.ticks(), 0, labelFormatter, undefined, 0, true, false);
 }
 
 /** @internal */
@@ -78,14 +76,26 @@ export const computePerPanelAxesGeomsSelector = createCustomCachedSelector(
     getSmallMultiplesSpec,
     axisSpecsLookupSelector,
     getSettingsSpecSelector,
+    getAxisTickLabelFormatter,
   ],
-  (axesGeoms, scales, groupBySpec, seriesDomains, smSpec, axisSpecsLookup, settingsSpec): Array<PerPanelAxisGeoms> => {
+  (
+    axesGeoms,
+    scales,
+    groupBySpec,
+    seriesDomains,
+    smSpec,
+    axisSpecsLookup,
+    settingsSpec,
+    axisTickFormatters,
+  ): Array<PerPanelAxisGeoms> => {
     const { horizontal, vertical } = scales;
     const isPrimaryColumn = isPrimaryColumnFn(scales);
     const isPrimaryRow = isPrimaryRowFn(scales);
     const { yDomainsPerPanel } = seriesDomains;
     const independentYDomain = smSpec?.independentYDomain === true && yDomainsPerPanel !== undefined;
     const chartRotation = settingsSpec.rotation;
+    // Y-domain maps to vertical axes for 0/180, horizontal axes for 90/-90
+    const panelSize = isHorizontalRotation(chartRotation) ? vertical.bandwidth : horizontal.bandwidth;
 
     return getPerPanelMap(scales, (_, h, v) => ({
       axesGeoms: axesGeoms.map((geom) => {
@@ -113,8 +123,9 @@ export const computePerPanelAxesGeomsSelector = createCustomCachedSelector(
         // When independentYDomain is active, force secondary to false for Y-axes
         // so that each panel renders its own tick marks and labels
         const updatedAxis = { ...geom.axis, panelTitle, secondary: false };
-        const panelHeight = vertical.bandwidth;
-        const visibleTicks = regenerateYAxisTicks(geom, panelYDomain, panelHeight, axisSpec);
+        // Use the full axis formatter pipeline (labelFormat -> tickFormat -> series fallback)
+        const labelFormatter = axisTickFormatters.y.get(id) ?? defaultTickFormatter;
+        const visibleTicks = regenerateYAxisTicks(panelYDomain, panelSize, labelFormatter);
 
         return { ...geom, axis: updatedAxis, visibleTicks };
       }),
