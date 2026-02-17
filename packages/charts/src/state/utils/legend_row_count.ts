@@ -103,7 +103,7 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
           const title = legendValueTitlesMap[type] ?? '';
           return `${title.toUpperCase()}: ${valueLabel}`;
         })();
-        return valueText.length * 7;
+        return textMeasure(valueText, font, 12, 1.5).width;
       })
       .filter(isDefined);
 

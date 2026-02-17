@@ -22,7 +22,7 @@ import { LayoutDirection, isDefined } from '../../utils/common';
 
 interface Props extends LegendItemProps {
   isListLayout?: boolean;
-  maxFormattedValue?: string;
+  maxFormattedValueWidth?: number;
 }
 
 /** @internal */
@@ -44,7 +44,7 @@ export const LegendList: React.FC<Props> = (props) => {
     onLegendItemMouseOver,
     onLegendItemMouseOut,
     isListLayout,
-    maxFormattedValue,
+    maxFormattedValueWidth,
   } = props;
   const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, depth, path, isToggleable } = item;
   const { isActive, actionRef, handlePointerDown, handleKeyDown } = useActionFocusManagement();
@@ -102,7 +102,6 @@ export const LegendList: React.FC<Props> = (props) => {
     for (const { type, legendValueItem, index } of valueData) {
       const showTitle = isListLayout;
       const title = showTitle ? legendValueTitlesMap[type] : '';
-      const titlePrefixLength = showTitle ? title.length + 2 : 0; // +2 for ": "
 
       const isCurrentAndLastValue = type === LegendValue.CurrentAndLastValue;
       const hasValue = Boolean(legendValueItem?.label);
@@ -118,8 +117,8 @@ export const LegendList: React.FC<Props> = (props) => {
           style={{
             textAlign: isListLayout ? 'left' : undefined,
             minWidth:
-              isListLayout && maxFormattedValue && isCurrentAndLastValue
-                ? `${(maxFormattedValue.length + titlePrefixLength) * 7}px`
+              isListLayout && maxFormattedValueWidth && isCurrentAndLastValue
+                ? `${maxFormattedValueWidth}px`
                 : undefined,
           }}
         >

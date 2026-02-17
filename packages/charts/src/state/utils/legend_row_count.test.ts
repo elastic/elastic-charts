@@ -209,9 +209,9 @@ describe('computeHorizontalLegendRowCount', () => {
     const items = [getMockedLegendItem('A', values)];
 
     // Label part: 4 + 16 + 8 + 10 + 8 + 4 = 50px
-    // Each value cell: 4 + (9 * 7) = 67px
+    // Each value cell: 4 + textMeasure('1,000,000').width = 4 + 90 = 94px (mock: 9 chars * 10)
     // With availableWidth = 60, each part overflows to a new row:
-    //   Row 1: label (50px), Row 2: avg value (67px capped to 60), Row 3: min value → triggers 3rd row
+    //   Row 1: label (50px), Row 2: avg value (94px capped to 60), Row 3: min value → triggers 3rd row
     const result = computeHorizontalLegendRowCount(
       getMockedArgs({
         items,
