@@ -575,6 +575,104 @@ describe('mergeYDomainPerPanel', () => {
     expect(hasNarrowerPanel).toBe(true);
   });
 
+  test('should compute independent Y domains per panel with splitVertically', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.groupBy({
+          id: 'vSplit',
+          by: (_spec: Spec, datum: Record<string, unknown>) => String(datum.category),
+        }),
+        MockGlobalSpec.smallMultiple({
+          splitVertically: 'vSplit',
+          independentYDomain: true,
+        }),
+        MockSeriesSpec.bar({
+          id: 'spec1',
+          groupId: DEFAULT_GLOBAL_ID,
+          xAccessor: 'x',
+          yAccessors: ['y'],
+          data: [
+            { x: 1, y: 5, category: 'X' },
+            { x: 2, y: 20, category: 'X' },
+            { x: 1, y: 3000, category: 'Y' },
+            { x: 2, y: 8000, category: 'Y' },
+          ],
+        }),
+      ],
+      store,
+    );
+    const { yDomains, yDomainsPerPanel } = computeSeriesDomainsSelector(store.getState());
+
+    // Global domain spans 0-8000
+    expect(yDomains[0]?.domain[0]).toBeLessThanOrEqual(0);
+    expect(yDomains[0]?.domain[1]).toBeGreaterThanOrEqual(8000);
+
+    // Per-panel domains must be present with 2 panels (X and Y)
+    expect(yDomainsPerPanel).toBeDefined();
+    expect(yDomainsPerPanel!.size).toBe(2);
+
+    const panelMaxValues: number[] = [];
+    for (const [, domains] of yDomainsPerPanel!) {
+      expect(domains.length).toBeGreaterThan(0);
+      panelMaxValues.push(domains[0]!.domain[1]);
+    }
+
+    // Panel X maxes at 20, panel Y at 8000
+    const globalMax = yDomains[0]!.domain[1];
+    const hasNarrowerPanel = panelMaxValues.some((max) => max < globalMax * 0.5);
+    expect(hasNarrowerPanel).toBe(true);
+  });
+
+  test('should produce correct per-panel axis ticks with 90-degree rotation', () => {
+    const store = MockStore.default({ width: 600, height: 300, top: 0, left: 0 });
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settingsNoMargins({ rotation: 90 }),
+        // At 90 degrees, Y-domain axes are horizontal (Bottom position)
+        MockGlobalSpec.yAxis({ id: 'y', groupId: DEFAULT_GLOBAL_ID, position: Position.Bottom }, 90),
+        MockGlobalSpec.groupBy({
+          id: 'hSplit',
+          by: (_spec: Spec, datum: Record<string, unknown>) => String(datum.category),
+        }),
+        MockGlobalSpec.smallMultiple({
+          splitHorizontally: 'hSplit',
+          independentYDomain: true,
+        }),
+        MockSeriesSpec.bar({
+          id: 'spec1',
+          groupId: DEFAULT_GLOBAL_ID,
+          xAccessor: 'x',
+          yAccessors: ['y'],
+          data: [
+            { x: 1, y: 10, category: 'A' },
+            { x: 2, y: 50, category: 'A' },
+            { x: 1, y: 5000, category: 'B' },
+            { x: 2, y: 10000, category: 'B' },
+          ],
+        }),
+      ],
+      store,
+    );
+
+    const perPanelAxesGeoms = computePerPanelAxesGeomsSelector(store.getState());
+    expect(perPanelAxesGeoms.length).toBe(2);
+
+    const panelTickLabels = perPanelAxesGeoms.map((panel) => {
+      const yAxisGeom = panel.axesGeoms.find((g) => g.axis.id === 'y');
+      return yAxisGeom?.visibleTicks.map((t) => t.label) ?? [];
+    });
+
+    // Both panels must have non-empty tick labels
+    expect(panelTickLabels[0]!.length).toBeGreaterThan(0);
+    expect(panelTickLabels[1]!.length).toBeGreaterThan(0);
+
+    // Tick labels must differ between panels (A: 0-50 range, B: 0-10000 range)
+    const labelsA = panelTickLabels[0]!.join(',');
+    const labelsB = panelTickLabels[1]!.join(',');
+    expect(labelsA).not.toEqual(labelsB);
+  });
+
   test('should not compute per-panel Y domains when independentYDomain is not set', () => {
     const store = MockStore.default();
     MockStore.addSpecs(

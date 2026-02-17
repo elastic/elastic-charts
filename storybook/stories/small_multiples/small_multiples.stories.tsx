@@ -25,3 +25,5 @@ export { Example as sorting } from './8_sorting.story';
 export { Example as independentYDomain } from './10_independent_y_domain.story';
 
 export { Example as independentYDomainRotated } from './11_independent_y_domain_rotated.story';
+
+export { Example as independentYDomainVertical } from './12_independent_y_domain_vertical.story';

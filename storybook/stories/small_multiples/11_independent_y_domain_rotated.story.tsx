@@ -22,32 +22,9 @@ import {
   Predicate,
 } from '@elastic/charts';
 
+import { independentYDomainData as data } from './independent_y_domain_data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-
-/**
- * Same data as the non-rotated independentYDomain story, used to verify
- * that per-panel Y-axis scaling works correctly with 90/-90 chart rotation.
- */
-const data = [
-  { x: '2024-01', y: 10, category: 'A' },
-  { x: '2024-02', y: 45, category: 'A' },
-  { x: '2024-03', y: 80, category: 'A' },
-  { x: '2024-04', y: 60, category: 'A' },
-  { x: '2024-05', y: 95, category: 'A' },
-
-  { x: '2024-01', y: 1200, category: 'B' },
-  { x: '2024-02', y: 5500, category: 'B' },
-  { x: '2024-03', y: 9800, category: 'B' },
-  { x: '2024-04', y: 7300, category: 'B' },
-  { x: '2024-05', y: 4100, category: 'B' },
-
-  { x: '2024-01', y: 1.2, category: 'C' },
-  { x: '2024-02', y: 3.8, category: 'C' },
-  { x: '2024-03', y: 2.1, category: 'C' },
-  { x: '2024-04', y: 4.5, category: 'C' },
-  { x: '2024-05', y: 0.9, category: 'C' },
-];
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const independentYDomain = boolean('Independent Y Domain per panel', true);

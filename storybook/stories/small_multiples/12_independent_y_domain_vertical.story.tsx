@@ -33,12 +33,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const Series = seriesType === 'bar' ? BarSeries : LineSeries;
 
   return (
-    <Chart title={title} description={description} size={['100%', 400]}>
+    <Chart title={title} description={description} size={['100%', 600]}>
       <Settings baseTheme={useBaseTheme()} showLegend={false} />
       <Axis id="bottom" position={Position.Bottom} />
       <Axis id="left" position={Position.Left} />
-      <GroupBy id="split_column" by={(spec, datum) => datum.category} sort={Predicate.DataIndex} />
-      <SmallMultiples splitHorizontally="split_column" independentYDomain={independentYDomain} />
+      <GroupBy id="split_row" by={(spec, datum) => datum.category} sort={Predicate.DataIndex} />
+      <SmallMultiples splitVertically="split_row" independentYDomain={independentYDomain} />
       <Series
         id="metric"
         xScaleType={ScaleType.Ordinal}
