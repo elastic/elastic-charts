@@ -16,7 +16,7 @@ import { createCustomCachedSelector } from '../create_selector';
 const LEGEND_VALUE_FONT = {
   fontFamily: DEFAULT_FONT_FAMILY,
   fontVariant: 'normal',
-  fontWeight: 400,
+  fontWeight: 900,
   fontStyle: 'normal',
 } as const;
 
