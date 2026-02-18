@@ -107,7 +107,7 @@ jobs:
           PR_REPO: ${{ steps.get-pr-info.outputs.pr_repo }}
           CAN_MODIFY: ${{ steps.get-pr-info.outputs.can_modify }}
         run: |
-          curl -s -X POST "https://api.buildkite.com/v2/organizations/elastic/pipelines/kibana-elastic-charts-build/builds" \
+          curl -s -X POST "https://api.buildkite.com/v2/organizations/elastic/pipelines/elastic-charts-build/builds" \
             -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
