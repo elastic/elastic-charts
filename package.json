@@ -12,7 +12,7 @@
     ]
   },
   "scripts": {
-    "postinstall": "cd ./e2e && yarn install && cd ../docs && yarn install && cd ../.buildkite && yarn install && cd ../github_bot && yarn install",
+    "postinstall": "cd ./e2e && yarn install && cd ../docs && yarn install && cd ../.buildkite && yarn install",
     "run:bk:step": "cd .buildkite && yarn run:step",
     "prepack": "echo 'This package is not published, see packages/*' && exit 1",
     "autoprefix:css": "lerna run --loglevel=silent --scope @elastic/charts autoprefix:css --stream --no-prefix",

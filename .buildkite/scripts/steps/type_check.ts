@@ -14,7 +14,6 @@ void (async () => {
   await yarnInstall('e2e');
   await yarnInstall('docs');
   await yarnInstall('.buildkite');
-  await yarnInstall('github_bot');
 
   startGroup('Running type checks');
 

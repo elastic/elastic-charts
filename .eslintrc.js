@@ -464,7 +464,7 @@ module.exports = {
       },
     },
     {
-      files: ['.buildkite/**/*', 'github_bot/**/*'],
+      files: ['.buildkite/**/*'],
       rules: {
         'no-console': 0,
         'unicorn/no-process-exit': 0,
