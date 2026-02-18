@@ -3,7 +3,7 @@
     {
       "repoOwner": "elastic",
       "repoName": "elastic-charts",
-      "pipelineSlug": "kibana-elastic-charts-build",
+      "pipelineSlug": "elastic-charts-build",
 
       "enabled": true,
       "allow_org_users": true,
@@ -14,6 +14,7 @@
       "build_on_comment": true,
       "build_drafts": true,
       "build_on_ready": true,
+      "cancel_intermediate_builds": true,
       "trigger_comment_regex": "^(?:(?:buildkite\\W+)?(?:build|test)\\W+(?:this|it))|^\\/ci$",
       "always_trigger_comment_regex": "^(?:(?:buildkite\\W+)?(?:build|test)\\W+(?:this|it))|^\\/ci$",
       "skip_ci_labels": [],
@@ -30,10 +31,11 @@
     {
       "repoOwner": "elastic",
       "repoName": "elastic-charts",
-      "pipelineSlug": "kibana-elastic-charts-build",
+      "pipelineSlug": "elastic-charts-build",
 
       "enabled": true,
       "allow_org_users": true,
+      "cancel_intermediate_builds": true,
       "allowed_repo_permissions": ["admin", "write"],
       "allowed_list": ["elastic-vault-github-plugin-prod[bot]"],
       "set_commit_status": true,

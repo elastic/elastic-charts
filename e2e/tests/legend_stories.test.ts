@@ -349,20 +349,22 @@ test.describe('Legend stories', () => {
   });
 
   test.describe('Legend tabular data', () => {
+    const disableActionOnHover = '&knob-Show legend action on hover_Legend=false';
+
     const datasetKnob = (p1: string, p2: string) => `&globals=&knob-Dataset_Legend=${p1}&knob-dataset=${p2}`;
     const getDatasetUrl = (p1: string, p2: string, others = '') => {
-      return `http://localhost:9001/?path=/story/legend--tabular-data${datasetKnob(p1, p2)}${others}`;
+      return `http://localhost:9001/?path=/story/legend--tabular-data${datasetKnob(p1, p2)}${disableActionOnHover}${others}`;
     };
 
     const legendPositionKnob = (position: string) => `&knob-Legend position_Legend=${position}`;
 
     const getPositionUrl = (p1: string, others = '') => {
-      return `http://localhost:9001/?path=/story/legend--tabular-data${legendPositionKnob(p1)}${others}`;
+      return `http://localhost:9001/?path=/story/legend--tabular-data${legendPositionKnob(p1)}${disableActionOnHover}${others}`;
     };
 
     const legendValueKnob = (values: string[]) => values.map((v, i) => `&knob-Legend Value_Legend[${i}]=${v}`).join('');
     const getlegendValueUrl = (values: string[], others = '') => {
-      return `http://localhost:9001/?path=/story/legend--tabular-data${legendValueKnob(values)}${others}`;
+      return `http://localhost:9001/?path=/story/legend--tabular-data${legendValueKnob(values)}${disableActionOnHover}${others}`;
     };
 
     pwEach.test<[string, string]>([

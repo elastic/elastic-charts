@@ -14,7 +14,6 @@ interface Job {
 }
 
 interface BuildConfig {
-  main: Job;
   jobs: Job[];
 }
 
@@ -23,7 +22,6 @@ interface BuildConfig {
  */
 export const getBuildConfig = (): BuildConfig => {
   return {
-    main: { name: '@elastic/datavis CI', id: 'main' },
     jobs: [
       { name: 'Types', id: 'types' },
       { name: 'API', id: 'api' },
@@ -43,12 +41,11 @@ export const getBuildConfig = (): BuildConfig => {
 };
 
 export const getJobCheckName = (checkId: string) => {
-  const { main, jobs } = getBuildConfig();
-  const job = [main, ...jobs].find(({ id }) => id === checkId);
+  const { jobs } = getBuildConfig();
+  const job = jobs.find(({ id }) => id === checkId);
+
   if (!job) {
-    throw new Error(
-      `Failed to find check name from step id ${checkId}. Job ids are:\n\n\t${[main, ...jobs].join('\n\t')}`,
-    );
+    throw new Error(`Failed to find check name from step id ${checkId}. Job ids are:\n\n\t${jobs.join('\n\t')}`);
   }
   return job.name;
 };

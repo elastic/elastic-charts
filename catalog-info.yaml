@@ -6,7 +6,7 @@ metadata:
   description: Builds Elastic Charts
   links:
     - title: Pipeline
-      url: https://buildkite.com/elastic/kibana-elastic-charts-build
+      url: https://buildkite.com/elastic/elastic-charts-build
 spec:
   type: buildkite-pipeline
   owner: group:kibana-visualizations
@@ -15,7 +15,7 @@ spec:
     apiVersion: buildkite.elastic.dev/v1
     kind: Pipeline
     metadata:
-      name: kibana / elastic-charts / build
+      name: elastic-charts / build
     spec:
       env:
         ELASTIC_SLACK_NOTIFICATIONS_ENABLED: "false"
