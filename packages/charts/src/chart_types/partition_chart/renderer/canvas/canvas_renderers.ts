@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import type { AnimationState } from './partition';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
@@ -13,6 +14,8 @@ import type { Pixels } from '../../../../common/geometry';
 import { cssFontShorthand, HorizontalAlignment } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { MIN_STROKE_WIDTH } from '../../../../renderers/canvas/primitives/line';
+import type { LegendPath } from '../../../../state/actions/legend';
+import type { ArcSeriesStyle } from '../../../../utils/themes/theme';
 import type {
   LinkLabelVM,
   OutsideLinksViewModel,
@@ -22,6 +25,8 @@ import type {
   ShapeViewModel,
   TextRow,
 } from '../../layout/types/viewmodel_types';
+import type { LegendStrategy } from '../../layout/utils/highlighted_geoms';
+import { highlightedGeoms } from '../../layout/utils/highlighted_geoms';
 import type { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
 
@@ -149,22 +154,53 @@ function renderTaperedBorder(
   }
 }
 
-function renderSectors(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
+function renderSectors(
+  ctx: CanvasRenderingContext2D,
+  quadViewModel: QuadViewModel[],
+  highlightedQuadSet: Set<QuadViewModel>,
+  arcSeriesStyle: ArcSeriesStyle,
+) {
   withContext(ctx, () => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
     quadViewModel.forEach((quad: QuadViewModel) => {
-      if (quad.x0 !== quad.x1) renderTaperedBorder(ctx, quad);
+      // Apply dimmed colors for unhighlighted quads
+      const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
+      const dimmed = arcSeriesStyle.arc.dimmed;
+      const dimmedFill = dimmed && 'fill' in dimmed ? dimmed.fill : undefined;
+      const useDimmedColor = isUnhighlighted && dimmedFill;
+
+      if (useDimmedColor) {
+        // Temporarily override fillColor for dimmed state
+        const originalFillColor = quad.fillColor;
+        quad.fillColor = dimmedFill;
+        if (quad.x0 !== quad.x1) renderTaperedBorder(ctx, quad);
+        quad.fillColor = originalFillColor; // Restore
+      } else {
+        if (quad.x0 !== quad.x1) renderTaperedBorder(ctx, quad);
+      }
     });
   });
 }
 
-function renderRectangles(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
+function renderRectangles(
+  ctx: CanvasRenderingContext2D,
+  quadViewModel: QuadViewModel[],
+  highlightedQuadSet: Set<QuadViewModel>,
+  arcSeriesStyle: ArcSeriesStyle,
+) {
   withContext(ctx, () => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
-    quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
+    quadViewModel.forEach((quad) => {
+      const { strokeWidth, fillColor, x0, x1, y0px, y1px } = quad;
       // only draw a shape if it would show up at all
       if (x1 - x0 >= 1 && y1px - y0px >= 1) {
-        ctx.fillStyle = fillColor;
+        // Apply dimmed colors for unhighlighted quads
+        const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
+        const dimmed = arcSeriesStyle.arc.dimmed;
+        const dimmedFill = dimmed && 'fill' in dimmed ? dimmed.fill : undefined;
+        const useDimmedColor = isUnhighlighted && dimmedFill;
+
+        ctx.fillStyle = useDimmedColor ? dimmedFill : fillColor;
         ctx.beginPath();
         ctx.moveTo(x0, y0px);
         ctx.lineTo(x0, y1px);
@@ -277,6 +313,12 @@ export function renderPartitionCanvas2d(
     panel,
     chartDimensions,
   }: ShapeViewModel,
+  _focus: unknown,
+  _animationState: AnimationState,
+  highlightedLegendPath: LegendPath,
+  legendStrategy: LegendStrategy | undefined,
+  flatLegend: boolean | undefined,
+  arcSeriesStyle: ArcSeriesStyle,
 ) {
   const { sectorLineWidth, sectorLineStroke, linkLabel } = style;
 
@@ -322,13 +364,24 @@ export function renderPartitionCanvas2d(
     ctx.strokeStyle = sectorLineStroke;
     ctx.lineWidth = sectorLineWidth;
 
+    // Calculate which quads are highlighted for legend dimming
+    const highlightedQuadSet = new Set<QuadViewModel>();
+    if (highlightedLegendPath.length > 0) {
+      // Use highlightedGeoms to determine which quads match the legend path
+      const highlighted = highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedLegendPath);
+      highlighted.forEach((quad) => highlightedQuadSet.add(quad));
+    }
+
     // painter's algorithm, like that of SVG: the sequence determines what overdraws what; first element of the array is drawn first
     // (of course, with SVG, it's for ambiguous situations only, eg. when 3D transforms with different Z values aren't used, but
     // unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
     // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
       // bottom layer: sectors (pie slices, ring sectors etc.)
-      () => (isSunburst(layout) ? renderSectors(ctx, quadViewModel) : renderRectangles(ctx, quadViewModel)),
+      () =>
+        isSunburst(layout)
+          ? renderSectors(ctx, quadViewModel, highlightedQuadSet, arcSeriesStyle)
+          : renderRectangles(ctx, quadViewModel, highlightedQuadSet, arcSeriesStyle),
 
       // all the fill-based, potentially multirow text, whether inside or outside the sector
       () => renderRowSets(ctx, rowSets, linkLineColor),

@@ -139,6 +139,10 @@ export const LIGHT_THEME: Theme = {
   barSeriesStyle: {
     rect: {
       opacity: 1,
+      dimmed: {
+        fill: LIGHT_DIMMED_COLORS.barFill,
+        texture: { opacity: 0.25 },
+      },
     },
     rectBorder: {
       visible: false,
@@ -161,6 +165,10 @@ export const LIGHT_THEME: Theme = {
       stroke: Colors.Black.keyword,
       strokeWidth: 1,
       opacity: 1,
+      dimmed: {
+        fill: LIGHT_DIMMED_COLORS.arcFill,
+        stroke: Colors.Black.keyword,
+      },
     },
   },
   sharedStyle: DEFAULT_GEOMETRY_STYLES,

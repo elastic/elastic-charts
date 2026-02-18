@@ -37,3 +37,4 @@ export { Example as withTexture } from './23_with_texture.story';
 export { Example as textureMultipleSeries } from './24_texture_multiple_series.story';
 export { Example as mixedPointShapes } from './25_mixed_point_shapes.story';
 export { Example as highlighterStyle } from './26_highlighter_style.story';
+export { Example as dimmedHighlightStyle } from './27_dimmed_highlight_style.story';

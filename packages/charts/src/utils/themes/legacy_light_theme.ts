@@ -122,6 +122,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
   barSeriesStyle: {
     rect: {
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
     rectBorder: {
       visible: false,
@@ -143,6 +144,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
       stroke: Colors.Black.keyword,
       strokeWidth: 1,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
   },
   sharedStyle: DEFAULT_GEOMETRY_STYLES,

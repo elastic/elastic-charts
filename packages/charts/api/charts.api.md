@@ -167,6 +167,12 @@ export interface ArcSeriesStyle {
 
 // @public (undocumented)
 export interface ArcStyle {
+    dimmed?: {
+        opacity: number;
+    } | {
+        fill: Color | ColorVariant;
+        stroke?: Color | ColorVariant;
+    };
     fill?: Color | ColorVariant;
     opacity: number;
     stroke?: Color | ColorVariant;
@@ -2644,6 +2650,14 @@ export interface RectBorderStyle {
 
 // @public (undocumented)
 export interface RectStyle {
+    dimmed?: {
+        opacity: number;
+    } | {
+        fill: Color | ColorVariant;
+        texture?: {
+            opacity: number;
+        };
+    };
     fill?: Color | ColorVariant;
     opacity: number;
     texture?: TexturedStyles;
