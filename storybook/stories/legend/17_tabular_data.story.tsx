@@ -61,6 +61,7 @@ const datasets: Record<'defaultDataset' | 'shortCopyDataset' | 'longCopyDataset'
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const hideActions = boolean('Hide legend action', false, 'Legend');
+  const legendActionOnHover = boolean('Show legend action on hover', true, 'Legend');
   const showLegendExtra = !boolean('Hide legend extra', false, 'Legend');
   const showColorPicker = !boolean('Hide color picker', true, 'Legend');
   const legendPosition = customKnobs.enum.position('Legend position', undefined, { group: 'Legend' });
@@ -99,6 +100,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         baseTheme={useBaseTheme()}
         legendPosition={legendPosition}
         legendAction={hideActions ? undefined : getLegendAction(euiPopoverPosition)}
+        legendActionOnHover={legendActionOnHover}
         legendColorPicker={showColorPicker ? getColorPicker(euiPopoverPosition) : undefined}
         legendSize={getLegendSizeKnob()}
         legendValues={showLegendExtra ? legendValues : []}

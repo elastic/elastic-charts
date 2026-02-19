@@ -479,6 +479,11 @@ export interface LegendSpec {
    * Render slot to render action for legend
    */
   legendAction?: LegendAction;
+  /**
+   * Display the legend action only on hover. When false, the action is always visible.
+   * @defaultValue false
+   */
+  legendActionOnHover?: boolean;
   legendColorPicker?: LegendColorPicker;
   /**
    * A SeriesSortFn to sort the legend values (top-bottom)
