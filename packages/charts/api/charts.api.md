@@ -2163,7 +2163,7 @@ export interface MetricStyle {
     // (undocumented)
     valueFontSize: 'default' | 'fit' | number;
     // (undocumented)
-    valuePosition: 'top' | 'bottom';
+    valuePosition: 'top' | 'middle' | 'bottom';
     // (undocumented)
     valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
 }
