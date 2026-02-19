@@ -86,5 +86,5 @@ export const Example: ChartsStory = (_, { title, description }) => {
 Example.parameters = {
   markdown:
     'The `legendLayout` prop allows you to render the legend in a list or table view.\n\n` +' +
-    '` __Note:__ When this prop is undefined, the layout is chosen automatically: by default a list view is used unless there is statistics or CurrentAndLastValue.',
+    '` __Note:__ When this prop is undefined, the layout is chosen automatically: by default a grid list view is used unless there is statistics.',
 };
