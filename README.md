@@ -3,7 +3,7 @@
   Elastic Charts
 </h1>
 <p align="center">
-  <a href="https://buildkite.com/elastic/datavis-ci/builds?branch=main">
+  <a href="https://buildkite.com/elastic/elastic-charts-build/builds?branch=main">
     <img alt="Build Status - main branch" src="https://badge.buildkite.com/1b2f6369ef27e5b23a7fccf2545d7d6e31bff1957c7c941d31.svg?branch=main">
   </a>
   <a href="https://www.npmjs.com/@elastic/charts"><img alt="NPM version" src="https://img.shields.io/npm/v/@elastic/charts.svg"></a>
@@ -54,7 +54,7 @@ We use [storybook](https://storybook.js.org) to document API, edge-cases, and th
 A hosted version is available at [https://elastic.github.io/elastic-charts/storybook][docs].
 
 ## CI
-We're using the same [build pipeline](https://buildkite.com/elastic/kibana-elastic-charts-build) for building PRs and the main branch. This pipeline is triggered through webhook events hitting the [buildkite-pr-bot](https://github.com/elastic/buildkite-pr-bot). Configuration for the triggered pipelines can be adjusted in [pull-requests.json](./.buildkite/pull-requests.json).
+We're using the same [build pipeline](https://buildkite.com/elastic/elastic-charts-build) for building PRs and the main branch. This pipeline is triggered through webhook events hitting the [buildkite-pr-bot](https://github.com/elastic/buildkite-pr-bot). Configuration for the triggered pipelines can be adjusted in [pull-requests.json](./.buildkite/pull-requests.json).
 
 ## Goals
 
