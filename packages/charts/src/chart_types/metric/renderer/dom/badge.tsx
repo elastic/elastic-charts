@@ -16,6 +16,9 @@ import type { Color } from '../../../../common/colors';
 /** @internal */
 export const BADGE_BORDER = 1;
 
+/** @internal */
+export const BADGE_PADDING_BLOCK = 2;
+
 const ICON_MARGIN = 4;
 
 interface BadgeProps {
