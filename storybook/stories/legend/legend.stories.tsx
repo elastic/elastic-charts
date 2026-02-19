@@ -24,3 +24,4 @@ export { Example as singleSeries } from './14_single_series.story';
 export { Example as sortItems } from './15_legend_sort.story';
 export { Example as customLegend } from './16_custom_legend.story';
 export { Example as tabularData } from './17_tabular_data.story';
+export { Example as labelTruncation } from './18_label_truncation.story';

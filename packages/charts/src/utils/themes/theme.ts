@@ -394,6 +394,9 @@ export interface BackgroundStyle {
 }
 
 /** @public */
+export type LegendLabelTruncationPosition = 'end' | 'middle';
+
+/** @public */
 export interface LegendLabelOptions {
   /**
    * Sets maxlines allowable before truncating
@@ -403,6 +406,15 @@ export interface LegendLabelOptions {
    * @defaultValue 1
    */
   maxLines: number;
+  /**
+   * Position where text is truncated when it overflows.
+   *
+   * - `'middle'`: Truncates in the middle, preserving start and end (e.g., `enterprise-au…ion-service`)
+   * - `'end'`: Traditional truncation at the end (e.g., `enterprise-authentication-an…`)
+   *
+   * @defaultValue 'middle'
+   */
+  truncationPosition?: LegendLabelTruncationPosition;
 }
 
 /** @public */

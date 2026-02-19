@@ -7,9 +7,10 @@
  */
 
 import classNames from 'classnames';
-import type { KeyboardEventHandler, MouseEventHandler } from 'react';
+import type { KeyboardEventHandler, MouseEventHandler, CSSProperties } from 'react';
 import React, { useCallback } from 'react';
 
+import { useMiddleTruncatedLabel } from './use_truncated_label';
 import { isRTLString } from '../../utils/common';
 import type { LegendLabelOptions } from '../../utils/themes/theme';
 
@@ -75,7 +76,17 @@ export function Label({
   hiddenSeriesCount,
   totalSeriesCount,
 }: LabelProps) {
-  const { className, dir, clampStyles } = getSharedProps(label, options, !!onToggle);
+  // Default to 'middle' truncation when not specified
+  const shouldTruncateMiddle = (options.truncationPosition ?? 'middle') === 'middle' && options.maxLines > 0;
+  const { labelRef, truncatedLabel, isComputed } = useMiddleTruncatedLabel({
+    label,
+    maxLines: options.maxLines,
+    shouldTruncate: shouldTruncateMiddle,
+  });
+
+  // Only apply middle truncation CSS classes when JS computation is complete
+  const useMiddleClasses = shouldTruncateMiddle && isComputed;
+  const { className, dir, clampStyles } = getSharedProps(label, options, !!onToggle, useMiddleClasses);
 
   const onClick: MouseEventHandler = useCallback(
     ({ metaKey, ctrlKey }) => onToggle?.(isAppleDevice ? metaKey : ctrlKey),
@@ -94,6 +105,7 @@ export function Label({
     // This div is required to allow multiline text truncation, all ARIA requirements are still met
     // https://stackoverflow.com/questions/68673034/webkit-line-clamp-does-not-apply-to-buttons
     <div
+      ref={labelRef}
       role="button"
       tabIndex={0}
       dir={dir}
@@ -106,35 +118,68 @@ export function Label({
       aria-label={`${label}; ${getInteractivityAriaLabel(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount)}`}
       data-testid="echLegendItemLabel"
     >
-      {label}
+      {truncatedLabel}
     </div>
   ) : (
-    <div dir={dir} className={className} title={label} style={clampStyles} data-testid="echLegendItemLabel">
-      {label}
+    <div
+      ref={labelRef}
+      dir={dir}
+      className={className}
+      title={label}
+      style={clampStyles}
+      data-testid="echLegendItemLabel"
+    >
+      {truncatedLabel}
     </div>
   );
 }
 
 /** @internal */
 export function NonInteractiveLabel({ label, options }: { label: string; options: LegendLabelOptions }) {
-  const { className, dir, clampStyles } = getSharedProps(label, options);
+  // Default to 'middle' truncation when not specified
+  const shouldTruncateMiddle = (options.truncationPosition ?? 'middle') === 'middle' && options.maxLines > 0;
+  const { labelRef, truncatedLabel, isComputed } = useMiddleTruncatedLabel({
+    label,
+    maxLines: options.maxLines,
+    shouldTruncate: shouldTruncateMiddle,
+  });
+
+  // Only apply middle truncation CSS classes when JS computation is complete
+  const useMiddleClasses = shouldTruncateMiddle && isComputed;
+  const { className, dir, clampStyles } = getSharedProps(label, options, false, useMiddleClasses);
+
   return (
-    <div dir={dir} className={className} title={label} style={clampStyles} data-testid="echLegendItemLabel">
-      {label}
+    <div
+      ref={labelRef}
+      dir={dir}
+      className={className}
+      title={label}
+      style={clampStyles}
+      data-testid="echLegendItemLabel"
+    >
+      {truncatedLabel}
     </div>
   );
 }
 
-function getSharedProps(label: string, options: LegendLabelOptions, isToggleable?: boolean) {
+function getSharedProps(
+  label: string,
+  options: LegendLabelOptions,
+  isToggleable?: boolean,
+  useMiddleClasses?: boolean,
+) {
   const maxLines = Math.abs(options.maxLines);
+
   const className = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(isToggleable),
     'echLegendItem__label--singleline': maxLines === 1,
+    'echLegendItem__label--singleline--middle': maxLines === 1 && useMiddleClasses,
     'echLegendItem__label--multiline': maxLines > 1,
+    'echLegendItem__label--multiline--middle': maxLines > 1 && useMiddleClasses,
   });
 
   const dir = isRTLString(label) ? 'rtl' : 'ltr'; // forced for individual labels in case mixed charset
-  const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
+  const clampStyles: CSSProperties = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
 
   return { className, dir, clampStyles };
 }

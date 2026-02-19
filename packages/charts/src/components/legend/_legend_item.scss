@@ -110,7 +110,13 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     @include wrapText;
 
     &--singleline {
+      @include resetWrapText;
       @include euiTextTruncate;
+
+      // When using middle truncation, JS handles the ellipsis: `clip` will disable euiTextTruncate
+      &--middle {
+        text-overflow: clip;
+      }
     }
 
     // div to prevent changing to button
@@ -118,6 +124,13 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2; // number of lines to show, overridden in element styles
+    }
+
+    // When using middle truncation, JS handles the ellipsis so disable CSS line-clamp truncation
+    &--multiline--middle:is(div) {
+      -webkit-line-clamp: none; // Disable CSS truncation, JS handles it
+      line-break: anywhere; // Allow breaking at any point for accurate text fitting
+      word-break: break-all; // Fallback for older browsers
     }
 
     &--clickable:hover {

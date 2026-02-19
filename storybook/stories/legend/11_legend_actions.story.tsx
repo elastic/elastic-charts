@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import type { LegendLabelOptions } from '@elastic/charts';
@@ -24,6 +24,15 @@ const getLabelOptionKnobs = (): LegendLabelOptions => {
 
   return {
     maxLines: number('max label lines', 1, { min: 0, step: 1 }, group),
+    truncationPosition: select(
+      'truncationPosition',
+      {
+        middle: 'middle',
+        end: 'end',
+      },
+      'middle',
+      group,
+    ),
   };
 };
 
