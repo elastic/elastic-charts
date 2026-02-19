@@ -106,6 +106,7 @@ export {
 // utilities
 export {
   Datum,
+  Layout,
   Position,
   Rendering,
   Rotation,
@@ -120,6 +121,7 @@ export {
   ShowAccessor,
   ValueAccessor,
   ValueFormatter,
+  LegendLayout,
   LayoutDirection,
 } from './utils/common';
 export { DataGenerator } from './utils/data_generators/data_generator';

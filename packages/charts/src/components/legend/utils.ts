@@ -27,5 +27,20 @@ export function getExtra(
   const extraValueKey = path.map(({ index }) => index).join('__');
   const itemExtraValues = extraValues.has(extraValueKey) ? extraValues.get(extraValueKey) : extraValues.get(key);
   const actionExtra = childId !== undefined ? itemExtraValues?.get(childId) : undefined;
-  return actionExtra ? actionExtra : extraValues.size === totalItems ? findCurrentValue(values) : undefined;
+  return actionExtra ?? (extraValues.size === totalItems ? findCurrentValue(values) : undefined);
 }
+
+/** @internal */
+export const prepareLegendValues = (
+  item: LegendItem,
+  legendValues: LegendValue[],
+  totalItems: number,
+  extraValues: Map<string, LegendItemExtraValues>,
+) => {
+  return legendValues.map((legendValue) => {
+    if (legendValue === LegendValue.Value || legendValue === LegendValue.CurrentAndLastValue) {
+      return getExtra(extraValues, item, totalItems);
+    }
+    return item.values.find(({ type }) => type === legendValue);
+  });
+};

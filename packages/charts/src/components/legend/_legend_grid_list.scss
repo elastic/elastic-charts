@@ -1,7 +1,7 @@
 .echLegend {
   z-index: 1;
 
-  .echLegendList {
+  .echLegendGridList {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     padding-inline-start: 0;
@@ -10,7 +10,7 @@
     margin-block-end: 0;
   }
   &--horizontal {
-    .echLegendList {
+    .echLegendGridList {
       grid-column-gap: $echLegendColumnGap;
       grid-row-gap: $echLegendRowGap;
       margin-top: $echLegendRowGap;
@@ -37,7 +37,7 @@
     pointer-events: none;
   }
 
-  .echLegendListContainer {
+  .echLegendGridListContainer {
     @include euiYScrollWithShadows;
     width: 100%;
     overflow-y: auto;

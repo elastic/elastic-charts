@@ -13,13 +13,14 @@ import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
 import { CustomLegend } from './custom_legend';
-import type { LegendItemProps } from './legend_item';
-import { LegendListItem } from './legend_item';
+import { LegendList } from './legend_list';
 import { LegendTable } from './legend_table';
 import { getLegendPositionConfig, legendPositionStyle } from './position_style';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
+import type { LegendItemProps } from './types';
 import { ActionFocusProvider } from './use_action_focus_management';
 import type { LegendItem, LegendItemExtraValues } from '../../common/legend';
+import { shouldDisplayGridList } from '../../common/legend';
 import { shouldDisplayTable } from '../../common/legend';
 import type { SeriesIdentifier } from '../../common/series_id';
 import type { LegendSpec } from '../../specs';
@@ -38,6 +39,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../state/select
 import { getInternalMainProjectionAreaSelector } from '../../state/selectors/get_internal_main_projection_area';
 import { getLegendConfigSelector } from '../../state/selectors/get_legend_config_selector';
 import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_items_values';
+import { getLegendMaxFormattedValueWidthSelector } from '../../state/selectors/get_legend_max_formatted_value';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { isBrushingSelector } from '../../state/selectors/is_brushing';
@@ -56,6 +58,7 @@ interface LegendStateProps {
   config: LegendSpec;
   items: LegendItem[];
   extraValues: Map<string, LegendItemExtraValues>;
+  maxFormattedValueWidth?: number;
 }
 
 interface LegendDispatchProps {
@@ -77,9 +80,10 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     chartDimensions,
     containerDimensions,
     config,
+    maxFormattedValueWidth,
   } = props;
 
-  const { onLegendItemOut, onLegendItemOver } = config;
+  const { onLegendItemOut, onLegendItemOver, legendLayout, legendPosition } = config;
   const { onItemOutAction, onItemOverAction } = props;
 
   const onLegendItemMouseOver = useCallback(
@@ -144,7 +148,8 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   };
 
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
-  const isTableView = shouldDisplayTable(itemProps.legendValues);
+  const isTableView = shouldDisplayTable(itemProps.legendValues, legendPosition, legendLayout);
+  const isGridListView = shouldDisplayGridList(isTableView, legendPosition, legendLayout);
   const actionFocusEnabled = Boolean(config.legendAction);
 
   return (
@@ -170,11 +175,25 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
           <div style={containerStyle} className="echLegendTable__container">
             <LegendTable items={items} {...itemProps} seriesWidth={size.seriesWidth} />
           </div>
+        ) : isGridListView ? (
+          <div style={containerStyle} className="echLegendGridListContainer">
+            <ul style={listStyle} className="echLegendGridList">
+              {items.map((item, index) => (
+                <LegendList key={`${index}`} item={item} {...itemProps} />
+              ))}
+            </ul>
+          </div>
         ) : (
           <div style={containerStyle} className="echLegendListContainer">
             <ul style={listStyle} className="echLegendList">
               {items.map((item, index) => (
-                <LegendListItem key={`${index}`} item={item} {...itemProps} />
+                <LegendList
+                  key={`${index}`}
+                  item={item}
+                  {...itemProps}
+                  isListLayout
+                  maxFormattedValueWidth={maxFormattedValueWidth}
+                />
               ))}
             </ul>
           </div>
@@ -228,6 +247,7 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
     size: getLegendSizeSelector(state),
     items: internalChartState.getLegendItems(state),
     extraValues: getLegendExtraValuesSelector(state),
+    maxFormattedValueWidth: getLegendMaxFormattedValueWidthSelector(state),
     config,
   };
 };

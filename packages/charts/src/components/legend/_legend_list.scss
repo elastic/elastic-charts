@@ -1,0 +1,97 @@
+.echLegend {
+  z-index: 1;
+
+  .echLegendList {
+    display: flex;
+    flex-direction: column;
+    padding-inline-start: 0;
+    padding-inline-end: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+  }
+  &--horizontal {
+    .echLegendList {
+      display: block;
+      margin-top: $echLegendRowGap;
+      margin-bottom: $echLegendRowGap;
+    }
+
+    .echLegendListContainer {
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      .echLegendList {
+        line-height: $echLegendRowHeight + $echLegendRowGap;
+      }
+
+      .echLegendItem {
+        display: inline;
+        margin-right: $echLegendColumnGap;
+
+        > .background {
+          display: none;
+        }
+
+        > *:not(.background) {
+          display: inline-block;
+          vertical-align: middle;
+          margin-left: 8px;
+        }
+
+        > .echLegendItem__action {
+          display: inline-flex;
+        }
+
+        > .echLegendItem__colorLabel {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          max-width: 100%; // prevent overflow when label + color marker exceeds line width
+          margin-left: $euiSizeXS; // match the 4px leading margin used in grid-list layout
+        }
+
+        > .echLegendItem__actionGroup {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+
+          > * {
+            margin-left: 0; // reset inherited margin; the group's own margin-left handles external spacing
+          }
+        }
+      }
+    }
+  }
+
+  &--top,
+  &--left {
+    order: 0;
+  }
+
+  &--bottom,
+  &--right {
+    order: 1;
+  }
+
+  &--debug {
+    background: rgba(238, 130, 238, 0.2);
+    position: relative;
+  }
+
+  &--inert {
+    pointer-events: none;
+  }
+
+  .echLegendListContainer {
+    @include euiYScrollWithShadows;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    :focus {
+      @include euiFocusRing(null, 1);
+      background-color: $euiFocusBackgroundColor;
+      border-radius: $euiBorderRadius / 2;
+    }
+  }
+}

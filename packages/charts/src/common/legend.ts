@@ -12,9 +12,18 @@ import type { CategoryKey, CategoryLabel } from './category';
 import type { Color } from './colors';
 import type { SeriesKey, SeriesIdentifier } from './series_id';
 import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import type { SeriesType } from '../specs';
+import type { LegendPositionConfig, SeriesType } from '../specs';
 import type { LegendPath } from '../state/actions/legend';
+import type { Layout, Position } from '../utils/common';
+import { LayoutDirection, Position as PositionObj } from '../utils/common';
 import type { PointStyle } from '../utils/themes/theme';
+
+/**
+ * @internal
+ */
+export function isPosition(value: Position | LegendPositionConfig): value is Position {
+  return Object.values(PositionObj).includes(value as Position);
+}
 
 /** @internal */
 export type LegendItemChildId = CategoryKey;
@@ -91,9 +100,53 @@ export type LegendItem = {
 /** @internal */
 export type LegendItemExtraValues = Map<LegendItemChildId, LegendItemValue>;
 
+/**
+ * Layout should be default implementation when either
+ *   - legendLayout is undefined
+ *   - legendPosition is left or right
+ *   - legendPositionConfig is a vertical position
+ * @internal */
+const shouldUseDefaultLayout = (legendPosition: Position | LegendPositionConfig, legendLayout?: Layout) => {
+  if (legendLayout === undefined) {
+    return true;
+  }
+  if (isPosition(legendPosition)) {
+    return legendPosition === PositionObj.Left || legendPosition === PositionObj.Right;
+  }
+
+  return legendPosition.direction === LayoutDirection.Vertical;
+};
+
 /** @internal */
-export const shouldDisplayTable = (legendValues: LegendValue[]) =>
-  legendValues.some((v) => v !== LegendValue.CurrentAndLastValue && v !== LegendValue.Value);
+export const shouldDisplayTable = (
+  legendValues: LegendValue[],
+  legendPosition: Position | LegendPositionConfig,
+  legendLayout?: Layout,
+) => {
+  if (legendLayout === 'table') {
+    return true;
+  } else if (shouldUseDefaultLayout(legendPosition, legendLayout)) {
+    return legendValues.some((v) => v !== LegendValue.CurrentAndLastValue && v !== LegendValue.Value);
+  }
+  return false;
+};
+
+/** @internal */
+export const shouldDisplayGridList = (
+  isTableView: boolean,
+  legendPosition: Position | LegendPositionConfig,
+  legendLayout?: Layout,
+) => {
+  if (isTableView) {
+    return false;
+  }
+  // For backward compatibility, show the gridList layout in the default setup
+  if (shouldUseDefaultLayout(legendPosition, legendLayout)) {
+    return true;
+  }
+  return false;
+};
+
 /**
  * todo: i18n
  * @internal
