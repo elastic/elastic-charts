@@ -6,15 +6,10 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
-
-import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
-
-/** @internal */
-export function ScreenReaderDescription(props: A11ySettings) {
-  const { description, descriptionId } = props;
-
-  if (!description) return null;
-
-  return <p id={descriptionId}>{description}</p>;
+/**
+ * Capitalizes the first letter of a string.
+ * @internal
+ */
+export function capitalizeFirst(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
