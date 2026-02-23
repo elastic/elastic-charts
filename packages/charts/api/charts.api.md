@@ -3073,6 +3073,8 @@ export interface TextStyle {
     // (undocumented)
     fontStyle?: FontStyle;
     // (undocumented)
+    fontWeight?: FontWeight;
+    // (undocumented)
     padding: number | SimplePadding;
 }
 
