@@ -173,21 +173,23 @@ export const LIGHT_THEME: Theme = {
       visible: true,
       fontSize: 12,
       fontFamily: DEFAULT_FONT_FAMILY,
+      fontWeight: 450,
       padding: {
         inner: 10,
         outer: 0,
       },
-      fill: LIGHT_TEXT_COLORS.textParagraph,
+      fill: LIGHT_TEXT_COLORS.textSubdued,
     },
     axisPanelTitle: {
       visible: true,
       fontSize: 10,
       fontFamily: 'sans-serif',
+      fontWeight: 450,
       padding: {
         inner: 8,
         outer: 0,
       },
-      fill: LIGHT_TEXT_COLORS.textParagraph,
+      fill: LIGHT_TEXT_COLORS.textSubdued,
     },
     axisLine: {
       visible: true,
