@@ -172,23 +172,21 @@ export const DARK_THEME: Theme = {
     axisTitle: {
       fontSize: 12,
       fontFamily: DEFAULT_FONT_FAMILY,
-      fontWeight: 450,
       padding: {
         inner: 10,
         outer: 0,
       },
-      fill: DARK_TEXT_COLORS.textSubdued,
+      fill: DARK_TEXT_COLORS.textParagraph,
       visible: true,
     },
     axisPanelTitle: {
       fontSize: 10,
       fontFamily: DEFAULT_FONT_FAMILY,
-      fontWeight: 450,
       padding: {
         inner: 8,
         outer: 0,
       },
-      fill: DARK_TEXT_COLORS.textSubdued,
+      fill: DARK_TEXT_COLORS.textParagraph,
       visible: true,
     },
     axisLine: {
