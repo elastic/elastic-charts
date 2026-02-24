@@ -12,6 +12,7 @@ import baseConfig from './playwright.config';
 
 const config: PlaywrightTestConfig = {
   ...baseConfig,
+  testIgnore: undefined, // Reset the testIgnore from base config
   testDir: 'tests_a11y',
   testMatch: ['**/tests_a11y/**/*.test.ts'],
   reporter: [

@@ -6,34 +6,16 @@
  * Side Public License, v 1.
  */
 
+import { getChartTypeDescriptionSelector } from './get_chart_type_description';
 import { getGoalChartDataSelector, getGoalChartLabelsSelector } from './get_goal_chart_data';
 import type { ChartSpecificScreenReaderData, ScreenReaderItem } from '../../../../state/chart_selectors';
-import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
-import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 
 /** @internal */
 export const getScreenReaderDataSelector = createCustomCachedSelector(
-  [
-    getGoalChartDataSelector,
-    getGoalChartLabelsSelector,
-    getInternalChartStateSelector,
-    getA11ySettingsSelector,
-    (state: GlobalChartState) => state,
-  ],
-  (goalChartData, goalChartLabels, internalChartState, a11ySettings, state): ChartSpecificScreenReaderData => {
+  [getGoalChartDataSelector, getGoalChartLabelsSelector, getChartTypeDescriptionSelector],
+  (goalChartData, goalChartLabels, chartTypeDescription): ChartSpecificScreenReaderData => {
     const screenReaderItems: ScreenReaderItem[] = [];
-
-    // Add chart type description first
-    const chartTypeDescription = internalChartState?.getChartTypeDescription(state);
-    if (chartTypeDescription) {
-      screenReaderItems.push({
-        label: 'Chart type',
-        id: a11ySettings.defaultSummaryId,
-        value: chartTypeDescription,
-      });
-    }
 
     // Add goal chart specific parts
     if (goalChartData && !isNaN(goalChartData.maximum)) {
@@ -69,6 +51,16 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
       );
     }
 
-    return { screenReaderItems };
+    const summaryParts: string[] = [];
+
+    // Add chart type description first
+    if (chartTypeDescription) {
+      summaryParts.push(chartTypeDescription);
+    }
+
+    return {
+      summaryParts,
+      screenReaderItems,
+    };
   },
 );

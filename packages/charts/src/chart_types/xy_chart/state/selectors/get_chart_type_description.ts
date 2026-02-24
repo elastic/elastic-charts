@@ -8,11 +8,14 @@
 
 import { getSeriesSpecsSelector } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { capitalizeFirst } from '../../../../utils/text/text_utils';
 import type { SeriesType } from '../../utils/specs';
 
 /** @internal */
 export const getChartTypeDescriptionSelector = createCustomCachedSelector([getSeriesSpecsSelector], (specs): string => {
   const seriesTypes = new Set<SeriesType>();
   specs.forEach((value) => seriesTypes.add(value.seriesType));
-  return seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
+  return seriesTypes.size > 1
+    ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart`
+    : `${capitalizeFirst([...seriesTypes][0] ?? '')} chart`;
 });

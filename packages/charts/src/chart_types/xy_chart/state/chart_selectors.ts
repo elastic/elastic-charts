@@ -14,6 +14,7 @@ import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_desc
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getLegendItemExtraValuesSelector } from './selectors/get_legend_item_extra_values';
+import { getScreenReaderDataSelector } from './selectors/get_screen_reader_data';
 import { getSeriesSpecsSelector } from './selectors/get_specs';
 import { getTooltipAnchorPositionSelector } from './selectors/get_tooltip_anchor_position';
 import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
@@ -58,6 +59,7 @@ export const chartSelectorsFactory = createChartSelectorsFactory(
 
     getDebugState: getDebugStateSelector,
     getChartTypeDescription: getChartTypeDescriptionSelector,
+    getScreenReaderData: getScreenReaderDataSelector,
     getSmallMultiplesDomains: computeSeriesDomainsSelector,
   },
   // event callbacks

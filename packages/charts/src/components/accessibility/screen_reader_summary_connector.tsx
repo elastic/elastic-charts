@@ -6,15 +6,13 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
-
-import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
+import type { GlobalChartState } from '../../state/chart_state';
+import {
+  getScreenReaderSummarySelector,
+  type ScreenReaderSummaryData,
+} from '../../state/selectors/get_screen_reader_summary';
 
 /** @internal */
-export function ScreenReaderDescription(props: A11ySettings) {
-  const { description, descriptionId } = props;
-
-  if (!description) return null;
-
-  return <p id={descriptionId}>{description}</p>;
-}
+export const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryData => {
+  return getScreenReaderSummarySelector(state);
+};
