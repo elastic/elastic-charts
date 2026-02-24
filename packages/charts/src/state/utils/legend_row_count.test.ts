@@ -32,7 +32,6 @@ function getMockedLegendItem(label: string, values: LegendItem['values'] = []): 
 function getMockedArgs(overrides: Partial<HorizontalLegendRowCountArgs> = {}): HorizontalLegendRowCountArgs {
   return {
     items: [],
-    legendValues: [],
     availableWidth: 1000,
     columnGap: 16,
     spacingBuffer: 8,
@@ -121,37 +120,25 @@ describe('computeHorizontalLegendRowCount', () => {
   describe('legendValues', () => {
     it('adds value cell widths to the item width', () => {
       const values = [{ value: 123, label: '123', type: LegendValue.Average }];
-      const items = [getMockedLegendItem('A', values), getMockedLegendItem('B', values)];
+      const itemsWithValues = [getMockedLegendItem('A', values), getMockedLegendItem('B', values)];
+      const itemsWithoutValues = [getMockedLegendItem('A'), getMockedLegendItem('B')];
 
       const withoutValues = computeHorizontalLegendRowCount(
-        getMockedArgs({ items, legendValues: [], availableWidth: 300 }),
+        getMockedArgs({ items: itemsWithoutValues, availableWidth: 300 }),
       );
       const withValues = computeHorizontalLegendRowCount(
-        getMockedArgs({ items, legendValues: [LegendValue.Average], availableWidth: 100 }),
+        getMockedArgs({ items: itemsWithValues, availableWidth: 100 }),
       );
 
       expect(withoutValues).toEqual({ isSingleLine: true, isMoreThanTwoLines: false });
       expect(withValues).toEqual({ isSingleLine: false, isMoreThanTwoLines: false });
     });
 
-    it('skips values whose type is not in legendValues', () => {
-      const values = [{ value: 100, label: '100', type: LegendValue.Min }];
-      const items = [getMockedLegendItem('Series A', values)];
-
-      // Request Max but item only has Min → value cell should be skipped
-      const result = computeHorizontalLegendRowCount(
-        getMockedArgs({ items, legendValues: [LegendValue.Max], availableWidth: 50 }),
-      );
-      expect(result).toEqual({ isSingleLine: true, isMoreThanTwoLines: false });
-    });
-
     it('skips non-CurrentAndLastValue entries with empty labels', () => {
       const values = [{ value: null, label: '', type: LegendValue.Average }];
       const items = [getMockedLegendItem('A', values)];
 
-      const result = computeHorizontalLegendRowCount(
-        getMockedArgs({ items, legendValues: [LegendValue.Average], availableWidth: 50 }),
-      );
+      const result = computeHorizontalLegendRowCount(getMockedArgs({ items, availableWidth: 50 }));
       expect(result).toEqual({ isSingleLine: true, isMoreThanTwoLines: false });
     });
   });
@@ -164,7 +151,6 @@ describe('computeHorizontalLegendRowCount', () => {
       const withShortMax = computeHorizontalLegendRowCount(
         getMockedArgs({
           items,
-          legendValues: [LegendValue.CurrentAndLastValue],
           availableWidth: 100,
           maxFormattedValue: '9',
         }),
@@ -173,7 +159,6 @@ describe('computeHorizontalLegendRowCount', () => {
       const withLongMax = computeHorizontalLegendRowCount(
         getMockedArgs({
           items,
-          legendValues: [LegendValue.CurrentAndLastValue],
           availableWidth: 100,
           maxFormattedValue: '999,999,999.99',
         }),
@@ -191,7 +176,6 @@ describe('computeHorizontalLegendRowCount', () => {
       const result = computeHorizontalLegendRowCount(
         getMockedArgs({
           items,
-          legendValues: [LegendValue.CurrentAndLastValue],
           availableWidth: 50,
         }),
       );
@@ -215,7 +199,6 @@ describe('computeHorizontalLegendRowCount', () => {
     const result = computeHorizontalLegendRowCount(
       getMockedArgs({
         items,
-        legendValues: [LegendValue.Average, LegendValue.Min],
         availableWidth: 60,
       }),
     );
@@ -230,7 +213,6 @@ describe('computeHorizontalLegendRowCount', () => {
       const withoutTitle = computeHorizontalLegendRowCount(
         getMockedArgs({
           items,
-          legendValues: [LegendValue.Average],
           availableWidth: 200,
           showValueTitle: false,
         }),
@@ -239,7 +221,6 @@ describe('computeHorizontalLegendRowCount', () => {
       const withTitle = computeHorizontalLegendRowCount(
         getMockedArgs({
           items,
-          legendValues: [LegendValue.Average],
           availableWidth: 200,
           showValueTitle: true,
         }),

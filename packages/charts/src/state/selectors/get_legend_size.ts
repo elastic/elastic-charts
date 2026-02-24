@@ -125,7 +125,6 @@ export const getLegendSizeSelector = createCustomCachedSelector(
       const { isSingleLine, isMoreThanTwoLines } = withTextMeasure((textMeasure) =>
         computeHorizontalLegendRowCount({
           items,
-          legendValues,
           availableWidth,
           columnGap: BETWEEN_ROW_GAP,
           spacingBuffer: WITHIN_ROW_GAP,

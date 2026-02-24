@@ -15,11 +15,6 @@ import type { TextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 export interface HorizontalLegendRowCountArgs {
   /** Legend items being rendered */
   items: LegendItem[];
-  /**
-   * Legend values configured to show (affects extra columns rendered in list layout).
-   * This is the same `legendValues` from the legend spec.
-   */
-  legendValues: LegendValue[];
   /** Available width for the wrapping `<ul>` */
   availableWidth: number;
   /** The `column-gap` used by the wrapping `<ul>` (px) */
@@ -62,7 +57,6 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
 } {
   const {
     items,
-    legendValues,
     availableWidth,
     columnGap,
     spacingBuffer,
@@ -89,12 +83,10 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
     const { width: labelOnlyWidth } = textMeasure(item.label, font, 12, 1.5);
     const cappedLabelWidth = widthLimit > 0 ? Math.min(labelOnlyWidth, widthLimit) : labelOnlyWidth;
 
-    const valueCellWidths = legendValues.map((type) => {
-      const v = item.values.find((vv) => vv.type === type);
-      if (!v) return 0;
-      if (type !== LegendValue.CurrentAndLastValue && !v.label) return 0;
+    const valueCellWidths = item.values.map(({ type, label }) => {
+      if (type !== LegendValue.CurrentAndLastValue && !label) return 0;
 
-      const valueLabel = type === LegendValue.CurrentAndLastValue ? maxFormattedValue ?? (v.label || '—') : v.label;
+      const valueLabel = type === LegendValue.CurrentAndLastValue ? maxFormattedValue ?? (label || '—') : label;
 
       const valueText = !showValueTitle
         ? valueLabel
