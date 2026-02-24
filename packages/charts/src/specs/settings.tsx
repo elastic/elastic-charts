@@ -443,6 +443,12 @@ export interface LegendSpec {
   legendPosition: Position | LegendPositionConfig;
   /**
    * The layout of the legend
+   *
+   * When `undefined`, the grid list layout is used if there are no aggregated values or the only value is
+   * `CurrentAndLastValue`; otherwise the table layout is shown.
+   *
+   * When `'list'`, the grid list layout is used instead if the legend position is left/right or the legend direction is vertical.
+   *
    * @defaultValue undefined
    */
   legendLayout?: LegendLayout;
