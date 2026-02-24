@@ -36,7 +36,7 @@ export const LegendLayout = Object.freeze({
   Table: 'table' as const,
 });
 /** @public */
-export type Layout = $Values<typeof LegendLayout>;
+export type LegendLayout = $Values<typeof LegendLayout>;
 
 /** @public */
 export const LayoutDirection = Object.freeze({

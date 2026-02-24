@@ -106,7 +106,6 @@ export {
 // utilities
 export {
   Datum,
-  Layout,
   Position,
   Rendering,
   Rotation,

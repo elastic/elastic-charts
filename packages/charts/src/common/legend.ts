@@ -14,7 +14,7 @@ import type { SeriesKey, SeriesIdentifier } from './series_id';
 import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import type { LegendPositionConfig, SeriesType } from '../specs';
 import type { LegendPath } from '../state/actions/legend';
-import type { Layout, Position } from '../utils/common';
+import type { LegendLayout, Position } from '../utils/common';
 import { LayoutDirection, Position as PositionObj } from '../utils/common';
 import type { PointStyle } from '../utils/themes/theme';
 
@@ -106,7 +106,7 @@ export type LegendItemExtraValues = Map<LegendItemChildId, LegendItemValue>;
  *   - legendPosition is left or right
  *   - legendPositionConfig is a vertical position
  * @internal */
-const shouldUseDefaultLayout = (legendPosition: Position | LegendPositionConfig, legendLayout?: Layout) => {
+const shouldUseDefaultLayout = (legendPosition: Position | LegendPositionConfig, legendLayout?: LegendLayout) => {
   if (legendLayout === undefined) {
     return true;
   }
@@ -121,7 +121,7 @@ const shouldUseDefaultLayout = (legendPosition: Position | LegendPositionConfig,
 export const shouldDisplayTable = (
   legendValues: LegendValue[],
   legendPosition: Position | LegendPositionConfig,
-  legendLayout?: Layout,
+  legendLayout?: LegendLayout,
 ) => {
   if (legendLayout === 'table') {
     return true;
@@ -135,7 +135,7 @@ export const shouldDisplayTable = (
 export const shouldDisplayGridList = (
   isTableView: boolean,
   legendPosition: Position | LegendPositionConfig,
-  legendLayout?: Layout,
+  legendLayout?: LegendLayout,
 ) => {
   if (isTableView) {
     return false;

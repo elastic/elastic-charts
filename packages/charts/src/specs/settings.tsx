@@ -35,7 +35,7 @@ import type { PointerValue } from '../state/types';
 import type {
   HorizontalAlignment,
   LayoutDirection,
-  Layout,
+  LegendLayout,
   Position,
   Rendering,
   Rotation,
@@ -445,7 +445,7 @@ export interface LegendSpec {
    * The layout of the legend
    * @defaultValue undefined
    */
-  legendLayout?: Layout;
+  legendLayout?: LegendLayout;
   /**
    * Add one or more computed statistics to each legend item.
    * The available statistics depends by chart type.
