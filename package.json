@@ -172,7 +172,7 @@
     "webpack-dev-server": "^4.1.0"
   },
   "engines": {
-    "node": ">=10",
+    "node": ">=22",
     "yarn": ">=1"
   },
   "config": {

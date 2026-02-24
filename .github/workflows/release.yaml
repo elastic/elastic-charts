@@ -7,7 +7,7 @@ on:
 
 
 env:
-  ECH_NODE_VERSION: '20.11.1'
+  ECH_NODE_VERSION: '22.22.0'
 
 jobs:
   checks:

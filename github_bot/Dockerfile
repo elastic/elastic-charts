@@ -1,4 +1,4 @@
-FROM node:16-alpine as builder
+FROM node:22-alpine as builder
 WORKDIR /app
 COPY firebase.json .firebaserc ./
 COPY package.json yarn.lock ./
@@ -7,7 +7,7 @@ COPY tsconfig.main.json ./tsconfig.json
 COPY src src
 RUN yarn build
 
-FROM node:16-alpine
+FROM node:22-alpine
 ENV NODE_ENV=production
 WORKDIR /app
 COPY firebase.json .firebaserc ./
