@@ -19,8 +19,6 @@ interface BuildConfig {
 
 /**
  * This config enabled updating of required check runs when build is skipped
- *
- * TODO update this to be have a single source of truth btw here and github_bot/src/build.ts
  */
 export const getBuildConfig = (): BuildConfig => {
   return {

@@ -28,6 +28,7 @@ export interface TextStyle {
   fontSize: number;
   fontFamily: string;
   fontStyle?: FontStyle;
+  fontWeight?: FontWeight;
   fill: Color;
   padding: number | SimplePadding;
 }
