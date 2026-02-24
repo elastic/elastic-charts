@@ -1792,9 +1792,6 @@ export interface LayerValue {
 }
 
 // @public (undocumented)
-export type Layout = $Values<typeof LegendLayout>;
-
-// @public (undocumented)
 export const LayoutDirection: Readonly<{
     Horizontal: "horizontal";
     Vertical: "vertical";
@@ -1861,6 +1858,9 @@ export const LegendLayout: Readonly<{
     Table: "table";
 }>;
 
+// @public (undocumented)
+export type LegendLayout = $Values<typeof LegendLayout>;
+
 // @public
 export type LegendPath = LegendPathElement[];
 
@@ -1887,7 +1887,7 @@ export interface LegendSpec {
     legendActionOnHover?: boolean;
     // (undocumented)
     legendColorPicker?: LegendColorPicker;
-    legendLayout?: Layout;
+    legendLayout?: LegendLayout;
     legendMaxDepth: number;
     legendPosition: Position | LegendPositionConfig;
     legendSize: number;
