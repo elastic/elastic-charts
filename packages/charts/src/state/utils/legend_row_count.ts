@@ -90,22 +90,20 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
     const { width: labelOnlyWidth } = textMeasure(item.label, font, 12, 1.5);
     const cappedLabelWidth = widthLimit > 0 ? Math.min(labelOnlyWidth, widthLimit) : labelOnlyWidth;
 
-    const valueCellWidths = legendValues
-      .map((type) => {
-        const v = item.values.find((vv) => vv.type === type);
-        if (!v) return;
-        if (type !== LegendValue.CurrentAndLastValue && !v.label) return;
+    const valueCellWidths = legendValues.map((type) => {
+      const v = item.values.find((vv) => vv.type === type);
+      if (!v) return 0;
+      if (type !== LegendValue.CurrentAndLastValue && !v.label) return 0;
 
-        const valueLabel = type === LegendValue.CurrentAndLastValue ? maxFormattedValue ?? (v.label || '—') : v.label;
+      const valueLabel = type === LegendValue.CurrentAndLastValue ? maxFormattedValue ?? (v.label || '—') : v.label;
 
-        const valueText = !showValueTitle
-          ? valueLabel
-          : `${legendValueTitlesMap[type]?.toUpperCase() ?? ''}: ${valueLabel}`;
-        return textMeasure(valueText, font, 12, 1.5).width;
-      })
-      .filter(isDefined);
+      const valueText = !showValueTitle
+        ? valueLabel
+        : `${legendValueTitlesMap[type]?.toUpperCase() ?? ''}: ${valueLabel}`;
+      return textMeasure(valueText, font, 12, 1.5).width;
+    });
 
-    const valuesWidth = valueCellWidths.map((w) => sharedMargin + w);
+    const valuesWidth = valueCellWidths.map((w) => (w ? sharedMargin + w : 0));
     const itemWidths = [
       sharedMargin +
         markerWidth +
@@ -118,6 +116,7 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
     ];
 
     for (const [index, itemWidth] of itemWidths.entries()) {
+      if (itemWidth === 0) continue;
       const isFirst = index === 0;
       const nextRowWidth = currentRowWidth === 0 ? itemWidth : currentRowWidth + (isFirst ? 0 : columnGap) + itemWidth;
 
