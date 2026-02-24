@@ -9,7 +9,7 @@
 import { getChartThemeSelector } from './get_chart_theme';
 import { getLegendConfigSelector } from './get_legend_config_selector';
 import { getLegendItemsSelector } from './get_legend_items';
-import { getLongestLegendFormattedValueSelector } from './get_legend_max_formatted_value';
+import { getLongestLegendFormattedValueSelector } from './get_longest_legend_formatted_value';
 import { getLegendTableSize } from './get_legend_table_size';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { shouldDisplayTable } from '../../common/legend';

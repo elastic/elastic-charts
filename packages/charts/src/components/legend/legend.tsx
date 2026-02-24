@@ -38,7 +38,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../state/select
 import { getInternalMainProjectionAreaSelector } from '../../state/selectors/get_internal_main_projection_area';
 import { getLegendConfigSelector } from '../../state/selectors/get_legend_config_selector';
 import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_items_values';
-import { getLongestLegendFormattedValueWidthSelector } from '../../state/selectors/get_legend_max_formatted_value';
+import { getLongestLegendFormattedValueWidthSelector } from '../../state/selectors/get_longest_legend_formatted_value';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { isBrushingSelector } from '../../state/selectors/is_brushing';
