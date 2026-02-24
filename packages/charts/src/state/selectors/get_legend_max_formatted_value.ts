@@ -21,7 +21,7 @@ const LEGEND_VALUE_FONT = {
 } as const;
 
 /** @internal */
-export const getLegendMaxFormattedValueSelector = createCustomCachedSelector(
+export const getLongestLegendFormattedValueSelector = createCustomCachedSelector(
   [(globalChartState: GlobalChartState) => globalChartState, getInternalChartStateSelector],
   (globalChartState, internalChartState): string | undefined => {
     return internalChartState?.getLongestLegendFormattedValue(globalChartState);
@@ -34,8 +34,8 @@ export const getLegendMaxFormattedValueSelector = createCustomCachedSelector(
  * Returns `undefined` when no max-formatted value is available.
  * @internal
  */
-export const getLegendMaxFormattedValueWidthSelector = createCustomCachedSelector(
-  [getLegendMaxFormattedValueSelector],
+export const getLongestLegendFormattedValueWidthSelector = createCustomCachedSelector(
+  [getLongestLegendFormattedValueSelector],
   (maxFormattedValue): number | undefined => {
     if (!maxFormattedValue) return undefined;
     const title = legendValueTitlesMap[LegendValue.CurrentAndLastValue] ?? '';

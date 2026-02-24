@@ -18,7 +18,7 @@ import { getAxesSpecForSpecId } from '../utils/spec';
  * Used to reserve stable width for the CurrentAndLastValue legend column, preventing layout shift on hover.
  * @internal
  */
-export const getLegendMaxFormattedValueSelector = createCustomCachedSelector(
+export const getLongestLegendFormattedValueSelector = createCustomCachedSelector(
   [computeSeriesDomainsSelector, getSeriesSpecsSelector, getAxisSpecsSelector, getSettingsSpecSelector],
   ({ yDomains }, seriesSpecs, axesSpecs, settings): string | undefined => {
     const maxYValue = yDomains?.[0]?.domain?.[1];

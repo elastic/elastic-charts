@@ -9,7 +9,7 @@
 import { getChartThemeSelector } from './get_chart_theme';
 import { getLegendConfigSelector } from './get_legend_config_selector';
 import { getLegendItemsSelector } from './get_legend_items';
-import { getLegendMaxFormattedValueSelector } from './get_legend_max_formatted_value';
+import { getLongestLegendFormattedValueSelector } from './get_legend_max_formatted_value';
 import { getLegendTableSize } from './get_legend_table_size';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { shouldDisplayTable } from '../../common/legend';
@@ -51,7 +51,7 @@ export const getLegendSizeSelector = createCustomCachedSelector(
     getChartThemeSelector,
     getParentDimensionSelector,
     getLegendItemsSelector,
-    getLegendMaxFormattedValueSelector,
+    getLongestLegendFormattedValueSelector,
   ],
   (config, theme, parentDimensions, items, maxFormattedValue): LegendSizing => {
     const { showLegend, legendSize, legendValues, legendPosition, legendAction, legendLayout } = config;
