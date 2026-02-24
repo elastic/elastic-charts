@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { Cancelable } from 'lodash';
+import type { DebouncedFunc } from 'lodash';
 import type { Store } from 'redux';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -82,6 +82,6 @@ export class MockStore {
     const settings = getSettingsSpecSelector(store.getState());
 
     // debounce mocked as lodash.debounce to enable flush
-    if (settings.onPointerUpdate) (settings.onPointerUpdate as unknown as Cancelable).flush();
+    if (settings.onPointerUpdate) (settings.onPointerUpdate as unknown as DebouncedFunc<any>).flush();
   }
 }

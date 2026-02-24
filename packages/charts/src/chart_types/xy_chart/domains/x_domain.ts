@@ -170,7 +170,8 @@ export function convertXScaleTypes(
   const timeZone = getZoneFromSpecs(specs);
   const type =
     scaleTypes.size === 1
-      ? scaleTypes.values().next().value // pick the only scaleType present
+      ? // TODO fix this non-null assertion
+        scaleTypes.values().next().value! // pick the only scaleType present
       : scaleTypes.has(ScaleType.Ordinal)
         ? ScaleType.Ordinal
         : ScaleType.Linear; // if Ordinal is not present, coerce to Linear, whether it's present or not
