@@ -47,7 +47,7 @@ export const chartSelectorsFactory = createChartSelectorsFactory(
 
     getLegendItems: computeLegendSelector,
     getLegendExtraValues: getLegendItemExtraValuesSelector,
-    getLegendMaxFormattedValue: getLegendMaxFormattedValueSelector,
+    getLongestLegendFormattedValue: getLegendMaxFormattedValueSelector,
     getPointerCursor: getPointerCursorSelector,
 
     isTooltipVisible: isTooltipVisibleSelector,

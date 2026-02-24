@@ -24,7 +24,7 @@ const LEGEND_VALUE_FONT = {
 export const getLegendMaxFormattedValueSelector = createCustomCachedSelector(
   [(globalChartState: GlobalChartState) => globalChartState, getInternalChartStateSelector],
   (globalChartState, internalChartState): string | undefined => {
-    return internalChartState?.getLegendMaxFormattedValue(globalChartState);
+    return internalChartState?.getLongestLegendFormattedValue(globalChartState);
   },
 );
 

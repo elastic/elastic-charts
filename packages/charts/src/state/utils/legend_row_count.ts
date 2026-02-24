@@ -10,7 +10,6 @@ import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import type { LegendItem } from '../../common/legend';
 import { LegendValue, legendValueTitlesMap } from '../../common/legend';
 import type { TextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
-import { isDefined } from '../../utils/common';
 
 /** @internal */
 export interface HorizontalLegendRowCountArgs {
