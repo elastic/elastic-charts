@@ -98,11 +98,9 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
 
         const valueLabel = type === LegendValue.CurrentAndLastValue ? maxFormattedValue ?? (v.label || '—') : v.label;
 
-        const valueText = (() => {
-          if (!showValueTitle) return valueLabel;
-          const title = legendValueTitlesMap[type] ?? '';
-          return `${title.toUpperCase()}: ${valueLabel}`;
-        })();
+        const valueText = !showValueTitle
+          ? valueLabel
+          : `${legendValueTitlesMap[type]?.toUpperCase() ?? ''}: ${valueLabel}`;
         return textMeasure(valueText, font, 12, 1.5).width;
       })
       .filter(isDefined);
