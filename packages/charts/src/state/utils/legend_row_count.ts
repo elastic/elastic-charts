@@ -83,7 +83,7 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
     const { width: labelOnlyWidth } = textMeasure(item.label, font, 12, 1.5);
     const cappedLabelWidth = widthLimit > 0 ? Math.min(labelOnlyWidth, widthLimit) : labelOnlyWidth;
 
-    const valueCellWidths = item.values.map(({ type, label }) => {
+    const valuesWidth = item.values.map(({ type, label }) => {
       if (type !== LegendValue.CurrentAndLastValue && !label) return 0;
 
       const valueLabel = type === LegendValue.CurrentAndLastValue ? maxFormattedValue ?? (label || '—') : label;
@@ -91,10 +91,9 @@ export function computeHorizontalLegendRowCount(args: HorizontalLegendRowCountAr
       const valueText = !showValueTitle
         ? valueLabel
         : `${legendValueTitlesMap[type]?.toUpperCase() ?? ''}: ${valueLabel}`;
-      return textMeasure(valueText, font, 12, 1.5).width;
+      return sharedMargin + textMeasure(valueText, font, 12, 1.5).width;
     });
 
-    const valuesWidth = valueCellWidths.map((w) => (w ? sharedMargin + w : 0));
     const itemWidths = [
       sharedMargin +
         markerWidth +
