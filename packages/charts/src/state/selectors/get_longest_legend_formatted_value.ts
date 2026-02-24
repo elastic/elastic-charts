@@ -38,7 +38,7 @@ export const getLongestLegendFormattedValueWidthSelector = createCustomCachedSel
   [getLongestLegendFormattedValueSelector],
   (maxFormattedValue): number | undefined => {
     if (!maxFormattedValue) return undefined;
-    const title = legendValueTitlesMap[LegendValue.CurrentAndLastValue] ?? '';
+    const title = legendValueTitlesMap[LegendValue.CurrentAndLastValue];
     const fullText = `${title.toUpperCase()}: ${maxFormattedValue}`;
     return withTextMeasure((textMeasure) => textMeasure(fullText, LEGEND_VALUE_FONT, 12, 1.5).width);
   },
