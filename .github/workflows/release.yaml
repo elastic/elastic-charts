@@ -85,6 +85,9 @@ jobs:
       - name: Build library
         run: yarn build
 
+      - name: Upgrade npm for trusted publishing (OIDC) support
+        run: npm install -g npm@11.5.1
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
