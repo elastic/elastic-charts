@@ -35,6 +35,7 @@ import type { PointerValue } from '../state/types';
 import type {
   HorizontalAlignment,
   LayoutDirection,
+  LegendLayout,
   Position,
   Rendering,
   Rotation,
@@ -440,6 +441,17 @@ export interface LegendSpec {
    * @defaultValue Position.Right
    */
   legendPosition: Position | LegendPositionConfig;
+  /**
+   * The layout of the legend
+   *
+   * When `undefined`, the grid list layout is used if there are no aggregated values or the only value is
+   * `CurrentAndLastValue`; otherwise the table layout is shown.
+   *
+   * When `'list'`, the grid list layout is used instead if the legend position is left/right or the legend direction is vertical.
+   *
+   * @defaultValue undefined
+   */
+  legendLayout?: LegendLayout;
   /**
    * Add one or more computed statistics to each legend item.
    * The available statistics depends by chart type.

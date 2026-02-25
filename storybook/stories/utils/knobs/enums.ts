@@ -9,13 +9,18 @@
 import { Position, Placement, ScaleType, TooltipStickTo, CurveType, Fit } from '@elastic/charts';
 import { PointShape } from '@elastic/charts/src';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
-import { VerticalAlignment, HorizontalAlignment } from '@elastic/charts/src/utils/common';
+import { VerticalAlignment, HorizontalAlignment, LegendLayout } from '@elastic/charts/src/utils/common';
 
 import { getKnobsFnFromEnum } from './utils';
 
 const getTooltipTypeKnob = getKnobsFnFromEnum(TooltipType, 'tooltip type', TooltipType.VerticalCursor);
 
 const getPositionKnob = getKnobsFnFromEnum(Position, 'position', Position.Right);
+
+const getLegendLayoutKnob = getKnobsFnFromEnum(LegendLayout, 'layout', LegendLayout.Table, {
+  allowUndefined: true,
+  undefinedLabel: 'Default',
+});
 
 const getPlacementKnob = getKnobsFnFromEnum(Placement, 'placement', undefined, {
   allowUndefined: true,
@@ -69,6 +74,7 @@ const getPointShapeKnob = getKnobsFnFromEnum(PointShape, 'point shape', PointSha
 
 export const enumKnobs = {
   tooltipType: getTooltipTypeKnob,
+  layout: getLegendLayoutKnob,
   position: getPositionKnob,
   placement: getPlacementKnob,
   stickTo: getStickToKnob,
