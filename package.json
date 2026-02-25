@@ -171,9 +171,6 @@
     "webpack-cli": "^4.8.0",
     "webpack-dev-server": "^4.1.0"
   },
-  "resolutions": {
-    "@types/glob": null
-  },
   "engines": {
     "node": ">=22",
     "yarn": ">=1"
