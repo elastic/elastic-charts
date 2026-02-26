@@ -16,13 +16,13 @@ import type {
   TimeFormatter,
   AxisLayer,
 } from '../../../xy_chart/axes/timeslip/continuous_time_rasters';
-import { MAX_TIME_GRID_COUNT, notTooDense } from '../../../xy_chart/axes/timeslip/multilayer_ticks';
+import { notTooDense } from '../../../xy_chart/axes/timeslip/multilayer_ticks';
 import type { NumericScale } from '../../projections/scale';
 import { clamp } from '../../utils/math';
 import type { TimeslipConfig } from '../config';
 import type { DataState } from '../data_fetch';
 
-const TIMESLIP_MAX_TIME_GRID_COUNT = 100 || MAX_TIME_GRID_COUNT; // use either
+const TIMESLIP_MAX_TIME_GRID_COUNT = 100; // or MAX_TIME_GRID_COUNT
 
 interface LoHi {
   lo: Interval | null;

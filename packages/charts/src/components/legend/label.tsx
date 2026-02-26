@@ -7,12 +7,14 @@
  */
 
 import classNames from 'classnames';
-import type { KeyboardEventHandler, MouseEventHandler, CSSProperties } from 'react';
+import type { KeyboardEventHandler, MouseEventHandler } from 'react';
 import React, { useCallback } from 'react';
 
 import { useMiddleTruncatedLabel } from './use_truncated_label';
 import { isRTLString } from '../../utils/common';
 import type { LegendLabelOptions } from '../../utils/themes/theme';
+
+type TruncationMode = 'line' | 'px';
 
 interface LabelProps {
   label: string;
@@ -22,6 +24,7 @@ interface LabelProps {
   options: LegendLabelOptions;
   hiddenSeriesCount: number;
   totalSeriesCount: number;
+  truncationMode?: TruncationMode;
 }
 
 const isAppleDevice = typeof window !== 'undefined' && /Mac|iPhone|iPad/.test(window.navigator.userAgent);
@@ -75,6 +78,7 @@ export function Label({
   options,
   hiddenSeriesCount,
   totalSeriesCount,
+  truncationMode,
 }: LabelProps) {
   // Default to 'middle' truncation when not specified
   const shouldTruncateMiddle = (options.truncationPosition ?? 'middle') === 'middle' && options.maxLines > 0;
@@ -86,7 +90,7 @@ export function Label({
 
   // Only apply middle truncation CSS classes when JS computation is complete
   const useMiddleClasses = shouldTruncateMiddle && isComputed;
-  const { className, dir, clampStyles } = getSharedProps(label, options, !!onToggle, useMiddleClasses);
+  const { className, dir, clampStyles } = getSharedProps(label, options, !!onToggle, truncationMode, useMiddleClasses);
 
   const onClick: MouseEventHandler = useCallback(
     ({ metaKey, ctrlKey }) => onToggle?.(isAppleDevice ? metaKey : ctrlKey),
@@ -99,7 +103,7 @@ export function Label({
     [onToggle],
   );
 
-  const title = options.maxLines > 0 ? label : ''; // full text already visible
+  const title = options.maxLines ?? 1 > 0 ? label : ''; // full text already visible
 
   return isToggleable ? (
     // This div is required to allow multiline text truncation, all ARIA requirements are still met
@@ -166,20 +170,32 @@ function getSharedProps(
   label: string,
   options: LegendLabelOptions,
   isToggleable?: boolean,
+  truncationMode: TruncationMode = 'line',
   useMiddleClasses?: boolean,
 ) {
-  const maxLines = Math.abs(options.maxLines);
-
+  const maxLines = Math.abs(options.maxLines ?? 1);
+  const widthLimit = Math.abs(options.widthLimit ?? 250);
   const className = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(isToggleable),
     'echLegendItem__label--singleline': maxLines === 1,
     'echLegendItem__label--singleline--middle': maxLines === 1 && useMiddleClasses,
-    'echLegendItem__label--multiline': maxLines > 1,
-    'echLegendItem__label--multiline--middle': maxLines > 1 && useMiddleClasses,
+    'echLegendItem__label--multiline': maxLines > 1 && truncationMode === 'line',
+    'echLegendItem__label--multiline--middle': maxLines > 1 && truncationMode === 'line' && useMiddleClasses,
   });
 
   const dir = isRTLString(label) ? 'rtl' : 'ltr'; // forced for individual labels in case mixed charset
-  const clampStyles: CSSProperties = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
+  const clampStyles: React.CSSProperties = {};
+
+  if (truncationMode === 'line' && maxLines > 1) {
+    clampStyles.WebkitLineClamp = maxLines;
+  }
+
+  if (truncationMode === 'px' && widthLimit > 0) {
+    clampStyles.maxWidth = `${widthLimit}px`;
+    clampStyles.wordBreak = 'break-word';
+    clampStyles.overflow = 'hidden';
+    clampStyles.textOverflow = 'ellipsis';
+  }
 
   return { className, dir, clampStyles };
 }

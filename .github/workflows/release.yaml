@@ -7,7 +7,7 @@ on:
 
 
 env:
-  ECH_NODE_VERSION: '20.11.1'
+  ECH_NODE_VERSION: '22.22.0'
 
 jobs:
   checks:
@@ -42,11 +42,6 @@ jobs:
         uses: bahmutov/npm-install@v1.10.9
         with:
           working-directory: .buildkite
-          useRollingCache: true
-      - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1.10.9
-        with:
-          working-directory: github_bot
           useRollingCache: true
 
       # TODO: fix this to avoid requiring build to run linting
