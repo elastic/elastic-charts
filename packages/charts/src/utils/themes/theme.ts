@@ -306,7 +306,7 @@ export interface HeatmapStyle {
  * Metric font weight options for text styling.
  * @public
  */
-export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal'>;
+export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal' | 450>;
 
 /**
  * Style options for the Metric chart type.
