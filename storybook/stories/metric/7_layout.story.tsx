@@ -236,8 +236,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const titlesTextAlign = getTextAlignKnob('Title and subtitle alignment', 'left', textConfigurationAndPositionGroup);
   const titleWeight = select(
     'Title weight',
-    { Bold: 'bold', Medium: 450, Normal: 'normal' },
-    450,
+    { Bold: 'bold', Medium: 500, Normal: 'normal' },
+    500,
     textConfigurationAndPositionGroup,
   );
   // Value (primary metric)
