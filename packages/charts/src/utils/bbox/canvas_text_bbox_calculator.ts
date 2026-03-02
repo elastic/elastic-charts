@@ -11,11 +11,34 @@ import { cssFontShorthand } from '../../common/text_utils';
 import { withContext } from '../../renderers/canvas';
 import type { Size } from '../dimensions';
 
+let domCanvas: HTMLCanvasElement | null = null;
+let domCtx: CanvasRenderingContext2D | null = null;
+
+/**
+ * Registers a canvas element that lives in the Chart DOM tree.
+ * An in-DOM canvas inherits computed CSS properties (e.g. font-feature-settings,
+ * font-variant-numeric) from its ancestors, producing accurate text measurements
+ * that match the rendered output.
+ * @internal
+ */
+export function registerMeasureCanvas(canvas: HTMLCanvasElement) {
+  domCanvas = canvas;
+  domCtx = canvas.getContext('2d');
+}
+
+/** @internal */
+export function unregisterMeasureCanvas(canvas: HTMLCanvasElement) {
+  if (domCanvas === canvas) {
+    domCanvas = null;
+    domCtx = null;
+  }
+}
+
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  return fun(ctx ? measureText(ctx) : () => ({ width: 0, height: 0 }));
+  const ctx = domCtx ?? document.createElement('canvas').getContext('2d');
+  const textMeasure = ctx ? measureText(ctx) : () => ({ width: 0, height: 0 });
+  return fun(textMeasure);
 };
 
 /** @internal */
