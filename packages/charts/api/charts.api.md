@@ -2119,7 +2119,7 @@ export type MetricElementEvent = {
 // Warning: (ae-forgotten-export) The symbol "FontWeight" needs to be exported by the entry point index.d.ts
 //
 // @public
-export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal'>;
+export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal' | 500>;
 
 // @alpha (undocumented)
 export interface MetricSpec extends Spec {
