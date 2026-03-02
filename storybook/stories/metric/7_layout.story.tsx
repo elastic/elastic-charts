@@ -128,7 +128,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     secondaryMetricGroup,
   );
   const secondaryMetricAriaDescription = text('Aria description', 'This is a description', secondaryMetricGroup);
-  const useBadgeTextColor = boolean('Custom badge text color', false, secondaryMetricGroup);
+  const useBadgeTextColor = boolean('Custom badge text color', true, secondaryMetricGroup);
   const badgeBorder = boolean('Badge border', true, secondaryMetricGroup);
   const badgeBorderSelection = select(
     'Badge border color',
