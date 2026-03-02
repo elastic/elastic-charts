@@ -2737,6 +2737,7 @@ export interface SecondaryMetricProps {
         color: Color;
     };
     badgeColor?: Color;
+    badgeTextColor?: Color;
     icon?: string;
     iconPosition?: 'before' | 'after';
     label?: string;

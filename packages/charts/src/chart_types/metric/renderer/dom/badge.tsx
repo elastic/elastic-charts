@@ -28,6 +28,8 @@ interface BadgeProps {
   value: string;
   /** Background color of the badge */
   backgroundColor: Color;
+  /** Optional explicit text color (undefined = auto contrast) */
+  textColor?: Color;
   /** Optional border color (undefined = no border) */
   borderColor?: Color;
   /** Optional icon to display with priority over text */
@@ -41,13 +43,14 @@ export const Badge: React.FC<BadgeProps> = ({
   className,
   value,
   backgroundColor,
+  textColor,
   borderColor,
   icon,
   iconPosition = 'after',
 }) => {
   const classes = classNames('echBadge__content', className);
 
-  const color = highContrastColor(colorToRgba(backgroundColor)).color.keyword;
+  const color = textColor ?? highContrastColor(colorToRgba(backgroundColor)).color.keyword;
   const iconStyles =
     value !== ''
       ? {
