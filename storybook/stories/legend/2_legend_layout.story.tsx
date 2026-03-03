@@ -15,25 +15,27 @@ import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_datas
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-import { getColorPicker } from '../utils/components/get_color_picker';
 import { getLegendAction } from '../utils/components/get_legend_action';
 import { customKnobs } from '../utils/knobs';
 
-const getLabelOptionKnobs = (): LegendLabelOptions => {
+const getLabelOptionKnobs = (isLineLimit: boolean): LegendLabelOptions => {
   const group = 'Label options';
 
-  return {
-    maxLines: number('max label lines', 1, { min: 0, step: 1 }, group),
-  };
+  return isLineLimit
+    ? {
+        maxLines: number('max label lines', 1, { min: 0, step: 1 }, group),
+      }
+    : {
+        widthLimit: number('width limit', 250, { min: 0, step: 1 }, group),
+      };
 };
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const hideActions = boolean('Hide legend action', false, 'Legend');
-  const legendActionOnHover = boolean('Show legend action on hover', true, 'Legend');
   const showLegendExtra = !boolean('Hide legend extra', false, 'Legend');
-  const showColorPicker = !boolean('Hide color picker', true, 'Legend');
-  const legendPosition = customKnobs.enum.position('Legend position', undefined, { group: 'Legend' });
+  const legendPosition = customKnobs.enum.position('Legend position', 'bottom', { group: 'Legend' });
   const euiPopoverPosition = customKnobs.enum.euiPopoverPosition(undefined, undefined, { group: 'Legend' });
+  const legendLayout = customKnobs.enum.layout('Legend Layout', 'list', { group: 'Legend' });
   const legendValues = customKnobs.multiSelect(
     'Legend Value',
     LegendValue,
@@ -41,7 +43,18 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'multi-select',
     'Legend',
   );
-  const labelOptions = getLabelOptionKnobs();
+  const dataCount = number(
+    'Number of items',
+    TestDatasets.BARCHART_2Y2G.length,
+    {
+      min: 1,
+      max: TestDatasets.BARCHART_2Y2G.length,
+      step: 1,
+    },
+    'Data',
+  );
+  const isLineLimit = legendLayout !== 'list' || legendPosition === 'right' || legendPosition === 'left';
+  const labelOptions = getLabelOptionKnobs(isLineLimit);
 
   return (
     <Chart title={title} description={description}>
@@ -51,9 +64,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
         baseTheme={useBaseTheme()}
         legendValues={showLegendExtra ? legendValues : []}
         legendPosition={legendPosition}
+        legendLayout={legendLayout}
         legendAction={hideActions ? undefined : getLegendAction(euiPopoverPosition)}
-        legendActionOnHover={legendActionOnHover}
-        legendColorPicker={showColorPicker ? getColorPicker(euiPopoverPosition) : undefined}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
@@ -65,7 +77,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         xAccessor="x"
         yAccessors={['y1', 'y2']}
         splitSeriesAccessors={['g1', 'g2']}
-        data={TestDatasets.BARCHART_2Y2G}
+        data={TestDatasets.BARCHART_2Y2G_VARIED_LEGEND.slice(0, dataCount)}
       />
     </Chart>
   );
@@ -73,5 +85,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
 Example.parameters = {
   markdown:
-    'The `legendAction` action prop allows you to pass a render function/component that will render next to the legend item.\n\n __Note:__ the context menu, color picker and popover are supplied by [eui](https://elastic.github.io/eui/#).',
+    'The `legendLayout` prop allows you to render the legend in a list or table view.\n\n` +' +
+    '` __Note:__ When this prop is undefined, the layout is chosen automatically: by default a grid list view is used unless there is statistics.',
 };

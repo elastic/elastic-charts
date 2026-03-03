@@ -9,7 +9,7 @@
 import React from 'react';
 
 import { Color as ItemColor } from './color';
-import type { LegendItemProps } from './legend_item';
+import type { LegendItemProps } from './types';
 import type { Color } from '../../common/colors';
 
 /** @internal */

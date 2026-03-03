@@ -13,6 +13,29 @@
     }
   }
 
+  &--actionOnHover {
+    .echLegendItem__action {
+      opacity: 0;
+      // Not using pointer-events: none here because it causes a rendering
+      // bug in Firefox. See https://github.com/elastic/elastic-charts/pull/2773#discussion_r2792933172
+    }
+
+    &:hover,
+    &:focus-within {
+      .echLegendItem__action {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+  }
+
+  &--isActive {
+    .echLegendItem__action {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
   &:last-child .echLegendTable__cell {
     border-bottom: $tableOutsideBorder;
   }

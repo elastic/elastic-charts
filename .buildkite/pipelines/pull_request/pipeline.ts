@@ -28,7 +28,6 @@ import {
 } from '../../steps';
 import type { Step, CustomCommandStep } from '../../utils';
 import { bkEnv, ChangeContext, uploadPipeline } from '../../utils';
-import { getBuildConfig } from '../../utils/build';
 import { MetaDataKeys } from '../../utils/constants';
 import { createDeployment, createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
 
@@ -40,15 +39,6 @@ void (async () => {
 
     const changeCtx = new ChangeContext();
     await changeCtx.init();
-
-    // Update main job status
-    await updateCheckStatus(
-      {
-        status: 'in_progress',
-        details_url: bkEnv.buildUrl,
-      },
-      getBuildConfig().main.id,
-    );
 
     const steps: Step[] = [
       jestStep(),

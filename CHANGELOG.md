@@ -1,3 +1,17 @@
+# [71.2.0](https://github.com/elastic/elastic-charts/compare/v71.1.2...v71.2.0) (2026-02-26)
+
+
+### Bug Fixes
+
+* **metric:** update badge to pill shape with adjusted padding ([#2786](https://github.com/elastic/elastic-charts/issues/2786)) ([80be269](https://github.com/elastic/elastic-charts/commit/80be269d2958be8c3da9a7d112bec9ed05ccfb26))
+* **theme:** expose font weight in text style ([#2788](https://github.com/elastic/elastic-charts/issues/2788)) ([02f4afa](https://github.com/elastic/elastic-charts/commit/02f4afad333ece3ee8927aef7f5643458b96c6e0))
+
+
+### Features
+
+* **legend:** add "list" layout for horizontal legends ([#2784](https://github.com/elastic/elastic-charts/issues/2784)) ([8967ce3](https://github.com/elastic/elastic-charts/commit/8967ce3028c95c84a588885a49e358062e0436ac))
+* **legend:** add legendActionOnHover option to show actions on hover ([#2773](https://github.com/elastic/elastic-charts/issues/2773)) ([d1be88f](https://github.com/elastic/elastic-charts/commit/d1be88f2a17b1eca86e17e9a2925da46e34aad05))
+
 ## [71.1.2](https://github.com/elastic/elastic-charts/compare/v71.1.1...v71.1.2) (2025-11-07)
 
 
