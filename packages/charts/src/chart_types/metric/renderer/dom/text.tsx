@@ -24,7 +24,7 @@ const GRID_SPAN_THREE = '1 / span 3';
 
 const gridRows = {
   top: { value: '1', titles: '2', body: '3', extra: '4' },
-  middle: { value: '3', titles: '1', body: '2', extra: '4' },
+  middle: { value: '3', titles: '1', body: '2', extra: '5' },
   bottom: { value: '4', titles: '1', body: '2', extra: '3' },
 };
 
@@ -59,7 +59,7 @@ const getGridTemplateColumnsWithIcon = (iconSize: number) => {
 
 const gridTemplateRows = {
   bottom: `min-content auto min-content min-content`,
-  middle: `min-content 1fr min-content min-content 1fr`,
+  middle: `min-content 1fr min-content 1fr min-content`,
   top: `min-content min-content auto min-content`,
 };
 
