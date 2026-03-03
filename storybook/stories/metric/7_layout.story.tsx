@@ -104,7 +104,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const dynamicBadgeColor = boolean('Dynamic badge color', true, secondaryMetricGroup);
   const badgeColor = dynamicBadgeColor
     ? (() => {
-        const badgeColorKey = select(
+        const selectedBadgeColor = select(
           'Secondary metric value color',
           {
             compareTo1: 'compareTo1',
@@ -116,8 +116,11 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
           } satisfies Record<BadgeColorKey, BadgeColorKey>,
           'compareTo3',
           secondaryMetricGroup,
-        ) as BadgeColorKey;
-        return badgeColorMap[badgeColorKey];
+        ) as string;
+
+        return (
+          badgeColorMap[selectedBadgeColor as BadgeColorKey] ?? { background: selectedBadgeColor, text: undefined }
+        );
       })()
     : { background: color('Secondary metric value color', '#24C292', secondaryMetricGroup), text: undefined };
 
