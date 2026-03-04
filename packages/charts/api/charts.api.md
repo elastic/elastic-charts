@@ -1848,8 +1848,8 @@ export type LegendItemValue = {
 
 // @public (undocumented)
 export interface LegendLabelOptions {
-    maxLines?: number;
-    widthLimit?: number;
+    maxLines: number;
+    widthLimit: number;
 }
 
 // @public (undocumented)

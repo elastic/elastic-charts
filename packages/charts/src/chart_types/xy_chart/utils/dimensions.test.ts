@@ -77,6 +77,7 @@ describe('Computed chart dimensions', () => {
     margin: 0,
     labelOptions: {
       maxLines: 1,
+      widthLimit: 250,
     },
   };
   const defaultTheme = LIGHT_THEME;

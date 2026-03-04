@@ -225,6 +225,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     margin: 0,
     labelOptions: {
       maxLines: 1,
+      widthLimit: 250,
     },
   },
   crosshair: {

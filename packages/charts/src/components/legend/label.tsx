@@ -92,7 +92,7 @@ export function Label({
     [onToggle],
   );
 
-  const title = options.maxLines ?? 1 > 0 ? label : ''; // full text already visible
+  const title = Math.abs(options.maxLines) > 0 ? label : ''; // full text already visible
 
   return isToggleable ? (
     // This div is required to allow multiline text truncation, all ARIA requirements are still met
@@ -135,8 +135,8 @@ function getSharedProps(
   isToggleable?: boolean,
   truncationMode: TruncationMode = 'line',
 ) {
-  const maxLines = Math.abs(options.maxLines ?? 1);
-  const widthLimit = Math.abs(options.widthLimit ?? 250);
+  const maxLines = Math.abs(options.maxLines);
+  const widthLimit = Math.abs(options.widthLimit);
   const className = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(isToggleable),
     'echLegendItem__label--singleline': maxLines === 1,
