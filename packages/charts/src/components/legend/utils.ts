@@ -14,7 +14,7 @@ const findCurrentValue = (values: LegendItemValue[]) =>
 
 /** @internal */
 export function getExtra(
-  extraValues: Map<string, LegendItemExtraValues>,
+  extraValues: ReadonlyMap<string, LegendItemExtraValues>,
   item: LegendItem,
   totalItems: number,
 ): LegendItemValue | undefined {

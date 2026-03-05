@@ -32,7 +32,7 @@ export const prepareLegendValues = (
   item: LegendItem,
   legendValues: LegendValue[],
   totalItems: number,
-  extraValues: Map<string, LegendItemExtraValues>,
+  extraValues: ReadonlyMap<string, LegendItemExtraValues>,
 ) => {
   return legendValues.map((legendValue) => {
     if (legendValue === LegendValue.Value || legendValue === LegendValue.CurrentAndLastValue) {

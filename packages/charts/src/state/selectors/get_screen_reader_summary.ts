@@ -17,7 +17,7 @@ import { createCustomCachedSelector } from '../create_selector';
 /** @internal */
 export interface ScreenReaderSummaryData {
   a11ySettings: A11ySettings;
-  screenReaderItems: ScreenReaderItem[];
+  screenReaderItems: ReadonlyArray<ScreenReaderItem>;
 }
 
 const DEFAULT_SCREEN_READER_SUMMARY: ScreenReaderSummaryData = {

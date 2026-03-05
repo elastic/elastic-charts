@@ -8,14 +8,14 @@
 
 import { getInternalChartStateSelector } from './get_internal_chart_state';
 import type { LegendItem } from '../../common/legend';
-import { EMPTY_LEGEND_LIST } from '../../common/legend';
+import { EMPTY_LEGEND_LIST } from '../chart_selectors';
 import type { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */
 export const getLegendItemsSelector = createCustomCachedSelector(
   [(globalChartState: GlobalChartState) => globalChartState, getInternalChartStateSelector],
-  (globalChartState, internalChartState): LegendItem[] => {
+  (globalChartState, internalChartState): ReadonlyArray<LegendItem> => {
     if (internalChartState) {
       return internalChartState.getLegendItems(globalChartState);
     }

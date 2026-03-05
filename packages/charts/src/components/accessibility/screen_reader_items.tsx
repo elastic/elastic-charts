@@ -12,7 +12,7 @@ import type { A11ySettings } from '../../state/selectors/get_accessibility_confi
 import type { ScreenReaderItem } from '../../state/selectors/get_screenreader_data';
 
 interface ScreenReaderItemsProps {
-  screenReaderItems: ScreenReaderItem[];
+  screenReaderItems: ReadonlyArray<ScreenReaderItem>;
 }
 
 /** @internal */

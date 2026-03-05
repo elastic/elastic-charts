@@ -16,7 +16,6 @@ import type { TooltipVisibility } from './tooltip_visibility';
 import type { DebugState } from './types';
 import { DEFAULT_CSS_CURSOR } from '../common/constants';
 import type { LegendItem, LegendItemExtraValues } from '../common/legend';
-import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../common/legend';
 import type { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import type { SeriesKey } from '../common/series_id';
 import type { AnchorPosition } from '../components/portal/types';
@@ -63,19 +62,19 @@ export interface ChartSelectors {
    * based on labels and their hierarchy depth.
    * @param globalState
    */
-  getLegendItemsLabels(globalState: GlobalChartState): LegendItemLabel[];
+  getLegendItemsLabels(globalState: GlobalChartState): ReadonlyArray<LegendItemLabel>;
 
   /**
    * Returns the list of legend items.
    * @param globalState
    */
-  getLegendItems(globalState: GlobalChartState): LegendItem[];
+  getLegendItems(globalState: GlobalChartState): ReadonlyArray<LegendItem>;
 
   /**
    * Returns the list of extra values for each legend item
    * @param globalState
    */
-  getLegendExtraValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemExtraValues>;
+  getLegendExtraValues(globalState: GlobalChartState): ReadonlyMap<SeriesKey, LegendItemExtraValues>;
 
   /**
    * Returns the CSS pointer cursor depending on the internal chart state
@@ -87,13 +86,13 @@ export interface ChartSelectors {
    * Describe if the tooltip is visible and comes from an external source
    * @param globalState
    */
-  isTooltipVisible(globalState: GlobalChartState): TooltipVisibility;
+  isTooltipVisible(globalState: GlobalChartState): Readonly<TooltipVisibility>;
 
   /**
    * Get the tooltip information to display
    * @param globalState the GlobalChartState
    */
-  getTooltipInfo(globalState: GlobalChartState): TooltipInfo | undefined;
+  getTooltipInfo(globalState: GlobalChartState): Readonly<TooltipInfo> | undefined;
 
   /**
    * Get the tooltip anchor position
@@ -111,25 +110,25 @@ export interface ChartSelectors {
    * Get the chart main projection area: exclude legends, axis and other external marks
    * @param globalState
    */
-  getMainProjectionArea(globalState: GlobalChartState): Dimensions;
+  getMainProjectionArea(globalState: GlobalChartState): Readonly<Dimensions>;
 
   /**
    * Get the chart container projection area
    * @param globalState
    */
-  getProjectionContainerArea(globalState: GlobalChartState): Dimensions;
+  getProjectionContainerArea(globalState: GlobalChartState): Readonly<Dimensions>;
 
   /**
    * Get the brushed area if available
    * @param globalState
    */
-  getBrushArea(globalState: GlobalChartState): Dimensions | null;
+  getBrushArea(globalState: GlobalChartState): Readonly<Dimensions> | null;
 
   /**
    * Get debug state of chart
    * @param globalState
    */
-  getDebugState(globalState: GlobalChartState): DebugState;
+  getDebugState(globalState: GlobalChartState): Readonly<DebugState>;
 
   /**
    * Get the series types for the screen reader summary component
@@ -139,34 +138,41 @@ export interface ChartSelectors {
   /**
    * Get chart-specific data for screen reader accessibility
    */
-  getScreenReaderData(globalState: GlobalChartState): ScreenReaderItem[];
+  getScreenReaderData(globalState: GlobalChartState): ReadonlyArray<ScreenReaderItem>;
 
   /**
    * Get the domain of the vertical and horizontal small multiple grids
    */
-  getSmallMultiplesDomains(globalState: GlobalChartState): SmallMultiplesSeriesDomains;
+  getSmallMultiplesDomains(globalState: GlobalChartState): Readonly<SmallMultiplesSeriesDomains>;
 
   /**
    * Determines if chart titles are displayed when provided
    */
   canDisplayChartTitles(globalState: GlobalChartState): boolean;
 }
-
-type ChartSelectorsFactory = () => ChartSelectors;
-
-const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 /** @internal */
-export const EMPTY_TOOLTIP = { header: null, values: [] };
-const EMPTY_DIMENSION = { top: 0, left: 0, width: 0, height: 0 };
-const EMPTY_SM_DOMAINS: SmallMultiplesSeriesDomains = { smVDomain: [], smHDomain: [] };
-const EMPTY_OBJ = {};
-const EMPTY_TOOLTIP_VISIBILITY: TooltipVisibility = {
+export const EMPTY_TOOLTIP: Readonly<TooltipInfo> = { header: null, values: [] };
+/** @internal */
+export const EMPTY_LEGEND_ITEM_EXTRA_VALUES: ReadonlyMap<SeriesKey, LegendItemExtraValues> = new Map<
+  SeriesKey,
+  LegendItemExtraValues
+>();
+/** @internal */
+export const EMPTY_LEGEND_LIST: ReadonlyArray<LegendItem> = [];
+
+/** @internal */
+export const EMPTY_LEGEND_ITEM_LIST: ReadonlyArray<LegendItemLabel> = [];
+const EMPTY_DIMENSION: Readonly<Dimensions> = { top: 0, left: 0, width: 0, height: 0 };
+const EMPTY_SM_DOMAINS: Readonly<SmallMultiplesSeriesDomains> = { smVDomain: [], smHDomain: [] };
+const EMPTY_OBJ: Readonly<DebugState> = {};
+const EMPTY_TOOLTIP_VISIBILITY: Readonly<TooltipVisibility> = {
   visible: false,
   isExternal: false,
   displayOnly: false,
   isPinnable: false,
 };
 
+type ChartSelectorsFactory = () => ChartSelectors;
 type CallbackCreator = () => (state: GlobalChartState) => void;
 
 /** @internal */

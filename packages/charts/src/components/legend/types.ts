@@ -28,7 +28,7 @@ export interface SharedLegendItemProps {
   flatLegend: boolean;
   totalItems: number;
   positionConfig: LegendPositionConfig;
-  extraValues: Map<string, LegendItemExtraValues>;
+  extraValues: ReadonlyMap<string, LegendItemExtraValues>;
   legendValues: Array<LegendValue>;
   isMostlyRTL: boolean;
   labelOptions: LegendLabelOptions;

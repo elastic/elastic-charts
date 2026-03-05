@@ -51,3 +51,9 @@ export const getLegendConfigSelector = createCustomCachedSelector(
     };
   },
 );
+
+/** @internal */
+export const getLegendValuesSelector = createCustomCachedSelector(
+  [getSettingsSpecSelector],
+  ({ legendValues }) => legendValues,
+);
