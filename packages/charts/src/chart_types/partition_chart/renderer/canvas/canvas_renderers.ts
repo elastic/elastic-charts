@@ -14,6 +14,7 @@ import { cssFontShorthand, HorizontalAlignment } from '../../../../common/text_u
 import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { MIN_STROKE_WIDTH } from '../../../../renderers/canvas/primitives/line';
 import type { LegendPath } from '../../../../state/actions/legend';
+import { getDimmedColor } from '../../../../utils/themes/dimmed_colors';
 import type { ArcSeriesStyle } from '../../../../utils/themes/theme';
 import type {
   LinkLabelVM,
@@ -32,21 +33,6 @@ import { isSunburst } from '../../layout/viewmodel/viewmodel';
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
 const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to avoid burnout in the middle of the pie when there are hundreds of pies
-
-/**
- * Returns the fill color for a partition element, considering highlight state.
- * When an element is unhighlighted (dimmed), returns the dimmed fill color if configured.
- */
-function getPartitionFillColor(
-  originalFillColor: Color,
-  isUnhighlighted: boolean,
-  dimmedConfig: { fill: Color } | { opacity: number } | undefined,
-): Color {
-  if (isUnhighlighted && dimmedConfig && 'fill' in dimmedConfig) {
-    return dimmedConfig.fill;
-  }
-  return originalFillColor;
-}
 
 const getCurrentRowX = (row: TextRow, horizontalAlignment: HorizontalAlignment, rotation: number) => {
   // TODO account for text rotation if needed
@@ -181,7 +167,7 @@ function renderSectors(
       if (quad.x0 === quad.x1) return;
 
       const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-      const fillColor = getPartitionFillColor(quad.fillColor, isUnhighlighted, arcSeriesStyle.arc.dimmed);
+      const fillColor = getDimmedColor(isUnhighlighted, arcSeriesStyle.arc.dimmed, 'fill', quad.fillColor);
       renderTaperedBorder(ctx, quad, fillColor);
     });
   });
@@ -200,7 +186,7 @@ function renderRectangles(
       // only draw a shape if it would show up at all
       if (x1 - x0 >= 1 && y1px - y0px >= 1) {
         const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-        const dimmedFillColor = getPartitionFillColor(fillColor, isUnhighlighted, arcSeriesStyle.arc.dimmed);
+        const dimmedFillColor = getDimmedColor(isUnhighlighted, arcSeriesStyle.arc.dimmed, 'fill', fillColor);
 
         ctx.fillStyle = dimmedFillColor;
         ctx.beginPath();

@@ -9,6 +9,7 @@
 import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
 import type { Stroke, Fill, Rect } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/common';
+import { getDimmedColor, hasDimmedColor } from '../../../../../utils/themes/dimmed_colors';
 import type {
   GeometryStateStyle,
   RectStyle,
@@ -37,12 +38,10 @@ export function buildBarStyle(
 ): { fill: Fill; stroke: Stroke } {
   // Check if dimmed by comparing to the unhighlighted style reference
   const isDimmed = geometryStateStyle === sharedStyle.unhighlighted;
-  const useDimmedColor = isDimmed && themeRectStyle.dimmed && 'fill' in themeRectStyle.dimmed;
+  const fillVariant = getDimmedColor(isDimmed, themeRectStyle.dimmed, 'fill', themeRectStyle.fill);
+  const hasDimmedFillColor = hasDimmedColor(isDimmed, themeRectStyle.dimmed, 'fill');
 
-  const fillBaseColor =
-    useDimmedColor && themeRectStyle.dimmed && 'fill' in themeRectStyle.dimmed
-      ? getColorFromVariant(baseColor, themeRectStyle.dimmed.fill)
-      : getColorFromVariant(baseColor, themeRectStyle.fill);
+  const fillBaseColor = getColorFromVariant(baseColor, fillVariant);
 
   const textureOpacity =
     isDimmed && themeRectStyle.dimmed && 'texture' in themeRectStyle.dimmed && themeRectStyle.dimmed.texture
@@ -55,7 +54,7 @@ export function buildBarStyle(
 
   const fillColor = overrideOpacity(
     colorToRgba(fillBaseColor),
-    (opacity) => opacity * themeRectStyle.opacity * (useDimmedColor ? 1 : geometryStateStyle.opacity),
+    (opacity) => opacity * themeRectStyle.opacity * (hasDimmedFillColor ? 1 : geometryStateStyle.opacity),
   );
   const fill: Fill = {
     color: fillColor,

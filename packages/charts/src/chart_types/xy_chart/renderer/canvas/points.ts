@@ -16,6 +16,7 @@ import type { Rotation } from '../../../../utils/common';
 import { getColorFromVariant } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
 import type { GeometryHighlightState, PointGeometry } from '../../../../utils/geometry';
+import { getDimmedColor } from '../../../../utils/themes/dimmed_colors';
 import type { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
 import { isolatedPointRadius } from '../../rendering/points';
 /**
@@ -42,13 +43,14 @@ export function renderPoints(
 
   const useIsolatedPointRadius = hideDataPoints && !hasConnectingLine;
 
-  const opacity =
-    highlightState === 'dimmed' && 'opacity' in pointStyle.dimmed ? pointStyle.dimmed.opacity : pointStyle.opacity;
+  const isDimmed = highlightState === 'dimmed';
+  const opacity = isDimmed && 'opacity' in pointStyle.dimmed ? pointStyle.dimmed.opacity : pointStyle.opacity;
 
-  const dimmedFill =
-    highlightState === 'dimmed' && 'fill' in pointStyle.dimmed ? colorToRgba(pointStyle.dimmed.fill) : undefined;
-  const dimmedStroke =
-    highlightState === 'dimmed' && 'stroke' in pointStyle.dimmed ? colorToRgba(pointStyle.dimmed.stroke) : undefined;
+  // Pre-compute dimmed colors (converted to RgbaTuple) for use inside the loop
+  const dimmedFillColor = getDimmedColor(isDimmed, pointStyle.dimmed, 'fill', undefined);
+  const dimmedStrokeColor = getDimmedColor(isDimmed, pointStyle.dimmed, 'stroke', undefined);
+  const dimmedFill = dimmedFillColor ? colorToRgba(dimmedFillColor) : undefined;
+  const dimmedStroke = dimmedStrokeColor ? colorToRgba(dimmedStrokeColor) : undefined;
 
   const focusedStrokeWidth =
     highlightState === 'focused' && pointStyle.focused ? pointStyle.focused.strokeWidth : undefined;
