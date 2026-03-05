@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import type { AnimationState } from './partition';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
@@ -33,6 +32,21 @@ import { isSunburst } from '../../layout/viewmodel/viewmodel';
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
 const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to avoid burnout in the middle of the pie when there are hundreds of pies
+
+/**
+ * Returns the fill color for a partition element, considering highlight state.
+ * When an element is unhighlighted (dimmed), returns the dimmed fill color if configured.
+ */
+function getPartitionFillColor(
+  originalFillColor: Color,
+  isUnhighlighted: boolean,
+  dimmedConfig: { fill: Color } | { opacity: number } | undefined,
+): Color {
+  if (isUnhighlighted && dimmedConfig && 'fill' in dimmedConfig) {
+    return dimmedConfig.fill;
+  }
+  return originalFillColor;
+}
 
 const getCurrentRowX = (row: TextRow, horizontalAlignment: HorizontalAlignment, rotation: number) => {
   // TODO account for text rotation if needed
@@ -108,7 +122,8 @@ function renderRowSets(ctx: CanvasRenderingContext2D, rowSets: RowSet[], linkLab
 
 function renderTaperedBorder(
   ctx: CanvasRenderingContext2D,
-  { strokeWidth, strokeStyle, fillColor, x0, x1, y0px, y1px }: QuadViewModel,
+  { strokeWidth, strokeStyle, x0, x1, y0px, y1px }: QuadViewModel,
+  fillColor: Color,
 ) {
   const X0 = x0 - TAU / 4;
   const X1 = x1 - TAU / 4;
@@ -163,21 +178,11 @@ function renderSectors(
   withContext(ctx, () => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
     quadViewModel.forEach((quad: QuadViewModel) => {
-      // Apply dimmed colors for unhighlighted quads
-      const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-      const dimmed = arcSeriesStyle.arc.dimmed;
-      const dimmedFill = dimmed && 'fill' in dimmed ? dimmed.fill : undefined;
-      const useDimmedColor = isUnhighlighted && dimmedFill;
+      if (quad.x0 === quad.x1) return;
 
-      if (useDimmedColor) {
-        // Temporarily override fillColor for dimmed state
-        const originalFillColor = quad.fillColor;
-        quad.fillColor = dimmedFill;
-        if (quad.x0 !== quad.x1) renderTaperedBorder(ctx, quad);
-        quad.fillColor = originalFillColor; // Restore
-      } else {
-        if (quad.x0 !== quad.x1) renderTaperedBorder(ctx, quad);
-      }
+      const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
+      const fillColor = getPartitionFillColor(quad.fillColor, isUnhighlighted, arcSeriesStyle.arc.dimmed);
+      renderTaperedBorder(ctx, quad, fillColor);
     });
   });
 }
@@ -194,13 +199,10 @@ function renderRectangles(
       const { strokeWidth, fillColor, x0, x1, y0px, y1px } = quad;
       // only draw a shape if it would show up at all
       if (x1 - x0 >= 1 && y1px - y0px >= 1) {
-        // Apply dimmed colors for unhighlighted quads
         const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-        const dimmed = arcSeriesStyle.arc.dimmed;
-        const dimmedFill = dimmed && 'fill' in dimmed ? dimmed.fill : undefined;
-        const useDimmedColor = isUnhighlighted && dimmedFill;
+        const dimmedFillColor = getPartitionFillColor(fillColor, isUnhighlighted, arcSeriesStyle.arc.dimmed);
 
-        ctx.fillStyle = useDimmedColor ? dimmedFill : fillColor;
+        ctx.fillStyle = dimmedFillColor;
         ctx.beginPath();
         ctx.moveTo(x0, y0px);
         ctx.lineTo(x0, y1px);
@@ -313,8 +315,6 @@ export function renderPartitionCanvas2d(
     panel,
     chartDimensions,
   }: ShapeViewModel,
-  _focus: unknown,
-  _animationState: AnimationState,
   highlightedLegendPath: LegendPath,
   legendStrategy: LegendStrategy | undefined,
   flatLegend: boolean | undefined,

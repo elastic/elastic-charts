@@ -166,7 +166,7 @@ export const LIGHT_THEME: Theme = {
       strokeWidth: 1,
       opacity: 1,
       dimmed: {
-        fill: LIGHT_DIMMED_COLORS.arcFill,
+        fill: LIGHT_DIMMED_COLORS.partitionFill,
         stroke: Colors.Black.keyword,
       },
     },

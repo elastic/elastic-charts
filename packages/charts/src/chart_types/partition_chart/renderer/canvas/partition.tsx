@@ -188,22 +188,21 @@ class PartitionComponent extends React.Component<PartitionProps> {
         const focus = props.geometriesFoci[geometryIndex];
         if (!focus) return;
 
-        const renderer = isSimpleLinear(geometries.layout, geometries.style.fillLabel, geometries.layers)
-          ? renderLinearPartitionCanvas2d
-          : isWaffle(geometries.layout)
-            ? renderWrappedPartitionCanvas2d
-            : renderPartitionCanvas2d;
-        renderer(
-          ctx,
-          devicePixelRatio,
-          geometries,
-          focus,
-          this.animationState,
-          props.highlightedLegendPath,
-          props.legendStrategy,
-          props.flatLegend,
-          props.arcSeriesStyle,
-        );
+        if (isSimpleLinear(geometries.layout, geometries.style.fillLabel, geometries.layers)) {
+          renderLinearPartitionCanvas2d(ctx, devicePixelRatio, geometries, focus, this.animationState);
+        } else if (isWaffle(geometries.layout)) {
+          renderWrappedPartitionCanvas2d(ctx, devicePixelRatio, geometries);
+        } else {
+          renderPartitionCanvas2d(
+            ctx,
+            devicePixelRatio,
+            geometries,
+            props.highlightedLegendPath,
+            props.legendStrategy,
+            props.flatLegend,
+            props.arcSeriesStyle,
+          );
+        }
       });
     }
   }

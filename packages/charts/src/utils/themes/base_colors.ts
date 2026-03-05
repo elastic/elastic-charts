@@ -213,7 +213,7 @@ export const LIGHT_DIMMED_COLORS = {
   areaPointFill: SEMANTIC_COLORS.plainLight,
 
   barFill: SEMANTIC_COLORS.shade15,
-  arcFill: SEMANTIC_COLORS.shade15,
+  partitionFill: SEMANTIC_COLORS.shade15,
 };
 
 /** @internal */
@@ -228,5 +228,5 @@ export const DARK_DIMMED_COLORS = {
   areaPointFill: SEMANTIC_COLORS.shade145,
 
   barFill: SEMANTIC_COLORS.shade110,
-  arcFill: SEMANTIC_COLORS.shade110,
+  partitionFill: SEMANTIC_COLORS.shade110,
 };

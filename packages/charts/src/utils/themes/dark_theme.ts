@@ -166,7 +166,7 @@ export const DARK_THEME: Theme = {
       strokeWidth: 1,
       opacity: 1,
       dimmed: {
-        fill: DARK_DIMMED_COLORS.arcFill,
+        fill: DARK_DIMMED_COLORS.partitionFill,
         stroke: 'white',
       },
     },
