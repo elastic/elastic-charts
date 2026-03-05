@@ -732,18 +732,6 @@ export interface ArcStyle {
   strokeWidth: number;
   /** the opacity of each arc on the theme/series */
   opacity: number;
-  /**
-   * The style applied to the arc when it is dimmed relative to other highlighted elements on the chart.
-   * This is typically used to visually de-emphasize the arc, for example, when another series is highlighted.
-   */
-  dimmed?:
-    | { opacity: number }
-    | {
-        /** The fill color to use when the arc is dimmed. */
-        fill: Color | ColorVariant;
-        /** The stroke color to use when the arc is dimmed. */
-        stroke?: Color | ColorVariant;
-      };
 }
 
 /** @public */

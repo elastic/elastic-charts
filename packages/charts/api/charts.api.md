@@ -167,12 +167,6 @@ export interface ArcSeriesStyle {
 
 // @public (undocumented)
 export interface ArcStyle {
-    dimmed?: {
-        opacity: number;
-    } | {
-        fill: Color | ColorVariant;
-        stroke?: Color | ColorVariant;
-    };
     fill?: Color | ColorVariant;
     opacity: number;
     stroke?: Color | ColorVariant;
@@ -2310,6 +2304,14 @@ export type PartialTheme = RecursivePartial<Theme>;
 // @public
 export const Partition: <D extends BaseDatum = any>(props: SFProps<PartitionSpec<D>, keyof (typeof buildProps)["overrides"], keyof (typeof buildProps)["defaults"], keyof (typeof buildProps)["optionals"], keyof (typeof buildProps)["requires"]>) => null;
 
+// @public (undocumented)
+export type PartitionDimmedStyle = {
+    opacity: number;
+} | {
+    fill: Color | ColorVariant;
+    stroke?: Color | ColorVariant;
+};
+
 // @public
 export type PartitionElementEvent = [layers: Array<LayerValue>, seriesIdentifier: SeriesIdentifier];
 
@@ -2365,6 +2367,7 @@ export interface PartitionStyle extends FillFontSizeRange {
     //
     // (undocumented)
     circlePadding: Distance;
+    dimmed?: PartitionDimmedStyle;
     // Warning: (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
     emptySizeRatio: SizeRatio;
     // (undocumented)

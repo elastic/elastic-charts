@@ -139,7 +139,6 @@ export const AMSTERDAM_DARK_THEME: Theme = {
       stroke: 'white',
       strokeWidth: 1,
       opacity: 1,
-      dimmed: { opacity: 0.25 },
     },
   },
   sharedStyle: DEFAULT_GEOMETRY_STYLES,
@@ -351,6 +350,7 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     },
     sectorLineWidth: 1.5,
     sectorLineStroke: '#1D1E24',
+    dimmed: { opacity: 0.25 },
   },
   heatmap: {
     brushArea: {

@@ -165,10 +165,6 @@ export const LIGHT_THEME: Theme = {
       stroke: Colors.Black.keyword,
       strokeWidth: 1,
       opacity: 1,
-      dimmed: {
-        fill: LIGHT_DIMMED_COLORS.partitionFill,
-        stroke: Colors.Black.keyword,
-      },
     },
   },
   sharedStyle: DEFAULT_GEOMETRY_STYLES,
@@ -380,6 +376,9 @@ export const LIGHT_THEME: Theme = {
     },
     sectorLineWidth: 1.5,
     sectorLineStroke: LIGHT_BACKGROUND_COLORS.backgroundBasePlain,
+    dimmed: {
+      fill: LIGHT_DIMMED_COLORS.partitionFill,
+    },
   },
   heatmap: {
     brushArea: {

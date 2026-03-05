@@ -30,7 +30,8 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Dimensions } from '../../../../utils/dimensions';
-import type { ArcSeriesStyle } from '../../../../utils/themes/theme';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import type { PartitionStyle } from '../../../../utils/themes/partition';
 import { MODEL_KEY } from '../../layout/config';
 import type { QuadViewModel, ShapeViewModel, SmallMultiplesDescriptors } from '../../layout/types/viewmodel_types';
 import { hasMostlyRTLLabels, nullShapeViewModel } from '../../layout/types/viewmodel_types';
@@ -63,7 +64,7 @@ interface ReactiveChartStateProps {
   highlightedLegendPath: LegendPath;
   legendStrategy: SettingsSpec['legendStrategy'];
   flatLegend: SettingsSpec['flatLegend'];
-  arcSeriesStyle: ArcSeriesStyle;
+  partitionStyle: PartitionStyle;
 }
 
 interface ReactiveChartDispatchProps {
@@ -200,7 +201,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
             props.highlightedLegendPath,
             props.legendStrategy,
             props.flatLegend,
-            props.arcSeriesStyle,
+            props.partitionStyle,
           );
         }
       });
@@ -234,7 +235,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   highlightedLegendPath: [],
   legendStrategy: undefined,
   flatLegend: undefined,
-  arcSeriesStyle: { arc: { visible: true, stroke: Colors.Black.keyword, strokeWidth: 1, opacity: 1 } },
+  partitionStyle: LIGHT_THEME.partition,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -258,7 +259,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     highlightedLegendPath: state.interactions.highlightedLegendPath,
     legendStrategy: settings.legendStrategy,
     flatLegend: settings.flatLegend,
-    arcSeriesStyle: theme.arcSeriesStyle,
+    partitionStyle: theme.partition,
   };
 };
 

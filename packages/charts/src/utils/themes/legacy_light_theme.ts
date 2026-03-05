@@ -144,7 +144,6 @@ export const LEGACY_LIGHT_THEME: Theme = {
       stroke: Colors.Black.keyword,
       strokeWidth: 1,
       opacity: 1,
-      dimmed: { opacity: 0.25 },
     },
   },
   sharedStyle: DEFAULT_GEOMETRY_STYLES,
@@ -355,6 +354,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
     },
     sectorLineWidth: 1,
     sectorLineStroke: 'white',
+    dimmed: { opacity: 0.25 },
   },
   heatmap: {
     brushArea: {

@@ -41,7 +41,7 @@ type ColorDimmedConfig = {
  * - **Color override** (`ColorDimmedConfig`): Uses specific colors for the dimmed state
  *
  * This is a simplified union type used by the utility functions. The actual theme
- * interfaces (PointStyle, LineStyle, AreaStyle, RectStyle, ArcStyle) define their
+ * interfaces (PointStyle, LineStyle, AreaStyle, RectStyle, PartitionStyle) define their
  * own inline dimmed types with style-specific additional properties.
  * @internal
  */

@@ -193,11 +193,9 @@ export const Example: ChartsStory = (_, { description }) => {
         },
       },
     },
-    arcSeriesStyle: {
-      arc: {
-        dimmed: {
-          fill: selectedDimmedColor,
-        },
+    partition: {
+      dimmed: {
+        fill: selectedDimmedColor,
       },
     },
   };

@@ -165,10 +165,6 @@ export const DARK_THEME: Theme = {
       stroke: 'white',
       strokeWidth: 1,
       opacity: 1,
-      dimmed: {
-        fill: DARK_DIMMED_COLORS.partitionFill,
-        stroke: 'white',
-      },
     },
   },
   sharedStyle: DEFAULT_GEOMETRY_STYLES,
@@ -380,6 +376,9 @@ export const DARK_THEME: Theme = {
     },
     sectorLineWidth: 1.5,
     sectorLineStroke: DARK_BACKGROUND_COLORS.backgroundBasePlain,
+    dimmed: {
+      fill: DARK_DIMMED_COLORS.partitionFill,
+    },
   },
   heatmap: {
     brushArea: {
