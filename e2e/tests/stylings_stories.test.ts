@@ -9,7 +9,7 @@
 import { test } from '@playwright/test';
 
 import { SeriesType } from '../constants';
-import { pwEach } from '../helpers';
+import { eachTheme, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
 test.describe('Stylings stories', () => {
@@ -88,5 +88,29 @@ test.describe('Stylings stories', () => {
       `http://localhost:9001/?path=/story/stylings--highlighter-style`,
       { top: 150, right: 150 },
     );
+  });
+
+  test.describe('Dimmed highlight style', () => {
+    eachTheme.describe(({ theme, urlParam }) => {
+      test(`should dim XY chart series on legend hover - ${theme}`, async ({ page }) => {
+        const action = async () => {
+          await common.moveMouseRelativeToDOMElement(page)({ left: 5, top: 5 }, '.echLegendItem');
+        };
+        await common.expectChartAtUrlToMatchScreenshot(page)(
+          `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&${urlParam}`,
+          { action },
+        );
+      });
+
+      test(`should dim partition chart slices on legend hover - ${theme}`, async ({ page }) => {
+        const action = async () => {
+          await common.moveMouseRelativeToDOMElement(page)({ left: 5, top: 5 }, '.echLegendItem');
+        };
+        await common.expectChartAtUrlToMatchScreenshot(page)(
+          `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&${urlParam}&knob-Partition layout=sunburst`,
+          { action },
+        );
+      });
+    });
   });
 });
