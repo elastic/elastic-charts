@@ -43,7 +43,7 @@ export function renderLines(
         };
       })
       // sort by dimmed first once are rendered ontop of the non-highlighted ones
-      .sort(({ highlightState }) => (highlightState === 'dimmed' ? -1 : 1))
+      .sort((a, b) => (a.highlightState === b.highlightState ? 0 : a.highlightState === 'dimmed' ? -1 : 1))
       .forEach(({ panel, line, highlightState }) => {
         const clippings = getPanelClipping(panel, rotation);
         if (line.style.line.visible) {

@@ -27,7 +27,7 @@ import type { PointerValue } from '../../../../state/types';
 import type { Rotation } from '../../../../utils/common';
 import { isNil } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
-import type { IndexedGeometry, PointGeometry } from '../../../../utils/geometry';
+import { isPointGeometry, type IndexedGeometry, type PointGeometry } from '../../../../utils/geometry';
 import type { Point } from '../../../../utils/point';
 import type { SeriesCompareFn } from '../../../../utils/series_sort';
 import { isLineAreaPointWithinPanel, isPointOnGeometry } from '../../rendering/utils';
@@ -121,17 +121,27 @@ function getTooltipAndHighlightFromValue(
     return EMPTY_VALUES;
   }
 
+  const legendSeriesSortFn: SeriesCompareFn = (a, b) => {
+    const aDs = seriesIdentifierDataSeriesMap[a.key];
+    const bDs = seriesIdentifierDataSeriesMap[b.key];
+    return defaultXYLegendSeriesSort(aDs, bDs);
+  };
+
   // build the tooltip value list
   let header: PointerValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
   const highlightedPoints: PointGeometry[] = [];
+  const hoveredPointsMap = new Map<string, { geom: PointGeometry; index: number }>();
   const xValues = new Set<any>();
   const hideNullValues = !tooltip.showNullValues;
   const values = matchingGeoms
     .slice()
     .sort((a, b) => {
-      // presort matchingGeoms to group by series then y value to prevent flipping
-      return b.seriesIdentifier.key.localeCompare(a.seriesIdentifier.key) || b.value.y - a.value.y;
+      // pre-sort matchingGeoms to group by series and sortingOrder then y value to prevent flipping
+      const seriesSort = legendSeriesSortFn(a.seriesIdentifier, b.seriesIdentifier);
+      if (seriesSort !== 0) return seriesSort;
+      // Within same series, sort by y value (for stability)
+      return b.value.y - a.value.y;
     })
     .reduce<TooltipValue[]>((acc, indexedGeometry) => {
       if (hideNullValues && indexedGeometry.value.y === null) {
@@ -163,9 +173,32 @@ function getTooltipAndHighlightFromValue(
         const isLineAreaPoint = isLineAreaPointWithinPanel(spec, indexedGeometry);
 
         if (isGeometryHovered) {
-          // Pointer is on geometry and geometry is area/line point -> hover highlight
           isTooltipHighlighted = true;
-          highlightedGeometries.push(indexedGeometry);
+
+          if (isPointGeometry(indexedGeometry)) {
+            // If Point Geometries overlap, then highlight the one with the highest sortingOrder
+            const hoveredPointKey = `${indexedGeometry.x}_${indexedGeometry.y}_${indexedGeometry.radius}`;
+            const existingGeom = hoveredPointsMap.get(hoveredPointKey);
+
+            if (!existingGeom) {
+              // No existing geometry -> add the current one
+              hoveredPointsMap.set(hoveredPointKey, { geom: indexedGeometry, index: highlightedGeometries.length });
+              highlightedGeometries.push(indexedGeometry);
+            } else {
+              // Already an existing geometry -> check if the current one has a higher sortingOrder
+              const currentDs = seriesIdentifierDataSeriesMap[indexedGeometry.seriesIdentifier.key];
+              const existingDs = seriesIdentifierDataSeriesMap[existingGeom.geom.seriesIdentifier.key];
+              const shouldReplaceExistingGeometry =
+                currentDs && existingDs && currentDs.sortOrder > existingDs.sortOrder;
+
+              if (shouldReplaceExistingGeometry) {
+                hoveredPointsMap.set(hoveredPointKey, { geom: indexedGeometry, index: existingGeom.index });
+                highlightedGeometries[existingGeom.index] = indexedGeometry;
+              }
+            }
+          } else {
+            highlightedGeometries.push(indexedGeometry);
+          }
         }
         if (isLineAreaPoint) {
           // Geometry is area/line point -> bucket highlight
@@ -200,12 +233,7 @@ function getTooltipAndHighlightFromValue(
     header = null;
   }
 
-  const baseTooltipSortFn: SeriesCompareFn = (a, b) => {
-    const aDs = seriesIdentifierDataSeriesMap[a.key];
-    const bDs = seriesIdentifierDataSeriesMap[b.key];
-    return defaultXYLegendSeriesSort(aDs, bDs);
-  };
-  const tooltipSortFn = tooltip.sort ?? settings.legendSort ?? baseTooltipSortFn;
+  const tooltipSortFn = tooltip.sort ?? settings.legendSort ?? legendSeriesSortFn;
   const sortedTooltipValues = values.sort((a, b) => {
     return tooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
   });

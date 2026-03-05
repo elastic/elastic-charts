@@ -36,6 +36,20 @@ const textConfigurationAndPositionGroup = 'Text configuration and position';
 const secondaryMetricGroup = 'Secondary metric';
 const colorGroup = 'Colors';
 
+const badgeColorMap = {
+  // Trend palette
+  compareTo1: { background: '#FDDDD8', text: '#A71627' },
+  compareTo2: { background: '#E3E8F2', text: '#1D2A3E' },
+  compareTo3: { background: '#C9F3E3', text: '#09724D' },
+
+  // COMPLEMENTARY palette
+  complementary1: { background: '#D9E8FF', text: '#1750BA' },
+  complementary2: { background: '#E3E8F2', text: '#1D2A3E' },
+  complementary3: { background: '#FDE9B5', text: '#825803' },
+} as const;
+
+type BadgeColorKey = keyof typeof badgeColorMap;
+
 export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   // Title and subtitle values
   const title = text('Title', 'Count of records');
@@ -89,20 +103,26 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const colorByValue = boolean('Color by value', true, secondaryMetricGroup);
   const dynamicBadgeColor = boolean('Dynamic badge color', true, secondaryMetricGroup);
   const badgeColor = dynamicBadgeColor
-    ? select(
-        'Secondary metric value color',
-        {
-          compareTo1: '#F6726A',
-          compareTo2: '#ECF1F9',
-          compareTo3: '#24C292',
-          complementary1: '#61a2ff',
-          complementary2: '#f6f9fc',
-          complementary3: '#eaae01',
-        },
-        '#24C292',
-        secondaryMetricGroup,
-      )
-    : color('Secondary metric value color', '#24C292', secondaryMetricGroup);
+    ? (() => {
+        const selectedBadgeColor = select(
+          'Secondary metric value color',
+          {
+            compareTo1: 'compareTo1',
+            compareTo2: 'compareTo2',
+            compareTo3: 'compareTo3',
+            complementary1: 'complementary1',
+            complementary2: 'complementary2',
+            complementary3: 'complementary3',
+          } satisfies Record<BadgeColorKey, BadgeColorKey>,
+          'compareTo3',
+          secondaryMetricGroup,
+        ) as string;
+
+        return (
+          badgeColorMap[selectedBadgeColor as BadgeColorKey] ?? { background: selectedBadgeColor, text: undefined }
+        );
+      })()
+    : { background: color('Secondary metric value color', '#24C292', secondaryMetricGroup), text: undefined };
 
   const secondaryMetricLabelPosition = select(
     'Secondary metric label position',
@@ -111,6 +131,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     secondaryMetricGroup,
   );
   const secondaryMetricAriaDescription = text('Aria description', 'This is a description', secondaryMetricGroup);
+  const useBadgeTextColor = boolean('Custom badge text color', true, secondaryMetricGroup);
   const badgeBorder = boolean('Badge border', true, secondaryMetricGroup);
   const badgeBorderSelection = select(
     'Badge border color',
@@ -131,7 +152,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const secondaryProps: SecondaryMetricProps = {
     value: secondaryMetricValue,
     label,
-    badgeColor: colorByValue ? badgeColor : undefined,
+    badgeColor: colorByValue ? badgeColor.background : undefined,
+    badgeTextColor: useBadgeTextColor ? badgeColor.text : undefined,
     labelPosition: secondaryMetricLabelPosition,
     ariaDescription: secondaryMetricAriaDescription,
     icon: secondaryMetricIcon,
@@ -236,8 +258,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const titlesTextAlign = getTextAlignKnob('Title and subtitle alignment', 'left', textConfigurationAndPositionGroup);
   const titleWeight = select(
     'Title weight',
-    { Bold: 'bold', Normal: 'normal' },
-    'normal',
+    { Bold: 'bold', Medium: 500, Normal: 'normal' },
+    500,
     textConfigurationAndPositionGroup,
   );
   // Value (primary metric)

@@ -30,6 +30,8 @@ export interface SecondaryMetricProps {
   label?: string;
   /** Optional background color for the value badge. If not provided, no badge is displayed */
   badgeColor?: Color;
+  /** Optional text color for the value badge. If not provided, it will be computed automatically for contrast */
+  badgeTextColor?: Color;
   /** Determines whether the label appears before or after the value */
   labelPosition?: 'before' | 'after';
   /**  Optional CSS properties to apply to the container element */
@@ -223,6 +225,7 @@ export const isSecondaryMetricProps = (props: any): props is SecondaryMetricProp
     'value' in props &&
     typeof props.value === 'string' &&
     (props.label === undefined || typeof props.label === 'string') &&
-    (props.badgeColor === undefined || typeof props.badgeColor === 'string')
+    (props.badgeColor === undefined || typeof props.badgeColor === 'string') &&
+    (props.badgeTextColor === undefined || typeof props.badgeTextColor === 'string')
   );
 };

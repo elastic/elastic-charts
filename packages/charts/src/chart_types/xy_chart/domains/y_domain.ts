@@ -182,6 +182,9 @@ export function isStackedSpec(spec: YBasicSeriesSpec) {
 export function coerceYScaleTypes(series: Pick<SeriesScales, 'yScaleType' | 'yNice'>[]) {
   const scaleTypes = new Set(series.map((s) => getYScaleTypeFromSpec(s.yScaleType)));
   const niceDomains = series.map((s) => getYNiceFromSpec(s.yNice));
-  const type = scaleTypes.size === 1 ? scaleTypes.values().next().value : ScaleType.Linear;
+  const type =
+    scaleTypes.size === 1
+      ? scaleTypes.values().next().value! // TODO fix this non-null assertion
+      : ScaleType.Linear;
   return { type, nice: !niceDomains.includes(false) };
 }
