@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { select } from '@storybook/addon-knobs';
+import { boolean, select } from '@storybook/addon-knobs';
 import React, { useState, useCallback } from 'react';
 
 import type { PartialTheme, SeriesIdentifier } from '@elastic/charts';
@@ -134,6 +134,10 @@ export const Example: ChartsStory = (_, { description }) => {
     setHoveredSeries(null);
   }, []);
 
+  // Chart visibility toggles
+  const showPartitionChart = boolean('Show Partition Chart', true);
+  const showXYChart = boolean('Show XY Chart', true);
+
   const partitionLayout = select(
     'Partition layout',
     { Sunburst: PartitionLayout.sunburst, Treemap: PartitionLayout.treemap },
@@ -242,151 +246,155 @@ export const Example: ChartsStory = (_, { description }) => {
         </div>
       </div>
 
-      {/* Partition Chart (top half) */}
-      <Chart
-        title={`Dimmed Highlight - ${partitionLayoutLabel}`}
-        description={description}
-        size={{ height: '50%' }}
-        id="partition-chart"
-      >
-        <Settings
-          showLegend
-          legendValues={[LegendValue.CurrentAndLastValue]}
-          legendPosition={Position.Right}
-          baseTheme={baseTheme}
-          theme={dimmedTheme}
-          onLegendItemOver={handleLegendItemOver}
-          onLegendItemOut={handleLegendItemOut}
-        />
-        <Partition
-          id="partition"
-          data={sunburstData}
-          layout={partitionLayout}
-          valueAccessor={(d) => d[3]}
-          layers={[
-            {
-              groupByRollup: (d: SunburstDatum) => d[0],
-              nodeLabel: (d) => `dest: ${d}`,
-              shape: {
-                fillColor: (key, sortIndex) => discreteColor(colorBrewerCategoricalPastel12, 0.7)(sortIndex),
+      {/* Partition Chart */}
+      {showPartitionChart && (
+        <Chart
+          title={`Dimmed Highlight - ${partitionLayoutLabel}`}
+          description={description}
+          size={{ height: showXYChart ? '50%' : '100%' }}
+          id="partition-chart"
+        >
+          <Settings
+            showLegend
+            legendValues={[LegendValue.CurrentAndLastValue]}
+            legendPosition={Position.Right}
+            baseTheme={baseTheme}
+            theme={dimmedTheme}
+            onLegendItemOver={handleLegendItemOver}
+            onLegendItemOut={handleLegendItemOut}
+          />
+          <Partition
+            id="partition"
+            data={sunburstData}
+            layout={partitionLayout}
+            valueAccessor={(d) => d[3]}
+            layers={[
+              {
+                groupByRollup: (d: SunburstDatum) => d[0],
+                nodeLabel: (d) => `dest: ${d}`,
+                shape: {
+                  fillColor: (key, sortIndex) => discreteColor(colorBrewerCategoricalPastel12, 0.7)(sortIndex),
+                },
               },
-            },
-            {
-              groupByRollup: (d: SunburstDatum) => d[2],
-              nodeLabel: (d) => `source: ${d}`,
-              shape: {
-                fillColor: (key, sortIndex, node) =>
-                  discreteColor(colorBrewerCategoricalPastel12, 0.5)(node.parent.sortIndex),
+              {
+                groupByRollup: (d: SunburstDatum) => d[2],
+                nodeLabel: (d) => `source: ${d}`,
+                shape: {
+                  fillColor: (key, sortIndex, node) =>
+                    discreteColor(colorBrewerCategoricalPastel12, 0.5)(node.parent.sortIndex),
+                },
               },
-            },
-          ]}
-        />
-      </Chart>
+            ]}
+          />
+        </Chart>
+      )}
 
-      {/* XY Chart (bottom half) */}
-      <Chart
-        title="Dimmed Highlight - Bar, Line, Area"
-        description={description}
-        size={{ height: '50%' }}
-        id="xy-chart"
-      >
-        <Settings
-          showLegend
-          legendValues={[LegendValue.CurrentAndLastValue]}
-          legendPosition={Position.Right}
-          baseTheme={baseTheme}
-          theme={dimmedTheme}
-          onLegendItemOver={handleLegendItemOver}
-          onLegendItemOut={handleLegendItemOut}
-        />
-        <Axis id="bottom" position={Position.Bottom} title="X axis" showOverlappingTicks />
-        <Axis id="left" title="Y axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+      {/* XY Chart */}
+      {showXYChart && (
+        <Chart
+          title="Dimmed Highlight - Bar, Line, Area"
+          description={description}
+          size={{ height: showPartitionChart ? '50%' : '100%' }}
+          id="xy-chart"
+        >
+          <Settings
+            showLegend
+            legendValues={[LegendValue.CurrentAndLastValue]}
+            legendPosition={Position.Right}
+            baseTheme={baseTheme}
+            theme={dimmedTheme}
+            onLegendItemOver={handleLegendItemOver}
+            onLegendItemOut={handleLegendItemOut}
+          />
+          <Axis id="bottom" position={Position.Bottom} title="X axis" showOverlappingTicks />
+          <Axis id="left" title="Y axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
-        <BarSeries
-          id="bars1"
-          name="Bars 1"
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          data={[
-            { x: 0, y: 2.3 },
-            { x: 1, y: 2 },
-            { x: 2, y: 4 },
-            { x: 3, y: 8 },
-          ]}
-        />
-        <BarSeries
-          id="bars2"
-          name="Bars 2"
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          data={[
-            { x: 0, y: 3.5 },
-            { x: 1, y: 4 },
-            { x: 2, y: 5 },
-            { x: 3, y: 6 },
-          ]}
-        />
-        <BarSeries
-          id="bars3"
-          name="Bars 3"
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          data={[
-            { x: 0, y: 4 },
-            { x: 1, y: 3 },
-            { x: 2, y: 6 },
-            { x: 3, y: 5 },
-          ]}
-        />
-        <LineSeries
-          id="line1"
-          name="Line 1"
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          data={[
-            { x: 0, y: 2 },
-            { x: 1, y: 7 },
-            { x: 2, y: 3 },
-            { x: 3, y: 6 },
-          ]}
-        />
-        <LineSeries
-          id="line2"
-          name="Line 2"
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          data={[
-            { x: 0, y: 5 },
-            { x: 1, y: 4 },
-            { x: 2, y: 8 },
-            { x: 3, y: 7 },
-          ]}
-        />
-        <AreaSeries
-          id="area"
-          name="Area"
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
-          data={[
-            { x: 0, y: 2.3 },
-            { x: 1, y: 7.3 },
-            { x: 2, y: 6 },
-            { x: 3, y: 2 },
-          ]}
-        />
-      </Chart>
+          <BarSeries
+            id="bars1"
+            name="Bars 1"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={[
+              { x: 0, y: 2.3 },
+              { x: 1, y: 2 },
+              { x: 2, y: 4 },
+              { x: 3, y: 8 },
+            ]}
+          />
+          <BarSeries
+            id="bars2"
+            name="Bars 2"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={[
+              { x: 0, y: 3.5 },
+              { x: 1, y: 4 },
+              { x: 2, y: 5 },
+              { x: 3, y: 6 },
+            ]}
+          />
+          <BarSeries
+            id="bars3"
+            name="Bars 3"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={[
+              { x: 0, y: 4 },
+              { x: 1, y: 3 },
+              { x: 2, y: 6 },
+              { x: 3, y: 5 },
+            ]}
+          />
+          <LineSeries
+            id="line1"
+            name="Line 1"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={[
+              { x: 0, y: 2 },
+              { x: 1, y: 7 },
+              { x: 2, y: 3 },
+              { x: 3, y: 6 },
+            ]}
+          />
+          <LineSeries
+            id="line2"
+            name="Line 2"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={[
+              { x: 0, y: 5 },
+              { x: 1, y: 4 },
+              { x: 2, y: 8 },
+              { x: 3, y: 7 },
+            ]}
+          />
+          <AreaSeries
+            id="area"
+            name="Area"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={[
+              { x: 0, y: 2.3 },
+              { x: 1, y: 7.3 },
+              { x: 2, y: 6 },
+              { x: 3, y: 2 },
+            ]}
+          />
+        </Chart>
+      )}
     </>
   );
 };

@@ -94,25 +94,26 @@ test.describe('Stylings stories', () => {
     eachTheme.describe(({ theme, urlParam }) => {
       test(`should dim XY chart series on Bars 2 legend hover - ${theme}`, async ({ page }) => {
         const action = async () => {
-          // Scroll to and hover on the "Bars 2" legend item in the XY chart section (second chart)
-          const xyChartLegendItem = page.locator('.echChart').nth(1).locator('[data-ech-series-name="Bars 2"]');
-          await xyChartLegendItem.scrollIntoViewIfNeeded();
-          await xyChartLegendItem.hover();
+          // Hover on the "Bars 2" legend item
+          const legendItem = page.locator('[data-ech-series-name="Bars 2"]');
+          await legendItem.hover();
         };
         await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&${urlParam}`,
+          // Hide partition chart so XY chart is the first .echChart
+          `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&${urlParam}&knob-Show Partition Chart=false`,
           { action },
         );
       });
 
       test(`should dim partition chart slices on legend hover - ${theme}`, async ({ page }) => {
         const action = async () => {
-          // Hover on the first legend item in the partition chart section (first chart)
-          const partitionLegendItem = page.locator('.echChart').first().locator('.echLegendItem').first();
-          await partitionLegendItem.hover();
+          // Hover on the first legend item
+          const legendItem = page.locator('.echLegendItem').first();
+          await legendItem.hover();
         };
         await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&${urlParam}&knob-Partition layout=sunburst`,
+          // Hide XY chart so partition chart is the only .echChart
+          `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&${urlParam}&knob-Show XY Chart=false`,
           { action },
         );
       });
