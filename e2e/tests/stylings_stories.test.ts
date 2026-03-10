@@ -92,9 +92,12 @@ test.describe('Stylings stories', () => {
 
   test.describe('Dimmed highlight style', () => {
     eachTheme.describe(({ theme, urlParam }) => {
-      test(`should dim XY chart series on legend hover - ${theme}`, async ({ page }) => {
+      test(`should dim XY chart series on Bars 2 legend hover - ${theme}`, async ({ page }) => {
         const action = async () => {
-          await common.moveMouseRelativeToDOMElement(page)({ left: 5, top: 5 }, '.echLegendItem');
+          // Scroll to and hover on the "Bars 2" legend item in the XY chart section (second chart)
+          const xyChartLegendItem = page.locator('.echChart').nth(1).locator('[data-ech-series-name="Bars 2"]');
+          await xyChartLegendItem.scrollIntoViewIfNeeded();
+          await xyChartLegendItem.hover();
         };
         await common.expectChartAtUrlToMatchScreenshot(page)(
           `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&${urlParam}`,
@@ -104,7 +107,9 @@ test.describe('Stylings stories', () => {
 
       test(`should dim partition chart slices on legend hover - ${theme}`, async ({ page }) => {
         const action = async () => {
-          await common.moveMouseRelativeToDOMElement(page)({ left: 5, top: 5 }, '.echLegendItem');
+          // Hover on the first legend item in the partition chart section (first chart)
+          const partitionLegendItem = page.locator('.echChart').first().locator('.echLegendItem').first();
+          await partitionLegendItem.hover();
         };
         await common.expectChartAtUrlToMatchScreenshot(page)(
           `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&${urlParam}&knob-Partition layout=sunburst`,
