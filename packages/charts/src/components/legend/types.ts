@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { LegendItemExtraValues, LegendValue } from '../../common/legend';
+import type { LegendItem, LegendItemExtraValues, LegendValue } from '../../common/legend';
 import type { SeriesIdentifier } from '../../common/series_id';
 import type {
   LegendItemListener,
@@ -28,7 +28,7 @@ export interface SharedLegendItemProps {
   flatLegend: boolean;
   totalItems: number;
   positionConfig: LegendPositionConfig;
-  extraValues: Map<string, LegendItemExtraValues>;
+  extraValues: ReadonlyMap<string, LegendItemExtraValues>;
   legendValues: Array<LegendValue>;
   isMostlyRTL: boolean;
   labelOptions: LegendLabelOptions;
@@ -44,4 +44,9 @@ export interface SharedLegendItemProps {
   toggleDeselectSeriesAction: typeof onToggleDeselectSeriesAction;
   legendTitle?: string;
   hiddenItems: number;
+}
+
+/** @internal */
+export interface LegendItemProps extends SharedLegendItemProps {
+  item: LegendItem;
 }

@@ -1849,7 +1849,17 @@ export type LegendItemValue = {
 // @public (undocumented)
 export interface LegendLabelOptions {
     maxLines: number;
+    widthLimit: number;
 }
+
+// @public (undocumented)
+export const LegendLayout: Readonly<{
+    List: "list";
+    Table: "table";
+}>;
+
+// @public (undocumented)
+export type LegendLayout = $Values<typeof LegendLayout>;
 
 // @public
 export type LegendPath = LegendPathElement[];
@@ -1877,6 +1887,7 @@ export interface LegendSpec {
     legendActionOnHover?: boolean;
     // (undocumented)
     legendColorPicker?: LegendColorPicker;
+    legendLayout?: LegendLayout;
     legendMaxDepth: number;
     legendPosition: Position | LegendPositionConfig;
     legendSize: number;
@@ -2108,7 +2119,7 @@ export type MetricElementEvent = {
 // Warning: (ae-forgotten-export) The symbol "FontWeight" needs to be exported by the entry point index.d.ts
 //
 // @public
-export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal'>;
+export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal' | 500>;
 
 // @alpha (undocumented)
 export interface MetricSpec extends Spec {
@@ -2163,7 +2174,7 @@ export interface MetricStyle {
     // (undocumented)
     valueFontSize: 'default' | 'fit' | number;
     // (undocumented)
-    valuePosition: 'top' | 'bottom';
+    valuePosition: 'top' | 'middle' | 'bottom';
     // (undocumented)
     valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
 }
@@ -2743,6 +2754,7 @@ export interface SecondaryMetricProps {
         color: Color;
     };
     badgeColor?: Color;
+    badgeTextColor?: Color;
     icon?: string;
     iconPosition?: 'before' | 'after';
     label?: string;
@@ -2867,7 +2879,7 @@ export const Settings: (props: SFProps<SettingsSpec, keyof (typeof settingsBuild
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "debug" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "locale" | "dow" | "showLegend" | "legendPosition" | "legendValues" | "legendMaxDepth" | "legendSize" | "flatLegend" | "legendActionOnHover", "theme" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "xDomain" | "onAnnotationClick" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "orderOrdinalBinsBy" | "renderingSort" | "noResults" | "ariaLabel" | "ariaLabelledBy" | "ariaDescription" | "ariaDescribedBy" | "ariaTableCaption" | "legendStrategy" | "onLegendItemOver" | "onLegendItemOut" | "onLegendItemClick" | "onLegendItemPlusClick" | "onLegendItemMinusClick" | "legendAction" | "legendColorPicker" | "legendSort" | "customLegend" | "legendTitle", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "debug" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "locale" | "dow" | "showLegend" | "legendPosition" | "legendValues" | "legendMaxDepth" | "legendSize" | "flatLegend" | "legendActionOnHover", "theme" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "xDomain" | "onAnnotationClick" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "orderOrdinalBinsBy" | "renderingSort" | "noResults" | "ariaLabel" | "ariaLabelledBy" | "ariaDescription" | "ariaDescribedBy" | "ariaTableCaption" | "legendLayout" | "legendStrategy" | "onLegendItemOver" | "onLegendItemOut" | "onLegendItemClick" | "onLegendItemPlusClick" | "onLegendItemMinusClick" | "legendAction" | "legendColorPicker" | "legendSort" | "customLegend" | "legendTitle", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -3089,6 +3101,8 @@ export interface TextStyle {
     fontSize: number;
     // (undocumented)
     fontStyle?: FontStyle;
+    // (undocumented)
+    fontWeight?: FontWeight;
     // (undocumented)
     padding: number | SimplePadding;
 }

@@ -20,6 +20,7 @@ export const getLegendConfigSelector = createCustomCachedSelector(
     legendColorPicker,
     legendMaxDepth,
     legendSize,
+    legendLayout,
     legendPosition,
     legendStrategy,
     onLegendItemClick,
@@ -39,6 +40,7 @@ export const getLegendConfigSelector = createCustomCachedSelector(
       legendColorPicker,
       legendMaxDepth,
       legendSize,
+      legendLayout,
       legendPosition: getLegendPositionConfig(legendPosition),
       legendStrategy,
       onLegendItemClick,
@@ -52,4 +54,10 @@ export const getLegendConfigSelector = createCustomCachedSelector(
       legendTitle,
     };
   },
+);
+
+/** @internal */
+export const getLegendValuesSelector = createCustomCachedSelector(
+  [getSettingsSpecSelector],
+  ({ legendValues }) => legendValues,
 );

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { BADGE_BORDER } from './badge';
+import { BADGE_BORDER, BADGE_PADDING_BLOCK } from './badge';
 import type { TextParts } from './text_processing';
 import { getTextParts } from './text_processing';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
@@ -217,6 +217,7 @@ export function getMetricTextPartDimensions(
       locale,
       style.valueFontSize === 'fit',
       progressBarHeight,
+      style.valuePosition === 'middle' ? 0 : ELEMENT_PADDING,
     ),
     textParts: getTextParts(datum, style),
     iconGridColumnWidth,
@@ -300,6 +301,7 @@ function computeMetricTextLayout(
   locale: string,
   fit: boolean,
   progressBarHeight: number, // with padding
+  extraPaddingTop: number,
 ): MetricTextLayout {
   const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * PADDING;
 
@@ -308,7 +310,7 @@ function computeMetricTextLayout(
 
   // If there is a badge, we add the padding to the extra height
   const hasBadge = !!(datum?.extra && 'badgeColor' in datum?.extra && datum?.extra?.badgeColor);
-  const badgeHeight = hasBadge ? BADGE_BORDER * 2 : 0;
+  const badgeHeight = hasBadge ? (BADGE_BORDER + BADGE_PADDING_BLOCK) * 2 : 0;
   // We assume that the extra element is taking one line
   const extraHeight = sizes.extraFontSize * LINE_HEIGHT + badgeHeight;
   const valueHeight = sizes.valueFontSize * LINE_HEIGHT;
@@ -343,7 +345,7 @@ function computeMetricTextLayout(
     const actualTitleHeight = titleLines.length > 0 ? titleLines.length * titleLineHeight : 0;
     const actualSubtitleHeight =
       subtitleLines.length > 0 ? subtitleLines.length * subtitleLineHeight + ELEMENT_PADDING : 0; // Subtitle padding top 5px
-    const actualExtraHeight = breakpoints.extra ? extraHeight + ELEMENT_PADDING : 0; // Extra padding top 5px
+    const actualExtraHeight = breakpoints.extra ? extraHeight + extraPaddingTop : 0;
 
     const nonValueElementsHeight =
       actualTitleHeight + actualSubtitleHeight + actualExtraHeight + progressBarHeight + PADDING * 2;

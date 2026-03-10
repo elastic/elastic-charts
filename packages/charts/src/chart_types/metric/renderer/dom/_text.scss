@@ -40,7 +40,7 @@
     }
   }
 
-  .echMetricText__extraBlock {
+  &__extraBlock {
     display: flex;
     align-items: center;
     overflow: hidden;
@@ -54,6 +54,11 @@
     }
     &--right {
       justify-content: flex-end;
+    }
+
+    // Vertical position modifiers
+    &--middle {
+      padding-top: 0;
     }
   }
 

@@ -13,7 +13,10 @@ import type { LegendItem } from '../../../common/legend';
 import type { SharedLegendItemProps } from '../types';
 
 /** @internal */
-export const LegendTableBody: React.FC<SharedLegendItemProps & { items: LegendItem[] }> = ({ items, ...itemProps }) => {
+export const LegendTableBody: React.FC<SharedLegendItemProps & { items: ReadonlyArray<LegendItem> }> = ({
+  items,
+  ...itemProps
+}) => {
   return (
     <div role="rowgroup" className="echLegendTable__rowgroup">
       {items.map((item) => (

@@ -30,6 +30,6 @@ export const getValidatedTimeZone = (specifiedTimeZone?: string): string =>
 export const getZoneFromSpecs = (specs: { timeZone?: string }[]): string => {
   const allValidTimezones = new Set<string>(specs.map((s) => s.timeZone ?? '').filter(isValidTimeZone));
   return allValidTimezones.size === 1
-    ? allValidTimezones.values().next().value
+    ? allValidTimezones.values().next().value! // TODO fix this non-null assertion
     : Intl.DateTimeFormat().resolvedOptions().timeZone;
 };

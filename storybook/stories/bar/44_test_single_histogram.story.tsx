@@ -37,7 +37,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   const xDomain = {
     min: KIBANA_METRICS.metrics.kibana_os_load.v1.data[0][0] - (oddDomain ? 217839 : 0),
-    max: KIBANA_METRICS.metrics.kibana_os_load.v1.data[0][0] + (oddDomain ? 200000 : 0 ?? binWidthMs - 1),
+    max: KIBANA_METRICS.metrics.kibana_os_load.v1.data[0][0] + (oddDomain ? 200000 : 0),
     minInterval: binWidthMs,
   };
 
