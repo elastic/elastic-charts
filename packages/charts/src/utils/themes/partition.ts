@@ -19,7 +19,7 @@ export type PartitionDimmedStyle =
       /** The fill color to use when partition slices are dimmed. */
       fill: Color | ColorVariant;
       /** The stroke color to use when partition slices are dimmed. */
-      stroke?: Color | ColorVariant;
+      stroke: Color | ColorVariant;
     };
 
 interface LabelConfig extends Font {
@@ -96,5 +96,5 @@ export interface PartitionStyle extends FillFontSizeRange {
    * The style applied to partition slices when they are dimmed relative to other highlighted elements.
    * This is typically used to visually de-emphasize slices when hovering over a legend item.
    */
-  dimmed?: PartitionDimmedStyle;
+  dimmed: PartitionDimmedStyle;
 }

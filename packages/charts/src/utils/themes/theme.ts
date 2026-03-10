@@ -752,13 +752,13 @@ export interface RectStyle {
    * The style applied to the rect when it is dimmed relative to other highlighted elements on the chart.
    * This is typically used to visually de-emphasize the rect, for example, when another series is highlighted.
    */
-  dimmed?:
+  dimmed:
     | { opacity: number }
     | {
         /** The fill color to use when the rect is dimmed. */
         fill: Color | ColorVariant;
         /** The opacity multiplier for the texture color when the rect is dimmed */
-        texture?: { opacity: number };
+        texture: { opacity: number };
       };
 }
 

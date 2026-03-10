@@ -166,8 +166,8 @@ function renderSectors(
     quadViewModel.forEach((quad: QuadViewModel) => {
       if (quad.x0 === quad.x1) return;
 
-      const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-      const fillColor = getDimmedColor(isUnhighlighted, partitionStyle.dimmed, 'fill', quad.fillColor);
+      const isDimmed = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
+      const fillColor = getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', quad.fillColor);
       renderTaperedBorder(ctx, quad, fillColor);
     });
   });
@@ -185,8 +185,8 @@ function renderRectangles(
       const { strokeWidth, fillColor, x0, x1, y0px, y1px } = quad;
       // only draw a shape if it would show up at all
       if (x1 - x0 >= 1 && y1px - y0px >= 1) {
-        const isUnhighlighted = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-        const dimmedFillColor = getDimmedColor(isUnhighlighted, partitionStyle.dimmed, 'fill', fillColor);
+        const isDimmed = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
+        const dimmedFillColor = getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', fillColor);
 
         ctx.fillStyle = dimmedFillColor;
         ctx.beginPath();

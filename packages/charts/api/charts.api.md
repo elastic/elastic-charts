@@ -2309,7 +2309,7 @@ export type PartitionDimmedStyle = {
     opacity: number;
 } | {
     fill: Color | ColorVariant;
-    stroke?: Color | ColorVariant;
+    stroke: Color | ColorVariant;
 };
 
 // @public
@@ -2367,7 +2367,7 @@ export interface PartitionStyle extends FillFontSizeRange {
     //
     // (undocumented)
     circlePadding: Distance;
-    dimmed?: PartitionDimmedStyle;
+    dimmed: PartitionDimmedStyle;
     // Warning: (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
     emptySizeRatio: SizeRatio;
     // (undocumented)
@@ -2653,11 +2653,11 @@ export interface RectBorderStyle {
 
 // @public (undocumented)
 export interface RectStyle {
-    dimmed?: {
+    dimmed: {
         opacity: number;
     } | {
         fill: Color | ColorVariant;
-        texture?: {
+        texture: {
             opacity: number;
         };
     };

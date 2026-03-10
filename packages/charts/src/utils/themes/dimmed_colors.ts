@@ -10,12 +10,14 @@ import type { Color } from '../../common/colors';
 import type { ColorVariant } from '../common';
 
 /**
+ * A color value that can be used for dimmed styling.
+ * @internal
+ */
+type DimmedColor = Color | ColorVariant;
+
+/**
  * Opacity-only dimmed styling configuration.
  * When used, elements are dimmed by reducing opacity while keeping their original color.
- *
- * Note: This is a base type for the utility functions. The actual theme interfaces
- * (PointStyle, LineStyle, etc.) have more specific inline types that may include
- * additional properties like `texture` or `strokeWidth`.
  * @internal
  */
 type OpacityDimmedConfig = { opacity: number };
@@ -23,14 +25,11 @@ type OpacityDimmedConfig = { opacity: number };
 /**
  * Color override dimmed styling configuration.
  * When used, elements are dimmed by replacing their color with specific dimmed colors.
- *
- * Note: This is a base type for the utility functions. The actual theme interfaces
- * may include additional properties beyond fill/stroke.
  * @internal
  */
 type ColorDimmedConfig = {
-  fill?: Color | ColorVariant;
-  stroke?: Color | ColorVariant;
+  fill?: DimmedColor;
+  stroke?: DimmedColor;
 };
 
 /**
@@ -38,17 +37,13 @@ type ColorDimmedConfig = {
  *
  * The dimmed style can be configured in two ways:
  * - **Opacity-only** (`OpacityDimmedConfig`): Reduces element opacity while keeping original color
- * - **Color override** (`ColorDimmedConfig`): Uses specific colors for the dimmed state
- *
- * This is a simplified union type used by the utility functions. The actual theme
- * interfaces (PointStyle, LineStyle, AreaStyle, RectStyle, PartitionStyle) define their
- * own inline dimmed types with style-specific additional properties.
+ * - **Color override** (`ColorDimmedConfig`): Uses specific fill/stroke colors for the dimmed state
  * @internal
  */
 type DimmedStyleConfig = OpacityDimmedConfig | ColorDimmedConfig;
 
 /**
- * Checks if a dimmed configuration uses color override (not opacity-only).
+ * Type guard: checks if config uses color overrides (has fill or stroke, no opacity).
  * @internal
  */
 function isColorDimmedConfig(config: DimmedStyleConfig): config is ColorDimmedConfig {
@@ -59,7 +54,7 @@ function isColorDimmedConfig(config: DimmedStyleConfig): config is ColorDimmedCo
  * Checks if a dimmed color is configured for the specified color key.
  *
  * Use this when you need to know whether a dimmed color was explicitly configured,
- * for example to determine opacity behavior.
+ * for example to determine opacity behavior (use full opacity when dimmed color exists).
  *
  * @param isDimmed - Whether the element is in a dimmed/unhighlighted state
  * @param dimmedConfig - The dimmed style configuration from theme
@@ -74,63 +69,45 @@ function isColorDimmedConfig(config: DimmedStyleConfig): config is ColorDimmedCo
  */
 export function hasDimmedColor(
   isDimmed: boolean,
-  dimmedConfig: DimmedStyleConfig | undefined,
+  dimmedConfig: DimmedStyleConfig,
   colorKey: 'fill' | 'stroke',
 ): boolean {
-  return isDimmed && !!dimmedConfig && isColorDimmedConfig(dimmedConfig) && colorKey in dimmedConfig;
+  return isDimmed && isColorDimmedConfig(dimmedConfig) && dimmedConfig[colorKey] !== undefined;
 }
 
 /**
  * Resolves the color to use based on highlight state and dimmed configuration.
  *
- * When an element is dimmed (unhighlighted) and the theme provides a specific dimmed color,
- * this function returns that dimmed color. Otherwise, it returns the default color.
- *
- * The dimmed style config can be either:
- * - `OpacityDimmedConfig` - Opacity-only dimming (returns default color, opacity handled separately)
- * - `ColorDimmedConfig` - Explicit dimmed colors (returns the specified color)
+ * When an element is dimmed and the theme provides a specific dimmed color,
+ * returns that color. Otherwise, returns the default color.
  *
  * @param isDimmed - Whether the element is in a dimmed/unhighlighted state
- * @param dimmedConfig - The dimmed style configuration from theme (e.g., `pointStyle.dimmed`)
+ * @param dimmedConfig - The dimmed style configuration from theme
  * @param colorKey - Which color property to extract ('fill' or 'stroke')
- * @param defaultColor - Fallback color when not dimmed or no dimmed color is configured.
- *                       Can be `undefined` when you only want the dimmed color or nothing.
- * @returns The resolved color - either the dimmed color or the default color
+ * @param defaultColor - Fallback color when not dimmed or no dimmed color configured
+ * @returns The dimmed color if configured and applicable, otherwise the default color
  *
  * @example
- * // In a point renderer:
- * const fillColor = getDimmedColor(
- *   highlightState === 'dimmed',
- *   pointStyle.dimmed,
- *   'fill',
- *   seriesColor
- * );
+ * // Always get a color (dimmed or series color):
+ * const stroke = getDimmedColor(isDimmed, lineStyle.dimmed, 'stroke', seriesColor);
  *
  * @example
- * // In a line renderer:
- * const strokeColor = getDimmedColor(
- *   highlightState === 'dimmed',
- *   lineStyle.dimmed,
- *   'stroke',
- *   seriesColor
- * );
- *
- * @example
- * // Get dimmed color only (undefined if not configured):
+ * // Get dimmed color only if configured (for optional override):
  * const dimmedFill = getDimmedColor(isDimmed, pointStyle.dimmed, 'fill', undefined);
+ * const fill = dimmedFill ?? originalFill;
  *
  * @internal
  */
-export function getDimmedColor<T extends Color | ColorVariant | undefined>(
+export function getDimmedColor<D extends DimmedColor | undefined>(
   isDimmed: boolean,
-  dimmedConfig: DimmedStyleConfig | undefined,
+  dimmedConfig: DimmedStyleConfig,
   colorKey: 'fill' | 'stroke',
-  defaultColor: T,
-): T {
-  if (hasDimmedColor(isDimmed, dimmedConfig, colorKey)) {
-    const dimmedColor = (dimmedConfig as ColorDimmedConfig)[colorKey];
+  defaultColor: D,
+): DimmedColor | D {
+  if (isDimmed && isColorDimmedConfig(dimmedConfig)) {
+    const dimmedColor = dimmedConfig[colorKey];
     if (dimmedColor !== undefined) {
-      return dimmedColor as T;
+      return dimmedColor;
     }
   }
   return defaultColor;

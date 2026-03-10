@@ -378,6 +378,7 @@ export const DARK_THEME: Theme = {
     sectorLineStroke: DARK_BACKGROUND_COLORS.backgroundBasePlain,
     dimmed: {
       fill: DARK_DIMMED_COLORS.partitionFill,
+      stroke: ColorVariant.None,
     },
   },
   heatmap: {
