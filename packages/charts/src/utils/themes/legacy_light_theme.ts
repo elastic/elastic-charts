@@ -229,6 +229,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
     margin: 0,
     labelOptions: {
       maxLines: 1,
+      widthLimit: 250,
       truncationPosition: 'middle',
     },
   },
@@ -438,7 +439,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
-    titleWeight: 'bold',
+    titleWeight: 500,
   },
   bulletGraph: LIGHT_THEME_BULLET_STYLE,
   tooltip: {

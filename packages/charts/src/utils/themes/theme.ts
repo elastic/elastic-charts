@@ -306,7 +306,7 @@ export interface HeatmapStyle {
  * Metric font weight options for text styling.
  * @public
  */
-export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal'>;
+export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal' | 500>;
 
 /**
  * Style options for the Metric chart type.
@@ -327,7 +327,7 @@ export interface MetricStyle {
   titlesTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
   extraTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
   valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
-  valuePosition: 'top' | 'bottom';
+  valuePosition: 'top' | 'middle' | 'bottom';
   iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
 
   titleWeight: MetricFontWeight;
@@ -403,19 +403,15 @@ export interface LegendLabelOptions {
    * Sets maxlines allowable before truncating
    *
    * Setting value to `0` will _never_ truncate the text
-   *
-   * @defaultValue 1
    */
-  maxLines?: number;
+  maxLines: number;
   /**
    * Sets widthLimit allowable before truncating (unit: px)
    * Only applicable if the list layout is chosen for the top and bottom positions
    *
    * Setting value to `0` will _never_ truncate the text
-   *
-   * @defaultValue 250
    */
-  widthLimit?: number;
+  widthLimit: number;
   /**
    * Position where text is truncated when it overflows.
    *
@@ -424,7 +420,7 @@ export interface LegendLabelOptions {
    *
    * @defaultValue 'middle'
    */
-  truncationPosition?: LegendLabelTruncationPosition;
+  truncationPosition: LegendLabelTruncationPosition;
 }
 
 /** @public */

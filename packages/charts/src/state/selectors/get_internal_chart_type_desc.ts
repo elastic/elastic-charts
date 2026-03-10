@@ -7,13 +7,13 @@
  */
 
 import { getInternalChartStateSelector } from './get_internal_chart_state';
-import { EMPTY_LEGEND_ITEM_LIST, type LegendItemLabel } from '../chart_selectors';
 import type { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */
-export const getLegendItemsLabelsSelector = createCustomCachedSelector(
+export const getInternalChartTypeDescSelector = createCustomCachedSelector(
   [(globalChartState: GlobalChartState) => globalChartState, getInternalChartStateSelector],
-  (globalChartState, internalChartState): ReadonlyArray<LegendItemLabel> =>
-    internalChartState?.getLegendItemsLabels(globalChartState) ?? EMPTY_LEGEND_ITEM_LIST,
+  (globalChartState, internalChartState): string => {
+    return internalChartState?.getChartTypeDescription(globalChartState) ?? '';
+  },
 );

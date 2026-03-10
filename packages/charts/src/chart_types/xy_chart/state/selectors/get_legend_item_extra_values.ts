@@ -9,16 +9,19 @@
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getTooltipInfoAndGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 import type { LegendItemExtraValues } from '../../../../common/legend';
-import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../../common/legend';
 import type { SeriesKey } from '../../../../common/series_id';
 import { ScaleType } from '../../../../scales/constants';
+import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getLegendValuesSelector } from '../../../../state/selectors/get_legend_config_selector';
 import { getLegendItemExtraValues } from '../../tooltip/tooltip';
 
 /** @internal */
 export const getLegendItemExtraValuesSelector = createCustomCachedSelector(
-  [getTooltipInfoAndGeomsSelector, getComputedScalesSelector],
-  ({ tooltip: { values } }, { xScale: { type } }): Map<SeriesKey, LegendItemExtraValues> =>
+  [getTooltipInfoAndGeomsSelector, getComputedScalesSelector, getLegendValuesSelector],
+  ({ tooltip: { values } }, { xScale: { type } }, legendValues): ReadonlyMap<SeriesKey, LegendItemExtraValues> =>
     // See https://github.com/elastic/elastic-charts/issues/2050
-    type === ScaleType.Ordinal ? EMPTY_LEGEND_ITEM_EXTRA_VALUES : getLegendItemExtraValues(values),
+    type === ScaleType.Ordinal || legendValues.length === 0
+      ? EMPTY_LEGEND_ITEM_EXTRA_VALUES
+      : getLegendItemExtraValues(values),
 );

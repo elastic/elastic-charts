@@ -1848,8 +1848,8 @@ export type LegendItemValue = {
 
 // @public (undocumented)
 export interface LegendLabelOptions {
-    maxLines?: number;
-    widthLimit?: number;
+    maxLines: number;
+    widthLimit: number;
     truncationPosition?: LegendLabelTruncationPosition;
 }
 
@@ -2123,7 +2123,7 @@ export type MetricElementEvent = {
 // Warning: (ae-forgotten-export) The symbol "FontWeight" needs to be exported by the entry point index.d.ts
 //
 // @public
-export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal'>;
+export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal' | 500>;
 
 // @alpha (undocumented)
 export interface MetricSpec extends Spec {
@@ -2178,7 +2178,7 @@ export interface MetricStyle {
     // (undocumented)
     valueFontSize: 'default' | 'fit' | number;
     // (undocumented)
-    valuePosition: 'top' | 'bottom';
+    valuePosition: 'top' | 'middle' | 'bottom';
     // (undocumented)
     valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
 }
@@ -2741,6 +2741,7 @@ export interface SecondaryMetricProps {
         color: Color;
     };
     badgeColor?: Color;
+    badgeTextColor?: Color;
     icon?: string;
     iconPosition?: 'before' | 'after';
     label?: string;

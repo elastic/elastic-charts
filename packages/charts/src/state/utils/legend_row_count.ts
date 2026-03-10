@@ -14,7 +14,7 @@ import type { TextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 /** @internal */
 export interface HorizontalLegendRowCountArgs {
   /** Legend items being rendered */
-  items: LegendItem[];
+  items: ReadonlyArray<LegendItem>;
   /** Available width for the wrapping `<ul>` */
   availableWidth: number;
   /** The `column-gap` used by the wrapping `<ul>` (px) */

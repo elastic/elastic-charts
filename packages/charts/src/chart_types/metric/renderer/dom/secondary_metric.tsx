@@ -22,6 +22,7 @@ export const SecondaryMetric: React.FC<SecondaryMetricInternalProps> = ({
   value,
   label,
   badgeColor,
+  badgeTextColor,
   labelPosition = 'before',
   style,
   ariaDescription,
@@ -48,6 +49,7 @@ export const SecondaryMetric: React.FC<SecondaryMetricInternalProps> = ({
           })}
           value={value}
           backgroundColor={badgeColor}
+          textColor={badgeTextColor}
           borderColor={badgeBorderColor}
           icon={icon}
           iconPosition={iconPosition}

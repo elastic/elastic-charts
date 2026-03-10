@@ -16,7 +16,7 @@ import type { SharedLegendItemProps } from '../types';
 
 /** @internal */
 export interface LegendTableProps extends SharedLegendItemProps {
-  items: LegendItem[];
+  items: ReadonlyArray<LegendItem>;
   seriesWidth?: number;
 }
 

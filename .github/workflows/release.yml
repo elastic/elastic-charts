@@ -5,6 +5,8 @@ name: Publish a Release
 on:
   workflow_dispatch
 
+permissions:
+  contents: read # for checkout
 
 env:
   ECH_NODE_VERSION: '22.22.0'
@@ -63,6 +65,11 @@ jobs:
     needs: [checks]
     if: ${{ needs.checks.result == 'success' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for trusted publishing and npm provenance
     steps:
       - name: Check out repository
         uses: actions/checkout@v4.1.7
@@ -81,9 +88,11 @@ jobs:
       - name: Build library
         run: yarn build
 
+      - name: Upgrade npm for trusted publishing (OIDC) support
+        run: npm install -g npm@11.5.1
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         run: yarn semantic-release

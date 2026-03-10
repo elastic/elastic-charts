@@ -121,7 +121,7 @@ export const getLegendSizeSelector = createCustomCachedSelector(
             : bbox.height * 2 + 24;
     } else {
       // This section is related to the list layout
-      const widthLimit = Math.abs(theme.legend.labelOptions.widthLimit ?? 250);
+      const widthLimit = Math.abs(theme.legend.labelOptions.widthLimit);
       const { isSingleLine, isMoreThanTwoLines } = withTextMeasure((textMeasure) =>
         computeHorizontalLegendRowCount({
           items,
