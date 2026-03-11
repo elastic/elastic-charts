@@ -80,8 +80,7 @@ export function Label({
   totalSeriesCount,
   truncationMode,
 }: LabelProps) {
-  // Default to 'middle' truncation when not specified
-  const shouldTruncateMiddle = (options.truncationPosition ?? 'middle') === 'middle' && options.maxLines > 0;
+  const shouldTruncateMiddle = options.truncationPosition === 'middle' && options.maxLines > 0;
   const { labelRef, truncatedLabel, isComputed } = useMiddleTruncatedLabel({
     label,
     maxLines: options.maxLines,
@@ -140,8 +139,7 @@ export function Label({
 
 /** @internal */
 export function NonInteractiveLabel({ label, options }: { label: string; options: LegendLabelOptions }) {
-  // Default to 'middle' truncation when not specified
-  const shouldTruncateMiddle = (options.truncationPosition ?? 'middle') === 'middle' && options.maxLines > 0;
+  const shouldTruncateMiddle = options.truncationPosition === 'middle' && options.maxLines > 0;
   const { labelRef, truncatedLabel, isComputed } = useMiddleTruncatedLabel({
     label,
     maxLines: options.maxLines,
@@ -150,7 +148,7 @@ export function NonInteractiveLabel({ label, options }: { label: string; options
 
   // Only apply middle truncation CSS classes when JS computation is complete
   const useMiddleClasses = shouldTruncateMiddle && isComputed;
-  const { className, dir, clampStyles } = getSharedProps(label, options, false, useMiddleClasses);
+  const { className, dir, clampStyles } = getSharedProps(label, options, false, undefined, useMiddleClasses);
 
   return (
     <div

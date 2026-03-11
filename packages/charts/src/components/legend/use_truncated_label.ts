@@ -19,6 +19,22 @@ const MIN_MIDDLE_TRUNCATION_CHARS = 4; // Minimum chars (available width) to con
 // React 18+ startTransition for low-priority updates, fallback to direct execution for React 16/17
 const startTransition = reactStartTransition ?? ((fn: () => void) => fn());
 
+/**
+ * Returns a stable container width for truncation computation.
+ * In px truncation mode, `maxWidth` is set via inline style and provides a
+ * content-independent reference, preventing infinite ResizeObserver loops
+ * (text change → element shrinks → observer fires → recompute → loop).
+ * In line truncation mode, `clientWidth` is stable because flex layout
+ * with `overflow: hidden` decouples element width from content.
+ */
+function getStableContainerWidth(element: HTMLElement): number {
+  const computedMaxWidth = parseFloat(window.getComputedStyle(element).maxWidth);
+  if (isFinite(computedMaxWidth) && computedMaxWidth > 0) {
+    return computedMaxWidth;
+  }
+  return element.clientWidth;
+}
+
 interface UseMiddleTruncatedLabelProps {
   label: string;
   maxLines: number;
@@ -174,6 +190,7 @@ export function useMiddleTruncatedLabel({
   const labelRef = useRef<HTMLDivElement>(null);
   const [truncatedLabel, setTruncatedLabel] = useState(label);
   const [isComputed, setIsComputed] = useState(false);
+  const lastContainerWidthRef = useRef<number>(0);
 
   const computeTruncatedLabel = useCallback(() => {
     if (!shouldTruncate || maxLines === 0) {
@@ -191,7 +208,7 @@ export function useMiddleTruncatedLabel({
 
     const computedStyle = window.getComputedStyle(element);
     const { font, fontSize } = getFontFromComputedStyle(computedStyle);
-    const containerWidth = element.clientWidth;
+    const containerWidth = getStableContainerWidth(element);
 
     if (containerWidth <= 0) {
       setTruncatedLabel(label);
@@ -199,6 +216,7 @@ export function useMiddleTruncatedLabel({
       return;
     }
 
+    lastContainerWidthRef.current = containerWidth;
     const availableWidth = containerWidth * maxLines;
 
     const result = withTextMeasure((measure) => {
@@ -208,7 +226,6 @@ export function useMiddleTruncatedLabel({
       if (fullTextWidth <= availableWidth) {
         return label;
       }
-
       return fitMiddleTruncation(label, availableWidth, measure, font, fontSize);
     });
 
@@ -226,6 +243,7 @@ export function useMiddleTruncatedLabel({
     // Reset state: show full label with CSS truncation until computed
     setTruncatedLabel(label);
     setIsComputed(false);
+    lastContainerWidthRef.current = 0;
 
     // Track rAF IDs to cancel pending computations
     let rafId = 0;
@@ -245,6 +263,18 @@ export function useMiddleTruncatedLabel({
 
     // Per-element ResizeObserver is necessary since label width varies by rendering mode (list, table, horizontal)
     const resizeObserver = new ResizeObserver(() => {
+      const el = labelRef.current;
+      if (!el) return;
+
+      const currentStableWidth = getStableContainerWidth(el);
+
+      // Skip when the stable reference width hasn't changed — this prevents
+      // infinite loops where our own text change shrinks the inline-flex
+      // element, firing the observer again with no actual layout change.
+      if (lastContainerWidthRef.current > 0 && Math.abs(currentStableWidth - lastContainerWidthRef.current) < 1) {
+        return;
+      }
+
       setIsComputed(false);
       // Cancel any pending resize computation to avoid queuing multiple calls
       cancelAnimationFrame(resizeRafId);

@@ -25,10 +25,12 @@ const getLabelOptionKnobs = (isLineLimit: boolean): LegendLabelOptions => {
     ? {
         maxLines: number('max label lines', 1, { min: 0, step: 1 }, group),
         widthLimit: 250,
+        truncationPosition: 'middle',
       }
     : {
         maxLines: 1,
         widthLimit: number('width limit', 250, { min: 0, step: 1 }, group),
+        truncationPosition: 'middle',
       };
 };
 

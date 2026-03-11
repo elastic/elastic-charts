@@ -69,6 +69,7 @@ const getLabelOptionKnobs = (): LegendLabelOptions => {
       group,
     ),
     maxLines: number('maxLines', 1, { min: 0, step: 1 }, group),
+    widthLimit: 250,
   };
 };
 
