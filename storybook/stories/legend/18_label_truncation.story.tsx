@@ -120,6 +120,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
   // Legend width control for demonstrating truncation
   const legendWidth = number('Legend width (vertical)', 200, { min: 50, max: 400, step: 10 }, 'Legend options');
 
+  // Data group knobs (last tab)
+  const hideLargeLabels = boolean('Hide large labels', false, 'Data');
+  const data = hideLargeLabels ? LONG_LABEL_DATA.filter((d) => d.g.length < 100) : LONG_LABEL_DATA;
+
   const legendPositionConfig: LegendPositionConfig = {
     vAlign,
     hAlign,
@@ -153,7 +157,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         xAccessor="x"
         yAccessors={['y']}
         splitSeriesAccessors={['g']}
-        data={LONG_LABEL_DATA}
+        data={data}
       />
     </Chart>
   );
