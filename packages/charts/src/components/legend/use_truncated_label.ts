@@ -21,16 +21,16 @@ const startTransition = reactStartTransition ?? ((fn: () => void) => fn());
 
 /**
  * Returns a stable container width for truncation computation.
- * In px truncation mode, `maxWidth` is set via inline style and provides a
+ * In px truncation mode, `maxWidth` is set as an inline style and provides a
  * content-independent reference, preventing infinite ResizeObserver loops
  * (text change → element shrinks → observer fires → recompute → loop).
  * In line truncation mode, `clientWidth` is stable because flex layout
  * with `overflow: hidden` decouples element width from content.
  */
 function getStableContainerWidth(element: HTMLElement): number {
-  const computedMaxWidth = parseFloat(window.getComputedStyle(element).maxWidth);
-  if (isFinite(computedMaxWidth) && computedMaxWidth > 0) {
-    return computedMaxWidth;
+  const inlineMaxWidth = parseFloat(element.style.maxWidth);
+  if (isFinite(inlineMaxWidth) && inlineMaxWidth > 0) {
+    return inlineMaxWidth;
   }
   return element.clientWidth;
 }
