@@ -1849,8 +1849,8 @@ export type LegendItemValue = {
 // @public (undocumented)
 export interface LegendLabelOptions {
     maxLines: number;
-    widthLimit: number;
     truncationPosition: LegendLabelTruncationPosition;
+    widthLimit: number;
 }
 
 // @public (undocumented)
