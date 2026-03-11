@@ -115,6 +115,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'Legend options',
   );
 
+  const legendLayout = customKnobs.enum.layout('Legend Layout', 'list', { group: 'Legend options' });
+
   // Legend width control for demonstrating truncation
   const legendWidth = number('Legend width (vertical)', 200, { min: 50, max: 400, step: 10 }, 'Legend options');
 
@@ -133,6 +135,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         legendPosition={floating ? legendPositionConfig : legendPosition}
         legendSize={legendSize}
         legendValues={showLegendExtra ? [LegendValue.CurrentAndLastValue] : []}
+        legendLayout={legendLayout}
         theme={{
           legend: {
             verticalWidth: legendWidth,
