@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { startTransition as reactStartTransition, useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { startTransition as reactStartTransition, useLayoutEffect, useRef, useState } from 'react';
 
 import type { Font } from '../../common/text_utils';
 import type { TextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
@@ -21,11 +21,9 @@ const startTransition = reactStartTransition ?? ((fn: () => void) => fn());
 
 /**
  * Returns a stable container width for truncation computation.
- * In px truncation mode, `maxWidth` is set as an inline style and provides a
- * content-independent reference, preventing infinite ResizeObserver loops
- * (text change → element shrinks → observer fires → recompute → loop).
- * In line truncation mode, `clientWidth` is stable because flex layout
- * with `overflow: hidden` decouples element width from content.
+ * Prefers inline `maxWidth` (set in px truncation mode) as it is
+ * content-independent. Falls back to `clientWidth` which, for flex items
+ * with `overflow: hidden`, is decoupled from content width.
  */
 function getStableContainerWidth(element: HTMLElement): number {
   const inlineMaxWidth = parseFloat(element.style.maxWidth);
@@ -38,19 +36,12 @@ function getStableContainerWidth(element: HTMLElement): number {
 interface UseMiddleTruncatedLabelProps {
   label: string;
   maxLines: number;
-  /**
-   * When true, applies middle truncation via JS.
-   * When false, returns the original label (CSS will handle end truncation).
-   */
-  shouldTruncate: boolean;
+  shouldTruncateMiddle: boolean;
 }
 
 interface UseMiddleTruncatedLabelResult {
-  /** Ref to attach to the label element. Undefined when truncation is disabled. */
   labelRef: React.RefObject<HTMLDivElement> | undefined;
-  /** The truncated label - middle (JS) or end (CSS) truncated based on shouldTruncate */
   truncatedLabel: string;
-  /** Whether the JS truncation computation has completed */
   isComputed: boolean;
 }
 
@@ -175,127 +166,97 @@ function fitMiddleTruncation(
 
 /**
  * Hook to compute middle-truncated label text based on container width.
- * Uses iterative refinement for accurate text fitting.
  *
- * Initially renders the full label (CSS handles end truncation), then
- * computes the middle-truncated version asynchronously via requestAnimationFrame.
+ * Runs on every render with an early bailout when the container width
+ * hasn't changed.
+ *
+ * External resizes (window, chart, knobs) cause React re-renders via
+ * Redux state updates, which should naturally re-trigger this measurement.
  *
  * @internal
  */
 export function useMiddleTruncatedLabel({
   label,
   maxLines,
-  shouldTruncate,
+  shouldTruncateMiddle,
 }: UseMiddleTruncatedLabelProps): UseMiddleTruncatedLabelResult {
   const labelRef = useRef<HTMLDivElement>(null);
   const [truncatedLabel, setTruncatedLabel] = useState(label);
   const [isComputed, setIsComputed] = useState(false);
-  const lastContainerWidthRef = useRef<number>(0);
+  const lastWidthRef = useRef<number>(0);
+  const lastLabelRef = useRef<string>(label);
+  const lastMaxLinesRef = useRef<number>(maxLines);
 
-  const computeTruncatedLabel = useCallback(() => {
-    if (!shouldTruncate || maxLines === 0) {
-      setTruncatedLabel(label);
-      setIsComputed(true);
-      return;
-    }
-
-    const element = labelRef.current;
-    if (!element) {
-      setTruncatedLabel(label);
-      setIsComputed(false);
-      return;
-    }
-
-    const computedStyle = window.getComputedStyle(element);
-    const { font, fontSize } = getFontFromComputedStyle(computedStyle);
-    const containerWidth = getStableContainerWidth(element);
-
-    if (containerWidth <= 0) {
-      setTruncatedLabel(label);
-      setIsComputed(false);
-      return;
-    }
-
-    lastContainerWidthRef.current = containerWidth;
-    const availableWidth = containerWidth * maxLines;
-
-    const result = withTextMeasure((measure) => {
-      const fullTextWidth = measure(label, font, fontSize).width;
-
-      // If text fits, no truncation needed
-      if (fullTextWidth <= availableWidth) {
-        return label;
-      }
-      return fitMiddleTruncation(label, availableWidth, measure, font, fontSize);
-    });
-
-    setTruncatedLabel(result);
-    setIsComputed(true);
-  }, [label, maxLines, shouldTruncate]);
-
+  // Intentionally no dependency array: must re-evaluate on every render to detect
+  // external container width changes (chart resize, legend size knobs, etc.) that
+  // don't change our props. The early bailout when width is unchanged keeps this cheap.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useLayoutEffect(() => {
-    if (!shouldTruncate) {
+    if (!shouldTruncateMiddle) {
       setTruncatedLabel(label);
       setIsComputed(true);
+      lastWidthRef.current = 0;
+      lastLabelRef.current = label;
+      lastMaxLinesRef.current = maxLines;
       return;
     }
 
-    // Reset state: show full label with CSS truncation until computed
-    setTruncatedLabel(label);
-    setIsComputed(false);
-    lastContainerWidthRef.current = 0;
-
-    // Track rAF IDs to cancel pending computations
-    let rafId = 0;
-    let resizeRafId = 0;
-
-    // Defer computation to next frame, marked as low-priority transition in React 18+
-    rafId = requestAnimationFrame(() => {
-      startTransition(() => {
-        computeTruncatedLabel();
-      });
-    });
-
     const element = labelRef.current;
-    if (!element) {
-      return () => cancelAnimationFrame(rafId);
+    if (!element) return;
+
+    const width = getStableContainerWidth(element);
+    const labelChanged = label !== lastLabelRef.current;
+    const maxLinesChanged = maxLines !== lastMaxLinesRef.current;
+
+    if (width > 0 && width === lastWidthRef.current && !labelChanged && !maxLinesChanged && isComputed) {
+      return;
     }
 
-    // Per-element ResizeObserver is necessary since label width varies by rendering mode (list, table, horizontal)
-    const resizeObserver = new ResizeObserver(() => {
-      const el = labelRef.current;
-      if (!el) return;
-
-      const currentStableWidth = getStableContainerWidth(el);
-
-      // Skip when the stable reference width hasn't changed — this prevents
-      // infinite loops where our own text change shrinks the inline-flex
-      // element, firing the observer again with no actual layout change.
-      if (lastContainerWidthRef.current > 0 && Math.abs(currentStableWidth - lastContainerWidthRef.current) < 1) {
-        return;
-      }
-
+    if (labelChanged) {
+      setTruncatedLabel(label);
       setIsComputed(false);
-      // Cancel any pending resize computation to avoid queuing multiple calls
-      cancelAnimationFrame(resizeRafId);
-      resizeRafId = requestAnimationFrame(() => {
-        startTransition(() => {
-          computeTruncatedLabel();
+      lastLabelRef.current = label;
+    }
+
+    if (maxLinesChanged) {
+      setIsComputed(false);
+      lastMaxLinesRef.current = maxLines;
+    }
+
+    lastWidthRef.current = width;
+
+    if (width <= 0) return;
+
+    const rafId = requestAnimationFrame(() => {
+      startTransition(() => {
+        const el = labelRef.current;
+        if (!el) return;
+
+        const computedStyle = window.getComputedStyle(el);
+        const { font, fontSize } = getFontFromComputedStyle(computedStyle);
+        const containerWidth = getStableContainerWidth(el);
+
+        if (containerWidth <= 0) return;
+
+        lastWidthRef.current = containerWidth;
+        const availableWidth = containerWidth * maxLines;
+
+        const result = withTextMeasure((measure) => {
+          const fullTextWidth = measure(label, font, fontSize).width;
+          if (fullTextWidth <= availableWidth) return label;
+          return fitMiddleTruncation(label, availableWidth, measure, font, fontSize);
         });
+
+        setTruncatedLabel(result);
+        setIsComputed(true);
       });
     });
 
-    resizeObserver.observe(element);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      cancelAnimationFrame(resizeRafId);
-      resizeObserver.disconnect();
-    };
-  }, [computeTruncatedLabel, shouldTruncate, label]);
+    return () => cancelAnimationFrame(rafId);
+  });
 
   return {
-    labelRef: shouldTruncate ? labelRef : undefined,
+    labelRef: shouldTruncateMiddle ? labelRef : undefined,
     truncatedLabel,
     isComputed,
   };

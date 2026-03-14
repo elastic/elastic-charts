@@ -84,7 +84,7 @@ export function Label({
   const { labelRef, truncatedLabel, isComputed } = useMiddleTruncatedLabel({
     label,
     maxLines: options.maxLines,
-    shouldTruncate: shouldTruncateMiddle,
+    shouldTruncateMiddle,
   });
 
   // Only apply middle truncation CSS classes when JS computation is complete
@@ -143,7 +143,7 @@ export function NonInteractiveLabel({ label, options }: { label: string; options
   const { labelRef, truncatedLabel, isComputed } = useMiddleTruncatedLabel({
     label,
     maxLines: options.maxLines,
-    shouldTruncate: shouldTruncateMiddle,
+    shouldTruncateMiddle,
   });
 
   // Only apply middle truncation CSS classes when JS computation is complete
