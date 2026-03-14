@@ -59,7 +59,7 @@ export function getLegendListStyle(
     paddingTop,
     paddingBottom,
     ...(floating && {
-      gridTemplateColumns: `repeat(${clamp(floatingColumns ?? 1, 1, totalItems)}, auto)`,
+      gridTemplateColumns: `repeat(${clamp(floatingColumns ?? 1, 1, totalItems)}, minmax(0, 1fr))`,
     }),
   };
 }
@@ -72,8 +72,8 @@ export function getLegendStyle({ direction, floating }: LegendPositionConfig, si
   if (direction === LayoutDirection.Vertical) {
     const width = `${size.width}px`;
     return {
-      width: floating ? undefined : width,
-      maxWidth: floating ? undefined : width,
+      width,
+      maxWidth: floating ? '100%' : width,
       marginLeft: margin,
       marginRight: margin,
     };
