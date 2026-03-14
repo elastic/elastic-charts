@@ -78,7 +78,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   // Legend options group knobs
   const legendPosition = customKnobs.enum.position('Legend position', Position.Right, { group: 'Legend options' });
-  const legendSize = getLegendSizeKnob('Legend options');
   const showLegendExtra = boolean('Show legend values', false, 'Legend options');
 
   // Inside chart positioning
@@ -117,8 +116,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   const legendLayout = customKnobs.enum.layout('Legend Layout', 'list', { group: 'Legend options' });
 
-  // Legend width control for demonstrating truncation
-  const legendWidth = number('Legend width (vertical)', 200, { min: 50, max: 400, step: 10 }, 'Legend options');
+  const legendSize = getLegendSizeKnob('Legend options', 260);
 
   // Data group knobs (last tab)
   const hideLargeLabels = boolean('Hide large labels', false, 'Data');
@@ -137,12 +135,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Settings
         showLegend
         legendPosition={floating ? legendPositionConfig : legendPosition}
-        legendSize={legendSize}
+        legendSize={!isNaN(legendSize) ? legendSize : undefined}
         legendValues={showLegendExtra ? [LegendValue.CurrentAndLastValue] : []}
         legendLayout={legendLayout}
         theme={{
           legend: {
-            verticalWidth: legendWidth,
+            verticalWidth: !isNaN(legendSize) ? legendSize : undefined,
             labelOptions,
           },
         }}
