@@ -317,7 +317,7 @@ test.describe('Legend stories', () => {
       (position) => {
         const isVertical = position === 'left' || position === 'right';
         if (isVertical) {
-          test('should limit width to min of 30% of computed width', async ({ page }) => {
+          test('should respect very small legend size', async ({ page }) => {
             await common.expectChartAtUrlToMatchScreenshot(page)(getUrl(position, 1));
           });
         }

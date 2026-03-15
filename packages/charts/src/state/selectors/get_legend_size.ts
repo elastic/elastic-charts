@@ -94,8 +94,10 @@ export const getLegendSizeSelector = createCustomCachedSelector(
       const scrollBarDimension = legendHeight > parentDimensions.height ? SCROLL_BAR_WIDTH : 0;
       const staticWidth = spacingBuffer + actionDimension + scrollBarDimension;
 
+      const minWidth = parentDimensions.width * 0.05;
+      const maxWidth = parentDimensions.width * 0.7;
       const width = Number.isFinite(legendSize)
-        ? Math.min(legendSize, parentDimensions.width * 0.7)
+        ? Math.min(Math.max(legendSize, minWidth), maxWidth)
         : Math.floor(Math.min(legendItemWidth + staticWidth, verticalWidth));
 
       return {

@@ -468,8 +468,7 @@ export interface LegendSpec {
   /**
    * Sets the exact legend width (vertical) or height (horizontal)
    *
-   * Limited to max of 70% of the chart container dimension
-   * Vertical legends limited to min of 30% of computed width
+   * Limited to min of 5% and max of 70% of the chart container dimension
    */
   legendSize: number;
   /**

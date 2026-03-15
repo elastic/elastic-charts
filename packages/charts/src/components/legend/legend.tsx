@@ -109,7 +109,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   }
 
   const positionConfig = getLegendPositionConfig(config.legendPosition);
-  const containerStyle = getLegendStyle(positionConfig, size, legend.margin);
+  const containerStyle = getLegendStyle(positionConfig, size, legend.margin, Number.isFinite(config.legendSize));
   const listStyle = getLegendListStyle(positionConfig, chartMargins, legend, items.length);
   const isMostlyRTL = hasMostlyRTLItems(items.map(({ label }) => label));
 

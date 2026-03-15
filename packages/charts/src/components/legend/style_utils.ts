@@ -68,11 +68,16 @@ export function getLegendListStyle(
  * Get the legend global style
  * @internal
  */
-export function getLegendStyle({ direction, floating }: LegendPositionConfig, size: Size, margin: number): LegendStyle {
+export function getLegendStyle(
+  { direction, floating }: LegendPositionConfig,
+  size: Size,
+  margin: number,
+  hasConfiguredWidth?: boolean,
+): LegendStyle {
   if (direction === LayoutDirection.Vertical) {
     const width = `${size.width}px`;
     return {
-      width,
+      width: floating && !hasConfiguredWidth ? undefined : width,
       maxWidth: floating ? '100%' : width,
       marginLeft: margin,
       marginRight: margin,
