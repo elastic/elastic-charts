@@ -348,7 +348,15 @@ test.describe('Legend stories', () => {
     );
   });
 
-  test.describe('Legend tabular data', () => {
+  test.describe('Label truncation', () => {
+    test('should correctly render middle truncation with floating legend and multiline', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/legend--label-truncation&knob-Inside chart (floating)_Legend options=true&knob-Horizontal alignment_Legend options=left&knob-maxLines_Label options=2&knob-Hide short labels_Data=true&knob-enable legend size_Legend options=true&knob-legend size_Legend options=600',
+      );
+    });
+  });
+
+  http: test.describe('Legend tabular data', () => {
     const disableActionOnHover = '&knob-Show legend action on hover_Legend=false';
 
     const datasetKnob = (p1: string, p2: string) => `&globals=&knob-Dataset_Legend=${p1}&knob-dataset=${p2}`;

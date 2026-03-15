@@ -120,7 +120,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   // Data group knobs (last tab)
   const hideLargeLabels = boolean('Hide large labels', false, 'Data');
-  const data = hideLargeLabels ? LONG_LABEL_DATA.filter((d) => d.g.length < 100) : LONG_LABEL_DATA;
+  const hideShortLabels = boolean('Hide short labels', false, 'Data');
+  let data = hideLargeLabels ? LONG_LABEL_DATA.filter((d) => d.g.length < 100) : LONG_LABEL_DATA;
+  data = hideShortLabels ? data.filter((d) => d.g.length >= 100) : data;
 
   const legendPositionConfig: LegendPositionConfig = {
     vAlign,

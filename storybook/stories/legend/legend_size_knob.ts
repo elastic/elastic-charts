@@ -9,7 +9,7 @@
 import { boolean, number } from '@storybook/addon-knobs';
 
 export const getLegendSizeKnob = (group?: string, defaultValue?: number) => {
-  const enabled = boolean('Enable legend size', false, group);
-  const size = enabled ? number('Legend size', defaultValue ?? 200, { min: 0, step: 1 }, group) : NaN;
+  const enabled = boolean('enable legend size', false, group);
+  const size = enabled ? number('legend size', defaultValue ?? 200, { min: 0, step: 1 }, group) : NaN;
   return size;
 };
