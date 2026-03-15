@@ -59,7 +59,7 @@ export function getLegendListStyle(
     paddingTop,
     paddingBottom,
     ...(floating && {
-      gridTemplateColumns: `repeat(${clamp(floatingColumns ?? 1, 1, totalItems)}, minmax(0, 1fr))`,
+      gridTemplateColumns: `repeat(${clamp(floatingColumns ?? 1, 1, totalItems)}, minmax(0, auto))`,
     }),
   };
 }
