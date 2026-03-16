@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { startTransition as reactStartTransition, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 import type { Font } from '../../common/text_utils';
 import type { TextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
@@ -15,9 +15,6 @@ import { withTextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 const ELLIPSIS = '…';
 const MAX_MEASURE_ITERATIONS = 5;
 const MIN_MIDDLE_TRUNCATION_CHARS = 4; // Minimum chars (available width) to consider middle truncation (2 on each side)
-
-// React 18+ startTransition for low-priority updates, fallback to direct execution for React 16/17
-const startTransition = reactStartTransition ?? ((fn: () => void) => fn());
 
 /**
  * Returns a stable container width for truncation computation.
@@ -227,32 +224,19 @@ export function useMiddleTruncatedLabel({
 
     if (width <= 0) return;
 
-    const rafId = requestAnimationFrame(() => {
-      startTransition(() => {
-        const el = labelRef.current;
-        if (!el) return;
+    const computedStyle = window.getComputedStyle(element);
+    const { font, fontSize } = getFontFromComputedStyle(computedStyle);
 
-        const computedStyle = window.getComputedStyle(el);
-        const { font, fontSize } = getFontFromComputedStyle(computedStyle);
-        const containerWidth = getStableContainerWidth(el);
+    const availableWidth = width * maxLines;
 
-        if (containerWidth <= 0) return;
-
-        lastWidthRef.current = containerWidth;
-        const availableWidth = containerWidth * maxLines;
-
-        const result = withTextMeasure((measure) => {
-          const fullTextWidth = measure(label, font, fontSize).width;
-          if (fullTextWidth <= availableWidth) return label;
-          return fitMiddleTruncation(label, availableWidth, measure, font, fontSize);
-        });
-
-        setTruncatedLabel(result);
-        setIsComputed(true);
-      });
+    const result = withTextMeasure((measure) => {
+      const fullTextWidth = measure(label, font, fontSize).width;
+      if (fullTextWidth <= availableWidth) return label;
+      return fitMiddleTruncation(label, availableWidth, measure, font, fontSize);
     });
 
-    return () => cancelAnimationFrame(rafId);
+    setTruncatedLabel(result);
+    setIsComputed(true);
   });
 
   return {
