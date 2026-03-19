@@ -10,7 +10,7 @@ import type { $Values } from 'utility-types';
 
 import type { CategoryKey, CategoryLabel } from './category';
 import type { Color } from './colors';
-import type { SeriesKey, SeriesIdentifier } from './series_id';
+import type { SeriesIdentifier } from './series_id';
 import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import type { LegendPositionConfig, SeriesType } from '../specs';
 import type { LegendPath } from '../state/actions/legend';
@@ -172,8 +172,3 @@ export const legendValueTitlesMap = {
   [LegendValue.Difference]: 'Diff',
   [LegendValue.DifferencePercent]: 'Diff %',
 };
-
-/** @internal */
-export const EMPTY_LEGEND_ITEM_EXTRA_VALUES = new Map<SeriesKey, LegendItemExtraValues>();
-/** @internal */
-export const EMPTY_LEGEND_LIST: LegendItem[] = [];

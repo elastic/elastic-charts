@@ -265,7 +265,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   // Value (primary metric)
   const valuePosition = select(
     'Primary metric position',
-    { Bottom: 'bottom', Top: 'top' },
+    { Bottom: 'bottom', Middle: 'middle', Top: 'top' },
     'top',
     textConfigurationAndPositionGroup,
   );

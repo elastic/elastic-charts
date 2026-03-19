@@ -9,13 +9,13 @@
 import type { CSSProperties } from 'react';
 
 import type { GlobalChartState } from './chart_state';
-import { getA11ySettingsSelector } from './selectors/get_accessibility_config';
 import { InitStatus } from './selectors/get_internal_is_intialized';
+import type { ScreenReaderItem } from './selectors/get_screenreader_data';
+import { getScreenReaderDataSelector } from './selectors/get_screenreader_data';
 import type { TooltipVisibility } from './tooltip_visibility';
 import type { DebugState } from './types';
 import { DEFAULT_CSS_CURSOR } from '../common/constants';
 import type { LegendItem, LegendItemExtraValues } from '../common/legend';
-import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../common/legend';
 import type { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import type { SeriesKey } from '../common/series_id';
 import type { AnchorPosition } from '../components/portal/types';
@@ -23,29 +23,10 @@ import type { TooltipInfo } from '../components/tooltip/types';
 import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
-export interface ScreenReaderItem {
-  /** The label for this part of the summary */
-  label: string;
-  /** Optional ID for referencing this part */
-  id?: string;
-  /** The value for this part of the summary */
-  value: string;
-}
-
-/** @internal */
-export interface ChartSpecificScreenReaderData {
-  /** Custom summary parts to include in the consolidated summary */
-  screenReaderItems?: ScreenReaderItem[];
-}
-
-/** @internal */
 export interface LegendItemLabel {
   label: string;
   depth: number;
 }
-
-/** @internal */
-export const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 
 /**
  * A set of chart-type-dependant functions that are required by all chart types
@@ -81,19 +62,19 @@ export interface ChartSelectors {
    * based on labels and their hierarchy depth.
    * @param globalState
    */
-  getLegendItemsLabels(globalState: GlobalChartState): LegendItemLabel[];
+  getLegendItemsLabels(globalState: GlobalChartState): ReadonlyArray<LegendItemLabel>;
 
   /**
    * Returns the list of legend items.
    * @param globalState
    */
-  getLegendItems(globalState: GlobalChartState): LegendItem[];
+  getLegendItems(globalState: GlobalChartState): ReadonlyArray<LegendItem>;
 
   /**
    * Returns the list of extra values for each legend item
    * @param globalState
    */
-  getLegendExtraValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemExtraValues>;
+  getLegendExtraValues(globalState: GlobalChartState): ReadonlyMap<SeriesKey, LegendItemExtraValues>;
 
   /**
    * Returns the longest legend formatted value used to reserve stable width for CurrentAndLastValue legend values.
@@ -111,13 +92,13 @@ export interface ChartSelectors {
    * Describe if the tooltip is visible and comes from an external source
    * @param globalState
    */
-  isTooltipVisible(globalState: GlobalChartState): TooltipVisibility;
+  isTooltipVisible(globalState: GlobalChartState): Readonly<TooltipVisibility>;
 
   /**
    * Get the tooltip information to display
    * @param globalState the GlobalChartState
    */
-  getTooltipInfo(globalState: GlobalChartState): TooltipInfo | undefined;
+  getTooltipInfo(globalState: GlobalChartState): Readonly<TooltipInfo> | undefined;
 
   /**
    * Get the tooltip anchor position
@@ -135,25 +116,25 @@ export interface ChartSelectors {
    * Get the chart main projection area: exclude legends, axis and other external marks
    * @param globalState
    */
-  getMainProjectionArea(globalState: GlobalChartState): Dimensions;
+  getMainProjectionArea(globalState: GlobalChartState): Readonly<Dimensions>;
 
   /**
    * Get the chart container projection area
    * @param globalState
    */
-  getProjectionContainerArea(globalState: GlobalChartState): Dimensions;
+  getProjectionContainerArea(globalState: GlobalChartState): Readonly<Dimensions>;
 
   /**
    * Get the brushed area if available
    * @param globalState
    */
-  getBrushArea(globalState: GlobalChartState): Dimensions | null;
+  getBrushArea(globalState: GlobalChartState): Readonly<Dimensions> | null;
 
   /**
    * Get debug state of chart
    * @param globalState
    */
-  getDebugState(globalState: GlobalChartState): DebugState;
+  getDebugState(globalState: GlobalChartState): Readonly<DebugState>;
 
   /**
    * Get the series types for the screen reader summary component
@@ -163,24 +144,41 @@ export interface ChartSelectors {
   /**
    * Get chart-specific data for screen reader accessibility
    */
-  getScreenReaderData?(globalState: GlobalChartState): ChartSpecificScreenReaderData;
+  getScreenReaderData(globalState: GlobalChartState): ReadonlyArray<ScreenReaderItem>;
 
   /**
    * Get the domain of the vertical and horizontal small multiple grids
    */
-  getSmallMultiplesDomains(globalState: GlobalChartState): SmallMultiplesSeriesDomains;
+  getSmallMultiplesDomains(globalState: GlobalChartState): Readonly<SmallMultiplesSeriesDomains>;
 
   /**
    * Determines if chart titles are displayed when provided
    */
   canDisplayChartTitles(globalState: GlobalChartState): boolean;
 }
+/** @internal */
+export const EMPTY_TOOLTIP: Readonly<TooltipInfo> = { header: null, values: [] };
+/** @internal */
+export const EMPTY_LEGEND_ITEM_EXTRA_VALUES: ReadonlyMap<SeriesKey, LegendItemExtraValues> = new Map<
+  SeriesKey,
+  LegendItemExtraValues
+>();
+/** @internal */
+export const EMPTY_LEGEND_LIST: ReadonlyArray<LegendItem> = [];
 
 /** @internal */
-export type ChartSelectorsFactory = () => ChartSelectors;
+export const EMPTY_LEGEND_ITEM_LIST: ReadonlyArray<LegendItemLabel> = [];
+const EMPTY_DIMENSION: Readonly<Dimensions> = { top: 0, left: 0, width: 0, height: 0 };
+const EMPTY_SM_DOMAINS: Readonly<SmallMultiplesSeriesDomains> = { smVDomain: [], smHDomain: [] };
+const EMPTY_OBJ: Readonly<DebugState> = {};
+const EMPTY_TOOLTIP_VISIBILITY: Readonly<TooltipVisibility> = {
+  visible: false,
+  isExternal: false,
+  displayOnly: false,
+  isPinnable: false,
+};
 
-const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
-
+type ChartSelectorsFactory = () => ChartSelectors;
 type CallbackCreator = () => (state: GlobalChartState) => void;
 
 /** @internal */
@@ -202,30 +200,16 @@ export const createChartSelectorsFactory =
       getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
       getLongestLegendFormattedValue: () => undefined,
       getPointerCursor: () => DEFAULT_CSS_CURSOR,
-      isTooltipVisible: () => ({
-        visible: false,
-        isExternal: false,
-        displayOnly: false,
-        isPinnable: false,
-      }),
+      isTooltipVisible: () => EMPTY_TOOLTIP_VISIBILITY,
       getTooltipInfo: () => EMPTY_TOOLTIP,
       getTooltipAnchor: () => null,
-      getProjectionContainerArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
-      getMainProjectionArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
+      getProjectionContainerArea: () => EMPTY_DIMENSION,
+      getMainProjectionArea: () => EMPTY_DIMENSION,
       getBrushArea: () => null,
-      getDebugState: () => ({}),
+      getDebugState: () => EMPTY_OBJ,
       getChartTypeDescription: () => '',
-      // The default screen reader data returns just the chart type description.
-      getScreenReaderData: (state: GlobalChartState): ChartSpecificScreenReaderData => {
-        const a11ySettings = getA11ySettingsSelector(state);
-        const chartTypeDescription = chartSelectors.getChartTypeDescription(state);
-        return {
-          screenReaderItems: chartTypeDescription
-            ? [{ label: 'Chart type', id: a11ySettings.defaultSummaryId, value: chartTypeDescription }]
-            : [],
-        };
-      },
-      getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),
+      getScreenReaderData: getScreenReaderDataSelector,
+      getSmallMultiplesDomains: () => EMPTY_SM_DOMAINS,
       canDisplayChartTitles: () => true,
       ...overrides,
       eventCallbacks: (state: GlobalChartState) => {

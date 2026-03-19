@@ -254,7 +254,7 @@ export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSlice
 function toggleDeselectedDataSeries(
   { legendItemIds, metaKey }: ToggleDeselectSeriesAction,
   deselectedDataSeries: SeriesIdentifier[],
-  legendItems: LegendItem[],
+  legendItems: ReadonlyArray<LegendItem>,
 ) {
   const actionSeriesKeys = legendItemIds.map(({ key }) => key);
   const deselectedDataSeriesKeys = new Set(deselectedDataSeries.map(({ key }) => key));

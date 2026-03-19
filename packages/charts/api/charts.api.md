@@ -1848,8 +1848,8 @@ export type LegendItemValue = {
 
 // @public (undocumented)
 export interface LegendLabelOptions {
-    maxLines?: number;
-    widthLimit?: number;
+    maxLines: number;
+    widthLimit: number;
 }
 
 // @public (undocumented)
@@ -2174,7 +2174,7 @@ export interface MetricStyle {
     // (undocumented)
     valueFontSize: 'default' | 'fit' | number;
     // (undocumented)
-    valuePosition: 'top' | 'bottom';
+    valuePosition: 'top' | 'middle' | 'bottom';
     // (undocumented)
     valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
 }

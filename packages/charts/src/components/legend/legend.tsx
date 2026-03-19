@@ -55,8 +55,8 @@ interface LegendStateProps {
   chartTheme: Theme;
   size: Size & { seriesWidth?: number };
   config: LegendSpec;
-  items: LegendItem[];
-  extraValues: Map<string, LegendItemExtraValues>;
+  items: ReadonlyArray<LegendItem>;
+  extraValues: ReadonlyMap<string, LegendItemExtraValues>;
   maxFormattedValueWidth?: number;
 }
 

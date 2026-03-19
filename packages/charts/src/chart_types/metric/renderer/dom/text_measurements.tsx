@@ -217,6 +217,7 @@ export function getMetricTextPartDimensions(
       locale,
       style.valueFontSize === 'fit',
       progressBarHeight,
+      style.valuePosition === 'middle' ? 0 : ELEMENT_PADDING,
     ),
     textParts: getTextParts(datum, style),
     iconGridColumnWidth,
@@ -300,6 +301,7 @@ function computeMetricTextLayout(
   locale: string,
   fit: boolean,
   progressBarHeight: number, // with padding
+  extraPaddingTop: number,
 ): MetricTextLayout {
   const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * PADDING;
 
@@ -343,7 +345,7 @@ function computeMetricTextLayout(
     const actualTitleHeight = titleLines.length > 0 ? titleLines.length * titleLineHeight : 0;
     const actualSubtitleHeight =
       subtitleLines.length > 0 ? subtitleLines.length * subtitleLineHeight + ELEMENT_PADDING : 0; // Subtitle padding top 5px
-    const actualExtraHeight = breakpoints.extra ? extraHeight + ELEMENT_PADDING : 0; // Extra padding top 5px
+    const actualExtraHeight = breakpoints.extra ? extraHeight + extraPaddingTop : 0;
 
     const nonValueElementsHeight =
       actualTitleHeight + actualSubtitleHeight + actualExtraHeight + progressBarHeight + PADDING * 2;
