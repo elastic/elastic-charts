@@ -89,45 +89,50 @@ export const LegendList: React.FC<Props> = (props) => {
 
   // Pre-compute value elements for both layout modes
   const valueElements: React.ReactNode[] = [];
-  const valueData = isListLayout
-    ? // In list layout, preserve the `legendValues` order and allow placeholders for CurrentAndLastValue
-      legendValues.map((type, index) => ({ type, legendValueItem: preparedLegendValues[index], index }))
-    : legendValueItems.map((legendValueItem, index) => ({
-        type: legendValueItem.type,
-        legendValueItem,
-        index,
-      }));
+  const shouldShowValues = !isSeriesHidden || Boolean(isListLayout);
+  if (shouldShowValues) {
+    const valueData = isListLayout
+      ? // In list layout, preserve the `legendValues` order and allow placeholders for CurrentAndLastValue
+        legendValues.map((type, index) => ({ type, legendValueItem: preparedLegendValues[index], index }))
+      : legendValueItems.map((legendValueItem, index) => ({
+          type: legendValueItem.type,
+          legendValueItem,
+          index,
+        }));
 
-  for (const { type, legendValueItem, index } of valueData) {
-    const showTitle = isListLayout;
-    const title = showTitle ? legendValueTitlesMap[type] : '';
+    for (const { type, legendValueItem, index } of valueData) {
+      const showTitle = isListLayout;
+      const title = showTitle ? legendValueTitlesMap[type] : '';
 
-    const isCurrentAndLastValue = type === LegendValue.CurrentAndLastValue;
-    const hasValue = Boolean(legendValueItem?.label);
-    const showPlaceholder = Boolean(isListLayout && isCurrentAndLastValue && !hasValue);
-    const displayedLabel = showPlaceholder ? '—' : legendValueItem?.label ?? '';
+      const isCurrentAndLastValue = type === LegendValue.CurrentAndLastValue;
+      const hasValue = Boolean(legendValueItem?.label);
+      const showPlaceholder = Boolean(isListLayout && isCurrentAndLastValue && !hasValue);
+      const displayedLabel = showPlaceholder ? '—' : legendValueItem?.label ?? '';
 
-    if (displayedLabel === '') continue;
+      if (displayedLabel === '') continue;
 
-    valueElements.push(
-      <div
-        key={isListLayout ? `${type}-${index}` : displayedLabel}
-        className="echLegendItem__legendValue"
-        style={{
-          textAlign: isListLayout ? 'left' : undefined,
-          minWidth:
-            isListLayout && maxFormattedValueWidth && isCurrentAndLastValue ? `${maxFormattedValueWidth}px` : undefined,
-        }}
-      >
-        {showTitle ? (
-          <>
-            <strong>{title.toUpperCase()}:</strong> {displayedLabel}
-          </>
-        ) : (
-          displayedLabel
-        )}
-      </div>,
-    );
+      valueElements.push(
+        <div
+          key={isListLayout ? `${type}-${index}` : displayedLabel}
+          className="echLegendItem__legendValue"
+          style={{
+            textAlign: isListLayout ? 'left' : undefined,
+            minWidth:
+              isListLayout && maxFormattedValueWidth && isCurrentAndLastValue
+                ? `${maxFormattedValueWidth}px`
+                : undefined,
+          }}
+        >
+          {showTitle ? (
+            <>
+              <strong>{title.toUpperCase()}:</strong> {displayedLabel}
+            </>
+          ) : (
+            displayedLabel
+          )}
+        </div>,
+      );
+    }
   }
 
   const actionElement = Action ? (
