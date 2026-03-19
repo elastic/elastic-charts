@@ -116,9 +116,7 @@ export const LegendList: React.FC<Props> = (props) => {
         style={{
           textAlign: isListLayout ? 'left' : undefined,
           minWidth:
-            isListLayout && maxFormattedValueWidth && isCurrentAndLastValue
-              ? `${maxFormattedValueWidth}px`
-              : undefined,
+            isListLayout && maxFormattedValueWidth && isCurrentAndLastValue ? `${maxFormattedValueWidth}px` : undefined,
         }}
       >
         {showTitle ? (
