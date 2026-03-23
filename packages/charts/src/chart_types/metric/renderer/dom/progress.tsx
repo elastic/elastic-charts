@@ -38,6 +38,7 @@ const zeroBaselineSizeMap = {
 interface ProgressBarProps {
   datum: MetricWProgress | BulletMetricWProgress;
   barBackground: Color;
+  panelBackground: Color;
   blendedBarColor: Color;
   size: ProgressBarSize;
 }
@@ -46,6 +47,7 @@ interface ProgressBarProps {
 export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   datum,
   barBackground,
+  panelBackground,
   blendedBarColor,
   size,
 }) => {
@@ -77,37 +79,9 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
         right: `${safeEndValue}%`,
       };
 
-  let borderRadius: CSSProperties = {};
-  if (!isVertical && endValue <= 0) {
-    borderRadius = {
-      ...borderRadius,
-      borderTopRightRadius: PROGRESS_BAR_BORDER_RADIUS,
-      borderBottomRightRadius: PROGRESS_BAR_BORDER_RADIUS,
-    };
-  }
-  if (!isVertical && min <= 0) {
-    borderRadius = {
-      ...borderRadius,
-      borderTopLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
-      borderBottomLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
-    };
-  }
-
-  // For vertical progress bar
-  if (isVertical && endValue <= 0) {
-    borderRadius = {
-      ...borderRadius,
-      borderTopLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
-      borderTopRightRadius: PROGRESS_BAR_BORDER_RADIUS,
-    };
-  }
-  if (isVertical && min <= 0) {
-    borderRadius = {
-      ...borderRadius,
-      borderBottomLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
-      borderBottomRightRadius: PROGRESS_BAR_BORDER_RADIUS,
-    };
-  }
+  const borderRadius: CSSProperties = { borderRadius: PROGRESS_BAR_BORDER_RADIUS };
+  const hasProgressSpan = max - min > 0;
+  const externalStroke: CSSProperties = hasProgressSpan ? { boxShadow: `0 0 0 2px ${panelBackground}` } : {};
 
   const zeroBaselineSize = zeroBaselineSizeMap[size];
 
@@ -152,7 +126,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
       )}
       <div
         className={getDirectionalClasses('ProgressBar', isVertical, size)}
-        style={{ ...positionStyle, ...borderRadius, backgroundColor: blendedBarColor }}
+        style={{ ...positionStyle, ...borderRadius, ...externalStroke, backgroundColor: blendedBarColor }}
         role="meter"
         title={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${scaledValue}%`}
         aria-label={title ? `${labelType} of ${title}` : labelType}
