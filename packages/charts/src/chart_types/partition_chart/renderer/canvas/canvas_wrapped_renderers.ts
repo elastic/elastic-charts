@@ -6,7 +6,13 @@
  * Side Public License, v 1.
  */
 
-import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { LegendPath } from '../../../../state/actions/legend';
+import { getColorFromVariant } from '../../../../utils/common';
+import { getDimmedColor } from '../../../../utils/themes/dimmed_colors';
+import type { PartitionStyle } from '../../../../utils/themes/partition';
+import type { QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { LegendStrategy } from '../../layout/utils/highlighted_geoms';
+import { highlightedGeoms } from '../../layout/utils/highlighted_geoms';
 
 const MAX_PADDING_RATIO = 0.25;
 
@@ -22,10 +28,21 @@ export function renderWrappedPartitionCanvas2d(
     height: panelHeight,
     chartDimensions: { width: containerWidth, height: containerHeight },
   }: ShapeViewModel,
+  highlightedLegendPath: LegendPath,
+  legendStrategy: LegendStrategy | undefined,
+  flatLegend: boolean | undefined,
+  partitionStyle: PartitionStyle,
 ) {
   const width = containerWidth * panelWidth;
   const height = containerHeight * panelHeight;
   const cornerRatio = 0.2;
+
+  // Calculate which quads are highlighted for legend dimming
+  const highlightedQuadSet = new Set<QuadViewModel>();
+  if (highlightedLegendPath.length > 0) {
+    const highlighted = highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedLegendPath);
+    highlighted.forEach((quad) => highlightedQuadSet.add(quad));
+  }
 
   ctx.save();
   ctx.textAlign = 'left';
@@ -36,7 +53,8 @@ export function renderWrappedPartitionCanvas2d(
   ctx.translate(diskCenter.x, diskCenter.y);
   ctx.clearRect(0, 0, width, height);
 
-  quadViewModel.forEach(({ fillColor, x0, x1, y0px: y0, y1px: y1 }) => {
+  quadViewModel.forEach((quad) => {
+    const { x0, x1, y0px: y0, y1px: y1 } = quad;
     if (y1 - y0 <= padding) return;
 
     const fWidth = x1 - x0;
@@ -46,6 +64,12 @@ export function renderWrappedPartitionCanvas2d(
     const x = x0 + fPadding;
     const y = y0 + padding / 2;
     const r = cornerRatio * Math.min(w, h);
+
+    const isDimmed = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
+    const fillColor = getColorFromVariant(
+      quad.fillColor,
+      getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', quad.fillColor),
+    );
 
     ctx.fillStyle = fillColor;
 

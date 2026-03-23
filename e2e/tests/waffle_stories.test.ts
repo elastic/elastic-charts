@@ -8,6 +8,7 @@
 
 import { test } from '@playwright/test';
 
+import { eachTheme } from '../helpers';
 import { common } from '../page_objects/common';
 
 test.describe('Waffle', () => {
@@ -20,5 +21,17 @@ test.describe('Waffle', () => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/waffle-alpha--test&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;theme:light&knob-use alpha=true',
     );
+  });
+
+  eachTheme.describe(({ theme, urlParam }) => {
+    test(`should dim cells on legend hover - ${theme}`, async ({ page }) => {
+      const action = async () => {
+        await common.moveMouseRelativeToDOMElement(page)({ left: 5, top: 5 }, '.echLegendItem');
+      };
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/waffle-alpha--simple&${urlParam}`,
+        { action },
+      );
+    });
   });
 });

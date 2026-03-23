@@ -14,6 +14,7 @@ import { cssFontShorthand, HorizontalAlignment } from '../../../../common/text_u
 import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { MIN_STROKE_WIDTH } from '../../../../renderers/canvas/primitives/line';
 import type { LegendPath } from '../../../../state/actions/legend';
+import { getColorFromVariant } from '../../../../utils/common';
 import { getDimmedColor } from '../../../../utils/themes/dimmed_colors';
 import type { PartitionStyle } from '../../../../utils/themes/partition';
 import type {
@@ -167,7 +168,10 @@ function renderSectors(
       if (quad.x0 === quad.x1) return;
 
       const isDimmed = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-      const fillColor = getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', quad.fillColor);
+      const fillColor = getColorFromVariant(
+        quad.fillColor,
+        getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', quad.fillColor),
+      );
       renderTaperedBorder(ctx, quad, fillColor);
     });
   });
@@ -186,7 +190,10 @@ function renderRectangles(
       // only draw a shape if it would show up at all
       if (x1 - x0 >= 1 && y1px - y0px >= 1) {
         const isDimmed = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-        const dimmedFillColor = getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', fillColor);
+        const dimmedFillColor = getColorFromVariant(
+          fillColor,
+          getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', fillColor),
+        );
 
         ctx.fillStyle = dimmedFillColor;
         ctx.beginPath();

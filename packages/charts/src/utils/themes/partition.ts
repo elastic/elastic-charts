@@ -18,8 +18,6 @@ export type PartitionDimmedStyle =
   | {
       /** The fill color to use when partition slices are dimmed. */
       fill: Color | ColorVariant;
-      /** The stroke color to use when partition slices are dimmed. */
-      stroke: Color | ColorVariant;
     };
 
 interface LabelConfig extends Font {

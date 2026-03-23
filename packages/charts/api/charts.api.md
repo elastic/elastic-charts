@@ -2320,7 +2320,6 @@ export type PartitionDimmedStyle = {
     opacity: number;
 } | {
     fill: Color | ColorVariant;
-    stroke: Color | ColorVariant;
 };
 
 // @public
