@@ -29,7 +29,6 @@ import { getInitialPointerState } from './utils/get_initial_pointer_state';
 import { getInitialTooltipState } from './utils/get_initial_tooltip_state';
 import type { Color } from '../common/colors';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/default_settings_spec';
-import { ELASTIC_CHARTS_DEV_MODE } from '../utils/build_constants';
 import { deepEqual } from '../utils/fast_deep_equal';
 
 export type { InteractionsState, TooltipInteractionState } from './interactions_state';
@@ -177,7 +176,7 @@ export const createChartStore = (chartId: string, title?: string, description?: 
         // TODO https://github.com/elastic/elastic-charts/issues/2078
         serializableCheck: false,
       }),
-    devTools: ELASTIC_CHARTS_DEV_MODE
+    devTools: process.env.ELASTIC_CHARTS_DEV_MODE
       ? {
           name: `@elastic/charts - ${chartId}`,
         }
