@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { colorToRgba, overrideOpacity, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import type { LegendPath } from '../../../../state/actions/legend';
 import { getColorFromVariant } from '../../../../utils/common';
 import { getDimmedColor } from '../../../../utils/themes/dimmed_colors';
@@ -66,10 +67,15 @@ export function renderWrappedPartitionCanvas2d(
     const r = cornerRatio * Math.min(w, h);
 
     const isDimmed = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-    const fillColor = getColorFromVariant(
+    const baseFillColor = getColorFromVariant(
       quad.fillColor,
       getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', quad.fillColor),
     );
+    // Apply opacity when dimmed with opacity config
+    const fillColor =
+      isDimmed && 'opacity' in partitionStyle.dimmed
+        ? RGBATupleToString(overrideOpacity(colorToRgba(baseFillColor), partitionStyle.dimmed.opacity))
+        : baseFillColor;
 
     ctx.fillStyle = fillColor;
 

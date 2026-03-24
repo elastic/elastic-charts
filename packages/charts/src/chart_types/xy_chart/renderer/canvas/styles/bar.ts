@@ -41,6 +41,14 @@ export function buildBarStyle(
   const fillVariant = getDimmedColor(isDimmed, themeRectStyle.dimmed, 'fill', themeRectStyle.fill);
   const hasDimmedFillColor = hasDimmedColor(isDimmed, themeRectStyle.dimmed, 'fill');
 
+  // When dimmed with opacity config, use the configured opacity; when dimmed with fill color, use full opacity
+  const dimmedOpacity =
+    isDimmed && 'opacity' in themeRectStyle.dimmed
+      ? themeRectStyle.dimmed.opacity
+      : hasDimmedFillColor
+        ? 1
+        : geometryStateStyle.opacity;
+
   const fillBaseColor = getColorFromVariant(baseColor, fillVariant);
 
   const textureOpacity =
@@ -54,7 +62,7 @@ export function buildBarStyle(
 
   const fillColor = overrideOpacity(
     colorToRgba(fillBaseColor),
-    (opacity) => opacity * themeRectStyle.opacity * (hasDimmedFillColor ? 1 : geometryStateStyle.opacity),
+    (opacity) => opacity * themeRectStyle.opacity * dimmedOpacity,
   );
   const fill: Fill = {
     color: fillColor,

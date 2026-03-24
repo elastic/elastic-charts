@@ -138,6 +138,9 @@ export const Example: ChartsStory = (_, { description }) => {
   const showPartitionChart = boolean('Show Partition Chart', true);
   const showXYChart = boolean('Show XY Chart', true);
 
+  // Toggle between fill-based and opacity-based dimming
+  const useOpacityOnlyDimming = boolean('Use opacity-only dimming', false);
+
   const partitionLayout = select(
     'Partition layout',
     { Sunburst: PartitionLayout.sunburst, Treemap: PartitionLayout.treemap },
@@ -158,51 +161,82 @@ export const Example: ChartsStory = (_, { description }) => {
   const selectedDimmedColor = `rgba(${selectedShadeRGB}, ${selectedAlpha})`;
 
   // Build theme with dimmed colors for all chart types
-  const dimmedTheme: PartialTheme = {
-    barSeriesStyle: {
-      rect: {
-        dimmed: {
-          fill: selectedDimmedColor,
+  // When useOpacityOnlyDimming is true, use { opacity: X } instead of { fill: ... }
+  const dimmedTheme: PartialTheme = useOpacityOnlyDimming
+    ? {
+        barSeriesStyle: {
+          rect: {
+            dimmed: { opacity: selectedAlpha },
+          },
         },
-      },
-    },
-    lineSeriesStyle: {
-      line: {
-        dimmed: {
-          stroke: selectedDimmedColor,
+        lineSeriesStyle: {
+          line: {
+            dimmed: { opacity: selectedAlpha },
+          },
+          point: {
+            dimmed: { opacity: selectedAlpha },
+          },
         },
-      },
-      point: {
-        dimmed: {
-          fill: isDarkTheme ? '#0B1628' : '#FFFFFF', // background color
-          stroke: selectedDimmedColor,
+        areaSeriesStyle: {
+          area: {
+            dimmed: { opacity: selectedAlpha },
+          },
+          line: {
+            dimmed: { opacity: selectedAlpha },
+          },
+          point: {
+            dimmed: { opacity: selectedAlpha },
+          },
         },
-      },
-    },
-    areaSeriesStyle: {
-      area: {
-        dimmed: {
-          fill: selectedDimmedColor,
+        partition: {
+          dimmed: { opacity: selectedAlpha },
         },
-      },
-      line: {
-        dimmed: {
-          stroke: selectedDimmedColor,
+      }
+    : {
+        barSeriesStyle: {
+          rect: {
+            dimmed: {
+              fill: selectedDimmedColor,
+            },
+          },
         },
-      },
-      point: {
-        dimmed: {
-          fill: isDarkTheme ? '#0B1628' : '#FFFFFF',
-          stroke: selectedDimmedColor,
+        lineSeriesStyle: {
+          line: {
+            dimmed: {
+              stroke: selectedDimmedColor,
+            },
+          },
+          point: {
+            dimmed: {
+              fill: isDarkTheme ? '#0B1628' : '#FFFFFF', // background color
+              stroke: selectedDimmedColor,
+            },
+          },
         },
-      },
-    },
-    partition: {
-      dimmed: {
-        fill: selectedDimmedColor,
-      },
-    },
-  };
+        areaSeriesStyle: {
+          area: {
+            dimmed: {
+              fill: selectedDimmedColor,
+            },
+          },
+          line: {
+            dimmed: {
+              stroke: selectedDimmedColor,
+            },
+          },
+          point: {
+            dimmed: {
+              fill: isDarkTheme ? '#0B1628' : '#FFFFFF',
+              stroke: selectedDimmedColor,
+            },
+          },
+        },
+        partition: {
+          dimmed: {
+            fill: selectedDimmedColor,
+          },
+        },
+      };
 
   const partitionLayoutLabel = partitionLayout === PartitionLayout.sunburst ? 'Sunburst' : 'Treemap';
 
@@ -223,17 +257,25 @@ export const Example: ChartsStory = (_, { description }) => {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ color: isDarkTheme ? '#8E9FBC' : '#5A6D8C' }}>Dimmed color:</span>
-          <div
-            style={{
-              width: '24px',
-              height: '24px',
-              background: selectedDimmedColor,
-              border: `1px solid ${isDarkTheme ? '#485975' : '#CAD3E2'}`,
-              borderRadius: '4px',
-            }}
-          />
-          <code style={{ color: isDarkTheme ? '#61A2FF' : '#1750BA' }}>{selectedDimmedColor}</code>
+          <span style={{ color: isDarkTheme ? '#8E9FBC' : '#5A6D8C' }}>
+            {useOpacityOnlyDimming ? 'Dimmed opacity:' : 'Dimmed color:'}
+          </span>
+          {useOpacityOnlyDimming ? (
+            <code style={{ color: isDarkTheme ? '#61A2FF' : '#1750BA' }}>{selectedAlpha}</code>
+          ) : (
+            <>
+              <div
+                style={{
+                  width: '24px',
+                  height: '24px',
+                  background: selectedDimmedColor,
+                  border: `1px solid ${isDarkTheme ? '#485975' : '#CAD3E2'}`,
+                  borderRadius: '4px',
+                }}
+              />
+              <code style={{ color: isDarkTheme ? '#61A2FF' : '#1750BA' }}>{selectedDimmedColor}</code>
+            </>
+          )}
         </div>
         <div style={{ color: isDarkTheme ? '#8E9FBC' : '#5A6D8C' }}>
           {hoveredSeries ? (

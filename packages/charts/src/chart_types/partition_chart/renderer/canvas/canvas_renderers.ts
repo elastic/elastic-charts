@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { colorToRgba, overrideOpacity, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import type { Pixels } from '../../../../common/geometry';
@@ -168,10 +168,15 @@ function renderSectors(
       if (quad.x0 === quad.x1) return;
 
       const isDimmed = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-      const fillColor = getColorFromVariant(
+      const baseFillColor = getColorFromVariant(
         quad.fillColor,
         getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', quad.fillColor),
       );
+      // Apply opacity when dimmed with opacity config
+      const fillColor =
+        isDimmed && 'opacity' in partitionStyle.dimmed
+          ? RGBATupleToString(overrideOpacity(colorToRgba(baseFillColor), partitionStyle.dimmed.opacity))
+          : baseFillColor;
       renderTaperedBorder(ctx, quad, fillColor);
     });
   });
@@ -190,10 +195,15 @@ function renderRectangles(
       // only draw a shape if it would show up at all
       if (x1 - x0 >= 1 && y1px - y0px >= 1) {
         const isDimmed = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
-        const dimmedFillColor = getColorFromVariant(
+        const baseFillColor = getColorFromVariant(
           fillColor,
           getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', fillColor),
         );
+        // Apply opacity when dimmed with opacity config
+        const dimmedFillColor =
+          isDimmed && 'opacity' in partitionStyle.dimmed
+            ? RGBATupleToString(overrideOpacity(colorToRgba(baseFillColor), partitionStyle.dimmed.opacity))
+            : baseFillColor;
 
         ctx.fillStyle = dimmedFillColor;
         ctx.beginPath();
