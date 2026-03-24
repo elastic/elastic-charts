@@ -6,7 +6,5 @@
  * Side Public License, v 1.
  */
 
-import { setupBuildTrigger } from './trigger_build';
-import type { EventSetupFn } from '../../types';
-
-export const setupFns: EventSetupFn[] = [setupBuildTrigger];
+/** @internal */
+export const LEGEND_HIERARCHY_MARGIN = 10;

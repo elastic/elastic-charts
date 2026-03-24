@@ -1,3 +1,25 @@
+# [71.3.0](https://github.com/elastic/elastic-charts/compare/v71.2.0...v71.3.0) (2026-03-03)
+
+
+### Features
+
+* **metric:** add secondary badge text color ([#2799](https://github.com/elastic/elastic-charts/issues/2799)) ([5c765e8](https://github.com/elastic/elastic-charts/commit/5c765e81b3910ef613b84e2e06885b447e5ea820))
+* **metric:** expose medium (500) title font-weight in Metric chart ([#2792](https://github.com/elastic/elastic-charts/issues/2792)) ([c582e81](https://github.com/elastic/elastic-charts/commit/c582e816c68cb370b0c80774acdf44a5dd583924))
+
+# [71.2.0](https://github.com/elastic/elastic-charts/compare/v71.1.2...v71.2.0) (2026-02-26)
+
+
+### Bug Fixes
+
+* **metric:** update badge to pill shape with adjusted padding ([#2786](https://github.com/elastic/elastic-charts/issues/2786)) ([80be269](https://github.com/elastic/elastic-charts/commit/80be269d2958be8c3da9a7d112bec9ed05ccfb26))
+* **theme:** expose font weight in text style ([#2788](https://github.com/elastic/elastic-charts/issues/2788)) ([02f4afa](https://github.com/elastic/elastic-charts/commit/02f4afad333ece3ee8927aef7f5643458b96c6e0))
+
+
+### Features
+
+* **legend:** add "list" layout for horizontal legends ([#2784](https://github.com/elastic/elastic-charts/issues/2784)) ([8967ce3](https://github.com/elastic/elastic-charts/commit/8967ce3028c95c84a588885a49e358062e0436ac))
+* **legend:** add legendActionOnHover option to show actions on hover ([#2773](https://github.com/elastic/elastic-charts/issues/2773)) ([d1be88f](https://github.com/elastic/elastic-charts/commit/d1be88f2a17b1eca86e17e9a2925da46e34aad05))
+
 ## [71.1.2](https://github.com/elastic/elastic-charts/compare/v71.1.1...v71.1.2) (2025-11-07)
 
 

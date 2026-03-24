@@ -65,7 +65,7 @@ export function getLegendTableSize(
   config: ReturnType<typeof getLegendConfigSelector>,
   theme: Theme,
   parentDimensions: Dimensions,
-  items: LegendItem[],
+  items: ReadonlyArray<LegendItem>,
   textMeasure: TextMeasure,
 ): LegendSizing {
   const {
