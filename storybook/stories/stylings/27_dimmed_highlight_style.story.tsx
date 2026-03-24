@@ -155,7 +155,10 @@ export const Example: ChartsStory = (_, { description }) => {
   const selectedShadeRGB = select('Shade color', shadeOptions, shadeOptions[defaultShadeKey] ?? '');
 
   // Alpha/opacity selector
-  const selectedAlpha = select('Alpha (opacity)', ALPHA_OPTIONS, ALPHA_OPTIONS['100% (solid) - default'] ?? 1.0);
+  const selectedAlphaRaw = select('Alpha (opacity)', ALPHA_OPTIONS, ALPHA_OPTIONS['100% (solid) - default'] ?? 1.0);
+  const selectedAlphaParsed =
+    typeof selectedAlphaRaw === 'number' ? selectedAlphaRaw : Number.parseFloat(String(selectedAlphaRaw));
+  const selectedAlpha = Number.isFinite(selectedAlphaParsed) ? selectedAlphaParsed : 1.0;
 
   // Build dimmed color from shade + alpha
   const selectedDimmedColor = `rgba(${selectedShadeRGB}, ${selectedAlpha})`;

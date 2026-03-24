@@ -126,7 +126,7 @@ test.describe('Stylings stories', () => {
         await legendItem.hover();
       };
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&globals=theme:light&knob-Show Partition Chart=false&knob-Use opacity-only dimming=true&knob-Alpha (opacity)=10%`,
+        `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&globals=theme:light&knob-Show Partition Chart=false&knob-Use opacity-only dimming=true&knob-Alpha (opacity)=0.10`,
         { action },
       );
     });
@@ -138,7 +138,7 @@ test.describe('Stylings stories', () => {
         await legendItem.hover();
       };
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&globals=theme:dark&knob-Show XY Chart=false&knob-Use opacity-only dimming=true&knob-Alpha (opacity)=15%`,
+        `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&globals=theme:dark&knob-Show XY Chart=false&knob-Use opacity-only dimming=true&knob-Alpha (opacity)=0.15`,
         { action },
       );
     });
