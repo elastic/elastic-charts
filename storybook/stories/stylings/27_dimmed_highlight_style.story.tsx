@@ -156,8 +156,16 @@ export const Example: ChartsStory = (_, { description }) => {
 
   // Alpha/opacity selector
   const selectedAlphaRaw = select('Alpha (opacity)', ALPHA_OPTIONS, ALPHA_OPTIONS['100% (solid) - default'] ?? 1.0);
+  const alphaFromString = (value: string): number => {
+    const trimmed = value.trim();
+    if (trimmed.endsWith('%')) {
+      const pct = Number.parseFloat(trimmed.slice(0, -1));
+      return pct / 100;
+    }
+    return Number.parseFloat(trimmed);
+  };
   const selectedAlphaParsed =
-    typeof selectedAlphaRaw === 'number' ? selectedAlphaRaw : Number.parseFloat(String(selectedAlphaRaw));
+    typeof selectedAlphaRaw === 'number' ? selectedAlphaRaw : alphaFromString(String(selectedAlphaRaw));
   const selectedAlpha = Number.isFinite(selectedAlphaParsed) ? selectedAlphaParsed : 1.0;
 
   // Build dimmed color from shade + alpha

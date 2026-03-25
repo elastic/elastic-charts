@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba, overrideOpacity, RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { colorToRgba, multiplyColorOpacity, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import type { Pixels } from '../../../../common/geometry';
@@ -175,7 +175,7 @@ function renderSectors(
       // Apply opacity when dimmed with opacity config
       const fillColor =
         isDimmed && 'opacity' in partitionStyle.dimmed
-          ? RGBATupleToString(overrideOpacity(colorToRgba(baseFillColor), partitionStyle.dimmed.opacity))
+          ? multiplyColorOpacity(baseFillColor, partitionStyle.dimmed.opacity)
           : baseFillColor;
       renderTaperedBorder(ctx, quad, fillColor);
     });
@@ -202,7 +202,7 @@ function renderRectangles(
         // Apply opacity when dimmed with opacity config
         const dimmedFillColor =
           isDimmed && 'opacity' in partitionStyle.dimmed
-            ? RGBATupleToString(overrideOpacity(colorToRgba(baseFillColor), partitionStyle.dimmed.opacity))
+            ? multiplyColorOpacity(baseFillColor, partitionStyle.dimmed.opacity)
             : baseFillColor;
 
         ctx.fillStyle = dimmedFillColor;

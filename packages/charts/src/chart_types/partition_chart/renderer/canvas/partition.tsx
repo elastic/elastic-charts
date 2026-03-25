@@ -190,7 +190,17 @@ class PartitionComponent extends React.Component<PartitionProps> {
         if (!focus) return;
 
         if (isSimpleLinear(geometries.layout, geometries.style.fillLabel, geometries.layers)) {
-          renderLinearPartitionCanvas2d(ctx, devicePixelRatio, geometries, focus, this.animationState);
+          renderLinearPartitionCanvas2d(
+            ctx,
+            devicePixelRatio,
+            geometries,
+            focus,
+            props.highlightedLegendPath,
+            props.legendStrategy,
+            props.flatLegend,
+            props.partitionStyle,
+            this.animationState,
+          );
         } else if (isWaffle(geometries.layout)) {
           renderWrappedPartitionCanvas2d(
             ctx,

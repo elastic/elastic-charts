@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba, overrideOpacity, RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { multiplyColorOpacity } from '../../../../common/color_library_wrappers';
 import type { LegendPath } from '../../../../state/actions/legend';
 import { getColorFromVariant } from '../../../../utils/common';
 import { getDimmedColor } from '../../../../utils/themes/dimmed_colors';
@@ -74,7 +74,7 @@ export function renderWrappedPartitionCanvas2d(
     // Apply opacity when dimmed with opacity config
     const fillColor =
       isDimmed && 'opacity' in partitionStyle.dimmed
-        ? RGBATupleToString(overrideOpacity(colorToRgba(baseFillColor), partitionStyle.dimmed.opacity))
+        ? multiplyColorOpacity(baseFillColor, partitionStyle.dimmed.opacity)
         : baseFillColor;
 
     ctx.fillStyle = fillColor;
