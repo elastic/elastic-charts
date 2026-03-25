@@ -247,6 +247,7 @@ export const DARK_THEME: Theme = {
     margin: 0,
     labelOptions: {
       maxLines: 1,
+      widthLimit: 250,
     },
   },
   crosshair: {
@@ -457,7 +458,7 @@ export const DARK_THEME: Theme = {
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
-    titleWeight: 'bold',
+    titleWeight: 500,
   },
   bulletGraph: DARK_THEME_BULLET_STYLE,
   tooltip: {

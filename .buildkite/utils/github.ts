@@ -381,7 +381,6 @@ export async function ghpDeploy(outDir: string) {
       outDir,
       {
         user: {
-          // TODO share this between github_bot package
           name: 'elastic-datavis[bot]',
           email: '98618603+elastic-datavis[bot]@users.noreply.github.com',
         },

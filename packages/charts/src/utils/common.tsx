@@ -31,6 +31,14 @@ export const Position = Object.freeze({
 export type Position = $Values<typeof Position>;
 
 /** @public */
+export const LegendLayout = Object.freeze({
+  List: 'list' as const,
+  Table: 'table' as const,
+});
+/** @public */
+export type LegendLayout = $Values<typeof LegendLayout>;
+
+/** @public */
 export const LayoutDirection = Object.freeze({
   Horizontal: 'horizontal' as const,
   Vertical: 'vertical' as const,
