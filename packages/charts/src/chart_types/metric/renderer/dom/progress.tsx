@@ -86,24 +86,25 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
     const isStartAtZero = scaledValue >= zero;
     const isEndAtZero = scaledValue <= zero;
 
-    const radiusMap = isVertical
-      ? {
-          start: ['borderBottomLeftRadius', 'borderBottomRightRadius'],
-          end: ['borderTopLeftRadius', 'borderTopRightRadius'],
-        }
-      : {
-          start: ['borderTopLeftRadius', 'borderBottomLeftRadius'],
-          end: ['borderTopRightRadius', 'borderBottomRightRadius'],
-        };
-
-    const zeroOut = (keys: string[]) => {
-      keys.forEach((key) => {
-        (borderRadius as Record<string, number>)[key] = 0;
-      });
-    };
-
-    if (isStartAtZero) zeroOut(radiusMap.start);
-    if (isEndAtZero) zeroOut(radiusMap.end);
+    if (isVertical) {
+      if (isStartAtZero) {
+        borderRadius.borderBottomLeftRadius = 0;
+        borderRadius.borderBottomRightRadius = 0;
+      }
+      if (isEndAtZero) {
+        borderRadius.borderTopLeftRadius = 0;
+        borderRadius.borderTopRightRadius = 0;
+      }
+    } else {
+      if (isStartAtZero) {
+        borderRadius.borderTopLeftRadius = 0;
+        borderRadius.borderBottomLeftRadius = 0;
+      }
+      if (isEndAtZero) {
+        borderRadius.borderTopRightRadius = 0;
+        borderRadius.borderBottomRightRadius = 0;
+      }
+    }
   }
 
   const labelType = isBullet ? 'Value' : 'Percentage';
