@@ -78,6 +78,34 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   const zeroPlacement =
     domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${PROGRESS_BAR_TARGET_SIZE / 2}px)`;
 
+  // When the domain crosses 0, we render a zero marker. If the progress fill touches 0,
+  // square off that end so the marker reads cleanly against the fill.
+  if (zeroPlacement && hasProgressSpan) {
+    const zero = scale(0);
+
+    const isStartAtZero = scaledValue >= zero;
+    const isEndAtZero = scaledValue <= zero;
+
+    const radiusMap = isVertical
+      ? {
+          start: ['borderBottomLeftRadius', 'borderBottomRightRadius'],
+          end: ['borderTopLeftRadius', 'borderTopRightRadius'],
+        }
+      : {
+          start: ['borderTopLeftRadius', 'borderBottomLeftRadius'],
+          end: ['borderTopRightRadius', 'borderBottomRightRadius'],
+        };
+
+    const zeroOut = (keys: string[]) => {
+      keys.forEach((key) => {
+        (borderRadius as Record<string, number>)[key] = 0;
+      });
+    };
+
+    if (isStartAtZero) zeroOut(radiusMap.start);
+    if (isEndAtZero) zeroOut(radiusMap.end);
+  }
+
   const labelType = isBullet ? 'Value' : 'Percentage';
 
   return (
