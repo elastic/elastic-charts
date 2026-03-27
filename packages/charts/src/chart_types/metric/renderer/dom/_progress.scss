@@ -96,8 +96,8 @@ $progress-bar-border-radius: 8px;
 }
 
 @mixin mark-size($is-vertical: false) {
-  width: if($is-vertical, $progress-bar-target-size - 3px, 1.5px);
-  height: if($is-vertical, 1.5px, $progress-bar-target-size - 3px);
+  width: if($is-vertical, $progress-bar-target-size - 3px, 1px);
+  height: if($is-vertical, 1px, $progress-bar-target-size - 3px);
 }
 
 .echSingleMetricZeroBaseline {
