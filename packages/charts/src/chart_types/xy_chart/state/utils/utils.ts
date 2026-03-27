@@ -30,6 +30,7 @@ import { isStackedSpec, mergeYDomain } from '../../domains/y_domain';
 import { renderArea } from '../../rendering/area';
 import { renderBars } from '../../rendering/bars';
 import { renderBubble } from '../../rendering/bubble';
+import { decimateDataSeries } from '../../rendering/decimation';
 import { renderLine } from '../../rendering/line';
 import { getAreaSeriesStyles, getLineSeriesStyles } from '../../rendering/line_area_style';
 import { defaultXYSeriesSort } from '../../utils/default_series_sort_fn';
@@ -421,11 +422,12 @@ function renderGeometries(
       const lineShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
       const lineSeriesStyle = getLineSeriesStyles(chartTheme.lineSeriesStyle, spec.lineSeriesStyle);
       const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
+      const decimatedLineDs = { ...ds, data: decimateDataSeries(ds.data, panel.width) };
 
       const renderedLines = renderLine(
         // move the point on half of the bandwidth if we have mixed bars/lines
         (xScale.bandwidth * lineShift) / 2,
-        ds,
+        decimatedLineDs,
         xScale,
         yScale,
         panel,
@@ -454,10 +456,11 @@ function renderGeometries(
       const areaShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
       const areaSeriesStyle = getAreaSeriesStyles(chartTheme.areaSeriesStyle, spec.areaSeriesStyle);
       const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
+      const decimatedAreaDs = { ...ds, data: decimateDataSeries(ds.data, panel.width) };
       const renderedArea = renderArea(
         // move the point on half of the bandwidth if we have mixed bars/lines
         (xScale.bandwidth * areaShift) / 2,
-        ds,
+        decimatedAreaDs,
         xScale,
         yScale,
         panel,
