@@ -95,67 +95,36 @@ $progress-bar-border-radius: 8px;
   }
 }
 
+@mixin mark-size($is-vertical: false) {
+  width: if($is-vertical, $progress-bar-target-size - 3px, 1px);
+  height: if($is-vertical, 1px, $progress-bar-target-size - 3px);
+}
+
 .echSingleMetricZeroBaseline {
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: visible;
+  z-index: 1;
+  width: $progress-bar-target-size;
+  height: $progress-bar-target-size;
 
-  $line-width: 2px;
-  $line-length: 13px;
-
-  $line-width-small: $line-width;
-  $line-length-small: $line-length / 2;
-
-  $line-width-medium: $line-width;
-  $line-length-medium: $line-length;
-
-  $line-width-large: $line-width * 2;
-  $line-length-large: $line-length * 2;
+  &__mark {
+    @include mark-size(false);
+  }
 
   &--vertical {
     position: absolute;
-    left: 0;
+    left: 100%;
+    bottom: 0;
 
-    &.echSingleMetricZeroBaseline--small {
-      right: auto;
-      height: $line-width-small;
-      width: $line-length-small;
-    }
-
-    &.echSingleMetricZeroBaseline--medium {
-      right: auto;
-      height: $line-width-medium;
-      width: $line-length-medium;
-    }
-
-    &.echSingleMetricZeroBaseline--large {
-      right: auto;
-      height: $line-width-large;
-      width: $line-length-large;
+    .echSingleMetricZeroBaseline__mark {
+      @include mark-size(true);
     }
   }
 
   &--horizontal {
     position: absolute;
-    bottom: 0;
-
-    &.echSingleMetricZeroBaseline--small {
-      top: auto;
-      width: $line-width-small;
-      height: $line-length-small;
-    }
-
-    &.echSingleMetricZeroBaseline--medium {
-      top: auto;
-      width: $line-width-medium;
-      height: $line-length-medium;
-    }
-
-    &.echSingleMetricZeroBaseline--large {
-      top: auto;
-      width: $line-width-large;
-      height: $line-length-large;
-    }
+    bottom: 100%;
   }
 }

@@ -26,15 +26,6 @@ import { isBulletMetric } from '../../specs';
  */
 const PROGRESS_BAR_BORDER_RADIUS = 8;
 
-/**
- * Synced with _progress.scss
- */
-const zeroBaselineSizeMap = {
-  small: 2,
-  medium: 2,
-  large: 4,
-};
-
 interface ProgressBarProps {
   datum: MetricWProgress | BulletMetricWProgress;
   barBackground: Color;
@@ -83,10 +74,9 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   const hasProgressSpan = max - min > 0;
   const externalStroke: CSSProperties = hasProgressSpan ? { boxShadow: `0 0 0 2px ${panelBackground}` } : {};
 
-  const zeroBaselineSize = zeroBaselineSizeMap[size];
-
   const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${PROGRESS_BAR_TARGET_SIZE / 2}px)`;
-  const zeroPlacement = domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${zeroBaselineSize / 2}px)`;
+  const zeroPlacement =
+    domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${PROGRESS_BAR_TARGET_SIZE / 2}px)`;
 
   const labelType = isBullet ? 'Value' : 'Percentage';
 
@@ -119,10 +109,11 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
         <div
           className={getDirectionalClasses('ZeroBaseline', isVertical, size)}
           style={{
-            backgroundColor: blendedBarColor,
             [isVertical ? 'bottom' : 'left']: zeroPlacement,
           }}
-        />
+        >
+          <div className="echSingleMetricZeroBaseline__mark" style={{ backgroundColor: blendedBarColor }} />
+        </div>
       )}
       <div
         className={getDirectionalClasses('ProgressBar', isVertical, size)}
