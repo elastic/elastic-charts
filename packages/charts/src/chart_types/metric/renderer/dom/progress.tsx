@@ -76,7 +76,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
 
   const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${PROGRESS_BAR_TARGET_SIZE / 2}px)`;
   const zeroPlacement =
-    domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${PROGRESS_BAR_TARGET_SIZE / 2}px)`;
+    domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${PROGRESS_BAR_TARGET_SIZE / 2 + 1}px)`;
 
   // When the domain crosses 0, we render a zero marker. If the progress fill touches 0,
   // square off that end so the marker reads cleanly against the fill.
