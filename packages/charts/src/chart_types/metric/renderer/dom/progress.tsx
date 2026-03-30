@@ -75,12 +75,13 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   const externalStroke: CSSProperties = hasProgressSpan ? { boxShadow: `0 0 0 2px ${panelBackground}` } : {};
 
   const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${PROGRESS_BAR_TARGET_SIZE / 2}px)`;
-  const zeroPlacement =
-    domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${PROGRESS_BAR_TARGET_SIZE / 2 + 1}px)`;
+  const hasZeroMarker = domainMin < 0 || domainMax > 0;
 
   // When the domain crosses 0, we render a zero marker. If the progress fill touches 0,
   // square off that end so the marker reads cleanly against the fill.
-  if (zeroPlacement && hasProgressSpan) {
+  let zeroBaselineNudgePx = 0;
+  if (hasZeroMarker && hasProgressSpan) {
+    const PROGRESS_BAR_ADJUSTMENT_PX = 1;
     const zero = scale(0);
 
     const isStartAtZero = scaledValue >= zero;
@@ -90,23 +91,30 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
       if (isStartAtZero) {
         borderRadius.borderBottomLeftRadius = 0;
         borderRadius.borderBottomRightRadius = 0;
+        zeroBaselineNudgePx = PROGRESS_BAR_ADJUSTMENT_PX;
       }
       if (isEndAtZero) {
         borderRadius.borderTopLeftRadius = 0;
         borderRadius.borderTopRightRadius = 0;
+        zeroBaselineNudgePx = -PROGRESS_BAR_ADJUSTMENT_PX;
       }
     } else {
       if (isStartAtZero) {
         borderRadius.borderTopLeftRadius = 0;
         borderRadius.borderBottomLeftRadius = 0;
+        zeroBaselineNudgePx = PROGRESS_BAR_ADJUSTMENT_PX;
       }
       if (isEndAtZero) {
         borderRadius.borderTopRightRadius = 0;
         borderRadius.borderBottomRightRadius = 0;
+        zeroBaselineNudgePx = -PROGRESS_BAR_ADJUSTMENT_PX;
       }
     }
   }
 
+  const zeroPlacement = hasZeroMarker
+    ? `calc(${scale(0)}% - ${PROGRESS_BAR_TARGET_SIZE / 2 + zeroBaselineNudgePx}px)`
+    : null;
   const labelType = isBullet ? 'Value' : 'Percentage';
 
   return (
@@ -134,7 +142,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
           />
         </div>
       )}
-      {zeroPlacement && (
+      {hasZeroMarker && (
         <div
           className={getDirectionalClasses('ZeroBaseline', isVertical, size)}
           style={{
