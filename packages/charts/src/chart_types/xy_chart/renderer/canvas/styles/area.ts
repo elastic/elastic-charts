@@ -12,6 +12,7 @@ import type { Fill } from '../../../../../geoms/types';
 import type { ColorVariant } from '../../../../../utils/common';
 import { getColorFromVariant } from '../../../../../utils/common';
 import type { GeometryHighlightState } from '../../../../../utils/geometry';
+import { getDimmedColor } from '../../../../../utils/themes/dimmed_colors';
 import type { AreaStyle, TexturedStyles } from '../../../../../utils/themes/theme';
 import { getTextureStyles } from '../../../utils/texture';
 
@@ -34,7 +35,7 @@ export function buildAreaStyles(
   highlightState: GeometryHighlightState,
 ): Fill {
   const isDimmed = highlightState === 'dimmed';
-  const fillColor = isDimmed && 'fill' in themeAreaStyle.dimmed ? themeAreaStyle.dimmed.fill : seriesColor;
+  const fillColor = getDimmedColor(isDimmed, themeAreaStyle.dimmed, 'fill', seriesColor);
   const opacity =
     isDimmed && 'opacity' in themeAreaStyle.dimmed
       ? themeAreaStyle.dimmed.opacity * themeAreaStyle.opacity

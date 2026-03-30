@@ -28,7 +28,7 @@ import type {
 /** @internal */
 export class MockStyles {
   static rect(partial: RecursivePartial<RectStyle> = {}): RectStyle {
-    return mergePartial({ fill: 'blue', opacity: 1 }, partial);
+    return mergePartial({ fill: 'blue', opacity: 1, dimmed: { opacity: 0.25 } }, partial);
   }
 
   static rectBorder(partial: RecursivePartial<RectBorderStyle> = {}): RectBorderStyle {

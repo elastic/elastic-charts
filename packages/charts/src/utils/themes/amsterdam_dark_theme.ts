@@ -116,6 +116,7 @@ export const AMSTERDAM_DARK_THEME: Theme = {
   barSeriesStyle: {
     rect: {
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
     rectBorder: {
       visible: false,
@@ -350,6 +351,7 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     },
     sectorLineWidth: 1.5,
     sectorLineStroke: '#1D1E24',
+    dimmed: { opacity: 0.25 },
   },
   heatmap: {
     brushArea: {
