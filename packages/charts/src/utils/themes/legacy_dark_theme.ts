@@ -122,6 +122,7 @@ export const LEGACY_DARK_THEME: Theme = {
   barSeriesStyle: {
     rect: {
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
     rectBorder: {
       visible: false,
@@ -354,6 +355,7 @@ export const LEGACY_DARK_THEME: Theme = {
     },
     sectorLineWidth: 1,
     sectorLineStroke: Colors.Black.keyword,
+    dimmed: { opacity: 0.25 },
   },
   heatmap: {
     brushArea: {

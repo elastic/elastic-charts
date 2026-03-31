@@ -7,8 +7,15 @@
  */
 
 import type { AnimationState, ContinuousDomainFocus } from './partition';
+import { multiplyColorOpacity } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
-import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { LegendPath } from '../../../../state/actions/legend';
+import { getColorFromVariant } from '../../../../utils/common';
+import { getDimmedColor } from '../../../../utils/themes/dimmed_colors';
+import type { PartitionStyle } from '../../../../utils/themes/partition';
+import type { QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { LegendStrategy } from '../../layout/utils/highlighted_geoms';
+import { highlightedGeoms } from '../../layout/utils/highlighted_geoms';
 
 const linear = (x: number) => x;
 const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);
@@ -30,8 +37,19 @@ export function renderLinearPartitionCanvas2d(
     animation,
   }: ShapeViewModel,
   { currentFocusX0, currentFocusX1, prevFocusX0, prevFocusX1 }: ContinuousDomainFocus,
+  highlightedLegendPath: LegendPath,
+  legendStrategy: LegendStrategy | undefined,
+  flatLegend: boolean | undefined,
+  partitionStyle: PartitionStyle,
   animationState: AnimationState,
 ) {
+  // Calculate which quads are highlighted for legend dimming
+  const highlightedQuadSet = new Set<QuadViewModel>();
+  if (highlightedLegendPath.length > 0) {
+    const highlighted = highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedLegendPath);
+    highlighted.forEach((quad) => highlightedQuadSet.add(quad));
+  }
+
   if (animation?.duration) {
     window.cancelAnimationFrame(animationState.rafId);
     render(0);
@@ -72,7 +90,8 @@ export function renderLinearPartitionCanvas2d(
     ctx.translate(diskCenter.x, diskCenter.y);
     ctx.clearRect(0, 0, width, height);
 
-    quadViewModel.forEach(({ fillColor, x0, x1, y0px: y0, y1px: y1, dataName, textColor, depth }) => {
+    quadViewModel.forEach((quad) => {
+      const { fillColor, x0, x1, y0px: y0, y1px: y1, dataName, textColor, depth } = quad;
       if (y1 - y0 <= padding) return;
 
       const fx0 = Math.max((x0 - focusX0) * scale, 0);
@@ -87,7 +106,18 @@ export function renderLinearPartitionCanvas2d(
       const fWidth = fx1 - fx0;
       const fPadding = Math.min(padding, MAX_PADDING_RATIO * fWidth);
 
-      ctx.fillStyle = fillColor;
+      const isDimmed = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
+      const baseFillColor = getColorFromVariant(
+        fillColor,
+        getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', fillColor),
+      );
+      // Apply opacity when dimmed with opacity config
+      const dimmedFillColor =
+        isDimmed && 'opacity' in partitionStyle.dimmed
+          ? multiplyColorOpacity(baseFillColor, partitionStyle.dimmed.opacity)
+          : baseFillColor;
+
+      ctx.fillStyle = dimmedFillColor;
       ctx.beginPath();
       ctx.rect(fx0 + fPadding, y0 + padding / 2, fWidth - fPadding, y1 - y0 - padding);
       ctx.fill();

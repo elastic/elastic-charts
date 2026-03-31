@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import type { Datum } from '@elastic/charts';
@@ -19,6 +20,9 @@ import { viridis18 as palette } from '../utils/utils';
 const color = palette.slice().reverse();
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const clipText = boolean('Clip text (use linear renderer)', false);
+  const useOpacityOnlyDimming = boolean('Use opacity-only dimming', false);
+
   return (
     <Chart title={title} description={description}>
       <Settings
@@ -30,6 +34,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
           partition: {
             minFontSize: 6,
             maxFontSize: 10,
+            ...(clipText ? { fillLabel: { clipText } } : {}),
+            ...(useOpacityOnlyDimming ? { dimmed: { opacity: 0.25 } } : {}),
           },
         }}
       />

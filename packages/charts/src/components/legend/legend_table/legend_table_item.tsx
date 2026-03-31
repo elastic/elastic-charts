@@ -94,6 +94,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
             isSeriesHidden={isSeriesHidden}
             totalSeriesCount={totalItems}
             hiddenSeriesCount={hiddenItems}
+            truncationMode="line"
           />
         </LegendTableCell>
 

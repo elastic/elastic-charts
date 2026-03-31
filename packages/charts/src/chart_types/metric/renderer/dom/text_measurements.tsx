@@ -133,7 +133,7 @@ const SUBTITLE_FONT: Font = {
   ...TITLE_FONT,
   fontWeight: 'normal',
 };
-const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs: 8, s: 8, m: 8, l: 8, xl: 8, xxl: 16 };
+const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs: 4, s: 4, m: 8, l: 8, xl: 8, xxl: 16 };
 const ELEMENT_PADDING = 5; // Aligned with our CSS in _text.scss
 
 /**
