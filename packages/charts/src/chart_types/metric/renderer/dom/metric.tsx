@@ -193,7 +193,7 @@ export const Metric: React.FunctionComponent<{
   const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
 
   const containerStyle: CSSProperties = {
-    backgroundColor: hasTrend ? backgroundColor : datumWithInteractionColor.color,
+    backgroundColor: hasTrend || hasProgressBar ? backgroundColor : datumWithInteractionColor.color,
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
     borderColor: style.border,
   };
@@ -292,6 +292,7 @@ export const Metric: React.FunctionComponent<{
         <ProgressBar
           datum={datumWithInteractionColor}
           barBackground={style.barBackground}
+          panelBackground={backgroundColor}
           blendedBarColor={blendedColor}
           size={progressBarSize}
         />

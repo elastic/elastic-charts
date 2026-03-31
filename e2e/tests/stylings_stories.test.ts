@@ -9,7 +9,7 @@
 import { test } from '@playwright/test';
 
 import { SeriesType } from '../constants';
-import { pwEach } from '../helpers';
+import { eachTheme, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
 test.describe('Stylings stories', () => {
@@ -88,5 +88,59 @@ test.describe('Stylings stories', () => {
       `http://localhost:9001/?path=/story/stylings--highlighter-style`,
       { top: 150, right: 150 },
     );
+  });
+
+  test.describe('Dimmed highlight style', () => {
+    eachTheme.describe(({ theme, urlParam }) => {
+      test(`should dim XY chart series on Bars 2 legend hover - ${theme}`, async ({ page }) => {
+        const action = async () => {
+          // Hover on the "Bars 2" legend item
+          const legendItem = page.locator('[data-ech-series-name="Bars 2"]');
+          await legendItem.hover();
+        };
+        await common.expectChartAtUrlToMatchScreenshot(page)(
+          // Hide partition chart so XY chart is the first .echChart
+          `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&${urlParam}&knob-Show Partition Chart=false`,
+          { action },
+        );
+      });
+
+      test(`should dim partition chart slices on legend hover - ${theme}`, async ({ page }) => {
+        const action = async () => {
+          // Hover on the first legend item
+          const legendItem = page.locator('.echLegendItem').first();
+          await legendItem.hover();
+        };
+        await common.expectChartAtUrlToMatchScreenshot(page)(
+          // Hide XY chart so partition chart is the only .echChart
+          `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&${urlParam}&knob-Show XY Chart=false`,
+          { action },
+        );
+      });
+    });
+
+    test('should apply opacity-only dimming on bar chart - light theme', async ({ page }) => {
+      const action = async () => {
+        // Hover on the "Bars 2" legend item
+        const legendItem = page.locator('[data-ech-series-name="Bars 2"]');
+        await legendItem.hover();
+      };
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&globals=theme:light&knob-Show Partition Chart=false&knob-Use opacity-only dimming=true&knob-Alpha (opacity)=0.10`,
+        { action },
+      );
+    });
+
+    test('should apply opacity-only dimming on partition chart - dark theme', async ({ page }) => {
+      const action = async () => {
+        // Hover on the first legend item
+        const legendItem = page.locator('.echLegendItem').first();
+        await legendItem.hover();
+      };
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/stylings--dimmed-highlight-style&globals=theme:dark&knob-Show XY Chart=false&knob-Use opacity-only dimming=true&knob-Alpha (opacity)=0.15`,
+        { action },
+      );
+    });
   });
 });

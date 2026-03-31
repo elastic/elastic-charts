@@ -26,18 +26,10 @@ import { isBulletMetric } from '../../specs';
  */
 const PROGRESS_BAR_BORDER_RADIUS = 8;
 
-/**
- * Synced with _progress.scss
- */
-const zeroBaselineSizeMap = {
-  small: 2,
-  medium: 2,
-  large: 4,
-};
-
 interface ProgressBarProps {
   datum: MetricWProgress | BulletMetricWProgress;
   barBackground: Color;
+  panelBackground: Color;
   blendedBarColor: Color;
   size: ProgressBarSize;
 }
@@ -46,6 +38,7 @@ interface ProgressBarProps {
 export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   datum,
   barBackground,
+  panelBackground,
   blendedBarColor,
   size,
 }) => {
@@ -77,43 +70,51 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
         right: `${safeEndValue}%`,
       };
 
-  let borderRadius: CSSProperties = {};
-  if (!isVertical && endValue <= 0) {
-    borderRadius = {
-      ...borderRadius,
-      borderTopRightRadius: PROGRESS_BAR_BORDER_RADIUS,
-      borderBottomRightRadius: PROGRESS_BAR_BORDER_RADIUS,
-    };
-  }
-  if (!isVertical && min <= 0) {
-    borderRadius = {
-      ...borderRadius,
-      borderTopLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
-      borderBottomLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
-    };
-  }
-
-  // For vertical progress bar
-  if (isVertical && endValue <= 0) {
-    borderRadius = {
-      ...borderRadius,
-      borderTopLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
-      borderTopRightRadius: PROGRESS_BAR_BORDER_RADIUS,
-    };
-  }
-  if (isVertical && min <= 0) {
-    borderRadius = {
-      ...borderRadius,
-      borderBottomLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
-      borderBottomRightRadius: PROGRESS_BAR_BORDER_RADIUS,
-    };
-  }
-
-  const zeroBaselineSize = zeroBaselineSizeMap[size];
+  const borderRadius: CSSProperties = { borderRadius: PROGRESS_BAR_BORDER_RADIUS };
+  const hasProgressSpan = max - min > 0;
+  const externalStroke: CSSProperties = hasProgressSpan ? { boxShadow: `0 0 0 2px ${panelBackground}` } : {};
 
   const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${PROGRESS_BAR_TARGET_SIZE / 2}px)`;
-  const zeroPlacement = domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${zeroBaselineSize / 2}px)`;
+  const hasZeroMarker = domainMin < 0 && domainMax > 0;
 
+  // When the domain crosses 0, we render a zero marker. If the progress fill touches 0,
+  // square off that end so the marker reads cleanly against the fill.
+  let zeroBaselineNudgePx = 0;
+  if (hasZeroMarker && hasProgressSpan) {
+    const PROGRESS_BAR_ADJUSTMENT_PX = 1;
+    const zero = scale(0);
+
+    const isStartAtZero = scaledValue >= zero;
+    const isEndAtZero = scaledValue <= zero;
+
+    if (isVertical) {
+      if (isStartAtZero) {
+        borderRadius.borderBottomLeftRadius = 0;
+        borderRadius.borderBottomRightRadius = 0;
+        zeroBaselineNudgePx = PROGRESS_BAR_ADJUSTMENT_PX;
+      }
+      if (isEndAtZero) {
+        borderRadius.borderTopLeftRadius = 0;
+        borderRadius.borderTopRightRadius = 0;
+        zeroBaselineNudgePx = -PROGRESS_BAR_ADJUSTMENT_PX;
+      }
+    } else {
+      if (isStartAtZero) {
+        borderRadius.borderTopLeftRadius = 0;
+        borderRadius.borderBottomLeftRadius = 0;
+        zeroBaselineNudgePx = PROGRESS_BAR_ADJUSTMENT_PX;
+      }
+      if (isEndAtZero) {
+        borderRadius.borderTopRightRadius = 0;
+        borderRadius.borderBottomRightRadius = 0;
+        zeroBaselineNudgePx = -PROGRESS_BAR_ADJUSTMENT_PX;
+      }
+    }
+  }
+
+  const zeroPlacement = hasZeroMarker
+    ? `calc(${scale(0)}% - ${PROGRESS_BAR_TARGET_SIZE / 2 + zeroBaselineNudgePx}px)`
+    : null;
   const labelType = isBullet ? 'Value' : 'Percentage';
 
   return (
@@ -141,18 +142,19 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
           />
         </div>
       )}
-      {zeroPlacement && (
+      {hasZeroMarker && (
         <div
           className={getDirectionalClasses('ZeroBaseline', isVertical, size)}
           style={{
-            backgroundColor: blendedBarColor,
             [isVertical ? 'bottom' : 'left']: zeroPlacement,
           }}
-        />
+        >
+          <div className="echSingleMetricZeroBaseline__mark" style={{ backgroundColor: blendedBarColor }} />
+        </div>
       )}
       <div
         className={getDirectionalClasses('ProgressBar', isVertical, size)}
-        style={{ ...positionStyle, ...borderRadius, backgroundColor: blendedBarColor }}
+        style={{ ...positionStyle, ...borderRadius, ...externalStroke, backgroundColor: blendedBarColor }}
         role="meter"
         title={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${scaledValue}%`}
         aria-label={title ? `${labelType} of ${title}` : labelType}

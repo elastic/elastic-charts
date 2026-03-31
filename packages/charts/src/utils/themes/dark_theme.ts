@@ -139,6 +139,10 @@ export const DARK_THEME: Theme = {
   barSeriesStyle: {
     rect: {
       opacity: 1,
+      dimmed: {
+        fill: DARK_DIMMED_COLORS.barFill,
+        texture: { opacity: 0.25 },
+      },
     },
     rectBorder: {
       visible: false,
@@ -373,6 +377,9 @@ export const DARK_THEME: Theme = {
     },
     sectorLineWidth: 1.5,
     sectorLineStroke: DARK_BACKGROUND_COLORS.backgroundBasePlain,
+    dimmed: {
+      fill: DARK_DIMMED_COLORS.partitionFill,
+    },
   },
   heatmap: {
     brushArea: {
