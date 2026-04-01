@@ -440,6 +440,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     titleWeight: 500,
   },
   bulletGraph: {
+    fontFamily: DEFAULT_FONT_FAMILY,
     textColor: '#343741',
     border: '#EDF0F5',
     barBackground: '#343741',
