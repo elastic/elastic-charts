@@ -14,9 +14,11 @@ import { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { withOptionalNumericFontFamily } from '../utils/elastic_ui_numeric_font';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const baseTheme = useBaseTheme();
   const debug = boolean('debug', false);
   const bulletTitle = text('title', 'A Nice Title');
   const subtitle = text('subtitle', 'Subtitle');
@@ -31,12 +33,15 @@ export const Example: ChartsStory = (_, { title, description }) => {
   });
   const format = text('format', '0');
   const formatter = (d: number) => numeral(d).format(format);
+  const useElasticUINumericFont = boolean('use "Elastic UI Numeric" font', true);
+  const numericFontFamily = withOptionalNumericFontFamily(baseTheme.bulletGraph.fontFamily, useElasticUINumericFont);
 
   return (
     <Chart title={title} description={description}>
       <Settings
         theme={{
           bulletGraph: {
+            fontFamily: numericFontFamily,
             angularTickLabelPadding,
           },
         }}
