@@ -80,7 +80,7 @@ const regionColors: Record<string, string> = {
 };
 
 const heatmapData = (() => {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
   const categories = ['Product A', 'Product B', 'Product C', 'Product D', 'Product E'];
   return categories.flatMap((category, categoryIndex) =>
     months.map((month, monthIndex) => ({
@@ -105,17 +105,12 @@ export const Example: ChartsStory = (_, { description }) => {
   const previewFontFamily = withOptionalNumericFontFamily(fontFamily, useElasticUINumericFont);
 
   const containerStyle: React.CSSProperties = {
+    fontFamily: previewFontFamily,
     ...(letterSpacing !== 0 ? { letterSpacing: `${letterSpacing}px` } : {}),
     ...(fontKerning !== 'auto' ? { fontKerning } : {}),
   };
 
   const theme: PartialTheme = {
-    metric: {
-      fontFamily,
-    },
-    legend: {
-      fontFamily,
-    },
     barSeriesStyle: {
       displayValue: {
         fontSize: fontSize + 2,
@@ -160,12 +155,6 @@ export const Example: ChartsStory = (_, { description }) => {
   };
   applyOptionalNumericFontFamily(theme, useElasticUINumericFont);
 
-  const activeTypography = [
-    ...(useElasticUINumericFont ? ['Elastic UI Numeric font'] : []),
-    ...(letterSpacing !== 0 ? [`letter-spacing: ${letterSpacing}px`] : []),
-    ...(fontKerning !== 'auto' ? [`font-kerning: ${fontKerning}`] : []),
-  ];
-
   const resizableChart = (height: number): React.CSSProperties => ({
     width: 600,
     height,
@@ -183,23 +172,6 @@ export const Example: ChartsStory = (_, { description }) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', ...containerStyle }}>
-      {activeTypography.length > 0 && (
-        <div
-          style={{
-            padding: '12px 16px',
-            background: '#fff3cd',
-            border: '1px solid #ffc107',
-            borderRadius: '4px',
-            fontSize: '13px',
-          }}
-        >
-          <strong>Active typography:</strong> {activeTypography.join(' | ')}
-          <div style={{ marginTop: '8px', fontSize: '20px', fontFamily: previewFontFamily }}>
-            0123456789 - $1,234,567.89 - 100.00%
-          </div>
-        </div>
-      )}
-
       <p style={{ margin: 0, fontSize: '12px', color: '#69707d' }}>{description}</p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
