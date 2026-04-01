@@ -436,6 +436,7 @@ export const LEGACY_DARK_THEME: Theme = {
     valueTextAlign: 'right',
     valuePosition: 'bottom',
     iconAlign: 'right',
+    spacing: 'small',
     border: '#343741',
     barBackground: '#343741',
     emptyBackground: Colors.Transparent.keyword,

@@ -220,6 +220,7 @@ class Component extends React.Component<Props> {
                   bulletToMetricStyle.minValueFontSize,
                   false,
                   false,
+                  textDimensions.metricSpacing.panelPadding,
                 );
                 const sizes = getSnappedFontSizes(fittedValueFontSize, panel.height, bulletToMetricStyle);
 

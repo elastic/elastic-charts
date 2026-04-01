@@ -16,7 +16,7 @@ import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calcula
 import { clamp, isNil, LayoutDirection } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
-import type { MetricStyle } from '../../../../utils/themes/theme';
+import type { MetricSpacing, MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricDatum, MetricWNumber } from '../../specs';
 import { isMetricWProgress } from '../../specs';
 
@@ -59,6 +59,7 @@ export interface MetricTextLayout extends ResponsiveBreakpoints {
 /** @internal */
 export interface MetricTextDimensions {
   heightBasedSizes: HeightBasedSizes;
+  metricSpacing: MetricSpacingLayout;
   hasProgressBar: boolean;
   progressBarDirection: LayoutDirection | undefined;
   /**
@@ -75,8 +76,6 @@ export interface MetricTextDimensions {
   iconGridColumnWidth: number;
 }
 
-/** @internal */
-export const PADDING = 8;
 /** @internal */
 export const PROGRESS_BAR_TARGET_SIZE = 8; // Aligned with our CSS in _index.scss
 const LINE_HEIGHT = 1.2; // Aligned with our CSS
@@ -111,15 +110,6 @@ const VALUE_FONT_SIZE: Record<BreakPoint, number> = {
   xl: 104,
   xxl: 170,
 };
-const VALUE_FONT_SIZE_VALUES = [
-  VALUE_FONT_SIZE.xl,
-  VALUE_FONT_SIZE.l,
-  VALUE_FONT_SIZE.m,
-  VALUE_FONT_SIZE.s,
-  VALUE_FONT_SIZE.xs,
-  VALUE_FONT_SIZE.xxs,
-  VALUE_FONT_SIZE.xxxs,
-];
 const VALUE_PART_FONT_RATIO = 1.3;
 const TITLE_FONT: Font = {
   fontStyle: 'normal',
@@ -134,7 +124,93 @@ const SUBTITLE_FONT: Font = {
   fontWeight: 'normal',
 };
 const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs: 4, s: 4, m: 8, l: 8, xl: 8, xxl: 16 };
-const ELEMENT_PADDING = 5; // Aligned with our CSS in _text.scss
+const DEFAULT_PANEL_PADDING = 8; // Aligned with our CSS in _variables.scss
+const DEFAULT_TITLE_SUBTITLE_GAP = 5; // Aligned with our CSS in _text.scss
+const DEFAULT_EXTRA_PADDING_TOP = 5; // Aligned with our CSS in _text.scss
+const DEFAULT_PRIMARY_ADJACENT_GAP = 0;
+const LARGE_TITLE_SUBTITLE_GAP = 8;
+const LARGE_PRIMARY_ADJACENT_GAP = 4;
+const LARGE_PRIMARY_FONT_MULTIPLIER = 1.5;
+const LARGE_SECONDARY_FONT_MULTIPLIER = 1.75;
+const LARGE_PANEL_PADDING: Record<BreakPoint, number> = {
+  xxxs: 16,
+  xxs: 16,
+  xs: 16,
+  s: 24,
+  m: 24,
+  l: 32,
+  xl: 40,
+  xxl: 48,
+};
+
+/** @internal */
+export interface MetricSpacingLayout {
+  panelPadding: number;
+  titleSubtitleGap: number;
+  extraPaddingTop: number;
+  primaryAdjacentGap: number;
+  progressTextGap: number;
+}
+
+function scaleForLargeMetric(size: number, multiplier: number): number {
+  return Math.round(size * multiplier);
+}
+
+function getMetricSpacingMode(style: MetricStyle): MetricSpacing {
+  return style.spacing ?? 'small';
+}
+
+function getHeightBreakpoint(ranges: [number, number, BreakPoint][], value: number): BreakPoint {
+  const range = ranges.find(([min, max]) => min <= value && value < max);
+  return range ? range[2] : ranges[0]?.[2] ?? 's';
+}
+
+function getValueFontSizeMap(spacingMode: MetricSpacing): Record<BreakPoint, number> {
+  if (spacingMode === 'small') {
+    return VALUE_FONT_SIZE;
+  }
+  return Object.entries(VALUE_FONT_SIZE).reduce(
+    (acc, [breakpoint, size]) => ({
+      ...acc,
+      [breakpoint]: scaleForLargeMetric(size, LARGE_PRIMARY_FONT_MULTIPLIER),
+    }),
+    {} as Record<BreakPoint, number>,
+  );
+}
+
+function getValueFontSizeSteps(spacingMode: MetricSpacing): number[] {
+  const valueFontSizeMap = getValueFontSizeMap(spacingMode);
+  return [
+    valueFontSizeMap.xl,
+    valueFontSizeMap.l,
+    valueFontSizeMap.m,
+    valueFontSizeMap.s,
+    valueFontSizeMap.xs,
+    valueFontSizeMap.xxs,
+    valueFontSizeMap.xxxs,
+  ];
+}
+
+function getMetricSpacingLayout(breakPoint: BreakPoint, style: MetricStyle): MetricSpacingLayout {
+  if (getMetricSpacingMode(style) === 'small') {
+    return {
+      panelPadding: DEFAULT_PANEL_PADDING,
+      titleSubtitleGap: DEFAULT_TITLE_SUBTITLE_GAP,
+      extraPaddingTop: style.valuePosition === 'middle' ? 0 : DEFAULT_EXTRA_PADDING_TOP,
+      primaryAdjacentGap: DEFAULT_PRIMARY_ADJACENT_GAP,
+      progressTextGap: DEFAULT_PANEL_PADDING,
+    };
+  }
+
+  const panelPadding = LARGE_PANEL_PADDING[breakPoint];
+  return {
+    panelPadding,
+    titleSubtitleGap: LARGE_TITLE_SUBTITLE_GAP,
+    extraPaddingTop: 0,
+    primaryAdjacentGap: LARGE_PRIMARY_ADJACENT_GAP,
+    progressTextGap: panelPadding,
+  };
+}
 
 /**
  * Approximate font size to fit given available space
@@ -148,9 +224,10 @@ export function getFitValueFontSize(
   minValueFontSize: number,
   hasIcon: boolean,
   isFitMode: boolean,
+  panelPadding: number,
 ) {
-  const maxWidth = (totalWidth - 2 * PADDING) * 0.98; // Buffer to prevent clipping
-  const maxHeight = (availableHeight - 2 * PADDING) * 0.98;
+  const maxWidth = (totalWidth - 2 * panelPadding) * 0.98; // Buffer to prevent clipping
+  const maxHeight = (availableHeight - 2 * panelPadding) * 0.98;
 
   const widthConstrainedSize = withTextMeasure((textMeasure) => {
     const iconMultiplier = hasIcon ? 1 : 0;
@@ -160,7 +237,7 @@ export function getFitValueFontSize(
       return sum + textMeasure(text, VALUE_FONT, fontSize).width;
     }, 0);
     const ratio = textWidth / initialValueFontSize;
-    return (maxWidth - iconMultiplier * PADDING) / (ratio + iconMultiplier / VALUE_PART_FONT_RATIO);
+    return (maxWidth - iconMultiplier * panelPadding) / (ratio + iconMultiplier / VALUE_PART_FONT_RATIO);
   });
 
   let constrainedSize;
@@ -184,6 +261,8 @@ export function getMetricTextPartDimensions(
   style: MetricStyle,
   locale: string,
 ): MetricTextDimensions {
+  const breakPoint = getHeightBreakpoint(HEIGHT_BP, panel.height);
+  const metricSpacing = getMetricSpacingLayout(breakPoint, style);
   const heightBasedSizes = getHeightBasedFontSizes(HEIGHT_BP, panel.height, style);
   const hasProgressBar = isMetricWProgress(datum);
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
@@ -194,19 +273,21 @@ export function getMetricTextPartDimensions(
 
   const { progressBarThickness, iconSize } = heightBasedSizes;
 
-  const progressBarTotalSpace = progressBarThickness + (hasTarget ? PROGRESS_BAR_TARGET_SIZE : 0) + PADDING;
+  const progressBarTotalSpace =
+    progressBarThickness + (hasTarget ? PROGRESS_BAR_TARGET_SIZE : 0) + metricSpacing.progressTextGap;
   const progressBarWidth = hasVerticalProgressBar ? progressBarTotalSpace : 0;
   const progressBarHeight = hasHorizontalProgressBar ? progressBarTotalSpace : 0;
 
   const isIconVisible = !!datum.icon && style.valuePosition === 'top';
   // The width of the icon column, including padding
-  const iconColumnWidth = iconSize + PADDING;
+  const iconColumnWidth = iconSize + metricSpacing.panelPadding;
   // If the value is center-aligned and the icon is visible, add an extra column width for visual centering
   const needsCenterSpacer = isIconVisible && style.valueTextAlign === 'center';
   const iconGridColumnWidth = isIconVisible ? iconColumnWidth * (needsCenterSpacer ? 2 : 1) : 0;
 
   return {
     heightBasedSizes,
+    metricSpacing,
     hasProgressBar,
     progressBarDirection,
     progressBarWidth,
@@ -217,7 +298,8 @@ export function getMetricTextPartDimensions(
       locale,
       style.valueFontSize === 'fit',
       progressBarHeight,
-      style.valuePosition === 'middle' ? 0 : ELEMENT_PADDING,
+      metricSpacing,
+      style.valuePosition,
     ),
     textParts: getTextParts(datum, style),
     iconGridColumnWidth,
@@ -229,16 +311,21 @@ function getHeightBasedFontSizes(
   value: number,
   style: MetricStyle,
 ): HeightBasedSizes {
-  const range = ranges.find(([min, max]) => min <= value && value < max);
-  const size = range ? range[2] : ranges[0]?.[2] ?? 's';
-  const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : VALUE_FONT_SIZE[size];
+  const size = getHeightBreakpoint(ranges, value);
+  const spacingMode = getMetricSpacingMode(style);
+  const valueFontSizeMap = getValueFontSizeMap(spacingMode);
+  const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : valueFontSizeMap[size];
   const valuePartFontSize = Math.floor(valueFontSize / VALUE_PART_FONT_RATIO);
+  const extraFontSize =
+    spacingMode === 'small'
+      ? EXTRA_FONT_SIZE[size]
+      : scaleForLargeMetric(EXTRA_FONT_SIZE[size], LARGE_SECONDARY_FONT_MULTIPLIER);
 
   return {
     iconSize: ICON_SIZE[size],
     titleFontSize: TITLE_FONT_SIZE[size],
     subtitleFontSize: SUBTITLE_FONT_SIZE[size],
-    extraFontSize: EXTRA_FONT_SIZE[size],
+    extraFontSize,
     valueFontSize,
     valuePartFontSize,
     progressBarThickness: PROGRESS_BAR_THICKNESS[size],
@@ -271,12 +358,15 @@ export function getSnappedFontSizes(
   panelHeight: number,
   style: MetricStyle,
 ): Pick<HeightBasedSizes, 'valueFontSize' | 'valuePartFontSize'> {
+  const spacingMode = getMetricSpacingMode(style);
+  const valueFontSizes = getValueFontSizeSteps(spacingMode);
+  const valueFontSizeMap = getValueFontSizeMap(spacingMode);
   const sizes = getHeightBasedFontSizes(HEIGHT_BP, panelHeight, style);
   const minFontSize = Math.min(fittedValueFontSize, sizes.valueFontSize);
   const fontSize = clamp(
-    VALUE_FONT_SIZE_VALUES.find((value) => value <= minFontSize) ?? minFontSize,
-    VALUE_FONT_SIZE.xxxs,
-    VALUE_FONT_SIZE.xxl,
+    valueFontSizes.find((value) => value <= minFontSize) ?? minFontSize,
+    valueFontSizeMap.xxxs,
+    valueFontSizeMap.xxl,
   );
   return {
     valueFontSize: fontSize,
@@ -301,9 +391,11 @@ function computeMetricTextLayout(
   locale: string,
   fit: boolean,
   progressBarHeight: number, // with padding
-  extraPaddingTop: number,
+  metricSpacing: MetricSpacingLayout,
+  valuePosition: MetricStyle['valuePosition'],
 ): MetricTextLayout {
-  const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * PADDING;
+  const { panelPadding, titleSubtitleGap, extraPaddingTop, primaryAdjacentGap } = metricSpacing;
+  const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * panelPadding;
 
   const titleLineHeight = sizes.titleFontSize * LINE_HEIGHT;
   const subtitleLineHeight = sizes.subtitleFontSize * LINE_HEIGHT;
@@ -344,11 +436,19 @@ function computeMetricTextLayout(
 
     const actualTitleHeight = titleLines.length > 0 ? titleLines.length * titleLineHeight : 0;
     const actualSubtitleHeight =
-      subtitleLines.length > 0 ? subtitleLines.length * subtitleLineHeight + ELEMENT_PADDING : 0; // Subtitle padding top 5px
+      subtitleLines.length > 0 ? subtitleLines.length * subtitleLineHeight + titleSubtitleGap : 0;
     const actualExtraHeight = breakpoints.extra ? extraHeight + extraPaddingTop : 0;
+    const primaryToTitleGap = valuePosition === 'top' && titleLines.length > 0 ? primaryAdjacentGap : 0;
+    const primaryToSecondaryGap = valuePosition === 'bottom' && breakpoints.extra ? primaryAdjacentGap : 0;
 
     const nonValueElementsHeight =
-      actualTitleHeight + actualSubtitleHeight + actualExtraHeight + progressBarHeight + PADDING * 2;
+      actualTitleHeight +
+      actualSubtitleHeight +
+      actualExtraHeight +
+      primaryToTitleGap +
+      primaryToSecondaryGap +
+      progressBarHeight +
+      panelPadding * 2;
     const totalHeight = nonValueElementsHeight + valueHeight;
 
     return {

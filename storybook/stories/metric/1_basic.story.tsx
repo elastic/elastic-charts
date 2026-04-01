@@ -81,6 +81,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const titlesTextAlign = getTextAlignKnob('title text-align', 'left');
   const valueTextAlign = getTextAlignKnob('value text-align', 'right');
   const extraTextAlign = getTextAlignKnob('extra text-align', 'right');
+  const spacing = select('spacing', { Small: 'small', Large: 'large' }, 'small');
   const valuePosition = select('value position', { Bottom: 'bottom', Middle: 'middle', Top: 'top' }, 'bottom');
   const iconAlign = select(
     'icon align',
@@ -153,6 +154,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
             valueTextAlign,
             extraTextAlign,
             iconAlign,
+            spacing,
             valuePosition,
           },
         }}

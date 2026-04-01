@@ -163,6 +163,7 @@ export const Metric: React.FunctionComponent<{
   const progressBarDirection = hasProgressBar ? datum.progressBarDirection : undefined;
 
   const hasTrend = isMetricWTrend(datum);
+  const { metricSpacing } = textDimensions;
 
   const containerClassName = classNames('echMetric', {
     'echMetric--rightBorder': columnIndex < totalColumns - 1,
@@ -192,10 +193,21 @@ export const Metric: React.FunctionComponent<{
 
   const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
 
-  const containerStyle: CSSProperties = {
+  const containerStyle: CSSProperties &
+    Record<
+      | '--echMetricPadding'
+      | '--echMetricTitleSubtitleGap'
+      | '--echMetricExtraPaddingTop'
+      | '--echMetricProgressTextGap',
+      string
+    > = {
     backgroundColor: hasTrend || hasProgressBar ? backgroundColor : datumWithInteractionColor.color,
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
     borderColor: style.border,
+    '--echMetricPadding': `${metricSpacing.panelPadding}px`,
+    '--echMetricTitleSubtitleGap': `${metricSpacing.titleSubtitleGap}px`,
+    '--echMetricExtraPaddingTop': `${metricSpacing.extraPaddingTop}px`,
+    '--echMetricProgressTextGap': `${metricSpacing.progressTextGap}px`,
   };
 
   const textContrastOptions = isColorContrastOptions(contrastOptions)

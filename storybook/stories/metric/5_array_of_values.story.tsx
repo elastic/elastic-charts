@@ -51,6 +51,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'default',
   );
   const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
+  const spacing = select('spacing', { Small: 'small', Large: 'large' }, 'small');
 
   const data = useMemo<(MetricDatum | undefined)[]>(
     () => [
@@ -170,6 +171,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             metric: {
               emptyBackground,
               valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
+              spacing,
             },
           }}
           baseTheme={useBaseTheme()}
