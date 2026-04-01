@@ -6,135 +6,184 @@
  * Side Public License, v 1.
  */
 
-import { select, number, boolean } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type { PartialTheme } from '@elastic/charts';
+import type { Datum, PartialTheme } from '@elastic/charts';
 import {
   Axis,
   BarSeries,
   Chart,
+  Heatmap,
   LabelOverflowConstraint,
   Metric,
+  Partition,
+  PartitionLayout,
   Position,
   ScaleType,
   Settings,
+  defaultPartitionValueFormatter,
 } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-
-const barData = [
-  { x: '2021', y: 1234567.89 },
-  { x: '2022', y: 2345678.9 },
-  { x: '2023', y: 3456789.01 },
-  { x: '2024', y: 4567890.12 },
-  { x: '2025', y: 5678901.23 },
-];
+import { applyOptionalNumericFontFamily, withOptionalNumericFontFamily } from '../utils/elastic_ui_numeric_font';
 
 const metricData = [
   [
     {
       color: '#3c3c3c',
       title: 'Revenue 2025',
-      subtitle: 'Total Revenue',
+      subtitle: 'Total Annual Revenue',
       value: 5678901.23,
       valueFormatter: (v: number) => `$${v.toFixed(2)}`,
     },
   ],
 ];
 
-export const Example: ChartsStory = (_, { description }) => {
-  // ── Layout ───────────────────────────────────────────────────────────────
-  const chartWidth = number('Chart width (px)', 300, { min: 100, max: 1200, step: 1 });
+const barData = [
+  { x: '2020', y: 1234567, g: 'Product Alpha - $1,234,567' },
+  { x: '2021', y: 2345678, g: 'Product Alpha - $1,234,567' },
+  { x: '2022', y: 3456789, g: 'Product Alpha - $1,234,567' },
+  { x: '2023', y: 4567890, g: 'Product Alpha - $1,234,567' },
+  { x: '2024', y: 5678901, g: 'Product Alpha - $1,234,567' },
+  { x: '2020', y: 987654, g: 'Product Beta - $987,654' },
+  { x: '2021', y: 1876543, g: 'Product Beta - $987,654' },
+  { x: '2022', y: 2765432, g: 'Product Beta - $987,654' },
+  { x: '2023', y: 3654321, g: 'Product Beta - $987,654' },
+  { x: '2024', y: 4543210, g: 'Product Beta - $987,654' },
+  { x: '2020', y: 567890, g: 'Product Gamma - $567,890' },
+  { x: '2021', y: 1456789, g: 'Product Gamma - $567,890' },
+  { x: '2022', y: 2345678, g: 'Product Gamma - $567,890' },
+  { x: '2023', y: 3234567, g: 'Product Gamma - $567,890' },
+  { x: '2024', y: 4123456, g: 'Product Gamma - $567,890' },
+];
 
-  // ── Font ─────────────────────────────────────────────────────────────────
+const treemapData = [
+  { region: 'North America', product: 'Electronics', revenue: 4500000 },
+  { region: 'North America', product: 'Clothing', revenue: 2300000 },
+  { region: 'Europe', product: 'Electronics', revenue: 3800000 },
+  { region: 'Europe', product: 'Clothing', revenue: 1900000 },
+  { region: 'Europe', product: 'Food', revenue: 2700000 },
+  { region: 'Asia Pacific', product: 'Electronics', revenue: 5200000 },
+  { region: 'Asia Pacific', product: 'Clothing', revenue: 3100000 },
+  { region: 'Asia Pacific', product: 'Food', revenue: 1600000 },
+  { region: 'Latin America', product: 'Electronics', revenue: 1800000 },
+  { region: 'Latin America', product: 'Clothing', revenue: 900000 },
+];
+
+const regionColors: Record<string, string> = {
+  'North America': '#3B528B',
+  Europe: '#24868E',
+  'Asia Pacific': '#35B779',
+  'Latin America': '#AADC32',
+};
+
+const heatmapData = (() => {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const categories = ['Product A', 'Product B', 'Product C', 'Product D', 'Product E'];
+  return categories.flatMap((category, categoryIndex) =>
+    months.map((month, monthIndex) => ({
+      x: month,
+      y: category,
+      value: 12000 + categoryIndex * 9000 + monthIndex * 3700 + ((categoryIndex + monthIndex) % 3) * 850,
+    })),
+  );
+})();
+
+export const Example: ChartsStory = (_, { description }) => {
+  const baseTheme = useBaseTheme();
   const fontFamily = select(
     'Font: family',
     { Inter: 'Inter', Arial: 'Arial', 'Times New Roman': 'Times New Roman', Courier: 'Courier' },
     'Inter',
   );
-  const fontSize = number('Font: size (px)', 20, { range: true, min: 8, max: 48, step: 1 });
-
-  // ── font-feature-settings ─────────────────────────────────────────────────
-  const tnum = boolean("font-feature-settings: 'tnum' — tabular digits", true);
-  const zero = boolean("font-feature-settings: 'zero' — slashed zero", true);
-  const ss01 = boolean("font-feature-settings: 'ss01' — open digits", true);
-  const ss07 = boolean("font-feature-settings: 'ss07' — squared punctuation", true);
-
-  // ── font-variant-numeric ──────────────────────────────────────────────────
-  const tabularNums = boolean('font-variant-numeric: tabular-nums', true);
-  const slashedZero = boolean('font-variant-numeric: slashed-zero', true);
-
-  const fontFeatureParts: string[] = [];
-  if (tnum) fontFeatureParts.push("'tnum'");
-  if (zero) fontFeatureParts.push("'zero'");
-  if (ss01) fontFeatureParts.push("'ss01'");
-  if (ss07) fontFeatureParts.push("'ss07'");
-
-  const fontVariantNumericParts: string[] = [];
-  if (tabularNums) fontVariantNumericParts.push('tabular-nums');
-  if (slashedZero) fontVariantNumericParts.push('slashed-zero');
+  const fontSize = number('Font: size (px)', 14, { range: true, min: 8, max: 48, step: 1 });
+  const useElasticUINumericFont = boolean('Font: use "Elastic UI Numeric"', true);
+  const letterSpacing = number('Typography: letter-spacing (px)', 0, { range: true, min: -2, max: 5, step: 0.5 });
+  const fontKerning = select('Typography: font-kerning', { auto: 'auto', normal: 'normal', none: 'none' }, 'auto');
+  const previewFontFamily = withOptionalNumericFontFamily(fontFamily, useElasticUINumericFont);
 
   const containerStyle: React.CSSProperties = {
-    ...(fontFeatureParts.length > 0 ? { fontFeatureSettings: fontFeatureParts.join(', ') } : {}),
-    ...(fontVariantNumericParts.length > 0 ? { fontVariantNumeric: fontVariantNumericParts.join(' ') } : {}),
+    ...(letterSpacing !== 0 ? { letterSpacing: `${letterSpacing}px` } : {}),
+    ...(fontKerning !== 'auto' ? { fontKerning } : {}),
   };
 
   const theme: PartialTheme = {
+    metric: {
+      fontFamily,
+    },
+    legend: {
+      fontFamily,
+    },
     barSeriesStyle: {
       displayValue: {
         fontSize: fontSize + 2,
         fontFamily,
-        fill: '#000',
       },
     },
     axes: {
       tickLabel: {
         fontSize,
         fontFamily,
-        fill: '#000',
+      },
+    },
+    partition: {
+      fillLabel: {
+        fontFamily,
+        valueFont: {
+          fontFamily,
+        },
+      },
+    },
+    heatmap: {
+      xAxisLabel: {
+        fontFamily,
+      },
+      yAxisLabel: {
+        fontFamily,
+        width: 'auto',
+        padding: { left: 8, right: 8 },
+      },
+      cell: {
+        maxWidth: 'fill',
+        label: {
+          visible: true,
+          minFontSize: 8,
+          maxFontSize: 14,
+          useGlobalMinFontSize: true,
+          fontFamily,
+        },
+        border: { stroke: 'white', strokeWidth: 1 },
       },
     },
   };
+  applyOptionalNumericFontFamily(theme, useElasticUINumericFont);
 
-  const anyFeaturesActive = fontFeatureParts.length > 0 || fontVariantNumericParts.length > 0;
+  const activeTypography = [
+    ...(useElasticUINumericFont ? ['Elastic UI Numeric font'] : []),
+    ...(letterSpacing !== 0 ? [`letter-spacing: ${letterSpacing}px`] : []),
+    ...(fontKerning !== 'auto' ? [`font-kerning: ${fontKerning}`] : []),
+  ];
+
+  const resizableChart = (height: number): React.CSSProperties => ({
+    width: 600,
+    height,
+    resize: 'both',
+    overflow: 'hidden',
+    border: '1px solid #d3dae6',
+    borderRadius: '4px',
+  });
+
+  const sectionTitle: React.CSSProperties = {
+    margin: 0,
+    fontSize: '13px',
+    fontWeight: 600,
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', ...containerStyle }}>
-      <div style={{ height: '200px', width: `${chartWidth}px` }}>
-        <Chart title="Metric Chart" description={description}>
-          <Settings baseTheme={useBaseTheme()} />
-          <Metric id="metric1" data={metricData} />
-        </Chart>
-      </div>
-
-      <div style={{ height: '300px', width: `${chartWidth}px` }}>
-        <Chart>
-          <Settings theme={theme} baseTheme={useBaseTheme()} />
-          <Axis id="bottom" position={Position.Bottom} title="Year" showOverlappingTicks />
-          <Axis
-            id="left"
-            title="Revenue ($)"
-            position={Position.Left}
-            tickFormat={(d: number) => `$${(d / 1_000_000).toFixed(1)}M`}
-          />
-          <BarSeries
-            id="bars"
-            displayValueSettings={{
-              showValueLabel: true,
-              overflowConstraints: [LabelOverflowConstraint.ChartEdges, LabelOverflowConstraint.BarGeometry],
-            }}
-            xScaleType={ScaleType.Ordinal}
-            yScaleType={ScaleType.Linear}
-            xAccessor="x"
-            yAccessors={['y']}
-            data={barData}
-          />
-        </Chart>
-      </div>
-
-      {anyFeaturesActive && (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', ...containerStyle }}>
+      {activeTypography.length > 0 && (
         <div
           style={{
             padding: '12px 16px',
@@ -144,22 +193,123 @@ export const Example: ChartsStory = (_, { description }) => {
             fontSize: '13px',
           }}
         >
-          <strong>Active features:</strong>{' '}
-          {[
-            ...(fontFeatureParts.length > 0 ? [`font-feature-settings: ${fontFeatureParts.join(', ')}`] : []),
-            ...(fontVariantNumericParts.length > 0
-              ? [`font-variant-numeric: ${fontVariantNumericParts.join(' ')}`]
-              : []),
-          ].join(' | ')}
-          <div style={{ marginTop: '8px', fontSize: '20px', fontFamily }}>0123456789 · $1,234,567.89 · 100.00%</div>
+          <strong>Active typography:</strong> {activeTypography.join(' | ')}
+          <div style={{ marginTop: '8px', fontSize: '20px', fontFamily: previewFontFamily }}>
+            0123456789 - $1,234,567.89 - 100.00%
+          </div>
         </div>
       )}
 
-      <p style={{ margin: 0, fontSize: '12px', color: '#888' }}>
-        Tests whether canvas text measurement respects rendered text when font variants (e.g. OpenType features) are
-        applied via CSS inheritance. Text measurement should account for all computed font properties that affect
-        rendered dimensions, ensuring text is neither clipped nor overlapping.
-      </p>
+      <p style={{ margin: 0, fontSize: '12px', color: '#69707d' }}>{description}</p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <p style={sectionTitle}>Metric</p>
+        <div style={resizableChart(150)}>
+          <Chart>
+            <Settings baseTheme={baseTheme} theme={theme} />
+            <Metric id="metric1" data={metricData} />
+          </Chart>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <p style={sectionTitle}>Bar chart with legend and display values</p>
+        <div style={resizableChart(300)}>
+          <Chart>
+            <Settings theme={theme} baseTheme={baseTheme} showLegend legendPosition="right" />
+            <Axis id="bottom" position={Position.Bottom} title="Year" showOverlappingTicks />
+            <Axis
+              id="left"
+              title="Revenue ($)"
+              position={Position.Left}
+              tickFormat={(d: number) => `$${(d / 1_000_000).toFixed(1)}M`}
+            />
+            <BarSeries
+              id="bars"
+              displayValueSettings={{
+                showValueLabel: true,
+                valueFormatter: (d: number) => `$${(d / 1_000_000).toFixed(2)}M`,
+                overflowConstraints: [LabelOverflowConstraint.ChartEdges, LabelOverflowConstraint.BarGeometry],
+              }}
+              xScaleType={ScaleType.Ordinal}
+              yScaleType={ScaleType.Linear}
+              xAccessor="x"
+              yAccessors={['y']}
+              splitSeriesAccessors={['g']}
+              stackAccessors={['x']}
+              data={barData}
+            />
+          </Chart>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <p style={sectionTitle}>Treemap</p>
+        <div style={resizableChart(350)}>
+          <Chart>
+            <Settings baseTheme={baseTheme} theme={theme} />
+            <Partition
+              id="treemap"
+              data={treemapData}
+              layout={PartitionLayout.treemap}
+              valueAccessor={(d: Datum) => d.revenue as number}
+              valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000))}\u00A0K`}
+              layers={[
+                {
+                  groupByRollup: (d: Datum) => d.region,
+                  nodeLabel: (d: Datum) => String(d),
+                  fillLabel: {
+                    valueFormatter: (d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000))}\u00A0K`,
+                  },
+                  shape: { fillColor: (key: string) => regionColors[key] ?? '#888' },
+                },
+                {
+                  groupByRollup: (d: Datum) => d.product,
+                  nodeLabel: (d: Datum) => String(d),
+                  fillLabel: {
+                    valueFormatter: (d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000))}\u00A0K`,
+                  },
+                  shape: {
+                    fillColor: (key: string, _shapeDepth: number, _node: unknown, tree) => {
+                      const parent = tree.length > 1 ? tree[tree.length - 2] : undefined;
+                      const parentKey = Array.isArray(parent) ? String(parent[0]) : '';
+                      return regionColors[parentKey] ?? '#aaa';
+                    },
+                  },
+                },
+              ]}
+            />
+          </Chart>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <p style={sectionTitle}>Heatmap</p>
+        <div style={resizableChart(300)}>
+          <Chart>
+            <Settings baseTheme={baseTheme} theme={theme} showLegend legendPosition="right" />
+            <Heatmap
+              id="heatmap"
+              colorScale={{
+                type: 'bands',
+                bands: [
+                  { start: -Infinity, end: 20000, color: '#AADC32' },
+                  { start: 20000, end: 40000, color: '#35B779' },
+                  { start: 40000, end: 60000, color: '#24868E' },
+                  { start: 60000, end: 80000, color: '#3B528B' },
+                  { start: 80000, end: Infinity, color: '#471164' },
+                ],
+              }}
+              data={heatmapData}
+              xAccessor="x"
+              yAccessor="y"
+              valueAccessor="value"
+              valueFormatter={(d) => d.toLocaleString()}
+              xSortPredicate="dataIndex"
+            />
+          </Chart>
+        </div>
+      </div>
     </div>
   );
 };
