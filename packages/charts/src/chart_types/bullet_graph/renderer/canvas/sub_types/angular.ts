@@ -18,7 +18,7 @@ import type { BulletPanelDimensions } from '../../../selectors/get_panel_dimensi
 import type { BulletSpec } from '../../../spec';
 import { BulletSubtype } from '../../../spec';
 import type { BulletStyle } from '../../../theme';
-import { GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
+import { GRAPH_PADDING, TICK_FONT_SIZE, getTickFont } from '../../../theme';
 import { getAngledChartSizing } from '../../../utils/angular';
 import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
 
@@ -32,6 +32,7 @@ export function angularBullet(
   debug: boolean,
   activeValue?: ActiveValue | null,
 ) {
+  const tickFont = getTickFont(style.fontFamily);
   const { datum, graphArea, scale, ticks, colorBands } = dimensions;
   const { radius } = getAngledChartSizing(graphArea.size, spec.subtype);
   const [startAngle, endAngle] = scale.range() as [number, number];
@@ -119,14 +120,14 @@ export function angularBullet(
   const measure = measureText(ctx);
   // Assumes mostly homogenous formatting
   const maxTickWidth = formatterColorTicks.reduce((acc, t) => {
-    const { width } = measure(t.formattedValue, TICK_FONT, TICK_FONT_SIZE);
+    const { width } = measure(t.formattedValue, tickFont, TICK_FONT_SIZE);
     return Math.max(acc, width);
   }, 0);
 
   // Tick labels
   ctx.fillStyle = style.textColor;
   ctx.textBaseline = 'middle';
-  ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
+  ctx.font = cssFontShorthand(tickFont, TICK_FONT_SIZE);
   formatterColorTicks
     .filter((tick) => tick.value >= min && tick.value <= max)
     .forEach((tick) => {

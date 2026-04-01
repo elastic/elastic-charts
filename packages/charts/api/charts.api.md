@@ -567,6 +567,8 @@ export interface BulletStyle {
     // (undocumented)
     fallbackBandColor: Color;
     // (undocumented)
+    fontFamily: string;
+    // (undocumented)
     minHeight: Pixels;
     // (undocumented)
     nonFiniteText: string;
