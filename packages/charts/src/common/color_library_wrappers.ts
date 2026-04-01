@@ -41,6 +41,22 @@ export function overrideOpacity([r, g, b, o]: RgbaTuple, opacity?: number | Opac
   return [r, g, b, clamp(Number.isFinite(opacityOverride) ? opacityOverride : o, 0, 1)];
 }
 
+/**
+ * Multiply a color's opacity by a given multiplier.
+ * @internal
+ */
+export function multiplyOpacity(rgba: RgbaTuple, opacityMultiplier: number): RgbaTuple {
+  return overrideOpacity(rgba, (opacity) => opacity * opacityMultiplier);
+}
+
+/**
+ * Multiply a CSS color's opacity by a given multiplier.
+ * @internal
+ */
+export function multiplyColorOpacity(color: Color, opacityMultiplier: number): Color {
+  return RGBATupleToString(multiplyOpacity(colorToRgba(color), opacityMultiplier));
+}
+
 /** @internal */
 export function RGBATupleToString(rgba: RgbTuple): Color {
   return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3] ?? 1})`;

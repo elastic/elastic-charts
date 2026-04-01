@@ -28,3 +28,26 @@ export const computeSeriesDomainsSelector = createCustomCachedSelector(
   ],
   computeSeriesDomains,
 );
+
+/**
+ * Returns series domains computed over the full dataset, ignoring any deselected series.
+ * When nothing is deselected, reuses the already-memoized result of computeSeriesDomainsSelector
+ * at zero extra cost. Only triggers a second computeSeriesDomains call when deselection is active.
+ * Used for stable legend width calculation.
+ * @internal
+ */
+export const computeFullSeriesDomainsSelector = createCustomCachedSelector(
+  [
+    computeSeriesDomainsSelector,
+    getDeselectedSeriesSelector,
+    getSeriesSpecsSelector,
+    getScaleConfigsFromSpecsSelector,
+    getAnnotationSpecsSelector,
+    getSettingsSpecSelector,
+    getSmallMultiplesIndexOrderSelector,
+  ],
+  (domains, deselectedSeries, seriesSpecs, scaleConfigs, annotations, settings, smallMultiples) => {
+    if (deselectedSeries.length === 0) return domains;
+    return computeSeriesDomains(seriesSpecs, scaleConfigs, annotations, settings, [], smallMultiples);
+  },
+);

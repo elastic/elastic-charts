@@ -12,6 +12,14 @@ import type { Font, PartialFont, FontFamily } from '../../common/text_utils';
 import type { ColorVariant, StrokeStyle } from '../common';
 import type { PerSideDistance } from '../dimensions';
 
+/** @public */
+export type PartitionDimmedStyle =
+  | { opacity: number }
+  | {
+      /** The fill color to use when partition slices are dimmed. */
+      fill: Color | ColorVariant;
+    };
+
 interface LabelConfig extends Font {
   textColor: Color | typeof ColorVariant.Adaptive;
   valueFont: PartialFont;
@@ -82,4 +90,9 @@ export interface PartitionStyle extends FillFontSizeRange {
   linkLabel: LinkLabelConfig;
   sectorLineWidth: Pixels;
   sectorLineStroke: StrokeStyle;
+  /**
+   * The style applied to partition slices when they are dimmed relative to other highlighted elements.
+   * This is typically used to visually de-emphasize slices when hovering over a legend item.
+   */
+  dimmed: PartitionDimmedStyle;
 }

@@ -24,10 +24,10 @@ const getLabelOptionKnobs = (isLineLimit: boolean): LegendLabelOptions => {
   return isLineLimit
     ? {
         maxLines: number('max label lines', 1, { min: 0, step: 1 }, group),
-        widthLimit: 250,
+        widthLimit: 240,
       }
     : {
-        maxLines: 1,
+        maxLines: 2,
         widthLimit: number('width limit', 250, { min: 0, step: 1 }, group),
       };
 };

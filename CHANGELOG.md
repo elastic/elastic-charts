@@ -1,3 +1,20 @@
+## [71.4.1](https://github.com/elastic/elastic-charts/compare/v71.4.0...v71.4.1) (2026-03-31)
+
+# [71.4.0](https://github.com/elastic/elastic-charts/compare/v71.3.0...v71.4.0) (2026-03-31)
+
+
+### Bug Fixes
+
+* **legend:** avoid re-rendering ([#2646](https://github.com/elastic/elastic-charts/issues/2646)) ([0ca3289](https://github.com/elastic/elastic-charts/commit/0ca3289ecc075452ef30410cb48f3bf5eb77006c))
+* **legend:** keep legend values visible when hiding series in list layout ([#2807](https://github.com/elastic/elastic-charts/issues/2807)) ([c5089f5](https://github.com/elastic/elastic-charts/commit/c5089f5db85ce9e31bce476ad3f652660c6a0dd4))
+
+
+### Features
+
+* **highlight:** Add support to configure dimmed (unhighlight) colors for Bar, Partition, Waffle and Flame charts ([#2774](https://github.com/elastic/elastic-charts/issues/2774)) ([b39e24d](https://github.com/elastic/elastic-charts/commit/b39e24d16b84700bea5202827dd5a14b7e2bac3a)), closes [#ECF1F9](https://github.com/elastic/elastic-charts/issues/ECF1F9) [#384861](https://github.com/elastic/elastic-charts/issues/384861)
+* **metric:** Add ability to vertically align the metrics values to the middle of the chart ([#2783](https://github.com/elastic/elastic-charts/issues/2783)) ([54ca7cb](https://github.com/elastic/elastic-charts/commit/54ca7cb8b1a2d435fa9dfae5d0046819065bc229))
+* **theme:** set default labelOptions.widthLimit in themes and update metric.titleWeight default to 500 ([#2802](https://github.com/elastic/elastic-charts/issues/2802)) ([fbb8834](https://github.com/elastic/elastic-charts/commit/fbb8834068c7056b270185105d58356303c2f737))
+
 # [71.3.0](https://github.com/elastic/elastic-charts/compare/v71.2.0...v71.3.0) (2026-03-03)
 
 

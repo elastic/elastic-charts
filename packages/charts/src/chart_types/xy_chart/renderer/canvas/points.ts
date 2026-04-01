@@ -16,6 +16,7 @@ import type { Rotation } from '../../../../utils/common';
 import { getColorFromVariant } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
 import type { GeometryHighlightState, PointGeometry } from '../../../../utils/geometry';
+import { getDimmedColor } from '../../../../utils/themes/dimmed_colors';
 import type { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
 import { isolatedPointRadius } from '../../rendering/points';
 /**
@@ -42,13 +43,12 @@ export function renderPoints(
 
   const useIsolatedPointRadius = hideDataPoints && !hasConnectingLine;
 
-  const opacity =
-    highlightState === 'dimmed' && 'opacity' in pointStyle.dimmed ? pointStyle.dimmed.opacity : pointStyle.opacity;
+  const isDimmed = highlightState === 'dimmed';
+  const opacity = isDimmed && 'opacity' in pointStyle.dimmed ? pointStyle.dimmed.opacity : pointStyle.opacity;
 
-  const dimmedFill =
-    highlightState === 'dimmed' && 'fill' in pointStyle.dimmed ? colorToRgba(pointStyle.dimmed.fill) : undefined;
-  const dimmedStroke =
-    highlightState === 'dimmed' && 'stroke' in pointStyle.dimmed ? colorToRgba(pointStyle.dimmed.stroke) : undefined;
+  // Pre-compute dimmed color config for use inside the loop (resolved per-point via getColorFromVariant)
+  const dimmedFillColorVariant = getDimmedColor(isDimmed, pointStyle.dimmed, 'fill', undefined);
+  const dimmedStrokeColorVariant = getDimmedColor(isDimmed, pointStyle.dimmed, 'stroke', undefined);
 
   const focusedStrokeWidth =
     highlightState === 'focused' && pointStyle.focused ? pointStyle.focused.strokeWidth : undefined;
@@ -68,6 +68,13 @@ export function renderPoints(
       isolated && useIsolatedPointRadius && pointStyle?.stroke
         ? colorToRgba(getColorFromVariant(color, pointStyle.stroke))
         : style.fill.color;
+
+    const dimmedFill = dimmedFillColorVariant
+      ? colorToRgba(getColorFromVariant(color, dimmedFillColorVariant))
+      : undefined;
+    const dimmedStroke = dimmedStrokeColorVariant
+      ? colorToRgba(getColorFromVariant(color, dimmedStrokeColorVariant))
+      : undefined;
 
     const fill = { color: overrideOpacity(dimmedFill ?? fillColor, (fillOpacity) => fillOpacity * opacity) };
 

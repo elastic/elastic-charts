@@ -106,4 +106,26 @@ test.describe('Axis stories', () => {
       { left: 300, top: 100 },
     );
   });
+
+  eachTheme.describe(({ theme, urlParam }) => {
+    test(`should dim slices on legend hover - sunburst - ${theme}`, async ({ page }) => {
+      const action = async () => {
+        await common.moveMouseRelativeToDOMElement(page)({ left: 5, top: 5 }, '.echLegendItem');
+      };
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/legend--piechart&${urlParam}&knob-Partition Layout=sunburst&knob-flatLegend=true&knob-legendMaxDepth=2`,
+        { action },
+      );
+    });
+
+    test(`should dim slices on legend hover - treemap - ${theme}`, async ({ page }) => {
+      const action = async () => {
+        await common.moveMouseRelativeToDOMElement(page)({ left: 5, top: 5 }, '.echLegendItem');
+      };
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/legend--piechart&${urlParam}&knob-Partition Layout=treemap&knob-flatLegend=true&knob-legendMaxDepth=2`,
+        { action },
+      );
+    });
+  });
 });

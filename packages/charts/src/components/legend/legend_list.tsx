@@ -89,7 +89,8 @@ export const LegendList: React.FC<Props> = (props) => {
 
   // Pre-compute value elements for both layout modes
   const valueElements: React.ReactNode[] = [];
-  if (!isSeriesHidden) {
+  const shouldShowValues = !isSeriesHidden || Boolean(isListLayout);
+  if (shouldShowValues) {
     const valueData = isListLayout
       ? // In list layout, preserve the `legendValues` order and allow placeholders for CurrentAndLastValue
         legendValues.map((type, index) => ({ type, legendValueItem: preparedLegendValues[index], index }))

@@ -194,6 +194,7 @@ describe('Rendering utils', () => {
     const sampleSeriesStyle: BarSeriesStyle = {
       rect: {
         opacity: 1,
+        dimmed: { opacity: 0.25 },
       },
       rectBorder: {
         visible: true,
