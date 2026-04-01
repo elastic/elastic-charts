@@ -15,10 +15,12 @@ import { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
+import { withOptionalNumericFontFamily } from '../utils/elastic_ui_numeric_font';
 import { customKnobs } from '../utils/knobs';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const baseTheme = useBaseTheme();
   const debug = boolean('debug', false);
   const debugState = boolean('Enable debug state', false);
   const bulletTitle = text('title', 'Error rate', 'General');
@@ -30,6 +32,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const format = text('format (numeraljs)', '0.[0]', 'General');
   const formatter = (d: number) => numeral(d).format(format);
   const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.horizontal, { group: 'General' });
+  const useElasticUINumericFont = boolean('use "Elastic UI Numeric" font', true, 'General');
+  const numericFontFamily = withOptionalNumericFontFamily(baseTheme.bulletGraph.fontFamily, useElasticUINumericFont);
 
   const niceDomain = boolean('niceDomain', false, 'Ticks');
   const tickStrategy = customKnobs.multiSelect(
@@ -57,7 +61,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
         debug={debug}
         onRenderChange={getDebugStateLogger(debugState)}
         debugState={debugState}
-        baseTheme={useBaseTheme()}
+        baseTheme={baseTheme}
+        theme={{
+          bulletGraph: {
+            fontFamily: numericFontFamily,
+          },
+        }}
       />
       <Bullet
         id="bullet"
