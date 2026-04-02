@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { isDraft, produce } from 'immer';
-
 import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types';
 import type { SettingsSpec } from '../../specs';
@@ -33,25 +31,19 @@ function getSettingsSpec(specs: SpecList): SettingsSpec {
 }
 
 function validateSpec(spec: SettingsSpec): SettingsSpec {
-  // When already inside an immer draft (e.g. called from a selector invoked within
-  // an RTK reducer), mutate directly — nested produce() on draft data is unsupported.
-  if (isDraft(spec)) {
-    applySpecValidation(spec);
-    return spec;
-  }
-  return produce(spec, applySpecValidation);
-}
+  const delay = spec.pointerUpdateDebounce ?? DEFAULT_POINTER_UPDATE_DEBOUNCE;
+  const needsDebounceFix = !!spec.onPointerUpdate;
+  const needsDowFix = spec.dow < 1 || spec.dow > 7 || !Number.isInteger(spec.dow);
 
-function applySpecValidation(draft: SettingsSpec): void {
-  const delay = draft.pointerUpdateDebounce ?? DEFAULT_POINTER_UPDATE_DEBOUNCE;
+  if (!needsDebounceFix && !needsDowFix) return spec;
 
-  if (draft.onPointerUpdate) {
-    draft.onPointerUpdate = debounce(draft.onPointerUpdate, delay);
+  if (needsDowFix) {
+    Logger.warn(`Settings.dow option must be an integer from 1 to 7, received ${spec.dow}. Using default of 1.`);
   }
 
-  if (draft.dow < 1 || draft.dow > 7 || !Number.isInteger(draft.dow)) {
-    Logger.warn(`Settings.dow option must be an integer from 1 to 7, received ${draft.dow}. Using default of 1.`);
-
-    draft.dow = settingsBuildProps.defaults.dow;
-  }
+  return {
+    ...spec,
+    ...(needsDebounceFix && { onPointerUpdate: debounce(spec.onPointerUpdate!, delay) }),
+    ...(needsDowFix && { dow: settingsBuildProps.defaults.dow }),
+  };
 }

@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { isDraft, produce } from 'immer';
-
 import { getSettingsSpecSelector } from './get_settings_spec';
 import { colorToRgba, overrideOpacity, RGBATupleToString } from '../../common/color_library_wrappers';
 import { clamp, mergePartial } from '../../utils/common';
@@ -34,29 +32,28 @@ function getTheme(baseTheme?: Theme, theme?: PartialTheme | PartialTheme[]): The
 }
 
 /**
- * Validation for final theme object used throughout charts
- *
- * Note: mutates theme in place when called within an immer draft,
- * otherwise uses produce() for immutable updates.
+ * Validates and returns a corrected copy of the theme object.
  */
 function validateTheme(theme: Theme): Theme {
-  // When already inside an immer draft (e.g. called from a selector invoked within
-  // an RTK reducer), mutate directly — nested produce() on draft data is unsupported.
-  if (isDraft(theme)) {
-    applyThemeValidation(theme);
-    return theme;
-  }
-  return produce(theme, applyThemeValidation);
-}
+  const fallbackRGBA = colorToRgba(theme.background.fallbackColor);
+  const needsFallbackFix = fallbackRGBA[3] !== 1;
 
-function applyThemeValidation(draft: Theme): void {
-  const fallbackRGBA = colorToRgba(draft.background.fallbackColor);
-  if (fallbackRGBA[3] !== 1) {
+  const clampedRotation = clamp(theme.heatmap.xAxisLabel.rotation, 0, 90);
+  const needsRotationFix = clampedRotation !== theme.heatmap.xAxisLabel.rotation;
+
+  if (!needsFallbackFix && !needsRotationFix) return theme;
+
+  if (needsFallbackFix) {
     Logger.warn(`background.fallbackColor must be opaque, found alpha of ${fallbackRGBA[3]}. Overriding alpha to 1.`);
-    const newFallback = overrideOpacity(fallbackRGBA, 1);
-    draft.background.fallbackColor = RGBATupleToString(newFallback);
   }
 
-  // heatmap rotation constraint:
-  draft.heatmap.xAxisLabel.rotation = clamp(draft.heatmap.xAxisLabel.rotation, 0, 90);
+  return {
+    ...theme,
+    ...(needsFallbackFix && {
+      background: { ...theme.background, fallbackColor: RGBATupleToString(overrideOpacity(fallbackRGBA, 1)) },
+    }),
+    ...(needsRotationFix && {
+      heatmap: { ...theme.heatmap, xAxisLabel: { ...theme.heatmap.xAxisLabel, rotation: clampedRotation } },
+    }),
+  };
 }
