@@ -54,7 +54,7 @@ export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
     }
     const fontString = cssFontShorthand(font, fontSize);
     // measureCtx doesn't need withContext, so not using it for performance reasons
-    if (isMeasureCtx) { 
+    if (isMeasureCtx) {
       // Avoid setting the font multiple times if it hasn't changed for performance
       if (fontString !== lastFont) {
         ctx.font = fontString;
