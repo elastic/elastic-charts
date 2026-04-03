@@ -35,7 +35,7 @@ const metricData = [
       color: '#3c3c3c',
       title: 'Revenue 2025',
       subtitle: 'Total Annual Revenue',
-      value: 5678901.23,
+      value: 5678901.24,
       valueFormatter: (v: number) => `$${v.toFixed(2)}`,
     },
   ],
@@ -111,6 +111,9 @@ export const Example: ChartsStory = (_, { description }) => {
   };
 
   const theme: PartialTheme = {
+    metric: {
+      valueFontSize: 'fit',
+    },
     barSeriesStyle: {
       displayValue: {
         fontSize: fontSize + 2,
