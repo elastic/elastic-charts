@@ -1,0 +1,572 @@
+---
+id: architecture
+title: Architecture Overview
+sidebar_position: 3
+---
+
+# Architecture Overview
+
+Understanding Elastic Charts' architecture will help you build better visualizations and contribute to the library. This guide explains the core architectural patterns and how different components work together.
+
+## High-Level Architecture
+
+Elastic Charts is built on a layered architecture that separates concerns and provides clear boundaries between different responsibilities:
+
+```
+┌─────────────────────────────────────────────────────┐
+│              React Components Layer                  │
+│    (Chart, Settings, Series, Axis, Annotations)     │
+└────────────────────┬────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────┐
+│              Specification Layer                     │
+│         (Specs parsed into internal state)          │
+└────────────────────┬────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────┐
+│              State Management Layer                  │
+│          (Redux store, selectors, actions)          │
+└────────────────────┬────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────┐
+│           Computation Layer                          │
+│    (Layout, scales, geometries, interactions)       │
+└────────────────────┬────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────┐
+│              Rendering Layer                         │
+│           (Canvas renderer)                          │
+└─────────────────────────────────────────────────────┘
+```
+
+## Core Components
+
+### 1. Chart Component (Entry Point)
+
+The `Chart` component is the root container that sets up the entire rendering pipeline:
+
+```tsx
+// packages/charts/src/components/chart.tsx
+export class Chart extends React.Component<ChartProps, ChartState> {
+  private chartStore: Store<GlobalChartState>;
+  
+  constructor(props: ChartProps) {
+    // Create a Redux store for this chart instance
+    this.chartStore = createChartStore(id, title, description);
+    
+    // Set up selectors registry
+    chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
+  }
+  
+  render() {
+    return (
+      <Provider store={this.chartStore}>
+        <SpecsParser>{children}</SpecsParser>
+        <ChartContainer />
+        <Legend />
+      </Provider>
+    );
+  }
+}
+```
+
+**Key Responsibilities:**
+- Creates an isolated Redux store for each chart instance
+- Provides React context through Redux Provider
+- Manages chart lifecycle
+- Handles parent container dimensions
+- Supports PNG snapshot exports
+
+### 2. Specification Parser
+
+The `SpecsParser` component collects all spec components (Settings, Series, Axis, etc.) from React children and dispatches them to the Redux store:
+
+```tsx
+// packages/charts/src/specs/specs_parser.tsx
+const SpecsParserComponent: FC<PropsWithChildren<DispatchProps>> = (props) => {
+  useEffect(() => {
+    props.specParsed();
+  });
+  
+  useEffect(() => () => {
+    props.specUnmounted();
+  }, []);
+  
+  return <>{props.children}</>;
+};
+```
+
+**Key Responsibilities:**
+- Coordinates spec lifecycle
+- Triggers parsing when specs are mounted/unmounted
+- Maintains spec tree structure
+
+### 3. Spec Factory Pattern
+
+Each chart specification uses a factory pattern to register itself with the Redux store:
+
+```tsx
+// Example: BarSeries component
+export const BarSeries: React.FC<BarSeriesSpec> = (props) => {
+  useSpecFactory({
+    ...props,
+    specType: SpecType.Series,
+    seriesType: 'bar',
+  });
+  
+  return null; // Specs don't render directly
+};
+```
+
+**Key Responsibilities:**
+- Register/unregister specs with the store
+- Provide type-safe spec definitions
+- Support spec composition
+
+## State Management
+
+Elastic Charts uses **Redux Toolkit** for predictable state management. Each chart has its own isolated Redux store.
+
+### Global Chart State
+
+```typescript
+// packages/charts/src/state/chart_state.ts
+export interface ChartSliceState {
+  chartId: string;
+  chartType: ChartType | null;
+  specs: SpecList;
+  parentDimensions: Dimensions;
+  interactions: InteractionsState;
+  colors: ColorsState;
+  chartRendered: boolean;
+  // ... more state
+}
+```
+
+### State Flow
+
+```
+User Props → Specs → Actions → Reducers → State → Selectors → Computed Values → Renderer
+```
+
+### Key State Slices
+
+1. **Specs State**: All chart specifications
+2. **Interactions State**: Mouse position, selections, tooltip state
+3. **Colors State**: Temporary and persisted color assignments
+4. **Dimensions State**: Chart and parent container dimensions
+
+### Selectors (Memoization)
+
+Elastic Charts uses **re-reselect** for highly optimized memoization. Selectors compute derived data from the state:
+
+```typescript
+// Example: Computing chart dimensions
+const computeChartDimensionsSelector = createCachedSelector(
+  [getSettingsSpecSelector, getParentDimensionsSelector, getAxisSpecsSelector],
+  (settings, parentDimensions, axisSpecs) => {
+    // Complex computation
+    return computedDimensions;
+  }
+)({
+  keySelector: (state) => state.chartId,
+  selectorCreator: createCustomCachedSelector,
+});
+```
+
+**Benefits:**
+- Expensive computations run only when inputs change
+- Per-chart-instance caching via chart ID
+- Prevents unnecessary re-renders
+
+## Chart Types Architecture
+
+Each chart type follows a plugin-like architecture:
+
+```
+packages/charts/src/chart_types/
+├── xy_chart/           # Line, Bar, Area, Bubble charts
+├── partition_chart/    # Pie, Donut, Sunburst, Treemap
+├── heatmap/           # Heatmap
+├── wordcloud/         # Word cloud
+├── flame_chart/       # Flame graph
+├── goal_chart/        # Goal/Gauge charts
+├── bullet_graph/      # Bullet graph
+└── metric/            # Metric display
+```
+
+### Chart Type Structure
+
+Each chart type implements:
+
+```typescript
+interface ChartType {
+  // State selectors specific to this chart type
+  chartStateSelectors: ChartTypeSelectors;
+  
+  // Chart-specific renderer
+  chartRenderer: ChartRenderer;
+  
+  // Specifications for this chart type
+  specs: ChartTypeSpecs;
+}
+```
+
+Example for XY Charts:
+
+```
+xy_chart/
+├── state/
+│   ├── chart_state.ts          # XY-specific state
+│   ├── selectors/              # XY-specific selectors
+│   │   ├── get_geometries.ts   # Compute bars, lines, areas
+│   │   ├── get_scales.ts       # Compute X/Y scales
+│   │   └── compute_legend.ts   # Compute legend items
+│   └── utils/
+│       ├── group_data.ts       # Data grouping logic
+│       └── compute_series.ts   # Series computation
+├── renderer/
+│   ├── canvas/                 # Canvas renderer
+│   │   └── xy_chart.tsx        # Main rendering component
+
+├── specs/                      # Spec definitions
+│   ├── line_series.tsx
+│   ├── bar_series.tsx
+│   └── area_series.tsx
+└── utils/                      # Chart-specific utilities
+```
+
+## Rendering Pipeline
+
+### Canvas Rendering (Default)
+
+Canvas rendering is optimized for performance with large datasets:
+
+```typescript
+// packages/charts/src/chart_types/xy_chart/renderer/canvas/xy_chart.tsx
+class XYChartComponent extends React.Component<XYChartProps> {
+  componentDidMount() {
+    this.drawCanvas();
+  }
+  
+  componentDidUpdate() {
+    this.drawCanvas();
+  }
+  
+  drawCanvas() {
+    const ctx = this.canvasRef.current?.getContext('2d');
+    if (!ctx) return;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+    
+    // Render geometries (bars, lines, areas, etc.)
+    renderXYChartCanvas2d(ctx, geometries, theme);
+  }
+}
+```
+
+**Rendering Steps:**
+1. Clear canvas
+2. Render backgrounds and panels
+3. Render grid lines
+4. Render data geometries (bars, lines, areas, points)
+5. Render axes
+6. Render annotations
+7. Render highlights and interactions
+
+## Data Flow
+
+### From Data to Pixels
+
+```
+1. Raw Data
+   ↓
+2. Data Accessors (extract values)
+   ↓
+3. Data Series (group and stack)
+   ↓
+4. Scales (map data to screen coordinates)
+   ↓
+5. Geometries (compute visual shapes)
+   ↓
+6. Renderer (draw to canvas)
+```
+
+### Example: Bar Chart Data Flow
+
+```typescript
+// 1. Raw data
+const data = [{ x: 'A', y: 10 }, { x: 'B', y: 20 }];
+
+// 2. Accessors extract values
+const xAccessor = (d) => d.x;  // 'A', 'B'
+const yAccessor = (d) => d.y;  // 10, 20
+
+// 3. Scales map data to coordinates
+const xScale = scaleOrdinal(['A', 'B'], [0, 100]);
+const yScale = scaleLinear([0, 20], [200, 0]);
+
+// 4. Geometries computed
+const barGeometries = data.map(d => ({
+  x: xScale(d.x),           // 0 or 100
+  y: yScale(d.y),           // computed Y position
+  width: barWidth,
+  height: 200 - yScale(d.y),
+  color: theme.colors.vizColors[0],
+}));
+
+// 5. Render to canvas
+ctx.fillStyle = geometry.color;
+ctx.fillRect(geometry.x, geometry.y, geometry.width, geometry.height);
+```
+
+## Scales System
+
+Elastic Charts uses **d3-scale** internally for mapping data values to visual space:
+
+### Scale Types
+
+```typescript
+export enum ScaleType {
+  Linear = 'linear',      // Continuous numeric
+  Ordinal = 'ordinal',    // Categorical
+  Time = 'time',          // Time-based
+  Log = 'log',            // Logarithmic
+  Sqrt = 'sqrt',          // Square root
+}
+```
+
+### Scale Computation
+
+```typescript
+// packages/charts/src/scales/
+const computeXScale = (
+  spec: SeriesSpec,
+  domain: Domain,
+  range: Range,
+): Scale => {
+  switch (spec.xScaleType) {
+    case ScaleType.Linear:
+      return scaleLinear().domain(domain).range(range);
+    case ScaleType.Ordinal:
+      return scaleOrdinal().domain(domain).range(range);
+    case ScaleType.Time:
+      return scaleTime().domain(domain).range(range);
+    // ... more scale types
+  }
+};
+```
+
+## Interaction System
+
+Interactions are managed through Redux actions and state:
+
+### Interaction Flow
+
+```
+User Event → Action → Reducer → State Update → Selector → Visual Feedback
+```
+
+### Example: Tooltip Interaction
+
+```typescript
+// 1. Mouse move event
+onPointerMove(event) {
+  dispatch(onPointerMoveAction(event.position));
+}
+
+// 2. Reducer updates pointer state
+case 'POINTER_MOVE':
+  state.interactions.pointer.position = action.payload;
+
+// 3. Selector computes tooltip content
+const getTooltipSelector = createSelector(
+  [getPointerPosition, getGeometries],
+  (position, geometries) => {
+    const hoveredGeometry = findGeometryAt(position, geometries);
+    return hoveredGeometry ? formatTooltip(hoveredGeometry) : null;
+  }
+);
+
+// 4. Tooltip component re-renders
+<Tooltip content={tooltipContent} position={tooltipPosition} />
+```
+
+### Supported Interactions
+
+- **Pointer Events**: Move, click, double-click
+- **Brushing**: Click and drag to select a region
+- **Zooming**: Scroll to zoom in/out
+- **Panning**: Drag to pan the chart
+- **Legend Interactions**: Click legend items to toggle series
+- **Keyboard Navigation**: Tab through elements, use arrow keys
+
+## Performance Optimizations
+
+### 1. Memoization
+
+Extensive use of memoized selectors prevents redundant calculations:
+
+```typescript
+const expensiveSelector = createCachedSelector(
+  [inputSelector1, inputSelector2],
+  (input1, input2) => {
+    // This only runs when inputs change
+    return expensiveComputation(input1, input2);
+  }
+)({ keySelector: (state) => state.chartId });
+```
+
+### 2. Canvas Rendering
+
+Canvas rendering is optimized for:
+- Large datasets (1000+ points)
+- Frequent updates
+- Complex animations
+
+### 3. Spatial Indexing
+
+For hit detection and tooltips, spatial indexing (Delaunay triangulation) is used:
+
+```typescript
+// packages/charts/src/chart_types/xy_chart/utils/indexed_geometry_spatial_map.ts
+class IndexedGeometrySpatialMap {
+  private map: Delaunay;
+  
+  find(point: Point): IndexedGeometry[] {
+    const index = this.map.find(point.x, point.y);
+    return this.pointGeometries[index];
+  }
+}
+```
+
+### 4. Request Animation Frame
+
+Rendering updates are batched using `requestAnimationFrame`:
+
+```typescript
+window.requestAnimationFrame(() => {
+  this.drawCanvas();
+});
+```
+
+## Accessibility
+
+The library provides basic accessibility features:
+
+- Keyboard navigation support for basic interactions
+- Semantic HTML structure where possible
+- Color contrast considerations in default themes
+
+:::note
+Canvas-based charts have inherent accessibility limitations. For critical accessibility requirements, consider providing alternative data representations (tables, text summaries) alongside visualizations.
+:::
+
+## Extension Points
+
+### Custom Chart Types
+
+Create custom chart types by implementing:
+
+```typescript
+interface ChartType {
+  chartType: string;
+  chartStateSelectors: ChartTypeSelectors;
+  chartRenderer: ChartRenderer;
+}
+```
+
+### Custom Themes
+
+Extend or override the base theme:
+
+```typescript
+const customTheme: PartialTheme = {
+  colors: {
+    vizColors: ['#FF0000', '#00FF00', '#0000FF'],
+  },
+  barSeriesStyle: {
+    rect: {
+      opacity: 0.8,
+    },
+  },
+};
+```
+
+### Custom Renderers
+
+Implement custom rendering logic:
+
+```typescript
+const customRenderer: ChartRenderer = (
+  containerRef,
+  forwardStageRef,
+) => {
+  return <CustomCanvasRenderer ref={forwardStageRef} />;
+};
+```
+
+## Build & Bundle
+
+### Build Process
+
+```bash
+# TypeScript compilation
+tsc -p tsconfig.src.json
+
+# SASS compilation
+sass 'src/styles:dist'
+
+# Type checking
+tsc -p tsconfig.check.json
+```
+
+### Output Structure
+
+```
+dist/
+├── index.js           # Main entry point
+├── index.d.ts         # TypeScript definitions
+├── theme.css          # Compiled styles
+└── components/        # Individual components
+```
+
+### Tree Shaking
+
+The library is built to support tree shaking:
+
+```typescript
+// You only import what you use
+import { Chart, BarSeries } from '@elastic/charts';
+// Other components are not included in your bundle
+```
+
+## Testing Architecture
+
+### Unit Tests
+
+Jest-based unit tests for individual functions and components:
+
+```bash
+yarn test
+```
+
+### Visual Regression Tests
+
+Playwright-based visual tests:
+
+```bash
+cd e2e && yarn test
+```
+
+
+
+## Next Steps
+
+Now that you understand the architecture:
+
+- [Core Concepts](./core-concepts) - Deep dive into scales, accessors, and data
+- [Components Reference](./components) - Detailed API documentation
+- [Contributing Guide](./contributing) - Learn how to contribute
+- [Examples](../examples/intro) - See architecture in action

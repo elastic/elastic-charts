@@ -1,0 +1,835 @@
+---
+id: core-concepts
+title: Core Concepts
+sidebar_position: 4
+---
+
+# Core Concepts
+
+This guide covers the fundamental concepts you need to understand to work effectively with Elastic Charts.
+
+## Data and Accessors
+
+### Understanding Data
+
+Elastic Charts works with arrays of data objects. The structure of your data objects is flexible:
+
+```typescript
+// Simple data structure
+const simpleData = [
+  { x: 1, y: 10 },
+  { x: 2, y: 20 },
+  { x: 3, y: 15 },
+];
+
+// Complex nested data
+const complexData = [
+  { 
+    timestamp: '2024-01-01',
+    metrics: {
+      sales: 1000,
+      revenue: 5000,
+    },
+    category: 'Electronics',
+  },
+  // ... more data
+];
+```
+
+### Accessor Functions
+
+Accessors tell the chart how to extract values from your data. They can be:
+
+1. **Property keys** (strings):
+```typescript
+xAccessor="x"
+yAccessors={['y']}
+```
+
+2. **Index numbers**:
+```typescript
+// For array-based data: [[1, 10], [2, 20]]
+xAccessor={0}
+yAccessors={[1]}
+```
+
+3. **Custom functions**:
+```typescript
+xAccessor={(d) => d.timestamp}
+yAccessors={[(d) => d.metrics.sales, (d) => d.metrics.revenue]}
+```
+
+### Accessor Types
+
+Different accessors serve different purposes:
+
+```typescript
+interface SeriesAccessors {
+  // X-axis value
+  xAccessor: Accessor;
+  
+  // Y-axis values (multiple for multi-series)
+  yAccessors: Accessor[];
+  
+  // Grouping for different series
+  splitSeriesAccessors?: Accessor[];
+  
+  // Stacking identifier
+  stackAccessors?: Accessor[];
+  
+  // Color grouping
+  colorAccessors?: Accessor[];
+  
+  // Custom marks (for bubble charts)
+  markSizeAccessor?: Accessor;
+}
+```
+
+### Example: Multiple Accessors
+
+```tsx
+const data = [
+  { date: '2024-01', region: 'North', product: 'A', sales: 100, profit: 20 },
+  { date: '2024-01', region: 'South', product: 'A', sales: 150, profit: 30 },
+  { date: '2024-01', region: 'North', product: 'B', sales: 120, profit: 25 },
+  // ... more data
+];
+
+<BarSeries
+  id="sales-data"
+  xAccessor="date"
+  yAccessors={['sales', 'profit']}
+  splitSeriesAccessors={['region']}  // Creates separate series per region
+  stackAccessors={['product']}       // Stacks products within each region
+  data={data}
+/>
+```
+
+## Scales
+
+Scales map data values to visual coordinates. Understanding scales is crucial for effective visualizations.
+
+### Scale Types
+
+#### Linear Scale
+Maps continuous numeric data to a continuous range:
+
+```tsx
+// For numeric data: 0, 10, 20, 30...
+<LineSeries
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Linear}
+  // ...
+/>
+```
+
+**Use cases**: Numeric data, measurements, counts
+
+#### Ordinal Scale
+Maps discrete categorical data to discrete positions:
+
+```tsx
+// For categorical data: 'Jan', 'Feb', 'Mar'...
+<BarSeries
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+  // ...
+/>
+```
+
+**Use cases**: Categories, labels, discrete groups
+
+#### Time Scale
+Maps temporal data to a continuous range:
+
+```tsx
+// For dates/timestamps
+<LineSeries
+  xScaleType={ScaleType.Time}
+  yScaleType={ScaleType.Linear}
+  xAccessor={(d) => new Date(d.timestamp)}
+  // ...
+/>
+```
+
+**Use cases**: Time series, chronological data
+
+#### Log Scale
+Maps data using logarithmic transformation:
+
+```tsx
+<LineSeries
+  xScaleType={ScaleType.Linear}
+  yScaleType={ScaleType.Log}
+  // ...
+/>
+```
+
+**Use cases**: Data spanning multiple orders of magnitude, exponential growth
+
+#### Square Root Scale
+Uses square root transformation:
+
+```tsx
+<LineSeries
+  yScaleType={ScaleType.Sqrt}
+  // ...
+/>
+```
+
+**Use cases**: Area-encoded data, reducing impact of outliers
+
+### Scale Domains
+
+Domains define the input range for scales. Elastic Charts computes domains automatically but you can override them:
+
+```tsx
+<Axis
+  id="left"
+  position={Position.Left}
+  domain={{ min: 0, max: 100 }}  // Force domain
+/>
+
+<Settings
+  xDomain={{ min: 0, max: 10 }}  // Global X domain
+/>
+```
+
+### Custom Domain Fitting
+
+Control how data fits within the domain:
+
+```tsx
+<Settings
+  domain={{
+    fit: true,           // Fit domain to data
+    padding: 0.1,        // Add 10% padding
+  }}
+/>
+```
+
+## Series and Grouping
+
+### Single Series
+
+A single line or bar series:
+
+```tsx
+<LineSeries
+  id="single-series"
+  name="Revenue"
+  data={data}
+  xAccessor="month"
+  yAccessors={['revenue']}
+/>
+```
+
+### Multiple Series
+
+Multiple independent series on the same chart:
+
+```tsx
+<Chart>
+  <LineSeries
+    id="series-1"
+    name="Revenue"
+    data={revenueData}
+    xAccessor="month"
+    yAccessors={['value']}
+  />
+  <LineSeries
+    id="series-2"
+    name="Costs"
+    data={costsData}
+    xAccessor="month"
+    yAccessors={['value']}
+  />
+</Chart>
+```
+
+### Split Series
+
+Create multiple series from a single dataset:
+
+```tsx
+const data = [
+  { month: 'Jan', region: 'North', sales: 100 },
+  { month: 'Jan', region: 'South', sales: 150 },
+  { month: 'Feb', region: 'North', sales: 120 },
+  { month: 'Feb', region: 'South', sales: 160 },
+];
+
+<LineSeries
+  id="sales"
+  data={data}
+  xAccessor="month"
+  yAccessors={['sales']}
+  splitSeriesAccessors={['region']}  // Creates 2 series: North & South
+/>
+```
+
+### Stacked Series
+
+Stack values vertically or horizontally:
+
+```tsx
+<BarSeries
+  id="stacked-bars"
+  data={data}
+  xAccessor="month"
+  yAccessors={['sales']}
+  stackAccessors={['month']}  // Stack bars at same x position
+  splitSeriesAccessors={['product']}  // Different products stacked
+/>
+```
+
+**Stack modes:**
+- **Percentage**: Values normalized to 100%
+- **Wiggle**: Minimizes baseline changes (for streamgraphs)
+- **Silhouette**: Centered around zero
+
+```tsx
+<Settings stackMode="percentage" />
+```
+
+## Geometries
+
+Geometries are the visual shapes representing your data. Elastic Charts computes geometries from data and specifications.
+
+### Geometry Types
+
+```typescript
+// Bar geometry
+interface BarGeometry {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: string;
+  seriesIdentifier: SeriesIdentifier;
+}
+
+// Line geometry
+interface LineGeometry {
+  points: Array<{ x: number; y: number }>;
+  color: string;
+  transform: Transform;
+}
+
+// Area geometry
+interface AreaGeometry {
+  lines: LineGeometry;
+  area: string;  // Path data
+  color: string;
+}
+
+// Point geometry (for scatter/bubble)
+interface PointGeometry {
+  x: number;
+  y: number;
+  radius: number;
+  color: string;
+  datum: any;
+}
+```
+
+### Accessing Geometries
+
+Geometries are computed internally and used for:
+
+1. **Rendering**: Drawing shapes on canvas
+2. **Interactions**: Hit testing for tooltips and clicks
+3. **Animations**: Transitioning between states
+
+You can access geometry data through event handlers:
+
+```tsx
+<Settings
+  onElementClick={(elements) => {
+    elements.forEach((element) => {
+      console.log('Clicked geometry:', element.geometry);
+      console.log('Data:', element.datum);
+    });
+  }}
+/>
+```
+
+## Themes
+
+Themes control the visual appearance of all chart elements.
+
+### Theme Structure
+
+```typescript
+interface Theme {
+  // Chart background
+  background: {
+    color: string;
+  };
+  
+  // Margins around the chart
+  chartMargins: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
+  
+  // Padding between chart and axis
+  chartPaddings: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
+  
+  // Color palette
+  colors: {
+    vizColors: string[];      // Main data colors
+    defaultVizColor: string;
+  };
+  
+  // Series-specific styles
+  barSeriesStyle: BarSeriesStyle;
+  lineSeriesStyle: LineSeriesStyle;
+  areaSeriesStyle: AreaSeriesStyle;
+  
+  // Axes styles
+  axes: AxisStyle;
+  
+  // Legend styles
+  legend: LegendStyle;
+  
+  // ... more theme properties
+}
+```
+
+### Using Built-in Themes
+
+```tsx
+import { LIGHT_THEME, DARK_THEME } from '@elastic/charts';
+
+<Settings theme={DARK_THEME} />
+```
+
+Available themes:
+- `LIGHT_THEME` - Default light theme
+- `DARK_THEME` - Dark theme
+- `LEGACY_LIGHT_THEME` - Legacy Elastic light theme
+- `LEGACY_DARK_THEME` - Legacy Elastic dark theme
+
+### Creating Custom Themes
+
+**Partial theme override:**
+
+```tsx
+<Settings
+  baseTheme={LIGHT_THEME}
+  theme={{
+    colors: {
+      vizColors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A'],
+    },
+    barSeriesStyle: {
+      rect: {
+        opacity: 0.8,
+      },
+      displayValue: {
+        fontSize: 14,
+        fill: '#000',
+      },
+    },
+  }}
+/>
+```
+
+**Complete custom theme:**
+
+```tsx
+const myTheme: Theme = {
+  ...LIGHT_THEME,
+  colors: {
+    ...LIGHT_THEME.colors,
+    vizColors: ['#custom1', '#custom2', '#custom3'],
+  },
+  barSeriesStyle: {
+    ...LIGHT_THEME.barSeriesStyle,
+    rect: {
+      opacity: 1,
+      fill: '#custom',
+    },
+  },
+};
+
+<Settings theme={myTheme} />
+```
+
+### Theming Best Practices
+
+1. **Extend base themes** rather than creating from scratch
+2. **Use semantic colors** from the theme instead of hardcoding
+3. **Test both light and dark modes** if supporting both
+4. **Consider color contrast** - ensure sufficient contrast for readability
+
+## Interactions
+
+Elastic Charts provides rich interaction capabilities out of the box.
+
+### Pointer Events
+
+Track mouse/touch position:
+
+```tsx
+<Settings
+  onPointerUpdate={(event) => {
+    console.log('Pointer at:', event.x, event.y);
+    console.log('Hovered elements:', event.elements);
+  }}
+  pointerUpdateDebounce={100}  // Debounce in ms
+  pointerUpdateTrigger="x"     // or "y", "both"
+/>
+```
+
+### Element Click
+
+Handle clicks on chart elements:
+
+```tsx
+<Settings
+  onElementClick={(elements) => {
+    elements.forEach(({ datum, seriesIdentifier }) => {
+      console.log('Clicked:', seriesIdentifier.key, datum);
+    });
+  }}
+/>
+```
+
+### Brushing (Range Selection)
+
+Allow users to select a range:
+
+```tsx
+<Settings
+  onBrushEnd={(brushArea) => {
+    if (brushArea) {
+      console.log('Selected range:', brushArea.x);
+      // brushArea.x = [min, max]
+    }
+  }}
+  brushAxis="x"  // or "y", "both"
+/>
+```
+
+### Legend Interactions
+
+Handle legend clicks:
+
+```tsx
+<Settings
+  onLegendItemClick={(legendItem) => {
+    console.log('Legend clicked:', legendItem.label);
+  }}
+  legendAction="toggle"  // or "toggleSeries"
+/>
+```
+
+### Tooltip Customization
+
+```tsx
+<Settings
+  tooltip={{
+    type: 'vertical',        // or 'cross', 'follow'
+    snap: true,              // Snap to nearest data point
+    stickTo: 'top',         // Tooltip position
+    boundary: 'chart',       // Boundary for tooltip
+    customTooltip: MyCustomTooltip,  // Custom component
+    headerFormatter: (data) => `Custom Header: ${data.value}`,
+  }}
+/>
+```
+
+## Annotations
+
+Annotations add context and highlight specific data points or regions.
+
+### Line Annotations
+
+Vertical or horizontal reference lines:
+
+```tsx
+import { LineAnnotation, AnnotationDomainType } from '@elastic/charts';
+
+<LineAnnotation
+  id="threshold"
+  domainType={AnnotationDomainType.YDomain}
+  dataValues={[{ dataValue: 50, details: 'Threshold' }]}
+  style={{
+    line: {
+      stroke: 'red',
+      strokeWidth: 2,
+      opacity: 0.8,
+    },
+  }}
+  marker={<div>⚠️</div>}  // Optional marker
+/>
+```
+
+### Rectangle Annotations
+
+Highlight regions:
+
+```tsx
+import { RectAnnotation } from '@elastic/charts';
+
+<RectAnnotation
+  id="highlight"
+  dataValues={[
+    {
+      coordinates: {
+        x0: 5,
+        x1: 10,
+        y0: 0,
+        y1: 100,
+      },
+      details: 'Important period',
+    },
+  ]}
+  style={{
+    fill: 'rgba(255, 0, 0, 0.1)',
+  }}
+/>
+```
+
+### Custom Annotations
+
+Create fully custom annotations:
+
+```tsx
+<Settings
+  customAnnotation={{
+    position: { x: 100, y: 200 },
+    render: () => <div>Custom annotation</div>,
+  }}
+/>
+```
+
+## Legends
+
+Legends help users understand what each series represents.
+
+### Legend Configuration
+
+```tsx
+<Settings
+  showLegend={true}
+  legendPosition="right"  // 'top', 'bottom', 'left', 'right'
+  legendMaxDepth={2}      // Maximum nesting level
+  legendSize={200}        // Fixed size in pixels
+  flatLegend={false}      // Flatten nested legends
+/>
+```
+
+### Legend Actions
+
+Control what happens when legend items are clicked:
+
+```tsx
+<Settings
+  legendAction="toggle"  // Hide/show series
+  onLegendItemClick={(legendItem) => {
+    console.log('Clicked:', legendItem);
+  }}
+  onLegendItemOver={(legendItem) => {
+    console.log('Hovered:', legendItem);
+  }}
+/>
+```
+
+### Custom Legend Values
+
+Display custom values in legend:
+
+```tsx
+<Settings
+  legendValues={['currentAndLastValue', 'average']}
+  legendValueFormatter={(value) => `$${value.toFixed(2)}`}
+/>
+```
+
+## Axes
+
+Axes provide scale and context for your data.
+
+### Axis Configuration
+
+```tsx
+import { Axis, Position } from '@elastic/charts';
+
+<Axis
+  id="bottom-axis"
+  position={Position.Bottom}
+  title="Time"
+  showOverlappingTicks={false}
+  showOverlappingLabels={false}
+  showGridLines={true}
+  tickFormat={(d) => formatDate(d)}
+  domain={{ min: 0, max: 100 }}
+  integersOnly={false}
+/>
+```
+
+### Multiple Axes
+
+Support multiple Y axes:
+
+```tsx
+<Axis id="left-axis" position={Position.Left} title="Sales ($)" />
+<Axis 
+  id="right-axis" 
+  position={Position.Right} 
+  title="Units"
+  tickFormat={(d) => `${d} units`}
+/>
+
+<LineSeries
+  id="sales"
+  yAccessors={['sales']}
+  groupId="left"  // Links to left axis
+  data={salesData}
+/>
+
+<LineSeries
+  id="units"
+  yAccessors={['units']}
+  groupId="right"  // Links to right axis
+  data={unitsData}
+/>
+```
+
+### Axis Styling
+
+```tsx
+<Axis
+  id="left"
+  position={Position.Left}
+  style={{
+    tickLabel: {
+      fontSize: 12,
+      fill: '#666',
+      padding: 10,
+    },
+    tickLine: {
+      stroke: '#ccc',
+      strokeWidth: 1,
+    },
+    axisTitle: {
+      fontSize: 14,
+      fill: '#333',
+    },
+  }}
+/>
+```
+
+## Data Formatting
+
+### Time Formatting
+
+```tsx
+import { timeFormatter, niceTimeFormatter } from '@elastic/charts';
+
+// Fixed format
+<Axis
+  tickFormat={timeFormatter('YYYY-MM-DD HH:mm')}
+/>
+
+// Adaptive format (chooses appropriate precision)
+<Axis
+  tickFormat={niceTimeFormatter([minTimestamp, maxTimestamp])}
+/>
+```
+
+### Number Formatting
+
+```tsx
+// Currency
+<Axis
+  tickFormat={(d) => `$${d.toLocaleString()}`}
+/>
+
+// Percentage
+<Axis
+  tickFormat={(d) => `${d}%`}
+/>
+
+// Scientific notation
+<Axis
+  tickFormat={(d) => d.toExponential(2)}
+/>
+
+// SI units (K, M, B)
+<Axis
+  tickFormat={(d) => {
+    if (d >= 1e9) return `${(d / 1e9).toFixed(1)}B`;
+    if (d >= 1e6) return `${(d / 1e6).toFixed(1)}M`;
+    if (d >= 1e3) return `${(d / 1e3).toFixed(1)}K`;
+    return d.toString();
+  }}
+/>
+```
+
+## Performance Considerations
+
+### Large Datasets
+
+For charts with thousands of data points:
+
+1. **Use Canvas renderer** (default):
+```tsx
+<Chart renderer="canvas" />
+```
+
+2. **Enable histogram mode** for time series:
+```tsx
+<Settings enableHistogramMode={true} />
+```
+
+3. **Limit tooltip data**:
+```tsx
+<Settings
+  tooltip={{
+    maxVisibleTooltipItems: 5,
+  }}
+/>
+```
+
+### Debouncing Interactions
+
+Reduce update frequency for better performance:
+
+```tsx
+<Settings
+  pointerUpdateDebounce={100}  // 100ms debounce
+  externalPointerEvents={{
+    tooltip: { enabled: true, debounce: 100 },
+  }}
+/>
+```
+
+### Memoization
+
+Use React.memo for custom components:
+
+```tsx
+const MyCustomTooltip = React.memo(({ data }) => {
+  // Expensive rendering
+  return <div>{formatComplexData(data)}</div>;
+});
+```
+
+## Next Steps
+
+Now that you understand the core concepts:
+
+- [Components Reference](./components) - Detailed API for each component
+- [Chart Types](./chart-types) - Learn about specific chart types
+- [Theming Guide](./theming) - Advanced theming techniques
+- [Examples](../examples/intro) - See concepts in action

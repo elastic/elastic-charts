@@ -1,0 +1,474 @@
+---
+id: getting-started
+title: Getting Started
+sidebar_position: 2
+---
+
+# Getting Started with Elastic Charts
+
+This guide will walk you through installing Elastic Charts and creating your first chart.
+
+## Installation
+
+Elastic Charts requires React 16.12 or higher. Install the library using yarn (npm is not officially supported):
+
+```bash
+yarn add @elastic/charts
+```
+
+### Peer Dependencies
+
+Elastic Charts has the following peer dependencies:
+
+```json
+{
+  "react": "^16.12 || ^17.0 || ^18.0",
+  "react-dom": "^16.12 || ^17.0 || ^18.0"
+}
+```
+
+Optional peer dependencies for date/time formatting:
+```json
+{
+  "moment": "^2.29.1",
+  "moment-timezone": "^0.5.32"
+}
+```
+
+### CSS Import
+
+Import the base styles in your application's entry point:
+
+```tsx
+import '@elastic/charts/dist/theme.css';
+```
+
+Alternatively, you can import SCSS if you need to customize it:
+
+```scss
+@import '@elastic/charts/dist/theme';
+```
+
+## Your First Chart
+
+Let's create a simple bar chart to visualize some sales data.
+
+### Basic Bar Chart
+
+```tsx
+import React from 'react';
+import { Chart, Settings, BarSeries, ScaleType } from '@elastic/charts';
+
+export const MyFirstChart = () => {
+  const data = [
+    { month: 'Jan', sales: 20 },
+    { month: 'Feb', sales: 45 },
+    { month: 'Mar', sales: 30 },
+    { month: 'Apr', sales: 55 },
+    { month: 'May', sales: 40 },
+    { month: 'Jun', sales: 60 },
+  ];
+
+  return (
+    <Chart size={{ height: 300 }}>
+      <Settings showLegend={true} />
+      <BarSeries
+        id="sales-chart"
+        name="Monthly Sales"
+        xScaleType={ScaleType.Ordinal}
+        yScaleType={ScaleType.Linear}
+        xAccessor="month"
+        yAccessors={['sales']}
+        data={data}
+      />
+    </Chart>
+  );
+};
+```
+
+### Understanding the Code
+
+Let's break down each component:
+
+#### Chart Component
+The `<Chart>` component is the root container for all visualizations:
+
+```tsx
+<Chart size={{ height: 300 }}>
+```
+
+- **size**: Controls the chart dimensions. Can be a number (square), object with width/height, or percentage
+- **id**: Optional unique identifier for the chart
+- **renderer**: Use 'canvas' (default and recommended)
+
+#### Settings Component
+The `<Settings>` component configures global chart behavior:
+
+```tsx
+<Settings showLegend={true} />
+```
+
+Common settings include:
+- **showLegend**: Display the legend
+- **theme**: Apply custom themes
+- **rotation**: Rotate the chart (0, 90, 180, 270 degrees)
+- **onElementClick**: Handle click events
+- **tooltip**: Customize tooltip behavior
+
+#### Series Component
+Series components define what and how to visualize data. Here we use `<BarSeries>`:
+
+```tsx
+<BarSeries
+  id="sales-chart"
+  name="Monthly Sales"
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+  xAccessor="month"
+  yAccessors={['sales']}
+  data={data}
+/>
+```
+
+- **id**: Unique identifier for this series (required)
+- **name**: Display name shown in legend and tooltips
+- **xScaleType**: Scale type for X-axis (Ordinal, Linear, Time, Log)
+- **yScaleType**: Scale type for Y-axis
+- **xAccessor**: Function or key to extract X values from data
+- **yAccessors**: Array of functions or keys to extract Y values
+- **data**: Array of data points
+
+## More Chart Types
+
+### Line Chart
+
+```tsx
+import { Chart, Settings, LineSeries, ScaleType, Axis, Position } from '@elastic/charts';
+
+export const LineChartExample = () => {
+  const data = [
+    { time: 1, value: 10 },
+    { time: 2, value: 25 },
+    { time: 3, value: 15 },
+    { time: 4, value: 30 },
+    { time: 5, value: 22 },
+  ];
+
+  return (
+    <Chart size={{ height: 300 }}>
+      <Settings />
+      <Axis id="bottom-axis" position={Position.Bottom} title="Time" />
+      <Axis id="left-axis" position={Position.Left} title="Value" />
+      <LineSeries
+        id="line-series"
+        name="Measurements"
+        xScaleType={ScaleType.Linear}
+        yScaleType={ScaleType.Linear}
+        xAccessor="time"
+        yAccessors={['value']}
+        data={data}
+      />
+    </Chart>
+  );
+};
+```
+
+### Area Chart
+
+```tsx
+import { Chart, Settings, AreaSeries, ScaleType } from '@elastic/charts';
+
+export const AreaChartExample = () => {
+  const data = [
+    { x: 0, y: 5 },
+    { x: 1, y: 8 },
+    { x: 2, y: 12 },
+    { x: 3, y: 7 },
+    { x: 4, y: 10 },
+  ];
+
+  return (
+    <Chart size={{ height: 300 }}>
+      <Settings />
+      <AreaSeries
+        id="area-series"
+        name="Area Chart"
+        xScaleType={ScaleType.Linear}
+        yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
+        data={data}
+      />
+    </Chart>
+  );
+};
+```
+
+### Pie Chart
+
+```tsx
+import { Chart, Settings, Partition, PartitionLayout } from '@elastic/charts';
+
+export const PieChartExample = () => {
+  const data = [
+    { category: 'Category A', value: 30 },
+    { category: 'Category B', value: 25 },
+    { category: 'Category C', value: 45 },
+  ];
+
+  return (
+    <Chart size={{ height: 300 }}>
+      <Settings />
+      <Partition
+        id="pie-chart"
+        data={data}
+        valueAccessor={(d) => d.value}
+        layers={[
+          {
+            groupByRollup: (d) => d.category,
+            shape: {
+              fillColor: (d) => d.color,
+            },
+          },
+        ]}
+        config={{
+          partitionLayout: PartitionLayout.sunburst,
+        }}
+      />
+    </Chart>
+  );
+};
+```
+
+## Adding Axes
+
+For XY charts (line, bar, area), you typically want to add axes:
+
+```tsx
+import { Axis, Position } from '@elastic/charts';
+
+<Chart size={{ height: 300 }}>
+  <Settings />
+  <Axis 
+    id="bottom-axis" 
+    position={Position.Bottom} 
+    title="X Axis Title" 
+  />
+  <Axis 
+    id="left-axis" 
+    position={Position.Left} 
+    title="Y Axis Title"
+    tickFormat={(d) => `$${d}`}
+  />
+  <BarSeries
+    id="bars"
+    xScaleType={ScaleType.Linear}
+    yScaleType={ScaleType.Linear}
+    xAccessor="x"
+    yAccessors={['y']}
+    data={data}
+  />
+</Chart>
+```
+
+Key axis props:
+- **position**: Position.Top, Position.Bottom, Position.Left, Position.Right
+- **title**: Axis label
+- **tickFormat**: Function to format tick labels
+- **showGridLines**: Show/hide grid lines
+- **domain**: Custom domain range
+
+## Theming
+
+Apply built-in themes or create custom ones:
+
+```tsx
+import { Chart, Settings, LIGHT_THEME, DARK_THEME } from '@elastic/charts';
+
+// Use built-in themes
+<Settings theme={DARK_THEME} />
+
+// Custom theme override
+<Settings
+  theme={{
+    colors: {
+      vizColors: ['#FF0000', '#00FF00', '#0000FF'],
+    },
+    barSeriesStyle: {
+      displayValue: {
+        fontSize: 12,
+        fill: '#000',
+      },
+    },
+  }}
+/>
+
+// Combine base theme with overrides
+<Settings
+  baseTheme={LIGHT_THEME}
+  theme={{
+    background: {
+      color: '#f0f0f0',
+    },
+  }}
+/>
+```
+
+## Interactive Features
+
+### Handling Click Events
+
+```tsx
+<Settings
+  onElementClick={(elements) => {
+    console.log('Clicked elements:', elements);
+  }}
+/>
+```
+
+### Custom Tooltips
+
+```tsx
+<Settings
+  tooltip={{
+    type: 'vertical',
+    snap: true,
+    headerFormatter: (data) => `Time: ${data.value}`,
+  }}
+/>
+```
+
+### Brushing (Selection)
+
+```tsx
+<Settings
+  onBrushEnd={(brushArea) => {
+    console.log('Selected area:', brushArea);
+  }}
+  brushAxis="x"
+/>
+```
+
+## Common Patterns
+
+### Multiple Series
+
+```tsx
+<Chart size={{ height: 300 }}>
+  <Settings />
+  <LineSeries
+    id="series-1"
+    name="Product A"
+    xScaleType={ScaleType.Linear}
+    yScaleType={ScaleType.Linear}
+    xAccessor="x"
+    yAccessors={['y']}
+    data={data1}
+  />
+  <LineSeries
+    id="series-2"
+    name="Product B"
+    xScaleType={ScaleType.Linear}
+    yScaleType={ScaleType.Linear}
+    xAccessor="x"
+    yAccessors={['y']}
+    data={data2}
+  />
+</Chart>
+```
+
+### Stacked Charts
+
+```tsx
+<BarSeries
+  id="bars"
+  name="Sales"
+  xScaleType={ScaleType.Ordinal}
+  yScaleType={ScaleType.Linear}
+  xAccessor="category"
+  yAccessors={['value']}
+  stackAccessors={['category']}  // Enable stacking
+  data={data}
+/>
+```
+
+### Time Series
+
+```tsx
+import { timeFormatter } from '@elastic/charts';
+
+const data = [
+  { timestamp: 1609459200000, value: 10 },
+  { timestamp: 1609545600000, value: 15 },
+  { timestamp: 1609632000000, value: 12 },
+];
+
+<Chart size={{ height: 300 }}>
+  <Settings />
+  <Axis
+    id="bottom"
+    position={Position.Bottom}
+    tickFormat={timeFormatter('MM/DD HH:mm')}
+  />
+  <Axis id="left" position={Position.Left} />
+  <LineSeries
+    id="time-series"
+    xScaleType={ScaleType.Time}
+    yScaleType={ScaleType.Linear}
+    xAccessor="timestamp"
+    yAccessors={['value']}
+    data={data}
+  />
+</Chart>
+```
+
+## Responsive Charts
+
+Charts automatically resize based on their container. You can control sizing:
+
+```tsx
+// Fixed height
+<Chart size={{ height: 400 }} />
+
+// Fixed width and height
+<Chart size={{ width: 600, height: 400 }} />
+
+// Percentage-based (responsive)
+<Chart size={{ width: '100%', height: 400 }} />
+
+// Aspect ratio
+<Chart size={['100%', '75%']} /> // 4:3 aspect ratio
+```
+
+## Next Steps
+
+Now that you've created your first charts, explore:
+
+- [Architecture](./architecture) - Understand how the library works internally
+- [Core Concepts](./core-concepts) - Learn about scales, accessors, and data flow
+- [Chart Types](./chart-types) - Explore all available chart types
+- [Theming Guide](./theming) - Create custom themes and styles
+- [Examples](../examples/intro) - Browse interactive examples in Storybook
+
+## Troubleshooting
+
+### Chart Not Rendering
+
+1. Ensure you've imported the CSS: `import '@elastic/charts/dist/theme.css'`
+2. Check that the Chart component has a defined height
+3. Verify your data structure matches the accessors
+4. Open browser DevTools and check for console errors
+
+### TypeScript Errors
+
+Make sure you have the correct TypeScript version (3.8+) and proper type definitions installed. The library includes its own type definitions.
+
+### Performance Issues
+
+For large datasets:
+- Use the canvas renderer (default)
+- Consider data sampling or aggregation
+- Use the `enableHistogramMode` setting for time-series data
+- Implement virtualization for very large datasets
+
+For more help, check the [Troubleshooting Guide](./troubleshooting) or visit our [GitHub Issues](https://github.com/elastic/elastic-charts/issues).
