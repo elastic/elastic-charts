@@ -12,7 +12,8 @@ import { debounce } from '../../../../../utils/debounce';
 import { Logger } from '../../../../../utils/logger';
 
 // TODO find a better way to do this when we have an actual build process
-const DISABLE_ANIMATIONS = (typeof process === 'object' && process.env && process.env.VRT) === 'true';
+const DISABLE_ANIMATIONS =
+  (typeof process === 'object' && process !== null && process.env && process.env.VRT) === 'true';
 
 /**
  * Function used to animate values from within a render context.
