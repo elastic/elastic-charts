@@ -313,6 +313,7 @@ export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal' | 500>;
  * @public
  */
 export interface MetricStyle {
+  fontFamily: string;
   textDarkColor: Color;
   textLightColor: Color;
   textSubtitleDarkColor: Color;

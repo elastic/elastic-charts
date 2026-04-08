@@ -200,6 +200,7 @@ class Component extends React.Component<Props> {
                 };
 
                 const bulletToMetricStyle = mergePartial(metricStyle, {
+                  fontFamily: style.fontFamily,
                   barBackground: colorScale(datum.value).hex(),
                   emptyBackground: Colors.Transparent.keyword,
                   border: 'gray',
@@ -220,6 +221,7 @@ class Component extends React.Component<Props> {
                   bulletToMetricStyle.minValueFontSize,
                   false,
                   false,
+                  bulletToMetricStyle.fontFamily,
                 );
                 const sizes = getSnappedFontSizes(fittedValueFontSize, panel.height, bulletToMetricStyle);
 

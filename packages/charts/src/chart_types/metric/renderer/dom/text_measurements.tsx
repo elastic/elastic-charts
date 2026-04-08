@@ -121,20 +121,23 @@ const VALUE_FONT_SIZE_VALUES = [
   VALUE_FONT_SIZE.xxxs,
 ];
 const VALUE_PART_FONT_RATIO = 1.3;
-const TITLE_FONT: Font = {
+const BASE_TEXT_FONT: Font = {
   fontStyle: 'normal',
   fontFamily: DEFAULT_FONT_FAMILY,
   fontVariant: 'normal',
-  fontWeight: 'bold',
-  textColor: 'black',
-};
-const VALUE_FONT = TITLE_FONT;
-const SUBTITLE_FONT: Font = {
-  ...TITLE_FONT,
   fontWeight: 'normal',
+  textColor: 'black',
 };
 const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs: 4, s: 4, m: 8, l: 8, xl: 8, xxl: 16 };
 const ELEMENT_PADDING = 5; // Aligned with our CSS in _text.scss
+
+function getMetricFont(fontFamily: string, fontWeight: Font['fontWeight']): Font {
+  return {
+    ...BASE_TEXT_FONT,
+    fontFamily,
+    fontWeight,
+  };
+}
 
 /**
  * Approximate font size to fit given available space
@@ -148,16 +151,18 @@ export function getFitValueFontSize(
   minValueFontSize: number,
   hasIcon: boolean,
   isFitMode: boolean,
+  fontFamily = DEFAULT_FONT_FAMILY,
 ) {
   const maxWidth = (totalWidth - 2 * PADDING) * 0.98; // Buffer to prevent clipping
   const maxHeight = (availableHeight - 2 * PADDING) * 0.98;
 
   const widthConstrainedSize = withTextMeasure((textMeasure) => {
     const iconMultiplier = hasIcon ? 1 : 0;
+    const valueFont = getMetricFont(fontFamily, 'bold');
     const textWidth = textParts.reduce((sum, { text, emphasis }) => {
       const fontSize =
         emphasis === 'small' ? Math.floor(initialValueFontSize / VALUE_PART_FONT_RATIO) : initialValueFontSize;
-      return sum + textMeasure(text, VALUE_FONT, fontSize).width;
+      return sum + textMeasure(text, valueFont, fontSize).width;
     }, 0);
     const ratio = textWidth / initialValueFontSize;
     return (maxWidth - iconMultiplier * PADDING) / (ratio + iconMultiplier / VALUE_PART_FONT_RATIO);
@@ -218,6 +223,7 @@ export function getMetricTextPartDimensions(
       style.valueFontSize === 'fit',
       progressBarHeight,
       style.valuePosition === 'middle' ? 0 : ELEMENT_PADDING,
+      style.fontFamily,
     ),
     textParts: getTextParts(datum, style),
     iconGridColumnWidth,
@@ -302,8 +308,11 @@ function computeMetricTextLayout(
   fit: boolean,
   progressBarHeight: number, // with padding
   extraPaddingTop: number,
+  fontFamily: string,
 ): MetricTextLayout {
   const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * PADDING;
+  const titleFont = getMetricFont(fontFamily, 'bold');
+  const subtitleFont = getMetricFont(fontFamily, 'normal');
 
   const titleLineHeight = sizes.titleFontSize * LINE_HEIGHT;
   const subtitleLineHeight = sizes.subtitleFontSize * LINE_HEIGHT;
@@ -321,7 +330,7 @@ function computeMetricTextLayout(
     const titleLines = datum.title
       ? wrapText(
           datum.title,
-          TITLE_FONT,
+          titleFont,
           sizes.titleFontSize,
           maxTitlesWidth,
           breakpoints.titleMaxLines,
@@ -333,7 +342,7 @@ function computeMetricTextLayout(
     const subtitleLines = datum.subtitle
       ? wrapText(
           datum.subtitle,
-          SUBTITLE_FONT,
+          subtitleFont,
           sizes.subtitleFontSize,
           maxTitlesWidth,
           breakpoints.subtitleMaxLines,
