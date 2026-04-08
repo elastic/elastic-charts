@@ -27,7 +27,11 @@ import {
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-import { applyOptionalNumericFontFamily, withOptionalNumericFontFamily } from '../utils/elastic_ui_numeric_font';
+import {
+  applyOptionalNumericFontFamily,
+  withOptionalNumericFontFamily,
+  useIsFontReady,
+} from '../utils/elastic_ui_numeric_font';
 
 const metricExtra: SecondaryMetricProps = {
   label: 'Operating',
@@ -110,6 +114,7 @@ export const Example: ChartsStory = (_, { description }) => {
   const letterSpacing = number('Typography: letter-spacing (px)', 0, { range: true, min: -2, max: 5, step: 0.5 });
   const fontKerning = select('Typography: font-kerning', { auto: 'auto', normal: 'normal', none: 'none' }, 'auto');
   const previewFontFamily = withOptionalNumericFontFamily(fontFamily, useElasticUINumericFont);
+  const isNumericFontReady = useIsFontReady();
 
   const containerStyle: React.CSSProperties = {
     fontFamily: previewFontFamily,
@@ -184,6 +189,17 @@ export const Example: ChartsStory = (_, { description }) => {
     fontSize: '13px',
     fontWeight: 600,
   };
+
+  if (!isNumericFontReady || true) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', ...containerStyle }}>
+        <p style={{ margin: 0, fontSize: '12px', color: '#69707d' }}>{description}</p>
+        <p style={{ margin: 0, fontSize: '12px', color: '#69707d' }}>
+          Loading &lsquo;Elastic UI Numeric&rsquo; font before rendering charts.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', ...containerStyle }}>
