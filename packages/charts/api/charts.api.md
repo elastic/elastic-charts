@@ -2148,6 +2148,8 @@ export interface MetricStyle {
     // (undocumented)
     extraTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
     // (undocumented)
+    fontFamily: string;
+    // (undocumented)
     iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
     // (undocumented)
     minHeight: Pixels;
