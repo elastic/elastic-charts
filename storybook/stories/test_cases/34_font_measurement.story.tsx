@@ -190,7 +190,7 @@ export const Example: ChartsStory = (_, { description }) => {
     fontWeight: 600,
   };
 
-  if (!isNumericFontReady || true) {
+  if (useElasticUINumericFont && !isNumericFontReady) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', ...containerStyle }}>
         <p style={{ margin: 0, fontSize: '12px', color: '#69707d' }}>{description}</p>
