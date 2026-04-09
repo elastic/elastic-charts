@@ -46,7 +46,7 @@ const metricData = [
       title: 'Revenue 2025',
       subtitle: 'Total Annual Revenue',
       value: 124_312_441,
-      valueFormatter: (v: number) => v.toLocaleString('en-US'),
+      valueFormatter: () => `124,312,441`, // For deterministic reproduction
       extra: metricExtra,
     },
   ],
