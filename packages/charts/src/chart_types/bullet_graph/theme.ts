@@ -23,6 +23,7 @@ import {
 
 /** @public */
 export interface BulletStyle {
+  fontFamily: string;
   textColor: Color;
   border: Color;
   barBackground: Color;
@@ -38,6 +39,7 @@ export interface BulletStyle {
 
 /** @internal */
 export const LIGHT_THEME_BULLET_STYLE: BulletStyle = {
+  fontFamily: DEFAULT_FONT_FAMILY,
   textColor: LIGHT_TEXT_COLORS.textParagraph,
   border: LIGHT_BORDER_COLORS.borderBaseSubdued,
   barBackground: LIGHT_TEXT_COLORS.textParagraph,
@@ -50,6 +52,7 @@ export const LIGHT_THEME_BULLET_STYLE: BulletStyle = {
 
 /** @internal */
 export const DARK_THEME_BULLET_STYLE: BulletStyle = {
+  fontFamily: DEFAULT_FONT_FAMILY,
   textColor: DARK_TEXT_COLORS.textParagraph,
   border: DARK_BORDER_COLORS.borderBaseSubdued,
   barBackground: DARK_TEXT_COLORS.textParagraph,
@@ -60,14 +63,40 @@ export const DARK_THEME_BULLET_STYLE: BulletStyle = {
   fallbackBandColor: DARK_BACKGROUND_COLORS.backgroundBaseDisabled,
 };
 
+function getFont(fontFamily: string, fontWeight: Font['fontWeight']): Font {
+  return {
+    fontStyle: 'normal',
+    fontFamily,
+    fontVariant: 'normal',
+    fontWeight,
+    textColor: 'black',
+  };
+}
+
 /** @internal */
-export const TITLE_FONT: Font = {
-  fontStyle: 'normal',
-  fontFamily: DEFAULT_FONT_FAMILY,
-  fontVariant: 'normal',
-  fontWeight: 'bold',
-  textColor: 'black',
-};
+export function getTitleFont(fontFamily: string): Font {
+  return getFont(fontFamily, 'bold');
+}
+
+/** @internal */
+export function getSubtitleFont(fontFamily: string): Font {
+  return getFont(fontFamily, 'normal');
+}
+
+/** @internal */
+export function getValueFont(fontFamily: string): Font {
+  return getFont(fontFamily, 'bold');
+}
+
+/** @internal */
+export function getTargetFont(fontFamily: string): Font {
+  return getFont(fontFamily, 'normal');
+}
+
+/** @internal */
+export function getTickFont(fontFamily: string): Font {
+  return getFont(fontFamily, 'normal');
+}
 
 /**
  * Approximate height of font ascent from the baseline
@@ -88,29 +117,16 @@ export const TITLE_FONT_ASCENT = TITLE_FONT_SIZE * TEXT_ASCENT_RATIO;
 export const TITLE_LINE_SPACING = 4;
 
 /** @internal */
-export const SUBTITLE_FONT: Font = {
-  ...TITLE_FONT,
-  fontWeight: 'normal',
-};
-/** @internal */
 export const SUBTITLE_FONT_SIZE = 14;
 
 /** @internal */
 export const SUBTITLE_FONT_ASCENT = SUBTITLE_FONT_SIZE * TEXT_ASCENT_RATIO;
 
 /** @internal */
-export const VALUE_FONT: Font = {
-  ...TITLE_FONT,
-};
-/** @internal */
 export const VALUE_FONT_SIZE = 22;
 
 const VALUE_FONT_ASCENT = VALUE_FONT_SIZE * TEXT_ASCENT_RATIO;
 
-/** @internal */
-export const TARGET_FONT: Font = {
-  ...SUBTITLE_FONT,
-};
 /** @internal */
 export const TARGET_FONT_SIZE = 16;
 
@@ -120,11 +136,6 @@ const TARGET_FONT_ASCENT = TARGET_FONT_SIZE * TEXT_ASCENT_RATIO;
 export const getMaxTargetValueAssent = (target?: string) =>
   !target ? VALUE_FONT_ASCENT : Math.max(VALUE_FONT_ASCENT, TARGET_FONT_ASCENT);
 
-/** @internal */
-export const TICK_FONT: Font = {
-  ...TITLE_FONT,
-  fontWeight: 'normal',
-};
 /** @internal */
 export const TICK_FONT_SIZE = 10;
 

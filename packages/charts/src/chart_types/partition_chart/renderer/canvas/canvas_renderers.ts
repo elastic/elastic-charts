@@ -6,13 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { colorToRgba, multiplyColorOpacity, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import type { Pixels } from '../../../../common/geometry';
 import { cssFontShorthand, HorizontalAlignment } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { MIN_STROKE_WIDTH } from '../../../../renderers/canvas/primitives/line';
+import type { LegendPath } from '../../../../state/actions/legend';
+import { getColorFromVariant } from '../../../../utils/common';
+import { getDimmedColor } from '../../../../utils/themes/dimmed_colors';
+import type { PartitionStyle } from '../../../../utils/themes/partition';
 import type {
   LinkLabelVM,
   OutsideLinksViewModel,
@@ -22,6 +26,8 @@ import type {
   ShapeViewModel,
   TextRow,
 } from '../../layout/types/viewmodel_types';
+import type { LegendStrategy } from '../../layout/utils/highlighted_geoms';
+import { highlightedGeoms } from '../../layout/utils/highlighted_geoms';
 import type { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
 
@@ -103,7 +109,8 @@ function renderRowSets(ctx: CanvasRenderingContext2D, rowSets: RowSet[], linkLab
 
 function renderTaperedBorder(
   ctx: CanvasRenderingContext2D,
-  { strokeWidth, strokeStyle, fillColor, x0, x1, y0px, y1px }: QuadViewModel,
+  { strokeWidth, strokeStyle, x0, x1, y0px, y1px }: QuadViewModel,
+  fillColor: Color,
 ) {
   const X0 = x0 - TAU / 4;
   const X1 = x1 - TAU / 4;
@@ -149,22 +156,56 @@ function renderTaperedBorder(
   }
 }
 
-function renderSectors(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
+function renderSectors(
+  ctx: CanvasRenderingContext2D,
+  quadViewModel: QuadViewModel[],
+  highlightedQuadSet: Set<QuadViewModel>,
+  partitionStyle: PartitionStyle,
+) {
   withContext(ctx, () => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
     quadViewModel.forEach((quad: QuadViewModel) => {
-      if (quad.x0 !== quad.x1) renderTaperedBorder(ctx, quad);
+      if (quad.x0 === quad.x1) return;
+
+      const isDimmed = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
+      const baseFillColor = getColorFromVariant(
+        quad.fillColor,
+        getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', quad.fillColor),
+      );
+      // Apply opacity when dimmed with opacity config
+      const fillColor =
+        isDimmed && 'opacity' in partitionStyle.dimmed
+          ? multiplyColorOpacity(baseFillColor, partitionStyle.dimmed.opacity)
+          : baseFillColor;
+      renderTaperedBorder(ctx, quad, fillColor);
     });
   });
 }
 
-function renderRectangles(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
+function renderRectangles(
+  ctx: CanvasRenderingContext2D,
+  quadViewModel: QuadViewModel[],
+  highlightedQuadSet: Set<QuadViewModel>,
+  partitionStyle: PartitionStyle,
+) {
   withContext(ctx, () => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
-    quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
+    quadViewModel.forEach((quad) => {
+      const { strokeWidth, fillColor, x0, x1, y0px, y1px } = quad;
       // only draw a shape if it would show up at all
       if (x1 - x0 >= 1 && y1px - y0px >= 1) {
-        ctx.fillStyle = fillColor;
+        const isDimmed = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
+        const baseFillColor = getColorFromVariant(
+          fillColor,
+          getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', fillColor),
+        );
+        // Apply opacity when dimmed with opacity config
+        const dimmedFillColor =
+          isDimmed && 'opacity' in partitionStyle.dimmed
+            ? multiplyColorOpacity(baseFillColor, partitionStyle.dimmed.opacity)
+            : baseFillColor;
+
+        ctx.fillStyle = dimmedFillColor;
         ctx.beginPath();
         ctx.moveTo(x0, y0px);
         ctx.lineTo(x0, y1px);
@@ -277,6 +318,10 @@ export function renderPartitionCanvas2d(
     panel,
     chartDimensions,
   }: ShapeViewModel,
+  highlightedLegendPath: LegendPath,
+  legendStrategy: LegendStrategy | undefined,
+  flatLegend: boolean | undefined,
+  partitionStyle: PartitionStyle,
 ) {
   const { sectorLineWidth, sectorLineStroke, linkLabel } = style;
 
@@ -322,13 +367,24 @@ export function renderPartitionCanvas2d(
     ctx.strokeStyle = sectorLineStroke;
     ctx.lineWidth = sectorLineWidth;
 
+    // Calculate which quads are highlighted for legend dimming
+    const highlightedQuadSet = new Set<QuadViewModel>();
+    if (highlightedLegendPath.length > 0) {
+      // Use highlightedGeoms to determine which quads match the legend path
+      const highlighted = highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedLegendPath);
+      highlighted.forEach((quad) => highlightedQuadSet.add(quad));
+    }
+
     // painter's algorithm, like that of SVG: the sequence determines what overdraws what; first element of the array is drawn first
     // (of course, with SVG, it's for ambiguous situations only, eg. when 3D transforms with different Z values aren't used, but
     // unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
     // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
       // bottom layer: sectors (pie slices, ring sectors etc.)
-      () => (isSunburst(layout) ? renderSectors(ctx, quadViewModel) : renderRectangles(ctx, quadViewModel)),
+      () =>
+        isSunburst(layout)
+          ? renderSectors(ctx, quadViewModel, highlightedQuadSet, partitionStyle)
+          : renderRectangles(ctx, quadViewModel, highlightedQuadSet, partitionStyle),
 
       // all the fill-based, potentially multirow text, whether inside or outside the sector
       () => renderRowSets(ctx, rowSets, linkLineColor),

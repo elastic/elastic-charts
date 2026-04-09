@@ -14,7 +14,7 @@ import type { ContinuousDomain, GenericDomain } from '../../../../../utils/domai
 import type { ActiveValue } from '../../../selectors/get_active_values';
 import type { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import type { BulletStyle } from '../../../theme';
-import { GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
+import { GRAPH_PADDING, TICK_FONT_SIZE, getTickFont } from '../../../theme';
 import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH, TICK_LABEL_PADDING } from '../constants';
 
 /** @internal */
@@ -25,6 +25,7 @@ export function horizontalBullet(
   backgroundColor: Color,
   activeValue?: ActiveValue | null,
 ) {
+  const tickFont = getTickFont(style.fontFamily);
   ctx.translate(GRAPH_PADDING.left, 0);
 
   const { datum, colorBands, ticks, scale } = dimensions;
@@ -89,14 +90,14 @@ export function horizontalBullet(
   // Tick labels
   ctx.fillStyle = style.textColor;
   ctx.textBaseline = 'top';
-  ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
+  ctx.font = cssFontShorthand(tickFont, TICK_FONT_SIZE);
   ticks
     .filter((tick) => tick >= min && tick <= max)
     .forEach((tick, i) => {
       const labelText = datum.tickFormatter(tick);
       if (i === ticks.length - 1) {
         const availableWidth = Math.abs((start > end ? min : max) - (ticks.at(i) ?? NaN));
-        const { width: labelWidth } = measureText(ctx)(labelText, TICK_FONT, TICK_FONT_SIZE);
+        const { width: labelWidth } = measureText(ctx)(labelText, tickFont, TICK_FONT_SIZE);
         ctx.textAlign = labelWidth >= Math.abs(scale(availableWidth) - scale(0)) ? 'end' : 'start';
       } else {
         ctx.textAlign = 'start';

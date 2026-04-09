@@ -116,6 +116,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
   barSeriesStyle: {
     rect: {
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
     rectBorder: {
       visible: false,
@@ -352,6 +353,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     },
     sectorLineWidth: 1.5,
     sectorLineStroke: '#FFF',
+    dimmed: { opacity: 0.25 },
   },
   heatmap: {
     brushArea: {
@@ -439,6 +441,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     titleWeight: 500,
   },
   bulletGraph: {
+    fontFamily: DEFAULT_FONT_FAMILY,
     textColor: '#343741',
     border: '#EDF0F5',
     barBackground: '#343741',

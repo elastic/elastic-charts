@@ -179,4 +179,19 @@ test.describe('Test cases stories', () => {
       );
     });
   });
+
+  test('should render font measurement test story', async ({ page }) => {
+    await common.expectElementAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/test-cases--font-measurement-test',
+      '#story-root',
+      {
+        waitSelector: common.chartWaitSelector,
+        action: async () => {
+          await page.waitForFunction(() => {
+            return document.querySelectorAll('.echChartStatus[data-ech-render-complete="true"]').length >= 4;
+          });
+        },
+      },
+    );
+  });
 });

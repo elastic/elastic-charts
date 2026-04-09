@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Rendering bars Multi series bar chart - ordinal can render first spec bars 1`] = `
 [
@@ -39,6 +39,12 @@ exports[`Rendering bars Multi series bar chart - ordinal can render first spec b
         "padding": 0,
       },
       "rect": {
+        "dimmed": {
+          "fill": "#ECF1F9",
+          "texture": {
+            "opacity": 0.25,
+          },
+        },
         "opacity": 1,
       },
       "rectBorder": {
@@ -101,6 +107,12 @@ exports[`Rendering bars Multi series bar chart - ordinal can render first spec b
         "padding": 0,
       },
       "rect": {
+        "dimmed": {
+          "fill": "#ECF1F9",
+          "texture": {
+            "opacity": 0.25,
+          },
+        },
         "opacity": 1,
       },
       "rectBorder": {
@@ -168,6 +180,12 @@ exports[`Rendering bars Multi series bar chart - ordinal can render second spec 
         "padding": 0,
       },
       "rect": {
+        "dimmed": {
+          "fill": "#ECF1F9",
+          "texture": {
+            "opacity": 0.25,
+          },
+        },
         "opacity": 1,
       },
       "rectBorder": {
@@ -230,6 +248,12 @@ exports[`Rendering bars Multi series bar chart - ordinal can render second spec 
         "padding": 0,
       },
       "rect": {
+        "dimmed": {
+          "fill": "#ECF1F9",
+          "texture": {
+            "opacity": 0.25,
+          },
+        },
         "opacity": 1,
       },
       "rectBorder": {
@@ -300,6 +324,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -363,6 +393,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -428,6 +464,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -491,6 +533,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -556,6 +604,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -619,6 +673,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -684,6 +744,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -747,6 +813,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -812,6 +884,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -875,6 +953,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -940,6 +1024,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1003,6 +1093,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1068,6 +1164,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1131,6 +1233,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1196,6 +1304,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1259,6 +1373,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1324,6 +1444,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1387,6 +1513,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1452,6 +1584,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1515,6 +1653,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1580,6 +1724,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1643,6 +1793,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1708,6 +1864,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1771,6 +1933,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1836,6 +2004,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1899,6 +2073,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -1964,6 +2144,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -2027,6 +2213,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -2092,6 +2284,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -2155,6 +2353,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -2220,6 +2424,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -2283,6 +2493,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -2348,6 +2564,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -2411,6 +2633,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -2476,6 +2704,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -2539,6 +2773,12 @@ IndexedGeometryMap {
               "padding": 0,
             },
             "rect": {
+              "dimmed": {
+                "fill": "#ECF1F9",
+                "texture": {
+                  "opacity": 0.25,
+                },
+              },
               "opacity": 1,
             },
             "rectBorder": {
@@ -2617,6 +2857,12 @@ exports[`Rendering bars should render two bars within domain 1`] = `
         "padding": 0,
       },
       "rect": {
+        "dimmed": {
+          "fill": "#ECF1F9",
+          "texture": {
+            "opacity": 0.25,
+          },
+        },
         "opacity": 1,
       },
       "rectBorder": {
@@ -2679,6 +2925,12 @@ exports[`Rendering bars should render two bars within domain 1`] = `
         "padding": 0,
       },
       "rect": {
+        "dimmed": {
+          "fill": "#ECF1F9",
+          "texture": {
+            "opacity": 0.25,
+          },
+        },
         "opacity": 1,
       },
       "rectBorder": {

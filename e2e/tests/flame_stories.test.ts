@@ -38,4 +38,24 @@ test.describe('Flame stories', () => {
       },
     );
   });
+
+  test('should dim icicle chart (linear renderer) on legend hover - fill dimming', async ({ page }) => {
+    const action = async () => {
+      await page.locator('.echLegendItem').first().hover();
+    };
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      `http://localhost:9001/?path=/story/flame-alpha--icicle-chart&globals=theme:light&knob-Clip%20text%20%28use%20linear%20renderer%29=true`,
+      { action },
+    );
+  });
+
+  test('should dim icicle chart (linear renderer) on legend hover - opacity dimming', async ({ page }) => {
+    const action = async () => {
+      await page.locator('.echLegendItem').first().hover();
+    };
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      `http://localhost:9001/?path=/story/flame-alpha--icicle-chart&globals=theme:light&knob-Clip%20text%20%28use%20linear%20renderer%29=true&knob-Use%20opacity-only%20dimming=true`,
+      { action },
+    );
+  });
 });

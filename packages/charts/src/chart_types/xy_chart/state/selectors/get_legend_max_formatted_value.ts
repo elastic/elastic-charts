@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { computeSeriesDomainsSelector } from './compute_series_domains';
+import { computeFullSeriesDomainsSelector } from './compute_series_domains';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
@@ -19,7 +19,7 @@ import { getAxesSpecForSpecId } from '../utils/spec';
  * @internal
  */
 export const getLongestLegendFormattedValueSelector = createCustomCachedSelector(
-  [computeSeriesDomainsSelector, getSeriesSpecsSelector, getAxisSpecsSelector, getSettingsSpecSelector],
+  [computeFullSeriesDomainsSelector, getSeriesSpecsSelector, getAxisSpecsSelector, getSettingsSpecSelector],
   ({ yDomains }, seriesSpecs, axesSpecs, settings): string | undefined => {
     const maxYValue = yDomains?.[0]?.domain?.[1];
     if (typeof maxYValue !== 'number' || !isFinite(maxYValue)) return undefined;

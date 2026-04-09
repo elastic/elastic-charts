@@ -7,7 +7,6 @@
  */
 
 import type { ActionReducerMapBuilder } from '@reduxjs/toolkit';
-import { produce } from 'immer';
 
 import { ChartType } from '../../chart_types';
 import { drilldownActive } from '../../chart_types/partition_chart/state/selectors/drilldown_active';
@@ -229,10 +228,7 @@ export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSlice
 
       const index = state.tooltip.selected.findIndex((item) => createItemId(item) === createItemId(action.payload));
       if (index !== -1) {
-        // deleting from the immutable array using immer's produce
-        state.tooltip.selected = produce(state.tooltip.selected, (draft) => {
-          draft.splice(index, 1);
-        });
+        state.tooltip.selected.splice(index, 1);
       } else {
         state.tooltip.selected.push(action.payload);
       }

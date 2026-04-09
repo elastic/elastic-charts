@@ -10,6 +10,7 @@ import { colorToRgba, overrideOpacity } from '../../../../../common/color_librar
 import type { Stroke } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/common';
 import type { GeometryHighlightState } from '../../../../../utils/geometry';
+import { getDimmedColor } from '../../../../../utils/themes/dimmed_colors';
 import type { LineStyle } from '../../../../../utils/themes/theme';
 
 /**
@@ -28,7 +29,7 @@ export function buildLineStyles(
   const isDimmed = highlightState === 'dimmed';
   const isFocused = highlightState === 'focused';
 
-  const strokeColor = isDimmed && 'stroke' in themeLineStyle.dimmed ? themeLineStyle.dimmed.stroke : seriesColor;
+  const strokeColor = getDimmedColor(isDimmed, themeLineStyle.dimmed, 'stroke', seriesColor);
   const opacity =
     isDimmed && 'opacity' in themeLineStyle.dimmed
       ? themeLineStyle.dimmed.opacity * themeLineStyle.opacity

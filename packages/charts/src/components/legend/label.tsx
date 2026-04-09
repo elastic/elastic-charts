@@ -24,7 +24,7 @@ interface LabelProps {
   options: LegendLabelOptions;
   hiddenSeriesCount: number;
   totalSeriesCount: number;
-  truncationMode?: TruncationMode;
+  truncationMode: TruncationMode;
 }
 
 const isAppleDevice = typeof window !== 'undefined' && /Mac|iPhone|iPad/.test(window.navigator.userAgent);
@@ -102,7 +102,7 @@ export function Label({
     [onToggle],
   );
 
-  const title = Math.abs(options.maxLines) > 0 ? label : ''; // full text already visible
+  const title = truncationMode === 'px' || Math.abs(options.maxLines) > 0 ? label : '';
 
   return isToggleable ? (
     // This div is required to allow multiline text truncation, all ARIA requirements are still met
@@ -175,8 +175,8 @@ function getSharedProps(
   const widthLimit = Math.abs(options.widthLimit);
   const className = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(isToggleable),
-    'echLegendItem__label--singleline': maxLines === 1,
-    'echLegendItem__label--singleline--middle': maxLines === 1 && useMiddleClasses,
+    'echLegendItem__label--singleline': truncationMode === 'px' || maxLines === 1,
+    'echLegendItem__label--singleline--middle': (truncationMode === 'px' || maxLines === 1) && useMiddleClasses,
     'echLegendItem__label--multiline': maxLines > 1 && truncationMode === 'line',
     'echLegendItem__label--multiline--middle': maxLines > 1 && truncationMode === 'line' && useMiddleClasses,
   });
