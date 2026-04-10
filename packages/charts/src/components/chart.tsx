@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { ChartBackground } from './chart_background';
 import { ChartContainer } from './chart_container';
+import { ChartMeasureCanvas } from './chart_measure_canvas';
 import { ChartResizer } from './chart_resizer';
 import { ChartStatus } from './chart_status';
 import { Legend } from './legend/legend';
@@ -175,6 +176,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     return (
       <Provider store={this.chartStore}>
         <div className="echChart" style={containerSizeStyle} data-testid="echChart">
+          <ChartMeasureCanvas />
           <Titles
             displayTitles={this.state.displayTitles}
             title={this.props.title}
