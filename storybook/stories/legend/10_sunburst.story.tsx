@@ -21,6 +21,7 @@ import {
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { getTruncationPositionKnob } from './truncation_position_knob';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import {
@@ -57,6 +58,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     { RegionsFirst: 'regionsFirst', ProductsFirst: 'productsFirst', DefaultSort: 'default' },
     'regionsFirst',
   );
+  const truncationPosition = getTruncationPositionKnob();
 
   const customLegendSort = (a: SeriesIdentifier, b: SeriesIdentifier) => {
     if (legendSortStrategy === 'regionsFirst') {
@@ -109,7 +111,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         theme={{
           partition: partitionTheme,
 
-          legend: { labelOptions: { maxLines } },
+          legend: { labelOptions: { maxLines, truncationPosition } },
         }}
       />
       <Partition

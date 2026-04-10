@@ -415,8 +415,8 @@ export interface LegendLabelOptions {
   /**
    * Position where text is truncated when it overflows.
    *
+   * - `'end'`: Traditional truncation at the end (default, e.g., `enterprise-authentication-an…`)
    * - `'middle'`: Truncates in the middle, preserving start and end (e.g., `enterprise-au…ion-service`)
-   * - `'end'`: Traditional truncation at the end (e.g., `enterprise-authentication-an…`)
    */
   truncationPosition: LegendLabelTruncationPosition;
 }

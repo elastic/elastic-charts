@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number, select } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import type { LegendLabelOptions } from '@elastic/charts';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendValue } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { getTruncationPositionKnob } from './truncation_position_knob';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getLegendAction } from '../utils/components/get_legend_action';
@@ -20,16 +21,7 @@ import { customKnobs } from '../utils/knobs';
 
 const getLabelOptionKnobs = (isLineLimit: boolean): LegendLabelOptions => {
   const group = 'Label options';
-
-  const truncationPosition = select(
-    'truncationPosition',
-    {
-      middle: 'middle',
-      end: 'end',
-    },
-    'middle',
-    group,
-  );
+  const truncationPosition = getTruncationPositionKnob(group);
 
   return isLineLimit
     ? {

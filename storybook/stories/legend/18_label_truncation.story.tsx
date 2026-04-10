@@ -24,6 +24,7 @@ import {
 } from '@elastic/charts';
 
 import { getLegendSizeKnob } from './legend_size_knob';
+import { getTruncationPositionKnob } from './truncation_position_knob';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
@@ -59,15 +60,7 @@ const getLabelOptionKnobs = (): LegendLabelOptions => {
   const group = 'Label options';
 
   return {
-    truncationPosition: select(
-      'truncationPosition',
-      {
-        middle: 'middle',
-        end: 'end',
-      },
-      'middle',
-      group,
-    ),
+    truncationPosition: getTruncationPositionKnob(group, 'middle'),
     maxLines: number('maxLines', 1, { min: 0, step: 1 }, group),
     widthLimit: 250,
   };
@@ -169,11 +162,12 @@ This story demonstrates the legend label truncation options.
 
 ### Truncation Positions
 
-- **\`middle\`** (default): Truncates text in the middle, preserving both the beginning and end of the label.
-  - Example: \`enterprise-authentication-and-authorization-management-service\` → \`enterprise-au…nt-service\`
-
-- **\`end\`**: CSS truncation at the end of the text.
+- **\`end\`** (theme default): CSS truncation at the end of the text.
   - Example: \`enterprise-authentication-and-authorization-management-service\` → \`enterprise-authentication-an…\`
+
+- **\`middle\`**: Truncates text in the middle, preserving both the beginning and end of the label.
+  - Example: \`enterprise-authentication-and-authorization-management-service\` → \`enterprise-au…nt-service\`
+  - This story selects \`middle\` by default to make the custom truncation behavior easier to inspect.
 
 ### Usage
 
@@ -184,7 +178,7 @@ This story demonstrates the legend label truncation options.
     legend: {
       labelOptions: {
         maxLines: 1,
-        truncationPosition: 'middle', // or 'end'
+        truncationPosition: 'end', // or 'middle'
       },
     },
   }}

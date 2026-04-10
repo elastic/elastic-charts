@@ -78,7 +78,7 @@ describe('Computed chart dimensions', () => {
     labelOptions: {
       maxLines: 1,
       widthLimit: 250,
-      truncationPosition: 'middle',
+      truncationPosition: 'end',
     },
   };
   const defaultTheme = LIGHT_THEME;

@@ -349,6 +349,12 @@ test.describe('Legend stories', () => {
   });
 
   test.describe('Label truncation', () => {
+    test('should correctly render middle truncation in layout story', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/legend--layout&knob-Legend position=top&knob-Legend Layout=list&knob-truncationPosition_Label options=middle',
+      );
+    });
+
     test('should correctly render middle truncation with floating legend and multiline', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/legend--label-truncation&knob-Inside chart (floating)_Legend options=true&knob-Horizontal alignment_Legend options=left&knob-maxLines_Label options=2&knob-Hide short labels_Data=true&knob-enable legend size_Legend options=true&knob-legend size_Legend options=600',

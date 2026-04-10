@@ -231,7 +231,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
     labelOptions: {
       maxLines: 1,
       widthLimit: 250,
-      truncationPosition: 'middle',
+      truncationPosition: 'end',
     },
   },
   crosshair: {

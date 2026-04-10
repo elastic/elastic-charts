@@ -14,6 +14,7 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendValue } fr
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { getLegendSizeKnob } from './legend_size_knob';
+import { getTruncationPositionKnob } from './truncation_position_knob';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getColorPicker } from '../utils/components/get_color_picker';
@@ -26,15 +27,7 @@ const getLabelOptionKnobs = (): LegendLabelOptions => {
   return {
     maxLines: number('max label lines', 1, { min: 0, step: 1 }, group),
     widthLimit: 250,
-    truncationPosition: select(
-      'truncationPosition',
-      {
-        middle: 'middle',
-        end: 'end',
-      },
-      'middle',
-      group,
-    ),
+    truncationPosition: getTruncationPositionKnob(group),
   };
 };
 

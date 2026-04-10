@@ -12,6 +12,7 @@ import React from 'react';
 import { BarSeries, Chart, LegendValue, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { getTruncationPositionKnob } from './truncation_position_knob';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
@@ -20,6 +21,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const rng = getRandomNumberGenerator();
   const maxLines = number('max label lines', 0, { min: 0, step: 1 });
   const seriesCount = number('series count', 1, { min: 1, step: 1 });
+  const truncationPosition = getTruncationPositionKnob();
   const data = [
     { x: 0, y: 2 },
     { x: 1, y: 7 },
@@ -52,7 +54,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         legendValues={[LegendValue.CurrentAndLastValue]}
         legendPosition={customKnobs.enum.position('legend position', 'top')}
         theme={{
-          legend: { labelOptions: { maxLines } },
+          legend: { labelOptions: { maxLines, truncationPosition } },
         }}
         baseTheme={useBaseTheme()}
       />
