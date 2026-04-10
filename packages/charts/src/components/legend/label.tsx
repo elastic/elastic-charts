@@ -10,11 +10,10 @@ import classNames from 'classnames';
 import type { KeyboardEventHandler, MouseEventHandler } from 'react';
 import React, { useCallback } from 'react';
 
+import type { TruncationMode } from './types';
 import { useMiddleTruncatedLabel } from './use_truncated_label';
 import { isRTLString } from '../../utils/common';
 import type { LegendLabelOptions } from '../../utils/themes/theme';
-
-type TruncationMode = 'line' | 'px';
 
 interface LabelProps {
   label: string;
@@ -85,6 +84,7 @@ export function Label({
     label,
     maxLines: options.maxLines,
     shouldTruncateMiddle,
+    truncationMode,
   });
 
   // Only apply middle truncation CSS classes when JS computation is complete
@@ -144,6 +144,7 @@ export function NonInteractiveLabel({ label, options }: { label: string; options
     label,
     maxLines: options.maxLines,
     shouldTruncateMiddle,
+    truncationMode: 'line',
   });
 
   // Only apply middle truncation CSS classes when JS computation is complete

@@ -8,6 +8,7 @@
 
 import { useLayoutEffect, useRef, useState } from 'react';
 
+import type { TruncationMode } from './types';
 import type { Font } from '../../common/text_utils';
 import type { TextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { withTextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
@@ -34,6 +35,7 @@ interface UseMiddleTruncatedLabelProps {
   label: string;
   maxLines: number;
   shouldTruncateMiddle: boolean;
+  truncationMode: TruncationMode;
 }
 
 interface UseMiddleTruncatedLabelResult {
@@ -176,6 +178,7 @@ export function useMiddleTruncatedLabel({
   label,
   maxLines,
   shouldTruncateMiddle,
+  truncationMode,
 }: UseMiddleTruncatedLabelProps): UseMiddleTruncatedLabelResult {
   const labelRef = useRef<HTMLDivElement>(null);
   const [truncatedLabel, setTruncatedLabel] = useState(label);
@@ -227,7 +230,8 @@ export function useMiddleTruncatedLabel({
     const computedStyle = window.getComputedStyle(element);
     const { font, fontSize } = getFontFromComputedStyle(computedStyle);
 
-    const availableWidth = width * maxLines;
+    // `px` mode is width-limited single-line truncation, so `maxLines` does not expand the fit budget.
+    const availableWidth = truncationMode === 'px' ? width : width * maxLines;
 
     const result = withTextMeasure((measure) => {
       const fullTextWidth = measure(label, font, fontSize).width;
