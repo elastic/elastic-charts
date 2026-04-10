@@ -34,6 +34,9 @@
     "@docusaurus/types": "^3.10.0",
     "typescript": "~5.5.3"
   },
+  "resolutions": {
+    "webpack": "5.105.1"
+  },
   "browserslist": {
     "production": [
       ">0.5%",
