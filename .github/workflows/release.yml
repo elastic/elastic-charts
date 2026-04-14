@@ -3,13 +3,30 @@
 name: Publish a Release
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Run semantic-release in dry-run mode
+        required: true
+        default: false
+        type: boolean
+      publish_pages:
+        description: Publish the assembled docs and Storybook site
+        required: true
+        default: true
+        type: boolean
+      pages_target_branch:
+        description: Branch to publish the assembled site to
+        required: true
+        default: gh-pages
+        type: string
 
 permissions:
   contents: read # for checkout
 
 env:
   ECH_NODE_VERSION: '22.22.0'
+  RELEASE_SITE_DIR: .release-site
 
 jobs:
   checks:
@@ -84,15 +101,54 @@ jobs:
         uses: bahmutov/npm-install@v1.10.9
         with:
           useRollingCache: true
+      - name: Install docs node_modules
+        uses: bahmutov/npm-install@v1.10.9
+        with:
+          working-directory: docs
+          useRollingCache: true
+
+      - name: Validate Pages publish parameters
+        if: ${{ inputs.dry_run && inputs.publish_pages && inputs.pages_target_branch == 'gh-pages' }}
+        run: |
+          echo "Dry-run releases may only publish to a non-production Pages branch." >&2
+          exit 1
 
       - name: Build library
         run: yarn build
 
+      - name: Build release site
+        run: node scripts/build_release_site.js
+
+      - name: Upload release site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-site
+          path: ${{ env.RELEASE_SITE_DIR }}
+          retention-days: 5
+
       - name: Upgrade npm for trusted publishing (OIDC) support
+        if: ${{ !inputs.dry_run }}
         run: npm install -g npm@11.5.1
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        run: yarn semantic-release
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            yarn semantic-release --dry-run
+          else
+            yarn semantic-release
+          fi
+
+      - name: Publish GitHub Pages branch
+        if: ${{ inputs.publish_pages }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.ADMIN_TOKEN_GH }}
+          publish_branch: ${{ inputs.pages_target_branch }}
+          publish_dir: ${{ env.RELEASE_SITE_DIR }}
+          force_orphan: true
+          user_name: elastic-datavis[bot]
+          user_email: 98618603+elastic-datavis[bot]@users.noreply.github.com
+          full_commit_message: Deploy release site for ${{ github.sha }}
