@@ -6,17 +6,17 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: Run semantic-release in dry-run mode (no publishing will happen)
+        description: `--dry-run`? Run the workflow without publishing a release
         required: true
         default: false
         type: boolean
       publish_pages:
-        description: Publish the assembled docs and Storybook github.io site
+        description: Publish `elastic.github.io/elastic-charts` site?
         required: true
         default: true
         type: boolean
       pages_target_branch:
-        description: Branch to publish the assembled site to (e.g. use gh-pages-temp for smoke testing)
+        description: github.io pages branch? (e.g. use "gh-pages-temp" for smoke testing)
         required: true
         default: gh-pages
         type: string
