@@ -11,7 +11,7 @@ on:
         default: false
         type: boolean
       publish_pages:
-        description: "Publish `elastic.github.io/elastic-charts` site?"
+        description: "Also publish `elastic.github.io/elastic-charts` site?"
         required: true
         default: true
         type: boolean
