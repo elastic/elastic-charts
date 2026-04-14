@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "`--dry-run`? Run the workflow without publishing a release"
+        description: "--dry-run - Run workflow without publishing a release?"
         required: true
         default: false
         type: boolean
