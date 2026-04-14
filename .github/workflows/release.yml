@@ -130,6 +130,7 @@ jobs:
           name: release-site
           path: ${{ env.RELEASE_SITE_DIR }}
           retention-days: 5
+          include-hidden-files: true
 
       - name: Upgrade npm for trusted publishing (OIDC) support
         if: ${{ !inputs.dry_run }}
