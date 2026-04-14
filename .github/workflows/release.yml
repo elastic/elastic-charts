@@ -6,17 +6,17 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: `--dry-run`? Run the workflow without publishing a release
+        description: "`--dry-run`? Run the workflow without publishing a release"
         required: true
         default: false
         type: boolean
       publish_pages:
-        description: Publish `elastic.github.io/elastic-charts` site?
+        description: "Publish `elastic.github.io/elastic-charts` site?"
         required: true
         default: true
         type: boolean
       pages_target_branch:
-        description: github.io pages branch? (e.g. use "gh-pages-temp" for smoke testing)
+        description: "github.io branch, only change when testing"
         required: true
         default: gh-pages
         type: string
