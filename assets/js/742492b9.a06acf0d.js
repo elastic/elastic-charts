@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkelastic_charts_docs=globalThis.webpackChunkelastic_charts_docs||[]).push([[48570],{70070(a){a.exports=JSON.parse('{"metadata":{"permalink":"/elastic-charts/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":0,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
