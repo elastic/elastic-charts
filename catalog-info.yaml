@@ -22,13 +22,14 @@ spec:
         ELASTIC_BUILDKITE_INFRA: "true"
       repository: elastic/elastic-charts
       provider_settings:
-        trigger_mode: none
+        trigger_mode: code
         build_branches: true
-        build_pull_requests: true
+        build_pull_requests: false
         build_tags: false
         prefix_pull_request_fork_branch_names: false
         skip_pull_request_builds_for_existing_commits: false
-      branch_configuration: 'main'
+        publish_commit_status: true
+      branch_configuration: "main"
       pipeline_file: ".buildkite/pipelines/pull_request/pipeline.sh"
       teams:
         kibana-visualizations:
