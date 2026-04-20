@@ -24,11 +24,17 @@ interface AnnotationTooltipProps {
 }
 
 /** @internal */
+export const getAnnotationTooltipDomId = (chartId: string, annotationId: string) =>
+  `echAnnotationTooltip__${chartId}__${annotationId}`;
+
+/** @internal */
 export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, zIndex }: AnnotationTooltipProps) => {
   const renderTooltip = useCallback(() => {
     if (!state || !state.isVisible) {
       return null;
     }
+
+    const tooltipDomId = getAnnotationTooltipDomId(chartId, state.id);
 
     return (
       <TooltipWrapper
@@ -41,11 +47,13 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, zIndex }
         noActionsLoaded=""
         className="echAnnotation"
         data-testid="echAnnotation"
+        id={tooltipDomId}
+        role="tooltip"
       >
         <TooltipContent {...state} />
       </TooltipWrapper>
     );
-  }, [state]);
+  }, [state, chartId]);
 
   const handleScroll = () => {
     // TODO: handle scroll cursor update

@@ -11,6 +11,7 @@ import { createPopper } from '@popperjs/core';
 import type { RefObject, CSSProperties } from 'react';
 import React, { useRef, useEffect, useCallback } from 'react';
 
+import { getAnnotationTooltipDomId } from './annotation_tooltip';
 import { DEFAULT_CSS_CURSOR } from '../../../../../common/constants';
 import type {
   onDOMElementEnter as onDOMElementEnterAction,
@@ -25,6 +26,7 @@ import type { AnimationOptions } from '../../canvas/animations/animation';
 import type { GetAnnotationParamsFn } from '../../common/utils';
 
 type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'panel'> & {
+  chartId: string;
   marker: AnnotationLineProps['markers'][number];
   chartAreaRef: RefObject<HTMLCanvasElement>;
   chartDimensions: Dimensions;
@@ -52,6 +54,7 @@ function getMarkerCentredTransform(alignment: Position, hasMarkerDimensions: boo
  */
 export function LineMarker({
   id,
+  chartId,
   specId,
   datum,
   panel,
@@ -122,6 +125,7 @@ export function LineMarker({
   void popper?.current?.update?.();
 
   const ariaLabel = datum.ariaLabel ?? datum.details ?? datum.header ?? `line annotation ${datum.dataValue}`;
+  const tooltipDomId = getAnnotationTooltipDomId(chartId, id);
 
   const handleEnter = useCallback(() => {
     onDOMElementEnter({
@@ -144,6 +148,7 @@ export function LineMarker({
       style={{ ...markerStyle, ...transform }}
       type="button"
       aria-label={ariaLabel}
+      aria-describedby={tooltipDomId}
     >
       <div ref={iconRef} className="echAnnotation__icon">
         {renderWithProps(icon, datum)}
