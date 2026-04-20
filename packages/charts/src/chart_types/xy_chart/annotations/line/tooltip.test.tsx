@@ -71,6 +71,50 @@ describe('Annotation tooltips', () => {
       expect(screen.queryByTestId('echTooltipHeader')).toBeNull();
     });
 
+    test('should show tooltip on keyboard navigation', () => {
+      render(
+        <Chart size={[100, 100]}>
+          <Settings
+            theme={{
+              chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },
+              chartPaddings: { left: 0, right: 0, top: 0, bottom: 0 },
+            }}
+          />
+          <LineSeries
+            id="line"
+            data={[
+              { x: 0, y: 1 },
+              { x: 2, y: 3 },
+              { x: 4, y: 5 },
+            ]}
+            xAccessor="x"
+            yAccessors={['y']}
+            xScaleType={ScaleType.Linear}
+          />
+          <LineAnnotation
+            id="foo"
+            domainType={AnnotationDomainType.YDomain}
+            dataValues={[{ dataValue: 2, details: 'foo' }]}
+            marker={<div style={{ width: '10px', height: '10px' }} />}
+          />
+        </Chart>,
+      );
+
+      expect(screen.queryByTestId('echAnnotationMarker')).not.toBeNull();
+      const marker = screen.getByTestId('echAnnotationMarker');
+      expect(screen.queryAllByTestId('echAnnotation')).toHaveLength(0);
+
+      if (marker) fireEvent.focus(marker);
+
+      expect(screen.queryByTestId('echTooltip')).not.toBeNull();
+      expect(screen.getByTestId('echTooltipHeader').textContent).toBe('2');
+      expect(screen.getByTestId('echAnnotationDetails').textContent).toBe('foo');
+
+      if (marker) fireEvent.blur(marker);
+
+      expect(screen.queryByTestId('echTooltipHeader')).toBeNull();
+    });
+
     test('should not show tooltip when using hideTooltips', () => {
       render(
         <Chart size={[100, 100]}>

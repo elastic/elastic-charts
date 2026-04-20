@@ -123,21 +123,24 @@ export function LineMarker({
 
   const ariaLabel = datum.ariaLabel ?? datum.details ?? datum.header ?? `line annotation ${datum.dataValue}`;
 
-  // want it to be tabbable if interactive if there is a click handler
-  return clickable ? (
+  const handleEnter = useCallback(() => {
+    onDOMElementEnter({
+      createdBySpecId: specId,
+      id,
+      type: DOMElementType.LineAnnotationMarker,
+      datum,
+    });
+  }, [onDOMElementEnter, specId, id, datum]);
+
+  return (
     <button
       className="echAnnotation__marker"
       data-testid="echAnnotationMarker"
-      onMouseEnter={() => {
-        onDOMElementEnter({
-          createdBySpecId: specId,
-          id,
-          type: DOMElementType.LineAnnotationMarker,
-          datum,
-        });
-      }}
+      onMouseEnter={handleEnter}
       onMouseLeave={() => onDOMElementLeave()}
-      onClick={() => onDOMElementClick()}
+      onFocus={handleEnter}
+      onBlur={() => onDOMElementLeave()}
+      {...(clickable ? { onClick: () => onDOMElementClick() } : {})}
       style={{ ...markerStyle, ...transform }}
       type="button"
       aria-label={ariaLabel}
@@ -151,30 +154,6 @@ export function LineMarker({
         </div>
       )}
     </button>
-  ) : (
-    <div
-      className="echAnnotation__marker"
-      data-testid="echAnnotationMarker"
-      onMouseEnter={() => {
-        onDOMElementEnter({
-          createdBySpecId: specId,
-          id,
-          type: DOMElementType.LineAnnotationMarker,
-          datum,
-        });
-      }}
-      onMouseLeave={() => onDOMElementLeave()}
-      style={{ ...markerStyle, ...transform }}
-    >
-      <div ref={iconRef} className="echAnnotation__icon">
-        {renderWithProps(icon, datum)}
-      </div>
-      {body && (
-        <div ref={testRef} className="echAnnotation__body">
-          {renderWithProps(body, datum)}
-        </div>
-      )}
-    </div>
   );
 }
 
