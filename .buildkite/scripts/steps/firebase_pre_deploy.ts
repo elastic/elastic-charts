@@ -9,7 +9,14 @@
 import fs from 'fs';
 import path from 'path';
 
-import { firebaseDeploy, downloadArtifacts, getChartsPackageMetadata, startGroup, decompress, bkEnv } from '../../utils';
+import {
+  firebaseDeploy,
+  downloadArtifacts,
+  getChartsPackageMetadata,
+  startGroup,
+  decompress,
+  bkEnv,
+} from '../../utils';
 import { createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
 
 void (async () => {
