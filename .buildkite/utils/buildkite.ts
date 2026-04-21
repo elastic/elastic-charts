@@ -9,7 +9,7 @@
 import axios from 'axios';
 import { getBuildkiteEnv, getMetadata, setMetadata, metadataExists } from 'buildkite-agent-node';
 
-import { ECH_CHECK_ID } from './constants';
+import { ECH_CHECK_ID, MetaDataKeys } from './constants';
 import { exec } from './exec';
 
 export const uploadPipeline = async (pipelineContent: any) => {
@@ -101,6 +101,49 @@ export const uploadArtifacts = async (query: string) => {
   startGroup(`Uploading artifacts matching "${q}"`);
   await exec(`buildkite-agent artifact upload ${q}`);
 };
+
+export interface ChartsPackageMetadata {
+  tarballFilename: string;
+  version: string;
+  commitSha: string;
+  commitShortSha: string;
+}
+
+// Persist the packaged charts tarball details for later deploy and comment steps.
+export async function setChartsPackageMetadata(metadata: ChartsPackageMetadata) {
+  await Promise.all([
+    setMetadata(MetaDataKeys.chartsPackageTarballFilename, metadata.tarballFilename),
+    setMetadata(MetaDataKeys.chartsPackageVersion, metadata.version),
+    setMetadata(MetaDataKeys.chartsPackageCommitSha, metadata.commitSha),
+    setMetadata(MetaDataKeys.chartsPackageCommitShortSha, metadata.commitShortSha),
+  ]);
+}
+
+export async function getChartsPackageMetadata(required: true): Promise<ChartsPackageMetadata>;
+export async function getChartsPackageMetadata(required?: false): Promise<ChartsPackageMetadata | null>;
+export async function getChartsPackageMetadata(required: boolean = false): Promise<ChartsPackageMetadata | null> {
+  const [tarballFilename, version, commitSha, commitShortSha] = await Promise.all([
+    getMetadata(MetaDataKeys.chartsPackageTarballFilename),
+    getMetadata(MetaDataKeys.chartsPackageVersion),
+    getMetadata(MetaDataKeys.chartsPackageCommitSha),
+    getMetadata(MetaDataKeys.chartsPackageCommitShortSha),
+  ]);
+
+  if (!tarballFilename || !version || !commitSha || !commitShortSha) {
+    if (required) {
+      throw new Error('Failed to find complete charts package metadata');
+    }
+
+    return null;
+  }
+
+  return {
+    tarballFilename,
+    version,
+    commitSha,
+    commitShortSha,
+  };
+}
 
 function getEnvNumber(key: string) {
   const stringValue = getEnvString(key);

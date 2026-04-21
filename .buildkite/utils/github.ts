@@ -417,6 +417,7 @@ export const comments = {
   },
   deployment({
     deploymentUrl,
+    packageTarballUrl,
     sha,
     previousSha,
     state,
@@ -460,8 +461,8 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
 - [Docs](${deploymentUrl})
 - [Storybook](${deploymentUrl}/storybook)
 - [e2e server](${deploymentUrl}/e2e)
-- ([Playwright VRT report](${deploymentUrl}/vrt-report)
-- ([Playwright A11Y report](${deploymentUrl}/a11y-report)`
+- [Playwright VRT report](${deploymentUrl}/vrt-report)
+- [Playwright A11Y report](${deploymentUrl}/a11y-report)${packageTarballUrl ? `\n- [Package .tgz](${packageTarballUrl})` : ''}`
           : `- ⏳ Storybook
 - ⏳ e2e server
 - ⏳ Playwright VRT report
@@ -477,7 +478,7 @@ ${deploymentMsg}`;
 - [Storybook](${deploymentUrl}/storybook)
 - [e2e server](${deploymentUrl}/e2e)
 ${preDeploy ? '- ⏳ Playwright VRT report - Running e2e tests' : `- [Playwright VRT report](${deploymentUrl}/vrt-report)`}
-${preDeploy ? '- ⏳ Playwright A11Y report - Running a11y tests' : `- [Playwright A11Y report](${deploymentUrl}/a11y-report)`}`;
+${preDeploy ? '- ⏳ Playwright A11Y report - Running a11y tests' : `- [Playwright A11Y report](${deploymentUrl}/a11y-report)`}${packageTarballUrl ? `\n- [Package .tgz](${packageTarballUrl})` : ''}`;
   },
 };
 

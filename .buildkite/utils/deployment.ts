@@ -10,7 +10,7 @@ import type { RestEndpointMethodTypes } from '@octokit/rest';
 import { getMetadata, setMetadata, metadataExists } from 'buildkite-agent-node';
 import type { Optional } from 'utility-types';
 
-import { bkEnv, getPreviousDeployCommitSha } from './buildkite';
+import { bkEnv, getChartsPackageMetadata, getPreviousDeployCommitSha } from './buildkite';
 import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
 import { getOrCreateDeploymentUrl } from './firebase';
@@ -21,6 +21,7 @@ export interface UpdateDeploymentCommentOptions {
   sha?: string;
   state: 'pending' | 'success' | 'failure';
   deploymentUrl?: string;
+  packageTarballUrl?: string;
   previousSha?: string;
   errorCmd?: string;
   errorMsg?: string;
@@ -72,12 +73,17 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
 
   const deploymentUrl = options.deploymentUrl ?? (await getOrCreateDeploymentUrl());
   const previousSha = options.previousSha ?? (await getMetadata(MetaDataKeys.deploymentPreviousSha));
+  const chartsPackage = await getChartsPackageMetadata();
+  const packageTarballUrl =
+    options.packageTarballUrl ??
+    (chartsPackage ? getChartsPackageUrl(deploymentUrl, chartsPackage.tarballFilename) : undefined);
   const commentBody = getComment('deployment', {
     ...options,
     state,
     preDeploy,
     sha,
     deploymentUrl,
+    packageTarballUrl,
     previousSha,
   });
 
@@ -90,6 +96,12 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
   });
 
   await setMetadata(MetaDataKeys.deploymentCommentId, id.toString());
+}
+
+// Derive the tarball URL from the deployed Firebase base URL to keep comments stable.
+function getChartsPackageUrl(deploymentUrl: string, tarballFilename: string) {
+  const baseUrl = deploymentUrl.endsWith('/') ? deploymentUrl : `${deploymentUrl}/`;
+  return new URL(`packages/${tarballFilename}`, baseUrl).toString();
 }
 
 /**

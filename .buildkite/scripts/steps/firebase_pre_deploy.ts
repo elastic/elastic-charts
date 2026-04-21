@@ -9,7 +9,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { firebaseDeploy, downloadArtifacts, startGroup, decompress, bkEnv } from '../../utils';
+import { firebaseDeploy, downloadArtifacts, getChartsPackageMetadata, startGroup, decompress, bkEnv } from '../../utils';
 import { createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
 
 void (async () => {
@@ -45,15 +45,26 @@ void (async () => {
     dest: path.join(outDir, 'e2e'),
   });
 
+  // Serve the packaged tarball from the preview site so downstream PRs can install it.
+  const chartsPackage = await getChartsPackageMetadata(true);
+  const chartsPackageSrc = path.join('.buildkite/artifacts/packages', chartsPackage.tarballFilename);
+  const chartsPackageDestDir = path.join(outDir, 'packages');
+  const chartsPackageDest = path.join(chartsPackageDestDir, chartsPackage.tarballFilename);
+  await downloadArtifacts(chartsPackageSrc, 'build_charts_package_preview');
+  fs.mkdirSync(chartsPackageDestDir, { recursive: true });
+  fs.copyFileSync(chartsPackageSrc, chartsPackageDest);
+
   startGroup('Check deployment files');
 
   const hasDocsIndex = fs.existsSync('./e2e_server/public/index.html');
   const hasStorybookIndex = fs.existsSync('./e2e_server/public/storybook/index.html');
   const hasE2EIndex = fs.existsSync('./e2e_server/public/e2e/index.html');
+  const hasChartsPackage = fs.existsSync(chartsPackageDest);
   const missingFiles = [
     ['docs', hasDocsIndex],
     ['storybook', hasStorybookIndex],
     ['e2e server', hasE2EIndex],
+    ['charts package tarball', hasChartsPackage],
   ]
     .filter(([, exists]) => !exists)
     .map<string>(([f]) => f as string);
