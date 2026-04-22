@@ -149,6 +149,11 @@ export function LineMarker({
       type="button"
       aria-label={ariaLabel}
       aria-describedby={tooltipDomId}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          onDOMElementLeave();
+        }
+      }}
     >
       <div ref={iconRef} className="echAnnotation__icon">
         {renderWithProps(icon, datum)}
