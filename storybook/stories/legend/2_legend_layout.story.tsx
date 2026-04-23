@@ -35,6 +35,7 @@ const getLabelOptionKnobs = (isLineLimit: boolean): LegendLabelOptions => {
 export const Example: ChartsStory = (_, { title, description }) => {
   const hideActions = boolean('Hide legend action', false, 'Legend');
   const showLegendExtra = !boolean('Hide legend extra', false, 'Legend');
+  const legendActionOnHover = boolean('Show legend action on hover', false, 'Legend');
   const legendPosition = customKnobs.enum.position('Legend position', 'bottom', { group: 'Legend' });
   const euiPopoverPosition = customKnobs.enum.euiPopoverPosition(undefined, undefined, { group: 'Legend' });
   const legendLayout = customKnobs.enum.layout('Legend Layout', 'list', { group: 'Legend' });
@@ -68,6 +69,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         legendPosition={legendPosition}
         legendLayout={legendLayout}
         legendAction={hideActions ? undefined : getLegendAction(euiPopoverPosition)}
+        legendActionOnHover={legendActionOnHover}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
