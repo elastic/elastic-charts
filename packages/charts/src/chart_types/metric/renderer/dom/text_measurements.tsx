@@ -227,8 +227,8 @@ export function getFitValueFontSize(
   minValueFontSize: number,
   hasIcon: boolean,
   isFitMode: boolean,
-  fontFamily = DEFAULT_FONT_FAMILY,
   panelPadding: number,
+  fontFamily = DEFAULT_FONT_FAMILY,
 ) {
   const maxWidth = (totalWidth - 2 * panelPadding) * 0.98; // Buffer to prevent clipping
   const maxHeight = (availableHeight - 2 * panelPadding) * 0.98;

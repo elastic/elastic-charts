@@ -130,18 +130,8 @@ class Component extends React.Component<Props> {
   render() {
     /* eslint-disable prettier/prettier */
     // TODO - Prettier is going crazy on this line, need to investigate
-    const {
-      initialized,
-      size,
-      forwardStageRef,
-      a11y,
-      dimensions,
-      spec,
-      style,
-      backgroundColor,
-      locale,
-      metricStyle,
-    } = this.props;
+    const { initialized, size, forwardStageRef, a11y, dimensions, spec, style, backgroundColor, locale, metricStyle } =
+      this.props;
     /* eslint-enable prettier/prettier */
     const contrastOptions: ColorContrastOptions = {
       lightColor: colorToRgba(metricStyle.textLightColor),
@@ -221,8 +211,8 @@ class Component extends React.Component<Props> {
                   bulletToMetricStyle.minValueFontSize,
                   false,
                   false,
-                  bulletToMetricStyle.fontFamily,
                   textDimensions.metricSpacing.panelPadding,
+                  bulletToMetricStyle.fontFamily,
                 );
                 const sizes = getSnappedFontSizes(fittedValueFontSize, panel.height, bulletToMetricStyle);
 

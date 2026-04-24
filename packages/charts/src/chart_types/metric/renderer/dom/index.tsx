@@ -155,8 +155,8 @@ function Component({
             style.minValueFontSize,
             datum.valueIcon !== undefined,
             style.valueFontSize === 'fit',
-            style.fontFamily,
             textDimensions.metricSpacing.panelPadding,
+            style.fontFamily,
           );
           acc.fittedValueFontSize = Math.min(acc.fittedValueFontSize, valueFontSize);
 
