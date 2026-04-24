@@ -28,3 +28,4 @@ export { Example as pointStyleOverrides } from './13_point_style_overrides.story
 export { Example as errorBoundary } from './14_error_boundary.story';
 export { Example as linearNicing } from './15_linear_nicing.story';
 export { Example as lensStressTest } from './33_lens_stress.story';
+export { Example as fontMeasurementTest } from './34_font_measurement.story';

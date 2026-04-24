@@ -319,6 +319,7 @@ export type MetricSpacing = 'small' | 'large';
  * @public
  */
 export interface MetricStyle {
+  fontFamily: string;
   textDarkColor: Color;
   textLightColor: Color;
   textSubtitleDarkColor: Color;

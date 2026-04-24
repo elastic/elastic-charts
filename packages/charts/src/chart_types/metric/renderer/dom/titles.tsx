@@ -64,6 +64,7 @@ const Title: React.FC<TitleProps> = ({
         <button
           // ".echMetric" displays an outline halo;
           // inline styles protect us from unintended overrides of these styles.
+          style={{ color: 'inherit', fontFamily: 'inherit' }}
           onMouseDown={(e) => e.stopPropagation()}
           onMouseUp={(e) => e.stopPropagation()}
           onClick={(e) => {

@@ -63,7 +63,7 @@ export class Logger {
    * @todo add more robust logic
    */
   private static isDevelopment(): boolean {
-    return process.env.NODE_ENV !== 'production';
+    return typeof process === 'object' && process !== null && process.env && process.env.NODE_ENV !== 'production';
   }
 
   /**
@@ -73,7 +73,7 @@ export class Logger {
    * @todo add more robust logic
    */
   private static isTest(): boolean {
-    return process.env.NODE_ENV === 'test';
+    return typeof process === 'object' && process !== null && process.env && process.env.NODE_ENV === 'test';
   }
 }
 

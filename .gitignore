@@ -30,5 +30,8 @@ playground/playground.tsx
 .buildkite/buildkite.d.ts
 .buildkite/artifacts/
 
-# keep only top-level lock file
+# keep only top-level lock file unless a workspace manages its own install
 **/*/yarn.lock
+!.buildkite/yarn.lock
+!docs/yarn.lock
+!e2e/yarn.lock

@@ -567,6 +567,8 @@ export interface BulletStyle {
     // (undocumented)
     fallbackBandColor: Color;
     // (undocumented)
+    fontFamily: string;
+    // (undocumented)
     minHeight: Pixels;
     // (undocumented)
     nonFiniteText: string;
@@ -2148,6 +2150,8 @@ export interface MetricStyle {
     emptyBackground: Color;
     // (undocumented)
     extraTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
+    // (undocumented)
+    fontFamily: string;
     // (undocumented)
     iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
     // (undocumented)

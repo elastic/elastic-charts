@@ -1,3 +1,17 @@
+# [71.5.0](https://github.com/elastic/elastic-charts/compare/v71.4.1...v71.5.0) (2026-04-14)
+
+
+### Bug Fixes
+
+* guard process.env for browser environments without bundler polyfills ([#2810](https://github.com/elastic/elastic-charts/issues/2810)) ([9ffd74e](https://github.com/elastic/elastic-charts/commit/9ffd74efae6519979f9d1ef6eeff55dff916b9cd))
+* remove `produce()` from selectors ([#2813](https://github.com/elastic/elastic-charts/issues/2813)) ([561162c](https://github.com/elastic/elastic-charts/commit/561162cb4e020e0a8d9448373bc17ef697c7b2a0))
+
+
+### Features
+
+* **theme:** Add `fontFamily` property to `BulletStyle` ([#2811](https://github.com/elastic/elastic-charts/issues/2811)) ([a23b25c](https://github.com/elastic/elastic-charts/commit/a23b25ca9ee227d74ccfe4e61dacd90155117259))
+* **theme:** Add `fontFamily` property to `MetricStyle` ([#2816](https://github.com/elastic/elastic-charts/issues/2816)) ([5bcaf24](https://github.com/elastic/elastic-charts/commit/5bcaf2435e2a7ca341ee713a16ed436975426fe0))
+
 ## [71.4.1](https://github.com/elastic/elastic-charts/compare/v71.4.0...v71.4.1) (2026-03-31)
 
 # [71.4.0](https://github.com/elastic/elastic-charts/compare/v71.3.0...v71.4.0) (2026-03-31)

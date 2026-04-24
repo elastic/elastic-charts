@@ -419,6 +419,7 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     },
   },
   metric: {
+    fontFamily: DEFAULT_FONT_FAMILY,
     textLightColor: '#E0E5EE',
     textDarkColor: '#343741',
     textSubtitleLightColor: '#E0E5EE',
@@ -441,6 +442,7 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     titleWeight: 500,
   },
   bulletGraph: {
+    fontFamily: DEFAULT_FONT_FAMILY,
     textColor: '#E0E5EE',
     border: '#343741',
     barBackground: '#FFF',

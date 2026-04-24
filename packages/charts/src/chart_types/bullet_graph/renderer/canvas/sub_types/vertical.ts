@@ -13,7 +13,7 @@ import type { ContinuousDomain, GenericDomain } from '../../../../../utils/domai
 import type { ActiveValue } from '../../../selectors/get_active_values';
 import type { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import type { BulletStyle } from '../../../theme';
-import { GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
+import { GRAPH_PADDING, TICK_FONT_SIZE, getTickFont } from '../../../theme';
 import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH, TICK_LABEL_PADDING } from '../constants';
 
 /** @internal */
@@ -24,6 +24,7 @@ export function verticalBullet(
   backgroundColor: Color,
   activeValue?: ActiveValue | null,
 ) {
+  const tickFont = getTickFont(style.fontFamily);
   ctx.translate(0, GRAPH_PADDING.top);
 
   const { datum, graphArea, scale, colorBands, ticks } = dimensions;
@@ -99,7 +100,7 @@ export function verticalBullet(
   // Tick labels
   ctx.textBaseline = 'top';
   ctx.fillStyle = style.textColor;
-  ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
+  ctx.font = cssFontShorthand(tickFont, TICK_FONT_SIZE);
   ticks
     .filter((tick) => tick >= min && tick <= max)
     .forEach((tick, i) => {

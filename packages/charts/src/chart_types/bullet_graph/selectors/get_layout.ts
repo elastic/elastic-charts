@@ -9,6 +9,7 @@
 import { getBulletSpec } from './get_bullet_spec';
 import { getChartSize } from './get_chart_size';
 import { createCustomCachedSelector } from '../../../state/create_selector';
+import { getChartThemeSelector } from '../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_spec';
 import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Size } from '../../../utils/dimensions';
@@ -18,14 +19,14 @@ import type { BulletDatum } from '../spec';
 import {
   FONT_PADDING,
   HEADER_PADDING,
-  SUBTITLE_FONT,
+  getSubtitleFont,
+  getTargetFont,
+  getTitleFont,
+  getValueFont,
   SUBTITLE_FONT_SIZE,
-  TARGET_FONT,
   TARGET_FONT_SIZE,
-  TITLE_FONT,
   TITLE_FONT_SIZE,
   TITLE_LINE_SPACING,
-  VALUE_FONT,
   VALUE_FONT_SIZE,
   getMaxTargetValueAssent,
   getTextAscentHeight,
@@ -83,8 +84,8 @@ const minChartWidths: Record<BulletSubtype, number> = {
 
 /** @internal */
 export const getLayout = createCustomCachedSelector(
-  [getBulletSpec, getChartSize, getSettingsSpecSelector],
-  (spec, chartSize, { locale }): BulletLayout => {
+  [getBulletSpec, getChartSize, getSettingsSpecSelector, getChartThemeSelector],
+  (spec, chartSize, { locale }, { bulletGraph }): BulletLayout => {
     const { data } = spec;
     const rows = data.length;
     const columns = data.reduce((acc, row) => {
@@ -96,6 +97,11 @@ export const getLayout = createCustomCachedSelector(
       width: panel.width - HEADER_PADDING.left - HEADER_PADDING.right,
       height: panel.height - HEADER_PADDING.top - HEADER_PADDING.bottom,
     };
+
+    const titleFont = getTitleFont(bulletGraph.fontFamily);
+    const subtitleFont = getSubtitleFont(bulletGraph.fontFamily);
+    const valueFont = getValueFont(bulletGraph.fontFamily);
+    const targetFont = getTargetFont(bulletGraph.fontFamily);
 
     return withTextMeasure((textMeasurer) => {
       // collect header elements title, subtitles and values
@@ -111,10 +117,10 @@ export const getLayout = createCustomCachedSelector(
             datum: cell,
           };
           const widths = {
-            title: textMeasurer(content.title.trim(), TITLE_FONT, TITLE_FONT_SIZE).width,
-            subtitle: content.subtitle ? textMeasurer(content.subtitle, TITLE_FONT, TITLE_FONT_SIZE).width : 0,
-            value: textMeasurer(content.value, VALUE_FONT, VALUE_FONT_SIZE).width,
-            target: textMeasurer(content.target, TARGET_FONT, TARGET_FONT_SIZE).width,
+            title: textMeasurer(content.title.trim(), titleFont, TITLE_FONT_SIZE).width,
+            subtitle: content.subtitle ? textMeasurer(content.subtitle, subtitleFont, SUBTITLE_FONT_SIZE).width : 0,
+            value: textMeasurer(content.value, valueFont, VALUE_FONT_SIZE).width,
+            target: textMeasurer(content.target, targetFont, TARGET_FONT_SIZE).width,
           };
           return { content, widths };
         }),
@@ -135,7 +141,7 @@ export const getLayout = createCustomCachedSelector(
 
           const titleTruncated = wrapText(
             cell.content.title,
-            TITLE_FONT,
+            titleFont,
             TITLE_FONT_SIZE,
             availableWidth,
             2,
@@ -143,15 +149,8 @@ export const getLayout = createCustomCachedSelector(
             locale,
           ).meta.truncated;
           const subtitleTruncated = cell.content.subtitle
-            ? wrapText(
-                cell.content.subtitle,
-                SUBTITLE_FONT,
-                SUBTITLE_FONT_SIZE,
-                availableWidth,
-                1,
-                textMeasurer,
-                locale,
-              ).meta.truncated
+            ? wrapText(cell.content.subtitle, subtitleFont, SUBTITLE_FONT_SIZE, availableWidth, 1, textMeasurer, locale)
+                .meta.truncated
             : false;
 
           return titleTruncated || subtitleTruncated;
@@ -172,7 +171,7 @@ export const getLayout = createCustomCachedSelector(
               // wrap only title if necessary
               title: wrapText(
                 cell.content.title,
-                TITLE_FONT,
+                titleFont,
                 TITLE_FONT_SIZE,
                 headerSize.width,
                 2,
@@ -182,7 +181,7 @@ export const getLayout = createCustomCachedSelector(
               subtitle: cell.content.subtitle
                 ? wrapText(
                     cell.content.subtitle,
-                    SUBTITLE_FONT,
+                    subtitleFont,
                     SUBTITLE_FONT_SIZE,
                     headerSize.width,
                     1,
@@ -203,11 +202,11 @@ export const getLayout = createCustomCachedSelector(
           return {
             panel,
             header: headerSize,
-            title: wrapText(cell.content.title, TITLE_FONT, TITLE_FONT_SIZE, availableWidth, 2, textMeasurer, locale),
+            title: wrapText(cell.content.title, titleFont, TITLE_FONT_SIZE, availableWidth, 2, textMeasurer, locale),
             subtitle: cell.content.subtitle
               ? wrapText(
                   cell.content.subtitle,
-                  SUBTITLE_FONT,
+                  subtitleFont,
                   SUBTITLE_FONT_SIZE,
                   availableWidth,
                   1,

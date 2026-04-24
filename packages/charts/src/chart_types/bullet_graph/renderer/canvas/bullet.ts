@@ -22,14 +22,14 @@ import type { BulletStyle } from '../../theme';
 import {
   FONT_PADDING,
   HEADER_PADDING,
-  SUBTITLE_FONT,
+  getSubtitleFont,
+  getTargetFont,
+  getTitleFont,
+  getValueFont,
   SUBTITLE_FONT_SIZE,
-  TARGET_FONT,
   TARGET_FONT_SIZE,
-  TITLE_FONT,
   TITLE_FONT_SIZE,
   TITLE_LINE_SPACING,
-  VALUE_FONT,
   VALUE_FONT_SIZE,
   getMaxTargetValueAssent,
   getTextAscentHeight,
@@ -51,6 +51,11 @@ export function renderBullet(
 ) {
   const { debug, style, dimensions, activeValues, spec, backgroundColor } = props;
   withContext(ctx, (ctx) => {
+    const titleFont = getTitleFont(style.fontFamily);
+    const subtitleFont = getSubtitleFont(style.fontFamily);
+    const valueFont = getValueFont(style.fontFamily);
+    const targetFont = getTargetFont(style.fontFamily);
+
     ctx.scale(dpr, dpr);
     clearCanvas(ctx, backgroundColor);
 
@@ -112,7 +117,7 @@ export function renderBullet(
           // Title
           ctx.fillStyle = props.style.textColor;
           ctx.textAlign = 'start';
-          ctx.font = cssFontShorthand(TITLE_FONT, TITLE_FONT_SIZE);
+          ctx.font = cssFontShorthand(titleFont, TITLE_FONT_SIZE);
 
           const titleYBaseline =
             commonYBaseline -
@@ -129,12 +134,12 @@ export function renderBullet(
 
           // Subtitle
           if (bulletGraph.subtitle) {
-            ctx.font = cssFontShorthand(SUBTITLE_FONT, SUBTITLE_FONT_SIZE);
+            ctx.font = cssFontShorthand(subtitleFont, SUBTITLE_FONT_SIZE);
             ctx.fillText(bulletGraph.subtitle, 0, commonYBaseline);
           }
 
           // Value
-          ctx.font = cssFontShorthand(VALUE_FONT, VALUE_FONT_SIZE);
+          ctx.font = cssFontShorthand(valueFont, VALUE_FONT_SIZE);
           if (!multiline) ctx.textAlign = 'end';
           {
             const y = commonYBaseline + (multiline ? MAX_TARGET_VALUE_ASCENT + FONT_PADDING : 0);
@@ -145,7 +150,7 @@ export function renderBullet(
 
           // Target
           if (bulletGraph.target) {
-            ctx.font = cssFontShorthand(TARGET_FONT, TARGET_FONT_SIZE);
+            ctx.font = cssFontShorthand(targetFont, TARGET_FONT_SIZE);
             if (!multiline) ctx.textAlign = 'end';
             const x = multiline ? bulletGraph.valueWidth : bulletGraph.header.width;
             const y = commonYBaseline + (multiline ? MAX_TARGET_VALUE_ASCENT + FONT_PADDING : 0);

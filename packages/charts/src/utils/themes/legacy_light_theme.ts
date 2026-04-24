@@ -422,6 +422,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
     },
   },
   metric: {
+    fontFamily: 'Sans-Serif',
     textLightColor: '#E0E5EE',
     textSubtitleLightColor: '#E0E5EE',
     textSubtitleDarkColor: '#343741',
