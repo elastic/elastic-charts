@@ -103,16 +103,18 @@ export const uploadArtifacts = async (query: string) => {
 };
 
 export interface ChartsPackageMetadata {
-  tarballFilename: string;
+  liveTarballFilename: string;
+  commitTarballFilename: string;
   version: string;
   commitSha: string;
   commitShortSha: string;
 }
 
-// Persist the packaged charts tarball details for later deploy and comment steps.
+// Persist live and commit-specific tarball details for deploy and comment steps.
 export async function setChartsPackageMetadata(metadata: ChartsPackageMetadata) {
   await Promise.all([
-    setMetadata(MetaDataKeys.chartsPackageTarballFilename, metadata.tarballFilename),
+    setMetadata(MetaDataKeys.chartsPackageLiveTarballFilename, metadata.liveTarballFilename),
+    setMetadata(MetaDataKeys.chartsPackageCommitTarballFilename, metadata.commitTarballFilename),
     setMetadata(MetaDataKeys.chartsPackageVersion, metadata.version),
     setMetadata(MetaDataKeys.chartsPackageCommitSha, metadata.commitSha),
     setMetadata(MetaDataKeys.chartsPackageCommitShortSha, metadata.commitShortSha),
@@ -122,14 +124,15 @@ export async function setChartsPackageMetadata(metadata: ChartsPackageMetadata) 
 export async function getChartsPackageMetadata(required: true): Promise<ChartsPackageMetadata>;
 export async function getChartsPackageMetadata(required?: false): Promise<ChartsPackageMetadata | null>;
 export async function getChartsPackageMetadata(required: boolean = false): Promise<ChartsPackageMetadata | null> {
-  const [tarballFilename, version, commitSha, commitShortSha] = await Promise.all([
-    getMetadata(MetaDataKeys.chartsPackageTarballFilename),
+  const [liveTarballFilename, commitTarballFilename, version, commitSha, commitShortSha] = await Promise.all([
+    getMetadata(MetaDataKeys.chartsPackageLiveTarballFilename),
+    getMetadata(MetaDataKeys.chartsPackageCommitTarballFilename),
     getMetadata(MetaDataKeys.chartsPackageVersion),
     getMetadata(MetaDataKeys.chartsPackageCommitSha),
     getMetadata(MetaDataKeys.chartsPackageCommitShortSha),
   ]);
 
-  if (!tarballFilename || !version || !commitSha || !commitShortSha) {
+  if (!liveTarballFilename || !commitTarballFilename || !version || !commitSha || !commitShortSha) {
     if (required) {
       throw new Error('Failed to find complete charts package metadata');
     }
@@ -138,7 +141,8 @@ export async function getChartsPackageMetadata(required: boolean = false): Promi
   }
 
   return {
-    tarballFilename,
+    liveTarballFilename,
+    commitTarballFilename,
     version,
     commitSha,
     commitShortSha,

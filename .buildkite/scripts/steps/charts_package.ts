@@ -45,24 +45,29 @@ void (async () => {
     throw new Error('Failed to parse npm pack output for @elastic/charts');
   }
 
-  const tarballFilename = `elastic-charts-v${packResult.version}-pr-${prNumber}.tgz`;
+  const commitShortSha = commitSha.slice(0, 7);
+  const liveTarballFilename = `elastic-charts-v${packResult.version}-pr-${prNumber}.tgz`;
+  const commitTarballFilename = `elastic-charts-v${packResult.version}-pr-${prNumber}-${commitShortSha}.tgz`;
   const artifactDir = '.buildkite/artifacts/packages';
   const packagedTarballPath = path.join('packages/charts', packResult.filename);
-  const artifactTarballPath = path.join(artifactDir, tarballFilename);
+  const liveArtifactTarballPath = path.join(artifactDir, liveTarballFilename);
+  const commitArtifactTarballPath = path.join(artifactDir, commitTarballFilename);
   const manifestPath = path.join(artifactDir, 'charts-package-manifest.json');
-  const commitShortSha = commitSha.slice(0, 7);
 
   fs.mkdirSync(artifactDir, { recursive: true });
-  fs.rmSync(artifactTarballPath, { force: true });
+  fs.rmSync(liveArtifactTarballPath, { force: true });
+  fs.rmSync(commitArtifactTarballPath, { force: true });
   fs.rmSync(manifestPath, { force: true });
-  fs.renameSync(packagedTarballPath, artifactTarballPath);
+  fs.renameSync(packagedTarballPath, liveArtifactTarballPath);
+  fs.copyFileSync(liveArtifactTarballPath, commitArtifactTarballPath);
 
   fs.writeFileSync(
     manifestPath,
     JSON.stringify(
       {
         packageName: '@elastic/charts',
-        tarballFilename,
+        liveTarballFilename,
+        commitTarballFilename,
         version: packResult.version,
         commitSha,
         commitShortSha,
@@ -74,12 +79,14 @@ void (async () => {
   );
 
   await setChartsPackageMetadata({
-    tarballFilename,
+    liveTarballFilename,
+    commitTarballFilename,
     version: packResult.version,
     commitSha,
     commitShortSha,
   });
 
-  await uploadArtifacts(artifactTarballPath);
+  await uploadArtifacts(liveArtifactTarballPath);
+  await uploadArtifacts(commitArtifactTarballPath);
   await uploadArtifacts(manifestPath);
 })();

@@ -418,6 +418,8 @@ export const comments = {
   deployment({
     deploymentUrl,
     packageTarballUrl,
+    commitPackageTarballUrl,
+    commitPackageTarballLabel,
     sha,
     previousSha,
     state,
@@ -451,6 +453,7 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
 
     const buildUrl = bkEnv.buildUrl;
     const buildText = !buildUrl ? '' : ` ([build#${buildUrl.split('/').pop()}](${buildUrl}))`;
+    const packageLinks = getPackageLinks(packageTarballUrl, commitPackageTarballUrl, commitPackageTarballLabel);
 
     if (state === 'pending') {
       const updateComment = previousSha ? `\n> 🚧 Updating deployment from ${previousSha}` : '';
@@ -462,7 +465,7 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
 - [Storybook](${deploymentUrl}/storybook)
 - [e2e server](${deploymentUrl}/e2e)
 - [Playwright VRT report](${deploymentUrl}/vrt-report)
-- [Playwright A11Y report](${deploymentUrl}/a11y-report)${packageTarballUrl ? `\n- [Package .tgz](${packageTarballUrl})` : ''}`
+- [Playwright A11Y report](${deploymentUrl}/a11y-report)${packageLinks ? `\n- ${packageLinks}` : ''}`
           : `- ⏳ Storybook
 - ⏳ e2e server
 - ⏳ Playwright VRT report
@@ -478,9 +481,26 @@ ${deploymentMsg}`;
 - [Storybook](${deploymentUrl}/storybook)
 - [e2e server](${deploymentUrl}/e2e)
 ${preDeploy ? '- ⏳ Playwright VRT report - Running e2e tests' : `- [Playwright VRT report](${deploymentUrl}/vrt-report)`}
-${preDeploy ? '- ⏳ Playwright A11Y report - Running a11y tests' : `- [Playwright A11Y report](${deploymentUrl}/a11y-report)`}${packageTarballUrl ? `\n- [Package .tgz](${packageTarballUrl})` : ''}`;
+${preDeploy ? '- ⏳ Playwright A11Y report - Running a11y tests' : `- [Playwright A11Y report](${deploymentUrl}/a11y-report)`}${packageLinks ? `\n- ${packageLinks}` : ''}`;
   },
 };
+
+function getPackageLinks(
+  packageTarballUrl?: string,
+  commitPackageTarballUrl?: string,
+  commitPackageTarballLabel?: string,
+) {
+  if (!packageTarballUrl && !commitPackageTarballUrl) return '';
+
+  const links = [];
+  if (packageTarballUrl) {
+    links.push(`[Package .tgz](${packageTarballUrl})`);
+  }
+  if (commitPackageTarballUrl) {
+    links.push(`[${commitPackageTarballLabel ?? 'commit.tgz'}](${commitPackageTarballUrl})`);
+  }
+  return links.join(' - ');
+}
 
 type Comments = typeof comments;
 
