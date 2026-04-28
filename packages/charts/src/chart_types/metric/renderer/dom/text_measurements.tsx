@@ -88,7 +88,10 @@ const HEIGHT_BP: [number, number, BreakPoint][] = [
   [600, Infinity, 'xxl'],
 ];
 const ICON_SIZE: Record<BreakPoint, number> = { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
-const TITLE_FONT_SIZE: Record<BreakPoint, number> = { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
+const TITLE_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
+  small: { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 },
+  large: { xxxs: 16, xxs: 16, xs: 16, s: 20, m: 24, l: 24, xl: 32, xxl: 42 },
+};
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = {
   xxxs: 14,
   xxs: 14,
@@ -99,7 +102,10 @@ const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = {
   xl: 26,
   xxl: 36,
 };
-const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { xxxs: 14, xxs: 14, xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
+const EXTRA_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
+  small: { xxxs: 14, xxs: 14, xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 },
+  large: { xxxs: 16, xxs: 16, xs: 16, s: 22, m: 28, l: 35, xl: 46, xxl: 63 },
+};
 const VALUE_FONT_SIZE: Record<BreakPoint, number> = {
   xxxs: 16,
   xxs: 26,
@@ -126,7 +132,6 @@ const DEFAULT_PRIMARY_ADJACENT_GAP = 0;
 const LARGE_TITLE_SUBTITLE_GAP = 8;
 const LARGE_PRIMARY_ADJACENT_GAP = 4;
 const LARGE_PRIMARY_FONT_MULTIPLIER = 1.5;
-const LARGE_SECONDARY_FONT_MULTIPLIER = 1.75;
 const LARGE_PANEL_PADDING: Record<BreakPoint, number> = {
   xxxs: 16,
   xxs: 16,
@@ -322,14 +327,11 @@ function getHeightBasedFontSizes(
   const valueFontSizeMap = getValueFontSizeMap(spacingMode);
   const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : valueFontSizeMap[size];
   const valuePartFontSize = Math.floor(valueFontSize / VALUE_PART_FONT_RATIO);
-  const extraFontSize =
-    spacingMode === 'small'
-      ? EXTRA_FONT_SIZE[size]
-      : scaleForLargeMetric(EXTRA_FONT_SIZE[size], LARGE_SECONDARY_FONT_MULTIPLIER);
+  const extraFontSize = EXTRA_FONT_SIZE_BY_SPACING[spacingMode][size];
 
   return {
     iconSize: ICON_SIZE[size],
-    titleFontSize: TITLE_FONT_SIZE[size],
+    titleFontSize: TITLE_FONT_SIZE_BY_SPACING[spacingMode][size],
     subtitleFontSize: SUBTITLE_FONT_SIZE[size],
     extraFontSize,
     valueFontSize,
