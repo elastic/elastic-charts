@@ -13,6 +13,7 @@ import {
   firebaseDeploy,
   downloadArtifacts,
   getChartsPackageMetadata,
+  prepareChartsPackagesForDeployment,
   startGroup,
   decompress,
   bkEnv,
@@ -54,31 +55,26 @@ void (async () => {
 
   // Serve the packaged tarball from the preview site so downstream PRs can install it.
   const chartsPackage = await getChartsPackageMetadata(true);
-  const chartsPackageDestDir = path.join(outDir, 'packages');
-  const liveChartsPackageSrc = path.join('.buildkite/artifacts/packages', chartsPackage.liveTarballFilename);
-  const liveChartsPackageDest = path.join(chartsPackageDestDir, chartsPackage.liveTarballFilename);
-  const commitChartsPackageSrc = path.join('.buildkite/artifacts/packages', chartsPackage.commitTarballFilename);
-  const commitChartsPackageDest = path.join(chartsPackageDestDir, chartsPackage.commitTarballFilename);
-  await downloadArtifacts(liveChartsPackageSrc, 'build_charts_package_preview');
-  await downloadArtifacts(commitChartsPackageSrc, 'build_charts_package_preview');
-  fs.mkdirSync(chartsPackageDestDir, { recursive: true });
-  fs.copyFileSync(liveChartsPackageSrc, liveChartsPackageDest);
-  fs.copyFileSync(commitChartsPackageSrc, commitChartsPackageDest);
-  // Rehydrate prior SHA tarballs here if preview channels ever need immutable history across redeploys.
+  const { liveTarballDest, commitTarballDest, manifestDest } = await prepareChartsPackagesForDeployment(
+    outDir,
+    chartsPackage,
+  );
 
   startGroup('Check deployment files');
 
   const hasDocsIndex = fs.existsSync('./e2e_server/public/index.html');
   const hasStorybookIndex = fs.existsSync('./e2e_server/public/storybook/index.html');
   const hasE2EIndex = fs.existsSync('./e2e_server/public/e2e/index.html');
-  const hasLiveChartsPackage = fs.existsSync(liveChartsPackageDest);
-  const hasCommitChartsPackage = fs.existsSync(commitChartsPackageDest);
+  const hasLiveChartsPackage = fs.existsSync(liveTarballDest);
+  const hasCommitChartsPackage = fs.existsSync(commitTarballDest);
+  const hasChartsPackageManifest = fs.existsSync(manifestDest);
   const missingFiles = [
     ['docs', hasDocsIndex],
     ['storybook', hasStorybookIndex],
     ['e2e server', hasE2EIndex],
     ['live charts package tarball', hasLiveChartsPackage],
     ['commit charts package tarball', hasCommitChartsPackage],
+    ['charts package manifest', hasChartsPackageManifest],
   ]
     .filter(([, exists]) => !exists)
     .map<string>(([f]) => f as string);

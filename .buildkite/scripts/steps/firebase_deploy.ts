@@ -13,6 +13,7 @@ import {
   firebaseDeploy,
   downloadArtifacts,
   getChartsPackageMetadata,
+  prepareChartsPackagesForDeployment,
   startGroup,
   decompress,
   bkEnv,
@@ -62,16 +63,10 @@ void (async () => {
   });
 
   const chartsPackage = await getChartsPackageMetadata(true);
-  const chartsPackageDestDir = path.join(outDir, 'packages');
-  const liveChartsPackageSrc = path.join('.buildkite/artifacts/packages', chartsPackage.liveTarballFilename);
-  const liveChartsPackageDest = path.join(chartsPackageDestDir, chartsPackage.liveTarballFilename);
-  const commitChartsPackageSrc = path.join('.buildkite/artifacts/packages', chartsPackage.commitTarballFilename);
-  const commitChartsPackageDest = path.join(chartsPackageDestDir, chartsPackage.commitTarballFilename);
-  await downloadArtifacts(liveChartsPackageSrc, 'build_charts_package_preview');
-  await downloadArtifacts(commitChartsPackageSrc, 'build_charts_package_preview');
-  fs.mkdirSync(chartsPackageDestDir, { recursive: true });
-  fs.copyFileSync(liveChartsPackageSrc, liveChartsPackageDest);
-  fs.copyFileSync(commitChartsPackageSrc, commitChartsPackageDest);
+  const { liveTarballDest, commitTarballDest, manifestDest } = await prepareChartsPackagesForDeployment(
+    outDir,
+    chartsPackage,
+  );
 
   startGroup('Check deployment files');
 
@@ -80,8 +75,9 @@ void (async () => {
   const hasE2EIndex = fs.existsSync(path.join(outDir, 'e2e/index.html'));
   const hasVrtReportIndex = fs.existsSync(path.join(outDir, 'vrt-report/index.html'));
   const hasA11yReportIndex = fs.existsSync(path.join(outDir, 'a11y-report/index.html'));
-  const hasLiveChartsPackage = fs.existsSync(liveChartsPackageDest);
-  const hasCommitChartsPackage = fs.existsSync(commitChartsPackageDest);
+  const hasLiveChartsPackage = fs.existsSync(liveTarballDest);
+  const hasCommitChartsPackage = fs.existsSync(commitTarballDest);
+  const hasChartsPackageManifest = fs.existsSync(manifestDest);
   const missingFiles = [
     ['docs', hasDocsIndex],
     ['storybook', hasStorybookIndex],
@@ -90,6 +86,7 @@ void (async () => {
     ['a11y report', hasA11yReportIndex],
     ['live charts package tarball', hasLiveChartsPackage],
     ['commit charts package tarball', hasCommitChartsPackage],
+    ['charts package manifest', hasChartsPackageManifest],
   ]
     .filter(([, exists]) => !exists)
     .map<string>(([f]) => f as string);

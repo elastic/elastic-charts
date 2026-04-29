@@ -9,7 +9,16 @@
 import fs from 'fs';
 import path from 'path';
 
-import { bkEnv, exec, setChartsPackageMetadata, startGroup, uploadArtifacts, yarnInstall } from '../../utils';
+import {
+  bkEnv,
+  CHARTS_PACKAGE_MANIFEST_FILENAME,
+  createChartsPackageManifest,
+  exec,
+  setChartsPackageMetadata,
+  startGroup,
+  uploadArtifacts,
+  yarnInstall,
+} from '../../utils';
 
 interface NpmPackResult {
   filename: string;
@@ -52,7 +61,14 @@ void (async () => {
   const packagedTarballPath = path.join('packages/charts', packResult.filename);
   const liveArtifactTarballPath = path.join(artifactDir, liveTarballFilename);
   const commitArtifactTarballPath = path.join(artifactDir, commitTarballFilename);
-  const manifestPath = path.join(artifactDir, 'charts-package-manifest.json');
+  const manifestPath = path.join(artifactDir, CHARTS_PACKAGE_MANIFEST_FILENAME);
+  const chartsPackageMetadata = {
+    liveTarballFilename,
+    commitTarballFilename,
+    version: packResult.version,
+    commitSha,
+    commitShortSha,
+  };
 
   fs.mkdirSync(artifactDir, { recursive: true });
   fs.rmSync(liveArtifactTarballPath, { force: true });
@@ -61,30 +77,9 @@ void (async () => {
   fs.renameSync(packagedTarballPath, liveArtifactTarballPath);
   fs.copyFileSync(liveArtifactTarballPath, commitArtifactTarballPath);
 
-  fs.writeFileSync(
-    manifestPath,
-    JSON.stringify(
-      {
-        packageName: '@elastic/charts',
-        liveTarballFilename,
-        commitTarballFilename,
-        version: packResult.version,
-        commitSha,
-        commitShortSha,
-        pullRequestNumber: prNumber,
-      },
-      null,
-      2,
-    ),
-  );
+  fs.writeFileSync(manifestPath, JSON.stringify(createChartsPackageManifest(chartsPackageMetadata, prNumber), null, 2));
 
-  await setChartsPackageMetadata({
-    liveTarballFilename,
-    commitTarballFilename,
-    version: packResult.version,
-    commitSha,
-    commitShortSha,
-  });
+  await setChartsPackageMetadata(chartsPackageMetadata);
 
   await uploadArtifacts(liveArtifactTarballPath);
   await uploadArtifacts(commitArtifactTarballPath);

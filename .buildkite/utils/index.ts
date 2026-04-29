@@ -11,4 +11,5 @@ export * from './github';
 export * from './exec';
 export * from './pipeline';
 export * from './firebase';
+export * from './package';
 export * from './common';

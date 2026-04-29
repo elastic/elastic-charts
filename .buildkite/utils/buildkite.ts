@@ -9,7 +9,7 @@
 import axios from 'axios';
 import { getBuildkiteEnv, getMetadata, setMetadata, metadataExists } from 'buildkite-agent-node';
 
-import { ECH_CHECK_ID, MetaDataKeys } from './constants';
+import { ECH_CHECK_ID } from './constants';
 import { exec } from './exec';
 
 export const uploadPipeline = async (pipelineContent: any) => {
@@ -101,61 +101,6 @@ export const uploadArtifacts = async (query: string) => {
   startGroup(`Uploading artifacts matching "${q}"`);
   await exec(`buildkite-agent artifact upload ${q}`);
 };
-
-export interface ChartsPackageMetadata {
-  liveTarballFilename: string;
-  commitTarballFilename: string;
-  version: string;
-  commitSha: string;
-  commitShortSha: string;
-}
-
-// Persist live and commit-specific tarball details for deploy and comment steps.
-export async function setChartsPackageMetadata(metadata: ChartsPackageMetadata) {
-  await Promise.all([
-    setMetadata(MetaDataKeys.chartsPackageLiveTarballFilename, metadata.liveTarballFilename),
-    setMetadata(MetaDataKeys.chartsPackageCommitTarballFilename, metadata.commitTarballFilename),
-    setMetadata(MetaDataKeys.chartsPackageVersion, metadata.version),
-    setMetadata(MetaDataKeys.chartsPackageCommitSha, metadata.commitSha),
-    setMetadata(MetaDataKeys.chartsPackageCommitShortSha, metadata.commitShortSha),
-  ]);
-}
-
-export async function getChartsPackageMetadata(required: true): Promise<ChartsPackageMetadata>;
-export async function getChartsPackageMetadata(required?: false): Promise<ChartsPackageMetadata | null>;
-export async function getChartsPackageMetadata(required: boolean = false): Promise<ChartsPackageMetadata | null> {
-  const [liveTarballFilename, commitTarballFilename, version, commitSha, commitShortSha] = await Promise.all([
-    getMetadata(MetaDataKeys.chartsPackageLiveTarballFilename),
-    getMetadata(MetaDataKeys.chartsPackageCommitTarballFilename),
-    getMetadata(MetaDataKeys.chartsPackageVersion),
-    getMetadata(MetaDataKeys.chartsPackageCommitSha),
-    getMetadata(MetaDataKeys.chartsPackageCommitShortSha),
-  ]);
-
-  if (!liveTarballFilename || !commitTarballFilename || !version || !commitSha || !commitShortSha) {
-    if (required) {
-      throw new Error('Failed to find complete charts package metadata');
-    }
-
-    return null;
-  }
-
-  return {
-    liveTarballFilename,
-    commitTarballFilename,
-    version,
-    commitSha,
-    commitShortSha,
-  };
-}
-
-export function getChartsPackageUrls(deploymentUrl: string, metadata: ChartsPackageMetadata) {
-  const baseUrl = deploymentUrl.endsWith('/') ? deploymentUrl : `${deploymentUrl}/`;
-  return {
-    liveTarballUrl: new URL(`packages/${metadata.liveTarballFilename}`, baseUrl).toString(),
-    commitTarballUrl: new URL(`packages/${metadata.commitTarballFilename}`, baseUrl).toString(),
-  };
-}
 
 function getEnvNumber(key: string) {
   const stringValue = getEnvString(key);

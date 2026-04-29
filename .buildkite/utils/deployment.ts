@@ -10,11 +10,12 @@ import type { RestEndpointMethodTypes } from '@octokit/rest';
 import { getMetadata, setMetadata, metadataExists } from 'buildkite-agent-node';
 import type { Optional } from 'utility-types';
 
-import { bkEnv, getChartsPackageMetadata, getChartsPackageUrls, getPreviousDeployCommitSha } from './buildkite';
+import { bkEnv, getPreviousDeployCommitSha } from './buildkite';
 import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
 import { getOrCreateDeploymentUrl } from './firebase';
 import { octokit, defaultGHOptions, getComment, commentByKey } from './github';
+import { getChartsPackageMetadata, getChartsPackageUrls } from './package';
 import type { OctokitParameters } from './types';
 
 export interface UpdateDeploymentCommentOptions {
