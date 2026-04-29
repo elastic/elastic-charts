@@ -192,7 +192,7 @@ function getDesiredRetainedCommitTarballFilenames(
 ) {
   return [
     currentCommitTarballFilename,
-    ...getPreviousRetainedCommitTarballFilenames(previousManifest).filter(
+    ...(previousManifest?.retainedCommitTarballFilenames ?? []).filter(
       (tarballFilename) => tarballFilename !== currentCommitTarballFilename,
     ),
   ].slice(0, CHARTS_PACKAGE_RETENTION_COUNT);
@@ -203,11 +203,19 @@ async function getDeployedChartsPackageManifest(deploymentUrl: string): Promise<
   const manifestUrl = getChartsPackageUrl(deploymentUrl, CHARTS_PACKAGE_MANIFEST_FILENAME);
 
   try {
-    const response = await axios.get<ChartsPackageManifest>(manifestUrl, {
+    const response = await axios.get<unknown>(manifestUrl, {
       validateStatus: (status) => status === 200 || status === 404,
     });
 
-    return response.status === 200 ? response.data : null;
+    if (response.status !== 200) {
+      return null;
+    }
+
+    const manifest = validateChartsPackageManifest(response.data);
+    if (!manifest) {
+      console.warn(`Ignoring invalid charts package manifest from ${manifestUrl}`);
+    }
+    return manifest;
   } catch (error) {
     console.warn(`Failed to fetch charts package manifest from ${manifestUrl}`);
     console.warn(error);
@@ -215,17 +223,42 @@ async function getDeployedChartsPackageManifest(deploymentUrl: string): Promise<
   }
 }
 
-// Fall back to the single commit entry when reading manifests created before retention was added.
-function getPreviousRetainedCommitTarballFilenames(previousManifest: ChartsPackageManifest | null) {
-  if (!previousManifest) {
-    return [];
+// Validate the required manifest fields and default optional retained filenames when omitted.
+function validateChartsPackageManifest(value: unknown): ChartsPackageManifest | null {
+  if (!value || typeof value !== 'object') {
+    return null;
   }
 
-  if (previousManifest.retainedCommitTarballFilenames?.length > 0) {
-    return previousManifest.retainedCommitTarballFilenames;
+  const manifest = value as Partial<ChartsPackageManifest>;
+  if (
+    manifest.packageName !== '@elastic/charts' ||
+    typeof manifest.liveTarballFilename !== 'string' ||
+    typeof manifest.commitTarballFilename !== 'string' ||
+    typeof manifest.version !== 'string' ||
+    typeof manifest.commitSha !== 'string' ||
+    typeof manifest.commitShortSha !== 'string' ||
+    typeof manifest.pullRequestNumber !== 'number'
+  ) {
+    return null;
   }
 
-  return [previousManifest.commitTarballFilename];
+  const retainedCommitTarballFilenames = Array.isArray(manifest.retainedCommitTarballFilenames)
+    ? manifest.retainedCommitTarballFilenames.filter(
+        (tarballFilename): tarballFilename is string => typeof tarballFilename === 'string',
+      )
+    : [manifest.commitTarballFilename];
+
+  return {
+    packageName: manifest.packageName,
+    liveTarballFilename: manifest.liveTarballFilename,
+    commitTarballFilename: manifest.commitTarballFilename,
+    version: manifest.version,
+    commitSha: manifest.commitSha,
+    commitShortSha: manifest.commitShortSha,
+    pullRequestNumber: manifest.pullRequestNumber,
+    retainedCommitTarballFilenames:
+      retainedCommitTarballFilenames.length > 0 ? retainedCommitTarballFilenames : [manifest.commitTarballFilename],
+  };
 }
 
 // Copy a retained tarball from the deployed preview so it survives the next full redeploy.
