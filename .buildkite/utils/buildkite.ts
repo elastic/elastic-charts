@@ -149,6 +149,14 @@ export async function getChartsPackageMetadata(required: boolean = false): Promi
   };
 }
 
+export function getChartsPackageUrls(deploymentUrl: string, metadata: ChartsPackageMetadata) {
+  const baseUrl = deploymentUrl.endsWith('/') ? deploymentUrl : `${deploymentUrl}/`;
+  return {
+    liveTarballUrl: new URL(`packages/${metadata.liveTarballFilename}`, baseUrl).toString(),
+    commitTarballUrl: new URL(`packages/${metadata.commitTarballFilename}`, baseUrl).toString(),
+  };
+}
+
 function getEnvNumber(key: string) {
   const stringValue = getEnvString(key);
   if (stringValue === undefined) {

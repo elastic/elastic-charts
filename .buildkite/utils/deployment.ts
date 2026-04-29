@@ -10,7 +10,7 @@ import type { RestEndpointMethodTypes } from '@octokit/rest';
 import { getMetadata, setMetadata, metadataExists } from 'buildkite-agent-node';
 import type { Optional } from 'utility-types';
 
-import { bkEnv, getChartsPackageMetadata, getPreviousDeployCommitSha } from './buildkite';
+import { bkEnv, getChartsPackageMetadata, getChartsPackageUrls, getPreviousDeployCommitSha } from './buildkite';
 import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
 import { getOrCreateDeploymentUrl } from './firebase';
@@ -76,10 +76,9 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
   const deploymentUrl = options.deploymentUrl ?? (await getOrCreateDeploymentUrl());
   const previousSha = options.previousSha ?? (await getMetadata(MetaDataKeys.deploymentPreviousSha));
   const chartsPackage = await getChartsPackageMetadata();
-  const packageTarballUrl =
-    options.packageTarballUrl ?? getChartsPackageUrl(deploymentUrl, chartsPackage?.liveTarballFilename);
-  const commitPackageTarballUrl =
-    options.commitPackageTarballUrl ?? getChartsPackageUrl(deploymentUrl, chartsPackage?.commitTarballFilename);
+  const chartsPackageUrls = chartsPackage ? getChartsPackageUrls(deploymentUrl, chartsPackage) : undefined;
+  const packageTarballUrl = options.packageTarballUrl ?? chartsPackageUrls?.liveTarballUrl;
+  const commitPackageTarballUrl = options.commitPackageTarballUrl ?? chartsPackageUrls?.commitTarballUrl;
   const commitPackageTarballLabel =
     options.commitPackageTarballLabel ?? (chartsPackage ? `${chartsPackage.commitShortSha}.tgz` : undefined);
   const commentBody = getComment('deployment', {
@@ -104,14 +103,6 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
 
   await setMetadata(MetaDataKeys.deploymentCommentId, id.toString());
 }
-
-// Derive live and commit tarball URLs from the deployed Firebase preview base URL.
-function getChartsPackageUrl(deploymentUrl: string, tarballFilename?: string) {
-  if (!tarballFilename) return undefined;
-  const baseUrl = deploymentUrl.endsWith('/') ? deploymentUrl : `${deploymentUrl}/`;
-  return new URL(`packages/${tarballFilename}`, baseUrl).toString();
-}
-
 /**
  * Must clear previous deployments when deployment `transient_environment` is t`rue`
  */

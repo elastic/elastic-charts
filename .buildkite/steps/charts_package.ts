@@ -14,7 +14,7 @@ export const chartsPackageStep = createStep<CustomCommandStep>(() => {
 
   return {
     ...commandStepDefaults,
-    label: ':package: Build - @elastic/charts tarball',
+    label: ':package: Build - @elastic/charts package',
     key: 'build_charts_package_preview',
     ignoreForced: true,
     skip: isPullRequest ? false : 'Only pull request builds publish charts package tarballs',

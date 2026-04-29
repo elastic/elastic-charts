@@ -28,7 +28,7 @@ export const getBuildConfig = (): BuildConfig => {
       { name: 'Build - Docs', id: 'build_docs' },
       { name: 'Build - e2e server', id: 'build_e2e' },
       { name: 'Build - Storybook', id: 'build_storybook' },
-      ...(bkEnv.isPullRequest ? [{ name: 'Build - @elastic/charts tarball', id: 'build_charts_package_preview' }] : []),
+      ...(bkEnv.isPullRequest ? [{ name: 'Build - @elastic/charts package', id: 'build_charts_package_preview' }] : []),
       { name: 'Pre Deploy - firebase', id: 'pre_deploy_fb' },
       { name: 'Eslint', id: 'eslint' },
       { name: 'Prettier', id: 'prettier' },
