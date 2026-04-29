@@ -158,7 +158,7 @@ export function getFitValueFontSize(
 
   const widthConstrainedSize = withTextMeasure((textMeasure) => {
     const iconMultiplier = hasIcon ? 1 : 0;
-    const valueFont = getMetricFont(fontFamily, 'bold');
+    const valueFont = getMetricFont(fontFamily, 500);
     const textWidth = textParts.reduce((sum, { text, emphasis }) => {
       const fontSize =
         emphasis === 'small' ? Math.floor(initialValueFontSize / VALUE_PART_FONT_RATIO) : initialValueFontSize;
