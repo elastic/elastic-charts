@@ -28,16 +28,24 @@ export interface ChartsPackageMetadata {
   commitShortSha: string;
 }
 
+interface ChartsPackageEntry {
+  tarballFilename: string;
+  builtAt?: string;
+  commitShortSha?: string;
+}
+
 export interface ChartsPackageManifest extends ChartsPackageMetadata {
   packageName: '@elastic/charts';
   pullRequestNumber: number;
   retainedCommitTarballFilenames: string[];
+  retainedCommitPackages: ChartsPackageEntry[];
 }
 
 export interface PreparedChartsPackages {
   liveTarballDest: string;
   commitTarballDest: string;
   manifestDest: string;
+  indexDest: string;
 }
 
 // Persist the current package filenames and commit identity for downstream steps.
@@ -83,7 +91,7 @@ export async function getChartsPackageMetadata(required: boolean = false): Promi
 export function createChartsPackageManifest(
   metadata: ChartsPackageMetadata,
   pullRequestNumber: number,
-  retainedCommitTarballFilenames: string[] = [metadata.commitTarballFilename],
+  retainedCommitPackages: ChartsPackageEntry[] = [createChartsPackageEntry(metadata)],
 ): ChartsPackageManifest {
   return {
     packageName: '@elastic/charts',
@@ -93,7 +101,8 @@ export function createChartsPackageManifest(
     commitSha: metadata.commitSha,
     commitShortSha: metadata.commitShortSha,
     pullRequestNumber,
-    retainedCommitTarballFilenames,
+    retainedCommitTarballFilenames: retainedCommitPackages.map(({ tarballFilename }) => tarballFilename),
+    retainedCommitPackages,
   };
 }
 
@@ -110,6 +119,11 @@ export function getChartsPackageUrls(deploymentUrl: string, metadata: ChartsPack
   };
 }
 
+export function getChartsPackagesUrl(deploymentUrl: string) {
+  const baseUrl = deploymentUrl.endsWith('/') ? deploymentUrl : `${deploymentUrl}/`;
+  return new URL('packages/', baseUrl).toString();
+}
+
 // Stage the current package artifacts and restore retained commit tarballs before deploy.
 export async function prepareChartsPackagesForDeployment(
   outDir: string,
@@ -124,6 +138,7 @@ export async function prepareChartsPackagesForDeployment(
   const commitChartsPackageDest = path.join(chartsPackageDestDir, chartsPackage.commitTarballFilename);
   const manifestSrc = path.join('.buildkite/artifacts/packages', CHARTS_PACKAGE_MANIFEST_FILENAME);
   const manifestDest = path.join(chartsPackageDestDir, CHARTS_PACKAGE_MANIFEST_FILENAME);
+  const indexDest = path.join(chartsPackageDestDir, 'index.html');
 
   await downloadArtifacts(liveChartsPackageSrc, 'build_charts_package_preview');
   await downloadArtifacts(commitChartsPackageSrc, 'build_charts_package_preview');
@@ -135,65 +150,70 @@ export async function prepareChartsPackagesForDeployment(
   fs.copyFileSync(commitChartsPackageSrc, commitChartsPackageDest);
 
   const currentManifest = JSON.parse(fs.readFileSync(manifestSrc, 'utf8')) as ChartsPackageManifest;
-  const retainedCommitTarballFilenames = await getRetainedCommitTarballFilenames(
-    chartsPackageDestDir,
-    chartsPackage.commitTarballFilename,
-  );
+  const currentCommitPackage = currentManifest.retainedCommitPackages[0] ?? createChartsPackageEntry(chartsPackage);
+  const retainedCommitPackages = await getRetainedCommitPackages(chartsPackageDestDir, currentCommitPackage);
 
   fs.writeFileSync(
     manifestDest,
     JSON.stringify(
-      createChartsPackageManifest(chartsPackage, currentManifest.pullRequestNumber, retainedCommitTarballFilenames),
+      createChartsPackageManifest(chartsPackage, currentManifest.pullRequestNumber, retainedCommitPackages),
       null,
       2,
     ),
+  );
+  fs.writeFileSync(
+    indexDest,
+    renderChartsPackagesIndex(chartsPackage, currentManifest.pullRequestNumber, retainedCommitPackages),
   );
 
   return {
     liveTarballDest: liveChartsPackageDest,
     commitTarballDest: commitChartsPackageDest,
     manifestDest,
+    indexDest,
   };
 }
 
 // Keep the current tarball first, then previous retained entries in manifest order, capped to the retention limit.
-async function getRetainedCommitTarballFilenames(chartsPackageDestDir: string, currentCommitTarballFilename: string) {
+async function getRetainedCommitPackages(chartsPackageDestDir: string, currentCommitPackage: ChartsPackageEntry) {
   if (!bkEnv.isPullRequest) {
-    return [currentCommitTarballFilename];
+    return [currentCommitPackage];
   }
 
   const deploymentUrl = await getOrCreateDeploymentUrl();
   const previousManifest = await getDeployedChartsPackageManifest(deploymentUrl);
-  const desiredRetainedCommitTarballFilenames = getDesiredRetainedCommitTarballFilenames(
-    currentCommitTarballFilename,
-    previousManifest,
-  );
-  const retainedCommitTarballFilenames = [currentCommitTarballFilename];
+  const desiredRetainedCommitPackages = getDesiredRetainedCommitPackages(currentCommitPackage, previousManifest);
+  const retainedCommitPackages = [currentCommitPackage];
 
-  for (const tarballFilename of desiredRetainedCommitTarballFilenames.slice(1)) {
-    const tarballDest = path.join(chartsPackageDestDir, tarballFilename);
-    const tarballUrl = getChartsPackageUrl(deploymentUrl, tarballFilename);
-    const wasDownloaded = await downloadDeployedChartsPackageTarball(tarballUrl, tarballDest);
+  for (const retainedCommitPackage of desiredRetainedCommitPackages.slice(1)) {
+    const tarballDest = path.join(chartsPackageDestDir, retainedCommitPackage.tarballFilename);
+    const tarballUrl = getChartsPackageUrl(deploymentUrl, retainedCommitPackage.tarballFilename);
+    const downloadedCommitPackage = await downloadDeployedChartsPackageTarball(tarballUrl, tarballDest);
 
-    if (wasDownloaded) {
-      retainedCommitTarballFilenames.push(tarballFilename);
+    if (downloadedCommitPackage) {
+      retainedCommitPackages.push({
+        ...retainedCommitPackage,
+        builtAt: retainedCommitPackage.builtAt ?? downloadedCommitPackage.builtAt ?? getFileBuiltAt(tarballDest),
+      });
     }
   }
 
-  console.log(`Retaining charts package tarballs: ${retainedCommitTarballFilenames.join(', ')}`);
+  console.log(
+    `Retaining charts package tarballs: ${retainedCommitPackages.map(({ tarballFilename }) => tarballFilename).join(', ')}`,
+  );
 
-  return retainedCommitTarballFilenames;
+  return retainedCommitPackages;
 }
 
 // Compute the retained list from manifest order only; it does not sort by SHA or timestamp.
-function getDesiredRetainedCommitTarballFilenames(
-  currentCommitTarballFilename: string,
+function getDesiredRetainedCommitPackages(
+  currentCommitPackage: ChartsPackageEntry,
   previousManifest: ChartsPackageManifest | null,
 ) {
   return [
-    currentCommitTarballFilename,
-    ...(previousManifest?.retainedCommitTarballFilenames ?? []).filter(
-      (tarballFilename) => tarballFilename !== currentCommitTarballFilename,
+    currentCommitPackage,
+    ...(previousManifest?.retainedCommitPackages ?? []).filter(
+      ({ tarballFilename }) => tarballFilename !== currentCommitPackage.tarballFilename,
     ),
   ].slice(0, CHARTS_PACKAGE_RETENTION_COUNT);
 }
@@ -242,11 +262,24 @@ function validateChartsPackageManifest(value: unknown): ChartsPackageManifest | 
     return null;
   }
 
+  const retainedCommitPackages = Array.isArray(manifest.retainedCommitPackages)
+    ? manifest.retainedCommitPackages
+        .map(validateChartsPackageEntry)
+        .filter((retainedCommitPackage): retainedCommitPackage is ChartsPackageEntry => retainedCommitPackage !== null)
+    : [];
+
   const retainedCommitTarballFilenames = Array.isArray(manifest.retainedCommitTarballFilenames)
     ? manifest.retainedCommitTarballFilenames.filter(
         (tarballFilename): tarballFilename is string => typeof tarballFilename === 'string',
       )
-    : [manifest.commitTarballFilename];
+    : [];
+
+  const normalizedRetainedCommitPackages =
+    retainedCommitPackages.length > 0
+      ? retainedCommitPackages
+      : retainedCommitTarballFilenames.map((tarballFilename) =>
+          createChartsPackageEntryFromTarballFilename(tarballFilename),
+        );
 
   return {
     packageName: manifest.packageName,
@@ -257,8 +290,59 @@ function validateChartsPackageManifest(value: unknown): ChartsPackageManifest | 
     commitShortSha: manifest.commitShortSha,
     pullRequestNumber: manifest.pullRequestNumber,
     retainedCommitTarballFilenames:
-      retainedCommitTarballFilenames.length > 0 ? retainedCommitTarballFilenames : [manifest.commitTarballFilename],
+      normalizedRetainedCommitPackages.length > 0
+        ? normalizedRetainedCommitPackages.map(({ tarballFilename }) => tarballFilename)
+        : [manifest.commitTarballFilename],
+    retainedCommitPackages:
+      normalizedRetainedCommitPackages.length > 0
+        ? normalizedRetainedCommitPackages
+        : [createChartsPackageEntryFromTarballFilename(manifest.commitTarballFilename, manifest.commitShortSha)],
   };
+}
+
+function validateChartsPackageEntry(value: unknown): ChartsPackageEntry | null {
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
+
+  const packageEntry = value as Partial<ChartsPackageEntry>;
+  if (typeof packageEntry.tarballFilename !== 'string') {
+    return null;
+  }
+
+  return createChartsPackageEntryFromTarballFilename(
+    packageEntry.tarballFilename,
+    typeof packageEntry.commitShortSha === 'string' ? packageEntry.commitShortSha : undefined,
+    typeof packageEntry.builtAt === 'string' ? packageEntry.builtAt : undefined,
+  );
+}
+
+function createChartsPackageEntry(
+  chartsPackage: ChartsPackageMetadata,
+  builtAt: string = new Date().toISOString(),
+): ChartsPackageEntry {
+  return {
+    tarballFilename: chartsPackage.commitTarballFilename,
+    builtAt,
+    commitShortSha: chartsPackage.commitShortSha,
+  };
+}
+
+function createChartsPackageEntryFromTarballFilename(
+  tarballFilename: string,
+  commitShortSha: string | undefined = getCommitShortShaFromTarballFilename(tarballFilename),
+  builtAt?: string,
+): ChartsPackageEntry {
+  return {
+    tarballFilename,
+    builtAt,
+    commitShortSha,
+  };
+}
+
+function getCommitShortShaFromTarballFilename(tarballFilename: string) {
+  const commitShortShaMatch = tarballFilename.match(/-([\da-f]{7,})\.tgz$/i);
+  return commitShortShaMatch?.[1];
 }
 
 // Copy a retained tarball from the deployed preview so it survives the next full redeploy.
@@ -274,11 +358,136 @@ async function downloadDeployedChartsPackageTarball(url: string, dest: string) {
     }
 
     await pipeline(response.data, fs.createWriteStream(dest));
-    return true;
+    return {
+      builtAt: getBuiltAtFromLastModifiedHeader(response.headers['last-modified']),
+    };
   } catch (error) {
     fs.rmSync(dest, { force: true });
     console.warn(`Failed to download charts package tarball from ${url}`);
     console.warn(error);
     return false;
   }
+}
+
+function getBuiltAtFromLastModifiedHeader(lastModified?: string) {
+  if (!lastModified) {
+    return undefined;
+  }
+
+  const builtAt = new Date(lastModified);
+  return Number.isNaN(builtAt.valueOf()) ? undefined : builtAt.toISOString();
+}
+
+function getFileBuiltAt(filePath: string) {
+  const stats = fs.statSync(filePath);
+  return stats.birthtime.toISOString();
+}
+
+function renderChartsPackagesIndex(
+  chartsPackage: ChartsPackageMetadata,
+  pullRequestNumber: number,
+  retainedCommitPackages: ChartsPackageEntry[],
+) {
+  const currentCommitPackage = retainedCommitPackages[0] ?? createChartsPackageEntry(chartsPackage);
+  const previousCommitPackages = retainedCommitPackages.slice(1);
+  const previousCommitPackageRows =
+    previousCommitPackages.length > 0
+      ? previousCommitPackages
+          .map(
+            ({ tarballFilename, commitShortSha, builtAt }) => `          <tr>
+            <td><a href="./${escapeHtml(tarballFilename)}">${escapeHtml(tarballFilename)}</a></td>
+            <td>${commitShortSha ? `<code>${escapeHtml(commitShortSha)}</code>` : 'Unavailable'}</td>
+            <td>${renderBuiltAt(builtAt)}</td>
+          </tr>`,
+          )
+          .join('\n')
+      : `          <tr>
+            <td colspan="3">No previous commit packages are currently retained for this preview.</td>
+          </tr>`;
+  const pullRequestUrl = `https://github.com/elastic/elastic-charts/pull/${pullRequestNumber}`;
+  const liveTarballFilename = escapeHtml(chartsPackage.liveTarballFilename);
+  const commitTarballFilename = escapeHtml(chartsPackage.commitTarballFilename);
+  const commitShortSha = escapeHtml(chartsPackage.commitShortSha);
+  const version = escapeHtml(chartsPackage.version);
+
+  return `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@elastic/charts preview packages</title>
+  </head>
+  <body>
+    <header>
+      <h1>@elastic/charts preview packages</h1>
+      <p>Published for <a href="${pullRequestUrl}">PR #${pullRequestNumber}</a>.</p>
+    </header>
+    <main>
+      <section aria-labelledby="usage-heading">
+        <h2 id="usage-heading">Usage notes</h2>
+        <p>These packages are for development and validation workflows only. They are not pre-releases.</p>
+        <p>The embedded package version remains <code>${version}</code> and is not a unique representation of a released or prerelease build.</p>
+      </section>
+      <section aria-labelledby="package-types-heading">
+        <h2 id="package-types-heading">Package types</h2>
+        <dl>
+          <dt>Live package</dt>
+          <dd>The <code>pr.tgz</code> file is updated to the latest successful build for this pull request.</dd>
+          <dt>Retained commit packages</dt>
+          <dd>Commit-specific tarballs are kept from recent successful builds so downstream changes can be compared without rebuilding the PR.</dd>
+        </dl>
+      </section>
+      <section aria-labelledby="current-build-heading">
+        <h2 id="current-build-heading">Current build</h2>
+        <dl>
+          <dt>Version</dt>
+          <dd><code>${version}</code></dd>
+          <dt>Commit</dt>
+          <dd><code>${commitShortSha}</code></dd>
+          <dt>Built</dt>
+          <dd>${renderBuiltAt(currentCommitPackage.builtAt)}</dd>
+        </dl>
+        <ul>
+          <li><a href="./${liveTarballFilename}">pr.tgz</a></li>
+          <li><a href="./${commitTarballFilename}">${commitShortSha}.tgz</a></li>
+          <li><a href="./${CHARTS_PACKAGE_MANIFEST_FILENAME}">${CHARTS_PACKAGE_MANIFEST_FILENAME}</a></li>
+        </ul>
+      </section>
+      <section aria-labelledby="retained-heading">
+        <h2 id="retained-heading">Retained previous commit packages</h2>
+        <table>
+          <caption>Recent immutable commit packages retained for comparison</caption>
+          <thead>
+            <tr>
+              <th scope="col">Package</th>
+              <th scope="col">Commit</th>
+              <th scope="col">Built</th>
+            </tr>
+          </thead>
+          <tbody>
+${previousCommitPackageRows}
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>
+`;
+}
+
+function renderBuiltAt(builtAt?: string) {
+  if (!builtAt) {
+    return 'Unavailable';
+  }
+
+  return `<time datetime="${escapeHtml(builtAt)}">${escapeHtml(new Date(builtAt).toUTCString())}</time>`;
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
 }

@@ -417,6 +417,7 @@ export const comments = {
   },
   deployment({
     deploymentUrl,
+    packagesUrl,
     packageTarballUrl,
     commitPackageTarballUrl,
     commitPackageTarballLabel,
@@ -453,7 +454,12 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
 
     const buildUrl = bkEnv.buildUrl;
     const buildText = !buildUrl ? '' : ` ([build#${buildUrl.split('/').pop()}](${buildUrl}))`;
-    const packageLinkLine = getPackageLinkLine(packageTarballUrl, commitPackageTarballUrl, commitPackageTarballLabel);
+    const packageLinkLine = getPackageLinkLine(
+      packagesUrl,
+      packageTarballUrl,
+      commitPackageTarballUrl,
+      commitPackageTarballLabel,
+    );
 
     if (state === 'pending') {
       const updateComment = previousSha ? `\n> 🚧 Updating deployment from ${previousSha}` : '';
@@ -502,15 +508,19 @@ ${deploymentLines}`;
 };
 
 function getPackageLinkLine(
+  packagesUrl?: string,
   packageTarballUrl?: string,
   commitPackageTarballUrl?: string,
   commitPackageTarballLabel?: string,
 ) {
-  if (!packageTarballUrl && !commitPackageTarballUrl) return undefined;
+  if (!packagesUrl && !packageTarballUrl && !commitPackageTarballUrl) return undefined;
 
   const links = [];
+  if (packagesUrl) {
+    links.push(`[Packages](${packagesUrl})`);
+  }
   if (packageTarballUrl) {
-    links.push(`[Package .tgz](${packageTarballUrl})`);
+    links.push(`[pr.tgz](${packageTarballUrl})`);
   }
   if (commitPackageTarballUrl) {
     links.push(`[${commitPackageTarballLabel ?? 'commit.tgz'}](${commitPackageTarballUrl})`);

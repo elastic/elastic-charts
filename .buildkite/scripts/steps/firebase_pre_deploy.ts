@@ -55,7 +55,7 @@ void (async () => {
 
   // Serve the packaged tarball from the preview site so downstream PRs can install it.
   const chartsPackage = await getChartsPackageMetadata(true);
-  const { liveTarballDest, commitTarballDest, manifestDest } = await prepareChartsPackagesForDeployment(
+  const { liveTarballDest, commitTarballDest, manifestDest, indexDest } = await prepareChartsPackagesForDeployment(
     outDir,
     chartsPackage,
   );
@@ -68,6 +68,7 @@ void (async () => {
   const hasLiveChartsPackage = fs.existsSync(liveTarballDest);
   const hasCommitChartsPackage = fs.existsSync(commitTarballDest);
   const hasChartsPackageManifest = fs.existsSync(manifestDest);
+  const hasChartsPackageIndex = fs.existsSync(indexDest);
   const missingFiles = [
     ['docs', hasDocsIndex],
     ['storybook', hasStorybookIndex],
@@ -75,6 +76,7 @@ void (async () => {
     ['live charts package tarball', hasLiveChartsPackage],
     ['commit charts package tarball', hasCommitChartsPackage],
     ['charts package manifest', hasChartsPackageManifest],
+    ['charts package index', hasChartsPackageIndex],
   ]
     .filter(([, exists]) => !exists)
     .map<string>(([f]) => f as string);

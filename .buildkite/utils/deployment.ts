@@ -15,13 +15,14 @@ import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
 import { getOrCreateDeploymentUrl } from './firebase';
 import { octokit, defaultGHOptions, getComment, commentByKey } from './github';
-import { getChartsPackageMetadata, getChartsPackageUrls } from './package';
+import { getChartsPackageMetadata, getChartsPackagesUrl, getChartsPackageUrls } from './package';
 import type { OctokitParameters } from './types';
 
 export interface UpdateDeploymentCommentOptions {
   sha?: string;
   state: 'pending' | 'success' | 'failure';
   deploymentUrl?: string;
+  packagesUrl?: string;
   packageTarballUrl?: string;
   commitPackageTarballUrl?: string;
   commitPackageTarballLabel?: string;
@@ -77,6 +78,7 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
   const deploymentUrl = options.deploymentUrl ?? (await getOrCreateDeploymentUrl());
   const previousSha = options.previousSha ?? (await getMetadata(MetaDataKeys.deploymentPreviousSha));
   const chartsPackage = await getChartsPackageMetadata();
+  const packagesUrl = options.packagesUrl ?? getChartsPackagesUrl(deploymentUrl);
   const chartsPackageUrls = chartsPackage ? getChartsPackageUrls(deploymentUrl, chartsPackage) : undefined;
   const packageTarballUrl = options.packageTarballUrl ?? chartsPackageUrls?.liveTarballUrl;
   const commitPackageTarballUrl = options.commitPackageTarballUrl ?? chartsPackageUrls?.commitTarballUrl;
@@ -88,6 +90,7 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
     preDeploy,
     sha,
     deploymentUrl,
+    packagesUrl,
     packageTarballUrl,
     commitPackageTarballUrl,
     commitPackageTarballLabel,
