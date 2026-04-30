@@ -6,10 +6,10 @@ source .buildkite/scripts/utils.sh
 
 echo "--- Setup Node"
 
-KIBANA_DIR=$(pwd)
-CACHE_DIR="$HOME/.kibana"
+ELASTIC_CHARTS_DIR=$(pwd)
+CACHE_DIR="$HOME/.elastic-charts"
 
-NODE_VERSION="$(cat "$KIBANA_DIR/.node-version")"
+NODE_VERSION="$(cat "$ELASTIC_CHARTS_DIR/.node-version")"
 NODE_DIR="$CACHE_DIR/node/$NODE_VERSION"
 NODE_BIN_DIR="$NODE_DIR/bin"
 YARN_OFFLINE_CACHE="$CACHE_DIR/yarn-offline-cache"
