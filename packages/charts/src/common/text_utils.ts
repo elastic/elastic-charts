@@ -130,18 +130,17 @@ function truncate(
   build: (k: number) => string,
   min: number,
 ) {
-  const n = desiredText.length;
-  if (n === 0) return { width: measure('', font, fontSize).width, text: '' };
+  if (desiredText.length === 0) return { width: measure('', font, fontSize).width, text: '' };
 
   const fullWidth = measure(desiredText, font, fontSize).width;
   if (fullWidth <= allottedWidth) return { width: fullWidth, text: desiredText };
 
-  const response = (k: number) => measure(build(Math.floor(k)), font, fontSize).width;
-  const k = monotonicHillClimb(response, n, allottedWidth, integerSnap, min);
+  const response = (k: number) => measure(build(k), font, fontSize).width;
+  const visible = monotonicHillClimb(response, desiredText.length, allottedWidth, integerSnap, min);
 
-  if (!Number.isFinite(k) || k < min) return { width: measure('', font, fontSize).width, text: '' };
+  if (!Number.isFinite(visible) || visible < min) return { width: measure('', font, fontSize).width, text: '' };
 
-  const text = build(Math.floor(k));
+  const text = build(visible);
   const { width } = measure(text, font, fontSize);
 
   return { width, text };
@@ -172,7 +171,7 @@ export function fitText(
       return `${left}${ELLIPSIS}${right}`;
     }, 2);
   }
-  return truncateText((v) => cutToLength(desiredText, Math.max(0, Math.floor(v))), desiredText.length < 2 ? 1 : 2);
+  return truncateText((v) => cutToLength(desiredText, v), desiredText.length < 2 ? 1 : 2);
 }
 
 /** @internal */
