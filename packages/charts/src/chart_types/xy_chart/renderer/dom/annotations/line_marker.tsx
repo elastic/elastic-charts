@@ -8,9 +8,10 @@
 
 import type { Instance } from '@popperjs/core';
 import { createPopper } from '@popperjs/core';
-import type { RefObject, CSSProperties } from 'react';
-import React, { useRef, useEffect, useCallback } from 'react';
+import type { RefObject, CSSProperties, HTMLAttributes } from 'react';
+import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 
+import { getAnnotationTooltipDomId } from './annotation_tooltip';
 import { DEFAULT_CSS_CURSOR } from '../../../../../common/constants';
 import type {
   onDOMElementEnter as onDOMElementEnterAction,
@@ -25,6 +26,7 @@ import type { AnimationOptions } from '../../canvas/animations/animation';
 import type { GetAnnotationParamsFn } from '../../common/utils';
 
 type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'panel'> & {
+  chartId: string;
   marker: AnnotationLineProps['markers'][number];
   chartAreaRef: RefObject<HTMLCanvasElement>;
   chartDimensions: Dimensions;
@@ -52,6 +54,7 @@ function getMarkerCentredTransform(alignment: Position, hasMarkerDimensions: boo
  */
 export function LineMarker({
   id,
+  chartId,
   specId,
   datum,
   panel,
@@ -68,16 +71,7 @@ export function LineMarker({
   const iconRef = useRef<HTMLDivElement | null>(null);
   const testRef = useRef<HTMLDivElement | null>(null);
   const popper = useRef<Instance | null>(null);
-  const markerStyle: CSSProperties = {
-    ...style,
-    ...getAnimatedStyles(options, style),
-    color,
-    top: chartDimensions.top + position.top + panel.top,
-    left: chartDimensions.left + position.left + panel.left,
-    cursor: clickable ? 'pointer' : DEFAULT_CSS_CURSOR,
-  };
 
-  const transform = { transform: getMarkerCentredTransform(alignment, Boolean(dimension)) };
   const setPopper = useCallback(() => {
     if (!iconRef.current || !testRef.current) return;
 
@@ -121,27 +115,65 @@ export function LineMarker({
 
   void popper?.current?.update?.();
 
-  const ariaLabel = datum.ariaLabel ?? datum.details ?? datum.header ?? `line annotation ${datum.dataValue}`;
+  const handleEnter = useCallback(() => {
+    onDOMElementEnter({
+      createdBySpecId: specId,
+      id,
+      type: DOMElementType.LineAnnotationMarker,
+      datum,
+    });
+  }, [onDOMElementEnter, specId, id, datum]);
 
-  // want it to be tabbable if interactive if there is a click handler
+  const elementProps: HTMLAttributes<HTMLDivElement> & HTMLAttributes<HTMLButtonElement> = useMemo(() => {
+    const markerStyle: CSSProperties = {
+      ...style,
+      ...getAnimatedStyles(options, style),
+      color,
+      top: chartDimensions.top + position.top + panel.top,
+      left: chartDimensions.left + position.left + panel.left,
+      cursor: clickable ? 'pointer' : DEFAULT_CSS_CURSOR,
+    };
+
+    const transform = { transform: getMarkerCentredTransform(alignment, Boolean(dimension)) };
+
+    const ariaLabel = datum.ariaLabel ?? datum.details ?? datum.header ?? `line annotation ${datum.dataValue}`;
+    const tooltipDomId = getAnnotationTooltipDomId(chartId, id);
+
+    return {
+      className: 'echAnnotation__marker',
+      'data-testid': 'echAnnotationMarker',
+      onMouseEnter: handleEnter,
+      onMouseLeave: () => onDOMElementLeave(),
+      onFocus: handleEnter,
+      onBlur: () => onDOMElementLeave(),
+      onKeyDown: (e) => {
+        if (e.key === 'Escape') {
+          onDOMElementLeave();
+        }
+      },
+      style: { ...markerStyle, ...transform },
+      'aria-describedby': tooltipDomId,
+      'aria-label': ariaLabel,
+    };
+  }, [
+    handleEnter,
+    onDOMElementLeave,
+    color,
+    chartDimensions,
+    position,
+    panel,
+    clickable,
+    style,
+    options,
+    alignment,
+    dimension,
+    id,
+    chartId,
+    datum,
+  ]);
+
   return clickable ? (
-    <button
-      className="echAnnotation__marker"
-      data-testid="echAnnotationMarker"
-      onMouseEnter={() => {
-        onDOMElementEnter({
-          createdBySpecId: specId,
-          id,
-          type: DOMElementType.LineAnnotationMarker,
-          datum,
-        });
-      }}
-      onMouseLeave={() => onDOMElementLeave()}
-      onClick={() => onDOMElementClick()}
-      style={{ ...markerStyle, ...transform }}
-      type="button"
-      aria-label={ariaLabel}
-    >
+    <button {...elementProps} onClick={() => onDOMElementClick()} type="button">
       <div ref={iconRef} className="echAnnotation__icon">
         {renderWithProps(icon, datum)}
       </div>
@@ -152,20 +184,11 @@ export function LineMarker({
       )}
     </button>
   ) : (
-    <div
-      className="echAnnotation__marker"
-      data-testid="echAnnotationMarker"
-      onMouseEnter={() => {
-        onDOMElementEnter({
-          createdBySpecId: specId,
-          id,
-          type: DOMElementType.LineAnnotationMarker,
-          datum,
-        });
-      }}
-      onMouseLeave={() => onDOMElementLeave()}
-      style={{ ...markerStyle, ...transform }}
-    >
+    // Non-clickable markers use a div (not a button) so they are not exposed as controls,
+    // but they still need tabIndex={0} so keyboard users can focus the marker for tooltip / hover state
+    // and Escape to dismiss.
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+    <div {...elementProps} tabIndex={0}>
       <div ref={iconRef} className="echAnnotation__icon">
         {renderWithProps(icon, datum)}
       </div>

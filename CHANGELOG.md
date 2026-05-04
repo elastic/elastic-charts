@@ -1,3 +1,11 @@
+## [71.5.1](https://github.com/elastic/elastic-charts/compare/v71.5.0...v71.5.1) (2026-04-30)
+
+
+### Bug Fixes
+
+* **a11y:** allow keyboard navigation of tooltips ([#2823](https://github.com/elastic/elastic-charts/issues/2823)) ([c05868a](https://github.com/elastic/elastic-charts/commit/c05868ada2f1c6107e31b0b678075da98cfe193f))
+* **legend:** remove column gap in list legend ([#2820](https://github.com/elastic/elastic-charts/issues/2820)) ([08ef363](https://github.com/elastic/elastic-charts/commit/08ef3634773a13a81f130220e3516eab6053b12d))
+
 # [71.5.0](https://github.com/elastic/elastic-charts/compare/v71.4.1...v71.5.0) (2026-04-14)
 
 

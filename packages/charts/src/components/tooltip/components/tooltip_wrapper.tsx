@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import type { PropsWithChildren } from 'react';
+import type { AriaRole, PropsWithChildren } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { TooltipActions } from './tooltip_actions';
@@ -24,6 +24,8 @@ type TooltipWrapperProps<
 > = PropsWithChildren<
   {
     className?: string;
+    id?: string;
+    role?: AriaRole;
   } & Pick<
     TooltipSpec<D, SI>,
     'actions' | 'actionPrompt' | 'pinningPrompt' | 'selectionPrompt' | 'actionsLoading' | 'noActionsLoaded'
@@ -34,6 +36,8 @@ type TooltipWrapperProps<
 export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
   children,
   className,
+  id,
+  role,
   actions,
   actionPrompt,
   pinningPrompt,
@@ -66,6 +70,8 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
 
   return (
     <div
+      id={id}
+      role={role}
       className={classNames('echTooltip', className, { 'echTooltip--pinned': pinned })}
       data-testid="echTooltip"
       dir={dir}
