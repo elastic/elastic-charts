@@ -73,4 +73,3 @@ export { Example as testDualYAxis } from './49_test_dual_axis.story';
 export { Example as testUseDefaultGroupDomain } from './56_test_use_dfl_gdomain.story';
 export { Example as testRectBorder } from './57_test_rect_border_bars.story';
 export { Example as dataValue } from './58_data_values.story';
-export { Example as tickLabelTruncation } from './59_tick_label_truncation.story';

@@ -25,11 +25,11 @@ const data = [
 ];
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const widthPx = number('Truncation width (px, 0 disables)', 120, { min: 0, max: 400, step: 10 });
+  const widthPx = number('Truncation width', 120, { min: 0, max: 400, step: 10 });
   const position = select<Truncate['position']>(
     'Truncation position',
     { end: 'end', start: 'start', middle: 'middle' },
-    'end',
+    'middle',
   );
 
   return (
