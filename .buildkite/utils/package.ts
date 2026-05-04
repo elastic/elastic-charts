@@ -32,6 +32,7 @@ interface ChartsPackageEntry {
   tarballFilename: string;
   builtAt?: string;
   commitShortSha?: string;
+  version?: string;
 }
 
 export interface ChartsPackageManifest extends ChartsPackageMetadata {
@@ -314,6 +315,7 @@ function validateChartsPackageEntry(value: unknown): ChartsPackageEntry | null {
     packageEntry.tarballFilename,
     typeof packageEntry.commitShortSha === 'string' ? packageEntry.commitShortSha : undefined,
     typeof packageEntry.builtAt === 'string' ? packageEntry.builtAt : undefined,
+    typeof packageEntry.version === 'string' ? packageEntry.version : undefined,
   );
 }
 
@@ -325,6 +327,7 @@ function createChartsPackageEntry(
     tarballFilename: chartsPackage.commitTarballFilename,
     builtAt,
     commitShortSha: chartsPackage.commitShortSha,
+    version: chartsPackage.version,
   };
 }
 
@@ -332,17 +335,24 @@ function createChartsPackageEntryFromTarballFilename(
   tarballFilename: string,
   commitShortSha: string | undefined = getCommitShortShaFromTarballFilename(tarballFilename),
   builtAt?: string,
+  version: string | undefined = getVersionFromTarballFilename(tarballFilename),
 ): ChartsPackageEntry {
   return {
     tarballFilename,
     builtAt,
     commitShortSha,
+    version,
   };
 }
 
 function getCommitShortShaFromTarballFilename(tarballFilename: string) {
   const commitShortShaMatch = tarballFilename.match(/-([\da-f]{7,})\.tgz$/i);
   return commitShortShaMatch?.[1];
+}
+
+function getVersionFromTarballFilename(tarballFilename: string) {
+  const versionMatch = tarballFilename.match(/-v(.+?)-pr-\d+(?:-[\da-f]{7,})?\.tgz$/i);
+  return versionMatch?.[1];
 }
 
 // Copy a retained tarball from the deployed preview so it survives the next full redeploy.
@@ -390,25 +400,36 @@ function renderChartsPackagesIndex(
 ) {
   const currentCommitPackage = retainedCommitPackages[0] ?? createChartsPackageEntry(chartsPackage);
   const previousCommitPackages = retainedCommitPackages.slice(1);
-  const previousCommitPackageRows =
-    previousCommitPackages.length > 0
-      ? previousCommitPackages
-          .map(
-            ({ tarballFilename, commitShortSha, builtAt }) => `          <tr>
-            <td><a href="./${escapeHtml(tarballFilename)}">${escapeHtml(tarballFilename)}</a></td>
-            <td>${commitShortSha ? `<code>${escapeHtml(commitShortSha)}</code>` : 'Unavailable'}</td>
-            <td>${renderBuiltAt(builtAt)}</td>
-          </tr>`,
-          )
-          .join('\n')
-      : `          <tr>
-            <td colspan="3">No previous commit packages are currently retained for this preview.</td>
-          </tr>`;
   const pullRequestUrl = `https://github.com/elastic/elastic-charts/pull/${pullRequestNumber}`;
-  const liveTarballFilename = escapeHtml(chartsPackage.liveTarballFilename);
-  const commitTarballFilename = escapeHtml(chartsPackage.commitTarballFilename);
-  const commitShortSha = escapeHtml(chartsPackage.commitShortSha);
-  const version = escapeHtml(chartsPackage.version);
+  const packageManifestHref = `./${CHARTS_PACKAGE_MANIFEST_FILENAME}`;
+  const packageRows = [
+    {
+      href: `./${chartsPackage.liveTarballFilename}`,
+      label: 'pr.tgz',
+      title: chartsPackage.liveTarballFilename,
+      commit: 'latest',
+      version: currentCommitPackage.version ?? chartsPackage.version,
+      builtAt: currentCommitPackage.builtAt,
+    },
+    {
+      href: `./${chartsPackage.commitTarballFilename}`,
+      label: `${chartsPackage.commitShortSha}.tgz`,
+      title: chartsPackage.commitTarballFilename,
+      commit: `${chartsPackage.commitShortSha} (latest)`,
+      version: currentCommitPackage.version ?? chartsPackage.version,
+      builtAt: currentCommitPackage.builtAt,
+    },
+    ...previousCommitPackages.map(({ tarballFilename, commitShortSha, version, builtAt }) => ({
+      href: `./${tarballFilename}`,
+      label: commitShortSha ? `${commitShortSha}.tgz` : tarballFilename,
+      title: tarballFilename,
+      commit: commitShortSha ?? 'Unavailable',
+      version: version ?? getVersionFromTarballFilename(tarballFilename) ?? 'Unavailable',
+      builtAt,
+    })),
+  ]
+    .map(renderChartsPackageRow)
+    .join('\n');
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -416,56 +437,38 @@ function renderChartsPackagesIndex(
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@elastic/charts preview packages</title>
+    <style>
+      th, td {
+        border: 1px solid #9ca3af;
+        padding: 8px;
+      }
+    </style>
   </head>
-  <body>
+  <body style="font-family: monospace; line-height: 1.5; margin: 24px;">
     <header>
-      <h1>@elastic/charts preview packages</h1>
-      <p>Published for <a href="${pullRequestUrl}">PR #${pullRequestNumber}</a>.</p>
+      <h1>@elastic/charts <a href="${pullRequestUrl}">PR #${pullRequestNumber}</a> preview packages</h1>
     </header>
     <main>
-      <section aria-labelledby="usage-heading">
-        <h2 id="usage-heading">Usage notes</h2>
-        <p>These packages are for development and validation workflows only. They are not pre-releases.</p>
-        <p>The embedded package version remains <code>${version}</code> and is not a unique representation of a released or prerelease build.</p>
-      </section>
-      <section aria-labelledby="package-types-heading">
-        <h2 id="package-types-heading">Package types</h2>
-        <dl>
-          <dt>Live package</dt>
-          <dd>The <code>pr.tgz</code> file is updated to the latest successful build for this pull request.</dd>
-          <dt>Retained commit packages</dt>
-          <dd>Commit-specific tarballs are kept from recent successful builds so downstream changes can be compared without rebuilding the PR.</dd>
-        </dl>
-      </section>
-      <section aria-labelledby="current-build-heading">
-        <h2 id="current-build-heading">Current build</h2>
-        <dl>
-          <dt>Version</dt>
-          <dd><code>${version}</code></dd>
-          <dt>Commit</dt>
-          <dd><code>${commitShortSha}</code></dd>
-          <dt>Built</dt>
-          <dd>${renderBuiltAt(currentCommitPackage.builtAt)}</dd>
-        </dl>
-        <ul>
-          <li><a href="./${liveTarballFilename}">pr.tgz</a></li>
-          <li><a href="./${commitTarballFilename}">${commitShortSha}.tgz</a></li>
-          <li><a href="./${CHARTS_PACKAGE_MANIFEST_FILENAME}">${CHARTS_PACKAGE_MANIFEST_FILENAME}</a></li>
-        </ul>
-      </section>
-      <section aria-labelledby="retained-heading">
-        <h2 id="retained-heading">Retained previous commit packages</h2>
-        <table>
-          <caption>Recent immutable commit packages retained for comparison</caption>
+      <p>
+        <strong>Disclaimer:</strong> These packages are for development and validation purposes only, and file names and embedded package versions are not representative of release or prerelease builds.
+      </p>
+      <section aria-labelledby="packages-heading">
+        <h2 id="packages-heading">Packages</h2>
+        <p>
+          Use <a href="./${chartsPackage.liveTarballFilename}">pr.tgz</a> to follow the latest successful build in this pull request, use commit-specific tarballs when you need a fixed package that will not update with later commits, and inspect
+          <a href="${packageManifestHref}">${CHARTS_PACKAGE_MANIFEST_FILENAME}</a> for the deployed manifest.
+        </p>
+        <table style="border-collapse: collapse; margin-top: 12px;">
           <thead>
             <tr>
               <th scope="col">Package</th>
               <th scope="col">Commit</th>
+              <th scope="col">Version</th>
               <th scope="col">Built</th>
             </tr>
           </thead>
           <tbody>
-${previousCommitPackageRows}
+${packageRows}
           </tbody>
         </table>
       </section>
@@ -481,6 +484,33 @@ function renderBuiltAt(builtAt?: string) {
   }
 
   return `<time datetime="${escapeHtml(builtAt)}">${escapeHtml(new Date(builtAt).toUTCString())}</time>`;
+}
+
+function renderChartsPackageRow({
+  href,
+  label,
+  title,
+  commit,
+  version,
+  builtAt,
+}: {
+  href: string;
+  label: string;
+  title: string;
+  commit: string;
+  version: string;
+  builtAt?: string;
+}) {
+  return `            <tr>
+              <td><a href="${escapeHtml(href)}" title="${escapeHtml(title)}">${escapeHtml(label)}</a></td>
+              <td>${renderCodeValue(commit)}</td>
+              <td>${renderCodeValue(version)}</td>
+              <td>${renderBuiltAt(builtAt)}</td>
+            </tr>`;
+}
+
+function renderCodeValue(value: string) {
+  return value === 'Unavailable' ? value : `<code>${escapeHtml(value)}</code>`;
 }
 
 function escapeHtml(value: string) {
