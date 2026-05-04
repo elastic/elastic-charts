@@ -175,6 +175,7 @@ export interface AxisStyle {
        */
       offset: TextOffset;
       alignment: TextAlignment;
+      maxWidth?: Pixels;
     };
   tickLine: TickStyle;
   gridLine: {

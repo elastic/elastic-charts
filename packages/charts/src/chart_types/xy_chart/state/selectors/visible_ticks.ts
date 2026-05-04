@@ -7,6 +7,7 @@
  */
 
 import type { AxisLabelFormatter } from './axis_tick_formatter';
+import { withTickLabelTruncation } from './axis_tick_formatter';
 import type { JoinedAxisData } from './compute_axis_ticks_dimensions';
 import { getJoinedVisibleAxesData, getLabelBox } from './compute_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
@@ -255,6 +256,10 @@ function getVisibleTickSets(
     const panel = getPanelSize(smScales);
     return [...joinedAxesData].reduce(
       (acc, [axisId, { axisSpec, axesStyle, gridLine, isXAxis, labelFormatter: userProvidedLabelFormatter }]) => {
+        const tickLabelFormatter = withTickLabelTruncation(
+          textMeasure,
+          axesStyle.tickLabel,
+        )(userProvidedLabelFormatter);
         const { groupId, integersOnly, maximumFractionDigits: mfd, timeAxisLayerCount } = axisSpec;
         const yDomain = yDomains.find((yd) => yd.groupId === groupId);
         const domain = isXAxis ? xDomain : yDomain;
@@ -318,7 +323,7 @@ function getVisibleTickSets(
               const scale = getScale(triedTickCount);
               const actualTickCount = scale?.ticks().length ?? 0;
               if (!scale || actualTickCount === previousActualTickCount || actualTickCount < 2) continue;
-              const raster = getMeasuredTicks(scale, scale.ticks(), undefined, 0, userProvidedLabelFormatter);
+              const raster = getMeasuredTicks(scale, scale.ticks(), undefined, 0, tickLabelFormatter);
               const nonZeroLengthTicks = raster.ticks.filter((tick) => tick.label.length > 0);
               const uniqueLabels = new Set(raster.ticks.map((tick) => tick.label));
               const areLabelsUnique = raster.ticks.length === uniqueLabels.size;
@@ -378,8 +383,7 @@ function getVisibleTickSets(
 
         // todo dry it up
         const scale = getScale(adaptiveTickCount ? fallbackAskedTickCount : maxTickCount);
-        const lastResortCandidate =
-          scale && getMeasuredTicks(scale, scale.ticks(), undefined, 0, userProvidedLabelFormatter);
+        const lastResortCandidate = scale && getMeasuredTicks(scale, scale.ticks(), undefined, 0, tickLabelFormatter);
         return lastResortCandidate ? acc.set(axisId, lastResortCandidate) : acc;
       },
       new Map(),
