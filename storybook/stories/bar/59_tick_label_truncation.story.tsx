@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { number } from '@storybook/addon-knobs';
+import { number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { Truncate } from '@elastic/charts';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
@@ -24,7 +25,12 @@ const data = [
 ];
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const maxWidth = number('Max width for tick labels (Y)', 120, { min: 0, max: 400, step: 10 });
+  const widthPx = number('Truncation width (px, 0 disables)', 120, { min: 0, max: 400, step: 10 });
+  const position = select<Truncate['position']>(
+    'Truncation position',
+    { end: 'end', start: 'start', middle: 'middle' },
+    'end',
+  );
 
   return (
     <Chart title={title} description={description}>
@@ -34,7 +40,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
         id="left"
         position={Position.Left}
         title="Team"
-        style={{ tickLabel: { maxWidth: maxWidth > 0 ? maxWidth : undefined } }}
+        style={{
+          tickLabel: {
+            truncation: widthPx > 0 ? { width: widthPx, position } : undefined,
+          },
+        }}
       />
 
       <BarSeries

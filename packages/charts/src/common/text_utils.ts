@@ -14,6 +14,7 @@ import type { ArrayEntry } from '../chart_types/partition_chart/layout/utils/gro
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 import type { TextMeasure } from '../utils/bbox/canvas_text_bbox_calculator';
 import type { Datum } from '../utils/common';
+import type { Truncate } from '../utils/themes/theme';
 
 const FONT_WEIGHTS_NUMERIC = [100, 200, 300, 400, 450, 500, 600, 700, 800, 900] as const;
 const FONT_WEIGHTS_ALPHA = ['normal', 'bold', 'lighter', 'bolder', 'inherit', 'initial', 'unset'] as const;
@@ -120,6 +121,32 @@ export function cutToLength(s: string, maxLength: number) {
   return s.length <= maxLength ? s : `${s.slice(0, Math.max(0, maxLength - 1))}…`; // ellipsis is one char
 }
 
+function truncate(
+  measure: TextMeasure,
+  desiredText: string,
+  allottedWidth: number,
+  fontSize: number,
+  font: Font,
+  build: (k: number) => string,
+  min: number,
+) {
+  const n = desiredText.length;
+  if (n === 0) return { width: measure('', font, fontSize).width, text: '' };
+
+  const fullWidth = measure(desiredText, font, fontSize).width;
+  if (fullWidth <= allottedWidth) return { width: fullWidth, text: desiredText };
+
+  const response = (k: number) => measure(build(Math.floor(k)), font, fontSize).width;
+  const k = monotonicHillClimb(response, n, allottedWidth, integerSnap, min);
+
+  if (!Number.isFinite(k) || k < min) return { width: measure('', font, fontSize).width, text: '' };
+
+  const text = build(Math.floor(k));
+  const { width } = measure(text, font, fontSize);
+
+  return { width, text };
+}
+
 /** @internal */
 export function fitText(
   measure: TextMeasure,
@@ -127,13 +154,25 @@ export function fitText(
   allottedWidth: number,
   fontSize: number,
   font: Font,
+  position: Truncate['position'] = 'end',
 ) {
-  const desiredLength = desiredText.length;
-  const response = (v: number) => measure(desiredText.slice(0, Math.max(0, v)), font, fontSize).width;
-  const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
-  const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(desiredText, visibleLength);
-  const { width } = measure(text, font, fontSize);
-  return { width, text };
+  const ELLIPSIS = '…';
+
+  const truncateText = (build: (k: number) => string, min: number) => {
+    return truncate(measure, desiredText, allottedWidth, fontSize, font, build, min);
+  };
+
+  if (position === 'start') {
+    return truncateText((k) => `${ELLIPSIS}${desiredText.slice(desiredText.length - k)}`, 1);
+  }
+  if (position === 'middle') {
+    return truncateText((k) => {
+      const left = desiredText.slice(0, Math.ceil(k / 2));
+      const right = desiredText.slice(desiredText.length - Math.floor(k / 2));
+      return `${left}${ELLIPSIS}${right}`;
+    }, 2);
+  }
+  return truncateText((v) => cutToLength(desiredText, Math.max(0, Math.floor(v))), desiredText.length < 2 ? 1 : 2);
 }
 
 /** @internal */

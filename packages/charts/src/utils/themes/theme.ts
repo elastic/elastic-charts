@@ -160,6 +160,12 @@ export interface Opacity {
 }
 
 /** @public */
+export interface Truncate {
+  width: Pixels;
+  position: 'end' | 'start' | 'middle';
+}
+
+/** @public */
 export interface AxisStyle {
   axisTitle: TextStyle & Visible;
   axisPanelTitle: TextStyle & Visible;
@@ -175,7 +181,11 @@ export interface AxisStyle {
        */
       offset: TextOffset;
       alignment: TextAlignment;
-      maxWidth?: Pixels;
+      /**
+       * When set, tick labels are truncated with an ellipsis so their measured width
+       * does not exceed `width` (unrotated text-direction pixels).
+       */
+      truncation?: Truncate;
     };
   tickLine: TickStyle;
   gridLine: {

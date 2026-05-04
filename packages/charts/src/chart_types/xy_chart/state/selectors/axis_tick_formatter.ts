@@ -31,9 +31,10 @@ export function withTickLabelTruncation(
   measure: TextMeasure,
   tickLabel: AxisStyle['tickLabel'],
 ): <V>(formatter: AxisLabelFormatter<V>) => AxisLabelFormatter<V> {
-  const { maxWidth, fontSize, fontStyle, fontFamily, fill } = tickLabel;
-
+  const { truncation, fontSize, fontStyle, fontFamily, fill } = tickLabel;
+  const maxWidth = truncation?.width;
   if (!maxWidth || maxWidth <= 0) return (formatter) => formatter;
+  const position = truncation?.position ?? 'end';
 
   const font: Font = {
     fontStyle: fontStyle ?? 'normal',
@@ -43,7 +44,7 @@ export function withTickLabelTruncation(
     textColor: fill,
   };
 
-  return (formatter) => (value) => fitText(measure, formatter(value), maxWidth, fontSize, font).text;
+  return (formatter) => (value) => fitText(measure, formatter(value), maxWidth, fontSize, font, position).text;
 }
 
 /** @internal */
