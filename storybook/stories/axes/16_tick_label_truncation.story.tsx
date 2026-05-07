@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { number, select } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import type { Truncate } from '@elastic/charts';
@@ -26,7 +26,8 @@ const data = [
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const widthPx = number('Truncation width', 120, { min: 0, max: 400, step: 10 });
-  const position = select<Truncate['position']>(
+  const relative = number('Truncation relative', 0.3, { min: 0, max: 1, step: 0.05 });
+  const position = select<NonNullable<Truncate['position']>>(
     'Truncation position',
     { end: 'end', start: 'start', middle: 'middle' },
     'middle',
@@ -42,7 +43,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
         title="Team"
         style={{
           tickLabel: {
-            truncation: widthPx > 0 ? { width: widthPx, position } : undefined,
+            truncation: {
+              width: widthPx,
+              relative,
+              position,
+            },
           },
         }}
       />

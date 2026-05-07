@@ -25,11 +25,12 @@ import { isContinuousScale } from '../../../../scales/types';
 import type { AxisSpec, SettingsSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
+import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Position, Rotation } from '../../../../utils/common';
 import { isFiniteNumber, isRTLString } from '../../../../utils/common';
-import type { Size } from '../../../../utils/dimensions';
+import type { Dimensions, Size } from '../../../../utils/dimensions';
 import type { AxisId } from '../../../../utils/ids';
 import { multilayerAxisEntry } from '../../axes/timeslip/multilayer_ticks';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
@@ -233,6 +234,7 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
     getSettingsSpecSelector,
     getScaleConfigsFromSpecsSelector,
     getJoinedVisibleAxesData,
+    getChartContainerDimensionsSelector,
     computeSeriesDomainsSelector,
     computeSmallMultipleScalesSelector,
     countBarsInClusterSelector,
@@ -246,6 +248,7 @@ function getVisibleTickSets(
   { rotation: chartRotation, locale, dow }: Pick<SettingsSpec, 'rotation' | 'locale' | 'dow'>,
   scaleConfigs: ScaleConfigs,
   joinedAxesData: Map<AxisId, JoinedAxisData>,
+  chartContainerDimensions: Dimensions,
   { xDomain, yDomains }: Pick<SeriesDomainsAndData, 'xDomain' | 'yDomains'>,
   smScales: SmallMultipleScales,
   totalGroupsCount: number,
@@ -259,6 +262,7 @@ function getVisibleTickSets(
         const tickLabelFormatter = withTickLabelTruncation(
           textMeasure,
           axesStyle.tickLabel,
+          chartContainerDimensions.width,
         )(userProvidedLabelFormatter);
         const { groupId, integersOnly, maximumFractionDigits: mfd, timeAxisLayerCount } = axisSpec;
         const yDomain = yDomains.find((yd) => yd.groupId === groupId);

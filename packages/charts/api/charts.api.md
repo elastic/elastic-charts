@@ -3543,9 +3543,11 @@ export interface TreeNode extends AngleFromTo {
 // @public (undocumented)
 export interface Truncate {
     // (undocumented)
-    position: 'end' | 'start' | 'middle';
+    position?: 'end' | 'start' | 'middle';
     // (undocumented)
-    width: Pixels;
+    relative?: Ratio;
+    // (undocumented)
+    width?: Pixels;
 }
 
 // @public

@@ -16,6 +16,7 @@ import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import type { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -142,13 +143,17 @@ export const getLabelBox = (
 
 /** @internal */
 export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
-  [getJoinedVisibleAxesData],
-  (joinedAxesData): AxesTicksDimensions =>
+  [getJoinedVisibleAxesData, getChartContainerDimensionsSelector],
+  (joinedAxesData, chartContainerDimensions): AxesTicksDimensions =>
     withTextMeasure(
       (textMeasure): AxesTicksDimensions =>
         [...joinedAxesData].reduce<AxesTicksDimensions>(
           (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, gridLine, labelFormatter }]) => {
-            const truncatedLabelFormatter = withTickLabelTruncation(textMeasure, axesStyle.tickLabel)(labelFormatter);
+            const truncatedLabelFormatter = withTickLabelTruncation(
+              textMeasure,
+              axesStyle.tickLabel,
+              chartContainerDimensions.width,
+            )(labelFormatter);
             return axesTicksDimensions.set(
               id,
               getLabelBox(axesStyle, scale.ticks(), truncatedLabelFormatter, textMeasure, axisSpec, gridLine),

@@ -161,8 +161,19 @@ export interface Opacity {
 
 /** @public */
 export interface Truncate {
-  width: Pixels;
-  position: 'end' | 'start' | 'middle';
+  /**
+   * Absolute maximum label width in pixels. When both `width` and `relative` are provided, the greater value is used.
+   */
+  width?: Pixels;
+  /**
+   * Relative maximum label width in `[0, 1]` of chart container width.
+   */
+  relative?: Ratio;
+  /**
+   * Ellipsis placement when truncation is applied.
+   * @defaultValue 'end'
+   */
+  position?: 'end' | 'start' | 'middle';
 }
 
 /** @public */
