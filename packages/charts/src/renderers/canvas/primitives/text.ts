@@ -60,8 +60,10 @@ export function renderText(
   });
 }
 
+/** @internal */
+export const ELLIPSIS = '…';
+
 const SPACE = ' ';
-const ELLIPSIS = '…';
 const DASH = '-';
 
 interface Options {
