@@ -188,7 +188,7 @@ export function LineMarker({
     // but they still need tabIndex={0} so keyboard users can focus the marker for tooltip / hover state
     // and Escape to dismiss.
     // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-    <div {...elementProps} tabIndex={0} role="img">
+    <div {...elementProps} tabIndex={0} role="graphics-symbol">
       <div ref={iconRef} className="echAnnotation__icon">
         {renderWithProps(icon, datum)}
       </div>
