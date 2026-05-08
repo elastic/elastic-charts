@@ -6,10 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number, select } from '@storybook/addon-knobs';
+import { select, text } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type { Truncate } from '@elastic/charts';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
@@ -24,33 +23,34 @@ const data = [
   { x: 'com.example.something.worker.01', y: 4 },
 ];
 
+type EllipsisPosition = 'start' | 'middle' | 'end';
+
+/** Knob helper: empty → unset; plain number → px; value like `25` or `25.5 %` → percentage string. */
+function parseThemeSize(raw: string): number | string | undefined {
+  const s = raw.trim();
+  if (!s) return undefined;
+  const pct = s.match(/^([\d.]+)\s*%$/);
+  if (pct) return `${pct[1]}%`;
+  const n = Number(s);
+  if (Number.isFinite(n)) return n;
+  return s;
+}
+
 export const Example: ChartsStory = (_, { title, description }) => {
-  const widthPx = number('Truncation width', 120, { min: 0, max: 400, step: 10 });
-  const relative = number('Truncation relative', 0.3, { min: 0, max: 1, step: 0.05 });
-  const position = select<NonNullable<Truncate['position']>>(
-    'Truncation position',
-    { end: 'end', start: 'start', middle: 'middle' },
-    'middle',
-  );
+  const maxLength = parseThemeSize(text('maxLength', '120'));
+  const truncate = select<EllipsisPosition>('truncate', { end: 'end', start: 'start', middle: 'middle' }, 'middle');
+  const rotation = select('Chart rotation', { '0°': 0, '90°': 90, '-90°': -90 }, 90);
+
+  const tickLabel = {
+    ...(maxLength !== undefined ? { maxLength } : {}),
+    truncate,
+  };
 
   return (
     <Chart title={title} description={description}>
-      <Settings baseTheme={useBaseTheme()} rotation={90} />
-      <Axis id="bottom" position={Position.Bottom} title="Count" />
-      <Axis
-        id="left"
-        position={Position.Left}
-        title="Team"
-        style={{
-          tickLabel: {
-            truncation: {
-              width: widthPx,
-              relative,
-              position,
-            },
-          },
-        }}
-      />
+      <Settings baseTheme={useBaseTheme()} rotation={rotation} />
+      <Axis id="bottom" position={Position.Bottom} title="Count" style={{ tickLabel }} />
+      <Axis id="left" position={Position.Left} title="Team" style={{ tickLabel }} />
 
       <BarSeries
         id="bars"

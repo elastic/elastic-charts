@@ -160,23 +160,6 @@ export interface Opacity {
 }
 
 /** @public */
-export interface Truncate {
-  /**
-   * Absolute maximum label width in pixels. When both `width` and `relative` are provided, the greater value is used.
-   */
-  width?: Pixels;
-  /**
-   * Relative maximum label width in `[0, 1]` of chart container width.
-   */
-  relative?: Ratio;
-  /**
-   * Ellipsis placement when truncation is applied.
-   * @defaultValue 'end'
-   */
-  position?: 'end' | 'start' | 'middle';
-}
-
-/** @public */
 export interface AxisStyle {
   axisTitle: TextStyle & Visible;
   axisPanelTitle: TextStyle & Visible;
@@ -193,10 +176,14 @@ export interface AxisStyle {
       offset: TextOffset;
       alignment: TextAlignment;
       /**
-       * When set, tick labels are truncated with an ellipsis so their measured width
-       * does not exceed `width` (unrotated text-direction pixels).
+       * The maximum size of the tick label.
+       * If a number, it is in pixels. If a string, it is relative to the container width, e.g. '20%'.
        */
-      truncation?: Truncate;
+      maxLength?: Pixels | string;
+      /**
+       * The position of the ellipsis when the tick label is truncated. Defaults to 'end'.
+       */
+      truncate?: 'start' | 'middle' | 'end';
     };
   tickLine: TickStyle;
   gridLine: {

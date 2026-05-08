@@ -299,7 +299,8 @@ export interface AxisStyle {
         rotation: number;
         offset: TextOffset;
         alignment: TextAlignment;
-        truncation?: Truncate;
+        maxLength?: Pixels | string;
+        truncate?: 'start' | 'middle' | 'end';
     };
     // (undocumented)
     tickLine: TickStyle;
@@ -3538,16 +3539,6 @@ export interface TreeNode extends AngleFromTo {
     y0: TreeLevel;
     // (undocumented)
     y1: TreeLevel;
-}
-
-// @public (undocumented)
-export interface Truncate {
-    // (undocumented)
-    position?: 'end' | 'start' | 'middle';
-    // (undocumented)
-    relative?: Ratio;
-    // (undocumented)
-    width?: Pixels;
 }
 
 // @public

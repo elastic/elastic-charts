@@ -13,7 +13,7 @@ import { fitText } from '../../../../common/text_utils';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import type { Rotation } from '../../../../utils/common';
+import { getPercentageValue, type Rotation } from '../../../../utils/common';
 import type { SpecId } from '../../../../utils/ids';
 import type { AxisStyle } from '../../../../utils/themes/theme';
 import { defaultTickFormatter, isXDomain } from '../../utils/axis_utils';
@@ -30,24 +30,12 @@ export type AxisLabelFormatters = { x: Map<SpecId, AxisLabelFormatter>; y: Map<S
 export function withTickLabelTruncation(
   measure: TextMeasure,
   tickLabel: AxisStyle['tickLabel'],
-  width: number,
+  containerWidth: number,
 ): <V>(formatter: AxisLabelFormatter<V>) => AxisLabelFormatter<V> {
-  const { truncation, fontSize, fontStyle, fontFamily, fill } = tickLabel;
+  const { fontSize, fontStyle, fontFamily, fill, truncate, maxLength } = tickLabel;
 
-  let maxWidth;
-
-  if (truncation?.width === undefined && truncation?.relative !== undefined) {
-    maxWidth = truncation.relative * width;
-  }
-  if (truncation?.width !== undefined && truncation?.relative === undefined) {
-    maxWidth = truncation.width;
-  }
-  if (truncation?.width !== undefined && truncation?.relative !== undefined) {
-    maxWidth = Math.max(truncation.width, truncation.relative * width);
-  }
-  if (!maxWidth || maxWidth <= 0 || !Number.isFinite(maxWidth)) return (formatter) => formatter;
-
-  const position = truncation?.position ?? 'end';
+  const maxWidth = maxLength ? getPercentageValue(maxLength, containerWidth, NaN) : undefined;
+  if (maxWidth === undefined || maxWidth <= 0 || maxWidth > containerWidth) return (formatter) => formatter;
 
   const font: Font = {
     fontStyle: fontStyle ?? 'normal',
@@ -57,7 +45,7 @@ export function withTickLabelTruncation(
     textColor: fill,
   };
 
-  return (formatter) => (value) => fitText(measure, formatter(value), maxWidth, fontSize, font, position).text;
+  return (formatter) => (value) => fitText(measure, formatter(value), maxWidth, fontSize, font, truncate ?? 'end').text;
 }
 
 /** @internal */
