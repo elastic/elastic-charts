@@ -70,7 +70,11 @@ if [[ ! $(which yarn) || $(yarn --version) != "$YARN_VERSION" ]]; then
   npm_install_global yarn "^$YARN_VERSION"
 fi
 
-yarn config set yarn-offline-mirror "$YARN_OFFLINE_CACHE"
+if [[ -d "$YARN_OFFLINE_CACHE" ]]; then
+  echo " -- moving yarn offline cache to $ELASTIC_CHARTS_DIR/.yarn-offline-cache"
+  mv "$YARN_OFFLINE_CACHE" "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
+  yarn config set yarn-offline-mirror "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
+fi
 
 YARN_GLOBAL_BIN=$(yarn global bin)
 export YARN_GLOBAL_BIN
