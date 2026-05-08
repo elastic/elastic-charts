@@ -90,7 +90,7 @@ const HEIGHT_BP: [number, number, BreakPoint][] = [
 const ICON_SIZE: Record<BreakPoint, number> = { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
 const TITLE_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
   small: { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 },
-  large: { xxxs: 16, xxs: 16, xs: 16, s: 20, m: 24, l: 24, xl: 32, xxl: 42 },
+  large: { xxxs: 16, xxs: 16, xs: 16, s: 20, m: 24, l: 28, xl: 32, xxl: 42 },
 };
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = {
   xxxs: 14,
@@ -106,15 +106,27 @@ const EXTRA_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, numbe
   small: { xxxs: 14, xxs: 14, xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 },
   large: { xxxs: 16, xxs: 16, xs: 16, s: 22, m: 28, l: 35, xl: 46, xxl: 63 },
 };
-const VALUE_FONT_SIZE: Record<BreakPoint, number> = {
-  xxxs: 16,
-  xxs: 26,
-  xs: 36,
-  s: 42,
-  m: 56,
-  l: 72,
-  xl: 104,
-  xxl: 170,
+const VALUE_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
+  small: {
+    xxxs: 16,
+    xxs: 26,
+    xs: 36,
+    s: 42,
+    m: 56,
+    l: 72,
+    xl: 104,
+    xxl: 170,
+  },
+  large: {
+    xxxs: 24,
+    xxs: 38,
+    xs: 50,
+    s: 64,
+    m: 84,
+    l: 120,
+    xl: 156,
+    xxl: 156,
+  },
 };
 const VALUE_PART_FONT_RATIO = 1.3;
 const BASE_TEXT_FONT: Font = {
@@ -131,7 +143,6 @@ const DEFAULT_EXTRA_PADDING_TOP = 5; // Aligned with our CSS in _text.scss
 const DEFAULT_PRIMARY_ADJACENT_GAP = 0;
 const LARGE_TITLE_SUBTITLE_GAP = 8;
 const LARGE_PRIMARY_ADJACENT_GAP = 4;
-const LARGE_PRIMARY_FONT_MULTIPLIER = 1.5;
 const LARGE_PANEL_PADDING: Record<BreakPoint, number> = {
   xxxs: 16,
   xxs: 16,
@@ -152,10 +163,6 @@ export interface MetricSpacingLayout {
   progressTextGap: number;
 }
 
-function scaleForLargeMetric(size: number, multiplier: number): number {
-  return Math.round(size * multiplier);
-}
-
 function getMetricSpacingMode(style: MetricStyle): MetricSpacing {
   return style.spacing ?? 'small';
 }
@@ -166,16 +173,7 @@ function getHeightBreakpoint(ranges: [number, number, BreakPoint][], value: numb
 }
 
 function getValueFontSizeMap(spacingMode: MetricSpacing): Record<BreakPoint, number> {
-  if (spacingMode === 'small') {
-    return VALUE_FONT_SIZE;
-  }
-  return Object.entries(VALUE_FONT_SIZE).reduce(
-    (acc, [breakpoint, size]) => ({
-      ...acc,
-      [breakpoint]: scaleForLargeMetric(size, LARGE_PRIMARY_FONT_MULTIPLIER),
-    }),
-    {} as Record<BreakPoint, number>,
-  );
+  return VALUE_FONT_SIZE_BY_SPACING[spacingMode];
 }
 
 function getValueFontSizeSteps(spacingMode: MetricSpacing): number[] {
