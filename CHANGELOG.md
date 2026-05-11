@@ -1,3 +1,17 @@
+# [71.6.0](https://github.com/elastic/elastic-charts/compare/v71.5.2...v71.6.0) (2026-05-11)
+
+
+### Features
+
+* **a11y:** add graphics-document role to charts ([#2831](https://github.com/elastic/elastic-charts/issues/2831)) ([1dee178](https://github.com/elastic/elastic-charts/commit/1dee1788ca184b2d2a29ea1897542daf1e6281d8))
+
+## [71.5.2](https://github.com/elastic/elastic-charts/compare/v71.5.1...v71.5.2) (2026-05-06)
+
+
+### Bug Fixes
+
+* **a11y:** give role="img" to interactive annotation line marker  ([#2830](https://github.com/elastic/elastic-charts/issues/2830)) ([b124d5f](https://github.com/elastic/elastic-charts/commit/b124d5f4ab830ded37b7b1cbbac3097e115a0de5))
+
 ## [71.5.1](https://github.com/elastic/elastic-charts/compare/v71.5.0...v71.5.1) (2026-04-30)
 
 
