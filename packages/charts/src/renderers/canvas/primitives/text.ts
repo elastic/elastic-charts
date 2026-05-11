@@ -9,7 +9,7 @@
 import { withContext } from '..';
 import type { Degrees } from '../../../common/geometry';
 import type { Font, TextAlign, TextBaseline } from '../../../common/text_utils';
-import { cssFontShorthand } from '../../../common/text_utils';
+import { cssFontShorthand, DASH, ELLIPSIS, SPACE } from '../../../common/text_utils';
 import { measureText } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { degToRad } from '../../../utils/common';
 import type { Point } from '../../../utils/point';
@@ -59,12 +59,6 @@ export function renderText(
     ctx.fillText(text, 0, 0);
   });
 }
-
-/** @internal */
-export const ELLIPSIS = '…';
-
-const SPACE = ' ';
-const DASH = '-';
 
 interface Options {
   wrapAtWord: boolean;

@@ -11,7 +11,6 @@ import type { $Values as Values } from 'utility-types';
 import type { Color } from './colors';
 import type { Pixels, Rectangle } from './geometry';
 import type { ArrayEntry } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { ELLIPSIS } from '../renderers/canvas/primitives/text';
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 import type { TextMeasure } from '../utils/bbox/canvas_text_bbox_calculator';
 import type { Datum } from '../utils/common';
@@ -75,6 +74,13 @@ export const TEXT_BASELINE = Object.freeze([
   'ideographic',
   'bottom',
 ] as const);
+
+/** @internal */
+export const ELLIPSIS = '…';
+/** @internal */
+export const SPACE = ' ';
+/** @internal */
+export const DASH = '-';
 
 /** @internal */
 export interface Box extends Font {
