@@ -76,9 +76,6 @@ fi
 if [[ -d "$YARN_OFFLINE_CACHE" ]]; then
   echo " -- moving yarn offline cache to $ELASTIC_CHARTS_DIR/.yarn-offline-cache"
   mv -v "$YARN_OFFLINE_CACHE" "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
-  ls -la "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
-  ls -la "$YARN_OFFLINE_CACHE"
-  ls -la "`dirname $ELASTIC_CHARTS_DIR`"
   yarn config set yarn-offline-mirror "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
 fi
 
