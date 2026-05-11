@@ -70,6 +70,9 @@ if [[ ! $(which yarn) || $(yarn --version) != "$YARN_VERSION" ]]; then
   npm_install_global yarn "^$YARN_VERSION"
 fi
 
+# Move the prewarmed offline cache into the repo so it's visible inside the
+# docker plugin container (mounted at /app). The container reads the location
+# from YARN_YARN_OFFLINE_MIRROR set by the docker plugin environment.
 if [[ -d "$YARN_OFFLINE_CACHE" ]]; then
   echo " -- moving yarn offline cache to $ELASTIC_CHARTS_DIR/.yarn-offline-cache"
   mv "$YARN_OFFLINE_CACHE" "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
