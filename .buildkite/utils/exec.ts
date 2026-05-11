@@ -112,7 +112,7 @@ export const exec = async (
 export const yarnInstall = async (cwd?: string, ignoreScripts = true) => {
   startGroup(`Installing node modules${cwd ? ` [${cwd}]` : ''}`);
   const scriptFlag = ignoreScripts ? ' --ignore-scripts' : '';
-  await exec(`yarn install --frozen-lockfile${scriptFlag}`, { cwd, retry: 5, retryWait: 15 });
+  await exec(`yarn install --frozen-lockfile --offline${scriptFlag}`, { cwd, retry: 5, retryWait: 15 });
 };
 
 function getErrorMsg(error: unknown): string {

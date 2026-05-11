@@ -75,7 +75,7 @@ fi
 # from YARN_YARN_OFFLINE_MIRROR set by the docker plugin environment.
 if [[ -d "$YARN_OFFLINE_CACHE" ]]; then
   echo " -- moving yarn offline cache to $ELASTIC_CHARTS_DIR/.yarn-offline-cache"
-  mv "$YARN_OFFLINE_CACHE" "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
+  mv -v "$YARN_OFFLINE_CACHE" "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
   yarn config set yarn-offline-mirror "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
 fi
 
