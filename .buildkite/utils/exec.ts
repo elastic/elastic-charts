@@ -125,7 +125,7 @@ ls /app/.yarn-offline-cache | wc -l
   await exec(`yarn config get yarn-offline-mirror`, { cwd, retry: 5, retryWait: 15 });
   await exec(`ls -la /app/.yarn-offline-cache | head`, { cwd, retry: 5, retryWait: 15 });
   await exec(`ls /app/.yarn-offline-cache | wc -l`, { cwd, retry: 5, retryWait: 15 });
-  await exec(`yarn install --frozen-lockfile${scriptFlag}`, { cwd, retry: 5, retryWait: 15 });
+  await exec(`yarn install --offline --verbose --frozen-lockfile${scriptFlag}`, { cwd, retry: 5, retryWait: 15 });
 };
 
 function getErrorMsg(error: unknown): string {
