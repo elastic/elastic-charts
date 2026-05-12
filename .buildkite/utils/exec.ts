@@ -112,20 +112,7 @@ export const exec = async (
 export const yarnInstall = async (cwd?: string, ignoreScripts = true) => {
   startGroup(`Installing node modules${cwd ? ` [${cwd}]` : ` [${process.cwd()}]`}`);
   const scriptFlag = ignoreScripts ? ' --ignore-scripts' : '';
-  /**
-   * Exec all these:
-echo "PWD=$(pwd)"
-echo "YARN_YARN_OFFLINE_MIRROR=${YARN_YARN_OFFLINE_MIRROR:-<unset>}"
-yarn config get yarn-offline-mirror
-ls -la /app/.yarn-offline-cache | head
-ls /app/.yarn-offline-cache | wc -l
-   */
-  await exec(`echo "PWD=$(pwd)"`, { cwd, retry: 5, retryWait: 15 });
-  await exec(`echo "YARN_YARN_OFFLINE_MIRROR=\${YARN_YARN_OFFLINE_MIRROR:-<unset>}"`, { cwd, retry: 5, retryWait: 15 });
-  await exec(`yarn config get yarn-offline-mirror`, { cwd, retry: 5, retryWait: 15 });
-  await exec(`ls -la /app/.yarn-offline-cache | head`, { cwd, retry: 5, retryWait: 15 });
-  await exec(`ls /app/.yarn-offline-cache | wc -l`, { cwd, retry: 5, retryWait: 15 });
-  await exec(`yarn install --offline --verbose --frozen-lockfile${scriptFlag}`, { cwd, retry: 5, retryWait: 15 });
+  await exec(`yarn install --frozen-lockfile${scriptFlag}`, { cwd, retry: 5, retryWait: 15 });
 };
 
 function getErrorMsg(error: unknown): string {
