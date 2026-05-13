@@ -34,7 +34,7 @@ export function withTickLabelTruncation(
 ): <V>(formatter: AxisLabelFormatter<V>) => AxisLabelFormatter<V> {
   const { fontSize, fontStyle, fontFamily, fill, truncate, maxLength } = tickLabel;
 
-  const maxWidth = maxLength ? getPercentageValue(maxLength, containerWidth, NaN) : undefined;
+  const maxWidth = maxLength ? getPercentageValue(maxLength, containerWidth, 0) : undefined;
   if (maxWidth === undefined || maxWidth <= 0 || maxWidth > containerWidth) return (formatter) => formatter;
 
   const font: Font = {
