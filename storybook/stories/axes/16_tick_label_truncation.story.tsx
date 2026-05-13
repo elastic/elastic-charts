@@ -13,9 +13,13 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { customKnobs } from '../utils/knobs';
 
 const data = [
-  { x: 'com.example.something.host.23', y: 12 },
+  {
+    x: 'com.example.something.host.23',
+    y: 12,
+  },
   { x: 'com.example.something.host.11', y: 8 },
   { x: 'com.example.something.host.07', y: 17 },
   { x: 'com.example.something.host.02', y: 5 },
@@ -37,20 +41,36 @@ function parseThemeSize(raw: string): number | string | undefined {
 }
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const maxLength = parseThemeSize(text('maxLength', '120'));
-  const truncate = select<EllipsisPosition>('truncate', { end: 'end', start: 'start', middle: 'middle' }, 'middle');
-  const rotation = select('Chart rotation', { '0°': 0, '90°': 90, '-90°': -90 }, 90);
+  const xMaxLength = parseThemeSize(text('Max length (X)', ''));
+  const xTruncate = select<EllipsisPosition>(
+    'Truncate (X)',
+    { end: 'end', start: 'start', middle: 'middle' },
+    'middle',
+  );
+  const yMaxLength = parseThemeSize(text('Max length (Y)', '120'));
+  const yTruncate = select<EllipsisPosition>(
+    'Truncate (Y)',
+    { end: 'end', start: 'start', middle: 'middle' },
+    'middle',
+  );
 
-  const tickLabel = {
-    ...(maxLength !== undefined ? { maxLength } : {}),
-    truncate,
-  };
+  const rotation = customKnobs.enum.rotation('Chart rotation', 90);
 
   return (
     <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} rotation={rotation} />
-      <Axis id="bottom" position={Position.Bottom} title="Count" style={{ tickLabel }} />
-      <Axis id="left" position={Position.Left} title="Team" style={{ tickLabel }} />
+      <Axis
+        id="bottom"
+        position={Position.Bottom}
+        title="Count"
+        style={{ tickLabel: { maxLength: xMaxLength, truncate: xTruncate } }}
+      />
+      <Axis
+        id="left"
+        position={Position.Left}
+        title="Team"
+        style={{ tickLabel: { maxLength: yMaxLength, truncate: yTruncate } }}
+      />
 
       <BarSeries
         id="bars"
