@@ -36,6 +36,7 @@
     "api:check:local": "yarn api:check --local",
     "api:extract": "yarn api-extractor run -c ./api-extractor.jsonc --verbose",
     "build": "yarn build:clean && rslib build && yarn build:collect:css && yarn concat:sass",
+    "build:pack": "yarn build && npm pack",
     "build:clean": "echo 'Cleaning dist...' && rm -rf ./dist",
     "build:collect:css": "mkdir -p ./dist/legacy && cp ./dist/esm/*.css ./dist/ && cp ./dist/esm/legacy/*.css ./dist/legacy/",
     "build:watch": "echo 'Watching build...' && yarn build:clean && rslib build --watch",

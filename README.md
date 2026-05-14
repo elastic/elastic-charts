@@ -61,6 +61,12 @@ From the repository root, run:
 yarn build
 ```
 
+To build and create a local npm tarball for `@elastic/charts`:
+
+```
+yarn build:pack
+```
+
 This builds `@elastic/charts` with Rslib and generates:
 
 - ESM output in `packages/charts/dist/esm`

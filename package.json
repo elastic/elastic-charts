@@ -20,6 +20,7 @@
     "api:extract": "yarn workspace @elastic/charts run api:extract",
     "backport": "backport",
     "build": "yarn workspace @elastic/charts run build",
+    "build:pack": "yarn workspace @elastic/charts run build:pack",
     "build:clean": "yarn workspace @elastic/charts run build:clean",
     "build:watch": "yarn workspace @elastic/charts run build:watch",
     "concat:sass": "yarn workspace @elastic/charts run concat:sass",
