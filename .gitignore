@@ -38,3 +38,4 @@ playground/playground.tsx
 
 # We keep node module archives in this folder
 .yarn-offline-cache/
+lerna-debug.log

@@ -51,8 +51,8 @@
     "test:e2e:server:build": "export NODE_OPTIONS=--openssl-legacy-provider; cd e2e_server/server && webpack build && cp ../../public/data.json ../.out/",
     "typecheck:base": "tsc -p ./tsconfig.base.json --noEmit",
     "typecheck:src": "yarn workspace @elastic/charts run typecheck",
-    "typecheck:docs": "lerna run --loglevel=silent --scope elastic-charts-docs typecheck --stream --no-prefix",
-    "typecheck:storybook": "lerna run --loglevel=silent --scope charts-storybook typecheck --stream --no-prefix",
+    "typecheck:docs": "cd docs && yarn typecheck",
+    "typecheck:storybook": "yarn workspace charts-storybook run typecheck",
     "typecheck:all": "yarn typecheck:base && yarn typecheck:src && yarn typecheck:docs && yarn typecheck:storybook",
     "typedoc": "typedoc",
     "ts:prune": "ts-prune"

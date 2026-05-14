@@ -32,10 +32,11 @@
     "*.scss"
   ],
   "scripts": {
-    "api:check": "yarn build && yarn api:extract",
-    "api:check:local": "yarn api:check --local",
+    "api:check": "yarn build:dts && yarn api:extract",
+    "api:check:local": "yarn build:dts && yarn api:extract --local",
     "api:extract": "yarn api-extractor run -c ./api-extractor.jsonc --verbose",
     "build": "yarn build:clean && rslib build && yarn build:collect:css && yarn concat:sass",
+    "build:dts": "yarn build:clean && yarn tsc -p ./tsconfig.src.json --emitDeclarationOnly --declaration --declarationMap --outDir ./dist/types",
     "build:pack": "yarn build && npm pack",
     "build:clean": "echo 'Cleaning dist...' && rm -rf ./dist",
     "build:collect:css": "mkdir -p ./dist/legacy && cp ./dist/esm/*.css ./dist/ && cp ./dist/esm/legacy/*.css ./dist/legacy/",
