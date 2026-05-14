@@ -53,6 +53,27 @@ yarn start
 We use [storybook](https://storybook.js.org) to document API, edge-cases, and the usage of the library.
 A hosted version is available at [https://elastic.github.io/elastic-charts/storybook][docs].
 
+### Build library artifacts
+
+From the repository root, run:
+
+```
+yarn build
+```
+
+To build and create a local npm tarball for `@elastic/charts`:
+
+```
+yarn build:pack
+```
+
+This builds `@elastic/charts` with Rslib and generates:
+
+- ESM output in `packages/charts/dist/esm`
+- CJS output in `packages/charts/dist/cjs`
+- Type declarations in `packages/charts/dist/types`
+- CSS theme files in `packages/charts/dist` and `packages/charts/dist/legacy`
+
 ## CI
 We're using the same [build pipeline](https://buildkite.com/elastic/elastic-charts-build) for building PRs and the main branch. This pipeline is triggered through webhook events hitting the [buildkite-pr-bot](https://github.com/elastic/buildkite-pr-bot). Configuration for the triggered pipelines can be adjusted in [pull-requests.json](./.buildkite/pull-requests.json).
 

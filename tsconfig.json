@@ -9,10 +9,10 @@
     "strict": true,
     "esModuleInterop": true,
     "noUncheckedIndexedAccess": true,
-    "module": "CommonJS",
+    "module": "ESNext",
     "target": "ES2022",
     "lib": ["ES2022", "DOM"],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "jsx": "react",
     "allowJs": false,
     "skipLibCheck": true,
@@ -21,8 +21,9 @@
     "resolveJsonModule": true,
     "paths": {
       "*": ["./declarations/*", "./*"],
-      "/@elastic/charts$": ["./packages/charts/src"],
-      "/@elastic/charts/src/*": ["./packages/charts/src/*"]
+      "@elastic/charts": ["./packages/charts/src"],
+      "@elastic/charts/src": ["./packages/charts/src"],
+      "@elastic/charts/src/*": ["./packages/charts/src/*"]
     }
   },
   "exclude": ["**/tmp", "**/dist"]
