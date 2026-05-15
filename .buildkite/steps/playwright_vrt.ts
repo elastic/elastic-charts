@@ -21,7 +21,7 @@ export const playwrightVrtStep = createStep<CustomGroupStep>(() => {
         ...commandStepDefaults,
         label: ':playwright: Playwright e2e VRT',
         skip,
-        parallelism: 10,
+        parallelism: 5,
         retry: {
           automatic: [
             {
