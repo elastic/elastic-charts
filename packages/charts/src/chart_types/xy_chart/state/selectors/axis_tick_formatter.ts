@@ -30,9 +30,11 @@ export type AxisLabelFormatters = { x: Map<SpecId, AxisLabelFormatter>; y: Map<S
 export function withTickLabelTruncation(
   measure: TextMeasure,
   tickLabel: AxisStyle['tickLabel'],
+  axisSpec: AxisSpec,
   containerWidth: number,
 ): <V>(formatter: AxisLabelFormatter<V>) => AxisLabelFormatter<V> {
-  const { fontSize, fontStyle, fontFamily, fill, truncate, maxLength } = tickLabel;
+  const { fontSize, fontStyle, fontFamily, fill } = tickLabel;
+  const { tickLabelMaxLength: maxLength, tickLabelTruncate: truncate } = axisSpec;
 
   const maxWidth = maxLength ? getPercentageValue(maxLength, containerWidth, 0) : undefined;
   if (maxWidth === undefined || maxWidth <= 0 || maxWidth > containerWidth) return (formatter) => formatter;

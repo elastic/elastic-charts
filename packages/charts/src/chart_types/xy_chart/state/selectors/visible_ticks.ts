@@ -262,6 +262,7 @@ function getVisibleTickSets(
         const tickLabelFormatter = withTickLabelTruncation(
           textMeasure,
           axesStyle.tickLabel,
+          axisSpec,
           chartContainerDimensions.width,
         )(userProvidedLabelFormatter);
         const { groupId, integersOnly, maximumFractionDigits: mfd, timeAxisLayerCount } = axisSpec;

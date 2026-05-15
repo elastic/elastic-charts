@@ -63,13 +63,15 @@ export const Example: ChartsStory = (_, { title, description }) => {
         id="bottom"
         position={Position.Bottom}
         title="Count"
-        style={{ tickLabel: { maxLength: xMaxLength, truncate: xTruncate } }}
+        tickLabelMaxLength={xMaxLength}
+        tickLabelTruncate={xTruncate}
       />
       <Axis
         id="left"
         position={Position.Left}
         title="Team"
-        style={{ tickLabel: { maxLength: yMaxLength, truncate: yTruncate } }}
+        tickLabelMaxLength={yMaxLength}
+        tickLabelTruncate={yTruncate}
       />
 
       <BarSeries

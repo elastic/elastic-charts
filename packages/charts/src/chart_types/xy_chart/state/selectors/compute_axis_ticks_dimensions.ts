@@ -152,6 +152,7 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
             const truncatedLabelFormatter = withTickLabelTruncation(
               textMeasure,
               axesStyle.tickLabel,
+              axisSpec,
               chartContainerDimensions.width,
             )(labelFormatter);
             return axesTicksDimensions.set(

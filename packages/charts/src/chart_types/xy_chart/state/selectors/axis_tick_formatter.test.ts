@@ -8,6 +8,7 @@
 
 import { withTickLabelTruncation } from './axis_tick_formatter';
 import * as textUtils from '../../../../common/text_utils';
+import { MockGlobalSpec } from '../../../../mocks/specs';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 
 const {
@@ -17,15 +18,17 @@ const {
 describe('withTickLabelTruncation', () => {
   const measure = jest.fn((text: string) => ({ width: text.length, height: tickLabel.fontSize }));
   const fitTextSpy = jest.spyOn(textUtils, 'fitText').mockReturnValue({ width: 0, text: 'tickLabel' });
-
   it('does not call fitText when maxLength is undefined', () => {
-    withTickLabelTruncation(measure, tickLabel, 200)((v: number) => `${v}`);
+    const axisSpec = MockGlobalSpec.yAxis({ tickLabelMaxLength: undefined, tickLabelTruncate: 'end' });
+
+    withTickLabelTruncation(measure, tickLabel, axisSpec, 200)((v: number) => `${v}`);
     expect(fitTextSpy).not.toHaveBeenCalled();
   });
 
   it("calls fitText with half the container width when maxLength is '50%'", () => {
     const containerWidth = 200;
-    const format = withTickLabelTruncation(measure, { ...tickLabel, maxLength: '50%' }, containerWidth)((v) => `${v}`);
+    const axisSpec = MockGlobalSpec.yAxis({ tickLabelMaxLength: '50%', tickLabelTruncate: 'end' });
+    const format = withTickLabelTruncation(measure, tickLabel, axisSpec, containerWidth)((v) => `${v}`);
     format('tickLabel');
     expect(fitTextSpy).toHaveBeenCalledWith(
       measure,
@@ -33,13 +36,14 @@ describe('withTickLabelTruncation', () => {
       containerWidth / 2,
       tickLabel.fontSize,
       expect.any(Object),
-      tickLabel.truncate ?? 'end',
+      axisSpec.tickLabelTruncate ?? 'end',
     );
   });
 
   it('calls fitText with the numeric maxLength as maximum width', () => {
     const maxLengthPx = 72;
-    const format = withTickLabelTruncation(measure, { ...tickLabel, maxLength: maxLengthPx }, 400)((v) => `${v}`);
+    const axisSpec = MockGlobalSpec.yAxis({ tickLabelMaxLength: maxLengthPx, tickLabelTruncate: 'end' });
+    const format = withTickLabelTruncation(measure, tickLabel, axisSpec, 400)((v) => `${v}`);
     format('tickLabel');
 
     expect(fitTextSpy).toHaveBeenCalledWith(
@@ -48,7 +52,7 @@ describe('withTickLabelTruncation', () => {
       maxLengthPx,
       tickLabel.fontSize,
       expect.any(Object),
-      tickLabel.truncate ?? 'end',
+      axisSpec.tickLabelTruncate ?? 'end',
     );
   });
 });

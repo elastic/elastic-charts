@@ -175,15 +175,6 @@ export interface AxisStyle {
        */
       offset: TextOffset;
       alignment: TextAlignment;
-      /**
-       * The maximum size of the tick label.
-       * If a number, it is in pixels. If a string, it is relative to the container width, e.g. '20%'.
-       */
-      maxLength?: Pixels | string;
-      /**
-       * The position of the ellipsis when the tick label is truncated. Defaults to 'end'.
-       */
-      truncate?: 'start' | 'middle' | 'end';
     };
   tickLine: TickStyle;
   gridLine: {
