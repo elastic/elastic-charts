@@ -7,9 +7,12 @@
  */
 
 import type { AxisProps } from './axis_props';
+import type { TextFont } from '../../../../../renderers/canvas/primitives/text';
 import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRectCenterRotated } from '../../../../../renderers/canvas/utils/debug';
+import { withTextMeasure } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position } from '../../../../../utils/common';
+import { wrapText } from '../../../../../utils/text/wrap';
 import type { AxisTick } from '../../../utils/axis_utils';
 import { getTickLabelPosition } from '../../../utils/axis_utils';
 
@@ -22,6 +25,7 @@ export function renderTickLabel(
   showTicks: boolean,
   { axisSpec, dimension, size, debug, axisStyle }: AxisProps,
   layerGirth: number,
+  locale: string,
 ) {
   const { position } = axisSpec;
   const labelStyle = axisStyle.tickLabel;
@@ -51,24 +55,42 @@ export function renderTickLabel(
 
   const tickOnTheSide = tick.multilayerTimeAxis && Number.isFinite(tick.layer);
 
-  renderText(
-    ctx,
-    center,
-    tick.label,
-    {
-      fontFamily: labelStyle.fontFamily,
-      fontStyle: labelStyle.fontStyle ?? 'normal',
-      fontVariant: 'normal',
-      fontWeight: 'normal',
-      textColor: labelStyle.fill,
-      fontSize: labelStyle.fontSize,
-      align: tickLabelProps.horizontalAlign,
-      baseline: tickLabelProps.verticalAlign,
-    },
-    labelStyle.rotation,
-    tickLabelProps.textOffsetX + (tickOnTheSide ? TICK_TO_LABEL_GAP : 0),
-    tickLabelProps.textOffsetY + (tick.layer || 0) * layerGirth * (position === Position.Top ? -1 : 1),
-    1,
-    tick.direction,
-  );
+  const font: TextFont = {
+    fontFamily: labelStyle.fontFamily,
+    fontStyle: labelStyle.fontStyle ?? 'normal',
+    fontVariant: 'normal',
+    fontWeight: 'normal',
+    textColor: labelStyle.fill,
+    fontSize: labelStyle.fontSize,
+    align: tickLabelProps.horizontalAlign,
+    baseline: tickLabelProps.verticalAlign,
+  };
+
+  const lines = withTextMeasure((measureText) => {
+    return wrapText(
+      tick.label,
+      font,
+      labelStyle.fontSize,
+      labelStyle.lineLength ?? Infinity,
+      labelStyle.wrapLines ?? 1,
+      measureText,
+      locale,
+    );
+  });
+
+  lines.forEach((line, i) => {
+    renderText(
+      ctx,
+      center,
+      line,
+      font,
+      labelStyle.rotation,
+      tickLabelProps.textOffsetX + (tickOnTheSide ? TICK_TO_LABEL_GAP : 0),
+      tickLabelProps.textOffsetY +
+        (tick.layer || 0) * layerGirth * (position === Position.Top ? -1 : 1) +
+        i * (labelStyle.lineHeight ?? 1.2) * labelStyle.fontSize,
+      1,
+      tick.direction,
+    );
+  });
 }

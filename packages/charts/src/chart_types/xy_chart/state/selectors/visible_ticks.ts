@@ -274,7 +274,7 @@ function getVisibleTickSets(
           labelFormatter: AxisLabelFormatter,
           showGrid = true,
         ): Projection => {
-          const labelBox = getLabelBox(axesStyle, ticks, labelFormatter, textMeasure, axisSpec, gridLine);
+          const labelBox = getLabelBox(axesStyle, ticks, labelFormatter, textMeasure, axisSpec, gridLine, locale);
           return {
             ticks: getVisibleTickSet(
               scale,

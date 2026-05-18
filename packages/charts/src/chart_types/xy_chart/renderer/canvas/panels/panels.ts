@@ -43,7 +43,7 @@ function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps, locale: st
   withContext(ctx, () => {
     ctx.translate(x, y);
     if (debug && !secondary) renderDebugRect(ctx, { x: 0, y: 0, ...size });
-    renderAxis(ctx, props); // TODO: compute axis dimensions per panel, For now, just render the axis line
+    renderAxis(ctx, props, locale); // TODO: compute axis dimensions per panel, For now, just render the axis line
     if (!secondary) {
       const { panelTitle, dimension } = props;
       renderTitle(

@@ -175,6 +175,9 @@ export interface AxisStyle {
        */
       offset: TextOffset;
       alignment: TextAlignment;
+      lineLength?: number;
+      wrapLines?: number;
+      lineHeight?: number;
     };
   tickLine: TickStyle;
   gridLine: {

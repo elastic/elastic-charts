@@ -13,7 +13,7 @@ import { renderTickLabel } from './tick_label';
 import { shouldShowTicks } from '../../../utils/axis_utils';
 
 /** @internal */
-export function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
+export function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps, locale: string) {
   const { ticks, axisStyle, axisSpec, secondary, layerGirth } = props;
   const showTicks = shouldShowTicks(axisStyle.tickLine, axisSpec.hide);
 
@@ -21,6 +21,6 @@ export function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
     renderTicks(ctx, ticks, props);
   }
   if (!secondary && axisStyle.tickLabel.visible)
-    ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props, layerGirth ?? 0));
+    ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props, layerGirth ?? 0, locale));
   renderAxisLine(ctx, props);
 }
