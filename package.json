@@ -48,7 +48,7 @@
     "test:e2e:generate:examples": "./e2e_server/scripts/extract_examples.sh",
     "test:e2e:generate:page": "./e2e_server/scripts/compile_vrt_page.sh",
     "test:e2e:server": "export NODE_OPTIONS=--openssl-legacy-provider; sh ./e2e_server/scripts/start.sh",
-    "test:e2e:server:build": "export NODE_OPTIONS=--openssl-legacy-provider; cd e2e_server/server && webpack build && cp ../../public/data.json ../.out/",
+    "test:e2e:server:build": "export NODE_OPTIONS=--openssl-legacy-provider; cd e2e_server/server && webpack build --progress --stats=normal && cp ../../public/data.json ../.out/",
     "typecheck:base": "tsc -p ./tsconfig.base.json --noEmit",
     "typecheck:src": "yarn workspace @elastic/charts run typecheck",
     "typecheck:docs": "cd docs && yarn typecheck",

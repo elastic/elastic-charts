@@ -22,10 +22,15 @@ module.exports = {
     chunkFilename: '[name].chunk.js',
     path: path.resolve(__dirname, '../.out'),
   },
-  infrastructureLogging: {
-    level: 'verbose',
-    debug: true,
-  },
+  infrastructureLogging: process.env.BUILDKITE
+    ? {
+        level: 'warn',
+        debug: false,
+      }
+    : {
+        level: 'verbose',
+        debug: true,
+      },
   devServer: {
     host: '0.0.0.0',
     port: 9002,

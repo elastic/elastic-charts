@@ -21,15 +21,20 @@ void (async () => {
   }
 
   startGroup('Generating e2e server files');
+  const generateStartedAt = Date.now();
   await exec('yarn test:e2e:generate');
+  console.log(`[timing] Generated e2e server files in ${((Date.now() - generateStartedAt) / 1000).toFixed(1)}s`);
 
   startGroup('Building e2e server');
+  const buildStartedAt = Date.now();
+  console.log('[build] Running `yarn test:e2e:server:build` with webpack progress/profile/stats enabled');
   await exec('yarn test:e2e:server:build', {
     env: {
       NODE_ENV: 'production',
       NODE_OPTIONS: '--openssl-legacy-provider',
     },
   });
+  console.log(`[timing] Built e2e server in ${((Date.now() - buildStartedAt) / 1000).toFixed(1)}s`);
 
   const dest = '.buildkite/artifacts/e2e_server.gz';
   await compress({
