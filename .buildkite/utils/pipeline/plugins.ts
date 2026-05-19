@@ -36,6 +36,8 @@ const environment = [
   ECH_CHECK_ID,
   'GITHUB_PR_MAINTAINER_CAN_MODIFY',
   'ECH_STEP_PLAYWRIGHT_UPDATE_SCREENSHOTS',
+  'YARN_YARN_OFFLINE_MIRROR=/app/.yarn-offline-cache', // see: .buildkite/scripts/node_setup.sh
+  'YARN_YARN_OFFLINE_MIRROR_PRUNING=false',
 ];
 
 export class Plugins {

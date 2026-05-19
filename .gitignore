@@ -35,3 +35,6 @@ playground/playground.tsx
 !.buildkite/yarn.lock
 !docs/yarn.lock
 !e2e/yarn.lock
+
+# We keep node module archives in this folder
+.yarn-offline-cache/

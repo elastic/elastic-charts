@@ -6,10 +6,10 @@ source .buildkite/scripts/utils.sh
 
 echo "--- Setup Node"
 
-KIBANA_DIR=$(pwd)
-CACHE_DIR="$HOME/.kibana"
+ELASTIC_CHARTS_DIR=$(pwd)
+CACHE_DIR="$HOME/.elastic-charts"
 
-NODE_VERSION="$(cat "$KIBANA_DIR/.node-version")"
+NODE_VERSION="$(cat "$ELASTIC_CHARTS_DIR/.node-version")"
 NODE_DIR="$CACHE_DIR/node/$NODE_VERSION"
 NODE_BIN_DIR="$NODE_DIR/bin"
 YARN_OFFLINE_CACHE="$CACHE_DIR/yarn-offline-cache"
@@ -70,7 +70,14 @@ if [[ ! $(which yarn) || $(yarn --version) != "$YARN_VERSION" ]]; then
   npm_install_global yarn "^$YARN_VERSION"
 fi
 
-yarn config set yarn-offline-mirror "$YARN_OFFLINE_CACHE"
+# Move the prewarmed offline cache into the repo so it's visible inside the
+# docker plugin container (mounted at /app). The container reads the location
+# from YARN_YARN_OFFLINE_MIRROR set by the docker plugin environment.
+if [[ -d "$YARN_OFFLINE_CACHE" ]]; then
+  echo " -- moving yarn offline cache to $ELASTIC_CHARTS_DIR/.yarn-offline-cache"
+  mv -v "$YARN_OFFLINE_CACHE" "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
+  yarn config set yarn-offline-mirror "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
+fi
 
 YARN_GLOBAL_BIN=$(yarn global bin)
 export YARN_GLOBAL_BIN
