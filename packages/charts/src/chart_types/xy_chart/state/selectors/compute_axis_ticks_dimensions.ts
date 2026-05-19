@@ -7,7 +7,7 @@
  */
 
 import type { AxisLabelFormatter } from './axis_tick_formatter';
-import { getAxisTickLabelFormatter } from './axis_tick_formatter';
+import { getAxisTickLabelFormatter, withTickLabelTruncation } from './axis_tick_formatter';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
@@ -16,6 +16,7 @@ import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import type { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -142,16 +143,23 @@ export const getLabelBox = (
 
 /** @internal */
 export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
-  [getJoinedVisibleAxesData],
-  (joinedAxesData): AxesTicksDimensions =>
+  [getJoinedVisibleAxesData, getChartContainerDimensionsSelector],
+  (joinedAxesData, chartContainerDimensions): AxesTicksDimensions =>
     withTextMeasure(
       (textMeasure): AxesTicksDimensions =>
         [...joinedAxesData].reduce<AxesTicksDimensions>(
-          (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, gridLine, labelFormatter }]) =>
-            axesTicksDimensions.set(
+          (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, gridLine, labelFormatter }]) => {
+            const truncatedLabelFormatter = withTickLabelTruncation(
+              textMeasure,
+              axesStyle.tickLabel,
+              axisSpec,
+              chartContainerDimensions.width,
+            )(labelFormatter);
+            return axesTicksDimensions.set(
               id,
-              getLabelBox(axesStyle, scale.ticks(), labelFormatter, textMeasure, axisSpec, gridLine),
-            ),
+              getLabelBox(axesStyle, scale.ticks(), truncatedLabelFormatter, textMeasure, axisSpec, gridLine),
+            );
+          },
           new Map(),
         ),
     ),
