@@ -12,7 +12,8 @@ import type { TextMeasure } from '../bbox/canvas_text_bbox_calculator';
 
 const ELLIPSIS = '…';
 
-interface WrapTextLines extends Array<string> {
+/** @internal */
+export interface WrapTextLines extends Array<string> {
   meta: {
     truncated: boolean;
   };

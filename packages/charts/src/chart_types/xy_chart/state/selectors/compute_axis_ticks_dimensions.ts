@@ -25,6 +25,8 @@ import type { AxisId } from '../../../../utils/ids';
 import { Logger } from '../../../../utils/logger';
 import { wrapText } from '../../../../utils/text/wrap';
 import type { AxisStyle, GridLineStyle } from '../../../../utils/themes/theme';
+import { createTickMeasurer, getMaxLineLength } from '../../axes/layout/tick_labels';
+import type { TickLabelBox } from '../../axes/layout/types';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
 import type { TickLabelBounds } from '../../utils/axis_utils';
 import {
@@ -36,7 +38,7 @@ import {
 import type { AxisSpec, TickFormatter } from '../../utils/specs';
 
 /** @internal */
-export type AxesTicksDimensions = Map<AxisId, TickLabelBounds>;
+export type AxesTicksDimensions = Map<AxisId, TickLabelBox[]>;
 
 const getScaleFunction = createCustomCachedSelector(
   [
@@ -134,7 +136,7 @@ export const getLabelBox = (
           labelText,
           font,
           axesStyle.tickLabel.fontSize,
-          axesStyle.tickLabel.lineLength ?? Infinity,
+          Infinity,
           axesStyle.tickLabel.wrapLines ?? 1,
           textMeasure,
           locale,
@@ -164,17 +166,21 @@ export const getLabelBox = (
 
 /** @internal */
 export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
-  [getJoinedVisibleAxesData, getSettingsSpecSelector],
-  (joinedAxesData, { locale }): AxesTicksDimensions =>
-    withTextMeasure(
-      (textMeasure): AxesTicksDimensions =>
-        [...joinedAxesData].reduce<AxesTicksDimensions>(
-          (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, gridLine, labelFormatter }]) =>
-            axesTicksDimensions.set(
-              id,
-              getLabelBox(axesStyle, scale.ticks(), labelFormatter, textMeasure, axisSpec, gridLine, locale),
-            ),
-          new Map(),
-        ),
-    ),
+  [getJoinedVisibleAxesData, getSettingsSpecSelector, getChartThemeSelector],
+  (joinedAxesData, { locale }, theme): AxesTicksDimensions =>
+    withTextMeasure((textMeasure): AxesTicksDimensions => {
+      return [...joinedAxesData].reduce<AxesTicksDimensions>(
+        (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, labelFormatter }]) => {
+          const tickMeasurer = createTickMeasurer(axesStyle, textMeasure, labelFormatter, locale);
+          const ticks = scale.ticks().map(labelFormatter);
+          const maxLineLength = getMaxLineLength(axisSpec.position, theme);
+
+          const tickDimensions = ticks.map((tick) => tickMeasurer(tick, maxLineLength));
+
+          axesTicksDimensions.set(id, tickDimensions);
+          return axesTicksDimensions;
+        },
+        new Map(),
+      );
+    }),
 );

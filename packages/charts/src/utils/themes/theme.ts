@@ -175,11 +175,17 @@ export interface AxisStyle {
        */
       offset: TextOffset;
       alignment: TextAlignment;
-      lineLength?: number;
       wrapLines?: number;
       lineHeight?: number;
     };
   tickLine: TickStyle;
+  maxSize: {
+    // WIP, review
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  };
   gridLine: {
     horizontal: GridLineStyle;
     vertical: GridLineStyle;

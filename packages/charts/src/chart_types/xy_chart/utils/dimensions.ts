@@ -11,7 +11,7 @@ import type { SettingsSpec, SmallMultiplesSpec } from '../../../specs';
 import type { ChartDimensions, Dimensions } from '../../../utils/dimensions';
 import type { AxisId } from '../../../utils/ids';
 import type { Theme, AxisStyle } from '../../../utils/themes/theme';
-import { getAxesDimensions } from '../axes/axes_sizes';
+import { getAxesDimensions } from '../axes/layout/dimensions';
 import type { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
 import type { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 
@@ -30,15 +30,14 @@ export function computeChartDimensions(
   scaleConfigs: ScaleConfigs,
   settingsSpec: SettingsSpec,
 ): ChartDimensions {
-  const axesDimensions = getAxesDimensions(
-    theme,
-    axisTickDimensions,
-    axesStyles,
-    axisSpecs,
-    smSpec,
-    scaleConfigs.x.type,
-    settingsSpec.rotation,
-  );
+  const axes = axisSpecs.map((spec) => ({
+    spec,
+    style: axesStyles.get(spec.id) ?? theme.axes,
+    tickDimensions: axisTickDimensions.get(spec.id) ?? [],
+    isHidden: spec.hide,
+  }));
+  const axesDimensions = getAxesDimensions(theme, axes, smSpec, scaleConfigs.x.type, settingsSpec.rotation);
+
   const chartWidth = parentDimensions.width - axesDimensions.left - axesDimensions.right;
   const chartHeight = parentDimensions.height - axesDimensions.top - axesDimensions.bottom;
   const pad = theme.chartPaddings;
