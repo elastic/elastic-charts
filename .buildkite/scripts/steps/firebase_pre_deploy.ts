@@ -9,7 +9,15 @@
 import fs from 'fs';
 import path from 'path';
 
-import { firebaseDeploy, downloadArtifacts, startGroup, decompress, bkEnv } from '../../utils';
+import {
+  firebaseDeploy,
+  downloadArtifacts,
+  getChartsPackageMetadata,
+  prepareChartsPackagesForDeployment,
+  startGroup,
+  decompress,
+  bkEnv,
+} from '../../utils';
 import { createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
 
 void (async () => {
@@ -45,15 +53,30 @@ void (async () => {
     dest: path.join(outDir, 'e2e'),
   });
 
+  // Serve the packaged tarball from the preview site so downstream PRs can install it.
+  const chartsPackage = await getChartsPackageMetadata(true);
+  const { liveTarballDest, commitTarballDest, manifestDest, indexDest } = await prepareChartsPackagesForDeployment(
+    outDir,
+    chartsPackage,
+  );
+
   startGroup('Check deployment files');
 
   const hasDocsIndex = fs.existsSync('./e2e_server/public/index.html');
   const hasStorybookIndex = fs.existsSync('./e2e_server/public/storybook/index.html');
   const hasE2EIndex = fs.existsSync('./e2e_server/public/e2e/index.html');
+  const hasLiveChartsPackage = fs.existsSync(liveTarballDest);
+  const hasCommitChartsPackage = fs.existsSync(commitTarballDest);
+  const hasChartsPackageManifest = fs.existsSync(manifestDest);
+  const hasChartsPackageIndex = fs.existsSync(indexDest);
   const missingFiles = [
     ['docs', hasDocsIndex],
     ['storybook', hasStorybookIndex],
     ['e2e server', hasE2EIndex],
+    ['live charts package tarball', hasLiveChartsPackage],
+    ['commit charts package tarball', hasCommitChartsPackage],
+    ['charts package manifest', hasChartsPackageManifest],
+    ['charts package index', hasChartsPackageIndex],
   ]
     .filter(([, exists]) => !exists)
     .map<string>(([f]) => f as string);

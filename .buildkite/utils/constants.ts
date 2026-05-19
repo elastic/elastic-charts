@@ -16,6 +16,11 @@ export const MetaDataKeys = {
   deploymentPreviousSha: 'deploymentPreviousSha',
   deploymentStatus: 'deploymentStatus',
   deploymentUrl: 'deploymentUrl',
+  chartsPackageLiveTarballFilename: 'chartsPackageLiveTarballFilename',
+  chartsPackageCommitTarballFilename: 'chartsPackageCommitTarballFilename',
+  chartsPackageVersion: 'chartsPackageVersion',
+  chartsPackageCommitSha: 'chartsPackageCommitSha',
+  chartsPackageCommitShortSha: 'chartsPackageCommitShortSha',
 };
 
 /**

@@ -16,6 +16,7 @@ export * from './playwright_a11y';
 export * from './docs';
 export * from './storybook';
 export * from './e2e_server';
+export * from './charts_package';
 export * from './firebase_pre_deploy';
 export * from './firebase_deploy';
 export * from './ghp_deploy';
