@@ -9,7 +9,15 @@
 import fs from 'fs';
 import path from 'path';
 
-import { firebaseDeploy, downloadArtifacts, startGroup, decompress, bkEnv } from '../../utils';
+import {
+  firebaseDeploy,
+  downloadArtifacts,
+  getChartsPackageMetadata,
+  prepareChartsPackagesForDeployment,
+  startGroup,
+  decompress,
+  bkEnv,
+} from '../../utils';
 import { createDeploymentStatus } from '../../utils/deployment';
 
 void (async () => {
@@ -54,6 +62,12 @@ void (async () => {
     dest: path.join(outDir, 'a11y-report'),
   });
 
+  const chartsPackage = await getChartsPackageMetadata(true);
+  const { liveTarballDest, commitTarballDest, manifestDest, indexDest } = await prepareChartsPackagesForDeployment(
+    outDir,
+    chartsPackage,
+  );
+
   startGroup('Check deployment files');
 
   const hasDocsIndex = fs.existsSync(path.join(outDir, 'index.html'));
@@ -61,12 +75,20 @@ void (async () => {
   const hasE2EIndex = fs.existsSync(path.join(outDir, 'e2e/index.html'));
   const hasVrtReportIndex = fs.existsSync(path.join(outDir, 'vrt-report/index.html'));
   const hasA11yReportIndex = fs.existsSync(path.join(outDir, 'a11y-report/index.html'));
+  const hasLiveChartsPackage = fs.existsSync(liveTarballDest);
+  const hasCommitChartsPackage = fs.existsSync(commitTarballDest);
+  const hasChartsPackageManifest = fs.existsSync(manifestDest);
+  const hasChartsPackageIndex = fs.existsSync(indexDest);
   const missingFiles = [
     ['docs', hasDocsIndex],
     ['storybook', hasStorybookIndex],
     ['e2e server', hasE2EIndex],
     ['vrt report', hasVrtReportIndex],
     ['a11y report', hasA11yReportIndex],
+    ['live charts package tarball', hasLiveChartsPackage],
+    ['commit charts package tarball', hasCommitChartsPackage],
+    ['charts package manifest', hasChartsPackageManifest],
+    ['charts package index', hasChartsPackageIndex],
   ]
     .filter(([, exists]) => !exists)
     .map<string>(([f]) => f as string);

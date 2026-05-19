@@ -19,6 +19,7 @@ export const firebaseDeployStep = createStep<CustomCommandStep>(() => {
       'build_docs',
       'build_storybook',
       'build_e2e',
+      'build_charts_package_preview',
       'playwright_vrt_merge_and_status',
       'playwright_a11y_merge_and_status',
     ],

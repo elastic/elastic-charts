@@ -15,12 +15,17 @@ import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
 import { getOrCreateDeploymentUrl } from './firebase';
 import { octokit, defaultGHOptions, getComment, commentByKey } from './github';
+import { getChartsPackageMetadata, getChartsPackagesUrl, getChartsPackageUrls } from './package';
 import type { OctokitParameters } from './types';
 
 export interface UpdateDeploymentCommentOptions {
   sha?: string;
   state: 'pending' | 'success' | 'failure';
   deploymentUrl?: string;
+  packagesUrl?: string;
+  packageTarballUrl?: string;
+  commitPackageTarballUrl?: string;
+  commitPackageTarballLabel?: string;
   previousSha?: string;
   errorCmd?: string;
   errorMsg?: string;
@@ -72,12 +77,23 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
 
   const deploymentUrl = options.deploymentUrl ?? (await getOrCreateDeploymentUrl());
   const previousSha = options.previousSha ?? (await getMetadata(MetaDataKeys.deploymentPreviousSha));
+  const chartsPackage = await getChartsPackageMetadata();
+  const packagesUrl = options.packagesUrl ?? getChartsPackagesUrl(deploymentUrl);
+  const chartsPackageUrls = chartsPackage ? getChartsPackageUrls(deploymentUrl, chartsPackage) : undefined;
+  const packageTarballUrl = options.packageTarballUrl ?? chartsPackageUrls?.liveTarballUrl;
+  const commitPackageTarballUrl = options.commitPackageTarballUrl ?? chartsPackageUrls?.commitTarballUrl;
+  const commitPackageTarballLabel =
+    options.commitPackageTarballLabel ?? (chartsPackage ? `${chartsPackage.commitShortSha}.tgz` : undefined);
   const commentBody = getComment('deployment', {
     ...options,
     state,
     preDeploy,
     sha,
     deploymentUrl,
+    packagesUrl,
+    packageTarballUrl,
+    commitPackageTarballUrl,
+    commitPackageTarballLabel,
     previousSha,
   });
 
@@ -91,7 +107,6 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
 
   await setMetadata(MetaDataKeys.deploymentCommentId, id.toString());
 }
-
 /**
  * Must clear previous deployments when deployment `transient_environment` is t`rue`
  */

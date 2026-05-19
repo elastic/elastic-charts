@@ -417,6 +417,10 @@ export const comments = {
   },
   deployment({
     deploymentUrl,
+    packagesUrl,
+    packageTarballUrl,
+    commitPackageTarballUrl,
+    commitPackageTarballLabel,
     sha,
     previousSha,
     state,
@@ -450,18 +454,29 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
 
     const buildUrl = bkEnv.buildUrl;
     const buildText = !buildUrl ? '' : ` ([build#${buildUrl.split('/').pop()}](${buildUrl}))`;
+    const packageLinkLine = getPackageLinkLine(
+      packagesUrl,
+      packageTarballUrl,
+      commitPackageTarballUrl,
+      commitPackageTarballLabel,
+    );
 
     if (state === 'pending') {
       const updateComment = previousSha ? `\n> 🚧 Updating deployment from ${previousSha}` : '';
       const deploymentMsg =
         previousSha && deploymentUrl
-          ? `### Old deployment - ${previousSha}
-
-- [Docs](${deploymentUrl})
-- [Storybook](${deploymentUrl}/storybook)
-- [e2e server](${deploymentUrl}/e2e)
-- ([Playwright VRT report](${deploymentUrl}/vrt-report)
-- ([Playwright A11Y report](${deploymentUrl}/a11y-report)`
+          ? [
+              `### Old deployment - ${previousSha}`,
+              '',
+              `- [Docs](${deploymentUrl})`,
+              `- [Storybook](${deploymentUrl}/storybook)`,
+              `- [e2e server](${deploymentUrl}/e2e)`,
+              `- [Playwright VRT report](${deploymentUrl}/vrt-report)`,
+              `- [Playwright A11Y report](${deploymentUrl}/a11y-report)`,
+              packageLinkLine,
+            ]
+              .filter((line): line is string => line !== undefined)
+              .join('\n')
           : `- ⏳ Storybook
 - ⏳ e2e server
 - ⏳ Playwright VRT report
@@ -471,15 +486,47 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
 ${deploymentMsg}`;
     }
 
+    const deploymentLines = [
+      `- [Docs](${deploymentUrl})`,
+      `- [Storybook](${deploymentUrl}/storybook)`,
+      `- [e2e server](${deploymentUrl}/e2e)`,
+      preDeploy
+        ? '- ⏳ Playwright VRT report - Running e2e tests'
+        : `- [Playwright VRT report](${deploymentUrl}/vrt-report)`,
+      preDeploy
+        ? '- ⏳ Playwright A11Y report - Running a11y tests'
+        : `- [Playwright A11Y report](${deploymentUrl}/a11y-report)`,
+      packageLinkLine,
+    ]
+      .filter((line): line is string => line !== undefined)
+      .join('\n');
+
     return `## ✅ Successful ${preDeploy ? 'Preliminary ' : ''}Deployment${buildText} - ${sha}
 
-- [Docs](${deploymentUrl})
-- [Storybook](${deploymentUrl}/storybook)
-- [e2e server](${deploymentUrl}/e2e)
-${preDeploy ? '- ⏳ Playwright VRT report - Running e2e tests' : `- [Playwright VRT report](${deploymentUrl}/vrt-report)`}
-${preDeploy ? '- ⏳ Playwright A11Y report - Running a11y tests' : `- [Playwright A11Y report](${deploymentUrl}/a11y-report)`}`;
+${deploymentLines}`;
   },
 };
+
+function getPackageLinkLine(
+  packagesUrl?: string,
+  packageTarballUrl?: string,
+  commitPackageTarballUrl?: string,
+  commitPackageTarballLabel?: string,
+) {
+  if (!packagesUrl && !packageTarballUrl && !commitPackageTarballUrl) return undefined;
+
+  const links = [];
+  if (packagesUrl) {
+    links.push(`[Packages](${packagesUrl})`);
+  }
+  if (packageTarballUrl) {
+    links.push(`[pr.tgz](${packageTarballUrl})`);
+  }
+  if (commitPackageTarballUrl) {
+    links.push(`[${commitPackageTarballLabel ?? 'commit.tgz'}](${commitPackageTarballUrl})`);
+  }
+  return `- ${links.join(' - ')}`;
+}
 
 type Comments = typeof comments;
 
