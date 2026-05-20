@@ -1,3 +1,10 @@
+# [71.7.0](https://github.com/elastic/elastic-charts/compare/v71.6.1...v71.7.0) (2026-05-20)
+
+
+### Features
+
+* **axis:** add option to truncate axis tick labels ([#2829](https://github.com/elastic/elastic-charts/issues/2829)) ([e0c8e72](https://github.com/elastic/elastic-charts/commit/e0c8e72c65835173c8071c713af3b75667ad484b))
+
 ## [71.6.1](https://github.com/elastic/elastic-charts/compare/v71.6.0...v71.6.1) (2026-05-15)
 
 # [71.6.0](https://github.com/elastic/elastic-charts/compare/v71.5.2...v71.6.0) (2026-05-11)
