@@ -48,7 +48,7 @@ export const commandStepDefaults: Partial<CustomCommandStep> = {
   agents: {
     provider: 'gcp',
     image: 'family/elastic-charts-ubuntu-2404',
-    imageProject: 'elastic-images-qa',
+    imageProject: 'elastic-images-prod',
     machineType: 'n2-standard-2',
   },
   skip: false,
