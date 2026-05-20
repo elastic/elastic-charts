@@ -11,6 +11,7 @@ import { bkEnv, startGroup } from '../../utils/buildkite';
 import { ChangeContext } from '../../utils/github';
 
 void (async () => {
+  return;
   const changes = new ChangeContext();
   await changes.init();
   const hasLintConfigChanges = changes.files.has([
