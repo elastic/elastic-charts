@@ -73,6 +73,13 @@ export async function getChartsPackageMetadata(required: boolean = false): Promi
 
   if (!liveTarballFilename || !commitTarballFilename || !version || !commitSha || !commitShortSha) {
     if (required) {
+      console.error('Failed to find complete charts package metadata', {
+        liveTarballFilename,
+        commitTarballFilename,
+        version,
+        commitSha,
+        commitShortSha,
+      });
       throw new Error('Failed to find complete charts package metadata');
     }
 
