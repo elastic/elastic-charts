@@ -34,6 +34,7 @@
     },
     {
       "groupName": "@elastic/eui",
+      "minimumReleaseAge": "14 days",
       "matchPackageNames": ["@elastic/eui", "@elastic/datemath"],
       "matchUpdateTypes": ["major"],
       "schedule": ["every 1 week on monday"],
@@ -43,6 +44,7 @@
     },
     {
       "groupName": "typescript",
+      "minimumReleaseAge": "14 days",
       "automerge": true,
       "enabled": true,
       "matchPackageNames": [
@@ -57,6 +59,7 @@
     },
     {
       "groupName": "eslint",
+      "minimumReleaseAge": "14 days",
       "matchPackageNames": [
         "prettier",
         "pretty-quick",
@@ -69,12 +72,14 @@
     },
     {
       "groupName": "jest",
+      "minimumReleaseAge": "14 days",
       "automerge": true,
       "enabled": true,
       "matchPackageNames": ["/.*jest.*/"]
     },
     {
       "groupName": "playwright",
+      "minimumReleaseAge": "14 days",
       "matchPackageNames": ["@playwright/test"],
       "automerge": true,
       "enabled": true
