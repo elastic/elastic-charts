@@ -382,7 +382,8 @@ export async function ghpDeploy(outDir: string) {
     console.log(`publishing to github pages: ${outDir}`);
     const lsResult = execSync(`ls -la ${outDir}`);
     console.log(`lsResult: ${lsResult}`);
-    const nodeModuleLsBefore = execSync(`ls -la node_modules |  head -n 10`);
+    const repoRoot = execSync(`git rev-parse --show-toplevel`);
+    const nodeModuleLsBefore = execSync(`ls -la ${repoRoot}/node_modules |  head -n 10`);
     console.log(`nodeModuleLsBefore: ${nodeModuleLsBefore}`);
     ghpages.publish(
       outDir,
@@ -401,7 +402,7 @@ export async function ghpDeploy(outDir: string) {
         else resolve();
       },
     );
-    const nodeModuleLsAfter = execSync(`ls -la node_modules |  head -n 10`);
+    const nodeModuleLsAfter = execSync(`ls -la ${repoRoot}/node_modules |  head -n 10`);
     console.log(`nodeModuleLsAfter: ${nodeModuleLsAfter}`);
   });
 }
