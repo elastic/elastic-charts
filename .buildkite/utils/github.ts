@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { execSync } from 'child_process';
+
 import type { StrategyOptions } from '@octokit/auth-app';
 import { createAppAuth } from '@octokit/auth-app';
 import type { components } from '@octokit/openapi-types';
@@ -377,23 +379,30 @@ export async function ghpDeploy(outDir: string) {
   });
 
   await new Promise<void>((resolve, reject) => {
-    // ghpages.publish(
-    //   outDir,
-    //   {
-    //     user: {
-    //       name: 'elastic-datavis[bot]',
-    //       email: '98618603+elastic-datavis[bot]@users.noreply.github.com',
-    //     },
-    //     silent: false,
-    //     branch: 'gh-pages',
-    //     message: `Deploying ${bkEnv.commit ?? 'latest changes'} 🚀`,
-    //     repo: `https://git:${token}@github.com/elastic/elastic-charts.git`,
-    //   },
-    //   (error) => {
-    //     if (error) reject(error);
-    //     else resolve();
-    //   },
-    // );
+    console.log(`publishing to github pages: ${outDir}`);
+    const lsResult = execSync(`ls -la ${outDir}`);
+    console.log(`lsResult: ${lsResult}`);
+    const nodeModuleLsBefore = execSync(`ls -la node_modules |  head -n 10`);
+    console.log(`nodeModuleLsBefore: ${nodeModuleLsBefore}`);
+    ghpages.publish(
+      outDir,
+      {
+        user: {
+          name: 'elastic-datavis[bot]',
+          email: '98618603+elastic-datavis[bot]@users.noreply.github.com',
+        },
+        silent: false,
+        branch: 'gh-pages-test',
+        message: `Deploying ${bkEnv.commit ?? 'latest changes'} 🚀`,
+        repo: `https://git:${token}@github.com/elastic/elastic-charts.git`,
+      },
+      (error) => {
+        if (error) reject(error);
+        else resolve();
+      },
+    );
+    const nodeModuleLsAfter = execSync(`ls -la node_modules |  head -n 10`);
+    console.log(`nodeModuleLsAfter: ${nodeModuleLsAfter}`);
   });
 }
 
