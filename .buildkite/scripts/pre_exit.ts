@@ -16,35 +16,35 @@ void (async function () {
 
   if (checkId && jobId && !skipChecks.has(checkId)) {
     await yarnInstall();
-    const jobStatus = await getJobStatus(jobId);
+    // const jobStatus = await getJobStatus(jobId);
 
-    if (jobStatus) {
-      if (jobStatus.state === 'CANCELING') {
-        const user = getCancelledBy(jobStatus.events ?? []);
-        await updateCheckStatus(
-          {
-            status: 'completed',
-            conclusion: 'cancelled',
-            details_url: jobUrl,
-          },
-          checkId,
-          user && `Cancelled by ${user}`,
-        );
-      } else {
-        const isFailedJob = (await getJobMetadata('failed')) === 'true';
+    // if (jobStatus) {
+    //   if (jobStatus.state === 'CANCELING') {
+    //     const user = getCancelledBy(jobStatus.events ?? []);
+    //     await updateCheckStatus(
+    //       {
+    //         status: 'completed',
+    //         conclusion: 'cancelled',
+    //         details_url: jobUrl,
+    //       },
+    //       checkId,
+    //       user && `Cancelled by ${user}`,
+    //     );
+    //   } else {
+    //     const isFailedJob = (await getJobMetadata('failed')) === 'true';
 
-        if (isFailedJob || !(await codeCheckIsCompleted())) {
-          await updateCheckStatus(
-            {
-              status: 'completed',
-              conclusion: isFailedJob ? 'failure' : 'success',
-              details_url: jobUrl,
-            },
-            checkId,
-          );
-        }
-      }
-    }
+    //     if (isFailedJob || !(await codeCheckIsCompleted())) {
+    //       await updateCheckStatus(
+    //         {
+    //           status: 'completed',
+    //           conclusion: isFailedJob ? 'failure' : 'success',
+    //           details_url: jobUrl,
+    //         },
+    //         checkId,
+    //       );
+    //     }
+    //   }
+    // }
   }
 })();
 

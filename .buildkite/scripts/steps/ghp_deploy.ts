@@ -15,14 +15,14 @@ void (async () => {
   const outDir = '.out';
 
   const docsSrc = '.buildkite/artifacts/docs/github.gz';
-  await downloadArtifacts(docsSrc, 'build_docs');
+  await downloadArtifacts(docsSrc, 'build_docs', '.', '019e4dc0-7d1d-4d4f-acc2-90db437e2e67');
   await decompress({
     src: docsSrc,
     dest: outDir,
   });
 
   const storybookSrc = '.buildkite/artifacts/storybook.gz';
-  await downloadArtifacts(storybookSrc, 'build_storybook');
+  await downloadArtifacts(storybookSrc, 'build_storybook', '.', '019e4dc0-7d1d-4d4f-acc2-90db437e2e67');
   await decompress({
     src: storybookSrc,
     dest: path.join(outDir, 'storybook'),

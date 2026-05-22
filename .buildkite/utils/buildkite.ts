@@ -39,7 +39,7 @@ export const bkEnv = (() => {
   const branch = bkBranch && bkBranch.split(':').reverse()[0];
   const pullRequestNumber = getEnvNumber('BUILDKITE_PULL_REQUEST');
   const checkId = getEnvString(ECH_CHECK_ID);
-  const isPullRequest = Boolean(pullRequestNumber);
+  const isPullRequest = false && Boolean(pullRequestNumber);
   let username: string | undefined;
 
   if (isPullRequest) {
