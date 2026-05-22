@@ -88,10 +88,20 @@ const HEIGHT_BP: [number, number, BreakPoint][] = [
   [500, 600, 'xl'],
   [600, Infinity, 'xxl'],
 ];
-const ICON_SIZE: Record<BreakPoint, number> = { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
+const ICON_SIZE: Record<BreakPoint, number> = {
+  xxxs: 16,
+  xxs: 16,
+  xs_minus: 16,
+  xs: 16,
+  s: 16,
+  m: 24,
+  l: 24,
+  xl: 32,
+  xxl: 42,
+};
 const TITLE_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
   small: { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 },
-  large: { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 20, m: 24, l: 28, xl: 32, xxl: 42 },
+  large: { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 22, m: 28, l: 36, xl: 46, xxl: 64 },
 };
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = {
   xxxs: 14,
@@ -106,7 +116,7 @@ const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = {
 };
 const EXTRA_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
   small: { xxxs: 14, xxs: 14, xs_minus: 14, xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 },
-  large: { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 22, m: 28, l: 35, xl: 46, xxl: 63 },
+  large: { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 22, m: 28, l: 36, xl: 46, xxl: 64 },
 };
 const VALUE_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
   small: {
@@ -140,7 +150,17 @@ const BASE_TEXT_FONT: Font = {
   fontWeight: 'normal',
   textColor: 'black',
 };
-const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs_minus: 4, xs: 4, s: 4, m: 8, l: 8, xl: 8, xxl: 16 };
+const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = {
+  xxxs: 4,
+  xxs: 4,
+  xs_minus: 4,
+  xs: 4,
+  s: 4,
+  m: 8,
+  l: 8,
+  xl: 8,
+  xxl: 16,
+};
 const DEFAULT_PANEL_PADDING = 8; // Aligned with our CSS in _variables.scss
 const DEFAULT_TITLE_SUBTITLE_GAP = 5; // Aligned with our CSS in _text.scss
 const DEFAULT_EXTRA_PADDING_TOP = 5; // Aligned with our CSS in _text.scss
