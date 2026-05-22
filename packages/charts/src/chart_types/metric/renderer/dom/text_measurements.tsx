@@ -20,7 +20,7 @@ import type { MetricSpacing, MetricStyle } from '../../../../utils/themes/theme'
 import type { MetricDatum, MetricWNumber } from '../../specs';
 import { isMetricWProgress } from '../../specs';
 
-type BreakPoint = 'xxxs' | 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
+type BreakPoint = 'xxxs' | 'xxs' | 'xs_minus' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
 
 type ResponsiveBreakpoints = {
   /** Maximum number of lines allowed for the title text before truncation */
@@ -80,21 +80,23 @@ export interface MetricTextDimensions {
 export const PROGRESS_BAR_TARGET_SIZE = 8; // Aligned with our CSS in _index.scss
 const LINE_HEIGHT = 1.2; // Aligned with our CSS
 const HEIGHT_BP: [number, number, BreakPoint][] = [
-  [100, 200, 'xs'],
+  [100, 150, 'xs_minus'],
+  [150, 200, 'xs'],
   [200, 300, 's'],
   [300, 400, 'm'],
   [400, 500, 'l'],
   [500, 600, 'xl'],
   [600, Infinity, 'xxl'],
 ];
-const ICON_SIZE: Record<BreakPoint, number> = { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
+const ICON_SIZE: Record<BreakPoint, number> = { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
 const TITLE_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
-  small: { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 },
-  large: { xxxs: 16, xxs: 16, xs: 16, s: 20, m: 24, l: 28, xl: 32, xxl: 42 },
+  small: { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 },
+  large: { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 20, m: 24, l: 28, xl: 32, xxl: 42 },
 };
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = {
   xxxs: 14,
   xxs: 14,
+  xs_minus: 14,
   xs: 14,
   s: 14,
   m: 16,
@@ -103,13 +105,14 @@ const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = {
   xxl: 36,
 };
 const EXTRA_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
-  small: { xxxs: 14, xxs: 14, xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 },
-  large: { xxxs: 16, xxs: 16, xs: 16, s: 22, m: 28, l: 35, xl: 46, xxl: 63 },
+  small: { xxxs: 14, xxs: 14, xs_minus: 14, xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 },
+  large: { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 22, m: 28, l: 35, xl: 46, xxl: 63 },
 };
 const VALUE_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
   small: {
     xxxs: 16,
     xxs: 26,
+    xs_minus: 36,
     xs: 36,
     s: 42,
     m: 56,
@@ -119,7 +122,8 @@ const VALUE_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, numbe
   },
   large: {
     xxxs: 24,
-    xxs: 38,
+    xxs: 36,
+    xs_minus: 36,
     xs: 50,
     s: 64,
     m: 84,
@@ -136,7 +140,7 @@ const BASE_TEXT_FONT: Font = {
   fontWeight: 'normal',
   textColor: 'black',
 };
-const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs: 4, s: 4, m: 8, l: 8, xl: 8, xxl: 16 };
+const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs_minus: 4, xs: 4, s: 4, m: 8, l: 8, xl: 8, xxl: 16 };
 const DEFAULT_PANEL_PADDING = 8; // Aligned with our CSS in _variables.scss
 const DEFAULT_TITLE_SUBTITLE_GAP = 5; // Aligned with our CSS in _text.scss
 const DEFAULT_EXTRA_PADDING_TOP = 5; // Aligned with our CSS in _text.scss
@@ -146,6 +150,7 @@ const LARGE_PRIMARY_ADJACENT_GAP = 4;
 const LARGE_PANEL_PADDING: Record<BreakPoint, number> = {
   xxxs: 16,
   xxs: 16,
+  xs_minus: 16,
   xs: 16,
   s: 24,
   m: 24,
@@ -184,6 +189,7 @@ function getValueFontSizeSteps(spacingMode: MetricSpacing): number[] {
     valueFontSizeMap.m,
     valueFontSizeMap.s,
     valueFontSizeMap.xs,
+    valueFontSizeMap.xs_minus,
     valueFontSizeMap.xxs,
     valueFontSizeMap.xxxs,
   ];
