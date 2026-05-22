@@ -377,23 +377,23 @@ export async function ghpDeploy(outDir: string) {
   });
 
   await new Promise<void>((resolve, reject) => {
-    ghpages.publish(
-      outDir,
-      {
-        user: {
-          name: 'elastic-datavis[bot]',
-          email: '98618603+elastic-datavis[bot]@users.noreply.github.com',
-        },
-        silent: false,
-        branch: 'gh-pages',
-        message: `Deploying ${bkEnv.commit ?? 'latest changes'} 🚀`,
-        repo: `https://git:${token}@github.com/elastic/elastic-charts.git`,
-      },
-      (error) => {
-        if (error) reject(error);
-        else resolve();
-      },
-    );
+    // ghpages.publish(
+    //   outDir,
+    //   {
+    //     user: {
+    //       name: 'elastic-datavis[bot]',
+    //       email: '98618603+elastic-datavis[bot]@users.noreply.github.com',
+    //     },
+    //     silent: false,
+    //     branch: 'gh-pages',
+    //     message: `Deploying ${bkEnv.commit ?? 'latest changes'} 🚀`,
+    //     repo: `https://git:${token}@github.com/elastic/elastic-charts.git`,
+    //   },
+    //   (error) => {
+    //     if (error) reject(error);
+    //     else resolve();
+    //   },
+    // );
   });
 }
 
