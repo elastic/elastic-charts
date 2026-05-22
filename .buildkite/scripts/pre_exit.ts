@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { execSync } from 'child_process';
+
 import { yarnInstall } from './../utils/exec';
 import { bkEnv, buildkiteGQLQuery, codeCheckIsCompleted, getJobMetadata, updateCheckStatus } from '../utils';
 
@@ -15,23 +17,25 @@ void (async function () {
   const { checkId, jobId, jobUrl } = bkEnv;
 
   if (checkId && jobId && !skipChecks.has(checkId)) {
-    await yarnInstall();
-    // const jobStatus = await getJobStatus(jobId);
+    let root = process.cwd();
+    try {
+      root = execSync(`git rev-parse --show-toplevel`).toString().trim();
+    } catch (error: unknown) {
+      console.error(`Failed to get git root directory, falling back to current directory: ${process.cwd()}`, error);
+    }
+    const nodeModuleLsBefore = execSync(`ls -la ${root}/node_modules |  head -n 10`);
+    console.log(`nodeModuleLsBefore: ${nodeModuleLsBefore}`);
+    const ee = await yarnInstall().catch((error) => {
+      console.error(`Failed to install dependencies`, error);
+      return error;
+    });
+    const nodeModuleLsAfter = execSync(`ls -la ${root}/node_modules |  head -n 10`);
+    console.log(`nodeModuleLsAfter: ${nodeModuleLsAfter}`);
 
-    // if (jobStatus) {
-    //   if (jobStatus.state === 'CANCELING') {
-    //     const user = getCancelledBy(jobStatus.events ?? []);
-    //     await updateCheckStatus(
-    //       {
-    //         status: 'completed',
-    //         conclusion: 'cancelled',
-    //         details_url: jobUrl,
-    //       },
-    //       checkId,
-    //       user && `Cancelled by ${user}`,
-    //     );
-    //   } else {
-    //     const isFailedJob = (await getJobMetadata('failed')) === 'true';
+    if (ee instanceof Error) {
+      console.error(`Failed to install dependencies`);
+      throw ee;
+    }
 
     //     if (isFailedJob || !(await codeCheckIsCompleted())) {
     //       await updateCheckStatus(
