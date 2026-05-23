@@ -50,6 +50,10 @@ jobs:
       - name: Upgrade npm for trusted publishing (OIDC) support
         run: npm install -g npm@11.5.1
 
+      - name: Determine npm dist-tag
+        id: npm_tag
+        run: echo "dist_tag=release-${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+
       - name: Bump version
         id: version
         working-directory: packages/charts
@@ -77,7 +81,7 @@ jobs:
 
       - name: Publish to npm
         working-directory: packages/charts
-        run: npm publish --provenance --access public
+        run: npm publish --provenance --access public --tag "${{ steps.npm_tag.outputs.dist_tag }}"
 
       - name: Push commit and tag
         run: git push origin "${{ github.ref_name }}" --follow-tags
@@ -97,6 +101,6 @@ jobs:
         run: |
           if [ -n "$SLACK_WEBHOOK" ]; then
             curl -fsSL -X POST -H 'Content-type: application/json' \
-              --data "{\"text\":\"Released @elastic/charts@${{ steps.version.outputs.version }}\"}" \
+              --data "{\"text\":\"Released @elastic/charts@${{ steps.version.outputs.version }} (npm tag: ${{ steps.npm_tag.outputs.dist_tag }})\"}" \
               "$SLACK_WEBHOOK"
           fi
