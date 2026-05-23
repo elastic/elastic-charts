@@ -1,0 +1,101 @@
+# TODO move this run to buildkite
+
+name: Publish a Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_bump:
+        description: 'Version bump type'
+        required: true
+        type: choice
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+
+env:
+  ECH_NODE_VERSION: '22.22.0'
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release and push tags
+      id-token: write # to enable use of OIDC for trusted publishing and npm provenance
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6.0.2
+        with:
+          token: ${{ secrets.ADMIN_TOKEN_GH }}
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup node
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: ${{ env.ECH_NODE_VERSION }}
+          registry-url: https://registry.npmjs.org
+
+      - name: Install node_modules
+        uses: bahmutov/npm-install@v1.12.1
+        with:
+          useRollingCache: true
+
+      - name: Build library
+        run: yarn build
+
+      - name: Upgrade npm for trusted publishing (OIDC) support
+        run: npm install -g npm@11.5.1
+
+      - name: Bump version
+        id: version
+        working-directory: packages/charts
+        run: |
+          NEW_VERSION=$(npm version ${{ inputs.version_bump }} --no-git-tag-version)
+          echo "version=${NEW_VERSION#v}" >> "$GITHUB_OUTPUT"
+          echo "tag=${NEW_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Copy package files
+        run: node ./packages/charts/scripts/move_txt_files.js
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit version bump
+        run: |
+          git add packages/charts/package.json
+          git commit -m "chore(release): ${{ steps.version.outputs.tag }} [skip ci]"
+
+      - name: Create tag
+        run: git tag ${{ steps.version.outputs.tag }}
+
+      - name: Publish to npm
+        working-directory: packages/charts
+        run: npm publish --provenance --access public
+
+      - name: Push commit and tag
+        run: git push origin "${{ github.ref_name }}" --follow-tags
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --generate-notes \
+            --title "@elastic/charts ${{ steps.version.outputs.tag }}"
+
+      - name: Notify Slack
+        if: success()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK" ]; then
+            curl -fsSL -X POST -H 'Content-type: application/json' \
+              --data "{\"text\":\"Released @elastic/charts@${{ steps.version.outputs.version }}\"}" \
+              "$SLACK_WEBHOOK"
+          fi
