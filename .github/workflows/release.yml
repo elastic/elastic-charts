@@ -74,6 +74,8 @@ jobs:
 
   release:
     name: Release
+    needs: [checks]
+    if: ${{ needs.checks.result == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write # to be able to publish a GitHub release and push tags
