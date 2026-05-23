@@ -54,9 +54,10 @@ jobs:
         id: version
         working-directory: packages/charts
         run: |
-          NEW_VERSION=$(npm version ${{ inputs.version_bump }} --no-git-tag-version)
-          echo "version=${NEW_VERSION#v}" >> "$GITHUB_OUTPUT"
-          echo "tag=${NEW_VERSION}" >> "$GITHUB_OUTPUT"
+          npm version ${{ inputs.version_bump }} --no-git-tag-version > /dev/null
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=v${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Copy package files
         run: node ./packages/charts/scripts/move_txt_files.js
