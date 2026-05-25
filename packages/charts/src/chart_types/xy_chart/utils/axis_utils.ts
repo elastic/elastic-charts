@@ -22,6 +22,8 @@ import type { Range } from '../../../utils/domain';
 import type { AxisId } from '../../../utils/ids';
 import type { Point } from '../../../utils/point';
 import type { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
+import { getMaxLabelDimensions } from '../axes/layout/tick_labels';
+import type { TickLabelBox } from '../axes/layout/types';
 import type { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import type { Projection } from '../state/selectors/visible_ticks';
 import type { SeriesDomainsAndData } from '../state/utils/types';
@@ -43,15 +45,7 @@ export interface AxisTick {
   showGrid: boolean;
   direction: TextDirection;
   multilayerTimeAxis: boolean;
-}
-
-/** @internal */
-export interface TickLabelBounds {
-  maxLabelBboxWidth: number;
-  maxLabelBboxHeight: number;
-  maxLabelTextWidth: number;
-  maxLabelTextHeight: number;
-  isHidden: boolean;
+  bounds: TickLabelBox;
 }
 
 interface TickLabelProps {
@@ -61,6 +55,7 @@ interface TickLabelProps {
   offsetY: number;
   textOffsetX: number;
   textOffsetY: number;
+  boxTopY: number;
   horizontalAlign: Extract<
     HorizontalAlignment,
     typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Center | typeof HorizontalAlignment.Right
@@ -69,6 +64,21 @@ interface TickLabelProps {
     VerticalAlignment,
     typeof VerticalAlignment.Top | typeof VerticalAlignment.Middle | typeof VerticalAlignment.Bottom
   >;
+}
+
+function getBlockTopOffset(
+  verticalAlign: TickLabelProps['verticalAlign'],
+  blockHeight: number,
+  labelBoxHalfGirth: number,
+): number {
+  switch (verticalAlign) {
+    case VerticalAlignment.Top:
+      return -labelBoxHalfGirth;
+    case VerticalAlignment.Middle:
+      return -blockHeight / 2;
+    case VerticalAlignment.Bottom:
+      return labelBoxHalfGirth - blockHeight;
+  }
 }
 
 /** @internal */
@@ -114,19 +124,19 @@ export function computeRotatedLabelDimensions(unrotatedDims: Size, degreesRotati
   return { width: rotatedWidth, height: rotatedHeight };
 }
 
-function getUserTextOffsets(dimensions: TickLabelBounds, { x, y, reference }: TextOffset) {
+function getUserTextOffsets(axisLabelBox: TickLabelBox, tickLabelBox: TickLabelBox, { x, y, reference }: TextOffset) {
   return reference === 'global'
     ? {
         local: { x: 0, y: 0 },
         global: {
-          x: getPercentageValue(x, dimensions.maxLabelBboxWidth, 0),
-          y: getPercentageValue(y, dimensions.maxLabelBboxHeight, 0),
+          x: getPercentageValue(x, axisLabelBox.bboxWidth, 0),
+          y: getPercentageValue(y, axisLabelBox.bboxHeight, 0),
         },
       }
     : {
         local: {
-          x: getPercentageValue(x, dimensions.maxLabelTextWidth, 0),
-          y: getPercentageValue(y, dimensions.maxLabelTextHeight, 0),
+          x: getPercentageValue(x, tickLabelBox.width, 0),
+          y: getPercentageValue(y, tickLabelBox.height, 0),
         },
         global: { x: 0, y: 0 },
       };
@@ -211,21 +221,24 @@ export function getTickLabelPosition(
   pos: Position,
   rotation: number,
   axisSize: Size,
-  tickDimensions: TickLabelBounds,
+  maxLabelBox: TickLabelBox,
   showTicks: boolean,
   textOffset: TextOffset,
   textAlignment: TextAlignment,
+  labelBox: TickLabelBox = maxLabelBox,
 ): TickLabelProps {
-  const { maxLabelBboxWidth, maxLabelTextWidth, maxLabelBboxHeight, maxLabelTextHeight } = tickDimensions;
+  const { bboxWidth, width: textWidth, bboxHeight, height: axisTextHeight } = maxLabelBox;
+  const { height: blockHeight } = labelBox;
   const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
   const labelInnerPadding = innerPad(tickLabel.padding);
   const horizontalAlign = getHorizontalAlign(pos, rotation, textAlignment.horizontal);
   const verticalAlign = getVerticalAlign(pos, rotation, textAlignment.vertical);
-  const userOffsets = getUserTextOffsets(tickDimensions, textOffset);
+  const userOffsets = getUserTextOffsets(maxLabelBox, labelBox, textOffset);
   const paddedTickDimension = tickDimension + labelInnerPadding;
   const axisNetSize = (isVerticalAxis(pos) ? axisSize.width : axisSize.height) - paddedTickDimension;
-  const labelBoxHalfGirth = isHorizontalAxis(pos) ? maxLabelBboxHeight / 2 : maxLabelBboxWidth / 2;
-  const labelHalfWidth = maxLabelTextWidth / 2;
+  const labelBoxHalfGirth = isHorizontalAxis(pos) ? bboxHeight / 2 : bboxWidth / 2;
+  const labelHalfWidth = textWidth / 2;
+
   return {
     horizontalAlign,
     verticalAlign,
@@ -236,7 +249,8 @@ export function getTickLabelPosition(
     textOffsetX:
       userOffsets.local.x +
       (isHorizontalAxis(pos) && rotation === 0 ? 0 : labelHalfWidth * horizontalOffsetMultiplier[horizontalAlign]),
-    textOffsetY: userOffsets.local.y + (maxLabelTextHeight / 2) * verticalOffsetMultiplier[verticalAlign],
+    textOffsetY: userOffsets.local.y + (axisTextHeight / 2) * verticalOffsetMultiplier[verticalAlign],
+    boxTopY: userOffsets.local.y + getBlockTopOffset(verticalAlign, blockHeight, labelBoxHalfGirth),
   };
 }
 
@@ -265,7 +279,7 @@ export function getPosition(
   chartMargins: PerSideDistance,
   { axisTitle, axisPanelTitle, tickLine, tickLabel }: AxisStyle,
   axisSpec: AxisSpec,
-  { maxLabelBboxHeight, maxLabelBboxWidth }: TickLabelBounds,
+  { bboxHeight, bboxWidth }: TickLabelBox,
   smScales: SmallMultipleScales,
   { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum }: PerSideDistance,
   multilayerTimeAxis: boolean,
@@ -277,7 +291,7 @@ export function getPosition(
   const vertical = isVerticalAxis(position);
   const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
   const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
-  const maxLabelBboxGirth = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
+  const maxLabelBboxGirth = tickLabel.visible ? (vertical ? bboxWidth : bboxHeight) : 0;
   const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, multilayerTimeAxis);
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
   return {
@@ -332,7 +346,7 @@ export interface AxisGeometry {
     secondary?: boolean; // defined later per panel
     multilayerTimeAxis: boolean;
   };
-  dimension: TickLabelBounds;
+  dimension: TickLabelBox;
   visibleTicks: AxisTick[];
 }
 
@@ -349,8 +363,9 @@ export function getAxesGeometries(
 ): AxisGeometry[] {
   const panel = getPanelSize(smScales);
   return [...visibleTicksSet].reduce(
-    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, { ticks, labelBox }]: [AxisId, Projection]) => {
+    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, { ticks }]: [AxisId, Projection]) => {
       const axisSpec = axisSpecs.get(axisId);
+      const labelBox = getMaxLabelDimensions(ticks.map((tick) => tick.bounds));
       if (axisSpec) {
         const vertical = isVerticalAxis(axisSpec.position);
         const axisStyle = axesStyles.get(axisId) ?? sharedAxesStyle;
@@ -376,8 +391,8 @@ export function getAxesGeometries(
           visibleTicks: ticks,
           parentSize: { height: dimensions.height, width: dimensions.width },
           size: {
-            width: labelBox.isHidden ? 0 : vertical ? dimensions.width : panel.width,
-            height: labelBox.isHidden ? 0 : vertical ? panel.height : dimensions.height,
+            width: axisSpec.hide ? 0 : vertical ? dimensions.width : panel.width,
+            height: axisSpec.hide ? 0 : vertical ? panel.height : dimensions.height,
           },
         });
       } else {

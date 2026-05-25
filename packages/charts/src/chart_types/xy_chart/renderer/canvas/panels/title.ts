@@ -38,7 +38,7 @@ export function renderTitle(
   panel: boolean,
   {
     size: { width, height },
-    dimension: { maxLabelBboxWidth, maxLabelBboxHeight },
+    dimension: { bboxWidth, bboxHeight },
     axisSpec,
     axisStyle: { axisPanelTitle, axisTitle, tickLabel, tickLine },
     panelTitle,
@@ -59,7 +59,7 @@ export function renderTitle(
   const horizontal = isHorizontalAxis(position);
   const font: TextFont = { ...titleFontDefaults, ...axisTitleToUse, textColor: axisTitleToUse.fill };
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
+  const maxLabelBoxGirth = horizontal ? bboxHeight : bboxWidth;
   const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, multilayerTimeAxis);
   const labelPaddingSum = innerPad(tickLabel.padding) + outerPad(tickLabel.padding);
   const labelSize = tickLabel.visible ? allLayersGirth + labelPaddingSum : 0;

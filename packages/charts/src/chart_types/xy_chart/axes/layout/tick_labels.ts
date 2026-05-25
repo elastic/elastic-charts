@@ -8,6 +8,7 @@
 
 import type { TickLabelBox } from './types';
 import type { Font } from '../../../../common/text_utils';
+import type { ScaleBand, ScaleContinuous } from '../../../../scales';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position } from '../../../../utils/common';
 import { wrapText } from '../../../../utils/text/wrap';
@@ -30,18 +31,20 @@ export const createTickMeasurer = (
     textColor: 'black',
   };
 
-  const maxLines = axisStyle.tickLabel.wrapLines ?? 1;
+  const maxLines = axisStyle.tickLabel.wrapLines ?? 2; // TODO(bia): check this again
   const lineHeight = axisStyle.tickLabel.lineHeight ?? 1.2;
 
   return (text: string, maxLineLength: number): TickLabelBox => {
     const formatted = format(text);
     const wrapped = wrapText(formatted, font, axisStyle.tickLabel.fontSize, maxLineLength, maxLines, measure, locale);
     const { width, height } = wrapped.reduce(
-      (acc, line) => {
-        acc.width = Math.max(acc.width, measure(line, font, axisStyle.tickLabel.fontSize).width);
+      (acc, line, index) => {
+        const measured = measure(line, font, axisStyle.tickLabel.fontSize);
+        acc.width = Math.max(acc.width, measured.width);
+        acc.height += index < wrapped.length - 1 ? lineHeight * axisStyle.tickLabel.fontSize : measured.height;
         return acc;
       },
-      { width: 0, height: wrapped.length * lineHeight * axisStyle.tickLabel.fontSize },
+      { width: 0, height: 0 },
     );
     const { width: bboxWidth, height: bboxHeight } = computeRotatedLabelDimensions(
       { width, height },
@@ -52,17 +55,19 @@ export const createTickMeasurer = (
 };
 
 /** @internal */
-export const getMaxLineLength = (position: Position, theme: Theme) => {
-  switch (position) {
-    case Position.Top:
-      return theme.axes.maxSize?.top ?? Infinity;
-    case Position.Bottom:
-      return theme.axes.maxSize?.bottom ?? Infinity;
-    case Position.Left:
-      return theme.axes.maxSize?.left ?? Infinity;
-    case Position.Right:
-      return theme.axes.maxSize?.right ?? Infinity;
+export type TickLabelMeasurer = ReturnType<typeof createTickMeasurer>;
+
+/** @internal */
+export const getMaxLineLength = (position: Position, theme: Theme, scale: ScaleBand | ScaleContinuous) => {
+  if (position === Position.Top || position === Position.Bottom) {
+    return scale.bandwidth > 0 ? scale.step : Infinity;
   }
+
+  if (position === Position.Left) {
+    return theme.axes.maxSize?.left ?? Infinity;
+  }
+
+  return theme.axes.maxSize?.right ?? Infinity;
 };
 
 /** @internal */

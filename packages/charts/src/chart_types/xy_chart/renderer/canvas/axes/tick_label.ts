@@ -39,21 +39,34 @@ export function renderTickLabel(
     showTicks,
     labelStyle.offset,
     labelStyle.alignment,
+    tick.bounds,
   );
 
   const center = { x: tickLabelProps.x + tickLabelProps.offsetX, y: tickLabelProps.y + tickLabelProps.offsetY };
 
   if (debug) {
-    const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth: width, maxLabelTextHeight: height } = dimension;
-    // full text container
-    renderDebugRectCenterRotated(ctx, center, { ...center, width, height }, undefined, undefined, labelStyle.rotation);
-    // rotated text container
+    const { width, height, bboxWidth, bboxHeight } = tick.bounds;
+    const textBlockCenter = {
+      x: center.x,
+      y: center.y + tickLabelProps.boxTopY + height / 2,
+    };
+    renderDebugRectCenterRotated(
+      ctx,
+      textBlockCenter,
+      { ...textBlockCenter, width, height },
+      undefined,
+      undefined,
+      labelStyle.rotation,
+    );
     if (labelStyle.rotation % 90 !== 0) {
-      renderDebugRectCenterRotated(ctx, center, { ...center, width: maxLabelBboxWidth, height: maxLabelBboxHeight });
+      renderDebugRectCenterRotated(ctx, textBlockCenter, { ...textBlockCenter, width: bboxWidth, height: bboxHeight });
     }
   }
 
   const tickOnTheSide = tick.multilayerTimeAxis && Number.isFinite(tick.layer);
+  const textOffsetX = tickLabelProps.textOffsetX + (tickOnTheSide ? TICK_TO_LABEL_GAP : 0);
+  const lineHeight = (labelStyle.lineHeight ?? 1.2) * labelStyle.fontSize;
+  const layerOffsetY = (tick.layer || 0) * layerGirth * (position === Position.Top ? -1 : 1);
 
   const font: TextFont = {
     fontFamily: labelStyle.fontFamily,
@@ -63,20 +76,22 @@ export function renderTickLabel(
     textColor: labelStyle.fill,
     fontSize: labelStyle.fontSize,
     align: tickLabelProps.horizontalAlign,
-    baseline: tickLabelProps.verticalAlign,
+    baseline: 'top',
   };
 
-  const lines = withTextMeasure((measureText) => {
-    return wrapText(
-      tick.label,
-      font,
-      labelStyle.fontSize,
-      labelStyle.lineLength ?? Infinity,
-      labelStyle.wrapLines ?? 1,
-      measureText,
-      locale,
-    );
-  });
+  const lines =
+    tick.bounds.lines ??
+    withTextMeasure((measureText) => {
+      return wrapText(
+        tick.label,
+        font,
+        labelStyle.fontSize,
+        tick.bounds.width,
+        labelStyle.wrapLines ?? 1,
+        measureText,
+        locale,
+      );
+    });
 
   lines.forEach((line, i) => {
     renderText(
@@ -85,10 +100,8 @@ export function renderTickLabel(
       line,
       font,
       labelStyle.rotation,
-      tickLabelProps.textOffsetX + (tickOnTheSide ? TICK_TO_LABEL_GAP : 0),
-      tickLabelProps.textOffsetY +
-        (tick.layer || 0) * layerGirth * (position === Position.Top ? -1 : 1) +
-        i * (labelStyle.lineHeight ?? 1.2) * labelStyle.fontSize,
+      textOffsetX,
+      tickLabelProps.boxTopY + layerOffsetY + i * lineHeight,
       1,
       tick.direction,
     );

@@ -106,7 +106,7 @@ export function multilayerAxisEntry(
       const minLabelGap = 4;
 
       const lastTick = entry.ticks.at(-1);
-      if (lastTick && lastTick.position + entry.labelBox.maxLabelBboxWidth > range[1]) {
+      if (lastTick && lastTick.position + lastTick.bounds.bboxWidth > range[1]) {
         lastTick.label = '';
       }
 
@@ -118,20 +118,13 @@ export function multilayerAxisEntry(
             (tick, i, a) =>
               i > 0 ||
               !a[1] ||
-              a[1].domainClampedPosition - tick.domainClampedPosition >= entry.labelBox.maxLabelBboxWidth + minLabelGap,
+              a[1].domainClampedPosition - tick.domainClampedPosition >= tick.bounds.bboxWidth + minLabelGap,
           ),
         ),
       };
     },
     {
       ticks: [],
-      labelBox: {
-        maxLabelBboxWidth: 0,
-        maxLabelBboxHeight: 0,
-        maxLabelTextWidth: 0,
-        maxLabelTextHeight: 0,
-        isHidden: true,
-      },
       scale,
     },
   );

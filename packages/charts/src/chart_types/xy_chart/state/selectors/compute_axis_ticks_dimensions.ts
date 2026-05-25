@@ -14,27 +14,18 @@ import { getAxesStylesSelector } from './get_axis_styles';
 import { getBarPaddingsSelector } from './get_bar_paddings';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
-import type { Font } from '../../../../common/text_utils';
 import type { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import type { AxisId } from '../../../../utils/ids';
 import { Logger } from '../../../../utils/logger';
-import { wrapText } from '../../../../utils/text/wrap';
 import type { AxisStyle, GridLineStyle } from '../../../../utils/themes/theme';
 import { createTickMeasurer, getMaxLineLength } from '../../axes/layout/tick_labels';
 import type { TickLabelBox } from '../../axes/layout/types';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
-import type { TickLabelBounds } from '../../utils/axis_utils';
-import {
-  computeRotatedLabelDimensions,
-  defaultTickFormatter,
-  getScaleForAxisSpec,
-  isXDomain,
-} from '../../utils/axis_utils';
+import { defaultTickFormatter, getScaleForAxisSpec, isXDomain } from '../../utils/axis_utils';
 import type { AxisSpec, TickFormatter } from '../../utils/specs';
 
 /** @internal */
@@ -112,59 +103,6 @@ export const getJoinedVisibleAxesData = createCustomCachedSelector(
 );
 
 /** @internal */
-export const getLabelBox = (
-  axesStyle: AxisStyle,
-  ticks: Array<string | number>,
-  labelFormatter: AxisLabelFormatter,
-  textMeasure: TextMeasure,
-  axisSpec: AxisSpec,
-  gridLine: GridLineStyle,
-  locale: string,
-): TickLabelBounds => {
-  const font: Font = {
-    fontStyle: axesStyle.tickLabel.fontStyle ?? 'normal',
-    fontFamily: axesStyle.tickLabel.fontFamily,
-    fontWeight: 'normal',
-    fontVariant: 'normal',
-    textColor: 'black',
-  };
-
-  return {
-    ...(axesStyle.tickLabel.visible ? ticks.map(labelFormatter) : []).reduce(
-      (sizes, labelText) => {
-        const text = wrapText(
-          labelText,
-          font,
-          axesStyle.tickLabel.fontSize,
-          Infinity,
-          axesStyle.tickLabel.wrapLines ?? 1,
-          textMeasure,
-          locale,
-        );
-
-        const textWidth = text.reduce(
-          (width, line) => Math.max(textMeasure(line, font, axesStyle.tickLabel.fontSize).width, width),
-          0,
-        );
-        const textHeight = text.length * (axesStyle.tickLabel.lineHeight ?? 1.2) * axesStyle.tickLabel.fontSize;
-        const rotatedBbox = computeRotatedLabelDimensions(
-          { width: textWidth, height: textHeight },
-          axesStyle.tickLabel.rotation,
-        );
-
-        sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
-        sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
-        sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(textWidth));
-        sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(textHeight));
-        return sizes;
-      },
-      { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
-    ),
-    isHidden: axisSpec.hide && gridLine.visible,
-  };
-};
-
-/** @internal */
 export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
   [getJoinedVisibleAxesData, getSettingsSpecSelector, getChartThemeSelector],
   (joinedAxesData, { locale }, theme): AxesTicksDimensions =>
@@ -173,7 +111,8 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
         (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, labelFormatter }]) => {
           const tickMeasurer = createTickMeasurer(axesStyle, textMeasure, labelFormatter, locale);
           const ticks = scale.ticks().map(labelFormatter);
-          const maxLineLength = getMaxLineLength(axisSpec.position, theme);
+
+          const maxLineLength = getMaxLineLength(axisSpec.position, theme, scale);
 
           const tickDimensions = ticks.map((tick) => tickMeasurer(tick, maxLineLength));
 

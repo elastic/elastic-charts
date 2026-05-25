@@ -23,24 +23,22 @@ const data = [
 ];
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const lineLength = number('lineLength', 100, { min: 0, max: 100, step: 1 });
   const lineHeight = number('lineHeight', 1.2, { min: 0, max: 2, step: 0.1 });
-  const wrapLines = number('wrapLines', 1, { min: 0, max: 10, step: 1 });
+  const wrapLines = number('wrapLines', 2, { min: 1, max: 10, step: 1 });
   const rotation = number('rotation', 0, { min: 0, max: 90, step: 10 });
-  const alignmentHorizontal = customKnobs.enum.horizontalTextAlignment('Alignment Horizontal');
-  const alignmentVertical = customKnobs.enum.verticalTextAlignment('Alignment Vertical');
+  const alignmentHorizontal = customKnobs.enum.horizontalTextAlignment('Alignment Horizontal', 'near');
+  const alignmentVertical = customKnobs.enum.verticalTextAlignment('Alignment Vertical', 'near');
 
   return (
     <Chart title={title} description={description}>
       <Settings debug={boolean('debug', true)} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"
-        position={Position.Bottom}
+        position={Position.Top}
         title="Bottom axis"
         showOverlappingTicks={boolean('showOverlappingTicks', true)}
         style={{
           tickLabel: {
-            lineLength,
             lineHeight,
             wrapLines,
             rotation,
@@ -51,7 +49,23 @@ export const Example: ChartsStory = (_, { title, description }) => {
           },
         }}
       />
-      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+      <Axis
+        id="left2"
+        title="Left axis"
+        position={Position.Left}
+        tickFormat={(d) => Number(d).toFixed(2)}
+        style={{
+          maxSize: {
+            left: 5,
+          },
+          tickLabel: {
+            alignment: {
+              horizontal: 'right',
+              vertical: 'middle',
+            },
+          },
+        }}
+      />
       <BarSeries
         id="bars"
         xScaleType={ScaleType.Ordinal}
