@@ -67,7 +67,6 @@ export function generateTicks(
   scale: ScaleBand | ScaleContinuous,
   ticks: (number | string)[],
   offset: number,
-  labelFormatter: AxisLabelFormatter,
   measureTickLabel: TickLabelMeasurer,
   maxLineLength: number,
   layer: number | undefined,
@@ -78,26 +77,28 @@ export function generateTicks(
   const getDirection = getDirectionFn(scale);
   const isContinuous = isContinuousScale(scale);
   return ticks.reduce<AxisTick[]>((acc, value, i) => {
+    if (typeof value === 'number' && !isFiniteNumber(value)) return acc;
     const domainClampedValue = isContinuous && typeof value === 'number' ? Math.max(value, scale.domain[0]) : value;
-    const label = labelFormatter(value);
+    if (typeof domainClampedValue === 'number' && !isFiniteNumber(domainClampedValue)) return acc;
     const position = scale.scale(value) + offset;
     const domainClampedPosition = scale.scale(domainClampedValue) + offset;
 
     if (!isFiniteNumber(position) || !isFiniteNumber(domainClampedPosition)) return acc;
+    const bounds = measureTickLabel(domainClampedValue, maxLineLength);
     if (layer === 0 && i === 0 && position < domainClampedPosition) return acc;
 
     acc.push({
       value,
       domainClampedValue,
-      label,
+      label: bounds.formatted ?? '',
       position,
       domainClampedPosition,
       layer,
       detailedLayer,
       showGrid,
-      direction: getDirection(label),
+      direction: getDirection(bounds.formatted ?? ''),
       multilayerTimeAxis,
-      bounds: measureTickLabel(label, maxLineLength),
+      bounds,
     });
     return acc;
   }, []);
@@ -108,7 +109,6 @@ function getVisibleTicks(
   measureTickLabel: TickLabelMeasurer,
   maxLineLength: number,
   totalBarsInCluster: number,
-  labelFormatter: AxisLabelFormatter,
   rotationOffset: number,
   scale: ScaleBand | ScaleContinuous,
   enableHistogramMode: boolean,
@@ -137,39 +137,43 @@ function getVisibleTicks(
   const firstTickValue = ticks[0];
   const allTicks: AxisTick[] =
     makeRaster && isSingleValueScale && typeof firstTickValue === 'number'
-      ? [
-          {
-            value: firstTickValue,
-            domainClampedValue: firstTickValue,
-            label: labelFormatter(firstTickValue),
-            position: (scale.scale(firstTickValue) || 0) + offset,
-            domainClampedPosition: (scale.scale(firstTickValue) || 0) + offset,
-            layer: undefined, // no multiple layers with `singleValueScale`s
-            detailedLayer: 0,
-            direction: 'rtl',
-            showGrid,
-            multilayerTimeAxis,
-            bounds: measureTickLabel(labelFormatter(firstTickValue), maxLineLength),
-          },
-          {
-            value: firstTickValue + scale.minInterval,
-            domainClampedValue: firstTickValue + scale.minInterval,
-            label: labelFormatter(firstTickValue + scale.minInterval),
-            position: scale.bandwidth + halfPadding * 2,
-            domainClampedPosition: scale.bandwidth + halfPadding * 2,
-            layer: undefined, // no multiple layers with `singleValueScale`s
-            detailedLayer: 0,
-            direction: 'rtl',
-            showGrid,
-            multilayerTimeAxis,
-            bounds: measureTickLabel(labelFormatter(firstTickValue + scale.minInterval), maxLineLength),
-          },
-        ]
+      ? (() => {
+          const firstBounds = measureTickLabel(firstTickValue, maxLineLength);
+          const secondValue = firstTickValue + scale.minInterval;
+          const secondBounds = measureTickLabel(secondValue, maxLineLength);
+          return [
+            {
+              value: firstTickValue,
+              domainClampedValue: firstTickValue,
+              label: firstBounds.formatted ?? '',
+              position: (scale.scale(firstTickValue) || 0) + offset,
+              domainClampedPosition: (scale.scale(firstTickValue) || 0) + offset,
+              layer: undefined, // no multiple layers with `singleValueScale`s
+              detailedLayer: 0,
+              direction: 'rtl',
+              showGrid,
+              multilayerTimeAxis,
+              bounds: firstBounds,
+            },
+            {
+              value: secondValue,
+              domainClampedValue: secondValue,
+              label: secondBounds.formatted ?? '',
+              position: scale.bandwidth + halfPadding * 2,
+              domainClampedPosition: scale.bandwidth + halfPadding * 2,
+              layer: undefined, // no multiple layers with `singleValueScale`s
+              detailedLayer: 0,
+              direction: 'rtl',
+              showGrid,
+              multilayerTimeAxis,
+              bounds: secondBounds,
+            },
+          ];
+        })()
       : generateTicks(
           scale,
           ticks,
           offset,
-          labelFormatter,
           measureTickLabel,
           maxLineLength,
           layer,
@@ -212,7 +216,6 @@ function getVisibleTickSet(
   layer: number | undefined,
   detailedLayer: number,
   ticks: (number | string)[],
-  labelFormatter: AxisLabelFormatter,
   adaptiveTickCount: boolean,
   theme: Theme,
   multilayerTimeAxis = false,
@@ -229,7 +232,6 @@ function getVisibleTickSet(
     measureTickLabel,
     maxLineLength,
     groupCount,
-    labelFormatter,
     rotationOffset,
     scale,
     histogramMode,
@@ -288,7 +290,6 @@ export function computeVisibleTickSets(
             layer,
             detailedLayer,
             ticks,
-            labelFormatter,
             adaptiveTickCount,
             theme,
             multilayerTimeAxis,

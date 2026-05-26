@@ -110,11 +110,9 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
       return [...joinedAxesData].reduce<AxesTicksDimensions>(
         (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, labelFormatter }]) => {
           const tickMeasurer = createTickMeasurer(axesStyle, textMeasure, labelFormatter, locale);
-          const ticks = scale.ticks().map(labelFormatter);
-
           const maxLineLength = getMaxLineLength(axisSpec.position, theme, scale);
 
-          const tickDimensions = ticks.map((tick) => tickMeasurer(tick, maxLineLength));
+          const tickDimensions = scale.ticks().map((tick) => tickMeasurer(tick, maxLineLength));
 
           axesTicksDimensions.set(id, tickDimensions);
           return axesTicksDimensions;

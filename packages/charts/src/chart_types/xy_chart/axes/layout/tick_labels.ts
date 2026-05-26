@@ -34,8 +34,8 @@ export const createTickMeasurer = (
   const maxLines = axisStyle.tickLabel.wrapLines ?? 2; // TODO(bia): check this again
   const lineHeight = axisStyle.tickLabel.lineHeight ?? 1.2;
 
-  return (text: string, maxLineLength: number): TickLabelBox => {
-    const formatted = format(text);
+  return (value: string | number, maxLineLength: number): TickLabelBox => {
+    const formatted = format(value);
     const wrapped = wrapText(formatted, font, axisStyle.tickLabel.fontSize, maxLineLength, maxLines, measure, locale);
     const { width, height } = wrapped.reduce(
       (acc, line, index) => {
@@ -50,7 +50,7 @@ export const createTickMeasurer = (
       { width, height },
       axisStyle.tickLabel.rotation,
     );
-    return { width, height, bboxWidth, bboxHeight, lines: wrapped };
+    return { formatted, width, height, bboxWidth, bboxHeight, lines: wrapped };
   };
 };
 

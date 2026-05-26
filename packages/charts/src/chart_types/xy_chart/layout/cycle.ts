@@ -26,6 +26,13 @@ import type { AxisSpec } from '../utils/specs';
 
 const MAX_ITERATIONS = 3;
 const LAYOUT_EPSILON_PX = 0.5;
+const MIN_PLOT_SIZE_PX = 1;
+
+const plotAreaForProjection = (chartDimensions: Dimensions): Dimensions => ({
+  ...chartDimensions,
+  width: Math.max(chartDimensions.width, MIN_PLOT_SIZE_PX),
+  height: Math.max(chartDimensions.height, MIN_PLOT_SIZE_PX),
+});
 
 /** @internal */
 export type ChartLayout = {
@@ -41,6 +48,7 @@ const projectTicks = (
   chartDimensions: Dimensions,
   textMeasure: TextMeasure,
 ) => {
+  const plotArea = plotAreaForProjection(chartDimensions);
   return computeVisibleTickSets(
     textMeasure,
     settings,
@@ -48,16 +56,8 @@ const projectTicks = (
     axes.data,
     scales.domains,
     {
-      horizontal: getSmallMultiplesScale(
-        sm.domains.smHDomain,
-        chartDimensions.width,
-        sm.spec?.style?.horizontalPanelPadding,
-      ),
-      vertical: getSmallMultiplesScale(
-        sm.domains.smVDomain,
-        chartDimensions.height,
-        sm.spec?.style?.verticalPanelPadding,
-      ),
+      horizontal: getSmallMultiplesScale(sm.domains.smHDomain, plotArea.width, sm.spec?.style?.horizontalPanelPadding),
+      vertical: getSmallMultiplesScale(sm.domains.smVDomain, plotArea.height, sm.spec?.style?.verticalPanelPadding),
     },
     bars.groupsCount,
     bars.enableHistogramMode,
@@ -119,21 +119,25 @@ export function computeChartLayout(params: LayoutParameters): ChartLayout {
 
     const axesDimensions = getAxesDimensions(theme, initialAxes, sm.spec, scales.configs.x.type, settings.rotation);
 
-    let chartArea = computeChartArea(container, axesDimensions, theme);
-    let projections = projectTicks(params, chartArea.chartDimensions, textMeasure);
-
-    const tickDimensions = projectionToTickDimensions(projections);
-    const axes = axesConfig.specs.map((spec) => ({
-      spec,
-      style: axesConfig.styles.get(spec.id) ?? theme.axes,
-      tickDimensions: tickDimensions.get(spec.id) ?? [],
-      isHidden: spec.hide,
-    }));
-
-    let margins = getAxesDimensions(theme, axes, sm.spec, scales.configs.x.type, settings.rotation);
+    let margins = axesDimensions;
+    let chartArea = computeChartArea(container, margins, theme);
+    let projections: Map<AxisId, Projection> = new Map();
 
     for (let i = 0; i < MAX_ITERATIONS; i++) {
       const nextChartArea = computeChartArea(container, margins, theme);
+      if (
+        nextChartArea.chartDimensions.width < MIN_PLOT_SIZE_PX ||
+        nextChartArea.chartDimensions.height < MIN_PLOT_SIZE_PX
+      ) {
+        if (projections.size > 0) {
+          break;
+        }
+        return {
+          dimensions: chartArea,
+          ticks: projectTicks(params, plotAreaForProjection(chartArea.chartDimensions), textMeasure),
+          meta: { iterations: 0 },
+        };
+      }
       const nextProjections = projectTicks(params, nextChartArea.chartDimensions, textMeasure);
       const nextTickDimensions = projectionToTickDimensions(nextProjections);
       const nextAxes = axesConfig.specs.map((spec) => ({

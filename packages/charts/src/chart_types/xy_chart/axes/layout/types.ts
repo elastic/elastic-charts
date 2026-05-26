@@ -10,6 +10,7 @@ import type { WrapTextLines } from '../../../../utils/text/wrap';
 
 /** @internal */
 export interface TickLabelBox {
+  formatted?: string;
   width: number;
   height: number;
   bboxWidth: number;

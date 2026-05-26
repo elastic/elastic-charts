@@ -32,7 +32,19 @@ import type { GroupId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import type { AxisStyle, TextOffset } from '../../../utils/themes/theme';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
+import type { TickLabelBox } from '../axes/layout/types';
 import { generateTicks } from '../axes/visible_ticks';
+import type { AxisLabelFormatter } from '../state/selectors/axis_tick_formatter';
+
+const measureTickLabels =
+  (format: AxisLabelFormatter) =>
+  (value: string | number, _maxLineLength: number): TickLabelBox => ({
+    label: format(value),
+    width: 0,
+    height: 0,
+    bboxWidth: 0,
+    bboxHeight: 0,
+  });
 
 const alignmentsDefault = { horizontal: HorizontalAlignment.Near, vertical: VerticalAlignment.Middle };
 
@@ -831,7 +843,8 @@ describe('Axis computational utils', () => {
       scale,
       scale.ticks(),
       0,
-      (v: any) => formatter(v, tickFormatOption),
+      measureTickLabels((v) => formatter(v, tickFormatOption)),
+      Infinity,
       0,
       0,
       true,
@@ -864,7 +877,17 @@ describe('Axis computational utils', () => {
     });
     const scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const tickFormatOption = { timeZone: 'utc+1' };
-    const result = generateTicks(scale, scale.ticks(), 0, (v) => tickFormat(v, tickFormatOption), 0, 0, true, false);
+    const result = generateTicks(
+      scale,
+      scale.ticks(),
+      0,
+      measureTickLabels((v) => tickFormat(v, tickFormatOption)),
+      Infinity,
+      0,
+      0,
+      true,
+      false,
+    );
 
     expect(result).toHaveLength(17);
     expect(result).toMatchObject([
@@ -894,7 +917,7 @@ describe('Axis computational utils', () => {
     });
     const scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 10] });
     const ticks = [1, 2, 3, 4, 5];
-    const result = generateTicks(scale, ticks, 0, String, 0, 0, true, false);
+    const result = generateTicks(scale, ticks, 0, measureTickLabels(String), Infinity, 0, 0, true, false);
 
     expect(result).toHaveLength(3);
     expect(result).toMatchObject([
