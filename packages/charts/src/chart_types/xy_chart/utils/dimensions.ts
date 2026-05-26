@@ -8,7 +8,7 @@
 
 import type { AxisSpec } from './specs';
 import type { SettingsSpec, SmallMultiplesSpec } from '../../../specs';
-import type { ChartDimensions, Dimensions } from '../../../utils/dimensions';
+import type { ChartDimensions, Dimensions, PerSideDistance } from '../../../utils/dimensions';
 import type { AxisId } from '../../../utils/ids';
 import type { Theme, AxisStyle } from '../../../utils/themes/theme';
 import { getAxesDimensions } from '../axes/layout/dimensions';
@@ -38,16 +38,25 @@ export function computeChartDimensions(
   }));
   const axesDimensions = getAxesDimensions(theme, axes, smSpec, scaleConfigs.x.type, settingsSpec.rotation);
 
-  const chartWidth = parentDimensions.width - axesDimensions.left - axesDimensions.right;
-  const chartHeight = parentDimensions.height - axesDimensions.top - axesDimensions.bottom;
-  const pad = theme.chartPaddings;
+  return computeChartArea(parentDimensions, axesDimensions, theme);
+}
+
+/** @internal */
+export type AxesPerSide = PerSideDistance & { margin: { left: number } };
+
+/** @internal */
+export function computeChartArea(container: Dimensions, axes: AxesPerSide, theme: Theme) {
+  const padding = theme.chartPaddings;
+  const width = container.width - axes.left - axes.right;
+  const height = container.height - axes.top - axes.bottom;
+
   return {
-    leftMargin: axesDimensions.margin.left,
+    leftMargin: axes.margin.left,
     chartDimensions: {
-      top: axesDimensions.top + pad.top,
-      left: axesDimensions.left + pad.left,
-      width: Math.max(0, chartWidth - pad.left - pad.right),
-      height: Math.max(0, chartHeight - pad.top - pad.bottom),
+      top: axes.top + padding.top,
+      left: axes.left + padding.left,
+      width: Math.max(0, width - padding.left - padding.right),
+      height: Math.max(0, height - padding.top - padding.bottom),
     },
   };
 }

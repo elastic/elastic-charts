@@ -10,7 +10,7 @@ import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getAxesStylesSelector } from './get_axis_styles';
 import { axisSpecsLookupSelector } from './get_specs';
-import { getVisibleTickSetsSelector } from './visible_ticks';
+import { getVisibleTickSetsSelector } from './get_visible_tick_sets_selector';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';

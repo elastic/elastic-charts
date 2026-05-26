@@ -32,7 +32,7 @@ import type { GroupId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import type { AxisStyle, TextOffset } from '../../../utils/themes/theme';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
-import { generateTicks } from '../state/selectors/visible_ticks';
+import { generateTicks } from '../axes/visible_ticks';
 
 const alignmentsDefault = { horizontal: HorizontalAlignment.Near, vertical: VerticalAlignment.Middle };
 

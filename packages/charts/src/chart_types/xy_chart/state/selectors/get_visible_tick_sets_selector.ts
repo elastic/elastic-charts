@@ -10,7 +10,7 @@ import { computeChartLayoutSelector } from './compute_chart_layout';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 /** @internal */
-export const computeChartDimensionsSelector = createCustomCachedSelector(
+export const getVisibleTickSetsSelector = createCustomCachedSelector(
   [computeChartLayoutSelector],
-  (layout) => layout.dimensions,
+  (chartLayout) => chartLayout.ticks,
 );

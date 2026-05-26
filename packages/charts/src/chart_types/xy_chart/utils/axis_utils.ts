@@ -24,8 +24,8 @@ import type { Point } from '../../../utils/point';
 import type { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
 import { getMaxLabelDimensions } from '../axes/layout/tick_labels';
 import type { TickLabelBox } from '../axes/layout/types';
+import type { Projection } from '../axes/visible_ticks';
 import type { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
-import type { Projection } from '../state/selectors/visible_ticks';
 import type { SeriesDomainsAndData } from '../state/utils/types';
 
 type TickValue = number | string;
