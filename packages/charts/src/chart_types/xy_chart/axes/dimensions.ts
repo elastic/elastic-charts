@@ -7,22 +7,17 @@
  */
 
 import { getMaxLabelDimensions } from './tick_labels';
-import type { TickLabelBox } from './types';
-import type { ScaleType } from '../../../../scales/constants';
-import type { SmallMultiplesSpec } from '../../../../specs';
-import type { Rotation } from '../../../../utils/common';
-import { Position } from '../../../../utils/common';
-import type { PerSideDistance } from '../../../../utils/dimensions';
-import { innerPad, outerPad } from '../../../../utils/dimensions';
-import type { AxisStyle, Theme } from '../../../../utils/themes/theme';
-import { isVerticalAxis } from '../../utils/axis_type_utils';
-import {
-  getAllAxisLayersGirth,
-  getTitleDimension,
-  isMultilayerTimeAxis,
-  shouldShowTicks,
-} from '../../utils/axis_utils';
-import type { AxisSpec } from '../../utils/specs';
+import type { ScaleType } from '../../../scales/constants';
+import type { SmallMultiplesSpec } from '../../../specs';
+import type { Rotation } from '../../../utils/common';
+import { Position } from '../../../utils/common';
+import type { PerSideDistance } from '../../../utils/dimensions';
+import { innerPad, outerPad } from '../../../utils/dimensions';
+import type { AxisStyle, Theme } from '../../../utils/themes/theme';
+import { isVerticalAxis } from '../utils/axis_type_utils';
+import type { AxisTick } from '../utils/axis_utils';
+import { getAllAxisLayersGirth, getTitleDimension, isMultilayerTimeAxis, shouldShowTicks } from '../utils/axis_utils';
+import type { AxisSpec } from '../utils/specs';
 
 /** @internal */
 export const measureAxisStatic = (spec: AxisSpec, style: AxisStyle, hasPanelTitle: boolean = false): number => {
@@ -40,7 +35,7 @@ export const getAxesDimensions = (
   axes: Array<{
     spec: AxisSpec;
     style: AxisStyle;
-    tickDimensions: TickLabelBox[];
+    ticks: AxisTick['layout'][];
     isHidden?: boolean;
   }>,
   smSpec: SmallMultiplesSpec | null,
@@ -48,14 +43,14 @@ export const getAxesDimensions = (
   rotation: Rotation,
 ): PerSideDistance & { margin: { left: number } } => {
   const sizes = axes.reduce(
-    (acc, { spec, style, tickDimensions, isHidden }) => {
+    (acc, { spec, style, ticks, isHidden }) => {
       if (isHidden) return acc;
       const isVertical = isVerticalAxis(spec.position);
 
       const hasPanelTitle = isVertical ? smSpec?.splitVertically : smSpec?.splitHorizontally;
       const staticBand = measureAxisStatic(spec, style, Boolean(hasPanelTitle));
 
-      const maxLabelDimensions = getMaxLabelDimensions(tickDimensions);
+      const maxLabelDimensions = getMaxLabelDimensions(ticks);
 
       const labelLayersBand = style.tickLabel.visible
         ? getAllAxisLayersGirth(
@@ -84,11 +79,11 @@ export const getAxesDimensions = (
 
       // space for labels, but coarse estimation. adjust after placing ticks?
       if (isVertical) {
-        acc.overflow.top += (tickDimensions.at(-1)?.bboxHeight ?? 0) / 2;
-        acc.overflow.bottom += (tickDimensions.at(0)?.bboxHeight ?? 0) / 2;
+        acc.overflow.top += (ticks.at(-1)?.bboxHeight ?? 0) / 2;
+        acc.overflow.bottom += (ticks.at(0)?.bboxHeight ?? 0) / 2;
       } else {
-        acc.overflow.left += (tickDimensions.at(-1)?.bboxWidth ?? 0) / 2;
-        acc.overflow.right += (tickDimensions.at(0)?.bboxWidth ?? 0) / 2;
+        acc.overflow.left += (ticks.at(-1)?.bboxWidth ?? 0) / 2;
+        acc.overflow.right += (ticks.at(0)?.bboxWidth ?? 0) / 2;
       }
 
       return acc;

@@ -22,14 +22,14 @@ import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calcula
 import type { AxisId } from '../../../../utils/ids';
 import { Logger } from '../../../../utils/logger';
 import type { AxisStyle, GridLineStyle } from '../../../../utils/themes/theme';
-import { createTickMeasurer, getMaxLineLength } from '../../axes/layout/tick_labels';
-import type { TickLabelBox } from '../../axes/layout/types';
+import { createTickLayout, getMaxLineLength } from '../../axes/tick_labels';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
+import type { AxisTick } from '../../utils/axis_utils';
 import { defaultTickFormatter, getScaleForAxisSpec, isXDomain } from '../../utils/axis_utils';
 import type { AxisSpec, TickFormatter } from '../../utils/specs';
 
 /** @internal */
-export type AxesTicksDimensions = Map<AxisId, TickLabelBox[]>;
+export type AxesTicksDimensions = Map<AxisId, AxisTick['layout'][]>;
 
 const getScaleFunction = createCustomCachedSelector(
   [
@@ -103,16 +103,16 @@ export const getJoinedVisibleAxesData = createCustomCachedSelector(
 );
 
 /** @internal */
-export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
+export const computeBaselineAxisTicksDimensionsSelector = createCustomCachedSelector(
   [getJoinedVisibleAxesData, getSettingsSpecSelector, getChartThemeSelector],
   (joinedAxesData, { locale }, theme): AxesTicksDimensions =>
     withTextMeasure((textMeasure): AxesTicksDimensions => {
       return [...joinedAxesData].reduce<AxesTicksDimensions>(
         (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, labelFormatter }]) => {
-          const tickMeasurer = createTickMeasurer(axesStyle, textMeasure, labelFormatter, locale);
+          const layoutTickLabel = createTickLayout(axesStyle, textMeasure, locale);
           const maxLineLength = getMaxLineLength(axisSpec.position, theme, scale);
 
-          const tickDimensions = scale.ticks().map((tick) => tickMeasurer(tick, maxLineLength));
+          const tickDimensions = scale.ticks().map((tick) => layoutTickLabel(labelFormatter(tick), maxLineLength));
 
           axesTicksDimensions.set(id, tickDimensions);
           return axesTicksDimensions;

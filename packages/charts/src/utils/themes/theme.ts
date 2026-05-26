@@ -175,8 +175,10 @@ export interface AxisStyle {
        */
       offset: TextOffset;
       alignment: TextAlignment;
-      wrapLines?: number;
-      lineHeight?: number;
+      /** Max number of lines for wrapped tick labels. Set to 1 to disable wrapping. */
+      wrapLines: number;
+      /** Line height multiplier applied to `fontSize` for wrapped tick labels. */
+      lineHeight: number;
     };
   tickLine: TickStyle;
   maxSize: {

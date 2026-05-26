@@ -7,10 +7,10 @@
  */
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getAxesStylesSelector } from './get_axis_styles';
 import { axisSpecsLookupSelector } from './get_specs';
-import { getVisibleTickSetsSelector } from './get_visible_tick_sets_selector';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -25,9 +25,20 @@ export const computeAxesGeometriesSelector = createCustomCachedSelector(
     axisSpecsLookupSelector,
     getAxesStylesSelector,
     computeSmallMultipleScalesSelector,
-    getVisibleTickSetsSelector,
+    computeChartLayoutSelector,
     getScaleConfigsFromSpecsSelector,
     getSettingsSpecSelector,
   ],
-  getAxesGeometries,
+  (chartDims, theme, axisSpecs, axesStyles, smScales, chartLayout, scaleConfigs, settingsSpec) => {
+    return getAxesGeometries(
+      chartDims,
+      theme,
+      axisSpecs,
+      axesStyles,
+      smScales,
+      chartLayout.ticks,
+      scaleConfigs,
+      settingsSpec,
+    );
+  },
 );

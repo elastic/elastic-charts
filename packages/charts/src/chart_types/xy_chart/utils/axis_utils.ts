@@ -22,8 +22,8 @@ import type { Range } from '../../../utils/domain';
 import type { AxisId } from '../../../utils/ids';
 import type { Point } from '../../../utils/point';
 import type { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
-import { getMaxLabelDimensions } from '../axes/layout/tick_labels';
-import type { TickLabelBox } from '../axes/layout/types';
+import type { TickLabelBox } from '../axes/tick_labels';
+import { getMaxLabelDimensions } from '../axes/tick_labels';
 import type { Projection } from '../axes/visible_ticks';
 import type { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import type { SeriesDomainsAndData } from '../state/utils/types';
@@ -45,7 +45,7 @@ export interface AxisTick {
   showGrid: boolean;
   direction: TextDirection;
   multilayerTimeAxis: boolean;
-  bounds: TickLabelBox;
+  layout: TickLabelBox;
 }
 
 interface TickLabelProps {
@@ -365,7 +365,7 @@ export function getAxesGeometries(
   return [...visibleTicksSet].reduce(
     (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, { ticks }]: [AxisId, Projection]) => {
       const axisSpec = axisSpecs.get(axisId);
-      const labelBox = getMaxLabelDimensions(ticks.map((tick) => tick.bounds));
+      const labelBox = getMaxLabelDimensions(ticks.map((tick) => tick.layout));
       if (axisSpec) {
         const vertical = isVerticalAxis(axisSpec.position);
         const axisStyle = axesStyles.get(axisId) ?? sharedAxesStyle;

@@ -6,23 +6,16 @@
  * Side Public License, v 1.
  */
 
-import type { TickLabelBox } from './types';
-import type { Font } from '../../../../common/text_utils';
-import type { ScaleBand, ScaleContinuous } from '../../../../scales';
-import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { Position } from '../../../../utils/common';
-import { wrapText } from '../../../../utils/text/wrap';
-import type { AxisStyle, Theme } from '../../../../utils/themes/theme';
-import type { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
-import { computeRotatedLabelDimensions } from '../../utils/axis_utils';
+import type { Font } from '../../../common/text_utils';
+import type { ScaleBand, ScaleContinuous } from '../../../scales';
+import type { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
+import { Position } from '../../../utils/common';
+import { wrapText, type WrapTextLines } from '../../../utils/text/wrap';
+import type { AxisStyle, Theme } from '../../../utils/themes/theme';
+import { computeRotatedLabelDimensions } from '../utils/axis_utils';
 
 /** @internal */
-export const createTickMeasurer = (
-  axisStyle: AxisStyle,
-  measure: TextMeasure,
-  format: AxisLabelFormatter,
-  locale: string,
-) => {
+export const createTickLayout = (axisStyle: AxisStyle, measure: TextMeasure, locale: string) => {
   const font: Font = {
     fontStyle: axisStyle.tickLabel.fontStyle ?? 'normal',
     fontFamily: axisStyle.tickLabel.fontFamily,
@@ -31,12 +24,10 @@ export const createTickMeasurer = (
     textColor: 'black',
   };
 
-  const maxLines = axisStyle.tickLabel.wrapLines ?? 2; // TODO(bia): check this again
-  const lineHeight = axisStyle.tickLabel.lineHeight ?? 1.2;
+  const { wrapLines: maxLines, lineHeight } = axisStyle.tickLabel;
 
-  return (value: string | number, maxLineLength: number): TickLabelBox => {
-    const formatted = format(value);
-    const wrapped = wrapText(formatted, font, axisStyle.tickLabel.fontSize, maxLineLength, maxLines, measure, locale);
+  return (value: string, maxLineLength: number) => {
+    const wrapped = wrapText(value, font, axisStyle.tickLabel.fontSize, maxLineLength, maxLines, measure, locale);
     const { width, height } = wrapped.reduce(
       (acc, line, index) => {
         const measured = measure(line, font, axisStyle.tickLabel.fontSize);
@@ -50,12 +41,14 @@ export const createTickMeasurer = (
       { width, height },
       axisStyle.tickLabel.rotation,
     );
-    return { formatted, width, height, bboxWidth, bboxHeight, lines: wrapped };
+    return { width, height, bboxWidth, bboxHeight, lines: wrapped };
   };
 };
 
 /** @internal */
-export type TickLabelMeasurer = ReturnType<typeof createTickMeasurer>;
+export type TickLabelLayout = ReturnType<typeof createTickLayout>;
+/** @internal */
+export type TickLabelBox = ReturnType<TickLabelLayout>;
 
 /** @internal */
 export const getMaxLineLength = (position: Position, theme: Theme, scale: ScaleBand | ScaleContinuous) => {
@@ -69,6 +62,8 @@ export const getMaxLineLength = (position: Position, theme: Theme, scale: ScaleB
 
   return theme.axes.maxSize?.right ?? Infinity;
 };
+
+const emptyWrapLines: WrapTextLines = Object.assign([], { meta: { truncated: false } });
 
 /** @internal */
 export const getMaxLabelDimensions = (ticks: TickLabelBox[]): TickLabelBox => {
@@ -84,6 +79,6 @@ export const getMaxLabelDimensions = (ticks: TickLabelBox[]): TickLabelBox => {
         lines: lines && max.lines ? (lines.length > max.lines.length ? lines : max.lines) : lines,
       };
     },
-    { bboxWidth: 0, bboxHeight: 0, width: 0, height: 0 },
+    { bboxWidth: 0, bboxHeight: 0, width: 0, height: 0, lines: emptyWrapLines },
   );
 };

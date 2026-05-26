@@ -11,8 +11,8 @@ import type { SettingsSpec, SmallMultiplesSpec } from '../../../specs';
 import type { ChartDimensions, Dimensions, PerSideDistance } from '../../../utils/dimensions';
 import type { AxisId } from '../../../utils/ids';
 import type { Theme, AxisStyle } from '../../../utils/themes/theme';
-import { getAxesDimensions } from '../axes/layout/dimensions';
-import type { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
+import { getAxesDimensions } from '../axes/dimensions';
+import type { AxesTicksDimensions } from '../state/selectors/compute_baseline_axis_ticks_dimensions';
 import type { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 
 /**
@@ -33,7 +33,7 @@ export function computeChartDimensions(
   const axes = axisSpecs.map((spec) => ({
     spec,
     style: axesStyles.get(spec.id) ?? theme.axes,
-    tickDimensions: axisTickDimensions.get(spec.id) ?? [],
+    ticks: axisTickDimensions.get(spec.id) ?? [],
     isHidden: spec.hide,
   }));
   const axesDimensions = getAxesDimensions(theme, axes, smSpec, scaleConfigs.x.type, settingsSpec.rotation);

@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import type { TickLabelMeasurer } from './layout/tick_labels';
-import { createTickMeasurer, getMaxLineLength } from './layout/tick_labels';
+import type { TickLabelLayout } from './tick_labels';
+import { createTickLayout, getMaxLineLength } from './tick_labels';
 import { multilayerAxisEntry } from './timeslip/multilayer_ticks';
 import type { SmallMultipleScales } from '../../../common/panel_utils';
 import { getPanelSize } from '../../../common/panel_utils';
@@ -23,7 +23,7 @@ import type { Size } from '../../../utils/dimensions';
 import type { AxisId } from '../../../utils/ids';
 import type { Theme } from '../../../utils/themes/theme';
 import type { AxisLabelFormatter } from '../state/selectors/axis_tick_formatter';
-import type { JoinedAxisData } from '../state/selectors/compute_axis_ticks_dimensions';
+import type { JoinedAxisData } from '../state/selectors/compute_baseline_axis_ticks_dimensions';
 import type { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import type { SeriesDomainsAndData } from '../state/utils/types';
 import { isHorizontalAxis, isVerticalAxis } from '../utils/axis_type_utils';
@@ -35,16 +35,7 @@ import { computeXScale } from '../utils/scales';
 export type Projection = { ticks: AxisTick[]; scale: ScaleBand | ScaleContinuous };
 
 /** @internal */
-export type GetMeasuredTicks = (
-  scale: ScaleBand | ScaleContinuous,
-  ticks: (number | string)[],
-  layer: number | undefined,
-  detailedLayer: number,
-  labelFormat: AxisLabelFormatter,
-  showGrid?: boolean,
-) => Projection;
-
-type Projections = Map<AxisId, Projection>;
+export type Projections = Map<AxisId, Projection>;
 
 const USE_ADAPTIVE_TICK_COUNT = true;
 
@@ -67,7 +58,8 @@ export function generateTicks(
   scale: ScaleBand | ScaleContinuous,
   ticks: (number | string)[],
   offset: number,
-  measureTickLabel: TickLabelMeasurer,
+  layoutTickLabel: TickLabelLayout,
+  formatTickLabel: AxisLabelFormatter,
   maxLineLength: number,
   layer: number | undefined,
   detailedLayer: number,
@@ -77,6 +69,7 @@ export function generateTicks(
   const getDirection = getDirectionFn(scale);
   const isContinuous = isContinuousScale(scale);
   return ticks.reduce<AxisTick[]>((acc, value, i) => {
+    const label = formatTickLabel(value);
     if (typeof value === 'number' && !isFiniteNumber(value)) return acc;
     const domainClampedValue = isContinuous && typeof value === 'number' ? Math.max(value, scale.domain[0]) : value;
     if (typeof domainClampedValue === 'number' && !isFiniteNumber(domainClampedValue)) return acc;
@@ -84,21 +77,21 @@ export function generateTicks(
     const domainClampedPosition = scale.scale(domainClampedValue) + offset;
 
     if (!isFiniteNumber(position) || !isFiniteNumber(domainClampedPosition)) return acc;
-    const bounds = measureTickLabel(domainClampedValue, maxLineLength);
+    const layout = layoutTickLabel(label, maxLineLength);
     if (layer === 0 && i === 0 && position < domainClampedPosition) return acc;
 
     acc.push({
       value,
       domainClampedValue,
-      label: bounds.formatted ?? '',
+      label,
       position,
       domainClampedPosition,
       layer,
       detailedLayer,
       showGrid,
-      direction: getDirection(bounds.formatted ?? ''),
+      direction: getDirection(label),
       multilayerTimeAxis,
-      bounds,
+      layout,
     });
     return acc;
   }, []);
@@ -106,7 +99,8 @@ export function generateTicks(
 
 function getVisibleTicks(
   axisSpec: AxisSpec,
-  measureTickLabel: TickLabelMeasurer,
+  layoutTickLabel: TickLabelLayout,
+  formatTickLabel: AxisLabelFormatter,
   maxLineLength: number,
   totalBarsInCluster: number,
   rotationOffset: number,
@@ -138,14 +132,13 @@ function getVisibleTicks(
   const allTicks: AxisTick[] =
     makeRaster && isSingleValueScale && typeof firstTickValue === 'number'
       ? (() => {
-          const firstBounds = measureTickLabel(firstTickValue, maxLineLength);
           const secondValue = firstTickValue + scale.minInterval;
-          const secondBounds = measureTickLabel(secondValue, maxLineLength);
+
           return [
             {
               value: firstTickValue,
               domainClampedValue: firstTickValue,
-              label: firstBounds.formatted ?? '',
+              label: formatTickLabel(firstTickValue),
               position: (scale.scale(firstTickValue) || 0) + offset,
               domainClampedPosition: (scale.scale(firstTickValue) || 0) + offset,
               layer: undefined, // no multiple layers with `singleValueScale`s
@@ -153,12 +146,12 @@ function getVisibleTicks(
               direction: 'rtl',
               showGrid,
               multilayerTimeAxis,
-              bounds: firstBounds,
+              layout: layoutTickLabel(formatTickLabel(firstTickValue), maxLineLength),
             },
             {
               value: secondValue,
               domainClampedValue: secondValue,
-              label: secondBounds.formatted ?? '',
+              label: formatTickLabel(secondValue),
               position: scale.bandwidth + halfPadding * 2,
               domainClampedPosition: scale.bandwidth + halfPadding * 2,
               layer: undefined, // no multiple layers with `singleValueScale`s
@@ -166,7 +159,7 @@ function getVisibleTicks(
               direction: 'rtl',
               showGrid,
               multilayerTimeAxis,
-              bounds: secondBounds,
+              layout: layoutTickLabel(formatTickLabel(secondValue), maxLineLength),
             },
           ];
         })()
@@ -174,7 +167,8 @@ function getVisibleTicks(
           scale,
           ticks,
           offset,
-          measureTickLabel,
+          layoutTickLabel,
+          formatTickLabel,
           maxLineLength,
           layer,
           detailedLayer,
@@ -191,7 +185,7 @@ function getVisibleTicks(
         .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
         .reduce(
           (prev, tick) => {
-            const requiredSpace = isVerticalAxis(position) ? tick.bounds.bboxHeight / 2 : tick.bounds.bboxWidth / 2;
+            const requiredSpace = isVerticalAxis(position) ? tick.layout.bboxHeight / 2 : tick.layout.bboxWidth / 2;
 
             const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
             if (tickLabelFits || showOverlappingTicks) {
@@ -208,7 +202,8 @@ function getVisibleTicks(
 
 function getVisibleTickSet(
   scale: ScaleBand | ScaleContinuous,
-  measureTickLabel: TickLabelMeasurer,
+  layoutTickLabel: TickLabelLayout,
+  formatTickLabel: AxisLabelFormatter,
   { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
   axisSpec: AxisSpec,
   groupCount: number,
@@ -229,7 +224,8 @@ function getVisibleTickSet(
 
   return getVisibleTicks(
     axisSpec,
-    measureTickLabel,
+    layoutTickLabel,
+    formatTickLabel,
     maxLineLength,
     groupCount,
     rotationOffset,
@@ -277,12 +273,13 @@ export function computeVisibleTickSets(
         labelFormatter: AxisLabelFormatter,
         showGrid = true,
       ): Projection => {
-        const measureTick = createTickMeasurer(axesStyle, textMeasure, labelFormatter, locale);
+        const layoutTickLabel = createTickLayout(axesStyle, textMeasure, locale);
 
         return {
           ticks: getVisibleTickSet(
             scale,
-            measureTick,
+            layoutTickLabel,
+            labelFormatter,
             { rotation: chartRotation },
             axisSpec,
             totalGroupsCount,

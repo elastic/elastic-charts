@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { getFallBackTickFormatter } from './compute_axis_ticks_dimensions';
+import { getFallBackTickFormatter } from './compute_baseline_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { getSeriesColorsSelector } from './get_series_color_map';
 import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';

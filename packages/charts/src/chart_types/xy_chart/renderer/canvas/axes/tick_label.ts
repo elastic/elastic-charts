@@ -10,9 +10,7 @@ import type { AxisProps } from './axis_props';
 import type { TextFont } from '../../../../../renderers/canvas/primitives/text';
 import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRectCenterRotated } from '../../../../../renderers/canvas/utils/debug';
-import { withTextMeasure } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position } from '../../../../../utils/common';
-import { wrapText } from '../../../../../utils/text/wrap';
 import type { AxisTick } from '../../../utils/axis_utils';
 import { getTickLabelPosition } from '../../../utils/axis_utils';
 
@@ -25,7 +23,6 @@ export function renderTickLabel(
   showTicks: boolean,
   { axisSpec, dimension, size, debug, axisStyle }: AxisProps,
   layerGirth: number,
-  locale: string,
 ) {
   const { position } = axisSpec;
   const labelStyle = axisStyle.tickLabel;
@@ -39,13 +36,13 @@ export function renderTickLabel(
     showTicks,
     labelStyle.offset,
     labelStyle.alignment,
-    tick.bounds,
+    tick.layout,
   );
 
   const center = { x: tickLabelProps.x + tickLabelProps.offsetX, y: tickLabelProps.y + tickLabelProps.offsetY };
 
   if (debug) {
-    const { width, height, bboxWidth, bboxHeight } = tick.bounds;
+    const { width, height, bboxWidth, bboxHeight } = tick.layout;
     const textBlockCenter = {
       x: center.x,
       y: center.y + tickLabelProps.boxTopY + height / 2,
@@ -65,7 +62,7 @@ export function renderTickLabel(
 
   const tickOnTheSide = tick.multilayerTimeAxis && Number.isFinite(tick.layer);
   const textOffsetX = tickLabelProps.textOffsetX + (tickOnTheSide ? TICK_TO_LABEL_GAP : 0);
-  const lineHeight = (labelStyle.lineHeight ?? 1.2) * labelStyle.fontSize;
+  const lineHeight = labelStyle.lineHeight * labelStyle.fontSize;
   const layerOffsetY = (tick.layer || 0) * layerGirth * (position === Position.Top ? -1 : 1);
 
   const font: TextFont = {
@@ -79,21 +76,7 @@ export function renderTickLabel(
     baseline: 'top',
   };
 
-  const lines =
-    tick.bounds.lines ??
-    withTextMeasure((measureText) => {
-      return wrapText(
-        tick.label,
-        font,
-        labelStyle.fontSize,
-        tick.bounds.width,
-        labelStyle.wrapLines ?? 1,
-        measureText,
-        locale,
-      );
-    });
-
-  lines.forEach((line, i) => {
+  tick.layout.lines.forEach((line, i) => {
     renderText(
       ctx,
       center,

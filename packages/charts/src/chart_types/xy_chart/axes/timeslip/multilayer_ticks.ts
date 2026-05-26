@@ -106,7 +106,7 @@ export function multilayerAxisEntry(
       const minLabelGap = 4;
 
       const lastTick = entry.ticks.at(-1);
-      if (lastTick && lastTick.position + lastTick.bounds.bboxWidth > range[1]) {
+      if (lastTick && lastTick.position + lastTick.layout.bboxWidth > range[1]) {
         lastTick.label = '';
       }
 
@@ -118,7 +118,7 @@ export function multilayerAxisEntry(
             (tick, i, a) =>
               i > 0 ||
               !a[1] ||
-              a[1].domainClampedPosition - tick.domainClampedPosition >= tick.bounds.bboxWidth + minLabelGap,
+              a[1].domainClampedPosition - tick.domainClampedPosition >= tick.layout.bboxWidth + minLabelGap,
           ),
         ),
       };
