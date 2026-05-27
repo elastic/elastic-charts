@@ -34,6 +34,7 @@ interface DeployOptions {
 const getChannelId = () =>
   bkEnv.isPullRequest ? `pr-${bkEnv.pullRequestNumber!}` : bkEnv.isMainBranch ? null : bkEnv.branch;
 
+// Deploy the assembled preview site to the PR channel or the default hosting target.
 export const firebaseDeploy = async (opt: DeployOptions = {}) => {
   const expires = opt.expires ?? '30d';
 
@@ -102,7 +103,7 @@ interface ChannelDeploymentInfo {
 }
 
 /**
- * Returns deployment id for given PR channel
+ * Returns the deployment URL for the current Firebase hosting channel.
  */
 export async function getOrCreateDeploymentUrl(): Promise<string> {
   const channelId = getChannelId();

@@ -6,14 +6,11 @@
  * Side Public License, v 1.
  */
 
-import type { Font } from '../../common/text_utils';
+import { ELLIPSIS, type Font } from '../../common/text_utils';
 import { monotonicHillClimb } from '../../solvers/monotonic_hill_climb';
 import type { TextMeasure } from '../bbox/canvas_text_bbox_calculator';
 
-const ELLIPSIS = '…';
-
-/** @internal */
-export interface WrapTextLines extends Array<string> {
+interface WrapTextLines extends Array<string> {
   meta: {
     truncated: boolean;
   };

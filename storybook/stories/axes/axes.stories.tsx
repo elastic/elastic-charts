@@ -26,4 +26,5 @@ export { Example as fitDomain } from './11_fit_domain_extent.story';
 export { Example as duplicateTicks } from './12_duplicate_ticks.story';
 export { Example as labelFormatting } from './13_label_formatting.story';
 export { Example as duplicateTicks2 } from './14_duplicate_ticks_2.story';
-export { Example as wrapTickLabels } from './16_wrap_tick_labels.story';
+export { Example as tickLabelTruncation } from './16_tick_label_truncation.story';
+export { Example as wrapTickLabels } from './17_wrap_tick_labels.story';
