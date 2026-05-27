@@ -65,5 +65,12 @@ test.describe('Meter stories', () => {
         getStoryUrl('/story/components-meter--markers-and-vertical', urlParam),
       );
     });
+
+    test('should render grouped signed ranges', async ({ page }) => {
+      await expectMeterStoryToMatchScreenshot(
+        page,
+        getStoryUrl('/story/components-meter--grouped-signed-ranges', urlParam),
+      );
+    });
   });
 });

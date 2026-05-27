@@ -27,7 +27,7 @@ export const Example = () => {
   const readableMarkerColor = isDarkTheme ? baseTheme.metric.textLightColor : baseTheme.metric.textDarkColor;
   const negativeOnlyValue = number(
     'Negative-only value',
-    -72,
+    -35,
     { range: true, min: -100, max: 0, step: 1 },
     generalGroup,
   );

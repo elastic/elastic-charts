@@ -9,6 +9,7 @@
 export { Example as PositiveModes } from './1_positive_modes.story';
 export { Example as SignedDomains } from './2_signed_domains.story';
 export { Example as MarkersAndVertical } from './3_markers_and_vertical.story';
+export { Example as GroupedSignedRanges } from './4_grouped_signed_ranges.story';
 
 export default {
   title: 'Components/Meter',
