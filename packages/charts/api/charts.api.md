@@ -2083,6 +2083,109 @@ export function mergeWithDefaultAnnotationLine(defaultStyles: LineAnnotationStyl
 export function mergeWithDefaultAnnotationRect(defaultStyles: RectAnnotationStyle, config?: RecursivePartial<RectAnnotationStyle>): RectAnnotationStyle;
 
 // @alpha (undocumented)
+export const Meter: React_2.FunctionComponent<MeterProps>;
+
+// @alpha
+export interface MeterColorStop {
+    // (undocumented)
+    color: Color;
+    // (undocumented)
+    stop: number;
+}
+
+// @alpha
+export type MeterFill = MeterSingleFill | MeterPaletteFill;
+
+// @alpha
+export const MeterFillStyle: Readonly<{
+    Single: "single";
+    Solid: "solid";
+    Gradient: "gradient";
+}>;
+
+// @alpha (undocumented)
+export type MeterFillStyle = $Values<typeof MeterFillStyle>;
+
+// @alpha (undocumented)
+export type MeterOrientation = LayoutDirection;
+
+// @alpha
+export interface MeterPaletteFill {
+    // (undocumented)
+    colorStops: MeterColorStop[];
+    // (undocumented)
+    fallbackColor?: Color;
+    // (undocumented)
+    style: Exclude<MeterFillStyle, typeof MeterFillStyle.Single>;
+    // (undocumented)
+    type: 'palette';
+}
+
+// @alpha
+export interface MeterProps {
+    // (undocumented)
+    ariaLabel?: string;
+    // (undocumented)
+    ariaValueMax?: number;
+    // (undocumented)
+    ariaValueMin?: number;
+    // (undocumented)
+    ariaValueNow?: number;
+    // (undocumented)
+    ariaValueText?: string;
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    domain: ContinuousDomain;
+    // (undocumented)
+    fill: MeterFill;
+    // (undocumented)
+    fillBorderColor?: Color;
+    // (undocumented)
+    fillBorderWidth?: number;
+    // (undocumented)
+    markerColor?: Color;
+    // (undocumented)
+    orientation?: MeterOrientation;
+    // (undocumented)
+    showZeroBaseline?: boolean;
+    // (undocumented)
+    size?: MeterSize;
+    // (undocumented)
+    style?: CSSProperties;
+    // (undocumented)
+    target?: number;
+    // (undocumented)
+    targetTitle?: string;
+    // (undocumented)
+    title?: string;
+    // (undocumented)
+    trackColor: Color;
+    // (undocumented)
+    value: number;
+    // (undocumented)
+    valueTitle?: string;
+}
+
+// @alpha
+export interface MeterSingleFill {
+    // (undocumented)
+    color: Color;
+    // (undocumented)
+    type: typeof MeterFillStyle.Single;
+}
+
+// @alpha
+export const MeterSize: Readonly<{
+    Small: "small";
+    Medium: "medium";
+    Large: "large";
+}>;
+
+// @alpha (undocumented)
+export type MeterSize = $Values<typeof MeterSize>;
+
+// @alpha (undocumented)
 export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data", never, "id">>;
 
 // @alpha (undocumented)
