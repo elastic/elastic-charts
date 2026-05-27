@@ -1,0 +1,124 @@
+@import './variables';
+
+$meter-border-radius: 8px;
+
+.echMeter {
+  position: relative;
+  display: block;
+  border-radius: $meter-border-radius;
+
+  &--horizontal {
+    width: 100%;
+
+    &.echMeter--small {
+      height: $meter-height-small;
+    }
+
+    &.echMeter--medium {
+      height: $meter-height-medium;
+    }
+
+    &.echMeter--large {
+      height: $meter-height-large;
+    }
+  }
+
+  &--vertical {
+    height: 100%;
+
+    &.echMeter--small {
+      width: $meter-width-small;
+    }
+
+    &.echMeter--medium {
+      width: $meter-width-medium;
+    }
+
+    &.echMeter--large {
+      width: $meter-width-large;
+    }
+  }
+}
+
+.echMeterBar {
+  transition: background-color ease-in-out 0.1s;
+  max-width: 100%;
+  max-height: 100%;
+
+  &--vertical {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+  }
+
+  &--horizontal {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+  }
+}
+
+.echMeterTarget {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  z-index: 1; // needed to pop up to top for hovered title
+
+  &--vertical {
+    transform: rotate(90deg);
+    position: absolute;
+    left: 100%;
+    bottom: 0;
+  }
+
+  &--horizontal {
+    position: absolute;
+    bottom: 100%;
+  }
+}
+
+@mixin meter-mark-size($is-vertical: false) {
+  width: if($is-vertical, $meter-target-size - 3px, 1px);
+  height: if($is-vertical, 1px, $meter-target-size - 3px);
+}
+
+.echMeterZeroBaseline {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  z-index: 1;
+  width: $meter-target-size;
+  height: $meter-target-size;
+
+  &__mark {
+    @include meter-mark-size(false);
+  }
+
+  &--vertical {
+    position: absolute;
+    left: 100%;
+    bottom: 0;
+
+    .echMeterZeroBaseline__mark {
+      @include meter-mark-size(true);
+    }
+  }
+
+  &--horizontal {
+    position: absolute;
+    bottom: 100%;
+  }
+}
+
+.echMeterFillPaint {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-repeat: no-repeat;
+}
