@@ -17,7 +17,7 @@ import { customKnobs } from '../utils/knobs';
 
 const data = [
   { category: 'a very long category name', value: 10 },
-  { category: 'an even longer category name', value: 20 },
+  { category: 'a very very very very very long category name', value: 20 },
   { category: 'label', value: 30 },
   { category: 'medium label', value: 40 },
 ];
@@ -35,7 +35,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Axis
         id="bottom"
         position={Position.Top}
-        title="Bottom axis"
+        title="Top axis"
         showOverlappingTicks={boolean('showOverlappingTicks', true)}
         style={{
           tickLabel: {
