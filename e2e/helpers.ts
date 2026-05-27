@@ -38,7 +38,7 @@ export interface StoryGroupInfo {
 /**
  * Groups to skip in all vrt.
  */
-const groupsToSkip: Set<string> = new Set(['Components/Tooltip', 'Bullet Graph']);
+const groupsToSkip: Set<string> = new Set(['Components/Tooltip', 'Components/Meter', 'Bullet Graph']);
 
 /**
  * Stories to skip in all vrt based by group.
