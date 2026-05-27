@@ -223,12 +223,14 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
     gradientFill && revealWindow
       ? isVertical
         ? {
-            height: `${revealWindow.scaleFactor}%`,
+            top: 'auto',
+            height: `${revealWindow.scaleFactor * 100}%`,
             bottom: `${revealWindow.offset}%`,
             backgroundImage: gradientFill,
           }
         : {
-            width: `${revealWindow.scaleFactor}%`,
+            right: 'auto',
+            width: `${revealWindow.scaleFactor * 100}%`,
             left: `${revealWindow.offset}%`,
             backgroundImage: gradientFill,
           }

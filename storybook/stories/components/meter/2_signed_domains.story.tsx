@@ -6,39 +6,115 @@
  * Side Public License, v 1.
  */
 
+import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { MeterFillStyle } from '@elastic/charts';
+import { MeterFillStyle, MeterSize } from '@elastic/charts';
 
 import { MeterPreview, StoryShell, signedPalette } from './meter_story_helpers';
+import { useBaseTheme, useThemeId } from '../../../use_base_theme';
 
-export const Example = () => (
-  <StoryShell>
-    <MeterPreview
-      title="Negative-only domain"
-      label="-72"
-      value={-72}
-      domain={[-100, 0]}
-      fill={{ type: 'palette', style: MeterFillStyle.Gradient, colorStops: signedPalette }}
-      alignment="left"
-    />
-    <MeterPreview
-      title="Mixed-sign negative value"
-      label="-35"
-      value={-35}
-      domain={[-100, 40]}
-      fill={{ type: 'palette', style: MeterFillStyle.Gradient, colorStops: signedPalette }}
-      alignment="left"
-    />
-    <MeterPreview
-      title="Mixed-sign positive value"
-      label="+25"
-      value={25}
-      domain={[-100, 40]}
-      fill={{ type: 'palette', style: MeterFillStyle.Gradient, colorStops: signedPalette }}
-    />
-  </StoryShell>
-);
+const generalGroup = 'General';
+const colorsGroup = 'Colors';
+const paletteGroup = 'Palette';
+
+const formatSignedValue = (value: number) => `${value > 0 ? '+' : ''}${Math.round(value)}`;
+
+export const Example = () => {
+  const baseTheme = useBaseTheme();
+  const themeId = useThemeId();
+  const isDarkTheme = themeId.includes('dark');
+  const readableMarkerColor = isDarkTheme ? baseTheme.metric.textLightColor : baseTheme.metric.textDarkColor;
+  const negativeOnlyValue = number(
+    'Negative-only value',
+    -72,
+    { range: true, min: -100, max: 0, step: 1 },
+    generalGroup,
+  );
+  const mixedNegativeValue = number(
+    'Mixed-sign negative value',
+    -35,
+    { range: true, min: -100, max: 40, step: 1 },
+    generalGroup,
+  );
+  const mixedPositiveValue = number(
+    'Mixed-sign positive value',
+    25,
+    { range: true, min: -100, max: 40, step: 1 },
+    generalGroup,
+  );
+  const size = select(
+    'Size',
+    { Small: MeterSize.Small, Medium: MeterSize.Medium, Large: MeterSize.Large },
+    MeterSize.Medium,
+    generalGroup,
+  ) as MeterSize;
+  const barWidth = number('Bar width', 320, { min: 240, max: 480, step: 10 }, generalGroup);
+  const fillBorderWidth = number('Fill border width', 2, { min: 0, max: 6, step: 1 }, generalGroup);
+  const showZeroBaseline = boolean('Show zero baseline', true, generalGroup);
+
+  const trackColor = color('Track color', baseTheme.metric.barBackground, colorsGroup);
+  const markerColor = color('Marker color', readableMarkerColor, colorsGroup);
+  const fillBorderColor = color('Fill border color', baseTheme.background.color ?? '#FFFFFF', colorsGroup);
+
+  const negativeStopColor = color('Negative stop color', signedPalette[0].color, paletteGroup);
+  const zeroStopColor = color('Zero stop color', signedPalette[1].color, paletteGroup);
+  const positiveStopColor = color('Positive stop color', signedPalette[2].color, paletteGroup);
+  const paletteStops = [
+    { stop: signedPalette[0].stop, color: negativeStopColor },
+    { stop: signedPalette[1].stop, color: zeroStopColor },
+    { stop: signedPalette[2].stop, color: positiveStopColor },
+  ];
+
+  return (
+    <StoryShell>
+      <MeterPreview
+        title="Negative-only domain"
+        label={formatSignedValue(negativeOnlyValue)}
+        value={negativeOnlyValue}
+        domain={[-100, 0]}
+        fill={{ type: 'palette', style: MeterFillStyle.Gradient, colorStops: paletteStops }}
+        alignment="left"
+        size={size}
+        barWidth={barWidth}
+        trackColor={trackColor}
+        markerColor={markerColor}
+        fillBorderColor={fillBorderColor}
+        fillBorderWidth={fillBorderWidth}
+        showZeroBaseline={showZeroBaseline}
+      />
+      <MeterPreview
+        title="Mixed-sign negative value"
+        label={formatSignedValue(mixedNegativeValue)}
+        value={mixedNegativeValue}
+        domain={[-100, 40]}
+        fill={{ type: 'palette', style: MeterFillStyle.Gradient, colorStops: paletteStops }}
+        alignment="left"
+        size={size}
+        barWidth={barWidth}
+        trackColor={trackColor}
+        markerColor={markerColor}
+        fillBorderColor={fillBorderColor}
+        fillBorderWidth={fillBorderWidth}
+        showZeroBaseline={showZeroBaseline}
+      />
+      <MeterPreview
+        title="Mixed-sign positive value"
+        label={formatSignedValue(mixedPositiveValue)}
+        value={mixedPositiveValue}
+        domain={[-100, 40]}
+        fill={{ type: 'palette', style: MeterFillStyle.Gradient, colorStops: paletteStops }}
+        size={size}
+        barWidth={barWidth}
+        trackColor={trackColor}
+        markerColor={markerColor}
+        fillBorderColor={fillBorderColor}
+        fillBorderWidth={fillBorderWidth}
+        showZeroBaseline={showZeroBaseline}
+      />
+    </StoryShell>
+  );
+};
 
 Example.parameters = {
   showHeader: true,

@@ -14,7 +14,7 @@ import type { ProgressBarSize } from './metric';
 import type { Color } from '../../../../common/colors';
 import { Meter } from '../../../../components/meter';
 import { getMeterScalePosition } from '../../../../components/meter/utils';
-import { isNil, LayoutDirection, sortNumbers } from '../../../../utils/common';
+import { clamp, isNil, LayoutDirection, sortNumbers } from '../../../../utils/common';
 import type { ContinuousDomain, GenericDomain } from '../../../../utils/domain';
 import type { BulletMetricWProgress, MetricWProgress } from '../../specs';
 import { isBulletMetric } from '../../specs';
@@ -47,7 +47,8 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
 
   const updatedDomain = scale.domain() as ContinuousDomain;
   const [domainMin, domainMax] = sortNumbers(updatedDomain);
-  const scaledValue = getMeterScalePosition(updatedDomain, value);
+  const scaledValue = clamp(getMeterScalePosition(updatedDomain, value), 0, 100);
+  const roundedScaledValue = Math.round(scaledValue * 100) / 100;
   const labelType = isBullet ? 'Value' : 'Percentage';
 
   return (
@@ -64,7 +65,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
       fillBorderWidth={2}
       className={getDirectionalClasses('Progress', isVertical, size)}
       title={!isBullet ? '' : `${updatedDomain[0]} to ${updatedDomain[1]}`}
-      valueTitle={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${scaledValue}%`}
+      valueTitle={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${roundedScaledValue}%`}
       targetTitle={
         isNil(target)
           ? undefined
@@ -73,8 +74,8 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
       ariaLabel={title ? `${labelType} of ${title}` : labelType}
       ariaValueMin={isBullet ? domainMin : 0}
       ariaValueMax={isBullet ? domainMax : 100}
-      ariaValueNow={isBullet ? value : scaledValue}
-      ariaValueText={isBullet ? valueFormatter(value) : `${scaledValue}%`}
+      ariaValueNow={isBullet ? value : roundedScaledValue}
+      ariaValueText={isBullet ? valueFormatter(value) : `${roundedScaledValue}%`}
     />
   );
 };
