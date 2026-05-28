@@ -38,13 +38,16 @@ async function expectMeterStoryToMatchScreenshot(page: Page, url: string) {
   expect(await previewFrame.screenshot()).toMatchSnapshot();
 }
 
-function getStoryUrl(storyPath: string, urlParam: string) {
+function getStoryUrl(storyPath: string, urlParam: string, extraParams: Record<string, string> = {}) {
   const url = new URL(environmentUrl!);
   url.searchParams.set('path', storyPath);
   url.searchParams.set('knob-debug', 'false');
 
   const [key = '', value = ''] = urlParam.split('=');
   url.searchParams.set(key, value);
+  Object.entries(extraParams).forEach(([param, paramValue]) => {
+    url.searchParams.set(param, paramValue);
+  });
 
   return url.toString();
 }
@@ -70,6 +73,15 @@ test.describe('Meter stories', () => {
       await expectMeterStoryToMatchScreenshot(
         page,
         getStoryUrl('/story/components-meter--grouped-signed-ranges', urlParam),
+      );
+    });
+
+    test('should render grouped signed ranges with gradient fill', async ({ page }) => {
+      await expectMeterStoryToMatchScreenshot(
+        page,
+        getStoryUrl('/story/components-meter--grouped-signed-ranges', urlParam, {
+          fillStyle: 'gradient',
+        }),
       );
     });
   });

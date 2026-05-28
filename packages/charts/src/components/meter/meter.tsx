@@ -24,9 +24,9 @@ import type { LayoutDirection as LayoutDirectionType } from '../../utils/common'
 import type { ContinuousDomain } from '../../utils/domain';
 import { Icon } from '../icons/icon';
 
-const METER_BORDER_RADIUS = 8;
+const METER_CORNER_RADIUS = 8;
 const METER_MARKER_SIZE = 8;
-const ZERO_BASELINE_ADJUSTMENT = 1;
+const BASELINE_MARKER_ADJUSTMENT = 1;
 
 /** @alpha */
 export type MeterOrientation = LayoutDirectionType;
@@ -101,11 +101,15 @@ export interface MeterProps {
   trackColor: Color;
   orientation?: MeterOrientation;
   size?: MeterSize;
+  baseline?: number;
   target?: number;
   markerColor?: Color;
   fillBorderColor?: Color;
   fillBorderWidth?: number;
-  showZeroBaseline?: boolean;
+  showBaselineMarker?: boolean;
+  flatBaselineEdge?: boolean;
+  roundTrack?: boolean;
+  roundFill?: boolean;
   className?: string;
   style?: CSSProperties;
   title?: string;
@@ -126,11 +130,15 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
   trackColor,
   orientation = LayoutDirection.Horizontal,
   size = MeterSize.Medium,
+  baseline = 0,
   target,
   markerColor,
   fillBorderColor,
   fillBorderWidth = 0,
-  showZeroBaseline,
+  showBaselineMarker = false,
+  flatBaselineEdge = false,
+  roundTrack = true,
+  roundFill = true,
   className,
   style,
   title,
@@ -145,9 +153,9 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
   const isVertical = orientation === LayoutDirection.Vertical;
   const normalizedDomain = sortNumbers(domain);
   const [domainMin, domainMax] = normalizedDomain;
-  const geometry = getMeterGeometry(normalizedDomain, value);
-  const zeroPosition = clamp(geometry.rawZeroPosition, 0, 100);
-  const hasVisibleZeroBaseline = geometry.hasZeroBaseline && (showZeroBaseline ?? true);
+  const geometry = getMeterGeometry(normalizedDomain, value, baseline);
+  const baselinePosition = clamp(geometry.rawBaselinePosition, 0, 100);
+  const hasVisibleBaselineMarker = geometry.isBaselineInDomain && showBaselineMarker;
   const fallbackFillColor =
     fill.type === MeterFillStyle.Single ? fill.color : fill.fallbackColor ?? fill.colorStops[0]?.color ?? trackColor;
   const solidFillColor =
@@ -163,43 +171,49 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
     markerColor ??
     (fill.type === MeterFillStyle.Single
       ? fill.color
-      : getMeterSolidFillColor(normalizedDomain, fill.colorStops, 0, fallbackFillColor));
+      : getMeterSolidFillColor(normalizedDomain, fill.colorStops, baseline, fallbackFillColor));
   const [resolvedAriaValueMin, resolvedAriaValueMax] = sortNumbers([
     ariaValueMin ?? domainMin,
     ariaValueMax ?? domainMax,
   ]);
   const resolvedAriaValueNow = clamp(ariaValueNow ?? value, resolvedAriaValueMin, resolvedAriaValueMax);
 
-  let zeroBaselineNudgePx = 0;
-  const fillBorderRadius: CSSProperties = { borderRadius: METER_BORDER_RADIUS };
+  const cornerRadius = roundFill ? METER_CORNER_RADIUS : 0;
+  let baselineMarkerNudgePx = 0;
+  const fillBorderRadius: CSSProperties = {
+    borderTopLeftRadius: cornerRadius,
+    borderTopRightRadius: cornerRadius,
+    borderBottomLeftRadius: cornerRadius,
+    borderBottomRightRadius: cornerRadius,
+  };
 
-  if (hasVisibleZeroBaseline && geometry.fillSize > 0) {
-    const isStartAtZero = geometry.rawValuePosition >= geometry.rawZeroPosition;
-    const isEndAtZero = geometry.rawValuePosition <= geometry.rawZeroPosition;
+  if (roundFill && flatBaselineEdge && geometry.isBaselineInDomain && geometry.fillSize > 0) {
+    const isStartAtBaseline = geometry.rawValuePosition >= geometry.rawBaselinePosition;
+    const isEndAtBaseline = geometry.rawValuePosition <= geometry.rawBaselinePosition;
 
     if (isVertical) {
-      if (isStartAtZero) {
+      if (isStartAtBaseline) {
         fillBorderRadius.borderBottomLeftRadius = 0;
         fillBorderRadius.borderBottomRightRadius = 0;
-        zeroBaselineNudgePx = ZERO_BASELINE_ADJUSTMENT;
+        baselineMarkerNudgePx = BASELINE_MARKER_ADJUSTMENT;
       }
 
-      if (isEndAtZero) {
+      if (isEndAtBaseline) {
         fillBorderRadius.borderTopLeftRadius = 0;
         fillBorderRadius.borderTopRightRadius = 0;
-        zeroBaselineNudgePx = -ZERO_BASELINE_ADJUSTMENT;
+        baselineMarkerNudgePx = -BASELINE_MARKER_ADJUSTMENT;
       }
     } else {
-      if (isStartAtZero) {
+      if (isStartAtBaseline) {
         fillBorderRadius.borderTopLeftRadius = 0;
         fillBorderRadius.borderBottomLeftRadius = 0;
-        zeroBaselineNudgePx = ZERO_BASELINE_ADJUSTMENT;
+        baselineMarkerNudgePx = BASELINE_MARKER_ADJUSTMENT;
       }
 
-      if (isEndAtZero) {
+      if (isEndAtBaseline) {
         fillBorderRadius.borderTopRightRadius = 0;
         fillBorderRadius.borderBottomRightRadius = 0;
-        zeroBaselineNudgePx = -ZERO_BASELINE_ADJUSTMENT;
+        baselineMarkerNudgePx = -BASELINE_MARKER_ADJUSTMENT;
       }
     }
   }
@@ -241,8 +255,8 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
   const targetPlacement = isNil(target)
     ? null
     : `calc(${clamp(getMeterScalePosition(normalizedDomain, target), 0, 100)}% - ${METER_MARKER_SIZE / 2}px)`;
-  const zeroPlacement = hasVisibleZeroBaseline
-    ? `calc(${zeroPosition}% - ${METER_MARKER_SIZE / 2 + zeroBaselineNudgePx}px)`
+  const baselinePlacement = hasVisibleBaselineMarker
+    ? `calc(${baselinePosition}% - ${METER_MARKER_SIZE / 2 + baselineMarkerNudgePx}px)`
     : null;
 
   return (
@@ -256,7 +270,7 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
         },
         className,
       )}
-      style={{ ...style, backgroundColor: trackColor }}
+      style={{ ...style, backgroundColor: trackColor, borderRadius: roundTrack ? METER_CORNER_RADIUS : 0 }}
       title={title}
     >
       {targetPlacement && (
@@ -271,14 +285,14 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
           <Icon height={METER_MARKER_SIZE} width={METER_MARKER_SIZE} type="downArrow" color={resolvedMarkerColor} />
         </div>
       )}
-      {zeroPlacement && (
+      {baselinePlacement && (
         <div
-          className={getDirectionalClasses('echMeterZeroBaseline', isVertical)}
+          className={getDirectionalClasses('echMeterBaselineMarker', isVertical)}
           style={{
-            [isVertical ? 'bottom' : 'left']: zeroPlacement,
+            [isVertical ? 'bottom' : 'left']: baselinePlacement,
           }}
         >
-          <div className="echMeterZeroBaseline__mark" style={{ backgroundColor: resolvedMarkerColor }} />
+          <div className="echMeterBaselineMarker__mark" style={{ backgroundColor: resolvedMarkerColor }} />
         </div>
       )}
       <div

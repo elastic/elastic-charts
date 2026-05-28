@@ -88,7 +88,7 @@ $meter-border-radius: 8px;
   height: if($is-vertical, 1px, $meter-target-size - 3px);
 }
 
-.echMeterZeroBaseline {
+.echMeterBaselineMarker {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -106,7 +106,7 @@ $meter-border-radius: 8px;
     left: 100%;
     bottom: 0;
 
-    .echMeterZeroBaseline__mark {
+    .echMeterBaselineMarker__mark {
       @include meter-mark-size(true);
     }
   }

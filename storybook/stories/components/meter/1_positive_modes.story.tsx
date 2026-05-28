@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { color, number, select } from '@storybook/addon-knobs';
+import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { MeterFillStyle, MeterSize } from '@elastic/charts';
@@ -29,6 +29,8 @@ export const Example = () => {
   ) as MeterSize;
   const barWidth = number('Bar width', 320, { min: 240, max: 480, step: 10 }, generalGroup);
   const fillBorderWidth = number('Fill border width', 2, { min: 0, max: 6, step: 1 }, generalGroup);
+  const roundTrack = boolean('Round track', true, generalGroup);
+  const roundFill = boolean('Round fill', true, generalGroup);
 
   const trackColor = color('Track color', baseTheme.metric.barBackground, colorsGroup);
   const fillBorderColor = color('Fill border color', baseTheme.background.color ?? '#FFFFFF', colorsGroup);
@@ -57,6 +59,8 @@ export const Example = () => {
         trackColor={trackColor}
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
+        roundTrack={roundTrack}
+        roundFill={roundFill}
       />
       <MeterPreview
         title="Solid palette fill"
@@ -69,6 +73,8 @@ export const Example = () => {
         trackColor={trackColor}
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
+        roundTrack={roundTrack}
+        roundFill={roundFill}
       />
       <MeterPreview
         title="Gradient palette fill"
@@ -81,6 +87,8 @@ export const Example = () => {
         trackColor={trackColor}
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
+        roundTrack={roundTrack}
+        roundFill={roundFill}
       />
     </StoryShell>
   );

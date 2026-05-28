@@ -13,7 +13,7 @@ import React, { useState } from 'react';
 import { Meter, MeterFillStyle, MeterSize } from '@elastic/charts';
 import type { MeterFill } from '@elastic/charts';
 
-import { StoryShell } from './meter_story_helpers';
+import { getStandaloneEnumOverride, StoryShell } from './meter_story_helpers';
 import { useBaseTheme, useThemeId } from '../../../use_base_theme';
 
 const OUTER_DOMAIN = [-200, 200] as const;
@@ -33,19 +33,25 @@ export const Example = () => {
   const panelBorder = isDarkTheme ? '#0F1D33' : '#D3DAE6';
   const dividerColor = isDarkTheme ? '#0B1628' : '#343741';
   const sliderTextColor = isDarkTheme ? baseTheme.metric.textLightColor : baseTheme.metric.textDarkColor;
-  const fillStyle = select(
+  const knobFillStyle = select(
     'Fill style',
     { Single: MeterFillStyle.Single, Solid: MeterFillStyle.Solid, Gradient: MeterFillStyle.Gradient },
     MeterFillStyle.Single,
     generalGroup,
   ) as MeterFillStyle;
+  const fillStyle =
+    getStandaloneEnumOverride('fillStyle', Object.values(MeterFillStyle) as MeterFillStyle[]) ?? knobFillStyle;
   const trackColor = color('Track color', isDarkTheme ? '#33425B' : baseTheme.metric.barBackground, colorsGroup);
   const singleFillColor = color('Single fill color', FILL_COLOR, colorsGroup);
-  const markerColor = color('Zero baseline marker color', dividerColor, colorsGroup);
+  const markerColor = color('Baseline marker color', dividerColor, colorsGroup);
   const fillBorderColor = color('Fill border color', panelBackground, colorsGroup);
+  const baseline = number('Baseline', 0, { range: true, min: -200, max: 200, step: 1 }, generalGroup);
   const fillBorderWidth = number('Fill border width', 2, { min: 0, max: 6, step: 1 }, generalGroup);
   const showSharedDivider = boolean('Show shared zero divider', false, generalGroup);
-  const showZeroBaseline = boolean('Show zero baseline markers', false, generalGroup);
+  const showBaselineMarker = boolean('Show baseline marker', false, generalGroup);
+  const flatBaselineEdge = boolean('Flat baseline edge', false, generalGroup);
+  const roundTrack = boolean('Round track', true, generalGroup);
+  const roundFill = boolean('Round fill', true, generalGroup);
   const negativeColor = color('Negative color', '#54B399', paletteGroup);
   const zeroColor = color('Zero color', '#F5A700', paletteGroup);
   const positiveColor = color('Positive color', '#D36086', paletteGroup);
@@ -109,11 +115,15 @@ export const Example = () => {
               domain={[domain[0], domain[1]]}
               fill={getFill(domain)}
               trackColor={trackColor}
+              baseline={baseline}
               markerColor={markerColor}
               fillBorderColor={fillBorderColor}
               fillBorderWidth={fillBorderWidth}
               size={MeterSize.Large}
-              showZeroBaseline={showZeroBaseline}
+              showBaselineMarker={showBaselineMarker}
+              flatBaselineEdge={flatBaselineEdge}
+              roundTrack={roundTrack}
+              roundFill={roundFill}
               ariaLabel={key}
               ariaValueText={`${value}`}
               style={{ width: '100%' }}
@@ -146,5 +156,5 @@ export const Example = () => {
 Example.parameters = {
   showHeader: true,
   markdown:
-    'Shows a shared zero-aligned comparison group where the inner bars saturate at +/-100 and the outer bars saturate at +/-200, driven by a single dual-handle range.',
+    'Shows a shared signed comparison group where the inner bars saturate at +/-100 and the outer bars saturate at +/-200, with configurable fill, baseline, and rounding controls.',
 };

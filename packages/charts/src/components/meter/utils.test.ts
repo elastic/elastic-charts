@@ -22,8 +22,8 @@ describe('Meter utils', () => {
       fillEnd: 40,
       fillSize: 40,
       rawValuePosition: 40,
-      rawZeroPosition: 0,
-      hasZeroBaseline: false,
+      rawBaselinePosition: 0,
+      isBaselineInDomain: true,
     });
   });
 
@@ -33,8 +33,8 @@ describe('Meter utils', () => {
       fillEnd: 100,
       fillSize: 50,
       rawValuePosition: 50,
-      rawZeroPosition: 111.11111111111111,
-      hasZeroBaseline: false,
+      rawBaselinePosition: 111.11111111111111,
+      isBaselineInDomain: false,
     });
   });
 
@@ -44,8 +44,30 @@ describe('Meter utils', () => {
       fillEnd: 71.42857142857143,
       fillSize: 35.714285714285715,
       rawValuePosition: 35.714285714285715,
-      rawZeroPosition: 71.42857142857143,
-      hasZeroBaseline: true,
+      rawBaselinePosition: 71.42857142857143,
+      isBaselineInDomain: true,
+    });
+  });
+
+  test('should anchor to a custom baseline inside the domain', () => {
+    expect(getMeterGeometry([-100, 40], -50, -20)).toEqual({
+      fillStart: 35.714285714285715,
+      fillEnd: 57.142857142857146,
+      fillSize: 21.42857142857143,
+      rawValuePosition: 35.714285714285715,
+      rawBaselinePosition: 57.142857142857146,
+      isBaselineInDomain: true,
+    });
+  });
+
+  test('should treat baseline values on the domain edge as visible', () => {
+    expect(getMeterGeometry([-100, 0], -35, 0)).toEqual({
+      fillStart: 65,
+      fillEnd: 100,
+      fillSize: 35,
+      rawValuePosition: 65,
+      rawBaselinePosition: 100,
+      isBaselineInDomain: true,
     });
   });
 
@@ -55,8 +77,8 @@ describe('Meter utils', () => {
       fillEnd: 71.42857142857143,
       fillSize: 35.714285714285715,
       rawValuePosition: 35.714285714285715,
-      rawZeroPosition: 71.42857142857143,
-      hasZeroBaseline: true,
+      rawBaselinePosition: 71.42857142857143,
+      isBaselineInDomain: true,
     });
   });
 

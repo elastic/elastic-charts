@@ -25,8 +25,8 @@ export interface MeterGeometry {
   fillEnd: number;
   fillSize: number;
   rawValuePosition: number;
-  rawZeroPosition: number;
-  hasZeroBaseline: boolean;
+  rawBaselinePosition: number;
+  isBaselineInDomain: boolean;
 }
 
 /** @internal */
@@ -52,11 +52,11 @@ export function getMeterScalePosition(domain: ContinuousDomain, value: number) {
 }
 
 /** @internal */
-export function getMeterGeometry(domain: ContinuousDomain, value: number): MeterGeometry {
+export function getMeterGeometry(domain: ContinuousDomain, value: number, baseline = 0): MeterGeometry {
   const getScalePosition = getScalePositionFn(domain);
-  const rawZeroPosition = getScalePosition(0);
+  const rawBaselinePosition = getScalePosition(baseline);
   const rawValuePosition = getScalePosition(value);
-  const [fillStart, fillEnd] = sortNumbers([clamp(rawZeroPosition, 0, 100), clamp(rawValuePosition, 0, 100)]);
+  const [fillStart, fillEnd] = sortNumbers([clamp(rawBaselinePosition, 0, 100), clamp(rawValuePosition, 0, 100)]);
   const [domainMin, domainMax] = sortNumbers(domain);
 
   return {
@@ -64,8 +64,8 @@ export function getMeterGeometry(domain: ContinuousDomain, value: number): Meter
     fillEnd,
     fillSize: fillEnd - fillStart,
     rawValuePosition,
-    rawZeroPosition,
-    hasZeroBaseline: domainMin < 0 && domainMax > 0,
+    rawBaselinePosition,
+    isBaselineInDomain: baseline >= domainMin && baseline <= domainMax,
   };
 }
 

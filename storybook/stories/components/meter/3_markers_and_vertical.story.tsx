@@ -43,8 +43,12 @@ export const Example = () => {
     MeterSize.Large,
     generalGroup,
   ) as MeterSize;
+  const mixedBaseline = number('Mixed baseline', 0, { range: true, min: -100, max: 40, step: 1 }, generalGroup);
   const fillBorderWidth = number('Fill border width', 2, { min: 0, max: 6, step: 1 }, generalGroup);
-  const showZeroBaseline = boolean('Show zero baseline', true, generalGroup);
+  const showBaselineMarker = boolean('Show baseline marker', false, generalGroup);
+  const flatBaselineEdge = boolean('Flat baseline edge', false, generalGroup);
+  const roundTrack = boolean('Round track', true, generalGroup);
+  const roundFill = boolean('Round fill', true, generalGroup);
 
   const trackColor = color('Track color', baseTheme.metric.barBackground, colorsGroup);
   const markerColor = color('Marker color', readableMarkerColor, colorsGroup);
@@ -83,6 +87,8 @@ export const Example = () => {
         markerColor={markerColor}
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
+        roundTrack={roundTrack}
+        roundFill={roundFill}
       />
       <div style={{ display: 'flex', gap: 32 }}>
         <MeterPreview
@@ -98,6 +104,8 @@ export const Example = () => {
           markerColor={markerColor}
           fillBorderColor={fillBorderColor}
           fillBorderWidth={fillBorderWidth}
+          roundTrack={roundTrack}
+          roundFill={roundFill}
         />
         <MeterPreview
           title="Vertical mixed-sign"
@@ -108,11 +116,15 @@ export const Example = () => {
           size={verticalSize}
           barHeight={verticalHeight}
           fill={{ type: 'palette', style: MeterFillStyle.Gradient, colorStops: signedStops }}
+          baseline={mixedBaseline}
           trackColor={trackColor}
           markerColor={markerColor}
           fillBorderColor={fillBorderColor}
           fillBorderWidth={fillBorderWidth}
-          showZeroBaseline={showZeroBaseline}
+          showBaselineMarker={showBaselineMarker}
+          flatBaselineEdge={flatBaselineEdge}
+          roundTrack={roundTrack}
+          roundFill={roundFill}
         />
       </div>
     </StoryShell>
@@ -121,5 +133,6 @@ export const Example = () => {
 
 Example.parameters = {
   showHeader: true,
-  markdown: 'Shows the optional target marker and the vertical orientation supported by the reusable Meter component.',
+  markdown:
+    'Shows the optional target marker, vertical orientation, and configurable baseline controls supported by the reusable Meter component.',
 };

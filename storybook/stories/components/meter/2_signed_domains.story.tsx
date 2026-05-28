@@ -49,9 +49,13 @@ export const Example = () => {
     MeterSize.Medium,
     generalGroup,
   ) as MeterSize;
+  const baseline = number('Baseline', 0, { range: true, min: -100, max: 40, step: 1 }, generalGroup);
   const barWidth = number('Bar width', 320, { min: 240, max: 480, step: 10 }, generalGroup);
   const fillBorderWidth = number('Fill border width', 2, { min: 0, max: 6, step: 1 }, generalGroup);
-  const showZeroBaseline = boolean('Show zero baseline', true, generalGroup);
+  const showBaselineMarker = boolean('Show baseline marker', false, generalGroup);
+  const flatBaselineEdge = boolean('Flat baseline edge', false, generalGroup);
+  const roundTrack = boolean('Round track', true, generalGroup);
+  const roundFill = boolean('Round fill', true, generalGroup);
 
   const trackColor = color('Track color', baseTheme.metric.barBackground, colorsGroup);
   const markerColor = color('Marker color', readableMarkerColor, colorsGroup);
@@ -69,48 +73,61 @@ export const Example = () => {
   return (
     <StoryShell>
       <MeterPreview
-        title="Negative-only domain"
+        title={`Negative-only domain (${formatSignedValue(negativeOnlyValue)})`}
         label={formatSignedValue(negativeOnlyValue)}
         value={negativeOnlyValue}
         domain={[-100, 0]}
         fill={{ type: 'palette', style: MeterFillStyle.Gradient, colorStops: paletteStops }}
-        alignment="left"
+        showLabel={false}
         size={size}
         barWidth={barWidth}
+        baseline={baseline}
         trackColor={trackColor}
         markerColor={markerColor}
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
-        showZeroBaseline={showZeroBaseline}
+        showBaselineMarker={showBaselineMarker}
+        flatBaselineEdge={flatBaselineEdge}
+        roundTrack={roundTrack}
+        roundFill={roundFill}
       />
       <MeterPreview
-        title="Mixed-sign negative value"
+        title={`Mixed-sign negative value (${formatSignedValue(mixedNegativeValue)})`}
         label={formatSignedValue(mixedNegativeValue)}
         value={mixedNegativeValue}
         domain={[-100, 40]}
         fill={{ type: 'palette', style: MeterFillStyle.Gradient, colorStops: paletteStops }}
-        alignment="left"
+        showLabel={false}
         size={size}
         barWidth={barWidth}
+        baseline={baseline}
         trackColor={trackColor}
         markerColor={markerColor}
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
-        showZeroBaseline={showZeroBaseline}
+        showBaselineMarker={showBaselineMarker}
+        flatBaselineEdge={flatBaselineEdge}
+        roundTrack={roundTrack}
+        roundFill={roundFill}
       />
       <MeterPreview
-        title="Mixed-sign positive value"
+        title={`Mixed-sign positive value (${formatSignedValue(mixedPositiveValue)})`}
         label={formatSignedValue(mixedPositiveValue)}
         value={mixedPositiveValue}
         domain={[-100, 40]}
         fill={{ type: 'palette', style: MeterFillStyle.Gradient, colorStops: paletteStops }}
+        showLabel={false}
         size={size}
         barWidth={barWidth}
+        baseline={baseline}
         trackColor={trackColor}
         markerColor={markerColor}
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
-        showZeroBaseline={showZeroBaseline}
+        showBaselineMarker={showBaselineMarker}
+        flatBaselineEdge={flatBaselineEdge}
+        roundTrack={roundTrack}
+        roundFill={roundFill}
       />
     </StoryShell>
   );
@@ -119,5 +136,5 @@ export const Example = () => {
 Example.parameters = {
   showHeader: true,
   markdown:
-    'Shows signed-domain behavior where negative-only meters grow from the right edge and mixed-sign meters anchor their fill at zero.',
+    'Shows signed-domain behavior where negative-only meters grow from the right edge and mixed-sign meters anchor their fill at the configured baseline.',
 };

@@ -31,12 +31,16 @@ interface MeterPreviewProps
     | 'domain'
     | 'orientation'
     | 'size'
+    | 'baseline'
     | 'target'
     | 'trackColor'
     | 'markerColor'
     | 'fillBorderColor'
     | 'fillBorderWidth'
-    | 'showZeroBaseline'
+    | 'showBaselineMarker'
+    | 'flatBaselineEdge'
+    | 'roundTrack'
+    | 'roundFill'
   > {
   title: string;
   label: string;
@@ -45,6 +49,7 @@ interface MeterPreviewProps
   alignment?: 'left' | 'right';
   barWidth?: number;
   barHeight?: number;
+  showLabel?: boolean;
 }
 
 export function MeterPreview({
@@ -55,15 +60,20 @@ export function MeterPreview({
   fill,
   size = MeterSize.Medium,
   orientation = LayoutDirection.Horizontal,
+  baseline,
   target,
   trackColor,
   markerColor,
   fillBorderColor,
   fillBorderWidth = 2,
-  showZeroBaseline,
+  showBaselineMarker,
+  flatBaselineEdge,
+  roundTrack,
+  roundFill,
   alignment = 'right',
   barWidth = 320,
   barHeight = 160,
+  showLabel = true,
 }: MeterPreviewProps) {
   const baseTheme = useBaseTheme();
   const themeId = useThemeId();
@@ -73,11 +83,12 @@ export function MeterPreview({
   const resolvedTrackColor = trackColor ?? baseTheme.metric.barBackground;
   const resolvedMarkerColor = markerColor ?? textColor;
   const resolvedFillBorderColor = fillBorderColor ?? baseTheme.background.color ?? '#FFFFFF';
-  const labelView = label ? (
-    <div style={{ color: textColor, fontSize: 12, fontWeight: 600, lineHeight: 1.2, whiteSpace: 'nowrap' }}>
-      {label}
-    </div>
-  ) : null;
+  const labelView =
+    showLabel && label ? (
+      <div style={{ color: textColor, fontSize: 12, fontWeight: 600, lineHeight: 1.2, whiteSpace: 'nowrap' }}>
+        {label}
+      </div>
+    ) : null;
 
   return (
     <div style={{ display: 'grid', gap: 8 }}>
@@ -90,13 +101,17 @@ export function MeterPreview({
               domain={domain}
               fill={fill}
               trackColor={resolvedTrackColor}
+              baseline={baseline}
               markerColor={resolvedMarkerColor}
               fillBorderColor={resolvedFillBorderColor}
               fillBorderWidth={fillBorderWidth}
               orientation={orientation}
               size={size}
               target={target}
-              showZeroBaseline={showZeroBaseline}
+              showBaselineMarker={showBaselineMarker}
+              flatBaselineEdge={flatBaselineEdge}
+              roundTrack={roundTrack}
+              roundFill={roundFill}
               ariaLabel={title}
               ariaValueText={label}
               style={{ height: '100%', margin: '0 auto' }}
@@ -108,8 +123,12 @@ export function MeterPreview({
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: alignment === 'left' ? `auto ${barWidth}px` : `${barWidth}px auto`,
-            gap: 12,
+            gridTemplateColumns: labelView
+              ? alignment === 'left'
+                ? `auto ${barWidth}px`
+                : `${barWidth}px auto`
+              : `${barWidth}px`,
+            gap: labelView ? 12 : 0,
             alignItems: 'center',
           }}
         >
@@ -119,13 +138,17 @@ export function MeterPreview({
             domain={domain}
             fill={fill}
             trackColor={resolvedTrackColor}
+            baseline={baseline}
             markerColor={resolvedMarkerColor}
             fillBorderColor={resolvedFillBorderColor}
             fillBorderWidth={fillBorderWidth}
             orientation={orientation}
             size={size}
             target={target}
-            showZeroBaseline={showZeroBaseline}
+            showBaselineMarker={showBaselineMarker}
+            flatBaselineEdge={flatBaselineEdge}
+            roundTrack={roundTrack}
+            roundFill={roundFill}
             ariaLabel={title}
             ariaValueText={label}
             style={{ width: barWidth }}
@@ -159,4 +182,13 @@ export function StoryShell({ children }: { children: React.ReactNode }) {
       {children}
     </div>
   );
+}
+
+export function getStandaloneEnumOverride<T extends string>(queryParam: string, allowedValues: readonly T[]) {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+
+  const value = new URLSearchParams(window.location.search).get(queryParam);
+  return value && allowedValues.includes(value as T) ? (value as T) : undefined;
 }

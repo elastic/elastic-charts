@@ -2134,6 +2134,8 @@ export interface MeterProps {
     // (undocumented)
     ariaValueText?: string;
     // (undocumented)
+    baseline?: number;
+    // (undocumented)
     className?: string;
     // (undocumented)
     domain: ContinuousDomain;
@@ -2144,11 +2146,17 @@ export interface MeterProps {
     // (undocumented)
     fillBorderWidth?: number;
     // (undocumented)
+    flatBaselineEdge?: boolean;
+    // (undocumented)
     markerColor?: Color;
     // (undocumented)
     orientation?: MeterOrientation;
     // (undocumented)
-    showZeroBaseline?: boolean;
+    roundFill?: boolean;
+    // (undocumented)
+    roundTrack?: boolean;
+    // (undocumented)
+    showBaselineMarker?: boolean;
     // (undocumented)
     size?: MeterSize;
     // (undocumented)
