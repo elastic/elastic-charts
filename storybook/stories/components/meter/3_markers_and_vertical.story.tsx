@@ -46,9 +46,12 @@ export const Example = () => {
   const mixedBaseline = number('Mixed baseline', 0, { range: true, min: -100, max: 40, step: 1 }, generalGroup);
   const fillBorderWidth = number('Fill border width', 2, { min: 0, max: 6, step: 1 }, generalGroup);
   const showBaselineMarker = boolean('Show baseline marker', false, generalGroup);
-  const flatBaselineEdge = boolean('Flat baseline edge', false, generalGroup);
-  const roundTrack = boolean('Round track', true, generalGroup);
-  const roundFill = boolean('Round fill', true, generalGroup);
+  const roundTrackStart = boolean('Round track start', true, generalGroup);
+  const roundTrackEnd = boolean('Round track end', true, generalGroup);
+  const targetRoundFillStart = boolean('Target round fill start', true, generalGroup);
+  const targetRoundFillEnd = boolean('Target round fill end', true, generalGroup);
+  const verticalRoundFillStart = boolean('Vertical round fill start', false, generalGroup);
+  const verticalRoundFillEnd = boolean('Vertical round fill end', true, generalGroup);
 
   const trackColor = color('Track color', baseTheme.metric.barBackground, colorsGroup);
   const markerColor = color('Marker color', readableMarkerColor, colorsGroup);
@@ -87,8 +90,10 @@ export const Example = () => {
         markerColor={markerColor}
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
-        roundTrack={roundTrack}
-        roundFill={roundFill}
+        roundTrackStart={roundTrackStart}
+        roundTrackEnd={roundTrackEnd}
+        roundFillStart={targetRoundFillStart}
+        roundFillEnd={targetRoundFillEnd}
       />
       <div style={{ display: 'flex', gap: 32 }}>
         <MeterPreview
@@ -104,8 +109,10 @@ export const Example = () => {
           markerColor={markerColor}
           fillBorderColor={fillBorderColor}
           fillBorderWidth={fillBorderWidth}
-          roundTrack={roundTrack}
-          roundFill={roundFill}
+          roundTrackStart={roundTrackStart}
+          roundTrackEnd={roundTrackEnd}
+          roundFillStart={verticalRoundFillStart}
+          roundFillEnd={verticalRoundFillEnd}
         />
         <MeterPreview
           title="Vertical mixed-sign"
@@ -122,9 +129,10 @@ export const Example = () => {
           fillBorderColor={fillBorderColor}
           fillBorderWidth={fillBorderWidth}
           showBaselineMarker={showBaselineMarker}
-          flatBaselineEdge={flatBaselineEdge}
-          roundTrack={roundTrack}
-          roundFill={roundFill}
+          roundTrackStart={roundTrackStart}
+          roundTrackEnd={roundTrackEnd}
+          roundFillStart={verticalRoundFillStart}
+          roundFillEnd={verticalRoundFillEnd}
         />
       </div>
     </StoryShell>

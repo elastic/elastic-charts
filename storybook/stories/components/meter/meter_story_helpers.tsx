@@ -38,9 +38,10 @@ interface MeterPreviewProps
     | 'fillBorderColor'
     | 'fillBorderWidth'
     | 'showBaselineMarker'
-    | 'flatBaselineEdge'
-    | 'roundTrack'
-    | 'roundFill'
+    | 'roundTrackStart'
+    | 'roundTrackEnd'
+    | 'roundFillStart'
+    | 'roundFillEnd'
   > {
   title: string;
   label: string;
@@ -67,9 +68,10 @@ export function MeterPreview({
   fillBorderColor,
   fillBorderWidth = 2,
   showBaselineMarker,
-  flatBaselineEdge,
-  roundTrack,
-  roundFill,
+  roundTrackStart,
+  roundTrackEnd,
+  roundFillStart,
+  roundFillEnd,
   alignment = 'right',
   barWidth = 320,
   barHeight = 160,
@@ -109,9 +111,10 @@ export function MeterPreview({
               size={size}
               target={target}
               showBaselineMarker={showBaselineMarker}
-              flatBaselineEdge={flatBaselineEdge}
-              roundTrack={roundTrack}
-              roundFill={roundFill}
+              roundTrackStart={roundTrackStart}
+              roundTrackEnd={roundTrackEnd}
+              roundFillStart={roundFillStart}
+              roundFillEnd={roundFillEnd}
               ariaLabel={title}
               ariaValueText={label}
               style={{ height: '100%', margin: '0 auto' }}
@@ -146,9 +149,10 @@ export function MeterPreview({
             size={size}
             target={target}
             showBaselineMarker={showBaselineMarker}
-            flatBaselineEdge={flatBaselineEdge}
-            roundTrack={roundTrack}
-            roundFill={roundFill}
+            roundTrackStart={roundTrackStart}
+            roundTrackEnd={roundTrackEnd}
+            roundFillStart={roundFillStart}
+            roundFillEnd={roundFillEnd}
             ariaLabel={title}
             ariaValueText={label}
             style={{ width: barWidth }}

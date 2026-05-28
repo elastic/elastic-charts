@@ -53,9 +53,10 @@ export const Example = () => {
   const barWidth = number('Bar width', 320, { min: 240, max: 480, step: 10 }, generalGroup);
   const fillBorderWidth = number('Fill border width', 2, { min: 0, max: 6, step: 1 }, generalGroup);
   const showBaselineMarker = boolean('Show baseline marker', false, generalGroup);
-  const flatBaselineEdge = boolean('Flat baseline edge', false, generalGroup);
-  const roundTrack = boolean('Round track', true, generalGroup);
-  const roundFill = boolean('Round fill', true, generalGroup);
+  const roundTrackStart = boolean('Round track start', true, generalGroup);
+  const roundTrackEnd = boolean('Round track end', true, generalGroup);
+  const roundFillStart = boolean('Round fill start', true, generalGroup);
+  const roundFillEnd = boolean('Round fill end', true, generalGroup);
 
   const trackColor = color('Track color', baseTheme.metric.barBackground, colorsGroup);
   const markerColor = color('Marker color', readableMarkerColor, colorsGroup);
@@ -87,9 +88,10 @@ export const Example = () => {
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
         showBaselineMarker={showBaselineMarker}
-        flatBaselineEdge={flatBaselineEdge}
-        roundTrack={roundTrack}
-        roundFill={roundFill}
+        roundTrackStart={roundTrackStart}
+        roundTrackEnd={roundTrackEnd}
+        roundFillStart={roundFillStart}
+        roundFillEnd={roundFillEnd}
       />
       <MeterPreview
         title={`Mixed-sign negative value (${formatSignedValue(mixedNegativeValue)})`}
@@ -106,9 +108,10 @@ export const Example = () => {
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
         showBaselineMarker={showBaselineMarker}
-        flatBaselineEdge={flatBaselineEdge}
-        roundTrack={roundTrack}
-        roundFill={roundFill}
+        roundTrackStart={roundTrackStart}
+        roundTrackEnd={roundTrackEnd}
+        roundFillStart={roundFillStart}
+        roundFillEnd={roundFillEnd}
       />
       <MeterPreview
         title={`Mixed-sign positive value (${formatSignedValue(mixedPositiveValue)})`}
@@ -125,9 +128,10 @@ export const Example = () => {
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
         showBaselineMarker={showBaselineMarker}
-        flatBaselineEdge={flatBaselineEdge}
-        roundTrack={roundTrack}
-        roundFill={roundFill}
+        roundTrackStart={roundTrackStart}
+        roundTrackEnd={roundTrackEnd}
+        roundFillStart={roundFillStart}
+        roundFillEnd={roundFillEnd}
       />
     </StoryShell>
   );

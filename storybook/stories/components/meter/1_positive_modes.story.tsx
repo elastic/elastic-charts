@@ -29,8 +29,10 @@ export const Example = () => {
   ) as MeterSize;
   const barWidth = number('Bar width', 320, { min: 240, max: 480, step: 10 }, generalGroup);
   const fillBorderWidth = number('Fill border width', 2, { min: 0, max: 6, step: 1 }, generalGroup);
-  const roundTrack = boolean('Round track', true, generalGroup);
-  const roundFill = boolean('Round fill', true, generalGroup);
+  const roundTrackStart = boolean('Round track start', true, generalGroup);
+  const roundTrackEnd = boolean('Round track end', true, generalGroup);
+  const roundFillStart = boolean('Round fill start', true, generalGroup);
+  const roundFillEnd = boolean('Round fill end', true, generalGroup);
 
   const trackColor = color('Track color', baseTheme.metric.barBackground, colorsGroup);
   const fillBorderColor = color('Fill border color', baseTheme.background.color ?? '#FFFFFF', colorsGroup);
@@ -59,8 +61,10 @@ export const Example = () => {
         trackColor={trackColor}
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
-        roundTrack={roundTrack}
-        roundFill={roundFill}
+        roundTrackStart={roundTrackStart}
+        roundTrackEnd={roundTrackEnd}
+        roundFillStart={roundFillStart}
+        roundFillEnd={roundFillEnd}
       />
       <MeterPreview
         title="Solid palette fill"
@@ -73,8 +77,10 @@ export const Example = () => {
         trackColor={trackColor}
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
-        roundTrack={roundTrack}
-        roundFill={roundFill}
+        roundTrackStart={roundTrackStart}
+        roundTrackEnd={roundTrackEnd}
+        roundFillStart={roundFillStart}
+        roundFillEnd={roundFillEnd}
       />
       <MeterPreview
         title="Gradient palette fill"
@@ -87,8 +93,10 @@ export const Example = () => {
         trackColor={trackColor}
         fillBorderColor={fillBorderColor}
         fillBorderWidth={fillBorderWidth}
-        roundTrack={roundTrack}
-        roundFill={roundFill}
+        roundTrackStart={roundTrackStart}
+        roundTrackEnd={roundTrackEnd}
+        roundFillStart={roundFillStart}
+        roundFillEnd={roundFillEnd}
       />
     </StoryShell>
   );

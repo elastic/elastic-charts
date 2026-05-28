@@ -31,7 +31,6 @@ export const Example = () => {
 
   const panelBackground = isDarkTheme ? '#081121' : baseTheme.background.color ?? '#FFFFFF';
   const panelBorder = isDarkTheme ? '#0F1D33' : '#D3DAE6';
-  const dividerColor = isDarkTheme ? '#0B1628' : '#343741';
   const sliderTextColor = isDarkTheme ? baseTheme.metric.textLightColor : baseTheme.metric.textDarkColor;
   const knobFillStyle = select(
     'Fill style',
@@ -43,15 +42,15 @@ export const Example = () => {
     getStandaloneEnumOverride('fillStyle', Object.values(MeterFillStyle) as MeterFillStyle[]) ?? knobFillStyle;
   const trackColor = color('Track color', isDarkTheme ? '#33425B' : baseTheme.metric.barBackground, colorsGroup);
   const singleFillColor = color('Single fill color', FILL_COLOR, colorsGroup);
-  const markerColor = color('Baseline marker color', dividerColor, colorsGroup);
+  const markerColor = color('Baseline marker color', sliderTextColor, colorsGroup);
   const fillBorderColor = color('Fill border color', panelBackground, colorsGroup);
   const baseline = number('Baseline', 0, { range: true, min: -200, max: 200, step: 1 }, generalGroup);
   const fillBorderWidth = number('Fill border width', 2, { min: 0, max: 6, step: 1 }, generalGroup);
-  const showSharedDivider = boolean('Show shared zero divider', false, generalGroup);
   const showBaselineMarker = boolean('Show baseline marker', false, generalGroup);
-  const flatBaselineEdge = boolean('Flat baseline edge', false, generalGroup);
-  const roundTrack = boolean('Round track', true, generalGroup);
-  const roundFill = boolean('Round fill', true, generalGroup);
+  const roundTrackStart = boolean('Round track start', true, generalGroup);
+  const roundTrackEnd = boolean('Round track end', true, generalGroup);
+  const roundFillStart = boolean('Round fill start', false, generalGroup);
+  const roundFillEnd = boolean('Round fill end', true, generalGroup);
   const negativeColor = color('Negative color', '#54B399', paletteGroup);
   const zeroColor = color('Zero color', '#F5A700', paletteGroup);
   const positiveColor = color('Positive color', '#D36086', paletteGroup);
@@ -85,7 +84,6 @@ export const Example = () => {
       <div style={{ display: 'grid', gap: 20 }}>
         <div
           style={{
-            position: 'relative',
             display: 'grid',
             gap: 12,
             width: lineWidth,
@@ -95,19 +93,6 @@ export const Example = () => {
             backgroundColor: panelBackground,
           }}
         >
-          {showSharedDivider && (
-            <div
-              style={{
-                position: 'absolute',
-                top: 24,
-                bottom: 24,
-                left: '50%',
-                width: 2,
-                transform: 'translateX(-50%)',
-                backgroundColor: dividerColor,
-              }}
-            />
-          )}
           {bars.map(({ key, domain, value }) => (
             <Meter
               key={key}
@@ -121,9 +106,10 @@ export const Example = () => {
               fillBorderWidth={fillBorderWidth}
               size={MeterSize.Large}
               showBaselineMarker={showBaselineMarker}
-              flatBaselineEdge={flatBaselineEdge}
-              roundTrack={roundTrack}
-              roundFill={roundFill}
+              roundTrackStart={roundTrackStart}
+              roundTrackEnd={roundTrackEnd}
+              roundFillStart={roundFillStart}
+              roundFillEnd={roundFillEnd}
               ariaLabel={key}
               ariaValueText={`${value}`}
               style={{ width: '100%' }}

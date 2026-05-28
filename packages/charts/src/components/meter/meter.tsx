@@ -107,9 +107,10 @@ export interface MeterProps {
   fillBorderColor?: Color;
   fillBorderWidth?: number;
   showBaselineMarker?: boolean;
-  flatBaselineEdge?: boolean;
-  roundTrack?: boolean;
-  roundFill?: boolean;
+  roundTrackStart?: boolean;
+  roundTrackEnd?: boolean;
+  roundFillStart?: boolean;
+  roundFillEnd?: boolean;
   className?: string;
   style?: CSSProperties;
   title?: string;
@@ -136,9 +137,10 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
   fillBorderColor,
   fillBorderWidth = 0,
   showBaselineMarker = false,
-  flatBaselineEdge = false,
-  roundTrack = true,
-  roundFill = true,
+  roundTrackStart = true,
+  roundTrackEnd = true,
+  roundFillStart = true,
+  roundFillEnd = true,
   className,
   style,
   title,
@@ -178,44 +180,22 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
   ]);
   const resolvedAriaValueNow = clamp(ariaValueNow ?? value, resolvedAriaValueMin, resolvedAriaValueMax);
 
-  const cornerRadius = roundFill ? METER_CORNER_RADIUS : 0;
+  const isFillForward = geometry.rawValuePosition >= geometry.rawBaselinePosition;
   let baselineMarkerNudgePx = 0;
-  const fillBorderRadius: CSSProperties = {
-    borderTopLeftRadius: cornerRadius,
-    borderTopRightRadius: cornerRadius,
-    borderBottomLeftRadius: cornerRadius,
-    borderBottomRightRadius: cornerRadius,
-  };
+  const fillBorderRadius = getFillBorderRadius({
+    isVertical,
+    isForward: isFillForward,
+    roundStart: roundFillStart,
+    roundEnd: roundFillEnd,
+  });
+  const trackBorderRadius = getTrackBorderRadius({
+    isVertical,
+    roundStart: roundTrackStart,
+    roundEnd: roundTrackEnd,
+  });
 
-  if (roundFill && flatBaselineEdge && geometry.isBaselineInDomain && geometry.fillSize > 0) {
-    const isStartAtBaseline = geometry.rawValuePosition >= geometry.rawBaselinePosition;
-    const isEndAtBaseline = geometry.rawValuePosition <= geometry.rawBaselinePosition;
-
-    if (isVertical) {
-      if (isStartAtBaseline) {
-        fillBorderRadius.borderBottomLeftRadius = 0;
-        fillBorderRadius.borderBottomRightRadius = 0;
-        baselineMarkerNudgePx = BASELINE_MARKER_ADJUSTMENT;
-      }
-
-      if (isEndAtBaseline) {
-        fillBorderRadius.borderTopLeftRadius = 0;
-        fillBorderRadius.borderTopRightRadius = 0;
-        baselineMarkerNudgePx = -BASELINE_MARKER_ADJUSTMENT;
-      }
-    } else {
-      if (isStartAtBaseline) {
-        fillBorderRadius.borderTopLeftRadius = 0;
-        fillBorderRadius.borderBottomLeftRadius = 0;
-        baselineMarkerNudgePx = BASELINE_MARKER_ADJUSTMENT;
-      }
-
-      if (isEndAtBaseline) {
-        fillBorderRadius.borderTopRightRadius = 0;
-        fillBorderRadius.borderBottomRightRadius = 0;
-        baselineMarkerNudgePx = -BASELINE_MARKER_ADJUSTMENT;
-      }
-    }
+  if (geometry.isBaselineInDomain && geometry.fillSize > 0 && !roundFillStart) {
+    baselineMarkerNudgePx = isFillForward ? BASELINE_MARKER_ADJUSTMENT : -BASELINE_MARKER_ADJUSTMENT;
   }
 
   const fillBorderStyle: CSSProperties =
@@ -270,7 +250,7 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
         },
         className,
       )}
-      style={{ ...style, backgroundColor: trackColor, borderRadius: roundTrack ? METER_CORNER_RADIUS : 0 }}
+      style={{ ...style, backgroundColor: trackColor, ...trackBorderRadius }}
       title={title}
     >
       {targetPlacement && (
@@ -319,6 +299,78 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
     </div>
   );
 };
+
+function getTrackBorderRadius({
+  isVertical,
+  roundStart,
+  roundEnd,
+}: {
+  isVertical: boolean;
+  roundStart: boolean;
+  roundEnd: boolean;
+}): CSSProperties {
+  const startRadius = roundStart ? METER_CORNER_RADIUS : 0;
+  const endRadius = roundEnd ? METER_CORNER_RADIUS : 0;
+
+  return isVertical
+    ? {
+        borderTopLeftRadius: endRadius,
+        borderTopRightRadius: endRadius,
+        borderBottomLeftRadius: startRadius,
+        borderBottomRightRadius: startRadius,
+      }
+    : {
+        borderTopLeftRadius: startRadius,
+        borderTopRightRadius: endRadius,
+        borderBottomLeftRadius: startRadius,
+        borderBottomRightRadius: endRadius,
+      };
+}
+
+function getFillBorderRadius({
+  isVertical,
+  isForward,
+  roundStart,
+  roundEnd,
+}: {
+  isVertical: boolean;
+  isForward: boolean;
+  roundStart: boolean;
+  roundEnd: boolean;
+}): CSSProperties {
+  const startRadius = roundStart ? METER_CORNER_RADIUS : 0;
+  const endRadius = roundEnd ? METER_CORNER_RADIUS : 0;
+
+  if (isVertical) {
+    return isForward
+      ? {
+          borderTopLeftRadius: endRadius,
+          borderTopRightRadius: endRadius,
+          borderBottomLeftRadius: startRadius,
+          borderBottomRightRadius: startRadius,
+        }
+      : {
+          borderTopLeftRadius: startRadius,
+          borderTopRightRadius: startRadius,
+          borderBottomLeftRadius: endRadius,
+          borderBottomRightRadius: endRadius,
+        };
+  }
+
+  return isForward
+    ? {
+        borderTopLeftRadius: startRadius,
+        borderTopRightRadius: endRadius,
+        borderBottomLeftRadius: startRadius,
+        borderBottomRightRadius: endRadius,
+      }
+    : {
+        borderTopLeftRadius: endRadius,
+        borderTopRightRadius: startRadius,
+        borderBottomLeftRadius: endRadius,
+        borderBottomRightRadius: startRadius,
+      };
+}
 
 function getDirectionalClasses(base: string, isVertical: boolean) {
   return classNames(base, {

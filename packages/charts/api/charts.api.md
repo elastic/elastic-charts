@@ -2146,15 +2146,17 @@ export interface MeterProps {
     // (undocumented)
     fillBorderWidth?: number;
     // (undocumented)
-    flatBaselineEdge?: boolean;
-    // (undocumented)
     markerColor?: Color;
     // (undocumented)
     orientation?: MeterOrientation;
     // (undocumented)
-    roundFill?: boolean;
+    roundFillEnd?: boolean;
     // (undocumented)
-    roundTrack?: boolean;
+    roundFillStart?: boolean;
+    // (undocumented)
+    roundTrackEnd?: boolean;
+    // (undocumented)
+    roundTrackStart?: boolean;
     // (undocumented)
     showBaselineMarker?: boolean;
     // (undocumented)
