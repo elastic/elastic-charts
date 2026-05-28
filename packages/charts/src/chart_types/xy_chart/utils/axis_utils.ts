@@ -11,6 +11,7 @@ import { computeXScale, computeYScales } from './scales';
 import { ChartType } from '../..';
 import type { SmallMultipleScales } from '../../../common/panel_utils';
 import { hasSMDomain, getPanelSize } from '../../../common/panel_utils';
+import type { TextAlign } from '../../../common/text_utils';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import type { AxisSpec, SettingsSpec } from '../../../specs';
@@ -48,14 +49,13 @@ export interface AxisTick {
   layout: TickLabelBox;
 }
 
-interface TickLabelProps {
+/** @internal */
+export interface TickLabelProps {
   x: number;
   y: number;
-  offsetX: number;
-  offsetY: number;
   textOffsetX: number;
   textOffsetY: number;
-  boxTopY: number;
+  textAlign: TextAlign;
   horizontalAlign: Extract<
     HorizontalAlignment,
     typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Center | typeof HorizontalAlignment.Right
@@ -64,21 +64,6 @@ interface TickLabelProps {
     VerticalAlignment,
     typeof VerticalAlignment.Top | typeof VerticalAlignment.Middle | typeof VerticalAlignment.Bottom
   >;
-}
-
-function getBlockTopOffset(
-  verticalAlign: TickLabelProps['verticalAlign'],
-  blockHeight: number,
-  labelBoxHalfGirth: number,
-): number {
-  switch (verticalAlign) {
-    case VerticalAlignment.Top:
-      return -labelBoxHalfGirth;
-    case VerticalAlignment.Middle:
-      return -blockHeight / 2;
-    case VerticalAlignment.Bottom:
-      return labelBoxHalfGirth - blockHeight;
-  }
 }
 
 /** @internal */
@@ -142,23 +127,11 @@ function getUserTextOffsets(axisLabelBox: TickLabelBox, tickLabelBox: TickLabelB
       };
 }
 
-const horizontalOffsetMultiplier = {
-  [HorizontalAlignment.Left]: -1,
-  [HorizontalAlignment.Right]: 1,
-  [HorizontalAlignment.Center]: 0,
-};
-
-const verticalOffsetMultiplier = {
-  [VerticalAlignment.Top]: -1,
-  [VerticalAlignment.Bottom]: 1,
-  [VerticalAlignment.Middle]: 0,
-};
-
 function getHorizontalAlign(
-  position: Position,
+  axisPosition: Position,
   rotation: number,
   alignment: HorizontalAlignment,
-): Exclude<HorizontalAlignment, typeof HorizontalAlignment.Far | typeof HorizontalAlignment.Near> {
+): TickLabelProps['horizontalAlign'] {
   if (
     alignment === HorizontalAlignment.Center ||
     alignment === HorizontalAlignment.Right ||
@@ -167,28 +140,31 @@ function getHorizontalAlign(
     return alignment;
   }
 
-  if (Math.abs(rotation) === 90) {
-    if (position === Position.Top) {
-      return rotation === 90 ? HorizontalAlignment.Right : HorizontalAlignment.Left;
-    } else if (position === Position.Bottom) {
-      return rotation === -90 ? HorizontalAlignment.Right : HorizontalAlignment.Left;
-    }
-  } else {
-    if (position === Position.Left) {
-      return alignment === HorizontalAlignment.Near ? HorizontalAlignment.Right : HorizontalAlignment.Left;
-    } else if (position === Position.Right) {
-      return alignment === HorizontalAlignment.Near ? HorizontalAlignment.Left : HorizontalAlignment.Right;
-    }
-  }
+  const isNear = alignment === HorizontalAlignment.Near;
 
-  return HorizontalAlignment.Center; // fallback for near/far on top/bottom axis
+  switch (axisPosition) {
+    case Position.Left:
+      return isNear ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+    case Position.Right:
+      return isNear ? HorizontalAlignment.Left : HorizontalAlignment.Right;
+    case Position.Top:
+      if (Math.abs(rotation) === 90) {
+        return rotation === 90 ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+      }
+      return HorizontalAlignment.Center;
+    case Position.Bottom:
+      if (Math.abs(rotation) === 90) {
+        return rotation === -90 ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+      }
+      return HorizontalAlignment.Center;
+  }
 }
 
 function getVerticalAlign(
-  position: Position,
+  axisPosition: Position,
   rotation: number,
   alignment: VerticalAlignment,
-): Exclude<VerticalAlignment, typeof VerticalAlignment.Far | typeof VerticalAlignment.Near> {
+): TickLabelProps['verticalAlign'] {
   if (
     alignment === VerticalAlignment.Middle ||
     alignment === VerticalAlignment.Top ||
@@ -197,21 +173,80 @@ function getVerticalAlign(
     return alignment;
   }
 
-  if (rotation % 180 === 0) {
-    if (position === Position.Left) {
-      return rotation === 0 ? VerticalAlignment.Bottom : VerticalAlignment.Top;
-    } else if (position === Position.Right) {
-      return rotation === 180 ? VerticalAlignment.Bottom : VerticalAlignment.Top;
-    }
-  } else {
-    if (position === Position.Top) {
-      return alignment === VerticalAlignment.Near ? VerticalAlignment.Bottom : VerticalAlignment.Top;
-    } else if (position === Position.Bottom) {
-      return alignment === VerticalAlignment.Near ? VerticalAlignment.Top : VerticalAlignment.Bottom;
-    }
-  }
+  const isNear = alignment === VerticalAlignment.Near;
 
-  return VerticalAlignment.Middle; // fallback for near/far on left/right axis
+  switch (axisPosition) {
+    case Position.Top:
+      return isNear ? VerticalAlignment.Bottom : VerticalAlignment.Top;
+    case Position.Bottom:
+      return isNear ? VerticalAlignment.Top : VerticalAlignment.Bottom;
+    case Position.Left:
+      if (rotation % 180 === 0) {
+        return rotation === 0 ? VerticalAlignment.Bottom : VerticalAlignment.Top;
+      }
+      return VerticalAlignment.Middle;
+    case Position.Right:
+      if (rotation % 180 === 0) {
+        return rotation === 180 ? VerticalAlignment.Bottom : VerticalAlignment.Top;
+      }
+      return VerticalAlignment.Middle;
+  }
+}
+
+/** @internal */
+export function getAlignedTickLabelPosition(
+  textAlignment: TextAlignment,
+  axisPosition: Position,
+  rotation: number,
+  tickPosition: number,
+  axisSize: Size,
+  paddedTickDimension: number,
+  labelBox: TickLabelBox,
+  userOffsets: { local: Point; global: Point },
+): TickLabelProps {
+  const alignment = {
+    horizontal: getHorizontalAlign(axisPosition, rotation, textAlignment.horizontal),
+    vertical: getVerticalAlign(axisPosition, rotation, textAlignment.vertical),
+  };
+
+  const { horizontal: horizontalAlign, vertical: verticalAlign } = alignment;
+
+  const anchor = (() => {
+    const axisNetSize = (isVerticalAxis(axisPosition) ? axisSize.width : axisSize.height) - paddedTickDimension;
+
+    if (isHorizontalAxis(axisPosition)) {
+      return {
+        x: tickPosition,
+        y: axisPosition === Position.Top ? axisNetSize : paddedTickDimension,
+      };
+    }
+
+    return {
+      x: axisPosition === Position.Left ? axisNetSize : paddedTickDimension,
+      y: tickPosition,
+    };
+  })();
+
+  const verticalBoxOffset = (() => {
+    switch (verticalAlign) {
+      case VerticalAlignment.Top:
+        return 0;
+      case VerticalAlignment.Middle:
+        return -labelBox.height / 2;
+      case VerticalAlignment.Bottom:
+        return -labelBox.height;
+    }
+  })();
+
+  return {
+    horizontalAlign,
+    verticalAlign,
+    x: anchor.x + userOffsets.global.x,
+    y: anchor.y + userOffsets.global.y,
+    textAlign: horizontalAlign,
+    textOffsetX: userOffsets.local.x,
+    textOffsetY: userOffsets.local.y + verticalBoxOffset,
+  };
 }
 
 /** @internal */
@@ -227,31 +262,21 @@ export function getTickLabelPosition(
   textAlignment: TextAlignment,
   labelBox: TickLabelBox = maxLabelBox,
 ): TickLabelProps {
-  const { bboxWidth, width: textWidth, bboxHeight, height: axisTextHeight } = maxLabelBox;
-  const { height: blockHeight } = labelBox;
   const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
   const labelInnerPadding = innerPad(tickLabel.padding);
-  const horizontalAlign = getHorizontalAlign(pos, rotation, textAlignment.horizontal);
-  const verticalAlign = getVerticalAlign(pos, rotation, textAlignment.vertical);
   const userOffsets = getUserTextOffsets(maxLabelBox, labelBox, textOffset);
   const paddedTickDimension = tickDimension + labelInnerPadding;
-  const axisNetSize = (isVerticalAxis(pos) ? axisSize.width : axisSize.height) - paddedTickDimension;
-  const labelBoxHalfGirth = isHorizontalAxis(pos) ? bboxHeight / 2 : bboxWidth / 2;
-  const labelHalfWidth = textWidth / 2;
 
-  return {
-    horizontalAlign,
-    verticalAlign,
-    x: pos === Position.Left ? axisNetSize : pos === Position.Right ? paddedTickDimension : tickPosition,
-    y: pos === Position.Top ? axisNetSize : pos === Position.Bottom ? paddedTickDimension : tickPosition,
-    offsetX: userOffsets.global.x + (isHorizontalAxis(pos) ? 0 : horizontalOffsetMultiplier[pos] * labelBoxHalfGirth),
-    offsetY: userOffsets.global.y + (isVerticalAxis(pos) ? 0 : verticalOffsetMultiplier[pos] * labelBoxHalfGirth),
-    textOffsetX:
-      userOffsets.local.x +
-      (isHorizontalAxis(pos) && rotation === 0 ? 0 : labelHalfWidth * horizontalOffsetMultiplier[horizontalAlign]),
-    textOffsetY: userOffsets.local.y + (axisTextHeight / 2) * verticalOffsetMultiplier[verticalAlign],
-    boxTopY: userOffsets.local.y + getBlockTopOffset(verticalAlign, blockHeight, labelBoxHalfGirth),
-  };
+  return getAlignedTickLabelPosition(
+    textAlignment,
+    pos,
+    rotation,
+    tickPosition,
+    axisSize,
+    paddedTickDimension,
+    labelBox,
+    userOffsets,
+  );
 }
 
 /** @internal */

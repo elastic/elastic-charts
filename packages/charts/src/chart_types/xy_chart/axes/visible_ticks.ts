@@ -37,6 +37,16 @@ export type Projection = { ticks: AxisTick[]; scale: ScaleBand | ScaleContinuous
 /** @internal */
 export type Projections = Map<AxisId, Projection>;
 
+/** @internal */
+export type GetMeasuredTicks = (
+  scale: ScaleBand | ScaleContinuous,
+  ticks: (number | string)[],
+  layer: number | undefined,
+  detailedLayer: number,
+  labelFormatter: AxisLabelFormatter,
+  showGrid?: boolean,
+) => Projection;
+
 const USE_ADAPTIVE_TICK_COUNT = true;
 
 function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
@@ -265,7 +275,7 @@ export function computeVisibleTickSets(
       const isNice = (isXAxis ? scaleConfigs.x.nice : scaleConfigs.y[groupId]?.nice) ?? false;
       const adaptiveTickCount = !isNice && USE_ADAPTIVE_TICK_COUNT;
 
-      const getMeasuredTicks = (
+      const getMeasuredTicks: GetMeasuredTicks = (
         scale: ScaleBand | ScaleContinuous,
         ticks: (number | string)[],
         layer: number | undefined,

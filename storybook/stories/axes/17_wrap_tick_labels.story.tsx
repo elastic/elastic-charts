@@ -28,14 +28,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const rotation = number('rotation', 0, { min: 0, max: 90, step: 10 });
   const alignmentHorizontal = customKnobs.enum.horizontalTextAlignment('Alignment Horizontal', 'near');
   const alignmentVertical = customKnobs.enum.verticalTextAlignment('Alignment Vertical', 'near');
-
   return (
     <Chart title={title} description={description}>
       <Settings debug={boolean('debug', true)} baseTheme={useBaseTheme()} />
       <Axis
-        id="bottom"
-        position={Position.Top}
-        title="Top axis"
+        id="category"
+        position={Position.Bottom}
+        title="Categorical axis"
         showOverlappingTicks={boolean('showOverlappingTicks', true)}
         style={{
           tickLabel: {

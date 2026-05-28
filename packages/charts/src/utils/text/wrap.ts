@@ -10,7 +10,8 @@ import { ELLIPSIS, type Font } from '../../common/text_utils';
 import { monotonicHillClimb } from '../../solvers/monotonic_hill_climb';
 import type { TextMeasure } from '../bbox/canvas_text_bbox_calculator';
 
-interface WrapTextLines extends Array<string> {
+/** @internal */
+export interface WrapTextLines extends Array<string> {
   meta: {
     truncated: boolean;
   };

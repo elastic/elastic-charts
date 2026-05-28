@@ -9,7 +9,7 @@
 import type { Dimensions, Size } from '../../../../../utils/dimensions';
 import type { Point } from '../../../../../utils/point';
 import type { AxisStyle } from '../../../../../utils/themes/theme';
-import type { TickLabelBox } from '../../../axes/layout/types';
+import type { TickLabelBox } from '../../../axes/tick_labels';
 import type { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
 import type { AxisTick } from '../../../utils/axis_utils';
 import type { AxisSpec } from '../../../utils/specs';
