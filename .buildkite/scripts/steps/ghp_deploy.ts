@@ -11,6 +11,12 @@ import path from 'path';
 
 import { downloadArtifacts, startGroup, decompress, ghpDeploy } from '../../utils';
 
+// gh-pages uses find-cache-dir, which resolves to <repoRoot>/node_modules/.cache/gh-pages.
+// This step runs in the docker node plugin as root with the workspace bind-mounted, so
+// writing there leaves root-owned dirs on the host and breaks the host pre-exit yarn install.
+// CACHE_DIR is honored by find-cache-dir and keeps the clone inside the container.
+process.env.CACHE_DIR = process.env.CACHE_DIR || '/tmp/ech-cache';
+
 void (async () => {
   const outDir = '.out';
 
