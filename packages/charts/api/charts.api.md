@@ -2089,7 +2089,6 @@ export const Meter: React_2.FunctionComponent<MeterProps>;
 export interface MeterColorStop {
     // (undocumented)
     color: Color;
-    // (undocumented)
     stop: number;
 }
 
@@ -2111,11 +2110,8 @@ export type MeterOrientation = LayoutDirection;
 
 // @alpha
 export interface MeterPaletteFill {
-    // (undocumented)
     colorStops: MeterColorStop[];
-    // (undocumented)
     fallbackColor?: Color;
-    // (undocumented)
     style: Exclude<MeterFillStyle, typeof MeterFillStyle.Single>;
     // (undocumented)
     type: 'palette';
@@ -2133,7 +2129,6 @@ export interface MeterProps {
     ariaValueNow?: number;
     // (undocumented)
     ariaValueText?: string;
-    // (undocumented)
     baseline?: number;
     // (undocumented)
     className?: string;
@@ -2149,15 +2144,10 @@ export interface MeterProps {
     markerColor?: Color;
     // (undocumented)
     orientation?: MeterOrientation;
-    // (undocumented)
     roundFillEnd?: boolean;
-    // (undocumented)
     roundFillStart?: boolean;
-    // (undocumented)
     roundTrackEnd?: boolean;
-    // (undocumented)
     roundTrackStart?: boolean;
-    // (undocumented)
     showBaselineMarker?: boolean;
     // (undocumented)
     size?: MeterSize;

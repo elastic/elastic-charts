@@ -49,6 +49,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   const [domainMin, domainMax] = sortNumbers(updatedDomain);
   const scaledValue = clamp(getMeterScalePosition(updatedDomain, value), 0, 100);
   const roundedScaledValue = Math.round(scaledValue * 100) / 100;
+  const hasZeroBaselineMarker = domainMin < 0 && domainMax > 0;
   const labelType = isBullet ? 'Value' : 'Percentage';
 
   return (
@@ -59,10 +60,16 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
       trackColor={barBackground}
       orientation={progressBarDirection}
       size={size}
+      baseline={0} // Fixed baseline for signed domains for Metric chart
       target={target}
       markerColor={blendedBarColor}
       fillBorderColor={panelBackground}
       fillBorderWidth={2}
+      showBaselineMarker={hasZeroBaselineMarker}
+      roundTrackStart
+      roundTrackEnd
+      roundFillStart={!hasZeroBaselineMarker}
+      roundFillEnd
       className={getDirectionalClasses('Progress', isVertical, size)}
       title={!isBullet ? '' : `${updatedDomain[0]} to ${updatedDomain[1]}`}
       valueTitle={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${roundedScaledValue}%`}

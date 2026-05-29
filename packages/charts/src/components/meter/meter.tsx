@@ -61,6 +61,10 @@ export type MeterFillStyle = $Values<typeof MeterFillStyle>;
  */
 export interface MeterColorStop {
   color: Color;
+  /**
+   * Domain value where this stop applies.
+   * Use the same units as `domain`, not a normalized 0-100 track percentage.
+   */
   stop: number;
 }
 
@@ -79,8 +83,17 @@ export interface MeterSingleFill {
  */
 export interface MeterPaletteFill {
   type: 'palette';
+  /**
+   * Resolves either a single interpolated palette color or a revealed gradient.
+   */
   style: Exclude<MeterFillStyle, typeof MeterFillStyle.Single>;
+  /**
+   * Domain-valued color stops used to resolve solid and gradient fills.
+   */
   colorStops: MeterColorStop[];
+  /**
+   * Used when no stop can be resolved, such as an empty stop list.
+   */
   fallbackColor?: Color;
 }
 
@@ -101,15 +114,41 @@ export interface MeterProps {
   trackColor: Color;
   orientation?: MeterOrientation;
   size?: MeterSize;
+  /**
+   * Domain value from which the fill grows.
+   * Values at or above the baseline fill toward the track end; values below it fill
+   * back toward the track start. Defaults to `0`.
+   */
   baseline?: number;
   target?: number;
   markerColor?: Color;
   fillBorderColor?: Color;
   fillBorderWidth?: number;
+  /**
+   * Shows a marker at `baseline` when the baseline lies within `domain`.
+   */
   showBaselineMarker?: boolean;
+  /**
+   * Rounds the track edge at the start of the domain.
+   * The track start is the left edge for horizontal meters and the bottom edge for vertical meters.
+   */
   roundTrackStart?: boolean;
+  /**
+   * Rounds the track edge at the end of the domain.
+   * The track end is the right edge for horizontal meters and the top edge for vertical meters.
+   */
   roundTrackEnd?: boolean;
+  /**
+   * Rounds the fill edge at the start of the filled span.
+   * The fill start is the baseline-side edge, so it follows the direction from `baseline` to `value`.
+   * When `value < baseline`, the physical start edge flips to the right for horizontal meters and the top for vertical meters.
+   */
   roundFillStart?: boolean;
+  /**
+   * Rounds the fill edge at the end of the filled span.
+   * The fill end is the value-side edge, so it follows the direction from `baseline` to `value`.
+   * When `value < baseline`, the physical end edge flips to the left for horizontal meters and the bottom for vertical meters.
+   */
   roundFillEnd?: boolean;
   className?: string;
   style?: CSSProperties;
@@ -259,7 +298,6 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
           style={{
             [isVertical ? 'bottom' : 'left']: targetPlacement,
           }}
-          aria-valuenow={target}
           title={targetTitle}
         >
           <Icon height={METER_MARKER_SIZE} width={METER_MARKER_SIZE} type="downArrow" color={resolvedMarkerColor} />
