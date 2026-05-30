@@ -11,6 +11,7 @@ import type { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
 import type { Color } from '../../../common/colors';
+import type { MeterFill, MeterSize } from '../../../components/meter';
 import type { Spec } from '../../../specs/spec_type';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { specComponentFactory } from '../../../state/spec_factory';
@@ -105,6 +106,18 @@ export type MetricWNumber = MetricBase & {
 export type MetricWProgress = MetricWNumber & {
   domainMax: number;
   progressBarDirection: LayoutDirection;
+  /**
+   * Optional Meter fill configuration for the progress bar.
+   * Defaults to a single-color fill derived from `color`.
+   */
+  progressBarFill?: MeterFill;
+  /**
+   * Optional Meter thickness preset for the progress bar.
+   * Use this when a parent layout, such as Lens table row density, needs to map
+   * onto a fixed progress bar thickness. When omitted, the bar size is derived
+   * from the Metric tile layout.
+   */
+  progressBarSize?: MeterSize;
 };
 
 /**

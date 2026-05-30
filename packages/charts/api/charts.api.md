@@ -2315,6 +2315,8 @@ export type MetricWNumberArrayValues = MetricBase & {
 export type MetricWProgress = MetricWNumber & {
     domainMax: number;
     progressBarDirection: LayoutDirection;
+    progressBarFill?: MeterFill;
+    progressBarSize?: MeterSize;
 };
 
 // @alpha (undocumented)

@@ -7,10 +7,12 @@
  */
 
 import { BADGE_BORDER, BADGE_PADDING_BLOCK } from './badge';
+import { getMetricProgressBarThickness } from './progress';
 import type { TextParts } from './text_processing';
 import { getTextParts } from './text_processing';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
 import type { Font } from '../../../../common/text_utils';
+import { MeterSize } from '../../../../components/meter';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isNil, LayoutDirection } from '../../../../utils/common';
@@ -128,7 +130,16 @@ const BASE_TEXT_FONT: Font = {
   fontWeight: 'normal',
   textColor: 'black',
 };
-const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs: 4, s: 4, m: 8, l: 8, xl: 8, xxl: 16 };
+const PROGRESS_BAR_SIZE: Record<BreakPoint, MeterSize> = {
+  xxxs: MeterSize.Small,
+  xxs: MeterSize.Small,
+  xs: MeterSize.Small,
+  s: MeterSize.Small,
+  m: MeterSize.Medium,
+  l: MeterSize.Medium,
+  xl: MeterSize.Medium,
+  xxl: MeterSize.Large,
+};
 const ELEMENT_PADDING = 5; // Aligned with our CSS in _text.scss
 
 function getMetricFont(fontFamily: string, fontWeight: Font['fontWeight']): Font {
@@ -189,7 +200,12 @@ export function getMetricTextPartDimensions(
   style: MetricStyle,
   locale: string,
 ): MetricTextDimensions {
-  const heightBasedSizes = getHeightBasedFontSizes(HEIGHT_BP, panel.height, style);
+  const heightBasedSizes = getHeightBasedFontSizes(
+    HEIGHT_BP,
+    panel.height,
+    style,
+    isMetricWProgress(datum) ? datum.progressBarSize : undefined,
+  );
   const hasProgressBar = isMetricWProgress(datum);
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
@@ -234,6 +250,7 @@ function getHeightBasedFontSizes(
   ranges: [number, number, BreakPoint][],
   value: number,
   style: MetricStyle,
+  progressBarSizeOverride?: 'small' | 'medium' | 'large',
 ): HeightBasedSizes {
   const range = ranges.find(([min, max]) => min <= value && value < max);
   const size = range ? range[2] : ranges[0]?.[2] ?? 's';
@@ -247,7 +264,7 @@ function getHeightBasedFontSizes(
     extraFontSize: EXTRA_FONT_SIZE[size],
     valueFontSize,
     valuePartFontSize,
-    progressBarThickness: PROGRESS_BAR_THICKNESS[size],
+    progressBarThickness: getMetricProgressBarThickness(progressBarSizeOverride ?? PROGRESS_BAR_SIZE[size]) ?? 4,
   };
 }
 

@@ -10,9 +10,11 @@ import classNames from 'classnames';
 import { scaleLinear } from 'd3-scale';
 import React from 'react';
 
-import type { ProgressBarSize } from './metric';
+import { combineColors } from '../../../../common/color_calcs';
+import { RGBATupleToString, colorToRgba } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
-import { Meter } from '../../../../components/meter';
+import type { MeterFill } from '../../../../components/meter';
+import { Meter, MeterFillStyle, MeterSize } from '../../../../components/meter';
 import { getMeterScalePosition } from '../../../../components/meter/utils';
 import { clamp, isNil, LayoutDirection, sortNumbers } from '../../../../utils/common';
 import type { ContinuousDomain, GenericDomain } from '../../../../utils/domain';
@@ -23,8 +25,69 @@ interface ProgressBarProps {
   datum: MetricWProgress | BulletMetricWProgress;
   barBackground: Color;
   panelBackground: Color;
+  fillBackgroundColor: Color;
   blendedBarColor: Color;
-  size: ProgressBarSize;
+  size: MeterSize;
+  fill?: MeterFill;
+}
+
+/** @internal */
+export function getMetricProgressBarSize(progressBarThickness?: number): MeterSize {
+  switch (progressBarThickness) {
+    case 4:
+      return MeterSize.Small;
+    case 8:
+      return MeterSize.Medium;
+    case 16:
+      return MeterSize.Large;
+    default:
+      return MeterSize.Small;
+  }
+}
+
+/** @internal */
+export function getMetricProgressBarThickness(size?: MeterSize) {
+  switch (size) {
+    case MeterSize.Small:
+      return 4;
+    case MeterSize.Medium:
+      return 8;
+    case MeterSize.Large:
+      return 16;
+    default:
+      return undefined;
+  }
+}
+
+function blendMetricProgressColor(color: Color, backgroundColor: Color) {
+  return RGBATupleToString(combineColors(colorToRgba(color), colorToRgba(backgroundColor)));
+}
+
+function resolveMetricProgressBarFill(
+  fill: MeterFill | undefined,
+  fallbackColor: Color,
+  backgroundColor: Color,
+): MeterFill {
+  if (!fill) {
+    return { type: MeterFillStyle.Single, color: fallbackColor };
+  }
+
+  if (fill.type === MeterFillStyle.Single) {
+    return {
+      ...fill,
+      color: blendMetricProgressColor(fill.color, backgroundColor),
+    };
+  }
+
+  return {
+    ...fill,
+    colorStops: fill.colorStops.map((stop) => ({
+      ...stop,
+      color: blendMetricProgressColor(stop.color, backgroundColor),
+    })),
+    fallbackColor:
+      fill.fallbackColor === undefined ? undefined : blendMetricProgressColor(fill.fallbackColor, backgroundColor),
+  };
 }
 
 /** @internal */
@@ -32,8 +95,10 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   datum,
   barBackground,
   panelBackground,
+  fillBackgroundColor,
   blendedBarColor,
   size,
+  fill,
 }) => {
   const { title, value, target, valueFormatter, targetFormatter, progressBarDirection } = datum;
   const isBullet = isBulletMetric(datum);
@@ -51,18 +116,19 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   const roundedScaledValue = Math.round(scaledValue * 100) / 100;
   const hasZeroBaselineMarker = domainMin < 0 && domainMax > 0;
   const labelType = isBullet ? 'Value' : 'Percentage';
+  const progressBarFill = resolveMetricProgressBarFill(fill, blendedBarColor, fillBackgroundColor);
 
   return (
     <Meter
       value={value}
       domain={updatedDomain}
-      fill={{ type: 'single', color: blendedBarColor }}
+      fill={progressBarFill}
       trackColor={barBackground}
       orientation={progressBarDirection}
       size={size}
       baseline={0} // Fixed baseline for signed domains for Metric chart
       target={target}
-      markerColor={blendedBarColor}
+      markerColor={fill ? undefined : blendedBarColor}
       fillBorderColor={panelBackground}
       fillBorderWidth={2}
       showBaselineMarker={hasZeroBaselineMarker}

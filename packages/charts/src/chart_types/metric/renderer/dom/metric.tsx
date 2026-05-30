@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import type { CSSProperties } from 'react';
 import React, { useState } from 'react';
 
-import { ProgressBar } from './progress';
+import { ProgressBar, getMetricProgressBarSize } from './progress';
 import { SparkLine, getSparkLineColor } from './sparkline';
 import type { TextColors } from './text';
 import { MetricText } from './text';
@@ -21,6 +21,7 @@ import { RGBATupleToString, changeColorLightness, colorToRgba } from '../../../.
 import type { Color } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
+import { MeterSize } from '../../../../components/meter';
 import type {
   BasicListener,
   ElementClickListener,
@@ -39,17 +40,6 @@ export interface TextContrastOptions {
   subtitle: ColorContrastOptions;
   extra: ColorContrastOptions;
 }
-
-/**
- * Synced with _index.scss
- * @internal
- */
-export type ProgressBarSize = 'small' | 'medium' | 'large';
-const progressBarMap: Record<number, ProgressBarSize> = {
-  4: 'small',
-  8: 'medium',
-  16: 'large',
-};
 
 interface MetricContext {
   backgroundColor: Color;
@@ -152,14 +142,16 @@ export const Metric: React.FunctionComponent<{
   onElementOver,
   onElementOut,
 }) => {
+  const hasProgressBar = isMetricWProgress(datum);
   const { progressBarThickness } = textDimensions.heightBasedSizes;
-  const progressBarSize = progressBarMap[progressBarThickness] ?? 'medium';
+  const progressBarSize = hasProgressBar
+    ? datum.progressBarSize ?? getMetricProgressBarSize(progressBarThickness)
+    : MeterSize.Small;
 
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');
   const [lastMouseDownTimestamp, setLastMouseDownTimestamp] = useState<number>(0);
   const metricHTMLId = `echMetric-${chartId}-${rowIndex}-${columnIndex}`;
 
-  const hasProgressBar = isMetricWProgress(datum);
   const progressBarDirection = hasProgressBar ? datum.progressBarDirection : undefined;
 
   const hasTrend = isMetricWTrend(datum);
@@ -187,6 +179,7 @@ export const Metric: React.FunctionComponent<{
   const blendedInteractionColor = RGBATupleToString(
     combineColors(colorToRgba(interactionColor), blendingBackgroundColor),
   );
+  const progressBarFill = isMetricWProgress(datum) ? datum.progressBarFill : undefined;
 
   const datumWithInteractionColor: MetricDatum = { ...datum, color: blendedInteractionColor };
 
@@ -294,7 +287,9 @@ export const Metric: React.FunctionComponent<{
           datum={datumWithInteractionColor}
           barBackground={style.barBackground}
           panelBackground={backgroundColor}
+          fillBackgroundColor={RGBATupleToString(blendingBackgroundColor)}
           blendedBarColor={blendedColor}
+          fill={progressBarFill}
           size={progressBarSize}
         />
       )}

@@ -9,12 +9,12 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import type { ProgressBarSize } from './metric';
 import { SecondaryMetric } from './secondary_metric';
 import type { MetricTextDimensions } from './text_measurements';
 import { PADDING } from './text_measurements';
 import { TitlesBlock } from './titles';
 import type { Color } from '../../../../common/colors';
+import type { MeterSize } from '../../../../components/meter';
 import { LayoutDirection, renderWithProps } from '../../../../utils/common';
 import type { MetricStyle } from '../../../../utils/themes/theme';
 import { isMetricWNumber, isSecondaryMetricProps } from '../../specs';
@@ -78,7 +78,7 @@ interface MetricTextprops {
   datum: MetricDatum;
   style: MetricStyle;
   onElementClick?: () => void;
-  progressBarSize: ProgressBarSize;
+  progressBarSize: MeterSize;
   textDimensions: MetricTextDimensions;
   colors: TextColors;
   defaultBadgeBorderColor?: Color;
