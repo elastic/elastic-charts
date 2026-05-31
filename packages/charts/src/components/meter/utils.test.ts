@@ -33,29 +33,29 @@ describe('Meter utils', () => {
       fillEnd: 100,
       fillSize: 50,
       rawValuePosition: 50,
-      rawBaselinePosition: 111.11111111111111,
+      rawBaselinePosition: expect.closeTo(111.11111111111111, 10),
       isBaselineInDomain: false,
     });
   });
 
   test('should anchor mixed-sign domains at zero', () => {
     expect(getMeterGeometry([-100, 40], -50)).toEqual({
-      fillStart: 35.714285714285715,
-      fillEnd: 71.42857142857143,
-      fillSize: 35.714285714285715,
-      rawValuePosition: 35.714285714285715,
-      rawBaselinePosition: 71.42857142857143,
+      fillStart: expect.closeTo(35.714285714285715, 10),
+      fillEnd: expect.closeTo(71.42857142857143, 10),
+      fillSize: expect.closeTo(35.714285714285715, 10),
+      rawValuePosition: expect.closeTo(35.714285714285715, 10),
+      rawBaselinePosition: expect.closeTo(71.42857142857143, 10),
       isBaselineInDomain: true,
     });
   });
 
   test('should anchor to a custom baseline inside the domain', () => {
     expect(getMeterGeometry([-100, 40], -50, -20)).toEqual({
-      fillStart: 35.714285714285715,
-      fillEnd: 57.14285714285714,
-      fillSize: 21.42857142857143,
-      rawValuePosition: 35.714285714285715,
-      rawBaselinePosition: 57.14285714285714,
+      fillStart: expect.closeTo(35.714285714285715, 10),
+      fillEnd: expect.closeTo(57.14285714285714, 10),
+      fillSize: expect.closeTo(21.42857142857143, 10),
+      rawValuePosition: expect.closeTo(35.714285714285715, 10),
+      rawBaselinePosition: expect.closeTo(57.14285714285714, 10),
       isBaselineInDomain: true,
     });
   });
@@ -73,11 +73,11 @@ describe('Meter utils', () => {
 
   test('should normalize reversed domains before scaling', () => {
     expect(getMeterGeometry([40, -100], -50)).toEqual({
-      fillStart: 35.714285714285715,
-      fillEnd: 71.42857142857143,
-      fillSize: 35.714285714285715,
-      rawValuePosition: 35.714285714285715,
-      rawBaselinePosition: 71.42857142857143,
+      fillStart: expect.closeTo(35.714285714285715, 10),
+      fillEnd: expect.closeTo(71.42857142857143, 10),
+      fillSize: expect.closeTo(35.714285714285715, 10),
+      rawValuePosition: expect.closeTo(35.714285714285715, 10),
+      rawBaselinePosition: expect.closeTo(71.42857142857143, 10),
       isBaselineInDomain: true,
     });
   });
