@@ -102,12 +102,27 @@ export type MetricWNumber = MetricBase & {
   targetFormatter?: ValueFormatter;
 };
 
+/**
+ * Accessible labels used by explicit-domain Metric progress bars.
+ *
+ * When `MetricWProgress.domain` is provided, Metric exposes actual values rather
+ * than derived percentages for titles and aria text. These labels customize that
+ * value and target wording.
+ *
+ * @alpha
+ */
+export interface MetricProgressValueLabels {
+  value: string;
+  target: string;
+}
+
 /** @alpha */
 export type MetricWProgress = MetricWNumber & {
-  domainMax: number;
   progressBarDirection: LayoutDirection;
   /**
    * Optional Meter fill configuration for the progress bar.
+   *
+   * Colors are resolved against the Metric tile background before rendering.
    * Defaults to a single-color fill derived from `color`.
    */
   progressBarFill?: MeterFill;
@@ -118,17 +133,39 @@ export type MetricWProgress = MetricWNumber & {
    * from the Metric tile layout.
    */
   progressBarSize?: MeterSize;
+  /**
+   * Maximum value of the Metric progress domain.
+   */
+  domainMax: number;
+  /**
+   * Optional minimum value of the Metric progress domain.
+   * Defaults to `0`, preserving the existing zero-based Metric behavior.
+   * Set this when Metric should render a signed or custom range.
+   */
+  domainMin?: number;
+  /**
+   * Optional labels for explicit-domain value and target text.
+   * Defaults to `Value` and `Target`.
+   * Ignored when `domainMin` is omitted.
+   */
+  progressValueLabels?: MetricProgressValueLabels;
+  /**
+   * When `true`, the explicit `[domainMin, domainMax]` range is niced before
+   * rendering. Ignored when `domainMin` is omitted.
+   */
+  niceDomain?: boolean;
 };
 
-/**
- * Type used internally by bullet
- * TODO - discuss usage of this externally
- *
- * @internal
- */
-export type BulletMetricWProgress = Omit<MetricWProgress, 'domainMax'> & {
+/** @internal Type used by Bullet chart Metric rendering. */
+export type BulletMetricWProgress = MetricWNumber & {
+  progressBarDirection: LayoutDirection;
+  progressBarFill?: MeterFill;
+  progressBarSize?: MeterSize;
   domain: GenericDomain;
   niceDomain?: boolean;
+  /**
+   * Bullet uses value/target wording that is owned by the Bullet chart contract.
+   */
   valueLabels: Omit<BulletValueLabels, 'active'>;
 };
 
@@ -188,7 +225,11 @@ export type MetricProps = ComponentProps<typeof Metric>;
 
 /** @internal */
 export function isBulletMetric(datum: MetricDatum): datum is BulletMetricWProgress {
-  return Array.isArray((datum as BulletMetricWProgress).domain);
+  return (
+    isMetricWNumber(datum) &&
+    Array.isArray((datum as BulletMetricWProgress).domain) &&
+    datum.hasOwnProperty('valueLabels')
+  );
 }
 
 /** @internal */
@@ -207,16 +248,13 @@ export function isMetricWNumber(datum: MetricDatum): datum is MetricWNumber {
 }
 
 /** @internal */
-export function isMetricWText(datum: MetricDatum): datum is MetricWNumber {
+export function isMetricWText(datum: MetricDatum): datum is MetricWText {
   return 'value' in datum && typeof datum.value === 'string';
 }
 
 /** @internal */
 export function isMetricWProgress(datum: MetricDatum): datum is MetricWProgress {
-  return (
-    (isMetricWNumber(datum) && datum.hasOwnProperty('domainMax') && !datum.hasOwnProperty('trend')) ||
-    isBulletMetric(datum)
-  );
+  return isMetricWNumber(datum) && !datum.hasOwnProperty('trend') && datum.hasOwnProperty('domainMax');
 }
 
 /** @internal */

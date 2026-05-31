@@ -2228,6 +2228,14 @@ export type MetricElementEvent = {
 // @public
 export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal' | 500>;
 
+// @alpha
+export interface MetricProgressValueLabels {
+    // (undocumented)
+    target: string;
+    // (undocumented)
+    value: string;
+}
+
 // @alpha (undocumented)
 export interface MetricSpec extends Spec {
     // (undocumented)
@@ -2313,10 +2321,13 @@ export type MetricWNumberArrayValues = MetricBase & {
 
 // @alpha (undocumented)
 export type MetricWProgress = MetricWNumber & {
-    domainMax: number;
     progressBarDirection: LayoutDirection;
     progressBarFill?: MeterFill;
     progressBarSize?: MeterSize;
+    domainMax: number;
+    domainMin?: number;
+    progressValueLabels?: MetricProgressValueLabels;
+    niceDomain?: boolean;
 };
 
 // @alpha (undocumented)

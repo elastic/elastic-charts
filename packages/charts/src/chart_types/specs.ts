@@ -45,6 +45,7 @@ export {
   MetricWNumberArrayValues,
   MetricWStringArrayValues,
   MetricWProgress,
+  MetricProgressValueLabels,
   MetricWTrend,
   MetricTrendShape,
   MetricDatum,

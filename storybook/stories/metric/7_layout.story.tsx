@@ -13,11 +13,10 @@ import React from 'react';
 
 import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber, SecondaryMetricProps } from '@elastic/charts';
 import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
-import type { BulletMetricWProgress } from '@elastic/charts/src/chart_types/metric/specs';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import {
-  defaultBulletValueLabels,
+  defaultProgressValueLabels,
   getProgressBarFill,
   labelsGroup,
   metricGroup,
@@ -43,6 +42,8 @@ const getIcon =
     <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
   );
 
+// Secondary metric and badge controls live in the same Storybook group as the
+// primary metric styling so all value-related options stay together.
 const secondaryMetricGroup = metricGroup;
 
 const badgeColorMap = {
@@ -118,7 +119,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const blendingBackground = color('Blending background', 'rgba(255,255,255,1)', metricGroup);
 
   const progressOrTrend = select(
-    'Type',
+    'Visualization type',
     { Trend: 'trend', 'Progress bar': 'bar', None: 'none' },
     'bar',
     progressBarGroup,
@@ -205,7 +206,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const badgeBorderSelection = select(
     'Badge border color',
     {
-      deafult: 'auto',
+      default: 'auto',
       customColor: 'custom color',
     },
     'auto',
@@ -265,25 +266,19 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     trendA11yTitle,
     trendA11yDescription,
   };
-  const numericProgressData =
-    progressMin !== 0
-      ? ({
-          ...numericDataBase,
-          domain: progressDomain,
-          progressBarDirection,
-          progressBarFill,
-          progressBarSize: progressBarSizeOverride,
-          niceDomain: false,
-          valueLabels: defaultBulletValueLabels,
-        } satisfies BulletMetricWProgress)
-      : ({
-          ...numericDataBase,
-          domainMax: progressMax,
-          progressBarDirection,
-          progressBarFill,
-          progressBarSize: progressBarSizeOverride,
-        } satisfies MetricWProgress);
-  const numericData: MetricWProgress | MetricWNumber | MetricWTrend | BulletMetricWProgress =
+  // A non-zero minimum exercises the public explicit-domain Metric progress API,
+  // which Lens also needs for signed ranges.
+  const numericProgressData: MetricWProgress = {
+    ...numericDataBase,
+    domainMax: progressMax,
+    domainMin: progressMin !== 0 ? progressMin : undefined,
+    progressBarDirection,
+    progressBarFill,
+    progressBarSize: progressBarSizeOverride,
+    niceDomain: progressMin !== 0 ? false : undefined,
+    progressValueLabels: progressMin !== 0 ? defaultProgressValueLabels : undefined,
+  };
+  const numericData: MetricWProgress | MetricWNumber | MetricWTrend =
     progressOrTrend === 'bar'
       ? numericProgressData
       : progressOrTrend === 'trend'
@@ -293,7 +288,6 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const textualData: MetricWText | MetricWTrend = {
     ...data,
     value,
-    ...(progressOrTrend === 'bar' ? { domainMax: progressMax, progressBarDirection } : {}),
     ...(progressOrTrend === 'trend' ? trendData : {}),
   };
 
@@ -301,7 +295,9 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const onEventOverAction = action('over');
   const onEventOutAction = action('out');
 
-  const configuredData = [[numberTextSwitch ? numericData : textualData]];
+  // Progress bars require numeric values, so keep the numeric Metric path when
+  // the progress-bar visualization is selected.
+  const configuredData = [[progressOrTrend === 'bar' || numberTextSwitch ? numericData : textualData]];
 
   return (
     <Chart title={storyTitle} description={description}>

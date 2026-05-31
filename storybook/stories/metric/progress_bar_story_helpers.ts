@@ -149,7 +149,7 @@ export function getProgressBarFill(
   };
 }
 
-export const defaultBulletValueLabels = {
+export const defaultProgressValueLabels = {
   value: 'Value',
   target: 'Target',
 } as const;

@@ -32,6 +32,19 @@ interface ProgressBarProps {
 }
 
 /** @internal */
+export type MetricProgressBarSize = MeterSize;
+type ExplicitDomainProgress = BulletMetricWProgress | (MetricWProgress & { domainMin: number });
+
+const DEFAULT_PROGRESS_VALUE_LABELS = {
+  value: 'Value',
+  target: 'Target',
+} as const;
+
+function hasExplicitProgressDomain(datum: MetricWProgress | BulletMetricWProgress): datum is ExplicitDomainProgress {
+  return isBulletMetric(datum) || datum.domainMin !== undefined;
+}
+
+/** @internal */
 export function getMetricProgressBarSize(progressBarThickness?: number): MeterSize {
   switch (progressBarThickness) {
     case 4:
@@ -46,7 +59,7 @@ export function getMetricProgressBarSize(progressBarThickness?: number): MeterSi
 }
 
 /** @internal */
-export function getMetricProgressBarThickness(size?: MeterSize) {
+export function getMetricProgressBarThickness(size?: MetricProgressBarSize) {
   switch (size) {
     case MeterSize.Small:
       return 4;
@@ -90,7 +103,7 @@ function resolveMetricProgressBarFill(
   };
 }
 
-/** @internal */
+/** @internal Metric-specific adapter that resolves Meter fill colors, sizing, and accessibility text. */
 export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   datum,
   barBackground,
@@ -101,12 +114,12 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   fill,
 }) => {
   const { title, value, target, valueFormatter, targetFormatter, progressBarDirection } = datum;
-  const isBullet = isBulletMetric(datum);
+  const hasExplicitDomain = hasExplicitProgressDomain(datum);
   const isVertical = progressBarDirection === LayoutDirection.Vertical;
-  const domain: GenericDomain = isBulletMetric(datum) ? datum.domain : [0, datum.domainMax];
+  const domain: GenericDomain = isBulletMetric(datum) ? datum.domain : [datum.domainMin ?? 0, datum.domainMax];
   const scale = scaleLinear().domain(domain).range([0, 100]);
 
-  if (isBulletMetric(datum) && datum.niceDomain) {
+  if (hasExplicitDomain && datum.niceDomain) {
     scale.nice();
   }
 
@@ -115,7 +128,12 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   const scaledValue = clamp(getMeterScalePosition(updatedDomain, value), 0, 100);
   const roundedScaledValue = Math.round(scaledValue * 100) / 100;
   const hasZeroBaselineMarker = domainMin < 0 && domainMax > 0;
-  const labelType = isBullet ? 'Value' : 'Percentage';
+  const progressValueLabels = hasExplicitDomain
+    ? isBulletMetric(datum)
+      ? datum.valueLabels
+      : datum.progressValueLabels ?? DEFAULT_PROGRESS_VALUE_LABELS
+    : undefined;
+  const labelType = progressValueLabels?.value ?? 'Percentage';
   const progressBarFill = resolveMetricProgressBarFill(fill, blendedBarColor, fillBackgroundColor);
 
   return (
@@ -137,18 +155,20 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
       roundFillStart={!hasZeroBaselineMarker}
       roundFillEnd
       className={getDirectionalClasses('Progress', isVertical, size)}
-      title={!isBullet ? '' : `${updatedDomain[0]} to ${updatedDomain[1]}`}
-      valueTitle={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${roundedScaledValue}%`}
+      title={progressValueLabels ? `${updatedDomain[0]} to ${updatedDomain[1]}` : ''}
+      valueTitle={
+        progressValueLabels ? `${progressValueLabels.value}: ${valueFormatter(value)}` : `${roundedScaledValue}%`
+      }
       targetTitle={
         isNil(target)
           ? undefined
-          : `${isBullet ? `${datum.valueLabels.target}: ` : ''}${(targetFormatter ?? valueFormatter)(target)}`
+          : `${progressValueLabels ? `${progressValueLabels.target}: ` : ''}${(targetFormatter ?? valueFormatter)(target)}`
       }
       ariaLabel={title ? `${labelType} of ${title}` : labelType}
-      ariaValueMin={isBullet ? domainMin : 0}
-      ariaValueMax={isBullet ? domainMax : 100}
-      ariaValueNow={isBullet ? value : roundedScaledValue}
-      ariaValueText={isBullet ? valueFormatter(value) : `${roundedScaledValue}%`}
+      ariaValueMin={progressValueLabels ? domainMin : 0}
+      ariaValueMax={progressValueLabels ? domainMax : 100}
+      ariaValueNow={progressValueLabels ? value : roundedScaledValue}
+      ariaValueText={progressValueLabels ? valueFormatter(value) : `${roundedScaledValue}%`}
     />
   );
 };

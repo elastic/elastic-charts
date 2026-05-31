@@ -7,6 +7,7 @@
  */
 
 import { BADGE_BORDER, BADGE_PADDING_BLOCK } from './badge';
+import type { MetricProgressBarSize } from './progress';
 import { getMetricProgressBarThickness } from './progress';
 import type { TextParts } from './text_processing';
 import { getTextParts } from './text_processing';
@@ -250,7 +251,7 @@ function getHeightBasedFontSizes(
   ranges: [number, number, BreakPoint][],
   value: number,
   style: MetricStyle,
-  progressBarSizeOverride?: 'small' | 'medium' | 'large',
+  progressBarSizeOverride?: MetricProgressBarSize,
 ): HeightBasedSizes {
   const range = ranges.find(([min, max]) => min <= value && value < max);
   const size = range ? range[2] : ranges[0]?.[2] ?? 's';

@@ -52,10 +52,10 @@ describe('Meter utils', () => {
   test('should anchor to a custom baseline inside the domain', () => {
     expect(getMeterGeometry([-100, 40], -50, -20)).toEqual({
       fillStart: 35.714285714285715,
-      fillEnd: 57.142857142857146,
+      fillEnd: 57.14285714285714,
       fillSize: 21.42857142857143,
       rawValuePosition: 35.714285714285715,
-      rawBaselinePosition: 57.142857142857146,
+      rawBaselinePosition: 57.14285714285714,
       isBaselineInDomain: true,
     });
   });

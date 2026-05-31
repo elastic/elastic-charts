@@ -144,6 +144,7 @@ export const Metric: React.FunctionComponent<{
 }) => {
   const hasProgressBar = isMetricWProgress(datum);
   const { progressBarThickness } = textDimensions.heightBasedSizes;
+  // An explicit progress size wins over the responsive Metric breakpoint preset.
   const progressBarSize = hasProgressBar
     ? datum.progressBarSize ?? getMetricProgressBarSize(progressBarThickness)
     : MeterSize.Small;

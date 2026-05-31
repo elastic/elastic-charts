@@ -16,7 +16,7 @@ import { Chart, isMetricElementEvent, Metric, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { getProgressBarFill, progressBarPaletteOptions } from './progress_bar_story_helpers';
+import { getProgressBarFill, progressBarPaletteOptions, progressBarSizeOptions } from './progress_bar_story_helpers';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme, useThemeId } from '../../use_base_theme';
 
@@ -54,6 +54,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   const progressBarDirection = select('progress bar direction', ['horizontal', 'vertical'], 'vertical');
   const progressBarPalette = select('progress bar palette', progressBarPaletteOptions, 'none');
+  const progressBarSize = select('progress bar size', progressBarSizeOptions, 'auto');
   const maxDataPoints = number('max trend data points', 30, { min: 0, max: 50, step: 1 });
   const emptyBackground = color('empty background', 'transparent');
   const valueFontSizeMode = select(
@@ -71,6 +72,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     () => getProgressBarFill(progressBarPalette, [0, 100], isDarkTheme),
     [isDarkTheme, progressBarPalette],
   );
+  const progressBarSizeOverride = progressBarSize === 'auto' ? undefined : progressBarSize;
 
   const data: (MetricDatum | undefined)[] = useMemo(
     () => [
@@ -111,6 +113,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
               domainMax: 100,
               progressBarDirection,
               progressBarFill,
+              progressBarSize: progressBarSizeOverride,
               extra: (
                 <span>
                   max <b>100Mb/s</b>
@@ -131,6 +134,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
               domainMax: 100,
               progressBarDirection,
               progressBarFill,
+              progressBarSize: progressBarSizeOverride,
               extra: (
                 <span>
                   max <b>100Mb/s</b>
@@ -180,7 +184,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           'The trend shows the daily Cloud revenue in the last quarter, showing peaks during weekends.',
       },
     ],
-    [maxDataPoints, progressBarFill, progressBarDirection, useProgressBar],
+    [maxDataPoints, progressBarFill, progressBarDirection, progressBarSizeOverride, useProgressBar],
   );
 
   const nColumns = number('number of columns', 4, { min: 1, max: data.length, step: 1 });
