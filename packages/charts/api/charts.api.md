@@ -2327,7 +2327,6 @@ export type MetricWProgress = MetricWNumber & {
     domainMax: number;
     domainMin?: number;
     progressValueLabels?: MetricProgressValueLabels;
-    niceDomain?: boolean;
 };
 
 // @alpha (undocumented)

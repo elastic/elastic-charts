@@ -275,7 +275,6 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     progressBarDirection,
     progressBarFill,
     progressBarSize: progressBarSizeOverride,
-    niceDomain: progressMin !== 0 ? false : undefined,
     progressValueLabels: progressMin !== 0 ? defaultProgressValueLabels : undefined,
   };
   const numericData: MetricWProgress | MetricWNumber | MetricWTrend =

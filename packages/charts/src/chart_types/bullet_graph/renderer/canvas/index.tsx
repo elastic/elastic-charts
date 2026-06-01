@@ -179,6 +179,8 @@ class Component extends React.Component<Props> {
                 const colorScale =
                   this.props.dimensions.rows[stats.rowIndex]?.[stats.columnIndex]?.colorScale ??
                   (() => ({ hex: () => this.props.style.fallbackBandColor })); // should never happen
+                const resolvedDomain =
+                  this.props.dimensions.rows[stats.rowIndex]?.[stats.columnIndex]?.domain ?? datum.domain;
                 const bulletDatum: BulletMetricWProgress = {
                   value: datum.value,
                   target: datum.target,
@@ -188,8 +190,7 @@ class Component extends React.Component<Props> {
                   progressBarDirection: spec.subtype === BulletSubtype.vertical ? 'vertical' : 'horizontal',
                   title: datum.title,
                   subtitle: datum.subtitle,
-                  domain: datum.domain,
-                  niceDomain: datum.niceDomain,
+                  domain: resolvedDomain,
                   valueLabels,
                   extra: datum.target
                     ? {

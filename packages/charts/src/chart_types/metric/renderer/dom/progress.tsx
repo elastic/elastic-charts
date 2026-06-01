@@ -118,11 +118,6 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   const isVertical = progressBarDirection === LayoutDirection.Vertical;
   const domain: GenericDomain = isBulletMetric(datum) ? datum.domain : [datum.domainMin ?? 0, datum.domainMax];
   const scale = scaleLinear().domain(domain).range([0, 100]);
-
-  if (hasExplicitDomain && datum.niceDomain) {
-    scale.nice();
-  }
-
   const updatedDomain = scale.domain() as ContinuousDomain;
   const [domainMin, domainMax] = sortNumbers(updatedDomain);
   const scaledValue = clamp(getMeterScalePosition(updatedDomain, value), 0, 100);

@@ -149,11 +149,6 @@ export type MetricWProgress = MetricWNumber & {
    * Ignored when `domainMin` is omitted.
    */
   progressValueLabels?: MetricProgressValueLabels;
-  /**
-   * When `true`, the explicit `[domainMin, domainMax]` range is niced before
-   * rendering. Ignored when `domainMin` is omitted.
-   */
-  niceDomain?: boolean;
 };
 
 /** @internal Type used by Bullet chart Metric rendering. */
@@ -162,7 +157,6 @@ export type BulletMetricWProgress = MetricWNumber & {
   progressBarFill?: MeterFill;
   progressBarSize?: MeterSize;
   domain: GenericDomain;
-  niceDomain?: boolean;
   /**
    * Bullet uses value/target wording that is owned by the Bullet chart contract.
    */
