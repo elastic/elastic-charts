@@ -17,7 +17,7 @@ import { getMultiSelectKnob, getNumberSelectKnob } from './custom';
 /**
  * Negative numbers do not behave well with vrt slugified naming
  */
-const getRotationKnob = (name = 'chartRotation') =>
+const getRotationKnob = (name = 'chartRotation', value: Rotation = 0) =>
   getNumberSelectKnob<Rotation>(
     name,
     {
@@ -26,7 +26,7 @@ const getRotationKnob = (name = 'chartRotation') =>
       '-90 deg': -90,
       '180 deg': 180,
     },
-    0,
+    value,
   );
 
 const boundaryMap: Record<string, TooltipProps['boundary'] | null> = {

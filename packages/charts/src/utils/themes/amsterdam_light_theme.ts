@@ -419,6 +419,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     },
   },
   metric: {
+    fontFamily: DEFAULT_FONT_FAMILY,
     textLightColor: '#E0E5EE',
     textDarkColor: '#343741',
     textSubtitleLightColor: '#E0E5EE',

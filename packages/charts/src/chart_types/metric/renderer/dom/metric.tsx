@@ -196,6 +196,7 @@ export const Metric: React.FunctionComponent<{
     backgroundColor: hasTrend || hasProgressBar ? backgroundColor : datumWithInteractionColor.color,
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
     borderColor: style.border,
+    fontFamily: style.fontFamily,
   };
 
   const textContrastOptions = isColorContrastOptions(contrastOptions)

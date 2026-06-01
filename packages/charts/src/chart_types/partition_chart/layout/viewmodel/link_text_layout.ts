@@ -179,13 +179,12 @@ function nodeToLinkLabel({
       text: valueText,
       isValue: false,
     });
-    const widthAdjustment = valueWidth + 2 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
 
     // label text removes space allotted for value and gaps, then tries to fit as much as possible
     const labelText = cutToLength(rawLabelText, maxTextLength);
     const allottedLabelWidth = Math.max(
       0,
-      rightSide ? rectWidth - diskCenter.x - translateX - widthAdjustment : diskCenter.x + translateX - widthAdjustment,
+      rightSide ? rectWidth - diskCenter.x - translateX - valueWidth : diskCenter.x + translateX - valueWidth,
     );
     const { text, width } =
       linkLabel.fontSize / 2 <= cy + diskCenter.y && cy + diskCenter.y <= rectHeight - linkLabel.fontSize / 2

@@ -75,6 +75,7 @@ type AnnotationsProps = AnnotationsDispatchProps & AnnotationsStateProps & Annot
 function renderAnnotationLineMarkers(
   chartAreaRef: RefObject<HTMLCanvasElement>,
   chartDimensions: Dimensions,
+  chartId: string,
   annotationLines: AnnotationLineProps[],
   onDOMElementEnter: typeof onDOMElementEnterAction,
   onDOMElementLeave: typeof onDOMElementLeaveAction,
@@ -92,6 +93,7 @@ function renderAnnotationLineMarkers(
         {...props}
         marker={markers[0]}
         key={`annotation-${props.id}`}
+        chartId={chartId}
         chartAreaRef={chartAreaRef}
         chartDimensions={chartDimensions}
         onDOMElementEnter={onDOMElementEnter}
@@ -135,6 +137,7 @@ const AnnotationsComponent = ({
         const lineMarkers = renderAnnotationLineMarkers(
           chartAreaRef,
           chartDimensions,
+          chartId,
           annotationLines,
           onDOMElementEnter,
           onDOMElementLeave,
@@ -153,6 +156,7 @@ const AnnotationsComponent = ({
     annotationSpecs,
     chartAreaRef,
     chartDimensions,
+    chartId,
     onDOMElementEnter,
     onDOMElementLeave,
     hoveredAnnotationIds,

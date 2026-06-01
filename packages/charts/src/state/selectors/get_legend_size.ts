@@ -33,7 +33,6 @@ const SHARED_MARGIN = 4;
 const VERTICAL_PADDING = 4;
 /** @internal */
 export const TOP_MARGIN = 2;
-const BETWEEN_ROW_GAP = 24;
 const WITHIN_ROW_GAP = 8;
 const ACTION_WIDTH = 16;
 
@@ -126,7 +125,7 @@ export const getLegendSizeSelector = createCustomCachedSelector(
         computeHorizontalLegendRowCount({
           items,
           availableWidth,
-          columnGap: BETWEEN_ROW_GAP,
+          columnGap: 0,
           spacingBuffer: WITHIN_ROW_GAP,
           actionDimension: ACTION_WIDTH,
           markerWidth: MARKER_WIDTH,

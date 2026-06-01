@@ -9,7 +9,7 @@
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type { Datum, PartialTheme } from '@elastic/charts';
+import type { Datum, PartialTheme, SecondaryMetricProps } from '@elastic/charts';
 import {
   Axis,
   BarSeries,
@@ -27,7 +27,17 @@ import {
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-import { applyOptionalNumericFontFamily, withOptionalNumericFontFamily } from '../utils/elastic_ui_numeric_font';
+import {
+  applyOptionalNumericFontFamily,
+  withOptionalNumericFontFamily,
+  useIsFontReady,
+} from '../utils/elastic_ui_numeric_font';
+
+const metricExtra: SecondaryMetricProps = {
+  label: 'Operating',
+  labelPosition: 'before',
+  value: '55.44%',
+};
 
 const metricData = [
   [
@@ -35,8 +45,9 @@ const metricData = [
       color: '#3c3c3c',
       title: 'Revenue 2025',
       subtitle: 'Total Annual Revenue',
-      value: 5678901.23,
-      valueFormatter: (v: number) => `$${v.toFixed(2)}`,
+      value: 124_312_441,
+      valueFormatter: () => `124,312,441`, // For deterministic reproduction
+      extra: metricExtra,
     },
   ],
 ];
@@ -103,6 +114,7 @@ export const Example: ChartsStory = (_, { description }) => {
   const letterSpacing = number('Typography: letter-spacing (px)', 0, { range: true, min: -2, max: 5, step: 0.5 });
   const fontKerning = select('Typography: font-kerning', { auto: 'auto', normal: 'normal', none: 'none' }, 'auto');
   const previewFontFamily = withOptionalNumericFontFamily(fontFamily, useElasticUINumericFont);
+  const isNumericFontReady = useIsFontReady();
 
   const containerStyle: React.CSSProperties = {
     fontFamily: previewFontFamily,
@@ -111,6 +123,14 @@ export const Example: ChartsStory = (_, { description }) => {
   };
 
   const theme: PartialTheme = {
+    metric: {
+      fontFamily,
+      valueFontSize: 'fit',
+      titlesTextAlign: 'left',
+      valueTextAlign: 'right',
+      extraTextAlign: 'right',
+      valuePosition: 'bottom',
+    },
     barSeriesStyle: {
       displayValue: {
         fontSize: fontSize + 2,
@@ -155,8 +175,8 @@ export const Example: ChartsStory = (_, { description }) => {
   };
   applyOptionalNumericFontFamily(theme, useElasticUINumericFont);
 
-  const resizableChart = (height: number): React.CSSProperties => ({
-    width: 600,
+  const resizableChart = (width: number, height: number): React.CSSProperties => ({
+    width,
     height,
     resize: 'both',
     overflow: 'hidden',
@@ -170,13 +190,24 @@ export const Example: ChartsStory = (_, { description }) => {
     fontWeight: 600,
   };
 
+  if (useElasticUINumericFont && !isNumericFontReady) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', ...containerStyle }}>
+        <p style={{ margin: 0, fontSize: '12px', color: '#69707d' }}>{description}</p>
+        <p style={{ margin: 0, fontSize: '12px', color: '#69707d' }}>
+          Loading &lsquo;Elastic UI Numeric&rsquo; font before rendering charts.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', ...containerStyle }}>
       <p style={{ margin: 0, fontSize: '12px', color: '#69707d' }}>{description}</p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <p style={sectionTitle}>Metric</p>
-        <div style={resizableChart(150)}>
+        <div style={resizableChart(280, 150)}>
           <Chart>
             <Settings baseTheme={baseTheme} theme={theme} />
             <Metric id="metric1" data={metricData} />
@@ -186,7 +217,7 @@ export const Example: ChartsStory = (_, { description }) => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <p style={sectionTitle}>Bar chart with legend and display values</p>
-        <div style={resizableChart(300)}>
+        <div style={resizableChart(600, 300)}>
           <Chart>
             <Settings theme={theme} baseTheme={baseTheme} showLegend legendPosition="right" />
             <Axis id="bottom" position={Position.Bottom} title="Year" showOverlappingTicks />
@@ -217,7 +248,7 @@ export const Example: ChartsStory = (_, { description }) => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <p style={sectionTitle}>Treemap</p>
-        <div style={resizableChart(350)}>
+        <div style={resizableChart(600, 350)}>
           <Chart>
             <Settings baseTheme={baseTheme} theme={theme} />
             <Partition
@@ -257,7 +288,7 @@ export const Example: ChartsStory = (_, { description }) => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <p style={sectionTitle}>Heatmap</p>
-        <div style={resizableChart(300)}>
+        <div style={resizableChart(600, 300)}>
           <Chart>
             <Settings baseTheme={baseTheme} theme={theme} showLegend legendPosition="right" />
             <Heatmap

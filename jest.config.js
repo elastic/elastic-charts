@@ -23,11 +23,28 @@ module.exports = {
     '/node_modules/',
   ],
   clearMocks: true,
+  // uuid v10+ ships ESM-only; Jest does not transform node_modules by default.
+  transformIgnorePatterns: ['/node_modules/(?!uuid/)'],
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',
       {
         tsconfig: 'tsconfig.jest.json',
+      },
+    ],
+    // Compile uuid's .js under node_modules to CJS for Jest's runtime.
+    '[/\\\\]node_modules[/\\\\]uuid[/\\\\].+\\.js$': [
+      'babel-jest',
+      {
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              targets: { node: 'current' },
+              modules: 'commonjs',
+            },
+          ],
+        ],
       },
     ],
   },

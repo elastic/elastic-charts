@@ -8,10 +8,14 @@
 
 import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
+import type { Font } from '../../../../common/text_utils';
+import { fitText } from '../../../../common/text_utils';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import type { Rotation } from '../../../../utils/common';
+import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { getPercentageValue, type Rotation } from '../../../../utils/common';
 import type { SpecId } from '../../../../utils/ids';
+import type { AxisStyle } from '../../../../utils/themes/theme';
 import { defaultTickFormatter, isXDomain } from '../../utils/axis_utils';
 import { groupBy } from '../../utils/group_data_series';
 import type { AxisSpec } from '../../utils/specs';
@@ -21,6 +25,30 @@ export type AxisLabelFormatter<V = unknown> = (value: V) => string;
 
 /** @internal */
 export type AxisLabelFormatters = { x: Map<SpecId, AxisLabelFormatter>; y: Map<SpecId, AxisLabelFormatter> };
+
+/** @internal */
+export function withTickLabelTruncation(
+  measure: TextMeasure,
+  tickLabel: AxisStyle['tickLabel'],
+  axisSpec: AxisSpec,
+  containerWidth: number,
+): <V>(formatter: AxisLabelFormatter<V>) => AxisLabelFormatter<V> {
+  const { fontSize, fontStyle, fontFamily, fill } = tickLabel;
+  const { tickLabelMaxLength: maxLength, tickLabelTruncate: truncate } = axisSpec;
+
+  const maxWidth = maxLength ? getPercentageValue(maxLength, containerWidth, 0) : undefined;
+  if (maxWidth === undefined || maxWidth <= 0 || maxWidth > containerWidth) return (formatter) => formatter;
+
+  const font: Font = {
+    fontStyle: fontStyle ?? 'normal',
+    fontFamily,
+    fontWeight: 'normal',
+    fontVariant: 'normal',
+    textColor: fill,
+  };
+
+  return (formatter) => (value) => fitText(measure, formatter(value), maxWidth, fontSize, font, truncate ?? 'end').text;
+}
 
 /** @internal */
 export const getAxisTickLabelFormatter = createCustomCachedSelector(

@@ -46,8 +46,7 @@
       "enable_skippable_commits": false,
       "skip_ci_on_only_changed": [],
       "always_require_ci_on_changed": [],
-      "enable_trigger_checkbox": false,
-      "target_branch": "main"
+      "enable_trigger_checkbox": false
     }
   ]
 }

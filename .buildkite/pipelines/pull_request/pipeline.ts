@@ -25,6 +25,7 @@ import {
   storybookStep,
   typeCheckStep,
   firebasePreDeployStep,
+  chartsPackageStep,
 } from '../../steps';
 import type { Step, CustomCommandStep } from '../../utils';
 import { bkEnv, ChangeContext, uploadPipeline } from '../../utils';
@@ -49,6 +50,7 @@ void (async () => {
       docsStep(),
       storybookStep(),
       e2eServerStep(),
+      chartsPackageStep(),
       firebasePreDeployStep(),
       ghpDeployStep(),
       playwrightVrtStep(),

@@ -9,7 +9,15 @@
 import fs from 'fs';
 import path from 'path';
 
-import { firebaseDeploy, downloadArtifacts, startGroup, decompress, bkEnv } from '../../utils';
+import {
+  firebaseDeploy,
+  downloadArtifacts,
+  getChartsPackageMetadata,
+  prepareChartsPackagesForDeployment,
+  startGroup,
+  decompress,
+  bkEnv,
+} from '../../utils';
 import { createDeploymentStatus } from '../../utils/deployment';
 
 void (async () => {
@@ -54,6 +62,10 @@ void (async () => {
     dest: path.join(outDir, 'a11y-report'),
   });
 
+  const chartsPackage = bkEnv.isPullRequest ? await getChartsPackageMetadata(true) : null;
+  const chartsPackagePaths =
+    chartsPackage !== null ? await prepareChartsPackagesForDeployment(outDir, chartsPackage) : null;
+
   startGroup('Check deployment files');
 
   const hasDocsIndex = fs.existsSync(path.join(outDir, 'index.html'));
@@ -67,6 +79,14 @@ void (async () => {
     ['e2e server', hasE2EIndex],
     ['vrt report', hasVrtReportIndex],
     ['a11y report', hasA11yReportIndex],
+    ...(chartsPackagePaths
+      ? ([
+          ['live charts package tarball', fs.existsSync(chartsPackagePaths.liveTarballDest)],
+          ['commit charts package tarball', fs.existsSync(chartsPackagePaths.commitTarballDest)],
+          ['charts package manifest', fs.existsSync(chartsPackagePaths.manifestDest)],
+          ['charts package index', fs.existsSync(chartsPackagePaths.indexDest)],
+        ] as const)
+      : []),
   ]
     .filter(([, exists]) => !exists)
     .map<string>(([f]) => f as string);

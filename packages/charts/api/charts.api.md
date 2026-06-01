@@ -246,7 +246,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "tickFormat" | "ticks" | "gridLine" | "labelFormat" | "integersOnly" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "tickFormat" | "ticks" | "tickLabelMaxLength" | "tickLabelTruncate" | "gridLine" | "labelFormat" | "integersOnly" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -275,6 +275,8 @@ export interface AxisSpec extends Spec {
     specType: typeof SpecType.Axis;
     style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
     tickFormat?: TickFormatter;
+    tickLabelMaxLength?: Pixels | string;
+    tickLabelTruncate?: Truncate;
     ticks?: number;
     // @alpha
     timeAxisLayerCount: number;
@@ -2148,6 +2150,8 @@ export interface MetricStyle {
     // (undocumented)
     extraTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
     // (undocumented)
+    fontFamily: string;
+    // (undocumented)
     iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
     // (undocumented)
     minHeight: Pixels;
@@ -3536,6 +3540,9 @@ export interface TreeNode extends AngleFromTo {
     // (undocumented)
     y1: TreeLevel;
 }
+
+// @public (undocumented)
+export type Truncate = 'start' | 'middle' | 'end';
 
 // @public
 export interface UnaryAccessorFn<D extends BaseDatum = any, Return = any> {

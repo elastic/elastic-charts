@@ -1,3 +1,48 @@
+# [71.7.0](https://github.com/elastic/elastic-charts/compare/v71.6.1...v71.7.0) (2026-05-20)
+
+
+### Features
+
+* **axis:** add option to truncate axis tick labels ([#2829](https://github.com/elastic/elastic-charts/issues/2829)) ([e0c8e72](https://github.com/elastic/elastic-charts/commit/e0c8e72c65835173c8071c713af3b75667ad484b))
+
+## [71.6.1](https://github.com/elastic/elastic-charts/compare/v71.6.0...v71.6.1) (2026-05-15)
+
+# [71.6.0](https://github.com/elastic/elastic-charts/compare/v71.5.2...v71.6.0) (2026-05-11)
+
+
+### Features
+
+* **a11y:** add graphics-document role to charts ([#2831](https://github.com/elastic/elastic-charts/issues/2831)) ([1dee178](https://github.com/elastic/elastic-charts/commit/1dee1788ca184b2d2a29ea1897542daf1e6281d8))
+
+## [71.5.2](https://github.com/elastic/elastic-charts/compare/v71.5.1...v71.5.2) (2026-05-06)
+
+
+### Bug Fixes
+
+* **a11y:** give role="img" to interactive annotation line marker  ([#2830](https://github.com/elastic/elastic-charts/issues/2830)) ([b124d5f](https://github.com/elastic/elastic-charts/commit/b124d5f4ab830ded37b7b1cbbac3097e115a0de5))
+
+## [71.5.1](https://github.com/elastic/elastic-charts/compare/v71.5.0...v71.5.1) (2026-04-30)
+
+
+### Bug Fixes
+
+* **a11y:** allow keyboard navigation of tooltips ([#2823](https://github.com/elastic/elastic-charts/issues/2823)) ([c05868a](https://github.com/elastic/elastic-charts/commit/c05868ada2f1c6107e31b0b678075da98cfe193f))
+* **legend:** remove column gap in list legend ([#2820](https://github.com/elastic/elastic-charts/issues/2820)) ([08ef363](https://github.com/elastic/elastic-charts/commit/08ef3634773a13a81f130220e3516eab6053b12d))
+
+# [71.5.0](https://github.com/elastic/elastic-charts/compare/v71.4.1...v71.5.0) (2026-04-14)
+
+
+### Bug Fixes
+
+* guard process.env for browser environments without bundler polyfills ([#2810](https://github.com/elastic/elastic-charts/issues/2810)) ([9ffd74e](https://github.com/elastic/elastic-charts/commit/9ffd74efae6519979f9d1ef6eeff55dff916b9cd))
+* remove `produce()` from selectors ([#2813](https://github.com/elastic/elastic-charts/issues/2813)) ([561162c](https://github.com/elastic/elastic-charts/commit/561162cb4e020e0a8d9448373bc17ef697c7b2a0))
+
+
+### Features
+
+* **theme:** Add `fontFamily` property to `BulletStyle` ([#2811](https://github.com/elastic/elastic-charts/issues/2811)) ([a23b25c](https://github.com/elastic/elastic-charts/commit/a23b25ca9ee227d74ccfe4e61dacd90155117259))
+* **theme:** Add `fontFamily` property to `MetricStyle` ([#2816](https://github.com/elastic/elastic-charts/issues/2816)) ([5bcaf24](https://github.com/elastic/elastic-charts/commit/5bcaf2435e2a7ca341ee713a16ed436975426fe0))
+
 ## [71.4.1](https://github.com/elastic/elastic-charts/compare/v71.4.0...v71.4.1) (2026-03-31)
 
 # [71.4.0](https://github.com/elastic/elastic-charts/compare/v71.3.0...v71.4.0) (2026-03-31)

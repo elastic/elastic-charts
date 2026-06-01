@@ -446,6 +446,7 @@ export const LIGHT_THEME: Theme = {
     },
   },
   metric: {
+    fontFamily: DEFAULT_FONT_FAMILY,
     textLightColor: DARK_TEXT_COLORS.textHeading,
     textSubtitleLightColor: DARK_TEXT_COLORS.textParagraph,
     textExtraLightColor: DARK_TEXT_COLORS.textParagraph,

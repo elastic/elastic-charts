@@ -7,6 +7,7 @@
  */
 
 import './elastic_ui_numeric_font.scss';
+import { useFontFaceReady } from './use_font_face_ready';
 
 export const ELASTIC_UI_NUMERIC_FONT_FAMILY = "'Elastic UI Numeric'";
 
@@ -47,4 +48,8 @@ export function applyNumericFontFamily(value: unknown): void {
 export function applyOptionalNumericFontFamily(value: unknown, enabled: boolean): void {
   if (!enabled) return;
   applyNumericFontFamily(value);
+}
+
+export function useIsFontReady() {
+  return useFontFaceReady(ELASTIC_UI_NUMERIC_FONT_FAMILY);
 }
