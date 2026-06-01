@@ -32,7 +32,7 @@ import type {
 import { LayoutDirection, isNil } from '../../../../utils/common';
 import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricWNumber } from '../../specs';
-import { isMetricWProgress, isMetricWTrend, isSecondaryMetricProps } from '../../specs';
+import { isBulletMetric, isMetricWProgress, isMetricWTrend, isSecondaryMetricProps } from '../../specs';
 
 /** @internal */
 export interface TextContrastOptions {
@@ -142,18 +142,19 @@ export const Metric: React.FunctionComponent<{
   onElementOver,
   onElementOut,
 }) => {
-  const hasProgressBar = isMetricWProgress(datum);
+  const progressDatum = isMetricWProgress(datum) || isBulletMetric(datum) ? datum : undefined;
+  const hasProgressBar = progressDatum !== undefined;
   const { progressBarThickness } = textDimensions.heightBasedSizes;
   // An explicit progress size wins over the responsive Metric breakpoint preset.
-  const progressBarSize = hasProgressBar
-    ? datum.progressBarSize ?? getMetricProgressBarSize(progressBarThickness)
+  const progressBarSize = progressDatum
+    ? progressDatum.progressBarSize ?? getMetricProgressBarSize(progressBarThickness)
     : MeterSize.Small;
 
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');
   const [lastMouseDownTimestamp, setLastMouseDownTimestamp] = useState<number>(0);
   const metricHTMLId = `echMetric-${chartId}-${rowIndex}-${columnIndex}`;
 
-  const progressBarDirection = hasProgressBar ? datum.progressBarDirection : undefined;
+  const progressBarDirection = progressDatum?.progressBarDirection;
 
   const hasTrend = isMetricWTrend(datum);
 
@@ -180,9 +181,12 @@ export const Metric: React.FunctionComponent<{
   const blendedInteractionColor = RGBATupleToString(
     combineColors(colorToRgba(interactionColor), blendingBackgroundColor),
   );
-  const progressBarFill = isMetricWProgress(datum) ? datum.progressBarFill : undefined;
+  const progressBarFill = progressDatum?.progressBarFill;
 
   const datumWithInteractionColor: MetricDatum = { ...datum, color: blendedInteractionColor };
+  const progressDatumWithInteractionColor = progressDatum
+    ? { ...progressDatum, color: blendedInteractionColor }
+    : undefined;
 
   const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
 
@@ -283,9 +287,9 @@ export const Metric: React.FunctionComponent<{
         defaultBadgeBorderColor={defaultBadgeBorderColor}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
-      {isMetricWProgress(datumWithInteractionColor) && (
+      {progressDatumWithInteractionColor && (
         <ProgressBar
-          datum={datumWithInteractionColor}
+          datum={progressDatumWithInteractionColor}
           barBackground={style.barBackground}
           panelBackground={backgroundColor}
           fillBackgroundColor={RGBATupleToString(blendingBackgroundColor)}

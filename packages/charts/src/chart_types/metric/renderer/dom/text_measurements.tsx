@@ -21,7 +21,7 @@ import type { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
 import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricDatum, MetricWNumber } from '../../specs';
-import { isMetricWProgress } from '../../specs';
+import { isBulletMetric, isMetricWProgress } from '../../specs';
 
 type BreakPoint = 'xxxs' | 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
 
@@ -201,15 +201,11 @@ export function getMetricTextPartDimensions(
   style: MetricStyle,
   locale: string,
 ): MetricTextDimensions {
-  const heightBasedSizes = getHeightBasedFontSizes(
-    HEIGHT_BP,
-    panel.height,
-    style,
-    isMetricWProgress(datum) ? datum.progressBarSize : undefined,
-  );
-  const hasProgressBar = isMetricWProgress(datum);
+  const progressDatum = isMetricWProgress(datum) || isBulletMetric(datum) ? datum : undefined;
+  const heightBasedSizes = getHeightBasedFontSizes(HEIGHT_BP, panel.height, style, progressDatum?.progressBarSize);
+  const hasProgressBar = progressDatum !== undefined;
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
-  const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
+  const progressBarDirection = progressDatum?.progressBarDirection;
 
   const hasVerticalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Vertical;
   const hasHorizontalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Horizontal;

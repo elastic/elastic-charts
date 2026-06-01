@@ -157,6 +157,8 @@ export type BulletMetricWProgress = MetricWNumber & {
   progressBarFill?: MeterFill;
   progressBarSize?: MeterSize;
   domain: GenericDomain;
+  /** Preserve Bullet's tick-domain nicing behavior in the shared Metric progress adapter. */
+  niceDomain?: boolean;
   /**
    * Bullet uses value/target wording that is owned by the Bullet chart contract.
    */
