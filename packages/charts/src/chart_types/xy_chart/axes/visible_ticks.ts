@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { measureAxisStatic, resolveTickLabelConstraints } from './dimensions';
 import type { TickLabelLayout } from './tick_labels';
-import { createTickLayout, getMaxLineLength } from './tick_labels';
+import { createTickLayout } from './tick_labels';
 import { multilayerAxisEntry } from './timeslip/multilayer_ticks';
 import type { SmallMultipleScales } from '../../../common/panel_utils';
 import { getPanelSize } from '../../../common/panel_utils';
@@ -15,13 +16,12 @@ import type { ScaleBand } from '../../../scales';
 import { ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { isContinuousScale } from '../../../scales/types';
-import type { AxisSpec, SettingsSpec } from '../../../specs';
+import type { AxisSpec, SettingsSpec, SmallMultiplesSpec } from '../../../specs';
 import type { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Position, Rotation } from '../../../utils/common';
 import { isFiniteNumber, isRTLString } from '../../../utils/common';
 import type { Size } from '../../../utils/dimensions';
 import type { AxisId } from '../../../utils/ids';
-import type { Theme } from '../../../utils/themes/theme';
 import type { AxisLabelFormatter } from '../state/selectors/axis_tick_formatter';
 import type { JoinedAxisData } from '../state/selectors/compute_baseline_axis_ticks_dimensions';
 import type { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
@@ -70,7 +70,6 @@ export function generateTicks(
   offset: number,
   layoutTickLabel: TickLabelLayout,
   formatTickLabel: AxisLabelFormatter,
-  maxLineLength: number,
   layer: number | undefined,
   detailedLayer: number,
   showGrid: boolean,
@@ -87,7 +86,7 @@ export function generateTicks(
     const domainClampedPosition = scale.scale(domainClampedValue) + offset;
 
     if (!isFiniteNumber(position) || !isFiniteNumber(domainClampedPosition)) return acc;
-    const layout = layoutTickLabel(label, maxLineLength);
+    const layout = layoutTickLabel(label);
     if (layer === 0 && i === 0 && position < domainClampedPosition) return acc;
 
     acc.push({
@@ -111,7 +110,6 @@ function getVisibleTicks(
   axisSpec: AxisSpec,
   layoutTickLabel: TickLabelLayout,
   formatTickLabel: AxisLabelFormatter,
-  maxLineLength: number,
   totalBarsInCluster: number,
   rotationOffset: number,
   scale: ScaleBand | ScaleContinuous,
@@ -156,7 +154,7 @@ function getVisibleTicks(
               direction: 'rtl',
               showGrid,
               multilayerTimeAxis,
-              layout: layoutTickLabel(formatTickLabel(firstTickValue), maxLineLength),
+              layout: layoutTickLabel(formatTickLabel(firstTickValue)),
             },
             {
               value: secondValue,
@@ -169,7 +167,7 @@ function getVisibleTicks(
               direction: 'rtl',
               showGrid,
               multilayerTimeAxis,
-              layout: layoutTickLabel(formatTickLabel(secondValue), maxLineLength),
+              layout: layoutTickLabel(formatTickLabel(secondValue)),
             },
           ];
         })()
@@ -179,7 +177,6 @@ function getVisibleTicks(
           offset,
           layoutTickLabel,
           formatTickLabel,
-          maxLineLength,
           layer,
           detailedLayer,
           showGrid,
@@ -222,7 +219,6 @@ function getVisibleTickSet(
   detailedLayer: number,
   ticks: (number | string)[],
   adaptiveTickCount: boolean,
-  theme: Theme,
   multilayerTimeAxis = false,
   showGrid = true,
 ): AxisTick[] {
@@ -230,13 +226,10 @@ function getVisibleTickSet(
   const somehowRotated = (vertical && chartRotation === -90) || (!vertical && chartRotation === 180);
   const rotationOffset = histogramMode && somehowRotated ? scale.step : 0; // todo find the true cause of the this offset issue
 
-  const maxLineLength = getMaxLineLength(axisSpec.position, theme, scale);
-
   return getVisibleTicks(
     axisSpec,
     layoutTickLabel,
     formatTickLabel,
-    maxLineLength,
     groupCount,
     rotationOffset,
     scale,
@@ -260,12 +253,14 @@ export function computeVisibleTickSets(
   smScales: SmallMultipleScales,
   totalGroupsCount: number,
   enableHistogramMode: boolean,
-  theme: Theme,
+  containerWidth: number,
+  containerHeight: number,
+  smSpec: SmallMultiplesSpec | null,
   barsPadding?: number,
 ): Projections {
   const panel = getPanelSize(smScales);
   return [...joinedAxesData].reduce(
-    (acc, [axisId, { axisSpec, axesStyle, isXAxis, labelFormatter: userProvidedLabelFormatter }]) => {
+    (acc, [axisId, { axisSpec, axesStyle, scale: unitScale, isXAxis, labelFormatter: userProvidedLabelFormatter }]) => {
       const { groupId, maximumFractionDigits, timeAxisLayerCount } = axisSpec;
       const yDomain = yDomains.find((yd) => yd.groupId === groupId);
       const domain = isXAxis ? xDomain : yDomain;
@@ -275,6 +270,9 @@ export function computeVisibleTickSets(
       const isNice = (isXAxis ? scaleConfigs.x.nice : scaleConfigs.y[groupId]?.nice) ?? false;
       const adaptiveTickCount = !isNice && USE_ADAPTIVE_TICK_COUNT;
 
+      const hasPanelTitle = isVerticalAxis(axisSpec.position) ? smSpec?.splitVertically : smSpec?.splitHorizontally;
+      const staticBand = measureAxisStatic(axisSpec, axesStyle, Boolean(hasPanelTitle));
+
       const getMeasuredTicks: GetMeasuredTicks = (
         scale: ScaleBand | ScaleContinuous,
         ticks: (number | string)[],
@@ -283,7 +281,15 @@ export function computeVisibleTickSets(
         labelFormatter: AxisLabelFormatter,
         showGrid = true,
       ): Projection => {
-        const layoutTickLabel = createTickLayout(axesStyle, textMeasure, locale);
+        const { maxLineLength, maxWrapLines } = resolveTickLabelConstraints({
+          position: axisSpec.position,
+          style: axesStyle,
+          staticBand,
+          containerWidth,
+          containerHeight,
+          scale,
+        });
+        const layoutTickLabel = createTickLayout(axesStyle, textMeasure, locale, maxWrapLines, maxLineLength);
 
         return {
           ticks: getVisibleTickSet(
@@ -298,7 +304,6 @@ export function computeVisibleTickSets(
             detailedLayer,
             ticks,
             adaptiveTickCount,
-            theme,
             multilayerTimeAxis,
             showGrid,
           ),

@@ -65,7 +65,7 @@ export const projectionToTickDimensions = (projections: Map<AxisId, Projection>)
 };
 
 const projectTicks = (
-  { settings, scales, axes, sm, bars, theme }: LayoutParameters,
+  { settings, scales, axes, sm, bars, container }: LayoutParameters,
   chartDimensions: Dimensions,
   textMeasure: TextMeasure,
 ) => {
@@ -89,7 +89,9 @@ const projectTicks = (
     },
     bars.groupsCount,
     bars.enableHistogramMode,
-    theme,
+    container.width,
+    container.height,
+    sm.spec,
     bars.padding,
   );
 };
@@ -138,48 +140,46 @@ const isLayoutStable = (a: AxesPerSide, b: AxesPerSide) => {
 export function computeChartLayout(params: LayoutParameters): ChartLayout {
   const { container, theme, settings, scales, axes: axesConfig, sm, bootstrap } = params;
   return withTextMeasure((textMeasure) => {
-    const initialAxes = axesConfig.specs.map((spec) => ({
-      spec,
-      style: axesConfig.styles.get(spec.id) ?? theme.axes,
-      ticks: bootstrap.tickDimensions.get(spec.id) ?? [],
-      isHidden: spec.hide,
-    }));
-
-    const axesDimensions = getAxesDimensions(theme, initialAxes, sm.spec, scales.configs.x.type, settings.rotation);
-
-    let margins = axesDimensions;
-    let chartArea = computeChartArea(container, margins, theme);
-    let projections: Map<AxisId, Projection> = new Map();
-
-    for (let i = 0; i < MAX_ITERATIONS; i++) {
-      const tickDimensions = projectionToTickDimensions(projections);
-      const nextAxes = axesConfig.specs.map((spec) => ({
+    const measureMargins = (tickDimensions: AxesTicksDimensions) => {
+      const axes = axesConfig.specs.map((spec) => ({
         spec,
         style: axesConfig.styles.get(spec.id) ?? theme.axes,
         ticks: tickDimensions.get(spec.id) ?? [],
         isHidden: spec.hide,
       }));
-      const nextMargins = getAxesDimensions(theme, nextAxes, sm.spec, scales.configs.x.type, settings.rotation);
+      return getAxesDimensions(
+        theme,
+        axes,
+        sm.spec,
+        scales.configs.x.type,
+        settings.rotation,
+        container.width,
+        container.height,
+      );
+    };
 
+    let margins = measureMargins(bootstrap.tickDimensions);
+    let chartArea = computeChartArea(container, margins, theme);
+    let projections = projectTicks(params, chartArea.chartDimensions, textMeasure);
+
+    for (let i = 0; i < MAX_ITERATIONS; i++) {
+      const nextMargins = measureMargins(projectionToTickDimensions(projections));
+      const nextChartArea = computeChartArea(container, nextMargins, theme);
       if (isLayoutStable(margins, nextMargins)) {
         return {
-          dimensions: chartArea,
+          dimensions: nextChartArea,
           ticks: projections,
-          meta: {
-            iterations: i + 1,
-          },
+          meta: { iterations: i + 1 },
         };
       }
       margins = nextMargins;
-      chartArea = computeChartArea(container, margins, theme);
+      chartArea = nextChartArea;
       projections = projectTicks(params, chartArea.chartDimensions, textMeasure);
     }
     return {
       dimensions: chartArea,
       ticks: projections,
-      meta: {
-        iterations: MAX_ITERATIONS,
-      },
+      meta: { iterations: MAX_ITERATIONS },
     };
   });
 }

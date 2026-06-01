@@ -36,7 +36,15 @@ export function computeChartDimensions(
     ticks: axisTickDimensions.get(spec.id) ?? [],
     isHidden: spec.hide,
   }));
-  const axesDimensions = getAxesDimensions(theme, axes, smSpec, scaleConfigs.x.type, settingsSpec.rotation);
+  const axesDimensions = getAxesDimensions(
+    theme,
+    axes,
+    smSpec,
+    scaleConfigs.x.type,
+    settingsSpec.rotation,
+    parentDimensions.width,
+    parentDimensions.height,
+  );
 
   return computeChartArea(parentDimensions, axesDimensions, theme);
 }

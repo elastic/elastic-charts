@@ -14,7 +14,7 @@ import { hasSMDomain, getPanelSize } from '../../../common/panel_utils';
 import type { TextAlign } from '../../../common/text_utils';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import type { AxisSpec, SettingsSpec } from '../../../specs';
+import type { AxisSpec, SettingsSpec, SmallMultiplesSpec } from '../../../specs';
 import type { Rotation } from '../../../utils/common';
 import { degToRad, getPercentageValue, HorizontalAlignment, Position, VerticalAlignment } from '../../../utils/common';
 import type { Dimensions, PerSideDistance, Size } from '../../../utils/dimensions';
@@ -23,6 +23,7 @@ import type { Range } from '../../../utils/domain';
 import type { AxisId } from '../../../utils/ids';
 import type { Point } from '../../../utils/point';
 import type { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
+import { getExtentBounds, measureAxisStatic } from '../axes/dimensions';
 import type { TickLabelBox } from '../axes/tick_labels';
 import { getMaxLabelDimensions } from '../axes/tick_labels';
 import type { Projection } from '../axes/visible_ticks';
@@ -302,22 +303,40 @@ export const getAllAxisLayersGirth = (
 export function getPosition(
   { chartDimensions }: { chartDimensions: Dimensions },
   chartMargins: PerSideDistance,
-  { axisTitle, axisPanelTitle, tickLine, tickLabel }: AxisStyle,
+  axisStyle: AxisStyle,
   axisSpec: AxisSpec,
   { bboxHeight, bboxWidth }: TickLabelBox,
   smScales: SmallMultipleScales,
   { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum }: PerSideDistance,
   multilayerTimeAxis: boolean,
+  containerWidth: number = Infinity,
+  containerHeight: number = Infinity,
+  smSpec: SmallMultiplesSpec | null = null,
 ) {
+  const { axisTitle, axisPanelTitle, tickLine, tickLabel } = axisStyle;
   const { title, position, hide, timeAxisLayerCount } = axisSpec;
   const tickDimension = shouldShowTicks(tickLine, hide) ? tickLine.size + tickLine.padding : 0;
   const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
   const titleDimension = title ? getTitleDimension(axisTitle) : 0;
   const vertical = isVerticalAxis(position);
   const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
-  const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
-  const maxLabelBboxGirth = tickLabel.visible ? (vertical ? bboxWidth : bboxHeight) : 0;
-  const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, multilayerTimeAxis);
+
+  const hasPanelTitle = smSpec
+    ? isVerticalAxis(position)
+      ? smSpec.splitVertically
+      : smSpec.splitHorizontally
+    : hasSMDomain(scaleBand);
+
+  const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
+
+  // cap label girth by the resolved label budget so parallelSize agrees with
+  // the axis extent reserved in getAxesDimensions
+  const staticBand = measureAxisStatic(axisSpec, axisStyle, Boolean(hasPanelTitle));
+  const { labelBudget } = getExtentBounds(position, axisStyle, staticBand, containerWidth, containerHeight);
+  const rawLabelGirth = tickLabel.visible ? (vertical ? bboxWidth : bboxHeight) : 0;
+  const cappedLabelGirth = Math.min(rawLabelGirth, labelBudget);
+
+  const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, cappedLabelGirth, multilayerTimeAxis);
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
   return {
     leftIncrement: position === Position.Left ? parallelSize + chartMargins.left : 0,
@@ -385,6 +404,8 @@ export function getAxesGeometries(
   visibleTicksSet: Map<AxisId, Projection>,
   scaleConfigs: ScaleConfigs,
   settingsSpec: SettingsSpec,
+  container: Dimensions,
+  smSpec: SmallMultiplesSpec | null,
 ): AxisGeometry[] {
   const panel = getPanelSize(smScales);
   return [...visibleTicksSet].reduce(
@@ -404,6 +425,9 @@ export function getAxesGeometries(
           smScales,
           acc,
           multilayerTimeAxis,
+          container.width,
+          container.height,
+          smSpec,
         );
         acc.top += topIncrement;
         acc.bottom += bottomIncrement;

@@ -179,15 +179,14 @@ export interface AxisStyle {
       wrapLines: number;
       /** Line height multiplier applied to `fontSize` for wrapped tick labels. */
       lineHeight: number;
+      /** Max length of the tick label in pixels. */
+      limit?: Pixels;
     };
   tickLine: TickStyle;
-  maxSize: {
-    // WIP, review
-    top: number;
-    bottom: number;
-    left: number;
-    right: number;
-  };
+  /** Min extent (cross-axis) of the axis in pixels or relative to the container size in the cross-axis direction, e.g. '20%'. */
+  minExtent?: Pixels | string;
+  /** Max extent (cross-axis) of the axis in pixels or relative to the container size in the cross-axis direction, e.g. '20%'. */
+  maxExtent?: Pixels | string;
   gridLine: {
     horizontal: GridLineStyle;
     vertical: GridLineStyle;

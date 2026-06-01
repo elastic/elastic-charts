@@ -30,7 +30,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const alignmentVertical = customKnobs.enum.verticalTextAlignment('Alignment Vertical', 'near');
   return (
     <Chart title={title} description={description}>
-      <Settings debug={boolean('debug', true)} baseTheme={useBaseTheme()} />
+      <Settings debug={boolean('debug', true)} baseTheme={useBaseTheme()} rotation={90} />
       <Axis
         id="category"
         position={Position.Bottom}
@@ -52,17 +52,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
         id="left2"
         title="Left axis"
         position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
         style={{
-          maxSize: {
-            left: 5,
-          },
-          tickLabel: {
-            alignment: {
-              horizontal: 'right',
-              vertical: 'middle',
-            },
-          },
+          maxExtent: '15%',
         }}
       />
       <BarSeries

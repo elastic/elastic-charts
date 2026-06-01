@@ -13,8 +13,10 @@ import { getAxesStylesSelector } from './get_axis_styles';
 import { axisSpecsLookupSelector } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
+import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_multiples_spec';
 import { getAxesGeometries } from '../../utils/axis_utils';
 
 /** @internal */
@@ -28,8 +30,10 @@ export const computeAxesGeometriesSelector = createCustomCachedSelector(
     computeChartLayoutSelector,
     getScaleConfigsFromSpecsSelector,
     getSettingsSpecSelector,
+    getChartContainerDimensionsSelector,
+    getSmallMultiplesSpec,
   ],
-  (chartDims, theme, axisSpecs, axesStyles, smScales, chartLayout, scaleConfigs, settingsSpec) => {
+  (chartDims, theme, axisSpecs, axesStyles, smScales, chartLayout, scaleConfigs, settingsSpec, container, smSpec) => {
     return getAxesGeometries(
       chartDims,
       theme,
@@ -39,6 +43,8 @@ export const computeAxesGeometriesSelector = createCustomCachedSelector(
       chartLayout.ticks,
       scaleConfigs,
       settingsSpec,
+      container,
+      smSpec,
     );
   },
 );

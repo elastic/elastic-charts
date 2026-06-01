@@ -6,16 +6,20 @@
  * Side Public License, v 1.
  */
 
-import type { Font } from '../../../common/text_utils';
-import type { ScaleBand, ScaleContinuous } from '../../../scales';
+import { type Font } from '../../../common/text_utils';
 import type { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { Position } from '../../../utils/common';
 import { wrapText, type WrapTextLines } from '../../../utils/text/wrap';
-import type { AxisStyle, Theme } from '../../../utils/themes/theme';
+import type { AxisStyle } from '../../../utils/themes/theme';
 import { computeRotatedLabelDimensions } from '../utils/axis_utils';
 
 /** @internal */
-export const createTickLayout = (axisStyle: AxisStyle, measure: TextMeasure, locale: string) => {
+export const createTickLayout = (
+  axisStyle: AxisStyle,
+  measure: TextMeasure,
+  locale: string,
+  maxLines: number,
+  maxLineLength: number,
+) => {
   const font: Font = {
     fontStyle: axisStyle.tickLabel.fontStyle ?? 'normal',
     fontFamily: axisStyle.tickLabel.fontFamily,
@@ -24,9 +28,9 @@ export const createTickLayout = (axisStyle: AxisStyle, measure: TextMeasure, loc
     textColor: 'black',
   };
 
-  const { wrapLines: maxLines, lineHeight } = axisStyle.tickLabel;
+  const { lineHeight } = axisStyle.tickLabel;
 
-  return (value: string, maxLineLength: number) => {
+  return (value: string) => {
     const wrapped = wrapText(value, font, axisStyle.tickLabel.fontSize, maxLineLength, maxLines, measure, locale);
     const { width, height } = wrapped.reduce(
       (acc, line, index) => {
@@ -49,19 +53,6 @@ export const createTickLayout = (axisStyle: AxisStyle, measure: TextMeasure, loc
 export type TickLabelLayout = ReturnType<typeof createTickLayout>;
 /** @internal */
 export type TickLabelBox = ReturnType<TickLabelLayout>;
-
-/** @internal */
-export const getMaxLineLength = (position: Position, theme: Theme, scale: ScaleBand | ScaleContinuous) => {
-  if (position === Position.Top || position === Position.Bottom) {
-    return scale.bandwidth > 0 ? scale.step : Infinity;
-  }
-
-  if (position === Position.Left) {
-    return theme.axes.maxSize?.left ?? Infinity;
-  }
-
-  return theme.axes.maxSize?.right ?? Infinity;
-};
 
 const emptyWrapLines: WrapTextLines = Object.assign([], { meta: { truncated: false } });
 
