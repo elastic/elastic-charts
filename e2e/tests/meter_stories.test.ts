@@ -22,14 +22,20 @@ async function expectMeterStoryToMatchScreenshot(page: Page, url: string) {
 
   await page.goto(url);
 
-  const topLevelStory = page.locator(storySelector);
+  const topLevelStory = page.locator(storySelector).first();
+  const previewFrame = page.locator(previewFrameSelector).first();
+
+  // Meter stories render directly on the e2e page, but some Storybook surfaces
+  // still render inside the preview iframe. Wait for either host to mount before
+  // deciding which screenshot path to use.
+  await page.waitForSelector(`${storySelector}, ${previewFrameSelector}`, { state: 'attached' });
+
   if (await topLevelStory.count()) {
-    await topLevelStory.first().waitFor({ state: 'visible' });
-    expect(await topLevelStory.first().screenshot()).toMatchSnapshot();
+    await topLevelStory.waitFor({ state: 'visible' });
+    expect(await topLevelStory.screenshot()).toMatchSnapshot();
     return;
   }
 
-  const previewFrame = page.locator(previewFrameSelector);
   await previewFrame.waitFor({ state: 'attached' });
 
   const frameLocator = page.frameLocator(previewFrameSelector);
