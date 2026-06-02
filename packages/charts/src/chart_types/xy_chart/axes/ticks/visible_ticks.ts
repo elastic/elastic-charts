@@ -105,7 +105,8 @@ export function generateTicks(
   }, []);
 }
 
-function getVisibleTicks(
+/** @internal */
+export function getVisibleTicks(
   axisSpec: AxisSpec,
   layoutTickLabel: TickLabelLayout,
   formatTickLabel: AxisLabelFormatter,

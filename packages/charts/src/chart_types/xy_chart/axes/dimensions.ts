@@ -185,6 +185,7 @@ export const getAxesDimensions = (
 
       /* Overflow accounts for the first/last tick label spilling along the axis direction (orthogonal to 
       the extent we just added) */
+      // TODO(bia): depending on alignment/rotation, might not be just half of the bbox
       if (isVertical) {
         acc.overflow.top += (ticks.at(-1)?.bboxHeight ?? 0) / 2;
         acc.overflow.bottom += (ticks.at(0)?.bboxHeight ?? 0) / 2;
