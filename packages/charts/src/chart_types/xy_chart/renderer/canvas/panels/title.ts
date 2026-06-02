@@ -14,8 +14,9 @@ import { Position } from '../../../../../utils/common';
 import { innerPad, outerPad } from '../../../../../utils/dimensions';
 import type { Point } from '../../../../../utils/point';
 import { wrapText } from '../../../../../utils/text/wrap';
+import { getAllAxisLayersGirth, getTitleDimension } from '../../../axes/dimensions';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
-import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
+import { shouldShowTicks } from '../../../utils/axis_utils';
 import type { AxisProps } from '../axes/axis_props';
 
 type PanelTitleProps = Pick<

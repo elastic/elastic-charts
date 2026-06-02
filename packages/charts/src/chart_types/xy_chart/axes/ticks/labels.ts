@@ -6,14 +6,24 @@
  * Side Public License, v 1.
  */
 
-import { type Font } from '../../../common/text_utils';
-import type { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { wrapText, type WrapTextLines } from '../../../utils/text/wrap';
-import type { AxisStyle } from '../../../utils/themes/theme';
-import { computeRotatedLabelDimensions } from '../utils/axis_utils';
+import { type Font } from '../../../../common/text_utils';
+import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { degToRad } from '../../../../utils/common';
+import type { Size } from '../../../../utils/dimensions';
+import { wrapText, type WrapTextLines } from '../../../../utils/text/wrap';
+import type { AxisStyle } from '../../../../utils/themes/theme';
 
 /** @internal */
-export const createTickLayout = (
+export function computeRotatedLabelDimensions(unrotatedDims: Size, degreesRotation: number): Size {
+  const { width, height } = unrotatedDims;
+  const radians = degToRad(degreesRotation);
+  const rotatedHeight = Math.abs(width * Math.sin(radians)) + Math.abs(height * Math.cos(radians));
+  const rotatedWidth = Math.abs(width * Math.cos(radians)) + Math.abs(height * Math.sin(radians));
+  return { width: rotatedWidth, height: rotatedHeight };
+}
+
+/** @internal */
+export const createTickLabelLayout = (
   axisStyle: AxisStyle,
   measure: TextMeasure,
   locale: string,
@@ -50,7 +60,8 @@ export const createTickLayout = (
 };
 
 /** @internal */
-export type TickLabelLayout = ReturnType<typeof createTickLayout>;
+export type TickLabelLayout = ReturnType<typeof createTickLabelLayout>;
+
 /** @internal */
 export type TickLabelBox = ReturnType<TickLabelLayout>;
 

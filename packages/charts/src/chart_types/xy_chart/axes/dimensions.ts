@@ -6,38 +6,54 @@
  * Side Public License, v 1.
  */
 
-import type { TickLabelBox } from './tick_labels';
-import { getMaxLabelDimensions } from './tick_labels';
+import type { TickLabelBox } from './ticks/labels';
+import { getMaxLabelDimensions } from './ticks/labels';
+import type { AxisTick } from './ticks/types';
 import type { Pixels } from '../../../common/geometry';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
-import type { ScaleType } from '../../../scales/constants';
 import type { SmallMultiplesSpec } from '../../../specs';
-import type { Rotation } from '../../../utils/common';
 import { getPercentageValue, Position } from '../../../utils/common';
 import { innerPad, outerPad, type PerSideDistance } from '../../../utils/dimensions';
 import type { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { isVerticalAxis } from '../utils/axis_type_utils';
-import {
-  getAllAxisLayersGirth,
-  getTitleDimension,
-  isMultilayerTimeAxis,
-  shouldShowTicks,
-  type AxisTick,
-} from '../utils/axis_utils';
+import { shouldShowTicks } from '../utils/axis_utils';
 import type { AxisSpec } from '../utils/specs';
 
 /** @internal */
-export const measureAxisStatic = (
+export const hasPanelTitle = (position: Position, smSpec: SmallMultiplesSpec | null): boolean =>
+  Boolean(isVerticalAxis(position) ? smSpec?.splitVertically : smSpec?.splitHorizontally);
+
+/** @internal */
+export const measureAxisFixedBand = (
   spec: Pick<AxisSpec, 'title' | 'hide'>,
   style: AxisStyle,
-  hasPanelTitle: boolean = false,
+  includePanelTitle: boolean = false,
 ): number => {
   const ticks = shouldShowTicks(style.tickLine, spec.hide) ? style.tickLine.size + style.tickLine.padding : 0;
   const padding = style.tickLabel.visible ? innerPad(style.tickLabel.padding) + outerPad(style.tickLabel.padding) : 0;
   const title = spec.title ? getTitleDimension(style.axisTitle) : 0;
-  const panel = hasPanelTitle ? getTitleDimension(style.axisPanelTitle) : 0;
+  const panel = includePanelTitle ? getTitleDimension(style.axisPanelTitle) : 0;
 
   return ticks + padding + title + panel;
+};
+
+/** @internal */
+export function getTitleDimension({
+  visible,
+  fontSize,
+  padding,
+}: AxisStyle['axisTitle'] | AxisStyle['axisPanelTitle']): number {
+  return visible && fontSize > 0 ? innerPad(padding) + fontSize + outerPad(padding) : 0;
+}
+
+/** @internal */
+export const getAllAxisLayersGirth = (
+  timeAxisLayerCount: number,
+  maxLabelBoxGirth: number,
+  multilayerTimeAxis: boolean,
+) => {
+  const axisLayerCount = timeAxisLayerCount > 0 && multilayerTimeAxis ? timeAxisLayerCount : 1;
+  return axisLayerCount * maxLabelBoxGirth;
 };
 
 const resolveExtentPx = (value: Pixels | string | undefined, crossAxisContainerSize: number): number | undefined => {
@@ -46,35 +62,22 @@ const resolveExtentPx = (value: Pixels | string | undefined, crossAxisContainerS
   return px > 0 ? px : undefined;
 };
 
-type AxisExtentBounds = {
-  maxExtentPx: number;
-  minExtentPx: number;
-  labelBudget: number;
-  staticBand: number;
-  container: number;
-};
-
 /** @internal */
-export const getExtentBounds = (
+export const getAxisBand = (
   position: Position,
   style: AxisStyle,
-  staticBand: number,
+  fixed: number,
   containerWidth: number,
   containerHeight: number,
-): AxisExtentBounds => {
+) => {
   const container = isVerticalAxis(position) ? containerWidth : containerHeight;
-  const maxExtentPx = resolveExtentPx(style.maxExtent, container) ?? Infinity;
-  const minExtentPx = resolveExtentPx(style.minExtent, container) ?? 0;
-  const labelBudget = Math.max(0, maxExtentPx - staticBand);
-  return { maxExtentPx, minExtentPx, labelBudget, staticBand, container };
+  const maxExtent = resolveExtentPx(style.maxExtent, container) ?? container;
+  const minExtent = resolveExtentPx(style.minExtent, container) ?? 0;
+  const labelBudget = Math.max(0, maxExtent - fixed);
+  return { maxExtent, minExtent, labelBudget, fixed, container };
 };
 
-/** @internal */
-type TickLabelConstraints = {
-  maxLineLength: number;
-  maxWrapLines: number;
-  bounds: AxisExtentBounds;
-};
+type AxisBand = ReturnType<typeof getAxisBand>;
 
 /**
  * Resolve `tickLabel.limit`, `tickLabel.wrapLines` and `maxExtent` into the
@@ -91,70 +94,60 @@ type TickLabelConstraints = {
 export const resolveTickLabelConstraints = ({
   position,
   style,
-  staticBand,
-  containerWidth,
-  containerHeight,
+  band,
   scale,
 }: {
   position: Position;
   style: AxisStyle;
-  staticBand: number;
-  containerWidth: number;
-  containerHeight: number;
+  band: AxisBand;
   scale: ScaleBand | ScaleContinuous;
-}): TickLabelConstraints => {
-  const bounds = getExtentBounds(position, style, staticBand, containerWidth, containerHeight);
+}) => {
   const vertical = isVerticalAxis(position);
 
   let maxLineLength: number;
   if (vertical) {
-    maxLineLength = Math.min(style.tickLabel.limit ?? bounds.labelBudget, bounds.labelBudget, bounds.container);
+    maxLineLength = Math.min(style.tickLabel.limit ?? band.labelBudget, band.labelBudget, band.container);
   } else {
-    const bandLineCap = scale.bandwidth > 0 ? scale.bandwidth + scale.barsPadding / 2 : bounds.maxExtentPx;
-    const limit = style.tickLabel.limit ?? bandLineCap;
-    maxLineLength = Math.min(limit, bandLineCap, bounds.container);
+    const bandwidthCap = scale.bandwidth > 0 ? scale.bandwidth + scale.barsPadding / 2 : band.maxExtent;
+    const limit = style.tickLabel.limit ?? bandwidthCap;
+    maxLineLength = Math.min(limit, bandwidthCap, band.container);
   }
 
   const lineHeightPx = style.tickLabel.lineHeight * style.tickLabel.fontSize;
   let maxWrapLines = style.tickLabel.wrapLines;
-  if (!vertical && lineHeightPx > 0 && bounds.labelBudget > 0) {
-    const maxWrapFromBudget = Math.max(1, Math.floor(bounds.labelBudget / lineHeightPx));
+  if (!vertical && lineHeightPx > 0 && band.labelBudget > 0) {
+    const maxWrapFromBudget = Math.max(1, Math.floor(band.labelBudget / lineHeightPx));
     maxWrapLines = Math.min(style.tickLabel.wrapLines, maxWrapFromBudget);
   }
 
-  return { maxLineLength, maxWrapLines, bounds };
+  return { maxLineLength, maxWrapLines };
 };
 
-const computeAxisExtent = (
+/** @internal */
+export const computeAxisBandSize = (
   spec: AxisSpec,
   style: AxisStyle,
   ticks: TickLabelBox[],
-  staticBand: number,
-  containerWidth: number,
-  containerHeight: number,
-  xScaleType: ScaleType,
-  rotation: Rotation,
+  layout: AxisLayoutContext,
 ): number => {
   const vertical = isVerticalAxis(spec.position);
-
-  const { maxExtentPx, minExtentPx, labelBudget } = getExtentBounds(
-    spec.position,
-    style,
-    staticBand,
-    containerWidth,
-    containerHeight,
-  );
-
+  const { band, multilayerTimeAxis } = layout;
   const maxLabelDimensions = getMaxLabelDimensions(ticks);
-  const rawGirth = vertical ? maxLabelDimensions.bboxWidth : maxLabelDimensions.bboxHeight;
-  const cappedGirth = Math.min(rawGirth, labelBudget);
+  const maxLabelSize = vertical ? maxLabelDimensions.bboxWidth : maxLabelDimensions.bboxHeight;
 
+  const labelSize = Math.min(maxLabelSize, band.labelBudget);
   const labelLayersBand = style.tickLabel.visible
-    ? getAllAxisLayersGirth(spec.timeAxisLayerCount, cappedGirth, isMultilayerTimeAxis(spec, xScaleType, rotation))
+    ? getAllAxisLayersGirth(spec.timeAxisLayerCount, labelSize, multilayerTimeAxis)
     : 0;
+  const axisBand = band.fixed + labelLayersBand;
 
-  const axisBand = staticBand + labelLayersBand;
-  return Math.min(maxExtentPx, Math.max(axisBand, minExtentPx));
+  return Math.min(band.maxExtent, Math.max(axisBand, band.minExtent));
+};
+
+/** @internal */
+export type AxisLayoutContext = {
+  band: AxisBand;
+  multilayerTimeAxis: boolean;
 };
 
 /** @internal */
@@ -164,32 +157,16 @@ export const getAxesDimensions = (
     spec: AxisSpec;
     style: AxisStyle;
     ticks: AxisTick['layout'][];
+    layout: AxisLayoutContext;
     isHidden?: boolean;
   }>,
-  smSpec: SmallMultiplesSpec | null,
-  xScaleType: ScaleType,
-  rotation: Rotation,
-  containerWidth: number,
-  containerHeight: number,
 ): PerSideDistance & { margin: { left: number } } => {
   const sizes = axes.reduce(
-    (acc, { spec, style, ticks, isHidden }) => {
+    (acc, { spec, style, ticks, layout, isHidden }) => {
       if (isHidden) return acc;
       const isVertical = isVerticalAxis(spec.position);
 
-      const hasPanelTitle = isVertical ? smSpec?.splitVertically : smSpec?.splitHorizontally;
-      const staticBand = measureAxisStatic(spec, style, Boolean(hasPanelTitle));
-
-      const extent = computeAxisExtent(
-        spec,
-        style,
-        ticks,
-        staticBand,
-        containerWidth,
-        containerHeight,
-        xScaleType,
-        rotation,
-      );
+      const extent = computeAxisBandSize(spec, style, ticks, layout);
 
       switch (spec.position) {
         case Position.Top:

@@ -6,45 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { getJoinedVisibleAxesData } from './compute_baseline_axes';
 import { computeChartLayoutSelector } from './compute_chart_layout';
-import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
-import { getAxesStylesSelector } from './get_axis_styles';
-import { axisSpecsLookupSelector } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
-import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_multiples_spec';
-import { getAxesGeometries } from '../../utils/axis_utils';
+import { getAxesGeometries } from '../../axes/geometry';
 
 /** @internal */
 export const computeAxesGeometriesSelector = createCustomCachedSelector(
-  [
-    computeChartDimensionsSelector,
-    getChartThemeSelector,
-    axisSpecsLookupSelector,
-    getAxesStylesSelector,
-    computeSmallMultipleScalesSelector,
-    computeChartLayoutSelector,
-    getScaleConfigsFromSpecsSelector,
-    getSettingsSpecSelector,
-    getChartContainerDimensionsSelector,
-    getSmallMultiplesSpec,
-  ],
-  (chartDims, theme, axisSpecs, axesStyles, smScales, chartLayout, scaleConfigs, settingsSpec, container, smSpec) => {
-    return getAxesGeometries(
-      chartDims,
-      theme,
-      axisSpecs,
-      axesStyles,
-      smScales,
-      chartLayout.ticks,
-      scaleConfigs,
-      settingsSpec,
-      container,
-      smSpec,
-    );
-  },
+  [getChartThemeSelector, getJoinedVisibleAxesData, computeSmallMultipleScalesSelector, computeChartLayoutSelector],
+  (theme, joinedAxesData, smScales, chartLayout) =>
+    getAxesGeometries(chartLayout.dimensions, theme, joinedAxesData, smScales, chartLayout.ticks),
 );

@@ -6,30 +6,29 @@
  * Side Public License, v 1.
  */
 
-import { measureAxisStatic, resolveTickLabelConstraints } from './dimensions';
-import type { TickLabelLayout } from './tick_labels';
-import { createTickLayout } from './tick_labels';
-import { multilayerAxisEntry } from './timeslip/multilayer_ticks';
-import type { SmallMultipleScales } from '../../../common/panel_utils';
-import { getPanelSize } from '../../../common/panel_utils';
-import type { ScaleBand } from '../../../scales';
-import { ScaleContinuous } from '../../../scales';
-import { ScaleType } from '../../../scales/constants';
-import { isContinuousScale } from '../../../scales/types';
-import type { AxisSpec, SettingsSpec, SmallMultiplesSpec } from '../../../specs';
-import type { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import type { Position, Rotation } from '../../../utils/common';
-import { isFiniteNumber, isRTLString } from '../../../utils/common';
-import type { Size } from '../../../utils/dimensions';
-import type { AxisId } from '../../../utils/ids';
-import type { AxisLabelFormatter } from '../state/selectors/axis_tick_formatter';
-import type { JoinedAxisData } from '../state/selectors/compute_baseline_axis_ticks_dimensions';
-import type { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
-import type { SeriesDomainsAndData } from '../state/utils/types';
-import { isHorizontalAxis, isVerticalAxis } from '../utils/axis_type_utils';
-import { isMultilayerTimeAxis } from '../utils/axis_utils';
-import type { AxisTick, TextDirection } from '../utils/axis_utils';
-import { computeXScale } from '../utils/scales';
+import type { TickLabelLayout } from './labels';
+import { createTickLabelLayout } from './labels';
+import type { AxisTick, TextDirection } from './types';
+import type { SmallMultipleScales } from '../../../../common/panel_utils';
+import { getPanelSize } from '../../../../common/panel_utils';
+import type { ScaleBand } from '../../../../scales';
+import { ScaleContinuous } from '../../../../scales';
+import { ScaleType } from '../../../../scales/constants';
+import { isContinuousScale } from '../../../../scales/types';
+import type { AxisSpec, SettingsSpec } from '../../../../specs';
+import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import type { Position, Rotation } from '../../../../utils/common';
+import { isFiniteNumber, isRTLString } from '../../../../utils/common';
+import type { Size } from '../../../../utils/dimensions';
+import type { AxisId } from '../../../../utils/ids';
+import type { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
+import type { JoinedAxisData } from '../../state/selectors/compute_baseline_axes';
+import type { ScaleConfigs } from '../../state/selectors/get_api_scale_configs';
+import type { SeriesDomainsAndData } from '../../state/utils/types';
+import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
+import { computeXScale } from '../../utils/scales';
+import { resolveTickLabelConstraints } from '../dimensions';
+import { multilayerAxisEntry } from '../timeslip/multilayer_ticks';
 
 /** @internal */
 export type Projection = { ticks: AxisTick[]; scale: ScaleBand | ScaleContinuous };
@@ -253,25 +252,18 @@ export function computeVisibleTickSets(
   smScales: SmallMultipleScales,
   totalGroupsCount: number,
   enableHistogramMode: boolean,
-  containerWidth: number,
-  containerHeight: number,
-  smSpec: SmallMultiplesSpec | null,
   barsPadding?: number,
 ): Projections {
   const panel = getPanelSize(smScales);
   return [...joinedAxesData].reduce(
-    (acc, [axisId, { axisSpec, axesStyle, scale: unitScale, isXAxis, labelFormatter: userProvidedLabelFormatter }]) => {
+    (acc, [axisId, { axisSpec, axesStyle, isXAxis, labelFormatter: userProvidedLabelFormatter, layout }]) => {
       const { groupId, maximumFractionDigits, timeAxisLayerCount } = axisSpec;
       const yDomain = yDomains.find((yd) => yd.groupId === groupId);
       const domain = isXAxis ? xDomain : yDomain;
       const range = axisMinMax(axisSpec.position, chartRotation, panel);
       const maxTickCount = domain?.desiredTickCount ?? 0;
-      const multilayerTimeAxis = isMultilayerTimeAxis(axisSpec, scaleConfigs.x.type, chartRotation);
       const isNice = (isXAxis ? scaleConfigs.x.nice : scaleConfigs.y[groupId]?.nice) ?? false;
       const adaptiveTickCount = !isNice && USE_ADAPTIVE_TICK_COUNT;
-
-      const hasPanelTitle = isVerticalAxis(axisSpec.position) ? smSpec?.splitVertically : smSpec?.splitHorizontally;
-      const staticBand = measureAxisStatic(axisSpec, axesStyle, Boolean(hasPanelTitle));
 
       const getMeasuredTicks: GetMeasuredTicks = (
         scale: ScaleBand | ScaleContinuous,
@@ -284,12 +276,10 @@ export function computeVisibleTickSets(
         const { maxLineLength, maxWrapLines } = resolveTickLabelConstraints({
           position: axisSpec.position,
           style: axesStyle,
-          staticBand,
-          containerWidth,
-          containerHeight,
+          band: layout.band,
           scale,
         });
-        const layoutTickLabel = createTickLayout(axesStyle, textMeasure, locale, maxWrapLines, maxLineLength);
+        const layoutTickLabel = createTickLabelLayout(axesStyle, textMeasure, locale, maxWrapLines, maxLineLength);
 
         return {
           ticks: getVisibleTickSet(
@@ -304,7 +294,7 @@ export function computeVisibleTickSets(
             detailedLayer,
             ticks,
             adaptiveTickCount,
-            multilayerTimeAxis,
+            layout.multilayerTimeAxis,
             showGrid,
           ),
           scale, // tick count driving nicing; nicing drives domain; therefore scale may vary, downstream needs it
@@ -370,7 +360,7 @@ export function computeVisibleTickSets(
         return { fallbackAskedTickCount };
       };
 
-      if (multilayerTimeAxis) {
+      if (layout.multilayerTimeAxis) {
         const scale = getScale(0); // the scale is only needed for its non-tick props like step, bandwidth, ...
         if (!scale || !isContinuousScale(scale)) throw new Error('Scale generation for the multilayer axis failed');
         return acc.set(

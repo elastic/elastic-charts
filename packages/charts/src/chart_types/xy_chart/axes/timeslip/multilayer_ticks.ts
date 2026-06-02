@@ -11,7 +11,7 @@ import { unitIntervalWidth, continuousTimeRasters } from './continuous_time_rast
 import type { ScaleContinuous } from '../../../../scales';
 import type { XDomain } from '../../domains/types';
 import type { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
-import type { GetMeasuredTicks, Projection } from '../visible_ticks';
+import type { GetMeasuredTicks, Projection } from '../ticks/visible_ticks';
 
 const WIDTH_FUDGE = 1.05; // raster bin widths are sometimes approximate, but there's no raster that's just 5% denser/sparser, so it's safe
 

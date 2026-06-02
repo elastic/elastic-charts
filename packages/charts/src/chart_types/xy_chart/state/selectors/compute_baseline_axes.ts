@@ -10,6 +10,7 @@ import type { AxisLabelFormatter } from './axis_tick_formatter';
 import { getAxisTickLabelFormatter } from './axis_tick_formatter';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
+import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getAxesStylesSelector } from './get_axis_styles';
 import { getBarPaddingsSelector } from './get_bar_paddings';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
@@ -24,11 +25,12 @@ import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calcula
 import type { AxisId } from '../../../../utils/ids';
 import { Logger } from '../../../../utils/logger';
 import type { AxisStyle, GridLineStyle } from '../../../../utils/themes/theme';
-import { measureAxisStatic, resolveTickLabelConstraints } from '../../axes/dimensions';
-import { createTickLayout } from '../../axes/tick_labels';
+import type { AxisLayoutContext } from '../../axes/dimensions';
+import { getAxisBand, hasPanelTitle, measureAxisFixedBand, resolveTickLabelConstraints } from '../../axes/dimensions';
+import { createTickLabelLayout } from '../../axes/ticks/labels';
+import type { AxisTick } from '../../axes/ticks/types';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
-import type { AxisTick } from '../../utils/axis_utils';
-import { defaultTickFormatter, getScaleForAxisSpec, isXDomain } from '../../utils/axis_utils';
+import { defaultTickFormatter, getScaleForAxisSpec, isMultilayerTimeAxis, isXDomain } from '../../utils/axis_utils';
 import type { AxisSpec, TickFormatter } from '../../utils/specs';
 
 /** @internal */
@@ -74,12 +76,22 @@ export type JoinedAxisData = {
   gridLine: GridLineStyle;
   isXAxis: boolean;
   labelFormatter: AxisLabelFormatter;
+  layout: AxisLayoutContext;
 };
 
 /** @internal */
 export const getJoinedVisibleAxesData = createCustomCachedSelector(
-  [getUnitScales, getAxisSpecsSelector, getThemedAxesStyles, getSettingsSpecSelector, getAxisTickLabelFormatter],
-  (unitScales, axesSpecs, themedAxesStyles, { rotation }, axisTickLabelFormatters) =>
+  [
+    getUnitScales,
+    getAxisSpecsSelector,
+    getThemedAxesStyles,
+    getSettingsSpecSelector,
+    getAxisTickLabelFormatter,
+    getChartContainerDimensionsSelector,
+    getSmallMultiplesSpec,
+    getScaleConfigsFromSpecsSelector,
+  ],
+  (unitScales, axesSpecs, themedAxesStyles, { rotation }, axisTickLabelFormatters, container, smSpec, scaleConfigs) =>
     axesSpecs.reduce<Map<AxisId, JoinedAxisData>>((axisData, axisSpec) => {
       const { id, position, hide } = axisSpec;
       const axesStyle = themedAxesStyles.get(id);
@@ -91,7 +103,11 @@ export const getJoinedVisibleAxesData = createCustomCachedSelector(
         const isXAxis = isXDomain(position, rotation);
         const labelFormatter = axisTickLabelFormatters[isXAxis ? 'x' : 'y'].get(id) ?? defaultTickFormatter;
 
-        if (axisShown)
+        if (axisShown) {
+          const fixedBand = measureAxisFixedBand(axisSpec, axesStyle, hasPanelTitle(position, smSpec));
+          const axisBand = getAxisBand(position, axesStyle, fixedBand, container.width, container.height);
+          const multilayerTimeAxis = isMultilayerTimeAxis(axisSpec, scaleConfigs.x.type, rotation);
+
           axisData.set(id, {
             axisSpec,
             scale,
@@ -99,7 +115,9 @@ export const getJoinedVisibleAxesData = createCustomCachedSelector(
             gridLine,
             labelFormatter,
             isXAxis,
+            layout: { band: axisBand, multilayerTimeAxis },
           });
+        }
       }
       return axisData;
     }, new Map()),
@@ -107,24 +125,19 @@ export const getJoinedVisibleAxesData = createCustomCachedSelector(
 
 /** @internal */
 export const computeBaselineAxisTicksDimensionsSelector = createCustomCachedSelector(
-  [getJoinedVisibleAxesData, getSettingsSpecSelector, getChartContainerDimensionsSelector, getSmallMultiplesSpec],
-  (joinedAxesData, { locale }, containerDimensions, smSpec): AxesTicksDimensions =>
+  [getJoinedVisibleAxesData, getSettingsSpecSelector],
+  (joinedAxesData, { locale }): AxesTicksDimensions =>
     withTextMeasure((textMeasure): AxesTicksDimensions => {
       return [...joinedAxesData].reduce<AxesTicksDimensions>(
-        (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, labelFormatter }]) => {
-          const hasPanelTitle = isVerticalAxis(axisSpec.position) ? smSpec?.splitVertically : smSpec?.splitHorizontally;
-          const staticBand = measureAxisStatic(axisSpec, axesStyle, Boolean(hasPanelTitle));
-
+        (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, labelFormatter, layout }]) => {
           const { maxLineLength, maxWrapLines } = resolveTickLabelConstraints({
             position: axisSpec.position,
             style: axesStyle,
-            staticBand,
-            containerWidth: containerDimensions.width,
-            containerHeight: containerDimensions.height,
+            band: layout.band,
             scale,
           });
 
-          const layoutTickLabel = createTickLayout(axesStyle, textMeasure, locale, maxWrapLines, maxLineLength);
+          const layoutTickLabel = createTickLabelLayout(axesStyle, textMeasure, locale, maxWrapLines, maxLineLength);
           const tickDimensions = scale.ticks().map((tick) => layoutTickLabel(labelFormatter(tick)));
 
           axesTicksDimensions.set(id, tickDimensions);

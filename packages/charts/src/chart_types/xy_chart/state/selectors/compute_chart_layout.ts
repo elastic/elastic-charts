@@ -6,16 +6,12 @@
  * Side Public License, v 1.
  */
 
-import type { AxesTicksDimensions, JoinedAxisData } from './compute_baseline_axis_ticks_dimensions';
-import {
-  computeBaselineAxisTicksDimensionsSelector,
-  getJoinedVisibleAxesData,
-} from './compute_baseline_axis_ticks_dimensions';
+import type { AxesTicksDimensions, JoinedAxisData } from './compute_baseline_axes';
+import { computeBaselineAxisTicksDimensionsSelector, getJoinedVisibleAxesData } from './compute_baseline_axes';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import type { ScaleConfigs } from './get_api_scale_configs';
 import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
-import { getAxesStylesSelector } from './get_axis_styles';
 import { getBarPaddingsSelector } from './get_bar_paddings';
 import { getAxisSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
@@ -31,9 +27,9 @@ import { withTextMeasure, type TextMeasure } from '../../../../utils/bbox/canvas
 import type { ChartDimensions, Dimensions, PerSideDistance } from '../../../../utils/dimensions';
 import type { OrdinalDomain } from '../../../../utils/domain';
 import type { AxisId } from '../../../../utils/ids';
-import type { AxisStyle, Theme } from '../../../../utils/themes/theme';
+import type { Theme } from '../../../../utils/themes/theme';
 import { getAxesDimensions } from '../../axes/dimensions';
-import { computeVisibleTickSets, type Projection } from '../../axes/visible_ticks';
+import { computeVisibleTickSets, type Projection } from '../../axes/ticks/visible_ticks';
 import { computeChartArea } from '../../utils/dimensions';
 import type { SeriesDomainsAndData } from '../utils/types';
 
@@ -52,8 +48,7 @@ export type ChartLayout = {
   };
 };
 
-/** @internal */
-export const projectionToTickDimensions = (projections: Map<AxisId, Projection>): AxesTicksDimensions => {
+const projectionToTickDimensions = (projections: Map<AxisId, Projection>): AxesTicksDimensions => {
   const tickDimensions = new Map();
   projections.forEach(({ ticks }, id) => {
     tickDimensions.set(
@@ -65,7 +60,7 @@ export const projectionToTickDimensions = (projections: Map<AxisId, Projection>)
 };
 
 const projectTicks = (
-  { settings, scales, axes, sm, bars, container }: LayoutParameters,
+  { settings, scales, axes, sm, bars }: LayoutParameters,
   chartDimensions: Dimensions,
   textMeasure: TextMeasure,
 ) => {
@@ -89,9 +84,6 @@ const projectTicks = (
     },
     bars.groupsCount,
     bars.enableHistogramMode,
-    container.width,
-    container.height,
-    sm.spec,
     bars.padding,
   );
 };
@@ -107,7 +99,6 @@ export type LayoutParameters = {
   };
   axes: {
     specs: AxisSpec[];
-    styles: Map<AxisId, AxisStyle | null>;
     data: Map<AxisId, JoinedAxisData>;
   };
   sm: {
@@ -138,24 +129,23 @@ const isLayoutStable = (a: AxesPerSide, b: AxesPerSide) => {
 
 /** @internal */
 export function computeChartLayout(params: LayoutParameters): ChartLayout {
-  const { container, theme, settings, scales, axes: axesConfig, sm, bootstrap } = params;
+  const { container, theme, axes: axesConfig, bootstrap } = params;
   return withTextMeasure((textMeasure) => {
     const measureMargins = (tickDimensions: AxesTicksDimensions) => {
-      const axes = axesConfig.specs.map((spec) => ({
-        spec,
-        style: axesConfig.styles.get(spec.id) ?? theme.axes,
-        ticks: tickDimensions.get(spec.id) ?? [],
-        isHidden: spec.hide,
-      }));
-      return getAxesDimensions(
-        theme,
-        axes,
-        sm.spec,
-        scales.configs.x.type,
-        settings.rotation,
-        container.width,
-        container.height,
-      );
+      const axes = axesConfig.specs.flatMap((spec) => {
+        const joined = axesConfig.data.get(spec.id);
+        if (!joined) return [];
+        return [
+          {
+            spec,
+            style: joined.axesStyle,
+            ticks: tickDimensions.get(spec.id) ?? [],
+            layout: joined.layout,
+            isHidden: spec.hide,
+          },
+        ];
+      });
+      return getAxesDimensions(theme, axes);
     };
 
     let margins = measureMargins(bootstrap.tickDimensions);
@@ -192,7 +182,6 @@ export const computeChartLayoutSelector = createCustomCachedSelector(
     getSettingsSpecSelector,
     getScaleConfigsFromSpecsSelector,
     getAxisSpecsSelector,
-    getAxesStylesSelector,
     getJoinedVisibleAxesData,
     computeSeriesDomainsSelector,
     getSmallMultiplesSpec,
@@ -208,7 +197,6 @@ export const computeChartLayoutSelector = createCustomCachedSelector(
     settings,
     scales,
     axes,
-    styles,
     joined,
     domains,
     sm,
@@ -222,27 +210,11 @@ export const computeChartLayoutSelector = createCustomCachedSelector(
       container,
       theme,
       settings,
-      scales: {
-        configs: scales,
-        domains,
-      },
-      axes: {
-        specs: axes,
-        styles,
-        data: joined,
-      },
-      sm: {
-        spec: sm,
-        domains: smDomains,
-      },
-      bars: {
-        groupsCount: groups,
-        enableHistogramMode,
-        padding: barPadding,
-      },
-      bootstrap: {
-        tickDimensions: bootstrapTickDimensions,
-      },
+      scales: { configs: scales, domains },
+      axes: { specs: axes, data: joined },
+      sm: { spec: sm, domains: smDomains },
+      bars: { groupsCount: groups, enableHistogramMode, padding: barPadding },
+      bootstrap: { tickDimensions: bootstrapTickDimensions },
     };
     return computeChartLayout(params);
   },

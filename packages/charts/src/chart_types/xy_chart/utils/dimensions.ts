@@ -6,48 +6,8 @@
  * Side Public License, v 1.
  */
 
-import type { AxisSpec } from './specs';
-import type { SettingsSpec, SmallMultiplesSpec } from '../../../specs';
-import type { ChartDimensions, Dimensions, PerSideDistance } from '../../../utils/dimensions';
-import type { AxisId } from '../../../utils/ids';
-import type { Theme, AxisStyle } from '../../../utils/themes/theme';
-import { getAxesDimensions } from '../axes/dimensions';
-import type { AxesTicksDimensions } from '../state/selectors/compute_baseline_axis_ticks_dimensions';
-import type { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
-
-/**
- * Compute the chart dimensions. It's computed removing from the parent dimensions
- * the axis spaces, the legend and any other specified style margin and padding.
- * @internal
- */
-export function computeChartDimensions(
-  parentDimensions: Dimensions,
-  theme: Theme,
-  axisTickDimensions: AxesTicksDimensions,
-  axesStyles: Map<AxisId, AxisStyle | null>,
-  axisSpecs: AxisSpec[],
-  smSpec: SmallMultiplesSpec | null,
-  scaleConfigs: ScaleConfigs,
-  settingsSpec: SettingsSpec,
-): ChartDimensions {
-  const axes = axisSpecs.map((spec) => ({
-    spec,
-    style: axesStyles.get(spec.id) ?? theme.axes,
-    ticks: axisTickDimensions.get(spec.id) ?? [],
-    isHidden: spec.hide,
-  }));
-  const axesDimensions = getAxesDimensions(
-    theme,
-    axes,
-    smSpec,
-    scaleConfigs.x.type,
-    settingsSpec.rotation,
-    parentDimensions.width,
-    parentDimensions.height,
-  );
-
-  return computeChartArea(parentDimensions, axesDimensions, theme);
-}
+import type { Dimensions, PerSideDistance } from '../../../utils/dimensions';
+import type { Theme } from '../../../utils/themes/theme';
 
 /** @internal */
 export type AxesPerSide = PerSideDistance & { margin: { left: number } };

@@ -12,8 +12,8 @@ import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRectCenterRotated } from '../../../../../renderers/canvas/utils/debug';
 import { degToRad, Position } from '../../../../../utils/common';
 import type { Point } from '../../../../../utils/point';
-import type { AxisTick } from '../../../utils/axis_utils';
-import { getTickLabelPosition } from '../../../utils/axis_utils';
+import { getTickLabelPosition } from '../../../axes/ticks/geometry';
+import type { AxisTick } from '../../../axes/ticks/types';
 
 const TICK_TO_LABEL_GAP = 2;
 
