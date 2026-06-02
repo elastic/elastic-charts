@@ -14,32 +14,32 @@ import { common } from '../page_objects';
 test.describe('Metric', () => {
   test('should render horizontal progress bar', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--grid&globals=theme%3Alight&knob-use+progress+bar=true&knob-progress+bar+direction=horizontal&knob-max+trend+data+points=30',
+      'http://localhost:9001/?path=/story/metric-alpha--grid&globals=theme:light&knob-use progress bar=true&knob-progress bar direction=horizontal&knob-max trend data points=30',
     );
   });
   test('should render no progress bar', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--grid&globals=theme%3Alight&knob-use+progress+bar=&knob-progress+bar+direction=horizontal&knob-max+trend+data+points=30',
+      'http://localhost:9001/?path=/story/metric-alpha--grid&globals=theme:light&knob-use progress bar=&knob-progress bar direction=horizontal&knob-max trend data points=30',
     );
   });
   test('should render vertical progress bar in dark mode', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--grid&globals=theme%3Adark&knob-use+progress+bar=true&knob-progress+bar+direction=vertical&knob-max+trend+data+points=30',
+      'http://localhost:9001/?path=/story/metric-alpha--grid&globals=theme:dark&knob-use progress bar=true&knob-progress bar direction=vertical&knob-max trend data points=30',
     );
   });
   test('should render horizontal progress bar in dark mode', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--grid&globals=theme%3Adark&knob-use+progress+bar=true&knob-progress+bar+direction=horizontal&knob-max+trend+data+points=30',
+      'http://localhost:9001/?path=/story/metric-alpha--grid&globals=theme:dark&knob-use progress bar=true&knob-progress bar direction=horizontal&knob-max trend data points=30',
     );
   });
   test('should render no progress bar in dark mode', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--grid&globals=theme%3Adark&knob-use+progress+bar=&knob-progress+bar+direction=horizontal&knob-max+trend+data+points=30',
+      'http://localhost:9001/?path=/story/metric-alpha--grid&globals=theme:dark&knob-use progress bar=&knob-progress bar direction=horizontal&knob-max trend data points=30',
     );
   });
   test('should render progress bar palette and size in grid', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--grid&globals=theme%3Alight&knob-use+progress+bar=true&knob-progress+bar+direction=horizontal&knob-progress+bar+palette=palette-1-gradient&knob-progress+bar+size=small&knob-max+trend+data+points=30',
+      'http://localhost:9001/?path=/story/metric-alpha--grid&globals=theme:light&knob-use progress bar=true&knob-progress bar direction=horizontal&knob-progress bar palette=palette-1-gradient&knob-progress bar size=small&knob-max trend data points=30',
     );
   });
   test('text value with trend', async ({ page }) => {
@@ -54,7 +54,7 @@ test.describe('Metric', () => {
   });
   test('should render with empty and missing background colors', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--grid&globals=theme%3Alight%3Bbackground%3Agray&knob-empty+background=white&knob-number+of+columns=3',
+      'http://localhost:9001/?path=/story/metric-alpha--grid&globals=theme:light;background:gray&knob-empty background=white&knob-number of columns=3',
     );
   });
 
@@ -110,7 +110,7 @@ test.describe('Metric', () => {
 
   test('should render metric with value on top using fit font mode', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--layout&globals=toggles.showHeader%3Atrue%3Btoggles.showChartTitle%3Afalse%3Btoggles.showChartDescription%3Afalse%3Btoggles.showChartBoundary%3Afalse%3Btheme%3Alight&knob-Aria+description_Metric=This+is+a+description&knob-Is+numeric+metric_Metric=true&knob-Title_Labels=Count+of+records&knob-Subtitle_Labels=&knob-Value_Metric=5&knob-Show+extra_Metric=&knob-Label_Metric=Last+week&knob-Color+by+value_Metric=true&knob-Secondary+metric+label+position_Metric=before&knob-Secondary+metric+trend+icon_Metric=%E2%86%91&knob-Secondary+metric+trend+icon+position_Metric=after&knob-Secondary+metric+value_Metric=87.20&knob-Secondary+metric+value+color_Metric=compareTo3&knob-Visualization+type_Progress+bar=none&knob-Primary+metric+font+size+mode_Labels=fit&knob-Progress+bar+direction_Progress+bar=horizontal',
+      'http://localhost:9001/?path=/story/metric-alpha--layout&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Aria description_Metric=This is a description&knob-Is numeric metric_Metric=true&knob-Title_Labels=Count of records&knob-Subtitle_Labels=&knob-Value_Metric=5&knob-Show extra_Metric=&knob-Label_Metric=Last week&knob-Color by value_Metric=true&knob-Secondary metric label position_Metric=before&knob-Secondary metric trend icon_Metric=&knob-Secondary metric trend icon position_Metric=after&knob-Secondary metric value_Metric=87.20&knob-Secondary metric value color_Metric=compareTo3&knob-Visualization type_Progress bar=none&knob-Primary metric font size mode_Labels=fit&knob-Progress bar direction_Progress bar=horizontal',
       {
         action: async () => await common.setResizeDimensions(page)({ height: 200, width: 150 }),
       },
@@ -119,7 +119,7 @@ test.describe('Metric', () => {
 
   test('should render signed-domain progress bar with palette and size', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--layout&globals=toggles.showHeader%3Atrue%3Btoggles.showChartTitle%3Afalse%3Btoggles.showChartDescription%3Afalse%3Btoggles.showChartBoundary%3Afalse%3Btheme%3Alight&knob-Aria+description_Metric=This+is+a+description&knob-Is+numeric+metric_Metric=true&knob-Title_Labels=Signed+domain+metric&knob-Subtitle_Labels=Little+description+of+this+component&knob-Value_Metric=-25&knob-Show+extra_Metric=true&knob-Label_Metric=Last+week&knob-Color+by+value_Metric=true&knob-Secondary+metric+label+position_Metric=before&knob-Secondary+metric+trend+icon_Metric=%E2%86%91&knob-Secondary+metric+trend+icon+position_Metric=after&knob-Secondary+metric+value_Metric=87.20&knob-Secondary+metric+value+color_Metric=compareTo3&knob-Visualization+type_Progress+bar=bar&knob-Progress+min_Progress+bar=-100&knob-Progress+max_Progress+bar=100&knob-Progress+bar+direction_Progress+bar=horizontal&knob-Progress+bar+palette_Progress+bar=palette-1-gradient&knob-Progress+bar+size_Progress+bar=large',
+      'http://localhost:9001/?path=/story/metric-alpha--layout&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Aria description_Metric=This is a description&knob-Is numeric metric_Metric=true&knob-Title_Labels=Signed domain metric&knob-Subtitle_Labels=Little description of this component&knob-Value_Metric=-25&knob-Show extra_Metric=true&knob-Label_Metric=Last week&knob-Color by value_Metric=true&knob-Secondary metric label position_Metric=before&knob-Secondary metric trend icon_Metric=&knob-Secondary metric trend icon position_Metric=after&knob-Secondary metric value_Metric=87.20&knob-Secondary metric value color_Metric=compareTo3&knob-Visualization type_Progress bar=bar&knob-Progress min_Progress bar=-100&knob-Progress max_Progress bar=100&knob-Progress bar direction_Progress bar=horizontal&knob-Progress bar palette_Progress bar=palette-1-gradient&knob-Progress bar size_Progress bar=large',
       {
         action: async () => await common.setResizeDimensions(page)({ height: 200, width: 180 }),
       },
@@ -137,7 +137,7 @@ test.describe('Metric', () => {
 
   test('should use restrictive breakpoint at 99px height', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--layout&globals=toggles.showHeader%3Atrue%3Btoggles.showChartTitle%3Afalse%3Btoggles.showChartDescription%3Afalse%3Btoggles.showChartBoundary%3Afalse%3Btheme%3Alight&knob-Aria+description_Metric=This+is+a+description&knob-Is+numeric+metric_Metric=true&knob-Title_Labels=Count+of+records+Count+of+records+Count+of+records+Count+of+records&knob-Subtitle_Labels=Subtitle+Subtitle+Subtitle+Subtitle+Subtitle&knob-Value_Metric=5&knob-Show+extra_Metric=true&knob-Label_Metric=Last+week&knob-Color+by+value_Metric=true&knob-Secondary+metric+label+position_Metric=before&knob-Secondary+metric+trend+icon_Metric=%E2%86%91&knob-Secondary+metric+trend+icon+position_Metric=after&knob-Secondary+metric+value_Metric=87.20&knob-Secondary+metric+value+color_Metric=compareTo3&knob-Visualization+type_Progress+bar=none&knob-Show+metric+icon_Labels=true&knob-Progress+bar+direction_Progress+bar=horizontal',
+      'http://localhost:9001/?path=/story/metric-alpha--layout&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Aria description_Metric=This is a description&knob-Is numeric metric_Metric=true&knob-Title_Labels=Count of records Count of records Count of records Count of records&knob-Subtitle_Labels=Subtitle Subtitle Subtitle Subtitle Subtitle&knob-Value_Metric=5&knob-Show extra_Metric=true&knob-Label_Metric=Last week&knob-Color by value_Metric=true&knob-Secondary metric label position_Metric=before&knob-Secondary metric trend icon_Metric=&knob-Secondary metric trend icon position_Metric=after&knob-Secondary metric value_Metric=87.20&knob-Secondary metric value color_Metric=compareTo3&knob-Visualization type_Progress bar=none&knob-Show metric icon_Labels=true&knob-Progress bar direction_Progress bar=horizontal',
       {
         action: async () => await common.setResizeDimensions(page)({ height: 99, width: 250 }),
       },
@@ -146,7 +146,7 @@ test.describe('Metric', () => {
 
   test('should use restrictive breakpoint at 149px height', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--layout&globals=toggles.showHeader%3Atrue%3Btoggles.showChartTitle%3Afalse%3Btoggles.showChartDescription%3Afalse%3Btoggles.showChartBoundary%3Afalse%3Btheme%3Alight&knob-Aria+description_Metric=This+is+a+description&knob-Is+numeric+metric_Metric=true&knob-Title_Labels=Count+of+records+Count+of+records+Count+of+records+Count+of+records&knob-Subtitle_Labels=Subtitle+Subtitle+Subtitle+Subtitle+Subtitle&knob-Value_Metric=5&knob-Show+extra_Metric=true&knob-Label_Metric=Last+week&knob-Color+by+value_Metric=true&knob-Secondary+metric+label+position_Metric=before&knob-Secondary+metric+trend+icon_Metric=%E2%86%91&knob-Secondary+metric+trend+icon+position_Metric=after&knob-Secondary+metric+value_Metric=87.20&knob-Secondary+metric+value+color_Metric=compareTo3&knob-Visualization+type_Progress+bar=bar&knob-Show+metric+icon_Labels=true&knob-Progress+bar+direction_Progress+bar=horizontal',
+      'http://localhost:9001/?path=/story/metric-alpha--layout&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Aria description_Metric=This is a description&knob-Is numeric metric_Metric=true&knob-Title_Labels=Count of records Count of records Count of records Count of records&knob-Subtitle_Labels=Subtitle Subtitle Subtitle Subtitle Subtitle&knob-Value_Metric=5&knob-Show extra_Metric=true&knob-Label_Metric=Last week&knob-Color by value_Metric=true&knob-Secondary metric label position_Metric=before&knob-Secondary metric trend icon_Metric=&knob-Secondary metric trend icon position_Metric=after&knob-Secondary metric value_Metric=87.20&knob-Secondary metric value color_Metric=compareTo3&knob-Visualization type_Progress bar=bar&knob-Show metric icon_Labels=true&knob-Progress bar direction_Progress bar=horizontal',
       {
         action: async () => await common.setResizeDimensions(page)({ height: 149, width: 250 }),
       },
@@ -168,7 +168,7 @@ test.describe('Metric', () => {
   test.describe('Layout configuration', () => {
     test(`with default secondary and 'before' secondary label position`, async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--layout&globals=toggles.showHeader%3Atrue%3Btoggles.showChartTitle%3Afalse%3Btoggles.showChartDescription%3Afalse%3Btoggles.showChartBoundary%3Afalse%3Btheme%3Alight&knob-Aria+description_Metric=This+is+a+description&knob-Is+numeric+metric_Metric=true&knob-Title_Labels=Count+of+records&knob-Subtitle_Labels=Little+description+of+this+component&knob-Value_Metric=55.23&knob-Show+extra_Metric=true&knob-Label_Metric=Last+week&knob-Color+by+value_Metric=true&knob-Secondary+metric+label+position_Metric=before&knob-Secondary+metric+trend+icon_Metric=%E2%86%91&knob-Secondary+metric+trend+icon+position_Metric=after&knob-Secondary+metric+value_Metric=87.20&knob-Secondary+metric+value+color_Metric=compareTo3&knob-Visualization+type_Progress+bar=bar',
+        'http://localhost:9001/?path=/story/metric-alpha--layout&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Aria description_Metric=This is a description&knob-Is numeric metric_Metric=true&knob-Title_Labels=Count of records&knob-Subtitle_Labels=Little description of this component&knob-Value_Metric=55.23&knob-Show extra_Metric=true&knob-Label_Metric=Last week&knob-Color by value_Metric=true&knob-Secondary metric label position_Metric=before&knob-Secondary metric trend icon_Metric=&knob-Secondary metric trend icon position_Metric=after&knob-Secondary metric value_Metric=87.20&knob-Secondary metric value color_Metric=compareTo3&knob-Visualization type_Progress bar=bar',
         {
           action: async () => await common.setResizeDimensions(page)({ height: 180, width: 180 }),
         },
@@ -177,7 +177,7 @@ test.describe('Metric', () => {
 
     test(`with default secondary and 'after' secondary label position`, async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--layout&globals=toggles.showHeader%3Atrue%3Btoggles.showChartTitle%3Afalse%3Btoggles.showChartDescription%3Afalse%3Btoggles.showChartBoundary%3Afalse%3Btheme%3Alight&knob-Aria+description_Metric=This+is+a+description&knob-Is+numeric+metric_Metric=true&knob-Title_Labels=Count+of+records&knob-Subtitle_Labels=Little+description+of+this+component&knob-Value_Metric=55.23&knob-Show+extra_Metric=true&knob-Label_Metric=Last+week&knob-Color+by+value_Metric=true&knob-Secondary+metric+label+position_Metric=after&knob-Secondary+metric+trend+icon_Metric=%E2%86%91&knob-Secondary+metric+trend+icon+position_Metric=after&knob-Secondary+metric+value_Metric=87.20&knob-Secondary+metric+value+color_Metric=compareTo3&knob-Visualization+type_Progress+bar=bar',
+        'http://localhost:9001/?path=/story/metric-alpha--layout&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Aria description_Metric=This is a description&knob-Is numeric metric_Metric=true&knob-Title_Labels=Count of records&knob-Subtitle_Labels=Little description of this component&knob-Value_Metric=55.23&knob-Show extra_Metric=true&knob-Label_Metric=Last week&knob-Color by value_Metric=true&knob-Secondary metric label position_Metric=after&knob-Secondary metric trend icon_Metric=&knob-Secondary metric trend icon position_Metric=after&knob-Secondary metric value_Metric=87.20&knob-Secondary metric value color_Metric=compareTo3&knob-Visualization type_Progress bar=bar',
         {
           action: async () => await common.setResizeDimensions(page)({ height: 180, width: 180 }),
         },
@@ -186,7 +186,7 @@ test.describe('Metric', () => {
 
     test(`with default secondary metric with badge and no secondary label`, async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--layout&globals=toggles.showHeader%3Atrue%3Btoggles.showChartTitle%3Afalse%3Btoggles.showChartDescription%3Afalse%3Btoggles.showChartBoundary%3Afalse%3Btheme%3Alight&knob-Aria+description_Metric=This+is+a+description&knob-Is+numeric+metric_Metric=true&knob-Title_Labels=Count+of+records&knob-Subtitle_Labels=Little+description+of+this+component&knob-Value_Metric=55.23&knob-Show+extra_Metric=true&knob-Label_Metric=&knob-Color+by+value_Metric=true&knob-Secondary+metric+label+position_Metric=before&knob-Secondary+metric+trend+icon_Metric=%E2%86%91&knob-Secondary+metric+trend+icon+position_Metric=after&knob-Secondary+metric+value_Metric=87.20&knob-Secondary+metric+value+color_Metric=compareTo3&knob-Visualization+type_Progress+bar=bar',
+        'http://localhost:9001/?path=/story/metric-alpha--layout&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Aria description_Metric=This is a description&knob-Is numeric metric_Metric=true&knob-Title_Labels=Count of records&knob-Subtitle_Labels=Little description of this component&knob-Value_Metric=55.23&knob-Show extra_Metric=true&knob-Label_Metric=&knob-Color by value_Metric=true&knob-Secondary metric label position_Metric=before&knob-Secondary metric trend icon_Metric=&knob-Secondary metric trend icon position_Metric=after&knob-Secondary metric value_Metric=87.20&knob-Secondary metric value color_Metric=compareTo3&knob-Visualization type_Progress bar=bar',
         {
           action: async () => await common.setResizeDimensions(page)({ height: 180, width: 180 }),
         },
@@ -195,7 +195,7 @@ test.describe('Metric', () => {
 
     test(`with default secondary metric with no badge and no secondary label`, async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--layout&globals=toggles.showHeader%3Atrue%3Btoggles.showChartTitle%3Afalse%3Btoggles.showChartDescription%3Afalse%3Btoggles.showChartBoundary%3Afalse%3Btheme%3Alight&knob-Aria+description_Metric=This+is+a+description&knob-Is+numeric+metric_Metric=true&knob-Title_Labels=Count+of+records&knob-Subtitle_Labels=Little+description+of+this+component&knob-Value_Metric=55.23&knob-Show+extra_Metric=true&knob-Label_Metric=&knob-Color+by+value_Metric=&knob-Secondary+metric+label+position_Metric=before&knob-Secondary+metric+trend+icon_Metric=%E2%86%91&knob-Secondary+metric+trend+icon+position_Metric=after&knob-Secondary+metric+value_Metric=87.20&knob-Secondary+metric+value+color_Metric=compareTo3&knob-Visualization+type_Progress+bar=bar',
+        'http://localhost:9001/?path=/story/metric-alpha--layout&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Aria description_Metric=This is a description&knob-Is numeric metric_Metric=true&knob-Title_Labels=Count of records&knob-Subtitle_Labels=Little description of this component&knob-Value_Metric=55.23&knob-Show extra_Metric=true&knob-Label_Metric=&knob-Color by value_Metric=&knob-Secondary metric label position_Metric=before&knob-Secondary metric trend icon_Metric=&knob-Secondary metric trend icon position_Metric=after&knob-Secondary metric value_Metric=87.20&knob-Secondary metric value color_Metric=compareTo3&knob-Visualization type_Progress bar=bar',
         {
           action: async () => await common.setResizeDimensions(page)({ height: 180, width: 180 }),
         },
@@ -204,7 +204,7 @@ test.describe('Metric', () => {
 
     test(`with value at the top, center aligned, and a metric icon`, async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--layout&globals=toggles.showHeader%3Atrue%3Btoggles.showChartTitle%3Afalse%3Btoggles.showChartDescription%3Afalse%3Btoggles.showChartBoundary%3Afalse%3Btheme%3Alight&knob-Aria+description_Metric=This+is+a+description&knob-Is+numeric+metric_Metric=true&knob-Title_Labels=Count+of+records&knob-Subtitle_Labels=Little+description+of+this+component&knob-Value_Metric=55.23&knob-Show+extra_Metric=true&knob-Label_Metric=Last+week&knob-Color+by+value_Metric=true&knob-Secondary+metric+label+position_Metric=before&knob-Secondary+metric+trend+icon_Metric=%E2%86%91&knob-Secondary+metric+trend+icon+position_Metric=after&knob-Secondary+metric+value_Metric=87.20&knob-Secondary+metric+value+color_Metric=compareTo3&knob-Visualization+type_Progress+bar=bar&knob-Show+metric+icon_Labels=true&knob-Primary+metric+alignment_Labels=center&knob-Title+and+subtitle+alignment_Labels=center',
+        'http://localhost:9001/?path=/story/metric-alpha--layout&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Aria description_Metric=This is a description&knob-Is numeric metric_Metric=true&knob-Title_Labels=Count of records&knob-Subtitle_Labels=Little description of this component&knob-Value_Metric=55.23&knob-Show extra_Metric=true&knob-Label_Metric=Last week&knob-Color by value_Metric=true&knob-Secondary metric label position_Metric=before&knob-Secondary metric trend icon_Metric=&knob-Secondary metric trend icon position_Metric=after&knob-Secondary metric value_Metric=87.20&knob-Secondary metric value color_Metric=compareTo3&knob-Visualization type_Progress bar=bar&knob-Show metric icon_Labels=true&knob-Primary metric alignment_Labels=center&knob-Title and subtitle alignment_Labels=center',
         {
           action: async () => await common.setResizeDimensions(page)({ height: 180, width: 180 }),
         },
@@ -213,7 +213,7 @@ test.describe('Metric', () => {
 
     test(`with titles at the top, center aligned, and a metric icon`, async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=%2Fstory%2Fmetric-alpha--layout&globals=toggles.showHeader%3Atrue%3Btoggles.showChartTitle%3Afalse%3Btoggles.showChartDescription%3Afalse%3Btoggles.showChartBoundary%3Afalse%3Btheme%3Alight&knob-Aria+description_Metric=This+is+a+description&knob-Is+numeric+metric_Metric=true&knob-Title_Labels=Count+of+records&knob-Subtitle_Labels=Little+description+of+this+component&knob-Value_Metric=55.23&knob-Show+extra_Metric=true&knob-Label_Metric=Last+week&knob-Color+by+value_Metric=true&knob-Secondary+metric+label+position_Metric=before&knob-Secondary+metric+trend+icon_Metric=%E2%86%91&knob-Secondary+metric+trend+icon+position_Metric=after&knob-Secondary+metric+value_Metric=87.20&knob-Secondary+metric+value+color_Metric=compareTo3&knob-Visualization+type_Progress+bar=bar&knob-Show+metric+icon_Labels=true&knob-Primary+metric+alignment_Labels=center&knob-Primary+metric+position_Labels=bottom&knob-Title+and+subtitle+alignment_Labels=center',
+        'http://localhost:9001/?path=/story/metric-alpha--layout&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Aria description_Metric=This is a description&knob-Is numeric metric_Metric=true&knob-Title_Labels=Count of records&knob-Subtitle_Labels=Little description of this component&knob-Value_Metric=55.23&knob-Show extra_Metric=true&knob-Label_Metric=Last week&knob-Color by value_Metric=true&knob-Secondary metric label position_Metric=before&knob-Secondary metric trend icon_Metric=↑&knob-Secondary metric trend icon position_Metric=after&knob-Secondary metric value_Metric=87.20&knob-Secondary metric value color_Metric=compareTo3&knob-Visualization type_Progress bar=bar&knob-Show metric icon_Labels=true&knob-Primary metric alignment_Labels=center&knob-Primary metric position_Labels=bottom&knob-Title and subtitle alignment_Labels=center',
         {
           action: async () => await common.setResizeDimensions(page)({ height: 180, width: 180 }),
         },
