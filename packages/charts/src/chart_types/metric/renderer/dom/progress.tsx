@@ -15,7 +15,6 @@ import { RGBATupleToString, colorToRgba } from '../../../../common/color_library
 import type { Color } from '../../../../common/colors';
 import type { MeterFill } from '../../../../components/meter';
 import { Meter, MeterFillStyle, MeterSize } from '../../../../components/meter';
-import { getMeterScalePosition } from '../../../../components/meter/utils';
 import { clamp, isNil, LayoutDirection, sortNumbers } from '../../../../utils/common';
 import type { ContinuousDomain, GenericDomain } from '../../../../utils/domain';
 import type { BulletMetricWProgress, MetricWProgress } from '../../specs';
@@ -103,6 +102,25 @@ function resolveMetricProgressBarFill(
   };
 }
 
+function mirrorDomainValue(domain: ContinuousDomain, value: number) {
+  const [domainMin, domainMax] = sortNumbers(domain);
+  return domainMin + domainMax - value;
+}
+
+function reverseMetricProgressBarFill(fill: MeterFill, domain: ContinuousDomain): MeterFill {
+  if (fill.type === MeterFillStyle.Single) {
+    return fill;
+  }
+
+  return {
+    ...fill,
+    colorStops: fill.colorStops.map((stop) => ({
+      ...stop,
+      stop: mirrorDomainValue(domain, stop.stop),
+    })),
+  };
+}
+
 /** @internal Metric-specific adapter that resolves Meter fill colors, sizing, and accessibility text. */
 export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   datum,
@@ -124,8 +142,9 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   }
 
   const updatedDomain = scale.domain() as ContinuousDomain;
+  const isReversedBulletDomain = isBulletMetric(datum) && updatedDomain[0] > updatedDomain[1];
   const [domainMin, domainMax] = sortNumbers(updatedDomain);
-  const scaledValue = clamp(getMeterScalePosition(updatedDomain, value), 0, 100);
+  const scaledValue = clamp(scale(value), 0, 100);
   const roundedScaledValue = Math.round(scaledValue * 100) / 100;
   const hasZeroBaselineMarker = domainMin < 0 && domainMax > 0;
   const progressValueLabels = hasExplicitDomain
@@ -135,17 +154,24 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
     : undefined;
   const labelType = progressValueLabels?.value ?? 'Percentage';
   const progressBarFill = resolveMetricProgressBarFill(fill, blendedBarColor, fillBackgroundColor);
+  const meterDomain: ContinuousDomain = isReversedBulletDomain ? sortNumbers(updatedDomain) : updatedDomain;
+  const meterValue = isReversedBulletDomain ? mirrorDomainValue(updatedDomain, value) : value;
+  const meterBaseline = isReversedBulletDomain ? mirrorDomainValue(updatedDomain, 0) : 0;
+  const meterTarget = isReversedBulletDomain && !isNil(target) ? mirrorDomainValue(updatedDomain, target) : target;
+  const meterFill = isReversedBulletDomain
+    ? reverseMetricProgressBarFill(progressBarFill, updatedDomain)
+    : progressBarFill;
 
   return (
     <Meter
-      value={value}
-      domain={updatedDomain}
-      fill={progressBarFill}
+      value={meterValue}
+      domain={meterDomain}
+      fill={meterFill}
       trackColor={barBackground}
       orientation={progressBarDirection}
       size={size}
-      baseline={0} // Fixed baseline for signed domains for Metric chart
-      target={target}
+      baseline={meterBaseline} // Fixed baseline for signed domains for Metric chart
+      target={meterTarget}
       markerColor={fill ? undefined : blendedBarColor}
       fillBorderColor={panelBackground}
       fillBorderWidth={2}
