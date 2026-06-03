@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`computeChartLayoutSelector with deterministic text measurement hidden axes do not reserve any space 1`] = `
+{
+  "chartDimensions": {
+    "height": 100,
+    "left": 0,
+    "top": 0,
+    "width": 200,
+  },
+  "leftMargin": 0,
+}
+`;
+
+exports[`computeChartLayoutSelector with deterministic text measurement left axis with short labels reserves space on the left 1`] = `
+{
+  "chartDimensions": {
+    "height": 110,
+    "left": 64,
+    "top": 5,
+    "width": 136,
+  },
+  "leftMargin": 0,
+}
+`;
+
+exports[`computeChartLayoutSelector with deterministic text measurement multi-iteration loop converges to a self-consistent (fixed-point) layout 1`] = `
+{
+  "chartDimensions": {
+    "height": 53,
+    "left": 112,
+    "top": 5,
+    "width": 72,
+  },
+  "leftMargin": 0,
+}
+`;
+
+exports[`computeChartLayoutSelector with deterministic text measurement without axes the chart area fills the container 1`] = `
+{
+  "chartDimensions": {
+    "height": 100,
+    "left": 0,
+    "top": 0,
+    "width": 100,
+  },
+  "leftMargin": 0,
+}
+`;

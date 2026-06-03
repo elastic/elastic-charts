@@ -9,12 +9,17 @@
 import { getTickLabelPosition } from './geometry';
 import type { TickLabelBox } from './labels';
 import { HorizontalAlignment, mergePartial, Position, VerticalAlignment } from '../../../../utils/common';
-import type { Size } from '../../../../utils/dimensions';
+import { innerPad, type Size } from '../../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { AxisStyle, TextOffset } from '../../../../utils/themes/theme';
 
-const styleWith = (overrides: Partial<AxisStyle['tickLabel']> = {}): AxisStyle =>
-  mergePartial(LIGHT_THEME.axes, { tickLabel: overrides });
+const AXIS_STYLE = LIGHT_THEME.axes;
+const TICK_LINE_DIMENSION = AXIS_STYLE.tickLine.size + AXIS_STYLE.tickLine.padding;
+const LABEL_INNER_PADDING = innerPad(AXIS_STYLE.tickLabel.padding);
+const PADDED_TICK_DIMENSION = TICK_LINE_DIMENSION + LABEL_INNER_PADDING;
+
+const styleWith = (overrides: Partial<AxisStyle['tickLabel']> = {}) =>
+  mergePartial(AXIS_STYLE, { tickLabel: overrides });
 
 const labelBox: TickLabelBox = {
   width: 40,
@@ -27,16 +32,12 @@ const labelBox: TickLabelBox = {
 const localOffset: TextOffset = { x: 0, y: 0, reference: 'local' };
 const nearAlignment = { horizontal: HorizontalAlignment.Near, vertical: VerticalAlignment.Near };
 
-// LIGHT_THEME defaults: tickLine.size=10, tickLine.padding=10, tickLabel.padding.inner=10
-// → with showTicks=true: paddedTickDimension = 10 + 10 + 10 = 30
-const PADDED_TICK_DIMENSION = 30;
-
 describe('getTickLabelPosition', () => {
   describe('vertical axes', () => {
     const verticalSize: Size = { width: 100, height: 200 };
     const tickPosition = 80;
 
-    test('left axis with `near` alignment anchors the label to the right of the axis band', () => {
+    test('left axis with "near" alignment anchors the label to the right of the axis band', () => {
       const props = getTickLabelPosition(
         styleWith(),
         tickPosition,
@@ -59,7 +60,7 @@ describe('getTickLabelPosition', () => {
       });
     });
 
-    test('right axis with `near` alignment anchors the label to the left of the axis band', () => {
+    test('right axis with "near" alignment anchors the label to the left of the axis band', () => {
       const props = getTickLabelPosition(
         styleWith(),
         tickPosition,
@@ -71,9 +72,12 @@ describe('getTickLabelPosition', () => {
         localOffset,
         nearAlignment,
       );
-      expect(props).toMatchObject({
+      expect(props).toEqual({
         x: PADDED_TICK_DIMENSION,
         y: tickPosition,
+        textOffsetX: 0,
+        textOffsetY: -labelBox.height / 2,
+        textAlign: HorizontalAlignment.Left,
         horizontalAlign: HorizontalAlignment.Left,
         verticalAlign: VerticalAlignment.Middle,
       });
@@ -84,7 +88,7 @@ describe('getTickLabelPosition', () => {
     const horizontalSize: Size = { width: 200, height: 100 };
     const tickPosition = 50;
 
-    test('top axis with `near` alignment anchors the label above the axis band, bottom-aligned', () => {
+    test('top axis with "near" alignment anchors the label above the axis band, bottom-aligned', () => {
       const props = getTickLabelPosition(
         styleWith(),
         tickPosition,
@@ -107,7 +111,7 @@ describe('getTickLabelPosition', () => {
       });
     });
 
-    test('bottom axis with `near` alignment anchors the label below the axis band, top-aligned', () => {
+    test('bottom axis with "near" alignment anchors the label below the axis band, top-aligned', () => {
       const props = getTickLabelPosition(
         styleWith(),
         tickPosition,
@@ -201,8 +205,9 @@ describe('getTickLabelPosition', () => {
       nearAlignment,
     );
 
-    // tickLine size + padding == 20, label inner padding stays
-    expect(visible.y - hidden.y).toBe(20);
+    expect(visible.y).toBe(PADDED_TICK_DIMENSION);
+    expect(hidden.y).toBe(LABEL_INNER_PADDING);
+    expect(visible.y - hidden.y).toBe(TICK_LINE_DIMENSION);
   });
 
   test('global text offset shifts the anchor; local offset moves text inside the box', () => {
@@ -229,12 +234,13 @@ describe('getTickLabelPosition', () => {
       nearAlignment,
     );
 
-    // global: 50% of bboxWidth (40) added to x; nothing in textOffsetX
-    expect(globalProps.x - (100 - PADDED_TICK_DIMENSION)).toBe(20);
-    expect(globalProps.textOffsetX).toBe(0);
+    const axisWidth = 100;
+    const anchorX = axisWidth - PADDED_TICK_DIMENSION;
+    const halfLabelWidth = labelBox.bboxWidth / 2;
 
-    // local: x stays at the anchor; textOffsetX gets 50% of label width (40)
-    expect(localProps.x).toBe(100 - PADDED_TICK_DIMENSION);
-    expect(localProps.textOffsetX).toBe(20);
+    expect(globalProps.x - anchorX).toBe(halfLabelWidth);
+    expect(globalProps.textOffsetX).toBe(0);
+    expect(localProps.x).toBe(anchorX);
+    expect(localProps.textOffsetX).toBe(halfLabelWidth);
   });
 });

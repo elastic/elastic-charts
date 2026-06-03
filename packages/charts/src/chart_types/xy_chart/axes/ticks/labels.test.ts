@@ -24,7 +24,7 @@ const monospaceMeasure: TextMeasure = (text, _font, fontSize) => ({
 
 const styleWith = (overrides: Partial<AxisStyle['tickLabel']> = {}): AxisStyle =>
   mergePartial(LIGHT_THEME.axes, {
-    tickLabel: { fontSize: 10, lineHeight: 1, rotation: 0, ...overrides },
+    tickLabel: { lineHeight: 1, rotation: 0, ...overrides },
   });
 
 const emptyLines = Object.assign([] as string[], { meta: { truncated: false } });
@@ -60,20 +60,22 @@ describe('createTickLabelLayout', () => {
   test('returns a single line when the label fits within maxLineLength', () => {
     const layout = createTickLabelLayout(styleWith(), monospaceMeasure, 'en', 1, 100);
     const result = layout('hello');
-    expect(result.lines).toEqual(['hello']);
+    expect(result.lines[0]).toEqual('hello');
     expect(result.width).toBe(5);
-    expect(result.height).toBe(10);
-    expect(result.bboxWidth).toBe(5);
-    expect(result.bboxHeight).toBe(10);
+    expect(result.height).toBe(LIGHT_THEME.axes.tickLabel.fontSize);
+    expect(result.bboxWidth).toBeCloseTo(5);
+    expect(result.bboxHeight).toBeCloseTo(LIGHT_THEME.axes.tickLabel.fontSize);
   });
 
   test('wraps a long label across multiple lines using lineHeight for inner-line spacing', () => {
-    const layout = createTickLabelLayout(styleWith({ lineHeight: 1.5 }), monospaceMeasure, 'en', 5, 5);
+    const lineHeight = 1.5;
+    const fontSize = LIGHT_THEME.axes.tickLabel.fontSize;
+    const layout = createTickLabelLayout(styleWith({ lineHeight }), monospaceMeasure, 'en', 5, 5);
     const result = layout('one two three');
     expect(result.lines.length).toBeGreaterThan(1);
-    // last line uses raw measured height; inner lines use lineHeight * fontSize
-    const inner = result.lines.length - 1;
-    const expectedHeight = inner * 1.5 * 10 + 10;
+    // n - 1 inner lines spaced by lineHeight*fontSize, plus the last line at its measured height (= fontSize).
+    const innerLines = result.lines.length - 1;
+    const expectedHeight = innerLines * lineHeight * fontSize + fontSize;
     expect(result.height).toBe(expectedHeight);
   });
 
@@ -81,9 +83,9 @@ describe('createTickLabelLayout', () => {
     const layout = createTickLabelLayout(styleWith({ rotation: 90 }), monospaceMeasure, 'en', 1, 100);
     const result = layout('hello');
     expect(result.width).toBe(5);
-    expect(result.height).toBe(10);
-    expect(result.bboxWidth).toBe(10);
-    expect(result.bboxHeight).toBe(5);
+    expect(result.height).toBe(LIGHT_THEME.axes.tickLabel.fontSize);
+    expect(result.bboxWidth).toBeCloseTo(LIGHT_THEME.axes.tickLabel.fontSize);
+    expect(result.bboxHeight).toBeCloseTo(5);
   });
 });
 

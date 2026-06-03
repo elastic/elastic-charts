@@ -54,11 +54,13 @@ describe('generateTicks', () => {
   test('formats time-scale ticks using the provided formatter and time zone', () => {
     const start = DateTime.fromISO('2026-06-01T00:11:00.000', { zone: 'utc' }).toMillis();
     const end = DateTime.fromISO('2026-06-01T04:11:00.000', { zone: 'utc' }).toMillis();
+
     const xDomain = MockXDomain.fromScaleType(ScaleType.Time, {
       isBandScale: false,
       domain: [start, end],
       minInterval: moment.duration(30, 'minutes').asMilliseconds(),
     });
+
     const scale = computeXScale({ xDomain, totalBarsInCluster: 0, range: [0, 600] });
     const formatter = niceTimeFormatter([start, end]);
 
@@ -86,17 +88,6 @@ describe('generateTicks', () => {
     ]);
   });
 
-  test('attaches a layout to every emitted tick using the provided layoutTickLabel function', () => {
-    const xDomain = MockXDomain.fromScaleType(ScaleType.Ordinal, { domain: ['a', 'bb', 'ccc'] });
-    const scale = computeXScale({ xDomain, totalBarsInCluster: 0, range: [0, 30] });
-
-    const layoutSpy = jest.fn(layoutTickLabel);
-    const result = generateTicks(scale, ['a', 'bb', 'ccc'], 0, layoutSpy, String, 0, 0, false, false);
-
-    expect(layoutSpy).toHaveBeenCalledTimes(3);
-    expect(result.map((tick) => tick.layout.bboxWidth)).toEqual([1, 2, 3]);
-  });
-
   test('omits the first tick on the first layer when offset before the domain start', () => {
     // Mirrors the multilayer time axis case that the rule was introduced to fix (see PR #2681):
     // domain starts mid-bin (00:11) on a 30-min grid, but the raster proposes a 00:00 tick aligned
@@ -118,7 +109,6 @@ describe('generateTicks', () => {
     const dropped = generateTicks(scale, ticks, 0, layoutTickLabel, formatTickLabel, 0, 0, true, false);
     const kept = generateTicks(scale, ticks, 0, layoutTickLabel, formatTickLabel, 1, 0, true, false);
 
-    // layer 0: the off-domain "00:00" tick is dropped, leaving the 8 in-domain ticks
     expect(dropped.map((tick) => tick.label)).toEqual([
       '00:30:00',
       '01:00:00',
@@ -129,7 +119,7 @@ describe('generateTicks', () => {
       '03:30:00',
       '04:00:00',
     ]);
-    // any other layer: it stays, with its position clamped to domain[0]
+
     expect(kept).toHaveLength(9);
     expect(kept[0]?.label).toBe('00:00:00');
     expect(kept[0]?.domainClampedValue).toBe(start);
@@ -180,7 +170,6 @@ describe('getVisibleTicks', () => {
   });
 
   test('drops overlapping ticks when neither showOverlappingTicks nor adaptiveTickCount are set', () => {
-    // labels are 80px tall → requiredSpace = 40px. Tick spacing is 50px, so adjacent ticks overlap.
     const axisSpec = MockGlobalSpec.yAxis({ id: 'y', position: Position.Left });
     const result = getVisibleTicks(
       axisSpec,

@@ -7,7 +7,7 @@
  */
 
 import type { AxisLayoutContext } from './dimensions';
-import { computeAxisBandSize } from './dimensions';
+import { measureAxisBand } from './dimensions';
 import { getMaxLabelDimensions, type TickLabelBox } from './ticks/labels';
 import type { AxisTick } from './ticks/types';
 import type { Projection } from './ticks/visible_ticks';
@@ -34,7 +34,7 @@ export function getPosition(
 ) {
   const { position } = axisSpec;
   const vertical = isVerticalAxis(position);
-  const bandSize = computeAxisBandSize(axisSpec, axisStyle, tickLabels, layout);
+  const bandSize = measureAxisBand(axisSpec, axisStyle, tickLabels, layout);
 
   return {
     leftIncrement: position === Position.Left ? bandSize + chartMargins.left : 0,

@@ -124,7 +124,7 @@ export const resolveTickLabelConstraints = ({
 };
 
 /** @internal */
-export const computeAxisBandSize = (
+export const measureAxisBand = (
   spec: AxisSpec,
   style: AxisStyle,
   ticks: TickLabelBox[],
@@ -166,7 +166,7 @@ export const getAxesDimensions = (
       if (isHidden) return acc;
       const isVertical = isVerticalAxis(spec.position);
 
-      const extent = computeAxisBandSize(spec, style, ticks, layout);
+      const extent = measureAxisBand(spec, style, ticks, layout);
 
       switch (spec.position) {
         case Position.Top:

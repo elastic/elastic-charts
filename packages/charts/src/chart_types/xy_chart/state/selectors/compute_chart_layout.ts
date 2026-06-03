@@ -33,7 +33,7 @@ import { computeVisibleTickSets, type Projection } from '../../axes/ticks/visibl
 import { computeChartArea } from '../../utils/dimensions';
 import type { SeriesDomainsAndData } from '../utils/types';
 
-const MAX_ITERATIONS = 3;
+const MAX_ITERATIONS = 5;
 const LAYOUT_EPSILON_PX = 0.5;
 
 /** @internal */
