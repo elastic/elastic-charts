@@ -139,7 +139,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
         id="y-axis"
         position={yPosition}
         title="Y axis"
-        tickFormat={(d) => Number(d).toFixed(0)}
         showOverlappingTicks={axisYKnobs.showOverlapping}
         style={buildAxisStyle(axisYKnobs)}
       />
