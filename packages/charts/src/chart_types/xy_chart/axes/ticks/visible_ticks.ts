@@ -253,6 +253,7 @@ export function computeVisibleTickSets(
   smScales: SmallMultipleScales,
   totalGroupsCount: number,
   enableHistogramMode: boolean,
+  containerWidth: number,
   barsPadding?: number,
 ): Projections {
   const panel = getPanelSize(smScales);
@@ -275,12 +276,20 @@ export function computeVisibleTickSets(
         showGrid = true,
       ): Projection => {
         const { maxLineLength, maxWrapLines } = resolveTickLabelConstraints({
-          position: axisSpec.position,
+          axisSpec,
           style: axesStyle,
           band: layout.band,
           scale,
+          containerWidth,
         });
-        const layoutTickLabel = createTickLabelLayout(axesStyle, textMeasure, locale, maxWrapLines, maxLineLength);
+        const layoutTickLabel = createTickLabelLayout(
+          axesStyle,
+          axisSpec,
+          textMeasure,
+          locale,
+          maxWrapLines,
+          maxLineLength,
+        );
 
         return {
           ticks: getVisibleTickSet(

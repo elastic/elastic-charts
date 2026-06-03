@@ -92,24 +92,31 @@ type AxisBand = ReturnType<typeof getAxisBand>;
  * @internal
  */
 export const resolveTickLabelConstraints = ({
-  position,
+  axisSpec,
   style,
   band,
   scale,
+  containerWidth,
 }: {
-  position: Position;
+  axisSpec: AxisSpec;
   style: AxisStyle;
   band: AxisBand;
   scale: ScaleBand | ScaleContinuous;
+  containerWidth: number;
 }) => {
-  const vertical = isVerticalAxis(position);
+  const vertical = isVerticalAxis(axisSpec.position);
 
-  let maxLineLength: number;
+  const maxTickLabelLength = axisSpec.tickLabelMaxLength
+    ? getPercentageValue(axisSpec.tickLabelMaxLength, containerWidth, 0)
+    : undefined;
+
+  let maxLineLength = style.tickLabel.limit ?? maxTickLabelLength;
+
   if (vertical) {
-    maxLineLength = Math.min(style.tickLabel.limit ?? band.labelBudget, band.labelBudget, band.container);
+    maxLineLength = Math.min(maxLineLength ?? band.labelBudget, band.labelBudget, band.container);
   } else {
     const bandwidthCap = scale.bandwidth > 0 ? scale.bandwidth + scale.barsPadding / 2 : band.maxExtent;
-    const limit = style.tickLabel.limit ?? bandwidthCap;
+    const limit = maxLineLength ?? bandwidthCap;
     maxLineLength = Math.min(limit, bandwidthCap, band.container);
   }
 

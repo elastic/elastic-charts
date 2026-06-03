@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { ELLIPSIS, type Font } from '../../common/text_utils';
+import type { Truncate } from '../../chart_types/specs';
+import { fitText, type Font } from '../../common/text_utils';
 import { monotonicHillClimb } from '../../solvers/monotonic_hill_climb';
 import type { TextMeasure } from '../bbox/canvas_text_bbox_calculator';
 
@@ -29,25 +30,90 @@ export function wrapText(
   measure: TextMeasure,
   locale: string,
   granularity: Granularity = 'word',
+  truncate: Truncate = 'end',
 ): WrapTextLines {
-  const lines: WrapTextLines = [] as any;
-  lines.meta = {
-    truncated: false,
-  };
-
   if (maxLines <= 0) {
+    const empty: WrapTextLines = [] as any;
+    empty.meta = { truncated: false };
+    return empty;
+  }
+
+  const cleanedText = text.replaceAll('\n', ' ').replaceAll(/ +(?= )/g, '');
+  const lines = wrapTextLines(cleanedText, font, fontSize, maxLineWidth, measure, locale, granularity);
+
+  if (lines.length <= maxLines) {
+    lines.meta = { truncated: false };
     return lines;
   }
-  const segmenter = textSegmenter(locale, granularity);
-  // remove new lines and multi-spaces.
-  const cleanedText = text.replaceAll('\n', ' ').replaceAll(/ +(?= )/g, '');
 
+  // find the width of the text that will fit within the maxLineWidth * maxLines budget
+  const allottedWidth = findAllottedWidth(
+    cleanedText,
+    font,
+    fontSize,
+    maxLineWidth,
+    maxLines,
+    measure,
+    locale,
+    granularity,
+    truncate,
+  );
+
+  // truncate the text to the allotted width
+  const { text: truncatedText } = fitText(measure, cleanedText, allottedWidth, fontSize, font, truncate);
+
+  // wrap the truncated text to the maxLineWidth
+  const rewrapped = wrapTextLines(truncatedText, font, fontSize, maxLineWidth, measure, locale, granularity);
+  rewrapped.meta = { truncated: true };
+
+  return rewrapped;
+}
+
+function findAllottedWidth(
+  cleanedText: string,
+  font: Font,
+  fontSize: number,
+  maxLineWidth: number,
+  maxLines: number,
+  measure: TextMeasure,
+  locale: string,
+  granularity: Granularity,
+  truncate: Truncate,
+): number {
+  const wrapLineCount = (budget: number) =>
+    wrapTextLines(
+      fitText(measure, cleanedText, budget, fontSize, font, truncate).text,
+      font,
+      fontSize,
+      maxLineWidth,
+      measure,
+      locale,
+      granularity,
+    ).length;
+
+  const maxBudget = maxLineWidth * maxLines;
+  const allottedWidth = monotonicHillClimb(wrapLineCount, maxBudget, maxLines, (n) => n, 0);
+
+  return allottedWidth;
+}
+
+function wrapTextLines(
+  cleanedText: string,
+  font: Font,
+  fontSize: number,
+  maxLineWidth: number,
+  measure: TextMeasure,
+  locale: string,
+  granularity: Granularity,
+): WrapTextLines {
+  const lines: WrapTextLines = [] as any;
+
+  const segmenter = textSegmenter(locale, granularity);
   const segments = Array.from(segmenter(cleanedText)).map((d) => ({
     ...d,
     width: measure(d.segment, font, fontSize).width,
   }));
 
-  const ellipsisWidth = measure(ELLIPSIS, font, fontSize).width;
   let currentLineWidth = 0;
   for (const segment of segments) {
     // the word is longer then the available space and is not a space
@@ -67,22 +133,7 @@ export function wrapText(
       currentLineWidth += segment.width;
     }
   }
-  if (lines.length > maxLines) {
-    lines.meta.truncated = true;
-    const lastLineMaxLineWidth = maxLineWidth - ellipsisWidth;
-    const lineToTruncate = lines[maxLines - 1] ?? '';
-    const lastLine = clipTextToWidth(lineToTruncate, font, fontSize, lastLineMaxLineWidth, measure);
-    if (lastLine.length > 0) {
-      lines.splice(maxLines - 1, Infinity, `${lastLine}${ELLIPSIS}`);
-    } else {
-      if (lastLineMaxLineWidth > 0) {
-        // Not enough space for both a character and ellipsis; if 1 line → first char; if >1 lines → only ellipsis
-        lines.splice(maxLines - 1, Infinity, maxLines > 1 ? ELLIPSIS : lineToTruncate.slice(0, 1));
-      } else {
-        lines.splice(maxLines, Infinity);
-      }
-    }
-  }
+
   return lines;
 }
 

@@ -745,12 +745,13 @@ export interface AxisSpec extends Spec {
    */
   labelFormat?: TickFormatter;
   /**
+   * @deprecated use `style.tickLabel.truncate` instead.
    * The position of the ellipsis when the tick label overflows. Defaults to 'end'.
    */
   tickLabelTruncate?: Truncate;
   /**
-   * The maximum size of the tick label.
-   * If a number, it is in pixels. If a string, it is relative to the container width, e.g. '20%'.
+   * @deprecated use `style.tickLabel.limit` instead.
+   * The maximum size of the tick label. If a number, it is in pixels. If a string, it is relative to the container width, e.g. '20%'.
    */
   tickLabelMaxLength?: Pixels | string;
   /** An approximate count of how many ticks will be generated */

@@ -14,6 +14,7 @@ import type { BulletStyle } from '../../chart_types/bullet_graph/theme';
 import type { Color } from '../../common/colors';
 import type { Pixels, Radian, Ratio } from '../../common/geometry';
 import type { Font, FontStyle, FontWeight, TextAlign } from '../../common/text_utils';
+import type { Truncate } from '../../specs';
 import type { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import type { Margins, Padding, SimplePadding } from '../dimensions';
 import type { Point } from '../point';
@@ -181,6 +182,8 @@ export interface AxisStyle {
       lineHeight: number;
       /** Max length of the tick label in pixels. */
       limit?: Pixels;
+      /** Where the tick label is truncated when it exceeds the limit. Defaults to 'end'. */
+      truncate?: Truncate;
     };
   tickLine: TickStyle;
   /** Min extent (cross-axis) of the axis in pixels or relative to the container size in the cross-axis direction, e.g. '20%'. */

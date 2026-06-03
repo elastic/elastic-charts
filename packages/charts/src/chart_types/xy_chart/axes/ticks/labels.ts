@@ -12,6 +12,7 @@ import { degToRad } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
 import { wrapText, type WrapTextLines } from '../../../../utils/text/wrap';
 import type { AxisStyle } from '../../../../utils/themes/theme';
+import type { AxisSpec } from '../../utils/specs';
 
 /** @internal */
 export function computeRotatedLabelDimensions(unrotatedDims: Size, degreesRotation: number): Size {
@@ -25,6 +26,7 @@ export function computeRotatedLabelDimensions(unrotatedDims: Size, degreesRotati
 /** @internal */
 export const createTickLabelLayout = (
   axisStyle: AxisStyle,
+  axisSpec: AxisSpec,
   measure: TextMeasure,
   locale: string,
   maxLines: number,
@@ -41,7 +43,20 @@ export const createTickLabelLayout = (
   const { lineHeight } = axisStyle.tickLabel;
 
   return (value: string) => {
-    const wrapped = wrapText(value, font, axisStyle.tickLabel.fontSize, maxLineLength, maxLines, measure, locale);
+    const truncate = axisStyle.tickLabel.truncate ?? axisSpec.tickLabelTruncate;
+
+    const wrapped = wrapText(
+      value,
+      font,
+      axisStyle.tickLabel.fontSize,
+      maxLineLength,
+      maxLines,
+      measure,
+      locale,
+      'word',
+      truncate,
+    );
+
     const { width, height } = wrapped.reduce(
       (acc, line, index) => {
         const measured = measure(line, font, axisStyle.tickLabel.fontSize);

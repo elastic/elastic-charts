@@ -24,7 +24,6 @@ import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import type { AxisStyle, Theme } from '../../../utils/themes/theme';
 
 const AXIS_STYLE = LIGHT_THEME.axes;
-// Primitive theme inputs the band-size formulas should consume.
 const TITLE = AXIS_STYLE.axisTitle;
 const PANEL_TITLE = AXIS_STYLE.axisPanelTitle;
 const TICK_LABEL_PADDING = AXIS_STYLE.tickLabel.padding;
@@ -129,20 +128,38 @@ describe('resolveTickLabelConstraints', () => {
 
   test('vertical axes cap maxLineLength by labelBudget; wrapLines unchanged', () => {
     const band = getAxisBand(Position.Left, style, 0, 100, 200);
-    const result = resolveTickLabelConstraints({ position: Position.Left, style, band, scale: continuousScale });
+    const result = resolveTickLabelConstraints({
+      axisSpec: MockGlobalSpec.yAxis(),
+      style,
+      band,
+      scale: continuousScale,
+      containerWidth: 100,
+    });
     expect(result.maxLineLength).toBe(100);
     expect(result.maxWrapLines).toBe(5);
   });
 
   test('horizontal ordinal axes cap maxLineLength by bandwidth + half barsPadding', () => {
     const band = getAxisBand(Position.Bottom, style, 0, 200, 200);
-    const result = resolveTickLabelConstraints({ position: Position.Bottom, style, band, scale: ordinalScale });
+    const result = resolveTickLabelConstraints({
+      axisSpec: MockGlobalSpec.xAxis(),
+      style,
+      band,
+      scale: ordinalScale,
+      containerWidth: 100,
+    });
     expect(result.maxLineLength).toBe(50 + 0.2 / 2);
   });
 
   test('horizontal axes clamp wrapLines to what fits in the labelBudget', () => {
     const band = getAxisBand(Position.Bottom, style, 0, 200, 40);
-    const result = resolveTickLabelConstraints({ position: Position.Bottom, style, band, scale: continuousScale });
+    const result = resolveTickLabelConstraints({
+      axisSpec: MockGlobalSpec.xAxis(),
+      style,
+      band,
+      scale: continuousScale,
+      containerWidth: 100,
+    });
     expect(result.maxWrapLines).toBe(4);
   });
 });

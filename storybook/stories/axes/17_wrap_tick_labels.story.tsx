@@ -22,14 +22,14 @@ const AXIS_X_GROUP = 'Axis X';
 const AXIS_Y_GROUP = 'Axis Y';
 
 const data = [
-  { category: 'a very long category name', value: 10 },
-  { category: 'a very very very very very long category name', value: 20 },
-  { category: 'label', value: 30 },
-  { category: 'medium label', value: 40 },
-  { category: 'a very long category name 0', value: 10 },
-  { category: 'a very very very very very long category name 1', value: 20 },
-  { category: 'label 2', value: 30 },
-  { category: 'medium label 3 label label 3 medium', value: 40 },
+  { category: 'this is a long category name', value: 28 },
+  { category: 'this is an even longer category name', value: 36 },
+  { category: 'ctg', value: 3 },
+  { category: 'category name', value: 13 },
+  { category: 'category', value: 8 },
+  { category: 'this is the longest category name in this story', value: 47 },
+  { category: 'another category', value: 16 },
+  { category: 'category', value: 8 },
 ];
 
 function parseThemeSize(raw: string): number | string | undefined {
@@ -59,6 +59,7 @@ const getWrapAxisKnobs = (group: string) => {
   const wrapLines = number('wrapLines', 2, { min: 1, max: 10, step: 1 }, group);
   const lineHeight = number('lineHeight', 1.2, { min: 0, max: 2, step: 0.1 }, group);
   const showOverlapping = boolean('show overlapping', false, group);
+  const truncate = select('truncate', { end: 'end', start: 'start', middle: 'middle' }, 'end', group);
 
   return {
     rotation,
@@ -70,6 +71,7 @@ const getWrapAxisKnobs = (group: string) => {
     wrapLines,
     lineHeight,
     showOverlapping,
+    truncate,
   };
 };
 
@@ -83,6 +85,7 @@ const buildAxisStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePa
     maxExtent,
     alignmentHorizontal,
     alignmentVertical,
+    truncate,
   } = knobs;
   const alignment =
     alignmentHorizontal !== undefined || alignmentVertical !== undefined
@@ -101,6 +104,7 @@ const buildAxisStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePa
       wrapLines,
       ...(tickLabelLimit !== undefined && { limit: tickLabelLimit }),
       ...(alignment !== undefined && { alignment }),
+      ...(truncate !== undefined && { truncate }),
     },
   };
 };

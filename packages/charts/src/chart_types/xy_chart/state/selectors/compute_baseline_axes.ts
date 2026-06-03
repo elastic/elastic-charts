@@ -125,19 +125,27 @@ export const getJoinedVisibleAxesData = createCustomCachedSelector(
 
 /** @internal */
 export const computeBaselineAxisTicksDimensionsSelector = createCustomCachedSelector(
-  [getJoinedVisibleAxesData, getSettingsSpecSelector],
-  (joinedAxesData, { locale }): AxesTicksDimensions =>
+  [getJoinedVisibleAxesData, getSettingsSpecSelector, getChartContainerDimensionsSelector],
+  (joinedAxesData, { locale }, containerDimensions): AxesTicksDimensions =>
     withTextMeasure((textMeasure): AxesTicksDimensions => {
       return [...joinedAxesData].reduce<AxesTicksDimensions>(
         (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, labelFormatter, layout }]) => {
           const { maxLineLength, maxWrapLines } = resolveTickLabelConstraints({
-            position: axisSpec.position,
+            axisSpec,
             style: axesStyle,
             band: layout.band,
             scale,
+            containerWidth: containerDimensions.width,
           });
 
-          const layoutTickLabel = createTickLabelLayout(axesStyle, textMeasure, locale, maxWrapLines, maxLineLength);
+          const layoutTickLabel = createTickLabelLayout(
+            axesStyle,
+            axisSpec,
+            textMeasure,
+            locale,
+            maxWrapLines,
+            maxLineLength,
+          );
           const tickDimensions = scale.ticks().map((tick) => layoutTickLabel(labelFormatter(tick)));
 
           axesTicksDimensions.set(id, tickDimensions);
