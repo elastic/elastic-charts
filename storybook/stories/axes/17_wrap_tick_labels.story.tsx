@@ -6,55 +6,113 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, select, text } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { AxisStyle, RecursivePartial, Rotation } from '@elastic/charts';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
+import { getNumberSelectKnob } from '../utils/knobs/custom';
+
+const CHART_CONFIG_GROUP = 'Chart config';
+const AXIS_X_GROUP = 'Axis X';
+const AXIS_Y_GROUP = 'Axis Y';
 
 const data = [
   { category: 'a very long category name', value: 10 },
   { category: 'a very very very very very long category name', value: 20 },
   { category: 'label', value: 30 },
   { category: 'medium label', value: 40 },
+  { category: 'a very long category name 0', value: 10 },
+  { category: 'a very very very very very long category name 1', value: 20 },
+  { category: 'label 2', value: 30 },
+  { category: 'medium label 3 label label 3 medium', value: 40 },
 ];
 
+function parseTickLabelLimit(raw: string): number | undefined {
+  const s = raw.trim();
+  if (!s) return undefined;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : undefined;
+}
+
+const getWrapAxisKnobs = (group: string) => {
+  const rotation = number('rotation', 0, { range: true, min: -90, max: 90, step: 1 }, group);
+  const alignmentVertical = customKnobs.enum.verticalTextAlignment('Alignment Vertical', undefined, { group });
+  const alignmentHorizontal = customKnobs.enum.horizontalTextAlignment('Alignment Horizontal', undefined, {
+    group,
+  });
+  const tickLabelLimit = parseTickLabelLimit(text('Tick label limit', '', group));
+  const wrapLines = number('wrapLines', 2, { min: 1, max: 10, step: 1 }, group);
+  const lineHeight = number('lineHeight', 1.2, { min: 0, max: 2, step: 0.1 }, group);
+  const showOverlapping = boolean('show overlapping', false, group);
+
+  return {
+    rotation,
+    alignmentVertical,
+    alignmentHorizontal,
+    tickLabelLimit,
+    wrapLines,
+    lineHeight,
+    showOverlapping,
+  };
+};
+
+const buildTickLabelStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePartial<AxisStyle>['tickLabel'] => {
+  const { rotation, lineHeight, wrapLines, tickLabelLimit, alignmentHorizontal, alignmentVertical } = knobs;
+  const alignment =
+    alignmentHorizontal !== undefined || alignmentVertical !== undefined
+      ? {
+          ...(alignmentHorizontal !== undefined && { horizontal: alignmentHorizontal }),
+          ...(alignmentVertical !== undefined && { vertical: alignmentVertical }),
+        }
+      : undefined;
+
+  return {
+    rotation,
+    lineHeight,
+    wrapLines,
+    ...(tickLabelLimit !== undefined && { limit: tickLabelLimit }),
+    ...(alignment !== undefined && { alignment }),
+  };
+};
+
 export const Example: ChartsStory = (_, { title, description }) => {
-  const lineHeight = number('lineHeight', 1.2, { min: 0, max: 2, step: 0.1 });
-  const wrapLines = number('wrapLines', 2, { min: 1, max: 10, step: 1 });
-  const rotation = number('rotation', 0, { min: 0, max: 90, step: 10 });
-  const alignmentHorizontal = customKnobs.enum.horizontalTextAlignment('Alignment Horizontal', 'near');
-  const alignmentVertical = customKnobs.enum.verticalTextAlignment('Alignment Vertical', 'near');
+  const chartRotation = getNumberSelectKnob<Rotation>(
+    'Chart rotation',
+    { '0 deg': 0, '90 deg': 90, '-90 deg': -90, '180 deg': 180 },
+    0,
+    CHART_CONFIG_GROUP,
+  );
+  const barCount = number('Number of bars', data.length, { min: 1, max: data.length, step: 1 }, CHART_CONFIG_GROUP);
+  const debug = boolean('debug', true, CHART_CONFIG_GROUP);
+
+  const xPosition = select('Position', { Bottom: Position.Bottom, Top: Position.Top }, Position.Bottom, AXIS_X_GROUP);
+  const yPosition = select('Position', { Left: Position.Left, Right: Position.Right }, Position.Left, AXIS_Y_GROUP);
+
+  const axisXKnobs = getWrapAxisKnobs(AXIS_X_GROUP);
+  const axisYKnobs = getWrapAxisKnobs(AXIS_Y_GROUP);
+
   return (
     <Chart title={title} description={description}>
-      <Settings debug={boolean('debug', true)} baseTheme={useBaseTheme()} rotation={90} />
+      <Settings debug={debug} baseTheme={useBaseTheme()} rotation={chartRotation} />
       <Axis
-        id="category"
-        position={Position.Bottom}
-        title="Categorical axis"
-        showOverlappingTicks={boolean('showOverlappingTicks', true)}
-        style={{
-          tickLabel: {
-            lineHeight,
-            wrapLines,
-            rotation,
-            alignment: {
-              horizontal: alignmentHorizontal,
-              vertical: alignmentVertical,
-            },
-          },
-        }}
+        id="x-axis"
+        position={xPosition}
+        title="X axis"
+        showOverlappingTicks={axisXKnobs.showOverlapping}
+        style={{ tickLabel: buildTickLabelStyle(axisXKnobs) }}
       />
       <Axis
-        id="left2"
-        title="Left axis"
-        position={Position.Left}
-        style={{
-          maxExtent: '15%',
-        }}
+        id="y-axis"
+        position={yPosition}
+        title="Y axis"
+        tickFormat={(d) => Number(d).toFixed(0)}
+        showOverlappingTicks={axisYKnobs.showOverlapping}
+        style={{ tickLabel: buildTickLabelStyle(axisYKnobs) }}
       />
       <BarSeries
         id="bars"
@@ -62,7 +120,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         yScaleType={ScaleType.Linear}
         xAccessor="category"
         yAccessors={['value']}
-        data={data}
+        data={data.slice(0, barCount)}
       />
     </Chart>
   );
