@@ -32,11 +32,19 @@ const data = [
   { category: 'medium label 3 label label 3 medium', value: 40 },
 ];
 
-function parseTickLabelLimit(raw: string): number | undefined {
+function parseThemeSize(raw: string): number | string | undefined {
   const s = raw.trim();
   if (!s) return undefined;
+  const pct = s.match(/^([\d.]+)\s*%$/);
+  if (pct) return `${pct[1]}%`;
   const n = Number(s);
-  return Number.isFinite(n) ? n : undefined;
+  if (Number.isFinite(n)) return n;
+  return s;
+}
+
+function parseTickLabelLimit(raw: string): number | undefined {
+  const limit = parseThemeSize(raw);
+  return typeof limit === 'number' ? limit : undefined;
 }
 
 const getWrapAxisKnobs = (group: string) => {
@@ -46,6 +54,8 @@ const getWrapAxisKnobs = (group: string) => {
     group,
   });
   const tickLabelLimit = parseTickLabelLimit(text('Tick label limit', '', group));
+  const minExtent = parseThemeSize(text('minExtent', '', group));
+  const maxExtent = parseThemeSize(text('maxExtent', '', group));
   const wrapLines = number('wrapLines', 2, { min: 1, max: 10, step: 1 }, group);
   const lineHeight = number('lineHeight', 1.2, { min: 0, max: 2, step: 0.1 }, group);
   const showOverlapping = boolean('show overlapping', false, group);
@@ -55,14 +65,25 @@ const getWrapAxisKnobs = (group: string) => {
     alignmentVertical,
     alignmentHorizontal,
     tickLabelLimit,
+    minExtent,
+    maxExtent,
     wrapLines,
     lineHeight,
     showOverlapping,
   };
 };
 
-const buildTickLabelStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePartial<AxisStyle>['tickLabel'] => {
-  const { rotation, lineHeight, wrapLines, tickLabelLimit, alignmentHorizontal, alignmentVertical } = knobs;
+const buildAxisStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePartial<AxisStyle> => {
+  const {
+    rotation,
+    lineHeight,
+    wrapLines,
+    tickLabelLimit,
+    minExtent,
+    maxExtent,
+    alignmentHorizontal,
+    alignmentVertical,
+  } = knobs;
   const alignment =
     alignmentHorizontal !== undefined || alignmentVertical !== undefined
       ? {
@@ -72,11 +93,15 @@ const buildTickLabelStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): Recurs
       : undefined;
 
   return {
-    rotation,
-    lineHeight,
-    wrapLines,
-    ...(tickLabelLimit !== undefined && { limit: tickLabelLimit }),
-    ...(alignment !== undefined && { alignment }),
+    ...(minExtent !== undefined && { minExtent }),
+    ...(maxExtent !== undefined && { maxExtent }),
+    tickLabel: {
+      rotation,
+      lineHeight,
+      wrapLines,
+      ...(tickLabelLimit !== undefined && { limit: tickLabelLimit }),
+      ...(alignment !== undefined && { alignment }),
+    },
   };
 };
 
@@ -104,7 +129,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         position={xPosition}
         title="X axis"
         showOverlappingTicks={axisXKnobs.showOverlapping}
-        style={{ tickLabel: buildTickLabelStyle(axisXKnobs) }}
+        style={buildAxisStyle(axisXKnobs)}
       />
       <Axis
         id="y-axis"
@@ -112,7 +137,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         title="Y axis"
         tickFormat={(d) => Number(d).toFixed(0)}
         showOverlappingTicks={axisYKnobs.showOverlapping}
-        style={{ tickLabel: buildTickLabelStyle(axisYKnobs) }}
+        style={buildAxisStyle(axisYKnobs)}
       />
       <BarSeries
         id="bars"

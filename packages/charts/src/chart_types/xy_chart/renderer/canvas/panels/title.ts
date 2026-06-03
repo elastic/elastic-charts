@@ -11,12 +11,11 @@ import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRect } from '../../../../../renderers/canvas/utils/debug';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position } from '../../../../../utils/common';
-import { innerPad, outerPad } from '../../../../../utils/dimensions';
+import { outerPad } from '../../../../../utils/dimensions';
 import type { Point } from '../../../../../utils/point';
 import { wrapText } from '../../../../../utils/text/wrap';
-import { getAllAxisLayersGirth, getTitleDimension } from '../../../axes/dimensions';
+import { getTitleDimension } from '../../../axes/dimensions';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
-import { shouldShowTicks } from '../../../utils/axis_utils';
 import type { AxisProps } from '../axes/axis_props';
 
 type PanelTitleProps = Pick<
@@ -39,17 +38,15 @@ export function renderTitle(
   panel: boolean,
   {
     size: { width, height },
-    dimension: { bboxWidth, bboxHeight },
     axisSpec,
-    axisStyle: { axisPanelTitle, axisTitle, tickLabel, tickLine },
+    axisStyle: { axisPanelTitle, axisTitle },
     panelTitle,
     debug,
     anchorPoint,
-    multilayerTimeAxis,
   }: TitleProps,
   locale: string,
 ) {
-  const { position, hide: hideAxis, title, timeAxisLayerCount } = axisSpec;
+  const { position, title } = axisSpec;
   const titleToRender = panel ? panelTitle : title;
   const axisTitleToUse = panel ? axisPanelTitle : axisTitle;
   if (!titleToRender || !axisTitleToUse.visible) {
@@ -59,18 +56,14 @@ export function renderTitle(
   const otherTitle = panel ? title : panelTitle;
   const horizontal = isHorizontalAxis(position);
   const font: TextFont = { ...titleFontDefaults, ...axisTitleToUse, textColor: axisTitleToUse.fill };
-  const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const maxLabelBoxGirth = horizontal ? bboxHeight : bboxWidth;
-  const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, multilayerTimeAxis);
-  const labelPaddingSum = innerPad(tickLabel.padding) + outerPad(tickLabel.padding);
-  const labelSize = tickLabel.visible ? allLayersGirth + labelPaddingSum : 0;
   const otherTitleDimension = otherTitle ? getTitleDimension(otherAxisTitleToUse) : 0;
   const titlePadding = panel || (axisTitleToUse.visible && title) ? axisTitleToUse.padding : 0;
   const rotation = horizontal ? 0 : -90;
+  const bandSize = horizontal ? height : width;
   const offset =
     position === Position.Left || position === Position.Top
       ? outerPad(titlePadding) + (panel ? otherTitleDimension : 0)
-      : tickDimension + labelSize + innerPad(titlePadding) + (panel ? 0 : otherTitleDimension);
+      : bandSize - outerPad(titlePadding) - font.fontSize - (panel ? otherTitleDimension : 0);
   const x = anchorPoint.x + (horizontal ? 0 : offset);
   const y = anchorPoint.y + (horizontal ? offset : height);
   const textX = horizontal ? width / 2 + (panel ? 0 : x) : font.fontSize / 2 + (panel ? offset : x);
