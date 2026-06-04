@@ -23,7 +23,7 @@ import { isVerticalAxis } from '../utils/axis_type_utils';
 import type { AxisSpec } from '../utils/specs';
 
 /** @internal */
-export function getPosition(
+function getPosition(
   { chartDimensions }: { chartDimensions: Dimensions },
   chartMargins: PerSideDistance,
   axisStyle: AxisStyle,
@@ -72,7 +72,11 @@ export interface AxisGeometry {
   visibleTicks: AxisTick[];
 }
 
-/** @internal */
+/**
+ * From the static joined axes data and a final set of visible ticks to display,
+ * this function calculates the geometry of the axes so they can be rendered.
+ * @internal
+ */
 export function getAxesGeometries(
   chartDims: { chartDimensions: Dimensions; leftMargin: number },
   { chartPaddings, chartMargins }: Theme,

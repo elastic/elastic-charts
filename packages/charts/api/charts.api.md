@@ -3550,7 +3550,7 @@ export interface TreeNode extends AngleFromTo {
 }
 
 // @public (undocumented)
-export type Truncate = 'start' | 'middle' | 'end';
+export type Truncate = 'start' | 'end' | 'middle';
 
 // @public
 export interface UnaryAccessorFn<D extends BaseDatum = any, Return = any> {

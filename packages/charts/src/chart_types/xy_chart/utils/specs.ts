@@ -32,6 +32,7 @@ import type {
   RectAnnotationStyle,
   BubbleSeriesStyle,
   AxisStyle,
+  Truncate,
 } from '../../../utils/themes/theme';
 import type { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 import type {
@@ -703,9 +704,6 @@ export const HistogramModeAlignments = Object.freeze({
 
 /** @public */
 export type HistogramModeAlignment = 'start' | 'center' | 'end';
-
-/** @public */
-export type Truncate = 'start' | 'middle' | 'end';
 
 /**
  * This spec describe the configuration for a chart axis.

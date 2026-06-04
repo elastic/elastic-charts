@@ -11,10 +11,10 @@ import type { $Values as Values } from 'utility-types';
 import type { Color } from './colors';
 import type { Pixels, Rectangle } from './geometry';
 import type { ArrayEntry } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import type { Truncate } from '../chart_types/specs';
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 import type { TextMeasure } from '../utils/bbox/canvas_text_bbox_calculator';
 import type { Datum } from '../utils/common';
+import type { Truncate } from '../utils/themes/theme';
 
 const FONT_WEIGHTS_NUMERIC = [100, 200, 300, 400, 450, 500, 600, 700, 800, 900] as const;
 const FONT_WEIGHTS_ALPHA = ['normal', 'bold', 'lighter', 'bolder', 'inherit', 'initial', 'unset'] as const;

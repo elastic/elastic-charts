@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import type { Truncate } from '../../chart_types/specs';
 import { fitText, type Font } from '../../common/text_utils';
 import { monotonicHillClimb } from '../../solvers/monotonic_hill_climb';
 import type { TextMeasure } from '../bbox/canvas_text_bbox_calculator';
+import type { Truncate } from '../themes/theme';
 
 /** @internal */
 export interface WrapTextLines extends Array<string> {
@@ -137,7 +137,8 @@ function wrapTextLines(
   return lines;
 }
 
-function textSegmenter(
+/** @internal */
+export function textSegmenter(
   locale: string,
   granularity: Granularity,
 ): (text: string) => { segment: string; index: number; isWordLike?: boolean }[] {

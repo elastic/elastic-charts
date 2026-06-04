@@ -14,7 +14,6 @@ import type { BulletStyle } from '../../chart_types/bullet_graph/theme';
 import type { Color } from '../../common/colors';
 import type { Pixels, Radian, Ratio } from '../../common/geometry';
 import type { Font, FontStyle, FontWeight, TextAlign } from '../../common/text_utils';
-import type { Truncate } from '../../specs';
 import type { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import type { Margins, Padding, SimplePadding } from '../dimensions';
 import type { Point } from '../point';
@@ -159,6 +158,9 @@ export interface Opacity {
   /** The opacity value from 0 to 1 */
   opacity: number;
 }
+
+/** @public */
+export type Truncate = 'start' | 'end' | 'middle';
 
 /** @public */
 export interface AxisStyle {
