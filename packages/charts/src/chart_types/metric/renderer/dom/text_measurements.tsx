@@ -20,7 +20,7 @@ import type { MetricSpacing, MetricStyle } from '../../../../utils/themes/theme'
 import type { MetricDatum, MetricWNumber } from '../../specs';
 import { isMetricWProgress } from '../../specs';
 
-type BreakPoint = 'xxxs' | 'xxs' | 'xs_minus' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
+type BreakPoint = 'xxxs' | 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl';
 
 type ResponsiveBreakpoints = {
   /** Maximum number of lines allowed for the title text before truncation */
@@ -80,66 +80,66 @@ export interface MetricTextDimensions {
 export const PROGRESS_BAR_TARGET_SIZE = 8; // Aligned with our CSS in _index.scss
 const LINE_HEIGHT = 1.2; // Aligned with our CSS
 const HEIGHT_BP: [number, number, BreakPoint][] = [
-  [100, 150, 'xs_minus'],
-  [150, 200, 'xs'],
-  [200, 300, 's'],
-  [300, 400, 'm'],
-  [400, 500, 'l'],
-  [500, 600, 'xl'],
-  [600, Infinity, 'xxl'],
+  [100, 150, 'xs'],
+  [150, 200, 's'],
+  [200, 300, 'm'],
+  [300, 400, 'l'],
+  [400, 500, 'xl'],
+  [500, 600, 'xxl'],
+  [600, Infinity, 'xxxl'],
 ];
 const ICON_SIZE: Record<BreakPoint, number> = {
   xxxs: 16,
   xxs: 16,
-  xs_minus: 16,
   xs: 16,
   s: 16,
-  m: 24,
+  m: 16,
   l: 24,
-  xl: 32,
-  xxl: 42,
+  xl: 24,
+  xxl: 32,
+  xxxl: 42,
 };
 const TITLE_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
-  small: { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 },
-  large: { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 22, m: 28, l: 36, xl: 46, xxl: 64 },
+  small: { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 16, l: 24, xl: 24, xxl: 32, xxxl: 42 },
+  large: { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 22, l: 28, xl: 36, xxl: 46, xxxl: 64 },
 };
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = {
   xxxs: 14,
   xxs: 14,
-  xs_minus: 14,
   xs: 14,
   s: 14,
-  m: 16,
-  l: 20,
-  xl: 26,
-  xxl: 36,
+  m: 14,
+  l: 16,
+  xl: 20,
+  xxl: 26,
+  xxxl: 36,
 };
 const EXTRA_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
-  small: { xxxs: 14, xxs: 14, xs_minus: 14, xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 },
-  large: { xxxs: 16, xxs: 16, xs_minus: 16, xs: 16, s: 22, m: 28, l: 36, xl: 46, xxl: 64 },
+  small: { xxxs: 14, xxs: 14, xs: 14, s: 14, m: 14, l: 16, xl: 20, xxl: 26, xxxl: 36 },
+  large: { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 22, l: 28, xl: 36, xxl: 46, xxxl: 64 },
 };
 const VALUE_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, number>> = {
   small: {
     xxxs: 16,
     xxs: 26,
-    xs_minus: 36,
     xs: 36,
-    s: 42,
-    m: 56,
-    l: 72,
-    xl: 104,
-    xxl: 170,
+    s: 36,
+    m: 42,
+    l: 56,
+    xl: 72,
+    xxl: 104,
+    xxxl: 170,
   },
   large: {
     xxxs: 24,
     xxs: 36,
-    xs_minus: 36,
-    xs: 50,
-    s: 64,
-    m: 84,
-    l: 120,
-    xl: 156,
+    xs: 36,
+    s: 50,
+    m: 64,
+    l: 84,
+    xl: 120,
     xxl: 156,
+    xxxl: 156,
   },
 };
 const VALUE_PART_FONT_RATIO = 1.3;
@@ -153,13 +153,13 @@ const BASE_TEXT_FONT: Font = {
 const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = {
   xxxs: 4,
   xxs: 4,
-  xs_minus: 4,
   xs: 4,
   s: 4,
-  m: 8,
+  m: 4,
   l: 8,
   xl: 8,
-  xxl: 16,
+  xxl: 8,
+  xxxl: 16,
 };
 const DEFAULT_PANEL_PADDING = 8; // Aligned with our CSS in _variables.scss
 const DEFAULT_TITLE_SUBTITLE_GAP = 5; // Aligned with our CSS in _text.scss
@@ -170,13 +170,13 @@ const LARGE_PRIMARY_ADJACENT_GAP = 4;
 const LARGE_PANEL_PADDING: Record<BreakPoint, number> = {
   xxxs: 16,
   xxs: 16,
-  xs_minus: 16,
   xs: 16,
-  s: 24,
+  s: 16,
   m: 24,
-  l: 32,
-  xl: 40,
-  xxl: 48,
+  l: 24,
+  xl: 32,
+  xxl: 40,
+  xxxl: 48,
 };
 
 /** @internal */
@@ -204,12 +204,12 @@ function getValueFontSizeMap(spacingMode: MetricSpacing): Record<BreakPoint, num
 function getValueFontSizeSteps(spacingMode: MetricSpacing): number[] {
   const valueFontSizeMap = getValueFontSizeMap(spacingMode);
   return [
+    valueFontSizeMap.xxl,
     valueFontSizeMap.xl,
     valueFontSizeMap.l,
     valueFontSizeMap.m,
     valueFontSizeMap.s,
     valueFontSizeMap.xs,
-    valueFontSizeMap.xs_minus,
     valueFontSizeMap.xxs,
     valueFontSizeMap.xxxs,
   ];
@@ -398,7 +398,7 @@ export function getSnappedFontSizes(
   const fontSize = clamp(
     valueFontSizes.find((value) => value <= minFontSize) ?? minFontSize,
     valueFontSizeMap.xxxs,
-    valueFontSizeMap.xxl,
+    valueFontSizeMap.xxxl,
   );
   return {
     valueFontSize: fontSize,
