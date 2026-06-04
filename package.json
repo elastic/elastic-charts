@@ -1,6 +1,5 @@
 {
   "name": "elastic-charts-mono",
-  "version": "71.5.1",
   "description": "Mono repo for @elastic/charts",
   "author": "Elastic DataVis",
   "license": "SEE LICENSE IN LICENSE.txt",
