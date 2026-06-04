@@ -188,10 +188,6 @@ export interface MetricSpacingLayout {
   progressTextGap: number;
 }
 
-function getMetricSpacingMode(style: MetricStyle): MetricSpacing {
-  return style.spacing ?? 'small';
-}
-
 function getHeightBreakpoint(ranges: [number, number, BreakPoint][], value: number): BreakPoint {
   const range = ranges.find(([min, max]) => min <= value && value < max);
   return range ? range[2] : ranges[0]?.[2] ?? 's';
@@ -216,7 +212,7 @@ function getValueFontSizeSteps(spacingMode: MetricSpacing): number[] {
 }
 
 function getMetricSpacingLayout(breakPoint: BreakPoint, style: MetricStyle): MetricSpacingLayout {
-  if (getMetricSpacingMode(style) === 'small') {
+  if (style.spacing === 'small') {
     return {
       panelPadding: DEFAULT_PANEL_PADDING,
       titleSubtitleGap: DEFAULT_TITLE_SUBTITLE_GAP,
@@ -347,7 +343,7 @@ function getHeightBasedFontSizes(
   style: MetricStyle,
 ): HeightBasedSizes {
   const size = getHeightBreakpoint(ranges, value);
-  const spacingMode = getMetricSpacingMode(style);
+  const spacingMode = style.spacing;
   const valueFontSizeMap = getValueFontSizeMap(spacingMode);
   const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : valueFontSizeMap[size];
   const valuePartFontSize = Math.floor(valueFontSize / VALUE_PART_FONT_RATIO);
@@ -390,7 +386,7 @@ export function getSnappedFontSizes(
   panelHeight: number,
   style: MetricStyle,
 ): Pick<HeightBasedSizes, 'valueFontSize' | 'valuePartFontSize'> {
-  const spacingMode = getMetricSpacingMode(style);
+  const spacingMode = style.spacing;
   const valueFontSizes = getValueFontSizeSteps(spacingMode);
   const valueFontSizeMap = getValueFontSizeMap(spacingMode);
   const sizes = getHeightBasedFontSizes(HEIGHT_BP, panelHeight, style);
