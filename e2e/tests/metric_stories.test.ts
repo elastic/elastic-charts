@@ -207,6 +207,35 @@ test.describe('Metric', () => {
     });
   });
 
+  test.describe('Large spacing', () => {
+    test('basic story renders with large spacing', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/metric-alpha--basic&globals=theme:light&knob-spacing=large`,
+      );
+    });
+
+    test('grid story renders with large spacing', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/metric-alpha--grid&globals=theme:light&knob-spacing=large`,
+      );
+    });
+
+    test('body content story renders with large spacing', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/metric-alpha--body-content&globals=theme:light&knob-spacing=large`,
+        {
+          maxDiffPixels: 5,
+        },
+      );
+    });
+
+    test('layout story renders with large spacing', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/metric-alpha--layout&globals=theme:light&knob-Metric spacing_Text configuration and position=large`,
+      );
+    });
+  });
+
   pwEach.describe(['trend', 'bar', 'none'])(
     (v) => `Metric - ${v} type`,
     (type) => {
