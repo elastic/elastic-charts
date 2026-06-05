@@ -63,7 +63,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'default',
   );
   const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
-  const spacing = select('spacing', { Small: 'small', Large: 'large' }, 'small');
+  const spacing = select('space and size', { Small: 'small', Large: 'large' }, 'small');
   const valuePosition = select('value position', { Bottom: 'bottom', Middle: 'middle', Top: 'top' }, 'bottom');
 
   const data: (MetricDatum | undefined)[] = useMemo(

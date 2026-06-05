@@ -270,12 +270,6 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     textConfigurationAndPositionGroup,
   );
   const valueTextAlign = getTextAlignKnob('Primary metric alignment', 'left', textConfigurationAndPositionGroup);
-  const spacing = select(
-    'Metric spacing',
-    { Small: 'small', Large: 'large' },
-    'small',
-    textConfigurationAndPositionGroup,
-  );
   const valueFontSizeMode = select(
     'Primary metric font size mode',
     { Default: 'default', Fit: 'fit', Custom: 'custom' },
@@ -286,6 +280,12 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     'Primary metric font size (only if custom font size selected)',
     40,
     { min: 0, step: 10 },
+    textConfigurationAndPositionGroup,
+  );
+  const spacing = select(
+    'Space and size',
+    { Small: 'small', Large: 'large' },
+    'small',
     textConfigurationAndPositionGroup,
   );
   // Extra (secondary metric)

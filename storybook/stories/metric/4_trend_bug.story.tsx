@@ -24,7 +24,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   const canHaveNullValues = boolean('can have null values', false);
   const alignSeriesGaps = boolean('align gaps', false);
-  const spacing = select('spacing', { Small: 'small', Large: 'large' }, 'small');
+  const spacing = select('space and size', { Small: 'small', Large: 'large' }, 'small');
   const trendShape = customKnobs.fromEnum('trend shape', MetricTrendShape, MetricTrendShape.Area);
 
   const numberTextSwitch = boolean('is numeric metric', true);
