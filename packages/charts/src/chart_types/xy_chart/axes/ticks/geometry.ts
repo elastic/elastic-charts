@@ -157,6 +157,9 @@ export function getTickLabelPosition(
   })();
 
   const verticalBoxOffset = (() => {
+    if (labelBox.lines.length === 1) {
+      return 0;
+    }
     switch (verticalAlign) {
       case VerticalAlignment.Top:
         return 0;

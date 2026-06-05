@@ -53,7 +53,7 @@ describe('getTickLabelPosition', () => {
         x: verticalSize.width - PADDED_TICK_DIMENSION,
         y: tickPosition,
         textOffsetX: 0,
-        textOffsetY: -labelBox.height / 2,
+        textOffsetY: 0,
         textAlign: HorizontalAlignment.Right,
         horizontalAlign: HorizontalAlignment.Right,
         verticalAlign: VerticalAlignment.Middle,
@@ -76,7 +76,7 @@ describe('getTickLabelPosition', () => {
         x: PADDED_TICK_DIMENSION,
         y: tickPosition,
         textOffsetX: 0,
-        textOffsetY: -labelBox.height / 2,
+        textOffsetY: 0,
         textAlign: HorizontalAlignment.Left,
         horizontalAlign: HorizontalAlignment.Left,
         verticalAlign: VerticalAlignment.Middle,
@@ -104,7 +104,7 @@ describe('getTickLabelPosition', () => {
         x: tickPosition,
         y: horizontalSize.height - PADDED_TICK_DIMENSION,
         textOffsetX: 0,
-        textOffsetY: -labelBox.height,
+        textOffsetY: 0,
         textAlign: HorizontalAlignment.Center,
         horizontalAlign: HorizontalAlignment.Center,
         verticalAlign: VerticalAlignment.Bottom,
@@ -242,5 +242,29 @@ describe('getTickLabelPosition', () => {
     expect(globalProps.textOffsetX).toBe(0);
     expect(localProps.x).toBe(anchorX);
     expect(localProps.textOffsetX).toBe(halfLabelWidth);
+  });
+
+  test('multi-line labels apply block vertical offsets', () => {
+    const multiLineBox: TickLabelBox = {
+      ...labelBox,
+      height: 32,
+      lines: Object.assign(['line one', 'line two'], { meta: { truncated: false } }),
+    };
+
+    const props = getTickLabelPosition(
+      styleWith(),
+      80,
+      Position.Left,
+      0,
+      { width: 100, height: 200 },
+      multiLineBox,
+      true,
+      localOffset,
+      nearAlignment,
+      multiLineBox,
+    );
+
+    expect(props.textOffsetY).toBe(-multiLineBox.height / 2);
+    expect(props.verticalAlign).toBe(VerticalAlignment.Middle);
   });
 });

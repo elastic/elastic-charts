@@ -10,9 +10,9 @@ import type { AxisProps } from './axis_props';
 import type { TextFont } from '../../../../../renderers/canvas/primitives/text';
 import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRectCenterRotated } from '../../../../../renderers/canvas/utils/debug';
-import { degToRad, Position } from '../../../../../utils/common';
+import { degToRad, Position, VerticalAlignment } from '../../../../../utils/common';
 import type { Point } from '../../../../../utils/point';
-import { getTickLabelPosition } from '../../../axes/ticks/geometry';
+import { getTickLabelPosition, type TickLabelProps } from '../../../axes/ticks/geometry';
 import type { AxisTick } from '../../../axes/ticks/types';
 
 const TICK_TO_LABEL_GAP = 2;
@@ -38,11 +38,25 @@ function getTickLabelBoxCenter(
   textAlign: TextFont['align'],
   textOffsetX: number,
   textOffsetY: number,
+  verticalAlign: TickLabelProps['verticalAlign'],
+  isMultiLine: boolean,
   rotation: number,
 ): Point {
+  let y = textOffsetY + height / 2;
+
+  if (!isMultiLine) {
+    if (verticalAlign === VerticalAlignment.Top) {
+      y = textOffsetY + height / 2;
+    } else if (verticalAlign === VerticalAlignment.Middle) {
+      y = textOffsetY;
+    } else {
+      y = textOffsetY - height / 2;
+    }
+  }
+
   const center = {
     x: textAlign === 'left' ? textOffsetX + width / 2 : textAlign === 'right' ? textOffsetX - width / 2 : textOffsetX,
-    y: textOffsetY + height / 2,
+    y,
   };
 
   const rotated = rotateOffset(center, rotation);
@@ -82,6 +96,7 @@ export function renderTickLabel(
   const lineHeight = labelStyle.lineHeight * labelStyle.fontSize;
   const layerOffsetY = (tick.layer || 0) * layerGirth * (position === Position.Top ? -1 : 1);
   const textOffsetY = tickLabelProps.textOffsetY + layerOffsetY;
+  const isMultiLine = tick.layout.lines.length > 1;
 
   if (debug) {
     const { width, height, bboxWidth, bboxHeight } = tick.layout;
@@ -91,6 +106,8 @@ export function renderTickLabel(
       tickLabelProps.textAlign,
       textOffsetX,
       textOffsetY,
+      tickLabelProps.verticalAlign,
+      isMultiLine,
       labelStyle.rotation,
     );
 
@@ -115,7 +132,7 @@ export function renderTickLabel(
     textColor: labelStyle.fill,
     fontSize: labelStyle.fontSize,
     align: tickLabelProps.textAlign,
-    baseline: 'top',
+    baseline: isMultiLine ? 'top' : tickLabelProps.verticalAlign,
   };
 
   tick.layout.lines.forEach((line, i) => {

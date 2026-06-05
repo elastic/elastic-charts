@@ -22,14 +22,14 @@ const AXIS_X_GROUP = 'Axis X';
 const AXIS_Y_GROUP = 'Axis Y';
 
 const data = [
-  { category: 'this is a long category name', value: 28 },
+  { category: 'this is the longest category name in this story', value: 47 },
   { category: 'this is an even longer category name', value: 36 },
-  { category: 'ctg', value: 3 },
+  { category: 'this is a long category name', value: 28 },
+  { category: 'another category', value: 16 },
   { category: 'category name', value: 13 },
   { category: 'category', value: 8 },
-  { category: 'this is the longest category name in this story', value: 47 },
-  { category: 'another category', value: 16 },
   { category: 'category', value: 8 },
+  { category: 'ctg', value: 3 },
 ];
 
 function parseThemeSize(raw: string): number | string | undefined {
