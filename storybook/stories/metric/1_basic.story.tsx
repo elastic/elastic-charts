@@ -9,7 +9,7 @@
 import { EuiIcon } from '@elastic/eui';
 import { action } from '@storybook/addon-actions';
 import { select, boolean, text, color, number } from '@storybook/addon-knobs';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 
 import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber } from '@elastic/charts';
 import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
@@ -142,6 +142,15 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const onEventOutAction = action('out');
 
   const configuredData = [[numberTextSwitch ? numericData : textualData]];
+
+  const previewSize = spacing === 'large' ? { width: '300px', height: '158px' } : { width: '200px', height: '200px' };
+
+  useLayoutEffect(() => {
+    const wrapper = document.getElementById('story-resize-wrapper');
+    if (!wrapper) return;
+    wrapper.style.width = previewSize.width;
+    wrapper.style.height = previewSize.height;
+  }, [previewSize.width, previewSize.height]);
 
   return (
     <Chart title={storyTitle} description={description}>
