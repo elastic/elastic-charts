@@ -293,8 +293,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   const baseTheme = useBaseTheme();
 
-  const previewSize =
-    spacing === 'large' ? { width: '300px', height: '158px' } : { width: '200px', height: '200px' };
+  const previewSize = spacing === 'large' ? { width: '300px', height: '158px' } : { width: '200px', height: '200px' };
 
   useLayoutEffect(() => {
     const wrapper = document.getElementById('story-resize-wrapper');

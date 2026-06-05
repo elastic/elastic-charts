@@ -41,10 +41,8 @@ const arrayToGrid: <T>(array: T[], nColumns: number) => T[][] = (array, nColumns
 
 const getTileSize = (spacing: 'small' | 'large') =>
   spacing === 'large' ? { width: 300, height: 158 } : { width: 200, height: 200 };
-const getContainerWidth = (_data: (MetricDatum | undefined)[][], tileWidth: number) =>
-  _data[0].length * tileWidth;
-const getContainerHeight = (_data: (MetricDatum | undefined)[][], tileHeight: number) =>
-  _data.length * tileHeight;
+const getContainerWidth = (_data: (MetricDatum | undefined)[][], tileWidth: number) => _data[0].length * tileWidth;
+const getContainerHeight = (_data: (MetricDatum | undefined)[][], tileHeight: number) => _data.length * tileHeight;
 
 const defaultValueFormatter = (d: number) => `${d}`;
 
