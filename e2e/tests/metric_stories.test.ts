@@ -211,12 +211,26 @@ test.describe('Metric', () => {
     test('basic story renders with large spacing', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
         `http://localhost:9001/?path=/story/metric-alpha--basic&globals=theme:light&knob-spacing=large`,
+        {
+          action: async () => await common.setResizeDimensions(page)({ height: 158, width: 300 }),
+        },
       );
     });
 
     test('grid story renders with large spacing', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
         `http://localhost:9001/?path=/story/metric-alpha--grid&globals=theme:light&knob-spacing=large`,
+        {
+          action: async () => {
+            await page
+              .locator('#story-root > div')
+              .first()
+              .evaluate((el) => {
+                (el as HTMLElement).style.height = `${158 * 2}px`;
+                (el as HTMLElement).style.width = `${300 * 4}px`;
+              });
+          },
+        },
       );
     });
 
@@ -232,6 +246,9 @@ test.describe('Metric', () => {
     test('layout story renders with large spacing', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
         `http://localhost:9001/?path=/story/metric-alpha--layout&globals=theme:light&knob-Metric spacing_Text configuration and position=large`,
+        {
+          action: async () => await common.setResizeDimensions(page)({ height: 158, width: 300 }),
+        },
       );
     });
   });
