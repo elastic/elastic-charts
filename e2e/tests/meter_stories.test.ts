@@ -15,7 +15,7 @@ import { eachTheme } from '../helpers';
 const storySelector = '[data-test-subj="echMeterStory"]';
 const previewFrameSelector = 'iframe[title="storybook-preview-iframe"]';
 
-async function expectMeterStoryToMatchScreenshot(page: Page, url: string) {
+async function expectMeterStoryToMatchScreenshot(page: Page, url: string, snapshotPath: string[]) {
   if (!environmentUrl) {
     throw new Error('ENV_URL must be provided');
   }
@@ -32,7 +32,7 @@ async function expectMeterStoryToMatchScreenshot(page: Page, url: string) {
 
   if (await topLevelStory.count()) {
     await topLevelStory.waitFor({ state: 'visible' });
-    expect(await topLevelStory.screenshot()).toMatchSnapshot();
+    expect(await topLevelStory.screenshot()).toMatchSnapshot(snapshotPath);
     return;
   }
 
@@ -41,7 +41,7 @@ async function expectMeterStoryToMatchScreenshot(page: Page, url: string) {
   const frameLocator = page.frameLocator(previewFrameSelector);
   await frameLocator.locator(storySelector).waitFor({ state: 'visible' });
 
-  expect(await previewFrame.screenshot()).toMatchSnapshot();
+  expect(await previewFrame.screenshot()).toMatchSnapshot(snapshotPath);
 }
 
 function getStoryUrl(storyPath: string, urlParam: string, extraParams: Record<string, string> = {}) {
@@ -58,37 +58,55 @@ function getStoryUrl(storyPath: string, urlParam: string, extraParams: Record<st
   return url.toString();
 }
 
-test.describe('Meter stories', () => {
-  eachTheme.describe(({ urlParam }) => {
-    test('should render positive modes', async ({ page }) => {
-      await expectMeterStoryToMatchScreenshot(page, getStoryUrl('/story/components-meter--positive-modes', urlParam));
-    });
+function getSnapshotPath(theme: string, name: string) {
+  return ['meter', `${theme}-theme`, `${name}.png`];
+}
 
-    test('should render signed domains', async ({ page }) => {
-      await expectMeterStoryToMatchScreenshot(page, getStoryUrl('/story/components-meter--signed-domains', urlParam));
-    });
+test.describe('Meter', () => {
+  eachTheme.describe(
+    ({ urlParam, theme }) => {
+      test('should render positive modes', async ({ page }) => {
+        await expectMeterStoryToMatchScreenshot(
+          page,
+          getStoryUrl('/story/components-meter--positive-modes', urlParam),
+          getSnapshotPath(theme, 'should-render-positive-modes'),
+        );
+      });
 
-    test('should render markers and vertical layouts', async ({ page }) => {
-      await expectMeterStoryToMatchScreenshot(
-        page,
-        getStoryUrl('/story/components-meter--markers-and-vertical', urlParam),
-      );
-    });
+      test('should render signed domains', async ({ page }) => {
+        await expectMeterStoryToMatchScreenshot(
+          page,
+          getStoryUrl('/story/components-meter--signed-domains', urlParam),
+          getSnapshotPath(theme, 'should-render-signed-domains'),
+        );
+      });
 
-    test('should render grouped signed ranges', async ({ page }) => {
-      await expectMeterStoryToMatchScreenshot(
-        page,
-        getStoryUrl('/story/components-meter--grouped-signed-ranges', urlParam),
-      );
-    });
+      test('should render markers and vertical layouts', async ({ page }) => {
+        await expectMeterStoryToMatchScreenshot(
+          page,
+          getStoryUrl('/story/components-meter--markers-and-vertical', urlParam),
+          getSnapshotPath(theme, 'should-render-markers-and-vertical-layouts'),
+        );
+      });
 
-    test('should render grouped signed ranges with gradient fill', async ({ page }) => {
-      await expectMeterStoryToMatchScreenshot(
-        page,
-        getStoryUrl('/story/components-meter--grouped-signed-ranges', urlParam, {
-          fillStyle: 'gradient',
-        }),
-      );
-    });
-  });
+      test('should render grouped signed ranges', async ({ page }) => {
+        await expectMeterStoryToMatchScreenshot(
+          page,
+          getStoryUrl('/story/components-meter--grouped-signed-ranges', urlParam),
+          getSnapshotPath(theme, 'should-render-grouped-signed-ranges'),
+        );
+      });
+
+      test('should render grouped signed ranges with gradient fill', async ({ page }) => {
+        await expectMeterStoryToMatchScreenshot(
+          page,
+          getStoryUrl('/story/components-meter--grouped-signed-ranges', urlParam, {
+            fillStyle: 'gradient',
+          }),
+          getSnapshotPath(theme, 'should-render-grouped-signed-ranges-with-gradient-fill'),
+        );
+      });
+    },
+    (theme) => `${theme} theme`,
+  );
 });
