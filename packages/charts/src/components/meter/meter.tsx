@@ -18,6 +18,7 @@ import {
   getMeterScalePosition,
   getMeterSolidFillColor,
 } from './utils';
+import type { MeterGeometry } from './utils';
 import type { Color } from '../../common/colors';
 import { clamp, isNil, LayoutDirection, sortNumbers } from '../../utils/common';
 import type { LayoutDirection as LayoutDirectionType } from '../../utils/common';
@@ -197,22 +198,7 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
   const geometry = getMeterGeometry(normalizedDomain, value, baseline);
   const baselinePosition = geometry.rawBaselinePosition;
   const hasVisibleBaselineMarker = geometry.isBaselineInDomain && showBaselineMarker;
-  const fallbackFillColor =
-    fill.type === MeterFillStyle.Single ? fill.color : fill.fallbackColor ?? fill.colorStops[0]?.color ?? trackColor;
-  const solidFillColor =
-    fill.type === MeterFillStyle.Single
-      ? fill.color
-      : getMeterSolidFillColor(normalizedDomain, fill.colorStops, value, fallbackFillColor);
-  const gradientFill =
-    fill.type === 'palette' && fill.style === MeterFillStyle.Gradient
-      ? getMeterGradientFill(normalizedDomain, fill.colorStops, orientation)
-      : undefined;
-  const revealWindow = gradientFill ? getMeterRevealWindow(geometry.fillStart, geometry.fillSize) : undefined;
-  const resolvedMarkerColor =
-    markerColor ??
-    (fill.type === MeterFillStyle.Single
-      ? fill.color
-      : getMeterSolidFillColor(normalizedDomain, fill.colorStops, baseline, fallbackFillColor));
+  const resolvedMarkerColor = markerColor ?? getResolvedMarkerColor(fill, normalizedDomain, baseline, trackColor);
   const [resolvedAriaValueMin, resolvedAriaValueMax] = sortNumbers([
     ariaValueMin ?? domainMin,
     ariaValueMax ?? domainMax,
@@ -252,24 +238,14 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
         right: `${100 - geometry.fillEnd}%`,
       };
 
-  const fillPaintStyle: CSSProperties =
-    gradientFill && revealWindow
-      ? isVertical
-        ? {
-            top: 'auto',
-            height: `${revealWindow.scaleFactor * 100}%`,
-            bottom: `${revealWindow.offset}%`,
-            backgroundImage: gradientFill,
-          }
-        : {
-            right: 'auto',
-            width: `${revealWindow.scaleFactor * 100}%`,
-            left: `${revealWindow.offset}%`,
-            backgroundImage: gradientFill,
-          }
-      : {
-          backgroundColor: solidFillColor,
-        };
+  const fillPaintStyle = getFillPaintStyle({
+    fill,
+    trackColor,
+    orientation,
+    domain: normalizedDomain,
+    value,
+    geometry,
+  });
 
   const targetPlacement = isNil(target)
     ? null
@@ -415,4 +391,65 @@ function getDirectionalClasses(base: string, isVertical: boolean) {
     [`${base}--vertical`]: isVertical,
     [`${base}--horizontal`]: !isVertical,
   });
+}
+
+function getPaletteFallbackFillColor(fill: MeterPaletteFill, trackColor: Color) {
+  return fill.fallbackColor ?? fill.colorStops[0]?.color ?? trackColor;
+}
+
+function getResolvedMarkerColor(fill: MeterFill, domain: ContinuousDomain, baseline: number, trackColor: Color) {
+  if (fill.type === MeterFillStyle.Single) {
+    return fill.color;
+  }
+
+  const fallbackFillColor = getPaletteFallbackFillColor(fill, trackColor);
+  return getMeterSolidFillColor(domain, fill.colorStops, baseline, fallbackFillColor);
+}
+
+function getFillPaintStyle({
+  fill,
+  trackColor,
+  orientation,
+  domain,
+  value,
+  geometry,
+}: {
+  fill: MeterFill;
+  trackColor: Color;
+  orientation: MeterOrientation;
+  domain: ContinuousDomain;
+  value: number;
+  geometry: MeterGeometry;
+}): CSSProperties {
+  if (fill.type === MeterFillStyle.Single) {
+    return { backgroundColor: fill.color };
+  }
+
+  const fallbackFillColor = getPaletteFallbackFillColor(fill, trackColor);
+  const solidFillColor = getMeterSolidFillColor(domain, fill.colorStops, value, fallbackFillColor);
+
+  if (fill.style !== MeterFillStyle.Gradient) {
+    return { backgroundColor: solidFillColor };
+  }
+
+  const gradientFill = getMeterGradientFill(domain, fill.colorStops, orientation);
+  const revealWindow = getMeterRevealWindow(geometry.fillStart, geometry.fillSize);
+
+  if (!gradientFill || !revealWindow) {
+    return { backgroundColor: solidFillColor };
+  }
+
+  return orientation === LayoutDirection.Vertical
+    ? {
+        top: 'auto',
+        height: `${revealWindow.scaleFactor * 100}%`,
+        bottom: `${revealWindow.offset}%`,
+        backgroundImage: gradientFill,
+      }
+    : {
+        right: 'auto',
+        width: `${revealWindow.scaleFactor * 100}%`,
+        left: `${revealWindow.offset}%`,
+        backgroundImage: gradientFill,
+      };
 }
