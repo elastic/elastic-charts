@@ -220,6 +220,7 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
   });
 
   if (geometry.isBaselineInDomain && geometry.fillSize > 0 && !roundFillStart) {
+    // Keep the baseline marker centered against the squared fill edge.
     baselineMarkerNudgePx = isFillForward ? BASELINE_MARKER_ADJUSTMENT : -BASELINE_MARKER_ADJUSTMENT;
   }
 
