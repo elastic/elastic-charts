@@ -202,7 +202,7 @@ export function getMetricTextPartDimensions(
   locale: string,
 ): MetricTextDimensions {
   const progressDatum = isMetricWProgress(datum) || isBulletMetric(datum) ? datum : undefined;
-  const heightBasedSizes = getHeightBasedFontSizes(HEIGHT_BP, panel.height, style, progressDatum?.progressBarSize);
+  const heightBasedSizes = getHeightBasedSizes(HEIGHT_BP, panel.height, style, progressDatum?.progressBarSize);
   const hasProgressBar = progressDatum !== undefined;
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
   const progressBarDirection = progressDatum?.progressBarDirection;
@@ -243,7 +243,7 @@ export function getMetricTextPartDimensions(
   };
 }
 
-function getHeightBasedFontSizes(
+function getHeightBasedSizes(
   ranges: [number, number, BreakPoint][],
   value: number,
   style: MetricStyle,
@@ -291,7 +291,7 @@ export function getSnappedFontSizes(
   panelHeight: number,
   style: MetricStyle,
 ): Pick<HeightBasedSizes, 'valueFontSize' | 'valuePartFontSize'> {
-  const sizes = getHeightBasedFontSizes(HEIGHT_BP, panelHeight, style);
+  const sizes = getHeightBasedSizes(HEIGHT_BP, panelHeight, style);
   const minFontSize = Math.min(fittedValueFontSize, sizes.valueFontSize);
   const fontSize = clamp(
     VALUE_FONT_SIZE_VALUES.find((value) => value <= minFontSize) ?? minFontSize,
