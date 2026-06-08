@@ -195,7 +195,7 @@ export const Meter: React.FunctionComponent<MeterProps> = ({
   const normalizedDomain = sortNumbers(domain);
   const [domainMin, domainMax] = normalizedDomain;
   const geometry = getMeterGeometry(normalizedDomain, value, baseline);
-  const baselinePosition = clamp(geometry.rawBaselinePosition, 0, 100);
+  const baselinePosition = geometry.rawBaselinePosition;
   const hasVisibleBaselineMarker = geometry.isBaselineInDomain && showBaselineMarker;
   const fallbackFillColor =
     fill.type === MeterFillStyle.Single ? fill.color : fill.fallbackColor ?? fill.colorStops[0]?.color ?? trackColor;
