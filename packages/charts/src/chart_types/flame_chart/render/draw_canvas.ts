@@ -38,7 +38,13 @@ export const drawCanvas2d = (
 ) => {
   const zoomedRowHeight = rowHeight / Math.abs(focusHiY - focusLoY);
   const rowHeightPx = zoomedRowHeight * cssHeight;
-  const fontSize = zoomedRowHeight * cssHeight - 2 * BOX_GAP_VERTICAL;
+  // Scale font size with both vertical and horizontal zoom to ensure readability
+  // when using CTRL-Wheel to zoom (which may zoom X more than Y after Y hits minimum)
+  const horizontalZoomFactor = 1 / Math.abs(focusHiX - focusLoX);
+  const verticalZoomFactor = 1 / Math.abs(focusHiY - focusLoY);
+  const zoomFactor = Math.max(horizontalZoomFactor, verticalZoomFactor);
+  const baseFontSize = rowHeight * cssHeight - 2 * BOX_GAP_VERTICAL;
+  const fontSize = baseFontSize * zoomFactor;
   const minTextLengthCssPix = MIN_TEXT_LENGTH * fontSize; // don't render shorter text than this
   const minRectWidthForTextInCssPix = minTextLengthCssPix + TEXT_PAD_LEFT + TEXT_PAD_RIGHT;
   const minRectWidth = minRectWidthForTextInCssPix / cssWidth;
