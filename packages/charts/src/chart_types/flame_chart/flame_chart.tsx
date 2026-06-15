@@ -343,7 +343,27 @@ class FlameComponent extends React.Component<FlameProps> {
   }
 
   private focusOnNode(nodeIndex: number) {
-    this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, nodeIndex);
+    const fullFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, nodeIndex);
+    // Preserve vertical zoom level: use the full focus rect for horizontal (x0, x1),
+    // but keep the current vertical extent and recenter on the clicked node.
+    const currentExtentY = this.currentFocus.y1 - this.currentFocus.y0;
+    const fullExtentY = fullFocus.y1 - fullFocus.y0;
+    const isZoomedInVertically = currentExtentY < fullExtentY - 1e-10;
+    if (isZoomedInVertically) {
+      // Center the clicked node vertically within the current zoom level
+      const nodeCenterY = (fullFocus.y0 + fullFocus.y1) / 2;
+      const newExtentY = currentExtentY;
+      const newY0 = clamp(nodeCenterY - newExtentY / 2, 0, 1 - newExtentY);
+      const newY1 = newY0 + newExtentY;
+      this.targetFocus = {
+        x0: fullFocus.x0,
+        x1: fullFocus.x1,
+        y0: newY0,
+        y1: newY1,
+      };
+    } else {
+      this.targetFocus = fullFocus;
+    }
     this.wobble(nodeIndex);
   }
 
