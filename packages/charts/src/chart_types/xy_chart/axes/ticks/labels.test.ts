@@ -66,8 +66,8 @@ describe('createTickLabelLayout', () => {
     expect(result.lines[0]).toEqual('hello');
     expect(result.width).toBe(5);
     expect(result.height).toBe(LIGHT_THEME.axes.tickLabel.fontSize);
-    expect(result.bboxWidth).toBeCloseTo(5);
-    expect(result.bboxHeight).toBeCloseTo(LIGHT_THEME.axes.tickLabel.fontSize);
+    expect(result.bboxWidth).toBe(5);
+    expect(result.bboxHeight).toBe(LIGHT_THEME.axes.tickLabel.fontSize);
   });
 
   test('wraps a long label across multiple lines using lineHeight for inner-line spacing', () => {
@@ -87,8 +87,8 @@ describe('createTickLabelLayout', () => {
     const result = layout('hello');
     expect(result.width).toBe(5);
     expect(result.height).toBe(LIGHT_THEME.axes.tickLabel.fontSize);
-    expect(result.bboxWidth).toBeCloseTo(LIGHT_THEME.axes.tickLabel.fontSize);
-    expect(result.bboxHeight).toBeCloseTo(5);
+    expect(result.bboxWidth).toBe(LIGHT_THEME.axes.tickLabel.fontSize);
+    expect(result.bboxHeight).toBe(6);
   });
 });
 

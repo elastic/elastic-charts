@@ -190,15 +190,17 @@ export const getAxesDimensions = (
           break;
       }
 
-      /* Overflow accounts for the first/last tick label spilling along the axis direction (orthogonal to 
-      the extent we just added) */
+      /* Overflow accounts for the first/last tick label spilling along the axis direction (orthogonal to
+      the extent we just added). When multiple axes share an overflow side, the larger contribution wins.
+      Multilayer time axes are skipped: their layer-0 labels are bin-anchored (not centered on the tick
+      position), so the "half bbox spills past the edge" assumption doesn't hold. */
       // TODO(bia): depending on alignment/rotation, might not be just half of the bbox
       if (isVertical) {
-        acc.overflow.top += (ticks.at(-1)?.bboxHeight ?? 0) / 2;
-        acc.overflow.bottom += (ticks.at(0)?.bboxHeight ?? 0) / 2;
-      } else {
-        acc.overflow.left += (ticks.at(-1)?.bboxWidth ?? 0) / 2;
-        acc.overflow.right += (ticks.at(0)?.bboxWidth ?? 0) / 2;
+        acc.overflow.top = Math.max(acc.overflow.top, (ticks.at(0)?.bboxHeight ?? 0) / 2);
+        acc.overflow.bottom = Math.max(acc.overflow.bottom, (ticks.at(-1)?.bboxHeight ?? 0) / 2);
+      } else if (!layout.multilayerTimeAxis) {
+        acc.overflow.left = Math.max(acc.overflow.left, (ticks.at(0)?.bboxWidth ?? 0) / 2);
+        acc.overflow.right = Math.max(acc.overflow.right, (ticks.at(-1)?.bboxWidth ?? 0) / 2);
       }
 
       return acc;

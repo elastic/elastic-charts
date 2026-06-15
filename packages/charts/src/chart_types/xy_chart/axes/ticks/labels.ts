@@ -32,45 +32,44 @@ export const createTickLabelLayout = (
   maxLines: number,
   maxLineLength: number,
 ) => {
+  const { lineHeight, fontSize, fontStyle, fontFamily, rotation } = axisStyle.tickLabel;
+
   const font: Font = {
-    fontStyle: axisStyle.tickLabel.fontStyle ?? 'normal',
-    fontFamily: axisStyle.tickLabel.fontFamily,
+    fontStyle: fontStyle ?? 'normal',
+    fontFamily,
     fontWeight: 'normal',
     fontVariant: 'normal',
     textColor: 'black',
   };
 
-  const { lineHeight } = axisStyle.tickLabel;
-
   return (value: string) => {
     const truncate = axisStyle.tickLabel.truncate ?? axisSpec.tickLabelTruncate;
 
-    const wrapped = wrapText(
-      value,
-      font,
-      axisStyle.tickLabel.fontSize,
-      maxLineLength,
-      maxLines,
-      measure,
-      locale,
-      'word',
-      truncate,
-    );
+    let lines: WrapTextLines = Object.assign([], { meta: { truncated: false } });
 
-    const { width, height } = wrapped.reduce(
+    const measureSingleLine = measure(value, font, fontSize);
+    lines =
+      measureSingleLine.width <= maxLineLength
+        ? Object.assign([value], { meta: { truncated: false } })
+        : wrapText(value, font, fontSize, maxLineLength, maxLines, measure, locale, 'word', truncate);
+
+    const { width, height } = lines.reduce(
       (acc, line, index) => {
-        const measured = measure(line, font, axisStyle.tickLabel.fontSize);
+        const measured = measure(line, font, fontSize);
         acc.width = Math.max(acc.width, measured.width);
-        acc.height += index < wrapped.length - 1 ? lineHeight * axisStyle.tickLabel.fontSize : measured.height;
+        acc.height += index < lines.length - 1 ? lineHeight * fontSize : measured.height;
         return acc;
       },
       { width: 0, height: 0 },
     );
-    const { width: bboxWidth, height: bboxHeight } = computeRotatedLabelDimensions(
-      { width, height },
-      axisStyle.tickLabel.rotation,
-    );
-    return { width, height, bboxWidth, bboxHeight, lines: wrapped };
+    const { width: bboxWidth, height: bboxHeight } = computeRotatedLabelDimensions({ width, height }, rotation);
+    return {
+      width: Math.ceil(width),
+      height: Math.ceil(height),
+      bboxWidth: Math.ceil(bboxWidth),
+      bboxHeight: Math.ceil(bboxHeight),
+      lines,
+    };
   };
 };
 

@@ -157,17 +157,32 @@ export function getTickLabelPosition(
   })();
 
   const verticalBoxOffset = (() => {
-    if (labelBox.lines.length === 1) {
-      return 0;
+    if (isVerticalAxis(position)) {
+      if (labelBox.lines.length === 1) return 0;
+      switch (verticalAlign) {
+        case VerticalAlignment.Top:
+          return 0;
+        case VerticalAlignment.Middle:
+          return -labelBox.height / 2;
+        case VerticalAlignment.Bottom:
+          return -labelBox.height;
+      }
     }
-    switch (verticalAlign) {
-      case VerticalAlignment.Top:
-        return 0;
-      case VerticalAlignment.Middle:
-        return -labelBox.height / 2;
-      case VerticalAlignment.Bottom:
-        return -labelBox.height;
-    }
+
+    const baselineHeight = labelBox.lines.length === 1 ? 0 : labelBox.height;
+
+    const offset = (() => {
+      switch (verticalAlign) {
+        case VerticalAlignment.Top:
+          return 0;
+        case VerticalAlignment.Middle:
+          return (maxLabelBox.bboxHeight - baselineHeight) / 2;
+        case VerticalAlignment.Bottom:
+          return maxLabelBox.bboxHeight - baselineHeight;
+      }
+    })();
+
+    return position === Position.Top ? offset - maxLabelBox.bboxHeight : offset;
   })();
 
   return {
