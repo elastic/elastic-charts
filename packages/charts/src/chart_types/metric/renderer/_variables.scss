@@ -1,7 +1,8 @@
-// Progress bar thickness by size
-$progress-bar-thickness-small: 4px;
-$progress-bar-thickness-medium: 8px;
-$progress-bar-thickness-large: 16px;
+@import '../../../components/meter/variables';
+
+$progress-bar-thickness-small: $meter-thickness-small;
+$progress-bar-thickness-medium: $meter-thickness-medium;
+$progress-bar-thickness-large: $meter-thickness-large;
 
 $progress-bar-width-small: $progress-bar-thickness-small;
 $progress-bar-width-medium: $progress-bar-thickness-medium;
@@ -13,6 +14,6 @@ $progress-bar-height-large: $progress-bar-thickness-large;
 
 $padding: 8px;
 
-$progress-bar-target-size: 8px;
+$progress-bar-target-size: $meter-target-size;
 $progress-bar-target-width: $progress-bar-target-size;
 $progress-bar-target-height: $progress-bar-target-size;
