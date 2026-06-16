@@ -7,7 +7,7 @@
  */
 
 import type { TickLabelLayout } from './labels';
-import { createTickLabelLayout } from './labels';
+import { createTickLabelLayout, shouldAllowWordWrap } from './labels';
 import type { AxisTick, TextDirection } from './types';
 import type { SmallMultipleScales } from '../../../../common/panel_utils';
 import { getPanelSize } from '../../../../common/panel_utils';
@@ -47,6 +47,21 @@ export type GetMeasuredTicks = (
 ) => Projection;
 
 const USE_ADAPTIVE_TICK_COUNT = true;
+/** @internal */
+export const MIN_LABEL_GAP = 4;
+
+/** @internal */
+export const withoutTickLabel = (tick: AxisTick): AxisTick => ({
+  ...tick,
+  label: '',
+  layout: {
+    width: 0,
+    height: 0,
+    bboxWidth: 0,
+    bboxHeight: 0,
+    lines: Object.assign([], { meta: { truncated: false } }),
+  },
+});
 
 function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
   const horizontal = isHorizontalAxis(axisPosition);
@@ -194,12 +209,12 @@ export function getVisibleTicks(
           (prev, tick) => {
             const requiredSpace = isVerticalAxis(position) ? tick.layout.bboxHeight / 2 : tick.layout.bboxWidth / 2;
 
-            const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
+            const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace + MIN_LABEL_GAP;
             if (tickLabelFits || showOverlappingTicks) {
-              prev.visibleTicks.push(tickLabelFits ? tick : { ...tick, label: '' });
+              prev.visibleTicks.push(tickLabelFits ? tick : withoutTickLabel(tick));
               if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
             } else if (adaptiveTickCount && !tickLabelFits && !showOverlappingTicks) {
-              prev.visibleTicks.push({ ...tick, label: '' });
+              prev.visibleTicks.push(withoutTickLabel(tick));
             }
             return prev;
           },
@@ -281,7 +296,9 @@ export function computeVisibleTickSets(
           band: layout.band,
           scale,
           containerWidth,
+          multilayerTimeAxis: layout.multilayerTimeAxis,
         });
+
         const layoutTickLabel = createTickLabelLayout(
           axesStyle,
           axisSpec,
@@ -289,6 +306,7 @@ export function computeVisibleTickSets(
           locale,
           maxWrapLines,
           maxLineLength,
+          shouldAllowWordWrap(scale),
         );
 
         return {

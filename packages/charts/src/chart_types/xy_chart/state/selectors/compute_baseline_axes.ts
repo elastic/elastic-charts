@@ -27,7 +27,7 @@ import { Logger } from '../../../../utils/logger';
 import type { AxisStyle, GridLineStyle } from '../../../../utils/themes/theme';
 import type { AxisLayoutContext } from '../../axes/dimensions';
 import { getAxisBand, hasPanelTitle, measureAxisFixedBand, resolveTickLabelConstraints } from '../../axes/dimensions';
-import { createTickLabelLayout } from '../../axes/ticks/labels';
+import { createTickLabelLayout, shouldAllowWordWrap } from '../../axes/ticks/labels';
 import type { AxisTick } from '../../axes/ticks/types';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
 import { defaultTickFormatter, getScaleForAxisSpec, isMultilayerTimeAxis, isXDomain } from '../../utils/axis_utils';
@@ -136,6 +136,7 @@ export const computeBaselineAxisTicksDimensionsSelector = createCustomCachedSele
             band: layout.band,
             scale,
             containerWidth: containerDimensions.width,
+            multilayerTimeAxis: layout.multilayerTimeAxis,
           });
 
           const layoutTickLabel = createTickLabelLayout(
@@ -145,6 +146,7 @@ export const computeBaselineAxisTicksDimensionsSelector = createCustomCachedSele
             locale,
             maxWrapLines,
             maxLineLength,
+            shouldAllowWordWrap(scale),
           );
           const tickDimensions = scale.ticks().map((tick) => layoutTickLabel(labelFormatter(tick)));
 

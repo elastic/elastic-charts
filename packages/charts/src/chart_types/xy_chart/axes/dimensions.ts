@@ -9,8 +9,10 @@
 import type { TickLabelBox } from './ticks/labels';
 import { getMaxLabelDimensions } from './ticks/labels';
 import type { AxisTick } from './ticks/types';
+import { MIN_LABEL_GAP } from './ticks/visible_ticks';
 import type { Pixels } from '../../../common/geometry';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
+import { isBandScale } from '../../../scales/types';
 import type { SmallMultiplesSpec } from '../../../specs';
 import { getPercentageValue, Position } from '../../../utils/common';
 import { innerPad, outerPad, type PerSideDistance } from '../../../utils/dimensions';
@@ -97,12 +99,14 @@ export const resolveTickLabelConstraints = ({
   band,
   scale,
   containerWidth,
+  multilayerTimeAxis = false,
 }: {
   axisSpec: AxisSpec;
   style: AxisStyle;
   band: AxisBand;
   scale: ScaleBand | ScaleContinuous;
   containerWidth: number;
+  multilayerTimeAxis?: boolean;
 }) => {
   const vertical = isVerticalAxis(axisSpec.position);
 
@@ -112,12 +116,16 @@ export const resolveTickLabelConstraints = ({
 
   let maxLineLength = style.tickLabel.limit ?? maxTickLabelLength;
 
-  if (vertical) {
+  if (vertical || multilayerTimeAxis) {
     maxLineLength = Math.min(maxLineLength ?? band.labelBudget, band.labelBudget, band.container);
   } else {
-    const bandwidthCap = scale.bandwidth > 0 ? scale.bandwidth + scale.barsPadding / 2 : band.maxExtent;
+    const categorySlotWidth = isBandScale(scale)
+      ? scale.step
+      : scale.bandwidth * Math.max(scale.totalBarsInCluster ?? 1, 1);
+    const bandwidthCap = categorySlotWidth > 0 ? categorySlotWidth + scale.barsPadding / 2 : band.maxExtent;
     const limit = maxLineLength ?? bandwidthCap;
-    maxLineLength = Math.min(limit, bandwidthCap, band.container);
+    const minLength = MIN_LABEL_GAP * 3;
+    maxLineLength = Math.max(minLength, Math.min(limit, bandwidthCap, band.container));
   }
 
   const lineHeightPx = style.tickLabel.lineHeight * style.tickLabel.fontSize;
@@ -168,25 +176,26 @@ export const getAxesDimensions = (
     isHidden?: boolean;
   }>,
 ): PerSideDistance & { margin: { left: number } } => {
+  const { chartMargins } = theme;
+
   const sizes = axes.reduce(
     (acc, { spec, style, ticks, layout, isHidden }) => {
       if (isHidden) return acc;
       const isVertical = isVerticalAxis(spec.position);
-
       const extent = measureAxisBand(spec, style, ticks, layout);
 
       switch (spec.position) {
         case Position.Top:
-          acc.top += extent;
+          acc.top += extent + chartMargins.top;
           break;
         case Position.Bottom:
-          acc.bottom += extent;
+          acc.bottom += extent + chartMargins.bottom;
           break;
         case Position.Left:
-          acc.left += extent;
+          acc.left += extent + chartMargins.left;
           break;
         case Position.Right:
-          acc.right += extent;
+          acc.right += extent + chartMargins.right;
           break;
       }
 
@@ -206,21 +215,26 @@ export const getAxesDimensions = (
       return acc;
     },
     {
-      top: theme.chartMargins.top,
-      bottom: theme.chartMargins.bottom,
-      left: theme.chartMargins.left,
-      right: theme.chartMargins.right,
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
       overflow: { top: 0, bottom: 0, left: 0, right: 0 },
     },
   );
 
+  const left = Math.max(sizes.overflow.left + chartMargins.left, sizes.left);
+  const right = Math.max(sizes.overflow.right + chartMargins.right, sizes.right);
+  const top = Math.max(sizes.overflow.top + chartMargins.top, sizes.top);
+  const bottom = Math.max(sizes.overflow.bottom + chartMargins.bottom, sizes.bottom);
+
   return {
-    top: Math.max(sizes.top, theme.chartMargins.top + sizes.overflow.top),
-    bottom: Math.max(sizes.bottom, theme.chartMargins.bottom + sizes.overflow.bottom),
-    left: Math.max(sizes.left, theme.chartMargins.left + sizes.overflow.left),
-    right: Math.max(sizes.right, theme.chartMargins.right + sizes.overflow.right),
+    top,
+    bottom,
+    left,
+    right,
     margin: {
-      left: 0, // TODO(bia): check why we needed this before, do we still need it?
+      left: left - sizes.left,
     },
   };
 };

@@ -11,7 +11,7 @@ import { unitIntervalWidth, continuousTimeRasters } from './continuous_time_rast
 import type { ScaleContinuous } from '../../../../scales';
 import type { XDomain } from '../../domains/types';
 import type { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
-import type { GetMeasuredTicks, Projection } from '../ticks/visible_ticks';
+import { MIN_LABEL_GAP, withoutTickLabel, type GetMeasuredTicks, type Projection } from '../ticks/visible_ticks';
 
 const WIDTH_FUDGE = 1.05; // raster bin widths are sometimes approximate, but there's no raster that's just 5% denser/sparser, so it's safe
 
@@ -103,22 +103,22 @@ export function multilayerAxisEntry(
         !l.labeled ? () => '' : layerIndex === timeAxisLayerCount - 1 ? l.detailedLabelFormat : l.minorTickLabelFormat,
         notTooDense(domainFromS, domainToS, binWidth, cartesianWidth, MAX_TIME_GRID_COUNT)(l),
       );
-      const minLabelGap = 4;
 
-      const lastTick = entry.ticks.at(-1);
+      let { ticks } = entry;
+      const lastTick = ticks.at(-1);
       if (lastTick && lastTick.position + lastTick.layout.bboxWidth > range[1]) {
-        lastTick.label = '';
+        ticks = [...ticks.slice(0, -1), withoutTickLabel(lastTick)];
       }
 
       return {
         ...combinedEntry,
         ...entry,
         ticks: (combinedEntry.ticks || []).concat(
-          entry.ticks.filter(
+          ticks.filter(
             (tick, i, a) =>
               i > 0 ||
               !a[1] ||
-              a[1].domainClampedPosition - tick.domainClampedPosition >= tick.layout.bboxWidth + minLabelGap,
+              a[1].domainClampedPosition - tick.domainClampedPosition >= tick.layout.bboxWidth + MIN_LABEL_GAP,
           ),
         ),
       };

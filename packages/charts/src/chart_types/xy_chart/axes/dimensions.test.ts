@@ -18,6 +18,7 @@ import {
 import type { TickLabelBox } from './ticks/labels';
 import { MockGlobalSpec } from '../../../mocks/specs/specs';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
+import { ScaleType } from '../../../scales/constants';
 import { mergePartial, Position } from '../../../utils/common';
 import { innerPad, outerPad } from '../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
@@ -162,6 +163,20 @@ describe('resolveTickLabelConstraints', () => {
     });
     expect(result.maxWrapLines).toBe(4);
   });
+
+  test('multilayer time axes cap maxLineLength by labelBudget, not single-bar bandwidth', () => {
+    const histogramScale = { type: ScaleType.Time, bandwidth: 12, barsPadding: 0.2 } as unknown as ScaleContinuous;
+    const band = getAxisBand(Position.Bottom, style, 0, 200, 200);
+    const result = resolveTickLabelConstraints({
+      axisSpec: MockGlobalSpec.xAxis(),
+      style,
+      band,
+      scale: histogramScale,
+      containerWidth: 200,
+      multilayerTimeAxis: true,
+    });
+    expect(result.maxLineLength).toBe(200);
+  });
 });
 
 describe('measureAxisBand', () => {
@@ -235,7 +250,7 @@ describe('getAxesDimensions', () => {
       bottom: 2,
       left: 3,
       right: 4,
-      margin: { left: 0 },
+      margin: { left: 3 },
     });
   });
 
@@ -250,9 +265,30 @@ describe('getAxesDimensions', () => {
       },
     ]);
     expect(result.left).toBe(3 + 5 + 40);
+    expect(result.margin.left).toBe(0);
     expect(result.right).toBe(4);
     expect(result.top).toBe(1);
     expect(result.bottom).toBe(2);
+  });
+
+  test('includes chartMargins between stacked axes on the same side', () => {
+    const yAxis2 = MockGlobalSpec.yAxis({ id: 'y2', position: Position.Left, title: undefined });
+    const result = getAxesDimensions(theme, [
+      {
+        spec: yAxis,
+        style: AXIS_STYLE,
+        ticks: [tickBox({ bboxWidth: 30, bboxHeight: 0 })],
+        layout: layoutFor(AXIS_STYLE, Position.Left, 5),
+      },
+      {
+        spec: yAxis2,
+        style: AXIS_STYLE,
+        ticks: [tickBox({ bboxWidth: 20, bboxHeight: 0 })],
+        layout: layoutFor(AXIS_STYLE, Position.Left, 5),
+      },
+    ]);
+    expect(result.left).toBe(5 + 30 + 3 + 5 + 20 + 3);
+    expect(result.margin.left).toBe(0);
   });
 
   test('skips hidden axes', () => {

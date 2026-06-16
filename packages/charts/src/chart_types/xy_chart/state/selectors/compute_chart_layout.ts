@@ -149,26 +149,31 @@ export function computeChartLayout(params: LayoutParameters): ChartLayout {
       return getAxesDimensions(theme, axes);
     };
 
-    let margins = measureMargins(bootstrap.tickDimensions);
-    let chartArea = computeChartArea(container, margins, theme);
-    let projections = projectTicks(params, chartArea.chartDimensions, textMeasure);
+    let projections = projectTicks(
+      params,
+      computeChartArea(container, measureMargins(bootstrap.tickDimensions), theme).chartDimensions,
+      textMeasure,
+    );
 
     for (let i = 0; i < MAX_ITERATIONS; i++) {
-      const nextMargins = measureMargins(projectionToTickDimensions(projections));
-      const nextChartArea = computeChartArea(container, nextMargins, theme);
+      const margins = measureMargins(projectionToTickDimensions(projections));
+      const chartArea = computeChartArea(container, margins, theme);
+      const nextProjections = projectTicks(params, chartArea.chartDimensions, textMeasure);
+      const nextMargins = measureMargins(projectionToTickDimensions(nextProjections));
+
       if (isLayoutStable(margins, nextMargins)) {
         return {
-          dimensions: nextChartArea,
-          ticks: projections,
+          dimensions: computeChartArea(container, nextMargins, theme),
+          ticks: nextProjections,
           meta: { iterations: i + 1 },
         };
       }
-      margins = nextMargins;
-      chartArea = nextChartArea;
-      projections = projectTicks(params, chartArea.chartDimensions, textMeasure);
+      projections = nextProjections;
     }
+
+    const finalMargins = measureMargins(projectionToTickDimensions(projections));
     return {
-      dimensions: chartArea,
+      dimensions: computeChartArea(container, finalMargins, theme),
       ticks: projections,
       meta: { iterations: MAX_ITERATIONS },
     };

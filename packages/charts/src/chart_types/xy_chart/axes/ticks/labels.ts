@@ -6,13 +6,20 @@
  * Side Public License, v 1.
  */
 
-import { type Font } from '../../../../common/text_utils';
+import { fitText, type Font } from '../../../../common/text_utils';
+import type { ScaleBand, ScaleContinuous } from '../../../../scales';
+import { ScaleType } from '../../../../scales/constants';
+import { isContinuousScale } from '../../../../scales/types';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { degToRad } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
 import { wrapText, type WrapTextLines } from '../../../../utils/text/wrap';
 import type { AxisStyle } from '../../../../utils/themes/theme';
 import type { AxisSpec } from '../../utils/specs';
+
+/** @internal */
+export const shouldAllowWordWrap = (scale: ScaleBand | ScaleContinuous): boolean =>
+  !isContinuousScale(scale) || scale.type === ScaleType.Time;
 
 /** @internal */
 export function computeRotatedLabelDimensions(unrotatedDims: Size, degreesRotation: number): Size {
@@ -31,6 +38,7 @@ export const createTickLabelLayout = (
   locale: string,
   maxLines: number,
   maxLineLength: number,
+  allowWordWrap = true,
 ) => {
   const { lineHeight, fontSize, fontStyle, fontFamily, rotation } = axisStyle.tickLabel;
 
@@ -48,10 +56,15 @@ export const createTickLabelLayout = (
     let lines: WrapTextLines = Object.assign([], { meta: { truncated: false } });
 
     const measureSingleLine = measure(value, font, fontSize);
-    lines =
-      measureSingleLine.width <= maxLineLength
-        ? Object.assign([value], { meta: { truncated: false } })
-        : wrapText(value, font, fontSize, maxLineLength, maxLines, measure, locale, 'word', truncate);
+
+    if (measureSingleLine.width <= maxLineLength) {
+      lines = Object.assign([value], { meta: { truncated: false } });
+    } else if (!allowWordWrap) {
+      const { text } = fitText(measure, value, maxLineLength, fontSize, font, truncate ?? 'end');
+      lines = Object.assign([text], { meta: { truncated: text !== value } });
+    } else {
+      lines = wrapText(value, font, fontSize, maxLineLength, maxLines, measure, locale, 'word', truncate);
+    }
 
     const { width, height } = lines.reduce(
       (acc, line, index) => {
