@@ -29,7 +29,8 @@ import type { OrdinalDomain } from '../../../../utils/domain';
 import type { AxisId } from '../../../../utils/ids';
 import type { Theme } from '../../../../utils/themes/theme';
 import { getAxesDimensions } from '../../axes/dimensions';
-import { computeVisibleTickSets, type Projection } from '../../axes/ticks/visible_ticks';
+import type { Projection } from '../../axes/ticks/types';
+import { computeVisibleTickSets } from '../../axes/ticks/visible_ticks';
 import { computeChartArea } from '../../utils/dimensions';
 import type { SeriesDomainsAndData } from '../utils/types';
 

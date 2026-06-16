@@ -9,8 +9,7 @@
 import type { AxisLayoutContext } from './dimensions';
 import { measureAxisBand } from './dimensions';
 import { getMaxLabelDimensions, type TickLabelBox } from './ticks/labels';
-import type { AxisTick } from './ticks/types';
-import type { Projection } from './ticks/visible_ticks';
+import type { AxisTick, Projection } from './ticks/types';
 import type { SmallMultipleScales } from '../../../common/panel_utils';
 import { getPanelSize } from '../../../common/panel_utils';
 import { Position } from '../../../utils/common';

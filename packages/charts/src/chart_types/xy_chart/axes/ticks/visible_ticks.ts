@@ -7,8 +7,8 @@
  */
 
 import type { TickLabelLayout } from './labels';
-import { createTickLabelLayout, shouldAllowWordWrap } from './labels';
-import type { AxisTick, TextDirection } from './types';
+import { createTickLabelLayout, MIN_LABEL_GAP, shouldAllowWordWrap, withoutTickLabel } from './labels';
+import type { AxisTick, GetMeasuredTicks, Projection, Projections, TextDirection } from './types';
 import type { SmallMultipleScales } from '../../../../common/panel_utils';
 import { getPanelSize } from '../../../../common/panel_utils';
 import type { ScaleBand } from '../../../../scales';
@@ -30,38 +30,7 @@ import { computeXScale } from '../../utils/scales';
 import { resolveTickLabelConstraints } from '../dimensions';
 import { multilayerAxisEntry } from '../timeslip/multilayer_ticks';
 
-/** @internal */
-export type Projection = { ticks: AxisTick[]; scale: ScaleBand | ScaleContinuous };
-
-/** @internal */
-export type Projections = Map<AxisId, Projection>;
-
-/** @internal */
-export type GetMeasuredTicks = (
-  scale: ScaleBand | ScaleContinuous,
-  ticks: (number | string)[],
-  layer: number | undefined,
-  detailedLayer: number,
-  labelFormatter: AxisLabelFormatter,
-  showGrid?: boolean,
-) => Projection;
-
 const USE_ADAPTIVE_TICK_COUNT = true;
-/** @internal */
-export const MIN_LABEL_GAP = 4;
-
-/** @internal */
-export const withoutTickLabel = (tick: AxisTick): AxisTick => ({
-  ...tick,
-  label: '',
-  layout: {
-    width: 0,
-    height: 0,
-    bboxWidth: 0,
-    bboxHeight: 0,
-    lines: Object.assign([], { meta: { truncated: false } }),
-  },
-});
 
 function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
   const horizontal = isHorizontalAxis(axisPosition);

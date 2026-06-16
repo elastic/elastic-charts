@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import type { AxisTick } from './types';
 import { fitText, type Font } from '../../../../common/text_utils';
 import type { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
@@ -29,6 +30,24 @@ export function computeRotatedLabelDimensions(unrotatedDims: Size, degreesRotati
   const rotatedWidth = Math.abs(width * Math.cos(radians)) + Math.abs(height * Math.sin(radians));
   return { width: rotatedWidth, height: rotatedHeight };
 }
+
+/** @internal */
+export const MIN_LABEL_GAP = 4;
+/** @internal */
+export const MIN_LABEL_LENGTH = 12;
+
+/** @internal */
+export const withoutTickLabel = (tick: AxisTick): AxisTick => ({
+  ...tick,
+  label: '',
+  layout: {
+    width: 0,
+    height: 0,
+    bboxWidth: 0,
+    bboxHeight: 0,
+    lines: Object.assign([], { meta: { truncated: false } }),
+  },
+});
 
 /** @internal */
 export const createTickLabelLayout = (

@@ -7,6 +7,9 @@
  */
 
 import type { TickLabelBox } from './labels';
+import type { ScaleBand, ScaleContinuous } from '../../../../scales';
+import type { AxisId } from '../../../../utils/ids';
+import type { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
 
 type TickValue = number | string;
 
@@ -27,3 +30,19 @@ export interface AxisTick {
   multilayerTimeAxis: boolean;
   layout: TickLabelBox;
 }
+
+/** @internal */
+export type Projection = { ticks: AxisTick[]; scale: ScaleBand | ScaleContinuous };
+
+/** @internal */
+export type Projections = Map<AxisId, Projection>;
+
+/** @internal */
+export type GetMeasuredTicks = (
+  scale: ScaleBand | ScaleContinuous,
+  ticks: (number | string)[],
+  layer: number | undefined,
+  detailedLayer: number,
+  labelFormatter: AxisLabelFormatter,
+  showGrid?: boolean,
+) => Projection;

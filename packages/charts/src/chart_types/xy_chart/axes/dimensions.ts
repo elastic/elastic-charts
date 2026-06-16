@@ -7,9 +7,8 @@
  */
 
 import type { TickLabelBox } from './ticks/labels';
-import { getMaxLabelDimensions } from './ticks/labels';
+import { getMaxLabelDimensions, MIN_LABEL_LENGTH } from './ticks/labels';
 import type { AxisTick } from './ticks/types';
-import { MIN_LABEL_GAP } from './ticks/visible_ticks';
 import type { Pixels } from '../../../common/geometry';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isBandScale } from '../../../scales/types';
@@ -124,8 +123,7 @@ export const resolveTickLabelConstraints = ({
       : scale.bandwidth * Math.max(scale.totalBarsInCluster ?? 1, 1);
     const bandwidthCap = categorySlotWidth > 0 ? categorySlotWidth + scale.barsPadding / 2 : band.maxExtent;
     const limit = maxLineLength ?? bandwidthCap;
-    const minLength = MIN_LABEL_GAP * 3;
-    maxLineLength = Math.max(minLength, Math.min(limit, bandwidthCap, band.container));
+    maxLineLength = Math.max(MIN_LABEL_LENGTH, Math.min(limit, bandwidthCap, band.container));
   }
 
   const lineHeightPx = style.tickLabel.lineHeight * style.tickLabel.fontSize;
