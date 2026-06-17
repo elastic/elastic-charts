@@ -8,6 +8,7 @@
 
 import { yarnInstall } from './../utils/exec';
 import { bkEnv, buildkiteGQLQuery, codeCheckIsCompleted, getJobMetadata, updateCheckStatus } from '../utils';
+import { refreshDeploymentComment } from '../utils/deployment';
 
 const skipChecks = new Set(['playwright_vrt', 'playwright_a11y']);
 
@@ -45,6 +46,12 @@ void (async function () {
         }
       }
     }
+  }
+
+  // Keep the PR deployment comment in sync as each check completes. Best-effort: it never
+  // throws and is a no-op until the comment exists / for non-PR builds.
+  if (checkId) {
+    await refreshDeploymentComment();
   }
 })();
 

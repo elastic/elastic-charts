@@ -527,36 +527,44 @@ cc: @nickofthyme`.trim();
     // Deployment is in progress: nothing is live yet.
     if (state === 'pending') {
       const updateComment = previousSha ? `\n> 🚧 Updating deployment from ${previousSha}` : '';
-      const deploymentTable =
+      const deploymentSection: StatusSection =
         previousSha && deploymentUrl
-          ? renderStatusTable([
-              { label: 'Docs', status: `[old deployment](${deploymentUrl})` },
-              { label: 'Storybook', status: `[old deployment](${deploymentUrl}/storybook)` },
-              { label: 'e2e server', status: `[old deployment](${deploymentUrl}/e2e)` },
-              ...(packageLinks ? [{ label: 'Packages', status: packageLinks }] : []),
-            ])
-          : renderStatusTable([
-              { label: 'Docs', status: '⏳ Deploying' },
-              { label: 'Storybook', status: '⏳ Deploying' },
-              { label: 'e2e server', status: '⏳ Deploying' },
-              ...(packageLinks ? [{ label: 'Packages', status: '⏳ Pending' }] : []),
-            ]);
+          ? {
+              heading: '📦 Deployment ⏳',
+              rows: [
+                { label: 'Docs', status: `[old deployment](${deploymentUrl})` },
+                { label: 'Storybook', status: `[old deployment](${deploymentUrl}/storybook)` },
+                { label: 'e2e server', status: `[old deployment](${deploymentUrl}/e2e)` },
+                ...(packageLinks ? [{ label: 'Packages', status: packageLinks }] : []),
+              ],
+            }
+          : {
+              heading: '📦 Deployment ⏳',
+              rows: [
+                { label: 'Docs', status: '⏳ Deploying' },
+                { label: 'Storybook', status: '⏳ Deploying' },
+                { label: 'e2e server', status: '⏳ Deploying' },
+                ...(packageLinks ? [{ label: 'Packages', status: '⏳ Pending' }] : []),
+              ],
+            };
+      const testsSection = getTestsSection(testStatuses, deploymentUrl, preDeploy);
 
       return `## ⏳ In Progress${buildText} - ${sha}${updateComment}
 
-### 📦 Deployment ⏳
-${deploymentTable}
-
-${renderTestsSection(testStatuses, deploymentUrl, preDeploy)}`;
+${renderSideBySide([deploymentSection, testsSection])}`;
     }
 
     // Deployment succeeded: the preview site is live. Tests are reported separately.
-    const deploymentTable = renderStatusTable([
-      { label: 'Docs', status: `[✅ View](${deploymentUrl})` },
-      { label: 'Storybook', status: `[✅ View](${deploymentUrl}/storybook)` },
-      { label: 'e2e server', status: `[✅ View](${deploymentUrl}/e2e)` },
-      ...(packageLinks ? [{ label: 'Packages', status: packageLinks }] : []),
-    ]);
+    const deploymentSection: StatusSection = {
+      heading: '📦 Deployment ✅',
+      rows: [
+        { label: 'Docs', status: `✅ [View](${deploymentUrl})` },
+        { label: 'Storybook', status: `✅ [View](${deploymentUrl}/storybook)` },
+        { label: 'e2e server', status: `✅ [View](${deploymentUrl}/e2e)` },
+        ...(packageLinks ? [{ label: 'Packages', status: packageLinks }] : []),
+      ],
+    };
+    const testsSection = getTestsSection(testStatuses, deploymentUrl, preDeploy);
 
     const testsState = getOverallTestsState(testStatuses, preDeploy);
     const overall =
@@ -564,10 +572,7 @@ ${renderTestsSection(testStatuses, deploymentUrl, preDeploy)}`;
 
     return `## ${overall}${buildText} - ${sha}
 
-### 📦 Deployment ✅
-${deploymentTable}
-
-${renderTestsSection(testStatuses, deploymentUrl, preDeploy)}`;
+${renderSideBySide([deploymentSection, testsSection])}`;
   },
 };
 
@@ -588,7 +593,11 @@ const testStatusEmoji: Record<TestCheckConclusion, string> = {
   skipped: '⏭️',
 };
 
-function renderTestsSection(testStatuses: TestCheckStatus[], deploymentUrl: string | undefined, preDeploy: boolean) {
+function getTestsSection(
+  testStatuses: TestCheckStatus[],
+  deploymentUrl: string | undefined,
+  preDeploy: boolean,
+): StatusSection {
   const testsState = getOverallTestsState(testStatuses, preDeploy);
   const heading =
     testsState === 'failure' ? '🧪 CI Checks ❌' : testsState === 'success' ? '🧪 CI Checks ✅' : '🧪 CI Checks ⏳';
@@ -617,8 +626,7 @@ function renderTestsSection(testStatuses: TestCheckStatus[], deploymentUrl: stri
           { label: 'API', status: '⏳ Running' },
         ];
 
-  return `### ${heading}
-${renderStatusTable(rows)}`;
+  return { heading, rows };
 }
 
 function getTestStatusLabel(conclusion: TestCheckConclusion, preDeploy: boolean, reportLink: string): string {
@@ -635,7 +643,40 @@ function getTestStatusLabel(conclusion: TestCheckConclusion, preDeploy: boolean,
   }
 }
 
-function renderStatusTable(rows: { label: string; status: string }[]): string {
+interface StatusRow {
+  label: string;
+  status: string;
+}
+
+interface StatusSection {
+  heading: string;
+  rows: StatusRow[];
+}
+
+/**
+ * Renders two sections side by side as a single markdown table, with each section taking up
+ * two columns (Step | Status). The shorter section is padded with empty cells so the rows line
+ * up. Keeps markdown links intact (no HTML needed).
+ */
+function sideBySideCell(rows: StatusRow[], i: number): [string, string] {
+  const row = rows[i];
+  return row ? [row.label, row.status] : ['', ''];
+}
+
+function renderSideBySide([left, right]: [StatusSection, StatusSection]): string {
+  const rowCount = Math.max(left.rows.length, right.rows.length);
+  const header = `| ${left.heading} | | ${right.heading} | |`;
+  const divider = '| --- | --- | --- | --- |';
+  const bodyRows = Array.from({ length: rowCount }, (_, i) => {
+    const [ll, ls] = sideBySideCell(left.rows, i);
+    const [rl, rs] = sideBySideCell(right.rows, i);
+    return `| ${ll} | ${ls} | ${rl} | ${rs} |`;
+  });
+
+  return [header, divider, ...bodyRows].join('\n');
+}
+
+function renderStatusTable(rows: StatusRow[]): string {
   return ['| Step | Status |', '| --- | --- |', ...rows.map(({ label, status }) => `| ${label} | ${status} |`)].join(
     '\n',
   );

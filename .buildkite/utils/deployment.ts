@@ -40,6 +40,8 @@ export interface UpdateDeploymentCommentOptions {
   jobLink?: string;
   preDeploy?: boolean;
   testStatuses?: TestCheckStatus[];
+  /** Internal: set when re-rendering due to a check-status change (not a deployment-state change). */
+  refresh?: boolean;
 }
 
 // CI quality checks that must all pass (zero errors) before a run is considered successful.
@@ -55,20 +57,26 @@ const TEST_CHECKS = [
 ];
 
 export async function createOrUpdateDeploymentComment(options: UpdateDeploymentCommentOptions) {
-  const { state, preDeploy, sha = bkEnv.commit! } = options;
+  const { state, preDeploy, sha = bkEnv.commit!, refresh = false } = options;
   const skipDeployment = await getMetadata(MetaDataKeys.skipDeployment);
-  console.warn('MetaDataKeys.skipDeployment', skipDeployment);
+  if (!refresh) console.warn('MetaDataKeys.skipDeployment', skipDeployment);
   const deploymentStatus = await getMetadata(MetaDataKeys.deploymentStatus);
   const status = preDeploy ? `${state}-preDeploy` : state;
 
-  if (process.env.BLOCK_REQUESTS || !bkEnv.isPullRequest || skipDeployment === 'true' || deploymentStatus === status)
-    return;
+  if (process.env.BLOCK_REQUESTS || !bkEnv.isPullRequest || skipDeployment === 'true') return;
 
-  await setMetadata(MetaDataKeys.deploymentStatus, status);
-
+  // A `refresh` is triggered when an individual check status changes (e.g. from pre_exit),
+  // not when the deployment state changes. In that case the deployment `state` may be
+  // unchanged, so we must skip the dedupe gate and only update if a comment already exists.
   const previousCommentId = await getMetadata(MetaDataKeys.deploymentCommentId);
+  if (refresh) {
+    if (!previousCommentId) return; // nothing to refresh yet
+  } else {
+    if (deploymentStatus === status) return;
+    await setMetadata(MetaDataKeys.deploymentStatus, status);
+  }
 
-  if (state === 'pending' && !previousCommentId) {
+  if (state === 'pending' && !previousCommentId && !refresh) {
     // initial cleanup - delete previous comments
     const { data: botComments } = await octokit.issues.listComments({
       ...defaultGHOptions,
@@ -89,13 +97,6 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
     }
   }
 
-  if (previousCommentId) {
-    await octokit.issues.deleteComment({
-      ...defaultGHOptions,
-      comment_id: Number(previousCommentId),
-    });
-  }
-
   const deploymentUrl = options.deploymentUrl ?? (await getOrCreateDeploymentUrl());
   const previousSha = options.previousSha ?? (await getMetadata(MetaDataKeys.deploymentPreviousSha));
   const chartsPackage = await getChartsPackageMetadata();
@@ -106,12 +107,11 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
   const commitPackageTarballLabel =
     options.commitPackageTarballLabel ?? (chartsPackage ? `${chartsPackage.commitShortSha}.tgz` : undefined);
 
-  // Tests are tracked as their own GitHub check runs, separate from the deployment.
-  // On a successful final deploy (post-tests) we resolve their real conclusions so the
-  // comment can clearly show that a deploy can succeed while tests fail (or vice versa).
-  // During preDeploy the tests are still running, so we leave them unresolved.
-  const testStatuses =
-    options.testStatuses ?? (state === 'success' && !preDeploy ? await getTestCheckStatuses(TEST_CHECKS) : []);
+  // Checks (tests, lint, types, etc.) are tracked as their own GitHub check runs, separate
+  // from the preview deployment. We always resolve their real conclusions so the comment
+  // reflects the live CI status and updates as each check completes. Report links for
+  // VRT/A11Y are still suppressed during preDeploy by the renderer (reports not deployed yet).
+  const testStatuses = options.testStatuses ?? (await getTestCheckStatuses(TEST_CHECKS));
 
   const commentBody = getComment('deployment', {
     ...options,
@@ -127,6 +127,17 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
     testStatuses,
   });
 
+  // Edit the existing comment in place when present (avoids flicker and duplicate comments
+  // from concurrent refreshes); otherwise create it.
+  if (previousCommentId) {
+    await octokit.issues.updateComment({
+      ...defaultGHOptions,
+      comment_id: Number(previousCommentId),
+      body: commentBody,
+    });
+    return;
+  }
+
   const {
     data: { id },
   } = await octokit.issues.createComment({
@@ -136,6 +147,33 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
   });
 
   await setMetadata(MetaDataKeys.deploymentCommentId, id.toString());
+}
+
+/**
+ * Re-renders the deployment comment with the latest CI check statuses, editing the existing
+ * comment in place. Safe to call frequently (e.g. after every job finishes) and is a no-op
+ * when there is no deployment comment yet or deployment is skipped.
+ */
+export async function refreshDeploymentComment() {
+  if (process.env.BLOCK_REQUESTS || !bkEnv.isPullRequest) return;
+  if (!(await metadataExists(MetaDataKeys.deploymentCommentId))) return;
+
+  // Reuse the last known deployment state so the header/deployment section stay correct
+  // while only the check statuses change.
+  const deploymentStatus = (await getMetadata(MetaDataKeys.deploymentStatus)) ?? 'pending';
+  const preDeploy = deploymentStatus.endsWith('-preDeploy');
+  const state = deploymentStatus.replace('-preDeploy', '') as UpdateDeploymentCommentOptions['state'];
+
+  // Never resurrect a failed deployment via a refresh.
+  if (state === 'failure') return;
+
+  try {
+    await createOrUpdateDeploymentComment({ state, preDeploy, refresh: true });
+  } catch (error) {
+    // A refresh is best-effort and must never fail a CI job.
+    console.error('Failed to refresh deployment comment');
+    console.error(error);
+  }
 }
 /**
  * Must clear previous deployments when deployment `transient_environment` is t`rue`
