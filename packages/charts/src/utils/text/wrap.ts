@@ -32,18 +32,18 @@ export function wrapText(
   granularity: Granularity = 'word',
   truncate: Truncate = 'end',
 ): WrapTextLines {
-  if (maxLines <= 0) {
-    const empty: WrapTextLines = [] as any;
-    empty.meta = { truncated: false };
-    return empty;
-  }
+  if (maxLines <= 0) return Object.assign([], { meta: { truncated: false } });
 
   const cleanedText = text.replaceAll('\n', ' ').replaceAll(/ +(?= )/g, '');
   const lines = wrapTextLines(cleanedText, font, fontSize, maxLineWidth, measure, locale, granularity);
 
-  if (lines.length <= maxLines) {
-    lines.meta = { truncated: false };
-    return lines;
+  if (lines.length <= maxLines) return Object.assign(lines, { meta: { truncated: false } });
+
+  // 'end' and 'start' truncate at a line edge, so we keep the wrapped lines on the visible
+  // side intact and only fit the one that shares its line with the ellipsis. This avoids
+  // the global re-wrap only in the 'middle' below.
+  if (truncate === 'end' || truncate === 'start') {
+    return truncateLinesAtEdge(lines, maxLines, font, fontSize, maxLineWidth, measure, truncate);
   }
 
   // find the width of the text that will fit within the maxLineWidth * maxLines budget
@@ -64,9 +64,26 @@ export function wrapText(
 
   // wrap the truncated text to the maxLineWidth
   const rewrapped = wrapTextLines(truncatedText, font, fontSize, maxLineWidth, measure, locale, granularity);
-  rewrapped.meta = { truncated: true };
+  return Object.assign(rewrapped, { meta: { truncated: true } });
+}
 
-  return rewrapped;
+function truncateLinesAtEdge(
+  lines: string[],
+  maxLines: number,
+  font: Font,
+  fontSize: number,
+  maxLineWidth: number,
+  measure: TextMeasure,
+  edge: 'start' | 'end',
+): WrapTextLines {
+  const overflow =
+    edge === 'end' ? lines.slice(maxLines - 1).join('') : lines.slice(0, lines.length - maxLines + 1).join('');
+  const { text: truncatedLine } = fitText(measure, overflow, maxLineWidth, fontSize, font, edge);
+  const result =
+    edge === 'end'
+      ? [...lines.slice(0, maxLines - 1), truncatedLine]
+      : [truncatedLine, ...lines.slice(lines.length - maxLines + 1)];
+  return Object.assign(result, { meta: { truncated: true } });
 }
 
 function findAllottedWidth(
@@ -105,8 +122,8 @@ function wrapTextLines(
   measure: TextMeasure,
   locale: string,
   granularity: Granularity,
-): WrapTextLines {
-  const lines: WrapTextLines = [] as any;
+): string[] {
+  const lines: string[] = [];
 
   const segmenter = textSegmenter(locale, granularity);
   const segments = Array.from(segmenter(cleanedText)).map((d) => ({
