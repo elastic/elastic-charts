@@ -19,7 +19,7 @@ import type { Optional } from 'utility-types';
 
 import { getJobCheckName } from './build';
 import { bkEnv } from './buildkite';
-import type { UpdateDeploymentCommentOptions } from './deployment';
+import type { TestCheckConclusion, TestCheckStatus, UpdateDeploymentCommentOptions } from './deployment';
 import type { CheckStatusOptions, CreateCheckOptions } from './octokit';
 
 if (!process.env.GITHUB_AUTH) throw new Error('GITHUB_AUTH env variable must be defined');
@@ -305,6 +305,52 @@ export const updateCheckStatus = async (
   }
 };
 
+/**
+ * Resolves the latest GitHub check-run conclusion for the given test check ids.
+ * Tests live as their own check runs (set in e2e_reports.ts), independent from the
+ * preview deployment. Returns `pending` when a check has not yet completed.
+ */
+export const getTestCheckStatuses = async (
+  checkIds: { id: string; label: string }[],
+  userRef?: string,
+): Promise<TestCheckStatus[]> => {
+  const ref = userRef ?? bkEnv.commit;
+  if (!ref) return checkIds.map(({ label }): TestCheckStatus => ({ label, conclusion: 'pending' }));
+
+  // eslint-disable-next-line @typescript-eslint/return-await
+  return Promise.all(
+    checkIds.map(async ({ id, label }): Promise<TestCheckStatus> => {
+      try {
+        const name = getJobCheckName(id);
+        const {
+          data: {
+            check_runs: [latestCheckRun],
+          },
+        } = await octokit.checks.listForRef({
+          ...defaultGHOptions,
+          ref,
+          check_name: name,
+          app_id: auth.appId,
+          per_page: 1,
+        });
+
+        if (latestCheckRun?.status !== 'completed') {
+          return { label, conclusion: 'pending' };
+        }
+
+        const { conclusion } = latestCheckRun;
+        if (conclusion === 'success') return { label, conclusion: 'success' };
+        // Skipped/neutral checks (e.g. a linter skipped because no relevant files changed)
+        // should not count as a failure nor block a successful run.
+        if (conclusion === 'skipped' || conclusion === 'neutral') return { label, conclusion: 'skipped' };
+        return { label, conclusion: 'failure' };
+      } catch {
+        return { label, conclusion: 'pending' };
+      }
+    }),
+  );
+};
+
 interface FileDiff {
   path: string;
   changeType: 'ADDED' | 'DELETED' | 'RENAMED' | 'COPIED' | 'MODIFIED' | 'CHANGED';
@@ -428,91 +474,179 @@ export const comments = {
     errorMsg,
     jobLink,
     preDeploy = false,
+    testStatuses = [],
   }: UpdateDeploymentCommentOptions) {
     console.warn(`DEPLOYMENT STATUS - ${state} - preDeploy: ${preDeploy}`);
 
-    if (state === 'failure') {
-      const errorCmdMsg = errorCmd
-        ? `\n\n**Command failed:**
-\`\`\`
-${errorCmd}
-\`\`\`\n\n`
-        : '\n';
-      const err = errorMsg
-        ? `${errorCmdMsg}
-**Error:**
-
-\`\`\`
-${errorMsg}
-\`\`\``
-        : errorCmdMsg;
-      const finalMessage = `## ❌ Failed Deployment - ${sha}
-Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
-`;
-      return `${finalMessage.trim()}\n\ncc: @nickofthyme`;
-    }
-
     const buildUrl = bkEnv.buildUrl;
     const buildText = !buildUrl ? '' : ` ([build#${buildUrl.split('/').pop()}](${buildUrl}))`;
-    const packageLinkLine = getPackageLinkLine(
+    const packageLinks = getPackageLinks(
       packagesUrl,
       packageTarballUrl,
       commitPackageTarballUrl,
       commitPackageTarballLabel,
     );
 
-    if (state === 'pending') {
-      const updateComment = previousSha ? `\n> 🚧 Updating deployment from ${previousSha}` : '';
-      const deploymentMsg =
-        previousSha && deploymentUrl
-          ? [
-              `### Old deployment - ${previousSha}`,
-              '',
-              `- [Docs](${deploymentUrl})`,
-              `- [Storybook](${deploymentUrl}/storybook)`,
-              `- [e2e server](${deploymentUrl}/e2e)`,
-              `- [Playwright VRT report](${deploymentUrl}/vrt-report)`,
-              `- [Playwright A11Y report](${deploymentUrl}/a11y-report)`,
-              packageLinkLine,
-            ]
-              .filter((line): line is string => line !== undefined)
-              .join('\n')
-          : `- ⏳ Storybook
-- ⏳ e2e server
-- ⏳ Playwright VRT report
-- ⏳ Playwright A11Y report`;
-      return `## ⏳ Pending Deployment${buildText} - ${sha}${updateComment}
+    // Deployment failed: the preview site could not be published. This is distinct from
+    // the test results - the tests may not even have run yet.
+    if (state === 'failure') {
+      const errorCmdMsg = errorCmd
+        ? `\n\n**Command failed:**
+\`\`\`
+${errorCmd}
+\`\`\``
+        : '';
+      const err = errorMsg
+        ? `${errorCmdMsg}
 
-${deploymentMsg}`;
+**Error:**
+
+\`\`\`
+${errorMsg}
+\`\`\``
+        : errorCmdMsg;
+
+      const deploymentTable = renderStatusTable([
+        { label: 'Docs', status: '❌ Failed' },
+        { label: 'Storybook', status: '❌ Failed' },
+        { label: 'e2e server', status: '❌ Failed' },
+        ...(packageLinks ? [{ label: 'Packages', status: '❌ Failed' }] : []),
+      ]);
+
+      return `## ❌ Failed${buildText} - ${sha}
+
+### 📦 Deployment ❌
+The preview site failed to deploy${jobLink ? ` - [failed job](${jobLink})` : ''}.
+
+${deploymentTable}
+${err}
+
+cc: @nickofthyme`.trim();
     }
 
-    const deploymentLines = [
-      `- [Docs](${deploymentUrl})`,
-      `- [Storybook](${deploymentUrl}/storybook)`,
-      `- [e2e server](${deploymentUrl}/e2e)`,
-      preDeploy
-        ? '- ⏳ Playwright VRT report - Running e2e tests'
-        : `- [Playwright VRT report](${deploymentUrl}/vrt-report)`,
-      preDeploy
-        ? '- ⏳ Playwright A11Y report - Running a11y tests'
-        : `- [Playwright A11Y report](${deploymentUrl}/a11y-report)`,
-      packageLinkLine,
-    ]
-      .filter((line): line is string => line !== undefined)
-      .join('\n');
+    // Deployment is in progress: nothing is live yet.
+    if (state === 'pending') {
+      const updateComment = previousSha ? `\n> 🚧 Updating deployment from ${previousSha}` : '';
+      const deploymentTable =
+        previousSha && deploymentUrl
+          ? renderStatusTable([
+              { label: 'Docs', status: `[old deployment](${deploymentUrl})` },
+              { label: 'Storybook', status: `[old deployment](${deploymentUrl}/storybook)` },
+              { label: 'e2e server', status: `[old deployment](${deploymentUrl}/e2e)` },
+              ...(packageLinks ? [{ label: 'Packages', status: packageLinks }] : []),
+            ])
+          : renderStatusTable([
+              { label: 'Docs', status: '⏳ Deploying' },
+              { label: 'Storybook', status: '⏳ Deploying' },
+              { label: 'e2e server', status: '⏳ Deploying' },
+              ...(packageLinks ? [{ label: 'Packages', status: '⏳ Pending' }] : []),
+            ]);
 
-    return `## ✅ Successful ${preDeploy ? 'Preliminary ' : ''}Deployment${buildText} - ${sha}
+      return `## ⏳ In Progress${buildText} - ${sha}${updateComment}
 
-${deploymentLines}`;
+### 📦 Deployment ⏳
+${deploymentTable}
+
+${renderTestsSection(testStatuses, deploymentUrl, preDeploy)}`;
+    }
+
+    // Deployment succeeded: the preview site is live. Tests are reported separately.
+    const deploymentTable = renderStatusTable([
+      { label: 'Docs', status: `[✅ View](${deploymentUrl})` },
+      { label: 'Storybook', status: `[✅ View](${deploymentUrl}/storybook)` },
+      { label: 'e2e server', status: `[✅ View](${deploymentUrl}/e2e)` },
+      ...(packageLinks ? [{ label: 'Packages', status: packageLinks }] : []),
+    ]);
+
+    const testsState = getOverallTestsState(testStatuses, preDeploy);
+    const overall =
+      testsState === 'failure' ? '❌ Failed' : testsState === 'success' ? '✅ Successful' : '⏳ In Progress';
+
+    return `## ${overall}${buildText} - ${sha}
+
+### 📦 Deployment ✅
+${deploymentTable}
+
+${renderTestsSection(testStatuses, deploymentUrl, preDeploy)}`;
   },
 };
 
-function getPackageLinkLine(
+type TestsState = 'success' | 'failure' | 'pending';
+
+function getOverallTestsState(testStatuses: TestCheckStatus[], preDeploy: boolean): TestsState {
+  if (preDeploy || testStatuses.length === 0) return 'pending';
+  if (testStatuses.some((t) => t.conclusion === 'failure')) return 'failure';
+  if (testStatuses.some((t) => t.conclusion === 'pending')) return 'pending';
+  // Only success/skipped remain - the run is successful.
+  return 'success';
+}
+
+const testStatusEmoji: Record<TestCheckConclusion, string> = {
+  success: '✅',
+  failure: '❌',
+  pending: '⏳',
+  skipped: '⏭️',
+};
+
+function renderTestsSection(testStatuses: TestCheckStatus[], deploymentUrl: string | undefined, preDeploy: boolean) {
+  const testsState = getOverallTestsState(testStatuses, preDeploy);
+  const heading =
+    testsState === 'failure' ? '🧪 CI Checks ❌' : testsState === 'success' ? '🧪 CI Checks ✅' : '🧪 CI Checks ⏳';
+
+  // Map known test labels to their published report path.
+  const reportPath: Record<string, string> = {
+    'Playwright VRT': 'vrt-report',
+    'Playwright A11Y': 'a11y-report',
+  };
+
+  const rows =
+    testStatuses.length > 0
+      ? testStatuses.map(({ label, conclusion }) => {
+          const path = reportPath[label];
+          const reportLink = !preDeploy && path && deploymentUrl ? ` [report](${deploymentUrl}/${path})` : '';
+          const status = getTestStatusLabel(conclusion, preDeploy, reportLink);
+          return { label, status };
+        })
+      : [
+          { label: 'Playwright VRT', status: '⏳ Running' },
+          { label: 'Playwright A11Y', status: '⏳ Running' },
+          { label: 'Jest', status: '⏳ Running' },
+          { label: 'Eslint', status: '⏳ Running' },
+          { label: 'Prettier', status: '⏳ Running' },
+          { label: 'Types', status: '⏳ Running' },
+          { label: 'API', status: '⏳ Running' },
+        ];
+
+  return `### ${heading}
+${renderStatusTable(rows)}`;
+}
+
+function getTestStatusLabel(conclusion: TestCheckConclusion, preDeploy: boolean, reportLink: string): string {
+  switch (conclusion) {
+    case 'pending':
+      return `${testStatusEmoji.pending} ${preDeploy ? 'Running' : 'Pending'}`;
+    case 'success':
+      return `${testStatusEmoji.success} Passed${reportLink}`;
+    case 'skipped':
+      return `${testStatusEmoji.skipped} Skipped`;
+    case 'failure':
+    default:
+      return `${testStatusEmoji.failure} Failed${reportLink}`;
+  }
+}
+
+function renderStatusTable(rows: { label: string; status: string }[]): string {
+  return ['| Step | Status |', '| --- | --- |', ...rows.map(({ label, status }) => `| ${label} | ${status} |`)].join(
+    '\n',
+  );
+}
+
+function getPackageLinks(
   packagesUrl?: string,
   packageTarballUrl?: string,
   commitPackageTarballUrl?: string,
   commitPackageTarballLabel?: string,
-) {
+): string | undefined {
   if (!packagesUrl && !packageTarballUrl && !commitPackageTarballUrl) return undefined;
 
   const links = [];
@@ -525,7 +659,7 @@ function getPackageLinkLine(
   if (commitPackageTarballUrl) {
     links.push(`[${commitPackageTarballLabel ?? 'commit.tgz'}](${commitPackageTarballUrl})`);
   }
-  return `- ${links.join(' - ')}`;
+  return links.join(' · ');
 }
 
 type Comments = typeof comments;

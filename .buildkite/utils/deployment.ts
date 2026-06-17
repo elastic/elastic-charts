@@ -14,9 +14,17 @@ import { bkEnv, getPreviousDeployCommitSha } from './buildkite';
 import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
 import { getOrCreateDeploymentUrl } from './firebase';
-import { octokit, defaultGHOptions, getComment, commentByKey } from './github';
+import { octokit, defaultGHOptions, getComment, commentByKey, getTestCheckStatuses } from './github';
 import { getChartsPackageMetadata, getChartsPackagesUrl, getChartsPackageUrls } from './package';
 import type { OctokitParameters } from './types';
+
+export type TestCheckConclusion = 'success' | 'failure' | 'pending' | 'skipped';
+
+export interface TestCheckStatus {
+  /** Human readable label e.g. "Playwright VRT" */
+  label: string;
+  conclusion: TestCheckConclusion;
+}
 
 export interface UpdateDeploymentCommentOptions {
   sha?: string;
@@ -31,7 +39,20 @@ export interface UpdateDeploymentCommentOptions {
   errorMsg?: string;
   jobLink?: string;
   preDeploy?: boolean;
+  testStatuses?: TestCheckStatus[];
 }
+
+// CI quality checks that must all pass (zero errors) before a run is considered successful.
+// These are tracked as their own GitHub check runs, independent from the preview deployment.
+const TEST_CHECKS = [
+  { id: 'playwright_vrt', label: 'Playwright VRT' },
+  { id: 'playwright_a11y', label: 'Playwright A11Y' },
+  { id: 'jest', label: 'Jest' },
+  { id: 'eslint', label: 'Eslint' },
+  { id: 'prettier', label: 'Prettier' },
+  { id: 'types', label: 'Types' },
+  { id: 'api', label: 'API' },
+];
 
 export async function createOrUpdateDeploymentComment(options: UpdateDeploymentCommentOptions) {
   const { state, preDeploy, sha = bkEnv.commit! } = options;
@@ -84,6 +105,14 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
   const commitPackageTarballUrl = options.commitPackageTarballUrl ?? chartsPackageUrls?.commitTarballUrl;
   const commitPackageTarballLabel =
     options.commitPackageTarballLabel ?? (chartsPackage ? `${chartsPackage.commitShortSha}.tgz` : undefined);
+
+  // Tests are tracked as their own GitHub check runs, separate from the deployment.
+  // On a successful final deploy (post-tests) we resolve their real conclusions so the
+  // comment can clearly show that a deploy can succeed while tests fail (or vice versa).
+  // During preDeploy the tests are still running, so we leave them unresolved.
+  const testStatuses =
+    options.testStatuses ?? (state === 'success' && !preDeploy ? await getTestCheckStatuses(TEST_CHECKS) : []);
+
   const commentBody = getComment('deployment', {
     ...options,
     state,
@@ -95,6 +124,7 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
     commitPackageTarballUrl,
     commitPackageTarballLabel,
     previousSha,
+    testStatuses,
   });
 
   const {

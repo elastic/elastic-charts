@@ -22,6 +22,13 @@ export const firebaseDeployStep = createStep<CustomCommandStep>(() => {
       'build_charts_package_preview',
       'playwright_vrt_merge_and_status',
       'playwright_a11y_merge_and_status',
+      // Wait for all quality checks so the deployment comment can report a final,
+      // accurate CI status. allow_dependency_failure ensures we still deploy on failure.
+      'jest',
+      'eslint',
+      'prettier',
+      'types',
+      'api',
     ],
     commands: ['npx ts-node .buildkite/scripts/steps/firebase_deploy.ts'],
     env: {
