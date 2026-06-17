@@ -187,6 +187,10 @@ void (async () => {
 
   await downloadArtifacts(artifactPath);
 
+  // Collect every shard's `blob` report (`*.zip`) into a single directory so the
+  // native `playwright merge-reports` can consume them. Blob report names contain
+  // the shard number, so they will not clash.
+  const blobReportsDir = 'reports/all-blob-reports';
   const files = fs.readdirSync(reportDir);
   await Promise.all<void>(
     files
@@ -194,7 +198,7 @@ void (async () => {
       .map((f) =>
         decompress({
           src: path.join(reportDir, f),
-          dest: path.join('e2e/reports', path.basename(f, '.gz')),
+          dest: path.join('e2e', blobReportsDir),
         }),
       ),
   );
@@ -205,6 +209,7 @@ void (async () => {
     cwd: 'e2e',
     env: {
       HTML_REPORT_DIR: outputDir,
+      BLOB_REPORTS_DIR: blobReportsDir,
     },
   });
 
