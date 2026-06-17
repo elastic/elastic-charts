@@ -90,6 +90,30 @@ describe('createTickLabelLayout', () => {
     expect(result.bboxWidth).toBe(LIGHT_THEME.axes.tickLabel.fontSize);
     expect(result.bboxHeight).toBe(6);
   });
+
+  describe('compact single-word labels', () => {
+    const xAxisSpec = MockGlobalSpec.xAxis();
+
+    test('keeps a short single word whole on one line when it overflows its slot', () => {
+      const layout = createTickLabelLayout(styleWith(), xAxisSpec, monospaceMeasure, 'en', 2, 4, true);
+      const result = layout('Monday');
+      expect([...result.lines]).toEqual(['Monday']);
+      expect(result.lines.meta.truncated).toBe(false);
+      expect(result.width).toBe(6);
+    });
+
+    test('still truncates a long single token that overflows its slot', () => {
+      const layout = createTickLabelLayout(styleWith(), xAxisSpec, monospaceMeasure, 'en', 2, 4, true);
+      const result = layout('abcdefghijklmnopqrst');
+      expect(result.lines.meta.truncated).toBe(true);
+    });
+
+    test('still wraps multi-word labels across lines', () => {
+      const layout = createTickLabelLayout(styleWith(), xAxisSpec, monospaceMeasure, 'en', 5, 5, true);
+      const result = layout('one two three');
+      expect(result.lines.length).toBeGreaterThan(1);
+    });
+  });
 });
 
 describe('getMaxLabelDimensions', () => {

@@ -16,6 +16,7 @@ import { degToRad } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
 import { wrapText, type WrapTextLines } from '../../../../utils/text/wrap';
 import type { AxisStyle } from '../../../../utils/themes/theme';
+import { isHorizontalAxis } from '../../utils/axis_type_utils';
 import type { AxisSpec } from '../../utils/specs';
 
 /** @internal */
@@ -35,6 +36,19 @@ export function computeRotatedLabelDimensions(unrotatedDims: Size, degreesRotati
 export const MIN_LABEL_GAP = 4;
 /** @internal */
 export const MIN_LABEL_LENGTH = 12;
+
+/**
+ * Max length (in characters) of a single-word label that is kept whole on one line when it
+ * overflows its slot, instead of being wrapped mid-word or truncated. Tuned to cover short
+ * labels such as weekday/month names (e.g. `"Wednesday"`), while genuinely long single tokens
+ * (urls, hashes, identifiers) still fall through to the wrap/truncate paths.
+ */
+const MAX_FULL_LABEL_CHARS = 10;
+
+const isCompactSingleWord = (value: string): boolean => {
+  const trimmed = value.trim();
+  return trimmed.length > 0 && trimmed.length <= MAX_FULL_LABEL_CHARS && !/\s/.test(trimmed);
+};
 
 /** @internal */
 export const withoutTickLabel = (tick: AxisTick): AxisTick => ({
@@ -69,6 +83,8 @@ export const createTickLabelLayout = (
     textColor: 'black',
   };
 
+  const horizontal = isHorizontalAxis(axisSpec.position);
+
   return (value: string) => {
     const truncate = axisStyle.tickLabel.truncate ?? axisSpec.tickLabelTruncate;
 
@@ -77,6 +93,8 @@ export const createTickLabelLayout = (
     const measureSingleLine = measure(value, font, fontSize);
 
     if (measureSingleLine.width <= maxLineLength) {
+      lines = Object.assign([value], { meta: { truncated: false } });
+    } else if (allowWordWrap && horizontal && isCompactSingleWord(value)) {
       lines = Object.assign([value], { meta: { truncated: false } });
     } else if (!allowWordWrap) {
       const { text } = fitText(measure, value, maxLineLength, fontSize, font, truncate ?? 'end');
