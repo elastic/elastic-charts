@@ -7,7 +7,7 @@
  */
 
 import type { TickLabelLayout } from './labels';
-import { createTickLabelLayout, MIN_LABEL_GAP, shouldAllowWordWrap, withoutTickLabel } from './labels';
+import { createTickLabelLayout, getMaxLabelDimensions, shouldAllowWordWrap, withoutTickLabel } from './labels';
 import type { AxisTick, GetMeasuredTicks, Projection, Projections, TextDirection } from './types';
 import type { SmallMultipleScales } from '../../../../common/panel_utils';
 import { getPanelSize } from '../../../../common/panel_utils';
@@ -169,26 +169,27 @@ export function getVisibleTicks(
 
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const bypassOverlapCheck = showOverlappingLabels || multilayerTimeAxis;
-  return bypassOverlapCheck
-    ? allTicks
-    : allTicks
-        .slice()
-        .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
-        .reduce(
-          (prev, tick) => {
-            const requiredSpace = isVerticalAxis(position) ? tick.layout.bboxHeight / 2 : tick.layout.bboxWidth / 2;
+  if (bypassOverlapCheck) return allTicks;
 
-            const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace + MIN_LABEL_GAP;
-            if (tickLabelFits || showOverlappingTicks) {
-              prev.visibleTicks.push(tickLabelFits ? tick : withoutTickLabel(tick));
-              if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
-            } else if (adaptiveTickCount && !tickLabelFits && !showOverlappingTicks) {
-              prev.visibleTicks.push(withoutTickLabel(tick));
-            }
-            return prev;
-          },
-          { visibleTicks: [] as AxisTick[], occupiedSpace: -Infinity },
-        ).visibleTicks;
+  const maxLabelBox = getMaxLabelDimensions(allTicks.map((tick) => tick.layout));
+  const requiredSpace = isVerticalAxis(position) ? maxLabelBox.bboxHeight / 2 : maxLabelBox.bboxWidth / 2;
+
+  return allTicks
+    .slice()
+    .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
+    .reduce(
+      (prev, tick) => {
+        const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
+        if (tickLabelFits || showOverlappingTicks) {
+          prev.visibleTicks.push(tickLabelFits ? tick : withoutTickLabel(tick));
+          if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
+        } else if (adaptiveTickCount && !tickLabelFits && !showOverlappingTicks) {
+          prev.visibleTicks.push(withoutTickLabel(tick));
+        }
+        return prev;
+      },
+      { visibleTicks: [] as AxisTick[], occupiedSpace: -Infinity },
+    ).visibleTicks;
 }
 
 function getVisibleTickSet(
@@ -322,14 +323,14 @@ export function computeVisibleTickSets(
             if (!scale || actualTickCount === previousActualTickCount || actualTickCount < 2) continue;
             const raster = getMeasuredTicks(scale, scale.ticks(), undefined, 0, userProvidedLabelFormatter);
             const nonZeroLengthTicks = raster.ticks.filter((tick) => tick.label.length > 0);
-            const uniqueLabels = new Set(raster.ticks.map((tick) => tick.label));
-            const areLabelsUnique = raster.ticks.length === uniqueLabels.size;
+            const uniqueLabels = new Set(nonZeroLengthTicks.map((tick) => tick.label));
+            const areLabelsUnique = nonZeroLengthTicks.length === uniqueLabels.size;
             const areAdjacentTimeLabelsUnique =
               scale.type === ScaleType.Time &&
               !axisSpec.showDuplicatedTicks &&
-              (areLabelsUnique || raster.ticks.every((d, i, a) => i === 0 || d.label !== a[i - 1]?.label));
+              (areLabelsUnique || nonZeroLengthTicks.every((d, i, a) => i === 0 || d.label !== a[i - 1]?.label));
             const atLeastTwoTicks = uniqueLabels.size >= 2;
-            const allTicksFit = !uniqueLabels.has('');
+            const allTicksFit = nonZeroLengthTicks.length === raster.ticks.length;
             const compliant =
               axisSpec &&
               (scale.type === ScaleType.Time || atLeastTwoTicks) &&

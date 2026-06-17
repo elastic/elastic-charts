@@ -11,7 +11,7 @@ import { getMaxLabelDimensions, MIN_LABEL_LENGTH } from './ticks/labels';
 import type { AxisTick } from './ticks/types';
 import type { Pixels } from '../../../common/geometry';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
-import { isBandScale } from '../../../scales/types';
+import { isBandScale, isContinuousScale } from '../../../scales/types';
 import type { SmallMultiplesSpec } from '../../../specs';
 import { getPercentageValue, Position } from '../../../utils/common';
 import { innerPad, outerPad, type PerSideDistance } from '../../../utils/dimensions';
@@ -87,7 +87,8 @@ type AxisBand = ReturnType<typeof getAxisBand>;
  *
  * - Vertical axes (left/right): cross-axis = width.
  *   `effectiveLineLimit = min(limit ?? labelBudget, labelBudget)`.
- * - Horizontal axes (top/bottom): line width is also capped by band width.
+ * - Horizontal axes (top/bottom): line width is capped by category slot width for ordinal
+ *   and grouped-bar scales. Histogram continuous axes use the label budget instead.
  *   `effectiveWrapLines = min(wrapLines, floor(labelBudget / lineHeightPx))`
  *   so the total wrapped height fits inside `maxExtent`.
  * @internal
@@ -117,6 +118,8 @@ export const resolveTickLabelConstraints = ({
 
   if (vertical || multilayerTimeAxis) {
     maxLineLength = Math.min(maxLineLength ?? band.labelBudget, band.labelBudget, band.container);
+  } else if (isContinuousScale(scale) && scale.bandwidth > 0) {
+    maxLineLength = Math.max(MIN_LABEL_LENGTH, Math.min(maxLineLength ?? band.maxExtent, band.container));
   } else {
     const categorySlotWidth = isBandScale(scale)
       ? scale.step

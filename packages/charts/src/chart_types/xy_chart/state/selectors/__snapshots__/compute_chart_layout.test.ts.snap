@@ -28,9 +28,9 @@ exports[`computeChartLayoutSelector with deterministic text measurement multi-it
 {
   "chartDimensions": {
     "height": 53,
-    "left": 96,
+    "left": 112,
     "top": 5,
-    "width": 80,
+    "width": 72,
   },
   "leftMargin": 0,
 }

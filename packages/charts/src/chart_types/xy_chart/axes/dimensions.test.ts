@@ -123,8 +123,8 @@ describe('getAxisBand', () => {
 });
 
 describe('resolveTickLabelConstraints', () => {
-  const ordinalScale = { bandwidth: 50, barsPadding: 0.2 } as unknown as ScaleBand;
-  const continuousScale = { bandwidth: 0, barsPadding: 0 } as unknown as ScaleContinuous;
+  const ordinalScale = { type: ScaleType.Ordinal, step: 50, bandwidth: 50, barsPadding: 0.2 } as unknown as ScaleBand;
+  const continuousScale = { type: ScaleType.Linear, bandwidth: 0, barsPadding: 0 } as unknown as ScaleContinuous;
   const style = mergePartial(LIGHT_THEME.axes, { tickLabel: { fontSize: 10, lineHeight: 1, wrapLines: 5 } });
 
   test('vertical axes cap maxLineLength by labelBudget; wrapLines unchanged', () => {
