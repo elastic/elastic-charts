@@ -10,61 +10,22 @@ import type { AxisProps } from './axis_props';
 import type { TextFont } from '../../../../../renderers/canvas/primitives/text';
 import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRectCenterRotated } from '../../../../../renderers/canvas/utils/debug';
-import { degToRad, Position, VerticalAlignment } from '../../../../../utils/common';
+import { HorizontalAlignment, Position, VerticalAlignment } from '../../../../../utils/common';
 import type { Point } from '../../../../../utils/point';
-import { getTickLabelPosition, type TickLabelProps } from '../../../axes/ticks/geometry';
+import { getTickLabelPosition, rotateVector, type ResolvedHorizontalAlign } from '../../../axes/ticks/geometry';
 import type { AxisTick } from '../../../axes/ticks/types';
 
 const TICK_TO_LABEL_GAP = 2;
 
-function rotateOffset({ x, y }: Point, rotation: number): Point {
-  if (rotation === 0) {
-    return { x, y };
+function getTextAnchorX(horizontalAlign: ResolvedHorizontalAlign, textWidth: number): number {
+  switch (horizontalAlign) {
+    case HorizontalAlignment.Left:
+      return -textWidth / 2;
+    case HorizontalAlignment.Right:
+      return textWidth / 2;
+    case HorizontalAlignment.Center:
+      return 0;
   }
-
-  const radians = degToRad(rotation);
-  const cos = Math.cos(radians);
-  const sin = Math.sin(radians);
-
-  return {
-    x: x * cos - y * sin,
-    y: x * sin + y * cos,
-  };
-}
-
-function getTickLabelBoxCenter(
-  origin: Point,
-  { width, height }: { width: number; height: number },
-  textAlign: TextFont['align'],
-  textOffsetX: number,
-  textOffsetY: number,
-  verticalAlign: TickLabelProps['verticalAlign'],
-  isMultiLine: boolean,
-  rotation: number,
-): Point {
-  let y = textOffsetY + height / 2;
-
-  if (!isMultiLine) {
-    if (verticalAlign === VerticalAlignment.Top) {
-      y = textOffsetY + height / 2;
-    } else if (verticalAlign === VerticalAlignment.Middle) {
-      y = textOffsetY;
-    } else {
-      y = textOffsetY - height / 2;
-    }
-  }
-
-  const center = {
-    x: textAlign === 'left' ? textOffsetX + width / 2 : textAlign === 'right' ? textOffsetX - width / 2 : textOffsetX,
-    y,
-  };
-
-  const rotated = rotateOffset(center, rotation);
-
-  return {
-    x: origin.x + rotated.x,
-    y: origin.y + rotated.y,
-  };
 }
 
 /** @internal */
@@ -76,12 +37,15 @@ export function renderTickLabel(
   layerGirth: number,
 ) {
   const { position } = axisSpec;
-  const labelStyle = axisStyle.tickLabel;
-  const tickLabelProps = getTickLabelPosition(
+  const { tickLabel: labelStyle } = axisStyle;
+  const { width, height, bboxWidth, bboxHeight, lines } = tick.layout;
+  const { rotation } = labelStyle;
+
+  const { center, textAlign, horizontalAlign } = getTickLabelPosition(
     axisStyle,
     tick.domainClampedPosition,
     position,
-    labelStyle.rotation,
+    rotation,
     size,
     dimension,
     showTicks,
@@ -90,39 +54,29 @@ export function renderTickLabel(
     tick.layout,
   );
 
-  const origin = { x: tickLabelProps.x, y: tickLabelProps.y };
-  const textOffsetX =
-    tickLabelProps.textOffsetX + (tick.multilayerTimeAxis && Number.isFinite(tick.layer) ? TICK_TO_LABEL_GAP : 0);
-  const lineHeight = labelStyle.lineHeight * labelStyle.fontSize;
+  //pushes multilayer time-axis labels away from the tick edge.
+  const tickGapX = tick.multilayerTimeAxis && Number.isFinite(tick.layer) ? TICK_TO_LABEL_GAP : 0;
+  // stacks multilayer time-axis layers along the cross-axis direction.
   const layerOffsetY = (tick.layer || 0) * layerGirth * (position === Position.Top ? -1 : 1);
-  const textOffsetY = tickLabelProps.textOffsetY + layerOffsetY;
-  const isMultiLine = tick.layout.lines.length > 1;
 
   if (debug) {
-    const { width, height, bboxWidth, bboxHeight } = tick.layout;
-    const textBlockCenter = getTickLabelBoxCenter(
-      origin,
-      { width, height },
-      tickLabelProps.textAlign,
-      textOffsetX,
-      textOffsetY,
-      tickLabelProps.verticalAlign,
-      isMultiLine,
-      labelStyle.rotation,
-    );
+    const extraInRotated = rotateVector({ x: tickGapX, y: layerOffsetY }, rotation);
+    const debugCenter: Point = {
+      x: center.x + extraInRotated.x,
+      y: center.y + extraInRotated.y,
+    };
 
-    renderDebugRectCenterRotated(
-      ctx,
-      textBlockCenter,
-      { ...textBlockCenter, width, height },
-      undefined,
-      undefined,
-      labelStyle.rotation,
-    );
-    if (labelStyle.rotation % 90 !== 0) {
-      renderDebugRectCenterRotated(ctx, textBlockCenter, { ...textBlockCenter, width: bboxWidth, height: bboxHeight });
+    renderDebugRectCenterRotated(ctx, debugCenter, { ...debugCenter, width, height }, undefined, undefined, rotation);
+    if (rotation % 90 !== 0) {
+      renderDebugRectCenterRotated(ctx, debugCenter, { ...debugCenter, width: bboxWidth, height: bboxHeight });
     }
   }
+
+  const isMultiLine = lines.length > 1;
+  const lineHeight = labelStyle.lineHeight * labelStyle.fontSize;
+
+  const baseline = isMultiLine ? VerticalAlignment.Top : VerticalAlignment.Middle;
+  const stackBaseY = isMultiLine ? -height / 2 : 0;
 
   const font: TextFont = {
     fontFamily: labelStyle.fontFamily,
@@ -131,19 +85,21 @@ export function renderTickLabel(
     fontWeight: 'normal',
     textColor: labelStyle.fill,
     fontSize: labelStyle.fontSize,
-    align: tickLabelProps.textAlign,
-    baseline: isMultiLine ? 'top' : tickLabelProps.verticalAlign,
+    align: textAlign,
+    baseline,
   };
 
-  tick.layout.lines.forEach((line, i) => {
+  const anchorX = getTextAnchorX(horizontalAlign, width);
+
+  lines.forEach((line, i) => {
     renderText(
       ctx,
-      origin,
+      center,
       line,
       font,
-      labelStyle.rotation,
-      textOffsetX,
-      textOffsetY + i * lineHeight,
+      rotation,
+      anchorX + tickGapX,
+      stackBaseY + layerOffsetY + i * lineHeight,
       1,
       tick.direction,
     );

@@ -29,7 +29,7 @@ const labelBox: TickLabelBox = {
   lines: Object.assign(['label'], { meta: { truncated: false } }),
 };
 
-const localOffset: TextOffset = { x: 0, y: 0, reference: 'local' };
+const noOffset: TextOffset = { x: 0, y: 0, reference: 'local' };
 const nearAlignment = { horizontal: HorizontalAlignment.Near, vertical: VerticalAlignment.Near };
 
 describe('getTickLabelPosition', () => {
@@ -37,7 +37,7 @@ describe('getTickLabelPosition', () => {
     const verticalSize: Size = { width: 100, height: 200 };
     const tickPosition = 80;
 
-    test('left axis with "near" alignment anchors the label to the right of the axis band', () => {
+    test('left axis with "near" alignment places the bbox against the inner band edge', () => {
       const props = getTickLabelPosition(
         styleWith(),
         tickPosition,
@@ -46,21 +46,22 @@ describe('getTickLabelPosition', () => {
         verticalSize,
         labelBox,
         true,
-        localOffset,
+        noOffset,
         nearAlignment,
       );
+
       expect(props).toEqual({
-        x: verticalSize.width - PADDED_TICK_DIMENSION,
-        y: tickPosition,
-        textOffsetX: 0,
-        textOffsetY: 0,
+        center: {
+          x: verticalSize.width - PADDED_TICK_DIMENSION - labelBox.bboxWidth / 2,
+          y: tickPosition,
+        },
         textAlign: HorizontalAlignment.Right,
         horizontalAlign: HorizontalAlignment.Right,
         verticalAlign: VerticalAlignment.Middle,
       });
     });
 
-    test('right axis with "near" alignment anchors the label to the left of the axis band', () => {
+    test('right axis with "near" alignment places the bbox against the inner band edge', () => {
       const props = getTickLabelPosition(
         styleWith(),
         tickPosition,
@@ -69,14 +70,15 @@ describe('getTickLabelPosition', () => {
         verticalSize,
         labelBox,
         true,
-        localOffset,
+        noOffset,
         nearAlignment,
       );
+
       expect(props).toEqual({
-        x: PADDED_TICK_DIMENSION,
-        y: tickPosition,
-        textOffsetX: 0,
-        textOffsetY: 0,
+        center: {
+          x: PADDED_TICK_DIMENSION + labelBox.bboxWidth / 2,
+          y: tickPosition,
+        },
         textAlign: HorizontalAlignment.Left,
         horizontalAlign: HorizontalAlignment.Left,
         verticalAlign: VerticalAlignment.Middle,
@@ -88,7 +90,7 @@ describe('getTickLabelPosition', () => {
     const horizontalSize: Size = { width: 200, height: 100 };
     const tickPosition = 50;
 
-    test('top axis with "near" alignment anchors the label above the axis band, bottom-aligned', () => {
+    test('top axis with "near" alignment places the bboxes at the top of the axis band', () => {
       const props = getTickLabelPosition(
         styleWith(),
         tickPosition,
@@ -97,21 +99,22 @@ describe('getTickLabelPosition', () => {
         horizontalSize,
         labelBox,
         true,
-        localOffset,
+        noOffset,
         nearAlignment,
       );
+
       expect(props).toEqual({
-        x: tickPosition,
-        y: horizontalSize.height - PADDED_TICK_DIMENSION,
-        textOffsetX: 0,
-        textOffsetY: 0,
+        center: {
+          x: tickPosition,
+          y: horizontalSize.height - PADDED_TICK_DIMENSION - labelBox.bboxHeight / 2,
+        },
         textAlign: HorizontalAlignment.Center,
         horizontalAlign: HorizontalAlignment.Center,
         verticalAlign: VerticalAlignment.Bottom,
       });
     });
 
-    test('bottom axis with "near" alignment anchors the label below the axis band, top-aligned', () => {
+    test('bottom axis with "near" alignment places the bboxes at the bottom of the axis band', () => {
       const props = getTickLabelPosition(
         styleWith(),
         tickPosition,
@@ -120,48 +123,40 @@ describe('getTickLabelPosition', () => {
         horizontalSize,
         labelBox,
         true,
-        localOffset,
+        noOffset,
         nearAlignment,
       );
+
       expect(props).toEqual({
-        x: tickPosition,
-        y: PADDED_TICK_DIMENSION,
-        textOffsetX: 0,
-        textOffsetY: 0,
+        center: {
+          x: tickPosition,
+          y: PADDED_TICK_DIMENSION + labelBox.bboxHeight / 2,
+        },
         textAlign: HorizontalAlignment.Center,
         horizontalAlign: HorizontalAlignment.Center,
         verticalAlign: VerticalAlignment.Top,
       });
     });
 
-    test('rotated bottom axis switches horizontal/vertical alignment based on rotation sign', () => {
-      let props = getTickLabelPosition(
-        styleWith({ rotation: 90 }),
-        50,
-        Position.Bottom,
-        90,
-        { width: 200, height: 100 },
-        labelBox,
-        true,
-        localOffset,
-        nearAlignment,
-      );
-      expect(props.horizontalAlign).toBe(HorizontalAlignment.Left);
-      expect(props.verticalAlign).toBe(VerticalAlignment.Middle);
+    test('rotated bottom axis at ±90° centers the bbox on the tick', () => {
+      const size = { width: 200, height: 100 };
 
-      props = getTickLabelPosition(
-        styleWith({ rotation: -90 }),
-        50,
-        Position.Bottom,
-        -90,
-        { width: 200, height: 100 },
-        labelBox,
-        true,
-        localOffset,
-        nearAlignment,
-      );
-      expect(props.horizontalAlign).toBe(HorizontalAlignment.Right);
-      expect(props.verticalAlign).toBe(VerticalAlignment.Middle);
+      for (const rotation of [90, -90]) {
+        const props = getTickLabelPosition(
+          styleWith({ rotation }),
+          50,
+          Position.Bottom,
+          rotation,
+          size,
+          labelBox,
+          true,
+          noOffset,
+          nearAlignment,
+        );
+
+        expect(props.horizontalAlign).toBe(HorizontalAlignment.Center);
+        expect(props.verticalAlign).toBe(VerticalAlignment.Top);
+      }
     });
   });
 
@@ -174,23 +169,25 @@ describe('getTickLabelPosition', () => {
       { width: 100, height: 100 },
       labelBox,
       true,
-      localOffset,
+      noOffset,
       { horizontal: HorizontalAlignment.Center, vertical: VerticalAlignment.Top },
     );
+
     expect(props.horizontalAlign).toBe(HorizontalAlignment.Center);
     expect(props.verticalAlign).toBe(VerticalAlignment.Top);
   });
 
-  test('hidden ticks remove the tick line + padding from the anchor', () => {
+  test('hidden ticks remove the tick line + padding from the band edge', () => {
+    const size = { width: 200, height: 100 };
     const visible = getTickLabelPosition(
       styleWith(),
       0,
       Position.Bottom,
       0,
-      { width: 200, height: 100 },
+      size,
       labelBox,
       true,
-      localOffset,
+      noOffset,
       nearAlignment,
     );
     const hidden = getTickLabelPosition(
@@ -198,73 +195,17 @@ describe('getTickLabelPosition', () => {
       0,
       Position.Bottom,
       0,
-      { width: 200, height: 100 },
+      size,
       labelBox,
       false,
-      localOffset,
+      noOffset,
       nearAlignment,
     );
 
-    expect(visible.y).toBe(PADDED_TICK_DIMENSION);
-    expect(hidden.y).toBe(LABEL_INNER_PADDING);
-    expect(visible.y - hidden.y).toBe(TICK_LINE_DIMENSION);
-  });
-
-  test('global text offset shifts the anchor; local offset moves text inside the box', () => {
-    const globalProps = getTickLabelPosition(
-      styleWith(),
-      0,
-      Position.Left,
-      0,
-      { width: 100, height: 100 },
-      labelBox,
-      true,
-      { x: '50%', y: '25%', reference: 'global' },
-      nearAlignment,
-    );
-    const localProps = getTickLabelPosition(
-      styleWith(),
-      0,
-      Position.Left,
-      0,
-      { width: 100, height: 100 },
-      labelBox,
-      true,
-      { x: '50%', y: '25%', reference: 'local' },
-      nearAlignment,
-    );
-
-    const axisWidth = 100;
-    const anchorX = axisWidth - PADDED_TICK_DIMENSION;
-    const halfLabelWidth = labelBox.bboxWidth / 2;
-
-    expect(globalProps.x - anchorX).toBe(halfLabelWidth);
-    expect(globalProps.textOffsetX).toBe(0);
-    expect(localProps.x).toBe(anchorX);
-    expect(localProps.textOffsetX).toBe(halfLabelWidth);
-  });
-
-  test('multi-line labels apply block vertical offsets', () => {
-    const multiLineBox: TickLabelBox = {
-      ...labelBox,
-      height: 32,
-      lines: Object.assign(['line one', 'line two'], { meta: { truncated: false } }),
-    };
-
-    const props = getTickLabelPosition(
-      styleWith(),
-      80,
-      Position.Left,
-      0,
-      { width: 100, height: 200 },
-      multiLineBox,
-      true,
-      localOffset,
-      nearAlignment,
-      multiLineBox,
-    );
-
-    expect(props.textOffsetY).toBe(-multiLineBox.height / 2);
-    expect(props.verticalAlign).toBe(VerticalAlignment.Middle);
+    const visibleTop = visible.center.y - labelBox.bboxHeight / 2;
+    const hiddenTop = hidden.center.y - labelBox.bboxHeight / 2;
+    expect(visibleTop).toBe(PADDED_TICK_DIMENSION);
+    expect(hiddenTop).toBe(LABEL_INNER_PADDING);
+    expect(visibleTop - hiddenTop).toBe(TICK_LINE_DIMENSION);
   });
 });
