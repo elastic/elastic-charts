@@ -15,6 +15,7 @@ import { bkEnv, startGroup } from './buildkite';
 import { DEFAULT_FIREBASE_URL, MetaDataKeys } from './constants';
 import { createDeploymentStatus, createOrUpdateDeploymentComment } from './deployment';
 import { exec } from './exec';
+import { updateCheckStatus } from './github';
 
 // Set up Google Application Credentials for use by the Firebase CLI
 // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
@@ -76,6 +77,21 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
     console.log(`Successfully deployed to ${deploymentUrl}`);
 
     await setMetadata(MetaDataKeys.deploymentUrl, deploymentUrl);
+
+    // Mark the deploy check complete as soon as the site is published, rather than waiting
+    // for the job to exit (via pre_exit). This stops the GitHub "Deploy - firebase" check
+    // from spinning while post-deploy work (e.g. building the status comment) finishes.
+    // Only for the final deploy - the preDeploy check has its own lifecycle.
+    if (!opt.preDeploy && bkEnv.checkId === 'deploy_fb') {
+      await updateCheckStatus(
+        {
+          status: 'completed',
+          conclusion: 'success',
+          details_url: bkEnv.jobUrl,
+        },
+        'deploy_fb',
+      );
+    }
 
     if (bkEnv.isPullRequest) {
       await createOrUpdateDeploymentComment({
