@@ -16,8 +16,9 @@ import { Chart, isMetricElementEvent, Metric, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { getProgressBarFill, progressBarPaletteOptions, progressBarSizeOptions } from './progress_bar_story_helpers';
 import type { ChartsStory } from '../../types';
-import { useBaseTheme } from '../../use_base_theme';
+import { useBaseTheme, useThemeId } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator();
 
@@ -46,11 +47,14 @@ const getContainerHeight = (_data: (MetricDatum | undefined)[][]) => _data.lengt
 const defaultValueFormatter = (d: number) => `${d}`;
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const isDarkTheme = useThemeId().includes('dark');
   const showGridBorder = boolean('show grid border', false);
   const addMetricClick = boolean('attach click handler', true);
   const useProgressBar = boolean('use progress bar', true);
 
   const progressBarDirection = select('progress bar direction', ['horizontal', 'vertical'], 'vertical');
+  const progressBarPalette = select('progress bar palette', progressBarPaletteOptions, 'none');
+  const progressBarSize = select('progress bar size', progressBarSizeOptions, 'auto');
   const maxDataPoints = number('max trend data points', 30, { min: 0, max: 50, step: 1 });
   const emptyBackground = color('empty background', 'transparent');
   const valueFontSizeMode = select(
@@ -64,6 +68,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
   );
   const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
   const valuePosition = select('value position', { Bottom: 'bottom', Middle: 'middle', Top: 'top' }, 'bottom');
+  const progressBarFill = useMemo(
+    () => getProgressBarFill(progressBarPalette, [0, 100], isDarkTheme),
+    [isDarkTheme, progressBarPalette],
+  );
+  const progressBarSizeOverride = progressBarSize === 'auto' ? undefined : progressBarSize;
 
   const data: (MetricDatum | undefined)[] = useMemo(
     () => [
@@ -99,15 +108,19 @@ export const Example: ChartsStory = (_, { title, description }) => {
         icon: getIcon('sortUp'),
         value: 12.57,
         valueFormatter: (d) => `${d} Mb/s`,
-        ...(useProgressBar && {
-          domainMax: 100,
-          progressBarDirection,
-          extra: (
-            <span>
-              max <b>100Mb/s</b>
-            </span>
-          ),
-        }),
+        ...(useProgressBar
+          ? {
+              domainMax: 100,
+              progressBarDirection,
+              progressBarFill,
+              progressBarSize: progressBarSizeOverride,
+              extra: (
+                <span>
+                  max <b>100Mb/s</b>
+                </span>
+              ),
+            }
+          : {}),
       },
       {
         color: '#5e5e5e',
@@ -116,15 +129,19 @@ export const Example: ChartsStory = (_, { title, description }) => {
         icon: getIcon('sortDown'),
         value: 41.12,
         valueFormatter: (d) => `${d} Mb/s`,
-        ...(useProgressBar && {
-          domainMax: 100,
-          progressBarDirection,
-          extra: (
-            <span>
-              max <b>100Mb/s</b>
-            </span>
-          ),
-        }),
+        ...(useProgressBar
+          ? {
+              domainMax: 100,
+              progressBarDirection,
+              progressBarFill,
+              progressBarSize: progressBarSizeOverride,
+              extra: (
+                <span>
+                  max <b>100Mb/s</b>
+                </span>
+              ),
+            }
+          : {}),
       },
       {
         color: '#6DCCB1',
@@ -167,7 +184,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           'The trend shows the daily Cloud revenue in the last quarter, showing peaks during weekends.',
       },
     ],
-    [maxDataPoints, useProgressBar, progressBarDirection],
+    [maxDataPoints, progressBarFill, progressBarDirection, progressBarSizeOverride, useProgressBar],
   );
 
   const nColumns = number('number of columns', 4, { min: 1, max: data.length, step: 1 });

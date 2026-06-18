@@ -14,6 +14,11 @@ expect.extend(pwExpect.matchers);
 
 const isCI = process.env.CI === 'true';
 
+// On sharded CI runs each shard emits a `blob` report that is later merged into a
+// single HTML report via `playwright merge-reports`. Locally we keep the directly
+// viewable `html` report.
+const useBlobReport = process.env.PLAYWRIGHT_BLOB_REPORT === 'true';
+
 const config: PlaywrightTestConfig = {
   use: {
     headless: true,
@@ -29,7 +34,7 @@ const config: PlaywrightTestConfig = {
   },
   reporter: [
     ['list'],
-    ['html', { open: 'never', outputFolder: 'reports/html' }],
+    useBlobReport ? ['blob', { outputDir: 'reports/blob' }] : ['html', { open: 'never', outputFolder: 'reports/html' }],
     ['json', { outputFile: 'reports/json/report.json' }],
   ],
   expect: {
