@@ -166,6 +166,10 @@ test.describe('Axis stories', () => {
   test.describe('Overflow tick labels', () => {
     const story = 'http://localhost:9001/?path=/story/axes--overflow-tick-labels';
 
+    test('should handle overflow tick label with a single bar', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(`${story}&knob-Number of bars_Chart config=1`);
+    });
+
     test('should wrap long tick labels across multiple lines', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(`${story}&knob-wrapLines_Axis X=3&knob-truncate_Axis X=end`);
     });

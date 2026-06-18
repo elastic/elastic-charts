@@ -11,6 +11,8 @@ import type { TickLabelBox } from './ticks/labels';
 import { getMaxLabelDimensions } from './ticks/labels';
 import type { AxisTick } from './ticks/types';
 import type { Pixels } from '../../../common/geometry';
+import type { ScaleBand, ScaleContinuous } from '../../../scales';
+import { isBandScale } from '../../../scales/types';
 import type { SmallMultiplesSpec } from '../../../specs';
 import { getPercentageValue, Position } from '../../../utils/common';
 import { innerPad, outerPad, type PerSideDistance } from '../../../utils/dimensions';
@@ -110,13 +112,14 @@ export const getAxesDimensions = (
     style: AxisStyle;
     ticks: AxisTick['layout'][];
     layout: AxisLayoutContext;
+    scale?: ScaleBand | ScaleContinuous;
     isHidden?: boolean;
   }>,
 ): PerSideDistance & { margin: { left: number } } => {
   const { chartMargins } = theme;
 
   const sizes = axes.reduce(
-    (acc, { spec, style, ticks, layout, isHidden }) => {
+    (acc, { spec, style, ticks, layout, scale, isHidden }) => {
       if (isHidden) return acc;
       const isVertical = isVerticalAxis(spec.position);
       const extent = measureAxisBand(spec, style, ticks, layout);
@@ -146,16 +149,24 @@ export const getAxesDimensions = (
             getHorizontalAlign(spec.position, style.tickLabel.rotation, style.tickLabel.alignment.horizontal),
           );
 
+      let axisPadding = 0;
+
+      if (scale && isBandScale(scale)) {
+        axisPadding = scale.outerPadding * scale.step + scale.bandwidth / 2;
+      }
       // Overflow accounts for the first/last tick label spilling along the axis direction (orthogonal to
       // the extent we just added). When multiple axes share an overflow side, the larger contribution wins.
-
       if (isVertical) {
-        acc.overflow.top = Math.max(acc.overflow.top, (ticks.at(0)?.bboxHeight ?? 0) * leadingFraction);
-        acc.overflow.bottom = Math.max(acc.overflow.bottom, (ticks.at(-1)?.bboxHeight ?? 0) * (1 - leadingFraction));
+        const top = Math.max(0, (ticks.at(0)?.bboxHeight ?? 0) * leadingFraction - axisPadding);
+        const bottom = Math.max(0, (ticks.at(-1)?.bboxHeight ?? 0) * (1 - leadingFraction) - axisPadding);
+        acc.overflow.top = Math.max(acc.overflow.top, top);
+        acc.overflow.bottom = Math.max(acc.overflow.bottom, bottom);
         // Multilayer time axes are skipped, labels are anchored at start and drops end labels that don't fit.
       } else if (!layout.multilayerTimeAxis) {
-        acc.overflow.left = Math.max(acc.overflow.left, (ticks.at(0)?.bboxWidth ?? 0) * leadingFraction);
-        acc.overflow.right = Math.max(acc.overflow.right, (ticks.at(-1)?.bboxWidth ?? 0) * (1 - leadingFraction));
+        const left = Math.max(0, (ticks.at(0)?.bboxWidth ?? 0) * leadingFraction - axisPadding);
+        const right = Math.max(0, (ticks.at(-1)?.bboxWidth ?? 0) * (1 - leadingFraction) - axisPadding);
+        acc.overflow.left = Math.max(acc.overflow.left, left);
+        acc.overflow.right = Math.max(acc.overflow.right, right);
       }
 
       return acc;

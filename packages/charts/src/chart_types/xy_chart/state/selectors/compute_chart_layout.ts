@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { AxesTicksDimensions, JoinedAxisData } from './compute_baseline_axes';
+import type { AxesTicksDimensions, AxisTicksDimension, JoinedAxisData } from './compute_baseline_axes';
 import { computeBaselineAxisTicksDimensionsSelector, getJoinedVisibleAxesData } from './compute_baseline_axes';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
@@ -38,17 +38,6 @@ import type { SeriesDomainsAndData } from '../utils/types';
 
 const MAX_ITERATIONS = 5;
 const LAYOUT_EPSILON_PX = 0.5;
-
-const projectionToTickDimensions = (projections: Map<AxisId, Projection>): AxesTicksDimensions => {
-  const tickDimensions = new Map();
-  projections.forEach(({ ticks }, id) => {
-    tickDimensions.set(
-      id,
-      ticks.map((tick) => tick.layout),
-    );
-  });
-  return tickDimensions;
-};
 
 const projectTicks = (
   { settings, scales, axes, sm, bars }: LayoutParameters,
@@ -127,16 +116,20 @@ function computeChartLayout(params: LayoutParameters): {
 } {
   const { container, theme, axes: axesConfig, bootstrap } = params;
   return withTextMeasure((textMeasure) => {
-    const measureMargins = (tickDimensions: AxesTicksDimensions) => {
+    const measureMargins = (measures: Map<AxisId, Projection | AxisTicksDimension>) => {
       const axes = axesConfig.specs.flatMap((spec) => {
         const joined = axesConfig.data.get(spec.id);
         if (!joined) return [];
+        const measure = measures.get(spec.id);
+        const layouts =
+          measure && 'ticks' in measure ? measure.ticks.map((tick) => tick.layout) : measure?.layouts ?? [];
         return [
           {
             spec,
             style: joined.axesStyle,
-            ticks: tickDimensions.get(spec.id) ?? [],
+            ticks: layouts,
             layout: joined.layout,
+            scale: measure?.scale ?? joined.scale,
             isHidden: spec.hide,
           },
         ];
@@ -151,10 +144,10 @@ function computeChartLayout(params: LayoutParameters): {
     );
 
     for (let i = 0; i < MAX_ITERATIONS; i++) {
-      const margins = measureMargins(projectionToTickDimensions(projections));
+      const margins = measureMargins(projections);
       const chartArea = computeChartArea(container, margins, theme);
       const nextProjections = projectTicks(params, chartArea.chartDimensions, textMeasure);
-      const nextMargins = measureMargins(projectionToTickDimensions(nextProjections));
+      const nextMargins = measureMargins(nextProjections);
 
       if (isLayoutStable(margins, nextMargins)) {
         return {
@@ -167,10 +160,11 @@ function computeChartLayout(params: LayoutParameters): {
       projections = nextProjections;
     }
 
-    const finalMargins = measureMargins(projectionToTickDimensions(projections));
+    const finalMargins = measureMargins(projections);
+    const finalChartArea = computeChartArea(container, finalMargins, theme);
     return {
-      dimensions: computeChartArea(container, finalMargins, theme),
-      ticks: projections,
+      dimensions: finalChartArea,
+      ticks: projectTicks(params, finalChartArea.chartDimensions, textMeasure),
       meta: { iterations: MAX_ITERATIONS },
     };
   });

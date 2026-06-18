@@ -9,7 +9,8 @@
 import type { TickLabelLayout } from './labels';
 import {
   createTickLabelLayout,
-  getMaxLabelDimensions,
+  getTickLabelExtent,
+  MIN_LABEL_GAP,
   resolveTickLabelConstraints,
   shouldAllowWordWrap,
   withoutTickLabel,
@@ -107,6 +108,7 @@ export function getVisibleTicks(
   detailedLayer: number,
   ticks: (number | string)[],
   adaptiveTickCount: boolean,
+  labelRotation: number,
   multilayerTimeAxis: boolean = false,
   showGrid = true,
 ): AxisTick[] {
@@ -176,15 +178,13 @@ export function getVisibleTicks(
   const bypassOverlapCheck = showOverlappingLabels || multilayerTimeAxis;
   if (bypassOverlapCheck) return allTicks;
 
-  const maxLabelBox = getMaxLabelDimensions(allTicks.map((tick) => tick.layout));
-  const requiredSpace = isVerticalAxis(position) ? maxLabelBox.bboxHeight / 2 : maxLabelBox.bboxWidth / 2;
-
   return allTicks
     .slice()
     .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
     .reduce(
       (prev, tick) => {
-        const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
+        const requiredSpace = getTickLabelExtent(tick.layout, position, labelRotation);
+        const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace + MIN_LABEL_GAP;
         if (tickLabelFits || showOverlappingTicks) {
           prev.visibleTicks.push(tickLabelFits ? tick : withoutTickLabel(tick));
           if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
@@ -209,6 +209,7 @@ function getVisibleTickSet(
   detailedLayer: number,
   ticks: (number | string)[],
   adaptiveTickCount: boolean,
+  labelRotation: number,
   multilayerTimeAxis = false,
   showGrid = true,
 ): AxisTick[] {
@@ -228,6 +229,7 @@ function getVisibleTickSet(
     detailedLayer,
     ticks,
     adaptiveTickCount,
+    labelRotation,
     multilayerTimeAxis,
     showGrid,
   );
@@ -297,6 +299,7 @@ export function computeVisibleTickSets(
             detailedLayer,
             ticks,
             adaptiveTickCount,
+            axesStyle.tickLabel.rotation,
             layout.multilayerTimeAxis,
             showGrid,
           ),

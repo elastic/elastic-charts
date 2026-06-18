@@ -34,7 +34,13 @@ import { defaultTickFormatter, getScaleForAxisSpec, isMultilayerTimeAxis, isXDom
 import type { AxisSpec, TickFormatter } from '../../utils/specs';
 
 /** @internal */
-export type AxesTicksDimensions = Map<AxisId, AxisTick['layout'][]>;
+export type AxisTicksDimension = {
+  layouts: AxisTick['layout'][];
+  scale: ScaleBand | ScaleContinuous;
+};
+
+/** @internal */
+export type AxesTicksDimensions = Map<AxisId, AxisTicksDimension>;
 
 const getScaleFunction = createCustomCachedSelector(
   [
@@ -150,7 +156,7 @@ export const computeBaselineAxisTicksDimensionsSelector = createCustomCachedSele
           );
           const tickDimensions = scale.ticks().map((tick) => layoutTickLabel(labelFormatter(tick)));
 
-          axesTicksDimensions.set(id, tickDimensions);
+          axesTicksDimensions.set(id, { layouts: tickDimensions, scale });
           return axesTicksDimensions;
         },
         new Map(),

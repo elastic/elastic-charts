@@ -12,7 +12,7 @@ import type { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { degToRad, getPercentageValue } from '../../../../utils/common';
+import { degToRad, getPercentageValue, type Position } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
 import { wrapText, type WrapTextLines } from '../../../../utils/text/wrap';
 import type { AxisStyle } from '../../../../utils/themes/theme';
@@ -31,6 +31,31 @@ export function computeRotatedLabelDimensions(unrotatedDims: Size, degreesRotati
   const rotatedHeight = Math.abs(width * Math.sin(radians)) + Math.abs(height * Math.cos(radians));
   const rotatedWidth = Math.abs(width * Math.cos(radians)) + Math.abs(height * Math.sin(radians));
   return { width: rotatedWidth, height: rotatedHeight };
+}
+
+/**
+ * Half-extent of a tick label along the band axis for overlap checks.
+ * Uses the axis-aligned bbox at 0°/±90°; at oblique angles uses line thickness
+ * (or label length when text runs mostly along the band) instead of the full bbox.
+ * @internal
+ */
+export function getTickLabelExtent(tick: TickLabelBox, position: Position, rotationDeg: number): number {
+  const { bboxHeight, bboxWidth, height, width } = tick;
+  const vertical = isVerticalAxis(position);
+  const halfExtent = (vertical ? bboxHeight : bboxWidth) / 2;
+
+  const angle = Math.abs(rotationDeg % 180);
+  if (angle % 90 === 0) {
+    return halfExtent;
+  }
+
+  const cross = vertical ? height : width;
+  const along = vertical ? width : height;
+
+  const cos = Math.abs(Math.cos(degToRad(rotationDeg)));
+  const sin = Math.abs(Math.sin(degToRad(rotationDeg)));
+
+  return cos >= sin ? cross / (2 * cos) : along / (2 * sin);
 }
 
 /** @internal */
@@ -101,10 +126,8 @@ export const resolveTickLabelConstraints = ({
   } else if (isContinuousScale(scale) && scale.bandwidth > 0) {
     maxLineLength = Math.max(MIN_LABEL_LENGTH, maxLineLength ?? band.maxExtent);
   } else {
-    const categorySlotWidth = isBandScale(scale)
-      ? scale.bandwidth
-      : scale.bandwidth * Math.max(scale.totalBarsInCluster ?? 1, 1);
-    const bandwidthCap = categorySlotWidth > 0 ? categorySlotWidth * (1 + scale.barsPadding) : band.maxExtent;
+    const categorySlotWidth = isBandScale(scale) ? scale.step * (1 - scale.barsPadding / 2) : 0;
+    const bandwidthCap = categorySlotWidth > 0 ? categorySlotWidth : band.maxExtent;
     maxLineLength = Math.max(MIN_LABEL_LENGTH, maxLineLength ?? bandwidthCap);
   }
 

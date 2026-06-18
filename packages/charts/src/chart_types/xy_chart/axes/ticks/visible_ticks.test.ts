@@ -143,6 +143,7 @@ describe('getVisibleTicks', () => {
       0,
       ticks,
       false,
+      0,
     );
 
     expect(result.map((tick) => tick.label)).toEqual(['0', '25', '50', '75', '100']);
@@ -163,6 +164,7 @@ describe('getVisibleTicks', () => {
       0,
       ticks,
       false,
+      0,
     );
 
     expect(result.map((tick) => tick.label)).toEqual(['0', '25', '50', '75', '100']);
@@ -183,6 +185,7 @@ describe('getVisibleTicks', () => {
       0,
       ticks,
       false,
+      0,
     );
 
     expect(result.map((tick) => tick.label)).toEqual(['0', '50', '100']);
@@ -206,6 +209,7 @@ describe('getVisibleTicks', () => {
       0,
       ticks,
       false,
+      0,
     );
 
     expect(result.map((tick) => tick.label)).toEqual(['0', '25', '50', '75', '100']);
