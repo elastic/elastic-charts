@@ -10,13 +10,17 @@ import type { PlaywrightTestConfig } from '@playwright/test';
 
 import baseConfig from './playwright.config';
 
+const useBlobReport = process.env.PLAYWRIGHT_BLOB_REPORT === 'true';
+
 const config: PlaywrightTestConfig = {
   ...baseConfig,
   testDir: 'tests_a11y',
   testMatch: ['**/tests_a11y/**/*.test.ts'],
   reporter: [
     ['list'],
-    ['html', { open: 'never', outputFolder: 'reports/a11y-html' }],
+    useBlobReport
+      ? ['blob', { outputDir: 'reports/a11y-blob' }]
+      : ['html', { open: 'never', outputFolder: 'reports/a11y-html' }],
     ['json', { outputFile: 'reports/a11y-json/report.json' }],
   ],
   use: {
