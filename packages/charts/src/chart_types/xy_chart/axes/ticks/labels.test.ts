@@ -158,7 +158,7 @@ describe('resolveTickLabelConstraints', () => {
     expect(result.maxWrapLines).toBe(5);
   });
 
-  test('horizontal ordinal axes cap maxLineLength by step + half barsPadding', () => {
+  test('horizontal ordinal axes cap maxLineLength by bandwidth + half barsPadding', () => {
     const band = getAxisBand(Position.Bottom, style, 0, 200, 200);
     const result = resolveTickLabelConstraints({
       axisSpec: MockGlobalSpec.xAxis(),
@@ -167,7 +167,7 @@ describe('resolveTickLabelConstraints', () => {
       scale: ordinalScale,
       containerWidth: 100,
     });
-    expect(result.maxLineLength).toBe(50 + 0.2 / 2);
+    expect(result.maxLineLength).toBe(50 * (1 + 0.2));
   });
 
   test('horizontal axes clamp wrapLines to what fits in the labelBudget', () => {

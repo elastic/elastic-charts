@@ -102,11 +102,10 @@ export const resolveTickLabelConstraints = ({
     maxLineLength = Math.max(MIN_LABEL_LENGTH, Math.min(maxLineLength ?? band.maxExtent));
   } else {
     const categorySlotWidth = isBandScale(scale)
-      ? scale.step
+      ? scale.bandwidth
       : scale.bandwidth * Math.max(scale.totalBarsInCluster ?? 1, 1);
-    const bandwidthCap = categorySlotWidth > 0 ? categorySlotWidth + scale.barsPadding / 2 : band.maxExtent;
-    const limit = maxLineLength ?? bandwidthCap;
-    maxLineLength = Math.max(MIN_LABEL_LENGTH, Math.min(limit, bandwidthCap));
+    const bandwidthCap = categorySlotWidth > 0 ? categorySlotWidth * (1 + scale.barsPadding) : band.maxExtent;
+    maxLineLength = Math.max(MIN_LABEL_LENGTH, maxLineLength ?? bandwidthCap);
   }
 
   const lineHeightPx = style.tickLabel.lineHeight * style.tickLabel.fontSize;
