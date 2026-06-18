@@ -7,18 +7,15 @@
  */
 
 import {
-  measureAxisBand,
   getAxesDimensions,
   getAxisBand,
   getTitleDimension,
+  measureAxisBand,
   measureAxisFixedBand,
-  resolveTickLabelConstraints,
   type AxisLayoutContext,
 } from './dimensions';
 import type { TickLabelBox } from './ticks/labels';
 import { MockGlobalSpec } from '../../../mocks/specs/specs';
-import type { ScaleBand, ScaleContinuous } from '../../../scales';
-import { ScaleType } from '../../../scales/constants';
 import { mergePartial, Position } from '../../../utils/common';
 import { innerPad, outerPad } from '../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
@@ -74,11 +71,6 @@ describe('measureAxisFixedBand', () => {
     );
   });
 
-  test('omits tickLabel padding when tickLabel is not visible', () => {
-    const hidden = mergePartial(AXIS_STYLE, { tickLabel: { visible: false } });
-    expect(measureAxisFixedBand({ title: 'Y', hide: false }, hidden)).toBe(expectedTitleBand);
-  });
-
   test('adds tick line size + padding only when ticks are shown', () => {
     const tickLineSize = 5;
     const tickLinePadding = 3;
@@ -119,63 +111,6 @@ describe('getAxisBand', () => {
       100,
     );
     expect(band).toMatchObject({ maxExtent: 80, minExtent: 20, labelBudget: 50 });
-  });
-});
-
-describe('resolveTickLabelConstraints', () => {
-  const ordinalScale = { type: ScaleType.Ordinal, step: 50, bandwidth: 50, barsPadding: 0.2 } as unknown as ScaleBand;
-  const continuousScale = { type: ScaleType.Linear, bandwidth: 0, barsPadding: 0 } as unknown as ScaleContinuous;
-  const style = mergePartial(LIGHT_THEME.axes, { tickLabel: { fontSize: 10, lineHeight: 1, wrapLines: 5 } });
-
-  test('vertical axes cap maxLineLength by labelBudget; wrapLines unchanged', () => {
-    const band = getAxisBand(Position.Left, style, 0, 100, 200);
-    const result = resolveTickLabelConstraints({
-      axisSpec: MockGlobalSpec.yAxis(),
-      style,
-      band,
-      scale: continuousScale,
-      containerWidth: 100,
-    });
-    expect(result.maxLineLength).toBe(100);
-    expect(result.maxWrapLines).toBe(5);
-  });
-
-  test('horizontal ordinal axes cap maxLineLength by bandwidth + half barsPadding', () => {
-    const band = getAxisBand(Position.Bottom, style, 0, 200, 200);
-    const result = resolveTickLabelConstraints({
-      axisSpec: MockGlobalSpec.xAxis(),
-      style,
-      band,
-      scale: ordinalScale,
-      containerWidth: 100,
-    });
-    expect(result.maxLineLength).toBe(50 + 0.2 / 2);
-  });
-
-  test('horizontal axes clamp wrapLines to what fits in the labelBudget', () => {
-    const band = getAxisBand(Position.Bottom, style, 0, 200, 40);
-    const result = resolveTickLabelConstraints({
-      axisSpec: MockGlobalSpec.xAxis(),
-      style,
-      band,
-      scale: continuousScale,
-      containerWidth: 100,
-    });
-    expect(result.maxWrapLines).toBe(4);
-  });
-
-  test('multilayer time axes cap maxLineLength by labelBudget, not single-bar bandwidth', () => {
-    const histogramScale = { type: ScaleType.Time, bandwidth: 12, barsPadding: 0.2 } as unknown as ScaleContinuous;
-    const band = getAxisBand(Position.Bottom, style, 0, 200, 200);
-    const result = resolveTickLabelConstraints({
-      axisSpec: MockGlobalSpec.xAxis(),
-      style,
-      band,
-      scale: histogramScale,
-      containerWidth: 200,
-      multilayerTimeAxis: true,
-    });
-    expect(result.maxLineLength).toBe(200);
   });
 });
 
@@ -242,6 +177,39 @@ describe('getAxesDimensions', () => {
     ]);
     expect(result.left).toBe(3 + 40);
     expect(result.right).toBe(4 + 40);
+  });
+
+  test('left-aligned labels spill the full last-label bbox into the trailing overflow only', () => {
+    const style = mergePartial(AXIS_STYLE, { tickLabel: { alignment: { horizontal: 'left' } } });
+    const ticks = [tickBox({ bboxWidth: 80, bboxHeight: 10 }), tickBox({ bboxWidth: 80, bboxHeight: 10 })];
+    const result = getAxesDimensions(theme, [
+      { spec: xAxis, style, ticks, layout: layoutFor(style, Position.Bottom, 5) },
+    ]);
+    // leadingFraction=0 → no left overflow, full bbox on the right
+    expect(result.left).toBe(3);
+    expect(result.right).toBe(4 + 80);
+  });
+
+  test('right-aligned labels spill the full first-label bbox into the leading overflow only', () => {
+    const style = mergePartial(AXIS_STYLE, { tickLabel: { alignment: { horizontal: 'right' } } });
+    const ticks = [tickBox({ bboxWidth: 80, bboxHeight: 10 }), tickBox({ bboxWidth: 80, bboxHeight: 10 })];
+    const result = getAxesDimensions(theme, [
+      { spec: xAxis, style, ticks, layout: layoutFor(style, Position.Bottom, 5) },
+    ]);
+    // leadingFraction=1 → full bbox on the left, no right overflow
+    expect(result.left).toBe(3 + 80);
+    expect(result.right).toBe(4);
+  });
+
+  test('rotation shifts the spill to the resolved near corner', () => {
+    // near alignment + negative rotation on a bottom axis resolves to the Right corner (leadingFraction=1)
+    const style = mergePartial(AXIS_STYLE, { tickLabel: { rotation: -45, alignment: { horizontal: 'near' } } });
+    const ticks = [tickBox({ bboxWidth: 80, bboxHeight: 10 }), tickBox({ bboxWidth: 80, bboxHeight: 10 })];
+    const result = getAxesDimensions(theme, [
+      { spec: xAxis, style, ticks, layout: layoutFor(style, Position.Bottom, 5) },
+    ]);
+    expect(result.left).toBe(3 + 80);
+    expect(result.right).toBe(4);
   });
 
   test('returns chartMargins on each side when no axes are provided', () => {

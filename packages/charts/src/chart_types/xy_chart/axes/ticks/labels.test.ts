@@ -10,13 +10,17 @@ import {
   computeRotatedLabelDimensions,
   createTickLabelLayout,
   getMaxLabelDimensions,
+  resolveTickLabelConstraints,
   type TickLabelBox,
 } from './labels';
 import { MockGlobalSpec } from '../../../../mocks/specs';
+import type { ScaleBand, ScaleContinuous } from '../../../../scales';
+import { ScaleType } from '../../../../scales/constants';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { mergePartial } from '../../../../utils/common';
+import { mergePartial, Position } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { AxisStyle } from '../../../../utils/themes/theme';
+import { getAxisBand } from '../dimensions';
 
 const monospaceMeasure: TextMeasure = (text, _font, fontSize) => ({
   width: text.length,
@@ -133,5 +137,62 @@ describe('getMaxLabelDimensions', () => {
       box({ width: 5, height: 20, bboxWidth: 5, bboxHeight: 20 }),
     ]);
     expect(result).toMatchObject({ width: 10, height: 20, bboxWidth: 10, bboxHeight: 20 });
+  });
+});
+
+describe('resolveTickLabelConstraints', () => {
+  const ordinalScale = { type: ScaleType.Ordinal, step: 50, bandwidth: 50, barsPadding: 0.2 } as unknown as ScaleBand;
+  const continuousScale = { type: ScaleType.Linear, bandwidth: 0, barsPadding: 0 } as unknown as ScaleContinuous;
+  const style = mergePartial(LIGHT_THEME.axes, { tickLabel: { fontSize: 10, lineHeight: 1, wrapLines: 5 } });
+
+  test('vertical axes cap maxLineLength by labelBudget; wrapLines unchanged', () => {
+    const band = getAxisBand(Position.Left, style, 0, 100, 200);
+    const result = resolveTickLabelConstraints({
+      axisSpec: MockGlobalSpec.yAxis(),
+      style,
+      band,
+      scale: continuousScale,
+      containerWidth: 100,
+    });
+    expect(result.maxLineLength).toBe(100);
+    expect(result.maxWrapLines).toBe(5);
+  });
+
+  test('horizontal ordinal axes cap maxLineLength by step + half barsPadding', () => {
+    const band = getAxisBand(Position.Bottom, style, 0, 200, 200);
+    const result = resolveTickLabelConstraints({
+      axisSpec: MockGlobalSpec.xAxis(),
+      style,
+      band,
+      scale: ordinalScale,
+      containerWidth: 100,
+    });
+    expect(result.maxLineLength).toBe(50 + 0.2 / 2);
+  });
+
+  test('horizontal axes clamp wrapLines to what fits in the labelBudget', () => {
+    const band = getAxisBand(Position.Bottom, style, 0, 200, 40);
+    const result = resolveTickLabelConstraints({
+      axisSpec: MockGlobalSpec.xAxis(),
+      style,
+      band,
+      scale: continuousScale,
+      containerWidth: 100,
+    });
+    expect(result.maxWrapLines).toBe(4);
+  });
+
+  test('multilayer time axes cap maxLineLength by labelBudget, not single-bar bandwidth', () => {
+    const histogramScale = { type: ScaleType.Time, bandwidth: 12, barsPadding: 0.2 } as unknown as ScaleContinuous;
+    const band = getAxisBand(Position.Bottom, style, 0, 200, 200);
+    const result = resolveTickLabelConstraints({
+      axisSpec: MockGlobalSpec.xAxis(),
+      style,
+      band,
+      scale: histogramScale,
+      containerWidth: 200,
+      multilayerTimeAxis: true,
+    });
+    expect(result.maxLineLength).toBe(200);
   });
 });

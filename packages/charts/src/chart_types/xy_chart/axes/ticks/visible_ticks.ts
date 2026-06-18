@@ -7,7 +7,13 @@
  */
 
 import type { TickLabelLayout } from './labels';
-import { createTickLabelLayout, getMaxLabelDimensions, shouldAllowWordWrap, withoutTickLabel } from './labels';
+import {
+  createTickLabelLayout,
+  getMaxLabelDimensions,
+  resolveTickLabelConstraints,
+  shouldAllowWordWrap,
+  withoutTickLabel,
+} from './labels';
 import type { AxisTick, GetMeasuredTicks, Projection, Projections, TextDirection } from './types';
 import type { SmallMultipleScales } from '../../../../common/panel_utils';
 import { getPanelSize } from '../../../../common/panel_utils';
@@ -27,7 +33,6 @@ import type { ScaleConfigs } from '../../state/selectors/get_api_scale_configs';
 import type { SeriesDomainsAndData } from '../../state/utils/types';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { computeXScale } from '../../utils/scales';
-import { resolveTickLabelConstraints } from '../dimensions';
 import { multilayerAxisEntry } from '../timeslip/multilayer_ticks';
 
 const USE_ADAPTIVE_TICK_COUNT = true;

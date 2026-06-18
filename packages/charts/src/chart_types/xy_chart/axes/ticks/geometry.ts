@@ -58,7 +58,8 @@ function getUserTextOffsets(axisLabelBox: TickLabelBox, tickLabelBox: TickLabelB
       };
 }
 
-function getHorizontalAlign(
+/** @internal */
+export function getHorizontalAlign(
   position: Position,
   rotation: number,
   alignment: HorizontalAlignment,
@@ -99,7 +100,12 @@ function getHorizontalAlign(
   }
 }
 
-function getVerticalAlign(position: Position, rotation: number, alignment: VerticalAlignment): ResolvedVerticalAlign {
+/** @internal */
+export function getVerticalAlign(
+  position: Position,
+  rotation: number,
+  alignment: VerticalAlignment,
+): ResolvedVerticalAlign {
   if (
     alignment === VerticalAlignment.Middle ||
     alignment === VerticalAlignment.Top ||
@@ -137,6 +143,14 @@ function getVerticalAlign(position: Position, rotation: number, alignment: Verti
 }
 
 /** @internal */
+export const horizontalAlignFraction = (alignment: ResolvedHorizontalAlign): number =>
+  alignment === HorizontalAlignment.Left ? 0 : alignment === HorizontalAlignment.Right ? 1 : 0.5;
+
+/** @internal */
+export const verticalAlignFraction = (alignment: ResolvedVerticalAlign): number =>
+  alignment === VerticalAlignment.Top ? 0 : alignment === VerticalAlignment.Bottom ? 1 : 0.5;
+
+/** @internal */
 export function rotateVector({ x, y }: Point, rotation: number): Point {
   if (rotation === 0) return { x, y };
   const radians = degToRad(rotation);
@@ -155,10 +169,8 @@ function getAnchor(
   labelBox: TickLabelBox,
   maxLabelBox: TickLabelBox,
 ): Point {
-  const horizontal =
-    horizontalAlignment === HorizontalAlignment.Left ? 0 : horizontalAlignment === HorizontalAlignment.Right ? 1 : 0.5;
-  const vertical =
-    verticalAlignment === VerticalAlignment.Top ? 0 : verticalAlignment === VerticalAlignment.Bottom ? 1 : 0.5;
+  const horizontal = horizontalAlignFraction(horizontalAlignment);
+  const vertical = verticalAlignFraction(verticalAlignment);
 
   if (isHorizontalAxis(axisPosition)) {
     const x = position + (0.5 - horizontal) * labelBox.bboxWidth;

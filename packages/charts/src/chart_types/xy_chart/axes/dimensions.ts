@@ -6,12 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { getHorizontalAlign, getVerticalAlign, horizontalAlignFraction, verticalAlignFraction } from './ticks/geometry';
 import type { TickLabelBox } from './ticks/labels';
-import { getMaxLabelDimensions, MIN_LABEL_LENGTH } from './ticks/labels';
+import { getMaxLabelDimensions } from './ticks/labels';
 import type { AxisTick } from './ticks/types';
 import type { Pixels } from '../../../common/geometry';
-import type { ScaleBand, ScaleContinuous } from '../../../scales';
-import { isBandScale, isContinuousScale } from '../../../scales/types';
 import type { SmallMultiplesSpec } from '../../../specs';
 import { getPercentageValue, Position } from '../../../utils/common';
 import { innerPad, outerPad, type PerSideDistance } from '../../../utils/dimensions';
@@ -78,66 +77,8 @@ export const getAxisBand = (
   return { maxExtent, minExtent, labelBudget, fixed, container };
 };
 
-type AxisBand = ReturnType<typeof getAxisBand>;
-
-/**
- * Resolve `tickLabel.limit`, `tickLabel.wrapLines` and `maxExtent` into the
- * effective maximum line width and number of wrap lines that should be passed to the wrap
- * pipeline. `maxExtent` wins over `limit` and over `wrapLines`.
- *
- * - Vertical axes (left/right): cross-axis = width.
- *   `effectiveLineLimit = min(limit ?? labelBudget, labelBudget)`.
- * - Horizontal axes (top/bottom): line width is capped by category slot width for ordinal
- *   and grouped-bar scales. Histogram continuous axes use the label budget instead.
- *   `effectiveWrapLines = min(wrapLines, floor(labelBudget / lineHeightPx))`
- *   so the total wrapped height fits inside `maxExtent`.
- * @internal
- */
-export const resolveTickLabelConstraints = ({
-  axisSpec,
-  style,
-  band,
-  scale,
-  containerWidth,
-  multilayerTimeAxis = false,
-}: {
-  axisSpec: AxisSpec;
-  style: AxisStyle;
-  band: AxisBand;
-  scale: ScaleBand | ScaleContinuous;
-  containerWidth: number;
-  multilayerTimeAxis?: boolean;
-}) => {
-  const vertical = isVerticalAxis(axisSpec.position);
-
-  const maxTickLabelLength = axisSpec.tickLabelMaxLength
-    ? getPercentageValue(axisSpec.tickLabelMaxLength, containerWidth, 0)
-    : undefined;
-
-  let maxLineLength = style.tickLabel.limit ?? maxTickLabelLength;
-
-  if (vertical || multilayerTimeAxis) {
-    maxLineLength = Math.min(maxLineLength ?? band.labelBudget, band.labelBudget, band.container);
-  } else if (isContinuousScale(scale) && scale.bandwidth > 0) {
-    maxLineLength = Math.max(MIN_LABEL_LENGTH, Math.min(maxLineLength ?? band.maxExtent, band.container));
-  } else {
-    const categorySlotWidth = isBandScale(scale)
-      ? scale.step
-      : scale.bandwidth * Math.max(scale.totalBarsInCluster ?? 1, 1);
-    const bandwidthCap = categorySlotWidth > 0 ? categorySlotWidth + scale.barsPadding / 2 : band.maxExtent;
-    const limit = maxLineLength ?? bandwidthCap;
-    maxLineLength = Math.max(MIN_LABEL_LENGTH, Math.min(limit, bandwidthCap, band.container));
-  }
-
-  const lineHeightPx = style.tickLabel.lineHeight * style.tickLabel.fontSize;
-  let maxWrapLines = style.tickLabel.wrapLines;
-  if (!vertical && lineHeightPx > 0 && band.labelBudget > 0) {
-    const maxWrapFromBudget = Math.max(1, Math.floor(band.labelBudget / lineHeightPx));
-    maxWrapLines = Math.min(style.tickLabel.wrapLines, maxWrapFromBudget);
-  }
-
-  return { maxLineLength, maxWrapLines };
-};
+/** @internal */
+export type AxisBand = ReturnType<typeof getAxisBand>;
 
 /** @internal */
 export const measureAxisBand = (
@@ -200,17 +141,26 @@ export const getAxesDimensions = (
           break;
       }
 
-      /* Overflow accounts for the first/last tick label spilling along the axis direction (orthogonal to
-      the extent we just added). When multiple axes share an overflow side, the larger contribution wins.
-      Multilayer time axes are skipped: their layer-0 labels are bin-anchored (not centered on the tick
-      position), so the "half bbox spills past the edge" assumption doesn't hold. */
-      // TODO(bia): depending on alignment/rotation, might not be just half of the bbox
+      // The spilled amount depends on how the label is anchored to the tick, the first tick spills
+      // `fraction x bbox` and the last tick spills `(1 - fraction) x bbox`
+      const leadingFraction = isVertical
+        ? verticalAlignFraction(
+            getVerticalAlign(spec.position, style.tickLabel.rotation, style.tickLabel.alignment.vertical),
+          )
+        : horizontalAlignFraction(
+            getHorizontalAlign(spec.position, style.tickLabel.rotation, style.tickLabel.alignment.horizontal),
+          );
+
+      // Overflow accounts for the first/last tick label spilling along the axis direction (orthogonal to
+      // the extent we just added). When multiple axes share an overflow side, the larger contribution wins.
+
       if (isVertical) {
-        acc.overflow.top = Math.max(acc.overflow.top, (ticks.at(0)?.bboxHeight ?? 0) / 2);
-        acc.overflow.bottom = Math.max(acc.overflow.bottom, (ticks.at(-1)?.bboxHeight ?? 0) / 2);
+        acc.overflow.top = Math.max(acc.overflow.top, (ticks.at(0)?.bboxHeight ?? 0) * leadingFraction);
+        acc.overflow.bottom = Math.max(acc.overflow.bottom, (ticks.at(-1)?.bboxHeight ?? 0) * (1 - leadingFraction));
+        // Multilayer time axes are skipped, labels are anchored at start and drops end labels that don't fit.
       } else if (!layout.multilayerTimeAxis) {
-        acc.overflow.left = Math.max(acc.overflow.left, (ticks.at(0)?.bboxWidth ?? 0) / 2);
-        acc.overflow.right = Math.max(acc.overflow.right, (ticks.at(-1)?.bboxWidth ?? 0) / 2);
+        acc.overflow.left = Math.max(acc.overflow.left, (ticks.at(0)?.bboxWidth ?? 0) * leadingFraction);
+        acc.overflow.right = Math.max(acc.overflow.right, (ticks.at(-1)?.bboxWidth ?? 0) * (1 - leadingFraction));
       }
 
       return acc;

@@ -10,14 +10,15 @@ import type { AxisTick } from './types';
 import { fitText, type Font } from '../../../../common/text_utils';
 import type { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
-import { isContinuousScale } from '../../../../scales/types';
+import { isBandScale, isContinuousScale } from '../../../../scales/types';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { degToRad } from '../../../../utils/common';
+import { degToRad, getPercentageValue } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
 import { wrapText, type WrapTextLines } from '../../../../utils/text/wrap';
 import type { AxisStyle } from '../../../../utils/themes/theme';
-import { isHorizontalAxis } from '../../utils/axis_type_utils';
+import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import type { AxisSpec } from '../../utils/specs';
+import type { AxisBand } from '../dimensions';
 
 /** @internal */
 export const shouldAllowWordWrap = (scale: ScaleBand | ScaleContinuous): boolean =>
@@ -62,6 +63,61 @@ export const withoutTickLabel = (tick: AxisTick): AxisTick => ({
     lines: Object.assign([], { meta: { truncated: false } }),
   },
 });
+
+/**
+ * Resolve `tickLabel.limit`, `tickLabel.wrapLines` and `maxExtent` into the
+ * effective maximum line width and number of wrap lines that should be passed to the wrap
+ * pipeline. `axis.maxExtent` wins over `limit` and over `wrapLines`.
+ *
+ * - Horizontal axes (top/bottom): line width is capped by category slot width for ordinal
+ *   and grouped-bar scales. Histogram continuous axes use the label budget instead.
+ * @internal
+ */
+export const resolveTickLabelConstraints = ({
+  axisSpec,
+  style,
+  band,
+  scale,
+  containerWidth,
+  multilayerTimeAxis = false,
+}: {
+  axisSpec: AxisSpec;
+  style: AxisStyle;
+  band: AxisBand;
+  scale: ScaleBand | ScaleContinuous;
+  containerWidth: number;
+  multilayerTimeAxis?: boolean;
+}) => {
+  const vertical = isVerticalAxis(axisSpec.position);
+
+  const maxTickLabelLength = axisSpec.tickLabelMaxLength
+    ? getPercentageValue(axisSpec.tickLabelMaxLength, containerWidth, 0)
+    : undefined;
+
+  let maxLineLength = style.tickLabel.limit ?? maxTickLabelLength;
+
+  if (vertical || multilayerTimeAxis) {
+    maxLineLength = Math.min(maxLineLength ?? band.labelBudget, band.labelBudget);
+  } else if (isContinuousScale(scale) && scale.bandwidth > 0) {
+    maxLineLength = Math.max(MIN_LABEL_LENGTH, Math.min(maxLineLength ?? band.maxExtent));
+  } else {
+    const categorySlotWidth = isBandScale(scale)
+      ? scale.step
+      : scale.bandwidth * Math.max(scale.totalBarsInCluster ?? 1, 1);
+    const bandwidthCap = categorySlotWidth > 0 ? categorySlotWidth + scale.barsPadding / 2 : band.maxExtent;
+    const limit = maxLineLength ?? bandwidthCap;
+    maxLineLength = Math.max(MIN_LABEL_LENGTH, Math.min(limit, bandwidthCap));
+  }
+
+  const lineHeightPx = style.tickLabel.lineHeight * style.tickLabel.fontSize;
+  let maxWrapLines = style.tickLabel.wrapLines;
+  if (!vertical && lineHeightPx > 0 && band.labelBudget > 0) {
+    const maxWrapFromBudget = Math.max(1, Math.floor(band.labelBudget / lineHeightPx));
+    maxWrapLines = Math.min(style.tickLabel.wrapLines, maxWrapFromBudget);
+  }
+
+  return { maxLineLength, maxWrapLines };
+};
 
 /** @internal */
 export const createTickLabelLayout = (
