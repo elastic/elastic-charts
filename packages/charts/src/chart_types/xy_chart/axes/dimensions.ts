@@ -46,12 +46,7 @@ export function getTitleDimension({
   return visible && fontSize > 0 ? innerPad(padding) + fontSize + outerPad(padding) : 0;
 }
 
-/** @internal */
-export const getAllAxisLayersGirth = (
-  timeAxisLayerCount: number,
-  maxLabelBoxGirth: number,
-  multilayerTimeAxis: boolean,
-) => {
+const getAllAxisLayersGirth = (timeAxisLayerCount: number, maxLabelBoxGirth: number, multilayerTimeAxis: boolean) => {
   const axisLayerCount = timeAxisLayerCount > 0 && multilayerTimeAxis ? timeAxisLayerCount : 1;
   return axisLayerCount * maxLabelBoxGirth;
 };

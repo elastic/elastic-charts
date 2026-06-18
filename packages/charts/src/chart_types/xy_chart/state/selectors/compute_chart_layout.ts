@@ -24,30 +24,20 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_multiples_spec';
 import { getSmallMultiplesScale } from '../../../../state/utils/get_small_multiples_scale';
 import { withTextMeasure, type TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import type { ChartDimensions, Dimensions, PerSideDistance } from '../../../../utils/dimensions';
+import type { ChartDimensions, Dimensions } from '../../../../utils/dimensions';
 import type { OrdinalDomain } from '../../../../utils/domain';
 import type { AxisId } from '../../../../utils/ids';
+import { Logger } from '../../../../utils/logger';
 import type { Theme } from '../../../../utils/themes/theme';
 import { getAxesDimensions } from '../../axes/dimensions';
 import type { Projection } from '../../axes/ticks/types';
 import { computeVisibleTickSets } from '../../axes/ticks/visible_ticks';
+import type { AxesPerSide } from '../../utils/dimensions';
 import { computeChartArea } from '../../utils/dimensions';
 import type { SeriesDomainsAndData } from '../utils/types';
 
 const MAX_ITERATIONS = 5;
 const LAYOUT_EPSILON_PX = 0.5;
-
-/** @internal */
-export type AxesPerSide = PerSideDistance & { margin: { left: number } };
-
-/** @internal */
-export type ChartLayout = {
-  dimensions: ChartDimensions;
-  ticks: Map<AxisId, Projection>;
-  meta: {
-    iterations: number;
-  };
-};
 
 const projectionToTickDimensions = (projections: Map<AxisId, Projection>): AxesTicksDimensions => {
   const tickDimensions = new Map();
@@ -90,8 +80,7 @@ const projectTicks = (
   );
 };
 
-/** @internal */
-export type LayoutParameters = {
+type LayoutParameters = {
   container: Dimensions;
   theme: Theme;
   settings: SettingsSpec;
@@ -129,8 +118,13 @@ const isLayoutStable = (a: AxesPerSide, b: AxesPerSide) => {
   ].every(Boolean);
 };
 
-/** @internal */
-export function computeChartLayout(params: LayoutParameters): ChartLayout {
+function computeChartLayout(params: LayoutParameters): {
+  dimensions: ChartDimensions;
+  ticks: Map<AxisId, Projection>;
+  meta: {
+    iterations: number;
+  };
+} {
   const { container, theme, axes: axesConfig, bootstrap } = params;
   return withTextMeasure((textMeasure) => {
     const measureMargins = (tickDimensions: AxesTicksDimensions) => {
@@ -169,6 +163,7 @@ export function computeChartLayout(params: LayoutParameters): ChartLayout {
           meta: { iterations: i + 1 },
         };
       }
+      Logger.warn('Layout did not converge after', i + 1, 'iterations');
       projections = nextProjections;
     }
 

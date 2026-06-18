@@ -154,8 +154,7 @@ function wrapTextLines(
   return lines;
 }
 
-/** @internal */
-export function textSegmenter(
+function textSegmenter(
   locale: string,
   granularity: Granularity,
 ): (text: string) => { segment: string; index: number; isWordLike?: boolean }[] {

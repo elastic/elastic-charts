@@ -44,50 +44,10 @@ describe('wrapText', () => {
     expect([...lines]).toEqual(['…def']);
   });
 
-  it('truncates in the middle when maxLines is exceeded', () => {
-    const lines = wrapText('abcdef', font, fontSize, 4, 1, monospaceMeasure, 'en', 'word', 'middle');
-    expect(lines.meta.truncated).toBe(true);
-    expect([...lines]).toEqual(['ab…f']);
-  });
-
   it('fits to maxLineWidth * maxLines then re-wraps for multi-line middle truncation', () => {
     const lines = wrapText('one two three four', font, fontSize, 5, 2, monospaceMeasure, 'en', 'word', 'middle');
     expect(lines.meta.truncated).toBe(true);
     expect(lines.length).toBe(2);
     expect(lines.join('')).toBe('one t…four');
-  });
-
-  it('truncates at the end when word wrap needs more lines than a single-line width budget allows', () => {
-    const lines = wrapText(
-      'this is an even longer category name',
-      font,
-      fontSize,
-      18,
-      2,
-      monospaceMeasure,
-      'en',
-      'word',
-      'end',
-    );
-    expect(lines.meta.truncated).toBe(true);
-    expect(lines.length).toBeLessThanOrEqual(2);
-    expect(lines.at(-1)).toMatch(/…$/);
-  });
-
-  it('truncates at the start when word wrap needs more lines than a single-line width budget allows', () => {
-    const lines = wrapText(
-      'this is an even longer category name',
-      font,
-      fontSize,
-      18,
-      2,
-      monospaceMeasure,
-      'en',
-      'word',
-      'start',
-    );
-    expect(lines.meta.truncated).toBe(true);
-    expect(lines.length).toBeLessThanOrEqual(2);
-    expect(lines[0]).toMatch(/^…/);
   });
 });

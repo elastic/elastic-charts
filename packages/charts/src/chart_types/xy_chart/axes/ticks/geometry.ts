@@ -21,13 +21,12 @@ import type { Point } from '../../../../utils/point';
 import type { AxisStyle, TextAlignment, TextOffset } from '../../../../utils/themes/theme';
 import { isHorizontalAxis } from '../../utils/axis_type_utils';
 
-/** @internal */
-export interface TickLabelProps {
+type TickLabelProps = {
   center: Point;
   horizontalAlign: ResolvedHorizontalAlign;
   verticalAlign: ResolvedVerticalAlign;
   textAlign: TextAlign;
-}
+};
 
 /** @internal */
 export type ResolvedHorizontalAlign = Extract<
@@ -159,6 +158,10 @@ export function rotateVector({ x, y }: Point, rotation: number): Point {
   return { x: x * cos - y * sin, y: x * sin + y * cos };
 }
 
+/**
+ * Calculates the anchor point of the tick label, i.e., the center of the label box,
+ * adjusted for the alignment and axis position.
+ */
 function getAnchor(
   position: number,
   tickSize: number,

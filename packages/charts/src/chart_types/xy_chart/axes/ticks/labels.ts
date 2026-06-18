@@ -35,8 +35,8 @@ export function computeRotatedLabelDimensions(unrotatedDims: Size, degreesRotati
 
 /** @internal */
 export const MIN_LABEL_GAP = 4;
-/** @internal */
-export const MIN_LABEL_LENGTH = 12;
+
+const MIN_LABEL_LENGTH = 12;
 
 /**
  * Max length (in characters) of a single-word label that is kept whole on one line when it
@@ -99,7 +99,7 @@ export const resolveTickLabelConstraints = ({
   if (vertical || multilayerTimeAxis) {
     maxLineLength = Math.min(maxLineLength ?? band.labelBudget, band.labelBudget);
   } else if (isContinuousScale(scale) && scale.bandwidth > 0) {
-    maxLineLength = Math.max(MIN_LABEL_LENGTH, Math.min(maxLineLength ?? band.maxExtent));
+    maxLineLength = Math.max(MIN_LABEL_LENGTH, maxLineLength ?? band.maxExtent);
   } else {
     const categorySlotWidth = isBandScale(scale)
       ? scale.bandwidth

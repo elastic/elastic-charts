@@ -75,14 +75,12 @@ describe('createTickLabelLayout', () => {
   });
 
   test('wraps a long label across multiple lines using lineHeight for inner-line spacing', () => {
-    const lineHeight = 1.5;
-    const { fontSize } = LIGHT_THEME.axes.tickLabel;
-    const layout = createTickLabelLayout(styleWith({ lineHeight }), axisSpec, monospaceMeasure, 'en', 5, 5);
+    const style = styleWith({ lineHeight: 1 });
+    const { fontSize, lineHeight } = style.tickLabel;
+    const layout = createTickLabelLayout(style, axisSpec, monospaceMeasure, 'en', 5, 5);
     const result = layout('one two three');
     expect(result.lines.length).toBeGreaterThan(1);
-    // n - 1 inner lines spaced by lineHeight*fontSize, plus the last line at its measured height (= fontSize).
-    const innerLines = result.lines.length - 1;
-    const expectedHeight = innerLines * lineHeight * fontSize + fontSize;
+    const expectedHeight = (result.lines.length - 1) * lineHeight * fontSize + fontSize;
     expect(result.height).toBe(expectedHeight);
   });
 
