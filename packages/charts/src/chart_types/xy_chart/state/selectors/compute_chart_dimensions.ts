@@ -6,28 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
-import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
-import { getAxesStylesSelector } from './get_axis_styles';
-import { getAxisSpecsSelector } from './get_specs';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
-import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_multiples_spec';
-import { computeChartDimensions } from '../../utils/dimensions';
 
 /** @internal */
 export const computeChartDimensionsSelector = createCustomCachedSelector(
-  [
-    getChartContainerDimensionsSelector,
-    getChartThemeSelector,
-    computeAxisTicksDimensionsSelector,
-    getAxesStylesSelector,
-    getAxisSpecsSelector,
-    getSmallMultiplesSpec,
-    getScaleConfigsFromSpecsSelector,
-    getSettingsSpecSelector,
-  ],
-  computeChartDimensions,
+  [computeChartLayoutSelector],
+  (layout) => layout.dimensions,
 );

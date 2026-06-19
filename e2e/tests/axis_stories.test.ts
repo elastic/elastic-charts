@@ -163,6 +163,58 @@ test.describe('Axis stories', () => {
     (r) => `should render correctly rotated ticks - ${r}`,
   );
 
+  test.describe('Overflow tick labels', () => {
+    const story = 'http://localhost:9001/?path=/story/axes--overflow-tick-labels';
+
+    test('should handle overflow tick label with a single bar', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(`${story}&knob-Number of bars_Chart config=1`);
+    });
+
+    test('should wrap long tick labels across multiple lines', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(`${story}&knob-wrapLines_Axis X=3&knob-truncate_Axis X=end`);
+    });
+
+    test('should truncate tick labels at the end', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(`${story}&knob-wrapLines_Axis X=1&knob-truncate_Axis X=end`);
+    });
+
+    test('should truncate tick labels at the start', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `${story}&knob-wrapLines_Axis X=1&knob-truncate_Axis X=start`,
+      );
+    });
+
+    test('should truncate tick labels in the middle', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `${story}&knob-wrapLines_Axis X=1&knob-truncate_Axis X=middle`,
+      );
+    });
+
+    test('should truncate tick labels with a custom limit', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `${story}&knob-wrapLines_Axis X=1&knob-truncate_Axis X=end&knob-Tick label limit_Axis X=50`,
+      );
+    });
+
+    test('should wrap and truncate rotated tick labels', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `${story}&knob-rotation_Axis X=45&knob-wrapLines_Axis X=2&knob-truncate_Axis X=end`,
+      );
+    });
+
+    test('should constrain tick labels with maxExtent', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `${story}&knob-maxExtent_Axis X=40&knob-wrapLines_Axis X=1&knob-truncate_Axis X=end`,
+      );
+    });
+
+    test('should overflow tick labels with 90 deg chart rotation', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `${story}&knob-Chart rotation_Chart config=90&knob-maxExtent_Axis Y=200`,
+      );
+    });
+  });
+
   test.describe('Small multiples', () => {
     const allPositions = [Position.Top, Position.Right, Position.Bottom, Position.Left];
     const showAllParams = allPositions.map((p) => `knob-Hide_${p}=false`).join('&');

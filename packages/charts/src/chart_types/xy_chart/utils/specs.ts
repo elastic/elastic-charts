@@ -32,6 +32,7 @@ import type {
   RectAnnotationStyle,
   BubbleSeriesStyle,
   AxisStyle,
+  Truncate,
 } from '../../../utils/themes/theme';
 import type { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 import type {
@@ -704,9 +705,6 @@ export const HistogramModeAlignments = Object.freeze({
 /** @public */
 export type HistogramModeAlignment = 'start' | 'center' | 'end';
 
-/** @public */
-export type Truncate = 'start' | 'middle' | 'end';
-
 /**
  * This spec describe the configuration for a chart axis.
  * @public
@@ -745,12 +743,13 @@ export interface AxisSpec extends Spec {
    */
   labelFormat?: TickFormatter;
   /**
+   * @deprecated use `style.tickLabel.truncate` instead.
    * The position of the ellipsis when the tick label overflows. Defaults to 'end'.
    */
   tickLabelTruncate?: Truncate;
   /**
-   * The maximum size of the tick label.
-   * If a number, it is in pixels. If a string, it is relative to the container width, e.g. '20%'.
+   * @deprecated use `style.tickLabel.limit` instead.
+   * The maximum size of the tick label. If a number, it is in pixels. If a string, it is relative to the container width, e.g. '20%'.
    */
   tickLabelMaxLength?: Pixels | string;
   /** An approximate count of how many ticks will be generated */

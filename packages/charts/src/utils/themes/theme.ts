@@ -160,6 +160,9 @@ export interface Opacity {
 }
 
 /** @public */
+export type Truncate = 'start' | 'end' | 'middle';
+
+/** @public */
 export interface AxisStyle {
   axisTitle: TextStyle & Visible;
   axisPanelTitle: TextStyle & Visible;
@@ -175,8 +178,20 @@ export interface AxisStyle {
        */
       offset: TextOffset;
       alignment: TextAlignment;
+      /** Max number of lines for wrapped tick labels. Set to 1 to disable wrapping. */
+      wrapLines: number;
+      /** Line height multiplier applied to `fontSize` for wrapped tick labels. */
+      lineHeight: number;
+      /** Max length of the tick label in pixels. */
+      limit?: Pixels;
+      /** Where the tick label is truncated when it exceeds the limit. Defaults to 'end'. */
+      truncate?: Truncate;
     };
   tickLine: TickStyle;
+  /** Min extent (cross-axis) of the axis in pixels or relative to the container size in the cross-axis direction, e.g. '20%'. */
+  minExtent?: Pixels | string;
+  /** Max extent (cross-axis) of the axis in pixels or relative to the container size in the cross-axis direction, e.g. '20%'. */
+  maxExtent?: Pixels | string;
   gridLine: {
     horizontal: GridLineStyle;
     vertical: GridLineStyle;

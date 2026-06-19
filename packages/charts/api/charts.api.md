@@ -246,7 +246,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "tickFormat" | "ticks" | "tickLabelMaxLength" | "tickLabelTruncate" | "gridLine" | "labelFormat" | "integersOnly" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "integersOnly" | "gridLine" | "tickFormat" | "labelFormat" | "tickLabelTruncate" | "tickLabelMaxLength" | "ticks" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -275,7 +275,9 @@ export interface AxisSpec extends Spec {
     specType: typeof SpecType.Axis;
     style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
     tickFormat?: TickFormatter;
+    // @deprecated (undocumented)
     tickLabelMaxLength?: Pixels | string;
+    // @deprecated (undocumented)
     tickLabelTruncate?: Truncate;
     ticks?: number;
     // @alpha
@@ -296,11 +298,17 @@ export interface AxisStyle {
         horizontal: GridLineStyle;
         vertical: GridLineStyle;
     };
+    maxExtent?: Pixels | string;
+    minExtent?: Pixels | string;
     // (undocumented)
     tickLabel: TextStyle & Visible & {
         rotation: number;
         offset: TextOffset;
         alignment: TextAlignment;
+        wrapLines: number;
+        lineHeight: number;
+        limit?: Pixels;
+        truncate?: Truncate;
     };
     // (undocumented)
     tickLine: TickStyle;
@@ -3657,7 +3665,7 @@ export interface TreeNode extends AngleFromTo {
 }
 
 // @public (undocumented)
-export type Truncate = 'start' | 'middle' | 'end';
+export type Truncate = 'start' | 'end' | 'middle';
 
 // @public
 export interface UnaryAccessorFn<D extends BaseDatum = any, Return = any> {

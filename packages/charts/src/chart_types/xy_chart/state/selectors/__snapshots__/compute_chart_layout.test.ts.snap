@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`computeChartLayoutSelector hidden axes do not reserve any space 1`] = `
+{
+  "chartDimensions": {
+    "height": 100,
+    "left": 0,
+    "top": 0,
+    "width": 200,
+  },
+  "leftMargin": 0,
+}
+`;
+
+exports[`computeChartLayoutSelector layout loop converges in a single iteration for long ordinal labels 1`] = `
+{
+  "chartDimensions": {
+    "height": 53,
+    "left": 96,
+    "top": 5,
+    "width": 104,
+  },
+  "leftMargin": 0,
+}
+`;
+
+exports[`computeChartLayoutSelector left axis with short labels reserves space on the left 1`] = `
+{
+  "chartDimensions": {
+    "height": 110,
+    "left": 64,
+    "top": 5,
+    "width": 136,
+  },
+  "leftMargin": 0,
+}
+`;
+
+exports[`computeChartLayoutSelector without axes the chart area fills the container 1`] = `
+{
+  "chartDimensions": {
+    "height": 100,
+    "left": 0,
+    "top": 0,
+    "width": 100,
+  },
+  "leftMargin": 0,
+}
+`;

@@ -9,8 +9,9 @@
 import type { Dimensions, Size } from '../../../../../utils/dimensions';
 import type { Point } from '../../../../../utils/point';
 import type { AxisStyle } from '../../../../../utils/themes/theme';
+import type { TickLabelBox } from '../../../axes/ticks/labels';
+import type { AxisTick } from '../../../axes/ticks/types';
 import type { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
-import type { AxisTick, TickLabelBounds } from '../../../utils/axis_utils';
 import type { AxisSpec } from '../../../utils/specs';
 
 /** @internal */
@@ -22,7 +23,7 @@ export interface AxisProps {
   axisSpec: AxisSpec; // todo rename to just spec (it's in Axis... already)
   size: Size;
   anchorPoint: Point;
-  dimension: TickLabelBounds;
+  dimension: TickLabelBox;
   ticks: AxisTick[];
   debug: boolean;
   renderingArea: Dimensions;
