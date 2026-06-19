@@ -139,8 +139,8 @@ export const getAxesDimensions = (
           break;
       }
 
-      // The spilled amount depends on how the label is anchored to the tick, the first tick spills
-      // `fraction x bbox` and the last tick spills `(1 - fraction) x bbox`
+      // For adjusting the overflow how much the edge ticks can overflow, based on the alignment of the tick label.
+      // centered/middle = 0.5, left/top (start) = 0, right/bottom (end) = 1.
       const leadingFraction = isVertical
         ? verticalAlignFraction(
             getVerticalAlign(spec.position, style.tickLabel.rotation, style.tickLabel.alignment.vertical),
@@ -154,8 +154,8 @@ export const getAxesDimensions = (
       if (scale && isBandScale(scale)) {
         axisPadding = scale.outerPadding * scale.step + scale.bandwidth / 2;
       }
-      // Overflow accounts for the first/last tick label spilling along the axis direction (orthogonal to
-      // the extent we just added). When multiple axes share an overflow side, the larger contribution wins.
+      // Overflow accounts for the first/last tick label spilling along the axis direction.
+      // When multiple axes share an overflow side, the larger contribution wins.
       if (isVertical) {
         const top = Math.max(0, (ticks.at(0)?.bboxHeight ?? 0) * leadingFraction - axisPadding);
         const bottom = Math.max(0, (ticks.at(-1)?.bboxHeight ?? 0) * (1 - leadingFraction) - axisPadding);

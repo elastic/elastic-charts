@@ -9,7 +9,6 @@
 import type { TickLabelLayout } from './labels';
 import {
   createTickLabelLayout,
-  getTickLabelExtent,
   MIN_LABEL_GAP,
   resolveTickLabelConstraints,
   shouldAllowWordWrap,
@@ -183,7 +182,7 @@ export function getVisibleTicks(
     .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
     .reduce(
       (prev, tick) => {
-        const requiredSpace = getTickLabelExtent(tick.layout, position, labelRotation);
+        const requiredSpace = (isVerticalAxis(position) ? tick.layout.bboxHeight : tick.layout.bboxWidth) / 2;
         const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace + MIN_LABEL_GAP;
         if (tickLabelFits || showOverlappingTicks) {
           prev.visibleTicks.push(tickLabelFits ? tick : withoutTickLabel(tick));

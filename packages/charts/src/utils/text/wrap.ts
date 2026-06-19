@@ -40,8 +40,7 @@ export function wrapText(
   if (lines.length <= maxLines) return Object.assign(lines, { meta: { truncated: false } });
 
   // 'end' and 'start' truncate at a line edge, so we keep the wrapped lines on the visible
-  // side intact and only fit the one that shares its line with the ellipsis. This avoids
-  // the global re-wrap only in the 'middle' below.
+  // side intact and only fit the one that shares its line with the ellipsis.
   if (truncate === 'end' || truncate === 'start') {
     return truncateLinesAtEdge(lines, maxLines, font, fontSize, maxLineWidth, measure, truncate);
   }

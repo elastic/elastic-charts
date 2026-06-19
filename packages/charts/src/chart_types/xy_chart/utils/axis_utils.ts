@@ -36,11 +36,15 @@ export function getScaleForAxisSpec(
   return (
     {
       groupId,
-      maximumFractionDigits,
+      integersOnly,
+      maximumFractionDigits: mfd,
       position,
     }: Pick<AxisSpec, 'groupId' | 'integersOnly' | 'maximumFractionDigits' | 'position'>,
     range: Range,
   ): ScaleContinuous | ScaleBand | null => {
+    // TODO: remove this fallback when integersOnly is removed
+    const maximumFractionDigits = integersOnly ? 0 : mfd;
+
     return isXDomain(position, chartRotation)
       ? computeXScale({ xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, maximumFractionDigits })
       : computeYScales({ yDomains, range, maximumFractionDigits }).get(groupId) ?? null;

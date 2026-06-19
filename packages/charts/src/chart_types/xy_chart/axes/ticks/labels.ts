@@ -12,7 +12,7 @@ import type { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { degToRad, getPercentageValue, type Position } from '../../../../utils/common';
+import { degToRad, getPercentageValue } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
 import { wrapText, type WrapTextLines } from '../../../../utils/text/wrap';
 import type { AxisStyle } from '../../../../utils/themes/theme';
@@ -33,47 +33,17 @@ export function computeRotatedLabelDimensions(unrotatedDims: Size, degreesRotati
   return { width: rotatedWidth, height: rotatedHeight };
 }
 
-/**
- * Half-extent of a tick label along the band axis for overlap checks.
- * Uses the axis-aligned bbox at 0°/±90°; at oblique angles uses line thickness
- * (or label length when text runs mostly along the band) instead of the full bbox.
- * @internal
- */
-export function getTickLabelExtent(tick: TickLabelBox, position: Position, rotationDeg: number): number {
-  const { bboxHeight, bboxWidth, height, width } = tick;
-  const vertical = isVerticalAxis(position);
-  const halfExtent = (vertical ? bboxHeight : bboxWidth) / 2;
-
-  const angle = Math.abs(rotationDeg % 180);
-  if (angle % 90 === 0) {
-    return halfExtent;
-  }
-
-  const cross = vertical ? height : width;
-  const along = vertical ? width : height;
-
-  const cos = Math.abs(Math.cos(degToRad(rotationDeg)));
-  const sin = Math.abs(Math.sin(degToRad(rotationDeg)));
-
-  return cos >= sin ? cross / (2 * cos) : along / (2 * sin);
-}
-
 /** @internal */
 export const MIN_LABEL_GAP = 4;
 
 const MIN_LABEL_LENGTH = 12;
 
-/**
- * Max length (in characters) of a single-word label that is kept whole on one line when it
- * overflows its slot, instead of being wrapped mid-word or truncated. Tuned to cover short
- * labels such as weekday/month names (e.g. `"Wednesday"`), while genuinely long single tokens
- * (urls, hashes, identifiers) still fall through to the wrap/truncate paths.
- */
-const MAX_FULL_LABEL_CHARS = 10;
+// Max length (in characters) of a single-word label that is shouldn't be wrapped.
+const SHORT_WORD_MAX_LENGTH = 10;
 
 const isCompactSingleWord = (value: string): boolean => {
   const trimmed = value.trim();
-  return trimmed.length > 0 && trimmed.length <= MAX_FULL_LABEL_CHARS && !/\s/.test(trimmed);
+  return trimmed.length > 0 && trimmed.length <= SHORT_WORD_MAX_LENGTH && !/\s/.test(trimmed);
 };
 
 /** @internal */
@@ -90,14 +60,10 @@ export const withoutTickLabel = (tick: AxisTick): AxisTick => ({
 });
 
 /**
- * Resolve `tickLabel.limit`, `tickLabel.wrapLines` and `maxExtent` into the
- * effective maximum line width and number of wrap lines that should be passed to the wrap
- * pipeline. `axis.maxExtent` wins over `limit` and over `wrapLines`.
- *
- * - Horizontal axes (top/bottom): line width is capped by category slot width for ordinal
- *   and grouped-bar scales. Histogram continuous axes use the label budget instead.
- * @internal
- */
+ * Resolves the tick label constraints (wrap lines and max line length) for the given axis.
+ * In band scales, scale.step is used to cap the max line length in horizontal axes.
+ * Otherwise, the max line length is capped by the axis label budget.
+ *  @internal */
 export const resolveTickLabelConstraints = ({
   axisSpec,
   style,
@@ -133,10 +99,12 @@ export const resolveTickLabelConstraints = ({
 
   const lineHeightPx = style.tickLabel.lineHeight * style.tickLabel.fontSize;
   let maxWrapLines = style.tickLabel.wrapLines;
+
   if (!vertical && lineHeightPx > 0 && band.labelBudget > 0) {
     const maxWrapFromBudget = Math.max(1, Math.floor(band.labelBudget / lineHeightPx));
     maxWrapLines = Math.min(style.tickLabel.wrapLines, maxWrapFromBudget);
   }
+  // in vertical axis with band Y scale , we could also cap the wrap lines by scale.step, but less obvious if helpful.
 
   return { maxLineLength, maxWrapLines };
 };

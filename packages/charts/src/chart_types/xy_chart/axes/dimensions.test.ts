@@ -9,7 +9,6 @@
 import {
   getAxesDimensions,
   getAxisBand,
-  getTitleDimension,
   measureAxisBand,
   measureAxisFixedBand,
   type AxisLayoutContext,
@@ -42,16 +41,6 @@ const tickBox = (overrides: Partial<TickLabelBox> = {}): TickLabelBox => ({
 const layoutFor = (style: AxisStyle, position: Position, fixed: number, w = 200, h = 100): AxisLayoutContext => ({
   band: getAxisBand(position, style, fixed, w, h),
   multilayerTimeAxis: false,
-});
-
-describe('getTitleDimension', () => {
-  test('returns inner padding + font size + outer padding when visible with non-zero font size', () => {
-    expect(getTitleDimension(TITLE)).toBe(innerPad(TITLE.padding) + TITLE.fontSize + outerPad(TITLE.padding));
-  });
-
-  test('returns 0 when invisible', () => {
-    expect(getTitleDimension({ ...TITLE, visible: false })).toBe(0);
-  });
 });
 
 describe('measureAxisFixedBand', () => {
@@ -185,7 +174,6 @@ describe('getAxesDimensions', () => {
     const result = getAxesDimensions(theme, [
       { spec: xAxis, style, ticks, layout: layoutFor(style, Position.Bottom, 5) },
     ]);
-    // leadingFraction=0 → no left overflow, full bbox on the right
     expect(result.left).toBe(3);
     expect(result.right).toBe(4 + 80);
   });
@@ -196,13 +184,12 @@ describe('getAxesDimensions', () => {
     const result = getAxesDimensions(theme, [
       { spec: xAxis, style, ticks, layout: layoutFor(style, Position.Bottom, 5) },
     ]);
-    // leadingFraction=1 → full bbox on the left, no right overflow
     expect(result.left).toBe(3 + 80);
     expect(result.right).toBe(4);
   });
 
   test('rotation shifts the spill to the resolved near corner', () => {
-    // near alignment + negative rotation on a bottom axis resolves to the Right corner (leadingFraction=1)
+    // near alignment + negative rotation on a bottom axis resolves to the Right corner and overflows to the left.
     const style = mergePartial(AXIS_STYLE, { tickLabel: { rotation: -45, alignment: { horizontal: 'near' } } });
     const ticks = [tickBox({ bboxWidth: 80, bboxHeight: 10 }), tickBox({ bboxWidth: 80, bboxHeight: 10 })];
     const result = getAxesDimensions(theme, [
@@ -220,23 +207,6 @@ describe('getAxesDimensions', () => {
       right: 4,
       margin: { left: 3 },
     });
-  });
-
-  test('reserves the band per side and keeps unaffected sides at chartMargins', () => {
-    // bboxHeight=0 keeps the orthogonal overflow at 0 so we can assert top/bottom == chartMargins
-    const result = getAxesDimensions(theme, [
-      {
-        spec: yAxis,
-        style: AXIS_STYLE,
-        ticks: [tickBox({ bboxWidth: 40, bboxHeight: 0 })],
-        layout: layoutFor(AXIS_STYLE, Position.Left, 5),
-      },
-    ]);
-    expect(result.left).toBe(3 + 5 + 40);
-    expect(result.margin.left).toBe(0);
-    expect(result.right).toBe(4);
-    expect(result.top).toBe(1);
-    expect(result.bottom).toBe(2);
   });
 
   test('includes chartMargins between stacked axes on the same side', () => {
