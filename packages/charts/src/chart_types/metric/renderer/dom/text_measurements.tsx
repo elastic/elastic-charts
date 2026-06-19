@@ -79,7 +79,7 @@ export interface MetricTextDimensions {
 /** @internal */
 export const PROGRESS_BAR_TARGET_SIZE = 8; // Aligned with our CSS in _index.scss
 const LINE_HEIGHT = 1.2; // Aligned with our CSS
-const HEIGHT_BP: [number, number, BreakPoint][] = [
+const HEIGHT_BP_SMALL: [number, number, BreakPoint][] = [
   [100, 150, 'xs'],
   [150, 200, 's'],
   [200, 300, 'm'],
@@ -88,6 +88,19 @@ const HEIGHT_BP: [number, number, BreakPoint][] = [
   [500, 600, 'xxl'],
   [600, Infinity, 'xxxl'],
 ];
+const HEIGHT_BP_LARGE: [number, number, BreakPoint][] = [
+  [100, 160, 'xs'],
+  [160, 216, 's'],
+  [216, 300, 'm'],
+  [300, 400, 'l'],
+  [400, 500, 'xl'],
+  [500, 600, 'xxl'],
+  [600, Infinity, 'xxxl'],
+];
+
+function getHeightBpRanges(spacing: MetricSpacing): [number, number, BreakPoint][] {
+  return spacing === 'large' ? HEIGHT_BP_LARGE : HEIGHT_BP_SMALL;
+}
 const ICON_SIZE: Record<BreakPoint, number> = {
   xxxs: 16,
   xxs: 16,
@@ -134,7 +147,7 @@ const VALUE_FONT_SIZE_BY_SPACING: Record<MetricSpacing, Record<BreakPoint, numbe
     xxxs: 24,
     xxs: 36,
     xs: 36,
-    s: 50,
+    s: 45,
     m: 64,
     l: 84,
     xl: 120,
@@ -291,9 +304,10 @@ export function getMetricTextPartDimensions(
   style: MetricStyle,
   locale: string,
 ): MetricTextDimensions {
-  const breakPoint = getHeightBreakpoint(HEIGHT_BP, panel.height);
+  const heightBpRanges = getHeightBpRanges(style.spacing);
+  const breakPoint = getHeightBreakpoint(heightBpRanges, panel.height);
   const metricSpacing = getMetricSpacingLayout(breakPoint, style);
-  const heightBasedSizes = getHeightBasedFontSizes(HEIGHT_BP, panel.height, style);
+  const heightBasedSizes = getHeightBasedFontSizes(panel.height, style);
   const hasProgressBar = isMetricWProgress(datum);
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
@@ -337,12 +351,8 @@ export function getMetricTextPartDimensions(
   };
 }
 
-function getHeightBasedFontSizes(
-  ranges: [number, number, BreakPoint][],
-  value: number,
-  style: MetricStyle,
-): HeightBasedSizes {
-  const size = getHeightBreakpoint(ranges, value);
+function getHeightBasedFontSizes(value: number, style: MetricStyle): HeightBasedSizes {
+  const size = getHeightBreakpoint(getHeightBpRanges(style.spacing), value);
   const spacingMode = style.spacing;
   const valueFontSizeMap = getValueFontSizeMap(spacingMode);
   const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : valueFontSizeMap[size];
@@ -389,7 +399,7 @@ export function getSnappedFontSizes(
   const spacingMode = style.spacing;
   const valueFontSizes = getValueFontSizeSteps(spacingMode);
   const valueFontSizeMap = getValueFontSizeMap(spacingMode);
-  const sizes = getHeightBasedFontSizes(HEIGHT_BP, panelHeight, style);
+  const sizes = getHeightBasedFontSizes(panelHeight, style);
   const minFontSize = Math.min(fittedValueFontSize, sizes.valueFontSize);
   const fontSize = clamp(
     valueFontSizes.find((value) => value <= minFontSize) ?? minFontSize,
