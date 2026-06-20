@@ -1853,8 +1853,12 @@ export type LegendItemValue = {
 // @public (undocumented)
 export interface LegendLabelOptions {
     maxLines: number;
+    truncationPosition: LegendLabelTruncationPosition;
     widthLimit: number;
 }
+
+// @public (undocumented)
+export type LegendLabelTruncationPosition = 'end' | 'middle';
 
 // @public (undocumented)
 export const LegendLayout: Readonly<{

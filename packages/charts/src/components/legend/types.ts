@@ -24,6 +24,9 @@ import type { LegendPath, onToggleDeselectSeriesAction } from '../../state/actio
 import type { LegendLabelOptions } from '../../utils/themes/theme';
 
 /** @internal */
+export type TruncationMode = 'line' | 'px';
+
+/** @internal */
 export interface SharedLegendItemProps {
   flatLegend: boolean;
   totalItems: number;

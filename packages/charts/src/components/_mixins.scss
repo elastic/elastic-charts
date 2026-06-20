@@ -8,6 +8,13 @@
   min-width: 1px;
 }
 
+@mixin resetWrapText {
+  overflow-wrap: initial;
+  word-wrap: initial;
+  word-break: initial;
+  hyphens: initial;
+}
+
 @mixin lineClamp($maxLines) {
   text-overflow: ellipsis;
   display: -webkit-box;
