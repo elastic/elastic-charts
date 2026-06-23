@@ -259,7 +259,7 @@ test.describe('Metric', () => {
 
     test('layout story renders with large spacing', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        `http://localhost:9001/?path=/story/metric-alpha--layout&globals=theme:light&knob-Space and size_Text configuration and position=large`,
+        `http://localhost:9001/?path=/story/metric-alpha--layout&globals=theme:light&knob-Space and size_Labels=large`,
         {
           action: async () => await common.setResizeDimensions(page)({ height: 158, width: 300 }),
         },
