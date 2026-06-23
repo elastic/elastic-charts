@@ -224,17 +224,17 @@ function getValueFontSizeSteps(spacingMode: MetricSpacing): number[] {
   ];
 }
 
-function getMetricSpacingLayout(breakPoint: BreakPoint, style: MetricStyle): MetricSpacingLayout {
-  if (style.spacing === 'small') {
-    return {
-      panelPadding: DEFAULT_PANEL_PADDING,
-      titleSubtitleGap: DEFAULT_TITLE_SUBTITLE_GAP,
-      extraPaddingTop: style.valuePosition === 'middle' ? 0 : DEFAULT_EXTRA_PADDING_TOP,
-      primaryAdjacentGap: DEFAULT_PRIMARY_ADJACENT_GAP,
-      progressTextGap: DEFAULT_PANEL_PADDING,
-    };
-  }
+function getSmallMetricSpacingLayout(valuePosition: MetricStyle['valuePosition']): MetricSpacingLayout {
+  return {
+    panelPadding: DEFAULT_PANEL_PADDING,
+    titleSubtitleGap: DEFAULT_TITLE_SUBTITLE_GAP,
+    extraPaddingTop: valuePosition === 'middle' ? 0 : DEFAULT_EXTRA_PADDING_TOP,
+    primaryAdjacentGap: DEFAULT_PRIMARY_ADJACENT_GAP,
+    progressTextGap: DEFAULT_PANEL_PADDING,
+  };
+}
 
+function getLargeMetricSpacingLayout(breakPoint: BreakPoint): MetricSpacingLayout {
   const panelPadding = LARGE_PANEL_PADDING[breakPoint];
   return {
     panelPadding,
@@ -306,7 +306,10 @@ export function getMetricTextPartDimensions(
 ): MetricTextDimensions {
   const heightBpRanges = getHeightBpRanges(style.spacing);
   const breakPoint = getHeightBreakpoint(heightBpRanges, panel.height);
-  const metricSpacing = getMetricSpacingLayout(breakPoint, style);
+  const metricSpacing =
+    style.spacing === 'large'
+      ? getLargeMetricSpacingLayout(breakPoint)
+      : getSmallMetricSpacingLayout(style.valuePosition);
   const heightBasedSizes = getHeightBasedFontSizes(breakPoint, style);
   const hasProgressBar = isMetricWProgress(datum);
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
