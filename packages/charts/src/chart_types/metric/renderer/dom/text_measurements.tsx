@@ -307,7 +307,7 @@ export function getMetricTextPartDimensions(
   const heightBpRanges = getHeightBpRanges(style.spacing);
   const breakPoint = getHeightBreakpoint(heightBpRanges, panel.height);
   const metricSpacing = getMetricSpacingLayout(breakPoint, style);
-  const heightBasedSizes = getHeightBasedFontSizes(heightBpRanges, panel.height, style);
+  const heightBasedSizes = getHeightBasedFontSizes(breakPoint, style);
   const hasProgressBar = isMetricWProgress(datum);
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
@@ -351,12 +351,7 @@ export function getMetricTextPartDimensions(
   };
 }
 
-function getHeightBasedFontSizes(
-  ranges: [number, number, BreakPoint][],
-  value: number,
-  style: MetricStyle,
-): HeightBasedSizes {
-  const size = getHeightBreakpoint(ranges, value);
+function getHeightBasedFontSizes(size: BreakPoint, style: MetricStyle): HeightBasedSizes {
   const spacingMode = style.spacing;
   const valueFontSizeMap = getValueFontSizeMap(spacingMode);
   const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : valueFontSizeMap[size];
@@ -402,9 +397,10 @@ export function getSnappedFontSizes(
 ): Pick<HeightBasedSizes, 'valueFontSize' | 'valuePartFontSize'> {
   const spacingMode = style.spacing;
   const heightBpRanges = getHeightBpRanges(spacingMode);
+  const breakPoint = getHeightBreakpoint(heightBpRanges, panelHeight);
   const valueFontSizes = getValueFontSizeSteps(spacingMode);
   const valueFontSizeMap = getValueFontSizeMap(spacingMode);
-  const sizes = getHeightBasedFontSizes(heightBpRanges, panelHeight, style);
+  const sizes = getHeightBasedFontSizes(breakPoint, style);
   const minFontSize = Math.min(fittedValueFontSize, sizes.valueFontSize);
   const fontSize = clamp(
     valueFontSizes.find((value) => value <= minFontSize) ?? minFontSize,
