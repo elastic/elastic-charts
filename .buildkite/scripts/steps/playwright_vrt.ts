@@ -99,10 +99,10 @@ void (async () => {
   await exec('node ./e2e/scripts/extract_examples.js');
 
   startGroup('Running e2e vrt playwright job');
-  const reportDir = `reports/vrt_report_${shardIndex}`;
+  const blobDir = 'reports/blob';
   async function postCommandTasks() {
     await compress({
-      src: path.join('e2e', reportDir),
+      src: path.join('e2e', blobDir),
       dest: `.buildkite/artifacts/vrt_reports/report_${shardIndex}.gz`,
     });
 
@@ -118,7 +118,8 @@ void (async () => {
       cwd: 'e2e',
       env: {
         [ENV_URL]: 'http://127.0.0.1:9002',
-        PLAYWRIGHT_HTML_REPORT: reportDir,
+        PLAYWRIGHT_BLOB_REPORT: 'true',
+        PLAYWRIGHT_BLOB_OUTPUT_FILE: path.join(blobDir, `report_${shardIndex}.zip`),
         PLAYWRIGHT_JSON_OUTPUT_NAME: `reports/vrt-json/report_${shardIndex}.json`,
       },
     });

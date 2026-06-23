@@ -7,10 +7,13 @@
  */
 
 import { BADGE_BORDER, BADGE_PADDING_BLOCK } from './badge';
+import type { MetricProgressBarSize } from './progress';
+import { getMetricProgressBarThickness } from './progress';
 import type { TextParts } from './text_processing';
 import { getTextParts } from './text_processing';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
 import type { Font } from '../../../../common/text_utils';
+import { MeterSize } from '../../../../components/meter';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isNil, LayoutDirection } from '../../../../utils/common';
@@ -18,7 +21,7 @@ import type { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
 import type { MetricSpacing, MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricDatum, MetricWNumber } from '../../specs';
-import { isMetricWProgress } from '../../specs';
+import { isBulletMetric, isMetricWProgress } from '../../specs';
 
 type BreakPoint = 'xxxs' | 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl';
 
@@ -163,16 +166,16 @@ const BASE_TEXT_FONT: Font = {
   fontWeight: 'normal',
   textColor: 'black',
 };
-const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = {
-  xxxs: 4,
-  xxs: 4,
-  xs: 4,
-  s: 4,
-  m: 4,
-  l: 8,
-  xl: 8,
-  xxl: 8,
-  xxxl: 16,
+const PROGRESS_BAR_SIZE: Record<BreakPoint, MeterSize> = {
+  xxxs: MeterSize.Small,
+  xxs: MeterSize.Small,
+  xs: MeterSize.Small,
+  s: MeterSize.Small,
+  m: MeterSize.Small,
+  l: MeterSize.Medium,
+  xl: MeterSize.Medium,
+  xxl: MeterSize.Medium,
+  xxxl: MeterSize.Large,
 };
 const DEFAULT_PANEL_PADDING = 8; // Aligned with our CSS in _variables.scss
 const DEFAULT_TITLE_SUBTITLE_GAP = 5; // Aligned with our CSS in _text.scss
@@ -318,10 +321,11 @@ export function getMetricTextPartDimensions(
     style.spacing === 'large'
       ? getLargeMetricSpacingLayout(breakPoint)
       : getSmallMetricSpacingLayout(style.valuePosition);
-  const heightBasedSizes = getHeightBasedFontSizes(breakPoint, style);
-  const hasProgressBar = isMetricWProgress(datum);
+  const progressDatum = isMetricWProgress(datum) || isBulletMetric(datum) ? datum : undefined;
+  const heightBasedSizes = getHeightBasedFontSizes(breakPoint, style, progressDatum?.progressBarSize);
+  const hasProgressBar = progressDatum !== undefined;
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
-  const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
+  const progressBarDirection = progressDatum?.progressBarDirection;
 
   const hasVerticalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Vertical;
   const hasHorizontalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Horizontal;
@@ -362,7 +366,11 @@ export function getMetricTextPartDimensions(
   };
 }
 
-function getHeightBasedFontSizes(size: BreakPoint, style: MetricStyle): HeightBasedSizes {
+function getHeightBasedFontSizes(
+  size: BreakPoint,
+  style: MetricStyle,
+  progressBarSizeOverride?: MetricProgressBarSize,
+): HeightBasedSizes {
   const spacingMode = style.spacing;
   const valueFontSizeMap = getValueFontSizeMap(spacingMode);
   const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : valueFontSizeMap[size];
@@ -376,7 +384,7 @@ function getHeightBasedFontSizes(size: BreakPoint, style: MetricStyle): HeightBa
     extraFontSize,
     valueFontSize,
     valuePartFontSize,
-    progressBarThickness: PROGRESS_BAR_THICKNESS[size],
+    progressBarThickness: getMetricProgressBarThickness(progressBarSizeOverride ?? PROGRESS_BAR_SIZE[size]) ?? 4,
   };
 }
 

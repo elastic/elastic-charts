@@ -61,6 +61,7 @@ export {
   AccessorObjectKey,
   AccessorArrayIndex,
 } from './utils/accessor';
+export * from './components/meter';
 export * from './components/tooltip';
 
 // scales
