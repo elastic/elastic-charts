@@ -194,10 +194,18 @@ const LARGE_PANEL_PADDING: Record<BreakPoint, number> = {
 
 /** @internal */
 export interface MetricSpacingLayout {
+  /** Inner padding of the metric panel, applied on all sides. */
   panelPadding: number;
+  /** Vertical gap between the title and the subtitle text blocks. */
   titleSubtitleGap: number;
+  /** Top padding above the extra/badge element. */
   extraPaddingTop: number;
+  /**
+   * Gap between the primary value and the adjacent text block
+   * (title when value is on top, secondary/extra when value is on bottom).
+   */
   primaryAdjacentGap: number;
+  /** Gap between the progress bar and the text block adjacent to it. */
   progressTextGap: number;
 }
 
