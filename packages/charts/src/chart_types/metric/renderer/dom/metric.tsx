@@ -48,6 +48,22 @@ interface MetricContext {
   hasTrend: boolean;
 }
 
+/**
+ * CSS custom properties exposed on the metric container for use by descendant
+ * stylesheets. These mirror the spacing values produced by `MetricSpacingLayout`
+ * so the SCSS layer can react to the active spacing/breakpoint.
+ */
+type MetricSpacingCSSVars = {
+  /** Padding applied to the metric panel (matches `MetricSpacingLayout.panelPadding`). */
+  '--echMetricPadding': string;
+  /** Vertical gap between the title and subtitle (matches `MetricSpacingLayout.titleSubtitleGap`). */
+  '--echMetricTitleSubtitleGap': string;
+  /** Top padding for the extra/badge element (matches `MetricSpacingLayout.extraPaddingTop`). */
+  '--echMetricExtraPaddingTop': string;
+  /** Gap between the progress bar and the adjacent text block (matches `MetricSpacingLayout.progressTextGap`). */
+  '--echMetricProgressTextGap': string;
+};
+
 const getTextColor = ({
   metricContext: { backgroundColor, blendedColor, hasProgressBar, hasTrend },
   contrastOptions,
@@ -157,6 +173,7 @@ export const Metric: React.FunctionComponent<{
   const progressBarDirection = progressDatum?.progressBarDirection;
 
   const hasTrend = isMetricWTrend(datum);
+  const { metricSpacing } = textDimensions;
 
   const containerClassName = classNames('echMetric', {
     'echMetric--rightBorder': columnIndex < totalColumns - 1,
@@ -190,11 +207,15 @@ export const Metric: React.FunctionComponent<{
 
   const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
 
-  const containerStyle: CSSProperties = {
+  const containerStyle: CSSProperties & MetricSpacingCSSVars = {
     backgroundColor: hasTrend || hasProgressBar ? backgroundColor : datumWithInteractionColor.color,
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
     borderColor: style.border,
     fontFamily: style.fontFamily,
+    '--echMetricPadding': `${metricSpacing.panelPadding}px`,
+    '--echMetricTitleSubtitleGap': `${metricSpacing.titleSubtitleGap}px`,
+    '--echMetricExtraPaddingTop': `${metricSpacing.extraPaddingTop}px`,
+    '--echMetricProgressTextGap': `${metricSpacing.progressTextGap}px`,
   };
 
   const textContrastOptions = isColorContrastOptions(contrastOptions)

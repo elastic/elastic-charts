@@ -461,6 +461,7 @@ export const DARK_THEME: Theme = {
     valueTextAlign: 'right',
     valuePosition: 'bottom',
     iconAlign: 'right',
+    spacing: 'small',
     border: DARK_BORDER_COLORS.borderBaseSubdued,
     barBackground: DARK_BACKGROUND_COLORS.backgroundBaseDisabled,
     emptyBackground: Colors.Transparent.keyword,

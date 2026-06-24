@@ -9,7 +9,7 @@
 import { EuiIcon } from '@elastic/eui';
 import { action } from '@storybook/addon-actions';
 import { select, boolean, text, color, number } from '@storybook/addon-knobs';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 
 import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber } from '@elastic/charts';
 import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
@@ -81,6 +81,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const titlesTextAlign = getTextAlignKnob('title text-align', 'left');
   const valueTextAlign = getTextAlignKnob('value text-align', 'right');
   const extraTextAlign = getTextAlignKnob('extra text-align', 'right');
+  const spacing = select('space and size', { Small: 'small', Large: 'large' }, 'small');
   const valuePosition = select('value position', { Bottom: 'bottom', Middle: 'middle', Top: 'top' }, 'bottom');
   const iconAlign = select(
     'icon align',
@@ -142,6 +143,15 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   const configuredData = [[numberTextSwitch ? numericData : textualData]];
 
+  const previewSize = spacing === 'large' ? { width: '300px', height: '158px' } : { width: '200px', height: '200px' };
+
+  useLayoutEffect(() => {
+    const wrapper = document.getElementById('story-resize-wrapper');
+    if (!wrapper) return;
+    wrapper.style.width = previewSize.width;
+    wrapper.style.height = previewSize.height;
+  }, [previewSize.width, previewSize.height]);
+
   return (
     <Chart title={storyTitle} description={description}>
       <Settings
@@ -153,6 +163,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
             valueTextAlign,
             extraTextAlign,
             iconAlign,
+            spacing,
             valuePosition,
           },
         }}

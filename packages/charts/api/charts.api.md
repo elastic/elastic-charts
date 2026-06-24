@@ -2236,6 +2236,9 @@ export interface MetricProgressValueLabels {
     value: string;
 }
 
+// @public
+export type MetricSpacing = 'small' | 'large';
+
 // @alpha (undocumented)
 export interface MetricSpec extends Spec {
     // (undocumented)
@@ -2270,6 +2273,8 @@ export interface MetricStyle {
     minValueFontSize: number;
     // (undocumented)
     nonFiniteText: string;
+    // (undocumented)
+    spacing: MetricSpacing;
     // (undocumented)
     textDarkColor: Color;
     // (undocumented)

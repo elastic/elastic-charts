@@ -309,6 +309,12 @@ export interface HeatmapStyle {
 export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal' | 500>;
 
 /**
+ * Metric spacing presets.
+ * @public
+ */
+export type MetricSpacing = 'small' | 'large';
+
+/**
  * Style options for the Metric chart type.
  * @public
  */
@@ -330,6 +336,7 @@ export interface MetricStyle {
   valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
   valuePosition: 'top' | 'middle' | 'bottom';
   iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
+  spacing: MetricSpacing;
 
   titleWeight: MetricFontWeight;
 
