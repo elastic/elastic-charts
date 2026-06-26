@@ -7,7 +7,7 @@
  */
 
 import { boolean, number, select, text } from '@storybook/addon-knobs';
-import React from 'react';
+import React, { Profiler } from 'react';
 
 import type { AxisStyle, RecursivePartial, Rotation } from '@elastic/charts';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
@@ -110,6 +110,7 @@ const buildAxisStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePa
 };
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  window.performance.mark('Perf:Started');
   const chartRotation = getNumberSelectKnob<Rotation>(
     'Chart rotation',
     { '0 deg': 0, '90 deg': 90, '-90 deg': -90, '180 deg': 180 },
@@ -127,7 +128,16 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings debug={debug} baseTheme={useBaseTheme()} rotation={chartRotation} />
+      <Settings
+        debug={debug}
+        baseTheme={useBaseTheme()}
+        rotation={chartRotation}
+        onRenderChange={(isRendered) => {
+          if (isRendered) window.performance.mark('Perf:Ended');
+          const { duration } = window.performance.measure('overall', 'Perf:Started', 'Perf:Ended');
+          console.log(`chart render: ${duration.toFixed(2)}ms`);
+        }}
+      />
       <Axis
         id="x-axis"
         position={xPosition}

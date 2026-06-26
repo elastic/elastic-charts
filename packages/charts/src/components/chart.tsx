@@ -8,7 +8,7 @@
 
 import classNames from 'classnames';
 import type { CSSProperties, ReactNode } from 'react';
-import React, { createRef } from 'react';
+import React, { createRef, Profiler } from 'react';
 import { Provider } from 'react-redux';
 import type { Unsubscribe, Store } from 'redux';
 import type { OptionalKeys } from 'utility-types';
@@ -173,33 +173,46 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     });
 
     return (
-      <Provider store={this.chartStore}>
-        <div
-          className="echChart"
-          style={containerSizeStyle}
-          data-testid="echChart"
-          role="graphics-document"
-          aria-roledescription="visualization"
-        >
-          <Titles
-            displayTitles={this.state.displayTitles}
-            title={this.props.title}
-            description={this.props.description}
-            paddingLeft={this.state.paddingLeft}
-            paddingRight={this.state.paddingRight}
-          />
-          <div className={chartContentClassNames}>
-            <ChartBackground />
-            <ChartStatus />
-            <ChartResizer />
-            <Legend />
-            <SpecsParser>{this.props.children}</SpecsParser>
-            <div className="echContainer" ref={this.chartContainerRef}>
-              <ChartContainer getChartContainerRef={this.getChartContainerRef} forwardStageRef={this.chartStageRef} />
+      <Profiler
+        id="new"
+        onRender={(id, phase, actualDuration, baseDuration, startTime, commitTime) => {
+          console.log(id, {
+            phase,
+            actualDuration,
+            baseDuration,
+            startTime,
+            commitTime,
+          });
+        }}
+      >
+        <Provider store={this.chartStore}>
+          <div
+            className="echChart"
+            style={containerSizeStyle}
+            data-testid="echChart"
+            role="graphics-document"
+            aria-roledescription="visualization"
+          >
+            <Titles
+              displayTitles={this.state.displayTitles}
+              title={this.props.title}
+              description={this.props.description}
+              paddingLeft={this.state.paddingLeft}
+              paddingRight={this.state.paddingRight}
+            />
+            <div className={chartContentClassNames}>
+              <ChartBackground />
+              <ChartStatus />
+              <ChartResizer />
+              <Legend />
+              <SpecsParser>{this.props.children}</SpecsParser>
+              <div className="echContainer" ref={this.chartContainerRef}>
+                <ChartContainer getChartContainerRef={this.getChartContainerRef} forwardStageRef={this.chartStageRef} />
+              </div>
             </div>
           </div>
-        </div>
-      </Provider>
+        </Provider>
+      </Profiler>
     );
   }
 }
