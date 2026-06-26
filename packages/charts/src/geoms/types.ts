@@ -49,6 +49,16 @@ export interface Texture extends Pick<TexturedStyles, 'rotation' | 'offset'> {
   pattern: CanvasPattern;
 }
 
+/** @internal */
+export interface Gradient {
+  type: 'linear';
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  stops: Array<{ offset: number; color: RgbaTuple }>;
+}
+
 /**
  * Fill style for every geometry
  * @public
@@ -59,6 +69,8 @@ export interface Fill {
    */
   color: RgbaTuple;
   texture?: Texture;
+  /** resolved gradient fill, painted in place of the solid `color` when present */
+  gradient?: Gradient;
 }
 
 /**
