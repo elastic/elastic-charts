@@ -183,6 +183,14 @@ export function getY1ScaledValueFn(yScale: ScaleContinuous): (datum: DataSeriesD
 }
 
 /** @internal */
+export function getXScaledValueFn(
+  xScale: ScaleBand | ScaleContinuous,
+  xScaleOffset: number = 0,
+): (datum: DataSeriesDatum) => number {
+  return (datum) => xScale.scale(datum.x) - xScaleOffset;
+}
+
+/** @internal */
 export function getY0ScaledValueFn(yScale: ScaleContinuous): (datum: DataSeriesDatum) => number {
   const domainPolarity = getDomainPolarity(yScale.domain);
   const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);

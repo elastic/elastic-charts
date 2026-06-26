@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
 import type { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { withClipRanges } from '../../../../../renderers/canvas';
+import { applyCanvasFill, type FillBoundingBox } from '../../../../../renderers/canvas/primitives/fill';
 import { renderMultiLine } from '../../../../../renderers/canvas/primitives/line';
 import type { ClippedRanges } from '../../../../../utils/geometry';
 import type { Point } from '../../../../../utils/point';
@@ -46,21 +46,22 @@ export function renderAreaPath(
   clippedRanges: ClippedRanges,
   clippings: Rect,
   shouldClip: boolean,
+  bbox: FillBoundingBox,
 ) {
-  withClipRanges(ctx, clippedRanges, clippings, false, () => renderPathFill(ctx, area, fill, transform));
+  withClipRanges(ctx, clippedRanges, clippings, false, () => renderPathFill(ctx, area, fill, transform, bbox));
   if (clippedRanges.length > 0 && shouldClip) {
-    withClipRanges(ctx, clippedRanges, clippings, true, () => renderPathFill(ctx, area, fitFill, transform));
+    withClipRanges(ctx, clippedRanges, clippings, true, () => renderPathFill(ctx, area, fitFill, transform, bbox));
   }
 }
 
-function renderPathFill(ctx: CanvasRenderingContext2D, path: string, fill: Fill, { x, y }: Point) {
+function renderPathFill(
+  ctx: CanvasRenderingContext2D,
+  path: string,
+  fill: Fill,
+  { x, y }: Point,
+  bbox: FillBoundingBox,
+) {
   ctx.translate(x, y);
   const path2d = new Path2D(path);
-  ctx.fillStyle = RGBATupleToString(fill.color);
-  ctx.fill(path2d);
-
-  if (fill.texture) {
-    ctx.fillStyle = fill.texture.pattern;
-    ctx.fill(path2d);
-  }
+  applyCanvasFill(ctx, fill, bbox, () => ctx.fill(path2d));
 }

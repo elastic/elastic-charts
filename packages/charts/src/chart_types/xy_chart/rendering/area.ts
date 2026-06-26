@@ -9,8 +9,15 @@
 import { area } from 'd3-shape';
 
 import { renderPoints } from './points';
-import type { MarkSizeOptions } from './utils';
-import { getClippedRanges, getY0ScaledValueFn, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn } from './utils';
+import type { MarkSizeOptions, YDefinedFn } from './utils';
+import {
+  getClippedRanges,
+  getXScaledValueFn,
+  getY0ScaledValueFn,
+  getY1ScaledValueFn,
+  getYDatumValueFn,
+  isYValueDefinedFn,
+} from './utils';
 import type { Color } from '../../../common/colors';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import type { CurveType } from '../../../utils/curves';
@@ -43,6 +50,7 @@ export function renderArea(
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
+  const xFn = getXScaledValueFn(xScale, xScaleOffset);
   const y1Fn = getY1ScaledValueFn(yScale);
   const y0Fn = getY0ScaledValueFn(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
@@ -56,6 +64,8 @@ export function renderArea(
       return definedFn(datum, y1DatumAccessor) && (isBandedSpec ? definedFn(datum, y0DatumAccessor) : true);
     })
     .curve(getCurveFactory(curve));
+
+  const bbox = computeAreaBoundingBox(dataSeries.data, xFn, y0Fn, y1Fn, definedFn, y1DatumAccessor);
 
   // TODO we can probably avoid this function call if no fit function is applied.
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
@@ -90,6 +100,7 @@ export function renderArea(
       y: 0,
       x: shift,
     },
+    bbox,
     seriesIdentifier: getSeriesIdentifierFromDataSeries(dataSeries),
     style,
     isStacked,
@@ -102,4 +113,33 @@ export function renderArea(
     areaGeometry,
     indexedGeometryMap,
   };
+}
+
+function computeAreaBoundingBox(
+  data: DataSeriesDatum[],
+  xFn: (datum: DataSeriesDatum) => number,
+  y0Fn: (datum: DataSeriesDatum) => number,
+  y1Fn: (datum: DataSeriesDatum) => number,
+  definedFn: YDefinedFn,
+  y1DatumAccessor: (datum: DataSeriesDatum) => number | null,
+): { x0: number; y0: number; x1: number; y1: number } {
+  const { minX, maxX, minY, maxY } = data.reduce(
+    (acc, datum) => {
+      if (!definedFn(datum, y1DatumAccessor)) return acc;
+      const xs = [xFn(datum)].filter(Number.isFinite);
+      const ys = [y1Fn(datum), y0Fn(datum)].filter(Number.isFinite);
+      return {
+        minX: Math.min(acc.minX, ...xs),
+        maxX: Math.max(acc.maxX, ...xs),
+        minY: Math.min(acc.minY, ...ys),
+        maxY: Math.max(acc.maxY, ...ys),
+      };
+    },
+    { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity },
+  );
+
+  if (minX === Infinity || minY === Infinity) {
+    return { x0: 0, y0: 0, x1: 0, y1: 0 };
+  }
+  return { x0: minX, y0: minY, x1: maxX, y1: maxY };
 }

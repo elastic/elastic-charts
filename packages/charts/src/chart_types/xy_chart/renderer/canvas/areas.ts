@@ -124,7 +124,7 @@ function renderArea(
   clippings: Rect,
   highlightState: GeometryHighlightState,
 ) {
-  const { area, color, transform, style, clippedRanges, shouldClip } = geometry;
+  const { area, color, transform, style, clippedRanges, shouldClip, bbox } = geometry;
   const areaFill = buildAreaStyles(ctx, imgCanvas, color, style.area, highlightState);
 
   const fitAreaFillThemeStyle = { ...style.fit.area, dimmed: style.area.dimmed };
@@ -139,6 +139,7 @@ function renderArea(
     clippedRanges,
     clippings,
     shouldClip && style.fit.area.visible,
+    bbox,
   );
 }
 
