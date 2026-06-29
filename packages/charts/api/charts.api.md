@@ -174,11 +174,15 @@ export interface ArcStyle {
     visible: boolean;
 }
 
-// @public (undocumented)
+// @public
 export type AreaFitStyle = Visible & Opacity & {
-    fill: Color | typeof ColorVariant.Series;
+    fill?: Color | typeof ColorVariant.Series;
     texture?: TexturedStyles;
+    gradient?: AreaGradient;
 };
+
+// @public
+export type AreaGradient = LinearGradient;
 
 // Warning: (ae-forgotten-export) The symbol "SFProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "buildProps_3" needs to be exported by the entry point index.d.ts
@@ -225,6 +229,7 @@ export interface AreaStyle {
         };
     };
     fill?: Color | ColorVariant;
+    gradient?: AreaGradient;
     opacity: number;
     texture?: TexturedStyles;
     visible: boolean;
@@ -1471,6 +1476,13 @@ export interface GoalStyles {
     tickLine: Pick<StrokeStyle, 'stroke'>;
 }
 
+// @public
+export interface GradientStop {
+    color: Color | typeof ColorVariant.Series;
+    offset: number;
+    opacity?: number;
+}
+
 // @public (undocumented)
 export interface GridLineStyle {
     // (undocumented)
@@ -2002,6 +2014,17 @@ export type LineAnnotationSpec<D = any> = BaseAnnotationSpec<typeof AnnotationTy
 // @public
 export interface LineAnnotationStyle {
     line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
+}
+
+// @public
+export interface LinearGradient {
+    stops: GradientStop[];
+    // (undocumented)
+    type: 'linear';
+    x0?: number;
+    x1?: number;
+    y0?: number;
+    y1?: number;
 }
 
 // @public (undocumented)

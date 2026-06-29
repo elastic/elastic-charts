@@ -70,13 +70,13 @@ export function buildAreaStyles(
  * resolved against the (dimmed-aware) series color and folded with the opacity.
  */
 function resolveGradient(gradient: AreaGradient, baseColor: Color, baseOpacity: number): Gradient {
-  const { x1 = 0, y1 = 1, x2 = 0, y2 = 0, stops } = gradient;
+  const { x0 = 0, y0 = 1, x1 = 0, y1 = 0, stops } = gradient;
   return {
     type: 'linear',
+    x0,
+    y0,
     x1,
     y1,
-    x2,
-    y2,
     stops: stops.map(({ offset, color, opacity = 1 }) => ({
       offset,
       color: overrideOpacity(

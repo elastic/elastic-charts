@@ -728,13 +728,13 @@ export interface GradientStop {
 export interface LinearGradient {
   type: 'linear';
   /** start x-coordinate, normalized `[0, 1]` relative to the area bounding box @defaultValue 0 */
-  x1?: number;
+  x0?: number;
   /** start y-coordinate, normalized `[0, 1]` relative to the area bounding box @defaultValue 1 */
-  y1?: number;
+  y0?: number;
   /** end x-coordinate, normalized `[0, 1]` relative to the area bounding box @defaultValue 0 */
-  x2?: number;
+  x1?: number;
   /** end y-coordinate, normalized `[0, 1]` relative to the area bounding box @defaultValue 0 */
-  y2?: number;
+  y1?: number;
   /** ordered list of color stops defining the gradient */
   stops: GradientStop[];
 }

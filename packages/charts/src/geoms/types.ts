@@ -49,13 +49,16 @@ export interface Texture extends Pick<TexturedStyles, 'rotation' | 'offset'> {
   pattern: CanvasPattern;
 }
 
-/** @internal */
+/**
+ * Linear gradient fill config, currently only used for areas.
+ *  @public
+ */
 export interface Gradient {
   type: 'linear';
+  x0: number;
+  y0: number;
   x1: number;
   y1: number;
-  x2: number;
-  y2: number;
   stops: Array<{ offset: number; color: RgbaTuple }>;
 }
 

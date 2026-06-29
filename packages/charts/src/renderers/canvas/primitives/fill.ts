@@ -29,10 +29,10 @@ function buildCanvasGradient(
   const width = x1 - x0;
   const height = y1 - y0;
   const canvasGradient = ctx.createLinearGradient(
+    x0 + gradient.x0 * width,
+    y0 + gradient.y0 * height,
     x0 + gradient.x1 * width,
     y0 + gradient.y1 * height,
-    x0 + gradient.x2 * width,
-    y0 + gradient.y2 * height,
   );
   for (const { offset, color } of gradient.stops) {
     canvasGradient.addColorStop(offset, RGBATupleToString(color));

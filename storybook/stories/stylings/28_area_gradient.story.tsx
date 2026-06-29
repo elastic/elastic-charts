@@ -49,10 +49,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const bottomOpacity = number('Bottom opacity', 0, { min: 0, max: 1, step: 0.05 }, group.gradient);
 
   // Direction in normalized [0,1] bbox coords. Default: bottom (y1:1) -> top (y2:0).
+  const x0 = number('x0', 0, { min: 0, max: 1, step: 0.1 }, group.gradient);
+  const y0 = number('y0', 1, { min: 0, max: 1, step: 0.1 }, group.gradient);
   const x1 = number('x1', 0, { min: 0, max: 1, step: 0.1 }, group.gradient);
-  const y1 = number('y1', 1, { min: 0, max: 1, step: 0.1 }, group.gradient);
-  const x2 = number('x2', 0, { min: 0, max: 1, step: 0.1 }, group.gradient);
-  const y2 = number('y2', 0, { min: 0, max: 1, step: 0.1 }, group.gradient);
+  const y1 = number('y1', 0, { min: 0, max: 1, step: 0.1 }, group.gradient);
 
   const layout = select<'single' | 'stacked' | 'banded'>(
     'Layout',
@@ -65,10 +65,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   const gradient: AreaGradient = {
     type: 'linear',
+    x0,
+    y0,
     x1,
     y1,
-    x2,
-    y2,
     stops: [
       { offset: 0, color: useSeriesColor ? ColorVariant.Series : bottomColor, opacity: bottomOpacity },
       { offset: 1, color: useSeriesColor ? ColorVariant.Series : topColor, opacity: topOpacity },
