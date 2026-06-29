@@ -140,9 +140,7 @@ export interface AreaGeometry {
     y: number;
   };
   /**
-   * Bounding box of the filled area in the untransformed scaled coordinate space
-   * (i.e. before `transform` is applied). `(x0, y0)` is the top-left corner and
-   * `(x1, y1)` the bottom-right corner. Used to map normalized gradient coordinates.
+   * `(x0, y0)` is the top-left corner and `(x1, y1)` the bottom-right corner (pre-transformed).
    */
   bbox: { x0: number; y0: number; x1: number; y1: number };
   seriesIdentifier: XYChartSeriesIdentifier;
