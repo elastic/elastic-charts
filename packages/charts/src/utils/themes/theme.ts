@@ -710,7 +710,7 @@ export type TexturedStyles = TexturedPathStyles | TexturedShapeStyles;
 export interface GradientStop {
   /** position of the stop within the gradient, in the `[0, 1]` range */
   offset: number;
-  /** a static color, or {@link ColorVariant.Series} to derive it from the series color */
+  /** a static color, or {@link (ColorVariant:variable).Series} to derive it from the series color */
   color: Color | typeof ColorVariant.Series;
   /** optional opacity multiplier applied on top of the resolved stop color, in the `[0, 1]` range */
   opacity?: number;
