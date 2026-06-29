@@ -108,7 +108,6 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
       area: {
         visible: true,
         opacity: 0.15,
-        fill: ColorVariant.Series,
       },
     },
     pointVisibilityMinDistance: 20,

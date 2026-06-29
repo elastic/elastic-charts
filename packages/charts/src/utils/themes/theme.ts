@@ -891,11 +891,16 @@ export interface AreaSeriesStyle {
   pointVisibilityMinDistance: Pixels;
 }
 
-/** @public */
+/**
+ * Style for the fitted (interpolated) portions of an area. When omitted, the
+ * fitted area inherits the corresponding value from the main {@link AreaStyle}
+ * @public
+ */
 export type AreaFitStyle = Visible &
   Opacity & {
-    fill: Color | typeof ColorVariant.Series;
+    fill?: Color | typeof ColorVariant.Series;
     texture?: TexturedStyles;
+    gradient?: AreaGradient;
   };
 
 /** @public */
