@@ -115,7 +115,8 @@ export function renderArea(
   };
 }
 
-function computeAreaBoundingBox(
+/** @internal */
+export function computeAreaBoundingBox(
   data: DataSeriesDatum[],
   xFn: (datum: DataSeriesDatum) => number,
   y0Fn: (datum: DataSeriesDatum) => number,
