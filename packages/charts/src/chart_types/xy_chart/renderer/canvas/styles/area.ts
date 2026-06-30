@@ -8,12 +8,12 @@
 
 import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
 import type { Color } from '../../../../../common/colors';
-import type { Fill } from '../../../../../geoms/types';
+import type { Fill, Gradient } from '../../../../../geoms/types';
 import type { ColorVariant } from '../../../../../utils/common';
 import { getColorFromVariant } from '../../../../../utils/common';
 import type { GeometryHighlightState } from '../../../../../utils/geometry';
 import { getDimmedColor } from '../../../../../utils/themes/dimmed_colors';
-import type { AreaStyle, TexturedStyles } from '../../../../../utils/themes/theme';
+import type { AreaGradient, AreaStyle, TexturedStyles } from '../../../../../utils/themes/theme';
 import { getTextureStyles } from '../../../utils/texture';
 
 /**
@@ -56,9 +56,34 @@ export function buildAreaStyles(
     (currentColorOpacity) => currentColorOpacity * opacity,
   );
 
+  const gradient = themeAreaStyle.gradient ? resolveGradient(themeAreaStyle.gradient, fillColor, opacity) : undefined;
+
   return {
     color,
     texture,
+    gradient,
+  };
+}
+
+/**
+ * Resolves a themed {@link AreaGradient} into a paint-ready {@link Gradient}: stop colors are
+ * resolved against the (dimmed-aware) series color and folded with the opacity.
+ */
+function resolveGradient(gradient: AreaGradient, baseColor: Color, baseOpacity: number): Gradient {
+  const { x0 = 0, y0 = 1, x1 = 0, y1 = 0, stops } = gradient;
+  return {
+    type: 'linear',
+    x0,
+    y0,
+    x1,
+    y1,
+    stops: stops.map(({ offset, color, opacity = 1 }) => ({
+      offset,
+      color: overrideOpacity(
+        colorToRgba(getColorFromVariant(baseColor, color)),
+        (currentColorOpacity) => currentColorOpacity * opacity * baseOpacity,
+      ),
+    })),
   };
 }
 
