@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Transform } from '../utils/types';
@@ -14,7 +14,7 @@ import { computeChartTransform } from '../utils/utils';
 
 /** @internal */
 export const computeChartTransformSelector = createCustomCachedSelector(
-  [computeChartDimensionsSelector, getSettingsSpecSelector],
-  (chartDimensions, settingsSpecs): Transform =>
-    computeChartTransform(chartDimensions.chartDimensions, settingsSpecs.rotation),
+  [computeChartLayoutSelector, getSettingsSpecSelector],
+  ({ dimensions: { chartDimensions } }, settingsSpecs): Transform =>
+    computeChartTransform(chartDimensions, settingsSpecs.rotation),
 );

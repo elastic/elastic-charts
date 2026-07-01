@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
@@ -22,7 +22,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
-import type { ChartDimensions } from '../../../../utils/dimensions';
+import type { Dimensions } from '../../../../utils/dimensions';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { getCursorBandPosition } from '../../crosshair/crosshair_utils';
 import type { BasicSeriesSpec } from '../../utils/specs';
@@ -36,7 +36,7 @@ export const getCursorBandPositionSelector = createCustomCachedSelector(
   [
     getOrientedProjectedPointerPositionSelector,
     getExternalPointerEventStateSelector,
-    computeChartDimensionsSelector,
+    computeChartLayoutSelector,
     getSettingsSpecSelector,
     computeSeriesGeometriesSelector,
     getSeriesSpecsSelector,
@@ -51,7 +51,7 @@ export const getCursorBandPositionSelector = createCustomCachedSelector(
 function getCursorBand(
   orientedProjectedPointerPosition: PointerPosition,
   externalPointerEvent: PointerEvent | null,
-  { chartDimensions }: ChartDimensions,
+  { dimensions: { chartDimensions } }: { dimensions: { chartDimensions: Dimensions } },
   settingsSpec: SettingsSpec,
   { scales: { xScale } }: Pick<ComputedGeometries, 'scales'>,
   seriesSpecs: BasicSeriesSpec[],

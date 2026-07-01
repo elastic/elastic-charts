@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import type { SmallMultipleScales } from '../../../../common/panel_utils';
 import type { ScaleBand } from '../../../../scales/scale_band';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -24,8 +24,8 @@ export type PointerPosition = Point & { horizontalPanelValue: PrimitiveValue; ve
  * @internal
  */
 export const getProjectedPointerPositionSelector = createCustomCachedSelector(
-  [getActivePointerPosition, computeChartDimensionsSelector, computeSmallMultipleScalesSelector],
-  (currentPointerPosition, { chartDimensions }, smallMultipleScales): PointerPosition =>
+  [getActivePointerPosition, computeChartLayoutSelector, computeSmallMultipleScalesSelector],
+  (currentPointerPosition, { dimensions: { chartDimensions } }, smallMultipleScales): PointerPosition =>
     getProjectedPointerPosition(currentPointerPosition, chartDimensions, smallMultipleScales),
 );
 
