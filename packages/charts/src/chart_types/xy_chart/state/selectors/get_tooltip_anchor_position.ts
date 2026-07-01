@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import { getCursorBandPositionSelector } from './get_cursor_band';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import type { AnchorPosition } from '../../../../components/portal/types';
@@ -20,7 +20,7 @@ import { getTooltipAnchorPosition } from '../../crosshair/crosshair_utils';
 /** @internal */
 export const getTooltipAnchorPositionSelector = createCustomCachedSelector(
   [
-    computeChartDimensionsSelector,
+    computeChartLayoutSelector,
     getSettingsSpecSelector,
     getCursorBandPositionSelector,
     getProjectedPointerPositionSelector,
@@ -28,7 +28,7 @@ export const getTooltipAnchorPositionSelector = createCustomCachedSelector(
     getTooltipSpecSelector,
   ],
   (
-    chartDimensions,
+    { dimensions: chartDimensions },
     settings,
     cursorBandPosition,
     projectedPointerPosition,

@@ -36,7 +36,7 @@ import type { SharedGeometryStateStyle } from '../../../../../utils/themes/theme
 import type { AnnotationLineProps } from '../../../annotations/line/types';
 import type { AnnotationDimensions, AnnotationTooltipState } from '../../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../../state/selectors/compute_annotations';
-import { computeChartDimensionsSelector } from '../../../state/selectors/compute_chart_dimensions';
+import { computeChartLayoutSelector } from '../../../state/selectors/compute_chart_layout';
 import { getAnnotationTooltipStateSelector } from '../../../state/selectors/get_annotation_tooltip_state';
 import { getHighlightedAnnotationIdsSelector } from '../../../state/selectors/get_highlighted_annotation_ids_selector';
 import { getAnnotationSpecsSelector } from '../../../state/selectors/get_specs';
@@ -217,7 +217,7 @@ const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
   }
   return {
     isChartEmpty: isChartEmptySelector(state),
-    chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
+    chartDimensions: computeChartLayoutSelector(state).dimensions.chartDimensions,
     sharedStyle: getChartThemeSelector(state).sharedStyle,
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),

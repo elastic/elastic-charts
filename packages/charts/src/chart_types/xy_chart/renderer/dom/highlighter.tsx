@@ -22,7 +22,7 @@ import type { IndexedGeometry, PointGeometry } from '../../../../utils/geometry'
 import { isPointGeometry, isBarGeometry } from '../../../../utils/geometry';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { HighlighterStyle } from '../../../../utils/themes/theme';
-import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
+import { computeChartLayoutSelector } from '../../state/selectors/compute_chart_layout';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
 import { getSeriesSpecsSelector } from '../../state/selectors/get_specs';
 import {
@@ -212,7 +212,7 @@ const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
     highlightedGeometries: getHighlightedGeomsSelector(state),
     highlightedPoints: getHighlightedPointsSelector(state),
     chartTransform: computeChartTransformSelector(state),
-    chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
+    chartDimensions: computeChartLayoutSelector(state).dimensions.chartDimensions,
     chartRotation: getChartRotationSelector(state),
     style: getChartThemeSelector(state).highlighter,
     seriesSpecs: getSeriesSpecsSelector(state),

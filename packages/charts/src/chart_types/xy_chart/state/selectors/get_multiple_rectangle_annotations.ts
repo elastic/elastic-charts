@@ -7,7 +7,7 @@
  */
 
 import { computeAnnotationDimensionsSelector } from './compute_annotations';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import { getTooltipStateForDOMElements } from './get_annotation_tooltip_state';
 import { getAnnotationSpecsSelector } from './get_specs';
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
@@ -32,7 +32,7 @@ const getHoveredDOMElement = (state: GlobalChartState) => state.interactions.hov
 export const getMultipleRectangleAnnotations = createCustomCachedSelector(
   [
     getCurrentPointerPosition,
-    computeChartDimensionsSelector,
+    computeChartLayoutSelector,
     getChartRotationSelector,
     getAnnotationSpecsSelector,
     computeAnnotationDimensionsSelector,
@@ -44,11 +44,7 @@ export const getMultipleRectangleAnnotations = createCustomCachedSelector(
 
 function getMultipleRectangularAnnotationTooltipState(
   cursorPosition: Point,
-  {
-    chartDimensions,
-  }: {
-    chartDimensions: Dimensions;
-  },
+  { dimensions: { chartDimensions } }: { dimensions: { chartDimensions: Dimensions } },
   chartRotation: Rotation,
   annotationSpecs: AnnotationSpec[],
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
