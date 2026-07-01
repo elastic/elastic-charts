@@ -20,6 +20,8 @@ import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import type { AxisSpec } from '../../utils/specs';
 import type { AxisBand } from '../dimensions';
 
+const SAFE_LABEL_MAX_LENGTH = 1_000;
+
 /** @internal */
 export const shouldAllowWordWrap = (scale: ScaleBand | ScaleContinuous): boolean =>
   !isContinuousScale(scale) || scale.type === ScaleType.Time;
@@ -131,7 +133,8 @@ export const createTickLabelLayout = (
 
   const horizontal = isHorizontalAxis(axisSpec.position);
 
-  return (value: string) => {
+  return (raw: string) => {
+    const value = raw.slice(0, SAFE_LABEL_MAX_LENGTH);
     const truncate = axisStyle.tickLabel.truncate ?? axisSpec.tickLabelTruncate;
 
     let lines: WrapTextLines = Object.assign([], { meta: { truncated: false } });
