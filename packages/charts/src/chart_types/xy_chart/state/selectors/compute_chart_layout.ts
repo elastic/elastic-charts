@@ -27,7 +27,6 @@ import { withTextMeasure, type TextMeasure } from '../../../../utils/bbox/canvas
 import type { ChartDimensions, Dimensions } from '../../../../utils/dimensions';
 import type { OrdinalDomain } from '../../../../utils/domain';
 import type { AxisId } from '../../../../utils/ids';
-import { Logger } from '../../../../utils/logger';
 import type { Theme } from '../../../../utils/themes/theme';
 import { getAxesDimensions } from '../../axes/dimensions';
 import type { Projection } from '../../axes/ticks/types';
@@ -156,7 +155,7 @@ function computeChartLayout(params: LayoutParameters): {
           meta: { iterations: i + 1 },
         };
       }
-      Logger.warn('Layout did not converge after', i + 1, 'iterations');
+      // Logger.warn('Layout did not converge after', i + 1, 'iterations');
       projections = nextProjections;
     }
 
