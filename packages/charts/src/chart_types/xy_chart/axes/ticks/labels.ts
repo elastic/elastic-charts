@@ -108,7 +108,7 @@ export const resolveTickLabelConstraints = ({
   }
   // in vertical axis with band Y scale , we could also cap the wrap lines by scale.step, but less obvious if helpful.
 
-  return { maxLineLength, maxWrapLines };
+  return { maxLineLength, maxWrapLines: Math.max(1, maxWrapLines) };
 };
 
 /** @internal */
