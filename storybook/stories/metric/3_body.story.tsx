@@ -53,6 +53,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const valueIconType = customKnobs.eui.getIconTypeKnob('EUI value icon glyph name', 'sortUp');
   const showBody = boolean('show body contents', true);
   const showBodyArea = boolean('show full body area', false);
+  const spacing = select('space and size', { Small: 'small', Large: 'large' }, 'small');
   const valuePosition = select('value position', { Bottom: 'bottom', Middle: 'middle', Top: 'top' }, 'bottom');
   const getIcon =
     (type: string) =>
@@ -115,6 +116,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
       <Settings
         theme={{
           metric: {
+            spacing,
             valuePosition,
           },
         }}

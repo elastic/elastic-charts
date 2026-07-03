@@ -1,3 +1,16 @@
+# [71.8.0](https://github.com/elastic/elastic-charts/compare/v71.7.0...v71.8.0) (2026-06-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @playwright/test to 1.61.0 ([#2803](https://github.com/elastic/elastic-charts/issues/2803)) ([42f00bc](https://github.com/elastic/elastic-charts/commit/42f00bceea0fa78fe3c363eb912d289d002d0d5a))
+
+
+### Features
+
+* **components:** Add Meter component ([#2846](https://github.com/elastic/elastic-charts/issues/2846)) ([fa4c39f](https://github.com/elastic/elastic-charts/commit/fa4c39fa422d2d049163c8d1156b1972aaf1a306))
+* **metric:** add large spacing param to the metric chart ([#2815](https://github.com/elastic/elastic-charts/issues/2815)) ([4c16c20](https://github.com/elastic/elastic-charts/commit/4c16c2093f07feb926466c99b008e84fc6ab9951))
+
 # [71.7.0](https://github.com/elastic/elastic-charts/compare/v71.6.1...v71.7.0) (2026-05-20)
 
 

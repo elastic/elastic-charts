@@ -435,6 +435,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     valueTextAlign: 'right',
     valuePosition: 'bottom',
     iconAlign: 'right',
+    spacing: 'small',
     border: '#EDF0F5',
     barBackground: '#EDF0F5',
     emptyBackground: Colors.Transparent.keyword,

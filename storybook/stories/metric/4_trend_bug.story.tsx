@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, text, color, number } from '@storybook/addon-knobs';
+import { boolean, text, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber } from '@elastic/charts';
@@ -24,6 +24,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   const canHaveNullValues = boolean('can have null values', false);
   const alignSeriesGaps = boolean('align gaps', false);
+  const spacing = select('space and size', { Small: 'small', Large: 'large' }, 'small');
   const trendShape = customKnobs.fromEnum('trend shape', MetricTrendShape, MetricTrendShape.Area);
 
   const numberTextSwitch = boolean('is numeric metric', true);
@@ -81,6 +82,11 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   return (
     <Chart title={storyTitle} description={description}>
       <Settings
+        theme={{
+          metric: {
+            spacing,
+          },
+        }}
         baseTheme={useBaseTheme()}
         onElementClick={([d]) => {
           if (isMetricElementEvent(d)) {

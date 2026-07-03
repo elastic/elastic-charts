@@ -9,7 +9,7 @@
 import { EuiIcon } from '@elastic/eui';
 import { action } from '@storybook/addon-actions';
 import { select, boolean, text, color, number } from '@storybook/addon-knobs';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 
 import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber, SecondaryMetricProps } from '@elastic/charts';
 import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
@@ -93,6 +93,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     labelsGroup,
   );
   const extraTextAlign = getTextAlignKnob('Extra element alignment', 'left', labelsGroup);
+  const spacing = select('Space and size', { Small: 'small', Large: 'large' }, 'small', labelsGroup);
 
   const value = text('Value', '55.23', metricGroup);
   const numberTextSwitch = boolean('Is numeric metric', true, metricGroup);
@@ -298,6 +299,15 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   // the progress-bar visualization is selected.
   const configuredData = [[progressOrTrend === 'bar' || numberTextSwitch ? numericData : textualData]];
 
+  const previewSize = spacing === 'large' ? { width: '300px', height: '158px' } : { width: '200px', height: '200px' };
+
+  useLayoutEffect(() => {
+    const wrapper = document.getElementById('story-resize-wrapper');
+    if (!wrapper) return;
+    wrapper.style.width = previewSize.width;
+    wrapper.style.height = previewSize.height;
+  }, [previewSize.width, previewSize.height]);
+
   return (
     <Chart title={storyTitle} description={description}>
       <Settings
@@ -309,6 +319,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
             valueTextAlign,
             extraTextAlign,
             iconAlign,
+            spacing,
             valuePosition,
             titleWeight,
             barBackground,

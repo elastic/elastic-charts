@@ -5,11 +5,11 @@ $progress-bar-border-radius: 8px;
   border-radius: $progress-bar-border-radius;
 
   &--vertical {
-    left: $padding;
+    left: var(--echMetricPadding, #{$padding});
     right: 0;
-    top: $padding;
+    top: var(--echMetricPadding, #{$padding});
     bottom: 0;
-    height: calc(100% - #{$padding * 2});
+    height: calc(100% - (var(--echMetricPadding, #{$padding}) * 2));
     width: 100%;
 
     &.echSingleMetricProgress--small {
@@ -29,11 +29,11 @@ $progress-bar-border-radius: 8px;
   }
 
   &--horizontal {
-    left: $padding;
+    left: var(--echMetricPadding, #{$padding});
     right: 0;
-    width: calc(100% - #{$padding * 2});
+    width: calc(100% - (var(--echMetricPadding, #{$padding}) * 2));
     top: 0;
-    bottom: $padding;
+    bottom: var(--echMetricPadding, #{$padding});
     height: 100%;
 
     &.echSingleMetricProgress--small {

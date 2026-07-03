@@ -40,9 +40,10 @@ const arrayToGrid: <T>(array: T[], nColumns: number) => T[][] = (array, nColumns
   return ret;
 };
 
-const maxTileSideLength = 200;
-const getContainerWidth = (_data: (MetricDatum | undefined)[][]) => _data[0].length * maxTileSideLength;
-const getContainerHeight = (_data: (MetricDatum | undefined)[][]) => _data.length * maxTileSideLength;
+const getTileSize = (spacing: 'small' | 'large') =>
+  spacing === 'large' ? { width: 300, height: 158 } : { width: 200, height: 200 };
+const getContainerWidth = (_data: (MetricDatum | undefined)[][], tileWidth: number) => _data[0].length * tileWidth;
+const getContainerHeight = (_data: (MetricDatum | undefined)[][], tileHeight: number) => _data.length * tileHeight;
 
 const defaultValueFormatter = (d: number) => `${d}`;
 
@@ -67,6 +68,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'default',
   );
   const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
+  const spacing = select('space and size', { Small: 'small', Large: 'large' }, 'small');
   const valuePosition = select('value position', { Bottom: 'bottom', Middle: 'middle', Top: 'top' }, 'bottom');
   const progressBarFill = useMemo(
     () => getProgressBarFill(progressBarPalette, [0, 100], isDarkTheme),
@@ -189,16 +191,18 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   const nColumns = number('number of columns', 4, { min: 1, max: data.length, step: 1 });
 
+  const tileSize = getTileSize(spacing);
+
   const [chartData, setChartData] = useState(arrayToGrid(data, nColumns));
-  const [containerHeight, setContainerHeight] = useState(getContainerHeight(chartData));
-  const [containerWidth, setContainerWidth] = useState(getContainerWidth(chartData));
+  const [containerHeight, setContainerHeight] = useState(getContainerHeight(chartData, tileSize.height));
+  const [containerWidth, setContainerWidth] = useState(getContainerWidth(chartData, tileSize.width));
 
   useEffect(() => {
     const newData = arrayToGrid(data, nColumns);
     setChartData(newData);
-    setContainerHeight(getContainerHeight(newData));
-    setContainerWidth(getContainerWidth(newData));
-  }, [data, progressBarDirection, useProgressBar, maxDataPoints, nColumns]);
+    setContainerHeight(getContainerHeight(newData, tileSize.height));
+    setContainerWidth(getContainerWidth(newData, tileSize.width));
+  }, [data, progressBarDirection, useProgressBar, maxDataPoints, nColumns, tileSize.width, tileSize.height]);
 
   button('randomize data', () => {
     setChartData(
@@ -245,6 +249,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             metric: {
               emptyBackground,
               valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
+              spacing,
               valuePosition,
             },
           }}
