@@ -5,7 +5,7 @@
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: min-content auto min-content min-content;
   height: 100%;
-  padding: $padding;
+  padding: var(--echMetricPadding, #{$padding});
   line-height: 1.2;
 
   &__gap {
@@ -44,7 +44,7 @@
     display: flex;
     align-items: center;
     overflow: hidden;
-    padding-top: 5px;
+    padding-top: var(--echMetricExtraPaddingTop, 5px);
 
     &--left {
       justify-content: flex-start;
@@ -92,7 +92,7 @@
   }
 
   &__subtitle {
-    padding-top: 5px;
+    padding-top: var(--echMetricTitleSubtitleGap, 5px);
     font-weight: normal;
     width: 95%;
   }
@@ -109,7 +109,7 @@
   }
 
   &__valueIcon {
-    padding-left: $padding;
+    padding-left: var(--echMetricPadding, #{$padding});
   }
 
   &__part {
