@@ -9,7 +9,7 @@
 import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type { AreaGradient } from '@elastic/charts';
+import type { LinearGradient } from '@elastic/charts';
 import {
   AreaSeries,
   Axis,
@@ -42,7 +42,7 @@ const data = [
 
 const SERIES_COLOR = LIGHT_THEME.colors.vizColors[2];
 
-const gradient: AreaGradient = {
+const gradient: LinearGradient = {
   type: 'linear',
   stops: [
     { offset: 0, color: ColorVariant.Series, opacity: 0 },

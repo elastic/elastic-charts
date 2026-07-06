@@ -67,8 +67,7 @@ export function renderLine(
     pointStyleAccessor,
   );
 
-  // clipped ranges are only consumed when `shouldClip` (i.e. `hasFit`) is true
-  const clippedRanges = hasFit ? getClippedRanges(dataSeries.data, xScale, xScaleOffset) : [];
+  const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
   const lineGeometry: LineGeometry = {
     line: pathGenerator(dataSeries.data) || '',

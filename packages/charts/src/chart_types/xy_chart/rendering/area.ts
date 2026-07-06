@@ -67,9 +67,9 @@ export function renderArea(
     .curve(getCurveFactory(curve));
 
   const bboxAccumulator = createAreaBoundingBoxTraverser(xFn, y0Fn, y1Fn, definedFn, y1DatumAccessor);
-  const clippedRangesAccumulator = hasFit ? createClippedRangesTraverser(xScale, xScaleOffset) : null;
-  const steps = [bboxAccumulator.step];
-  if (clippedRangesAccumulator) steps.push(clippedRangesAccumulator.step);
+  // TODO we can probably avoid this function call if no fit function is applied.
+  const clippedRangesAccumulator = createClippedRangesTraverser(xScale, xScaleOffset);
+  const steps = [bboxAccumulator.step, clippedRangesAccumulator.step];
 
   dataSeries.data.forEach((datum) => {
     if (datum === undefined) return;
@@ -77,7 +77,7 @@ export function renderArea(
   });
 
   const bbox = bboxAccumulator.result();
-  const clippedRanges = clippedRangesAccumulator ? clippedRangesAccumulator.result() : [];
+  const clippedRanges = clippedRangesAccumulator.result();
 
   const lines: string[] = [];
   const y0Line = isBandedSpec && pathGenerator.lineY0()(dataSeries.data);
