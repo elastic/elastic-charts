@@ -7,7 +7,7 @@
  */
 
 import { RGBATupleToString } from '../../../common/color_library_wrappers';
-import type { Fill, Gradient } from '../../../geoms/types';
+import type { Fill, ResolvedLinearGradient } from '../../../geoms/types';
 
 /**
  * Bounding box of the shape being filled, in the current canvas coordinate space.
@@ -23,7 +23,7 @@ export interface FillBoundingBox {
 
 function buildCanvasGradient(
   ctx: CanvasRenderingContext2D,
-  gradient: Gradient,
+  gradient: ResolvedLinearGradient,
   { x0, y0, x1, y1 }: FillBoundingBox,
 ): CanvasGradient {
   const width = x1 - x0;

@@ -178,11 +178,8 @@ export interface ArcStyle {
 export type AreaFitStyle = Visible & Opacity & {
     fill?: Color | typeof ColorVariant.Series;
     texture?: TexturedStyles;
-    gradient?: AreaGradient;
+    gradient?: LinearGradient;
 };
-
-// @public
-export type AreaGradient = LinearGradient;
 
 // Warning: (ae-forgotten-export) The symbol "SFProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "buildProps_3" needs to be exported by the entry point index.d.ts
@@ -229,7 +226,7 @@ export interface AreaStyle {
         };
     };
     fill?: Color | ColorVariant;
-    gradient?: AreaGradient;
+    gradient?: LinearGradient;
     opacity: number;
     texture?: TexturedStyles;
     visible: boolean;
@@ -1479,8 +1476,8 @@ export interface GoalStyles {
 // @public
 export interface GradientStop {
     color: Color | typeof ColorVariant.Series;
-    offset: number;
-    opacity?: number;
+    offset: Ratio;
+    opacity?: Ratio;
 }
 
 // @public (undocumented)
@@ -2021,10 +2018,10 @@ export interface LinearGradient {
     stops: GradientStop[];
     // (undocumented)
     type: 'linear';
-    x0?: number;
-    x1?: number;
-    y0?: number;
-    y1?: number;
+    x0?: Ratio;
+    x1?: Ratio;
+    y0?: Ratio;
+    y1?: Ratio;
 }
 
 // @public (undocumented)

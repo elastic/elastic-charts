@@ -9,7 +9,7 @@
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type { AreaGradient, Rotation } from '@elastic/charts';
+import type { LinearGradient, Rotation } from '@elastic/charts';
 import {
   AreaSeries,
   Axis,
@@ -63,7 +63,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const withTexture = boolean('Overlay texture', false, group.layout);
   const rotation = select<Rotation>('Rotation', { '0': 0, '90': 90, '-90': -90, '180': 180 }, 0, group.layout);
 
-  const gradient: AreaGradient = {
+  const gradient: LinearGradient = {
     type: 'linear',
     x0,
     y0,

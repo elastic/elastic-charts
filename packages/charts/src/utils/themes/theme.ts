@@ -716,11 +716,11 @@ export type TexturedStyles = TexturedPathStyles | TexturedShapeStyles;
  */
 export interface GradientStop {
   /** position of the stop within the gradient, in the `[0, 1]` range */
-  offset: number;
+  offset: Ratio;
   /** a static color, or {@link (ColorVariant:variable).Series} to derive it from the series color */
   color: Color | typeof ColorVariant.Series;
   /** optional opacity multiplier applied on top of the resolved stop color, in the `[0, 1]` range */
-  opacity?: number;
+  opacity?: Ratio;
 }
 
 /**
@@ -735,29 +735,22 @@ export interface GradientStop {
 export interface LinearGradient {
   type: 'linear';
   /** start x-coordinate, normalized `[0, 1]` relative to the area bounding box @defaultValue 0 */
-  x0?: number;
+  x0?: Ratio;
   /** start y-coordinate, normalized `[0, 1]` relative to the area bounding box @defaultValue 1 */
-  y0?: number;
+  y0?: Ratio;
   /** end x-coordinate, normalized `[0, 1]` relative to the area bounding box @defaultValue 0 */
-  x1?: number;
+  x1?: Ratio;
   /** end y-coordinate, normalized `[0, 1]` relative to the area bounding box @defaultValue 0 */
-  y1?: number;
+  y1?: Ratio;
   /** ordered list of color stops defining the gradient */
   stops: GradientStop[];
 }
-
-/**
- * Gradient fill config for an area spec. Currently only linear gradients are supported.
- * @public
- */
-export type AreaGradient = LinearGradient;
-
 /** @public */
 export interface AreaStyle {
   /** applying textures to the area on the theme/series */
   texture?: TexturedStyles;
   /** applying a gradient fill to the area on the theme/series */
-  gradient?: AreaGradient;
+  gradient?: LinearGradient;
   /** is the area is visible or hidden ? */
   visible: boolean;
   /** a static fill color if defined, if not it will use the color of the series */
@@ -907,7 +900,7 @@ export type AreaFitStyle = Visible &
   Opacity & {
     fill?: Color | typeof ColorVariant.Series;
     texture?: TexturedStyles;
-    gradient?: AreaGradient;
+    gradient?: LinearGradient;
   };
 
 /** @public */
