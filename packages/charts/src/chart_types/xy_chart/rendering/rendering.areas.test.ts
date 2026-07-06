@@ -8,8 +8,7 @@
 
 import type { Store } from 'redux';
 
-import { computeAreaBoundingBox } from './area';
-import type { YDefinedFn } from './utils';
+import { computeAreaBoundingBox, type YDefinedFn } from './utils';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';

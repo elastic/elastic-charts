@@ -9,9 +9,10 @@
 import { area } from 'd3-shape';
 
 import { renderPoints } from './points';
-import type { MarkSizeOptions, YDefinedFn } from './utils';
+import type { MarkSizeOptions } from './utils';
 import {
-  getClippedRanges,
+  createAreaBoundingBoxTraverser,
+  createClippedRangesTraverser,
   getXScaledValueFn,
   getY0ScaledValueFn,
   getY1ScaledValueFn,
@@ -65,10 +66,18 @@ export function renderArea(
     })
     .curve(getCurveFactory(curve));
 
-  const bbox = computeAreaBoundingBox(dataSeries.data, xFn, y0Fn, y1Fn, definedFn, y1DatumAccessor);
+  const bboxAccumulator = createAreaBoundingBoxTraverser(xFn, y0Fn, y1Fn, definedFn, y1DatumAccessor);
+  const clippedRangesAccumulator = hasFit ? createClippedRangesTraverser(xScale, xScaleOffset) : null;
+  const steps = [bboxAccumulator.step];
+  if (clippedRangesAccumulator) steps.push(clippedRangesAccumulator.step);
 
-  // TODO we can probably avoid this function call if no fit function is applied.
-  const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
+  dataSeries.data.forEach((datum) => {
+    if (datum === undefined) return;
+    steps.forEach((step) => step(datum));
+  });
+
+  const bbox = bboxAccumulator.result();
+  const clippedRanges = clippedRangesAccumulator ? clippedRangesAccumulator.result() : [];
 
   const lines: string[] = [];
   const y0Line = isBandedSpec && pathGenerator.lineY0()(dataSeries.data);
@@ -116,31 +125,9 @@ export function renderArea(
 }
 
 /** @internal */
-export function computeAreaBoundingBox(
-  data: DataSeriesDatum[],
-  xFn: (datum: DataSeriesDatum) => number,
-  y0Fn: (datum: DataSeriesDatum) => number,
-  y1Fn: (datum: DataSeriesDatum) => number,
-  definedFn: YDefinedFn,
-  y1DatumAccessor: (datum: DataSeriesDatum) => number | null,
-): { x0: number; y0: number; x1: number; y1: number } {
-  const { minX, maxX, minY, maxY } = data.reduce(
-    (acc, datum) => {
-      if (!definedFn(datum, y1DatumAccessor)) return acc;
-      const xs = [xFn(datum)].filter(Number.isFinite);
-      const ys = [y1Fn(datum), y0Fn(datum)].filter(Number.isFinite);
-      return {
-        minX: Math.min(acc.minX, ...xs),
-        maxX: Math.max(acc.maxX, ...xs),
-        minY: Math.min(acc.minY, ...ys),
-        maxY: Math.max(acc.maxY, ...ys),
-      };
-    },
-    { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity },
-  );
-
-  if (minX === Infinity || minY === Infinity) {
-    return { x0: 0, y0: 0, x1: 0, y1: 0 };
-  }
-  return { x0: minX, y0: minY, x1: maxX, y1: maxY };
+export interface AreaBoundingBox {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
 }

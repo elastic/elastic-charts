@@ -47,6 +47,51 @@ export function isDatumFilled({ filled, initialY1 }: DataSeriesDatum) {
   return filled?.x !== undefined || filled?.y1 !== undefined || initialY1 === null || initialY1 === undefined;
 }
 
+/** @internal */
+export interface DatumTraverser<T> {
+  step: (datum: DataSeriesDatum) => void;
+  /** Called after the pass to produce the accumulated result. */
+  result: () => T;
+}
+
+/** @internal */
+export function createClippedRangesTraverser(
+  xScale: ScaleBand | ScaleContinuous,
+  xScaleOffset: number,
+): DatumTraverser<ClippedRanges> {
+  const ranges: ClippedRanges = [];
+  let firstNonNullX: number | null = null;
+  let hasNull = false;
+  let completeDatasetIsNull = true;
+
+  return {
+    step: (datum) => {
+      const datumFilled = isDatumFilled(datum);
+      if (!datumFilled) completeDatasetIsNull = false;
+
+      const xScaled = xScale.scale(datum.x);
+      if (Number.isNaN(xScaled)) return;
+
+      const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
+
+      if (datumFilled) {
+        const endXValue = xScale.range[1] - xScale.bandwidth * (2 / 3);
+        if (firstNonNullX !== null && xValue === endXValue) {
+          ranges.push([firstNonNullX, xValue]);
+        }
+        hasNull = true;
+      } else {
+        if (hasNull) {
+          ranges.push([firstNonNullX ?? 0, xValue]);
+          hasNull = false;
+        }
+        firstNonNullX = xValue;
+      }
+    },
+    result: () => (completeDatasetIsNull ? [[xScale.range[0], xScale.range[1]]] : ranges),
+  };
+}
+
 /**
  * Gets clipped ranges that have been fitted to values
  * @param dataset
@@ -59,39 +104,12 @@ export function getClippedRanges(
   xScale: ScaleBand | ScaleContinuous,
   xScaleOffset: number,
 ): ClippedRanges {
-  let firstNonNullX: number | null = null;
-  let hasNull = false;
-
-  const completeDatasetIsNull = dataset.every((datum) => isDatumFilled(datum));
-
-  if (completeDatasetIsNull) return [[xScale.range[0], xScale.range[1]]];
-
-  return dataset.reduce<ClippedRanges>((acc, data) => {
-    const xScaled = xScale.scale(data.x);
-    if (Number.isNaN(xScaled)) return acc;
-
-    const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
-
-    if (isDatumFilled(data)) {
-      const endXValue = xScale.range[1] - xScale.bandwidth * (2 / 3);
-      if (firstNonNullX !== null && xValue === endXValue) {
-        acc.push([firstNonNullX, xValue]);
-      }
-      hasNull = true;
-    } else {
-      if (hasNull) {
-        if (firstNonNullX !== null) {
-          acc.push([firstNonNullX, xValue]);
-        } else {
-          acc.push([0, xValue]);
-        }
-        hasNull = false;
-      }
-
-      firstNonNullX = xValue;
-    }
-    return acc;
-  }, []);
+  const traverser = createClippedRangesTraverser(xScale, xScaleOffset);
+  dataset.forEach((datum) => {
+    if (datum === undefined) return;
+    traverser.step(datum);
+  });
+  return traverser.result();
 }
 
 /** @internal */
@@ -205,4 +223,74 @@ export function getY0ScaledValueFn(yScale: ScaleContinuous): (datum: DataSeriesD
 function getDomainPolarity(domain: number[]): number {
   // 1 if both numbers are positive, -1 if both are negative, 0 if zeros or mixed
   return Math.sign(Math.sign(domain[0] ?? NaN) + Math.sign(domain[1] ?? NaN));
+}
+
+type AreaBoundingBox = {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+};
+
+/** @internal */
+export function createAreaBoundingBoxTraverser(
+  xFn: (datum: DataSeriesDatum) => number,
+  y0Fn: (datum: DataSeriesDatum) => number,
+  y1Fn: (datum: DataSeriesDatum) => number,
+  definedFn: YDefinedFn,
+  y1DatumAccessor: (datum: DataSeriesDatum) => number | null,
+): DatumTraverser<AreaBoundingBox> {
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+
+  return {
+    step: (datum) => {
+      if (!definedFn(datum, y1DatumAccessor)) return;
+
+      const x = xFn(datum);
+      if (Number.isFinite(x)) {
+        minX = Math.min(minX, x);
+        maxX = Math.max(maxX, x);
+      }
+
+      const y1Value = y1Fn(datum);
+      if (Number.isFinite(y1Value)) {
+        minY = Math.min(minY, y1Value);
+        maxY = Math.max(maxY, y1Value);
+      }
+
+      const y0Value = y0Fn(datum);
+      if (Number.isFinite(y0Value)) {
+        minY = Math.min(minY, y0Value);
+        maxY = Math.max(maxY, y0Value);
+      }
+    },
+    result: () => {
+      if (minX === Infinity || minY === Infinity) {
+        return { x0: 0, y0: 0, x1: 0, y1: 0 };
+      }
+      return { x0: minX, y0: minY, x1: maxX, y1: maxY };
+    },
+  };
+}
+
+/** @internal */
+export function computeAreaBoundingBox(
+  data: DataSeriesDatum[],
+  xFn: (datum: DataSeriesDatum) => number,
+  y0Fn: (datum: DataSeriesDatum) => number,
+  y1Fn: (datum: DataSeriesDatum) => number,
+  definedFn: YDefinedFn,
+  y1DatumAccessor: (datum: DataSeriesDatum) => number | null,
+): AreaBoundingBox {
+  const traverser = createAreaBoundingBoxTraverser(xFn, y0Fn, y1Fn, definedFn, y1DatumAccessor);
+
+  data.forEach((datum) => {
+    if (datum === undefined) return;
+    traverser.step(datum);
+  });
+
+  return traverser.result();
 }
