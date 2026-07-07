@@ -10,7 +10,15 @@ import { area } from 'd3-shape';
 
 import { renderPoints } from './points';
 import type { MarkSizeOptions } from './utils';
-import { getClippedRanges, getY0ScaledValueFn, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn } from './utils';
+import {
+  createAreaBoundingBoxTraverser,
+  createClippedRangesTraverser,
+  getXScaledValueFn,
+  getY0ScaledValueFn,
+  getY1ScaledValueFn,
+  getYDatumValueFn,
+  isYValueDefinedFn,
+} from './utils';
 import type { Color } from '../../../common/colors';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import type { CurveType } from '../../../utils/curves';
@@ -43,6 +51,7 @@ export function renderArea(
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
+  const xFn = getXScaledValueFn(xScale, xScaleOffset);
   const y1Fn = getY1ScaledValueFn(yScale);
   const y0Fn = getY0ScaledValueFn(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
@@ -57,8 +66,18 @@ export function renderArea(
     })
     .curve(getCurveFactory(curve));
 
+  const bboxAccumulator = createAreaBoundingBoxTraverser(xFn, y0Fn, y1Fn, definedFn, y1DatumAccessor);
   // TODO we can probably avoid this function call if no fit function is applied.
-  const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
+  const clippedRangesAccumulator = createClippedRangesTraverser(xScale, xScaleOffset);
+  const steps = [bboxAccumulator.step, clippedRangesAccumulator.step];
+
+  dataSeries.data.forEach((datum) => {
+    if (datum === undefined) return;
+    steps.forEach((step) => step(datum));
+  });
+
+  const bbox = bboxAccumulator.result();
+  const clippedRanges = clippedRangesAccumulator.result();
 
   const lines: string[] = [];
   const y0Line = isBandedSpec && pathGenerator.lineY0()(dataSeries.data);
@@ -90,6 +109,7 @@ export function renderArea(
       y: 0,
       x: shift,
     },
+    bbox,
     seriesIdentifier: getSeriesIdentifierFromDataSeries(dataSeries),
     style,
     isStacked,
@@ -102,4 +122,12 @@ export function renderArea(
     areaGeometry,
     indexedGeometryMap,
   };
+}
+
+/** @internal */
+export interface AreaBoundingBox {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
 }

@@ -94,6 +94,7 @@ export class MockAreaGeometry {
     points: [],
     color: Colors.Red.keyword,
     transform: { x: 0, y: 0 },
+    bbox: { x0: 0, y0: 0, x1: 0, y1: 0 },
     seriesIdentifier: MockSeriesIdentifier.default(),
     style: areaSeriesStyle,
     isStacked: false,

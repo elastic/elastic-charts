@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { applyCanvasFill } from './fill';
 import { MIN_STROKE_WIDTH } from './line';
 import { RGBATupleToString } from '../../../common/color_library_wrappers';
 import type { Fill, Rect, Stroke } from '../../../geoms/types';
@@ -22,7 +23,7 @@ export interface StrokedSides {
 export function renderRect(
   ctx: CanvasRenderingContext2D,
   { x, y, width, height }: Rect,
-  { color, texture }: Fill,
+  fill: Fill,
   stroke: Stroke,
   disableBorderOffset: boolean = false,
 ) {
@@ -37,15 +38,21 @@ export function renderRect(
     ctx.stroke();
   }
 
-  ctx.beginPath();
-  ctx.rect(x + borderOffset, y + borderOffset, width - borderOffset * 2, height - borderOffset * 2);
-  ctx.fillStyle = RGBATupleToString(color);
-  ctx.fill();
+  const rectFill = {
+    x: x + borderOffset,
+    y: y + borderOffset,
+    width: width - borderOffset * 2,
+    height: height - borderOffset * 2,
+  };
 
-  if (texture) {
-    ctx.fillStyle = texture.pattern;
-    ctx.fill();
-  }
+  ctx.beginPath();
+  ctx.rect(rectFill.x, rectFill.y, rectFill.width, rectFill.height);
+  applyCanvasFill(
+    ctx,
+    fill,
+    { x0: rectFill.x, y0: rectFill.y, x1: rectFill.x + rectFill.width, y1: rectFill.y + rectFill.height },
+    () => ctx.fill(),
+  );
 }
 
 /**

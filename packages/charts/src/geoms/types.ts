@@ -7,7 +7,8 @@
  */
 
 import type { RgbaTuple } from '../common/color_library_wrappers';
-import type { TexturedStyles } from '../utils/themes/theme';
+import type { Ratio } from '../common/geometry';
+import type { LinearGradient, TexturedStyles } from '../utils/themes/theme';
 
 /** @internal */
 export interface Text {
@@ -50,6 +51,14 @@ export interface Texture extends Pick<TexturedStyles, 'rotation' | 'offset'> {
 }
 
 /**
+ * Linear gradient fill config, currently only used for areas.
+ *  @public
+ */
+export type ResolvedLinearGradient = Required<Omit<LinearGradient, 'stops'>> & {
+  stops: Array<{ offset: Ratio; color: RgbaTuple }>;
+};
+
+/**
  * Fill style for every geometry
  * @public
  */
@@ -59,6 +68,8 @@ export interface Fill {
    */
   color: RgbaTuple;
   texture?: Texture;
+  /** resolved gradient fill, painted in place of the solid `color` when present */
+  gradient?: ResolvedLinearGradient;
 }
 
 /**

@@ -22,8 +22,9 @@ jest.spyOn(commonColors, 'colorToRgba');
 const COLOR = 'aquamarine';
 
 describe('Area styles', () => {
-  let ctx: CanvasRenderingContext2D;
-  let imgCanvas: HTMLCanvasElement;
+  // not used by the tests below (the texture path is mocked), only passed through
+  const ctx = {} as unknown as CanvasRenderingContext2D;
+  const imgCanvas = {} as unknown as HTMLCanvasElement;
 
   describe('#buildAreaStyles', () => {
     let result: Fill;
@@ -98,6 +99,81 @@ describe('Area styles', () => {
       it('should call getTextureStyles with params', () => {
         expect(getTextureStyles).toHaveBeenCalledTimes(1);
         expect(getTextureStyles).toHaveBeenCalledWith(ctx, imgCanvas, baseColor, expect.anything(), texture);
+      });
+    });
+
+    describe('Gradient', () => {
+      beforeAll(() => {
+        // pass static colors through, and resolve the series variant to a known color
+        (common.getColorFromVariant as jest.Mock).mockImplementation((_baseColor, color) =>
+          color === common.ColorVariant.Series ? 'rgba(1,2,3,1)' : color,
+        );
+      });
+
+      describe('when no gradient is configured', () => {
+        beforeAll(() => {
+          setDefaults();
+        });
+
+        it('should not return a gradient', () => {
+          expect(result.gradient).toBeUndefined();
+        });
+      });
+
+      describe('when a gradient is configured', () => {
+        beforeAll(() => {
+          setDefaults();
+          themeAreaStyle = {
+            ...MockStyles.area({ opacity: 0.5 }),
+            gradient: {
+              type: 'linear',
+              x0: 0.1,
+              y0: 0.2,
+              x1: 0.3,
+              y1: 0.4,
+              stops: [
+                { offset: 0, color: 'rgba(10,10,10,1)' },
+                { offset: 0.5, color: common.ColorVariant.Series, opacity: 0.6 },
+                { offset: 1, color: 'rgba(20,20,20,0.5)' },
+              ],
+            },
+          };
+        });
+
+        it('should resolve coordinates, offsets, the series variant and fold stop/area opacity', () => {
+          // series-variant stops are resolved against the (dimmed-aware) base color
+          expect(common.getColorFromVariant).toHaveBeenCalledWith(baseColor, common.ColorVariant.Series);
+          // coordinates pass through, and each stop alpha = colorAlpha * stopOpacity * areaOpacity (0.5)
+          expect(result.gradient).toEqual({
+            type: 'linear',
+            x0: 0.1,
+            y0: 0.2,
+            x1: 0.3,
+            y1: 0.4,
+            stops: [
+              { offset: 0, color: [10, 10, 10, 0.5] },
+              { offset: 0.5, color: [1, 2, 3, 0.3] },
+              { offset: 1, color: [20, 20, 20, 0.25] },
+            ],
+          });
+        });
+      });
+
+      describe('when gradient coordinates are omitted', () => {
+        beforeAll(() => {
+          setDefaults();
+          themeAreaStyle = {
+            ...MockStyles.area(),
+            gradient: {
+              type: 'linear',
+              stops: [{ offset: 0, color: 'rgba(0,0,0,1)' }],
+            },
+          };
+        });
+
+        it('should default to a vertical (bottom-to-top) gradient', () => {
+          expect(result.gradient).toMatchObject({ x0: 0, y0: 1, x1: 0, y1: 0 });
+        });
       });
     });
   });
