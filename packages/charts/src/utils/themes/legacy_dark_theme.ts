@@ -194,8 +194,6 @@ export const LEGACY_DARK_THEME: Theme = {
         vertical: 'near',
         horizontal: 'near',
       },
-      wrapLines: 2,
-      lineHeight: 1.2,
     },
     tickLine: {
       visible: true,

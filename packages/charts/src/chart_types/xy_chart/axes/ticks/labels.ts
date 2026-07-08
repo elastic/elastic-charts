@@ -22,6 +22,18 @@ import type { AxisBand } from '../dimensions';
 
 const SAFE_LABEL_MAX_LENGTH = 1_000;
 
+/**
+ * Default number of lines for wrapped tick labels. `1` disables wrapping.
+ * @internal
+ */
+export const DEFAULT_TICK_LABEL_WRAP_LINES = 1;
+
+/**
+ * Default line height multiplier applied to `fontSize` for wrapped tick labels.
+ * @internal
+ */
+export const DEFAULT_TICK_LABEL_LINE_HEIGHT = 1.2;
+
 /** @internal */
 export const shouldAllowWordWrap = (scale: ScaleBand | ScaleContinuous): boolean =>
   !isContinuousScale(scale) || scale.type === ScaleType.Time;
@@ -42,6 +54,11 @@ const MIN_LABEL_LENGTH = 12;
 
 // Max length (in characters) of a single-word label that is shouldn't be wrapped.
 const SHORT_WORD_MAX_LENGTH = 10;
+
+// Safe floor on the number of visible characters kept when truncating a tick label. Truncating below
+// this (e.g. "a…y") rarely helps the reader, so we stop here and let the label overflow instead. Four
+// is the minimum recommended by common design-system guidance (IBM Carbon, PatternFly, Maersk).
+const MIN_TRUNCATED_CHARS = 4;
 
 const isCompactSingleWord = (value: string): boolean => {
   const trimmed = value.trim();
@@ -83,8 +100,14 @@ export const resolveTickLabelConstraints = ({
 }) => {
   const vertical = isVerticalAxis(axisSpec.position);
 
+  // A `%` tick label length resolves against the axis' own reference size:
+  // - vertical axes use the cross-axis container size (`band.container`), matching `maxExtent`.
+  // - horizontal axes use the along-axis size (`containerWidth`, i.e. the chart/plot width).
+  // Using `band.container` for vertical axes keeps the percentage stable across layout passes, where
+  // `containerWidth` is the shrinking plot width rather than the full container width.
+  const percentReference = vertical ? band.container : containerWidth;
   const maxTickLabelLength = axisSpec.tickLabelMaxLength
-    ? getPercentageValue(axisSpec.tickLabelMaxLength, containerWidth, 0)
+    ? getPercentageValue(axisSpec.tickLabelMaxLength, percentReference, 0)
     : undefined;
 
   let maxLineLength = style.tickLabel.limit ?? maxTickLabelLength;
@@ -99,12 +122,14 @@ export const resolveTickLabelConstraints = ({
     maxLineLength = Math.max(MIN_LABEL_LENGTH, maxLineLength ?? bandwidthCap);
   }
 
-  const lineHeightPx = style.tickLabel.lineHeight * style.tickLabel.fontSize;
-  let maxWrapLines = style.tickLabel.wrapLines;
+  const wrapLines = style.tickLabel.wrapLines ?? DEFAULT_TICK_LABEL_WRAP_LINES;
+  const lineHeight = style.tickLabel.lineHeight ?? DEFAULT_TICK_LABEL_LINE_HEIGHT;
+  const lineHeightPx = lineHeight * style.tickLabel.fontSize;
+  let maxWrapLines = wrapLines;
 
   if (!vertical && lineHeightPx > 0 && band.labelBudget > 0) {
     const maxWrapFromBudget = Math.max(1, Math.floor(band.labelBudget / lineHeightPx));
-    maxWrapLines = Math.min(style.tickLabel.wrapLines, maxWrapFromBudget);
+    maxWrapLines = Math.min(wrapLines, maxWrapFromBudget);
   }
   // in vertical axis with band Y scale , we could also cap the wrap lines by scale.step, but less obvious if helpful.
 
@@ -121,7 +146,8 @@ export const createTickLabelLayout = (
   maxLineLength: number,
   allowWordWrap = true,
 ) => {
-  const { lineHeight, fontSize, fontStyle, fontFamily, rotation } = axisStyle.tickLabel;
+  const { fontSize, fontStyle, fontFamily, rotation } = axisStyle.tickLabel;
+  const lineHeight = axisStyle.tickLabel.lineHeight ?? DEFAULT_TICK_LABEL_LINE_HEIGHT;
 
   const font: Font = {
     fontStyle: fontStyle ?? 'normal',
@@ -135,7 +161,8 @@ export const createTickLabelLayout = (
 
   return (raw: string) => {
     const value = raw.slice(0, SAFE_LABEL_MAX_LENGTH);
-    const truncate = axisStyle.tickLabel.truncate ?? axisSpec.tickLabelTruncate;
+    // Truncation is opt-in; when unset the label overflows instead of being cut.
+    const truncate = axisStyle.tickLabel.truncate ?? axisSpec.tickLabelTruncate ?? false;
 
     let lines: WrapTextLines = Object.assign([], { meta: { truncated: false } });
 
@@ -146,10 +173,25 @@ export const createTickLabelLayout = (
     } else if (allowWordWrap && horizontal && isCompactSingleWord(value)) {
       lines = Object.assign([value], { meta: { truncated: false } });
     } else if (!allowWordWrap) {
-      const { text } = fitText(measure, value, maxLineLength, fontSize, font, truncate ?? 'end');
-      lines = Object.assign([text], { meta: { truncated: text !== value } });
+      if (truncate) {
+        const { text } = fitText(measure, value, maxLineLength, fontSize, font, truncate, MIN_TRUNCATED_CHARS);
+        lines = Object.assign([text], { meta: { truncated: text !== value } });
+      } else {
+        lines = Object.assign([value], { meta: { truncated: false } });
+      }
     } else {
-      lines = wrapText(value, font, fontSize, maxLineLength, maxLines, measure, locale, 'word', truncate);
+      lines = wrapText(
+        value,
+        font,
+        fontSize,
+        maxLineLength,
+        maxLines,
+        measure,
+        locale,
+        'word',
+        truncate,
+        MIN_TRUNCATED_CHARS,
+      );
     }
 
     const { width, height } = lines.reduce(

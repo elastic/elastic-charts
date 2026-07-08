@@ -305,10 +305,10 @@ export interface AxisStyle {
         rotation: number;
         offset: TextOffset;
         alignment: TextAlignment;
-        wrapLines: number;
-        lineHeight: number;
+        wrapLines?: number;
+        lineHeight?: number;
         limit?: Pixels;
-        truncate?: Truncate;
+        truncate?: Truncate | false;
     };
     // (undocumented)
     tickLine: TickStyle;

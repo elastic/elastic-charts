@@ -13,6 +13,7 @@ import { renderDebugRectCenterRotated } from '../../../../../renderers/canvas/ut
 import { HorizontalAlignment, Position, VerticalAlignment } from '../../../../../utils/common';
 import type { Point } from '../../../../../utils/point';
 import { getTickLabelPosition, rotateVector, type ResolvedHorizontalAlign } from '../../../axes/ticks/geometry';
+import { DEFAULT_TICK_LABEL_LINE_HEIGHT } from '../../../axes/ticks/labels';
 import type { AxisTick } from '../../../axes/ticks/types';
 
 const TICK_TO_LABEL_GAP = 2;
@@ -73,7 +74,7 @@ export function renderTickLabel(
   }
 
   const isMultiLine = lines.length > 1;
-  const lineHeight = labelStyle.lineHeight * labelStyle.fontSize;
+  const lineHeight = (labelStyle.lineHeight ?? DEFAULT_TICK_LABEL_LINE_HEIGHT) * labelStyle.fontSize;
 
   const baseline = isMultiLine ? VerticalAlignment.Top : VerticalAlignment.Middle;
   const stackBaseY = isMultiLine ? -height / 2 : 0;

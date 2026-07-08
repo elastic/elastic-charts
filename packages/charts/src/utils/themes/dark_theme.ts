@@ -215,8 +215,6 @@ export const DARK_THEME: Theme = {
         vertical: 'near',
         horizontal: 'near',
       },
-      wrapLines: 2,
-      lineHeight: 1.2,
     },
     tickLine: {
       visible: false,
