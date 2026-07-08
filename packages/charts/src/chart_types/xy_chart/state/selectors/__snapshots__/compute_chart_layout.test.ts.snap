@@ -15,10 +15,10 @@ exports[`computeChartLayoutSelector hidden axes do not reserve any space 1`] = `
 exports[`computeChartLayoutSelector layout loop converges in a single iteration for long ordinal labels 1`] = `
 {
   "chartDimensions": {
-    "height": 53,
-    "left": 96,
+    "height": 65,
+    "left": 112,
     "top": 5,
-    "width": 104,
+    "width": 88,
   },
   "leftMargin": 0,
 }

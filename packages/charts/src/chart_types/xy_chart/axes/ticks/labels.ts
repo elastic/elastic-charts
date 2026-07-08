@@ -55,10 +55,16 @@ const MIN_LABEL_LENGTH = 12;
 // Max length (in characters) of a single-word label that is shouldn't be wrapped.
 const SHORT_WORD_MAX_LENGTH = 10;
 
-// Safe floor on the number of visible characters kept when truncating a tick label. Truncating below
-// this (e.g. "a…y") rarely helps the reader, so we stop here and let the label overflow instead. Four
-// is the minimum recommended by common design-system guidance (IBM Carbon, PatternFly, Maersk).
-const MIN_TRUNCATED_CHARS = 4;
+// Configuration for readable truncation of tick labels, defaults to 4 visible characters and 3 hidden characters.
+// This is to avoid over truncating the label that would be too short to be readable. In those cases, it's best
+// to let the label overflow instead, and visible ticks later will be able to cull the overflowed labels.
+const readableTickLabelOptions = {
+  min: {
+    visible: 4,
+    hidden: 3,
+  },
+  overflow: true,
+};
 
 const isCompactSingleWord = (value: string): boolean => {
   const trimmed = value.trim();
@@ -174,7 +180,7 @@ export const createTickLabelLayout = (
       lines = Object.assign([value], { meta: { truncated: false } });
     } else if (!allowWordWrap) {
       if (truncate) {
-        const { text } = fitText(measure, value, maxLineLength, fontSize, font, truncate, MIN_TRUNCATED_CHARS);
+        const { text } = fitText(measure, value, maxLineLength, fontSize, font, truncate, readableTickLabelOptions);
         lines = Object.assign([text], { meta: { truncated: text !== value } });
       } else {
         lines = Object.assign([value], { meta: { truncated: false } });
@@ -190,7 +196,7 @@ export const createTickLabelLayout = (
         locale,
         'word',
         truncate,
-        MIN_TRUNCATED_CHARS,
+        readableTickLabelOptions,
       );
     }
 

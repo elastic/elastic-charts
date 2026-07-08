@@ -32,6 +32,19 @@ describe('wrapText', () => {
     expect(lines.meta.truncated).toBe(false);
   });
 
+  it('keeps the full text on an overflowing last line when truncation is disabled', () => {
+    const lines = wrapText('one two three four', font, fontSize, 5, 2, monospaceMeasure, 'en', 'word', false);
+    expect(lines.meta.truncated).toBe(false);
+    expect(lines.length).toBe(2);
+    expect(lines.join('')).toBe('one two three four');
+  });
+
+  it('defaults to end truncation when maxLines is exceeded', () => {
+    const lines = wrapText('abcdef', font, fontSize, 4, 1, monospaceMeasure, 'en');
+    expect(lines.meta.truncated).toBe(true);
+    expect([...lines]).toEqual(['abc…']);
+  });
+
   it('truncates at the end when maxLines is exceeded', () => {
     const lines = wrapText('abcdef', font, fontSize, 4, 1, monospaceMeasure, 'en', 'word', 'end');
     expect(lines.meta.truncated).toBe(true);
@@ -44,10 +57,41 @@ describe('wrapText', () => {
     expect([...lines]).toEqual(['…def']);
   });
 
+  it('marks overflowing full text as not truncated when too few characters would be hidden', () => {
+    const lines = wrapText('abcdef', font, fontSize, 5, 1, monospaceMeasure, 'en', 'word', 'end', {
+      min: { visible: 4, hidden: 3 },
+      overflow: true,
+    });
+    expect(lines.meta.truncated).toBe(false);
+    expect([...lines]).toEqual(['abcdef']);
+  });
+
   it('fits to maxLineWidth * maxLines then re-wraps for multi-line middle truncation', () => {
     const lines = wrapText('one two three four', font, fontSize, 5, 2, monospaceMeasure, 'en', 'word', 'middle');
     expect(lines.meta.truncated).toBe(true);
     expect(lines.length).toBe(2);
     expect(lines.join('')).toBe('one t…four');
+  });
+
+  it('relaxes the min visible characters to stay within maxLines when overflow is not explicitly enabled (middle)', () => {
+    const lines = wrapText('abcdefghijklmnop', font, fontSize, 2, 2, monospaceMeasure, 'en', 'word', 'middle', {
+      min: { visible: 5 },
+    });
+    expect(lines.meta.truncated).toBe(true);
+    expect(lines.length).toBe(2);
+    expect(lines.join('')).toBe('ab…p');
+  });
+
+  it('never wraps past maxLines when the min visible forces overflow (middle)', () => {
+    // maxLineWidth * maxLines = 4 can't fit the 5-char min, so the last line must overflow
+    // horizontally rather than the label wrapping onto a third line.
+    const lines = wrapText('abcdefghijklmnop', font, fontSize, 2, 2, monospaceMeasure, 'en', 'word', 'middle', {
+      min: { visible: 5 },
+      overflow: true,
+    });
+    expect(lines.meta.truncated).toBe(true);
+    expect(lines.length).toBe(2);
+    expect(lines.at(-1)).toBe('c…op');
+    expect(lines.join('')).toBe('abc…op');
   });
 });

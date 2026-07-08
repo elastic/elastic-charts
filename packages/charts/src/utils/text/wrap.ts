@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { fitText, type Font } from '../../common/text_utils';
+import { fitText, type Font, type TruncateConfig } from '../../common/text_utils';
 import { monotonicHillClimb } from '../../solvers/monotonic_hill_climb';
 import type { TextMeasure } from '../bbox/canvas_text_bbox_calculator';
 import type { Truncate } from '../themes/theme';
@@ -30,7 +30,8 @@ export function wrapText(
   measure: TextMeasure,
   locale: string,
   granularity: Granularity = 'word',
-  truncate: Truncate = 'end',
+  truncate: Truncate | false = 'end',
+  truncateConfig?: TruncateConfig,
 ): WrapTextLines {
   if (maxLines <= 0) return Object.assign([], { meta: { truncated: false } });
 
@@ -39,10 +40,16 @@ export function wrapText(
 
   if (lines.length <= maxLines) return Object.assign(lines, { meta: { truncated: false } });
 
+  if (!truncate) {
+    const head = lines.slice(0, Math.max(0, maxLines - 1));
+    const overflow = lines.slice(Math.max(0, maxLines - 1)).join('');
+    return Object.assign([...head, overflow], { meta: { truncated: false } });
+  }
+
   // 'end' and 'start' truncate at a line edge, so we keep the wrapped lines on the visible
   // side intact and only fit the one that shares its line with the ellipsis.
   if (truncate === 'end' || truncate === 'start') {
-    return truncateLinesAtEdge(lines, maxLines, font, fontSize, maxLineWidth, measure, truncate);
+    return truncateLinesAtEdge(lines, maxLines, font, fontSize, maxLineWidth, measure, truncate, truncateConfig);
   }
 
   // find the width of the text that will fit within the maxLineWidth * maxLines budget
@@ -59,11 +66,34 @@ export function wrapText(
   );
 
   // truncate the text to the allotted width
-  const { text: truncatedText } = fitText(measure, cleanedText, allottedWidth, fontSize, font, truncate);
+  const { text: truncatedText } = fitText(
+    measure,
+    cleanedText,
+    allottedWidth,
+    fontSize,
+    font,
+    truncate,
+    truncateConfig,
+  );
 
   // wrap the truncated text to the maxLineWidth
   const rewrapped = wrapTextLines(truncatedText, font, fontSize, maxLineWidth, measure, locale, granularity);
-  return Object.assign(rewrapped, { meta: { truncated: true } });
+
+  // options.overflow could keep more text than the budget search assumed which would make rewrap go over
+  // maxLines. So we need to fold the overflown lines into the last visible line and let it overflow horizontally.
+  if (rewrapped.length > maxLines) {
+    if (!truncateConfig?.overflow) {
+      const { text: fittedText } = fitText(measure, cleanedText, allottedWidth, fontSize, font, truncate);
+      const fittedLines = wrapTextLines(fittedText, font, fontSize, maxLineWidth, measure, locale, granularity);
+      return Object.assign(fittedLines, { meta: { truncated: fittedText !== cleanedText } });
+    }
+
+    const head = rewrapped.slice(0, maxLines - 1);
+    const lastLine = rewrapped.slice(maxLines - 1).join('');
+    return Object.assign([...head, lastLine], { meta: { truncated: truncatedText !== cleanedText } });
+  }
+
+  return Object.assign(rewrapped, { meta: { truncated: truncatedText !== cleanedText } });
 }
 
 function truncateLinesAtEdge(
@@ -74,15 +104,16 @@ function truncateLinesAtEdge(
   maxLineWidth: number,
   measure: TextMeasure,
   edge: 'start' | 'end',
+  truncateConfig?: TruncateConfig,
 ): WrapTextLines {
   const overflow =
     edge === 'end' ? lines.slice(maxLines - 1).join('') : lines.slice(0, lines.length - maxLines + 1).join('');
-  const { text: truncatedLine } = fitText(measure, overflow, maxLineWidth, fontSize, font, edge);
+  const { text: truncatedLine } = fitText(measure, overflow, maxLineWidth, fontSize, font, edge, truncateConfig);
   const result =
     edge === 'end'
       ? [...lines.slice(0, maxLines - 1), truncatedLine]
       : [truncatedLine, ...lines.slice(lines.length - maxLines + 1)];
-  return Object.assign(result, { meta: { truncated: true } });
+  return Object.assign(result, { meta: { truncated: truncatedLine !== overflow } });
 }
 
 function findAllottedWidth(

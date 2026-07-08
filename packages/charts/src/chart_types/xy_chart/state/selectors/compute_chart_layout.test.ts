@@ -121,7 +121,12 @@ describe('computeChartLayoutSelector', () => {
     // Three ordinal categories plus a wider y-axis label format create a feedback loop between
     // bandwidth, label truncation, and overflow margins that needs more than one corrective pass.
     const container = { width: 200, height: 120, top: 0, left: 0 };
-    const xSpec = MockGlobalSpec.xAxis({ id: 'x', position: Position.Bottom, title: 'X axis' });
+    const xSpec = MockGlobalSpec.xAxis({
+      id: 'x',
+      position: Position.Bottom,
+      title: 'X axis',
+      style: { tickLabel: { wrapLines: 2, truncate: 'end' } },
+    });
     const ySpec = MockGlobalSpec.yAxis({
       id: 'y',
       position: Position.Left,

@@ -744,7 +744,7 @@ export interface AxisSpec extends Spec {
   labelFormat?: TickFormatter;
   /**
    * @deprecated use `style.tickLabel.truncate` instead.
-   * The position of the ellipsis when the tick label overflows. Defaults to 'end'.
+   * The position of the ellipsis when the tick label overflows
    */
   tickLabelTruncate?: Truncate;
   /**

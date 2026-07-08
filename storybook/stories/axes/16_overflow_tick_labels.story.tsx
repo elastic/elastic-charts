@@ -24,7 +24,7 @@ const AXIS_Y_GROUP = 'Axis Y';
 const data = [
   { category: 'this is the longest category name in this story', value: 47 },
   { category: 'this is an even longer category name', value: 36 },
-  { category: 'this is a long category name', value: 28 },
+  { category: 'this is a longer category name', value: 28 },
   { category: 'another category', value: 16 },
   { category: 'category name', value: 13 },
   { category: 'category', value: 8 },
@@ -56,10 +56,15 @@ const getWrapAxisKnobs = (group: string) => {
   const tickLabelLimit = parseTickLabelLimit(text('Tick label limit', '', group));
   const minExtent = parseThemeSize(text('minExtent', '', group));
   const maxExtent = parseThemeSize(text('maxExtent', '', group));
-  const wrapLines = number('wrapLines', 2, { min: 1, max: 10, step: 1 }, group);
+  const wrapLines = number('wrapLines', 1, { min: 1, max: 10, step: 1 }, group);
   const lineHeight = number('lineHeight', 1.2, { min: 0, max: 2, step: 0.1 }, group);
   const showOverlapping = boolean('show overlapping', false, group);
-  const truncate = select('truncate', { end: 'end', start: 'start', middle: 'middle' }, 'end', group);
+  const truncate = select(
+    'truncate',
+    { disabled: 'disabled', end: 'end', start: 'start', middle: 'middle' },
+    'disabled',
+    group,
+  );
 
   return {
     rotation,
@@ -104,7 +109,7 @@ const buildAxisStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePa
       wrapLines,
       ...(tickLabelLimit !== undefined && { limit: tickLabelLimit }),
       ...(alignment !== undefined && { alignment }),
-      ...(truncate !== undefined && { truncate }),
+      truncate: truncate === 'disabled' ? false : truncate,
     },
   };
 };
@@ -132,7 +137,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         id="x-axis"
         position={xPosition}
         title="X axis"
-        showOverlappingTicks={axisXKnobs.showOverlapping}
+        showOverlappingLabels={axisXKnobs.showOverlapping}
         style={buildAxisStyle(axisXKnobs)}
       />
       <Axis

@@ -76,7 +76,8 @@ describe('createTickLabelLayout', () => {
 
   test('wraps a long label across multiple lines using lineHeight for inner-line spacing', () => {
     const style = styleWith({ lineHeight: 1 });
-    const { fontSize, lineHeight } = style.tickLabel;
+    const { fontSize } = style.tickLabel;
+    const lineHeight = style.tickLabel.lineHeight ?? 1;
     const layout = createTickLabelLayout(style, axisSpec, monospaceMeasure, 'en', 5, 5);
     const result = layout('one two three');
     expect(result.lines.length).toBeGreaterThan(1);
@@ -104,8 +105,23 @@ describe('createTickLabelLayout', () => {
       expect(result.width).toBe(6);
     });
 
-    test('still truncates a long single token that overflows its slot', () => {
+    test('overflows a long single token by default instead of truncating', () => {
       const layout = createTickLabelLayout(styleWith(), xAxisSpec, monospaceMeasure, 'en', 2, 4, true);
+      const result = layout('abcdefghijklmnopqrst');
+      expect(result.lines.meta.truncated).toBe(false);
+      expect(result.lines.join('')).toBe('abcdefghijklmnopqrst');
+    });
+
+    test('truncates a long single token when truncation is enabled', () => {
+      const layout = createTickLabelLayout(
+        styleWith({ truncate: 'end' }),
+        xAxisSpec,
+        monospaceMeasure,
+        'en',
+        2,
+        4,
+        true,
+      );
       const result = layout('abcdefghijklmnopqrst');
       expect(result.lines.meta.truncated).toBe(true);
     });
