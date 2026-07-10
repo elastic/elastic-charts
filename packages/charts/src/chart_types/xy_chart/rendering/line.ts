@@ -67,7 +67,6 @@ export function renderLine(
     pointStyleAccessor,
   );
 
-  // TODO we can probably avoid computing the clipped ranges if no fit function is applied.
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
   const lineGeometry: LineGeometry = {

@@ -23,6 +23,7 @@ import {
   type AreaGeometry,
   type PerPanel,
 } from '../../../../utils/geometry';
+import type { AreaStyle } from '../../../../utils/themes/theme';
 
 /** @internal */
 export function renderAreas(
@@ -124,10 +125,19 @@ function renderArea(
   clippings: Rect,
   highlightState: GeometryHighlightState,
 ) {
-  const { area, color, transform, style, clippedRanges, shouldClip } = geometry;
+  const { area, color, transform, style, clippedRanges, shouldClip, bbox } = geometry;
   const areaFill = buildAreaStyles(ctx, imgCanvas, color, style.area, highlightState);
 
-  const fitAreaFillThemeStyle = { ...style.fit.area, dimmed: style.area.dimmed };
+  // the fitted area inherits the main area's fill/texture/gradient unless explicitly overridden,
+  const fitAreaFillThemeStyle: AreaStyle = {
+    ...style.area,
+    visible: style.fit.area.visible,
+    opacity: style.fit.area.opacity,
+    fill: style.fit.area.fill ?? style.area.fill,
+    texture: style.fit.area.texture ?? style.area.texture,
+    gradient: style.fit.area.gradient ?? style.area.gradient,
+    dimmed: style.area.dimmed,
+  };
   const fitAreaFill = buildAreaStyles(ctx, imgCanvas, color, fitAreaFillThemeStyle, highlightState);
 
   renderAreaPath(
@@ -139,6 +149,7 @@ function renderArea(
     clippedRanges,
     clippings,
     shouldClip && style.fit.area.visible,
+    bbox,
   );
 }
 

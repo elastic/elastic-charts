@@ -38,3 +38,5 @@ export { Example as textureMultipleSeries } from './24_texture_multiple_series.s
 export { Example as mixedPointShapes } from './25_mixed_point_shapes.story';
 export { Example as highlighterStyle } from './26_highlighter_style.story';
 export { Example as dimmedHighlightStyle } from './27_dimmed_highlight_style.story';
+export { Example as areaWithGradient } from './28_area_gradient.story';
+export { Example as fitInheritStyle } from './29_fit_inherit_style.story';

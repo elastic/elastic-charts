@@ -1,3 +1,16 @@
+# [71.9.0](https://github.com/elastic/elastic-charts/compare/v71.8.0...v71.9.0) (2026-07-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @playwright/test to ^1.61.0 ([#2853](https://github.com/elastic/elastic-charts/issues/2853)) ([d27ab3c](https://github.com/elastic/elastic-charts/commit/d27ab3cd757f7e00f9da58a4a525c9d9113a656b))
+* reduce selector cache memory leaks and tooltip DOM cleanup ([#2856](https://github.com/elastic/elastic-charts/issues/2856)) ([9498b9b](https://github.com/elastic/elastic-charts/commit/9498b9b0a4141877b2601742de51a632c31ba2b2))
+
+
+### Features
+
+* **area:** add gradient fill for area ([#2854](https://github.com/elastic/elastic-charts/issues/2854)) ([886841c](https://github.com/elastic/elastic-charts/commit/886841c79773c87765e97e8d4c2a70967baa6361))
+
 # [71.8.0](https://github.com/elastic/elastic-charts/compare/v71.7.0...v71.8.0) (2026-06-24)
 
 

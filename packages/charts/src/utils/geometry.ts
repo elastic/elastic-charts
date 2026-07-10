@@ -139,6 +139,10 @@ export interface AreaGeometry {
     x: number;
     y: number;
   };
+  /**
+   * `(x0, y0)` is the top-left corner and `(x1, y1)` the bottom-right corner (pre-transformed).
+   */
+  bbox: { x0: number; y0: number; x1: number; y1: number };
   seriesIdentifier: XYChartSeriesIdentifier;
   style: AreaSeriesStyle;
   isStacked: boolean;
