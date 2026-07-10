@@ -179,11 +179,17 @@ const TooltipPortalComponent = ({
 
   useEffect(() => {
     setPopper();
-    const nodeCopy = portalNode;
+    const portalCopy = portalNode;
+    const anchorCopy = anchorNode;
+    const anchorWasCreatedByUs = !isHTMLElement((anchor as PortalAnchorRef).current);
 
     return () => {
-      if (nodeCopy.parentNode) {
-        nodeCopy.parentNode.removeChild(nodeCopy);
+      if (portalCopy.parentNode) {
+        portalCopy.parentNode.removeChild(portalCopy);
+      }
+
+      if (anchorWasCreatedByUs && anchorCopy.parentNode) {
+        anchorCopy.parentNode.removeChild(anchorCopy);
       }
 
       destroyPopper();
