@@ -18,9 +18,10 @@ Clear the canvas; call `drawTimeBar`; draw the left gutter (span names, ellipsis
 shared `text` primitive). Iterate lanes **culled** to the visible y-range; per visible lane, draw the
 thin total line across `[scale(start), scale(end)]` and its `active` segments as solid rects (per-datum
 `color` if set, else the themed active color), each additionally culled to the current `focusDomain`.
-Implement `pickLane(x, y)` with plain CPU math —
-`lane = floor((y - plot.y + scrollOffset) / laneHeight)`, bounds-checked against the span count — no
-GPU pick texture is needed at Canvas2D scale (contrast with Flame's WebGL picking).
+Implement `pickLane(x, y, geom)` with plain CPU math —
+`lane = floor((y - geom.plot.y + geom.scrollOffset) / geom.laneHeight)`, bounds-checked against the
+span count, reading `scrollOffset` off `geom` (per Spec 3) rather than ambient state — no GPU pick
+texture is needed at Canvas2D scale (contrast with Flame's WebGL picking).
 
 Reuse the shared Canvas2D primitives in
 [renderers/canvas/primitives/](../../../packages/charts/src/renderers/canvas/primitives/) (`rect`,

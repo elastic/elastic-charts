@@ -6,18 +6,23 @@
 
 ## Files
 
-- `chart_types/trace_chart/trace_chart.tsx` (event handlers).
-- `chart_types/trace_chart/chart_selectors.ts` (`getTooltipInfo`, `getPointerCursor`).
+- `chart_types/trace_chart/trace_chart.tsx` (event handlers, hover state).
+- `chart_types/trace_chart/chart_selectors.ts` (`getPointerCursor`).
 
 ## Contract
 
-`getTooltipInfo(state)` returns the hovered span's `TooltipInfo` with the original span exposed on
-`datum`; pointer handlers map `pickLane` results to tooltip visibility and `onElementOver/Out/Click`.
+Hover is **not** redux-selector-driven — Trace is in the self-managed canvas family (Spec 0), and
+neither of its precedents (Flame, Timeslip) route hover through the store. Follow Flame's pattern:
+`trace_chart.tsx` keeps the hovered span index as a plain component instance field (e.g. `hoverIndex`),
+mutated in the pointer handler and forcing a re-render, mirroring Flame's `hoverIndex`/
+`updateHoverIndex` (`flame_chart.tsx`). `chart_selectors.ts` exposes only `getPointerCursor(state)`
+(cursor style from settings, independent of hover state). Pointer handlers map `pickLane` results to
+tooltip visibility and `onElementOver/Out/Click`.
 
 ## Steps
 
-On `mousemove`, call `pickLane` and set the hovered index in component state; position the shared
-`BasicTooltip` (or the caller's `customTooltip`) at the pointer; clear on pointer leave. On click, fire
+On `mousemove`, call `pickLane` and set the hovered index on the component instance field; position the
+shared `BasicTooltip` (or the caller's `customTooltip`) at the pointer; clear on pointer leave. On click, fire
 `onElementClick` with a payload carrying the full `NormalizedSpan` (including `meta`). Provide sensible
 default tooltip values (name, total duration, self time, start offset from trace start) while allowing
 `<Tooltip customTooltip>` to fully override the rendered content — this is how OTel `attributes`/`status`

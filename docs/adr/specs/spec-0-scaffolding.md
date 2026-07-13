@@ -30,6 +30,9 @@ render/interaction loop; the chart type is inferred from whichever spec is mount
 
 `TraceSpec`/`TraceDatum` shells (fields present per the architecture's authoritative contracts;
 `data` accepted but not processed yet — see [Spec 1](./spec-1-normalization.md) for the real shape).
+Two props load-bearing from the start: `format: 'simple' | 'otel'` — **required**, no default; ADR
+0002 selects the input format explicitly rather than auto-detecting from shape, so a default would
+silently reintroduce shape-sniffing — and `xScaleType: 'time' | 'linear'`, optional, default `'time'`.
 
 ## Steps
 

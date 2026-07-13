@@ -1,6 +1,7 @@
 # Spec 2 — Self-time derivation
 
-**Goal:** resolve each span's `active` segments (explicit if supplied, else self time).
+**Goal:** resolve each span's `active` segments when Spec 1 left them empty — i.e. derive self time as
+a fallback for spans without an explicit `active` (simple format only; see Spec 1).
 
 **Depends on:** [Spec 1](./spec-1-normalization.md) (`NormalizedSpan`).
 
@@ -18,9 +19,10 @@ function resolveActive(spans: NormalizedSpan[]): NormalizedSpan[]; // fills `act
 
 ## Steps
 
-Build a `parentId → children[]` map. For each span whose `active` is empty, compute `[start,end]` minus
-the **union** of its direct children's `[start,end]` via sorted-interval subtraction, producing 0..N
-segments. Spans that already carry an explicit `active` (possible under the simple format) pass through
+Build a `parentId → children[]` map. For each span whose `active` is empty (i.e. Spec 1 found no
+`TraceDatum.active` to copy), compute `[start,end]` minus the **union** of its direct children's
+`[start,end]` via sorted-interval subtraction, producing 0..N segments. Spans that already carry a
+non-empty `active` (copied verbatim by Spec 1 from an explicit `TraceDatum.active`) pass through
 unchanged. Clamp any child extent to the parent's before subtracting, so a child that overruns its
 parent (clock skew, bad data) cannot produce a negative-width or out-of-bounds segment.
 
