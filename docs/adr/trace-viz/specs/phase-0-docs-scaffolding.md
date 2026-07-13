@@ -7,8 +7,8 @@ per-spec loop assumes. Nothing renders yet; this is the paper trail the rest of 
 
 ## Actions
 
-1. Create `docs/adr/` with `docs/adr/README.md` — an index listing the ADRs and linking the spec docs.
-2. Create `docs/adr/specs/` and copy each spec section into its own file so each is executable standalone.
+1. Create `docs/adr/trace-viz/` with `docs/adr/trace-viz/README.md` — an index listing the ADRs and linking the spec docs.
+2. Create `docs/adr/trace-viz/specs/` and copy each spec section into its own file so each is executable standalone.
 3. Seed ADRs for the hard-to-reverse, non-obvious, real-trade-off decisions:
    - [0001 — Canvas2D renderer with a WebGL seam](../0001-renderer-canvas2d-with-webgl-seam.md)
    - [0002 — Single normalized span, dual input](../0002-single-normalized-span-dual-input.md)
@@ -21,12 +21,12 @@ per-spec loop assumes. Nothing renders yet; this is the paper trail the rest of 
 **Review:** peer-read the ADRs/glossary for accuracy against the architecture; no `/review-claudio`
 pass at this step since there is no code yet.
 
-**Acceptance:** `docs/adr/` (README + 3 ADRs), `docs/adr/specs/` (this file + 9 spec docs), and
+**Acceptance:** `docs/adr/trace-viz/` (README + 3 ADRs), `docs/adr/trace-viz/specs/` (this file + 9 spec docs), and
 `CONTEXT.md` exist and agree with the architecture; branch created.
 
 ## Status
 
-- [x] `docs/adr/` created with README + 3 ADRs.
-- [x] `docs/adr/specs/` created with all spec docs.
+- [x] `docs/adr/trace-viz/` created with README + 3 ADRs.
+- [x] `docs/adr/trace-viz/specs/` created with all spec docs.
 - [x] `CONTEXT.md` created at repo root.
 - [x] Feature branch `feat/trace-viz` already in place.

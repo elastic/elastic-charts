@@ -24,7 +24,7 @@ span count, reading `scrollOffset` off `geom` (per Spec 3) rather than ambient s
 texture is needed at Canvas2D scale (contrast with Flame's WebGL picking).
 
 Reuse the shared Canvas2D primitives in
-[renderers/canvas/primitives/](../../../packages/charts/src/renderers/canvas/primitives/) (`rect`,
+[renderers/canvas/primitives/](../../../../packages/charts/src/renderers/canvas/primitives/) (`rect`,
 `line`, `text`) rather than hand-rolling drawing calls.
 
 ## Storybook

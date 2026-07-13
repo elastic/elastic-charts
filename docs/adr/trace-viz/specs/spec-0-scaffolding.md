@@ -14,7 +14,7 @@ render/interaction loop; the chart type is inferred from whichever spec is mount
 
 ## Files
 
-- [chart_types/index.ts](../../../packages/charts/src/chart_types/index.ts) — add `Trace: 'trace'` to `ChartType`.
+- [chart_types/index.ts](../../../../packages/charts/src/chart_types/index.ts) — add `Trace: 'trace'` to `ChartType`.
 - `chart_types/trace_chart/trace_api.ts` — minimal `TraceSpec` + `<Trace>` component via
   `buildSFProps`/`useSpecFactory` (data typed but unused yet).
 - `chart_types/trace_chart/chart_selectors.ts` — `createChartSelectorsFactory` with
@@ -22,9 +22,9 @@ render/interaction loop; the chart type is inferred from whichever spec is mount
 - `chart_types/trace_chart/trace_chart.tsx` — connected component rendering one blank
   `<canvas ref={forwardStageRef} className="echCanvasRenderer">`, `getContext('2d')` on mount,
   `onChartRendered()`, exported `chartRenderer: ChartRenderer`.
-- [chart_type_renderers.ts](../../../packages/charts/src/chart_types/chart_type_renderers.ts) — register `ChartType.Trace`.
-- [chart_type_selectors.ts](../../../packages/charts/src/chart_types/chart_type_selectors.ts) — register `ChartType.Trace`.
-- [packages/charts/src/index.ts](../../../packages/charts/src/index.ts) — `export * from './chart_types/trace_chart/trace_api'`.
+- [chart_type_renderers.ts](../../../../packages/charts/src/chart_types/chart_type_renderers.ts) — register `ChartType.Trace`.
+- [chart_type_selectors.ts](../../../../packages/charts/src/chart_types/chart_type_selectors.ts) — register `ChartType.Trace`.
+- [packages/charts/src/index.ts](../../../../packages/charts/src/index.ts) — `export * from './chart_types/trace_chart/trace_api'`.
 
 ## Contract
 
@@ -37,9 +37,17 @@ silently reintroduce shape-sniffing — and `xScaleType: 'time' | 'linear'`, opt
 ## Steps
 
 Clone Timeslip's api + component skeleton
-([timeslip_api.ts](../../../packages/charts/src/chart_types/timeslip/timeslip_api.ts),
-[timeslip_chart.tsx](../../../packages/charts/src/chart_types/timeslip/timeslip_chart.tsx)); strip its
+([timeslip_api.ts](../../../../packages/charts/src/chart_types/timeslip/timeslip_api.ts),
+[timeslip_chart.tsx](../../../../packages/charts/src/chart_types/timeslip/timeslip_chart.tsx)); strip its
 `getData`; wire the two registries and the barrel export.
+
+Known, accepted debt: this clones Timeslip's `mapStateToProps` block for
+`onElementOver/Click/Out`/`onRenderChange` verbatim — the same block Timeslip and Flame each already
+carry with their own `// todo extract these mappings once there are other charts like X` comment
+(`timeslip_chart.tsx`, `flame_chart.tsx`). Trace becomes the third copy. Carry the same `todo` comment
+forward rather than silently repeating it, and extract a shared
+`getStandardChartCallbacks(state)`-style selector (next to `getSettingsSpecSelector`) once Trace ships —
+retrofitting Timeslip/Flame onto it is a separate follow-up, out of scope here.
 
 ## Storybook
 

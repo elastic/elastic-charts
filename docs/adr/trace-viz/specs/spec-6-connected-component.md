@@ -28,13 +28,13 @@ mouse-wheel → zoom via `doZoomAroundPosition`; drag → pan via `doPanFromJump
 `kineticFlywheel`; vertical wheel/drag (or a scrollbar) → component-instance `scrollOffset`, passed
 into `buildGeometry` each frame. Initial
 `focusDomain = domain` (fit all). Emit `onRenderChange`/`onChartRendered` per the standard chart
-protocol. Leave [chart_container.tsx](../../../packages/charts/src/components/chart_container.tsx)
+protocol. Leave [chart_container.tsx](../../../../packages/charts/src/components/chart_container.tsx)
 untouched unless a pointer-event conflict actually appears — Timeslip needs no special-casing there,
 unlike Flame.
 
 Reuse:
-[`initialZoomPan`, `doZoomAroundPosition`, `doPanFromJumpDelta`, `kineticFlywheel`, `markDragStartPosition`, `endDrag`](../../../packages/charts/src/chart_types/timeslip/projections/zoom_pan.ts),
-[`domainTween`](../../../packages/charts/src/chart_types/timeslip/projections/domain_tween.ts).
+[`initialZoomPan`, `doZoomAroundPosition`, `doPanFromJumpDelta`, `kineticFlywheel`, `markDragStartPosition`, `endDrag`](../../../../packages/charts/src/chart_types/timeslip/projections/zoom_pan.ts),
+[`domainTween`](../../../../packages/charts/src/chart_types/timeslip/projections/domain_tween.ts).
 
 ## Storybook
 

@@ -27,4 +27,4 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 Build order: Phase 0 → Spec 0 → Spec 1 → (Spec 2 / Spec 3 / Spec 4 in parallel once Spec 1's
 `NormalizedSpan` contract is fixed) → Spec 5 → Spec 6 → Spec 7 → Spec 8.
 
-See the repo root [`CONTEXT.md`](../../CONTEXT.md) for the domain glossary.
+See the repo root [`CONTEXT.md`](../../../CONTEXT.md) for the domain glossary.

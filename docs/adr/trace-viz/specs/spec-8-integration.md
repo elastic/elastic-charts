@@ -13,7 +13,7 @@ already carries its own aspect story and review.
 
 ## Steps
 
-Author the integration stories and their fixtures. Update this `docs/adr/specs/` set and the ADRs with
+Author the integration stories and their fixtures. Update this `docs/adr/trace-viz/specs/` set and the ADRs with
 anything that changed during implementation. Verify the root `CONTEXT.md` glossary still matches the
 shipped terms.
 

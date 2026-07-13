@@ -17,9 +17,9 @@ function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
 ## Steps
 
 Select
-[`continuousTimeRasters`](../../../packages/charts/src/chart_types/xy_chart/axes/timeslip/continuous_time_rasters.ts)
+[`continuousTimeRasters`](../../../../packages/charts/src/chart_types/xy_chart/axes/timeslip/continuous_time_rasters.ts)
 when `xScaleType === 'time'`, or
-[`numericalRasters`](../../../packages/charts/src/chart_types/xy_chart/axes/timeslip/numerical_rasters.ts)
+[`numericalRasters`](../../../../packages/charts/src/chart_types/xy_chart/axes/timeslip/numerical_rasters.ts)
 when `'linear'` — mirroring how Timeslip already picks between them
 (`timeslip/render/raster.ts` / `cartesian.ts`). Request tick layers for `geom.focusDomain` and
 `geom.timeBar.width`. Draw tick lines + labels within `geom.timeBar`, and faint gridlines down through
