@@ -41,6 +41,7 @@ test.describe('Stylings stories', () => {
       });
     });
   });
+
   test.describe('Fit function styling', () => {
     test('can style the line', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
@@ -79,6 +80,39 @@ test.describe('Stylings stories', () => {
           action,
           waitSelector: common.chartWaitSelector,
         },
+      );
+    });
+    test('should inherit style from main area unless explicitly overridden', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/stylings--fit-inherit-style&knob-Area%20fill=solid',
+      );
+    });
+  });
+
+  test.describe('Gradient', () => {
+    test('single area, series-color stops (default)', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/stylings--area-with-gradient',
+      );
+    });
+    test('single area, explicit stop colors', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/stylings--area-with-gradient&knob-Bottom%20color_Gradient=rgba(231,39,53,1)&knob-Stops%20use%20series%20color_Gradient=false&knob-Top%20color_Gradient=rgba(0,104,182,1)',
+      );
+    });
+    test('stacked areas', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/stylings--area-with-gradient&knob-Layout_Layout=stacked',
+      );
+    });
+    test('banded area', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/stylings--area-with-gradient&knob-Layout_Layout=banded',
+      );
+    });
+    test('gradient with texture overlay', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/stylings--area-with-gradient&knob-Overlay%20texture_Layout=true',
       );
     });
   });

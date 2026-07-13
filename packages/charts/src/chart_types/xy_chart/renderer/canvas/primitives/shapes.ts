@@ -9,6 +9,7 @@
 import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
 import type { Circle, Fill, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
+import { applyCanvasFill } from '../../../../../renderers/canvas/primitives/fill';
 import { MIN_STROKE_WIDTH } from '../../../../../renderers/canvas/primitives/line';
 import { degToRad } from '../../../../../utils/common';
 import type { PointShape } from '../../../../../utils/themes/theme';
@@ -19,7 +20,7 @@ export function renderShape(
   ctx: CanvasRenderingContext2D,
   shape: PointShape,
   { x, y, radius }: Circle,
-  { color: fillColor }: Fill,
+  fill: Fill,
   { width, dash, color: strokeColor }: Stroke,
 ) {
   withContext(ctx, () => {
@@ -30,8 +31,8 @@ export function renderShape(
 
     const path = new Path2D(pathFn(radius));
 
-    ctx.fillStyle = RGBATupleToString(fillColor);
-    ctx.fill(path);
+    const bbox = { x0: -radius, y0: -radius, x1: radius, y1: radius };
+    applyCanvasFill(ctx, fill, bbox, () => ctx.fill(path));
 
     if (width > MIN_STROKE_WIDTH) {
       ctx.strokeStyle = RGBATupleToString(strokeColor);

@@ -16,43 +16,46 @@ import createCachedSelector from 're-reselect';
 import type { GlobalChartState } from './chart_state';
 
 /**
- * This wraps Redux Toolkit's `createSelector` with a custom cache size of 100.
- * It will be passed on to re-reselect's `createCachedSelector` to handle the cache.
- * This means we'll get a cache size of 100 for each chartId. The default cache size
- * of 1 slowed things down quite a bit after migrating to Redux Toolkit.
+ * Wraps RTK's `createSelector` with a bounded LRU memo cache per chartId.
+ * maxSize=2 captures all hit-rate gains with minimal memory footprint.
+ * Keeping this small is critical because every cached entry can retain
+ * large chart objects (geometry arrays, scales, tooltip info) and the
+ * cost is multiplied by ~170 selectors × N charts on the page.
  */
-const createSelectorWithMaxSize100 = ((selectors: any[], combiner: (...args: any[]) => any) =>
+const createSelectorWithLRU = ((selectors: any[], combiner: (...args: any[]) => any) =>
   createSelector(selectors, combiner, {
     memoizeOptions: {
-      maxSize: 100,
+      maxSize: 2,
     },
   })) as unknown as typeof createSelector;
 
 /**
- * Custom object cache
+ * Custom cache backed by Map (re-reselect ICacheObject).
+ * Map is preferred over a plain object because .size is O(1),
+ * .delete() doesn't deoptimize V8 hidden classes
  * see https://github.com/toomuchdesign/re-reselect/tree/master/src/cache#write-your-custom-cache-object
  */
 class CustomMapCache implements ICacheObject {
-  private cache: any = {};
+  private cache = new Map<string, () => any>();
 
   set(key: string, selectorFn: () => any) {
-    this.cache[key] = selectorFn;
+    this.cache.set(key, selectorFn);
   }
 
   get(key: string) {
-    return this.cache[key];
+    return this.cache.get(key);
   }
 
   remove(key: string) {
-    delete this.cache[key];
+    this.cache.delete(key);
   }
 
   clear() {
-    this.cache = {};
+    this.cache.clear();
   }
 
   isEmpty() {
-    return Object.keys(this.cache).length === 0;
+    return this.cache.size === 0;
   }
 
   isValidCacheKey(key: string) {
@@ -60,35 +63,30 @@ class CustomMapCache implements ICacheObject {
   }
 }
 
+const keySelector = ({ chartId }: GlobalChartState) => chartId;
+
 class GlobalSelectorCache {
   private selectorCaches: CustomMapCache[] = [];
 
-  static keySelector({ chartId }: GlobalChartState) {
-    return chartId;
-  }
-
-  getNewOptions() {
+  registerSelector() {
+    const cache = new CustomMapCache();
+    this.selectorCaches.push(cache);
     return {
-      keySelector: GlobalSelectorCache.keySelector,
-      cacheObject: this.getCacheObject(),
-      selectorCreator: createSelectorWithMaxSize100,
+      keySelector,
+      cacheObject: cache,
+      selectorCreator: createSelectorWithLRU,
     };
   }
 
   removeKeyFromAll(key: string) {
-    // remove the chart id from all caches
     this.selectorCaches.forEach((cache) => {
       cache.remove(key);
     });
-    // clean up empty caches
-    this.selectorCaches = this.selectorCaches.filter((cache) => !cache.isEmpty());
-  }
-
-  private getCacheObject(): CustomMapCache {
-    const cache = new CustomMapCache();
-    this.selectorCaches.push(cache);
-
-    return cache;
+    // NOTE: we intentionally do NOT prune empty caches from the array.
+    // Each cache is shared by closure with a live re-reselect selector.
+    // Pruning it here would orphan the cache: future chartIds written to
+    // it by re-reselect would never be cleaned up by subsequent
+    // removeKeyFromAll calls, causing a memory leak.
   }
 }
 
@@ -112,5 +110,5 @@ export const globalSelectorCache = new GlobalSelectorCache();
  */
 export const createCustomCachedSelector = ((...args: any[]) => {
   // @ts-ignore - forced types to simplify usage. All types align correctly
-  return createCachedSelector(...args)(globalSelectorCache.getNewOptions());
+  return createCachedSelector(...args)(globalSelectorCache.registerSelector());
 }) as unknown as typeof createSelector;
