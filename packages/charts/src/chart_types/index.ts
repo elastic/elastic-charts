@@ -23,6 +23,7 @@ export const ChartType = Object.freeze({
   Wordcloud: 'wordcloud' as const,
   Metric: 'metric' as const,
   Bullet: 'bullet' as const,
+  Trace: 'trace' as const,
 });
 /** @public */
 export type ChartType = $Values<typeof ChartType>;
