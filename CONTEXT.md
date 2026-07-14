@@ -34,3 +34,18 @@ The set of spans sharing one `traceId`. The Trace chart renders one trace at a t
 **Focus domain**:
 The currently-visible time window `[min, max]` of the Trace waterfall after zoom/pan, eased toward a target.
 _Avoid_: viewport, visible range.
+
+**Scroll offset**:
+The vertical lane-scroll position (pixels) within the plot area. A component-instance value clamped to
+`[0, max(0, spans.length × laneHeight − plot.height)]`. Distinct from the **Focus domain** (which is
+the horizontal time window). When `scroll offset = 0` the topmost lane is flush with the top of the
+plot; increasing the offset scrolls lanes upward, revealing lower lanes.
+_Avoid_: vertical offset (ambiguous with DPR transforms), viewport offset.
+
+**Minimum visible extent**:
+The smallest meaningful time window the trace chart allows via zoom-in: **1 ms**. This is the finest
+granularity the time-raster axis engine can label; zooming beyond it repeats identical millisecond
+labels. The floor applies to both `linear` and `time` x-scale types, since both store domain values in
+ms. Distinct from the **Focus domain** (the current window, always ≥ the minimum visible extent after
+clamping).
+_Avoid_: minimum zoom level (implies a zoom exponent, not a time window).

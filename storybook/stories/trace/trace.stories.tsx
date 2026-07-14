@@ -16,3 +16,4 @@ export { Example as selfTimeDebug } from './02_self_time_debug.story';
 export { Example as geometryDebug } from './03_geometry_debug.story';
 export { Example as timeBar } from './04_time_bar.story';
 export { Example as renderer } from './05_renderer.story';
+export { Example as interactive } from './06_interactive.story';

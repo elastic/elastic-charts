@@ -80,10 +80,14 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       const midY = laneTop + laneHeight / 2;
 
       // --- Total-duration line (thin horizontal rule for the full span extent) ---
-      const lineX1 = scale(span.start);
-      const lineX2 = scale(span.end);
-      // Skip if entirely outside the visible plot x-range (focusDomain cull).
-      if (lineX2 >= plot.left && lineX1 <= plotRight) {
+      const rawX1 = scale(span.start);
+      const rawX2 = scale(span.end);
+      // Cull entirely-out-of-range spans, then clamp to plot bounds so the line
+      // never paints leftward into the gutter over the span-name labels. Mirrors
+      // the clamp already applied to active-segment rects below.
+      if (rawX2 >= plot.left && rawX1 <= plotRight) {
+        const lineX1 = Math.max(plot.left, rawX1);
+        const lineX2 = Math.min(plotRight, rawX2);
         renderMultiLine(ctx, [{ x1: lineX1, y1: midY, x2: lineX2, y2: midY }], totalLineStroke);
       }
 

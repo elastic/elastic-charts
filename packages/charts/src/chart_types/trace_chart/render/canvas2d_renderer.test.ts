@@ -286,6 +286,57 @@ describe('draw — segment culling (x-range cull)', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Tests: total-duration line clamping
+// ---------------------------------------------------------------------------
+
+describe('draw — total-duration line clamping', () => {
+  it('clamps the total line start to plot.left when span.start is left of the visible window', () => {
+    // Span runs from t=-500 to t=500; its raw scaled x1 falls to the left of plot.left=200.
+    // scale(-500) = 200 + (-500/1000)*700 = 200 - 350 = -150  → left of plot.left
+    // scale(500)  = 200 + (500/1000)*700  = 200 + 350 = 550   → inside plot
+    const ctx = makeCtx();
+    const oobSpan: NormalizedSpan[] = [
+      {
+        id: 'oob',
+        name: 'OOB-start',
+        start: -500,
+        end: 500,
+        active: [],
+        meta: { id: 'oob', name: 'OOB-start', traceId: 't1', start: -500, end: 500 } as TraceDatum,
+      },
+    ];
+    draw(ctx, makeGeom({ spans: oobSpan }), style);
+    // The total line must be drawn (span is partially visible).
+    expect(ctx.moveTo).toHaveBeenCalledTimes(1);
+    // moveTo(x, y) — x must equal plot.left (200), not the raw -150.
+    const [movedX] = (ctx.moveTo as jest.Mock).mock.calls[0] as [number, number];
+    expect(movedX).toBe(PLOT_LEFT);
+  });
+
+  it('clamps the total line end to plotRight when span.end is right of the visible window', () => {
+    // Span runs from t=0 to t=1500; its raw x2 falls right of plotRight=900.
+    // scale(0)    = 200   → inside plot
+    // scale(1500) = 200 + (1500/1000)*700 = 1250 → right of plotRight=900
+    const ctx = makeCtx();
+    const oobSpan: NormalizedSpan[] = [
+      {
+        id: 'oob',
+        name: 'OOB-end',
+        start: 0,
+        end: 1500,
+        active: [],
+        meta: { id: 'oob', name: 'OOB-end', traceId: 't1', start: 0, end: 1500 } as TraceDatum,
+      },
+    ];
+    draw(ctx, makeGeom({ spans: oobSpan }), style);
+    expect(ctx.lineTo).toHaveBeenCalledTimes(1);
+    // lineTo(x, y) — x must equal plotRight (PLOT_LEFT + PLOT_WIDTH = 900), not 1250.
+    const [lineX] = (ctx.lineTo as jest.Mock).mock.calls[0] as [number, number];
+    expect(lineX).toBe(PLOT_LEFT + PLOT_WIDTH);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Tests: per-span color override
 // ---------------------------------------------------------------------------
 

@@ -6,6 +6,7 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0001 — Trace chart renders via Canvas2D, behind a WebGL seam](./0001-renderer-canvas2d-with-webgl-seam.md)
 - [0002 — Trace chart accepts two input formats, normalized to one internal span shape](./0002-single-normalized-span-dual-input.md)
 - [0003 — A span's active segment(s) default to its self time, not its full duration](./0003-self-time-as-active-segments.md)
+- [0004 — Self-managed RAF render loop & the zoom-eases / pan-1:1 interaction model](./0004-raf-render-loop-and-interaction-model.md)
 
 ## Spec plans
 

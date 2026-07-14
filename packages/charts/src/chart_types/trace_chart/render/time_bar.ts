@@ -87,6 +87,15 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
   // Gridline density gate: mirrors the second notTooDense call in raster.ts:186.
   const showGridLine = notTooDense(domainFrom, domainTo, 0, timeBar.width, MAX_TIME_GRID_COUNT);
 
+  // The trace time bar is a single-row axis. The raster engine can return multiple labeled layers
+  // (e.g. a coarse date layer + a fine time layer). Drawing every labeled layer's text at the same
+  // fixed row causes label overlap wherever a coarse and fine tick share an x position. Fix: pick
+  // only the finest (most granular) labeled layer for label rendering. Both raster factories return
+  // layers finest-first (see `[...layers].reverse()` in continuous_time_rasters.ts and
+  // numerical_rasters.ts), so the finest labeled layer is the first element with layer.labeled === true.
+  // Tick lines and gridlines are still drawn for all layers; only label text is restricted to one layer.
+  const labelLayer: AxisLayer<Interval> | null = layers.find((l) => l.labeled) ?? null;
+
   withContext(ctx, () => {
     // --- Time bar background ---
     ctx.fillStyle = style.timeBarLabel.color; // will be overridden per element; set base state
@@ -102,6 +111,14 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
 
         // Skip ticks outside the visible plot x-range.
         if (tickX < plot.left || tickX > plot.left + plot.width) continue;
+
+        // Linear mode: 1 ms is the finest meaningful resolution (matches the zoom-depth floor,
+        // ADR 0004 Decision 3). numericalRasters subdivides below 1 ms at deep zoom, emitting
+        // fractional-ms ticks whose integer-ms labels all duplicate. Render only ticks that sit on
+        // a whole-ms boundary → at most one tick (line + gridline + label) per millisecond.
+        // Time mode is exempt: continuousTimeRasters already bottoms out at integer-ms ticks, and
+        // applying an epsilon test to large epoch-ms values risks float-precision false positives.
+        if (!isTime && Math.abs(tickMs - Math.round(tickMs)) > 1e-6) continue;
 
         // --- Tick line: protrudes from bottom of time bar ---
         withContext(ctx, () => {
@@ -125,8 +142,8 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
           });
         }
 
-        // --- Tick label (labeled layers only) ---
-        if (layer.labeled) {
+        // --- Tick label (finest labeled layer only — see comment above) ---
+        if (layer === labelLayer) {
           const label = isTime
             ? layer.minorTickLabelFormat(minimum * MS_PER_SECOND) // formatters expect ms
             : formatElapsedMs(minimum); // linear: ignore numericalRasters formatter (epoch-relative)
