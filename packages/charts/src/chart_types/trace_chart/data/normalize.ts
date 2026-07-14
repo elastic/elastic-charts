@@ -82,13 +82,23 @@ function flattenEnvelope(envelope: OtlpEnvelope): OtelSpan[] {
  * Converts an OTLP nanosecond timestamp to epoch milliseconds via bigint arithmetic, so precision
  * isn't lost to floating point (epoch nanos exceed `Number.MAX_SAFE_INTEGER`). OTLP JSON emits nanos as
  * strings; some sources use number or bigint directly.
+ *
+ * Malformed values (non-integer strings such as `"12.5"` or `"abc"`) would throw a `SyntaxError`
+ * inside `BigInt()`. Since OTLP data arrives from external pipelines, we guard with a try/catch and
+ * return `NaN` (consistent with the defensive `?? []` in `flattenEnvelope`). Upstream code should
+ * filter spans whose `start`/`end` are `NaN` before they reach geometry/rendering.
  * @internal
  */
 export function nanoToMs(nano: string | number | bigint): number {
-  const nanoBigInt = typeof nano === 'number' ? BigInt(Math.trunc(nano)) : BigInt(nano);
-  const ms = nanoBigInt / 1_000_000n;
-  const remainderNs = nanoBigInt % 1_000_000n;
-  return Number(ms) + Number(remainderNs) / 1_000_000;
+  try {
+    const nanoBigInt = typeof nano === 'number' ? BigInt(Math.trunc(nano)) : BigInt(nano);
+    const ms = nanoBigInt / 1_000_000n;
+    const remainderNs = nanoBigInt % 1_000_000n;
+    return Number(ms) + Number(remainderNs) / 1_000_000;
+  } catch {
+    Logger.warn(`nanoToMs: could not convert "${String(nano)}" to a BigInt — malformed OTLP timestamp; using NaN.`);
+    return NaN;
+  }
 }
 
 function selectTrace(spans: NormalizedSpan[], traceId?: string): NormalizedSpan[] {

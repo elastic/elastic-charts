@@ -13,12 +13,12 @@ import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
 import { normalize } from './data/normalize';
-import type { OtelInput } from './data/types';
 import { resolveActive } from './data/self_time';
 import { canvas2dRenderer } from './render/canvas2d_renderer';
 import { buildGeometry } from './render/geometry';
+import { computeMaxScroll, computeZoomMax, hasViewKeyChanged } from './render/interaction';
 import { buildTraceStyle } from './theme';
-import type { TraceDatum, TraceSpec } from './trace_api';
+import type { TraceSpec } from './trace_api';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import type { SettingsSpec } from '../../specs';
@@ -34,8 +34,7 @@ import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import type { Size } from '../../utils/dimensions';
 import type { Theme } from '../../utils/themes/theme';
-import { withAnimation, withDeltaTime } from '../timeslip/utils/animation';
-import { zoomSafePointerX, zoomSafePointerY } from '../timeslip/utils/dom';
+import { domainTween } from '../timeslip/projections/domain_tween';
 import {
   initialZoomPan,
   doZoomAroundPosition,
@@ -44,26 +43,16 @@ import {
   endDrag,
   kineticFlywheel,
   getFocusDomain,
-  multiplierToZoom,
 } from '../timeslip/projections/zoom_pan';
 import type { ZoomPan } from '../timeslip/projections/zoom_pan';
-import { domainTween } from '../timeslip/projections/domain_tween';
+import { withDeltaTime } from '../timeslip/utils/animation';
+import { zoomSafePointerX, zoomSafePointerY } from '../timeslip/utils/dom';
 
 /**
  * Wheel zoom velocity: maps normalized wheel distance (deltaY/plotWidth) to zoom change.
  * Same order of magnitude as Timeslip's wheel handler.
  */
 const WHEEL_ZOOM_VELOCITY = 3;
-
-/**
- * Minimum visible time window in ms — the finest granularity the time-raster engine can label.
- * Below 1 ms the millisecond raster keeps emitting bins but labels repeat (e.g. "0ms … 0ms …").
- * Both `linear` and `time` xScaleType traces store domain values in ms, so this constant applies
- * to both. The clamp is local to the trace chart's wheel handler so the shared Timeslip
- * `ZOOM_MAX = 35` in zoom_pan.ts is not changed (different semantics, different consumers).
- * See ADR 0004 Decision 3.
- */
-const MIN_VISIBLE_EXTENT_MS = 1;
 
 interface StateProps {
   traceSpec: TraceSpec | undefined;
@@ -90,7 +79,7 @@ type TraceProps = StateProps & DispatchProps & OwnProps;
 
 /** Memoized normalize→resolveActive output. Keyed on (data ref, format, xScaleType). */
 interface PipelineCache {
-  dataRef: TraceDatum[];
+  dataRef: TraceSpec['data']; // TraceDatum[] | OtelInput depending on format
   format: string;
   xScaleType: string;
   result: { spans: ReturnType<typeof resolveActive>; domain: { min: number; max: number } };
@@ -108,7 +97,11 @@ class TraceComponent extends React.Component<TraceProps> {
   // DOM API Canvas2d resource
   private ctx: CanvasRenderingContext2D | null = null;
 
-  // RAF loop handle — built in componentDidMount; withAnimation manages rAF internally
+  // RAF loop handle — owned rAF id so we can cancel on unmount.
+  // withAnimation hides the id in a closure with no cancel path; we replicate its dedup logic here.
+  private rafId: number | null = null;
+  /** Set true in componentDidMount, false in componentWillUnmount; guards frame() post-unmount. */
+  private mounted = false;
   private scheduleRender: (() => void) | null = null;
 
   // Zoom/pan state (time axis, horizontal)
@@ -135,6 +128,9 @@ class TraceComponent extends React.Component<TraceProps> {
   // Memoized pipeline (normalize→resolveActive) — recomputed only when data/format/xScaleType change
   private pipelineCache: PipelineCache | null = null;
 
+  // Memoized style — recomputed only when the theme reference changes (mirrors pipelineCache pattern)
+  private styleCache: { theme: Theme; style: ReturnType<typeof buildTraceStyle> } | null = null;
+
   /**
    * Identifies the reference-domain semantics in effect. Compared on each componentDidUpdate;
    * when it changes the horizontal view resets to fit-all. Preserves zoom across same-scale
@@ -149,7 +145,7 @@ class TraceComponent extends React.Component<TraceProps> {
   private handleWheel: ((e: WheelEvent) => void) | null = null;
   private handleMouseDown: ((e: MouseEvent) => void) | null = null;
   private handleMouseMove: ((e: MouseEvent) => void) | null = null;
-  private handleMouseUp: ((e: MouseEvent) => void) | null = null;
+  private handleMouseUp: (() => void) | null = null;
 
   // -------------------------------------------------------------------------
   // Lifecycle
@@ -170,6 +166,7 @@ class TraceComponent extends React.Component<TraceProps> {
   }
 
   componentDidMount = () => {
+    this.mounted = true;
     this.tryCanvasContext();
 
     // Fit-all snap (zoom=0, NaN tween → one RAF tick, then stops).
@@ -179,9 +176,13 @@ class TraceComponent extends React.Component<TraceProps> {
       ? { xScaleType: this.props.traceSpec.xScaleType, format: this.props.traceSpec.format }
       : null;
 
-    // Build the RAF pipeline: withDeltaTime wraps frame; withAnimation cancels+requests rAF.
+    // Build the RAF pipeline: withDeltaTime wraps frame for delta-time; we own the rAF id so we
+    // can cancel it in componentWillUnmount (withAnimation hides the id with no cancel path).
     const timedRender = withDeltaTime((deltaT: number) => this.frame(deltaT));
-    this.scheduleRender = withAnimation(timedRender);
+    this.scheduleRender = () => {
+      if (this.rafId !== null) window.cancelAnimationFrame(this.rafId);
+      this.rafId = window.requestAnimationFrame(timedRender);
+    };
 
     // Canvas interaction listeners
     this.setupEventHandlers();
@@ -199,10 +200,14 @@ class TraceComponent extends React.Component<TraceProps> {
   };
 
   componentWillUnmount() {
+    this.mounted = false;
+    // Cancel any pending rAF so frame() doesn't fire on a detached canvas post-unmount.
+    if (this.rafId !== null) {
+      window.cancelAnimationFrame(this.rafId);
+      this.rafId = null;
+    }
     this.teardownEventHandlers();
     this.props.containerRef().current?.removeEventListener('wheel', this.preventScroll);
-    // withAnimation cancels on next call; we don't hold the rAF id directly — that's fine since
-    // after unmount no more frames are scheduled and the canvas is gone.
   }
 
   componentDidUpdate = () => {
@@ -216,12 +221,7 @@ class TraceComponent extends React.Component<TraceProps> {
     // Keying on (xScaleType, format) — not the data ref — preserves zoom across same-scale data
     // refreshes (future streaming concern). See ADR 0004 Decision 2 (addendum).
     const spec = this.props.traceSpec;
-    if (
-      spec &&
-      (!this.viewKey ||
-        this.viewKey.xScaleType !== spec.xScaleType ||
-        this.viewKey.format !== spec.format)
-    ) {
+    if (spec && hasViewKeyChanged(this.viewKey, spec)) {
       this.resetView();
       this.viewKey = { xScaleType: spec.xScaleType, format: spec.format };
     }
@@ -235,13 +235,14 @@ class TraceComponent extends React.Component<TraceProps> {
   // -------------------------------------------------------------------------
 
   private frame = (deltaT: number) => {
+    if (!this.mounted) return; // guard against post-unmount rAF callbacks
     if (!this.ctx) return;
 
-    const { traceSpec, chartDimensions: { width, height }, theme } = this.props;
+    const { traceSpec, chartDimensions: { width, height } } = this.props;
     if (!traceSpec) return;
 
     const { spans, domain } = this.getPipeline(traceSpec);
-    const style = buildTraceStyle(theme);
+    const style = this.getStyle();
 
     // --- Zoom/pan → target focus domain ---
     const target = getFocusDomain(this.zoomPan, domain.min, domain.max);
@@ -267,15 +268,25 @@ class TraceComponent extends React.Component<TraceProps> {
     }
 
     // Clamp vertical scroll to content height
-    const maxScroll = Math.max(0, spans.length * style.laneHeight - (height - style.timeBarHeight));
-    this.scrollOffset = Math.min(this.scrollOffset, maxScroll);
+    this.scrollOffset = Math.min(
+      this.scrollOffset,
+      computeMaxScroll(spans.length, style.laneHeight, height - style.timeBarHeight),
+    );
 
-    // Build geometry and draw
+    // Build geometry and draw (spans are pre-sorted and domain pre-computed — no per-frame sort/reduce)
     const focusDomain = { min: this.tween.niceDomainMin, max: this.tween.niceDomainMax };
-    const geom = buildGeometry(spans, { width, height }, focusDomain, this.scrollOffset, style, traceSpec.xScaleType);
+    const geom = buildGeometry(
+      spans,
+      { width, height },
+      focusDomain,
+      this.scrollOffset,
+      style,
+      traceSpec.xScaleType,
+      domain,
+    );
 
     // DPR scaling: renderer is dpr-agnostic, caller sets the transform each frame.
-    const dpr = window.devicePixelRatio;
+    const dpr = window.devicePixelRatio ?? 1;
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     canvas2dRenderer.draw(this.ctx, geom, style);
 
@@ -284,6 +295,19 @@ class TraceComponent extends React.Component<TraceProps> {
       this.scheduleRender?.();
     }
   };
+
+  // -------------------------------------------------------------------------
+  // Memoized style
+  // -------------------------------------------------------------------------
+
+  /** Returns `buildTraceStyle(theme)`, recomputing only when the theme reference changes. */
+  private getStyle(): ReturnType<typeof buildTraceStyle> {
+    const { theme } = this.props;
+    if (!this.styleCache || this.styleCache.theme !== theme) {
+      this.styleCache = { theme, style: buildTraceStyle(theme) };
+    }
+    return this.styleCache.style;
+  }
 
   // -------------------------------------------------------------------------
   // Memoized data pipeline
@@ -301,15 +325,17 @@ class TraceComponent extends React.Component<TraceProps> {
     }
 
     // Recompute: format is part of the key because it selects the normalize branch.
-    // The 'otel' branch expects OtelInput; spec.data is typed TraceDatum[] in the public API even for
-    // otel (the correlated union lives inside normalize). The cast is safe when format='otel' and is
-    // localized here rather than widening the public TraceSpec type — proper fix is a Spec 1/API follow-up.
+    // TraceSpec is a discriminated union on `format`, so checking spec.format === 'simple' narrows
+    // spec.data to TraceDatum[] and the else branch to OtelInput — no cast required.
     const normalizeResult =
       spec.format === 'simple'
         ? normalize(spec.data, 'simple', spec.xScaleType)
-        : normalize(spec.data as unknown as OtelInput, 'otel', spec.xScaleType);
+        : normalize(spec.data, 'otel', spec.xScaleType);
 
-    const spans = resolveActive(normalizeResult.spans);
+    // Sort once here (O(N log N) per data/format/scale change) so buildGeometry doesn't re-sort
+    // on every rAF frame. buildGeometry's contract requires pre-sorted input.
+    const resolved = resolveActive(normalizeResult.spans);
+    const spans = resolved.slice().sort((a, b) => a.start - b.start);
     const result = { spans, domain: normalizeResult.domain };
     this.pipelineCache = { dataRef: spec.data, format: spec.format, xScaleType: spec.xScaleType, result };
     return result;
@@ -326,7 +352,7 @@ class TraceComponent extends React.Component<TraceProps> {
     this.handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       if (!this.props.traceSpec) return;
-      const style = buildTraceStyle(this.props.theme);
+      const style = this.getStyle();
       const plotWidth = this.props.chartDimensions.width - style.gutterWidth;
       const plotLeft = style.gutterWidth;
 
@@ -340,20 +366,11 @@ class TraceComponent extends React.Component<TraceProps> {
         false,
       );
 
-      // Clamp zoom so the visible extent never drops below the finest time-raster interval (1 ms).
-      // Below this floor the millisecond raster repeats identical labels. Uses multiplierToZoom from
-      // the shared projection to compute the zoom level at which extent === MIN_VISIBLE_EXTENT_MS.
-      // The clamp sits here (not in zoom_pan.ts ZOOM_MAX) because it is domain-aware and
-      // trace-specific — Timeslip has different semantics and must not be constrained this way.
+      // Clamp zoom so the visible extent never drops below MIN_VISIBLE_EXTENT_MS (1 ms) — the
+      // finest granularity the time-raster engine can label. See ADR 0004 Decision 3.
       const { domain } = this.getPipeline(this.props.traceSpec);
       const referenceExtentMs = domain.max - domain.min;
-      if (referenceExtentMs > MIN_VISIBLE_EXTENT_MS) {
-        const zoomMax = multiplierToZoom(MIN_VISIBLE_EXTENT_MS / referenceExtentMs);
-        this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, zoomMax);
-      } else {
-        // Reference domain is already ≤ 1 ms: fit-all is the deepest meaningful view.
-        this.zoomPan.focus.zoom = 0;
-      }
+      this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(referenceExtentMs));
 
       this.scheduleRender?.();
     };
@@ -370,7 +387,7 @@ class TraceComponent extends React.Component<TraceProps> {
       if (e.buttons !== 1) return; // only while primary button held
 
       if (!this.props.traceSpec) return;
-      const style = buildTraceStyle(this.props.theme);
+      const style = this.getStyle();
       const plotWidth = this.props.chartDimensions.width - style.gutterWidth;
       const plotHeight = this.props.chartDimensions.height - style.timeBarHeight;
       const { spans } = this.getPipeline(this.props.traceSpec);
@@ -379,7 +396,7 @@ class TraceComponent extends React.Component<TraceProps> {
       doPanFromPosition(this.zoomPan, plotWidth, zoomSafePointerX(e));
 
       // Vertical pan: direct scrollOffset adjustment, clamped (no kinetics)
-      const maxScroll = Math.max(0, spans.length * style.laneHeight - plotHeight);
+      const maxScroll = computeMaxScroll(spans.length, style.laneHeight, plotHeight);
       this.scrollOffset = Math.min(
         Math.max(0, this.dragStartScrollOffset - (zoomSafePointerY(e) - this.dragStartY)),
         maxScroll,
@@ -388,7 +405,7 @@ class TraceComponent extends React.Component<TraceProps> {
       this.scheduleRender?.();
     };
 
-    this.handleMouseUp = (_e: MouseEvent) => {
+    this.handleMouseUp = () => {
       endDrag(this.zoomPan); // copies dragVelocity → flyVelocity
       this.flywheelActive = true; // main frame's kineticFlywheel branch owns the coast
       this.scheduleRender?.();
@@ -396,8 +413,10 @@ class TraceComponent extends React.Component<TraceProps> {
 
     canvas.addEventListener('wheel', this.handleWheel, { passive: false });
     canvas.addEventListener('mousedown', this.handleMouseDown);
-    canvas.addEventListener('mousemove', this.handleMouseMove);
-    canvas.addEventListener('mouseup', this.handleMouseUp);
+    // mousemove and mouseup are bound to window so a fast flick that releases the pointer outside
+    // the canvas still fires endDrag and triggers the kinetic flywheel coast. Mirrors Timeslip.
+    window.addEventListener('mousemove', this.handleMouseMove);
+    window.addEventListener('mouseup', this.handleMouseUp);
   }
 
   private teardownEventHandlers() {
@@ -406,8 +425,8 @@ class TraceComponent extends React.Component<TraceProps> {
 
     if (this.handleWheel) canvas.removeEventListener('wheel', this.handleWheel);
     if (this.handleMouseDown) canvas.removeEventListener('mousedown', this.handleMouseDown);
-    if (this.handleMouseMove) canvas.removeEventListener('mousemove', this.handleMouseMove);
-    if (this.handleMouseUp) canvas.removeEventListener('mouseup', this.handleMouseUp);
+    if (this.handleMouseMove) window.removeEventListener('mousemove', this.handleMouseMove);
+    if (this.handleMouseUp) window.removeEventListener('mouseup', this.handleMouseUp);
   }
 
   // -------------------------------------------------------------------------
@@ -442,7 +461,7 @@ class TraceComponent extends React.Component<TraceProps> {
       touchAction: 'none',
     };
 
-    const dpr = window.devicePixelRatio;
+    const dpr = window.devicePixelRatio ?? 1;
     const canvasWidth = width * dpr;
     const canvasHeight = height * dpr;
     return (

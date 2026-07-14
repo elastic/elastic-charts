@@ -11,8 +11,12 @@ import type { TraceGeometry, TraceStyle } from './types';
 import type { Size } from '../../../utils/dimensions';
 
 /**
- * Pure layout builder for the trace waterfall chart. Partitions the canvas, start-sorts spans,
- * and builds a linear ms→px scale closure. No DOM access, no mutable external state.
+ * Pure layout builder for the trace waterfall chart. Partitions the canvas and builds a linear
+ * ms→px scale closure. No DOM access, no mutable external state.
+ *
+ * **Contract:** `spans` must already be sorted ascending by `start` (the caller's responsibility —
+ * sorting is done once per data change in the pipeline cache, not on every rAF frame).
+ * `domain` is the full data extent across all spans, also computed once by the pipeline.
  *
  * Contrast with Timeslip's zoom/pan, which reads mutable closure state at draw time; here every
  * value downstream needs is explicitly threaded through `TraceGeometry`.
@@ -25,14 +29,10 @@ export function buildGeometry(
   scrollOffset: number,
   style: TraceStyle,
   xScaleType: 'time' | 'linear',
+  domain: { min: number; max: number },
 ): TraceGeometry {
-  // Start-sort: copy, do not mutate the input array.
-  const sorted = spans.slice().sort((a, b) => a.start - b.start);
-
-  // Compute full domain across all spans (used for fit/reset).
-  const domainMin = sorted.length > 0 ? sorted.reduce((acc, s) => Math.min(acc, s.start), Infinity) : 0;
-  const domainMax = sorted.length > 0 ? sorted.reduce((acc, s) => Math.max(acc, s.end), -Infinity) : 0;
-  const domain = { min: domainMin, max: domainMax };
+  // spans is already start-sorted by the pipeline cache (O(N log N) once per data change, not per frame).
+  // domain is pre-computed by normalize() and passed in; no per-frame reduce needed.
 
   const { width: canvasWidth, height: canvasHeight } = canvasSize;
   const { gutterWidth, timeBarHeight, laneHeight } = style;
@@ -54,7 +54,7 @@ export function buildGeometry(
       : (tMs: number) => plot.left + ((tMs - focusDomain.min) / focusSpan) * plot.width;
 
   return {
-    spans: sorted,
+    spans,
     gutter,
     timeBar,
     plot,

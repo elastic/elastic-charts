@@ -11,7 +11,7 @@ import type { TraceDatum } from '../trace_api';
 
 /**
  * A single OpenTelemetry span, as it appears in an OTLP payload (JSON encoding: nanos are strings).
- * @internal
+ * @public
  */
 export interface OtelSpan {
   spanId: string;
@@ -27,7 +27,7 @@ export interface OtelSpan {
 
 /**
  * The OTLP JSON envelope shape, as emitted by OTel exporters/collectors.
- * @internal
+ * @public
  */
 export interface OtlpEnvelope {
   resourceSpans: {
@@ -39,7 +39,7 @@ export interface OtlpEnvelope {
 
 /**
  * Accepted shapes for `format: 'otel'`: the full OTLP envelope, or a flat span array.
- * @internal
+ * @public
  */
 export type OtelInput = OtlpEnvelope | OtelSpan[];
 

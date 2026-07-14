@@ -13,6 +13,11 @@ import { SpecType } from '../../specs/spec_type'; // kept as long-winded import 
 import type { SFProps } from '../../state/spec_factory';
 import { buildSFProps, useSpecFactory } from '../../state/spec_factory';
 import { stripUndefined } from '../../utils/common';
+import type { OtelInput } from './data/types';
+
+// Re-export the OTel input types so consumers using format='otel' don't need a separate import.
+export type { OtelInput };
+export type { OtelSpan, OtlpEnvelope } from './data/types';
 
 /**
  * A single span in the "simple" input format.
@@ -30,16 +35,39 @@ export interface TraceDatum {
 }
 
 /**
- * Specifies the trace chart
+ * Base fields shared by both `TraceSpec` variants.
  * @public
  */
-export interface TraceSpec extends Spec {
+interface TraceSpecBase extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Trace;
-  data: TraceDatum[];
-  format: 'simple' | 'otel';
   xScaleType: 'time' | 'linear';
 }
+
+/**
+ * `TraceSpec` for the `format: 'simple'` path — data is an array of `TraceDatum`.
+ * @public
+ */
+export interface TraceSpecSimple extends TraceSpecBase {
+  format: 'simple';
+  data: TraceDatum[];
+}
+
+/**
+ * `TraceSpec` for the `format: 'otel'` path — data is an OTLP envelope or a flat `OtelSpan[]`.
+ * @public
+ */
+export interface TraceSpecOtel extends TraceSpecBase {
+  format: 'otel';
+  data: OtelInput;
+}
+
+/**
+ * Discriminated union spec for the trace chart. The `format` field selects the input shape.
+ * TypeScript narrows `data` to the correct type when you check `spec.format`.
+ * @public
+ */
+export type TraceSpec = TraceSpecSimple | TraceSpecOtel;
 
 const buildProps = buildSFProps<TraceSpec>()(
   {
@@ -65,6 +93,9 @@ export const Trace = (
   >,
 ) => {
   const { defaults, overrides } = buildProps;
+  // @ts-ignore — All Spec keys are guaranteed by SFProps; spreading a discriminated union loses the
+  // discriminant in TS's inference (format becomes 'simple'|'otel' after spread), but the combined
+  // value is a valid TraceSpec instance at runtime. Follows the same pattern as specComponentFactory.
   useSpecFactory<TraceSpec>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };
