@@ -8,6 +8,7 @@ $rowColorStripWidth: 5px;
  */
 $colorStripCheckWidth: 11px;
 $colorStripPadding: 5px;
+$colorStripGap: 2px;
 $maxRowColorStripWidth: $colorStripCheckWidth + $colorStripPadding * 2;
 
 $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
@@ -208,6 +209,13 @@ $transitionTime: 200ms;
     bottom: 0;
     width: $rowColorStripWidth;
     transition: width $transitionTime;
+  }
+
+  &__tableBody .echTooltip__tableRow:not(:first-child) {
+    .echTooltip__colorStrip,
+    .echTooltip__colorStrip--bg {
+      top: $colorStripGap;
+    }
   }
 
   &__colorStrip {
