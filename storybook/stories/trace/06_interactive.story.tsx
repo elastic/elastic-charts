@@ -6,9 +6,8 @@
  * Side Public License, v 1.
  */
 
-import React, { useMemo } from 'react';
-
 import { select } from '@storybook/addon-knobs';
+import React, { useMemo } from 'react';
 
 import { Chart, Settings, Trace } from '@elastic/charts';
 import type { TraceDatum } from '@elastic/charts/src/chart_types/trace_chart/trace_api';
@@ -66,7 +65,11 @@ const SPAN_DURATION_SCALE = 10;
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const theme = useBaseTheme();
-  const xScaleType = select<'time' | 'linear'>('x scale', { 'linear (elapsed ms)': 'linear', 'time (epoch ms)': 'time' }, 'linear');
+  const xScaleType = select<'time' | 'linear'>(
+    'x scale',
+    { 'linear (elapsed ms)': 'linear', 'time (epoch ms)': 'time' },
+    'linear',
+  );
 
   // Scale durations ×10 (0–10 000 ms) so the time bar crosses whole-second boundaries in both modes.
   // In 'time' mode also offset by EPOCH_BASE so the raster engine renders realistic wall-clock ticks.
