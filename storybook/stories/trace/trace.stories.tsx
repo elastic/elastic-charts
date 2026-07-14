@@ -11,3 +11,4 @@ export default {
 };
 
 export { Example as traceScaffold } from './00_scaffold.story';
+export { Example as normalizeDebug } from './01_normalize_debug.story';
