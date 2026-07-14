@@ -211,10 +211,25 @@ $transitionTime: 200ms;
     transition: width $transitionTime;
   }
 
-  &__tableBody .echTooltip__tableRow:not(:first-child) {
+  &__tableBody {
     .echTooltip__colorStrip,
     .echTooltip__colorStrip--bg {
-      top: $colorStripGap;
+      top: $colorStripGap / 2;
+      bottom: $colorStripGap / 2;
+    }
+
+    .echTooltip__tableRow:first-child {
+      .echTooltip__colorStrip,
+      .echTooltip__colorStrip--bg {
+        top: 0;
+      }
+    }
+
+    .echTooltip__tableRow:last-child {
+      .echTooltip__colorStrip,
+      .echTooltip__colorStrip--bg {
+        bottom: 0;
+      }
     }
   }
 
