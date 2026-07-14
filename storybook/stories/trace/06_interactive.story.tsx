@@ -6,7 +6,9 @@
  * Side Public License, v 1.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
+
+import { select } from '@storybook/addon-knobs';
 
 import { Chart, Settings, Trace } from '@elastic/charts';
 import type { TraceDatum } from '@elastic/charts/src/chart_types/trace_chart/trace_api';
@@ -64,7 +66,7 @@ const SPAN_DURATION_SCALE = 10;
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const theme = useBaseTheme();
-  const [xScaleType, setXScaleType] = useState<'time' | 'linear'>('linear');
+  const xScaleType = select<'time' | 'linear'>('x scale', { 'linear (elapsed ms)': 'linear', 'time (epoch ms)': 'time' }, 'linear');
 
   // Scale durations ×10 (0–10 000 ms) so the time bar crosses whole-second boundaries in both modes.
   // In 'time' mode also offset by EPOCH_BASE so the raster engine renders realistic wall-clock ticks.
@@ -82,38 +84,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
   }, [xScaleType]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 16, fontFamily: 'sans-serif' }}>
-      <div>
-        <h2 style={{ margin: '0 0 4px', fontSize: 16 }}>Spec 6 — Interactive trace waterfall</h2>
-        <p style={{ margin: '0 0 8px', color: '#555', fontSize: 13 }}>
-          Wheel to zoom · Drag to pan (horizontal = time axis, vertical = lane scroll) · Release to coast
-        </p>
-        <label style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
-          x scale
-          <select
-            value={xScaleType}
-            onChange={(e) => setXScaleType(e.target.value as 'time' | 'linear')}
-            style={{ fontSize: 13 }}
-          >
-            <option value="linear">linear (elapsed ms)</option>
-            <option value="time">time (epoch ms)</option>
-          </select>
-        </label>
-      </div>
-
-      <Chart title={title} description={description} size={{ width: '100%', height: 300 }}>
-        <Settings baseTheme={theme} />
-        <Trace id="trace_interactive" data={data} format="simple" xScaleType={xScaleType} />
-      </Chart>
-
-      <p style={{ margin: 0, fontSize: 11, color: '#888' }}>
-        16-span trace · ~10 s duration ·{' '}
-        {xScaleType === 'linear'
-          ? 'linear scale: elapsed time from zero (0ms … 10s)'
-          : 'time scale: absolute wall-clock ticks (22:13:20 … 22:13:30)'}{' '}
-        · wheel-zoom eased via domainTween · drag-pan 1:1 · kinetic coast on release · vertical drag scrolls lanes
-      </p>
-    </div>
+    <Chart title={title} description={description} size={{ width: '100%', height: 300 }}>
+      <Settings baseTheme={theme} />
+      <Trace id="trace_interactive" data={data} format="simple" xScaleType={xScaleType} />
+    </Chart>
   );
 };
 
