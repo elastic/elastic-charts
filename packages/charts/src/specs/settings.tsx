@@ -17,6 +17,7 @@ import type { ProjectedValues, PointerOutEvent, PointerOverEvent, PointerEvent }
 import { PointerEventType } from './settings_types';
 import type { Spec } from './spec_type';
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
+import type { TraceDatum, OtelSpan } from '../chart_types/trace_chart/trace_api';
 import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import type { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
 import type { LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
@@ -167,6 +168,41 @@ export function isMetricElementEvent(e: Parameters<ElementClickListener>[0][0]):
 }
 
 /**
+ * Represents an interaction event with a span in a trace waterfall chart.
+ *
+ * Exposes format-agnostic identity + timing fields so callers are never forced to branch on the
+ * input format (per ADR 0002). The original datum (`TraceDatum` for `format:'simple'`, `OtelSpan`
+ * for `format:'otel'`) is available via `datum` — use it to access OTel `attributes`/`status`.
+ *
+ * Note: `settings.tsx` importing a trace type follows the same pattern as `Cell` (heatmap) and
+ * `WordModel` (wordcloud) already present in this file.
+ * @public
+ */
+export interface TraceElementEvent {
+  type: 'traceElementEvent';
+  id: string;
+  name: string;
+  parentId?: string;
+  traceId?: string;
+  start: number;
+  end: number;
+  /** `end - start` */
+  duration: number;
+  /** Sum of active-segment durations (self time, per ADR 0003) */
+  selfTime: number;
+  /** Original datum — exposes OTel `attributes`/`status` for `format:'otel'` inputs */
+  datum: TraceDatum | OtelSpan;
+}
+
+/**
+ * A type-guard for {@link TraceElementEvent}.
+ * @public
+ */
+export function isTraceElementEvent(e: Parameters<ElementClickListener>[0][0]): e is TraceElementEvent {
+  return 'type' in e && (e as { type?: string }).type === 'traceElementEvent';
+}
+
+/**
  * @public
  * The listener type for click on the projection area.
  */
@@ -191,6 +227,7 @@ export type ElementClickListener = (
     | HeatmapElementEvent
     | WordCloudElementEvent
     | MetricElementEvent
+    | TraceElementEvent
   >,
   options?: { keyPressed: KeyPressed },
 ) => void;
@@ -204,6 +241,7 @@ export type ElementOverListener = (
     | HeatmapElementEvent
     | WordCloudElementEvent
     | MetricElementEvent
+    | TraceElementEvent
   >,
 ) => void;
 

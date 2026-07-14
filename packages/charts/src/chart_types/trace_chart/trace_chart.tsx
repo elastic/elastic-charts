@@ -14,9 +14,12 @@ import { bindActionCreators } from 'redux';
 
 import { normalize } from './data/normalize';
 import { resolveActive } from './data/self_time';
-import { canvas2dRenderer } from './render/canvas2d_renderer';
+import type { NormalizedSpan } from './data/types';
+import { canvas2dRenderer, pickRegion } from './render/canvas2d_renderer';
 import { buildGeometry } from './render/geometry';
 import { computeMaxScroll, computeZoomMax, hasViewKeyChanged } from './render/interaction';
+import { buildTraceEvent, buildTraceTooltipInfo } from './render/tooltip';
+import type { HoverRegion, PickResult, TraceGeometry } from './render/types';
 import { buildTraceStyle } from './theme';
 import type { TraceSpec } from './trace_api';
 import { ChartType } from '..';
@@ -34,6 +37,8 @@ import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import type { Size } from '../../utils/dimensions';
 import type { Theme } from '../../utils/themes/theme';
+import { BasicTooltip } from '../../components/tooltip/tooltip';
+import type { TooltipInfo } from '../../components/tooltip/types';
 import { domainTween } from '../timeslip/projections/domain_tween';
 import {
   initialZoomPan,
@@ -147,6 +152,19 @@ class TraceComponent extends React.Component<TraceProps> {
   private handleMouseMove: ((e: MouseEvent) => void) | null = null;
   private handleMouseUp: (() => void) | null = null;
 
+  // Hover / tooltip state — self-managed (not redux), following the Flame/Timeslip canvas family pattern.
+  // lastGeom is written once per frame; all hover handlers read it for picking without rebuilding geometry.
+  private lastGeom: TraceGeometry | null = null;
+  private hoverIndex = -1;         // -1 = no hover; matches pickLane/pickRegion sentinel
+  private hoverRegion: HoverRegion | null = null;
+  private pointerX = NaN;
+  private pointerY = NaN;
+  private tooltipInfo: TooltipInfo = { header: null, values: [] };
+  private dragMoved = false;       // distinguishes a genuine click from a pan-then-release
+  private handleHoverMove: ((e: MouseEvent) => void) | null = null;
+  private handleCanvasClick: ((e: MouseEvent) => void) | null = null;
+  private handleCanvasLeave: (() => void) | null = null;
+
   // -------------------------------------------------------------------------
   // Lifecycle
   // -------------------------------------------------------------------------
@@ -210,7 +228,7 @@ class TraceComponent extends React.Component<TraceProps> {
     this.props.containerRef().current?.removeEventListener('wheel', this.preventScroll);
   }
 
-  componentDidUpdate = () => {
+  componentDidUpdate = (prevProps: TraceProps) => {
     if (!this.ctx) this.tryCanvasContext();
 
     // Reset the horizontal view when the reference-domain semantics change (xScaleType or format).
@@ -226,8 +244,16 @@ class TraceComponent extends React.Component<TraceProps> {
       this.viewKey = { xScaleType: spec.xScaleType, format: spec.format };
     }
 
-    // Re-render on prop change (dimensions, theme, new spec data)
-    this.scheduleRender?.();
+    // Redraw only when a canvas-affecting prop changed. Hover setState()s don't touch these three
+    // props, so hover stays a DOM-only tooltip-portal update — no wasted rAF, no flag needed.
+    // (Spec 7 draws no canvas hover highlight; if one is added later, trigger its redraw explicitly.)
+    if (
+      this.props.traceSpec !== prevProps.traceSpec ||
+      this.props.theme !== prevProps.theme ||
+      this.props.chartDimensions !== prevProps.chartDimensions
+    ) {
+      this.scheduleRender?.();
+    }
   };
 
   // -------------------------------------------------------------------------
@@ -290,6 +316,9 @@ class TraceComponent extends React.Component<TraceProps> {
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     canvas2dRenderer.draw(this.ctx, geom, style);
 
+    // Store for picking in hover/click handlers — single source of truth for the current layout.
+    this.lastGeom = geom;
+
     // Keep the loop alive only while there is work to do
     if (tweenOngoing || this.flywheelActive) {
       this.scheduleRender?.();
@@ -342,6 +371,63 @@ class TraceComponent extends React.Component<TraceProps> {
   }
 
   // -------------------------------------------------------------------------
+  // Hover / tooltip helpers
+  // -------------------------------------------------------------------------
+
+  /** Cursor is `pointer` when over an active or waiting region (inside the span's extent). */
+  private getActiveCursor(): CSSProperties['cursor'] {
+    if (this.hoverIndex >= 0 && this.hoverRegion !== 'empty') return 'pointer';
+    return DEFAULT_CSS_CURSOR;
+  }
+
+  private rebuildTooltip(span: NormalizedSpan, index: number, domainMin: number, region: HoverRegion) {
+    const style = this.getStyle();
+    this.tooltipInfo = buildTraceTooltipInfo(span, index, domainMin, region, span.color ?? style.activeSegmentColor);
+  }
+
+  /**
+   * Updates hover state, fires `onElement*` callbacks on lane-entry/exit, and schedules a React
+   * re-render (DOM-only tooltip portal update; does not trigger a canvas rAF frame — see
+   * `componentDidUpdate`).
+   *
+   * Change-guarded: `setState` is only called when the index or region changed, or while hovering
+   * (to reposition the tooltip as the pointer moves). Callbacks fire only on lane entry/exit.
+   */
+  private updateHover(result: PickResult | null) {
+    const newIndex = result ? result.index : -1;
+    const prevIndex = this.hoverIndex;
+
+    this.hoverIndex = newIndex;
+    this.hoverRegion = result?.region ?? null;
+
+    if (newIndex !== prevIndex) {
+      // Lane changed (enter new lane or leave all lanes)
+      if (newIndex >= 0 && this.lastGeom && this.props.traceSpec) {
+        const span = this.lastGeom.spans[newIndex];
+        if (span) {
+          const { domain } = this.getPipeline(this.props.traceSpec);
+          this.rebuildTooltip(span, newIndex, domain.min, this.hoverRegion!);
+          this.props.onElementOver([buildTraceEvent(span)]);
+        }
+      } else {
+        this.tooltipInfo = { header: null, values: [] };
+        if (prevIndex >= 0) this.props.onElementOut();
+      }
+      this.setState({});
+    } else if (newIndex >= 0) {
+      // Same lane — update region (State row) and reposition tooltip with pointer
+      if (this.lastGeom && this.props.traceSpec) {
+        const span = this.lastGeom.spans[newIndex];
+        if (span) {
+          const { domain } = this.getPipeline(this.props.traceSpec);
+          this.rebuildTooltip(span, newIndex, domain.min, this.hoverRegion!);
+        }
+      }
+      this.setState({});
+    }
+  }
+
+  // -------------------------------------------------------------------------
   // Event handlers
   // -------------------------------------------------------------------------
 
@@ -351,6 +437,9 @@ class TraceComponent extends React.Component<TraceProps> {
 
     this.handleWheel = (e: WheelEvent) => {
       e.preventDefault();
+      // Clear stale tooltip during zoom — mirrors Flame's smartDraw hover suppression.
+      this.updateHover(null);
+
       if (!this.props.traceSpec) return;
       const style = this.getStyle();
       const plotWidth = this.props.chartDimensions.width - style.gutterWidth;
@@ -376,8 +465,11 @@ class TraceComponent extends React.Component<TraceProps> {
     };
 
     this.handleMouseDown = (e: MouseEvent) => {
+      this.dragMoved = false;
       this.easeZoom = false;
       this.flywheelActive = false;
+      // Clear stale tooltip during drag — mirrors Flame's smartDraw hover suppression.
+      this.updateHover(null);
       markDragStartPosition(this.zoomPan, zoomSafePointerX(e));
       this.dragStartY = zoomSafePointerY(e);
       this.dragStartScrollOffset = this.scrollOffset;
@@ -385,6 +477,7 @@ class TraceComponent extends React.Component<TraceProps> {
 
     this.handleMouseMove = (e: MouseEvent) => {
       if (e.buttons !== 1) return; // only while primary button held
+      this.dragMoved = true; // distinguish a genuine click from a pan-then-release
 
       if (!this.props.traceSpec) return;
       const style = this.getStyle();
@@ -411,8 +504,35 @@ class TraceComponent extends React.Component<TraceProps> {
       this.scheduleRender?.();
     };
 
+    // Hover: separate canvas listener, disjoint from the window drag handler above (guarded by buttons).
+    this.handleHoverMove = (e: MouseEvent) => {
+      if (e.buttons === 1) return; // dragging → window handler owns it
+      if (!this.lastGeom) return;
+      this.pointerX = zoomSafePointerX(e); // canvas-relative CSS px, DPR-agnostic → matches geom units
+      this.pointerY = zoomSafePointerY(e);
+      this.updateHover(pickRegion(this.pointerX, this.pointerY, this.lastGeom));
+    };
+
+    // Click: only fires for genuine clicks — not for pan-then-release (dragMoved guards this).
+    this.handleCanvasClick = (e: MouseEvent) => {
+      if (this.dragMoved) return;
+      if (!this.lastGeom || !this.props.traceSpec) return;
+      const result = pickRegion(zoomSafePointerX(e), zoomSafePointerY(e), this.lastGeom);
+      if (result && result.index >= 0) {
+        const span = this.lastGeom.spans[result.index];
+        if (span) this.props.onElementClick([buildTraceEvent(span)]);
+      }
+    };
+
+    this.handleCanvasLeave = () => {
+      this.updateHover(null);
+    };
+
     canvas.addEventListener('wheel', this.handleWheel, { passive: false });
     canvas.addEventListener('mousedown', this.handleMouseDown);
+    canvas.addEventListener('mousemove', this.handleHoverMove);
+    canvas.addEventListener('click', this.handleCanvasClick);
+    canvas.addEventListener('mouseleave', this.handleCanvasLeave);
     // mousemove and mouseup are bound to window so a fast flick that releases the pointer outside
     // the canvas still fires endDrag and triggers the kinetic flywheel coast. Mirrors Timeslip.
     window.addEventListener('mousemove', this.handleMouseMove);
@@ -425,6 +545,9 @@ class TraceComponent extends React.Component<TraceProps> {
 
     if (this.handleWheel) canvas.removeEventListener('wheel', this.handleWheel);
     if (this.handleMouseDown) canvas.removeEventListener('mousedown', this.handleMouseDown);
+    if (this.handleHoverMove) canvas.removeEventListener('mousemove', this.handleHoverMove);
+    if (this.handleCanvasClick) canvas.removeEventListener('click', this.handleCanvasClick);
+    if (this.handleCanvasLeave) canvas.removeEventListener('mouseleave', this.handleCanvasLeave);
     if (this.handleMouseMove) window.removeEventListener('mousemove', this.handleMouseMove);
     if (this.handleMouseUp) window.removeEventListener('mouseup', this.handleMouseUp);
   }
@@ -447,6 +570,8 @@ class TraceComponent extends React.Component<TraceProps> {
       forwardStageRef,
       chartDimensions: { width, height },
       a11ySettings,
+      tooltipRequired,
+      containerRef,
     } = this.props;
     const style: CSSProperties = {
       width,
@@ -457,7 +582,9 @@ class TraceComponent extends React.Component<TraceProps> {
       margin: 0,
       border: 0,
       position: 'absolute',
-      cursor: DEFAULT_CSS_CURSOR,
+      // Inline cursor: 'pointer' over active/waiting regions; default over empty or gutter.
+      // Canvas sits on top and receives the pointer, so this wins over the container-level cursor.
+      cursor: this.getActiveCursor(),
       touchAction: 'none',
     };
 
@@ -478,6 +605,21 @@ class TraceComponent extends React.Component<TraceProps> {
             role="presentation"
           />
         </figure>
+        {/* BasicTooltip is connect()-ed; it auto-reads `settings.customTooltip` from redux, so
+            <Tooltip customTooltip> override is free. No pinning machinery needed for Spec 7. */}
+        <BasicTooltip
+          onPointerMove={() => {}}
+          position={{ x: this.pointerX, y: this.pointerY, width: 0, height: 0 }}
+          pinned={false}
+          selected={[]}
+          canPinTooltip={false}
+          pinTooltip={() => {}}
+          toggleSelectedTooltipItem={() => {}}
+          setSelectedTooltipItems={() => {}}
+          visible={tooltipRequired && this.hoverIndex >= 0 && (this.hoverRegion !== 'empty' || this.props.traceSpec?.showTooltipOverEmpty === true)}
+          info={this.tooltipInfo}
+          getChartContainerRef={containerRef}
+        />
       </>
     );
   };

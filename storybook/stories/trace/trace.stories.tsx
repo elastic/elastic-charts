@@ -17,3 +17,4 @@ export { Example as geometryDebug } from './03_geometry_debug.story';
 export { Example as timeBar } from './04_time_bar.story';
 export { Example as renderer } from './05_renderer.story';
 export { Example as interactive } from './06_interactive.story';
+export { Example as tooltipEvents } from './07_tooltip_events.story';

@@ -14,7 +14,7 @@ import { renderText, wrapLines } from '../../../renderers/canvas/primitives/text
 import type { TextFont } from '../../../renderers/canvas/primitives/text';
 import type { Fill, Stroke } from '../../../geoms/types';
 import { drawTimeBar } from './time_bar';
-import type { TraceGeometry, TraceRenderer, TraceStyle } from './types';
+import type { HoverRegion, PickResult, TraceGeometry, TraceRenderer, TraceStyle } from './types';
 
 /** Padding above/below active-segment rects within a lane (px). Mirrors TICK_HEIGHT in time_bar.ts. */
 const LANE_PADDING = 3;
@@ -127,7 +127,7 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
 
 /**
  * Returns the 0-based span-array index under `(_x, y)`, or -1 if outside all lanes.
- * Hit-testing is **y-only** (spec-literal); x-axis / segment refinement is deferred to Spec 7.
+ * Hit-testing is **y-only** (spec-literal); for x-axis / segment refinement use `pickRegion`.
  * @internal
  */
 export function pickLane(_x: number, y: number, geom: TraceGeometry): number {
@@ -136,6 +136,44 @@ export function pickLane(_x: number, y: number, geom: TraceGeometry): number {
   const lane = Math.floor((y - plot.top + scrollOffset) / laneHeight);
   if (lane < 0 || lane >= spans.length) return -1;
   return lane;
+}
+
+/**
+ * Returns the lane index and x-axis region (`active` | `waiting` | `empty`) under `(x, y)`, or
+ * `null` when the pointer is outside all lanes (above/below the plot area). Supersedes `pickLane`
+ * for hover/tooltip use: the `region` drives the State row in the default tooltip and the cursor.
+ *
+ * Region semantics (per ADR 0003):
+ * - `active`  — `t` falls inside a span's active segment (self-time by default)
+ * - `waiting` — `t` is inside `[start, end]` but not an active segment (in children, by default)
+ * - `empty`   — `t` is outside `[start, end]`; no span activity at this x in this lane
+ * @internal
+ */
+export function pickRegion(x: number, y: number, geom: TraceGeometry): PickResult | null {
+  const { plot, laneHeight, scrollOffset, spans, focusDomain } = geom;
+  if (y < plot.top || y > plot.top + plot.height) return null;
+  const lane = Math.floor((y - plot.top + scrollOffset) / laneHeight);
+  if (lane < 0 || lane >= spans.length) return null;
+  const span = spans[lane];
+  if (!span) return null;
+
+  // Invert the linear scale: map x-pixel → time value. Guard degenerate zero-width domain/plot.
+  const extent = focusDomain.max - focusDomain.min;
+  const t =
+    plot.width > 0 && extent > 0
+      ? focusDomain.min + ((x - plot.left) / plot.width) * extent
+      : focusDomain.min;
+
+  let region: HoverRegion;
+  if (t < span.start || t > span.end) {
+    region = 'empty';
+  } else if (span.active.some((seg) => t >= seg.start && t <= seg.end)) {
+    region = 'active';
+  } else {
+    region = 'waiting';
+  }
+
+  return { index: lane, region };
 }
 
 /** @internal */

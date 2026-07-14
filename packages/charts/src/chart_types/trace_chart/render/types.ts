@@ -69,6 +69,25 @@ export interface TraceGeometry {
 }
 
 /**
+ * The x-axis region the pointer is over within a lane.
+ * - `active`  — inside an active segment (self-time, per ADR 0003)
+ * - `waiting` — inside [start, end] but not an active segment (time spent in children, by default)
+ * - `empty`   — outside [start, end]; no span activity at this x in this lane
+ * @internal
+ */
+export type HoverRegion = 'active' | 'waiting' | 'empty';
+
+/**
+ * Result of x-aware lane picking (`pickRegion`). `index` is the 0-based span-array index; `region`
+ * is the x-axis sub-region under the pointer within that lane.
+ * @internal
+ */
+export interface PickResult {
+  index: number;
+  region: HoverRegion;
+}
+
+/**
  * The renderer seam that allows a Canvas2D or WebGL backend to be swapped without changing
  * geometry, interaction, or the public API. See ADR 0001.
  * @internal

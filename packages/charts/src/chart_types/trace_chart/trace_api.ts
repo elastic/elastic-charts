@@ -42,6 +42,13 @@ interface TraceSpecBase extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Trace;
   xScaleType: 'time' | 'linear';
+  /**
+   * When `true`, the tooltip also appears while hovering the empty region of a lane
+   * (past the span's `[start, end]` extent). Defaults to `false` — the span, not the
+   * whole lane, is the hover target.
+   * @public
+   */
+  showTooltipOverEmpty?: boolean;
 }
 
 /**

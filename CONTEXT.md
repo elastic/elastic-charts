@@ -42,6 +42,13 @@ the horizontal time window). When `scroll offset = 0` the topmost lane is flush 
 plot; increasing the offset scrolls lanes upward, revealing lower lanes.
 _Avoid_: vertical offset (ambiguous with DPR transforms), viewport offset.
 
+**Waiting**:
+The portion of a span's total line not covered by an active segment; time the span was not itself
+executing. By default (when active segments are self-time-derived, per ADR 0003) this is time the
+span spent in its children. When a caller supplies `active` ranges explicitly, it is
+caller-defined inactivity. One of three hover regions alongside **active** and **empty**.
+_Avoid_: idle (implies nothing is happening globally), blocked (implies a stall or error).
+
 **Minimum visible extent**:
 The smallest meaningful time window the trace chart allows via zoom-in: **1 ms**. This is the finest
 granularity the time-raster axis engine can label; zooming beyond it repeats identical millisecond
