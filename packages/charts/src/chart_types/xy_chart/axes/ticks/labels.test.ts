@@ -209,4 +209,65 @@ describe('resolveTickLabelConstraints', () => {
     });
     expect(result.maxLineLength).toBe(200);
   });
+
+  describe('rotated labels', () => {
+    const rotatedStyle = (rotation: number): AxisStyle =>
+      mergePartial(LIGHT_THEME.axes, { tickLabel: { fontSize: 10, lineHeight: 1, wrapLines: 5, rotation } });
+
+    test('horizontal ordinal at 90° is capped by the cross-axis size, not the step slot', () => {
+      const band = getAxisBand(Position.Bottom, style, 0, 200, 200);
+      const result = resolveTickLabelConstraints({
+        axisSpec: MockGlobalSpec.xAxis(),
+        style: rotatedStyle(90),
+        band,
+        scale: ordinalScale,
+        containerWidth: 100,
+      });
+      expect(result.maxLineLength).toBe(200);
+    });
+
+    test('horizontal ordinal at 45° allows a longer line than the unrotated step slot', () => {
+      const band = getAxisBand(Position.Bottom, style, 0, 200, 200);
+      const result = resolveTickLabelConstraints({
+        axisSpec: MockGlobalSpec.xAxis(),
+        style: rotatedStyle(45),
+        band,
+        scale: ordinalScale,
+        containerWidth: 100,
+      });
+      // step * (1 - barsPadding / 2) === 45
+      expect(result.maxLineLength).toBeGreaterThan(50 * (1 - 0.2 / 2));
+    });
+  });
+
+  describe('min/max length', () => {
+    const withLengths = (overrides: Partial<AxisStyle['tickLabel']>): AxisStyle =>
+      mergePartial(LIGHT_THEME.axes, { tickLabel: { fontSize: 10, lineHeight: 1, wrapLines: 5, ...overrides } });
+
+    const step = 50 * (1 - 0.2 / 2);
+
+    test('minLength raises maxLineLength above the geometric slot', () => {
+      const band = getAxisBand(Position.Bottom, style, 0, 200, 200);
+      const result = resolveTickLabelConstraints({
+        axisSpec: MockGlobalSpec.xAxis(),
+        style: withLengths({ minLength: 60 }),
+        band,
+        scale: ordinalScale,
+        containerWidth: 100,
+      });
+      expect(result.maxLineLength).toBe(60);
+    });
+
+    test('minLength below the geometric slot leaves it unchanged', () => {
+      const band = getAxisBand(Position.Bottom, style, 0, 200, 200);
+      const result = resolveTickLabelConstraints({
+        axisSpec: MockGlobalSpec.xAxis(),
+        style: withLengths({ minLength: 5 }),
+        band,
+        scale: ordinalScale,
+        containerWidth: 100,
+      });
+      expect(result.maxLineLength).toBe(step);
+    });
+  });
 });

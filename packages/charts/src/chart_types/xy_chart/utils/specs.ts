@@ -748,7 +748,7 @@ export interface AxisSpec extends Spec {
    */
   tickLabelTruncate?: Truncate;
   /**
-   * @deprecated use `style.tickLabel.limit` instead.
+   * @deprecated use `style.tickLabel.maxLength` instead.
    * The maximum size of the tick label. If a number, it is in pixels. If a string, it is relative to the container width, e.g. '20%'.
    */
   tickLabelMaxLength?: Pixels | string;

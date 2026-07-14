@@ -189,7 +189,9 @@ export interface AxisStyle {
        */
       lineHeight?: number;
       /** Max length of the tick label in pixels. */
-      limit?: Pixels;
+      maxLength?: Pixels;
+      /** Min length of the tick label in pixels. */
+      minLength?: Pixels;
       /**
        * Where the tick label is truncated when it exceeds the available space.
        * Set to `false` to disable truncation and let the label overflow.

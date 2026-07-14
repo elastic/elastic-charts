@@ -309,7 +309,8 @@ export interface AxisStyle {
         alignment: TextAlignment;
         wrapLines?: number;
         lineHeight?: number;
-        limit?: Pixels;
+        maxLength?: Pixels;
+        minLength?: Pixels;
         truncate?: Truncate | false;
     };
     // (undocumented)

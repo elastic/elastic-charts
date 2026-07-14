@@ -85,9 +85,22 @@ export const withoutTickLabel = (tick: AxisTick): AxisTick => ({
 });
 
 /**
+ * At 0 this is equal to along. As the label rotates, a longer line fits along the axis until, at 90, the axis cross size becomes the limit.
+ */
+const resolveRotatedBandCap = (along: number, cross: number, rotationDeg: number, lineHeightPx: number): number => {
+  const rad = degToRad(Math.abs(rotationDeg));
+  const sin = Math.abs(Math.sin(rad));
+  const cos = Math.abs(Math.cos(rad));
+  const alongLimit = cos > 0 ? (along - lineHeightPx * sin) / cos : Infinity;
+  const crossLimit = sin > 0 ? (cross - lineHeightPx * cos) / sin : Infinity;
+  const width = Math.min(alongLimit, crossLimit);
+  return Number.isFinite(width) ? width : along;
+};
+
+/**
  * Resolves the tick label constraints (wrap lines and max line length) for the given axis.
- * In band scales, scale.step is used to cap the max line length in horizontal axes.
- * Otherwise, the max line length is capped by the axis label budget.
+ * In band scales, scale.step caps the max line length on horizontal axes, adjusted for label
+ * rotation. Otherwise, the max line length is capped by the axis label budget.
  *  @internal */
 export const resolveTickLabelConstraints = ({
   axisSpec,
@@ -116,28 +129,35 @@ export const resolveTickLabelConstraints = ({
     ? getPercentageValue(axisSpec.tickLabelMaxLength, percentReference, 0)
     : undefined;
 
-  let maxLineLength = style.tickLabel.limit ?? maxTickLabelLength;
-
-  if (vertical || multilayerTimeAxis) {
-    maxLineLength = Math.min(maxLineLength ?? band.labelBudget, band.labelBudget);
-  } else if (isContinuousScale(scale) && scale.bandwidth > 0) {
-    maxLineLength = Math.max(MIN_LABEL_LENGTH, maxLineLength ?? band.maxExtent);
-  } else {
-    const categorySlotWidth = isBandScale(scale) ? scale.step * (1 - scale.barsPadding / 2) : 0;
-    const bandwidthCap = categorySlotWidth > 0 ? categorySlotWidth : band.maxExtent;
-    maxLineLength = Math.max(MIN_LABEL_LENGTH, maxLineLength ?? bandwidthCap);
-  }
-
+  const minLineLength = style.tickLabel.minLength ?? MIN_LABEL_LENGTH;
   const wrapLines = style.tickLabel.wrapLines ?? DEFAULT_TICK_LABEL_WRAP_LINES;
   const lineHeight = style.tickLabel.lineHeight ?? DEFAULT_TICK_LABEL_LINE_HEIGHT;
   const lineHeightPx = lineHeight * style.tickLabel.fontSize;
+
+  let maxLineLength = style.tickLabel.maxLength ?? maxTickLabelLength;
+
+  if (vertical || multilayerTimeAxis) {
+    maxLineLength = Math.max(minLineLength, Math.min(maxLineLength ?? band.labelBudget, band.labelBudget));
+  } else if (isContinuousScale(scale) && scale.bandwidth > 0) {
+    maxLineLength = Math.max(minLineLength, maxLineLength ?? band.maxExtent);
+  } else {
+    const categorySlotWidth = isBandScale(scale) ? scale.step * (1 - scale.barsPadding / 2) : 0;
+    // Band scales rotate the step slot so angled labels aren't over-wrapped, non-band horizontal
+    // scales keep the axis-extent fallback.
+    const bandwidthCap =
+      categorySlotWidth > 0
+        ? resolveRotatedBandCap(categorySlotWidth, band.labelBudget, style.tickLabel.rotation, lineHeightPx)
+        : band.maxExtent;
+    maxLineLength = Math.max(minLineLength, maxLineLength ?? bandwidthCap);
+  }
+
   let maxWrapLines = wrapLines;
 
   if (!vertical && lineHeightPx > 0 && band.labelBudget > 0) {
     const maxWrapFromBudget = Math.max(1, Math.floor(band.labelBudget / lineHeightPx));
     maxWrapLines = Math.min(wrapLines, maxWrapFromBudget);
   }
-  // in vertical axis with band Y scale , we could also cap the wrap lines by scale.step, but less obvious if helpful.
+  // in vertical axis with band Y scale, we could also cap the wrap lines by scale.step, but less obvious if helpful.
 
   return { maxLineLength, maxWrapLines: Math.max(1, maxWrapLines) };
 };
