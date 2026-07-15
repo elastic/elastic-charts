@@ -104,14 +104,6 @@ $transitionTime: 200ms;
     display: contents;
   }
 
-  // Body as subgrid so we can have a row-gap but still inherit the table's column tracks
-  .echTooltip__table:not(.echTooltip__table--noGrid) > .echTooltip__tableBody {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: subgrid;
-    row-gap: $colorStripGap;
-  }
-
   &__tableHeader {
     margin-bottom: 0;
     top: 0;
@@ -217,6 +209,20 @@ $transitionTime: 200ms;
     bottom: 0;
     width: $rowColorStripWidth;
     transition: width $transitionTime;
+  }
+
+  &__tableBody {
+    .echTooltip__colorStrip,
+    .echTooltip__colorStrip--bg {
+      bottom: $colorStripGap;
+    }
+
+    .echTooltip__tableRow:last-child {
+      .echTooltip__colorStrip,
+      .echTooltip__colorStrip--bg {
+        bottom: 0;
+      }
+    }
   }
 
   &__colorStrip {
