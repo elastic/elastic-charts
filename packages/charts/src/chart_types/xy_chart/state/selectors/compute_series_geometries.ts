@@ -11,6 +11,7 @@ import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { getSeriesColorsSelector } from './get_series_color_map';
 import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
+import { getVisibleTickSetsSelector } from './visible_ticks';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -28,10 +29,11 @@ export const computeSeriesGeometriesSelector = createCustomCachedSelector(
     getSettingsSpecSelector,
     getAxisSpecsSelector,
     computeSmallMultipleScalesSelector,
+    getVisibleTickSetsSelector,
     isHistogramModeEnabledSelector,
     getFallBackTickFormatter,
   ],
-  (specs, domain, colors, theme, settings, axis, smScales, isHistogram, fallbackFormatter) => {
+  (specs, domain, colors, theme, settings, axis, smScales, visibleTicksSet, isHistogram, fallbackFormatter) => {
     return withTextMeasure((measureText) =>
       computeSeriesGeometries(
         specs,
@@ -41,6 +43,7 @@ export const computeSeriesGeometriesSelector = createCustomCachedSelector(
         settings,
         axis,
         smScales,
+        visibleTicksSet,
         isHistogram,
         fallbackFormatter,
         measureText,
