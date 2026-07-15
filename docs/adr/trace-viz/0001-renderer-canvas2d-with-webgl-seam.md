@@ -16,3 +16,22 @@ helper, no new dependency — without changing geometry, interaction, or the pub
   (shaders, GPU pick texture) for headroom not yet needed.
 - **Canvas2D with no seam** — rejected: cheapest short-term, but would require a rewrite of the
   renderer's call sites if WebGL becomes necessary.
+
+## Re-evaluation (Spec 18, 2026)
+
+A second performance assessment was performed when nanosecond precision and raw rendering throughput
+were requested. Findings confirm the original decision holds:
+
+- The renderer is already `O(visible lanes)` via vertical culling
+  (`canvas2d_renderer.ts`, `firstLane`/`lastLane` clamp). Per-frame draw-call count is bounded by
+  viewport height divided by lane height — typically 10–40 calls — regardless of total span count.
+  This is the regime where WebGL's batching advantage is negligible.
+- GPU-side text rendering (glyph atlas, signed-distance field shaders) would add significant
+  implementation cost with no throughput gain in this bounded-call-count regime.
+- The 5 000-span large-N benchmark (`09_large_n.story.tsx`) confirmed pan/zoom/scroll stay smooth
+  at culled draw counts; the culling regression test in `canvas2d_renderer.test.ts` remains the
+  performance gate.
+
+**Conclusion:** WebGL is still not warranted. The `TraceRenderer` seam introduced by this ADR
+remains the designated escape hatch if a future all-lanes-at-once overview (no vertical culling)
+use case demands it.

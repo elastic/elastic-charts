@@ -72,9 +72,22 @@ The string value that determines which palette color a span's active segments re
 _Avoid_: category, series, bucket.
 
 **Minimum visible extent**:
-The smallest meaningful time window the trace chart allows via zoom-in: **1 ms**. This is the finest
-granularity the time-raster axis engine can label; zooming beyond it repeats identical millisecond
-labels. The floor applies to both `linear` and `time` x-scale types, since both store domain values in
-ms. Distinct from the **Focus domain** (the current window, always ≥ the minimum visible extent after
+The smallest meaningful time window the trace chart allows via zoom-in. Scale-dependent:
+- **`linear` x-scale:** **1 ns** (`1e-6 ms`). `normalize()` re-zeros all timestamps to zero, so the
+  domain spans `[0, totalDurationMs]`; float64 can represent nanosecond differences without precision
+  loss at this base. The tick formatter switches units at µs/ns breakpoints so adjacent labels remain
+  distinct. Note: `ZOOM_MAX = 35` caps reachable zoom depth — traces longer than ~34 s cannot zoom
+  all the way to 1 ns via wheel; the 1 ns floor is only reachable within that bound.
+- **`time` x-scale:** **1 ms**. Epoch-based domain values are ~1.7 × 10¹² ms; float64 at that
+  magnitude cannot represent sub-ms differences, making 1 ms a hard precision limit.
+
+Distinct from the **Focus domain** (the current window, always ≥ the minimum visible extent after
 clamping).
 _Avoid_: minimum zoom level (implies a zoom exponent, not a time window).
+
+**Empty state**:
+The condition when the trace chart has no lanes to render. Two distinct cases: `no-data` (the `data`
+prop was empty — no spans supplied at all) and `trace-not-found` (spans were supplied but the
+specified `traceId` matched none of them). Each case renders a distinct centered message on the
+canvas. The combined-waterfall case (spans present, no `traceId` filter) is never an empty state.
+_Avoid_: empty chart, no results (those are library-wide terms for other chart types).

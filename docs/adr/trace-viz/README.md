@@ -12,6 +12,7 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0007 — Controlled `focusDomain` is perform-and-fire; one callback for all gesture sources](./0007-focus-domain-perform-and-fire.md)
 - [0008 — Scroll-to-span uses controlProviderCallback + TraceSearchProvider](./0008-scroll-to-span-control-provider.md)
 - [0009 — Brush rubber-band is a CSS `<div>`, not a canvas draw](./0009-brush-overlay-css-div.md)
+- [0010 — Linear-scale nanosecond precision (supersedes ADR 0004 D3 for linear)](./0010-linear-scale-nanosecond-precision.md)
 
 ## Spec plans
 
@@ -33,10 +34,12 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 - [Spec 10 — Sticky (pinnable) tooltip](./specs/spec-10-pinnable-tooltip.md)
 - [Spec 11 — Brush-to-zoom (X-only)](./specs/spec-11-brush-zoom.md)
 - [Spec 12 — Focus-domain control + overview composition](./specs/spec-12-focus-domain-control.md)
-- [Spec 13 — Responsive layout & relocatable label panel](./specs/spec-13-responsive-labels.md)
+- [Spec 13 — Responsive layout & relocatable label panel](./specs/spec-13-responsive-labels.md) *(implement next)*
 - [Spec 14 — Accessibility (best effort)](./specs/spec-14-accessibility.md)
 - [Spec 15 — Scroll-to-lane API + search story](./specs/spec-15-scroll-to-lane.md)
 - [Spec 16 — API documentation story (auto-extracted)](./specs/spec-16-api-docs.md)
+- [Spec 17 — Empty-state distinction (no-data vs trace-not-found)](./specs/spec-17-empty-state.md)
+- [Spec 18 — Nanosecond precision for linear x-scale](./specs/spec-18-nanosecond-linear.md)
 
 Build order (Specs 0–8): Phase 0 → Spec 0 → Spec 1 → (Spec 2 / Spec 3 / Spec 4 in parallel once
 Spec 1's `NormalizedSpan` contract is fixed) → Spec 5 → Spec 6 → Spec 7 → Spec 8.
@@ -46,5 +49,9 @@ tooltip — independent) → Spec 11 (brush X-only) → Spec 12 (focus control +
 → Spec 13 (responsive labels — independent) → Spec 15 (scroll-to-lane, provides
 `scrollLaneIntoView`) → Spec 14 (a11y, reuses 15's scroll helper) → Spec 16 (API docs — last, so
 the table captures every new prop).
+
+Build order (Specs 17–18 / Spec 13): all three are independent of each other and of Specs 9–16.
+Spec 17 (empty-state) depends only on Specs 1 and 5. Spec 18 (ns precision) depends only on
+Specs 4 and 6. Spec 13 (label position) depends only on Spec 5. Any order is valid.
 
 See the repo root [`CONTEXT.md`](../../../CONTEXT.md) for the domain glossary.
