@@ -39,9 +39,9 @@ const CANVAS_WIDTH = 900;
 const CANVAS_HEIGHT = 400;
 const focusDomain = { min: 0, max: 1000 };
 
-const { spans: normalized } = normalize(spans, 'simple', 'linear');
+const { spans: normalized, domain } = normalize(spans, 'linear');
 const resolved = resolveActive(normalized);
-const geom = buildGeometry(resolved, { width: CANVAS_WIDTH, height: CANVAS_HEIGHT }, focusDomain, 0, style, 'linear');
+const geom = buildGeometry(resolved, { width: CANVAS_WIDTH, height: CANVAS_HEIGHT }, focusDomain, 0, style, 'linear', domain);
 
 export const Example = () => (
   <div className="echChart">
@@ -145,7 +145,7 @@ export const Example = () => (
                 title={`${span.name}: ${span.start}–${span.end}ms`}
               />
               {/* Active segments */}
-              {span.active.map((seg, j) => (
+              {span.activeSegments.map((seg, j) => (
                 <div
                   key={j}
                   style={{

@@ -106,7 +106,7 @@ const spans: NormalizedSpan[] = [
     name: 'SpanA',
     start: 0,
     end: 1000,
-    active: [{ start: 0, end: 500 }],
+    activeSegments: [{ start: 0, end: 500 }],
     meta: { id: 'a', name: 'SpanA', traceId: 't1', start: 0, end: 1000 } satisfies TraceDatum,
   },
   {
@@ -114,7 +114,7 @@ const spans: NormalizedSpan[] = [
     name: 'SpanB',
     start: 100,
     end: 900,
-    active: [
+    activeSegments: [
       { start: 100, end: 400 },
       { start: 600, end: 900 },
     ],
@@ -125,7 +125,7 @@ const spans: NormalizedSpan[] = [
     name: 'SpanC',
     start: 200,
     end: 700,
-    active: [],
+    activeSegments: [],
     meta: { id: 'c', name: 'SpanC', traceId: 't1', start: 200, end: 700 } satisfies TraceDatum,
   },
 ];
@@ -272,7 +272,7 @@ describe('draw — vertical culling regression (large-N)', () => {
       name: `Span ${i}`,
       start: 0,
       end: 1000,
-      active: [{ start: 0, end: 500 }],
+      activeSegments: [{ start: 0, end: 500 }],
       meta: { id: `s${i}`, name: `Span ${i}`, traceId: 't1', start: 0, end: 1000 } satisfies TraceDatum,
     }));
   }
@@ -310,7 +310,7 @@ describe('draw — segment culling (x-range cull)', () => {
         name: 'OOB',
         start: 0,
         end: 1000,
-        active: [
+        activeSegments: [
           // scale(-500)=-150, scale(-100)=130 → segX2=130 < plot.left=200 → culled
           { start: -500, end: -100 },
           // scale(1500)=1250 > plotRight=900 → segX1>plotRight → culled
@@ -342,7 +342,7 @@ describe('draw — total-duration line clamping', () => {
         name: 'OOB-start',
         start: -500,
         end: 500,
-        active: [],
+        activeSegments: [],
         meta: { id: 'oob', name: 'OOB-start', traceId: 't1', start: -500, end: 500 } satisfies TraceDatum,
       },
     ];
@@ -365,7 +365,7 @@ describe('draw — total-duration line clamping', () => {
         name: 'OOB-end',
         start: 0,
         end: 1500,
-        active: [],
+        activeSegments: [],
         meta: { id: 'oob', name: 'OOB-end', traceId: 't1', start: 0, end: 1500 } satisfies TraceDatum,
       },
     ];
@@ -390,7 +390,7 @@ describe('draw — per-span color override', () => {
         name: 'Colored',
         start: 0,
         end: 500,
-        active: [{ start: 0, end: 500 }],
+        activeSegments: [{ start: 0, end: 500 }],
         color: '#ff0000',
         meta: { id: 'col', name: 'Colored', traceId: 't1', start: 0, end: 500 } satisfies TraceDatum,
       },

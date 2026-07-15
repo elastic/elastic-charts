@@ -11,10 +11,10 @@ import type { NormalizedSpan } from './types';
 type Segment = { start: number; end: number };
 
 /**
- * Fills each span's empty `active` array with its self time: the span's `[start, end]` interval
- * minus the union of its direct children's `[start, end]` intervals (sorted-interval subtraction).
- * Spans that already carry a non-empty `active` (copied verbatim by the normalization step) pass
- * through unchanged. Input spans are not mutated. See ADR 0003.
+ * Fills each span's empty `activeSegments` array with its self time: the span's `[start, end]`
+ * interval minus the union of its direct children's `[start, end]` intervals (sorted-interval
+ * subtraction). Spans that already carry a non-empty `activeSegments` (copied verbatim by the
+ * normalization step) pass through unchanged. Input spans are not mutated. See ADR 0003.
  * @internal
  */
 export function resolveActive(spans: NormalizedSpan[]): NormalizedSpan[] {
@@ -32,12 +32,12 @@ export function resolveActive(spans: NormalizedSpan[]): NormalizedSpan[] {
   }
 
   return spans.map((span) => {
-    // Pass through spans that already carry an explicit `active`.
-    if (span.active.length > 0) return span;
+    // Pass through spans that already carry explicit activeSegments.
+    if (span.activeSegments.length > 0) return span;
 
     const children = childrenByParentId.get(span.id) ?? [];
-    const active = selfTimeSegments(span.start, span.end, children);
-    return { ...span, active };
+    const activeSegments = selfTimeSegments(span.start, span.end, children);
+    return { ...span, activeSegments };
   });
 }
 

@@ -474,6 +474,17 @@ export const DARK_THEME: Theme = {
     maxTableHeight: 120,
     defaultDotColor: Colors.White.keyword,
   },
+  trace: {
+    gutterWidth: 200,
+    timeBarHeight: 32,
+    laneHeight: 24,
+    totalLineThickness: 2,
+    totalLineColor: DARK_BORDER_COLORS.borderBaseSubdued,
+    activeSegmentColor: DARK_BORDER_COLORS.borderBaseSubdued,
+    gutterLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: DARK_TEXT_COLORS.textSubdued },
+    timeBarLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: DARK_TEXT_COLORS.textSubdued },
+    gridLineColor: DARK_BORDER_COLORS.borderBaseSubdued,
+  },
   // TODO map colors to base color mappings
   flamegraph: {
     navigation: {

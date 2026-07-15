@@ -23,7 +23,7 @@ const style: TraceStyle = {
 };
 
 function span(id: string, start: number, end: number): NormalizedSpan {
-  return { id, name: id, start, end, active: [], meta: {} as never };
+  return { id, name: id, start, end, activeSegments: [], meta: {} as never };
 }
 
 const canvasSize = { width: 1000, height: 600 };

@@ -29,7 +29,9 @@ a span's active range isn't supplied explicitly (see [ADR 0003](./docs/adr/0003-
 _Avoid_: exclusive time (self time is the canonical term used throughout this codebase).
 
 **Trace**:
-The set of spans sharing one `traceId`. The Trace chart renders one trace at a time.
+The set of spans sharing one `traceId`. The chart typically renders a single trace; pass `traceId` to
+filter to one, or omit it to render all supplied spans as one combined waterfall (one lane per span,
+interleaved by start time).
 
 **Focus domain**:
 The currently-visible time window `[min, max]` of the Trace waterfall after zoom/pan, eased toward a target.

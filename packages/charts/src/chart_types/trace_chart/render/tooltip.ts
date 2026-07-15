@@ -18,7 +18,7 @@ function formatMs(ms: number): string {
 }
 
 function computeSelfTime(span: NormalizedSpan): number {
-  return span.active.reduce((acc, seg) => acc + (seg.end - seg.start), 0);
+  return span.activeSegments.reduce((acc, seg) => acc + (seg.end - seg.start), 0);
 }
 
 const EMPTY_SERIES_ID = { specId: '', key: '' };
@@ -33,12 +33,13 @@ const REGION_LABEL: Record<HoverRegion, string> = {
  * Builds the default `TooltipInfo` for a hovered trace span.
  *
  * Shows: Name, Duration (total extent), Self time (Σ active segments), Start offset from domain
- * start, and the x-axis State at the pointer position (Active / Waiting / —).
+ * start, the x-axis State at the pointer position (Active / Waiting / —), and — when hovering an
+ * active segment in a span with more than one — an "Active segment" row showing that segment's own
+ * duration with an ordinal `(i of n)`.
  *
- * `TooltipValue.datum` is set to the full `NormalizedSpan` without a cast — this works because
- * `TooltipValue<D>` defaults `D` to `Datum = any` (utils/common.tsx), so `datum` accepts any value.
- * The `datum` field lets a caller-supplied `customTooltip` reach `span.meta` (the original
- * `TraceDatum` or `OtelSpan`) and its OTel `attributes`/`status` (ADR 0002).
+ * `TooltipValue.datum` is the original `TraceDatum` (via `span.meta`), identical to the datum
+ * exposed in `onElementClick` / `onElementOver` callbacks. A `customTooltip` can reach
+ * source-specific data (e.g. OTel `attributes`/`status`) via `(values[0].datum as TraceDatum).meta`.
  * @internal
  */
 export function buildTraceTooltipInfo(
@@ -47,6 +48,7 @@ export function buildTraceTooltipInfo(
   domainMin: number,
   region: HoverRegion,
   color: string,
+  segmentIndex: number,
 ): TooltipInfo {
   const total = span.end - span.start;
   const selfTime = computeSelfTime(span);
@@ -61,27 +63,44 @@ export function buildTraceTooltipInfo(
     value,
     formattedValue,
     valueAccessor: index,
-    datum: span, // NormalizedSpan; carries span.meta for customTooltip access
+    // datum is the original TraceDatum (via span.meta) — consistent with onElementClick/onElementOver.
+    // Access source-specific data (e.g. OtelSpan attributes) via (datum as TraceDatum).meta.
+    datum: span.meta,
   });
 
-  return {
-    header: null,
-    values: [
-      row('Name', span.name, span.name),
-      row('Duration', total, formatMs(total)),
-      row('Self time', selfTime, formatMs(selfTime)),
-      row('Start', startOffset, `+${formatMs(startOffset)}`),
-      row('State', REGION_LABEL[region], REGION_LABEL[region]),
-    ],
-  };
+  const values = [
+    row('Name', span.name, span.name),
+    row('Duration', total, formatMs(total)),
+    row('Self time', selfTime, formatMs(selfTime)),
+    row('Start', startOffset, `+${formatMs(startOffset)}`),
+    row('State', REGION_LABEL[region], REGION_LABEL[region]),
+  ];
+
+  // When hovering an active segment, show that segment's own duration and its offset from trace start.
+  // Omit the ordinal when there is only one segment (its duration equals self time — redundant).
+  if (region === 'active' && segmentIndex >= 0) {
+    const seg = span.activeSegments[segmentIndex];
+    if (seg) {
+      const segDuration = seg.end - seg.start;
+      const segOffset = seg.start - domainMin; // from trace start, same baseline as the 'Start' row
+      const n = span.activeSegments.length;
+      const label = n > 1 ? `Active segment (${segmentIndex + 1} of ${n})` : 'Active segment';
+      // Insert duration at index 3 (after 'Self time'), offset at index 4 (after duration).
+      // Row order: Name, Duration, Self time, Active segment, Active segment offset, Start, State.
+      values.splice(3, 0, row(label, segDuration, formatMs(segDuration)));
+      values.splice(4, 0, row('Active segment offset', segOffset, `+${formatMs(segOffset)}`));
+    }
+  }
+
+  return { header: null, values };
 }
 
 /**
  * Builds the `TraceElementEvent` payload fired via `onElementClick` / `onElementOver`.
  *
- * Exposes the format-agnostic identity + timing fields (per ADR 0002) and the original `datum`
- * (`TraceDatum | OtelSpan`) so callers can access OTel `attributes`/`status` without importing
- * any `@internal` type.
+ * Exposes the format-agnostic identity and timing fields plus the original `TraceDatum` (`datum`)
+ * so callers can access source-specific data (e.g. OTel `attributes`/`status` via `datum.meta`)
+ * without importing any `@internal` type.
  * @internal
  */
 export function buildTraceEvent(span: NormalizedSpan): TraceElementEvent {

@@ -25,7 +25,7 @@ const simpleSpans: TraceDatum[] = [
   { id: 'leaf', name: 'Serializer.encode', parentId: 'db', traceId: 't1', start: 700, end: 820 },
 ];
 
-const { spans: normalized } = normalize(simpleSpans, 'simple', 'linear');
+const { spans: normalized } = normalize(simpleSpans, 'linear');
 const resolved = resolveActive(normalized);
 
 // Styles (inline so the story is self-contained)
@@ -56,9 +56,9 @@ function SpanRow({ span }: { span: NormalizedSpan }) {
     <div style={spanRowStyle}>
       <div style={labelStyle}>
         <strong>{span.name}</strong> — [{span.start}ms – {span.end}ms] — self-time segments:{' '}
-        {span.active.length === 0
+        {span.activeSegments.length === 0
           ? '(none)'
-          : span.active.map((a, i) => `[${a.start}–${a.end}ms]`).join(', ')}
+          : span.activeSegments.map((a, i) => `[${a.start}–${a.end}ms]`).join(', ')}
       </div>
       <div style={barTrackStyle}>
         {/* Total duration bar (muted) */}
@@ -74,7 +74,7 @@ function SpanRow({ span }: { span: NormalizedSpan }) {
           title={`Total: ${span.start}–${span.end}ms`}
         />
         {/* Active (self-time) segments */}
-        {span.active.map((seg, i) => (
+        {span.activeSegments.map((seg, i) => (
           <div
             key={i}
             style={{

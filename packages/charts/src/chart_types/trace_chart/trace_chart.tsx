@@ -83,10 +83,9 @@ interface OwnProps {
 
 type TraceProps = StateProps & DispatchProps & OwnProps;
 
-/** Memoized normalize→resolveActive output. Keyed on (data ref, format, xScaleType, traceId). */
+/** Memoized normalize→resolveActive output. Keyed on (data ref, xScaleType, traceId). */
 interface PipelineCache {
-  dataRef: TraceSpec['data']; // TraceDatum[] | OtelInput depending on format
-  format: string;
+  dataRef: TraceSpec['data'];
   xScaleType: string;
   traceId: string | undefined;
   result: { spans: ReturnType<typeof resolveActive>; domain: { min: number; max: number } };
@@ -193,7 +192,7 @@ class TraceComponent extends React.Component<TraceProps> {
     this.resetView();
     // Seed the domain-semantics key so the first componentDidUpdate doesn't spuriously reset.
     this.viewKey = this.props.traceSpec
-      ? { xScaleType: this.props.traceSpec.xScaleType, format: this.props.traceSpec.format, traceId: this.props.traceSpec.traceId }
+      ? { xScaleType: this.props.traceSpec.xScaleType, format: 'simple', traceId: this.props.traceSpec.traceId }
       : null;
 
     // Build the RAF pipeline: withDeltaTime wraps frame for delta-time; we own the rAF id so we
@@ -241,9 +240,9 @@ class TraceComponent extends React.Component<TraceProps> {
     // Keying on (xScaleType, format) — not the data ref — preserves zoom across same-scale data
     // refreshes (future streaming concern). See ADR 0004 Decision 2 (addendum).
     const spec = this.props.traceSpec;
-    if (spec && hasViewKeyChanged(this.viewKey, { xScaleType: spec.xScaleType, format: spec.format, traceId: spec.traceId })) {
+    if (spec && hasViewKeyChanged(this.viewKey, { xScaleType: spec.xScaleType, format: 'simple', traceId: spec.traceId })) {
       this.resetView();
-      this.viewKey = { xScaleType: spec.xScaleType, format: spec.format, traceId: spec.traceId };
+      this.viewKey = { xScaleType: spec.xScaleType, format: 'simple', traceId: spec.traceId };
     }
 
     // Redraw only when a canvas-affecting prop changed. Hover setState()s don't touch these three
@@ -349,27 +348,21 @@ class TraceComponent extends React.Component<TraceProps> {
     if (
       cache &&
       cache.dataRef === spec.data &&
-      cache.format === spec.format &&
       cache.xScaleType === spec.xScaleType &&
       cache.traceId === spec.traceId
     ) {
       return cache.result;
     }
 
-    // Recompute: format is part of the key because it selects the normalize branch.
-    // TraceSpec is a discriminated union on `format`, so checking spec.format === 'simple' narrows
-    // spec.data to TraceDatum[] and the else branch to OtelInput — no cast required.
-    const normalizeResult =
-      spec.format === 'simple'
-        ? normalize(spec.data, 'simple', spec.xScaleType, spec.traceId)
-        : normalize(spec.data, 'otel', spec.xScaleType, spec.traceId);
+    // Recompute: normalize now takes TraceDatum[] directly — OTel data arrives pre-converted by fromOtlp.
+    const normalizeResult = normalize(spec.data, spec.xScaleType, spec.traceId);
 
-    // Sort once here (O(N log N) per data/format/scale change) so buildGeometry doesn't re-sort
+    // Sort once here (O(N log N) per data/scale change) so buildGeometry doesn't re-sort
     // on every rAF frame. buildGeometry's contract requires pre-sorted input.
     const resolved = resolveActive(normalizeResult.spans);
     const spans = resolved.slice().sort((a, b) => a.start - b.start);
     const result = { spans, domain: normalizeResult.domain };
-    this.pipelineCache = { dataRef: spec.data, format: spec.format, xScaleType: spec.xScaleType, traceId: spec.traceId, result };
+    this.pipelineCache = { dataRef: spec.data, xScaleType: spec.xScaleType, traceId: spec.traceId, result };
     return result;
   }
 
@@ -383,9 +376,9 @@ class TraceComponent extends React.Component<TraceProps> {
     return DEFAULT_CSS_CURSOR;
   }
 
-  private rebuildTooltip(span: NormalizedSpan, index: number, domainMin: number, region: HoverRegion) {
+  private rebuildTooltip(span: NormalizedSpan, index: number, domainMin: number, region: HoverRegion, segmentIndex: number) {
     const style = this.getStyle();
-    this.tooltipInfo = buildTraceTooltipInfo(span, index, domainMin, region, span.color ?? style.activeSegmentColor);
+    this.tooltipInfo = buildTraceTooltipInfo(span, index, domainMin, region, span.color ?? style.activeSegmentColor, segmentIndex);
   }
 
   /**
@@ -409,7 +402,7 @@ class TraceComponent extends React.Component<TraceProps> {
         const span = this.lastGeom.spans[newIndex];
         if (span) {
           const { domain } = this.getPipeline(this.props.traceSpec);
-          this.rebuildTooltip(span, newIndex, domain.min, this.hoverRegion!);
+          this.rebuildTooltip(span, newIndex, domain.min, this.hoverRegion!, result?.segmentIndex ?? -1);
           this.props.onElementOver([buildTraceEvent(span)]);
         }
       } else {
@@ -418,12 +411,13 @@ class TraceComponent extends React.Component<TraceProps> {
       }
       this.setState({});
     } else if (newIndex >= 0) {
-      // Same lane — update region (State row) and reposition tooltip with pointer
+      // Same lane — update region (State row) and reposition tooltip with pointer.
+      // Also update segmentIndex: the pointer may have crossed into a different active segment.
       if (this.lastGeom && this.props.traceSpec) {
         const span = this.lastGeom.spans[newIndex];
         if (span) {
           const { domain } = this.getPipeline(this.props.traceSpec);
-          this.rebuildTooltip(span, newIndex, domain.min, this.hoverRegion!);
+          this.rebuildTooltip(span, newIndex, domain.min, this.hoverRegion!, result?.segmentIndex ?? -1);
         }
       }
       this.setState({});

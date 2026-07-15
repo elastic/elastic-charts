@@ -94,7 +94,7 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       // --- Active segments (solid rects showing self-time) ---
       // Use per-span color override if set; otherwise fall back to the default active color.
       const activeFill: Fill = span.color != null ? { color: colorToRgba(span.color) } : defaultActiveFill;
-      for (const seg of span.active) {
+      for (const seg of span.activeSegments) {
         const segX1 = scale(seg.start);
         const segX2 = scale(seg.end);
         // Skip segments entirely outside the visible plot x-range.
@@ -165,15 +165,19 @@ export function pickRegion(x: number, y: number, geom: TraceGeometry): PickResul
       : focusDomain.min;
 
   let region: HoverRegion;
+  let segmentIndex = -1;
   if (t < span.start || t > span.end) {
     region = 'empty';
-  } else if (span.active.some((seg) => t >= seg.start && t <= seg.end)) {
-    region = 'active';
   } else {
-    region = 'waiting';
+    segmentIndex = span.activeSegments.findIndex((seg) => t >= seg.start && t <= seg.end);
+    if (segmentIndex >= 0) {
+      region = 'active';
+    } else {
+      region = 'waiting';
+    }
   }
 
-  return { index: lane, region };
+  return { index: lane, region, segmentIndex };
 }
 
 /** @internal */

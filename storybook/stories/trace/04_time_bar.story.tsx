@@ -64,11 +64,11 @@ function TimeBarCanvas({
       max: baseFocusMin + fullDomainMs,
     };
 
-    const geom = buildGeometry([], { width: CANVAS_WIDTH, height: TIME_BAR_HEIGHT }, focusDomain, 0, style, xScaleType);
-    // Override domain to reflect the full trace (buildGeometry sets domain=0,0 for empty spans).
-    const geomWithDomain = { ...geom, domain };
+    // Pass domain explicitly: buildGeometry sets domain=0,0 for empty spans, so we supply the
+    // full trace domain directly to make the time bar reflect the right range.
+    const geom = buildGeometry([], { width: CANVAS_WIDTH, height: TIME_BAR_HEIGHT }, focusDomain, 0, style, xScaleType, domain);
 
-    drawTimeBar(ctx, geomWithDomain, style);
+    drawTimeBar(ctx, geom, style);
     ctx.restore();
   }, [xScaleType, focusShiftMs, dpr]);
 

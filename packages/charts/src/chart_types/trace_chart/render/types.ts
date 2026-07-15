@@ -13,8 +13,8 @@ import type { NormalizedSpan } from '../data/types';
 export type { Dimensions, Size };
 
 /**
- * Style configuration for the trace waterfall chart, derived from the chart's global `Theme`.
- * @internal
+ * Style configuration for the trace waterfall chart. Set via `theme.trace` on the global `Theme`.
+ * @public
  */
 export interface TraceStyle {
   /** Width of the left gutter that shows span names, in px. */
@@ -85,6 +85,11 @@ export type HoverRegion = 'active' | 'waiting' | 'empty';
 export interface PickResult {
   index: number;
   region: HoverRegion;
+  /**
+   * 0-based index into `span.activeSegments` when `region === 'active'`; -1 otherwise.
+   * Use this to display per-segment duration in the tooltip.
+   */
+  segmentIndex: number;
 }
 
 /**

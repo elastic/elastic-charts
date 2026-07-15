@@ -1,6 +1,6 @@
 # Trace chart accepts two input formats, normalized to one internal span shape
 
-**Status:** accepted
+**Status:** superseded by [0005](./0005-single-input-format-otel-adapter.md)
 
 `<Trace>` accepts either a simple `TraceDatum[]` or an OpenTelemetry OTLP payload (JSON envelope or a
 flat span array), selected explicitly via a `format: 'simple' | 'otel'` prop rather than auto-detected

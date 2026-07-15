@@ -37,11 +37,11 @@ const FEW_SPANS: TraceDatum[] = [
 ];
 
 describe('Trace chart — smoke mount', () => {
-  it('mounts without throwing for format="simple" and xScaleType="linear"', () => {
+  it('mounts without throwing for xScaleType="linear"', () => {
     expect(() => {
       const { unmount } = render(
         <Chart size={[800, 200]}>
-          <Trace id="trace1" data={FEW_SPANS} format="simple" xScaleType="linear" />
+          <Trace id="trace1" data={FEW_SPANS} xScaleType="linear" />
         </Chart>,
       );
       unmount();
@@ -52,7 +52,7 @@ describe('Trace chart — smoke mount', () => {
     expect(() => {
       const { unmount } = render(
         <Chart size={[800, 200]}>
-          <Trace id="trace2" data={FEW_SPANS} format="simple" />
+          <Trace id="trace2" data={FEW_SPANS} />
         </Chart>,
       );
       unmount();
@@ -63,7 +63,7 @@ describe('Trace chart — smoke mount', () => {
     expect(() => {
       const { unmount } = render(
         <Chart size={[800, 200]}>
-          <Trace id="trace3" data={[]} format="simple" xScaleType="linear" />
+          <Trace id="trace3" data={[]} xScaleType="linear" />
         </Chart>,
       );
       unmount();
@@ -78,7 +78,7 @@ describe('Trace chart — smoke mount', () => {
             also calls it via rAF, so the total call count is chart-shell-internal and not
             something to over-specify here. What matters: it is called with true. */}
         <Settings onRenderChange={onRenderChange} />
-        <Trace id="trace4" data={FEW_SPANS} format="simple" xScaleType="linear" />
+        <Trace id="trace4" data={FEW_SPANS} xScaleType="linear" />
       </Chart>,
     );
     expect(onRenderChange).toHaveBeenCalledWith(true);
@@ -92,13 +92,13 @@ describe('Trace chart — smoke mount', () => {
 
     const { rerender } = render(
       <Chart size={[800, 200]}>
-        <Trace id="trace5" data={FEW_SPANS} format="simple" xScaleType="linear" />
+        <Trace id="trace5" data={FEW_SPANS} xScaleType="linear" />
       </Chart>,
     );
     expect(() => {
       rerender(
         <Chart size={[800, 200]}>
-          <Trace id="trace5" data={NEW_SPANS} format="simple" xScaleType="linear" />
+          <Trace id="trace5" data={NEW_SPANS} xScaleType="linear" />
         </Chart>,
       );
     }).not.toThrow();
@@ -114,13 +114,13 @@ describe('Trace chart — smoke mount', () => {
      */
     const { rerender } = render(
       <Chart size={[800, 200]}>
-        <Trace id="trace6" data={FEW_SPANS} format="simple" xScaleType="linear" />
+        <Trace id="trace6" data={FEW_SPANS} xScaleType="linear" />
       </Chart>,
     );
     expect(() => {
       rerender(
         <Chart size={[800, 200]}>
-          <Trace id="trace6" data={FEW_SPANS} format="simple" xScaleType="time" />
+          <Trace id="trace6" data={FEW_SPANS} xScaleType="time" />
         </Chart>,
       );
     }).not.toThrow();
@@ -128,7 +128,7 @@ describe('Trace chart — smoke mount', () => {
     expect(() => {
       rerender(
         <Chart size={[800, 200]}>
-          <Trace id="trace6" data={FEW_SPANS} format="simple" xScaleType="linear" />
+          <Trace id="trace6" data={FEW_SPANS} xScaleType="linear" />
         </Chart>,
       );
     }).not.toThrow();

@@ -13,11 +13,15 @@ import { Chart, Trace, Settings } from '@elastic/charts';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
+/**
+ * Empty trace — no data supplied. Demonstrates the standard library empty state
+ * (the "No data to display" panel, overridable via `Settings.noResults`).
+ */
 export const Example: ChartsStory = (_, { title, description }) => {
   return (
     <Chart title={title} description={description} size={{ width: 1024, height: 512 }}>
       <Settings baseTheme={useBaseTheme()} />
-      <Trace id="spec_1" data={[]} format="simple" />
+      <Trace id="spec_1" data={[]} />
     </Chart>
   );
 };

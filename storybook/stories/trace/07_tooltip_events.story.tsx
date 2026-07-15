@@ -10,10 +10,8 @@ import { action } from '@storybook/addon-actions';
 import { boolean, select } from '@storybook/addon-knobs';
 import React, { useMemo } from 'react';
 
-import type { CustomTooltip } from '@elastic/charts';
-import { Chart, Settings, Tooltip, Trace } from '@elastic/charts';
-import type { OtelSpan } from '@elastic/charts/src/chart_types/trace_chart/trace_api';
-import type { NormalizedSpan } from '@elastic/charts/src/chart_types/trace_chart/data/types';
+import type { CustomTooltip, OtelSpan, TraceDatum } from '@elastic/charts';
+import { Chart, fromOtlp, Settings, Tooltip, Trace } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -90,16 +88,16 @@ const OTEL_SPANS: OtelSpan[] = [
  * never via dangerouslySetInnerHTML. React auto-escapes text children.
  */
 const TraceCustomTooltip: CustomTooltip = ({ values, backgroundColor }) => {
-  const span = values[0]?.datum as NormalizedSpan | undefined;
-  if (!span) return null;
+  const datum = values[0]?.datum as TraceDatum | undefined;
+  if (!datum) return null;
 
-  const meta = span.meta as OtelSpan;
-  const attrs = meta.attributes ?? [];
-  const status = meta.status;
+  const meta = datum.meta as OtelSpan;
+  const attrs = meta?.attributes ?? [];
+  const status = meta?.status;
 
   return (
     <div style={{ padding: '8px 12px', minWidth: 220, fontFamily: 'monospace', fontSize: 12, background: backgroundColor, borderRadius: 4, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-      <div style={{ fontWeight: 700, marginBottom: 6, fontSize: 13 }}>{span.name}</div>
+      <div style={{ fontWeight: 700, marginBottom: 6, fontSize: 13 }}>{datum.name}</div>
       {values.map((v) => (
         <div key={v.label} style={{ display: 'flex', justifyContent: 'space-between', gap: 16, marginBottom: 2 }}>
           <span style={{ color: '#888' }}>{v.label}</span>
@@ -148,13 +146,17 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   // In 'time' mode shift the nanosecond timestamps by EPOCH_BASE so the raster
   // engine renders realistic wall-clock ticks instead of 1970-01-01 labels.
+  // fromOtlp converts nanoseconds → epoch-ms and carries the original OtelSpan on datum.meta.
   const data = useMemo(() => {
-    if (xScaleType !== 'time') return OTEL_SPANS;
-    return OTEL_SPANS.map((s) => ({
-      ...s,
-      startTimeUnixNano: (BigInt(s.startTimeUnixNano) + EPOCH_BASE_NS).toString(),
-      endTimeUnixNano: (BigInt(s.endTimeUnixNano) + EPOCH_BASE_NS).toString(),
-    }));
+    const spans =
+      xScaleType === 'time'
+        ? OTEL_SPANS.map((s) => ({
+            ...s,
+            startTimeUnixNano: (BigInt(s.startTimeUnixNano) + EPOCH_BASE_NS).toString(),
+            endTimeUnixNano: (BigInt(s.endTimeUnixNano) + EPOCH_BASE_NS).toString(),
+          }))
+        : OTEL_SPANS;
+    return fromOtlp(spans);
   }, [xScaleType]);
 
   return (
@@ -176,9 +178,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
           onElementOver={action('onElementOver')}
           onElementOut={action('onElementOut')}
         />
-        {/* customTooltip receives values[0].datum as NormalizedSpan; .meta is the OtelSpan with attributes/status. */}
+        {/* customTooltip receives values[0].datum as TraceDatum; .meta is the OtelSpan with attributes/status. */}
         <Tooltip customTooltip={TraceCustomTooltip} />
-        <Trace id="trace_tooltip_events" data={data} format="otel" xScaleType={xScaleType} showTooltipOverEmpty={showTooltipOverEmpty} />
+        <Trace id="trace_tooltip_events" data={data} xScaleType={xScaleType} showTooltipOverEmpty={showTooltipOverEmpty} />
       </Chart>
 
       <p style={{ margin: 0, fontSize: 11, color: '#888' }}>

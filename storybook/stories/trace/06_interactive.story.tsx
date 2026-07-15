@@ -9,8 +9,8 @@
 import { select } from '@storybook/addon-knobs';
 import React, { useMemo } from 'react';
 
+import type { TraceDatum } from '@elastic/charts';
 import { Chart, Settings, Trace } from '@elastic/charts';
-import type { TraceDatum } from '@elastic/charts/src/chart_types/trace_chart/trace_api';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -89,7 +89,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   return (
     <Chart title={title} description={description} size={{ width: '100%', height: 300 }}>
       <Settings baseTheme={theme} />
-      <Trace id="trace_interactive" data={data} format="simple" xScaleType={xScaleType} />
+      <Trace id="trace_interactive" data={data} xScaleType={xScaleType} />
     </Chart>
   );
 };

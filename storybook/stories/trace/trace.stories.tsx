@@ -10,8 +10,7 @@ export default {
   title: 'Trace (@alpha)',
 };
 
-export { Example as traceScaffold } from './00_scaffold.story';
-export { Example as normalizeDebug } from './01_normalize_debug.story';
+export { Example as emptyTrace } from './00_empty.story';
 export { Example as selfTimeDebug } from './02_self_time_debug.story';
 export { Example as geometryDebug } from './03_geometry_debug.story';
 export { Example as timeBar } from './04_time_bar.story';

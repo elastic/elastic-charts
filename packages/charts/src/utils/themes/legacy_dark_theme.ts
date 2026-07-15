@@ -486,4 +486,15 @@ export const LEGACY_DARK_THEME: Theme = {
     stroke: Colors.Transparent.keyword,
     strokeWidth: 0,
   },
+  trace: {
+    gutterWidth: 200,
+    timeBarHeight: 32,
+    laneHeight: 24,
+    totalLineThickness: 2,
+    totalLineColor: '#444',
+    activeSegmentColor: '#6092C0',
+    gutterLabel: { fontFamily: 'sans-serif', fontSize: 10, color: '#999' },
+    timeBarLabel: { fontFamily: 'sans-serif', fontSize: 10, color: '#999' },
+    gridLineColor: '#444',
+  },
 };

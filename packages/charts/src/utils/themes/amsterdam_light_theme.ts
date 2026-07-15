@@ -504,4 +504,15 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     stroke: Colors.Transparent.keyword,
     strokeWidth: 0,
   },
+  trace: {
+    gutterWidth: 200,
+    timeBarHeight: 32,
+    laneHeight: 24,
+    totalLineThickness: 2,
+    totalLineColor: '#eaedf3',
+    activeSegmentColor: '#6092C0',
+    gutterLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: '#646a77' },
+    timeBarLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: '#646a77' },
+    gridLineColor: '#eaedf3',
+  },
 };

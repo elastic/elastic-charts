@@ -13,14 +13,13 @@ import { SpecType } from '../../specs/spec_type'; // kept as long-winded import 
 import type { SFProps } from '../../state/spec_factory';
 import { buildSFProps, useSpecFactory } from '../../state/spec_factory';
 import { stripUndefined } from '../../utils/common';
-import type { OtelInput } from './data/types';
 
-// Re-export the OTel input types so consumers using format='otel' don't need a separate import.
-export type { OtelInput };
-export type { OtelSpan, OtlpEnvelope } from './data/types';
+// Re-export the OTel adapter so consumers don't need a separate import path.
+export type { OtelInput, OtelSpan, OtlpEnvelope } from './data/otel_adapter';
+export { fromOtlp } from './data/otel_adapter';
 
 /**
- * A single span in the "simple" input format.
+ * A single span in the Trace chart input.
  * @public
  */
 export interface TraceDatum {
@@ -30,23 +29,46 @@ export interface TraceDatum {
   traceId?: string;
   start: number;
   end: number;
-  active?: { start: number; end: number }[];
+  /**
+   * Explicit active-execution segments for this span (the solid marks drawn inside the total-duration
+   * line). When omitted, defaults to the span's self time — its `[start, end]` extent minus the union
+   * of its direct children's extents (see ADR 0003). When supplied, the values are taken verbatim.
+   */
+  activeSegments?: { start: number; end: number }[];
   color?: Color;
+  /**
+   * Arbitrary per-span payload passed through unchanged to tooltip `datum` and element-event
+   * callbacks. Use this to carry source-specific data (e.g. OTel `attributes`/`status` when the
+   * data was produced by {@link fromOtlp}) without modifying the `TraceDatum` structure.
+   */
+  meta?: unknown;
 }
 
 /**
- * Base fields shared by both `TraceSpec` variants.
+ * Spec for the Trace chart. Add one `<Trace>` inside a `<Chart>` to render a waterfall visualization.
  * @public
  */
-interface TraceSpecBase extends Spec {
+export interface TraceSpec extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Trace;
+  /** Span data. Each element occupies exactly one lane in the waterfall. */
+  data: TraceDatum[];
+  /**
+   * Controls the x-axis scale and domain-origin semantics:
+   * - `'time'`: absolute epoch-ms; tick labels show wall-clock time.
+   * - `'linear'`: elapsed-from-zero (domain rezeroed to the earliest span start); tick labels show elapsed duration.
+   *
+   * Both modes store domain values in milliseconds and share the same 1 ms minimum-visible-extent
+   * floor. When using `'time'`, ensure your `start`/`end` values are epoch-millisecond timestamps
+   * (e.g. `Date.now()`); small elapsed-ms values are interpreted as 1970-01-01 dates. Use `fromOtlp`
+   * (which converts OTLP nanoseconds to epoch-ms) or add your own epoch offset.
+   */
   xScaleType: 'time' | 'linear';
   /**
-   * When set, only spans whose `traceId` matches this value are rendered. When omitted
-   * and the data contains spans from more than one trace, all spans are kept and a
-   * dev-mode warning is logged.
-   * @public
+   * When set, only spans whose `traceId` matches this value are rendered. When omitted, all spans in
+   * `data` are rendered as one combined waterfall (one lane per span, interleaved by start time).
+   * An informational dev-mode warning is logged when spans from more than one trace are present and
+   * `traceId` is not set.
    */
   traceId?: string;
   /**
@@ -57,31 +79,6 @@ interface TraceSpecBase extends Spec {
    */
   showTooltipOverEmpty?: boolean;
 }
-
-/**
- * `TraceSpec` for the `format: 'simple'` path — data is an array of `TraceDatum`.
- * @public
- */
-export interface TraceSpecSimple extends TraceSpecBase {
-  format: 'simple';
-  data: TraceDatum[];
-}
-
-/**
- * `TraceSpec` for the `format: 'otel'` path — data is an OTLP envelope or a flat `OtelSpan[]`.
- * @public
- */
-export interface TraceSpecOtel extends TraceSpecBase {
-  format: 'otel';
-  data: OtelInput;
-}
-
-/**
- * Discriminated union spec for the trace chart. The `format` field selects the input shape.
- * TypeScript narrows `data` to the correct type when you check `spec.format`.
- * @public
- */
-export type TraceSpec = TraceSpecSimple | TraceSpecOtel;
 
 const buildProps = buildSFProps<TraceSpec>()(
   {
@@ -94,7 +91,19 @@ const buildProps = buildSFProps<TraceSpec>()(
 );
 
 /**
- * Adds trace spec to chart specs
+ * Adds a trace spec to the chart. Place inside a `<Chart>` component.
+ *
+ * ```tsx
+ * <Chart>
+ *   <Settings baseTheme={theme} />
+ *   <Trace id="my-trace" data={spans} xScaleType="linear" />
+ * </Chart>
+ * ```
+ *
+ * For OpenTelemetry data, convert first with {@link fromOtlp}:
+ * ```tsx
+ * <Trace id="my-trace" data={fromOtlp(otlpEnvelope)} xScaleType="time" />
+ * ```
  * @public
  */
 export const Trace = (
@@ -107,9 +116,6 @@ export const Trace = (
   >,
 ) => {
   const { defaults, overrides } = buildProps;
-  // @ts-ignore — All Spec keys are guaranteed by SFProps; spreading a discriminated union loses the
-  // discriminant in TS's inference (format becomes 'simple'|'otel' after spread), but the combined
-  // value is a valid TraceSpec instance at runtime. Follows the same pattern as specComponentFactory.
   useSpecFactory<TraceSpec>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };

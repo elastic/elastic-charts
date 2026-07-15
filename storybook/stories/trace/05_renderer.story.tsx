@@ -43,10 +43,10 @@ export const Example = () => {
     const style = buildTraceStyle(theme);
 
     // Full normalize → resolveActive → buildGeometry pipeline (Specs 1–3).
-    const { spans: normalized } = normalize(INPUT_SPANS, 'simple', 'linear');
+    const { spans: normalized, domain } = normalize(INPUT_SPANS, 'linear');
     const resolved = resolveActive(normalized);
     const focusDomain = { min: 0, max: 1000 };
-    const geom = buildGeometry(resolved, { width: CANVAS_WIDTH, height: CANVAS_HEIGHT }, focusDomain, 0, style, 'linear');
+    const geom = buildGeometry(resolved, { width: CANVAS_WIDTH, height: CANVAS_HEIGHT }, focusDomain, 0, style, 'linear', domain);
 
     // DPR-scale once, then hand off to the renderer (which is dpr-agnostic by contract).
     ctx.save();

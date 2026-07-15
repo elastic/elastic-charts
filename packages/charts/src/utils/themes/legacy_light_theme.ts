@@ -485,4 +485,15 @@ export const LEGACY_LIGHT_THEME: Theme = {
     stroke: Colors.Transparent.keyword,
     strokeWidth: 0,
   },
+  trace: {
+    gutterWidth: 200,
+    timeBarHeight: 32,
+    laneHeight: 24,
+    totalLineThickness: 2,
+    totalLineColor: '#eaeaea',
+    activeSegmentColor: '#6092C0',
+    gutterLabel: { fontFamily: 'sans-serif', fontSize: 10, color: '#777' },
+    timeBarLabel: { fontFamily: 'sans-serif', fontSize: 10, color: '#777' },
+    gridLineColor: '#eaeaea',
+  },
 };

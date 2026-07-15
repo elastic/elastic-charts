@@ -17,7 +17,7 @@ import type { ProjectedValues, PointerOutEvent, PointerOverEvent, PointerEvent }
 import { PointerEventType } from './settings_types';
 import type { Spec } from './spec_type';
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
-import type { TraceDatum, OtelSpan } from '../chart_types/trace_chart/trace_api';
+import type { TraceDatum } from '../chart_types/trace_chart/trace_api';
 import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import type { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
 import type { LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
@@ -171,8 +171,8 @@ export function isMetricElementEvent(e: Parameters<ElementClickListener>[0][0]):
  * Represents an interaction event with a span in a trace waterfall chart.
  *
  * Exposes format-agnostic identity + timing fields so callers are never forced to branch on the
- * input format (per ADR 0002). The original datum (`TraceDatum` for `format:'simple'`, `OtelSpan`
- * for `format:'otel'`) is available via `datum` — use it to access OTel `attributes`/`status`.
+ * The original `TraceDatum` is available via `datum`. For data produced by {@link fromOtlp}, the
+ * underlying `OtelSpan` (with `attributes`/`status`) is on `datum.meta`.
  *
  * Note: `settings.tsx` importing a trace type follows the same pattern as `Cell` (heatmap) and
  * `WordModel` (wordcloud) already present in this file.
@@ -184,14 +184,24 @@ export interface TraceElementEvent {
   name: string;
   parentId?: string;
   traceId?: string;
+  /**
+   * Span start in ms. In `xScaleType: 'linear'` mode this is elapsed-from-zero (rezeroed to the
+   * earliest span start in the data), not the original `TraceDatum.start`.
+   */
   start: number;
+  /**
+   * Span end in ms. Same rezeroing caveat as `start` for `xScaleType: 'linear'` mode.
+   */
   end: number;
   /** `end - start` */
   duration: number;
   /** Sum of active-segment durations (self time, per ADR 0003) */
   selfTime: number;
-  /** Original datum — exposes OTel `attributes`/`status` for `format:'otel'` inputs */
-  datum: TraceDatum | OtelSpan;
+  /**
+   * The original `TraceDatum`. For data produced by {@link fromOtlp}, access the underlying
+   * `OtelSpan` (with OTel `attributes`/`status`) via `datum.meta as OtelSpan`.
+   */
+  datum: TraceDatum;
 }
 
 /**

@@ -10,41 +10,9 @@ import type { Color } from '../../../common/colors';
 import type { TraceDatum } from '../trace_api';
 
 /**
- * A single OpenTelemetry span, as it appears in an OTLP payload (JSON encoding: nanos are strings).
- * @public
- */
-export interface OtelSpan {
-  spanId: string;
-  parentSpanId?: string;
-  traceId?: string;
-  name: string;
-  startTimeUnixNano: string | number | bigint;
-  endTimeUnixNano: string | number | bigint;
-  attributes?: { key: string; value: unknown }[];
-  status?: { code?: number; message?: string };
-  kind?: number;
-}
-
-/**
- * The OTLP JSON envelope shape, as emitted by OTel exporters/collectors.
- * @public
- */
-export interface OtlpEnvelope {
-  resourceSpans: {
-    scopeSpans: {
-      spans: OtelSpan[];
-    }[];
-  }[];
-}
-
-/**
- * Accepted shapes for `format: 'otel'`: the full OTLP envelope, or a flat span array.
- * @public
- */
-export type OtelInput = OtlpEnvelope | OtelSpan[];
-
-/**
- * A span normalized from either input format, format-agnostic for every downstream stage.
+ * A span prepared for rendering: filtered by `traceId`, projected onto the x-scale
+ * (epoch ms under 'time'; elapsed-from-zero under 'linear'), with `activeSegments`
+ * and `meta` guaranteed to be present regardless of the source datum.
  * @internal
  */
 export interface NormalizedSpan {
@@ -55,9 +23,13 @@ export interface NormalizedSpan {
   /** ms: epoch (xScaleType 'time') or relative-from-domain-min (xScaleType 'linear') */
   start: number;
   end: number;
-  /** copied from TraceDatum.active if supplied (simple format only); else empty, resolved in Spec 2 */
-  active: { start: number; end: number }[];
+  /**
+   * Active-execution segments (the solid marks in each lane). Empty until `resolveActive` fills
+   * them with self-time derivation (ADR 0003); copied verbatim from TraceDatum.activeSegments
+   * if the caller supplied them explicitly.
+   */
+  activeSegments: { start: number; end: number }[];
   color?: Color;
-  /** the original datum, for custom tooltip / element callbacks */
-  meta: TraceDatum | OtelSpan;
+  /** The original TraceDatum; exposed to tooltip datum and element-event callbacks. */
+  meta: TraceDatum;
 }

@@ -8,8 +8,8 @@
 
 import React, { useMemo } from 'react';
 
+import type { TraceDatum } from '@elastic/charts';
 import { Chart, Settings, Trace } from '@elastic/charts';
-import type { TraceDatum } from '@elastic/charts/src/chart_types/trace_chart/trace_api';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -31,7 +31,8 @@ function seededRng(seed: number) {
       return lo + Math.floor(this.next() * (hi - lo + 1));
     },
     pick<T>(arr: readonly T[]): T {
-      return arr[this.int(0, arr.length - 1)];
+      // int() is range-bounded to [0, arr.length-1], so the element always exists.
+      return arr[this.int(0, arr.length - 1)]!;
     },
   };
 }
@@ -138,7 +139,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
       <Chart title={title} description={description} size={{ width: '100%', height: 300 }}>
         <Settings baseTheme={theme} />
-        <Trace id="trace_large_n" data={data} format="simple" xScaleType="linear" />
+        <Trace id="trace_large_n" data={data} xScaleType="linear" />
       </Chart>
 
       <p style={{ margin: 0, fontSize: 11, color: '#888' }}>
