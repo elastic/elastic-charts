@@ -10,6 +10,7 @@ import React, { useMemo } from 'react';
 
 import type { TraceDatum } from '@elastic/charts';
 import { Chart, Settings, Trace } from '@elastic/charts';
+import { number, select } from '@storybook/addon-knobs';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -56,19 +57,21 @@ const SERVICE_OPS: readonly [string, readonly string[]][] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Trace builder — recursive tree that fills to TARGET_SPANS.
+// Trace builder — recursive tree that fills to targetSpans.
 // ---------------------------------------------------------------------------
-const TARGET_SPANS = 5_000;
 
 /**
- * Builds a realistic distributed-trace TraceDatum[] of ~TARGET_SPANS spans.
+ * Builds a realistic distributed-trace TraceDatum[] of ~targetSpans spans.
  *
  * Structure: a root "POST /checkout" span; each branch gets 2–15 children
  * (more near the root, fewer at depth), placed sequentially with small self-time
  * gaps so the self-time algorithm produces visible active segments. Service and
  * operation names are chosen from SERVICE_OPS at each node.
+ *
+ * The seed (42) is fixed so VRT baselines are stable across runs; only the span
+ * count changes when the knob is adjusted.
  */
-function buildTrace(): TraceDatum[] {
+function buildTrace(targetSpans: number): TraceDatum[] {
   const rng = seededRng(42);
   const spans: TraceDatum[] = [];
   let counter = 0;
@@ -80,7 +83,7 @@ function buildTrace(): TraceDatum[] {
   }
 
   function populate(parentId: string, t0: number, t1: number, depth: number): void {
-    if (spans.length >= TARGET_SPANS || depth > 7 || t1 - t0 < 2) return;
+    if (spans.length >= targetSpans || depth > 7 || t1 - t0 < 2) return;
     const dur = t1 - t0;
 
     // Wide at the root, narrower as we go deeper.
@@ -94,7 +97,7 @@ function buildTrace(): TraceDatum[] {
 
     let cursor = t0 + selfHead;
 
-    for (let i = 0; i < nChildren && spans.length < TARGET_SPANS; i++) {
+    for (let i = 0; i < nChildren && spans.length < targetSpans; i++) {
       const [svc, ops] = rng.pick(SERVICE_OPS);
       const op = rng.pick(ops);
 
@@ -120,30 +123,39 @@ function buildTrace(): TraceDatum[] {
   return spans;
 }
 
+const DEFAULT_SPAN_COUNT = 5_000;
+
 export const Example: ChartsStory = (_, { title, description }) => {
   const theme = useBaseTheme();
-  const data: TraceDatum[] = useMemo(() => buildTrace(), []);
+  const spanCount = number('span count', DEFAULT_SPAN_COUNT, { min: 100, max: 10_000, step: 100 });
+  const xScaleType = select<'linear' | 'time'>(
+    'x scale',
+    { 'linear (elapsed ms)': 'linear', 'time (epoch ms)': 'time' },
+    'linear',
+  );
+
+  const data: TraceDatum[] = useMemo(() => buildTrace(spanCount), [spanCount]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 16, fontFamily: 'sans-serif' }}>
       <div>
-        <h2 style={{ margin: '0 0 4px', fontSize: 16 }}>Spec 8 — Large-N performance gate</h2>
+        <h2 style={{ margin: '0 0 4px', fontSize: 16 }}>Spec 8 &mdash; Large-N performance gate</h2>
         <p style={{ margin: '0 0 8px', color: '#555', fontSize: 13 }}>
-          ~{TARGET_SPANS.toLocaleString()} spans modelling a realistic microservices checkout trace
-          (frontend → api-gateway → auth/user/product/inventory/order/payment/notification, plus DB and
+          ~{spanCount.toLocaleString()} spans modelling a realistic microservices checkout trace
+          (frontend &rarr; api-gateway &rarr; auth/user/product/inventory/order/payment/notification, plus DB and
           cache leaves). Pan (drag), zoom (wheel), and vertical scroll must stay responsive via viewport
-          culling — the draw loop only visits the visible lanes per frame. ADR 0001&apos;s WebGL seam is
+          culling &mdash; the draw loop only visits the visible lanes per frame. ADR 0001&apos;s WebGL seam is
           the fallback if this regresses.
         </p>
       </div>
 
       <Chart title={title} description={description} size={{ width: '100%', height: 300 }}>
         <Settings baseTheme={theme} />
-        <Trace id="trace_large_n" data={data} xScaleType="linear" />
+        <Trace id="trace_large_n" data={data} xScaleType={xScaleType} />
       </Chart>
 
       <p style={{ margin: 0, fontSize: 11, color: '#888' }}>
-        Simple format · ~{TARGET_SPANS.toLocaleString()} spans · seeded PRNG (deterministic, VRT-stable) ·
+        Simple format &middot; ~{spanCount.toLocaleString()} spans &middot; seeded PRNG (deterministic, VRT-stable) &middot;
         culling regression guard in <code>canvas2d_renderer.test.ts</code>
       </p>
     </div>

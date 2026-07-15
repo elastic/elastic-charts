@@ -28,7 +28,27 @@ const style: TraceStyle = {
   gridLineColor: '#e0e0e0',
 };
 
-/** Epoch ms corresponding to a fixed trace for the 'time' scale type. */
+/**
+ * Epoch ms anchor used in stories that expose an `x scale` knob.
+ *
+ * ## Why the x-scale knob requires traces longer than 1 s
+ *
+ * The `'time'` and `'linear'` x-scale types produce visually identical tick labels for traces
+ * shorter than ~1 s:
+ *   - `'linear'` labels elapsed ms from zero: "0ms … 800ms"
+ *   - `'time'` without an epoch offset labels wall-clock ms since 1970-01-01: "00:00:00.000 … 00:00:00.800"
+ *
+ * The two labels look the same at sub-second precision, making the knob appear broken.
+ *
+ * The fix is twofold:
+ *   1. Use a trace that crosses at least one whole-second boundary (duration > 1 s).
+ *   2. Offset the span timestamps by EPOCH_BASE when `xScaleType='time'` so the raster engine
+ *      renders realistic wall-clock labels ("22:13:20 … 22:13:30") instead of 1970-01-01.
+ *
+ * Stories where the data is ≤ 1 s and no EPOCH_BASE offset is applied therefore omit the
+ * `x scale` knob entirely (e.g. 11_chrome_network, 12_kibana_trace, 13_segment_phases,
+ * 14_pinned_tooltip, 15_brush_zoom). Stories with > 1 s data always apply this offset.
+ */
 const EPOCH_BASE = 1_700_000_000_000; // 2023-11-14T22:13:20Z
 
 function TimeBarCanvas({
@@ -91,9 +111,15 @@ export const Example = () => {
       <div className="echChartStatus" data-ech-render-complete={true} />
       <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
         <h2 style={{ marginBottom: 12 }}>Spec 4 — time bar</h2>
-        <p style={{ marginBottom: 16, color: '#555', fontSize: 13 }}>
+        <p style={{ marginBottom: 8, color: '#555', fontSize: 13 }}>
           Draws only the time bar via the shared raster-axis engines. Switch scale type and nudge the
           focus domain to verify ticks update correctly.
+        </p>
+        <p style={{ marginBottom: 16, color: '#888', fontSize: 12, fontStyle: 'italic' }}>
+          Note: the <code>x scale</code> knob is only meaningful for traces longer than 1&nbsp;s.
+          Below 1&nbsp;s the two scales produce identical sub-second labels, so stories with
+          sub-second fixtures omit the knob. This story uses a 10&nbsp;s domain plus a fixed epoch
+          base (2023-11-14T22:13:20Z) so wall-clock and elapsed labels are clearly distinguishable.
         </p>
 
         {/* Controls */}
