@@ -51,6 +51,26 @@ span spent in its children. When a caller supplies `active` ranges explicitly, i
 caller-defined inactivity. One of three hover regions alongside **active** and **empty**.
 _Avoid_: idle (implies nothing is happening globally), blocked (implies a stall or error).
 
+**Label position**:
+The rendering mode for span name labels: `gutter` (drawn in the fixed left panel — the default), `inline` (drawn over the span's bar near its start edge — the Chrome/Kibana style), or `none` (labels omitted; accessible only via tooltip and screen-reader table). Set via `theme.trace.labelPosition`. No auto-switching — the caller sets the mode explicitly.
+_Avoid_: label mode, label placement.
+
+**Focused lane**:
+The lane currently selected via keyboard navigation, indicated by a full-width background highlight drawn in `draw()`. Distinct from the hovered lane (which is mouse-driven and controls tooltip visibility). Only one lane is focused at a time; focus is cleared when the canvas loses keyboard focus.
+_Avoid_: selected lane, active lane (active is already used for active segments).
+
+**Brush**:
+A Shift+drag gesture on the plot area that draws an X-axis rubber-band rect and, on release, eases the focus domain to the selected time range. X-only (no Y-axis brushing). The default drag gesture (`dragMode='pan'`) is inverted by Shift; setting `dragMode='brush'` makes plain drag brush and Shift+drag pan.
+_Avoid_: drag-zoom, range select, lasso.
+
+**Pinned tooltip**:
+A tooltip frozen in place after the user clicks a span. Remains visible regardless of subsequent mouse position; dismissed by clicking elsewhere on the canvas or pressing Escape. Managed as local component instance state, not redux.
+_Avoid_: sticky tooltip (ambiguous with `stickTo` anchor positioning), locked tooltip.
+
+**Color group**:
+The string value that determines which palette color a span's active segments receive. Two spans with the same color group key get the same color. The key can be derived from any span property (e.g. an OTel attribute, span kind, or a caller-computed value); the chart resolves key → color via a cyclic index into the EUI palette.
+_Avoid_: category, series, bucket.
+
 **Minimum visible extent**:
 The smallest meaningful time window the trace chart allows via zoom-in: **1 ms**. This is the finest
 granularity the time-raster axis engine can label; zooming beyond it repeats identical millisecond
