@@ -43,6 +43,13 @@ interface TraceSpecBase extends Spec {
   chartType: typeof ChartType.Trace;
   xScaleType: 'time' | 'linear';
   /**
+   * When set, only spans whose `traceId` matches this value are rendered. When omitted
+   * and the data contains spans from more than one trace, all spans are kept and a
+   * dev-mode warning is logged.
+   * @public
+   */
+  traceId?: string;
+  /**
    * When `true`, the tooltip also appears while hovering the empty region of a lane
    * (past the span's `[start, end]` extent). Defaults to `false` — the span, not the
    * whole lane, is the hover target.

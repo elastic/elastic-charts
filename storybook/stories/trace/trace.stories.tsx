@@ -18,3 +18,5 @@ export { Example as timeBar } from './04_time_bar.story';
 export { Example as renderer } from './05_renderer.story';
 export { Example as interactive } from './06_interactive.story';
 export { Example as tooltipEvents } from './07_tooltip_events.story';
+export { Example as multiTrace } from './08_multi_trace.story';
+export { Example as largeN } from './09_large_n.story';

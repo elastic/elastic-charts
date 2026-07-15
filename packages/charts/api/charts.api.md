@@ -713,6 +713,7 @@ export const ChartType: Readonly<{
     Wordcloud: "wordcloud";
     Metric: "metric";
     Bullet: "bullet";
+    Trace: "trace";
 }>;
 
 // @public (undocumented)
@@ -1178,12 +1179,12 @@ export interface DomainRange {
 }
 
 // @public
-export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>, options?: {
+export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent | TraceElementEvent>, options?: {
     keyPressed: KeyPressed;
 }) => void;
 
 // @public (undocumented)
-export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>) => void;
+export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent | TraceElementEvent>) => void;
 
 // @public (undocumented)
 export const entryKey: ([key]: ArrayEntry) => string;
@@ -1772,6 +1773,9 @@ export type IsAny<T, True, False = never> = True | False extends (T extends neve
 
 // @public
 export function isMetricElementEvent(e: Parameters<ElementClickListener>[0][0]): e is MetricElementEvent;
+
+// @public
+export function isTraceElementEvent(e: Parameters<ElementClickListener>[0][0]): e is TraceElementEvent;
 
 // @public
 export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, False, True> : False;
@@ -2438,6 +2442,47 @@ export type OrdinalDomain = (number | string)[];
 export interface OrdinalScale {
     // (undocumented)
     type: typeof ScaleType.Ordinal;
+}
+
+// @public
+export type OtelInput = OtlpEnvelope | OtelSpan[];
+
+// @public
+export interface OtelSpan {
+    // (undocumented)
+    attributes?: {
+        key: string;
+        value: unknown;
+    }[];
+    // (undocumented)
+    endTimeUnixNano: string | number | bigint;
+    // (undocumented)
+    kind?: number;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    parentSpanId?: string;
+    // (undocumented)
+    spanId: string;
+    // (undocumented)
+    startTimeUnixNano: string | number | bigint;
+    // (undocumented)
+    status?: {
+        code?: number;
+        message?: string;
+    };
+    // (undocumented)
+    traceId?: string;
+}
+
+// @public
+export interface OtlpEnvelope {
+    // (undocumented)
+    resourceSpans: {
+        scopeSpans: {
+            spans: OtelSpan[];
+        }[];
+    }[];
 }
 
 // @public (undocumented)
@@ -3663,6 +3708,76 @@ export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIden
 
 // @public
 export type TooltipValueFormatter<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = (data: TooltipValue<D, SI>) => JSX.Element | string;
+
+// Warning: (ae-forgotten-export) The symbol "buildProps_13" needs to be exported by the entry point index.d.ts
+//
+// @public
+export const Trace: (props: SFProps<TraceSpec, keyof (typeof buildProps_13)["overrides"], keyof (typeof buildProps_13)["defaults"], keyof (typeof buildProps_13)["optionals"], keyof (typeof buildProps_13)["requires"]>) => null;
+
+// @public
+export interface TraceDatum {
+    // (undocumented)
+    active?: {
+        start: number;
+        end: number;
+    }[];
+    // (undocumented)
+    color?: Color;
+    // (undocumented)
+    end: number;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    parentId?: string;
+    // (undocumented)
+    start: number;
+    // (undocumented)
+    traceId?: string;
+}
+
+// @public
+export interface TraceElementEvent {
+    datum: TraceDatum | OtelSpan;
+    duration: number;
+    // (undocumented)
+    end: number;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    parentId?: string;
+    selfTime: number;
+    // (undocumented)
+    start: number;
+    // (undocumented)
+    traceId?: string;
+    // (undocumented)
+    type: 'traceElementEvent';
+}
+
+// @public
+export type TraceSpec = TraceSpecSimple | TraceSpecOtel;
+
+// Warning: (ae-forgotten-export) The symbol "TraceSpecBase" needs to be exported by the entry point index.d.ts
+//
+// @public
+export interface TraceSpecOtel extends TraceSpecBase {
+    // (undocumented)
+    data: OtelInput;
+    // (undocumented)
+    format: 'otel';
+}
+
+// @public
+export interface TraceSpecSimple extends TraceSpecBase {
+    // (undocumented)
+    data: TraceDatum[];
+    // (undocumented)
+    format: 'simple';
+}
 
 // @public (undocumented)
 export type TreeLevel = number;

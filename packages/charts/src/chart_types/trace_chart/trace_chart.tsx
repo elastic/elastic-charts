@@ -17,6 +17,7 @@ import { resolveActive } from './data/self_time';
 import type { NormalizedSpan } from './data/types';
 import { canvas2dRenderer, pickRegion } from './render/canvas2d_renderer';
 import { buildGeometry } from './render/geometry';
+import type { ViewKey } from './render/interaction';
 import { computeMaxScroll, computeZoomMax, hasViewKeyChanged } from './render/interaction';
 import { buildTraceEvent, buildTraceTooltipInfo } from './render/tooltip';
 import type { HoverRegion, PickResult, TraceGeometry } from './render/types';
@@ -82,11 +83,12 @@ interface OwnProps {
 
 type TraceProps = StateProps & DispatchProps & OwnProps;
 
-/** Memoized normalize→resolveActive output. Keyed on (data ref, format, xScaleType). */
+/** Memoized normalize→resolveActive output. Keyed on (data ref, format, xScaleType, traceId). */
 interface PipelineCache {
   dataRef: TraceSpec['data']; // TraceDatum[] | OtelInput depending on format
   format: string;
   xScaleType: string;
+  traceId: string | undefined;
   result: { spans: ReturnType<typeof resolveActive>; domain: { min: number; max: number } };
 }
 
@@ -141,7 +143,7 @@ class TraceComponent extends React.Component<TraceProps> {
    * when it changes the horizontal view resets to fit-all. Preserves zoom across same-scale
    * data refreshes (data-ref changes do not reset the view).
    */
-  private viewKey: { xScaleType: string; format: string } | null = null;
+  private viewKey: ViewKey | null = null;
 
   // Stable bound method for the container-level wheel preventDefault (fixes the Spec 0 closure leak)
   private preventScroll = (e: WheelEvent) => e.preventDefault();
@@ -191,7 +193,7 @@ class TraceComponent extends React.Component<TraceProps> {
     this.resetView();
     // Seed the domain-semantics key so the first componentDidUpdate doesn't spuriously reset.
     this.viewKey = this.props.traceSpec
-      ? { xScaleType: this.props.traceSpec.xScaleType, format: this.props.traceSpec.format }
+      ? { xScaleType: this.props.traceSpec.xScaleType, format: this.props.traceSpec.format, traceId: this.props.traceSpec.traceId }
       : null;
 
     // Build the RAF pipeline: withDeltaTime wraps frame for delta-time; we own the rAF id so we
@@ -239,9 +241,9 @@ class TraceComponent extends React.Component<TraceProps> {
     // Keying on (xScaleType, format) — not the data ref — preserves zoom across same-scale data
     // refreshes (future streaming concern). See ADR 0004 Decision 2 (addendum).
     const spec = this.props.traceSpec;
-    if (spec && hasViewKeyChanged(this.viewKey, spec)) {
+    if (spec && hasViewKeyChanged(this.viewKey, { xScaleType: spec.xScaleType, format: spec.format, traceId: spec.traceId })) {
       this.resetView();
-      this.viewKey = { xScaleType: spec.xScaleType, format: spec.format };
+      this.viewKey = { xScaleType: spec.xScaleType, format: spec.format, traceId: spec.traceId };
     }
 
     // Redraw only when a canvas-affecting prop changed. Hover setState()s don't touch these three
@@ -348,7 +350,8 @@ class TraceComponent extends React.Component<TraceProps> {
       cache &&
       cache.dataRef === spec.data &&
       cache.format === spec.format &&
-      cache.xScaleType === spec.xScaleType
+      cache.xScaleType === spec.xScaleType &&
+      cache.traceId === spec.traceId
     ) {
       return cache.result;
     }
@@ -358,15 +361,15 @@ class TraceComponent extends React.Component<TraceProps> {
     // spec.data to TraceDatum[] and the else branch to OtelInput — no cast required.
     const normalizeResult =
       spec.format === 'simple'
-        ? normalize(spec.data, 'simple', spec.xScaleType)
-        : normalize(spec.data, 'otel', spec.xScaleType);
+        ? normalize(spec.data, 'simple', spec.xScaleType, spec.traceId)
+        : normalize(spec.data, 'otel', spec.xScaleType, spec.traceId);
 
     // Sort once here (O(N log N) per data/format/scale change) so buildGeometry doesn't re-sort
     // on every rAF frame. buildGeometry's contract requires pre-sorted input.
     const resolved = resolveActive(normalizeResult.spans);
     const spans = resolved.slice().sort((a, b) => a.start - b.start);
     const result = { spans, domain: normalizeResult.domain };
-    this.pipelineCache = { dataRef: spec.data, format: spec.format, xScaleType: spec.xScaleType, result };
+    this.pipelineCache = { dataRef: spec.data, format: spec.format, xScaleType: spec.xScaleType, traceId: spec.traceId, result };
     return result;
   }
 

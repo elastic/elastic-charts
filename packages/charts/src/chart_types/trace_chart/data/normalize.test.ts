@@ -115,6 +115,26 @@ describe('normalize', () => {
       const { spans } = normalize(multiTrace, 'simple', 'time', 't1');
       expect(spans.map((s) => s.id)).toEqual(['a']);
     });
+
+    it('returns an empty spans array when traceId matches nothing', () => {
+      const { spans } = normalize(multiTrace, 'simple', 'time', 'unknown');
+      expect(spans).toHaveLength(0);
+    });
+
+    it('logs a dev-warn when traceId matches no spans and the input is non-empty', () => {
+      const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+      normalize(multiTrace, 'simple', 'time', 'unknown');
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('unknown'));
+      warnSpy.mockRestore();
+    });
+
+    it('does not warn when traceId matches some spans', () => {
+      const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+      normalize(multiTrace, 'simple', 'time', 't1');
+      expect(warnSpy).not.toHaveBeenCalled();
+      warnSpy.mockRestore();
+    });
   });
 
   describe('multi-trace dev-warn', () => {

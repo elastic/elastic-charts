@@ -102,8 +102,12 @@ export function nanoToMs(nano: string | number | bigint): number {
 }
 
 function selectTrace(spans: NormalizedSpan[], traceId?: string): NormalizedSpan[] {
-  if (traceId) {
-    return spans.filter((span) => span.traceId === traceId);
+  if (traceId !== undefined) {
+    const kept = spans.filter((span) => span.traceId === traceId);
+    if (kept.length === 0 && spans.length > 0) {
+      Logger.warn(`Trace chart: traceId "${traceId}" matched no spans; rendering empty.`);
+    }
+    return kept;
   }
   const distinctTraceIds = new Set(spans.map((span) => span.traceId));
   if (distinctTraceIds.size > 1) {

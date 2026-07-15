@@ -129,4 +129,28 @@ describe('hasViewKeyChanged', () => {
     const timeOtel = { xScaleType: 'time', format: 'otel' };
     expect(hasViewKeyChanged(timeOtel, timeOtel)).toBe(false);
   });
+
+  it('returns true when traceId changes (t1 → t2)', () => {
+    expect(
+      hasViewKeyChanged({ xScaleType: 'linear', format: 'simple', traceId: 't1' }, { xScaleType: 'linear', format: 'simple', traceId: 't2' }),
+    ).toBe(true);
+  });
+
+  it('returns true when traceId is set for the first time (undefined → t1)', () => {
+    expect(
+      hasViewKeyChanged({ xScaleType: 'linear', format: 'simple' }, { xScaleType: 'linear', format: 'simple', traceId: 't1' }),
+    ).toBe(true);
+  });
+
+  it('returns true when traceId is cleared (t1 → undefined)', () => {
+    expect(
+      hasViewKeyChanged({ xScaleType: 'linear', format: 'simple', traceId: 't1' }, { xScaleType: 'linear', format: 'simple' }),
+    ).toBe(true);
+  });
+
+  it('returns false when traceId is the same in both keys', () => {
+    expect(
+      hasViewKeyChanged({ xScaleType: 'linear', format: 'simple', traceId: 't1' }, { xScaleType: 'linear', format: 'simple', traceId: 't1' }),
+    ).toBe(false);
+  });
 });

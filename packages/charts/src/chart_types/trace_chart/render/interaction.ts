@@ -49,17 +49,23 @@ export function computeMaxScroll(spanCount: number, laneHeight: number, plotHeig
 export interface ViewKey {
   xScaleType: string;
   format: string;
+  traceId?: string;
 }
 
 /**
  * Returns `true` when the reference-domain semantics have changed between `current` and `incoming`.
  * Used in `componentDidUpdate` to decide whether to call `resetView()`.
  *
- * A change means the domain origin shifted (`linear` re-zeroes; `time` keeps epoch-ms), so any
+ * A change means the domain origin shifted (`linear` re-zeroes; `time` keeps epoch-ms), or the
+ * selected trace switched (different `traceId` → different `[min, max]` domain). In both cases the
  * accumulated zoom exponent and tween state are meaningless and must be discarded.
  * @internal
  */
 export function hasViewKeyChanged(current: ViewKey | null, incoming: ViewKey): boolean {
   if (!current) return true;
-  return current.xScaleType !== incoming.xScaleType || current.format !== incoming.format;
+  return (
+    current.xScaleType !== incoming.xScaleType ||
+    current.format !== incoming.format ||
+    current.traceId !== incoming.traceId
+  );
 }
