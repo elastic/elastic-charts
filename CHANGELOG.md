@@ -1,3 +1,10 @@
+## [71.8.1](https://github.com/elastic/elastic-charts/compare/v71.8.0...v71.8.1) (2026-07-15)
+
+
+### Bug Fixes
+
+* reduce selector cache memory leaks and tooltip DOM cleanup ([#2856](https://github.com/elastic/elastic-charts/issues/2856)) [71.8.x] ([#2862](https://github.com/elastic/elastic-charts/issues/2862)) ([6bb6308](https://github.com/elastic/elastic-charts/commit/6bb6308aca675bf794cfb4d4a0926ee9cfb4a5b9))
+
 # [71.8.0](https://github.com/elastic/elastic-charts/compare/v71.7.0...v71.8.0) (2026-06-24)
 
 
