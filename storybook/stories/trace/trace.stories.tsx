@@ -23,3 +23,4 @@ export { Example as colorBy } from './10_color_by.story';
 export { Example as chromeNetwork } from './11_chrome_network.story';
 export { Example as kibanaTrace } from './12_kibana_trace.story';
 export { Example as segmentPhases } from './13_segment_phases.story';
+export { Example as pinnedTooltip } from './14_pinned_tooltip.story';

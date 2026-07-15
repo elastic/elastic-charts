@@ -20,9 +20,16 @@
  *
  * Interaction itself is exercised via the story (06_interactive), not unit-tested here
  * per the spec's own guidance.
+ *
+ * Spec 10 — Pin state-machine tests.
+ *
+ * jsdom has no real canvas (getContext('2d') returns null), so we can't test rendering
+ * or pick-region results. Instead these tests verify that the pin lifecycle compiles and
+ * runs without throwing: mount → right-click (dispatched as contextmenu) → Escape / data
+ * change / left-click. Visual pin behavior is confirmed in the story (14_pinned_tooltip).
  */
 
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
 import { Chart } from '../../components/chart';
@@ -132,5 +139,95 @@ describe('Trace chart — smoke mount', () => {
         </Chart>,
       );
     }).not.toThrow();
+  });
+});
+
+describe('Trace chart — pin lifecycle (Spec 10)', () => {
+  /**
+   * jsdom has no real canvas so pick-region returns nothing. These tests verify the pin-related
+   * code paths compile correctly and don't throw — not that pin state is set (that requires a real
+   * canvas and is covered by the story 14_pinned_tooltip).
+   */
+
+  it('handles contextmenu event on the canvas without throwing', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="pin1" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      // Dispatch a contextmenu event. pickRegion returns null in jsdom (no canvas context), so
+      // the handler hits the "NOP over empty" guard and returns without pinning — but it must not throw.
+      fireEvent.contextMenu(canvas!);
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('handles Escape keyup event on the window without throwing (pin lifecycle cleanup)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="pin2" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.contextMenu(canvas!); // attempt pin (NOP in jsdom but registers handlers)
+      fireEvent.keyUp(window, { key: 'Escape' }); // Escape dismiss — must not throw
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('handles left-click without throwing when chart is not pinned', () => {
+    const onElementClick = jest.fn();
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Settings onElementClick={onElementClick} />
+        <Trace id="pin3" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.click(canvas!);
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('unmounts cleanly even when pin dismiss listeners are registered', () => {
+    /**
+     * Exercises the teardownEventHandlers defensive-removal path: if the component unmounts
+     * while pinned (or between contextmenu and an unpin event), window listeners must be removed
+     * without throwing.
+     */
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="pin4" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    // Dispatch contextmenu to register handlers (even though pin state stays false in jsdom).
+    fireEvent.contextMenu(canvas!);
+    expect(() => unmount()).not.toThrow();
+  });
+
+  it('re-renders cleanly when data changes (unpin-on-data-change path)', () => {
+    const NEW_SPANS: TraceDatum[] = [{ id: 'root2', name: 'POST /submit', traceId: 't2', start: 0, end: 200 }];
+    const { rerender, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="pin5" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    expect(() => {
+      rerender(
+        <Chart size={[800, 200]}>
+          <Trace id="pin5" data={NEW_SPANS} xScaleType="linear" />
+        </Chart>,
+      );
+    }).not.toThrow();
+    unmount();
   });
 });

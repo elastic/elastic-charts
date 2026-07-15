@@ -168,6 +168,16 @@ class TraceComponent extends React.Component<TraceProps> {
   private handleCanvasClick: ((e: MouseEvent) => void) | null = null;
   private handleCanvasLeave: (() => void) | null = null;
 
+  // Pin / sticky tooltip state — mirrors flame_chart.tsx pin machinery.
+  // tooltipPinned=true freezes updateHover (content + index stay as-is); the frozen anchor positions
+  // the tooltip while the pointer moves elsewhere or zoom/pan runs.
+  private tooltipPinned = false;
+  private pinnedPointerX = NaN;
+  private pinnedPointerY = NaN;
+  private handleContextMenu: ((e: MouseEvent) => void) | null = null;
+  private handleKeyUp: ((e: KeyboardEvent) => void) | null = null;
+  private handleUnpinningTooltip: (() => void) | null = null;
+
   // -------------------------------------------------------------------------
   // Lifecycle
   // -------------------------------------------------------------------------
@@ -245,6 +255,12 @@ class TraceComponent extends React.Component<TraceProps> {
     if (spec && hasViewKeyChanged(this.viewKey, { xScaleType: spec.xScaleType, format: 'simple', traceId: spec.traceId })) {
       this.resetView();
       this.viewKey = { xScaleType: spec.xScaleType, format: 'simple', traceId: spec.traceId };
+    }
+
+    // Unpin when the spec changes (data or view — stale frozen index may no longer be valid).
+    // Only call unpinTooltip when already pinned to avoid an unnecessary setState.
+    if (this.tooltipPinned && this.props.traceSpec !== prevProps.traceSpec) {
+      this.unpinTooltip();
     }
 
     // Redraw only when a canvas-affecting prop changed. Hover setState()s don't touch these three
@@ -393,6 +409,30 @@ class TraceComponent extends React.Component<TraceProps> {
     this.tooltipInfo = buildTraceTooltipInfo(span, index, domainMin, region, span.color ?? style.activeSegmentColor, segmentIndex);
   }
 
+  private pinTooltip = (pinned: boolean) => {
+    if (!pinned) {
+      this.unpinTooltip();
+      return;
+    }
+    this.tooltipPinned = true;
+    this.pinnedPointerX = this.pointerX;
+    this.pinnedPointerY = this.pointerY;
+    this.setState({});
+  };
+
+  private unpinTooltip() {
+    this.tooltipPinned = false;
+    this.pinnedPointerX = NaN;
+    this.pinnedPointerY = NaN;
+    // Recompute hover from current pointer so the tooltip resumes tracking on unpin.
+    this.updateHover(
+      this.lastGeom && Number.isFinite(this.pointerX)
+        ? pickRegion(this.pointerX, this.pointerY, this.lastGeom)
+        : null,
+    );
+    this.setState({});
+  }
+
   /**
    * Updates hover state, fires `onElement*` callbacks on lane-entry/exit, and schedules a React
    * re-render (DOM-only tooltip portal update; does not trigger a canvas rAF frame — see
@@ -402,6 +442,10 @@ class TraceComponent extends React.Component<TraceProps> {
    * (to reposition the tooltip as the pointer moves). Callbacks fire only on lane entry/exit.
    */
   private updateHover(result: PickResult | null) {
+    // While pinned, freeze content and index. zoom/pan/drag still work unobstructed because they
+    // don't call setState; only this method does (indirectly via hover setState calls below).
+    if (this.tooltipPinned) return;
+
     const newIndex = result ? result.index : -1;
     const prevIndex = this.hoverIndex;
 
@@ -523,7 +567,9 @@ class TraceComponent extends React.Component<TraceProps> {
     };
 
     // Click: only fires for genuine clicks — not for pan-then-release (dragMoved guards this).
+    // Guard: while pinned the window 'click' dismiss listener runs first; don't also fire onElementClick.
     this.handleCanvasClick = (e: MouseEvent) => {
+      if (this.tooltipPinned) return;
       if (this.dragMoved) return;
       if (!this.lastGeom || !this.props.traceSpec) return;
       const result = pickRegion(zoomSafePointerX(e), zoomSafePointerY(e), this.lastGeom);
@@ -537,11 +583,52 @@ class TraceComponent extends React.Component<TraceProps> {
       this.updateHover(null);
     };
 
+    // Right-click to pin. Mirrors flame_chart.tsx handleContextMenu.
+    this.handleContextMenu = (e: MouseEvent) => {
+      e.stopPropagation();
+      e.preventDefault(); // suppress browser context menu
+      if (this.tooltipPinned) {
+        this.handleUnpinningTooltip?.();
+        return;
+      }
+      if (!this.lastGeom) return;
+      const x = zoomSafePointerX(e);
+      const y = zoomSafePointerY(e);
+      const result = pickRegion(x, y, this.lastGeom);
+      // NOP if over empty space (respects showTooltipOverEmpty; match the visible condition in render).
+      const overSpan = result && result.index >= 0 &&
+        (result.region !== 'empty' || this.props.traceSpec?.showTooltipOverEmpty === true);
+      if (!overSpan) return;
+      // Update pointer and build content while still unpinned, then pin.
+      this.pointerX = x;
+      this.pointerY = y;
+      this.updateHover(result);
+      // Scoped dismiss listeners: added on pin, removed on unpin / unmount.
+      window.addEventListener('keyup', this.handleKeyUp!);
+      window.addEventListener('click', this.handleUnpinningTooltip!);
+      window.addEventListener('visibilitychange', this.handleUnpinningTooltip!);
+      this.pinTooltip(true);
+    };
+
+    this.handleKeyUp = ({ key }: KeyboardEvent) => {
+      if (key !== 'Escape') return;
+      window.removeEventListener('keyup', this.handleKeyUp!);
+      this.unpinTooltip();
+    };
+
+    this.handleUnpinningTooltip = () => {
+      window.removeEventListener('keyup', this.handleKeyUp!);
+      window.removeEventListener('click', this.handleUnpinningTooltip!);
+      window.removeEventListener('visibilitychange', this.handleUnpinningTooltip!);
+      this.pinTooltip(false);
+    };
+
     canvas.addEventListener('wheel', this.handleWheel, { passive: false });
     canvas.addEventListener('mousedown', this.handleMouseDown);
     canvas.addEventListener('mousemove', this.handleHoverMove);
     canvas.addEventListener('click', this.handleCanvasClick);
     canvas.addEventListener('mouseleave', this.handleCanvasLeave);
+    canvas.addEventListener('contextmenu', this.handleContextMenu);
     // mousemove and mouseup are bound to window so a fast flick that releases the pointer outside
     // the canvas still fires endDrag and triggers the kinetic flywheel coast. Mirrors Timeslip.
     window.addEventListener('mousemove', this.handleMouseMove);
@@ -557,8 +644,15 @@ class TraceComponent extends React.Component<TraceProps> {
     if (this.handleHoverMove) canvas.removeEventListener('mousemove', this.handleHoverMove);
     if (this.handleCanvasClick) canvas.removeEventListener('click', this.handleCanvasClick);
     if (this.handleCanvasLeave) canvas.removeEventListener('mouseleave', this.handleCanvasLeave);
+    if (this.handleContextMenu) canvas.removeEventListener('contextmenu', this.handleContextMenu);
     if (this.handleMouseMove) window.removeEventListener('mousemove', this.handleMouseMove);
     if (this.handleMouseUp) window.removeEventListener('mouseup', this.handleMouseUp);
+    // Defensive: remove pin dismiss listeners in case the component unmounts while pinned.
+    if (this.handleKeyUp) window.removeEventListener('keyup', this.handleKeyUp);
+    if (this.handleUnpinningTooltip) {
+      window.removeEventListener('click', this.handleUnpinningTooltip);
+      window.removeEventListener('visibilitychange', this.handleUnpinningTooltip);
+    }
   }
 
   // -------------------------------------------------------------------------
@@ -615,17 +709,21 @@ class TraceComponent extends React.Component<TraceProps> {
           />
         </figure>
         {/* BasicTooltip is connect()-ed; it auto-reads `settings.customTooltip` from redux, so
-            <Tooltip customTooltip> override is free. No pinning machinery needed for Spec 7. */}
+            <Tooltip customTooltip> override is free. Pin state is self-managed (Spec 10). */}
         <BasicTooltip
           onPointerMove={() => {}}
-          position={{ x: this.pointerX, y: this.pointerY, width: 0, height: 0 }}
-          pinned={false}
+          position={
+            this.tooltipPinned
+              ? { x: this.pinnedPointerX, y: this.pinnedPointerY, width: 0, height: 0 }
+              : { x: this.pointerX, y: this.pointerY, width: 0, height: 0 }
+          }
+          pinned={this.tooltipPinned}
           selected={[]}
-          canPinTooltip={false}
-          pinTooltip={() => {}}
+          canPinTooltip={tooltipRequired}
+          pinTooltip={this.pinTooltip}
           toggleSelectedTooltipItem={() => {}}
           setSelectedTooltipItems={() => {}}
-          visible={tooltipRequired && this.hoverIndex >= 0 && (this.hoverRegion !== 'empty' || this.props.traceSpec?.showTooltipOverEmpty === true)}
+          visible={this.tooltipPinned || (tooltipRequired && this.hoverIndex >= 0 && (this.hoverRegion !== 'empty' || this.props.traceSpec?.showTooltipOverEmpty === true))}
           info={this.tooltipInfo}
           getChartContainerRef={containerRef}
         />
