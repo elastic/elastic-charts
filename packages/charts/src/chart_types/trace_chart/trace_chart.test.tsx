@@ -231,3 +231,71 @@ describe('Trace chart — pin lifecycle (Spec 10)', () => {
     unmount();
   });
 });
+
+describe('Trace chart — brush lifecycle (Spec 11)', () => {
+  /**
+   * jsdom has no real canvas so pick-region/geometry returns nothing. These tests verify the
+   * brush-related code paths compile correctly and don't throw — not that zooming occurs (that
+   * requires a real canvas and is covered by the story 15_brush_zoom).
+   */
+
+  it('handles Shift+mousedown / mousemove / mouseup without throwing (default dragMode="pan")', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="brush1" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.mouseDown(canvas!, { shiftKey: true, clientX: 100, clientY: 50, buttons: 1 });
+      fireEvent.mouseMove(window, { shiftKey: true, clientX: 300, clientY: 50, buttons: 1 });
+      fireEvent.mouseUp(window);
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('handles plain drag brush with dragMode="brush" without throwing', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="brush2" data={FEW_SPANS} xScaleType="linear" dragMode="brush" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.mouseDown(canvas!, { shiftKey: false, clientX: 100, clientY: 50, buttons: 1 });
+      fireEvent.mouseMove(window, { shiftKey: false, clientX: 300, clientY: 50, buttons: 1 });
+      fireEvent.mouseUp(window);
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('zero-move brush (mousedown + mouseup, no mousemove) is a no-op without throwing', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="brush3" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.mouseDown(canvas!, { shiftKey: true, clientX: 200, clientY: 50, buttons: 1 });
+      fireEvent.mouseUp(window);
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('unmounts cleanly while a brush is in progress', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="brush4" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    fireEvent.mouseDown(canvas!, { shiftKey: true, clientX: 100, clientY: 50, buttons: 1 });
+    fireEvent.mouseMove(window, { clientX: 250, clientY: 50, buttons: 1 });
+    expect(() => unmount()).not.toThrow();
+  });
+});

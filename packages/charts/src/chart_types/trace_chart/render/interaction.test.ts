@@ -14,7 +14,9 @@
  * jsdom smoke test (getContext('2d') returns null there, so frame() early-returns).
  */
 
-import { computeZoomMax, computeMaxScroll, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS } from './interaction';
+import { computeZoomMax, computeMaxScroll, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, domainToZoomPan, pixelRangeToDomain } from './interaction';
+import { getFocusDomain, initialZoomPan } from '../../timeslip/projections/zoom_pan';
+import type { TraceGeometry } from './types';
 
 // ---------------------------------------------------------------------------
 // computeZoomMax
@@ -152,5 +154,110 @@ describe('hasViewKeyChanged', () => {
     expect(
       hasViewKeyChanged({ xScaleType: 'linear', format: 'simple', traceId: 't1' }, { xScaleType: 'linear', format: 'simple', traceId: 't1' }),
     ).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// domainToZoomPan
+// ---------------------------------------------------------------------------
+
+describe('domainToZoomPan', () => {
+  it('round-trips through getFocusDomain: zoom+pan → focus domain matches the input range', () => {
+    const refFrom = 0;
+    const refTo = 1000;
+    const domainFrom = 200;
+    const domainTo = 600;
+    const focus = domainToZoomPan([domainFrom, domainTo], [refFrom, refTo]);
+    // Wrap into a minimal ZoomPan so getFocusDomain can consume it.
+    const zp = { ...initialZoomPan(), focus };
+    const { domainFrom: outFrom, domainTo: outTo } = getFocusDomain(zp, refFrom, refTo);
+    expect(outFrom).toBeCloseTo(domainFrom, 6);
+    expect(outTo).toBeCloseTo(domainTo, 6);
+  });
+
+  it('degenerate: refFrom === refTo → returns { zoom: 0, pan: 0 } (no divide-by-zero)', () => {
+    expect(domainToZoomPan([0, 0], [500, 500])).toEqual({ zoom: 0, pan: 0 });
+  });
+
+  it('full domain: domainFrom/To equals refFrom/To → zoom = 0 (fit-all)', () => {
+    const focus = domainToZoomPan([0, 1000], [0, 1000]);
+    // zoom = multiplierToZoom(1) = log2(1) = 0
+    expect(focus.zoom).toBeCloseTo(0, 6);
+  });
+
+  it('half domain centered: pan should be ~0.5', () => {
+    // Visible window [250, 750] in ref [0, 1000]: leeway = 500, panOffset = 250, pan = 250/500 = 0.5
+    const focus = domainToZoomPan([250, 750], [0, 1000]);
+    expect(focus.pan).toBeCloseTo(0.5, 6);
+  });
+
+  it('left-aligned half domain: pan = 0', () => {
+    // [0, 500] in [0, 1000]: leeway = 500, panOffset = 0, pan = 0
+    const focus = domainToZoomPan([0, 500], [0, 1000]);
+    expect(focus.pan).toBeCloseTo(0, 6);
+  });
+
+  it('right-aligned half domain: pan = 1', () => {
+    // [500, 1000] in [0, 1000]: leeway = 500, panOffset = 500, pan = 1
+    const focus = domainToZoomPan([500, 1000], [0, 1000]);
+    expect(focus.pan).toBeCloseTo(1, 6);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// pixelRangeToDomain
+// ---------------------------------------------------------------------------
+
+/** Minimal geometry fixture: plot from x=50 to x=450 (400 px wide), focusDomain [100, 500] ms */
+const GEOM: Pick<TraceGeometry, 'plot' | 'focusDomain'> = {
+  plot: { left: 50, top: 30, width: 400, height: 200 },
+  focusDomain: { min: 100, max: 500 },
+};
+
+describe('pixelRangeToDomain', () => {
+  it('converts known pixel range to expected ms range', () => {
+    // plot.left=50, plot.width=400, focusDomain [100,500] ms → span 400ms over 400px (1ms/px)
+    // x=50 → 100ms, x=450 → 500ms
+    const [from, to] = pixelRangeToDomain(50, 450, GEOM as TraceGeometry);
+    expect(from).toBeCloseTo(100, 6);
+    expect(to).toBeCloseTo(500, 6);
+  });
+
+  it('returns values in ascending order when x0 > x1 (reversed drag)', () => {
+    const [from, to] = pixelRangeToDomain(350, 150, GEOM as TraceGeometry);
+    expect(from).toBeLessThan(to);
+  });
+
+  it('clamps x values below plot.left to plot.left', () => {
+    // x=0 is left of plot.left=50 → clamps to 50 → 100ms
+    const [from] = pixelRangeToDomain(0, 450, GEOM as TraceGeometry);
+    expect(from).toBeCloseTo(100, 6);
+  });
+
+  it('clamps x values beyond plot right to plot right', () => {
+    // x=600 exceeds plot.left+width=450 → clamps to 450 → 500ms
+    const [, to] = pixelRangeToDomain(50, 600, GEOM as TraceGeometry);
+    expect(to).toBeCloseTo(500, 6);
+  });
+
+  it('midpoint pixel maps to midpoint domain value', () => {
+    // x=250 (midpoint of 50..450) → 300ms (midpoint of 100..500)
+    const [from, to] = pixelRangeToDomain(50, 250, GEOM as TraceGeometry);
+    expect(to).toBeCloseTo(300, 6);
+    expect(from).toBeCloseTo(100, 6);
+  });
+
+  it('degenerate: plot.width = 0 → returns full focusDomain unchanged', () => {
+    const zeroWidthGeom = { ...GEOM, plot: { ...GEOM.plot, width: 0 } } as TraceGeometry;
+    const [from, to] = pixelRangeToDomain(50, 100, zeroWidthGeom);
+    expect(from).toBe(100);
+    expect(to).toBe(500);
+  });
+
+  it('degenerate: focusDomain.min === focusDomain.max → returns full focusDomain unchanged', () => {
+    const pointGeom = { ...GEOM, focusDomain: { min: 300, max: 300 } } as TraceGeometry;
+    const [from, to] = pixelRangeToDomain(50, 450, pointGeom);
+    expect(from).toBe(300);
+    expect(to).toBe(300);
   });
 });

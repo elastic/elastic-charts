@@ -18,10 +18,12 @@ import type { NormalizedSpan } from './data/types';
 import { canvas2dRenderer, pickRegion } from './render/canvas2d_renderer';
 import { buildGeometry } from './render/geometry';
 import type { ViewKey } from './render/interaction';
-import { computeMaxScroll, computeZoomMax, hasViewKeyChanged } from './render/interaction';
+import { computeMaxScroll, computeZoomMax, domainToZoomPan, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, pixelRangeToDomain } from './render/interaction';
 import { buildTraceEvent, buildTraceTooltipInfo } from './render/tooltip';
 import type { HoverRegion, PickResult, TraceGeometry } from './render/types';
 import { buildTraceStyle } from './theme';
+import { colorToRgba } from '../../common/color_library_wrappers';
+import { clamp } from '../../utils/common';
 import type { TraceSpec } from './trace_api';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
@@ -177,6 +179,14 @@ class TraceComponent extends React.Component<TraceProps> {
   private handleContextMenu: ((e: MouseEvent) => void) | null = null;
   private handleKeyUp: ((e: KeyboardEvent) => void) | null = null;
   private handleUnpinningTooltip: (() => void) | null = null;
+
+  // Brush-to-zoom state (Spec 11). isBrushing gates the window drag handlers so a brush gesture
+  // never also pans. brushEnd tracks the last clamped x so mouseup has it even if the pointer
+  // released outside the canvas. brushOverlay is read in render() with setState({}) as the trigger.
+  private isBrushing = false;
+  private brushStart = NaN;
+  private brushEnd = NaN;
+  private brushOverlay: { x: number; width: number; top: number; height: number } | null = null;
 
   // -------------------------------------------------------------------------
   // Lifecycle
@@ -445,6 +455,8 @@ class TraceComponent extends React.Component<TraceProps> {
     // While pinned, freeze content and index. zoom/pan/drag still work unobstructed because they
     // don't call setState; only this method does (indirectly via hover setState calls below).
     if (this.tooltipPinned) return;
+    // While brushing, suppress hover — the rubber-band owns the pointer.
+    if (this.isBrushing) return;
 
     const newIndex = result ? result.index : -1;
     const prevIndex = this.hoverIndex;
@@ -518,6 +530,24 @@ class TraceComponent extends React.Component<TraceProps> {
     };
 
     this.handleMouseDown = (e: MouseEvent) => {
+      const dragMode = this.props.traceSpec?.dragMode ?? 'pan';
+      // isBrushMode: XOR — Shift inverts the configured gesture so both dragMode values are
+      // reachable from the keyboard. dragMode='pan' default: Shift+drag → brush, plain drag → pan.
+      const isBrushMode = (dragMode === 'brush') !== e.shiftKey;
+      if (isBrushMode) {
+        this.isBrushing = true;
+        this.brushStart = zoomSafePointerX(e);
+        this.brushEnd = this.brushStart; // zero-width seed so mouseup no-ops a plain click
+        this.flywheelActive = false; // stop any coast before the brush gesture
+        this.dragMoved = false;
+        if (this.lastGeom) {
+          const { plot } = this.lastGeom;
+          this.brushOverlay = { x: this.brushStart, width: 0, top: plot.top, height: plot.height };
+        }
+        this.updateHover(null);
+        this.setState({});
+        return;
+      }
       this.dragMoved = false;
       this.easeZoom = false;
       this.flywheelActive = false;
@@ -530,6 +560,22 @@ class TraceComponent extends React.Component<TraceProps> {
 
     this.handleMouseMove = (e: MouseEvent) => {
       if (e.buttons !== 1) return; // only while primary button held
+
+      if (this.isBrushing) {
+        // Update rubber-band extent. Clamp to plot bounds (clamp-and-continue on canvas-leave).
+        const geom = this.lastGeom;
+        if (geom) {
+          const { plot } = geom;
+          const x = clamp(zoomSafePointerX(e), plot.left, plot.left + plot.width);
+          this.brushEnd = x;
+          const left = Math.min(this.brushStart, x);
+          this.brushOverlay = { x: left, width: Math.abs(this.brushStart - x), top: plot.top, height: plot.height };
+        }
+        this.dragMoved = true; // suppress the post-drag click
+        this.setState({});
+        return;
+      }
+
       this.dragMoved = true; // distinguish a genuine click from a pan-then-release
 
       if (!this.props.traceSpec) return;
@@ -552,6 +598,28 @@ class TraceComponent extends React.Component<TraceProps> {
     };
 
     this.handleMouseUp = () => {
+      if (this.isBrushing) {
+        this.isBrushing = false;
+        this.brushOverlay = null;
+        const geom = this.lastGeom;
+        const spec = this.props.traceSpec;
+        if (!geom || !spec) { this.setState({}); return; }
+        // Use the last clamped brushEnd (set in mousemove). If no mousemove fired (zero-width
+        // click), brushEnd === brushStart, giving a zero range → < MIN_VISIBLE_EXTENT_MS → no-op.
+        const [from, to] = pixelRangeToDomain(this.brushStart, this.brushEnd, geom);
+        if (to - from < MIN_VISIBLE_EXTENT_MS) { this.setState({}); return; }
+        const { domain } = this.getPipeline(spec);
+        const clampedFrom = clamp(from, domain.min, domain.max);
+        const clampedTo = clamp(to, domain.min, domain.max);
+        if (clampedTo - clampedFrom < MIN_VISIBLE_EXTENT_MS) { this.setState({}); return; }
+        this.zoomPan.focus = domainToZoomPan([clampedFrom, clampedTo], [domain.min, domain.max]);
+        this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min));
+        this.easeZoom = true;
+        this.flywheelActive = false;
+        this.scheduleRender?.();
+        this.setState({});
+        return;
+      }
       endDrag(this.zoomPan); // copies dragVelocity → flyVelocity
       this.flywheelActive = true; // main frame's kineticFlywheel branch owns the coast
       this.scheduleRender?.();
@@ -694,6 +762,32 @@ class TraceComponent extends React.Component<TraceProps> {
     const dpr = window.devicePixelRatio ?? 1;
     const canvasWidth = width * dpr;
     const canvasHeight = height * dpr;
+
+    // Brush overlay — CSS div, DPR-agnostic (ADR 0009). Styled from theme.brush so it is visually
+    // consistent with the XY brush rubber-band and respects dark-mode. Rendered as a sibling of
+    // the canvas so it naturally stacks above it; pointerEvents:none passes input through.
+    const brushOverlay = this.brushOverlay;
+    let brushOverlayEl: React.ReactElement | null = null;
+    if (brushOverlay) {
+      const bs = this.props.theme.brush;
+      const [r, g, b] = colorToRgba(bs.fill);
+      brushOverlayEl = (
+        <div
+          style={{
+            position: 'absolute',
+            left: brushOverlay.x,
+            top: brushOverlay.top,
+            width: brushOverlay.width,
+            height: brushOverlay.height,
+            backgroundColor: `rgba(${r},${g},${b},${bs.opacity})`,
+            border: `${bs.strokeWidth}px solid ${bs.stroke}`,
+            boxSizing: 'border-box',
+            pointerEvents: 'none',
+          }}
+        />
+      );
+    }
+
     return (
       <>
         <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
@@ -708,6 +802,7 @@ class TraceComponent extends React.Component<TraceProps> {
             role="presentation"
           />
         </figure>
+        {brushOverlayEl}
         {/* BasicTooltip is connect()-ed; it auto-reads `settings.customTooltip` from redux, so
             <Tooltip customTooltip> override is free. Pin state is self-managed (Spec 10). */}
         <BasicTooltip

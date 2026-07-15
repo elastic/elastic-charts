@@ -139,6 +139,12 @@ export interface TraceSpec extends Spec {
    * Precedence per span: explicit `TraceDatum.color` > color-group color > themed default.
    */
   colorBy?: TraceColorAccessor;
+  /**
+   * Controls which gesture triggers the brush-to-zoom rubber-band.
+   * - `'pan'` (default): plain drag pans; `Shift`+drag draws the brush.
+   * - `'brush'`: plain drag draws the brush; `Shift`+drag pans.
+   */
+  dragMode?: 'pan' | 'brush';
 }
 
 const buildProps = buildSFProps<TraceSpec>()(

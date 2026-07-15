@@ -7,6 +7,8 @@
  */
 
 import { multiplierToZoom } from '../../timeslip/projections/zoom_pan';
+import { clamp } from '../../../utils/common';
+import type { TraceGeometry } from './types';
 
 /**
  * The finest time window the trace chart allows via zoom-in, in ms.
@@ -68,4 +70,47 @@ export function hasViewKeyChanged(current: ViewKey | null, incoming: ViewKey): b
     current.format !== incoming.format ||
     current.traceId !== incoming.traceId
   );
+}
+
+/**
+ * Closed-form inverse of `getFocusDomain`. Returns the `{zoom, pan}` focus to assign into
+ * `zoomPan.focus` so that the visible window snaps to `[domainFrom, domainTo]` against reference
+ * domain `[refFrom, refTo]`. Assigning into the live `zoomPan.focus` (not replacing the whole
+ * ZoomPan) preserves drag/flywheel state.
+ *
+ * Guards `refExtent <= 0` (empty dataset) → `{ zoom: 0, pan: 0 }` (fit-all, no divide-by-zero).
+ * @internal
+ */
+export function domainToZoomPan(
+  [domainFrom, domainTo]: [number, number],
+  [refFrom, refTo]: [number, number],
+): { zoom: number; pan: number } {
+  const refExtent = refTo - refFrom;
+  if (refExtent <= 0) return { zoom: 0, pan: 0 };
+  const focusExtent = domainTo - domainFrom;
+  const zoom = multiplierToZoom(focusExtent / refExtent);
+  const leeway = refExtent - focusExtent;
+  const pan = leeway > 0 ? (domainFrom - refFrom) / leeway : 0;
+  return { zoom, pan };
+}
+
+/**
+ * Inverts `geometry.scale` for two canvas CSS x-pixel positions, returning `[min, max]` in
+ * milliseconds. Both x values are clamped to the plot bounds before conversion.
+ *
+ * Guards `plot.width <= 0` and `focusSpan <= 0` (degenerate geometry) → returns the full
+ * `[focusDomain.min, focusDomain.max]` range unchanged.
+ * @internal
+ */
+export function pixelRangeToDomain(x0: number, x1: number, geometry: TraceGeometry): [number, number] {
+  const { plot, focusDomain } = geometry;
+  if (plot.width <= 0) return [focusDomain.min, focusDomain.max];
+  const focusSpan = focusDomain.max - focusDomain.min;
+  if (focusSpan <= 0) return [focusDomain.min, focusDomain.max];
+  const plotRight = plot.left + plot.width;
+  const toMs = (x: number) =>
+    focusDomain.min + ((clamp(x, plot.left, plotRight) - plot.left) / plot.width) * focusSpan;
+  const a = toMs(x0);
+  const b = toMs(x1);
+  return a <= b ? [a, b] : [b, a];
 }
