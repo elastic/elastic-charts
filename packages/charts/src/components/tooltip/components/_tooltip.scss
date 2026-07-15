@@ -8,7 +8,7 @@ $rowColorStripWidth: 5px;
  */
 $colorStripCheckWidth: 11px;
 $colorStripPadding: 5px;
-$colorStripGap: 2px;
+$colorStripGap: 1px;
 $maxRowColorStripWidth: $colorStripCheckWidth + $colorStripPadding * 2;
 
 $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
@@ -102,6 +102,14 @@ $transitionTime: 200ms;
     // This ignores all above elements for positioning
     // effectively spreading all children in its place
     display: contents;
+  }
+
+  // Body as subgrid so we can have a row-gap but still inherit the table's column tracks
+  .echTooltip__table:not(.echTooltip__table--noGrid) > .echTooltip__tableBody {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    row-gap: $colorStripGap;
   }
 
   &__tableHeader {
@@ -209,28 +217,6 @@ $transitionTime: 200ms;
     bottom: 0;
     width: $rowColorStripWidth;
     transition: width $transitionTime;
-  }
-
-  &__tableBody {
-    .echTooltip__colorStrip,
-    .echTooltip__colorStrip--bg {
-      top: $colorStripGap / 2;
-      bottom: $colorStripGap / 2;
-    }
-
-    .echTooltip__tableRow:first-child {
-      .echTooltip__colorStrip,
-      .echTooltip__colorStrip--bg {
-        top: 0;
-      }
-    }
-
-    .echTooltip__tableRow:last-child {
-      .echTooltip__colorStrip,
-      .echTooltip__colorStrip--bg {
-        bottom: 0;
-      }
-    }
   }
 
   &__colorStrip {
