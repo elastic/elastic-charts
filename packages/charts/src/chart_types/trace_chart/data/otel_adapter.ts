@@ -11,6 +11,10 @@ import type { TraceDatum } from '../trace_api';
 
 /**
  * A single OpenTelemetry span, as it appears in an OTLP payload (JSON encoding: nanos are strings).
+ *
+ * When produced by {@link fromOtlp} from an {@link OtlpEnvelope}, the span is augmented with its
+ * parent resource-span's `resource` field (not part of the raw OTLP span schema) so that
+ * resource-level attributes such as `service.name` are reachable via `span.resource?.attributes`.
  * @public
  */
 export interface OtelSpan {
@@ -23,6 +27,8 @@ export interface OtelSpan {
   attributes?: { key: string; value: unknown }[];
   status?: { code?: number; message?: string };
   kind?: number;
+  /** Resource-level attributes attached by {@link fromOtlp}; absent when input is a flat span array. */
+  resource?: { attributes?: { key: string; value: unknown }[] };
 }
 
 /**
@@ -31,6 +37,8 @@ export interface OtelSpan {
  */
 export interface OtlpEnvelope {
   resourceSpans: {
+    /** Resource-level attributes (e.g. `service.name`) shared by all spans in this resource group. */
+    resource?: { attributes?: { key: string; value: unknown }[] };
     scopeSpans: {
       spans: OtelSpan[];
     }[];
@@ -70,10 +78,14 @@ function isOtlpEnvelope(data: OtelInput): data is OtlpEnvelope {
   return !Array.isArray(data) && 'resourceSpans' in data;
 }
 
-// defensive `?? []`: a partial/malformed OTLP payload may omit empty resourceSpans/scopeSpans/spans arrays
+// defensive `?? []`: a partial/malformed OTLP payload may omit empty resourceSpans/scopeSpans/spans arrays.
+// Each span is spread with its parent resource-span's `resource` so that resource-level attributes
+// (e.g. `service.name`) are reachable via `span.resource?.attributes` after fromOtlp().
 function flattenEnvelope(envelope: OtlpEnvelope): OtelSpan[] {
   return (envelope.resourceSpans ?? []).flatMap((resourceSpan) =>
-    (resourceSpan.scopeSpans ?? []).flatMap((scopeSpan) => scopeSpan.spans ?? []),
+    (resourceSpan.scopeSpans ?? []).flatMap((scopeSpan) =>
+      (scopeSpan.spans ?? []).map((span) => ({ ...span, resource: resourceSpan.resource })),
+    ),
   );
 }
 

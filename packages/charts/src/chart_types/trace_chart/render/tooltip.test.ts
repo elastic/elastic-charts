@@ -231,6 +231,59 @@ describe('buildTraceTooltipInfo — edge cases', () => {
 });
 
 // ---------------------------------------------------------------------------
+// buildTraceTooltipInfo — labeled active segments
+// ---------------------------------------------------------------------------
+
+describe('buildTraceTooltipInfo — labeled segments', () => {
+  const labeledSpan: NormalizedSpan = {
+    ...span,
+    activeSegments: [
+      { start: 100, end: 200, label: 'loading', color: 'red' },
+      { start: 400, end: 500, label: 'process', color: 'green' },
+      { start: 500, end: 550, label: 'final', color: 'blue' },
+    ],
+  };
+
+  it('shows "Active segment: <label> (i of n)" when segment has a label and n > 1', () => {
+    const info = buildTraceTooltipInfo(labeledSpan, 0, DOMAIN_MIN, 'active', COLOR, 0);
+    expect(info.values[3]!.label).toBe('Active segment: loading (1 of 3)');
+  });
+
+  it('shows the correct label for the second segment', () => {
+    const info = buildTraceTooltipInfo(labeledSpan, 0, DOMAIN_MIN, 'active', COLOR, 1);
+    expect(info.values[3]!.label).toBe('Active segment: process (2 of 3)');
+  });
+
+  it('shows the correct label for the third segment', () => {
+    const info = buildTraceTooltipInfo(labeledSpan, 0, DOMAIN_MIN, 'active', COLOR, 2);
+    expect(info.values[3]!.label).toBe('Active segment: final (3 of 3)');
+  });
+
+  it('shows "Active segment: <label>" (no ordinal) when n = 1', () => {
+    const singleLabeledSpan: NormalizedSpan = {
+      ...span,
+      activeSegments: [{ start: 100, end: 300, label: 'loading' }],
+    };
+    const info = buildTraceTooltipInfo(singleLabeledSpan, 0, DOMAIN_MIN, 'active', COLOR, 0);
+    expect(info.values[3]!.label).toBe('Active segment: loading');
+  });
+
+  it('falls back to unlabeled format when segment has no label', () => {
+    // Use original `span` fixture which has no labels — fallback must be unchanged.
+    const info = buildTraceTooltipInfo(span, 0, DOMAIN_MIN, 'active', COLOR, 0);
+    expect(info.values[3]!.label).toBe('Active segment (1 of 2)');
+  });
+
+  it('still reports the correct segment duration and offset for a labeled segment', () => {
+    const info = buildTraceTooltipInfo(labeledSpan, 0, DOMAIN_MIN, 'active', COLOR, 0);
+    // segment [100, 200]: duration = 100 ms, offset from DOMAIN_MIN (50) = 50 ms
+    expect(info.values[3]!.value).toBe(100);
+    expect(info.values[4]!.label).toBe('Active segment offset');
+    expect(info.values[4]!.value).toBe(50);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // buildTraceEvent
 // ---------------------------------------------------------------------------
 

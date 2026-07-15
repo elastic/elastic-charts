@@ -10,7 +10,8 @@ import { normalize } from './normalize';
 import { fromOtlp, nanoToMs } from './otel_adapter';
 import type { OtelSpan, OtlpEnvelope } from './otel_adapter';
 import { Logger } from '../../../utils/logger';
-import type { TraceDatum } from '../trace_api';
+import type { TraceDatum, TraceColorAccessor } from '../trace_api';
+import { colorByOtelAttribute, colorByOtelKind } from '../trace_api';
 
 const simpleData: TraceDatum[] = [
   { id: 'a', name: 'root', start: 1000, end: 2000, traceId: 't1' },
@@ -210,6 +211,135 @@ describe('normalize', () => {
     });
   });
 
+  describe('colorBy', () => {
+    const VIZ_COLORS = ['red', 'green', 'blue'];
+
+    const spanWithService = (id: string, service: string, start = 0, end = 10): TraceDatum => ({
+      id,
+      name: id,
+      start,
+      end,
+      meta: { resource: { attributes: [{ key: 'service.name', value: service }] } },
+    });
+
+    const spanWithKind = (id: string, kind: number, start = 0, end = 10): TraceDatum => ({
+      id,
+      name: id,
+      start,
+      end,
+      meta: { kind },
+    });
+
+    it('assigns group colors to active segments via NormalizedSpan.color', () => {
+      const data = [spanWithService('a', 'svc-A'), spanWithService('b', 'svc-B')];
+      const { spans } = normalize(data, 'time', undefined, colorByOtelAttribute('service.name'), VIZ_COLORS);
+      expect(spans.find((s) => s.id === 'a')?.color).toBe('red');
+      expect(spans.find((s) => s.id === 'b')?.color).toBe('green');
+    });
+
+    it('explicit TraceDatum.color wins over the group color', () => {
+      const data: TraceDatum[] = [
+        { ...spanWithService('a', 'svc-A'), color: 'hotpink' },
+        spanWithService('b', 'svc-B'),
+      ];
+      const { spans } = normalize(data, 'time', undefined, colorByOtelAttribute('service.name'), VIZ_COLORS);
+      expect(spans.find((s) => s.id === 'a')?.color).toBe('hotpink'); // explicit wins
+      // svc-A still occupies palette index 0 in buildColorMap (first-seen, regardless of explicit override)
+      // so svc-B gets index 1 → 'green'
+      expect(spans.find((s) => s.id === 'b')?.color).toBe('green');
+    });
+
+    it('falls through to undefined (renderer default) when colorBy returns undefined for a span', () => {
+      const data: TraceDatum[] = [
+        { id: 'no-meta', name: 'no-meta', start: 0, end: 10 }, // no meta → accessor returns undefined
+      ];
+      const { spans } = normalize(data, 'time', undefined, colorByOtelAttribute('service.name'), VIZ_COLORS);
+      expect(spans[0]?.color).toBeUndefined();
+    });
+
+    it('falls through to undefined when vizColors is empty', () => {
+      const data = [spanWithService('a', 'svc-A')];
+      const { spans } = normalize(data, 'time', undefined, colorByOtelAttribute('service.name'), []);
+      expect(spans[0]?.color).toBeUndefined();
+    });
+
+    it('returns undefined color when neither colorBy nor vizColors is supplied', () => {
+      const data = [spanWithService('a', 'svc-A')];
+      const { spans } = normalize(data, 'time');
+      expect(spans[0]?.color).toBeUndefined();
+    });
+
+    it('colorByOtelKind groups by kind number', () => {
+      const data = [spanWithKind('a', 2), spanWithKind('b', 3), spanWithKind('c', 2)];
+      const { spans } = normalize(data, 'time', undefined, colorByOtelKind(), VIZ_COLORS);
+      expect(spans.find((s) => s.id === 'a')?.color).toBe('red');
+      expect(spans.find((s) => s.id === 'b')?.color).toBe('green');
+      expect(spans.find((s) => s.id === 'c')?.color).toBe('red'); // same kind → same color
+    });
+
+    it('colorByOtelAttribute reads span-level attribute before resource attribute', () => {
+      // span has http.method on span.attributes AND (hypothetically) on resource — span wins
+      const data: TraceDatum[] = [{
+        id: 'a', name: 'a', start: 0, end: 10,
+        meta: {
+          attributes: [{ key: 'service.name', value: 'span-level' }],
+          resource: { attributes: [{ key: 'service.name', value: 'resource-level' }] },
+        },
+      }];
+      const accessor = colorByOtelAttribute('service.name');
+      const key = accessor(data[0]!);
+      expect(key).toBe('span-level'); // span attribute wins
+    });
+
+    it('colorByOtelAttribute falls back to resource attribute when span attribute is absent', () => {
+      const datum = spanWithService('a', 'checkout'); // resource only
+      const accessor = colorByOtelAttribute('service.name');
+      expect(accessor(datum)).toBe('checkout');
+    });
+
+    it('colorByOtelAttribute returns undefined when attribute is absent from both', () => {
+      const datum: TraceDatum = { id: 'a', name: 'a', start: 0, end: 10, meta: { attributes: [] } };
+      expect(colorByOtelAttribute('service.name')(datum)).toBeUndefined();
+    });
+
+    it('colorByOtelKind returns undefined when kind is absent', () => {
+      const datum: TraceDatum = { id: 'a', name: 'a', start: 0, end: 10, meta: {} };
+      expect(colorByOtelKind()(datum)).toBeUndefined();
+    });
+
+    it('uses a stable color map across traceId selection (map built over full data)', () => {
+      // svc-A spans two traces; its color should be 'red' regardless of which trace is shown
+      const data: TraceDatum[] = [
+        { ...spanWithService('t1-a', 'svc-A', 0, 10), traceId: 't1' },
+        { ...spanWithService('t1-b', 'svc-B', 5, 10), traceId: 't1' },
+        { ...spanWithService('t2-a', 'svc-A', 0, 10), traceId: 't2' },
+      ];
+      const colorBy = colorByOtelAttribute('service.name');
+      const { spans: t1Spans } = normalize(data, 'time', 't1', colorBy, VIZ_COLORS);
+      const { spans: t2Spans } = normalize(data, 'time', 't2', colorBy, VIZ_COLORS);
+      // svc-A is first-seen in both calls because the map is built over all 3 spans
+      expect(t1Spans.find((s) => s.id === 't1-a')?.color).toBe('red');
+      expect(t2Spans.find((s) => s.id === 't2-a')?.color).toBe('red');
+    });
+
+    it('colorByOtelAttribute resolves service.name from fromOtlp envelope data', () => {
+      const envelope: OtlpEnvelope = {
+        resourceSpans: [{
+          resource: { attributes: [{ key: 'service.name', value: 'my-svc' }] },
+          scopeSpans: [{
+            spans: [{
+              spanId: 'x', name: 'op', traceId: 't1',
+              startTimeUnixNano: '0', endTimeUnixNano: '1000000000',
+            }],
+          }],
+        }],
+      };
+      const data = fromOtlp(envelope);
+      const { spans } = normalize(data, 'time', undefined, colorByOtelAttribute('service.name'), VIZ_COLORS);
+      expect(spans[0]?.color).toBe('red'); // first group → first palette entry
+    });
+  });
+
   describe('explicit activeSegments', () => {
     it('copies activeSegments through unchanged under xScaleType "time"', () => {
       const { spans } = normalize(simpleData, 'time');
@@ -239,6 +369,110 @@ describe('normalize', () => {
       const data = fromOtlp(otelSpans);
       const { spans } = normalize(data, 'time');
       expect(spans.every((s) => s.activeSegments.length === 0)).toBe(true);
+    });
+  });
+
+  describe('segment phase coloring', () => {
+    const VIZ_COLORS = ['red', 'green', 'blue'];
+
+    it('assigns palette colors to labeled segments in first-seen order', () => {
+      const data: TraceDatum[] = [{
+        id: 'a', name: 'a', start: 0, end: 100,
+        activeSegments: [
+          { start: 0, end: 30, label: 'loading' },
+          { start: 30, end: 80, label: 'process' },
+          { start: 80, end: 100, label: 'final' },
+        ],
+      }];
+      const { spans } = normalize(data, 'time', undefined, undefined, VIZ_COLORS);
+      const segs = spans[0]?.activeSegments ?? [];
+      expect(segs[0]?.color).toBe('red');   // loading → index 0
+      expect(segs[1]?.color).toBe('green'); // process → index 1
+      expect(segs[2]?.color).toBe('blue');  // final → index 2
+    });
+
+    it('the same label across multiple spans maps to the same color', () => {
+      const data: TraceDatum[] = [
+        { id: 'a', name: 'a', start: 0, end: 100, activeSegments: [{ start: 0, end: 50, label: 'loading' }] },
+        { id: 'b', name: 'b', start: 0, end: 100, activeSegments: [{ start: 0, end: 50, label: 'loading' }] },
+      ];
+      const { spans } = normalize(data, 'time', undefined, undefined, VIZ_COLORS);
+      expect(spans[0]?.activeSegments[0]?.color).toBe('red');
+      expect(spans[1]?.activeSegments[0]?.color).toBe('red'); // same label → same color
+    });
+
+    it('explicit segment.color wins over the label-derived palette color', () => {
+      const data: TraceDatum[] = [{
+        id: 'a', name: 'a', start: 0, end: 100,
+        activeSegments: [
+          { start: 0, end: 50, label: 'loading', color: 'hotpink' }, // explicit override
+          { start: 50, end: 100, label: 'loading' },                  // same label, no explicit color
+        ],
+      }];
+      const { spans } = normalize(data, 'time', undefined, undefined, VIZ_COLORS);
+      const segs = spans[0]?.activeSegments ?? [];
+      expect(segs[0]?.color).toBe('hotpink'); // explicit wins
+      expect(segs[1]?.color).toBe('red');     // label-derived (loading → index 0)
+    });
+
+    it('segment without label or color has no color property', () => {
+      const data: TraceDatum[] = [{
+        id: 'a', name: 'a', start: 0, end: 100,
+        activeSegments: [{ start: 0, end: 100 }],
+      }];
+      const { spans } = normalize(data, 'time', undefined, undefined, VIZ_COLORS);
+      expect(spans[0]?.activeSegments[0]?.color).toBeUndefined();
+    });
+
+    it('project() preserves label and resolved color when re-zeroing under xScaleType "linear"', () => {
+      const data: TraceDatum[] = [{
+        id: 'a', name: 'a', start: 1000, end: 2000,
+        activeSegments: [
+          { start: 1000, end: 1300, label: 'loading' },
+          { start: 1300, end: 2000, label: 'process' },
+        ],
+      }];
+      const { spans } = normalize(data, 'linear', undefined, undefined, VIZ_COLORS);
+      const segs = spans[0]?.activeSegments ?? [];
+      // domain min is 1000; rezeroed: loading [0, 300], process [300, 1000]
+      expect(segs[0]).toMatchObject({ start: 0, end: 300, label: 'loading', color: 'red' });
+      expect(segs[1]).toMatchObject({ start: 300, end: 1000, label: 'process', color: 'green' });
+    });
+
+    it('uses a stable segment color map across traceId selection', () => {
+      const data: TraceDatum[] = [
+        {
+          id: 't1-a', name: 'a', start: 0, end: 100, traceId: 't1',
+          activeSegments: [{ start: 0, end: 50, label: 'loading' }],
+        },
+        {
+          id: 't2-a', name: 'a', start: 0, end: 100, traceId: 't2',
+          activeSegments: [{ start: 0, end: 50, label: 'loading' }],
+        },
+      ];
+      const { spans: t1 } = normalize(data, 'time', 't1', undefined, VIZ_COLORS);
+      const { spans: t2 } = normalize(data, 'time', 't2', undefined, VIZ_COLORS);
+      // map is built over full data before traceId filtering → stable across views
+      expect(t1[0]?.activeSegments[0]?.color).toBe('red');
+      expect(t2[0]?.activeSegments[0]?.color).toBe('red');
+    });
+
+    it('segment coloring works independently of span-level colorBy', () => {
+      // Both segment labels and colorBy are active simultaneously; segment wins per precedence.
+      const data: TraceDatum[] = [{
+        id: 'a', name: 'a', start: 0, end: 100,
+        meta: { resource: { attributes: [{ key: 'service.name', value: 'checkout' }] } },
+        activeSegments: [
+          { start: 0, end: 50, label: 'loading' },
+          { start: 50, end: 100, label: 'process' },
+        ],
+      }];
+      const { spans } = normalize(data, 'time', undefined, colorByOtelAttribute('service.name'), VIZ_COLORS);
+      // Span-level color: 'red' (first-seen 'checkout'). Segment loading → 'red' too (index 0 resets).
+      // Both maps independently index from 0 — this is the documented behaviour.
+      const segs = spans[0]?.activeSegments ?? [];
+      expect(segs[0]?.color).toBe('red');   // loading → segment palette index 0
+      expect(segs[1]?.color).toBe('green'); // process → segment palette index 1
     });
   });
 });

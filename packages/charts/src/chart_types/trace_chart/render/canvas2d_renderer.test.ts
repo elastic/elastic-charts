@@ -401,6 +401,54 @@ describe('draw — per-span color override', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Tests: per-segment color (phase labels)
+// ---------------------------------------------------------------------------
+
+describe('draw — per-segment color override', () => {
+  it('does not throw when segments carry distinct colors and renders the correct rect count', () => {
+    const ctx = makeCtx();
+    const phasedSpans: NormalizedSpan[] = [
+      {
+        id: 'phased',
+        name: 'Phased',
+        start: 0,
+        end: 900,
+        // Three labeled segments each with a resolved color (as produced by the pipeline).
+        activeSegments: [
+          { start: 0, end: 300, label: 'loading', color: '#ff0000' },
+          { start: 300, end: 700, label: 'process', color: '#00ff00' },
+          { start: 700, end: 900, label: 'final', color: '#0000ff' },
+        ],
+        meta: { id: 'phased', name: 'Phased', traceId: 't1', start: 0, end: 900 } satisfies TraceDatum,
+      },
+    ];
+    expect(() => draw(ctx, makeGeom({ spans: phasedSpans }), style)).not.toThrow();
+    // One rect per segment.
+    expect(ctx.rect).toHaveBeenCalledTimes(3);
+  });
+
+  it('falls back to the span-level activeFill for segments without a color', () => {
+    // Mix: first segment has an explicit color, second does not. Both must render (no throw, 2 rects).
+    const ctx = makeCtx();
+    const mixedSpans: NormalizedSpan[] = [
+      {
+        id: 'mixed',
+        name: 'Mixed',
+        start: 0,
+        end: 1000,
+        activeSegments: [
+          { start: 0, end: 500, color: '#ff0000' }, // explicit color
+          { start: 500, end: 1000 },                 // no color → span fallback
+        ],
+        meta: { id: 'mixed', name: 'Mixed', traceId: 't1', start: 0, end: 1000 } satisfies TraceDatum,
+      },
+    ];
+    expect(() => draw(ctx, makeGeom({ spans: mixedSpans }), style)).not.toThrow();
+    expect(ctx.rect).toHaveBeenCalledTimes(2);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Tests: pickLane — boundary math
 // ---------------------------------------------------------------------------
 

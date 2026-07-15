@@ -25,10 +25,11 @@ export interface NormalizedSpan {
   end: number;
   /**
    * Active-execution segments (the solid marks in each lane). Empty until `resolveActive` fills
-   * them with self-time derivation (ADR 0003); copied verbatim from TraceDatum.activeSegments
-   * if the caller supplied them explicitly.
+   * them with self-time derivation (ADR 0003); copied from TraceDatum.activeSegments if the caller
+   * supplied them explicitly, with `color` resolved to the label-palette color (or the explicit
+   * per-segment override) by the normalize pipeline.
    */
-  activeSegments: { start: number; end: number }[];
+  activeSegments: { start: number; end: number; label?: string; color?: Color }[];
   color?: Color;
   /** The original TraceDatum; exposed to tooltip datum and element-event callbacks. */
   meta: TraceDatum;

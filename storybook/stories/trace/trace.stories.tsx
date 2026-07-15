@@ -19,3 +19,7 @@ export { Example as interactive } from './06_interactive.story';
 export { Example as tooltipEvents } from './07_tooltip_events.story';
 export { Example as multiTrace } from './08_multi_trace.story';
 export { Example as largeN } from './09_large_n.story';
+export { Example as colorBy } from './10_color_by.story';
+export { Example as chromeNetwork } from './11_chrome_network.story';
+export { Example as kibanaTrace } from './12_kibana_trace.story';
+export { Example as segmentPhases } from './13_segment_phases.story';

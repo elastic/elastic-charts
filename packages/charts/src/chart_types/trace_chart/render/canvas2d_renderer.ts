@@ -72,6 +72,10 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
 
     const plotRight = plot.left + plot.width;
 
+    // Lazily-built fill cache: at most one colorToRgba call per distinct segment color per
+    // draw() call. Segments per lane are few, so a plain Map is sufficient.
+    const segFillCache = new Map<string, Fill>();
+
     for (let i = firstLane; i <= lastLane; i++) {
       const span = spans[i];
       if (!span) continue;
@@ -92,7 +96,9 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       }
 
       // --- Active segments (solid rects showing self-time) ---
-      // Use per-span color override if set; otherwise fall back to the default active color.
+      // Span-level color (Spec 9 colorBy or explicit TraceDatum.color) is the lane-wide fallback.
+      // Per-segment colors (label-palette or explicit segment.color, both resolved in the pipeline)
+      // override the fallback for individual segments.
       const activeFill: Fill = span.color != null ? { color: colorToRgba(span.color) } : defaultActiveFill;
       for (const seg of span.activeSegments) {
         const segX1 = scale(seg.start);
@@ -103,10 +109,22 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
         const clampedX = Math.max(plot.left, segX1);
         const clampedW = Math.min(plotRight, segX2) - clampedX;
         if (clampedW <= 0) continue;
+        // Resolve per-segment fill: explicit/label-derived color wins over span-level fallback.
+        let segFill: Fill;
+        if (seg.color != null) {
+          let cached = segFillCache.get(seg.color);
+          if (cached === undefined) {
+            cached = { color: colorToRgba(seg.color) };
+            segFillCache.set(seg.color, cached);
+          }
+          segFill = cached;
+        } else {
+          segFill = activeFill;
+        }
         renderRect(
           ctx,
           { x: clampedX, y: laneTop + LANE_PADDING, width: clampedW, height: laneHeight - 2 * LANE_PADDING },
-          activeFill,
+          segFill,
           NO_STROKE,
           true, // disableBorderOffset — no stroke, so inset is irrelevant; explicit for clarity
         );

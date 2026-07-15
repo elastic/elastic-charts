@@ -83,11 +83,13 @@ interface OwnProps {
 
 type TraceProps = StateProps & DispatchProps & OwnProps;
 
-/** Memoized normalize→resolveActive output. Keyed on (data ref, xScaleType, traceId). */
+/** Memoized normalize→resolveActive output. Keyed on (data ref, xScaleType, traceId, colorBy ref, vizColors ref). */
 interface PipelineCache {
   dataRef: TraceSpec['data'];
   xScaleType: string;
   traceId: string | undefined;
+  colorBy: TraceSpec['colorBy'];
+  vizColors: Theme['colors']['vizColors'];
   result: { spans: ReturnType<typeof resolveActive>; domain: { min: number; max: number } };
 }
 
@@ -344,25 +346,35 @@ class TraceComponent extends React.Component<TraceProps> {
   // -------------------------------------------------------------------------
 
   private getPipeline(spec: TraceSpec): { spans: ReturnType<typeof resolveActive>; domain: { min: number; max: number } } {
+    const { vizColors } = this.props.theme.colors;
     const cache = this.pipelineCache;
     if (
       cache &&
       cache.dataRef === spec.data &&
       cache.xScaleType === spec.xScaleType &&
-      cache.traceId === spec.traceId
+      cache.traceId === spec.traceId &&
+      cache.colorBy === spec.colorBy &&
+      cache.vizColors === vizColors
     ) {
       return cache.result;
     }
 
     // Recompute: normalize now takes TraceDatum[] directly — OTel data arrives pre-converted by fromOtlp.
-    const normalizeResult = normalize(spec.data, spec.xScaleType, spec.traceId);
+    const normalizeResult = normalize(spec.data, spec.xScaleType, spec.traceId, spec.colorBy, vizColors);
 
     // Sort once here (O(N log N) per data/scale change) so buildGeometry doesn't re-sort
     // on every rAF frame. buildGeometry's contract requires pre-sorted input.
     const resolved = resolveActive(normalizeResult.spans);
     const spans = resolved.slice().sort((a, b) => a.start - b.start);
     const result = { spans, domain: normalizeResult.domain };
-    this.pipelineCache = { dataRef: spec.data, xScaleType: spec.xScaleType, traceId: spec.traceId, result };
+    this.pipelineCache = {
+      dataRef: spec.data,
+      xScaleType: spec.xScaleType,
+      traceId: spec.traceId,
+      colorBy: spec.colorBy,
+      vizColors,
+      result,
+    };
     return result;
   }
 

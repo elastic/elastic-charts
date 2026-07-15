@@ -7,8 +7,10 @@
  */
 
 import type { NormalizedSpan } from './types';
+import { buildColorMap, buildSegmentColorMap } from './colors';
 import { Logger } from '../../../utils/logger';
-import type { TraceDatum, TraceSpec } from '../trace_api';
+import type { Color } from '../../../common/colors';
+import type { TraceDatum, TraceColorAccessor, TraceSpec } from '../trace_api';
 
 type XScaleType = TraceSpec['xScaleType'];
 
@@ -34,24 +36,54 @@ export interface NormalizeResult {
  * carries the original `OtelSpan` on `datum.meta`.
  * @internal
  */
-export function normalize(data: TraceDatum[], xScaleType: XScaleType, traceId?: string): NormalizeResult {
-  const flat = parseSimple(data);
+export function normalize(
+  data: TraceDatum[],
+  xScaleType: XScaleType,
+  traceId?: string,
+  colorBy?: TraceColorAccessor,
+  vizColors?: Color[],
+): NormalizeResult {
+  // Build color maps over the full input — before traceId filtering — so colors are stable across
+  // all traces/views (cross-trace color stability).
+  const colorMap =
+    colorBy !== undefined && vizColors !== undefined ? buildColorMap(data, colorBy, vizColors) : undefined;
+  // Segment label map: same stability rationale as colorMap. Built unconditionally when vizColors is
+  // present so segment labels work even without a span-level colorBy accessor.
+  const segmentColorMap = vizColors !== undefined ? buildSegmentColorMap(data, vizColors) : undefined;
+  const flat = parseSimple(data, colorBy, colorMap, segmentColorMap);
   const selected = selectTrace(flat, traceId);
   return project(selected, xScaleType);
 }
 
-function parseSimple(data: TraceDatum[]): NormalizedSpan[] {
-  return data.map((datum) => ({
-    id: datum.id,
-    name: datum.name,
-    parentId: datum.parentId,
-    traceId: datum.traceId,
-    start: datum.start,
-    end: datum.end,
-    activeSegments: datum.activeSegments ? datum.activeSegments.map((segment) => ({ ...segment })) : [],
-    color: datum.color,
-    meta: datum,
-  }));
+function parseSimple(
+  data: TraceDatum[],
+  colorBy: TraceColorAccessor | undefined,
+  colorMap: Map<string, Color> | undefined,
+  segmentColorMap: Map<string, Color> | undefined,
+): NormalizedSpan[] {
+  return data.map((datum) => {
+    const groupKey = colorBy !== undefined ? colorBy(datum) : undefined;
+    const groupColor = groupKey !== undefined && colorMap !== undefined ? colorMap.get(groupKey) : undefined;
+    return {
+      id: datum.id,
+      name: datum.name,
+      parentId: datum.parentId,
+      traceId: datum.traceId,
+      start: datum.start,
+      end: datum.end,
+      activeSegments: datum.activeSegments
+        ? datum.activeSegments.map((segment) => {
+            // Precedence: explicit segment.color > label-derived palette color.
+            // Span-level and themed fallbacks are applied in the renderer via activeFill.
+            const resolvedColor =
+              segment.color ?? (segment.label !== undefined ? segmentColorMap?.get(segment.label) : undefined);
+            return resolvedColor !== undefined ? { ...segment, color: resolvedColor } : { ...segment };
+          })
+        : [],
+      color: datum.color ?? groupColor,
+      meta: datum,
+    };
+  });
 }
 
 function selectTrace(spans: NormalizedSpan[], traceId?: string): NormalizedSpan[] {
@@ -86,7 +118,7 @@ function project(spans: NormalizedSpan[], xScaleType: XScaleType): NormalizeResu
     ...span,
     start: span.start - min,
     end: span.end - min,
-    activeSegments: span.activeSegments.map((segment) => ({ start: segment.start - min, end: segment.end - min })),
+    activeSegments: span.activeSegments.map((segment) => ({ ...segment, start: segment.start - min, end: segment.end - min })),
   }));
   return { spans: rezeroed, domain: { min: 0, max: max - min } };
 }

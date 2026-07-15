@@ -84,7 +84,14 @@ export function buildTraceTooltipInfo(
       const segDuration = seg.end - seg.start;
       const segOffset = seg.start - domainMin; // from trace start, same baseline as the 'Start' row
       const n = span.activeSegments.length;
-      const label = n > 1 ? `Active segment (${segmentIndex + 1} of ${n})` : 'Active segment';
+      // Include the phase label when the segment has one (e.g. "Active segment: loading (1 of 3)").
+      const segLabel = seg.label;
+      let label: string;
+      if (segLabel !== undefined) {
+        label = n > 1 ? `Active segment: ${segLabel} (${segmentIndex + 1} of ${n})` : `Active segment: ${segLabel}`;
+      } else {
+        label = n > 1 ? `Active segment (${segmentIndex + 1} of ${n})` : 'Active segment';
+      }
       // Insert duration at index 3 (after 'Self time'), offset at index 4 (after duration).
       // Row order: Name, Duration, Self time, Active segment, Active segment offset, Start, State.
       values.splice(3, 0, row(label, segDuration, formatMs(segDuration)));
