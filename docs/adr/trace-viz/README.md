@@ -13,6 +13,7 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0008 — Scroll-to-span uses controlProviderCallback + TraceSearchProvider](./0008-scroll-to-span-control-provider.md)
 - [0009 — Brush rubber-band is a CSS `<div>`, not a canvas draw](./0009-brush-overlay-css-div.md)
 - [0010 — Linear-scale nanosecond precision (supersedes ADR 0004 D3 for linear)](./0010-linear-scale-nanosecond-precision.md)
+- [0011 — Segment selection model: thin refs in, rich details out; controlled perform-and-fire](./0011-segment-selection-model.md)
 
 ## Spec plans
 
@@ -40,6 +41,8 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 - [Spec 16 — API documentation story (auto-extracted)](./specs/spec-16-api-docs.md)
 - [Spec 17 — Empty-state distinction (no-data vs trace-not-found)](./specs/spec-17-empty-state.md)
 - [Spec 18 — Nanosecond precision for linear x-scale](./specs/spec-18-nanosecond-linear.md)
+- [Spec 19 — Segment selection (click, double-click, multi-select, clear)](./specs/spec-19-segment-selection.md)
+- [Spec 20 — Collapsible nesting (design exploration)](./specs/spec-20-collapsible-nesting.md) *(design stub — not yet executable)*
 
 Build order (Specs 0–8): Phase 0 → Spec 0 → Spec 1 → (Spec 2 / Spec 3 / Spec 4 in parallel once
 Spec 1's `NormalizedSpan` contract is fixed) → Spec 5 → Spec 6 → Spec 7 → Spec 8.
@@ -53,5 +56,11 @@ the table captures every new prop).
 Build order (Specs 17–18 / Spec 13): all three are independent of each other and of Specs 9–16.
 Spec 17 (empty-state) depends only on Specs 1 and 5. Spec 18 (ns precision) depends only on
 Specs 4 and 6. Spec 13 (label position) depends only on Spec 5. Any order is valid.
+
+Build order (Specs 19–20): Spec 19 (segment selection) depends on Specs 7, 10, and 14 — author
+after Spec 14 is complete so the lane-highlight render pass, `Escape`, and `Enter`/`Space` handlers
+are in place. Spec 20 (collapsible nesting design exploration) is independent of all other specs;
+it is not executable until the team picks an implementation option and promotes the stub to a full
+spec.
 
 See the repo root [`CONTEXT.md`](../../../CONTEXT.md) for the domain glossary.
