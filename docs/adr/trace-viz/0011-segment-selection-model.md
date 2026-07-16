@@ -5,7 +5,7 @@
 ## Context
 
 Spec 13 adds segment-level selection to the trace waterfall: left-clicking an active or waiting segment
-highlights it; double-clicking selects the whole span; Shift/Ctrl/Cmd-click multi-selects; clicking
+highlights it; double-clicking selects the whole span; Shift-click adds / Cmd(Mac)-Ctrl-click toggles for multi-select; clicking
 empty space clears. The feature must integrate with the existing self-managed interaction model (ADR
 0004), the right-click pin tooltip (Spec 10), and the Spec 12 keyboard navigation without introducing
 redux selectors or colliding with existing gestures.
@@ -96,13 +96,43 @@ selection-state management.
 **Rejected: accept a transient double-fire (no debounce).** The double-callback noise would require
 every consumer to deduplicate or guard, moving complexity outward.
 
-## Decision 7: Independent identity-toggled refs; no auto-conversion
+## Decision 7: Independent identity-toggled refs; no auto-conversion; split modifier semantics
 
 The selection set holds refs keyed by exact identity (`spanId` + `region` + `segmentIndex`).
-Shift/Ctrl/Cmd-click adds/removes one ref. Double-click adds/replaces with the whole-span ref
-(`region: 'span'`, `segmentIndex: -1`). A span-level ref and per-segment refs of the same span may
-coexist in the set; the renderer deduplicates overlapping highlight outlines (the whole-span extent
-subsumes its segment extents visually).
+
+**Modifier semantics (Spec 13.1 — native desktop convention):**
+
+- **Shift + click / double-click** = **additive** — adds a ref to the set; never removes. Shift-clicking
+  an already-selected ref is a no-op. Shift is also the brush-invert modifier (`Shift+drag` toggles
+  brush-zoom); the two meanings are disambiguated cleanly by `dragMoved`: only a zero-movement click
+  reaches the selection path.
+- **Cmd (macOS) / Ctrl (other) + click / double-click** = **toggle** — adds if absent, removes if
+  present. The normalization `isApple ? metaKey : ctrlKey` (mirroring the legend label component)
+  avoids the macOS collision: on macOS, `Ctrl+click` fires the browser `contextmenu` event — which is
+  bound to the tooltip-pin handler (Spec 10) — so raw `ctrlKey` would silently skip the selection
+  path. Using `metaKey` (Cmd) on Apple avoids this. Toggle wins when both Shift and Cmd/Ctrl are held.
+- **Plain click / double-click** = **replace** — replaces the set with `[ref]`.
+- **Modifier + empty-click** (no segment hit) = **no-op** — preserves the selection (native
+  file-manager behaviour). Plain empty-click still clears.
+
+**Keyboard equivalents (span-granular; no sub-segment keyboard path):**
+
+- `Enter` / `Space` = replace with whole-span ref (aligns to spec-13 line 102; plain Enter/Space was
+  previously toggling, which was a divergence from the spec).
+- `Shift+Enter` = additive-add whole-span ref.
+- `Cmd+Enter` (Mac) / `Ctrl+Enter` (other) = toggle whole-span ref. Note: `Cmd+Space` is intercepted
+  by macOS Spotlight — use `Cmd+Enter` instead; this is documented but not special-cased.
+- Keyboard selection is announced to screen-readers via the `aria-live` region (textContent, XSS-safe):
+  "Selected \<name\>" (replace), "\<name\> added, N selected" / "\<name\> removed, N selected"
+  (additive/toggle), "Selection cleared" (Escape). Mouse gestures stay silent (pointer users see the
+  outline; announcements would spam the region on every click).
+- There is **no keyboard path for single-segment (sub-span) selection** — keyboard navigation is
+  span-granular (arrows move focus between whole lanes); segment-level keyboard nav is out of scope.
+
+Double-click replaces or adds/toggles the whole-span ref (`region: 'span'`, `segmentIndex: -1`).
+A span-level ref and per-segment refs of the same span may coexist in the set; the renderer
+deduplicates overlapping highlight outlines (the whole-span extent subsumes its segment extents
+visually).
 
 **Rejected: span ref subsumes per-segment refs.** Selecting a span would have to silently remove
 per-segment refs; un-selecting the span would have to decide which per-segment refs to restore. More

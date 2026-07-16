@@ -8,7 +8,9 @@
 
 import type { TooltipInfo } from '../../../components/tooltip/types';
 import type { TraceElementEvent } from '../../../specs/settings';
+import { waitingSegments } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
+import type { TraceSelectionDetail } from '../trace_api';
 import type { HoverRegion } from './types';
 
 /** @internal */
@@ -81,19 +83,10 @@ export function buildTraceTooltipInfo(
   // When hovering an active segment, show that segment's own duration and its offset from trace start.
   // Omit the ordinal when there is only one segment (its duration equals self time — redundant).
   if (region === 'active' && segmentIndex >= 0) {
-    const seg = span.activeSegments[segmentIndex];
-    if (seg) {
-      const segDuration = seg.end - seg.start;
-      const segOffset = seg.start - domainMin; // from trace start, same baseline as the 'Start' row
-      const n = span.activeSegments.length;
-      // Include the phase label when the segment has one (e.g. "Active segment: loading (1 of 3)").
-      const segLabel = seg.label;
-      let label: string;
-      if (segLabel !== undefined) {
-        label = n > 1 ? `Active segment: ${segLabel} (${segmentIndex + 1} of ${n})` : `Active segment: ${segLabel}`;
-      } else {
-        label = n > 1 ? `Active segment (${segmentIndex + 1} of ${n})` : 'Active segment';
-      }
+    const detail = segmentRowDetail(span, 'active', segmentIndex, domainMin);
+    if (detail) {
+      const { segDuration, segOffset, ordinalLabel } = detail;
+      const label = `Active segment${ordinalLabel}`;
       // Insert duration at index 3 (after 'Self time'), offset at index 4 (after duration).
       // Row order: Name, Duration, Self time, Active segment, Active segment offset, Start, State.
       values.splice(3, 0, row(label, segDuration, formatMs(segDuration)));
@@ -101,7 +94,105 @@ export function buildTraceTooltipInfo(
     }
   }
 
+  // When hovering a waiting segment, show symmetric duration/offset rows.
+  if (region === 'waiting' && segmentIndex >= 0) {
+    const detail = segmentRowDetail(span, 'waiting', segmentIndex, domainMin);
+    if (detail) {
+      const { segDuration, segOffset, ordinalLabel } = detail;
+      const label = `Waiting segment${ordinalLabel}`;
+      values.splice(3, 0, row(label, segDuration, formatMs(segDuration)));
+      values.splice(4, 0, row('Waiting segment offset', segOffset, `+${formatMs(segOffset)}`));
+    }
+  }
+
   return { header: null, values };
+}
+
+/**
+ * Returns segment timing fields for a tooltip row or `TraceSelectionDetail`, or `null` when the
+ * index is out of range. Shared between `buildTraceTooltipInfo` and `buildTraceSelectionDetail`.
+ */
+function segmentRowDetail(
+  span: NormalizedSpan,
+  region: 'active' | 'waiting',
+  segmentIndex: number,
+  domainMin: number,
+): { segStart: number; segEnd: number; segDuration: number; segOffset: number; ordinalLabel: string } | null {
+  let segStart: number;
+  let segEnd: number;
+  let n: number;
+  let phaseLabel: string | undefined;
+
+  if (region === 'active') {
+    const seg = span.activeSegments[segmentIndex];
+    if (!seg) return null;
+    segStart = seg.start;
+    segEnd = seg.end;
+    n = span.activeSegments.length;
+    phaseLabel = seg.label;
+  } else {
+    const gaps = waitingSegments(span);
+    const gap = gaps[segmentIndex];
+    if (!gap) return null;
+    segStart = gap.start;
+    segEnd = gap.end;
+    n = gaps.length;
+  }
+
+  const segDuration = segEnd - segStart;
+  const segOffset = segStart - domainMin;
+
+  // Build the ordinal/label suffix. Omit ordinal when there is only one segment.
+  let ordinalLabel: string;
+  if (phaseLabel !== undefined) {
+    ordinalLabel = n > 1 ? `: ${phaseLabel} (${segmentIndex + 1} of ${n})` : `: ${phaseLabel}`;
+  } else {
+    ordinalLabel = n > 1 ? ` (${segmentIndex + 1} of ${n})` : '';
+  }
+
+  return { segStart, segEnd, segDuration, segOffset, ordinalLabel };
+}
+
+/**
+ * Builds a `TraceSelectionDetail` entry for one selected ref. Called once per ref in the
+ * `onSelectionChange` payload. Returns the same data the tooltip shows, plus all timing fields,
+ * so consumers don't need to re-derive durations. See ADR 0011 Decision 3.
+ * @internal
+ */
+export function buildTraceSelectionDetail(
+  span: NormalizedSpan,
+  domainMin: number,
+  region: 'span' | 'active' | 'waiting',
+  segmentIndex: number,
+): TraceSelectionDetail {
+  const duration = span.end - span.start;
+  const selfTime = computeSelfTime(span);
+
+  const detail: TraceSelectionDetail = {
+    spanId: span.id,
+    name: span.name,
+    ...(span.parentId !== undefined && { parentId: span.parentId }),
+    ...(span.traceId !== undefined && { traceId: span.traceId }),
+    start: span.start,
+    end: span.end,
+    duration,
+    selfTime,
+    datum: span.meta,
+    region,
+    segmentIndex,
+  };
+
+  if (region !== 'span' && segmentIndex >= 0) {
+    const seg = segmentRowDetail(span, region, segmentIndex, domainMin);
+    if (seg) {
+      detail.segmentStart = seg.segStart;
+      detail.segmentEnd = seg.segEnd;
+      detail.segmentDuration = seg.segDuration;
+      detail.segmentOffset = seg.segOffset;
+    }
+  }
+
+  return detail;
 }
 
 /**

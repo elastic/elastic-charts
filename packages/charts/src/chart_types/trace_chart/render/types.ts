@@ -37,6 +37,10 @@ export interface TraceStyle {
   gridLineColor: Color;
   /** Background fill for the full-width highlight behind the keyboard-focused lane. */
   focusedLaneBackground: Color;
+  /** Stroke color for the selection-highlight outline drawn around selected segments. */
+  selectedSegmentStroke: Color;
+  /** Stroke width in px for the selection-highlight outline. */
+  selectedSegmentStrokeWidth: number;
 }
 
 /**
@@ -68,6 +72,12 @@ export interface TraceGeometry {
    * Distinct from `hoverIndex` (mouse-driven). Drawn as a full-width background highlight.
    */
   focusedLaneIndex: number | null;
+  /**
+   * Resolved selection entries, filtered to refs that exist in the current span array and have
+   * valid `segmentIndex` values. Deduplicated: segment entries subsumed by a same-span `'span'`
+   * entry are dropped. Built by `buildGeometry`; consumed by the selection-highlight draw pass.
+   */
+  resolvedSelection: ReadonlyArray<{ laneIndex: number; region: 'span' | 'active' | 'waiting'; segmentIndex: number }>;
   /**
    * Maps a time value (ms) to an x pixel coordinate within the plot, based on `focusDomain`.
    * Returns `plot.left` when the domain is zero-width (degenerate guard).

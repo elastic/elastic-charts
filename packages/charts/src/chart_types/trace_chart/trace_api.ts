@@ -94,6 +94,48 @@ export interface TraceDatum {
 }
 
 /**
+ * Identity of one selected segment (thin — used in the controlled `selection` prop).
+ * @public
+ */
+export interface TraceSegmentRef {
+  spanId: string;
+  /** `'span'` = whole span selected (double-click). `'active'` | `'waiting'` = one segment. */
+  region: 'span' | 'active' | 'waiting';
+  /** 0-based index into `span.activeSegments` or `waitingSegments(span)`. -1 when `region === 'span'`. */
+  segmentIndex: number;
+}
+
+/** Array of selected refs. Empty array = nothing selected. @public */
+export type TraceSelection = TraceSegmentRef[];
+
+/**
+ * Rich per-entry detail fired via `onSelectionChange`. Carries all tooltip-equivalent data so
+ * consumers don't need to re-derive durations. See ADR 0011 Decision 3.
+ * @public
+ */
+export interface TraceSelectionDetail {
+  spanId: string;
+  name: string;
+  parentId?: string;
+  traceId?: string;
+  /** Span start, rezeroed in `'linear'` mode. */
+  start: number;
+  /** Span end, same caveat. */
+  end: number;
+  duration: number;
+  selfTime: number;
+  datum: TraceDatum;
+  region: 'span' | 'active' | 'waiting';
+  segmentIndex: number;
+  /** Present when `region !== 'span'`. */
+  segmentStart?: number;
+  segmentEnd?: number;
+  segmentDuration?: number;
+  /** Offset of the segment's start from the trace domain start, in ms. */
+  segmentOffset?: number;
+}
+
+/**
  * Spec for the Trace chart. Add one `<Trace>` inside a `<Chart>` to render a waterfall visualization.
  * @public
  */
@@ -153,6 +195,18 @@ export interface TraceSpec extends Spec {
    * @defaultValue true
    */
   showKeyboardFocusBadge?: boolean;
+  /**
+   * Controlled selection. When supplied, this is the render source of truth; gestures still execute
+   * and fire `onSelectionChange` — the parent decides whether to update the prop (perform-and-fire,
+   * same model as `focusDomain`/ADR 0007). When omitted, the component manages selection internally.
+   */
+  selection?: TraceSelection;
+  /**
+   * Called once per completed gesture with the new thin `next` refs and rich `details`. Fires on
+   * single-click (after the ~250 ms debounce), double-click, keyboard Enter/Space, and Escape.
+   * Suppressed when the resulting set is identity-equal to the previous fire (no-op echo guard).
+   */
+  onSelectionChange?: (next: TraceSelection, details: TraceSelectionDetail[]) => void;
 }
 
 const buildProps = buildSFProps<TraceSpec>()(

@@ -27,6 +27,8 @@ const style: TraceStyle = {
   timeBarLabel: { fontFamily: 'monospace', fontSize: 11, color: '#444' },
   gridLineColor: '#e0e0e0',
   focusedLaneBackground: 'rgba(96,146,192,0.15)',
+  selectedSegmentStroke: '#f00',
+  selectedSegmentStrokeWidth: 2,
 };
 
 /**

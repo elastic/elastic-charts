@@ -1,7 +1,7 @@
 # Spec 13 — Segment selection
 
 **Goal:** left-click an active or waiting segment to select and highlight it; double-click a span to
-select all its segments; Shift/Ctrl/Cmd-click to accumulate a multi-selection; click empty canvas
+select all its segments; Shift-click to add / Cmd(Mac)-Ctrl-click to toggle for multi-selection; click empty canvas
 space to clear. Selection is exposed via an `onSelectionChange` callback (rich detail) and an optional
 controlled `selection` prop (thin identity refs). See [ADR 0011](../0011-segment-selection-model.md).
 
@@ -95,19 +95,43 @@ export interface TraceSelectionDetail {
 | Gesture | Result |
 |---|---|
 | Left-click on active/waiting segment | replace selection with `[ref]` |
-| Shift / Ctrl / Cmd + left-click on segment | toggle `ref` in the set |
+| **Shift** + left-click on segment | **additive**: add `ref` to set; no-op if already selected (never removes) |
+| **Cmd (Mac) / Ctrl (other)** + left-click on segment | **toggle**: add if absent, remove if present |
 | Left-click on empty region / gutter / outside lanes | clear selection (`[]`) |
-| Double-click on span (any region) | replace with whole-span ref `{ spanId, region:'span', segmentIndex:-1 }`; modifier toggles into set |
-| Modifier + double-click | toggle whole-span ref into set |
-| Enter / Space (Spec 12 keyboard nav) | same as double-click on the focused lane (whole-span selection) |
-| Escape | clear selection (also clears focused lane + unpin, per Spec 12/10) |
+| Modifier + empty-click | **no-op** — preserves selection (native file-manager behaviour) |
+| Double-click on span (any region) | replace with whole-span ref `{ spanId, region:'span', segmentIndex:-1 }` |
+| **Shift** + double-click | additive-add whole-span ref |
+| **Cmd/Ctrl** + double-click | toggle whole-span ref into/out of set |
+| `Enter` / `Space` (Spec 12 keyboard nav) | **replace** with whole-span ref for the focused lane (aligns to "same as double-click") |
+| `Shift+Enter` | additive-add whole-span ref; announced via `aria-live` |
+| `Cmd+Enter` (Mac) / `Ctrl+Enter` (other) | toggle whole-span ref; announced via `aria-live` |
+| `Escape` | clear selection + announce "Selection cleared" (also clears focus + unpin, per Spec 12/10) |
 
 **Debounce:** a `clickTimer` (≤ 250 ms) defers the single-segment selection commit so that the second
 click of a double-click cancels the pending single-selection and replaces it with the whole-span
 selection. `onSelectionChange` fires once per gesture. `onElementClick` (Spec 7) fires immediately on
 every raw click, unchanged — the two channels are orthogonal.
 
-**Modifier detection:** `e.shiftKey || e.ctrlKey || e.metaKey` (covers Windows Ctrl and macOS Cmd).
+**Modifier detection (Spec 13.1):** `selectionModeFromEvent(e, isApple = isAppleDevice)`:
+- `isApple ? e.metaKey : e.ctrlKey` → `'toggle'`  (toggle wins when both held with Shift)
+- `e.shiftKey` → `'additive'`
+- neither → `'replace'`
+
+Normalization `isAppleDevice = /Mac|iPhone|iPad/.test(navigator.userAgent)` mirrors the legend
+component. The `isApple` parameter is an optional seam that allows tests to table-test both platforms
+without UA mocking. On macOS, `Ctrl+click` fires `contextmenu` (the tooltip-pin handler, Spec 10) —
+not `click` — so raw `ctrlKey` would silently miss the selection path; using `metaKey` (Cmd) avoids
+this collision.
+
+**Keyboard a11y note:** Keyboard navigation is span-granular (arrows move focus between whole lanes,
+per Spec 12). There is **no keyboard path for single-segment (sub-span) selection** — segment-level
+keyboard navigation is out of scope. `Cmd+Space` is intercepted by macOS Spotlight and is
+unreachable there; `Cmd+Enter` covers the same intent and is the documented alternative.
+
+**`aria-live` announcements (keyboard only):** On keyboard-initiated selection change, the existing
+1 px `aria-live` region (Spec 12) is updated with a short utterance (via `textContent`, XSS-safe).
+Mouse gestures stay silent — pointer users see the stroke outline; announcing every click would spam
+the region.
 
 ### Selection identity
 
@@ -227,7 +251,7 @@ export function buildGeometry(
 - Demo 2 (controlled): external buttons that set `selection` from outside; `onSelectionChange`
   logged via Storybook actions (both `next` thin refs and `details` rich array).
 - Knob: `showTooltipOverEmpty` to contrast empty-click behavior.
-- Instructions panel noting Shift/Ctrl/Cmd multi-select, double-click, Esc.
+- Instructions panel noting Shift=additive / Cmd(Mac)-Ctrl=toggle semantics, double-click, keyboard rows, Esc.
 
 ## Tests
 
@@ -236,11 +260,15 @@ export function buildGeometry(
 - `pickRegion` waiting `segmentIndex`: pointer inside first waiting gap → `{ region:'waiting', segmentIndex:0 }`;
   pointer inside second gap → `{ segmentIndex:1 }`; pointer inside active segment → unchanged (`region:'active'`).
 - Click replace: click segment → `selection = [ref]`; previous selection is cleared.
-- Modifier toggle add: Shift-click second segment → `selection = [ref1, ref2]`.
-- Modifier toggle remove: Shift-click already-selected segment → `selection = [ref1]` (removed).
+- `selectionModeFromEvent` table (G2 seam): no-modifier → replace; shiftKey → additive; ctrlKey(non-Apple)/metaKey(Apple) → toggle; toggle wins both-held. See `selection_helpers.test.ts`.
+- Shift-click additive: Shift-click second segment → `selection = [ref1, ref2]`.
+- Shift-click additive no-op: Shift-click already-selected segment → set unchanged (never removes).
+- Ctrl/Cmd-click toggle remove: Ctrl/Cmd-click already-selected segment → `selection = [ref1]` (removed).
+- Shift+drag: Shift+drag = brush (no selection); Shift+click (zero movement) = additive add (G1 disambiguation via `dragMoved`).
 - Double-click: `selection = [{ spanId, region:'span', segmentIndex:-1 }]`.
-- Modifier double-click: toggles whole-span ref into / out of set.
-- Empty-click: `selection = []`.
+- Modifier double-click: applies additive/toggle to whole-span ref.
+- Empty-click: `selection = []`. Modifier+empty-click: no-op (preserves).
+- Keyboard: plain Enter replaces; Shift+Enter additive-adds; Ctrl/Cmd+Enter toggles; aria-live announces each.
 - Debounce: single-click fires `onSelectionChange` once, after timer; double-click cancels the timer
   and fires `onSelectionChange` once with the whole-span ref.
 - Controlled prop: `selection` prop is used as render source of truth; gestures still fire
@@ -266,7 +294,7 @@ export function buildGeometry(
 - Verify `resolvedSelection` is recomputed by `buildGeometry` only when selection or spans change —
   not on every rAF frame (selection travels through `buildGeometry` which is called every frame;
   verify the `spanId → lane` Map is not re-built every frame — hoist to the caller or memoize).
-- Verify modifier key detection covers both `ctrlKey` and `metaKey` (Windows and macOS).
+- Verify modifier key detection uses `selectionModeFromEvent` with `isApple` seam: Apple UA → `metaKey`=toggle (Cmd), `ctrlKey`=replace (Ctrl+click fires contextmenu on Mac); non-Apple → `ctrlKey`=toggle, `metaKey`=replace.
 - Verify no XSS when span name / `datum.meta` values flow into `TraceSelectionDetail` (use typed
   fields, not dynamic HTML injection).
 - Verify `onSelectionChange` is not called with the same selection identity twice in a row (guard
@@ -279,9 +307,9 @@ export function buildGeometry(
   `onSelectionChange` with the correct thin ref and rich detail.
 - Double-clicking a span shows a stroke outline spanning its full `[start, end]` extent and fires
   `onSelectionChange` with a `region:'span'` ref.
-- Shift/Ctrl/Cmd-clicking accumulates refs; clicking empty space clears.
+- Shift-click is additive (adds; no-op if already selected); Cmd(Mac)/Ctrl(other)-click toggles; clicking empty space clears; Modifier+empty preserves.
 - The controlled `selection` prop is rendered correctly; gestures still fire the callback.
 - `onSelectionChange` fires exactly once per gesture (single or double).
 - Data refresh prunes stale refs and keeps valid ones.
-- Escape clears selection; Enter/Space selects the focused lane.
+- Keyboard: Escape clears + announces "Selection cleared"; plain Enter/Space replaces; Shift+Enter adds; Cmd/Ctrl+Enter toggles; each announced via aria-live (G4).
 - `yarn jest trace_chart` and `yarn typecheck` are green.

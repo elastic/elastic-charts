@@ -7,7 +7,9 @@
  */
 
 import type { NormalizedSpan } from '../data/types';
+import { waitingSegments } from '../data/self_time';
 import type { TraceGeometry, TraceStyle } from './types';
+import type { TraceSelection } from '../trace_api';
 import type { Size } from '../../../utils/dimensions';
 
 /**
@@ -31,6 +33,8 @@ export function buildGeometry(
   xScaleType: 'time' | 'linear',
   domain: { min: number; max: number },
   focusedLaneIndex: number | null = null,
+  selection: TraceSelection = [],
+  spanIdToLane: ReadonlyMap<string, number> = new Map(),
 ): TraceGeometry {
   // spans is already start-sorted by the pipeline cache (O(N log N) once per data change, not per frame).
   // domain is pre-computed by normalize() and passed in; no per-frame reduce needed.
@@ -54,6 +58,28 @@ export function buildGeometry(
       ? (_tMs: number) => plot.left
       : (tMs: number) => plot.left + ((tMs - focusDomain.min) / focusSpan) * plot.width;
 
+  // Resolve selection refs to lane indices, dropping dangling/out-of-range refs (defensive filter
+  // only — authoritative prune happens in componentDidUpdate per ADR 0011 Decision 4 / plan D3).
+  // Also dedup: drop segment entries geometrically subsumed by a same-span 'span' entry (D2).
+  const spanIdsWithSpanRef = new Set<string>();
+  for (const ref of selection) {
+    if (ref.region === 'span') spanIdsWithSpanRef.add(ref.spanId);
+  }
+
+  const resolvedSelection: TraceGeometry['resolvedSelection'] = selection
+    .map((ref) => {
+      const laneIndex = spanIdToLane.get(ref.spanId);
+      if (laneIndex === undefined) return null;
+      const span = spans[laneIndex];
+      if (!span) return null;
+      if (ref.region === 'active' && ref.segmentIndex >= span.activeSegments.length) return null;
+      if (ref.region === 'waiting' && ref.segmentIndex >= waitingSegments(span).length) return null;
+      // Dedup (D2): drop segment entries subsumed by a same-span 'span' ref.
+      if (ref.region !== 'span' && spanIdsWithSpanRef.has(ref.spanId)) return null;
+      return { laneIndex, region: ref.region, segmentIndex: ref.segmentIndex };
+    })
+    .filter((r): r is NonNullable<typeof r> => r !== null);
+
   return {
     spans,
     gutter,
@@ -65,6 +91,7 @@ export function buildGeometry(
     scrollOffset,
     xScaleType,
     focusedLaneIndex,
+    resolvedSelection,
     scale,
   };
 }

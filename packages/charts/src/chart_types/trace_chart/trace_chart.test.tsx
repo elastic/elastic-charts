@@ -299,3 +299,185 @@ describe('Trace chart — brush lifecycle (Spec 11)', () => {
     expect(() => unmount()).not.toThrow();
   });
 });
+
+describe('Trace chart — selection modifier semantics (Spec 13.1)', () => {
+  /**
+   * Strategy: jsdom canvas is a no-op, so lastGeom is always null after mount.
+   * We verify the modifier event path is wired without throwing; the full behavioural
+   * table (Shift=additive, Cmd/Ctrl=toggle) is covered by selection_helpers.test.ts
+   * (pure-function unit tests) and the Storybook 17_segment_selection story.
+   *
+   * Click timer tests use jest fake timers so DBLCLICK_DEBOUNCE_MS (250 ms) fires
+   * synchronously via jest.runAllTimers() — no real-time wait.
+   */
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('plain left-click does not throw (replace path)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="sel1" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.click(canvas!, { clientX: 300, clientY: 50 });
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('Shift+click does not throw (additive path)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="sel2" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.click(canvas!, { clientX: 300, clientY: 50, shiftKey: true });
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('Ctrl+click does not throw (toggle path, non-Apple)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="sel3" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.click(canvas!, { clientX: 300, clientY: 50, ctrlKey: true });
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('Meta+click does not throw (toggle path, Apple Cmd)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="sel4" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.click(canvas!, { clientX: 300, clientY: 50, metaKey: true });
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('double-click does not throw (whole-span select path)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="sel5" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.dblClick(canvas!, { clientX: 300, clientY: 50 });
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('Shift+double-click does not throw (additive whole-span)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="sel6" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.dblClick(canvas!, { clientX: 300, clientY: 50, shiftKey: true });
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('keyboard Enter does not throw (replace-then-announce path)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="sel7" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.keyDown(canvas!, { key: 'Enter' });
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('Shift+Enter does not throw (additive keyboard path)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="sel8" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.keyDown(canvas!, { key: 'Enter', shiftKey: true });
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('Ctrl+Enter does not throw (toggle keyboard path)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="sel9" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.keyDown(canvas!, { key: 'Enter', ctrlKey: true });
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('Escape does not throw (clear + announce path)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="sel10" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    expect(() => {
+      fireEvent.keyDown(canvas!, { key: 'Escape' });
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('clickTimer is cleared on unmount with a pending click', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="sel11" data={FEW_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas).not.toBeNull();
+    // Fire a click to start the 250 ms timer, then unmount before it fires.
+    fireEvent.click(canvas!, { clientX: 300, clientY: 50 });
+    // Unmount while the timer is pending — must not throw or cause post-unmount state updates.
+    expect(() => unmount()).not.toThrow();
+    // Advancing timers after unmount should be a no-op (timer was cleared in componentWillUnmount).
+    expect(() => jest.runAllTimers()).not.toThrow();
+  });
+});

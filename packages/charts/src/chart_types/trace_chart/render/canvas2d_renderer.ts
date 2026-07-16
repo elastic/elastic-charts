@@ -13,6 +13,7 @@ import { renderRect } from '../../../renderers/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../renderers/canvas/primitives/text';
 import type { TextFont } from '../../../renderers/canvas/primitives/text';
 import type { Fill, Stroke } from '../../../geoms/types';
+import { waitingSegments } from '../data/self_time';
 import { drawTimeBar } from './time_bar';
 import type { HoverRegion, PickResult, TraceGeometry, TraceRenderer, TraceStyle } from './types';
 
@@ -153,6 +154,57 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
         renderText(ctx, { x: gutter.left + 4, y: midY }, lines[0], gutterFont);
       }
     }
+
+    // --- Selection-highlight pass (after all lane content) ---
+    // Stroke-only outline per resolved selection entry; no fill so ADR 0006 colorBy fills are not distorted.
+    const { resolvedSelection } = geom;
+    if (resolvedSelection.length > 0) {
+      const NO_FILL: Fill = { color: [0, 0, 0, 0] as [number, number, number, number] };
+      const selectionStroke: Stroke = {
+        color: colorToRgba(style.selectedSegmentStroke),
+        width: style.selectedSegmentStrokeWidth,
+      };
+      for (const entry of resolvedSelection) {
+        const { laneIndex, region, segmentIndex } = entry;
+        if (laneIndex < firstLane || laneIndex > lastLane) continue;
+        const hlSpan = spans[laneIndex];
+        if (!hlSpan) continue;
+        const entryLaneTop = plot.top + laneIndex * laneHeight - scrollOffset;
+
+        let hlX1: number;
+        let hlX2: number;
+        if (region === 'active') {
+          const seg = hlSpan.activeSegments[segmentIndex];
+          if (!seg) continue;
+          hlX1 = scale(seg.start);
+          hlX2 = scale(seg.end);
+        } else if (region === 'waiting') {
+          const gaps = waitingSegments(hlSpan);
+          const gap = gaps[segmentIndex];
+          if (!gap) continue;
+          hlX1 = scale(gap.start);
+          hlX2 = scale(gap.end);
+        } else {
+          // region === 'span'
+          hlX1 = scale(hlSpan.start);
+          hlX2 = scale(hlSpan.end);
+        }
+
+        // Cull entirely off-screen, then clamp to plot bounds.
+        if (hlX2 < plot.left || hlX1 > plotRight) continue;
+        const hlClampedX = Math.max(plot.left, hlX1);
+        const hlClampedW = Math.min(plotRight, hlX2) - hlClampedX;
+        if (hlClampedW <= 0) continue;
+
+        renderRect(
+          ctx,
+          { x: hlClampedX, y: entryLaneTop + LANE_PADDING, width: hlClampedW, height: laneHeight - 2 * LANE_PADDING },
+          NO_FILL,
+          selectionStroke,
+          false,
+        );
+      }
+    }
   });
 }
 
@@ -205,6 +257,10 @@ export function pickRegion(x: number, y: number, geom: TraceGeometry): PickResul
       region = 'active';
     } else {
       region = 'waiting';
+      // Set segmentIndex to the 0-based index into waitingSegments(span) that contains t.
+      // -1 when no waiting segment contains t (degenerate data). Backward-compatible: the
+      // field was already -1 for non-active hits before this extension (ADR 0011 Consequence).
+      segmentIndex = waitingSegments(span).findIndex((gap) => t >= gap.start && t <= gap.end);
     }
   }
 

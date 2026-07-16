@@ -36,33 +36,44 @@ export function resolveActive(spans: NormalizedSpan[]): NormalizedSpan[] {
     if (span.activeSegments.length > 0) return span;
 
     const children = childrenByParentId.get(span.id) ?? [];
-    const activeSegments = selfTimeSegments(span.start, span.end, children);
+    const activeSegments = gapSegments(span.start, span.end, children);
     return { ...span, activeSegments };
   });
 }
 
 /**
- * Derives self-time segments for a span given its direct children. Clamps each child to the
- * parent's extent, merges overlapping children, then subtracts the merged union from
- * [parentStart, parentEnd]. O(n log n) on the number of children.
+ * Returns the waiting (non-active) segments of a span: the complement of `span.activeSegments`
+ * within `[span.start, span.end]`. Used by `pickRegion` and the selection-highlight pass to
+ * address waiting gaps by index (symmetric with active segments). See ADR 0011 Decision 5.
+ * @public
  */
-function selfTimeSegments(parentStart: number, parentEnd: number, children: NormalizedSpan[]): Segment[] {
+export function waitingSegments(span: NormalizedSpan): Segment[] {
+  return gapSegments(span.start, span.end, span.activeSegments);
+}
+
+/**
+ * Subtracts the union of `intervals` from `[parentStart, parentEnd]`, returning the gaps.
+ * Clamps each interval to the parent extent, merges overlapping intervals, then yields the
+ * uncovered sub-intervals. O(n log n). Used by both `resolveActive` (self-time) and
+ * `waitingSegments` (waiting gaps).
+ */
+function gapSegments(parentStart: number, parentEnd: number, intervals: readonly { start: number; end: number }[]): Segment[] {
   if (parentStart >= parentEnd) return []; // zero- or negative-duration span: nothing to draw
 
-  if (children.length === 0) {
+  if (intervals.length === 0) {
     return [{ start: parentStart, end: parentEnd }];
   }
 
-  // Clamp each child to parent's [start, end] and discard zero-width after clamping.
+  // Clamp each interval to parent's [start, end] and discard zero-width after clamping.
   const clamped: Segment[] = [];
-  for (const child of children) {
-    const start = Math.max(child.start, parentStart);
-    const end = Math.min(child.end, parentEnd);
+  for (const interval of intervals) {
+    const start = Math.max(interval.start, parentStart);
+    const end = Math.min(interval.end, parentEnd);
     if (start < end) clamped.push({ start, end });
   }
 
   if (clamped.length === 0) {
-    // All children were outside the parent (clock skew / bad data).
+    // All intervals were outside the parent (clock skew / bad data).
     return [{ start: parentStart, end: parentEnd }];
   }
 
@@ -82,15 +93,11 @@ function selfTimeSegments(parentStart: number, parentEnd: number, children: Norm
   // Subtract the merged union from [parentStart, parentEnd].
   const result: Segment[] = [];
   let cursor = parentStart;
-  for (const covered of merged) {
-    if (cursor < covered.start) {
-      result.push({ start: cursor, end: covered.start });
-    }
-    cursor = Math.max(cursor, covered.end);
+  for (const seg of merged) {
+    if (cursor < seg.start) result.push({ start: cursor, end: seg.start });
+    cursor = Math.max(cursor, seg.end);
   }
-  if (cursor < parentEnd) {
-    result.push({ start: cursor, end: parentEnd });
-  }
+  if (cursor < parentEnd) result.push({ start: cursor, end: parentEnd });
 
   return result;
 }

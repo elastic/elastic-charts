@@ -484,6 +484,8 @@ export const LIGHT_THEME: Theme = {
     timeBarLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: LIGHT_TEXT_COLORS.textSubdued },
     gridLineColor: LIGHT_BORDER_COLORS.borderBaseSubdued,
     focusedLaneBackground: LIGHT_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
+    selectedSegmentStroke: LIGHT_BACKGROUND_COLORS.backgroundFilledAccent,
+    selectedSegmentStrokeWidth: 2,
   },
   // TODO map colors to base color mappings
   flamegraph: {

@@ -13,20 +13,21 @@ import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
 import { normalize } from './data/normalize';
-import { resolveActive } from './data/self_time';
+import { resolveActive, waitingSegments } from './data/self_time';
 import type { NormalizedSpan } from './data/types';
 import { canvas2dRenderer, pickRegion } from './render/canvas2d_renderer';
 import { buildGeometry } from './render/geometry';
 import type { ViewKey } from './render/interaction';
 import { computeMaxScroll, computeScrollTarget, computeZoomMax, domainToZoomPan, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, pixelRangeToDomain } from './render/interaction';
-import { buildTraceEvent, buildTraceTooltipInfo, formatMs } from './render/tooltip';
+import { buildTraceEvent, buildTraceSelectionDetail, buildTraceTooltipInfo, formatMs } from './render/tooltip';
 import { ScreenReaderTraceTable } from './render/screen_reader_trace_table';
 import type { HoverRegion, PickResult, TraceGeometry } from './render/types';
 import { ScreenReaderSummary } from '../../components/accessibility';
 import { buildTraceStyle } from './theme';
 import { colorToRgba } from '../../common/color_library_wrappers';
 import { clamp } from '../../utils/common';
-import type { TraceSpec } from './trace_api';
+import type { TraceSegmentRef, TraceSelection, TraceSpec } from './trace_api';
+import { applySelection, selectionModeFromEvent, selectionSetEqual } from './selection_helpers';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import type { SettingsSpec } from '../../specs';
@@ -63,6 +64,9 @@ import { zoomSafePointerX, zoomSafePointerY } from '../timeslip/utils/dom';
  * Same order of magnitude as Timeslip's wheel handler.
  */
 const WHEEL_ZOOM_VELOCITY = 3;
+
+/** Debounce window for single-vs-double click disambiguation (ADR 0011 Decision 6). */
+const DBLCLICK_DEBOUNCE_MS = 250;
 
 /**
  * Keyboard pan fraction: one ←/→ keypress pans the visible time window by this fraction of its
@@ -215,6 +219,16 @@ class TraceComponent extends React.Component<TraceProps> {
   private handleFocus: (() => void) | null = null;
   private handleBlur: (() => void) | null = null;
 
+  // Selection state (Spec 13 / ADR 0011). All selection is self-managed instance state (no setState,
+  // no redux). The controlled prop path is: getEffectiveSelection() reads prop when present.
+  private selection: TraceSelection = [];
+  private clickTimer: ReturnType<typeof setTimeout> | null = null;
+  private lastFiredSelection: TraceSelection = [];
+  // Memoized spanId→laneIndex Map; rebuilt when the pipeline spans reference changes. Passed into
+  // buildGeometry each frame to avoid rebuilding the Map per rAF frame (plan D4 / /review-claudio).
+  private spanIdToLane: Map<string, number> = new Map();
+  private handleDblClick: ((e: MouseEvent) => void) | null = null;
+
   // -------------------------------------------------------------------------
   // Lifecycle
   // -------------------------------------------------------------------------
@@ -289,6 +303,11 @@ class TraceComponent extends React.Component<TraceProps> {
       window.cancelAnimationFrame(this.rafId);
       this.rafId = null;
     }
+    // Cancel pending single-click selection commit — prevents setState after unmount.
+    if (this.clickTimer !== null) {
+      clearTimeout(this.clickTimer);
+      this.clickTimer = null;
+    }
     this.teardownEventHandlers();
     this.props.containerRef().current?.removeEventListener('wheel', this.preventScroll);
   }
@@ -313,6 +332,60 @@ class TraceComponent extends React.Component<TraceProps> {
     // Only call unpinTooltip when already pinned to avoid an unnecessary setState.
     if (this.tooltipPinned && this.props.traceSpec !== prevProps.traceSpec) {
       this.unpinTooltip();
+    }
+
+    // Selection lifecycle on data/view changes (ADR 0011 Decision 4 / plan D3).
+    if (spec) {
+      const viewKeyChanged = hasViewKeyChanged(
+        this.viewKey && prevProps.traceSpec
+          ? { xScaleType: prevProps.traceSpec.xScaleType, format: 'simple', traceId: prevProps.traceSpec.traceId }
+          : null,
+        { xScaleType: spec.xScaleType, format: 'simple', traceId: spec.traceId },
+      );
+      if (viewKeyChanged) {
+        // View-domain semantics changed — stale selection (ADR 0011 mirrors pin reset).
+        // Fire onSelectionChange([]) only if selection was non-empty.
+        const current = this.getEffectiveSelection();
+        if (current.length > 0) {
+          this.selection = [];
+          this.fireSelectionChange([]);
+          this.scheduleRender?.();
+        }
+      } else if (spec.data !== prevProps.traceSpec?.data) {
+        // Data changed: prune stale refs (authoritative — plan D3).
+        const current = this.getEffectiveSelection();
+        if (current.length > 0) {
+          const { spans } = this.getPipeline(spec);
+          const pruned = current.filter((ref) => {
+            const laneIndex = this.spanIdToLane.get(ref.spanId);
+            if (laneIndex === undefined) return false;
+            const s = spans[laneIndex];
+            if (!s) return false;
+            if (ref.region === 'active' && ref.segmentIndex >= s.activeSegments.length) return false;
+            // waitingSegments is cheap (inline gap loop) so computing it once to validate is fine.
+            if (ref.region === 'waiting' && ref.segmentIndex >= waitingSegments(s).length) return false;
+            return true;
+          });
+          if (pruned.length !== current.length) {
+            // In controlled mode: fire only, don't write the field (parent owns the prop).
+            if (this.props.traceSpec?.selection === undefined) {
+              this.selection = pruned;
+            }
+            this.fireSelectionChange(pruned);
+            this.scheduleRender?.();
+          }
+        }
+      }
+
+      // Echo-guard: if controlled selection prop changed and is set-equal to lastFired, no-op.
+      if (
+        spec.selection !== undefined &&
+        spec.selection !== prevProps.traceSpec?.selection &&
+        !selectionSetEqual(spec.selection, this.lastFiredSelection)
+      ) {
+        this.lastFiredSelection = spec.selection;
+        this.scheduleRender?.();
+      }
     }
 
     // Redraw only when a canvas-affecting prop changed. Hover setState()s don't touch these three
@@ -381,6 +454,8 @@ class TraceComponent extends React.Component<TraceProps> {
       traceSpec.xScaleType,
       domain,
       this.focusedLaneIndex,
+      this.getEffectiveSelection(),
+      this.spanIdToLane,
     );
 
     // DPR scaling: renderer is dpr-agnostic, caller sets the transform each frame.
@@ -408,6 +483,39 @@ class TraceComponent extends React.Component<TraceProps> {
       this.styleCache = { theme, style: buildTraceStyle(theme) };
     }
     return this.styleCache.style;
+  }
+
+  // -------------------------------------------------------------------------
+  // Selection helpers (ADR 0011)
+  // -------------------------------------------------------------------------
+
+  /** Returns the controlled prop when present (perform-and-fire model), else the local field. */
+  private getEffectiveSelection(): TraceSelection {
+    return this.props.traceSpec?.selection ?? this.selection;
+  }
+
+  /**
+   * Fires `onSelectionChange` with the new selection and its rich details, guarded by the
+   * order-insensitive set-equality echo guard (plan D1 / ADR 0011 Decision 2). Updates
+   * `lastFiredSelection` **before** invoking the callback so a re-entrant controlled-prop update
+   * is recognized as an echo and does not trigger a redundant redraw.
+   */
+  private fireSelectionChange(next: TraceSelection) {
+    if (selectionSetEqual(next, this.lastFiredSelection)) return;
+    this.lastFiredSelection = next;
+    const spec = this.props.traceSpec;
+    if (!spec?.onSelectionChange) return;
+    const { spans, domain } = this.getPipeline(spec);
+    const details = next
+      .map((ref) => {
+        const laneIndex = this.spanIdToLane.get(ref.spanId);
+        if (laneIndex === undefined) return null;
+        const span = spans[laneIndex];
+        if (!span) return null;
+        return buildTraceSelectionDetail(span, domain.min, ref.region, ref.segmentIndex);
+      })
+      .filter((d): d is NonNullable<typeof d> => d !== null);
+    spec.onSelectionChange(next, details);
   }
 
   // -------------------------------------------------------------------------
@@ -444,6 +552,8 @@ class TraceComponent extends React.Component<TraceProps> {
       vizColors,
       result,
     };
+    // Rebuild spanIdToLane map on pipeline invalidation (plan D4 — not rebuilt per rAF frame).
+    this.spanIdToLane = new Map(spans.map((s, i) => [s.id, i]));
     return result;
   }
 
@@ -583,6 +693,7 @@ class TraceComponent extends React.Component<TraceProps> {
         this.brushEnd = this.brushStart; // zero-width seed so mouseup no-ops a plain click
         this.flywheelActive = false; // stop any coast before the brush gesture
         this.dragMoved = false;
+        if (this.clickTimer !== null) { clearTimeout(this.clickTimer); this.clickTimer = null; }
         if (this.lastGeom) {
           const { plot } = this.lastGeom;
           this.brushOverlay = { x: this.brushStart, width: 0, top: plot.top, height: plot.height };
@@ -592,6 +703,11 @@ class TraceComponent extends React.Component<TraceProps> {
         return;
       }
       this.dragMoved = false;
+      // Cancel any pending single-click selection commit — a new gesture sequence starts here.
+      if (this.clickTimer !== null) {
+        clearTimeout(this.clickTimer);
+        this.clickTimer = null;
+      }
       this.easeZoom = false;
       this.flywheelActive = false;
       // Clear stale tooltip during drag — mirrors Flame's smartDraw hover suppression.
@@ -683,11 +799,88 @@ class TraceComponent extends React.Component<TraceProps> {
       if (this.tooltipPinned) return;
       if (this.dragMoved) return;
       if (!this.lastGeom || !this.props.traceSpec) return;
+
       const result = pickRegion(zoomSafePointerX(e), zoomSafePointerY(e), this.lastGeom);
+
+      // onElementClick fires immediately on every raw click (Spec 7), unchanged.
       if (result && result.index >= 0) {
         const span = this.lastGeom.spans[result.index];
         if (span) this.props.onElementClick([buildTraceEvent(span)]);
       }
+
+      // Schedule single-select commit (~250 ms) so a double-click can cancel it first (ADR 0011 D6).
+      // The timer is also cleared in mousedown, so a rapid click-drag never commits a stale selection.
+      if (this.clickTimer !== null) {
+        clearTimeout(this.clickTimer);
+        this.clickTimer = null;
+      }
+      const geomSnapshot = this.lastGeom;
+      // Capture mode at click time; timer fires ~250 ms later after event is gone.
+      const mode = selectionModeFromEvent(e);
+
+      this.clickTimer = setTimeout(() => {
+        this.clickTimer = null;
+        const isHit = result && result.index >= 0 && result.region !== 'empty';
+        const current = this.getEffectiveSelection();
+        let next: TraceSelection;
+        if (!isHit || !result) {
+          // Empty/miss: plain click clears; modifier+miss preserves (native file-manager behaviour, G).
+          next = mode === 'replace' ? [] : current;
+        } else {
+          const span = geomSnapshot.spans[result.index];
+          if (!span) { next = mode === 'replace' ? [] : current; }
+          else {
+            const ref: TraceSegmentRef = {
+              spanId: span.id,
+              region: result.region as 'active' | 'waiting',
+              segmentIndex: result.segmentIndex,
+            };
+            next = applySelection(current, ref, mode);
+          }
+        }
+        this.selection = next;
+        this.fireSelectionChange(next);
+        this.scheduleRender?.();
+      }, DBLCLICK_DEBOUNCE_MS);
+    };
+
+    // Double-click: select whole span. Cancels the pending single-click timer.
+    this.handleDblClick = (e: MouseEvent) => {
+      if (this.dragMoved) return;
+      if (!this.lastGeom || !this.props.traceSpec) return;
+
+      // Cancel the first-click timer — double-click supersedes it.
+      if (this.clickTimer !== null) {
+        clearTimeout(this.clickTimer);
+        this.clickTimer = null;
+      }
+
+      const result = pickRegion(zoomSafePointerX(e), zoomSafePointerY(e), this.lastGeom);
+      if (!result || result.index < 0) return;
+      const span = this.lastGeom.spans[result.index];
+      if (!span) return;
+
+      const ref: TraceSegmentRef = { spanId: span.id, region: 'span', segmentIndex: -1 };
+      const current = this.getEffectiveSelection();
+      const next = applySelection(current, ref, selectionModeFromEvent(e));
+
+      // Dev-only: warn when a gesture produces a same-span span+segment overlap (ADR 0011 D2).
+      if (process.env.NODE_ENV !== 'production') {
+        const hasSegmentRefForSameSpan = next.some(
+          (r) => r.spanId === span.id && r.region !== 'span',
+        );
+        if (hasSegmentRefForSameSpan) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            `[elastic-charts/trace] Selection contains both a span ref and a segment ref for spanId="${span.id}". ` +
+            `The segment outline will be suppressed (deduped) in the highlight pass.`,
+          );
+        }
+      }
+
+      this.selection = next;
+      this.fireSelectionChange(next);
+      this.scheduleRender?.();
     };
 
     this.handleCanvasLeave = () => {
@@ -826,12 +1019,49 @@ class TraceComponent extends React.Component<TraceProps> {
         e.preventDefault();
         if (this.focusedLaneIndex !== null) {
           const span = geom.spans[this.focusedLaneIndex];
-          if (span) this.props.onElementClick([buildTraceEvent(span)]);
+          if (span) {
+            this.props.onElementClick([buildTraceEvent(span)]);
+            // Keyboard: whole-span selection — plain = replace (aligns spec-13 line 102, G3).
+            // Shift = additive, Cmd(Mac)/Ctrl(other) = toggle (G2 normalisation).
+            // No clickTimer needed — keyboard has no double-click ambiguity.
+            const ref: TraceSegmentRef = { spanId: span.id, region: 'span', segmentIndex: -1 };
+            const current = this.getEffectiveSelection();
+            const mode = selectionModeFromEvent(e);
+            const next = applySelection(current, ref, mode);
+            this.selection = next;
+            this.fireSelectionChange(next);
+            // Announce keyboard-initiated selection via aria-live (G4). Mouse stays silent.
+            if (this.ariaLiveRef.current) {
+              let utterance: string;
+              if (next.length > current.length) {
+                utterance = next.length === 1
+                  ? `Selected ${span.name}`
+                  : `${span.name} added, ${next.length} selected`;
+              } else if (next.length < current.length) {
+                utterance = `${span.name} removed, ${next.length} selected`;
+              } else {
+                // additive no-op (Shift on already-selected ref)
+                utterance = `${span.name} already selected`;
+              }
+              this.ariaLiveRef.current.textContent = utterance;
+            }
+            this.scheduleRender?.();
+          }
         }
       } else if (e.key === 'Escape') {
         e.preventDefault();
         this.focusedLaneIndex = null;
         this.unpinTooltip(); // idempotent — existing window keyup unpin (Spec 10) is a no-op after this
+        // Clear selection on Escape (ADR 0011 / plan step 8).
+        const current = this.getEffectiveSelection();
+        if (current.length > 0) {
+          this.selection = [];
+          this.fireSelectionChange([]);
+          // Announce keyboard-initiated selection clear via aria-live (G4).
+          if (this.ariaLiveRef.current) {
+            this.ariaLiveRef.current.textContent = 'Selection cleared';
+          }
+        }
         this.scheduleRender?.();
       }
     };
@@ -859,6 +1089,7 @@ class TraceComponent extends React.Component<TraceProps> {
     canvas.addEventListener('mousedown', this.handleMouseDown);
     canvas.addEventListener('mousemove', this.handleHoverMove);
     canvas.addEventListener('click', this.handleCanvasClick);
+    canvas.addEventListener('dblclick', this.handleDblClick);
     canvas.addEventListener('mouseleave', this.handleCanvasLeave);
     canvas.addEventListener('contextmenu', this.handleContextMenu);
     canvas.addEventListener('keydown', this.handleKeyDown);
@@ -878,6 +1109,7 @@ class TraceComponent extends React.Component<TraceProps> {
     if (this.handleMouseDown) canvas.removeEventListener('mousedown', this.handleMouseDown);
     if (this.handleHoverMove) canvas.removeEventListener('mousemove', this.handleHoverMove);
     if (this.handleCanvasClick) canvas.removeEventListener('click', this.handleCanvasClick);
+    if (this.handleDblClick) canvas.removeEventListener('dblclick', this.handleDblClick);
     if (this.handleCanvasLeave) canvas.removeEventListener('mouseleave', this.handleCanvasLeave);
     if (this.handleContextMenu) canvas.removeEventListener('contextmenu', this.handleContextMenu);
     if (this.handleKeyDown) canvas.removeEventListener('keydown', this.handleKeyDown);

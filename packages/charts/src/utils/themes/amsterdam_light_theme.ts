@@ -515,5 +515,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     timeBarLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: '#646a77' },
     gridLineColor: '#eaedf3',
     focusedLaneBackground: 'rgba(96,146,192,0.15)',
+    selectedSegmentStroke: '#EE72A6',
+    selectedSegmentStrokeWidth: 2,
   },
 };

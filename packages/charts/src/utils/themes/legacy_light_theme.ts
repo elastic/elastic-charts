@@ -496,5 +496,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
     timeBarLabel: { fontFamily: 'sans-serif', fontSize: 10, color: '#777' },
     gridLineColor: '#eaeaea',
     focusedLaneBackground: 'rgba(96,146,192,0.15)',
+    selectedSegmentStroke: '#EE72A6',
+    selectedSegmentStrokeWidth: 2,
   },
 };
