@@ -366,6 +366,28 @@ export function getMetricTextPartDimensions(
   };
 }
 
+/**
+ * Computes the minimum height required to render a metric tile without clipping
+ * @internal
+ */
+export function getMinimumMetricHeight(style: MetricStyle): number {
+  const ranges = getHeightBpRanges(style.spacing);
+  const smallestBreakpoint = ranges[0]?.[2] ?? 's';
+  const sizes = getHeightBasedFontSizes(smallestBreakpoint, style);
+
+  const valueFontSize = style.valueFontSize === 'fit' ? style.minValueFontSize : sizes.valueFontSize;
+
+  const { panelPadding } =
+    style.spacing === 'large'
+      ? getLargeMetricSpacingLayout(smallestBreakpoint)
+      : getSmallMetricSpacingLayout(style.valuePosition);
+
+  const valueHeight = valueFontSize * LINE_HEIGHT;
+  const titleHeight = sizes.titleFontSize * LINE_HEIGHT;
+
+  return Math.ceil(valueHeight + titleHeight + panelPadding);
+}
+
 function getHeightBasedFontSizes(
   size: BreakPoint,
   style: MetricStyle,

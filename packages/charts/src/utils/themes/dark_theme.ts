@@ -465,7 +465,7 @@ export const DARK_THEME: Theme = {
     barBackground: DARK_BACKGROUND_COLORS.backgroundBaseDisabled,
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
-    minHeight: 64,
+    minHeight: 80,
     titleWeight: 500,
   },
   bulletGraph: DARK_THEME_BULLET_STYLE,
