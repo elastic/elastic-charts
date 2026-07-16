@@ -14,6 +14,9 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0009 — Brush rubber-band is a CSS `<div>`, not a canvas draw](./0009-brush-overlay-css-div.md)
 - [0010 — Linear-scale nanosecond precision (supersedes ADR 0004 D3 for linear)](./0010-linear-scale-nanosecond-precision.md)
 - [0011 — Segment selection model: thin refs in, rich details out; controlled perform-and-fire](./0011-segment-selection-model.md)
+- [0012 — `role="application"` on the `<canvas>` element only; SR content as browsable siblings](./0012-role-application-canvas-only-sr-siblings.md)
+- [0013 — Screen-reader span data re-derived in a second redux selector](./0013-sr-data-second-redux-selector.md)
+- [0014 — Keyboard focus badge is a DOM sibling `<div>`, not a canvas draw](./0014-keyboard-focus-badge-dom-sibling.md)
 
 ## Spec plans
 
