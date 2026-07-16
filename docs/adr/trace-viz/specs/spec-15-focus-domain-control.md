@@ -1,4 +1,4 @@
-# Spec 14 — Focus-domain control + overview composition
+# Spec 15 — Focus-domain control + overview composition
 
 **Goal:** let an external chart drive and reflect the detail Trace's visible time window — the
 Chrome DevTools Performance / stock-market composition pattern — via a controlled `focusDomain` prop
@@ -58,11 +58,11 @@ within epsilon, treat it as an echo of our own emission and skip re-arming the t
    epsilon, call `domainToZoomPan` and start the loop.
 4. At the RAF-loop stop point (after the keep-going check returns false): compute settled domain, apply
    echo-suppression logic, fire `onFocusDomainChange` if applicable.
-5. Author `15_overview_sync.story.tsx`.
+5. Author `19_overview_sync.story.tsx`.
 
 ## Storybook
 
-`15_overview_sync.story.tsx` — an XY area chart ("span density over time") rendered above a `<Trace>`
+`19_overview_sync.story.tsx` — an XY area chart ("span density over time") rendered above a `<Trace>`
 detail panel:
 - Overview `onBrushEnd` → updates `focusDomain` state → flows into `<Trace focusDomain={…}>`.
 - `<Trace onFocusDomainChange={…}>` → updates a brush annotation on the overview to mirror the

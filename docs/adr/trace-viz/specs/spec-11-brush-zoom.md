@@ -7,7 +7,7 @@ the selected range. A `dragMode` prop inverts the default gesture so plain drag 
 **Depends on:** [Spec 6](./spec-6-connected-component.md) — the RAF loop, `zoomPan`/`tween`, and the
 existing drag-pan gesture are in place. [ADR 0009](../0009-brush-overlay-css-div.md) records the CSS
 `<div>` rendering decision. The `domainToZoomPan` helper authored here is also consumed by
-[Spec 14](./spec-14-focus-domain-control.md).
+[Spec 15](./spec-15-focus-domain-control.md).
 
 ## Files
 

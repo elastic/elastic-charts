@@ -114,7 +114,7 @@ spec (smooth pan with kinetic momentum) requires `doPanFromPosition`.
 
 ## Decision 3: Zoom-depth floor at the finest raster (1 ms), clamped locally in the wheel handler
 
-> **Amended (Spec 19 / ADR 0010):** The 1 ms floor described below applies only to the `'time'`
+> **Amended (Spec 18 / ADR 0010):** The 1 ms floor described below applies only to the `'time'`
 > x-scale type. For `'linear'` scale, the floor was lowered to **1 ns** (`1e-6 ms`). The original
 > objection (sub-ms ticks all render the same integer-ms label) is void once the tick formatter
 > switches units (µs/ns), keeping labels distinct. See [ADR 0010](./0010-linear-scale-nanosecond-precision.md).

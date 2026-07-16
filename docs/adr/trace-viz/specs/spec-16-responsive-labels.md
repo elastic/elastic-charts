@@ -1,4 +1,4 @@
-# Spec 15 — Responsive layout & relocatable label panel
+# Spec 16 — Responsive layout & relocatable label panel
 
 **Goal:** make the trace chart usable on narrow widths (mobile / side-panel embeds ~320px) by
 supporting three label-rendering modes — `gutter` (today's left panel), `inline` (Chrome/Kibana
@@ -25,7 +25,7 @@ spec adds `labelPosition` only.
 - `packages/charts/src/chart_types/trace_chart/theme.ts` — ensure `buildTraceStyle` propagates
   `labelPosition` from `theme.trace` (it already returns `theme.trace` directly, so no code change —
   just ensure the default is set in the default theme object).
-- `storybook/stories/trace/16_responsive.story.tsx` — knobs for `labelPosition` and chart width.
+- `storybook/stories/trace/20_responsive.story.tsx` — knobs for `labelPosition` and chart width.
 
 ## Contract
 
@@ -61,12 +61,12 @@ occupies the full canvas width. Guard the geometry calculation so `plotWidth = c
 3. Guard `gutterWidth = 0` in `render/geometry.ts`.
 4. Add inline/none branches to the label-drawing pass in `canvas2d_renderer.ts`.
 5. Implement the right-edge flip for inline labels.
-6. Author `16_responsive.story.tsx` with `labelPosition` and width knobs; include mobile (~320px)
+6. Author `20_responsive.story.tsx` with `labelPosition` and width knobs; include mobile (~320px)
    and side-panel (~480px) presets.
 
 ## Storybook
 
-`16_responsive.story.tsx`:
+`20_responsive.story.tsx`:
 - A `labelPosition` knob (`gutter` / `inline` / `none`).
 - A chart `width` knob with presets: mobile (320px), side-panel (480px), full (800px).
 - Demonstrates that at 320px with `labelPosition='inline'` and `gutterWidth=0`, the timeline remains

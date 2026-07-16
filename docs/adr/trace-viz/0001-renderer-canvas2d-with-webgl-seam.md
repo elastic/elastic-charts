@@ -17,7 +17,7 @@ helper, no new dependency — without changing geometry, interaction, or the pub
 - **Canvas2D with no seam** — rejected: cheapest short-term, but would require a rewrite of the
   renderer's call sites if WebGL becomes necessary.
 
-## Re-evaluation (Spec 19, 2026)
+## Re-evaluation (Spec 18, 2026)
 
 A second performance assessment was performed when nanosecond precision and raw rendering throughput
 were requested. Findings confirm the original decision holds:

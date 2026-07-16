@@ -1,4 +1,4 @@
-# Spec 13 — Empty-state distinction
+# Spec 17 — Empty-state distinction
 
 **Goal:** render a distinct centered message on the canvas when the trace chart has no lanes to
 render. Two cases require different messages:
@@ -60,7 +60,7 @@ time bar remains visible.
 
 ## Storybook
 
-`storybook/stories/trace/17_empty_state.story.tsx`:
+`storybook/stories/trace/21_empty_state.story.tsx`:
 - Two side-by-side panels (or knob toggle): one with `data={[]}` showing `"No data"`, one with
   non-empty data and a mismatched `traceId` showing `No spans found for trace "…"`.
 - Demonstrates that the time bar is still visible in both cases.

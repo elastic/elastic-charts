@@ -1,4 +1,4 @@
-# Spec 12 — Segment selection
+# Spec 13 — Segment selection
 
 **Goal:** left-click an active or waiting segment to select and highlight it; double-click a span to
 select all its segments; Shift/Ctrl/Cmd-click to accumulate a multi-selection; click empty canvas
@@ -9,8 +9,8 @@ controlled `selection` prop (thin identity refs). See [ADR 0011](../0011-segment
 - [Spec 7](./spec-7-tooltip-events.md) — `pickRegion` and `onElement*` callbacks in place.
 - [Spec 10](./spec-10-pinnable-tooltip.md) — pin lives on right-click; left-click is free for
   selection.
-- [Spec 16](./spec-16-accessibility.md) — lane-highlight render pass (`focusedLaneBackground`) exists;
-  keyboard `Enter`/`Space` and `Escape` handling is wired. Spec 12 extends both.
+- [Spec 12](./spec-12-accessibility.md) — lane-highlight render pass (`focusedLaneBackground`) exists;
+  keyboard `Enter`/`Space` and `Escape` handling is wired. Spec 13 extends both.
 
 ## Files
 
@@ -42,10 +42,10 @@ controlled `selection` prop (thin identity refs). See [ADR 0011](../0011-segment
   handler; empty-click clears; build `TraceSelectionDetail[]` and fire `onSelectionChange`; prune
   stale refs (keep valid) in `componentDidUpdate` when `traceSpec.data` changes; pass selection into
   `buildGeometry`; schedule a canvas redraw on selection change; extend Escape to also clear
-  selection; extend Spec 16 `Enter`/`Space` handler to make a whole-span selection.
+  selection; extend Spec 12 `Enter`/`Space` handler to make a whole-span selection.
 - `packages/charts/src/utils/themes/theme.ts` and the six theme files — add
   `selectedSegmentStroke` and `selectedSegmentStrokeWidth` to the `trace:` block.
-- `storybook/stories/trace/16_segment_selection.story.tsx` — new story; register in
+- `storybook/stories/trace/17_segment_selection.story.tsx` — new story; register in
   `trace.stories.tsx`.
 
 ## Contract
@@ -99,8 +99,8 @@ export interface TraceSelectionDetail {
 | Left-click on empty region / gutter / outside lanes | clear selection (`[]`) |
 | Double-click on span (any region) | replace with whole-span ref `{ spanId, region:'span', segmentIndex:-1 }`; modifier toggles into set |
 | Modifier + double-click | toggle whole-span ref into set |
-| Enter / Space (Spec 16 keyboard nav) | same as double-click on the focused lane (whole-span selection) |
-| Escape | clear selection (also clears focused lane + unpin, per Spec 16/10) |
+| Enter / Space (Spec 12 keyboard nav) | same as double-click on the focused lane (whole-span selection) |
+| Escape | clear selection (also clears focused lane + unpin, per Spec 12/10) |
 
 **Debounce:** a `clickTimer` (≤ 250 ms) defers the single-segment selection commit so that the second
 click of a double-click cancels the pending single-selection and replaces it with the whole-span
@@ -216,11 +216,11 @@ export function buildGeometry(
    - Cancel `clickTimer` in `componentWillUnmount`.
    - Pass selection into `buildGeometry`; redraw canvas on change.
    - Extend `Escape` and `Enter`/`Space`.
-10. Author `16_segment_selection.story.tsx`; register in `trace.stories.tsx`.
+10. Author `17_segment_selection.story.tsx`; register in `trace.stories.tsx`.
 
 ## Storybook
 
-`storybook/stories/trace/16_segment_selection.story.tsx`:
+`storybook/stories/trace/17_segment_selection.story.tsx`:
 
 - Demo 1 (uncontrolled): click active segment → highlight; click waiting gap → highlight; Shift-click
   another → multi-select outline; double-click span → whole-span outline; click empty → clear.
