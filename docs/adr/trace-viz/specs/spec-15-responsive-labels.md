@@ -1,4 +1,4 @@
-# Spec 13 — Responsive layout & relocatable label panel
+# Spec 15 — Responsive layout & relocatable label panel
 
 **Goal:** make the trace chart usable on narrow widths (mobile / side-panel embeds ~320px) by
 supporting three label-rendering modes — `gutter` (today's left panel), `inline` (Chrome/Kibana
@@ -48,7 +48,7 @@ embeds). Labels are drawn in the plot area itself:
   no halo/stroke by default (add only if a review pass shows readability is inadequate).
 
 **None mode (`'none'`):** no label drawing. Labels remain accessible via tooltip and the screen-reader
-table (Spec 14).
+table (Spec 16).
 
 **`gutterWidth = 0` guard:** when `gutterWidth = 0` (common with `'inline'` or `'none'`), the plot
 occupies the full canvas width. Guard the geometry calculation so `plotWidth = canvasWidth` (not

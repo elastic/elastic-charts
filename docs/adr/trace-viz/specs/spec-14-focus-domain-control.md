@@ -1,4 +1,4 @@
-# Spec 12 — Focus-domain control + overview composition
+# Spec 14 — Focus-domain control + overview composition
 
 **Goal:** let an external chart drive and reflect the detail Trace's visible time window — the
 Chrome DevTools Performance / stock-market composition pattern — via a controlled `focusDomain` prop

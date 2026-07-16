@@ -34,31 +34,31 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 - [Spec 9 — Categorical color palette (color-by API)](./specs/spec-9-color-by.md)
 - [Spec 10 — Sticky (pinnable) tooltip](./specs/spec-10-pinnable-tooltip.md)
 - [Spec 11 — Brush-to-zoom (X-only)](./specs/spec-11-brush-zoom.md)
-- [Spec 12 — Focus-domain control + overview composition](./specs/spec-12-focus-domain-control.md)
-- [Spec 13 — Responsive layout & relocatable label panel](./specs/spec-13-responsive-labels.md) *(implement next)*
-- [Spec 14 — Accessibility (best effort)](./specs/spec-14-accessibility.md)
-- [Spec 15 — Scroll-to-lane API + search story](./specs/spec-15-scroll-to-lane.md)
-- [Spec 16 — API documentation story (auto-extracted)](./specs/spec-16-api-docs.md)
-- [Spec 17 — Empty-state distinction (no-data vs trace-not-found)](./specs/spec-17-empty-state.md)
-- [Spec 18 — Nanosecond precision for linear x-scale](./specs/spec-18-nanosecond-linear.md)
-- [Spec 19 — Segment selection (click, double-click, multi-select, clear)](./specs/spec-19-segment-selection.md)
+- [Spec 12 — Segment selection (click, double-click, multi-select, clear)](./specs/spec-12-segment-selection.md)
+- [Spec 13 — Empty-state distinction (no-data vs trace-not-found)](./specs/spec-13-empty-state.md)
+- [Spec 14 — Focus-domain control + overview composition](./specs/spec-14-focus-domain-control.md)
+- [Spec 15 — Responsive layout & relocatable label panel](./specs/spec-15-responsive-labels.md) *(implement next)*
+- [Spec 16 — Accessibility (best effort)](./specs/spec-16-accessibility.md)
+- [Spec 17 — Scroll-to-lane API + search story](./specs/spec-17-scroll-to-lane.md)
+- [Spec 18 — API documentation story (auto-extracted)](./specs/spec-18-api-docs.md)
+- [Spec 19 — Nanosecond precision for linear x-scale](./specs/spec-19-nanosecond-linear.md)
 - [Spec 20 — Collapsible nesting (design exploration)](./specs/spec-20-collapsible-nesting.md) *(design stub — not yet executable)*
 
 Build order (Specs 0–8): Phase 0 → Spec 0 → Spec 1 → (Spec 2 / Spec 3 / Spec 4 in parallel once
 Spec 1's `NormalizedSpan` contract is fixed) → Spec 5 → Spec 6 → Spec 7 → Spec 8.
 
-Build order (Specs 9–16): Spec 9 (color — foundational for showcase stories) → Spec 10 (pin
-tooltip — independent) → Spec 11 (brush X-only) → Spec 12 (focus control + overview, depends on 11)
-→ Spec 13 (responsive labels — independent) → Spec 15 (scroll-to-lane, provides
-`scrollLaneIntoView`) → Spec 14 (a11y, reuses 15's scroll helper) → Spec 16 (API docs — last, so
+Build order (Specs 9–18): Spec 9 (color — foundational for showcase stories) → Spec 10 (pin
+tooltip — independent) → Spec 11 (brush X-only) → Spec 14 (focus control + overview, depends on 11)
+→ Spec 15 (responsive labels — independent) → Spec 17 (scroll-to-lane, provides
+`scrollLaneIntoView`) → Spec 16 (a11y, reuses 17's scroll helper) → Spec 18 (API docs — last, so
 the table captures every new prop).
 
-Build order (Specs 17–18 / Spec 13): all three are independent of each other and of Specs 9–16.
-Spec 17 (empty-state) depends only on Specs 1 and 5. Spec 18 (ns precision) depends only on
-Specs 4 and 6. Spec 13 (label position) depends only on Spec 5. Any order is valid.
+Build order (Specs 12–13 / Spec 19): all three are independent of each other and of Specs 9–18.
+Spec 13 (empty-state) depends only on Specs 1 and 5. Spec 19 (ns precision) depends only on
+Specs 4 and 6. Spec 15 (label position) depends only on Spec 5. Any order is valid.
 
-Build order (Specs 19–20): Spec 19 (segment selection) depends on Specs 7, 10, and 14 — author
-after Spec 14 is complete so the lane-highlight render pass, `Escape`, and `Enter`/`Space` handlers
+Build order (Specs 12 and 20): Spec 12 (segment selection) depends on Specs 7, 10, and 16 — author
+after Spec 16 is complete so the lane-highlight render pass, `Escape`, and `Enter`/`Space` handlers
 are in place. Spec 20 (collapsible nesting design exploration) is independent of all other specs;
 it is not executable until the team picks an implementation option and promotes the stub to a full
 spec.

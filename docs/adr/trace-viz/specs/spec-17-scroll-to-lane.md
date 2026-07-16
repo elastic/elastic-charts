@@ -1,4 +1,4 @@
-# Spec 15 — Scroll-to-lane API + search story
+# Spec 17 — Scroll-to-lane API + search story
 
 **Goal:** let an external component programmatically scroll the trace waterfall to a specific span's
 lane by span id; expose the mechanism via a React context/hook so downstream components (a search box,
@@ -43,7 +43,7 @@ prop-diffing would prevent re-triggering.
 - Resolve `laneIndex` to a vertical pixel position: `top = laneIndex * laneHeight - scrollOffset`.
 - **`align: 'center'`** (used by `scrollToSpan`): set `scrollOffset` to center the lane in the plot:
   `target = laneIndex * laneHeight - (plotHeight - laneHeight) / 2`. Clamp to `[0, maxScroll]`.
-- **`align: 'nearest'`** (used by Spec 14 keyboard nav): if the lane is already fully visible
+- **`align: 'nearest'`** (used by Spec 16 keyboard nav): if the lane is already fully visible
   (`top >= 0 && top + laneHeight <= plotHeight`), do nothing. Otherwise scroll just enough:
   if `top < 0`, set `target = laneIndex * laneHeight`; if `top + laneHeight > plotHeight`, set
   `target = laneIndex * laneHeight - plotHeight + laneHeight`. Clamp to `[0, maxScroll]`.
@@ -53,9 +53,9 @@ prop-diffing would prevent re-triggering.
 1. Resolve `id → laneIndex` by scanning `this.normalizedSpans` for `span.meta.id === id`.
 2. If not found: `Logger.warn('scrollToSpan: span id not found', id)` and return.
 3. Call `scrollLaneIntoView(laneIndex, { align: 'center' })`.
-4. Set `this.focusedLaneIndex = laneIndex` (reuse Spec 14's highlight; the field is declared in Spec
-   14 but the assignment here must compile — declare the field in Spec 15 as a placeholder or order
-   specs such that 15 is authored first and Spec 14 adds the keyboard handling).
+4. Set `this.focusedLaneIndex = laneIndex` (reuse Spec 16's highlight; the field is declared in Spec
+   14 but the assignment here must compile — declare the field in Spec 17 as a placeholder or order
+   specs such that 17 is authored first and Spec 16 adds the keyboard handling).
 
 **`TraceSearchProvider` + `useTraceSearch()`:**
 
@@ -129,7 +129,7 @@ The `Trace` spec passes `controlProviderCallback={useTraceSearch().register}` in
 ## Acceptance
 
 - Typing a span id in the external EUI search box snaps the trace to that lane (centered) and
-  highlights it with the Spec 14 focused-lane indicator.
+  highlights it with the Spec 16 focused-lane indicator.
 - Re-submitting the same id re-triggers the scroll.
 - An unknown id emits a `Logger.warn` and does nothing.
 - `yarn jest trace_chart` and `yarn typecheck` are green.

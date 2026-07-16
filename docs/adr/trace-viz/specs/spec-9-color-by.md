@@ -81,7 +81,7 @@ every render.
 - `10_color_by.story.tsx` — knob: `none | service | kind | custom`. `colorBy` must be a stable
   module-level const per mode (not a fresh arrow) so the rebuild trigger fires only on knob change.
 - `11_chrome_network.story.tsx` — synthetic HTTP request spans colored by resource type
-  (document / script / stylesheet / image / xhr / font); `labelPosition: 'inline'` (Spec 13 preview);
+  (document / script / stylesheet / image / xhr / font); `labelPosition: 'inline'` (Spec 15 preview);
   total-line dominates the visual; DevTools Network palette.
 - `12_kibana_trace.story.tsx` — service-colored spans with a nested depth layout; colors from
   `colorByOtelAttribute('service.name')`; Kibana-style light background.

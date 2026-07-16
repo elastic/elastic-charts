@@ -1,12 +1,12 @@
-# Spec 14 — Accessibility (best effort)
+# Spec 16 — Accessibility (best effort)
 
 **Goal:** make the trace chart reachable and operable by keyboard; give screen-reader users a
 meaningful description of the trace data via a hidden paginated table and an `aria-live` announcement
 region; provide a focused-lane visual highlight for sighted keyboard users.
 
-**Depends on:** [Spec 15](./spec-15-scroll-to-lane.md) — `scrollLaneIntoView(index, { align })` is
-required for keyboard nav to bring focused lanes into view. (Spec 15 and 14 are independent to
-implement; author Spec 15 first so the helper is available when wiring the keyboard handler.)
+**Depends on:** [Spec 17](./spec-17-scroll-to-lane.md) — `scrollLaneIntoView(index, { align })` is
+required for keyboard nav to bring focused lanes into view. (Spec 17 and 14 are independent to
+implement; author Spec 17 first so the helper is available when wiring the keyboard handler.)
 `getA11ySettingsSelector` and `ScreenReaderSummary` are already wired in `trace_chart.tsx`.
 
 ## Files

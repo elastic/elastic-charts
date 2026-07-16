@@ -14,8 +14,8 @@ in large traces. Constrained to **single-trace mode** only (`traceId` set): mult
 roots and interleaved spans from different traces; that case is out of scope.
 
 **Depends on:** [Spec 1](./spec-1-normalization.md) — `parentId` on `NormalizedSpan` exists.
-Would also interact with [Spec 14](./spec-14-accessibility.md) (keyboard nav) and
-[Spec 19](./spec-19-segment-selection.md) (selection on collapsed subtrees).
+Would also interact with [Spec 16](./spec-16-accessibility.md) (keyboard nav) and
+[Spec 12](./spec-12-segment-selection.md) (selection on collapsed subtrees).
 
 ## The tension
 
@@ -92,16 +92,16 @@ span may appear next to shallower ones because of start-time interleaving.
    `[firstLane, lastLane]` bounds. How does this interact with the scroll math?
 
 6. **Controlled vs uncontrolled collapse state:** the `collapsedSpanIds: Set<string>` state follows
-   the same two options as selection (Spec 19): uncontrolled instance field, or controlled prop +
+   the same two options as selection (Spec 12): uncontrolled instance field, or controlled prop +
    `onCollapseChange` callback. Which model, and does the `focusDomain` perform-and-fire pattern (ADR
    0007) apply here too?
 
-7. **Selection interaction with collapsed subtrees (Spec 19):** a `TraceSegmentRef` for a span whose
+7. **Selection interaction with collapsed subtrees (Spec 12):** a `TraceSegmentRef` for a span whose
    lane is hidden. Should selecting a hidden span auto-expand its parent? Should the controlled
    `selection` prop silently prune refs to hidden spans? Or is selection into a collapsed subtree a
    no-op?
 
-8. **A11y screen-reader table (Spec 14):** the hidden paginated table currently lists all spans. With
+8. **A11y screen-reader table (Spec 16):** the hidden paginated table currently lists all spans. With
    collapse, collapsed descendants may be hidden from the table too, or always listed regardless of
    visual collapse. The two are independent affordances; what does AT expect?
 
@@ -113,7 +113,7 @@ span may appear next to shallower ones because of start-time interleaving.
 ## Reusable pieces (independent of option)
 
 - `parentId → children` Map from `resolveActive` ([self_time.ts:22](../../../packages/charts/src/chart_types/trace_chart/data/self_time.ts#L22)).
-- `waitingSegments` from Spec 19 — unchanged by collapse.
+- `waitingSegments` from Spec 12 — unchanged by collapse.
 - Span `id` and `parentId` on `NormalizedSpan` — the tree structure is already in the data.
 - Controlled-prop + perform-and-fire pattern from ADR 0007 — applicable to `onCollapseChange`.
 

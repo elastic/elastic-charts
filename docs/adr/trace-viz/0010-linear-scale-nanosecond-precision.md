@@ -1,7 +1,7 @@
 
 # ADR 0010 — Linear-scale nanosecond precision (supersedes ADR 0004 Decision 3 for `linear`)
 
-**Status:** Accepted (Spec 18)
+**Status:** Accepted (Spec 19)
 
 ## Context
 

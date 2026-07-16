@@ -1,4 +1,4 @@
-# Spec 16 — API documentation story (auto-extracted)
+# Spec 18 — API documentation story (auto-extracted)
 
 **Goal:** a Storybook page that documents the public `Trace` API as a machine-generated table
 (name, type, default, required, TSDoc description), extracted from the TypeScript types via

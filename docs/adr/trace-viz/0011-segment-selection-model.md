@@ -1,13 +1,13 @@
 # ADR 0011 — Segment selection model
 
-**Status:** Accepted (Spec 19)
+**Status:** Accepted (Spec 12)
 
 ## Context
 
-Spec 19 adds segment-level selection to the trace waterfall: left-clicking an active or waiting segment
+Spec 12 adds segment-level selection to the trace waterfall: left-clicking an active or waiting segment
 highlights it; double-clicking selects the whole span; Shift/Ctrl/Cmd-click multi-selects; clicking
 empty space clears. The feature must integrate with the existing self-managed interaction model (ADR
-0004), the right-click pin tooltip (Spec 10), and the Spec 14 keyboard navigation without introducing
+0004), the right-click pin tooltip (Spec 10), and the Spec 16 keyboard navigation without introducing
 redux selectors or colliding with existing gestures.
 
 Several decisions here are non-obvious, hard to reverse, and the result of genuine trade-offs.

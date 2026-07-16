@@ -1,4 +1,4 @@
-# Spec 18 — Nanosecond precision for linear x-scale
+# Spec 19 — Nanosecond precision for linear x-scale
 
 **Goal:** lower the minimum visible extent for `'linear'` x-scale from 1 ms to 1 ns, enabling
 deep zoom into nanosecond OTLP timing on single traces. Axis tick labels switch units (µs/ns) so
