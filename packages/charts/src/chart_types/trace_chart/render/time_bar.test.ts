@@ -78,6 +78,7 @@ const style: TraceStyle = {
   gutterLabel: { fontFamily: 'sans-serif', fontSize: 11, color: '#333' },
   timeBarLabel: { fontFamily: 'sans-serif', fontSize: 11, color: '#333' },
   gridLineColor: '#eee',
+  focusedLaneBackground: 'rgba(96,146,192,0.15)',
 };
 
 function makeGeom(xScaleType: 'time' | 'linear'): TraceGeometry {
@@ -94,6 +95,7 @@ function makeGeom(xScaleType: 'time' | 'linear'): TraceGeometry {
     focusDomain,
     scrollOffset: 0,
     xScaleType,
+    focusedLaneIndex: null,
     scale: (tMs: number) => plotLeft + (tMs / 10_000) * plotWidth,
   };
 }
@@ -189,6 +191,7 @@ describe('drawTimeBar — whole-ms tick filter (linear mode)', () => {
       focusDomain,
       scrollOffset: 0,
       xScaleType: 'linear' as const,
+      focusedLaneIndex: null,
       scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
     };
 
@@ -284,6 +287,7 @@ describe('drawTimeBar — finest-labeled-layer selection (time mode)', () => {
       focusDomain,
       scrollOffset: 0,
       xScaleType: 'time' as const,
+      focusedLaneIndex: null,
       // scale converts ms → canvas x; the domain is passed as seconds to the time engine,
       // but geom.scale always receives ms (tickMs = minimum * MS_PER_SECOND inside drawTimeBar).
       scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,

@@ -13,6 +13,7 @@ import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import { ChartType } from '..';
 import { SpecType } from '../../specs/spec_type';
 import type { TraceSpec } from './trace_api';
+import { getScreenReaderDataSelector } from './state/selectors/get_screen_reader_data';
 
 /** @internal */
 export const chartSelectorsFactory = createChartSelectorsFactory({
@@ -32,4 +33,5 @@ export const chartSelectorsFactory = createChartSelectorsFactory({
   // via `getActiveCursor()` in trace_chart.tsx. This selector only reflects the container-level
   // default and equals the factory default; it is included to satisfy the ChartSelectors seam.
   getPointerCursor: () => DEFAULT_CSS_CURSOR,
+  getScreenReaderData: getScreenReaderDataSelector,
 });

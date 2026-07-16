@@ -26,6 +26,7 @@ const style: TraceStyle = {
   gutterLabel: { fontFamily: 'monospace', fontSize: 11, color: '#555' },
   timeBarLabel: { fontFamily: 'monospace', fontSize: 11, color: '#444' },
   gridLineColor: '#e0e0e0',
+  focusedLaneBackground: 'rgba(96,146,192,0.15)',
 };
 
 /**

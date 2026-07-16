@@ -483,6 +483,7 @@ export const LIGHT_THEME: Theme = {
     gutterLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: LIGHT_TEXT_COLORS.textSubdued },
     timeBarLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: LIGHT_TEXT_COLORS.textSubdued },
     gridLineColor: LIGHT_BORDER_COLORS.borderBaseSubdued,
+    focusedLaneBackground: LIGHT_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
   },
   // TODO map colors to base color mappings
   flamegraph: {

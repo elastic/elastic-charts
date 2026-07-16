@@ -90,6 +90,7 @@ const style: TraceStyle = {
   gutterLabel: { fontFamily: 'monospace', fontSize: 11, color: '#333' },
   timeBarLabel: { fontFamily: 'monospace', fontSize: 11, color: '#555' },
   gridLineColor: '#e8e8e8',
+  focusedLaneBackground: 'rgba(96,146,192,0.15)',
 };
 
 // Canvas partition dimensions — must be consistent with the style above.
@@ -145,6 +146,7 @@ function makeGeom(overrides: Partial<TraceGeometry> = {}): TraceGeometry {
     focusDomain: { min: 0, max: 1000 },
     scrollOffset: 0,
     xScaleType: 'linear',
+    focusedLaneIndex: null,
     scale: defaultScale,
     ...overrides,
   };

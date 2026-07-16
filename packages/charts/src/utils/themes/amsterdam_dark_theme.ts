@@ -514,5 +514,6 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     gutterLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: '#81858f' },
     timeBarLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: '#81858f' },
     gridLineColor: '#343741',
+    focusedLaneBackground: 'rgba(96,146,192,0.15)',
   },
 };

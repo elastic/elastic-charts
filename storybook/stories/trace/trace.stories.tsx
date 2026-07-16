@@ -25,3 +25,4 @@ export { Example as kibanaTrace } from './12_kibana_trace.story';
 export { Example as segmentPhases } from './13_segment_phases.story';
 export { Example as pinnedTooltip } from './14_pinned_tooltip.story';
 export { Example as brushZoom } from './15_brush_zoom.story';
+export { Example as accessibility } from './16_accessibility.story';

@@ -145,6 +145,14 @@ export interface TraceSpec extends Spec {
    * - `'brush'`: plain drag draws the brush; `Shift`+drag pans.
    */
   dragMode?: 'pan' | 'brush';
+  /**
+   * When `true` (default), a small "keyboard active" badge appears in the top-left corner of the
+   * chart while the canvas has keyboard focus, giving sighted users a WCAG 2.4.7 focus-visible cue.
+   * Set to `false` to suppress the badge, e.g. in design mockups or when a custom focus indicator
+   * is provided externally.
+   * @defaultValue true
+   */
+  showKeyboardFocusBadge?: boolean;
 }
 
 const buildProps = buildSFProps<TraceSpec>()(

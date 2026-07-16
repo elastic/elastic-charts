@@ -18,9 +18,11 @@ import type { NormalizedSpan } from './data/types';
 import { canvas2dRenderer, pickRegion } from './render/canvas2d_renderer';
 import { buildGeometry } from './render/geometry';
 import type { ViewKey } from './render/interaction';
-import { computeMaxScroll, computeZoomMax, domainToZoomPan, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, pixelRangeToDomain } from './render/interaction';
-import { buildTraceEvent, buildTraceTooltipInfo } from './render/tooltip';
+import { computeMaxScroll, computeScrollTarget, computeZoomMax, domainToZoomPan, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, pixelRangeToDomain } from './render/interaction';
+import { buildTraceEvent, buildTraceTooltipInfo, formatMs } from './render/tooltip';
+import { ScreenReaderTraceTable } from './render/screen_reader_trace_table';
 import type { HoverRegion, PickResult, TraceGeometry } from './render/types';
+import { ScreenReaderSummary } from '../../components/accessibility';
 import { buildTraceStyle } from './theme';
 import { colorToRgba } from '../../common/color_library_wrappers';
 import { clamp } from '../../utils/common';
@@ -61,6 +63,18 @@ import { zoomSafePointerX, zoomSafePointerY } from '../timeslip/utils/dom';
  * Same order of magnitude as Timeslip's wheel handler.
  */
 const WHEEL_ZOOM_VELOCITY = 3;
+
+/**
+ * Keyboard pan fraction: one ←/→ keypress pans the visible time window by this fraction of its
+ * current extent. 1:1 snap (easeZoom=false) per ADR 0004 Decision 2 — domainTween cannot ease pan.
+ */
+const KEY_PAN_FRACTION = 0.1;
+
+/**
+ * Keyboard zoom step: one +/- keypress applies this zoomChange (same sign/magnitude convention as
+ * the wheel handler). Positive = zoom in. Eased via domainTween (easeZoom=true) like wheel zoom.
+ */
+const KEY_ZOOM_STEP = 0.5;
 
 interface StateProps {
   traceSpec: TraceSpec | undefined;
@@ -188,6 +202,19 @@ class TraceComponent extends React.Component<TraceProps> {
   private brushEnd = NaN;
   private brushOverlay: { x: number; width: number; top: number; height: number } | null = null;
 
+  // Keyboard-nav / accessibility state (Spec 12).
+  // focusedLaneIndex: the lane currently selected by keyboard navigation. Distinct from hoverIndex.
+  // Cleared on canvas blur or Escape. Passed into buildGeometry each frame for the canvas highlight.
+  private focusedLaneIndex: number | null = null;
+  // hasFocus: true while the canvas has DOM focus (set in handleFocus, cleared in handleBlur).
+  // Drives the keyboard-badge focus indicator in render().
+  private hasFocus = false;
+  // Ref to the visually-hidden aria-live div. textContent is set (never innerHTML) after each lane move.
+  private ariaLiveRef = React.createRef<HTMLDivElement>();
+  private handleKeyDown: ((e: KeyboardEvent) => void) | null = null;
+  private handleFocus: (() => void) | null = null;
+  private handleBlur: (() => void) | null = null;
+
   // -------------------------------------------------------------------------
   // Lifecycle
   // -------------------------------------------------------------------------
@@ -204,6 +231,21 @@ class TraceComponent extends React.Component<TraceProps> {
     this.tween = { niceDomainMin: NaN, niceDomainMax: NaN };
     this.easeZoom = false;
     this.flywheelActive = false;
+  }
+
+  /**
+   * Scrolls lane `index` into view using `computeScrollTarget`, then schedules a repaint.
+   * Called by keyboard nav (align:'nearest') and reused by Spec 14 `scrollToSpan` (align:'center').
+   */
+  private scrollLaneIntoView(index: number, { align }: { align: 'center' | 'nearest' }) {
+    if (!this.props.traceSpec) return;
+    const style = this.getStyle();
+    const { spans } = this.getPipeline(this.props.traceSpec);
+    const { height } = this.props.chartDimensions;
+    const plotHeight = height - style.timeBarHeight;
+    const maxScroll = computeMaxScroll(spans.length, style.laneHeight, plotHeight);
+    this.scrollOffset = computeScrollTarget(index, this.scrollOffset, plotHeight, style.laneHeight, maxScroll, align);
+    this.scheduleRender?.();
   }
 
   componentDidMount = () => {
@@ -338,6 +380,7 @@ class TraceComponent extends React.Component<TraceProps> {
       style,
       traceSpec.xScaleType,
       domain,
+      this.focusedLaneIndex,
     );
 
     // DPR scaling: renderer is dpr-agnostic, caller sets the transform each frame.
@@ -691,12 +734,136 @@ class TraceComponent extends React.Component<TraceProps> {
       this.pinTooltip(false);
     };
 
+    // Keyboard navigation (Spec 12). Bound on the canvas; Tab is NOT prevented (no focus trap).
+    this.handleKeyDown = (e: KeyboardEvent) => {
+      const geom = this.lastGeom;
+      const spec = this.props.traceSpec;
+
+      // Pan (←/→) and zoom (+/-) work regardless of focusedLaneIndex.
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (!spec || !geom) return;
+        const { domain } = this.getPipeline(spec);
+        const focusDomain = { min: this.tween.niceDomainMin, max: this.tween.niceDomainMax };
+        const extent = focusDomain.max - focusDomain.min;
+        const delta = (e.key === 'ArrowLeft' ? -1 : 1) * extent * KEY_PAN_FRACTION;
+        const newFrom = clamp(focusDomain.min + delta, domain.min, domain.max - extent);
+        const newTo = newFrom + extent;
+        this.zoomPan.focus = domainToZoomPan([newFrom, newTo], [domain.min, domain.max]);
+        this.easeZoom = false; // 1:1 snap — domainTween cannot ease a pan (ADR 0004)
+        this.scheduleRender?.();
+        return;
+      }
+      if (e.key === '+' || e.key === '=') {
+        e.preventDefault();
+        if (!spec) return;
+        const style = this.getStyle();
+        const plotWidth = this.props.chartDimensions.width - style.gutterWidth;
+        const plotLeft = style.gutterWidth;
+        this.easeZoom = true;
+        doZoomAroundPosition(
+          this.zoomPan,
+          { innerSize: plotWidth, innerLeading: plotLeft },
+          plotLeft + plotWidth / 2,
+          KEY_ZOOM_STEP,
+          0,
+          false,
+        );
+        const { domain } = this.getPipeline(spec);
+        this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min));
+        this.scheduleRender?.();
+        return;
+      }
+      if (e.key === '-') {
+        e.preventDefault();
+        if (!spec) return;
+        const style = this.getStyle();
+        const plotWidth = this.props.chartDimensions.width - style.gutterWidth;
+        const plotLeft = style.gutterWidth;
+        this.easeZoom = true;
+        doZoomAroundPosition(
+          this.zoomPan,
+          { innerSize: plotWidth, innerLeading: plotLeft },
+          plotLeft + plotWidth / 2,
+          -KEY_ZOOM_STEP,
+          0,
+          false,
+        );
+        this.scheduleRender?.();
+        return;
+      }
+
+      // Lane-navigation keys require spans to be available.
+      if (!geom || geom.spans.length === 0) return;
+      const lastIndex = geom.spans.length - 1;
+
+      const moveFocus = (newIndex: number) => {
+        this.focusedLaneIndex = newIndex;
+        this.scrollLaneIntoView(newIndex, { align: 'nearest' });
+        const span = geom.spans[newIndex];
+        if (span && this.ariaLiveRef.current) {
+          // textContent assignment is XSS-safe — never innerHTML.
+          this.ariaLiveRef.current.textContent = `${span.name} — ${formatMs(span.end - span.start)}`;
+        }
+        this.scheduleRender?.();
+      };
+
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const current = this.focusedLaneIndex ?? 0;
+        moveFocus(Math.max(0, current - 1));
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const current = this.focusedLaneIndex ?? -1;
+        moveFocus(Math.min(lastIndex, current + 1));
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        moveFocus(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        moveFocus(lastIndex);
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (this.focusedLaneIndex !== null) {
+          const span = geom.spans[this.focusedLaneIndex];
+          if (span) this.props.onElementClick([buildTraceEvent(span)]);
+        }
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        this.focusedLaneIndex = null;
+        this.unpinTooltip(); // idempotent — existing window keyup unpin (Spec 10) is a no-op after this
+        this.scheduleRender?.();
+      }
+    };
+
+    // Focus: show the keyboard badge. Only triggers a re-render (badge is a DOM sibling of the canvas,
+    // not drawn on the canvas itself, so no scheduleRender needed).
+    this.handleFocus = () => {
+      if (!this.hasFocus) {
+        this.hasFocus = true;
+        this.setState({});
+      }
+    };
+
+    this.handleBlur = () => {
+      this.hasFocus = false;
+      if (this.focusedLaneIndex !== null) {
+        this.focusedLaneIndex = null;
+        this.scheduleRender?.();
+      } else {
+        this.setState({});
+      }
+    };
+
     canvas.addEventListener('wheel', this.handleWheel, { passive: false });
     canvas.addEventListener('mousedown', this.handleMouseDown);
     canvas.addEventListener('mousemove', this.handleHoverMove);
     canvas.addEventListener('click', this.handleCanvasClick);
     canvas.addEventListener('mouseleave', this.handleCanvasLeave);
     canvas.addEventListener('contextmenu', this.handleContextMenu);
+    canvas.addEventListener('keydown', this.handleKeyDown);
+    canvas.addEventListener('focus', this.handleFocus);
+    canvas.addEventListener('blur', this.handleBlur);
     // mousemove and mouseup are bound to window so a fast flick that releases the pointer outside
     // the canvas still fires endDrag and triggers the kinetic flywheel coast. Mirrors Timeslip.
     window.addEventListener('mousemove', this.handleMouseMove);
@@ -713,6 +880,9 @@ class TraceComponent extends React.Component<TraceProps> {
     if (this.handleCanvasClick) canvas.removeEventListener('click', this.handleCanvasClick);
     if (this.handleCanvasLeave) canvas.removeEventListener('mouseleave', this.handleCanvasLeave);
     if (this.handleContextMenu) canvas.removeEventListener('contextmenu', this.handleContextMenu);
+    if (this.handleKeyDown) canvas.removeEventListener('keydown', this.handleKeyDown);
+    if (this.handleFocus) canvas.removeEventListener('focus', this.handleFocus);
+    if (this.handleBlur) canvas.removeEventListener('blur', this.handleBlur);
     if (this.handleMouseMove) window.removeEventListener('mousemove', this.handleMouseMove);
     if (this.handleMouseUp) window.removeEventListener('mouseup', this.handleMouseUp);
     // Defensive: remove pin dismiss listeners in case the component unmounts while pinned.
@@ -791,6 +961,19 @@ class TraceComponent extends React.Component<TraceProps> {
     return (
       <>
         <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
+          {/* ScreenReaderSummary and ScreenReaderTraceTable are siblings of the canvas inside
+              the <figure> so AT can browse them with the virtual cursor. They must NOT be
+              descendants of the canvas (role="application" subtree is not browsable). */}
+          <ScreenReaderSummary />
+          <ScreenReaderTraceTable />
+          {/* Visually-hidden aria-live region: announces focused span name + duration on each
+              lane move. textContent is used (never innerHTML) to guard against XSS via span names. */}
+          <div
+            ref={this.ariaLiveRef}
+            aria-live="polite"
+            aria-atomic="true"
+            style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden' }}
+          />
           <canvas /* Canvas2d layer */
             ref={forwardStageRef}
             tabIndex={0}
@@ -798,9 +981,54 @@ class TraceComponent extends React.Component<TraceProps> {
             width={canvasWidth}
             height={canvasHeight}
             style={{ ...style, outline: 'none' }}
-            // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-            role="presentation"
+            role="application"
           />
+          {/* Keyboard-focus badge: visible only while the canvas has DOM focus (hasFocus) and
+              showKeyboardFocusBadge !== false. Drawn as a DOM sibling so it is never clipped by
+              overflow:hidden on .echContainer. aria-hidden — the SR surface (summary/table/aria-live)
+              already conveys state; this badge is purely a sighted WCAG 2.4.7 focus-visible cue.
+              pointerEvents:none so it doesn't interfere with mouse events on the canvas. */}
+          {this.hasFocus && this.props.traceSpec?.showKeyboardFocusBadge !== false && (
+            <div
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                top: 6,
+                left: 6,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                padding: '2px 6px',
+                borderRadius: 4,
+                background: 'rgba(0,0,0,0.45)',
+                color: '#fff',
+                fontSize: 10,
+                fontFamily: 'system-ui, sans-serif',
+                letterSpacing: '0.03em',
+                pointerEvents: 'none',
+                userSelect: 'none',
+                // Sit above the canvas (which is absolutely positioned inside the figure)
+                zIndex: 1,
+              }}
+            >
+              {/* Inline keyboard SVG — no external asset, no CSS class needed */}
+              <svg
+                width="13"
+                height="9"
+                viewBox="0 0 13 9"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ display: 'block', flexShrink: 0 }}
+              >
+                <rect x="0.5" y="0.5" width="12" height="8" rx="1.5" stroke="currentColor" strokeWidth="1" />
+                <rect x="2" y="2" width="2" height="1.5" rx="0.5" fill="currentColor" />
+                <rect x="5.5" y="2" width="2" height="1.5" rx="0.5" fill="currentColor" />
+                <rect x="9" y="2" width="2" height="1.5" rx="0.5" fill="currentColor" />
+                <rect x="2" y="5" width="9" height="1.5" rx="0.5" fill="currentColor" />
+              </svg>
+              keyboard active
+            </div>
+          )}
         </figure>
         {brushOverlayEl}
         {/* BasicTooltip is connect()-ed; it auto-reads `settings.customTooltip` from redux, so

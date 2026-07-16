@@ -35,6 +35,8 @@ export interface TraceStyle {
   timeBarLabel: { fontFamily: string; fontSize: number; color: Color };
   /** Color of the faint gridlines drawn down through the plot area. */
   gridLineColor: Color;
+  /** Background fill for the full-width highlight behind the keyboard-focused lane. */
+  focusedLaneBackground: Color;
 }
 
 /**
@@ -61,6 +63,11 @@ export interface TraceGeometry {
   scrollOffset: number;
   /** Which x-scale the trace uses; controls raster-engine and time-bar unit selection. */
   xScaleType: 'time' | 'linear';
+  /**
+   * The lane currently focused by keyboard navigation, or `null` when no lane is focused.
+   * Distinct from `hoverIndex` (mouse-driven). Drawn as a full-width background highlight.
+   */
+  focusedLaneIndex: number | null;
   /**
    * Maps a time value (ms) to an x pixel coordinate within the plot, based on `focusDomain`.
    * Returns `plot.left` when the domain is zero-width (degenerate guard).

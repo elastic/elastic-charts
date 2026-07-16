@@ -14,7 +14,7 @@
  * jsdom smoke test (getContext('2d') returns null there, so frame() early-returns).
  */
 
-import { computeZoomMax, computeMaxScroll, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, domainToZoomPan, pixelRangeToDomain } from './interaction';
+import { computeZoomMax, computeMaxScroll, computeScrollTarget, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, domainToZoomPan, pixelRangeToDomain } from './interaction';
 import { getFocusDomain, initialZoomPan } from '../../timeslip/projections/zoom_pan';
 import type { TraceGeometry } from './types';
 
@@ -259,5 +259,60 @@ describe('pixelRangeToDomain', () => {
     const [from, to] = pixelRangeToDomain(50, 450, pointGeom);
     expect(from).toBe(300);
     expect(to).toBe(300);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// computeScrollTarget
+// ---------------------------------------------------------------------------
+
+describe('computeScrollTarget', () => {
+  const laneHeight = 30;
+  const plotHeight = 200;
+  const maxScroll = 1000;
+
+  describe('align: center', () => {
+    it('spec example: lane 5 → target = 5*30 - (200-30)/2 = 65', () => {
+      // target = 150 - 85 = 65
+      expect(computeScrollTarget(5, 0, plotHeight, laneHeight, maxScroll, 'center')).toBe(65);
+    });
+
+    it('clamps to 0 when target is negative', () => {
+      // lane 0: target = 0 - 85 = -85 → clamped to 0
+      expect(computeScrollTarget(0, 0, plotHeight, laneHeight, maxScroll, 'center')).toBe(0);
+    });
+
+    it('clamps to maxScroll when target exceeds it', () => {
+      // lane 40: target = 40*30 - 85 = 1115 → clamped to 1000
+      expect(computeScrollTarget(40, 0, plotHeight, laneHeight, maxScroll, 'center')).toBe(maxScroll);
+    });
+  });
+
+  describe('align: nearest', () => {
+    it('returns scrollOffset unchanged when lane is fully visible', () => {
+      // scrollOffset=0, lane 2: top = 2*30 - 0 = 60; 60+30 = 90 ≤ 200 → in view
+      expect(computeScrollTarget(2, 0, plotHeight, laneHeight, maxScroll, 'nearest')).toBe(0);
+    });
+
+    it('scrolls up when lane is above view', () => {
+      // scrollOffset=100, lane 2: top = 2*30 - 100 = -40 → above view
+      // target = laneIndex * laneHeight = 2*30 = 60
+      expect(computeScrollTarget(2, 100, plotHeight, laneHeight, maxScroll, 'nearest')).toBe(60);
+    });
+
+    it('scrolls down when lane is below view', () => {
+      // scrollOffset=0, lane 8: top = 8*30 - 0 = 240 → 240+30 = 270 > 200 → below view
+      // target = 8*30 - 200 + 30 = 70
+      expect(computeScrollTarget(8, 0, plotHeight, laneHeight, maxScroll, 'nearest')).toBe(70);
+    });
+
+    it('clamps to 0 when nearest target would be negative', () => {
+      expect(computeScrollTarget(0, 50, plotHeight, laneHeight, maxScroll, 'nearest')).toBe(0);
+    });
+
+    it('clamps to maxScroll when nearest target exceeds it', () => {
+      // scrollOffset=0, lane 100: target = 100*30 - 200 + 30 = 2830 → clamped to 1000
+      expect(computeScrollTarget(100, 0, plotHeight, laneHeight, maxScroll, 'nearest')).toBe(maxScroll);
+    });
   });
 });

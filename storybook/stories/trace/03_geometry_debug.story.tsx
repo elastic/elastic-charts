@@ -33,6 +33,7 @@ const style: TraceStyle = {
   gutterLabel: { fontFamily: 'monospace', fontSize: 12, color: '#333' },
   timeBarLabel: { fontFamily: 'monospace', fontSize: 11, color: '#555' },
   gridLineColor: '#e8e8e8',
+  focusedLaneBackground: 'rgba(96,146,192,0.15)',
 };
 
 const CANVAS_WIDTH = 900;

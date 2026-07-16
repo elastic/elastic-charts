@@ -44,6 +44,45 @@ export function computeMaxScroll(spanCount: number, laneHeight: number, plotHeig
 }
 
 /**
+ * Computes the vertical scroll target (in pixels) to bring lane `laneIndex` into view.
+ *
+ * Two alignment modes:
+ * - **`'center'`** (used by Spec 14 `scrollToSpan`): center the lane in the visible plot.
+ *   `target = laneIndex * laneHeight - (plotHeight - laneHeight) / 2`
+ * - **`'nearest'`** (used by keyboard navigation ↑/↓/Home/End): scroll only if the lane is
+ *   already fully visible (no-op), otherwise scroll just enough to bring it to the nearest edge.
+ *
+ * Both modes snap (no tween) per ADR 0004 vertical-1:1. Result is clamped to `[0, maxScroll]`.
+ *
+ * Reused by Spec 14 `scrollToSpan` — **do not remove this function**.
+ * @internal
+ */
+export function computeScrollTarget(
+  laneIndex: number,
+  scrollOffset: number,
+  plotHeight: number,
+  laneHeight: number,
+  maxScroll: number,
+  align: 'center' | 'nearest',
+): number {
+  let target: number;
+  if (align === 'center') {
+    target = laneIndex * laneHeight - (plotHeight - laneHeight) / 2;
+  } else {
+    const top = laneIndex * laneHeight - scrollOffset;
+    if (top >= 0 && top + laneHeight <= plotHeight) {
+      return scrollOffset; // lane is fully visible — no-op
+    }
+    if (top < 0) {
+      target = laneIndex * laneHeight;
+    } else {
+      target = laneIndex * laneHeight - plotHeight + laneHeight;
+    }
+  }
+  return Math.max(0, Math.min(target, maxScroll));
+}
+
+/**
  * Identifier for the horizontal reference-domain semantics in effect. A change in either field
  * means the domain origin has shifted (see ADR 0004 Decision 2 addendum), requiring a view reset.
  * @internal

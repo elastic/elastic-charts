@@ -11,13 +11,15 @@ import type { TraceElementEvent } from '../../../specs/settings';
 import type { NormalizedSpan } from '../data/types';
 import type { HoverRegion } from './types';
 
-function formatMs(ms: number): string {
+/** @internal */
+export function formatMs(ms: number): string {
   if (ms >= 1000) return `${(ms / 1000).toFixed(2)} s`;
   if (ms >= 1) return `${ms.toFixed(2)} ms`;
   return `${(ms * 1000).toFixed(0)} μs`;
 }
 
-function computeSelfTime(span: NormalizedSpan): number {
+/** @internal */
+export function computeSelfTime(span: NormalizedSpan): number {
   return span.activeSegments.reduce((acc, seg) => acc + (seg.end - seg.start), 0);
 }
 

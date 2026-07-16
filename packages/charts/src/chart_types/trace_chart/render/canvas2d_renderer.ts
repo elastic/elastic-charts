@@ -34,7 +34,7 @@ const NO_STROKE: Stroke = { color: [0, 0, 0, 0] as [number, number, number, numb
  * @internal
  */
 export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: TraceStyle): void {
-  const { gutter, plot, spans, laneHeight, scrollOffset, scale } = geom;
+  const { gutter, plot, spans, laneHeight, scrollOffset, scale, focusedLaneIndex } = geom;
 
   withContext(ctx, () => {
     // Transparent clear of the full canvas area. Background ownership belongs to the Spec 6
@@ -50,6 +50,19 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
     // Only iterate lane indices whose top edge falls within the visible plot rect.
     const firstLane = Math.max(0, Math.floor(scrollOffset / laneHeight));
     const lastLane = Math.min(spans.length - 1, Math.floor((scrollOffset + plot.height) / laneHeight));
+
+    // --- Focused-lane background highlight (keyboard nav) ---
+    // Drawn before span content so total-line and active-segments render on top.
+    if (focusedLaneIndex !== null && focusedLaneIndex >= firstLane && focusedLaneIndex <= lastLane) {
+      const focusTop = plot.top + focusedLaneIndex * laneHeight - scrollOffset;
+      renderRect(
+        ctx,
+        { x: 0, y: focusTop, width: gutter.width + plot.width, height: laneHeight },
+        { color: colorToRgba(style.focusedLaneBackground) },
+        NO_STROKE,
+        true,
+      );
+    }
 
     // Hoist shared immutable style objects outside the per-lane loop to avoid per-frame allocations.
     const totalLineStroke: Stroke = {

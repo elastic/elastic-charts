@@ -20,6 +20,7 @@ const style: TraceStyle = {
   gutterLabel: { fontFamily: 'monospace', fontSize: 11, color: '#333' },
   timeBarLabel: { fontFamily: 'monospace', fontSize: 11, color: '#333' },
   gridLineColor: '#eee',
+  focusedLaneBackground: 'rgba(96,146,192,0.15)',
 };
 
 function span(id: string, start: number, end: number): NormalizedSpan {
