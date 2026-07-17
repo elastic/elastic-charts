@@ -8,20 +8,20 @@
 
 import React from 'react';
 
-import { Chart, Trace, Settings } from '@elastic/charts';
+import { Chart, Settings, Trace } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-/**
- * Empty trace — no data supplied. Demonstrates the standard library empty state
- * (the "No data to display" panel, overridable via `Settings.noResults`).
- */
-export const Example: ChartsStory = (_, { title, description }) => {
-  return (
-    <Chart title={title} description={description} size={{ width: 1024, height: 512 }}>
-      <Settings baseTheme={useBaseTheme()} />
-      <Trace id="spec_1" data={[]} />
-    </Chart>
-  );
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description} size={{ width: '100%', height: 300 }}>
+    <Settings baseTheme={useBaseTheme()} />
+    <Trace id="trace_empty" data={[]} />
+  </Chart>
+);
+
+Example.parameters = {
+  markdown:
+    'Renders `<Trace data={[]} />` with no spans. Shows the standard library empty state ' +
+    '("No data to display"), which callers can override via `Settings.noResults`.',
 };

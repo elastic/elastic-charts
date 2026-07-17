@@ -11,79 +11,45 @@ import React from 'react';
 import { normalize } from '@elastic/charts/src/chart_types/trace_chart/data/normalize';
 import { resolveActive } from '@elastic/charts/src/chart_types/trace_chart/data/self_time';
 import type { NormalizedSpan } from '@elastic/charts/src/chart_types/trace_chart/data/types';
-import type { TraceDatum } from '@elastic/charts/src/chart_types/trace_chart/trace_api';
 
-// A nested fixture with enough structure to show all self-time cases:
-// - root: has two children, one explicit gap and one overlap
-// - middleware: has one child, producing a leading segment
-// - leaf: no children, full self time
-const simpleSpans: TraceDatum[] = [
-  { id: 'root', name: 'HTTP GET /checkout', traceId: 't1', start: 0, end: 1000 },
-  { id: 'auth', name: 'AuthService.validate', parentId: 'root', traceId: 't1', start: 100, end: 350 },
-  { id: 'db', name: 'DB.query', parentId: 'root', traceId: 't1', start: 400, end: 850 },
-  { id: 'cache', name: 'Cache.get', parentId: 'db', traceId: 't1', start: 420, end: 600 },
-  { id: 'leaf', name: 'Serializer.encode', parentId: 'db', traceId: 't1', start: 700, end: 820 },
-];
+import { CHECKOUT_SPANS } from './data';
 
-const { spans: normalized } = normalize(simpleSpans, 'linear');
+// ---------------------------------------------------------------------------
+// Run the self-time pipeline once at module load (spans are static)
+// ---------------------------------------------------------------------------
+const { spans: normalized } = normalize(CHECKOUT_SPANS, 'linear');
 const resolved = resolveActive(normalized);
 
-// Styles (inline so the story is self-contained)
-const containerStyle: React.CSSProperties = { padding: 24, fontFamily: 'sans-serif' };
-const headerStyle: React.CSSProperties = { marginBottom: 16 };
-const spanRowStyle: React.CSSProperties = { marginBottom: 20 };
-const labelStyle: React.CSSProperties = { fontFamily: 'monospace', fontSize: 13, marginBottom: 6 };
-const barTrackStyle: React.CSSProperties = {
-  position: 'relative',
-  height: 16,
-  background: '#f0f0f0',
-  border: '1px solid #ccc',
-  width: 600,
-  borderRadius: 2,
-};
-
 const TOTAL_MS = 1000;
+const pct = (ms: number) => `${((ms / TOTAL_MS) * 100).toFixed(2)}%`;
 
-function pct(ms: number) {
-  return `${((ms / TOTAL_MS) * 100).toFixed(2)}%`;
-}
-
+// ---------------------------------------------------------------------------
+// SpanRow — renders one resolved span as a proportional bar
+// ---------------------------------------------------------------------------
 function SpanRow({ span }: { span: NormalizedSpan }) {
   const totalWidth = ((span.end - span.start) / TOTAL_MS) * 100;
-  const totalLeft = (span.start / TOTAL_MS) * 100;
-
+  const totalLeft  = (span.start / TOTAL_MS) * 100;
   return (
-    <div style={spanRowStyle}>
-      <div style={labelStyle}>
-        <strong>{span.name}</strong> — [{span.start}ms – {span.end}ms] — self-time segments:{' '}
+    <div style={{ marginBottom: 20 }}>
+      <div style={{ fontFamily: 'monospace', fontSize: 13, marginBottom: 6 }}>
+        <strong>{span.name}</strong>
+        {' — '}[{span.start}–{span.end}ms]
+        {' — self-time: '}
         {span.activeSegments.length === 0
           ? '(none)'
-          : span.activeSegments.map((a, i) => `[${a.start}–${a.end}ms]`).join(', ')}
+          : span.activeSegments.map((a) => `[${a.start}–${a.end}ms]`).join(', ')}
       </div>
-      <div style={barTrackStyle}>
-        {/* Total duration bar (muted) */}
+      <div style={{ position: 'relative', height: 16, background: '#f0f0f0', border: '1px solid #ccc', width: 600, borderRadius: 2 }}>
+        {/* Total duration (muted) */}
         <div
-          style={{
-            position: 'absolute',
-            left: pct(span.start),
-            width: `${totalWidth}%`,
-            height: '100%',
-            background: '#b0c4de',
-            opacity: 0.5,
-          }}
+          style={{ position: 'absolute', left: `${totalLeft}%`, width: `${totalWidth}%`, height: '100%', background: '#b0c4de', opacity: 0.5 }}
           title={`Total: ${span.start}–${span.end}ms`}
         />
         {/* Active (self-time) segments */}
         {span.activeSegments.map((seg, i) => (
           <div
             key={i}
-            style={{
-              position: 'absolute',
-              left: pct(seg.start),
-              width: pct(seg.end - seg.start),
-              height: '100%',
-              background: '#1f6feb',
-            }}
+            style={{ position: 'absolute', left: pct(seg.start), width: pct(seg.end - seg.start), height: '100%', background: '#1f6feb' }}
             title={`Active: ${seg.start}–${seg.end}ms`}
           />
         ))}
@@ -92,22 +58,23 @@ function SpanRow({ span }: { span: NormalizedSpan }) {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Story
+// ---------------------------------------------------------------------------
 export const Example = () => (
   <div className="echChart">
     <div className="echChartStatus" data-ech-render-complete={true} />
-    <div style={containerStyle}>
-      <h2 style={headerStyle}>Spec 2 — self-time derivation debug</h2>
-      <p style={{ marginBottom: 20, color: '#555', fontSize: 13 }}>
-        Light blue = total duration. Dark blue = derived self-time (active) segments. Gaps show where
-        children run. Explicit <code>active</code> fields (if present) are copied verbatim.
-      </p>
-      {resolved.map((span) => (
-        <SpanRow key={span.id} span={span} />
-      ))}
+    <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
+      {resolved.map((span) => <SpanRow key={span.id} span={span} />)}
     </div>
   </div>
 );
 
 Example.parameters = {
-  showHeader: true,
+  markdown:
+    'Debug view of the self-time derivation algorithm (`normalize` → `resolveActive`). ' +
+    '**Light blue** = total span duration. **Dark blue** = derived self-time (active) segments — ' +
+    'the portions not covered by any child. Gaps between active segments show where children run.\n\n' +
+    'Explicit `activeSegments` fields (if present on a span) are copied verbatim; ' +
+    'implicit self-time is derived from child coverage.',
 };

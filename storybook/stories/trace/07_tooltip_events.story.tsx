@@ -15,76 +15,13 @@ import { Chart, fromOtlp, Settings, Tooltip, Trace } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { EPOCH_BASE, EPOCH_BASE_NS, OTEL_TOOLTIP_SPANS } from './data';
 
 /**
- * Epoch ms anchor for 'time' scale mode — same value as 06_interactive.story.tsx.
- * Applied as a nanosecond offset (× 1_000_000) via BigInt to avoid precision loss.
- */
-const EPOCH_BASE = 1_700_000_000_000; // 2023-11-14T22:13:20Z
-const EPOCH_BASE_NS = BigInt(EPOCH_BASE) * 1_000_000n;
-
-/**
- * Small OTel fixture with `attributes` and `status` so the custom tooltip can render them.
- * Times are in nanoseconds (1 ms = 1_000_000 ns). Using string form to match OTLP JSON encoding.
- */
-const OTEL_SPANS: OtelSpan[] = [
-  {
-    spanId: 's1',
-    name: 'HTTP GET /api/v1/data',
-    traceId: 't1',
-    startTimeUnixNano: '0',
-    endTimeUnixNano: '1000000000',
-    attributes: [
-      { key: 'http.method', value: 'GET' },
-      { key: 'http.url', value: '/api/v1/data' },
-      { key: 'http.status_code', value: 200 },
-    ],
-    status: { code: 1, message: 'OK' },
-  },
-  {
-    spanId: 's2',
-    parentSpanId: 's1',
-    name: 'DB.query users',
-    traceId: 't1',
-    startTimeUnixNano: '100000000',
-    endTimeUnixNano: '600000000',
-    attributes: [
-      { key: 'db.system', value: 'postgresql' },
-      { key: 'db.statement', value: 'SELECT * FROM users WHERE id = $1' },
-    ],
-    status: { code: 1 },
-  },
-  {
-    spanId: 's3',
-    parentSpanId: 's1',
-    name: 'Cache.get session',
-    traceId: 't1',
-    startTimeUnixNano: '620000000',
-    endTimeUnixNano: '800000000',
-    attributes: [
-      { key: 'cache.backend', value: 'redis' },
-      { key: 'cache.hit', value: false },
-    ],
-    status: { code: 2, message: 'CACHE_MISS' },
-  },
-  {
-    spanId: 's4',
-    parentSpanId: 's2',
-    name: 'Auth.verify_token',
-    traceId: 't1',
-    startTimeUnixNano: '110000000',
-    endTimeUnixNano: '280000000',
-    attributes: [
-      { key: 'auth.method', value: 'JWT' },
-    ],
-    status: { code: 1 },
-  },
-];
-
-/**
- * Custom tooltip — renders the default span metadata plus all OTel attributes and status.
+ * Custom tooltip component — renders the default span metadata rows plus all OTel
+ * `attributes` and `status` from `datum.meta` (the original OtelSpan).
  *
- * XSS note: all OTel attribute values are rendered as React text children (String() coercion),
+ * XSS note: all attribute values are rendered as React text children (String() coercion),
  * never via dangerouslySetInnerHTML. React auto-escapes text children.
  */
 const TraceCustomTooltip: CustomTooltip = ({ values, backgroundColor }) => {
@@ -144,53 +81,46 @@ export const Example: ChartsStory = (_, { title, description }) => {
   );
   const showTooltipOverEmpty = boolean('tooltip over empty region', false);
 
-  // In 'time' mode shift the nanosecond timestamps by EPOCH_BASE so the raster
-  // engine renders realistic wall-clock ticks instead of 1970-01-01 labels.
-  // fromOtlp converts nanoseconds → epoch-ms and carries the original OtelSpan on datum.meta.
+  // In 'time' mode shift nanosecond timestamps by EPOCH_BASE_NS so the raster engine
+  // renders realistic wall-clock ticks. fromOtlp converts ns → epoch-ms and stores
+  // the original OtelSpan on datum.meta (used by TraceCustomTooltip above).
   const data = useMemo(() => {
-    const spans =
-      xScaleType === 'time'
-        ? OTEL_SPANS.map((s) => ({
-            ...s,
-            startTimeUnixNano: (BigInt(s.startTimeUnixNano) + EPOCH_BASE_NS).toString(),
-            endTimeUnixNano: (BigInt(s.endTimeUnixNano) + EPOCH_BASE_NS).toString(),
-          }))
-        : OTEL_SPANS;
+    const spans = xScaleType === 'time'
+      ? OTEL_TOOLTIP_SPANS.map((s) => ({
+          ...s,
+          startTimeUnixNano: (BigInt(s.startTimeUnixNano) + EPOCH_BASE_NS).toString(),
+          endTimeUnixNano:   (BigInt(s.endTimeUnixNano)   + EPOCH_BASE_NS).toString(),
+        }))
+      : OTEL_TOOLTIP_SPANS;
     return fromOtlp(spans);
   }, [xScaleType]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 16, fontFamily: 'sans-serif' }}>
-      <div>
-        <h2 style={{ margin: '0 0 4px', fontSize: 16 }}>Spec 7 — Tooltip &amp; element events</h2>
-        <p style={{ margin: '0 0 8px', color: '#555', fontSize: 13 }}>
-          Hover a span to see the default tooltip (Name / Duration / Self time / Start / State).
-          The custom tooltip below also renders OTel attributes and status.
-          Click a span or hover to log <code>onElementClick</code> / <code>onElementOver</code> in
-          the Actions panel.
-        </p>
-      </div>
-
-      <Chart title={title} description={description} size={{ width: '100%', height: 300 }}>
-        <Settings
-          baseTheme={theme}
-          onElementClick={action('onElementClick')}
-          onElementOver={action('onElementOver')}
-          onElementOut={action('onElementOut')}
-        />
-        {/* customTooltip receives values[0].datum as TraceDatum; .meta is the OtelSpan with attributes/status. */}
-        <Tooltip customTooltip={TraceCustomTooltip} />
-        <Trace id="trace_tooltip_events" data={data} xScaleType={xScaleType} showTooltipOverEmpty={showTooltipOverEmpty} />
-      </Chart>
-
-      <p style={{ margin: 0, fontSize: 11, color: '#888' }}>
-        OTel format · 4-span trace · hover region reflected in the State tooltip row ·
-        cursor turns to pointer over active/waiting regions
-      </p>
-    </div>
+    <Chart title={title} description={description} size={{ width: '100%', height: 300 }}>
+      <Settings
+        baseTheme={theme}
+        onElementClick={action('onElementClick')}
+        onElementOver={action('onElementOver')}
+        onElementOut={action('onElementOut')}
+      />
+      {/* customTooltip receives values[0].datum as TraceDatum; .meta is the OtelSpan */}
+      <Tooltip customTooltip={TraceCustomTooltip} />
+      <Trace
+        id="trace_tooltip_events"
+        data={data}
+        xScaleType={xScaleType}
+        showTooltipOverEmpty={showTooltipOverEmpty}
+      />
+    </Chart>
   );
 };
 
 Example.parameters = {
-  showHeader: true,
+  markdown:
+    'Demonstrates the default tooltip (Name / Duration / Self time / Start / State) and a ' +
+    '**custom tooltip** that additionally renders OTel `attributes` and `status` from `datum.meta`.\n\n' +
+    '`onElementClick` / `onElementOver` / `onElementOut` are wired to the **Actions** panel — ' +
+    'hover or click a span to log events. The `tooltip over empty region` knob controls whether ' +
+    'hovering empty canvas still shows a tooltip. The x-scale knob switches linear ↔ wall-clock.\n\n' +
+    `EPOCH_BASE: \`${EPOCH_BASE}\` (2023-11-14T22:13:20Z)`,
 };

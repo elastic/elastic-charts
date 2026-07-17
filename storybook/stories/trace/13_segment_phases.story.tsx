@@ -14,109 +14,63 @@ import { Chart, Settings, Trace } from '@elastic/charts';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-/**
- * A synthetic HTTP-request-lifecycle trace where each span models three execution phases:
- * `loading` (initial setup / DNS / TLS), `process` (in-flight I/O), and `final` (teardown /
- * response parsing). All `loading` segments across every span share one palette color, `process`
- * another, and `final` a third — demonstrating cross-span label color stability.
- *
- * Each segment uses the optional `label` field introduced in this spec; no explicit `color` is
- * set on any segment so the palette is assigned automatically from `theme.colors.vizColors`.
- */
-const FIXTURE: TraceDatum[] = [
+// 5-span HTTP lifecycle, each span split into 3 labeled phases.
+// Segments that share a label get the same palette color across all spans
+// (cross-span color stability): loading=vizColors[0], process=[1], final=[2].
+const DATA: TraceDatum[] = [
   {
-    id: 'root',
-    name: 'GET /checkout',
-    start: 0,
-    end: 1000,
+    id: 'root', name: 'GET /checkout', start: 0, end: 1000,
     activeSegments: [
-      { start: 0, end: 60, label: 'loading' },
-      { start: 60, end: 920, label: 'process' },
-      { start: 920, end: 1000, label: 'final' },
+      { start: 0,   end: 60,  label: 'loading' },
+      { start: 60,  end: 920, label: 'process' },
+      { start: 920, end: 1000,label: 'final'   },
     ],
   },
   {
-    id: 'auth',
-    name: 'auth.validate',
-    parentId: 'root',
-    start: 60,
-    end: 200,
+    id: 'auth', name: 'auth.validate', parentId: 'root', start: 60, end: 200,
     activeSegments: [
-      { start: 60, end: 80, label: 'loading' },
-      { start: 80, end: 185, label: 'process' },
-      { start: 185, end: 200, label: 'final' },
+      { start: 60,  end: 80,  label: 'loading' },
+      { start: 80,  end: 185, label: 'process' },
+      { start: 185, end: 200, label: 'final'   },
     ],
   },
   {
-    id: 'db-read',
-    name: 'db.query (read)',
-    parentId: 'root',
-    start: 200,
-    end: 520,
+    id: 'db-read', name: 'db.query (read)', parentId: 'root', start: 200, end: 520,
     activeSegments: [
       { start: 200, end: 230, label: 'loading' },
       { start: 230, end: 490, label: 'process' },
-      { start: 490, end: 520, label: 'final' },
+      { start: 490, end: 520, label: 'final'   },
     ],
   },
   {
-    id: 'cache-get',
-    name: 'cache.get',
-    parentId: 'root',
-    start: 210,
-    end: 310,
+    id: 'cache-get', name: 'cache.get', parentId: 'root', start: 210, end: 310,
     activeSegments: [
       { start: 210, end: 220, label: 'loading' },
       { start: 220, end: 295, label: 'process' },
-      { start: 295, end: 310, label: 'final' },
+      { start: 295, end: 310, label: 'final'   },
     ],
   },
   {
-    id: 'payment',
-    name: 'payments.charge',
-    parentId: 'root',
-    start: 520,
-    end: 860,
+    id: 'payment', name: 'payments.charge', parentId: 'root', start: 520, end: 860,
     activeSegments: [
       { start: 520, end: 560, label: 'loading' },
       { start: 560, end: 820, label: 'process' },
-      { start: 820, end: 860, label: 'final' },
+      { start: 820, end: 860, label: 'final'   },
     ],
   },
 ];
 
-export const Example: ChartsStory = (_, { title, description }) => {
-  const theme = useBaseTheme();
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 16, fontFamily: 'sans-serif' }}>
-      <div>
-        <h2 style={{ margin: '0 0 4px', fontSize: 16 }}>Segment phases — loading / process / final</h2>
-        <p style={{ margin: '0 0 8px', color: '#555', fontSize: 13 }}>
-          Each active segment carries a <code>label</code> (phase name). Segments with the same label
-          get the same palette color across all spans — <em>loading</em> is always the first palette
-          color, <em>process</em> the second, <em>final</em> the third. Hover a segment to see its
-          label in the tooltip.
-        </p>
-      </div>
-
-      <Chart title={title} description={description} size={{ width: '100%', height: 180 }}>
-        <Settings baseTheme={theme} />
-        <Trace
-          id="trace_segment_phases"
-          data={FIXTURE}
-          xScaleType="linear"
-        />
-      </Chart>
-
-      <p style={{ margin: 0, fontSize: 11, color: '#888' }}>
-        5 spans · 3 phases (loading / process / final) · automatic palette assignment via{' '}
-        <code>TraceActiveSegment.label</code>
-      </p>
-    </div>
-  );
-};
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description} size={{ width: '100%', height: 180 }}>
+    <Settings baseTheme={useBaseTheme()} />
+    <Trace id="trace_segment_phases" data={DATA} xScaleType="linear" />
+  </Chart>
+);
 
 Example.parameters = {
-  showHeader: true,
+  markdown:
+    'Each `TraceActiveSegment` carries an optional `label` (phase name). Segments sharing a label ' +
+    'receive the same color from `theme.colors.vizColors` across all spans — `loading` is always ' +
+    'vizColors[0], `process` [1], `final` [2]. No explicit `color` is set; palette assignment is ' +
+    'automatic. Hover a segment to see its label in the tooltip.',
 };
