@@ -177,6 +177,15 @@ export interface TraceSpec extends Spec {
    */
   traceId?: string;
   /**
+   * Message drawn centered on the canvas when `traceId` is set but matches no spans
+   * (the trace-not-found empty state). The time bar and axis still render around it.
+   * Defaults to `No spans found for trace "<traceId>"`.
+   *
+   * Note: this is a plain string, not a ReactNode — it is drawn directly on the canvas.
+   * `Settings.noResults` (which handles the separate no-data empty state) does not apply here.
+   */
+  traceNotFoundMessage?: string;
+  /**
    * When `true`, the tooltip also appears while hovering the empty region of a lane
    * (past the span's `[start, end]` extent). Defaults to `false` — the span, not the
    * whole lane, is the hover target.

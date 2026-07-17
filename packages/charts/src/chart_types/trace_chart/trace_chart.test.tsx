@@ -838,3 +838,46 @@ describe('Trace chart — laneOrder prop (Spec 15)', () => {
     unmount();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Spec 18 — trace-not-found empty state (hybrid routing, ADR 0019)
+// ---------------------------------------------------------------------------
+
+describe('Trace chart — trace-not-found empty state (Spec 18)', () => {
+  const SPANS: TraceDatum[] = [
+    { id: 'root', name: 'HTTP GET /api', traceId: 't1', start: 0, end: 500 },
+    { id: 'db', name: 'DB.query', parentId: 'root', traceId: 't1', start: 100, end: 450 },
+  ];
+
+  it('mounts without throwing when traceId matches nothing (trace-not-found case — canvas mounts, not overlay)', () => {
+    const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    expect(() => {
+      const { unmount } = render(
+        <Chart size={[800, 200]}>
+          <Trace id="spec18_not_found" data={SPANS} xScaleType="linear" traceId="does-not-exist" />
+        </Chart>,
+      );
+      unmount();
+    }).not.toThrow();
+    warnSpy.mockRestore();
+  });
+
+  it('mounts without throwing when traceNotFoundMessage is supplied', () => {
+    const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    expect(() => {
+      const { unmount } = render(
+        <Chart size={[800, 200]}>
+          <Trace
+            id="spec18_custom_msg"
+            data={SPANS}
+            xScaleType="linear"
+            traceId="does-not-exist"
+            traceNotFoundMessage="Custom: trace not found"
+          />
+        </Chart>,
+      );
+      unmount();
+    }).not.toThrow();
+    warnSpy.mockRestore();
+  });
+});

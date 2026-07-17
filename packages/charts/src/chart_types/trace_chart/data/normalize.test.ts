@@ -211,6 +211,43 @@ describe('normalize', () => {
     });
   });
 
+  describe('emptyReason', () => {
+    const data: TraceDatum[] = [
+      { id: 'a', name: 'a', start: 0, end: 10, traceId: 't1' },
+    ];
+
+    it('is "trace-not-found" when traceId is set but matches no spans', () => {
+      const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+      const result = normalize(data, 'time', 'does-not-exist');
+      expect(result.emptyReason).toBe('trace-not-found');
+      warnSpy.mockRestore();
+    });
+
+    it('is undefined for a normal render (traceId matches spans)', () => {
+      expect(normalize(data, 'time', 't1').emptyReason).toBeUndefined();
+    });
+
+    it('is undefined for combined-waterfall mode (no traceId)', () => {
+      expect(normalize(data, 'time').emptyReason).toBeUndefined();
+    });
+
+    it('is undefined when data is empty (no-data case belongs to isChartEmpty, not emptyReason)', () => {
+      expect(normalize([], 'time', 'any-id').emptyReason).toBeUndefined();
+    });
+
+    it('is undefined when traceId matches but all spans have non-finite timestamps (data-quality, not trace-not-found)', () => {
+      const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+      const badData: TraceDatum[] = [
+        { id: 'a', name: 'a', start: NaN, end: 10, traceId: 't1' },
+      ];
+      // selectTrace returns the span (traceId matched) — traceNotFound is false.
+      // dropNonFinite then removes it. emptyReason stays undefined.
+      const result = normalize(badData, 'time', 't1');
+      expect(result.emptyReason).toBeUndefined();
+      warnSpy.mockRestore();
+    });
+  });
+
   describe('colorBy', () => {
     const VIZ_COLORS = ['red', 'green', 'blue'];
 

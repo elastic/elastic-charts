@@ -120,7 +120,7 @@ interface PipelineCache {
   colorBy: TraceSpec['colorBy'];
   laneOrder: TraceSpec['laneOrder'];
   vizColors: Theme['colors']['vizColors'];
-  result: { spans: ReturnType<typeof resolveActive>; domain: { min: number; max: number } };
+  result: { spans: ReturnType<typeof resolveActive>; domain: { min: number; max: number }; emptyReason?: 'trace-not-found' };
 }
 
 /** Tween state for domainTween. Initialised to NaN so the first frame snaps to fit-all. */
@@ -473,7 +473,10 @@ class TraceComponent extends React.Component<TraceProps> {
     const { traceSpec, chartDimensions: { width, height } } = this.props;
     if (!traceSpec) return;
 
-    const { spans, domain } = this.getPipeline(traceSpec);
+    const { spans, domain, emptyReason } = this.getPipeline(traceSpec);
+    const emptyMessage = emptyReason === 'trace-not-found'
+      ? (traceSpec.traceNotFoundMessage ?? `No spans found for trace "${traceSpec.traceId}"`)
+      : null;
     const style = this.getStyle();
 
     // --- Zoom/pan → target focus domain ---
@@ -518,6 +521,7 @@ class TraceComponent extends React.Component<TraceProps> {
       this.focusedLaneIndex,
       this.getEffectiveSelection(),
       this.spanIdToLane,
+      emptyMessage,
     );
 
     // DPR scaling: renderer is dpr-agnostic, caller sets the transform each frame.
@@ -584,7 +588,7 @@ class TraceComponent extends React.Component<TraceProps> {
   // Memoized data pipeline
   // -------------------------------------------------------------------------
 
-  private getPipeline(spec: TraceSpec): { spans: ReturnType<typeof resolveActive>; domain: { min: number; max: number } } {
+  private getPipeline(spec: TraceSpec): { spans: ReturnType<typeof resolveActive>; domain: { min: number; max: number }; emptyReason?: 'trace-not-found' } {
     const { vizColors } = this.props.theme.colors;
     const cache = this.pipelineCache;
     if (
@@ -606,7 +610,7 @@ class TraceComponent extends React.Component<TraceProps> {
     // on every rAF frame. buildGeometry's contract requires pre-ordered input.
     const resolved = resolveActive(normalizeResult.spans);
     const spans = orderLanes(resolved, spec.laneOrder ?? 'tree');
-    const result = { spans, domain: normalizeResult.domain };
+    const result = { spans, domain: normalizeResult.domain, emptyReason: normalizeResult.emptyReason };
     this.pipelineCache = {
       dataRef: spec.data,
       xScaleType: spec.xScaleType,

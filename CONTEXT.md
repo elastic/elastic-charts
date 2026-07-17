@@ -126,8 +126,12 @@ _Avoid_: link (reserved for OTel's looser span-to-span `links` relation), depend
 blocking semantics), arrow (a rendering term, not a domain concept).
 
 **Empty state**:
-The condition when the trace chart has no lanes to render. Two distinct cases: `no-data` (the `data`
-prop was empty — no spans supplied at all) and `trace-not-found` (spans were supplied but the
-specified `traceId` matched none of them). Each case renders a distinct centered message on the
-canvas. The combined-waterfall case (spans present, no `traceId` filter) is never an empty state.
-_Avoid_: empty chart, no results (those are library-wide terms for other chart types).
+The condition when the trace chart has no lanes to render. Two distinct cases, handled differently:
+`no-data` (the `data` prop was empty — no spans supplied at all) delegates to the **library empty
+state** — the `NoResults` DOM overlay, overridable via `Settings.noResults` — and the trace canvas
+does not mount (`isChartEmpty` returns `true`). `trace-not-found` (spans were supplied but the
+specified `traceId` matched none of them) mounts the chart and renders the full time-bar/axis
+machinery with an empty plot and a centered message on the canvas. The combined-waterfall case
+(spans present, no `traceId` filter) is never an empty state.
+_Avoid_: empty chart (ambiguous); describing the `no-data` library overlay as a "canvas" message
+(it is a DOM overlay, distinct from the `trace-not-found` canvas draw).

@@ -42,7 +42,27 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
     // Delegate time bar (raster tick engine + vertical gridlines) — Spec 4 module.
     drawTimeBar(ctx, geom, style);
 
-    if (spans.length === 0) return;
+    if (spans.length === 0) {
+      if (geom.emptyMessage) {
+        const emptyFont: TextFont = {
+          fontStyle: 'normal',
+          fontVariant: 'normal',
+          fontWeight: 'normal',
+          fontFamily: style.timeBarLabel.fontFamily,
+          textColor: style.timeBarLabel.color,
+          fontSize: style.timeBarLabel.fontSize,
+          align: 'center',
+          baseline: 'middle',
+        };
+        renderText(
+          ctx,
+          { x: plot.left + plot.width / 2, y: plot.top + plot.height / 2 },
+          geom.emptyMessage,
+          emptyFont,
+        );
+      }
+      return;
+    }
 
     // --- Viewport culling ---
     // Only iterate lane indices whose top edge falls within the visible plot rect.

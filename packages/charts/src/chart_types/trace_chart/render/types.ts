@@ -83,6 +83,11 @@ export interface TraceGeometry {
    * Returns `plot.left` when the domain is zero-width (degenerate guard).
    */
   scale: (tMs: number) => number;
+  /**
+   * When non-null, drawn centered on the canvas plot area after the time bar renders.
+   * Set by `frame()` in `trace_chart.tsx` for the `trace-not-found` empty state; `null` otherwise.
+   */
+  emptyMessage: string | null;
 }
 
 /**

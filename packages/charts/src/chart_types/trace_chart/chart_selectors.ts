@@ -21,11 +21,7 @@ export const chartSelectorsFactory = createChartSelectorsFactory({
   isInitialized: () => InitStatus.Initialized,
   isChartEmpty: (globalState): boolean => {
     const spec = getSpecsFromStore<TraceSpec>(globalState.specs, ChartType.Trace, SpecType.Series)[0];
-    if (!spec || spec.data.length === 0) return true;
-    // Mirrors the traceId filter in normalize() without re-emitting dev-warnings
-    // (the RAF pipeline already emits them when it runs).
-    if (spec.traceId != null) return !spec.data.some((d) => d.traceId === spec.traceId);
-    return false;
+    return !spec || spec.data.length === 0;
   },
   getTooltipAnchor: () => ({ x: 0, y: 0, width: 0, height: 0 }),
   getTooltipInfo: () => ({ header: null, values: [] }),

@@ -1,5 +1,8 @@
 # Spec 18 — Empty-state distinction
 
+> **Implementation note:** the adopted approach uses a hybrid ownership model that differs from the
+> original spec. See [ADR 0019](../0019-empty-state-ownership.md) for the superseding decisions.
+
 **Goal:** render a distinct centered message on the canvas when the trace chart has no lanes to
 render. Two cases require different messages:
 - `"No data"` — the `data` prop was empty (no spans supplied at all).

@@ -112,6 +112,7 @@ function makeGeom(overrides: Partial<TraceGeometry> = {}): TraceGeometry {
     focusedLaneIndex: null,
     resolvedSelection: [],
     scale: defaultScale,
+    emptyMessage: null,
     ...overrides,
   };
 }
@@ -495,5 +496,42 @@ describe('canvas2dRenderer', () => {
     const geom = makeGeom();
     expect(canvas2dRenderer.pickLane(0, 32, geom)).toBe(0);
     expect(canvas2dRenderer.pickLane(0, 0, geom)).toBe(-1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: emptyMessage (trace-not-found canvas draw)
+// ---------------------------------------------------------------------------
+
+describe('draw — emptyMessage (trace-not-found empty state)', () => {
+  it('draws a centered fillText when spans is empty and emptyMessage is set', () => {
+    const ctx = makeCtx();
+    draw(ctx, makeGeom({ spans: [], emptyMessage: 'No spans found for trace "x"' }), style);
+    // renderText calls fillText once with the message.
+    expect(ctx.fillText).toHaveBeenCalledTimes(1);
+    const [text] = (ctx.fillText as jest.Mock).mock.calls[0] as [string, number, number];
+    expect(text).toBe('No spans found for trace "x"');
+  });
+
+  it('still calls drawTimeBar before drawing the message (time bar must remain visible)', () => {
+    const ctx = makeCtx();
+    draw(ctx, makeGeom({ spans: [], emptyMessage: 'trace not found' }), style);
+    expect(mockDrawTimeBar).toHaveBeenCalledTimes(1);
+  });
+
+  it('draws no fillText when spans is empty and emptyMessage is null', () => {
+    const ctx = makeCtx();
+    draw(ctx, makeGeom({ spans: [], emptyMessage: null }), style);
+    expect(ctx.fillText).not.toHaveBeenCalled();
+  });
+
+  it('draws no fillText when spans is non-empty and emptyMessage is set (message only for empty spans)', () => {
+    const ctx = makeCtx();
+    // emptyMessage is ignored when there are spans to render.
+    draw(ctx, makeGeom({ emptyMessage: 'should not show' }), style);
+    // fillText IS called but for gutter labels (3 spans), not the empty message.
+    // The key assertion is that the message string never appears.
+    const calls = (ctx.fillText as jest.Mock).mock.calls as [string, number, number][];
+    expect(calls.every(([t]) => t !== 'should not show')).toBe(true);
   });
 });

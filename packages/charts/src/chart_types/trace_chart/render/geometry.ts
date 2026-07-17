@@ -35,6 +35,7 @@ export function buildGeometry(
   focusedLaneIndex: number | null = null,
   selection: TraceSelection = [],
   spanIdToLane: ReadonlyMap<string, number> = new Map(),
+  emptyMessage: string | null = null,
 ): TraceGeometry {
   // spans is already start-sorted by the pipeline cache (O(N log N) once per data change, not per frame).
   // domain is pre-computed by normalize() and passed in; no per-frame reduce needed.
@@ -93,5 +94,6 @@ export function buildGeometry(
     focusedLaneIndex,
     resolvedSelection,
     scale,
+    emptyMessage,
   };
 }

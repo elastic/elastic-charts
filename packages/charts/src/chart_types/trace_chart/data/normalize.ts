@@ -18,6 +18,7 @@ type XScaleType = TraceSpec['xScaleType'];
 export interface NormalizeResult {
   spans: NormalizedSpan[];
   domain: { min: number; max: number };
+  emptyReason?: 'trace-not-found';
 }
 
 /**
@@ -52,8 +53,13 @@ export function normalize(
   const segmentColorMap = vizColors !== undefined ? buildSegmentColorMap(data, vizColors) : undefined;
   const flat = parseSimple(data, colorBy, colorMap, segmentColorMap);
   const selected = selectTrace(flat, traceId);
+  // Glossary-precise: trace-not-found means the traceId filter matched nothing, not that all
+  // matched spans happened to have non-finite timestamps (dropNonFinite below handles that case).
+  const traceNotFound = traceId !== undefined && flat.length > 0 && selected.length === 0;
   const finite = dropNonFinite(selected);
-  return project(finite, xScaleType);
+  const result = project(finite, xScaleType);
+  if (traceNotFound) result.emptyReason = 'trace-not-found';
+  return result;
 }
 
 function parseSimple(
