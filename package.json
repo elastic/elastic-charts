@@ -133,6 +133,7 @@
     "eslint-plugin-unicorn": "^51.0.1",
     "html-webpack-plugin": "^4.5.2",
     "jest": "^30.0.0",
+    "jest-canvas-mock": "^2.5.8",
     "jest-environment-jsdom": "^30.0.0",
     "jest-extended": "^6.0.0",
     "jest-matcher-utils": "^30.0.0",
