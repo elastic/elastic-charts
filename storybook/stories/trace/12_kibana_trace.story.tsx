@@ -24,7 +24,7 @@ const DATA = fromOtlp(FRONTEND_WEB_OTLP_ENVELOPE);
 export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description} size={{ width: '100%', height: 350 }}>
     <Settings baseTheme={useBaseTheme()} />
-    <Trace id="trace_kibana" data={DATA} xScaleType="linear" traceId="trace1" colorBy={BY_SERVICE} />
+    <Trace id="trace_kibana" data={DATA} xScaleType="linear" colorBy={BY_SERVICE} />
   </Chart>
 );
 

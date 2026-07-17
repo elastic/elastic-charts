@@ -17,19 +17,29 @@ type Segment = { start: number; end: number };
  * normalization step) pass through unchanged. Input spans are not mutated. See ADR 0003.
  * @internal
  */
-export function resolveActive(spans: NormalizedSpan[]): NormalizedSpan[] {
-  // Build parentId → direct children map in a single pass.
-  const childrenByParentId = new Map<string, NormalizedSpan[]>();
+/**
+ * Builds a `parentId → direct children` map from the span array in a single pass.
+ * Exported so `orderLanes` can share the same parentage definition without duplicating the logic.
+ * @internal
+ */
+export function buildChildrenMap(spans: NormalizedSpan[]): Map<string, NormalizedSpan[]> {
+  const map = new Map<string, NormalizedSpan[]>();
   for (const span of spans) {
     if (span.parentId !== undefined) {
-      let siblings = childrenByParentId.get(span.parentId);
+      let siblings = map.get(span.parentId);
       if (!siblings) {
         siblings = [];
-        childrenByParentId.set(span.parentId, siblings);
+        map.set(span.parentId, siblings);
       }
       siblings.push(span);
     }
   }
+  return map;
+}
+
+export function resolveActive(spans: NormalizedSpan[]): NormalizedSpan[] {
+  // Build parentId → direct children map in a single pass.
+  const childrenByParentId = buildChildrenMap(spans);
 
   return spans.map((span) => {
     // Pass through spans that already carry explicit activeSegments.

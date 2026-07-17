@@ -22,7 +22,7 @@ const BY_RESOURCE_TYPE: TraceColorAccessor = (datum) => (datum.meta as NetworkMe
 export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description} size={{ width: '100%', height: 350 }}>
     <Settings baseTheme={useBaseTheme()} />
-    <Trace id="trace_chrome_network" data={CHROME_NETWORK_SPANS} xScaleType="linear" colorBy={BY_RESOURCE_TYPE} />
+    <Trace id="trace_chrome_network" data={CHROME_NETWORK_SPANS} xScaleType="linear" colorBy={BY_RESOURCE_TYPE} laneOrder="chronological" />
   </Chart>
 );
 

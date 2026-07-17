@@ -13,6 +13,7 @@ import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
 import { normalize } from './data/normalize';
+import { orderLanes } from './data/order_lanes';
 import { resolveActive, waitingSegments } from './data/self_time';
 import type { NormalizedSpan } from './data/types';
 import { canvas2dRenderer, pickRegion } from './render/canvas2d_renderer';
@@ -117,6 +118,7 @@ interface PipelineCache {
   xScaleType: string;
   traceId: string | undefined;
   colorBy: TraceSpec['colorBy'];
+  laneOrder: TraceSpec['laneOrder'];
   vizColors: Theme['colors']['vizColors'];
   result: { spans: ReturnType<typeof resolveActive>; domain: { min: number; max: number } };
 }
@@ -591,6 +593,7 @@ class TraceComponent extends React.Component<TraceProps> {
       cache.xScaleType === spec.xScaleType &&
       cache.traceId === spec.traceId &&
       cache.colorBy === spec.colorBy &&
+      cache.laneOrder === spec.laneOrder &&
       cache.vizColors === vizColors
     ) {
       return cache.result;
@@ -599,16 +602,17 @@ class TraceComponent extends React.Component<TraceProps> {
     // Recompute: normalize now takes TraceDatum[] directly — OTel data arrives pre-converted by fromOtlp.
     const normalizeResult = normalize(spec.data, spec.xScaleType, spec.traceId, spec.colorBy, vizColors);
 
-    // Sort once here (O(N log N) per data/scale change) so buildGeometry doesn't re-sort
-    // on every rAF frame. buildGeometry's contract requires pre-sorted input.
+    // Order lanes once here (O(N log N) per data/scale change) so buildGeometry doesn't re-order
+    // on every rAF frame. buildGeometry's contract requires pre-ordered input.
     const resolved = resolveActive(normalizeResult.spans);
-    const spans = resolved.slice().sort((a, b) => a.start - b.start);
+    const spans = orderLanes(resolved, spec.laneOrder ?? 'tree');
     const result = { spans, domain: normalizeResult.domain };
     this.pipelineCache = {
       dataRef: spec.data,
       xScaleType: spec.xScaleType,
       traceId: spec.traceId,
       colorBy: spec.colorBy,
+      laneOrder: spec.laneOrder,
       vizColors,
       result,
     };

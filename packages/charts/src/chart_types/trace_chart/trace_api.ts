@@ -196,6 +196,20 @@ export interface TraceSpec extends Spec {
    */
   colorBy?: TraceColorAccessor;
   /**
+   * Controls the order in which spans are assigned to lanes (top → bottom).
+   *
+   * - `'tree'` (**default**): depth-first `parentId` nesting — each parent is immediately followed
+   *   by its descendants, recursively; siblings and roots are ordered by `start` ascending.
+   *   Matches the Kibana APM trace view. In multi-trace mode (no `traceId` filter) this produces
+   *   a forest: each subtree is grouped together rather than interleaved.
+   * - `'chronological'`: ascending by span `start` (Chrome DevTools Network panel style). Use this
+   *   when the trace has no meaningful nesting or when start-time ordering is the primary concern.
+   *
+   * See [ADR 0018](../../../../../../../docs/adr/trace-viz/0018-lane-ordering-tree-default.md).
+   * @defaultValue 'tree'
+   */
+  laneOrder?: 'tree' | 'chronological';
+  /**
    * Controls which gesture triggers the brush-to-zoom rubber-band.
    * - `'pan'` (default): plain drag pans; `Shift`+drag draws the brush.
    * - `'brush'`: plain drag draws the brush; `Shift`+drag pans.

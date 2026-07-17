@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { resolveActive } from './self_time';
+import { buildChildrenMap, resolveActive } from './self_time';
 import type { NormalizedSpan } from './types';
 
 /** Minimal NormalizedSpan factory — only fields relevant to self-time derivation. */
@@ -142,6 +142,42 @@ describe('resolveActive', () => {
       { start: 0, end: 200 },
       { start: 400, end: 500 },
       { start: 700, end: 1000 },
+    ]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// buildChildrenMap
+// ---------------------------------------------------------------------------
+
+describe('buildChildrenMap', () => {
+  function span(id: string, parentId?: string): NormalizedSpan {
+    return { id, name: id, parentId, start: 0, end: 10, activeSegments: [], meta: {} as never };
+  }
+
+  it('returns empty map for spans with no parentId', () => {
+    const map = buildChildrenMap([span('a'), span('b')]);
+    expect(map.size).toBe(0);
+  });
+
+  it('groups children under their parentId', () => {
+    const spans = [span('root'), span('c1', 'root'), span('c2', 'root'), span('gc', 'c1')];
+    const map = buildChildrenMap(spans);
+    expect(map.get('root')!.map((s) => s.id)).toEqual(['c1', 'c2']);
+    expect(map.get('c1')!.map((s) => s.id)).toEqual(['gc']);
+    expect(map.has('c2')).toBe(false);
+  });
+
+  it('resolveActive output is unchanged by the refactor', () => {
+    // Regression: resolveActive must behave identically before and after extracting buildChildrenMap.
+    const root = span('root');
+    const child = { ...span('child', 'root'), start: 2, end: 6 };
+    const rootFull = { ...root, start: 0, end: 10 };
+    const result = resolveActive([rootFull, child]);
+    const rootResult = result.find((s) => s.id === 'root')!;
+    expect(rootResult.activeSegments).toEqual([
+      { start: 0, end: 2 },
+      { start: 6, end: 10 },
     ]);
   });
 });

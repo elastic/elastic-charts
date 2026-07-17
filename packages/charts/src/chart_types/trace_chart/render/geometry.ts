@@ -16,8 +16,8 @@ import type { Size } from '../../../utils/dimensions';
  * Pure layout builder for the trace waterfall chart. Partitions the canvas and builds a linear
  * ms→px scale closure. No DOM access, no mutable external state.
  *
- * **Contract:** `spans` must already be sorted ascending by `start` (the caller's responsibility —
- * sorting is done once per data change in the pipeline cache, not on every rAF frame).
+ * **Contract:** `spans` must already be in lane order (the caller's responsibility — `orderLanes`
+ * is called once per data change in the pipeline cache, not on every rAF frame; see ADR 0018).
  * `domain` is the full data extent across all spans, also computed once by the pipeline.
  *
  * Contrast with Timeslip's zoom/pan, which reads mutable closure state at draw time; here every

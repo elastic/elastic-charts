@@ -7,6 +7,7 @@
  */
 
 import { normalize } from '../../data/normalize';
+import { orderLanes } from '../../data/order_lanes';
 import { resolveActive } from '../../data/self_time';
 import type { NormalizedSpan } from '../../data/types';
 import { computeSelfTime, formatMs } from '../../render/tooltip';
@@ -36,7 +37,9 @@ export interface TraceTableRow {
  * Derives `NormalizedSpan[]` from the `TraceSpec` via the existing `normalize`/`resolveActive`
  * pipeline. This is a second memoized call site (the component owns the first); same inputs →
  * identical output per ADR 0004 (canvas/DOM seam). Keyed on `(spec.data, spec.xScaleType,
- * spec.traceId, spec.colorBy, vizColors)` matching the component's `pipelineCache` keys.
+ * spec.traceId, spec.colorBy, spec.laneOrder, vizColors)` matching the component's `pipelineCache`
+ * keys — `laneOrder` is included so the SR table's lane indices stay identical to the visual order
+ * (Spec 12/13 depend on this consistency).
  *
  * Returns `null` when no spec is present.
  * @internal
@@ -49,7 +52,7 @@ const getNormalizedSpans = createCustomCachedSelector(
   (spec, vizColors): { spans: NormalizedSpan[]; domain: { min: number; max: number } } | null => {
     if (!spec || spec.data.length === 0) return null;
     const result = normalize(spec.data, spec.xScaleType, spec.traceId, spec.colorBy, vizColors);
-    const spans = resolveActive(result.spans).slice().sort((a, b) => a.start - b.start);
+    const spans = orderLanes(resolveActive(result.spans), spec.laneOrder ?? 'tree');
     return { spans, domain: result.domain };
   },
 );
