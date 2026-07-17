@@ -7,7 +7,7 @@
  */
 
 import type { Color } from '../../../common/colors';
-import type { TraceColorAccessor, TraceDatum, TraceActiveSegment } from '../trace_api';
+import type { TraceColorAccessor, TraceDatum } from '../trace_api';
 
 /**
  * Builds a map from color-group key → palette color by iterating `data` once in order.
@@ -58,7 +58,7 @@ export function buildSegmentColorMap(data: TraceDatum[], vizColors: Color[]): Ma
 
   let counter = 0;
   for (const datum of data) {
-    for (const segment of (datum.activeSegments ?? []) as TraceActiveSegment[]) {
+    for (const segment of (datum.activeSegments ?? [])) {
       const label = segment.label;
       if (label === undefined || map.has(label)) continue;
       map.set(label, vizColors[counter % vizColors.length]!);

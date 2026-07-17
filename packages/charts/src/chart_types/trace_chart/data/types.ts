@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { Color } from '../../../common/colors';
-import type { TraceDatum } from '../trace_api';
+import type { TraceDatum, TraceActiveSegment } from '../trace_api';
 
 /**
  * A span prepared for rendering: filtered by `traceId`, projected onto the x-scale
@@ -28,9 +27,12 @@ export interface NormalizedSpan {
    * them with self-time derivation (ADR 0003); copied from TraceDatum.activeSegments if the caller
    * supplied them explicitly, with `color` resolved to the label-palette color (or the explicit
    * per-segment override) by the normalize pipeline.
+   *
+   * Uses the public `TraceActiveSegment` type directly — the internal shape is identical, and
+   * sharing the type eliminates a parallel anonymous struct that would have to be kept in sync.
    */
-  activeSegments: { start: number; end: number; label?: string; color?: Color }[];
-  color?: Color;
+  activeSegments: TraceActiveSegment[];
+  color?: TraceActiveSegment['color'];
   /** The original TraceDatum; exposed to tooltip datum and element-event callbacks. */
   meta: TraceDatum;
 }

@@ -7,6 +7,7 @@
  */
 
 import { colorToRgba } from '../../../common/color_library_wrappers';
+import { Colors } from '../../../common/colors';
 import { withContext } from '../../../renderers/canvas';
 import { renderMultiLine } from '../../../renderers/canvas/primitives/line';
 import { renderRect } from '../../../renderers/canvas/primitives/rect';
@@ -20,12 +21,8 @@ import type { HoverRegion, PickResult, TraceGeometry, TraceRenderer, TraceStyle 
 /** Padding above/below active-segment rects within a lane (px). Mirrors TICK_HEIGHT in time_bar.ts. */
 const LANE_PADDING = 3;
 
-/**
- * Zero-width stroke used for active-segment rects (filled only, no visible border).
- * Using a transparent [0,0,0,0] color satisfies the `Stroke.color: RgbaTuple` constraint without
- * importing RgbaTuple directly.
- */
-const NO_STROKE: Stroke = { color: [0, 0, 0, 0] as [number, number, number, number], width: 0 };
+/** Zero-width stroke used for active-segment rects (filled only, no visible border). */
+const NO_STROKE: Stroke = { color: Colors.Transparent.rgba, width: 0 };
 
 /**
  * Draw the full trace waterfall onto `ctx`. **DPR-agnostic**: the caller must call
@@ -159,7 +156,7 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
     // Stroke-only outline per resolved selection entry; no fill so ADR 0006 colorBy fills are not distorted.
     const { resolvedSelection } = geom;
     if (resolvedSelection.length > 0) {
-      const NO_FILL: Fill = { color: [0, 0, 0, 0] as [number, number, number, number] };
+      const NO_FILL: Fill = { color: Colors.Transparent.rgba };
       const selectionStroke: Stroke = {
         color: colorToRgba(style.selectedSegmentStroke),
         width: style.selectedSegmentStrokeWidth,
@@ -268,4 +265,4 @@ export function pickRegion(x: number, y: number, geom: TraceGeometry): PickResul
 }
 
 /** @internal */
-export const canvas2dRenderer: TraceRenderer = { draw, pickLane };
+export const canvas2dRenderer: TraceRenderer = { draw, pickLane, pickRegion };

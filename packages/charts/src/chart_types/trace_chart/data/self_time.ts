@@ -42,13 +42,30 @@ export function resolveActive(spans: NormalizedSpan[]): NormalizedSpan[] {
 }
 
 /**
+ * Per-span memoization for `waitingSegments`. Keyed on the `NormalizedSpan` object reference,
+ * which is stable for the lifetime of a pipeline cache entry (a new `normalize` run produces new
+ * span objects, so entries are automatically evicted when the component's `pipelineCache` drops
+ * its reference — WeakMap keys are GC-eligible as soon as the span object is unreachable).
+ *
+ * Without this cache, `waitingSegments` (O(n log n) via `gapSegments`) is recomputed at ~4 call
+ * sites per hover event: canvas2d draw pass, geometry resolveSelection, tooltip builder, pickRegion.
+ */
+const waitingSegmentsCache = new WeakMap<NormalizedSpan, Segment[]>();
+
+/**
  * Returns the waiting (non-active) segments of a span: the complement of `span.activeSegments`
  * within `[span.start, span.end]`. Used by `pickRegion` and the selection-highlight pass to
  * address waiting gaps by index (symmetric with active segments). See ADR 0011 Decision 5.
+ *
+ * Result is memoized per span object reference (see `waitingSegmentsCache` above).
  * @public
  */
 export function waitingSegments(span: NormalizedSpan): Segment[] {
-  return gapSegments(span.start, span.end, span.activeSegments);
+  const cached = waitingSegmentsCache.get(span);
+  if (cached !== undefined) return cached;
+  const result = gapSegments(span.start, span.end, span.activeSegments);
+  waitingSegmentsCache.set(span, result);
+  return result;
 }
 
 /**

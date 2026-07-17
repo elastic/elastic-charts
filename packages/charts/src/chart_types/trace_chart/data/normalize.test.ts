@@ -476,3 +476,71 @@ describe('normalize', () => {
     });
   });
 });
+
+// ---------------------------------------------------------------------------
+// dropNonFinite — NaN / Infinity guard (Spec: Stage D-1)
+// ---------------------------------------------------------------------------
+
+describe('normalize — dropNonFinite guard', () => {
+  const VALID: TraceDatum = { id: 'v', name: 'valid', start: 0, end: 100 };
+
+  it('passes through spans with finite timestamps unchanged', () => {
+    const { spans, domain } = normalize([VALID], 'linear');
+    expect(spans).toHaveLength(1);
+    expect(domain).toEqual({ min: 0, max: 100 });
+  });
+
+  it('drops a span whose start is NaN and keeps valid siblings', () => {
+    const bad: TraceDatum = { id: 'bad', name: 'bad', start: NaN, end: 100 };
+    const { spans, domain } = normalize([VALID, bad], 'linear');
+    expect(spans).toHaveLength(1);
+    expect(spans[0]?.id).toBe('v');
+    expect(Number.isFinite(domain.min)).toBe(true);
+    expect(Number.isFinite(domain.max)).toBe(true);
+  });
+
+  it('drops a span whose end is NaN', () => {
+    const bad: TraceDatum = { id: 'bad', name: 'bad', start: 0, end: NaN };
+    const { spans } = normalize([bad, VALID], 'linear');
+    expect(spans).toHaveLength(1);
+    expect(spans[0]?.id).toBe('v');
+  });
+
+  it('drops a span whose start is +Infinity', () => {
+    const bad: TraceDatum = { id: 'bad', name: 'bad', start: Infinity, end: 100 };
+    const { spans } = normalize([bad, VALID], 'linear');
+    expect(spans).toHaveLength(1);
+  });
+
+  it('returns empty result and zero domain when ALL spans are non-finite', () => {
+    const bad: TraceDatum = { id: 'bad', name: 'bad', start: NaN, end: NaN };
+    const { spans, domain } = normalize([bad], 'linear');
+    expect(spans).toHaveLength(0);
+    expect(domain).toEqual({ min: 0, max: 0 });
+  });
+
+  it('strips only the non-finite activeSegments from an otherwise-valid span', () => {
+    const span: TraceDatum = {
+      id: 'v', name: 'valid', start: 0, end: 100,
+      activeSegments: [
+        { start: 10, end: 40 },           // finite — kept
+        { start: NaN, end: 60 },          // NaN start — dropped
+        { start: 50, end: Infinity },     // Infinity end — dropped
+        { start: 70, end: 90 },           // finite — kept
+      ],
+    };
+    const { spans } = normalize([span], 'linear');
+    expect(spans).toHaveLength(1);
+    expect(spans[0]?.activeSegments).toHaveLength(2);
+    expect(spans[0]?.activeSegments[0]).toMatchObject({ start: 10, end: 40 });
+    expect(spans[0]?.activeSegments[1]).toMatchObject({ start: 70, end: 90 });
+  });
+
+  it('emits a Logger.warn for each batch of dropped spans', () => {
+    const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const bad: TraceDatum = { id: 'bad', name: 'bad', start: NaN, end: 200 };
+    normalize([VALID, bad], 'linear');
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('dropped 1 span'));
+    warnSpy.mockRestore();
+  });
+});

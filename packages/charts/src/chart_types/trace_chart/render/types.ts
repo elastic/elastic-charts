@@ -118,4 +118,10 @@ export interface TraceRenderer {
   draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: TraceStyle): void;
   /** Returns the 0-based span-array index under (x, y), or -1 if outside all lanes. */
   pickLane(x: number, y: number, geom: TraceGeometry): number;
+  /**
+   * Fine-grained hit test: returns the segment region (active / waiting) under (x, y), or null
+   * when the pointer is outside all segments. This is the picker used by hover, click, and
+   * keyboard interaction — `pickLane` only resolves the lane.
+   */
+  pickRegion(x: number, y: number, geom: TraceGeometry): PickResult | null;
 }

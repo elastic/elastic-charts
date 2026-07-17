@@ -36,12 +36,18 @@ import { Chart } from '../../components/chart';
 import { Settings } from '../../specs';
 import { Trace } from './trace_api';
 import type { TraceDatum } from './trace_api';
+import { makeCtx } from './trace_test_helpers';
 
 /** Minimal fixture: root + one child, enough to exercise normalize → resolveActive. */
 const FEW_SPANS: TraceDatum[] = [
   { id: 'root', name: 'HTTP GET /api', traceId: 't1', start: 0, end: 500 },
   { id: 'db', name: 'DB.query', parentId: 'root', traceId: 't1', start: 100, end: 450 },
 ];
+
+// Importing trace_test_helpers activates jest-canvas-mock, which patches
+// HTMLCanvasElement.prototype.getContext for this file. All tests below therefore
+// run with a real canvas stub — the RAF→frame→draw path executes instead of
+// short-circuiting at `if (!this.ctx) return`.
 
 describe('Trace chart — smoke mount', () => {
   it('mounts without throwing for xScaleType="linear"', () => {
@@ -479,5 +485,65 @@ describe('Trace chart — selection modifier semantics (Spec 13.1)', () => {
     expect(() => unmount()).not.toThrow();
     // Advancing timers after unmount should be a no-op (timer was cleared in componentWillUnmount).
     expect(() => jest.runAllTimers()).not.toThrow();
+  });
+});
+
+describe('Trace chart — RAF → draw path (Stage 0 canvas test harness)', () => {
+  /**
+   * These tests verify that the full frame() → buildGeometry → canvas2dRenderer.draw() path
+   * executes without throwing, using the makeCtx() stub installed in the beforeAll above.
+   *
+   * This is the safety net for the structural refactors (Stages A/B/C): if state wiring or struct
+   * grouping breaks the connection between component state and the render pipeline, this test
+   * catches it — whereas the earlier smoke tests short-circuit at `if (!this.ctx) return`.
+   *
+   * jest.useFakeTimers() is required so jest.runAllTimers() fires the scheduled requestAnimationFrame
+   * callback synchronously, exercising the full rAF → frame → draw pipeline in a single test.
+   */
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('executes frame() → buildGeometry → draw without throwing (xScaleType="linear")', () => {
+    expect(() => {
+      const { unmount } = render(
+        <Chart size={[800, 200]}>
+          <Trace id="draw1" data={FEW_SPANS} xScaleType="linear" />
+        </Chart>,
+      );
+      // Advances the scheduled rAF from componentDidMount's scheduleRender(), exercising:
+      // frame() guard passes (ctx is non-null) → getPipeline() → getStyle() → buildGeometry() →
+      // ctx.setTransform() → canvas2dRenderer.draw() → drawTimeBar() → all rendering primitives.
+      jest.runAllTimers();
+      unmount();
+    }).not.toThrow();
+  });
+
+  it('executes frame() → buildGeometry → draw without throwing (xScaleType="time")', () => {
+    expect(() => {
+      const { unmount } = render(
+        <Chart size={[800, 200]}>
+          <Trace id="draw2" data={FEW_SPANS} xScaleType="time" />
+        </Chart>,
+      );
+      jest.runAllTimers();
+      unmount();
+    }).not.toThrow();
+  });
+
+  it('executes frame() without throwing on empty data', () => {
+    expect(() => {
+      const { unmount } = render(
+        <Chart size={[800, 200]}>
+          <Trace id="draw3" data={[]} xScaleType="linear" />
+        </Chart>,
+      );
+      jest.runAllTimers();
+      unmount();
+    }).not.toThrow();
   });
 });

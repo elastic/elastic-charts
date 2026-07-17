@@ -58,8 +58,8 @@ export type OtelInput = OtlpEnvelope | OtelSpan[];
  *
  * Malformed values (non-integer strings such as `"12.5"` or `"abc"`) would throw a `SyntaxError`
  * inside `BigInt()`. Since OTLP data arrives from external pipelines, we guard with a try/catch and
- * return `NaN`. Upstream code should filter spans whose `start`/`end` are `NaN` before they reach
- * geometry/rendering.
+ * return `NaN`. The `normalize` pipeline's `dropNonFinite` stage filters out any spans whose
+ * `start`/`end` are `NaN` before they reach geometry/rendering.
  * @internal
  */
 export function nanoToMs(nano: string | number | bigint): number {

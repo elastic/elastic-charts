@@ -52,7 +52,8 @@ export function normalize(
   const segmentColorMap = vizColors !== undefined ? buildSegmentColorMap(data, vizColors) : undefined;
   const flat = parseSimple(data, colorBy, colorMap, segmentColorMap);
   const selected = selectTrace(flat, traceId);
-  return project(selected, xScaleType);
+  const finite = dropNonFinite(selected);
+  return project(finite, xScaleType);
 }
 
 function parseSimple(
@@ -101,6 +102,42 @@ function selectTrace(spans: NormalizedSpan[], traceId?: string): NormalizedSpan[
     );
   }
   return spans;
+}
+
+/**
+ * Drops spans whose `start` or `end` is non-finite (NaN / ±Infinity) and warns about the count.
+ * Also strips individual `activeSegments` with non-finite bounds from otherwise-valid spans.
+ *
+ * This is the single choke point that defends both the direct `TraceDatum[]` path and the OTel
+ * path (`fromOtlp` → `nanoToMs` → NaN on BigInt parse failure) from poisoning the domain.
+ * `Math.min(x, NaN) === NaN`, so a single bad span in `project`'s reduce would blank the entire
+ * chart. See otel_adapter.ts comment at L60-62 which promised this filter would exist here.
+ *
+ * Downstream safety: colorMaps are built over the full pre-filter input (color stability is
+ * unaffected), and selection refs are spanId-based (lane reindexing after a drop is correct).
+ */
+function dropNonFinite(spans: NormalizedSpan[]): NormalizedSpan[] {
+  const valid = spans
+    .filter((span) => {
+      if (!Number.isFinite(span.start) || !Number.isFinite(span.end)) {
+        return false;
+      }
+      return true;
+    })
+    .map((span) => {
+      const finiteSegments = span.activeSegments.filter(
+        (seg) => Number.isFinite(seg.start) && Number.isFinite(seg.end),
+      );
+      return finiteSegments.length === span.activeSegments.length ? span : { ...span, activeSegments: finiteSegments };
+    });
+
+  const droppedSpans = spans.length - valid.length;
+  if (droppedSpans > 0) {
+    Logger.warn(
+      `Trace chart: dropped ${droppedSpans} span${droppedSpans === 1 ? '' : 's'} with non-finite start/end timestamps (NaN or ±Infinity). Check your data source for failed timestamp conversions.`,
+    );
+  }
+  return valid;
 }
 
 function project(spans: NormalizedSpan[], xScaleType: XScaleType): NormalizeResult {

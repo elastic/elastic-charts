@@ -19,6 +19,7 @@ import { draw, pickLane, canvas2dRenderer } from './canvas2d_renderer';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceGeometry, TraceStyle } from './types';
 import type { TraceDatum } from '../trace_api';
+import { makeCtx } from '../trace_test_helpers';
 
 // ---------------------------------------------------------------------------
 // Mocks: replace drawTimeBar so the renderer test is isolated from the time bar.
@@ -33,48 +34,8 @@ jest.mock('./time_bar', () => ({
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-/**
- * Hand-rolled CanvasRenderingContext2D stub with jest.fn() spies on every method
- * the renderer's draw primitives touch. Extend this when additional ctx methods
- * are needed by future draw calls.
- */
-function makeCtx(): CanvasRenderingContext2D {
-  return {
-    save: jest.fn(),
-    restore: jest.fn(),
-    clearRect: jest.fn(),
-    beginPath: jest.fn(),
-    rect: jest.fn(),
-    moveTo: jest.fn(),
-    lineTo: jest.fn(),
-    stroke: jest.fn(),
-    fill: jest.fn(),
-    fillText: jest.fn(),
-    strokeText: jest.fn(),
-    translate: jest.fn(),
-    rotate: jest.fn(),
-    scale: jest.fn(),
-    setLineDash: jest.fn(),
-    arc: jest.fn(),
-    closePath: jest.fn(),
-    fillRect: jest.fn(),
-    // measureText must return a TextMetrics-like object. Length-proportional width
-    // (7 px/char) keeps truncation behaviour deterministic in tests.
-    measureText: jest.fn((text: string) => ({ width: text.length * 7 })),
-    createLinearGradient: jest.fn(() => ({ addColorStop: jest.fn() })),
-    // Settable properties — primitives assign to these directly.
-    fillStyle: '' as CanvasRenderingContext2D['fillStyle'],
-    strokeStyle: '' as CanvasRenderingContext2D['strokeStyle'],
-    lineWidth: 0,
-    font: '',
-    textAlign: 'left' as CanvasTextAlign,
-    textBaseline: 'alphabetic' as CanvasTextBaseline,
-    lineJoin: 'miter' as CanvasLineJoin,
-    lineCap: 'butt' as CanvasLineCap,
-    direction: 'ltr' as CanvasDirection,
-  } as unknown as CanvasRenderingContext2D;
-}
+// makeCtx() is imported from '../trace_test_helpers' — shared with trace_chart.test.tsx so both
+// files exercise the same canvas stub without drift.
 
 // ---------------------------------------------------------------------------
 // Fixtures

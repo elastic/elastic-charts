@@ -21,10 +21,13 @@ import type { ViewKey } from './render/interaction';
 import { computeMaxScroll, computeScrollTarget, computeZoomMax, domainToZoomPan, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, pixelRangeToDomain } from './render/interaction';
 import { buildTraceEvent, buildTraceSelectionDetail, buildTraceTooltipInfo, formatMs } from './render/tooltip';
 import { ScreenReaderTraceTable } from './render/screen_reader_trace_table';
-import type { HoverRegion, PickResult, TraceGeometry } from './render/types';
+import { AriaLiveRegion } from './render/aria_live_region';
+import { BrushOverlay } from './render/brush_overlay';
+import { KeyboardFocusBadge } from './render/keyboard_focus_badge';
+import type { HoverRegion, PickResult } from './render/types';
+import type { BrushState, HoverState, PinState } from './trace_state';
 import { ScreenReaderSummary } from '../../components/accessibility';
 import { buildTraceStyle } from './theme';
-import { colorToRgba } from '../../common/color_library_wrappers';
 import { clamp } from '../../utils/common';
 import type { TraceSegmentRef, TraceSelection, TraceSpec } from './trace_api';
 import { applySelection, selectionModeFromEvent, selectionSetEqual } from './selection_helpers';
@@ -44,7 +47,6 @@ import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import type { Size } from '../../utils/dimensions';
 import type { Theme } from '../../utils/themes/theme';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
-import type { TooltipInfo } from '../../components/tooltip/types';
 import { domainTween } from '../timeslip/projections/domain_tween';
 import {
   initialZoomPan,
@@ -79,6 +81,11 @@ const KEY_PAN_FRACTION = 0.1;
  * the wheel handler). Positive = zoom in. Eased via domainTween (easeZoom=true) like wheel zoom.
  */
 const KEY_ZOOM_STEP = 0.5;
+
+/** Stable no-op for BasicTooltip callback props that trace manages internally. */
+const NOOP = () => {};
+/** Stable empty array for BasicTooltip `selected` prop (trace has no tooltip item selection). */
+const EMPTY: never[] = [];
 
 interface StateProps {
   traceSpec: TraceSpec | undefined;
@@ -176,35 +183,24 @@ class TraceComponent extends React.Component<TraceProps> {
   private handleMouseUp: (() => void) | null = null;
 
   // Hover / tooltip state — self-managed (not redux), following the Flame/Timeslip canvas family pattern.
-  // lastGeom is written once per frame; all hover handlers read it for picking without rebuilding geometry.
-  private lastGeom: TraceGeometry | null = null;
-  private hoverIndex = -1;         // -1 = no hover; matches pickLane/pickRegion sentinel
-  private hoverRegion: HoverRegion | null = null;
-  private pointerX = NaN;
-  private pointerY = NaN;
-  private tooltipInfo: TooltipInfo = { header: null, values: [] };
-  private dragMoved = false;       // distinguishes a genuine click from a pan-then-release
+  // hover.lastGeom is written once per frame; all mouse handlers read it for picking without rebuilding geometry.
+  private hover: HoverState = { lastGeom: null, index: -1, region: null, pointerX: NaN, pointerY: NaN, tooltipInfo: { header: null, values: [] }, dragMoved: false };
   private handleHoverMove: ((e: MouseEvent) => void) | null = null;
   private handleCanvasClick: ((e: MouseEvent) => void) | null = null;
   private handleCanvasLeave: (() => void) | null = null;
 
   // Pin / sticky tooltip state — mirrors flame_chart.tsx pin machinery.
-  // tooltipPinned=true freezes updateHover (content + index stay as-is); the frozen anchor positions
+  // pin.pinned=true freezes updateHover (content + index stay as-is); the frozen anchor positions
   // the tooltip while the pointer moves elsewhere or zoom/pan runs.
-  private tooltipPinned = false;
-  private pinnedPointerX = NaN;
-  private pinnedPointerY = NaN;
+  private pin: PinState = { pinned: false, x: NaN, y: NaN };
   private handleContextMenu: ((e: MouseEvent) => void) | null = null;
   private handleKeyUp: ((e: KeyboardEvent) => void) | null = null;
   private handleUnpinningTooltip: (() => void) | null = null;
 
-  // Brush-to-zoom state (Spec 11). isBrushing gates the window drag handlers so a brush gesture
-  // never also pans. brushEnd tracks the last clamped x so mouseup has it even if the pointer
-  // released outside the canvas. brushOverlay is read in render() with setState({}) as the trigger.
-  private isBrushing = false;
-  private brushStart = NaN;
-  private brushEnd = NaN;
-  private brushOverlay: { x: number; width: number; top: number; height: number } | null = null;
+  // Brush-to-zoom state (Spec 11). brush.active gates the window drag handlers so a brush gesture
+  // never also pans. brush.end tracks the last clamped x so mouseup has it even if the pointer
+  // released outside the canvas. brush.overlay is read in render() with setState({}) as the trigger.
+  private brush: BrushState = { active: false, start: NaN, end: NaN, overlay: null };
 
   // Keyboard-nav / accessibility state (Spec 12).
   // focusedLaneIndex: the lane currently selected by keyboard navigation. Distinct from hoverIndex.
@@ -247,6 +243,16 @@ class TraceComponent extends React.Component<TraceProps> {
     this.flywheelActive = false;
   }
 
+  /** Builds a ViewKey from a spec. Extracted to DRY up the 4× repeated literal. */
+  private buildViewKey(spec: TraceSpec): ViewKey {
+    return { xScaleType: spec.xScaleType, format: 'simple', traceId: spec.traceId };
+  }
+
+  /** Current tween domain — the smoothed focus window used for rendering and keyboard pan math. */
+  private get tweenDomain(): { min: number; max: number } {
+    return { min: this.tween.niceDomainMin, max: this.tween.niceDomainMax };
+  }
+
   /**
    * Scrolls lane `index` into view using `computeScrollTarget`, then schedules a repaint.
    * Called by keyboard nav (align:'nearest') and reused by Spec 14 `scrollToSpan` (align:'center').
@@ -269,9 +275,7 @@ class TraceComponent extends React.Component<TraceProps> {
     // Fit-all snap (zoom=0, NaN tween → one RAF tick, then stops).
     this.resetView();
     // Seed the domain-semantics key so the first componentDidUpdate doesn't spuriously reset.
-    this.viewKey = this.props.traceSpec
-      ? { xScaleType: this.props.traceSpec.xScaleType, format: 'simple', traceId: this.props.traceSpec.traceId }
-      : null;
+    this.viewKey = this.props.traceSpec ? this.buildViewKey(this.props.traceSpec) : null;
 
     // Build the RAF pipeline: withDeltaTime wraps frame for delta-time; we own the rAF id so we
     // can cancel it in componentWillUnmount (withAnimation hides the id with no cancel path).
@@ -314,83 +318,96 @@ class TraceComponent extends React.Component<TraceProps> {
 
   componentDidUpdate = (prevProps: TraceProps) => {
     if (!this.ctx) this.tryCanvasContext();
+    this.syncViewKeyReset(prevProps);
+    this.syncPinOnSpecChange(prevProps);
+    this.syncSelectionLifecycle(prevProps);
+    this.redrawIfCanvasPropsChanged(prevProps);
+  };
 
-    // Reset the horizontal view when the reference-domain semantics change (xScaleType or format).
-    // Rationale: switching e.g. linear ↔ time shifts the domain origin (elapsed zero vs epoch-ms)
-    // without changing the extent. domainTween's extent-only completion metric declares "done" on the
-    // first frame and strands the view between the old and new origins — the "updates only on hover"
-    // creep. A zoom exponent is also meaningless across a reference-domain change.
-    // Keying on (xScaleType, format) — not the data ref — preserves zoom across same-scale data
-    // refreshes (future streaming concern). See ADR 0004 Decision 2 (addendum).
+  // Reset the horizontal view when the reference-domain semantics change (xScaleType or format).
+  // Rationale: switching e.g. linear ↔ time shifts the domain origin (elapsed zero vs epoch-ms)
+  // without changing the extent. domainTween's extent-only completion metric declares "done" on the
+  // first frame and strands the view between the old and new origins — the "updates only on hover"
+  // creep. A zoom exponent is also meaningless across a reference-domain change.
+  // Keying on (xScaleType, format) — not the data ref — preserves zoom across same-scale data
+  // refreshes (future streaming concern). See ADR 0004 Decision 2 (addendum).
+  private syncViewKeyReset(_prevProps: TraceProps) {
     const spec = this.props.traceSpec;
-    if (spec && hasViewKeyChanged(this.viewKey, { xScaleType: spec.xScaleType, format: 'simple', traceId: spec.traceId })) {
+    if (!spec) return;
+    const newKey = this.buildViewKey(spec);
+    if (hasViewKeyChanged(this.viewKey, newKey)) {
       this.resetView();
-      this.viewKey = { xScaleType: spec.xScaleType, format: 'simple', traceId: spec.traceId };
+      this.viewKey = newKey;
     }
+  }
 
-    // Unpin when the spec changes (data or view — stale frozen index may no longer be valid).
-    // Only call unpinTooltip when already pinned to avoid an unnecessary setState.
-    if (this.tooltipPinned && this.props.traceSpec !== prevProps.traceSpec) {
+  // Unpin when the spec changes (data or view — stale frozen index may no longer be valid).
+  // Only call unpinTooltip when already pinned to avoid an unnecessary setState.
+  private syncPinOnSpecChange(prevProps: TraceProps) {
+    if (this.pin.pinned && this.props.traceSpec !== prevProps.traceSpec) {
       this.unpinTooltip();
     }
+  }
 
-    // Selection lifecycle on data/view changes (ADR 0011 Decision 4 / plan D3).
-    if (spec) {
-      const viewKeyChanged = hasViewKeyChanged(
-        this.viewKey && prevProps.traceSpec
-          ? { xScaleType: prevProps.traceSpec.xScaleType, format: 'simple', traceId: prevProps.traceSpec.traceId }
-          : null,
-        { xScaleType: spec.xScaleType, format: 'simple', traceId: spec.traceId },
-      );
-      if (viewKeyChanged) {
-        // View-domain semantics changed — stale selection (ADR 0011 mirrors pin reset).
-        // Fire onSelectionChange([]) only if selection was non-empty.
-        const current = this.getEffectiveSelection();
-        if (current.length > 0) {
-          this.selection = [];
-          this.fireSelectionChange([]);
+  // Selection lifecycle on data/view changes (ADR 0011 Decision 4 / plan D3).
+  private syncSelectionLifecycle(prevProps: TraceProps) {
+    const spec = this.props.traceSpec;
+    if (!spec) return;
+
+    const viewKeyChanged = hasViewKeyChanged(
+      this.viewKey && prevProps.traceSpec ? this.buildViewKey(prevProps.traceSpec) : null,
+      this.buildViewKey(spec),
+    );
+    if (viewKeyChanged) {
+      // View-domain semantics changed — stale selection (ADR 0011 mirrors pin reset).
+      // Fire onSelectionChange([]) only if selection was non-empty.
+      const current = this.getEffectiveSelection();
+      if (current.length > 0) {
+        this.selection = [];
+        this.fireSelectionChange([]);
+        this.scheduleRender?.();
+      }
+    } else if (spec.data !== prevProps.traceSpec?.data) {
+      // Data changed: prune stale refs (authoritative — plan D3).
+      const current = this.getEffectiveSelection();
+      if (current.length > 0) {
+        const { spans } = this.getPipeline(spec);
+        const pruned = current.filter((ref) => {
+          const laneIndex = this.spanIdToLane.get(ref.spanId);
+          if (laneIndex === undefined) return false;
+          const s = spans[laneIndex];
+          if (!s) return false;
+          if (ref.region === 'active' && ref.segmentIndex >= s.activeSegments.length) return false;
+          // waitingSegments is cheap (inline gap loop) so computing it once to validate is fine.
+          if (ref.region === 'waiting' && ref.segmentIndex >= waitingSegments(s).length) return false;
+          return true;
+        });
+        if (pruned.length !== current.length) {
+          // In controlled mode: fire only, don't write the field (parent owns the prop).
+          if (this.props.traceSpec?.selection === undefined) {
+            this.selection = pruned;
+          }
+          this.fireSelectionChange(pruned);
           this.scheduleRender?.();
         }
-      } else if (spec.data !== prevProps.traceSpec?.data) {
-        // Data changed: prune stale refs (authoritative — plan D3).
-        const current = this.getEffectiveSelection();
-        if (current.length > 0) {
-          const { spans } = this.getPipeline(spec);
-          const pruned = current.filter((ref) => {
-            const laneIndex = this.spanIdToLane.get(ref.spanId);
-            if (laneIndex === undefined) return false;
-            const s = spans[laneIndex];
-            if (!s) return false;
-            if (ref.region === 'active' && ref.segmentIndex >= s.activeSegments.length) return false;
-            // waitingSegments is cheap (inline gap loop) so computing it once to validate is fine.
-            if (ref.region === 'waiting' && ref.segmentIndex >= waitingSegments(s).length) return false;
-            return true;
-          });
-          if (pruned.length !== current.length) {
-            // In controlled mode: fire only, don't write the field (parent owns the prop).
-            if (this.props.traceSpec?.selection === undefined) {
-              this.selection = pruned;
-            }
-            this.fireSelectionChange(pruned);
-            this.scheduleRender?.();
-          }
-        }
-      }
-
-      // Echo-guard: if controlled selection prop changed and is set-equal to lastFired, no-op.
-      if (
-        spec.selection !== undefined &&
-        spec.selection !== prevProps.traceSpec?.selection &&
-        !selectionSetEqual(spec.selection, this.lastFiredSelection)
-      ) {
-        this.lastFiredSelection = spec.selection;
-        this.scheduleRender?.();
       }
     }
 
-    // Redraw only when a canvas-affecting prop changed. Hover setState()s don't touch these three
-    // props, so hover stays a DOM-only tooltip-portal update — no wasted rAF, no flag needed.
-    // (Spec 7 draws no canvas hover highlight; if one is added later, trigger its redraw explicitly.)
+    // Echo-guard: if controlled selection prop changed and is set-equal to lastFired, no-op.
+    if (
+      spec.selection !== undefined &&
+      spec.selection !== prevProps.traceSpec?.selection &&
+      !selectionSetEqual(spec.selection, this.lastFiredSelection)
+    ) {
+      this.lastFiredSelection = spec.selection;
+      this.scheduleRender?.();
+    }
+  }
+
+  // Redraw only when a canvas-affecting prop changed. Hover setState()s don't touch these three
+  // props, so hover stays a DOM-only tooltip-portal update — no wasted rAF, no flag needed.
+  // (Spec 7 draws no canvas hover highlight; if one is added later, trigger its redraw explicitly.)
+  private redrawIfCanvasPropsChanged(prevProps: TraceProps) {
     if (
       this.props.traceSpec !== prevProps.traceSpec ||
       this.props.theme !== prevProps.theme ||
@@ -398,7 +415,7 @@ class TraceComponent extends React.Component<TraceProps> {
     ) {
       this.scheduleRender?.();
     }
-  };
+  }
 
   // -------------------------------------------------------------------------
   // RAF frame — reads this.props/this at call time so redux re-renders are seen
@@ -444,7 +461,7 @@ class TraceComponent extends React.Component<TraceProps> {
     );
 
     // Build geometry and draw (spans are pre-sorted and domain pre-computed — no per-frame sort/reduce)
-    const focusDomain = { min: this.tween.niceDomainMin, max: this.tween.niceDomainMax };
+    const focusDomain = this.tweenDomain;
     const geom = buildGeometry(
       spans,
       { width, height },
@@ -464,7 +481,7 @@ class TraceComponent extends React.Component<TraceProps> {
     canvas2dRenderer.draw(this.ctx, geom, style);
 
     // Store for picking in hover/click handlers — single source of truth for the current layout.
-    this.lastGeom = geom;
+    this.hover.lastGeom = geom;
 
     // Keep the loop alive only while there is work to do
     if (tweenOngoing || this.flywheelActive) {
@@ -563,13 +580,13 @@ class TraceComponent extends React.Component<TraceProps> {
 
   /** Cursor is `pointer` when over an active or waiting region (inside the span's extent). */
   private getActiveCursor(): CSSProperties['cursor'] {
-    if (this.hoverIndex >= 0 && this.hoverRegion !== 'empty') return 'pointer';
+    if (this.hover.index >= 0 && this.hover.region !== 'empty') return 'pointer';
     return DEFAULT_CSS_CURSOR;
   }
 
   private rebuildTooltip(span: NormalizedSpan, index: number, domainMin: number, region: HoverRegion, segmentIndex: number) {
     const style = this.getStyle();
-    this.tooltipInfo = buildTraceTooltipInfo(span, index, domainMin, region, span.color ?? style.activeSegmentColor, segmentIndex);
+    this.hover.tooltipInfo = buildTraceTooltipInfo(span, index, domainMin, region, span.color ?? style.activeSegmentColor, segmentIndex);
   }
 
   private pinTooltip = (pinned: boolean) => {
@@ -577,20 +594,20 @@ class TraceComponent extends React.Component<TraceProps> {
       this.unpinTooltip();
       return;
     }
-    this.tooltipPinned = true;
-    this.pinnedPointerX = this.pointerX;
-    this.pinnedPointerY = this.pointerY;
+    this.pin.pinned = true;
+    this.pin.x = this.hover.pointerX;
+    this.pin.y = this.hover.pointerY;
     this.setState({});
   };
 
   private unpinTooltip() {
-    this.tooltipPinned = false;
-    this.pinnedPointerX = NaN;
-    this.pinnedPointerY = NaN;
+    this.pin.pinned = false;
+    this.pin.x = NaN;
+    this.pin.y = NaN;
     // Recompute hover from current pointer so the tooltip resumes tracking on unpin.
     this.updateHover(
-      this.lastGeom && Number.isFinite(this.pointerX)
-        ? pickRegion(this.pointerX, this.pointerY, this.lastGeom)
+      this.hover.lastGeom && Number.isFinite(this.hover.pointerX)
+        ? pickRegion(this.hover.pointerX, this.hover.pointerY, this.hover.lastGeom)
         : null,
     );
     this.setState({});
@@ -607,38 +624,38 @@ class TraceComponent extends React.Component<TraceProps> {
   private updateHover(result: PickResult | null) {
     // While pinned, freeze content and index. zoom/pan/drag still work unobstructed because they
     // don't call setState; only this method does (indirectly via hover setState calls below).
-    if (this.tooltipPinned) return;
+    if (this.pin.pinned) return;
     // While brushing, suppress hover — the rubber-band owns the pointer.
-    if (this.isBrushing) return;
+    if (this.brush.active) return;
 
     const newIndex = result ? result.index : -1;
-    const prevIndex = this.hoverIndex;
+    const prevIndex = this.hover.index;
 
-    this.hoverIndex = newIndex;
-    this.hoverRegion = result?.region ?? null;
+    this.hover.index = newIndex;
+    this.hover.region = result?.region ?? null;
 
     if (newIndex !== prevIndex) {
       // Lane changed (enter new lane or leave all lanes)
-      if (newIndex >= 0 && this.lastGeom && this.props.traceSpec) {
-        const span = this.lastGeom.spans[newIndex];
+      if (newIndex >= 0 && this.hover.lastGeom && this.props.traceSpec) {
+        const span = this.hover.lastGeom.spans[newIndex];
         if (span) {
           const { domain } = this.getPipeline(this.props.traceSpec);
-          this.rebuildTooltip(span, newIndex, domain.min, this.hoverRegion!, result?.segmentIndex ?? -1);
+          this.rebuildTooltip(span, newIndex, domain.min, this.hover.region!, result?.segmentIndex ?? -1);
           this.props.onElementOver([buildTraceEvent(span)]);
         }
       } else {
-        this.tooltipInfo = { header: null, values: [] };
+        this.hover.tooltipInfo = { header: null, values: [] };
         if (prevIndex >= 0) this.props.onElementOut();
       }
       this.setState({});
     } else if (newIndex >= 0) {
       // Same lane — update region (State row) and reposition tooltip with pointer.
       // Also update segmentIndex: the pointer may have crossed into a different active segment.
-      if (this.lastGeom && this.props.traceSpec) {
-        const span = this.lastGeom.spans[newIndex];
+      if (this.hover.lastGeom && this.props.traceSpec) {
+        const span = this.hover.lastGeom.spans[newIndex];
         if (span) {
           const { domain } = this.getPipeline(this.props.traceSpec);
-          this.rebuildTooltip(span, newIndex, domain.min, this.hoverRegion!, result?.segmentIndex ?? -1);
+          this.rebuildTooltip(span, newIndex, domain.min, this.hover.region!, result?.segmentIndex ?? -1);
         }
       }
       this.setState({});
@@ -688,21 +705,21 @@ class TraceComponent extends React.Component<TraceProps> {
       // reachable from the keyboard. dragMode='pan' default: Shift+drag → brush, plain drag → pan.
       const isBrushMode = (dragMode === 'brush') !== e.shiftKey;
       if (isBrushMode) {
-        this.isBrushing = true;
-        this.brushStart = zoomSafePointerX(e);
-        this.brushEnd = this.brushStart; // zero-width seed so mouseup no-ops a plain click
+        this.brush.active = true;
+        this.brush.start = zoomSafePointerX(e);
+        this.brush.end = this.brush.start; // zero-width seed so mouseup no-ops a plain click
         this.flywheelActive = false; // stop any coast before the brush gesture
-        this.dragMoved = false;
+        this.hover.dragMoved = false;
         if (this.clickTimer !== null) { clearTimeout(this.clickTimer); this.clickTimer = null; }
-        if (this.lastGeom) {
-          const { plot } = this.lastGeom;
-          this.brushOverlay = { x: this.brushStart, width: 0, top: plot.top, height: plot.height };
+        if (this.hover.lastGeom) {
+          const { plot } = this.hover.lastGeom;
+          this.brush.overlay = { x: this.brush.start, width: 0, top: plot.top, height: plot.height };
         }
         this.updateHover(null);
         this.setState({});
         return;
       }
-      this.dragMoved = false;
+      this.hover.dragMoved = false;
       // Cancel any pending single-click selection commit — a new gesture sequence starts here.
       if (this.clickTimer !== null) {
         clearTimeout(this.clickTimer);
@@ -720,22 +737,22 @@ class TraceComponent extends React.Component<TraceProps> {
     this.handleMouseMove = (e: MouseEvent) => {
       if (e.buttons !== 1) return; // only while primary button held
 
-      if (this.isBrushing) {
+      if (this.brush.active) {
         // Update rubber-band extent. Clamp to plot bounds (clamp-and-continue on canvas-leave).
-        const geom = this.lastGeom;
+        const geom = this.hover.lastGeom;
         if (geom) {
           const { plot } = geom;
           const x = clamp(zoomSafePointerX(e), plot.left, plot.left + plot.width);
-          this.brushEnd = x;
-          const left = Math.min(this.brushStart, x);
-          this.brushOverlay = { x: left, width: Math.abs(this.brushStart - x), top: plot.top, height: plot.height };
+          this.brush.end = x;
+          const left = Math.min(this.brush.start, x);
+          this.brush.overlay = { x: left, width: Math.abs(this.brush.start - x), top: plot.top, height: plot.height };
         }
-        this.dragMoved = true; // suppress the post-drag click
+        this.hover.dragMoved = true; // suppress the post-drag click
         this.setState({});
         return;
       }
 
-      this.dragMoved = true; // distinguish a genuine click from a pan-then-release
+      this.hover.dragMoved = true; // distinguish a genuine click from a pan-then-release
 
       if (!this.props.traceSpec) return;
       const style = this.getStyle();
@@ -757,15 +774,15 @@ class TraceComponent extends React.Component<TraceProps> {
     };
 
     this.handleMouseUp = () => {
-      if (this.isBrushing) {
-        this.isBrushing = false;
-        this.brushOverlay = null;
-        const geom = this.lastGeom;
+      if (this.brush.active) {
+        this.brush.active = false;
+        this.brush.overlay = null;
+        const geom = this.hover.lastGeom;
         const spec = this.props.traceSpec;
         if (!geom || !spec) { this.setState({}); return; }
         // Use the last clamped brushEnd (set in mousemove). If no mousemove fired (zero-width
         // click), brushEnd === brushStart, giving a zero range → < MIN_VISIBLE_EXTENT_MS → no-op.
-        const [from, to] = pixelRangeToDomain(this.brushStart, this.brushEnd, geom);
+        const [from, to] = pixelRangeToDomain(this.brush.start, this.brush.end, geom);
         if (to - from < MIN_VISIBLE_EXTENT_MS) { this.setState({}); return; }
         const { domain } = this.getPipeline(spec);
         const clampedFrom = clamp(from, domain.min, domain.max);
@@ -787,24 +804,24 @@ class TraceComponent extends React.Component<TraceProps> {
     // Hover: separate canvas listener, disjoint from the window drag handler above (guarded by buttons).
     this.handleHoverMove = (e: MouseEvent) => {
       if (e.buttons === 1) return; // dragging → window handler owns it
-      if (!this.lastGeom) return;
-      this.pointerX = zoomSafePointerX(e); // canvas-relative CSS px, DPR-agnostic → matches geom units
-      this.pointerY = zoomSafePointerY(e);
-      this.updateHover(pickRegion(this.pointerX, this.pointerY, this.lastGeom));
+      if (!this.hover.lastGeom) return;
+      this.hover.pointerX = zoomSafePointerX(e); // canvas-relative CSS px, DPR-agnostic → matches geom units
+      this.hover.pointerY = zoomSafePointerY(e);
+      this.updateHover(pickRegion(this.hover.pointerX, this.hover.pointerY, this.hover.lastGeom));
     };
 
     // Click: only fires for genuine clicks — not for pan-then-release (dragMoved guards this).
     // Guard: while pinned the window 'click' dismiss listener runs first; don't also fire onElementClick.
     this.handleCanvasClick = (e: MouseEvent) => {
-      if (this.tooltipPinned) return;
-      if (this.dragMoved) return;
-      if (!this.lastGeom || !this.props.traceSpec) return;
+      if (this.pin.pinned) return;
+      if (this.hover.dragMoved) return;
+      if (!this.hover.lastGeom || !this.props.traceSpec) return;
 
-      const result = pickRegion(zoomSafePointerX(e), zoomSafePointerY(e), this.lastGeom);
+      const result = pickRegion(zoomSafePointerX(e), zoomSafePointerY(e), this.hover.lastGeom);
 
       // onElementClick fires immediately on every raw click (Spec 7), unchanged.
       if (result && result.index >= 0) {
-        const span = this.lastGeom.spans[result.index];
+        const span = this.hover.lastGeom.spans[result.index];
         if (span) this.props.onElementClick([buildTraceEvent(span)]);
       }
 
@@ -814,7 +831,7 @@ class TraceComponent extends React.Component<TraceProps> {
         clearTimeout(this.clickTimer);
         this.clickTimer = null;
       }
-      const geomSnapshot = this.lastGeom;
+      const geomSnapshot = this.hover.lastGeom;
       // Capture mode at click time; timer fires ~250 ms later after event is gone.
       const mode = selectionModeFromEvent(e);
 
@@ -846,8 +863,8 @@ class TraceComponent extends React.Component<TraceProps> {
 
     // Double-click: select whole span. Cancels the pending single-click timer.
     this.handleDblClick = (e: MouseEvent) => {
-      if (this.dragMoved) return;
-      if (!this.lastGeom || !this.props.traceSpec) return;
+      if (this.hover.dragMoved) return;
+      if (!this.hover.lastGeom || !this.props.traceSpec) return;
 
       // Cancel the first-click timer — double-click supersedes it.
       if (this.clickTimer !== null) {
@@ -855,9 +872,9 @@ class TraceComponent extends React.Component<TraceProps> {
         this.clickTimer = null;
       }
 
-      const result = pickRegion(zoomSafePointerX(e), zoomSafePointerY(e), this.lastGeom);
+      const result = pickRegion(zoomSafePointerX(e), zoomSafePointerY(e), this.hover.lastGeom);
       if (!result || result.index < 0) return;
-      const span = this.lastGeom.spans[result.index];
+      const span = this.hover.lastGeom.spans[result.index];
       if (!span) return;
 
       const ref: TraceSegmentRef = { spanId: span.id, region: 'span', segmentIndex: -1 };
@@ -891,21 +908,21 @@ class TraceComponent extends React.Component<TraceProps> {
     this.handleContextMenu = (e: MouseEvent) => {
       e.stopPropagation();
       e.preventDefault(); // suppress browser context menu
-      if (this.tooltipPinned) {
+      if (this.pin.pinned) {
         this.handleUnpinningTooltip?.();
         return;
       }
-      if (!this.lastGeom) return;
+      if (!this.hover.lastGeom) return;
       const x = zoomSafePointerX(e);
       const y = zoomSafePointerY(e);
-      const result = pickRegion(x, y, this.lastGeom);
+      const result = pickRegion(x, y, this.hover.lastGeom);
       // NOP if over empty space (respects showTooltipOverEmpty; match the visible condition in render).
       const overSpan = result && result.index >= 0 &&
         (result.region !== 'empty' || this.props.traceSpec?.showTooltipOverEmpty === true);
       if (!overSpan) return;
       // Update pointer and build content while still unpinned, then pin.
-      this.pointerX = x;
-      this.pointerY = y;
+      this.hover.pointerX = x;
+      this.hover.pointerY = y;
       this.updateHover(result);
       // Scoped dismiss listeners: added on pin, removed on unpin / unmount.
       window.addEventListener('keyup', this.handleKeyUp!);
@@ -929,7 +946,7 @@ class TraceComponent extends React.Component<TraceProps> {
 
     // Keyboard navigation (Spec 12). Bound on the canvas; Tab is NOT prevented (no focus trap).
     this.handleKeyDown = (e: KeyboardEvent) => {
-      const geom = this.lastGeom;
+      const geom = this.hover.lastGeom;
       const spec = this.props.traceSpec;
 
       // Pan (←/→) and zoom (+/-) work regardless of focusedLaneIndex.
@@ -937,7 +954,7 @@ class TraceComponent extends React.Component<TraceProps> {
         e.preventDefault();
         if (!spec || !geom) return;
         const { domain } = this.getPipeline(spec);
-        const focusDomain = { min: this.tween.niceDomainMin, max: this.tween.niceDomainMax };
+        const focusDomain = this.tweenDomain;
         const extent = focusDomain.max - focusDomain.min;
         const delta = (e.key === 'ArrowLeft' ? -1 : 1) * extent * KEY_PAN_FRACTION;
         const newFrom = clamp(focusDomain.min + delta, domain.min, domain.max - extent);
@@ -1146,7 +1163,7 @@ class TraceComponent extends React.Component<TraceProps> {
       tooltipRequired,
       containerRef,
     } = this.props;
-    const style: CSSProperties = {
+    const canvasStyle: CSSProperties = {
       width,
       height,
       top: 0,
@@ -1155,40 +1172,17 @@ class TraceComponent extends React.Component<TraceProps> {
       margin: 0,
       border: 0,
       position: 'absolute',
-      // Inline cursor: 'pointer' over active/waiting regions; default over empty or gutter.
-      // Canvas sits on top and receives the pointer, so this wins over the container-level cursor.
       cursor: this.getActiveCursor(),
       touchAction: 'none',
+      outline: 'none',
     };
-
     const dpr = window.devicePixelRatio ?? 1;
-    const canvasWidth = width * dpr;
-    const canvasHeight = height * dpr;
-
-    // Brush overlay — CSS div, DPR-agnostic (ADR 0009). Styled from theme.brush so it is visually
-    // consistent with the XY brush rubber-band and respects dark-mode. Rendered as a sibling of
-    // the canvas so it naturally stacks above it; pointerEvents:none passes input through.
-    const brushOverlay = this.brushOverlay;
-    let brushOverlayEl: React.ReactElement | null = null;
-    if (brushOverlay) {
-      const bs = this.props.theme.brush;
-      const [r, g, b] = colorToRgba(bs.fill);
-      brushOverlayEl = (
-        <div
-          style={{
-            position: 'absolute',
-            left: brushOverlay.x,
-            top: brushOverlay.top,
-            width: brushOverlay.width,
-            height: brushOverlay.height,
-            backgroundColor: `rgba(${r},${g},${b},${bs.opacity})`,
-            border: `${bs.strokeWidth}px solid ${bs.stroke}`,
-            boxSizing: 'border-box',
-            pointerEvents: 'none',
-          }}
-        />
-      );
-    }
+    const tooltipPosition = this.pin.pinned
+      ? { x: this.pin.x, y: this.pin.y, width: 0, height: 0 }
+      : { x: this.hover.pointerX, y: this.hover.pointerY, width: 0, height: 0 };
+    const tooltipVisible =
+      this.pin.pinned ||
+      (tooltipRequired && this.hover.index >= 0 && (this.hover.region !== 'empty' || this.props.traceSpec?.showTooltipOverEmpty === true));
 
     return (
       <>
@@ -1198,88 +1192,32 @@ class TraceComponent extends React.Component<TraceProps> {
               descendants of the canvas (role="application" subtree is not browsable). */}
           <ScreenReaderSummary />
           <ScreenReaderTraceTable />
-          {/* Visually-hidden aria-live region: announces focused span name + duration on each
-              lane move. textContent is used (never innerHTML) to guard against XSS via span names. */}
-          <div
-            ref={this.ariaLiveRef}
-            aria-live="polite"
-            aria-atomic="true"
-            style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden' }}
-          />
-          <canvas /* Canvas2d layer */
+          <AriaLiveRegion ref={this.ariaLiveRef} />
+          <canvas
             ref={forwardStageRef}
             tabIndex={0}
             className="echCanvasRenderer"
-            width={canvasWidth}
-            height={canvasHeight}
-            style={{ ...style, outline: 'none' }}
+            width={width * dpr}
+            height={height * dpr}
+            style={canvasStyle}
             role="application"
           />
-          {/* Keyboard-focus badge: visible only while the canvas has DOM focus (hasFocus) and
-              showKeyboardFocusBadge !== false. Drawn as a DOM sibling so it is never clipped by
-              overflow:hidden on .echContainer. aria-hidden — the SR surface (summary/table/aria-live)
-              already conveys state; this badge is purely a sighted WCAG 2.4.7 focus-visible cue.
-              pointerEvents:none so it doesn't interfere with mouse events on the canvas. */}
-          {this.hasFocus && this.props.traceSpec?.showKeyboardFocusBadge !== false && (
-            <div
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                top: 6,
-                left: 6,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4,
-                padding: '2px 6px',
-                borderRadius: 4,
-                background: 'rgba(0,0,0,0.45)',
-                color: '#fff',
-                fontSize: 10,
-                fontFamily: 'system-ui, sans-serif',
-                letterSpacing: '0.03em',
-                pointerEvents: 'none',
-                userSelect: 'none',
-                // Sit above the canvas (which is absolutely positioned inside the figure)
-                zIndex: 1,
-              }}
-            >
-              {/* Inline keyboard SVG — no external asset, no CSS class needed */}
-              <svg
-                width="13"
-                height="9"
-                viewBox="0 0 13 9"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                style={{ display: 'block', flexShrink: 0 }}
-              >
-                <rect x="0.5" y="0.5" width="12" height="8" rx="1.5" stroke="currentColor" strokeWidth="1" />
-                <rect x="2" y="2" width="2" height="1.5" rx="0.5" fill="currentColor" />
-                <rect x="5.5" y="2" width="2" height="1.5" rx="0.5" fill="currentColor" />
-                <rect x="9" y="2" width="2" height="1.5" rx="0.5" fill="currentColor" />
-                <rect x="2" y="5" width="9" height="1.5" rx="0.5" fill="currentColor" />
-              </svg>
-              keyboard active
-            </div>
-          )}
+          <KeyboardFocusBadge visible={this.hasFocus && this.props.traceSpec?.showKeyboardFocusBadge !== false} />
         </figure>
-        {brushOverlayEl}
+        {this.brush.overlay && <BrushOverlay overlay={this.brush.overlay} brushTheme={this.props.theme.brush} />}
         {/* BasicTooltip is connect()-ed; it auto-reads `settings.customTooltip` from redux, so
             <Tooltip customTooltip> override is free. Pin state is self-managed (Spec 10). */}
         <BasicTooltip
-          onPointerMove={() => {}}
-          position={
-            this.tooltipPinned
-              ? { x: this.pinnedPointerX, y: this.pinnedPointerY, width: 0, height: 0 }
-              : { x: this.pointerX, y: this.pointerY, width: 0, height: 0 }
-          }
-          pinned={this.tooltipPinned}
-          selected={[]}
+          onPointerMove={NOOP}
+          position={tooltipPosition}
+          pinned={this.pin.pinned}
+          selected={EMPTY}
           canPinTooltip={tooltipRequired}
           pinTooltip={this.pinTooltip}
-          toggleSelectedTooltipItem={() => {}}
-          setSelectedTooltipItems={() => {}}
-          visible={this.tooltipPinned || (tooltipRequired && this.hoverIndex >= 0 && (this.hoverRegion !== 'empty' || this.props.traceSpec?.showTooltipOverEmpty === true))}
-          info={this.tooltipInfo}
+          toggleSelectedTooltipItem={NOOP}
+          setSelectedTooltipItems={NOOP}
+          visible={tooltipVisible}
+          info={this.hover.tooltipInfo}
           getChartContainerRef={containerRef}
         />
       </>
