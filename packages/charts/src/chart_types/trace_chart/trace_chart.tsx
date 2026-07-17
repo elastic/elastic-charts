@@ -29,6 +29,7 @@ import type { BrushState, HoverState, PinState } from './trace_state';
 import { ScreenReaderSummary } from '../../components/accessibility';
 import { buildTraceStyle } from './theme';
 import { clamp } from '../../utils/common';
+import { Logger } from '../../utils/logger';
 import type { TraceSegmentRef, TraceSelection, TraceSpec } from './trace_api';
 import { applySelection, selectionModeFromEvent, selectionSetEqual } from './selection_helpers';
 import { ChartType } from '..';
@@ -268,6 +269,43 @@ class TraceComponent extends React.Component<TraceProps> {
     this.scheduleRender?.();
   }
 
+  /** Announce a lane's span to the aria-live region. Shared by keyboard nav and scrollToSpan. */
+  private announceLane(span: NormalizedSpan): void {
+    if (this.ariaLiveRef.current) {
+      this.ariaLiveRef.current.textContent = `${span.name} — ${formatMs(span.end - span.start)}`;
+    }
+  }
+
+  /**
+   * Spec 14: scroll the lane for span `id` into view (centered), set the focused-lane highlight,
+   * and announce via the aria-live region. Does NOT move DOM keyboard focus (no focus-steal).
+   * Bound arrow-field so `this.scrollToSpan` is a stable reference to hand to the callback.
+   */
+  private scrollToSpan = (id: string): void => {
+    if (!this.props.traceSpec) return;
+    const { spans } = this.getPipeline(this.props.traceSpec); // ensures spanIdToLane is fresh
+    const laneIndex = this.spanIdToLane.get(id);
+    if (laneIndex === undefined) {
+      Logger.warn(`Trace chart scrollToSpan: span id "${id}" not found; ignoring.`);
+      return;
+    }
+    this.scrollLaneIntoView(laneIndex, { align: 'center' });
+    this.focusedLaneIndex = laneIndex; // reuse Spec 12 focus highlight; repaint already scheduled
+    const span = spans[laneIndex];
+    if (span) this.announceLane(span); // a11y parity with keyboard moveFocus
+  };
+
+  /**
+   * Re-registers the controlProviderCallback when its reference changes (idempotent per ADR 0008).
+   * Called from componentDidMount (initial registration) and componentDidUpdate.
+   */
+  private syncControlProvider(prevSpec: TraceSpec | undefined): void {
+    const cb = this.props.traceSpec?.controlProviderCallback;
+    if (cb && cb !== prevSpec?.controlProviderCallback) {
+      cb({ scrollToSpan: this.scrollToSpan });
+    }
+  }
+
   componentDidMount = () => {
     this.mounted = true;
     this.tryCanvasContext();
@@ -298,6 +336,10 @@ class TraceComponent extends React.Component<TraceProps> {
 
     // Container-level wheel preventDefault — must use stable reference for removal
     this.props.containerRef().current?.addEventListener('wheel', this.preventScroll, { passive: false });
+
+    // Spec 14: register control callbacks with the caller (initial registration).
+    // Must run after setupEventHandlers so scrollToSpan is fully operational.
+    this.props.traceSpec?.controlProviderCallback?.({ scrollToSpan: this.scrollToSpan });
   };
 
   componentWillUnmount() {
@@ -321,6 +363,7 @@ class TraceComponent extends React.Component<TraceProps> {
     this.syncViewKeyReset(prevProps);
     this.syncPinOnSpecChange(prevProps);
     this.syncSelectionLifecycle(prevProps);
+    this.syncControlProvider(prevProps.traceSpec);
     this.redrawIfCanvasPropsChanged(prevProps);
   };
 
@@ -1011,10 +1054,8 @@ class TraceComponent extends React.Component<TraceProps> {
         this.focusedLaneIndex = newIndex;
         this.scrollLaneIntoView(newIndex, { align: 'nearest' });
         const span = geom.spans[newIndex];
-        if (span && this.ariaLiveRef.current) {
-          // textContent assignment is XSS-safe — never innerHTML.
-          this.ariaLiveRef.current.textContent = `${span.name} — ${formatMs(span.end - span.start)}`;
-        }
+        // textContent assignment is XSS-safe — never innerHTML.
+        if (span) this.announceLane(span);
         this.scheduleRender?.();
       };
 

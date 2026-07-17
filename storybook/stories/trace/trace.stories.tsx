@@ -28,3 +28,4 @@ export { Example as brushZoom } from './15_brush_zoom.story';
 export { Example as accessibility } from './16_accessibility.story';
 export { Example as segmentSelection } from './17_segment_selection.story';
 export { Example as segmentSelectionControlled } from './18_segment_selection_controlled.story';
+export { Example as scrollToLane } from './19_scroll_to_lane.story';

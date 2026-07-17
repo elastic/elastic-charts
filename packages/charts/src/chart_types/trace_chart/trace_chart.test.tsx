@@ -34,8 +34,9 @@ import React from 'react';
 
 import { Chart } from '../../components/chart';
 import { Settings } from '../../specs';
+import { Logger } from '../../utils/logger';
 import { Trace } from './trace_api';
-import type { TraceDatum } from './trace_api';
+import type { TraceDatum, TraceControlCallbacks } from './trace_api';
 import { makeCtx } from './trace_test_helpers';
 
 /** Minimal fixture: root + one child, enough to exercise normalize → resolveActive. */
@@ -545,5 +546,210 @@ describe('Trace chart — RAF → draw path (Stage 0 canvas test harness)', () =
       jest.runAllTimers();
       unmount();
     }).not.toThrow();
+  });
+});
+
+describe('Trace chart — scrollToSpan + controlProviderCallback (Spec 14)', () => {
+  /**
+   * Tests for the imperative scroll-to-span control mechanism (ADR 0008).
+   * Uses jest-canvas-mock (imported via makeCtx above) so frame() runs fully.
+   */
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('controlProviderCallback is called on mount with scrollToSpan', () => {
+    const received: TraceControlCallbacks[] = [];
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace
+          id="cp1"
+          data={FEW_SPANS}
+          xScaleType="linear"
+          controlProviderCallback={(cb) => received.push(cb)}
+        />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(received).toHaveLength(1);
+    expect(typeof received[0]!.scrollToSpan).toBe('function');
+    unmount();
+  });
+
+  it('controlProviderCallback is re-called when its reference changes on re-render', () => {
+    const received: TraceControlCallbacks[] = [];
+    const cb1 = (cb: TraceControlCallbacks) => received.push(cb);
+    const cb2 = (cb: TraceControlCallbacks) => received.push(cb);
+
+    const { rerender, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="cp2" data={FEW_SPANS} xScaleType="linear" controlProviderCallback={cb1} />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(received).toHaveLength(1);
+
+    rerender(
+      <Chart size={[800, 200]}>
+        <Trace id="cp2" data={FEW_SPANS} xScaleType="linear" controlProviderCallback={cb2} />
+      </Chart>,
+    );
+    // Re-registered because the reference changed.
+    expect(received).toHaveLength(2);
+
+    unmount();
+  });
+
+  it('controlProviderCallback is NOT re-called when an unrelated prop changes', () => {
+    const received: TraceControlCallbacks[] = [];
+    const stableCb = (cb: TraceControlCallbacks) => received.push(cb);
+
+    const { rerender, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="cp3" data={FEW_SPANS} xScaleType="linear" controlProviderCallback={stableCb} />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(received).toHaveLength(1);
+
+    // Change showTooltipOverEmpty (unrelated prop) — stableCb reference unchanged.
+    rerender(
+      <Chart size={[800, 200]}>
+        <Trace id="cp3" data={FEW_SPANS} xScaleType="linear" controlProviderCallback={stableCb} showTooltipOverEmpty />
+      </Chart>,
+    );
+    expect(received).toHaveLength(1);
+
+    unmount();
+  });
+
+  it('scrollToSpan with unknown id calls Logger.warn and does not throw', () => {
+    let captured: TraceControlCallbacks | null = null;
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace
+          id="scroll1"
+          data={FEW_SPANS}
+          xScaleType="linear"
+          controlProviderCallback={(cb) => { captured = cb; }}
+        />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(captured).not.toBeNull();
+
+    const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    expect(() => captured!.scrollToSpan('no-such-id')).not.toThrow();
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('no-such-id'));
+    warnSpy.mockRestore();
+
+    unmount();
+  });
+
+  it('scrollToSpan with a known id does not call Logger.warn', () => {
+    let captured: TraceControlCallbacks | null = null;
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace
+          id="scroll2"
+          data={FEW_SPANS}
+          xScaleType="linear"
+          controlProviderCallback={(cb) => { captured = cb; }}
+        />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(captured).not.toBeNull();
+
+    const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    expect(() => captured!.scrollToSpan('root')).not.toThrow();
+    expect(warnSpy).not.toHaveBeenCalled();
+    warnSpy.mockRestore();
+
+    unmount();
+  });
+
+  it('scrollToSpan announces the span name via the aria-live region', () => {
+    let captured: TraceControlCallbacks | null = null;
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace
+          id="scroll3"
+          data={FEW_SPANS}
+          xScaleType="linear"
+          controlProviderCallback={(cb) => { captured = cb; }}
+        />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(captured).not.toBeNull();
+
+    captured!.scrollToSpan('db');
+
+    // The aria-live region's textContent should now contain the span name.
+    const ariaLive = container.querySelector('[aria-live]');
+    expect(ariaLive?.textContent).toContain('DB.query');
+
+    unmount();
+  });
+
+  it('scrollToSpan re-triggers with the same id (no prop-diffing guard)', () => {
+    let captured: TraceControlCallbacks | null = null;
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace
+          id="scroll4"
+          data={FEW_SPANS}
+          xScaleType="linear"
+          controlProviderCallback={(cb) => { captured = cb; }}
+        />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(captured).not.toBeNull();
+
+    const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    // Call twice with the same known id — neither call should warn.
+    expect(() => captured!.scrollToSpan('root')).not.toThrow();
+    expect(() => captured!.scrollToSpan('root')).not.toThrow();
+    expect(warnSpy).not.toHaveBeenCalled();
+    warnSpy.mockRestore();
+
+    unmount();
+  });
+
+  it('scrollToSpan does not move DOM keyboard focus (no focus-steal)', () => {
+    let captured: TraceControlCallbacks | null = null;
+    // Give focus to a button that will serve as the "external search box".
+    const button = document.createElement('button');
+    document.body.appendChild(button);
+    button.focus();
+    expect(document.activeElement).toBe(button);
+
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace
+          id="scroll5"
+          data={FEW_SPANS}
+          xScaleType="linear"
+          controlProviderCallback={(cb) => { captured = cb; }}
+        />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(captured).not.toBeNull();
+
+    captured!.scrollToSpan('root');
+
+    // Focus must NOT have moved to the canvas.
+    expect(document.activeElement).toBe(button);
+
+    document.body.removeChild(button);
+    unmount();
   });
 });

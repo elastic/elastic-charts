@@ -19,6 +19,20 @@ export type { OtelInput, OtelSpan, OtlpEnvelope } from './data/otel_adapter';
 export { fromOtlp } from './data/otel_adapter';
 
 /**
+ * Imperative control callbacks handed to the caller via `controlProviderCallback`.
+ * Re-calling `scrollToSpan` with the same id re-triggers (no prop-diffing guard).
+ * @public
+ */
+export interface TraceControlCallbacks {
+  /**
+   * Scroll the lane for the span with the given id into view (centered) and highlight it.
+   * Does NOT move DOM keyboard focus (no focus-steal). Unknown id → dev-warn, no-op.
+   * Imperative: re-calling with the same id re-triggers the scroll.
+   */
+  scrollToSpan: (id: string) => void;
+}
+
+/**
  * Shaped to match the OtelSpan fields read by the color-by helpers. Defined locally to avoid
  * a type-import cycle between trace_api ↔ otel_adapter.
  * @internal
@@ -207,6 +221,15 @@ export interface TraceSpec extends Spec {
    * Suppressed when the resulting set is identity-equal to the previous fire (no-op echo guard).
    */
   onSelectionChange?: (next: TraceSelection, details: TraceSelectionDetail[]) => void;
+  /**
+   * Imperative control registration (ADR 0008). When supplied, called on mount and whenever this
+   * prop's reference changes, with the chart's live `TraceControlCallbacks`. Store the received
+   * callbacks object and call its methods to drive the chart programmatically (e.g. scroll a span
+   * into view from an external search box).
+   *
+   * The callback must be idempotent — it is called on every re-registration (prop reference change).
+   */
+  controlProviderCallback?: (callbacks: TraceControlCallbacks) => void;
 }
 
 const buildProps = buildSFProps<TraceSpec>()(
