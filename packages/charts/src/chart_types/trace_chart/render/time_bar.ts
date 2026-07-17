@@ -26,6 +26,14 @@ import type { TextFont } from '../../../renderers/canvas/primitives/text';
 const MS_PER_SECOND = 1000;
 const TICK_HEIGHT = 6; // px, tick line protruding down into the time bar
 
+/**
+ * Distance in px from the plot edge within which a tick label switches from center-aligned to
+ * edge-aligned to avoid the label painting outside the canvas. Approximately half the width of a
+ * typical longest label ("2m 30s" ≈ 34 px at fontSize=10). Affects the leftmost and rightmost
+ * visible ticks.
+ */
+const TICK_LABEL_EDGE_PX = 20;
+
 /** IANA time zone used when the trace x-scale type is 'time'. */
 const TIME_ZONE = 'UTC';
 
@@ -148,7 +156,17 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
             ? layer.minorTickLabelFormat(minimum * MS_PER_SECOND) // formatters expect ms
             : formatElapsedMs(minimum); // linear: ignore numericalRasters formatter (epoch-relative)
           const labelY = timeBar.top + 2; // a couple of px from the top edge
-          renderText(ctx, { x: tickX, y: labelY }, label, labelFont);
+
+          // Flip from center-aligned to edge-aligned when the tick is near the plot boundary, so
+          // label text doesn't paint outside the canvas. Affects leftmost and rightmost visible ticks.
+          const plotRight = plot.left + plot.width;
+          let tickLabelFont = labelFont;
+          if (tickX - plot.left < TICK_LABEL_EDGE_PX) {
+            tickLabelFont = { ...labelFont, align: 'left' };
+          } else if (plotRight - tickX < TICK_LABEL_EDGE_PX) {
+            tickLabelFont = { ...labelFont, align: 'right' };
+          }
+          renderText(ctx, { x: tickX, y: labelY }, label, tickLabelFont);
         }
       }
     }

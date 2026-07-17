@@ -81,6 +81,7 @@ const style: TraceStyle = {
   focusedLaneBackground: 'rgba(96,146,192,0.15)',
   selectedSegmentStroke: '#f00',
   selectedSegmentStrokeWidth: 2,
+  labelPosition: 'gutter',
 };
 
 function makeGeom(xScaleType: 'time' | 'linear'): TraceGeometry {
