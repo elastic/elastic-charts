@@ -517,5 +517,6 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     focusedLaneBackground: 'rgba(96,146,192,0.15)',
     selectedSegmentStroke: '#EE72A6',
     selectedSegmentStrokeWidth: 2,
+    labelPosition: 'gutter',
   },
 };

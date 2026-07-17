@@ -23,6 +23,7 @@ const style: TraceStyle = {
   focusedLaneBackground: 'rgba(96,146,192,0.15)',
   selectedSegmentStroke: '#f00',
   selectedSegmentStrokeWidth: 2,
+  labelPosition: 'gutter',
 };
 
 function span(id: string, start: number, end: number): NormalizedSpan {
@@ -121,6 +122,19 @@ describe('buildGeometry', () => {
     const geomLinear = buildGeometry(spans, canvasSize, focusDomain, 0, style, 'linear', domain);
     expect(geomTime.xScaleType).toBe('time');
     expect(geomLinear.xScaleType).toBe('linear');
+  });
+
+  it('gutterWidth=0: plot occupies the full canvas width and plot.left is 0', () => {
+    // Spec 17 — gutterWidth=0 is the typical companion to labelPosition='inline'.
+    // The Math.max(0, canvasWidth - gutterWidth) guard already handles this; verify it.
+    const inlineStyle: TraceStyle = { ...style, gutterWidth: 0, labelPosition: 'inline' };
+    const geom = buildGeometry(spans, canvasSize, focusDomain, 0, inlineStyle, 'linear', domain);
+    expect(geom.plot.width).toBe(canvasSize.width);
+    expect(geom.plot.left).toBe(0);
+    expect(geom.gutter.width).toBe(0);
+    // Hit-test invariant: scale maps focusDomain.min → 0 (= plot.left).
+    expect(geom.scale(focusDomain.min)).toBeCloseTo(0);
+    expect(geom.scale(focusDomain.max)).toBeCloseTo(canvasSize.width);
   });
 
   it('empty spans produce a zero domain and a valid (no-throw) scale', () => {

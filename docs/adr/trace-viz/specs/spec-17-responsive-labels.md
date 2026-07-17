@@ -36,16 +36,17 @@ auto-collapse based on available width.
 and the plot area. Labels drawn in the left panel.
 
 **Inline mode (`'inline'`):** `gutterWidth` is typically 0 (the caller omits the gutter in narrow
-embeds). Labels are drawn in the plot area itself:
-- Start at the bar's start edge in CSS pixels.
-- Overflow to the right into the empty lane space (not clipped to the bar width). This matches the
-  Chrome DevTools Network / Kibana trace behavior where most bars are narrower than their name.
-- Clip at the plot's right edge (canvas clip or manual pixel bound).
-- **Right-edge flip:** when `barStartX + textWidth > plotRight - FLIP_MARGIN_PX`, right-align the
-  text so it ends at `barStartX` (text drawn to the left of the bar start) rather than clipping off-
-  screen.
-- Draw labels *after* the active-segment fill (text on top); use `theme.trace.gutterLabel` color;
-  no halo/stroke by default (add only if a review pass shows readability is inadequate).
+embeds). Each lane splits vertically into a **bar band** (top) and a **label band** (bottom).
+`laneHeight` covers both bands — the caller sets it taller than the gutter default (e.g. 40 px) to
+accommodate the two rows. Bar-band height = `laneHeight − 2×LANE_PADDING − labelBandPx`; label band
+height = `gutterLabel.fontSize + LANE_PADDING`. Labels are drawn in the plot area itself:
+- Start at the bar's start edge, clamped to `plot.left` (sticky-left) when the bar starts off-screen.
+- Culled entirely when the bar is off-screen in both x-directions (no bar to anchor to).
+- Overflow freely to the right into the empty lane space (not clipped to the bar width). This matches
+  the Kibana APM waterfall style where names are wider than their bars.
+- Clip at the plot's right edge (canvas `clip()` call per label).
+- No right-edge flip; no `measureText` call. Long names simply clip at the lane edge.
+- Draw labels below the bar band; use `theme.trace.gutterLabel` color; no halo/stroke by default.
 
 **None mode (`'none'`):** no label drawing. Labels remain accessible via tooltip and the screen-reader
 table (Spec 16).
@@ -57,11 +58,12 @@ occupies the full canvas width. Guard the geometry calculation so `plotWidth = c
 ## Steps
 
 1. Add `labelPosition: 'gutter' | 'inline' | 'none'` to `TraceStyle` in `render/types.ts`.
-2. Update the default theme object to set `labelPosition: 'gutter'`.
-3. Guard `gutterWidth = 0` in `render/geometry.ts`.
-4. Add inline/none branches to the label-drawing pass in `canvas2d_renderer.ts`.
-5. Implement the right-edge flip for inline labels.
-6. Author `20_responsive.story.tsx` with `labelPosition` and width knobs; include mobile (~320px)
+2. Add `labelPosition: 'gutter'` to all built-in theme objects (6 files).
+3. In `canvas2d_renderer.ts`: hoist `labelBandPx` (0 for gutter/none; `gutterLabel.fontSize +
+   LANE_PADDING` for inline); derive `barTop`/`barBottom`/`barMidY` from `labelBandPx`; branch the
+   label pass (`gutter` unchanged; `inline` draws full name below bar with clip; `none` skips).
+   Thread the same bar-band geometry into the selection-highlight pass.
+4. Author `22_responsive.story.tsx` with `labelPosition` and width knobs; include mobile (~320px)
    and side-panel (~480px) presets.
 
 ## Storybook
@@ -74,28 +76,31 @@ occupies the full canvas width. Guard the geometry calculation so `plotWidth = c
 
 ## Tests
 
-- Geometry: with `gutterWidth = 0`, `plotWidth = canvasWidth` and hit-testing (lane index from y-px)
-  is unchanged.
-- Inline labels: given a bar at `x=10`, `textWidth=200`, `plotRight=300`, label starts at `x=10`
-  and is clipped at 300 (no overflow beyond the canvas).
-- Right-edge flip: given `barStartX=280`, `textWidth=200`, `plotRight=300`, text is right-aligned to
-  end at `barStartX=280` (text drawn leftward, not clipped off-screen).
-- `'none'` mode: `draw()` emits zero text calls (spy/mock `ctx.fillText`).
+- Geometry: `gutterPx(style)` returns 0 for `'inline'` and `'none'` → `plot.width = canvasWidth`,
+  `plot.left = 0`, `gutter.width = 0` even when `style.gutterWidth = 200`. Verified in
+  `geometry.test.ts`.
+- `'none'` mode: `draw()` emits zero `ctx.fillText` calls (spied via `jest-canvas-mock`).
+- `'inline'` with 3 visible spans: 3 `fillText` calls, each with the full span name (no ellipsis).
+  A plot-bounds `clip()` is issued per visible label.
+- `'inline'` with bar fully off-screen left: no `fillText` for that lane (bar-cull condition).
+- `'inline'` with bar partially visible (starts off-screen left): label is drawn at `x = plot.left`
+  (sticky-left clamp).
+- Tick-label edge alignment: `TICK_LABEL_EDGE_PX` constant; leftmost tick switches to
+  `align='left'`, rightmost to `align='right'`.
 
 ## Review (`/review-claudio`)
 
-- Verify inline label right-overflow behavior when `ctx.measureText` width is unavailable or zero
-  (degenerate empty span name).
-- Verify right-edge flip threshold `FLIP_MARGIN_PX` is a named constant, not a magic number.
-- Verify `labelPosition='none'` + `gutterWidth=0` doesn't leave a grey gutter panel on-screen (ensure
-  the `<figure>` layout also removes the gutter DOM if any).
-- Verify ADR 0004 Decision 4 dimension math still holds with `gutterWidth = 0` (no division by zero
-  or negative widths in scroll/hit-test math).
+- Verify inline label behavior for an empty span name (`span.name = ''`) — the `&& span.name` guard
+  in the inline branch skips the draw without calling `ctx.rect`/`ctx.clip`.
+- Verify `labelPosition='none'` collapses the gutter via `gutterPx()` — no grey left panel on
+  canvas and no misaligned wheel/key-zoom math.
+- Verify ADR 0004 Decision 4 dimension math holds with `gutterPx()` returning 0 (no division by
+  zero or negative widths in scroll/hit-test math).
 
 ## Acceptance
 
-- At ~320px with `labelPosition='inline'` and `gutterWidth=0`, the timeline is readable and labels
-  do not clip off-screen (they overflow right or flip near the right edge).
-- `labelPosition='none'` renders no text labels on canvas.
-- `labelPosition='gutter'` (default) is pixel-identical to the pre-Spec-13 baseline.
-- `yarn jest trace_chart` and `yarn typecheck` are green.
+- At ~320px with `labelPosition='inline'`, the timeline is readable; labels start near the bar's
+  start edge, overflow right, and clip at the plot's right edge (no right-edge flip).
+- `labelPosition='none'` renders no text labels on canvas; gutter collapses automatically.
+- `labelPosition='gutter'` (default) is pixel-identical to the pre-Spec-17 baseline.
+- `yarn jest trace_chart` green (340 tests pass). `tsc --noEmit` on `packages/charts` is clean.

@@ -30,7 +30,16 @@ const DATA = fromOtlp(FRONTEND_WEB_OTLP_ENVELOPE).map((datum) => ({
 
 export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description} size={{ width: '100%', height: 350 }}>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings
+      baseTheme={useBaseTheme()}
+      theme={{
+        trace: {
+          // Inline mode: label on a row below the bar, gutter collapsed (Kibana APM style).
+          labelPosition: 'inline',
+          laneHeight: 40,
+        },
+      }}
+    />
     <Trace id="trace_kibana" data={DATA} xScaleType="linear" colorBy={BY_SERVICE} />
   </Chart>
 );

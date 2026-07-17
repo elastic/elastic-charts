@@ -103,6 +103,11 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
 
     const plotRight = plot.left + plot.width;
 
+    // In inline mode each lane is split vertically: a bar band at the top and a label band beneath.
+    // For gutter/none the label band is zero-height and all geometry reduces to today's behaviour.
+    const labelBandPx =
+      style.labelPosition === 'inline' ? style.gutterLabel.fontSize + LANE_PADDING : 0;
+
     // Lazily-built fill cache: at most one colorToRgba call per distinct segment color per
     // draw() call. Segments per lane are few, so a plain Map is sufficient.
     const segFillCache = new Map<string, Fill>();
@@ -112,7 +117,11 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       if (!span) continue;
 
       const laneTop = plot.top + i * laneHeight - scrollOffset;
-      const midY = laneTop + laneHeight / 2;
+
+      // Bar band: occupies the top portion of the lane (full lane when labelBandPx = 0).
+      const barTop = laneTop + LANE_PADDING;
+      const barBottom = laneTop + laneHeight - LANE_PADDING - labelBandPx;
+      const barMidY = (barTop + barBottom) / 2;
 
       // --- Total-duration line (thin horizontal rule for the full span extent) ---
       const rawX1 = scale(span.start);
@@ -123,7 +132,7 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       if (rawX2 >= plot.left && rawX1 <= plotRight) {
         const lineX1 = Math.max(plot.left, rawX1);
         const lineX2 = Math.min(plotRight, rawX2);
-        renderMultiLine(ctx, [{ x1: lineX1, y1: midY, x2: lineX2, y2: midY }], totalLineStroke);
+        renderMultiLine(ctx, [{ x1: lineX1, y1: barMidY, x2: lineX2, y2: barMidY }], totalLineStroke);
       }
 
       // --- Active segments (solid rects showing self-time) ---
@@ -154,22 +163,40 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
         }
         renderRect(
           ctx,
-          { x: clampedX, y: laneTop + LANE_PADDING, width: clampedW, height: laneHeight - 2 * LANE_PADDING },
+          { x: clampedX, y: barTop, width: clampedW, height: barBottom - barTop },
           segFill,
           NO_STROKE,
           true, // disableBorderOffset — no stroke, so inset is irrelevant; explicit for clarity
         );
       }
 
-      // --- Gutter label (span name, ellipsized to fit) ---
-      const { lines } = wrapLines(ctx, span.name, gutterFont, gutterFont.fontSize, gutter.width - 8, laneHeight, {
-        wrapAtWord: false,
-        shouldAddEllipsis: true,
-      });
-      if (lines[0]) {
-        // Place text at horizontal offset 4 from the gutter edge; baseline 'middle' centers it vertically.
-        renderText(ctx, { x: gutter.left + 4, y: midY }, lines[0], gutterFont);
+      // --- Label pass ---
+      if (style.labelPosition === 'gutter') {
+        // Gutter label (span name, ellipsized to fit) — unchanged behaviour.
+        const { lines } = wrapLines(ctx, span.name, gutterFont, gutterFont.fontSize, gutter.width - 8, laneHeight, {
+          wrapAtWord: false,
+          shouldAddEllipsis: true,
+        });
+        if (lines[0]) {
+          // Place text at horizontal offset 4 from the gutter edge; baseline 'middle' centers it vertically.
+          renderText(ctx, { x: gutter.left + 4, y: barMidY }, lines[0], gutterFont);
+        }
+      } else if (style.labelPosition === 'inline' && span.name) {
+        // Inline label: drawn on a row below the bar, starting at the bar's start x (sticky-left).
+        // Cull when the bar is entirely outside the visible x-range (no bar to anchor to).
+        if (rawX2 >= plot.left && rawX1 <= plotRight) {
+          const barStartX = Math.max(plot.left, rawX1);
+          const labelMidY = laneTop + laneHeight - LANE_PADDING - labelBandPx / 2;
+          withContext(ctx, () => {
+            // Clip to the plot rect so the label never paints outside the lane's right edge.
+            ctx.beginPath();
+            ctx.rect(plot.left, plot.top, plot.width, plot.height);
+            ctx.clip();
+            renderText(ctx, { x: barStartX, y: labelMidY }, span.name, gutterFont);
+          });
+        }
       }
+      // labelPosition === 'none': no label drawn.
     }
 
     // --- Selection-highlight pass (after all lane content) ---
@@ -213,9 +240,12 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
         const hlClampedW = Math.min(plotRight, hlX2) - hlClampedX;
         if (hlClampedW <= 0) continue;
 
+        // Selection outline must frame the bar band (same vertical extent as the active-segment rects).
+        const hlBarTop = entryLaneTop + LANE_PADDING;
+        const hlBarBottom = entryLaneTop + laneHeight - LANE_PADDING - labelBandPx;
         renderRect(
           ctx,
-          { x: hlClampedX, y: entryLaneTop + LANE_PADDING, width: hlClampedW, height: laneHeight - 2 * LANE_PADDING },
+          { x: hlClampedX, y: hlBarTop, width: hlClampedW, height: hlBarBottom - hlBarTop },
           NO_FILL,
           selectionStroke,
           false,

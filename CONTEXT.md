@@ -63,7 +63,7 @@ contiguous waiting gap is an addressable **waiting segment** (derived on demand 
 _Avoid_: idle (implies nothing is happening globally), blocked (implies a stall or error).
 
 **Label position**:
-The rendering mode for span name labels: `gutter` (drawn in the fixed left panel — the default), `inline` (drawn over the span's bar near its start edge — the Chrome/Kibana style), or `none` (labels omitted; accessible only via tooltip and screen-reader table). Set via `theme.trace.labelPosition`. No auto-switching — the caller sets the mode explicitly.
+The rendering mode for span name labels: `gutter` (drawn in the fixed left panel — the default), `inline` (drawn on a dedicated row below the bar, starting near the bar's start edge and overflowing right — the Kibana APM style), or `none` (labels omitted; accessible only via tooltip and screen-reader table). Set via `theme.trace.labelPosition`. No auto-switching — the caller sets the mode explicitly.
 _Avoid_: label mode, label placement.
 
 **Focused lane**:

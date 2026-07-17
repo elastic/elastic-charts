@@ -54,6 +54,7 @@ const style: TraceStyle = {
   focusedLaneBackground: 'rgba(96,146,192,0.15)',
   selectedSegmentStroke: '#f00',
   selectedSegmentStrokeWidth: 2,
+  labelPosition: 'gutter',
 };
 
 // Canvas partition dimensions — must be consistent with the style above.
@@ -533,5 +534,104 @@ describe('draw — emptyMessage (trace-not-found empty state)', () => {
     // The key assertion is that the message string never appears.
     const calls = (ctx.fillText as jest.Mock).mock.calls as [string, number, number][];
     expect(calls.every(([t]) => t !== 'should not show')).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: labelPosition — Spec 17 responsive labels
+// ---------------------------------------------------------------------------
+
+describe("draw — labelPosition: 'none'", () => {
+  const styleNone: TraceStyle = { ...style, labelPosition: 'none' };
+
+  it('draws no span-name labels (zero fillText calls)', () => {
+    const ctx = makeCtx();
+    draw(ctx, makeGeom(), styleNone);
+    expect(ctx.fillText).not.toHaveBeenCalled();
+  });
+
+  it('still draws total-duration lines and active-segment rects', () => {
+    const ctx = makeCtx();
+    draw(ctx, makeGeom(), styleNone);
+    // 3 spans → 3 total lines
+    expect(ctx.moveTo).toHaveBeenCalledTimes(3);
+    // SpanA=1 + SpanB=2 + SpanC=0 = 3 active rects
+    expect(ctx.rect).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe("draw — labelPosition: 'inline'", () => {
+  // laneHeight=40 to accommodate bar band + label band (Spec 17 inline geometry).
+  const styleInline: TraceStyle = {
+    ...style,
+    gutterWidth: 0,
+    laneHeight: 40,
+    labelPosition: 'inline',
+  };
+  // With gutterWidth=0, plot.left=0 and PLOT_LEFT_INLINE=0; adjust scale accordingly.
+  const scaleInline = (t: number) => (t / 1000) * PLOT_WIDTH;
+  const geomInline = () =>
+    makeGeom({
+      gutter: { top: 0, left: 0, width: 0, height: PLOT_TOP + PLOT_HEIGHT },
+      plot: { top: PLOT_TOP, left: 0, width: PLOT_WIDTH, height: PLOT_HEIGHT },
+      laneHeight: 40,
+      scale: scaleInline,
+    });
+
+  it('draws one full-name label per visible span', () => {
+    const ctx = makeCtx();
+    draw(ctx, geomInline(), styleInline);
+    // Three spans, all on-screen → 3 fillText calls.
+    expect(ctx.fillText).toHaveBeenCalledTimes(3);
+    const names = (ctx.fillText as jest.Mock).mock.calls.map(([t]: [string]) => t);
+    // Labels are full names (no ellipsis truncation in inline mode).
+    expect(names).toContain('SpanA');
+    expect(names).toContain('SpanB');
+    expect(names).toContain('SpanC');
+  });
+
+  it('clips each label to the plot rect (ctx.rect + ctx.clip called per visible lane)', () => {
+    const ctx = makeCtx();
+    draw(ctx, geomInline(), styleInline);
+    // ctx.clip is called inside withContext for each visible inline label (3 spans visible).
+    expect(ctx.clip).toHaveBeenCalledTimes(3);
+  });
+
+  it('draws no label for a span whose bar is entirely off-screen left', () => {
+    // A span with start=-200, end=-100; scaled: x1=(−200/1000)*700=−140, x2=(−100/1000)*700=−70.
+    // Both rawX1 and rawX2 are < plot.left=0 → bar is fully off-screen left → label is culled.
+    const offScreenSpan: NormalizedSpan[] = [
+      {
+        id: 'oob',
+        name: 'OffScreen',
+        start: -200,
+        end: -100,
+        activeSegments: [],
+        meta: { id: 'oob', name: 'OffScreen', traceId: 't1', start: -200, end: -100 } satisfies TraceDatum,
+      },
+    ];
+    const ctx = makeCtx();
+    draw(ctx, { ...geomInline(), spans: offScreenSpan }, styleInline);
+    expect(ctx.fillText).not.toHaveBeenCalled();
+  });
+
+  it('label is drawn when span starts off-screen left but is partially visible (sticky-left)', () => {
+    // Span starts off-screen (scale(-500)=−350 < plot.left=0) but ends on-screen (scale(500)=350).
+    // The label is NOT culled: rawX2=350 >= plot.left=0, so it draws with barStartX clamped to 0.
+    const partialSpan: NormalizedSpan[] = [
+      {
+        id: 'partial',
+        name: 'PartiallyVisible',
+        start: -500,
+        end: 500,
+        activeSegments: [],
+        meta: { id: 'partial', name: 'PartiallyVisible', traceId: 't1', start: -500, end: 500 } satisfies TraceDatum,
+      },
+    ];
+    const ctx = makeCtx();
+    draw(ctx, { ...geomInline(), spans: partialSpan }, styleInline);
+    expect(ctx.fillText).toHaveBeenCalledTimes(1);
+    const [text] = (ctx.fillText as jest.Mock).mock.calls[0] as [string];
+    expect(text).toBe('PartiallyVisible');
   });
 });

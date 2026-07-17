@@ -499,5 +499,6 @@ export const LEGACY_DARK_THEME: Theme = {
     focusedLaneBackground: 'rgba(96,146,192,0.15)',
     selectedSegmentStroke: '#BC1E70',
     selectedSegmentStrokeWidth: 2,
+    labelPosition: 'gutter',
   },
 };

@@ -18,6 +18,7 @@ import { resolveActive, waitingSegments } from './data/self_time';
 import type { NormalizedSpan } from './data/types';
 import { canvas2dRenderer, pickRegion } from './render/canvas2d_renderer';
 import { buildGeometry } from './render/geometry';
+import { gutterPx } from './render/types';
 import type { ViewKey } from './render/interaction';
 import { computeMaxScroll, computeScrollTarget, computeZoomMax, domainToZoomPan, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, pixelRangeToDomain } from './render/interaction';
 import { buildTraceEvent, buildTraceSelectionDetail, buildTraceTooltipInfo, formatMs } from './render/tooltip';
@@ -728,8 +729,8 @@ class TraceComponent extends React.Component<TraceProps> {
 
       if (!this.props.traceSpec) return;
       const style = this.getStyle();
-      const plotWidth = this.props.chartDimensions.width - style.gutterWidth;
-      const plotLeft = style.gutterWidth;
+      const plotLeft = gutterPx(style);
+      const plotWidth = this.props.chartDimensions.width - plotLeft;
 
       this.easeZoom = true;
       doZoomAroundPosition(
@@ -807,7 +808,7 @@ class TraceComponent extends React.Component<TraceProps> {
 
       if (!this.props.traceSpec) return;
       const style = this.getStyle();
-      const plotWidth = this.props.chartDimensions.width - style.gutterWidth;
+      const plotWidth = this.props.chartDimensions.width - gutterPx(style);
       const plotHeight = this.props.chartDimensions.height - style.timeBarHeight;
       const { spans } = this.getPipeline(this.props.traceSpec);
 
@@ -1019,8 +1020,8 @@ class TraceComponent extends React.Component<TraceProps> {
         e.preventDefault();
         if (!spec) return;
         const style = this.getStyle();
-        const plotWidth = this.props.chartDimensions.width - style.gutterWidth;
-        const plotLeft = style.gutterWidth;
+        const plotLeft = gutterPx(style);
+        const plotWidth = this.props.chartDimensions.width - plotLeft;
         this.easeZoom = true;
         doZoomAroundPosition(
           this.zoomPan,
@@ -1039,8 +1040,8 @@ class TraceComponent extends React.Component<TraceProps> {
         e.preventDefault();
         if (!spec) return;
         const style = this.getStyle();
-        const plotWidth = this.props.chartDimensions.width - style.gutterWidth;
-        const plotLeft = style.gutterWidth;
+        const plotLeft = gutterPx(style);
+        const plotWidth = this.props.chartDimensions.width - plotLeft;
         this.easeZoom = true;
         doZoomAroundPosition(
           this.zoomPan,

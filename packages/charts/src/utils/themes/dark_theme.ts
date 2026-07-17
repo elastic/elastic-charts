@@ -487,6 +487,7 @@ export const DARK_THEME: Theme = {
     focusedLaneBackground: DARK_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
     selectedSegmentStroke: DARK_BACKGROUND_COLORS.backgroundFilledAccent,
     selectedSegmentStrokeWidth: 2,
+    labelPosition: 'gutter',
   },
   // TODO map colors to base color mappings
   flamegraph: {

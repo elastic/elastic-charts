@@ -22,6 +22,7 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0017 — Trace viz story organisation principles](./0017-story-organisation-principles.md)
 - [0018 — Lane ordering: tree (DFS) default, chronological optional](./0018-lane-ordering-tree-default.md)
 - [0019 — Empty-state ownership: `no-data` delegates to the library overlay, `trace-not-found` is a canvas message](./0019-empty-state-ownership.md)
+- [0020 — Inline labels render on a dedicated row below the bar (Kibana APM style)](./0020-inline-labels-below-bar.md)
 
 ## Spec plans
 

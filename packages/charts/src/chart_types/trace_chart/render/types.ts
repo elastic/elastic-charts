@@ -31,6 +31,8 @@ export interface TraceStyle {
   activeSegmentColor: Color;
   /** Font for span name labels in the gutter. */
   gutterLabel: { fontFamily: string; fontSize: number; color: Color };
+  /** Where span-name labels are drawn: fixed left gutter, inline on a row below the bar, or omitted. */
+  labelPosition: 'gutter' | 'inline' | 'none';
   /** Font for time-bar tick labels. */
   timeBarLabel: { fontFamily: string; fontSize: number; color: Color };
   /** Color of the faint gridlines drawn down through the plot area. */
@@ -41,6 +43,16 @@ export interface TraceStyle {
   selectedSegmentStroke: Color;
   /** Stroke width in px for the selection-highlight outline. */
   selectedSegmentStrokeWidth: number;
+}
+
+/**
+ * Returns the effective left gutter width for layout and coordinate math. The gutter collapses to
+ * zero for `'inline'` and `'none'` label modes — in both cases the gutter region has no content,
+ * so reserving horizontal space for it would waste plot area and misalign interaction coordinates.
+ * @internal
+ */
+export function gutterPx(style: TraceStyle): number {
+  return style.labelPosition === 'gutter' ? style.gutterWidth : 0;
 }
 
 /**

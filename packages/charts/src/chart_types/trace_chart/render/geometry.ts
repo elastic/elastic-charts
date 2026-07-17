@@ -9,6 +9,7 @@
 import type { NormalizedSpan } from '../data/types';
 import { waitingSegments } from '../data/self_time';
 import type { TraceGeometry, TraceStyle } from './types';
+import { gutterPx } from './types';
 import type { TraceSelection } from '../trace_api';
 import type { Size } from '../../../utils/dimensions';
 
@@ -41,14 +42,17 @@ export function buildGeometry(
   // domain is pre-computed by normalize() and passed in; no per-frame reduce needed.
 
   const { width: canvasWidth, height: canvasHeight } = canvasSize;
-  const { gutterWidth, timeBarHeight, laneHeight } = style;
+  const { timeBarHeight, laneHeight } = style;
+  // gutterPx() collapses the gutter to 0 for 'inline' and 'none' label modes — the gutter region
+  // has no content in those modes, so reserving space for it would waste plot area.
+  const effectiveGutterWidth = gutterPx(style);
 
-  const plotLeft = gutterWidth;
+  const plotLeft = effectiveGutterWidth;
   const plotTop = timeBarHeight;
-  const plotWidth = Math.max(0, canvasWidth - gutterWidth);
+  const plotWidth = Math.max(0, canvasWidth - effectiveGutterWidth);
   const plotHeight = Math.max(0, canvasHeight - timeBarHeight);
 
-  const gutter = { top: 0, left: 0, width: gutterWidth, height: canvasHeight };
+  const gutter = { top: 0, left: 0, width: effectiveGutterWidth, height: canvasHeight };
   const timeBar = { top: 0, left: plotLeft, width: plotWidth, height: timeBarHeight };
   const plot = { top: plotTop, left: plotLeft, width: plotWidth, height: plotHeight };
 
