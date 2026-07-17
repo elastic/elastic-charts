@@ -19,6 +19,7 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0014 — Keyboard focus badge is a DOM sibling `<div>`, not a canvas draw](./0014-keyboard-focus-badge-dom-sibling.md)
 - [0015 — Critical path is consumer-supplied, interval-precise (not computed, not a boolean)](./0015-critical-path-consumer-supplied-intervals.md)
 - [0016 — Connections are an explicit consumer-supplied prop, not derived from OTel links](./0016-connections-explicit-prop.md)
+- [0017 — Trace viz story organisation principles](./0017-story-organisation-principles.md)
 
 ## Spec plans
 
