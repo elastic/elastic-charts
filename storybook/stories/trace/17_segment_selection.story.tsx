@@ -9,7 +9,7 @@
 import { boolean } from '@storybook/addon-knobs';
 import React, { useState } from 'react';
 
-import type { TraceDatum, TraceSelection, TraceSelectionDetail } from '@elastic/charts';
+import type { TraceDatum, TraceSelectionDetail } from '@elastic/charts';
 import { Chart, Settings, Trace } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
@@ -94,18 +94,6 @@ const S = {
     overflowX: 'auto' as const,
     whiteSpace: 'pre' as const,
   },
-  pill: (active: boolean) => ({
-    display: 'inline-block',
-    padding: '2px 10px',
-    borderRadius: 12,
-    border: '1px solid',
-    borderColor: active ? '#0077cc' : '#c8d3de',
-    background: active ? '#e6f3ff' : '#f8fafb',
-    color: active ? '#0077cc' : '#555',
-    fontSize: 11,
-    cursor: 'pointer',
-    userSelect: 'none' as const,
-  }),
   kbd: {
     display: 'inline-block',
     padding: '1px 5px',
@@ -117,59 +105,41 @@ const S = {
   },
   grid2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 },
   label: { fontSize: 11, color: '#6b7280', textTransform: 'uppercase' as const, letterSpacing: '0.05em', fontWeight: 600 },
-  buttonRow: { display: 'flex', gap: 8, flexWrap: 'wrap' as const },
-  button: {
-    padding: '4px 12px',
-    border: '1px solid #c8d3de',
-    borderRadius: 4,
-    background: '#f8fafb',
-    cursor: 'pointer',
-    fontSize: 12,
-  },
 };
 
 // ---------------------------------------------------------------------------
 // Story
 // ---------------------------------------------------------------------------
 
+const formatDetailLog = (details: TraceSelectionDetail[]) =>
+  details.length === 0
+    ? '(none)'
+    : details
+        .map(
+          (d) =>
+            `"${d.name}" region=${d.region} segIdx=${d.segmentIndex}` +
+            (d.segmentDuration !== undefined ? ` segDur=${d.segmentDuration.toFixed(0)}ms` : ''),
+        )
+        .join('\n');
+
 export const Example: ChartsStory = (_, { title, description }) => {
   const theme = useBaseTheme();
   const showTooltipOverEmpty = boolean('showTooltipOverEmpty', false);
 
-  // Uncontrolled demo state
-  const [uncontrolledLog, setUncontrolledLog] = useState<string>('—');
-  const [uncontrolledDetailLog, setUncontrolledDetailLog] = useState<string>('—');
-
-  // Controlled demo state
-  const [controlledSelection, setControlledSelection] = useState<TraceSelection>([]);
-  const [controlledLog, setControlledLog] = useState<string>('—');
-
-  const formatNextLog = (next: TraceSelection) =>
-    next.length === 0
-      ? '[] (cleared)'
-      : next.map((r) => `{spanId:"${r.spanId}", region:"${r.region}", segIdx:${r.segmentIndex}}`).join('\n');
-
-  const formatDetailLog = (details: TraceSelectionDetail[]) =>
-    details.length === 0
-      ? '(none)'
-      : details
-          .map(
-            (d) =>
-              `"${d.name}" region=${d.region} segIdx=${d.segmentIndex}` +
-              (d.segmentDuration !== undefined ? ` segDur=${d.segmentDuration.toFixed(0)}ms` : ''),
-          )
-          .join('\n');
+  const [log, setLog] = useState<string>('—');
+  const [detailLog, setDetailLog] = useState<string>('—');
 
   return (
     <div style={S.page}>
 
       {/* ── Description ────────────────────────────────────────────────── */}
       <div style={S.section}>
-        <h2 style={S.h2}>Segment Selection (Spec 13)</h2>
+        <h2 style={S.h2}>Segment Selection — Uncontrolled (Spec 13)</h2>
         <p style={S.p}>
-          Left-click an active or waiting segment to select and highlight it with a stroke outline.
-          Double-click a span to select the whole span. Modifier-click to accumulate a multi-selection.
-          Click empty canvas space to clear.
+          The chart manages selection internally. <code>onSelectionChange</code> fires once per
+          completed gesture with the thin <code>next</code> refs and rich <code>details</code>.
+          Left-click an active or waiting segment to select it; double-click a span to select the whole span;
+          modifier-click to accumulate a multi-selection; click empty canvas space to clear.
         </p>
         <p style={S.p}>
           <kbd style={S.kbd}>Shift</kbd> + click = <strong>additive</strong> (add only; never removes).{' '}
@@ -180,7 +150,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           Keyboard (focused lane): <kbd style={S.kbd}>Enter</kbd> / <kbd style={S.kbd}>Space</kbd> = replace with whole-span ref.{' '}
           <kbd style={S.kbd}>Shift</kbd>+Enter = additive-add.{' '}
           <kbd style={S.kbd}>Cmd</kbd>/<kbd style={S.kbd}>Ctrl</kbd>+Enter = toggle.{' '}
-          No keyboard path for single-segment (sub-span) selection — that requires mouse.{' '}
           Each keyboard selection is announced via the <code>aria-live</code> region (heard by screen-readers).{' '}
           <kbd style={S.kbd}>Esc</kbd> clears selection, focus, and unpin (announces &quot;Selection cleared&quot;).
         </p>
@@ -190,99 +159,32 @@ export const Example: ChartsStory = (_, { title, description }) => {
         </p>
       </div>
 
-      {/* ── Demo 1 — Uncontrolled ────────────────────────────────────── */}
-      <div style={S.section}>
-        <span style={S.label}>Demo 1 — Uncontrolled</span>
-        <p style={S.p}>
-          The chart manages selection internally. <code>onSelectionChange</code> fires once per
-          completed gesture with the thin <code>next</code> refs and rich <code>details</code>.
-        </p>
-        <Chart title={title} description={description} size={{ width: '100%', height: 200 }}>
-          <Settings baseTheme={theme} />
-          <Trace
-            id="trace_uncontrolled"
-            data={FIXTURE}
-            xScaleType="linear"
-            showTooltipOverEmpty={showTooltipOverEmpty}
-            onSelectionChange={(next, details) => {
-              setUncontrolledLog(formatNextLog(next));
-              setUncontrolledDetailLog(formatDetailLog(details));
-            }}
-          />
-        </Chart>
-        <div style={S.grid2}>
-          <div style={S.section}>
-            <span style={S.label}>onSelectionChange — next (thin refs)</span>
-            <div style={S.log}>{uncontrolledLog}</div>
-          </div>
-          <div style={S.section}>
-            <span style={S.label}>onSelectionChange — details (rich)</span>
-            <div style={S.log}>{uncontrolledDetailLog}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Demo 2 — Controlled ─────────────────────────────────────── */}
-      <div style={S.section}>
-        <span style={S.label}>Demo 2 — Controlled</span>
-        <p style={S.p}>
-          The <code>selection</code> prop is the render source of truth. Gestures still execute and
-          fire <code>onSelectionChange</code> — the parent decides whether to update the prop
-          (perform-and-fire, same model as <code>focusDomain</code>). The external buttons below
-          drive the selection independently.
-        </p>
-        <Chart title={title} description={description} size={{ width: '100%', height: 200 }}>
-          <Settings baseTheme={theme} />
-          <Trace
-            id="trace_controlled"
-            data={FIXTURE}
-            xScaleType="linear"
-            showTooltipOverEmpty={showTooltipOverEmpty}
-            selection={controlledSelection}
-            onSelectionChange={(next, details) => {
-              setControlledSelection(next);
-              setControlledLog(
-                `next: ${formatNextLog(next)}\ndetails: ${formatDetailLog(details)}`,
-              );
-            }}
-          />
-        </Chart>
+      {/* ── Chart ────────────────────────────────────────────────────── */}
+      <Chart title={title} description={description} size={{ width: '100%', height: 200 }}>
+        <Settings baseTheme={theme} />
+        <Trace
+          id="trace_uncontrolled"
+          data={FIXTURE}
+          xScaleType="linear"
+          showTooltipOverEmpty={showTooltipOverEmpty}
+          onSelectionChange={(next, details) => {
+            setLog(
+              next.length === 0
+                ? '[] (cleared)'
+                : next.map((r) => `{spanId:"${r.spanId}", region:"${r.region}", segIdx:${r.segmentIndex}}`).join('\n'),
+            );
+            setDetailLog(formatDetailLog(details));
+          }}
+        />
+      </Chart>
+      <div style={S.grid2}>
         <div style={S.section}>
-          <span style={S.label}>External selection buttons</span>
-          <div style={S.buttonRow}>
-            <button
-              style={S.button}
-              onClick={() => setControlledSelection([{ spanId: 'root', region: 'active', segmentIndex: 0 }])}
-            >
-              Select root active[0]
-            </button>
-            <button
-              style={S.button}
-              onClick={() => setControlledSelection([{ spanId: 'db', region: 'span', segmentIndex: -1 }])}
-            >
-              Select db whole-span
-            </button>
-            <button
-              style={S.button}
-              onClick={() => setControlledSelection([
-                { spanId: 'root', region: 'active', segmentIndex: 0 },
-                { spanId: 'db', region: 'active', segmentIndex: 1 },
-              ])}
-            >
-              Multi-select root+db
-            </button>
-            <button style={S.button} onClick={() => setControlledSelection([])}>
-              Clear
-            </button>
-          </div>
-          <div style={S.section}>
-            <span style={S.label}>Current selection (controlled prop)</span>
-            <div style={S.log}>{formatNextLog(controlledSelection)}</div>
-          </div>
-          <div style={S.section}>
-            <span style={S.label}>onSelectionChange log</span>
-            <div style={S.log}>{controlledLog}</div>
-          </div>
+          <span style={S.label}>onSelectionChange — next (thin refs)</span>
+          <div style={S.log}>{log}</div>
+        </div>
+        <div style={S.section}>
+          <span style={S.label}>onSelectionChange — details (rich)</span>
+          <div style={S.log}>{detailLog}</div>
         </div>
       </div>
 
