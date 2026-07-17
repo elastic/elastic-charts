@@ -37,11 +37,13 @@ export function orderLanes(spans: NormalizedSpan[], mode: 'tree' | 'chronologica
   const roots = spans.filter((s) => s.parentId === undefined || !ids.has(s.parentId)).sort((a, b) => a.start - b.start);
 
   const result: NormalizedSpan[] = [];
-  const visited = new Set<string>();
+  // Track visited by object identity rather than id so that two distinct span objects that happen
+  // to share the same id are both emitted (duplicate ids from untrusted input must not be lost).
+  const visited = new Set<NormalizedSpan>();
 
   function dfs(span: NormalizedSpan): void {
-    if (visited.has(span.id)) return; // cycle guard
-    visited.add(span.id);
+    if (visited.has(span)) return; // cycle guard by object identity
+    visited.add(span);
     result.push(span);
     const children = childrenMap.get(span.id);
     if (children) {
@@ -52,10 +54,10 @@ export function orderLanes(spans: NormalizedSpan[], mode: 'tree' | 'chronologica
 
   roots.forEach(dfs);
 
-  // Safety: append any spans not reached (e.g. in a cycle), sorted by start.
+  // Safety: append any spans not reached (e.g. in a cycle or with duplicate ids), sorted by start.
   if (result.length < spans.length) {
     spans
-      .filter((s) => !visited.has(s.id))
+      .filter((s) => !visited.has(s))
       .sort((a, b) => a.start - b.start)
       .forEach((s) => result.push(s));
   }

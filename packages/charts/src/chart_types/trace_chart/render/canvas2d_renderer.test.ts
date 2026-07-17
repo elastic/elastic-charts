@@ -176,8 +176,9 @@ describe('draw — visible lanes (no scroll, all 3 spans visible)', () => {
   it('renders one rect per active segment across all visible spans', () => {
     const ctx = makeCtx();
     draw(ctx, makeGeom(), style);
-    // SpanA: 1 active, SpanB: 2 active, SpanC: 0 active → 3 rects total.
-    expect(ctx.rect).toHaveBeenCalledTimes(3);
+    // SpanA: 1 active, SpanB: 2 active, SpanC: 0 active → 3 segment rects.
+    // +1 for the lane-area clip rect drawn once per draw() call.
+    expect(ctx.rect).toHaveBeenCalledTimes(4);
   });
 });
 
@@ -190,8 +191,9 @@ describe('draw — viewport culling', () => {
     const ctx = makeCtx();
     // scrollOffset=48 → firstLane=floor(48/24)=2, lastLane=2 → only SpanC is visible.
     draw(ctx, makeGeom({ scrollOffset: 48 }), style);
-    // SpanC has no active segments.
-    expect(ctx.rect).not.toHaveBeenCalled();
+    // SpanC has no active segments → no segment rects.
+    // The lane-area clip rect is still drawn once (unconditional when spans exist).
+    expect(ctx.rect).toHaveBeenCalledTimes(1);
     // SpanC's gutter label and total line are still drawn.
     expect(ctx.fillText).toHaveBeenCalledTimes(1);
     expect(ctx.moveTo).toHaveBeenCalledTimes(1);
@@ -203,7 +205,8 @@ describe('draw — viewport culling', () => {
     draw(ctx, makeGeom({ scrollOffset: 200 }), style);
     expect(ctx.fillText).not.toHaveBeenCalled();
     expect(ctx.moveTo).not.toHaveBeenCalled();
-    expect(ctx.rect).not.toHaveBeenCalled();
+    // Lane loop produces nothing, but the lane-area clip rect is still drawn once.
+    expect(ctx.rect).toHaveBeenCalledTimes(1);
   });
 
   it('still clears the canvas and calls drawTimeBar when all lanes are culled', () => {
@@ -290,7 +293,8 @@ describe('draw — segment culling (x-range cull)', () => {
       },
     ];
     draw(ctx, makeGeom({ spans: spansWithOob }), style);
-    expect(ctx.rect).toHaveBeenCalledTimes(1);
+    // 1 visible segment rect + 1 lane-area clip rect.
+    expect(ctx.rect).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -364,7 +368,8 @@ describe('draw — per-span color override', () => {
       },
     ];
     expect(() => draw(ctx, makeGeom({ spans: coloredSpans }), style)).not.toThrow();
-    expect(ctx.rect).toHaveBeenCalledTimes(1);
+    // 1 active segment rect + 1 lane-area clip rect.
+    expect(ctx.rect).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -391,8 +396,8 @@ describe('draw — per-segment color override', () => {
       },
     ];
     expect(() => draw(ctx, makeGeom({ spans: phasedSpans }), style)).not.toThrow();
-    // One rect per segment.
-    expect(ctx.rect).toHaveBeenCalledTimes(3);
+    // One rect per segment (3) + 1 lane-area clip rect.
+    expect(ctx.rect).toHaveBeenCalledTimes(4);
   });
 
   it('falls back to the span-level activeFill for segments without a color', () => {
@@ -412,7 +417,8 @@ describe('draw — per-segment color override', () => {
       },
     ];
     expect(() => draw(ctx, makeGeom({ spans: mixedSpans }), style)).not.toThrow();
-    expect(ctx.rect).toHaveBeenCalledTimes(2);
+    // 2 segment rects + 1 lane-area clip rect.
+    expect(ctx.rect).toHaveBeenCalledTimes(3);
   });
 });
 
@@ -555,8 +561,8 @@ describe("draw — labelPosition: 'none'", () => {
     draw(ctx, makeGeom(), styleNone);
     // 3 spans → 3 total lines
     expect(ctx.moveTo).toHaveBeenCalledTimes(3);
-    // SpanA=1 + SpanB=2 + SpanC=0 = 3 active rects
-    expect(ctx.rect).toHaveBeenCalledTimes(3);
+    // SpanA=1 + SpanB=2 + SpanC=0 = 3 active rects + 1 lane-area clip rect.
+    expect(ctx.rect).toHaveBeenCalledTimes(4);
   });
 });
 
@@ -590,11 +596,12 @@ describe("draw — labelPosition: 'inline'", () => {
     expect(names).toContain('SpanC');
   });
 
-  it('clips each label to the plot rect (ctx.rect + ctx.clip called per visible lane)', () => {
+  it('clips all lane content to the plot rect via a single lane-area ctx.clip()', () => {
     const ctx = makeCtx();
     draw(ctx, geomInline(), styleInline);
-    // ctx.clip is called inside withContext for each visible inline label (3 spans visible).
-    expect(ctx.clip).toHaveBeenCalledTimes(3);
+    // The per-label clip has been removed; a single ctx.save()/ctx.clip()/ctx.restore() now
+    // wraps all lane content (including inline labels), preventing time-bar overpaint.
+    expect(ctx.clip).toHaveBeenCalledTimes(1);
   });
 
   it('draws no label for a span whose bar is entirely off-screen left', () => {

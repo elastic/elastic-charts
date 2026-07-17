@@ -69,6 +69,15 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
     const firstLane = Math.max(0, Math.floor(scrollOffset / laneHeight));
     const lastLane = Math.min(spans.length - 1, Math.floor((scrollOffset + plot.height) / laneHeight));
 
+    // Clip the lane area so that a fractional scrollOffset cannot let lane content
+    // (total-line, active segments, labels, focus highlight, selection outlines)
+    // overpaint the time bar above plot.top. The clip rect covers the full gutter + plot
+    // width so the focused-lane background highlight still paints into the gutter column.
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, plot.top, gutter.width + plot.width, plot.height);
+    ctx.clip();
+
     // --- Focused-lane background highlight (keyboard nav) ---
     // Drawn before span content so total-line and active-segments render on top.
     if (focusedLaneIndex !== null && focusedLaneIndex >= firstLane && focusedLaneIndex <= lastLane) {
@@ -184,16 +193,11 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       } else if (style.labelPosition === 'inline' && span.name) {
         // Inline label: drawn on a row below the bar, starting at the bar's start x (sticky-left).
         // Cull when the bar is entirely outside the visible x-range (no bar to anchor to).
+        // Right-edge clipping is handled by the outer lane-area ctx.clip() above.
         if (rawX2 >= plot.left && rawX1 <= plotRight) {
           const barStartX = Math.max(plot.left, rawX1);
           const labelMidY = laneTop + laneHeight - LANE_PADDING - labelBandPx / 2;
-          withContext(ctx, () => {
-            // Clip to the plot rect so the label never paints outside the lane's right edge.
-            ctx.beginPath();
-            ctx.rect(plot.left, plot.top, plot.width, plot.height);
-            ctx.clip();
-            renderText(ctx, { x: barStartX, y: labelMidY }, span.name, gutterFont);
-          });
+          renderText(ctx, { x: barStartX, y: labelMidY }, span.name, gutterFont);
         }
       }
       // labelPosition === 'none': no label drawn.
@@ -252,6 +256,7 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
         );
       }
     }
+    ctx.restore(); // end of lane-area clip (paired with ctx.save() before the focused-lane pass)
   });
 }
 

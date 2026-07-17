@@ -10,6 +10,7 @@ export default {
   title: 'Trace (@alpha)',
 };
 
+export { Example as intro } from './01_intro.story';
 export { Example as emptyTrace } from './00_empty.story';
 export { Example as selfTimeDebug } from './02_self_time_debug.story';
 export { Example as geometryDebug } from './03_geometry_debug.story';

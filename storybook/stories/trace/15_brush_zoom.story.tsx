@@ -11,9 +11,9 @@ import React from 'react';
 
 import { Chart, Settings, Trace } from '@elastic/charts';
 
+import { CHECKOUT_SPANS } from './data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-import { CHECKOUT_SPANS } from './data';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const dragMode = select<'pan' | 'brush'>('drag mode', { pan: 'pan', brush: 'brush' }, 'pan');

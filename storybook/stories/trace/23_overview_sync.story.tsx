@@ -22,9 +22,9 @@ import {
   Trace,
 } from '@elastic/charts';
 
+import { CHECKOUT_WATERFALL } from './data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-import { CHECKOUT_WATERFALL } from './data';
 
 // ---------------------------------------------------------------------------
 // Overview data — span-count histogram in linear (elapsed-ms) space.
@@ -90,11 +90,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           }}
         />
         <Tooltip type={TooltipType.None} />
-        <Axis
-          id="bottom"
-          position={Position.Bottom}
-          tickFormat={(v) => `${Number(v).toFixed(0)} ms`}
-        />
+        <Axis id="bottom" position={Position.Bottom} tickFormat={(v) => `${Number(v).toFixed(0)} ms`} />
         <Axis
           id="left"
           position={Position.Left}
@@ -145,13 +141,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
 Example.parameters = {
   markdown:
-    '**Overview + detail composition (Spec 16 — `focusDomain` / `onFocusDomainChange`).**\n\n' +
+    '**Overview + detail composition via `focusDomain` / `onFocusDomainChange`.**\n\n' +
     'The overview histogram and the Trace detail panel share the same elapsed-ms coordinate space ' +
     '(`xScaleType="linear"`, domain re-zeroed by `normalize()` to `[0, totalMs]`).\n\n' +
     '**Interactions:**\n' +
     '- **Brush the overview** → blue rect + Trace eases to the selected window.\n' +
     '- **Zoom / pan / brush the Trace** → blue rect in overview reflects the new window.\n' +
-    '- **Echo-suppression (ADR 0007):** the overview brush feeds its domain back as `focusDomain`;\n' +
-    '  the pre-seed in `syncFocusDomain` suppresses the confirming echo so the overview annotation\n' +
+    '- **Echo-suppression:** the overview brush feeds its domain back as `focusDomain`;\n' +
+    '  a pre-seed suppresses the confirming echo so the overview annotation\n' +
     '  is updated directly in `onBrushEnd`, not via `onFocusDomainChange`.',
 };

@@ -15,7 +15,7 @@
  * or `<LogPanel …/>` makes it immediately clear they are utilities, not feature code.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import type { TraceSelection, TraceSelectionDetail } from '@elastic/charts';
 
@@ -65,7 +65,13 @@ const thStyle: React.CSSProperties = {
   borderBottom: '1px solid #e5e7eb',
 };
 const tdStyle: React.CSSProperties = { padding: '4px 10px', borderBottom: '1px solid #f0f0f0', verticalAlign: 'top' };
-const groupCellStyle: React.CSSProperties = { padding: '6px 10px 2px', color: '#6b7280', fontWeight: 600, fontSize: 11, letterSpacing: '0.05em' };
+const groupCellStyle: React.CSSProperties = {
+  padding: '6px 10px 2px',
+  color: '#6b7280',
+  fontWeight: 600,
+  fontSize: 11,
+  letterSpacing: '0.05em',
+};
 
 // ---------------------------------------------------------------------------
 // LogPanel — labeled monospace output box
@@ -116,9 +122,15 @@ export function AriaLiveMirror({ containerRef }: { containerRef: React.RefObject
 
     let mo = observe();
     let timeout: ReturnType<typeof setTimeout>;
-    if (!mo) timeout = setTimeout(() => { mo = observe(); }, 200);
+    if (!mo)
+      timeout = setTimeout(() => {
+        mo = observe();
+      }, 200);
 
-    return () => { mo?.disconnect(); clearTimeout(timeout); };
+    return () => {
+      mo?.disconnect();
+      clearTimeout(timeout);
+    };
   }, [containerRef]);
 
   return <LogPanel label="aria-live output (sighted mirror)" value={text} />;
@@ -140,9 +152,7 @@ const KEY_GROUPS: { group: string; rows: { keys: string[]; action: string }[] }[
   },
   {
     group: 'Selection',
-    rows: [
-      { keys: ['Enter', 'Space'], action: 'Fire onElementClick for the focused span' },
-    ],
+    rows: [{ keys: ['Enter', 'Space'], action: 'Fire onElementClick for the focused span' }],
   },
   {
     group: 'Time navigation',
@@ -178,9 +188,13 @@ export function KeyboardReference() {
       <tbody>
         {KEY_GROUPS.map(({ group, rows }) => (
           <React.Fragment key={group}>
-            <tr><td colSpan={2} style={groupCellStyle}>{group.toUpperCase()}</td></tr>
+            <tr>
+              <td colSpan={2} style={groupCellStyle}>
+                {group.toUpperCase()}
+              </td>
+            </tr>
             {rows.map(({ keys, action }) => (
-              <tr key={keys.join()}>
+              <tr key={keys.join(',')}>
                 <td style={tdStyle}>
                   {keys.map((k, i) => (
                     <React.Fragment key={k}>
@@ -204,18 +218,18 @@ export function KeyboardReference() {
 // ---------------------------------------------------------------------------
 
 const GESTURES: [string, string][] = [
-  ['Left-click active/waiting segment',       'Replace selection with [ref]'],
-  ['Shift + left-click segment',               'Add ref to set (additive; no-op if already selected)'],
-  ['Cmd/Ctrl + left-click segment',            'Toggle ref (add if absent; remove if present)'],
-  ['Left-click empty / gutter / outside lanes','Clear selection'],
-  ['Shift/Cmd/Ctrl + empty-click',             'No-op (preserves selection)'],
-  ['Double-click span (any region)',            'Replace with whole-span ref {region:"span", segmentIndex:-1}'],
-  ['Shift + double-click',                      'Additive-add whole-span ref'],
-  ['Cmd/Ctrl + double-click',                   'Toggle whole-span ref'],
-  ['Enter / Space (keyboard focus)',            'Replace selection with whole-span ref'],
-  ['Shift+Enter',                               'Add whole-span ref (additive)'],
-  ['Cmd/Ctrl+Enter',                            'Toggle whole-span ref; announced via aria-live'],
-  ['Escape',                                    'Clear selection + announce "Selection cleared"'],
+  ['Left-click active/waiting segment', 'Replace selection with [ref]'],
+  ['Shift + left-click segment', 'Add ref to set (additive; no-op if already selected)'],
+  ['Cmd/Ctrl + left-click segment', 'Toggle ref (add if absent; remove if present)'],
+  ['Left-click empty / gutter / outside lanes', 'Clear selection'],
+  ['Shift/Cmd/Ctrl + empty-click', 'No-op (preserves selection)'],
+  ['Double-click span (any region)', 'Replace with whole-span ref {region:"span", segmentIndex:-1}'],
+  ['Shift + double-click', 'Additive-add whole-span ref'],
+  ['Cmd/Ctrl + double-click', 'Toggle whole-span ref'],
+  ['Enter / Space (keyboard focus)', 'Replace selection with whole-span ref'],
+  ['Shift+Enter', 'Add whole-span ref (additive)'],
+  ['Cmd/Ctrl+Enter', 'Toggle whole-span ref; announced via aria-live'],
+  ['Escape', 'Clear selection + announce "Selection cleared"'],
 ];
 
 /**
@@ -261,9 +275,9 @@ export function formatSelectionDetail(details: TraceSelectionDetail[]): string {
     : details
         .map(
           (d) =>
-            `"${d.name}" region=${d.region} segIdx=${d.segmentIndex}` +
-            (d.segmentDuration !== undefined ? ` segDur=${d.segmentDuration.toFixed(0)}ms` : ''),
+            `"${d.name}" region=${d.region} segIdx=${d.segmentIndex}${
+              d.segmentDuration !== undefined ? ` segDur=${d.segmentDuration.toFixed(0)}ms` : ''
+            }`,
         )
         .join('\n');
 }
-

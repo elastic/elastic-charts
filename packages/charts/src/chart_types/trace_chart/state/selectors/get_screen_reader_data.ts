@@ -26,6 +26,7 @@ import type { TraceSpec } from '../../trace_api';
  * @internal
  */
 export interface TraceTableRow {
+  id: string;
   name: string;
   totalDuration: string;
   selfTime: string;
@@ -86,6 +87,7 @@ export const getTraceTableRowsSelector = createCustomCachedSelector(
     // Build a lookup map for parent name resolution (O(N) — same spans array).
     const nameById = new Map<string, string>(spans.map((s) => [s.id, s.name]));
     return spans.map((span): TraceTableRow => ({
+      id: span.id,
       name: span.name,
       totalDuration: formatMs(span.end - span.start),
       selfTime: formatMs(computeSelfTime(span)),

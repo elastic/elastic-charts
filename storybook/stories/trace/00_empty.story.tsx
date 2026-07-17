@@ -47,7 +47,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
 Example.parameters = {
   markdown:
-    'Demonstrates the two empty states for the Trace chart (ADR 0019).\n\n' +
+    'Demonstrates the two empty states for the Trace chart.\n\n' +
     '**no-data** (`data={[]}`) — the chart never mounts; the standard library empty state\n' +
     '("No data to display") is shown as a DOM overlay, overridable via `Settings.noResults`.\n\n' +
     '**trace-not-found** (`traceId` set but matches no spans) — the chart mounts, the time bar\n' +

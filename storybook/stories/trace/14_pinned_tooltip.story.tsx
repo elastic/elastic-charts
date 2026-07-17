@@ -10,9 +10,9 @@ import React from 'react';
 
 import { Chart, Settings, Trace } from '@elastic/charts';
 
+import { CHECKOUT_SPANS } from './data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-import { CHECKOUT_SPANS } from './data';
 
 export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description} size={{ width: '100%', height: 200 }}>

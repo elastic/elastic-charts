@@ -12,29 +12,29 @@ import React, { useEffect, useState } from 'react';
 import type { TraceSelection } from '@elastic/charts';
 import { Chart, Settings, Trace } from '@elastic/charts';
 
-import type { ChartsStory } from '../../types';
-import { useBaseTheme } from '../../use_base_theme';
 import { SELECTION_TRACE } from './data';
 import { formatSelection, formatSelectionDetail, LogPanel } from './story_components';
+import type { ChartsStory } from '../../types';
+import { useBaseTheme } from '../../use_base_theme';
 
 // Named preset selections — the knob drives which one is active.
 // Chart interaction also updates selection state, demonstrating the controlled pattern.
 const PRESET_LABELS = {
-  'None (clear)':                         'none',
-  'root — active[0]':                     'root-active-0',
-  'db — whole-span':                      'db-whole-span',
+  'None (clear)': 'none',
+  'root — active[0]': 'root-active-0',
+  'db — whole-span': 'db-whole-span',
   'Multi: root active[0] + db active[1]': 'multi-root-db',
 } as const;
 
 type PresetKey = (typeof PRESET_LABELS)[keyof typeof PRESET_LABELS];
 
 const PRESET_SELECTIONS: Record<PresetKey, TraceSelection> = {
-  'none':          [],
+  none: [],
   'root-active-0': [{ spanId: 'root', region: 'active', segmentIndex: 0 }],
-  'db-whole-span': [{ spanId: 'db',   region: 'span',   segmentIndex: -1 }],
+  'db-whole-span': [{ spanId: 'db', region: 'span', segmentIndex: -1 }],
   'multi-root-db': [
     { spanId: 'root', region: 'active', segmentIndex: 0 },
-    { spanId: 'db',   region: 'active', segmentIndex: 1 },
+    { spanId: 'db', region: 'active', segmentIndex: 1 },
   ],
 };
 
@@ -47,7 +47,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const [changeLog, setChangeLog] = useState<string>('—');
 
   // Changing the knob resets the controlled selection to the chosen preset.
-  useEffect(() => { setSelection(PRESET_SELECTIONS[presetKey]); }, [presetKey]);
+  useEffect(() => {
+    setSelection(PRESET_SELECTIONS[presetKey]);
+  }, [presetKey]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

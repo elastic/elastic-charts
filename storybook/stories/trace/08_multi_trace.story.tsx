@@ -20,21 +20,21 @@ import { useBaseTheme } from '../../use_base_theme';
 // t2: Background job        (2 spans)
 // t3: Scheduled report      (2 spans)
 const DATA: TraceDatum[] = [
-  { id: 't1-root',   name: 'HTTP GET /checkout',   traceId: 't1', start: 0,    end: 1000 },
-  { id: 't1-db',     name: 'DB.query',             traceId: 't1', parentId: 't1-root',   start: 100, end: 600 },
-  { id: 't1-cache',  name: 'Cache.get',            traceId: 't1', parentId: 't1-root',   start: 620, end: 800 },
-  { id: 't2-root',   name: 'Job: nightly-sync',    traceId: 't2', start: 0,    end: 2000 },
-  { id: 't2-fetch',  name: 'Fetch.remote',         traceId: 't2', parentId: 't2-root',   start: 200, end: 1500 },
-  { id: 't3-root',   name: 'Report: weekly-summary',traceId: 't3', start: 0,   end: 500 },
-  { id: 't3-render', name: 'PDF.render',           traceId: 't3', parentId: 't3-root',   start: 50,  end: 450 },
+  { id: 't1-root', name: 'HTTP GET /checkout', traceId: 't1', start: 0, end: 1000 },
+  { id: 't1-db', name: 'DB.query', traceId: 't1', parentId: 't1-root', start: 100, end: 600 },
+  { id: 't1-cache', name: 'Cache.get', traceId: 't1', parentId: 't1-root', start: 620, end: 800 },
+  { id: 't2-root', name: 'Job: nightly-sync', traceId: 't2', start: 0, end: 2000 },
+  { id: 't2-fetch', name: 'Fetch.remote', traceId: 't2', parentId: 't2-root', start: 200, end: 1500 },
+  { id: 't3-root', name: 'Report: weekly-summary', traceId: 't3', start: 0, end: 500 },
+  { id: 't3-render', name: 'PDF.render', traceId: 't3', parentId: 't3-root', start: 50, end: 450 },
 ];
 
 /** traceId options — 'all' maps to undefined, which triggers the multi-trace dev-warn. */
 const TRACE_OPTIONS: Record<string, string | undefined> = {
   't1 — HTTP request pipeline': 't1',
-  't2 — Background job':        't2',
-  't3 — Scheduled report':      't3',
-  'all (logs dev-warn)':         undefined,
+  't2 — Background job': 't2',
+  't3 — Scheduled report': 't3',
+  'all (logs dev-warn)': undefined,
 };
 
 export const Example: ChartsStory = (_, { title, description }) => {

@@ -15,8 +15,10 @@ import { buildSFProps, useSpecFactory } from '../../state/spec_factory';
 import { stripUndefined } from '../../utils/common';
 
 // Re-export the OTel adapter so consumers don't need a separate import path.
+// Import for local use in colorByOtelAttribute; also re-exported below for consumers.
+import { anyValueToString, fromOtlp } from './data/otel_adapter';
 export type { OtelInput, OtelSpan, OtlpEnvelope } from './data/otel_adapter';
-export { fromOtlp } from './data/otel_adapter';
+export { anyValueToString, fromOtlp };
 
 /**
  * Imperative control callbacks handed to the caller via `controlProviderCallback`.
@@ -341,9 +343,9 @@ export function colorByOtelAttribute(attribute: string): TraceColorAccessor {
     const span = datum.meta as SpanMeta | undefined;
     if (span === undefined || span === null) return undefined;
     const spanAttr = span.attributes?.find((a) => a.key === attribute);
-    if (spanAttr !== undefined) return String(spanAttr.value);
+    if (spanAttr !== undefined) return anyValueToString(spanAttr.value);
     const resourceAttr = span.resource?.attributes?.find((a) => a.key === attribute);
-    if (resourceAttr !== undefined) return String(resourceAttr.value);
+    if (resourceAttr !== undefined) return anyValueToString(resourceAttr.value);
     return undefined;
   };
 }

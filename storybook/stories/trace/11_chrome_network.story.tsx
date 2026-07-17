@@ -11,10 +11,10 @@ import React from 'react';
 import type { TraceColorAccessor } from '@elastic/charts';
 import { Chart, Settings, Trace } from '@elastic/charts';
 
-import type { ChartsStory } from '../../types';
-import { useBaseTheme } from '../../use_base_theme';
 import type { NetworkMeta } from './data';
 import { CHROME_NETWORK_SPANS } from './data';
+import type { ChartsStory } from '../../types';
+import { useBaseTheme } from '../../use_base_theme';
 
 /** Color accessor: reads `datum.meta.type` to group spans by resource type. */
 const BY_RESOURCE_TYPE: TraceColorAccessor = (datum) => (datum.meta as NetworkMeta | undefined)?.type;
@@ -22,7 +22,13 @@ const BY_RESOURCE_TYPE: TraceColorAccessor = (datum) => (datum.meta as NetworkMe
 export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description} size={{ width: '100%', height: 350 }}>
     <Settings baseTheme={useBaseTheme()} />
-    <Trace id="trace_chrome_network" data={CHROME_NETWORK_SPANS} xScaleType="linear" colorBy={BY_RESOURCE_TYPE} laneOrder="chronological" />
+    <Trace
+      id="trace_chrome_network"
+      data={CHROME_NETWORK_SPANS}
+      xScaleType="linear"
+      colorBy={BY_RESOURCE_TYPE}
+      laneOrder="chronological"
+    />
   </Chart>
 );
 

@@ -71,12 +71,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
 Example.parameters = {
   markdown:
-    'Demonstrates `theme.trace.labelPosition` — the Spec 17 responsive label control.\n\n' +
+    'Demonstrates `theme.trace.labelPosition` — the responsive label control.\n\n' +
     '- **`gutter`** (default): span names drawn in a fixed left panel. `gutterWidth=200`, `laneHeight=24`.\n' +
-    '- **`inline`**: span names drawn on a row below the bar, starting near the bar\'s start edge and ' +
+    "- **`inline`**: span names drawn on a row below the bar, starting near the bar's start edge and " +
     'overflowing right (Kibana APM style). `gutterWidth=0` and `laneHeight=40` are set to accommodate ' +
-    'the two-band lane. Labels are not cropped to the bar width; they clip only at the plot\'s right edge.\n' +
+    "the two-band lane. Labels are not cropped to the bar width; they clip only at the plot's right edge.\n" +
     '- **`none`**: no canvas labels. Names remain accessible via the tooltip and the screen-reader table.\n\n' +
     'Use the **width** knob to try mobile (320 px) and side-panel (480 px) presets with `inline` mode. ' +
-    'Auto-switching based on container width is scoped to a future spec.',
+    'Auto-switching based on container width is not yet implemented.',
 };

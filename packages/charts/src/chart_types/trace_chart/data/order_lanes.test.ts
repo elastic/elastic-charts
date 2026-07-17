@@ -241,3 +241,41 @@ describe('orderLanes — Kibana APM regression', () => {
     expect(firstSeven).not.toContain('0937'); // +5ms
   });
 });
+
+// ---------------------------------------------------------------------------
+// Duplicate span id (robustness — untrusted OTel input)
+// ---------------------------------------------------------------------------
+
+describe('orderLanes — duplicate span id', () => {
+  it('tree: both span objects are emitted when two spans share the same id', () => {
+    // Two distinct NormalizedSpan objects with identical ids (can arrive from untrusted OTel data).
+    const s1 = span('dup', 0, 100);
+    const s2 = span('dup', 200, 300);
+    const result = orderLanes([s1, s2], 'tree');
+    expect(result).toHaveLength(2);
+    expect(result).toContain(s1);
+    expect(result).toContain(s2);
+  });
+
+  it('chronological: both span objects are emitted when two spans share the same id', () => {
+    const s1 = span('dup', 0, 100);
+    const s2 = span('dup', 200, 300);
+    const result = orderLanes([s1, s2], 'chronological');
+    expect(result).toHaveLength(2);
+    expect(result).toContain(s1);
+    expect(result).toContain(s2);
+  });
+
+  it('tree: duplicate-id spans are appended after the valid tree (safety path)', () => {
+    // s1 is a valid root; s2 shares s1's id but is a different object.
+    // Both must appear in output; lane count must match input count.
+    const root = span('root', 0, 200);
+    const child = span('child', 10, 50, 'root');
+    const dup = span('root', 300, 400); // same id as root, different object
+    const result = orderLanes([root, child, dup], 'tree');
+    expect(result).toHaveLength(3);
+    expect(result).toContain(root);
+    expect(result).toContain(child);
+    expect(result).toContain(dup);
+  });
+});

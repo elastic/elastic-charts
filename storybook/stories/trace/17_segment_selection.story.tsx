@@ -11,10 +11,10 @@ import React, { useState } from 'react';
 
 import { Chart, Settings, Trace } from '@elastic/charts';
 
-import type { ChartsStory } from '../../types';
-import { useBaseTheme } from '../../use_base_theme';
 import { SELECTION_TRACE } from './data';
 import { formatSelection, formatSelectionDetail, GestureReference, LogPanel } from './story_components';
+import type { ChartsStory } from '../../types';
+import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const theme = useBaseTheme();

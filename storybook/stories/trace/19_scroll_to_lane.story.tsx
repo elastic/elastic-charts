@@ -10,10 +10,10 @@ import React, { useState } from 'react';
 
 import { Chart, Settings, Trace, TraceSearchProvider, useTraceSearch } from '@elastic/charts';
 
-import type { ChartsStory } from '../../types';
-import { useBaseTheme } from '../../use_base_theme';
 import { CHECKOUT_WATERFALL } from './data';
 import { LogPanel } from './story_components';
+import type { ChartsStory } from '../../types';
+import { useBaseTheme } from '../../use_base_theme';
 
 // Remap ids to match span names so the user types what they see in the waterfall.
 const idToName = new Map(CHECKOUT_WATERFALL.map((s) => [s.id, s.name]));
@@ -43,7 +43,11 @@ function ScrollToLaneDemo({ baseTheme }: { baseTheme: ReturnType<typeof useBaseT
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <Chart title="Scroll-to-lane" description="External search box drives the trace waterfall" size={{ width: '100%', height: 300 }}>
+      <Chart
+        title="Scroll-to-lane"
+        description="External search box drives the trace waterfall"
+        size={{ width: '100%', height: 300 }}
+      >
         <Settings baseTheme={baseTheme} />
         <Trace
           id="trace_scroll_to_lane"

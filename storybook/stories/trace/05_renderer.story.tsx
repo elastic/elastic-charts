@@ -15,8 +15,8 @@ import { canvas2dRenderer } from '@elastic/charts/src/chart_types/trace_chart/re
 import { buildGeometry } from '@elastic/charts/src/chart_types/trace_chart/render/geometry';
 import { buildTraceStyle } from '@elastic/charts/src/chart_types/trace_chart/theme';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { CHECKOUT_SPANS, EPOCH_BASE } from './data';
+import { useBaseTheme } from '../../use_base_theme';
 
 const CANVAS_W = 900;
 const CANVAS_H = 200;
@@ -44,14 +44,23 @@ export const Example = () => {
 
     // In 'time' mode offset spans by EPOCH_BASE so the raster engine renders realistic
     // wall-clock ticks instead of 1970-01-01 labels.
-    const spans = xScaleType === 'time'
-      ? INPUT_SPANS.map((d) => ({ ...d, start: d.start + EPOCH_BASE, end: d.end + EPOCH_BASE }))
-      : INPUT_SPANS;
+    const spans =
+      xScaleType === 'time'
+        ? INPUT_SPANS.map((d) => ({ ...d, start: d.start + EPOCH_BASE, end: d.end + EPOCH_BASE }))
+        : INPUT_SPANS;
 
     const { spans: normalized, domain } = normalize(spans, xScaleType);
     const resolved = resolveActive(normalized);
     const focusDomain = { min: domain.min, max: domain.max };
-    const geom = buildGeometry(resolved, { width: CANVAS_W, height: CANVAS_H }, focusDomain, 0, style, xScaleType, domain);
+    const geom = buildGeometry(
+      resolved,
+      { width: CANVAS_W, height: CANVAS_H },
+      focusDomain,
+      0,
+      style,
+      xScaleType,
+      domain,
+    );
 
     ctx.save();
     ctx.scale(dpr, dpr);

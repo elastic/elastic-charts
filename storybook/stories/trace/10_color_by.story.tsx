@@ -19,7 +19,10 @@ import { useBaseTheme } from '../../use_base_theme';
 // The resource context simulates fromOtlp output (real OtlpEnvelope path is in 12_kibana_trace).
 const DATA: TraceDatum[] = [
   {
-    id: 'root', name: 'HTTP GET /checkout', start: 0, end: 1000,
+    id: 'root',
+    name: 'HTTP GET /checkout',
+    start: 0,
+    end: 1000,
     meta: {
       attributes: [{ key: 'http.method', value: 'GET' }],
       resource: { attributes: [{ key: 'service.name', value: 'frontend' }] },
@@ -27,7 +30,11 @@ const DATA: TraceDatum[] = [
     },
   },
   {
-    id: 'db', name: 'DB.query', parentId: 'root', start: 100, end: 600,
+    id: 'db',
+    name: 'DB.query',
+    parentId: 'root',
+    start: 100,
+    end: 600,
     meta: {
       attributes: [{ key: 'db.system', value: 'postgresql' }],
       resource: { attributes: [{ key: 'service.name', value: 'db-service' }] },
@@ -35,7 +42,11 @@ const DATA: TraceDatum[] = [
     },
   },
   {
-    id: 'cache', name: 'Cache.get', parentId: 'root', start: 620, end: 800,
+    id: 'cache',
+    name: 'Cache.get',
+    parentId: 'root',
+    start: 620,
+    end: 800,
     meta: {
       attributes: [{ key: 'cache.hit', value: 'true' }],
       resource: { attributes: [{ key: 'service.name', value: 'cache-service' }] },
@@ -43,7 +54,11 @@ const DATA: TraceDatum[] = [
     },
   },
   {
-    id: 'render', name: 'Template.render', parentId: 'root', start: 820, end: 970,
+    id: 'render',
+    name: 'Template.render',
+    parentId: 'root',
+    start: 820,
+    end: 970,
     meta: {
       attributes: [{ key: 'template.name', value: 'checkout.html' }],
       resource: { attributes: [{ key: 'service.name', value: 'frontend' }] },
@@ -64,7 +79,10 @@ const BY_CUSTOM: TraceColorAccessor = (datum) => {
 };
 
 const ACCESSOR_OPTIONS: Record<string, TraceColorAccessor | undefined> = {
-  none: undefined, service: BY_SERVICE, kind: BY_KIND, custom: BY_CUSTOM,
+  none: undefined,
+  service: BY_SERVICE,
+  kind: BY_KIND,
+  custom: BY_CUSTOM,
 };
 
 export const Example: ChartsStory = (_, { title, description }) => {
@@ -85,7 +103,7 @@ Example.parameters = {
     'Priority: explicit `TraceDatum.color` > `colorBy` group color > themed default. ' +
     'Scroll/zoom position is **not** reset on recolor.\n\n' +
     '- **none** — themed default `activeSegmentColor` for all segments\n' +
-    '- **service** — `colorByOtelAttribute(\'service.name\')` (resource attribute)\n' +
+    "- **service** — `colorByOtelAttribute('service.name')` (resource attribute)\n" +
     '- **kind** — `colorByOtelKind()` (SERVER / CLIENT / INTERNAL / …)\n' +
     '- **custom** — hand-written accessor: `data-store` | `cache` | `app`',
 };

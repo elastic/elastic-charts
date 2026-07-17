@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { memo, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { getTraceTableRowsSelector, type TraceTableRow } from '../state/selectors/get_screen_reader_data';
@@ -27,15 +27,25 @@ const TABLE_PAGINATION = 20;
 const ScreenReaderTraceTableComponent = ({ a11ySettings, rows }: ScreenReaderTraceTableProps) => {
   const [count, setCount] = useState(1);
   const tableRowRef = useRef<HTMLTableRowElement>(null);
+  const prevCountRef = useRef(1);
   const { tableCaption } = a11ySettings;
 
   const rowLimit = TABLE_PAGINATION * count;
   const tableLength = rows.length;
   const showMoreRows = rowLimit < tableLength;
 
+  // Focus the first newly-revealed row after "show more" is clicked. Running in useEffect
+  // ensures the DOM has re-rendered (new rows mounted) before focus() is called.
+  useEffect(() => {
+    if (count > prevCountRef.current) {
+      prevCountRef.current = count;
+      tableRowRef.current?.focus();
+    }
+  }, [count]);
+
   const handleMoreData = () => {
     setCount(count + 1);
-    tableRowRef.current?.focus();
+    // focus() is deferred to the useEffect above so it runs after the DOM update.
   };
 
   return (
@@ -60,10 +70,10 @@ const ScreenReaderTraceTableComponent = ({ a11ySettings, rows }: ScreenReaderTra
           </tr>
         </thead>
         <tbody>
-          {rows.slice(0, rowLimit).map(({ name, totalDuration, selfTime, startOffset, parentName }, index) => (
+          {rows.slice(0, rowLimit).map(({ id, name, totalDuration, selfTime, startOffset, parentName }, index) => (
             <tr
-              key={`trace-row--${index}`}
-              ref={rowLimit === index ? tableRowRef : undefined}
+              key={id}
+              ref={index === rowLimit - TABLE_PAGINATION ? tableRowRef : undefined}
               tabIndex={-1}
             >
               <th scope="row">{name}</th>
@@ -78,7 +88,7 @@ const ScreenReaderTraceTableComponent = ({ a11ySettings, rows }: ScreenReaderTra
           <tfoot>
             <tr>
               <td colSpan={5}>
-                <button type="submit" onClick={handleMoreData} tabIndex={-1}>
+                <button type="button" onClick={handleMoreData} tabIndex={-1}>
                   Click to show more data
                 </button>
               </td>

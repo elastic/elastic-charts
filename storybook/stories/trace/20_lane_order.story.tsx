@@ -53,5 +53,5 @@ Example.parameters = {
     'Same Kibana APM dataset rendered in both `laneOrder` modes side-by-side. Toggle the radio ' +
     'buttons to switch between `tree` (depth-first — each parent immediately above its descendants, ' +
     'matching the Kibana trace view) and `chronological` (start-time order, matching the Chrome ' +
-    'DevTools Network panel). See ADR 0018 for the trade-off rationale.',
+    'DevTools Network panel). `tree` preserves parent/child nesting so related work groups visually; `chronological` makes concurrent spans easy to compare side-by-side.',
 };

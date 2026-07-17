@@ -15,18 +15,23 @@ import type { TraceStyle } from '@elastic/charts/src/chart_types/trace_chart/ren
 
 import { EPOCH_BASE } from './data';
 
-const CANVAS_W    = 900;
-const TIME_BAR_H  = 32;
+const CANVAS_W = 900;
+const TIME_BAR_H = 32;
 
 // Fixed style (production derives this via buildTraceStyle). gutterWidth=0: no span labels needed.
 const STYLE: TraceStyle = {
-  gutterWidth: 0, timeBarHeight: TIME_BAR_H, laneHeight: 28, totalLineThickness: 2,
-  totalLineColor: '#aaa', activeSegmentColor: '#1f6feb',
-  gutterLabel:  { fontFamily: 'monospace', fontSize: 11, color: '#555' },
+  gutterWidth: 0,
+  timeBarHeight: TIME_BAR_H,
+  laneHeight: 28,
+  totalLineThickness: 2,
+  totalLineColor: '#aaa',
+  activeSegmentColor: '#1f6feb',
+  gutterLabel: { fontFamily: 'monospace', fontSize: 11, color: '#555' },
   timeBarLabel: { fontFamily: 'monospace', fontSize: 11, color: '#444' },
   gridLineColor: '#e0e0e0',
   focusedLaneBackground: 'rgba(96,146,192,0.15)',
-  selectedSegmentStroke: '#f00', selectedSegmentStrokeWidth: 2,
+  selectedSegmentStroke: '#f00',
+  selectedSegmentStrokeWidth: 2,
 };
 
 // ---------------------------------------------------------------------------
@@ -47,10 +52,10 @@ function TimeBarCanvas({ xScaleType, focusShiftMs }: { xScaleType: 'time' | 'lin
     ctx.clearRect(0, 0, CANVAS_W, TIME_BAR_H);
 
     const fullDomainMs = 10_000; // 10 s
-    const focusWidthMs =  5_000; // 5 s window
+    const focusWidthMs = 5_000; // 5 s window
     const base = xScaleType === 'time' ? EPOCH_BASE : 0;
-    const focusDomain = { min: base + focusShiftMs,           max: base + focusShiftMs + focusWidthMs };
-    const domain      = { min: base,                          max: base + fullDomainMs };
+    const focusDomain = { min: base + focusShiftMs, max: base + focusShiftMs + focusWidthMs };
+    const domain = { min: base, max: base + fullDomainMs };
 
     // Supply domain explicitly: buildGeometry sets domain=0,0 for empty spans.
     const geom = buildGeometry([], { width: CANVAS_W, height: TIME_BAR_H }, focusDomain, 0, STYLE, xScaleType, domain);
@@ -72,7 +77,11 @@ function TimeBarCanvas({ xScaleType, focusShiftMs }: { xScaleType: 'time' | 'lin
 // Story
 // ---------------------------------------------------------------------------
 export const Example = () => {
-  const xScaleType  = select<'time' | 'linear'>('x scale', { 'time (epoch ms)': 'time', 'linear (elapsed ms)': 'linear' }, 'time');
+  const xScaleType = select<'time' | 'linear'>(
+    'x scale',
+    { 'time (epoch ms)': 'time', 'linear (elapsed ms)': 'linear' },
+    'time',
+  );
   const focusShiftMs = number('focus shift (ms)', 0, { min: 0, max: 5000, step: 100 });
 
   return (

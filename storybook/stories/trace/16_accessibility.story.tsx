@@ -12,10 +12,10 @@ import React, { useRef, useState } from 'react';
 import type { TraceDatum } from '@elastic/charts';
 import { Chart, Settings, Trace } from '@elastic/charts';
 
-import type { ChartsStory } from '../../types';
-import { useBaseTheme } from '../../use_base_theme';
 import { A11Y_TRACE } from './data';
 import { AriaLiveMirror, KeyboardReference, LogPanel } from './story_components';
+import type { ChartsStory } from '../../types';
+import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const theme = useBaseTheme();

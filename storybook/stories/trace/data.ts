@@ -55,11 +55,11 @@ export const EPOCH_BASE = 1_700_000_000_000; // 2023-11-14T22:13:20Z
  *       └── leaf  (700–820)
  */
 export const CHECKOUT_SPANS: TraceDatum[] = [
-  { id: 'root',  name: 'HTTP GET /checkout',    traceId: 't1', start: 0,   end: 1000 },
-  { id: 'auth',  name: 'AuthService.validate',  traceId: 't1', parentId: 'root', start: 100, end: 350 },
-  { id: 'db',    name: 'DB.query',              traceId: 't1', parentId: 'root', start: 400, end: 850 },
-  { id: 'cache', name: 'Cache.get',             traceId: 't1', parentId: 'db',   start: 420, end: 600 },
-  { id: 'leaf',  name: 'Serializer.encode',     traceId: 't1', parentId: 'db',   start: 700, end: 820 },
+  { id: 'root', name: 'HTTP GET /checkout', traceId: 't1', start: 0, end: 1000 },
+  { id: 'auth', name: 'AuthService.validate', traceId: 't1', parentId: 'root', start: 100, end: 350 },
+  { id: 'db', name: 'DB.query', traceId: 't1', parentId: 'root', start: 400, end: 850 },
+  { id: 'cache', name: 'Cache.get', traceId: 't1', parentId: 'db', start: 420, end: 600 },
+  { id: 'leaf', name: 'Serializer.encode', traceId: 't1', parentId: 'db', start: 700, end: 820 },
 ];
 
 // ---------------------------------------------------------------------------
@@ -90,22 +90,22 @@ export const CHECKOUT_SPANS: TraceDatum[] = [
  *   └── metrics  (950–980)
  */
 export const CHECKOUT_WATERFALL: TraceDatum[] = [
-  { id: 'root',   name: 'HTTP GET /checkout',    traceId: 't1', start: 0,   end: 1000 },
-  { id: 'auth',   name: 'AuthService.validate',  traceId: 't1', parentId: 'root',  start: 100, end: 350 },
-  { id: 'db',     name: 'DB.query',              traceId: 't1', parentId: 'root',  start: 400, end: 850 },
-  { id: 'cache',  name: 'Cache.get',             traceId: 't1', parentId: 'db',    start: 420, end: 600 },
-  { id: 'leaf',   name: 'Serializer.encode',     traceId: 't1', parentId: 'db',    start: 700, end: 820 },
-  { id: 'extra1', name: 'Queue.enqueue',         traceId: 't1', parentId: 'root',  start: 860, end: 920 },
-  { id: 'extra2', name: 'Cache.set',             traceId: 't1', parentId: 'db',    start: 620, end: 680 },
-  { id: 'extra3', name: 'Auth.token_refresh',    traceId: 't1', parentId: 'auth',  start: 110, end: 200 },
-  { id: 'extra4', name: 'Metrics.record',        traceId: 't1', parentId: 'root',  start: 950, end: 980 },
-  { id: 'extra5', name: 'TLS.handshake',         traceId: 't1', parentId: 'root',  start: 10,  end: 95  },
-  { id: 'extra6', name: 'Logger.flush',          traceId: 't1', parentId: 'root',  start: 820, end: 860 },
-  { id: 'extra7', name: 'Redis.get',             traceId: 't1', parentId: 'cache', start: 430, end: 510 },
-  { id: 'extra8', name: 'Redis.set',             traceId: 't1', parentId: 'extra2',start: 625, end: 665 },
-  { id: 'extra9', name: 'JWT.verify',            traceId: 't1', parentId: 'auth',  start: 210, end: 290 },
-  { id: 'extra10',name: 'S3.getObject',          traceId: 't1', parentId: 'db',    start: 500, end: 580 },
-  { id: 'extra11',name: 'gRPC.call',             traceId: 't1', parentId: 'root',  start: 300, end: 395 },
+  { id: 'root', name: 'HTTP GET /checkout', traceId: 't1', start: 0, end: 1000 },
+  { id: 'auth', name: 'AuthService.validate', traceId: 't1', parentId: 'root', start: 100, end: 350 },
+  { id: 'db', name: 'DB.query', traceId: 't1', parentId: 'root', start: 400, end: 850 },
+  { id: 'cache', name: 'Cache.get', traceId: 't1', parentId: 'db', start: 420, end: 600 },
+  { id: 'leaf', name: 'Serializer.encode', traceId: 't1', parentId: 'db', start: 700, end: 820 },
+  { id: 'extra1', name: 'Queue.enqueue', traceId: 't1', parentId: 'root', start: 860, end: 920 },
+  { id: 'extra2', name: 'Cache.set', traceId: 't1', parentId: 'db', start: 620, end: 680 },
+  { id: 'extra3', name: 'Auth.token_refresh', traceId: 't1', parentId: 'auth', start: 110, end: 200 },
+  { id: 'extra4', name: 'Metrics.record', traceId: 't1', parentId: 'root', start: 950, end: 980 },
+  { id: 'extra5', name: 'TLS.handshake', traceId: 't1', parentId: 'root', start: 10, end: 95 },
+  { id: 'extra6', name: 'Logger.flush', traceId: 't1', parentId: 'root', start: 820, end: 860 },
+  { id: 'extra7', name: 'Redis.get', traceId: 't1', parentId: 'cache', start: 430, end: 510 },
+  { id: 'extra8', name: 'Redis.set', traceId: 't1', parentId: 'extra2', start: 625, end: 665 },
+  { id: 'extra9', name: 'JWT.verify', traceId: 't1', parentId: 'auth', start: 210, end: 290 },
+  { id: 'extra10', name: 'S3.getObject', traceId: 't1', parentId: 'db', start: 500, end: 580 },
+  { id: 'extra11', name: 'gRPC.call', traceId: 't1', parentId: 'root', start: 300, end: 395 },
 ];
 
 // ---------------------------------------------------------------------------
@@ -134,35 +134,136 @@ export const CHECKOUT_WATERFALL: TraceDatum[] = [
  *   └── metrics(950–980)
  */
 export const A11Y_TRACE: TraceDatum[] = [
-  { id: 'root',    name: 'GET /checkout',         traceId: 't1', start: 0,   end: 1000 },
-  { id: 'tls',     name: 'TLS.handshake',         traceId: 't1', parentId: 'root',    start: 10,  end: 95,
-    activeSegments: [{ start: 10, end: 95 }] },
-  { id: 'auth',    name: 'AuthService.validate',  traceId: 't1', parentId: 'root',    start: 100, end: 350,
-    activeSegments: [{ start: 100, end: 200 }] },
-  { id: 'jwt',     name: 'JWT.verify',            traceId: 't1', parentId: 'auth',    start: 110, end: 190,
-    activeSegments: [{ start: 110, end: 190 }] },
-  { id: 'grpc',    name: 'gRPC.call',             traceId: 't1', parentId: 'root',    start: 300, end: 395,
-    activeSegments: [{ start: 300, end: 395 }] },
-  { id: 'db',      name: 'DB.query (read)',        traceId: 't1', parentId: 'root',    start: 400, end: 850,
-    activeSegments: [{ start: 400, end: 450 }, { start: 750, end: 830 }] },
-  { id: 'cache',   name: 'Cache.get',             traceId: 't1', parentId: 'db',      start: 420, end: 600,
-    activeSegments: [{ start: 420, end: 600 }] },
-  { id: 'redis-g', name: 'Redis.get',             traceId: 't1', parentId: 'cache',   start: 430, end: 510,
-    activeSegments: [{ start: 430, end: 510 }] },
-  { id: 's3',      name: 'S3.getObject',          traceId: 't1', parentId: 'db',      start: 500, end: 580,
-    activeSegments: [{ start: 500, end: 580 }] },
-  { id: 'cache-s', name: 'Cache.set',             traceId: 't1', parentId: 'db',      start: 620, end: 680,
-    activeSegments: [{ start: 620, end: 680 }] },
-  { id: 'redis-s', name: 'Redis.set',             traceId: 't1', parentId: 'cache-s', start: 625, end: 665,
-    activeSegments: [{ start: 625, end: 665 }] },
-  { id: 'serial',  name: 'Serializer.encode',     traceId: 't1', parentId: 'db',      start: 700, end: 820,
-    activeSegments: [{ start: 700, end: 820 }] },
-  { id: 'queue',   name: 'Queue.enqueue',         traceId: 't1', parentId: 'root',    start: 860, end: 920,
-    activeSegments: [{ start: 860, end: 920 }] },
-  { id: 'logger',  name: 'Logger.flush',          traceId: 't1', parentId: 'root',    start: 820, end: 860,
-    activeSegments: [{ start: 820, end: 860 }] },
-  { id: 'metrics', name: 'Metrics.record',        traceId: 't1', parentId: 'root',    start: 950, end: 980,
-    activeSegments: [{ start: 950, end: 980 }] },
+  { id: 'root', name: 'GET /checkout', traceId: 't1', start: 0, end: 1000 },
+  {
+    id: 'tls',
+    name: 'TLS.handshake',
+    traceId: 't1',
+    parentId: 'root',
+    start: 10,
+    end: 95,
+    activeSegments: [{ start: 10, end: 95 }],
+  },
+  {
+    id: 'auth',
+    name: 'AuthService.validate',
+    traceId: 't1',
+    parentId: 'root',
+    start: 100,
+    end: 350,
+    activeSegments: [{ start: 100, end: 200 }],
+  },
+  {
+    id: 'jwt',
+    name: 'JWT.verify',
+    traceId: 't1',
+    parentId: 'auth',
+    start: 110,
+    end: 190,
+    activeSegments: [{ start: 110, end: 190 }],
+  },
+  {
+    id: 'grpc',
+    name: 'gRPC.call',
+    traceId: 't1',
+    parentId: 'root',
+    start: 300,
+    end: 395,
+    activeSegments: [{ start: 300, end: 395 }],
+  },
+  {
+    id: 'db',
+    name: 'DB.query (read)',
+    traceId: 't1',
+    parentId: 'root',
+    start: 400,
+    end: 850,
+    activeSegments: [
+      { start: 400, end: 450 },
+      { start: 750, end: 830 },
+    ],
+  },
+  {
+    id: 'cache',
+    name: 'Cache.get',
+    traceId: 't1',
+    parentId: 'db',
+    start: 420,
+    end: 600,
+    activeSegments: [{ start: 420, end: 600 }],
+  },
+  {
+    id: 'redis-g',
+    name: 'Redis.get',
+    traceId: 't1',
+    parentId: 'cache',
+    start: 430,
+    end: 510,
+    activeSegments: [{ start: 430, end: 510 }],
+  },
+  {
+    id: 's3',
+    name: 'S3.getObject',
+    traceId: 't1',
+    parentId: 'db',
+    start: 500,
+    end: 580,
+    activeSegments: [{ start: 500, end: 580 }],
+  },
+  {
+    id: 'cache-s',
+    name: 'Cache.set',
+    traceId: 't1',
+    parentId: 'db',
+    start: 620,
+    end: 680,
+    activeSegments: [{ start: 620, end: 680 }],
+  },
+  {
+    id: 'redis-s',
+    name: 'Redis.set',
+    traceId: 't1',
+    parentId: 'cache-s',
+    start: 625,
+    end: 665,
+    activeSegments: [{ start: 625, end: 665 }],
+  },
+  {
+    id: 'serial',
+    name: 'Serializer.encode',
+    traceId: 't1',
+    parentId: 'db',
+    start: 700,
+    end: 820,
+    activeSegments: [{ start: 700, end: 820 }],
+  },
+  {
+    id: 'queue',
+    name: 'Queue.enqueue',
+    traceId: 't1',
+    parentId: 'root',
+    start: 860,
+    end: 920,
+    activeSegments: [{ start: 860, end: 920 }],
+  },
+  {
+    id: 'logger',
+    name: 'Logger.flush',
+    traceId: 't1',
+    parentId: 'root',
+    start: 820,
+    end: 860,
+    activeSegments: [{ start: 820, end: 860 }],
+  },
+  {
+    id: 'metrics',
+    name: 'Metrics.record',
+    traceId: 't1',
+    parentId: 'root',
+    start: 950,
+    end: 980,
+    activeSegments: [{ start: 950, end: 980 }],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -186,7 +287,10 @@ export const SELECTION_TRACE: TraceDatum[] = [
     traceId: 't1',
     start: 0,
     end: 1000,
-    activeSegments: [{ start: 0, end: 150, label: 'init' }, { start: 750, end: 1000, label: 'finalize' }],
+    activeSegments: [
+      { start: 0, end: 150, label: 'init' },
+      { start: 750, end: 1000, label: 'finalize' },
+    ],
   },
   {
     id: 'db',
@@ -249,18 +353,53 @@ export interface NetworkMeta {
  *   └── api-promo (xhr, 520–820)
  */
 export const CHROME_NETWORK_SPANS: TraceDatum[] = [
-  { id: 'nav',       name: 'index.html',                 start: 0,   end: 850, meta: { type: 'document' }   as NetworkMeta },
-  { id: 'react',     name: 'react.production.min.js',    start: 60,  end: 280, parentId: 'nav', meta: { type: 'script' }     as NetworkMeta },
-  { id: 'app',       name: 'app.bundle.js',              start: 80,  end: 490, parentId: 'nav', meta: { type: 'script' }     as NetworkMeta },
-  { id: 'main-css',  name: 'main.css',                   start: 55,  end: 180, parentId: 'nav', meta: { type: 'stylesheet' } as NetworkMeta },
-  { id: 'fonts-css', name: 'fonts.css',                  start: 58,  end: 170, parentId: 'nav', meta: { type: 'stylesheet' } as NetworkMeta },
-  { id: 'inter',     name: 'Inter-Regular.woff2',        start: 180, end: 310, parentId: 'nav', meta: { type: 'font' }       as NetworkMeta },
-  { id: 'inter-bold',name: 'Inter-Bold.woff2',           start: 185, end: 315, parentId: 'nav', meta: { type: 'font' }       as NetworkMeta },
-  { id: 'logo',      name: 'logo.svg',                   start: 200, end: 260, parentId: 'nav', meta: { type: 'image' }      as NetworkMeta },
-  { id: 'hero',      name: 'hero.webp',                  start: 210, end: 480, parentId: 'nav', meta: { type: 'image' }      as NetworkMeta },
-  { id: 'api-user',  name: '/api/user',                  start: 500, end: 640, parentId: 'nav', meta: { type: 'xhr' }        as NetworkMeta },
-  { id: 'api-cart',  name: '/api/cart',                  start: 510, end: 700, parentId: 'nav', meta: { type: 'xhr' }        as NetworkMeta },
-  { id: 'api-promo', name: '/api/promos',                start: 520, end: 820, parentId: 'nav', meta: { type: 'xhr' }        as NetworkMeta },
+  { id: 'nav', name: 'index.html', start: 0, end: 850, meta: { type: 'document' } as NetworkMeta },
+  {
+    id: 'react',
+    name: 'react.production.min.js',
+    start: 60,
+    end: 280,
+    parentId: 'nav',
+    meta: { type: 'script' } as NetworkMeta,
+  },
+  { id: 'app', name: 'app.bundle.js', start: 80, end: 490, parentId: 'nav', meta: { type: 'script' } as NetworkMeta },
+  {
+    id: 'main-css',
+    name: 'main.css',
+    start: 55,
+    end: 180,
+    parentId: 'nav',
+    meta: { type: 'stylesheet' } as NetworkMeta,
+  },
+  {
+    id: 'fonts-css',
+    name: 'fonts.css',
+    start: 58,
+    end: 170,
+    parentId: 'nav',
+    meta: { type: 'stylesheet' } as NetworkMeta,
+  },
+  {
+    id: 'inter',
+    name: 'Inter-Regular.woff2',
+    start: 180,
+    end: 310,
+    parentId: 'nav',
+    meta: { type: 'font' } as NetworkMeta,
+  },
+  {
+    id: 'inter-bold',
+    name: 'Inter-Bold.woff2',
+    start: 185,
+    end: 315,
+    parentId: 'nav',
+    meta: { type: 'font' } as NetworkMeta,
+  },
+  { id: 'logo', name: 'logo.svg', start: 200, end: 260, parentId: 'nav', meta: { type: 'image' } as NetworkMeta },
+  { id: 'hero', name: 'hero.webp', start: 210, end: 480, parentId: 'nav', meta: { type: 'image' } as NetworkMeta },
+  { id: 'api-user', name: '/api/user', start: 500, end: 640, parentId: 'nav', meta: { type: 'xhr' } as NetworkMeta },
+  { id: 'api-cart', name: '/api/cart', start: 510, end: 700, parentId: 'nav', meta: { type: 'xhr' } as NetworkMeta },
+  { id: 'api-promo', name: '/api/promos', start: 520, end: 820, parentId: 'nav', meta: { type: 'xhr' } as NetworkMeta },
 ];
 
 // ---------------------------------------------------------------------------
@@ -491,9 +630,7 @@ export const OTEL_TOOLTIP_SPANS: OtelSpan[] = [
     traceId: 't1',
     startTimeUnixNano: '110000000',
     endTimeUnixNano: '280000000',
-    attributes: [
-      { key: 'auth.method', value: 'JWT' },
-    ],
+    attributes: [{ key: 'auth.method', value: 'JWT' }],
     status: { code: 1 },
   },
 ];
@@ -510,9 +647,16 @@ export const OTEL_TOOLTIP_SPANS: OtelSpan[] = [
 export function seededRng(seed: number) {
   let s = seed >>> 0;
   return {
-    next() { s = (1664525 * s + 1013904223) >>> 0; return s / 0x100000000; },
-    int(lo: number, hi: number) { return lo + Math.floor(this.next() * (hi - lo + 1)); },
-    pick<T>(arr: readonly T[]): T { return arr[this.int(0, arr.length - 1)]!; },
+    next() {
+      s = (1664525 * s + 1013904223) >>> 0;
+      return s / 0x100000000;
+    },
+    int(lo: number, hi: number) {
+      return lo + Math.floor(this.next() * (hi - lo + 1));
+    },
+    pick<T>(arr: readonly T[]): T {
+      return arr[this.int(0, arr.length - 1)]!;
+    },
   };
 }
 
@@ -521,18 +665,18 @@ export function seededRng(seed: number) {
  * Each entry is [serviceName, operationNames[]].
  */
 export const SERVICE_OPS: readonly [string, readonly string[]][] = [
-  ['frontend',             ['render', 'hydrate', 'prefetch']],
-  ['api-gateway',          ['auth', 'rate-limit', 'forward', 'transform']],
-  ['auth-service',         ['validate-token', 'refresh-token', 'check-permissions']],
-  ['user-service',         ['get-user', 'get-profile', 'update-session']],
-  ['product-service',      ['get-product', 'list-products', 'pricing']],
-  ['inventory-service',    ['check-stock', 'reserve', 'release']],
-  ['order-service',        ['create', 'validate', 'process', 'update']],
-  ['payment-service',      ['fraud-check', 'charge', 'confirm', 'refund']],
+  ['frontend', ['render', 'hydrate', 'prefetch']],
+  ['api-gateway', ['auth', 'rate-limit', 'forward', 'transform']],
+  ['auth-service', ['validate-token', 'refresh-token', 'check-permissions']],
+  ['user-service', ['get-user', 'get-profile', 'update-session']],
+  ['product-service', ['get-product', 'list-products', 'pricing']],
+  ['inventory-service', ['check-stock', 'reserve', 'release']],
+  ['order-service', ['create', 'validate', 'process', 'update']],
+  ['payment-service', ['fraud-check', 'charge', 'confirm', 'refund']],
   ['notification-service', ['send-email', 'send-push', 'queue']],
-  ['db-postgres',          ['SELECT', 'INSERT', 'UPDATE', 'BEGIN', 'COMMIT']],
-  ['cache-redis',          ['GET', 'SET', 'DEL', 'HGET', 'EXPIRE']],
-  ['search-service',       ['query', 'rank', 'suggest', 'index']],
+  ['db-postgres', ['SELECT', 'INSERT', 'UPDATE', 'BEGIN', 'COMMIT']],
+  ['cache-redis', ['GET', 'SET', 'DEL', 'HGET', 'EXPIRE']],
+  ['search-service', ['query', 'rank', 'suggest', 'index']],
 ];
 
 /**
@@ -570,7 +714,10 @@ export function buildLargeTrace(targetSpans: number): TraceDatum[] {
       const op = rng.pick(ops);
       const childDur = Math.max(1, perSlot * (0.4 + rng.next() * 0.9));
       const childEnd = Math.min(cursor + childDur, t1);
-      if (childEnd <= cursor) { cursor += perSlot; continue; }
+      if (childEnd <= cursor) {
+        cursor += perSlot;
+        continue;
+      }
       const childId = addSpan(parentId, svc, op, cursor, childEnd);
       if (depth < 6 && rng.next() > 0.25) populate(childId, cursor, childEnd, depth + 1);
       cursor += perSlot;

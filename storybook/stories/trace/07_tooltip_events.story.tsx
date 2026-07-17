@@ -13,9 +13,9 @@ import React, { useMemo } from 'react';
 import type { CustomTooltip, OtelSpan, TraceDatum } from '@elastic/charts';
 import { Chart, fromOtlp, Settings, Tooltip, Trace } from '@elastic/charts';
 
+import { EPOCH_BASE, EPOCH_BASE_NS, OTEL_TOOLTIP_SPANS } from './data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-import { EPOCH_BASE, EPOCH_BASE_NS, OTEL_TOOLTIP_SPANS } from './data';
 
 /**
  * Custom tooltip component — renders the default span metadata rows plus all OTel
@@ -33,7 +33,17 @@ const TraceCustomTooltip: CustomTooltip = ({ values, backgroundColor }) => {
   const status = meta?.status;
 
   return (
-    <div style={{ padding: '8px 12px', minWidth: 220, fontFamily: 'monospace', fontSize: 12, background: backgroundColor, borderRadius: 4, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+    <div
+      style={{
+        padding: '8px 12px',
+        minWidth: 220,
+        fontFamily: 'monospace',
+        fontSize: 12,
+        background: backgroundColor,
+        borderRadius: 4,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+      }}
+    >
       <div style={{ fontWeight: 700, marginBottom: 6, fontSize: 13 }}>{datum.name}</div>
       {values.map((v) => (
         <div key={v.label} style={{ display: 'flex', justifyContent: 'space-between', gap: 16, marginBottom: 2 }}>
@@ -85,13 +95,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
   // renders realistic wall-clock ticks. fromOtlp converts ns → epoch-ms and stores
   // the original OtelSpan on datum.meta (used by TraceCustomTooltip above).
   const data = useMemo(() => {
-    const spans = xScaleType === 'time'
-      ? OTEL_TOOLTIP_SPANS.map((s) => ({
-          ...s,
-          startTimeUnixNano: (BigInt(s.startTimeUnixNano) + EPOCH_BASE_NS).toString(),
-          endTimeUnixNano:   (BigInt(s.endTimeUnixNano)   + EPOCH_BASE_NS).toString(),
-        }))
-      : OTEL_TOOLTIP_SPANS;
+    const spans =
+      xScaleType === 'time'
+        ? OTEL_TOOLTIP_SPANS.map((s) => ({
+            ...s,
+            startTimeUnixNano: (BigInt(s.startTimeUnixNano) + EPOCH_BASE_NS).toString(),
+            endTimeUnixNano: (BigInt(s.endTimeUnixNano) + EPOCH_BASE_NS).toString(),
+          }))
+        : OTEL_TOOLTIP_SPANS;
     return fromOtlp(spans);
   }, [xScaleType]);
 
