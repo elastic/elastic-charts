@@ -1,4 +1,4 @@
-# Spec 21 — Critical path
+# Spec 22 — Critical path
 
 **Goal:** render a consumer-supplied, interval-precise critical path as a distinct colored line along
 the bottom edge of the affected lanes. Presence of the `criticalPath` prop is the on/off toggle

@@ -30,8 +30,17 @@ _Avoid_: exclusive time (self time is the canonical term used throughout this co
 
 **Trace**:
 The set of spans sharing one `traceId`. The chart typically renders a single trace; pass `traceId` to
-filter to one, or omit it to render all supplied spans as one combined waterfall (one lane per span,
-interleaved by start time).
+filter to one, or omit it to render all supplied spans as one combined waterfall (one lane per span).
+Lane assignment order is controlled by the **Lane order** mode.
+
+**Lane order**:
+The rule that assigns spans to lanes top-to-bottom. Two modes: `tree` (depth-first `parentId`
+nesting — each parent is immediately above its descendants; the default, matching Kibana APM) and
+`chronological` (by span `start` ascending, matching Chrome DevTools Network). In `tree` mode,
+multi-trace mode (no `traceId` filter) produces a **forest**: each subtree is grouped together
+rather than interleaved by start. Orphan spans (whose `parentId` is absent from the span set) are
+treated as roots. Set via `TraceSpec.laneOrder`. See [ADR 0018](./docs/adr/trace-viz/0018-lane-ordering-tree-default.md).
+_Avoid_: sort order, row order.
 
 **Focus domain**:
 The currently-visible time window `[min, max]` of the Trace waterfall after zoom/pan, eased toward a target.

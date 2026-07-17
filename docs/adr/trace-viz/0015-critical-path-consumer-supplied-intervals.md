@@ -1,10 +1,10 @@
 # ADR 0015 — Critical path is consumer-supplied, interval-precise
 
-**Status:** Accepted (Spec 21)
+**Status:** Accepted (Spec 22)
 
 ## Context
 
-Spec 21 adds visual critical-path highlighting to the trace waterfall: a colored line along the
+Spec 22 adds visual critical-path highlighting to the trace waterfall: a colored line along the
 bottom edge of the lanes whose spans lie on the critical path. "Critical path" means the chain of
 span portions that gated the trace's total duration — the concept is well-established in APM tooling
 (Kibana's waterfall has a "Show critical path" toggle for it).
@@ -42,6 +42,6 @@ the original offset is lost. Critical intervals carry raw consumer times (same u
 `TraceDatum.start/end`), so they **must be re-zeroed and clamped to their span's projected
 `[start, end]`** inside the normalize pipeline, alongside `activeSegments`. Placing this transform in
 `buildGeometry` would require threading the pre-projection `domainMin` backwards — a leaky abstraction
-that touches the frozen `draw(ctx, geom, style)` contract (ADR 0001). Connections (Spec 22), by
+that touches the frozen `draw(ctx, geom, style)` contract (ADR 0001). Connections (Spec 23), by
 contrast, anchor to `TraceSegmentRef` and resolve against already-projected `NormalizedSpan` data, so
 they need no re-zero at all.

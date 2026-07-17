@@ -1,4 +1,4 @@
-# Spec 16 — Responsive layout & relocatable label panel
+# Spec 17 — Responsive layout & relocatable label panel
 
 **Goal:** make the trace chart usable on narrow widths (mobile / side-panel embeds ~320px) by
 supporting three label-rendering modes — `gutter` (today's left panel), `inline` (Chrome/Kibana

@@ -1,10 +1,10 @@
 # ADR 0016 — Connections are an explicit consumer-supplied prop, not derived from OTel links
 
-**Status:** Accepted (Spec 22)
+**Status:** Accepted (Spec 23)
 
 ## Context
 
-Spec 22 adds directional connector arrows between segment endpoints — the Chrome DevTools "Initiated
+Spec 23 adds directional connector arrows between segment endpoints — the Chrome DevTools "Initiated
 by" relationship: segment A finished and caused segment B to start. A `connections` prop is added to
 `TraceSpec`; each entry is a `TraceConnection { from: TraceSegmentRef; to: TraceSegmentRef }`.
 
@@ -38,7 +38,7 @@ any sub-span region precisely. Reusing it means:
 ## Decision 3: Visual-only in v1; no label, color, or a11y surface
 
 The v1 `TraceConnection` type carries no `label`, `color`, or tooltip data. These are deferred to a
-named follow-up (see Spec 22 "Out of scope"). Adding fields before a real consumer exists would
+named follow-up (see Spec 23 "Out of scope"). Adding fields before a real consumer exists would
 speculate about the API surface and make the type harder to deprecate if the semantics prove wrong.
 The `from`/`to` `TraceSegmentRef`s provide enough identity to reconstruct SR/tooltip content in a
 follow-up without a breaking change.

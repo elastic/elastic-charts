@@ -52,4 +52,4 @@ extra call on mount; subsequent renders hit the memoized result. The two caches 
 evicted (pipeline cache: on component unmount; selector cache: on store GC), but this is harmless —
 they are both derived from the same source inputs.
 
-Spec 15 (`focusDomain` control) and Spec 16 (responsive labels) are not affected.
+Spec 16 (`focusDomain` control) and Spec 17 (responsive labels) are not affected.

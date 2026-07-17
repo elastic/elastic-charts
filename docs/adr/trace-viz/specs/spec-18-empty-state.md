@@ -1,4 +1,4 @@
-# Spec 17 — Empty-state distinction
+# Spec 18 — Empty-state distinction
 
 **Goal:** render a distinct centered message on the canvas when the trace chart has no lanes to
 render. Two cases require different messages:

@@ -20,6 +20,7 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0015 — Critical path is consumer-supplied, interval-precise (not computed, not a boolean)](./0015-critical-path-consumer-supplied-intervals.md)
 - [0016 — Connections are an explicit consumer-supplied prop, not derived from OTel links](./0016-connections-explicit-prop.md)
 - [0017 — Trace viz story organisation principles](./0017-story-organisation-principles.md)
+- [0018 — Lane ordering: tree (DFS) default, chronological optional](./0018-lane-ordering-tree-default.md)
 
 ## Spec plans
 
@@ -43,19 +44,20 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 - [Spec 12 — Accessibility (keyboard nav, focused-lane highlight, scroll helper, SR surface)](./specs/spec-12-accessibility.md)
 - [Spec 13 — Segment selection (click, double-click, multi-select, clear)](./specs/spec-13-segment-selection.md)
 - [Spec 14 — Scroll-to-lane public API + search story](./specs/spec-14-scroll-to-lane.md)
-- [Spec 15 — Focus-domain control + overview composition](./specs/spec-15-focus-domain-control.md)
-- [Spec 16 — Responsive layout & relocatable label panel](./specs/spec-16-responsive-labels.md)
-- [Spec 17 — Empty-state distinction (no-data vs trace-not-found)](./specs/spec-17-empty-state.md)
-- [Spec 18 — Nanosecond precision for linear x-scale](./specs/spec-18-nanosecond-linear.md)
-- [Spec 19 — API documentation story (auto-extracted)](./specs/spec-19-api-docs.md)
-- [Spec 20 — Collapsible nesting (design exploration)](./specs/spec-20-collapsible-nesting.md) *(design stub — not yet executable)*
-- [Spec 21 — Critical path (consumer-supplied interval-precise highlight)](./specs/spec-21-critical-path.md)
-- [Spec 22 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-22-connections.md)
+- [Spec 15 — Lane ordering mode (tree default + chronological)](./specs/spec-15-lane-ordering.md)
+- [Spec 16 — Focus-domain control + overview composition](./specs/spec-16-focus-domain-control.md)
+- [Spec 17 — Responsive layout & relocatable label panel](./specs/spec-17-responsive-labels.md)
+- [Spec 18 — Empty-state distinction (no-data vs trace-not-found)](./specs/spec-18-empty-state.md)
+- [Spec 19 — Nanosecond precision for linear x-scale](./specs/spec-19-nanosecond-linear.md)
+- [Spec 20 — API documentation story (auto-extracted)](./specs/spec-20-api-docs.md)
+- [Spec 21 — Collapsible nesting (design exploration)](./specs/spec-21-collapsible-nesting.md) *(design stub — not yet executable)*
+- [Spec 22 — Critical path (consumer-supplied interval-precise highlight)](./specs/spec-22-critical-path.md)
+- [Spec 23 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-23-connections.md)
 
 Build order (Specs 0–8): Phase 0 → Spec 0 → Spec 1 → (Spec 2 / Spec 3 / Spec 4 in parallel once
 Spec 1's `NormalizedSpan` contract is fixed) → Spec 5 → Spec 6 → Spec 7 → Spec 8.
 
-Build order (Specs 9–19): Spec 9 (color — foundational for showcase stories) → Spec 10 (pin
+Build order (Specs 9–20): Spec 9 (color — foundational for showcase stories) → Spec 10 (pin
 tooltip — independent) → Spec 11 (brush X-only). After Spec 11 the remaining specs form an acyclic
 graph whose numeric order **is** the dependency order:
 
@@ -64,21 +66,23 @@ graph whose numeric order **is** the dependency order:
 - **Spec 13** (segment selection) — depends on Specs 7, 10, and 12.
 - **Spec 14** (scroll-to-lane public API) — depends on Spec 12 (reuses `scrollLaneIntoView` and
   `focusedLaneIndex`).
-- **Spec 15** (focus-domain control) — depends on Spec 11.
-- **Spec 16** (responsive labels) — depends on Spec 5.
-- **Spec 17** (empty-state distinction) — depends on Specs 1 and 5.
-- **Spec 18** (nanosecond linear scale) — depends on Specs 4 and 6.
-- **Spec 19** (API docs, auto-extracted) — must be last; captures public props from Specs 13–16.
+- **Spec 15** (lane ordering mode) — depends on Spec 1 (`parentId`). Independent of 12–14.
+- **Spec 16** (focus-domain control) — depends on Spec 11.
+- **Spec 17** (responsive labels) — depends on Spec 5.
+- **Spec 18** (empty-state distinction) — depends on Specs 1 and 5.
+- **Spec 19** (nanosecond linear scale) — depends on Specs 4 and 6.
+- **Spec 20** (API docs, auto-extracted) — must be last; captures public props from Specs 13–17.
 
-Specs 15–18 are mutually independent and can be parallelised after Spec 11.
+Specs 15–19 are mutually independent and can be parallelised after Spec 11.
 
-Spec 20 (collapsible nesting design exploration) is independent of all other specs; it is not
-executable until the team picks an implementation option and promotes the stub to a full spec.
+Spec 21 (collapsible nesting design exploration) is independent of all other specs; it is not
+executable until the team picks an implementation option and promotes the stub to a full spec. The
+lane-ordering question (previously open question #1) is resolved by Spec 15 + ADR 0018.
 
-- **Spec 21** (critical path highlight) — depends on Specs 5, 12, and 13. Independent of Spec 22.
+- **Spec 22** (critical path highlight) — depends on Specs 5, 12, and 13. Independent of Spec 23.
   Extends the normalize pipeline (`project()`) and adds a canvas draw pass; no interaction state.
-- **Spec 22** (connections / "Initiated by" arrows) — depends on Specs 5, 12, and 13 (reuses
+- **Spec 23** (connections / "Initiated by" arrows) — depends on Specs 5, 12, and 13 (reuses
   `TraceSegmentRef`, `waitingSegments`, and the `buildGeometry` resolved-field pattern). Independent
-  of Spec 21. Pure render — no pipeline changes, no interaction state.
+  of Spec 22. Pure render — no pipeline changes, no interaction state.
 
 See the repo root [`CONTEXT.md`](../../../CONTEXT.md) for the domain glossary.

@@ -1,11 +1,16 @@
-# Spec 20 — Collapsible nesting (design exploration)
+# Spec 21 — Collapsible nesting (design exploration)
 
 > **Status: Design stub — not an executable spec.**
 >
 > This document enumerates options, open questions, and reusable pieces for adding collapsible
-> parent-child subtrees to the trace waterfall. No implementation approach is committed here. The next
-> step is for the team to pick an option (A, B, or C), at which point this stub is promoted to a full
-> spec and the deferred lane-ordering ADR is written.
+> parent-child subtrees to the trace waterfall. No implementation approach is committed here.
+>
+> **Lane-ordering question resolved (2026-07-17):** Open question #1 (lane ordering A/B/C) is now
+> resolved by [Spec 15 — Lane ordering mode](./spec-15-lane-ordering.md) + [ADR 0018](../0018-lane-ordering-tree-default.md).
+> The default lane order is `'tree'` (depth-first, Option A ordering without collapse). Collapse now
+> builds on top of `laneOrder: 'tree'` — it adds a **visibility filter** (hide descendants) plus
+> gutter chevrons and optional indent; the tree order itself is already shipped.
+> Open questions 2–9 still stand and must be resolved before this stub can be promoted.
 
 ## Goal (exploratory)
 
@@ -19,13 +24,15 @@ Would also interact with [Spec 12](./spec-12-accessibility.md) (keyboard nav) an
 
 ## The tension
 
-The current lane model is **flat, sorted ascending by `start`, no indentation or tree structure**.
-Collapse of "nested parent-children" implies some form of tree traversal and visibility filtering —
-a departure from the flat model. The severity of the departure depends on which option is chosen.
+The lane model is now **tree-ordered by default** (depth-first `parentId` nesting, per Spec 15 /
+ADR 0018). Collapse builds on top of this: it adds a visibility filter (hide descendants of a
+collapsed parent) plus gutter chevrons and optional indentation. The reordering part (Option A) is
+already shipped; what remains is the hide/show mechanism and its interaction with scroll math,
+viewport culling, accessibility, and selection.
 
-The `parentId → children` map already computed in `resolveActive`
-([self_time.ts:22](../../../packages/charts/src/chart_types/trace_chart/data/self_time.ts#L22))
-is the reusable starting point for any option.
+The `parentId → children` map from `buildChildrenMap`
+([self_time.ts](../../../packages/charts/src/chart_types/trace_chart/data/self_time.ts))
+is the reusable starting point — shared with `orderLanes`.
 
 ## Options
 
@@ -69,7 +76,8 @@ span may appear next to shallower ones because of start-time interleaving.
 
 ## Open questions (must be resolved before promotion to full spec)
 
-1. **Lane ordering:** which option (A/B/C)? This choice cascades into all subsequent decisions.
+1. ~~**Lane ordering:** which option (A/B/C)?~~ **Resolved:** tree order (Option A) is the default,
+   shipped by Spec 15 + ADR 0018. Collapse adds hide/chevron/indent on top of tree order.
 
 2. **Chevron affordance:** the gutter is currently a pure text-label canvas region, not interactive.
    Options: (a) extend `pickLane`/`pickRegion` to detect a chevron hit-zone in the gutter x-range;
