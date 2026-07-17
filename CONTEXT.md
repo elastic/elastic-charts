@@ -98,6 +98,24 @@ Distinct from the **Focus domain** (the current window, always ≥ the minimum v
 clamping).
 _Avoid_: minimum zoom level (implies a zoom exponent, not a time window).
 
+**Critical path**:
+A consumer-supplied set of interval-precise **critical intervals** marking the portions of spans that
+gated the trace's total duration; rendered as a distinct colored line along the bottom edge of the
+affected lanes. Each critical interval may cover only a sub-range of a single active segment — it is
+not span-granular. Consumers supply raw pre-normalization times (same units as `TraceDatum.start/end`);
+the chart re-zeros them in `'linear'` mode alongside `activeSegments`.
+_Avoid_: critical segment (would collide with the index-addressable active/waiting **segment**),
+critical span (implies span-granular marking).
+
+**Connection**:
+A directed causal edge drawn as an orthogonal elbow connector from a source segment endpoint (the
+**initiator**) to a target segment endpoint (the **initiated**), expressing the Chrome DevTools
+"Initiated by" relationship. The arrow originates at the **end** of the `from` region and points to
+the **start** of the `to` region. Connections may cross lanes arbitrarily. Distinct from the
+structural `parentId` nesting, which is a tree relationship between whole spans.
+_Avoid_: link (reserved for OTel's looser span-to-span `links` relation), dependency (overclaims
+blocking semantics), arrow (a rendering term, not a domain concept).
+
 **Empty state**:
 The condition when the trace chart has no lanes to render. Two distinct cases: `no-data` (the `data`
 prop was empty — no spans supplied at all) and `trace-not-found` (spans were supplied but the

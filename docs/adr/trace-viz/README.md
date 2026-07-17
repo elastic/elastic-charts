@@ -17,6 +17,8 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0012 — `role="application"` on the `<canvas>` element only; SR content as browsable siblings](./0012-role-application-canvas-only-sr-siblings.md)
 - [0013 — Screen-reader span data re-derived in a second redux selector](./0013-sr-data-second-redux-selector.md)
 - [0014 — Keyboard focus badge is a DOM sibling `<div>`, not a canvas draw](./0014-keyboard-focus-badge-dom-sibling.md)
+- [0015 — Critical path is consumer-supplied, interval-precise (not computed, not a boolean)](./0015-critical-path-consumer-supplied-intervals.md)
+- [0016 — Connections are an explicit consumer-supplied prop, not derived from OTel links](./0016-connections-explicit-prop.md)
 
 ## Spec plans
 
@@ -46,6 +48,8 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 - [Spec 18 — Nanosecond precision for linear x-scale](./specs/spec-18-nanosecond-linear.md)
 - [Spec 19 — API documentation story (auto-extracted)](./specs/spec-19-api-docs.md)
 - [Spec 20 — Collapsible nesting (design exploration)](./specs/spec-20-collapsible-nesting.md) *(design stub — not yet executable)*
+- [Spec 21 — Critical path (consumer-supplied interval-precise highlight)](./specs/spec-21-critical-path.md)
+- [Spec 22 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-22-connections.md)
 
 Build order (Specs 0–8): Phase 0 → Spec 0 → Spec 1 → (Spec 2 / Spec 3 / Spec 4 in parallel once
 Spec 1's `NormalizedSpan` contract is fixed) → Spec 5 → Spec 6 → Spec 7 → Spec 8.
@@ -69,5 +73,11 @@ Specs 15–18 are mutually independent and can be parallelised after Spec 11.
 
 Spec 20 (collapsible nesting design exploration) is independent of all other specs; it is not
 executable until the team picks an implementation option and promotes the stub to a full spec.
+
+- **Spec 21** (critical path highlight) — depends on Specs 5, 12, and 13. Independent of Spec 22.
+  Extends the normalize pipeline (`project()`) and adds a canvas draw pass; no interaction state.
+- **Spec 22** (connections / "Initiated by" arrows) — depends on Specs 5, 12, and 13 (reuses
+  `TraceSegmentRef`, `waitingSegments`, and the `buildGeometry` resolved-field pattern). Independent
+  of Spec 21. Pure render — no pipeline changes, no interaction state.
 
 See the repo root [`CONTEXT.md`](../../../CONTEXT.md) for the domain glossary.
