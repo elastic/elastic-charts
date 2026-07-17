@@ -35,6 +35,7 @@ import React from 'react';
 import { Chart } from '../../components/chart';
 import { Settings } from '../../specs';
 import { Logger } from '../../utils/logger';
+import * as OrderLanesModule from './data/order_lanes';
 import { Trace } from './trace_api';
 import type { TraceDatum, TraceControlCallbacks } from './trace_api';
 import { makeCtx } from './trace_test_helpers';
@@ -750,6 +751,90 @@ describe('Trace chart — scrollToSpan + controlProviderCallback (Spec 14)', () 
     expect(document.activeElement).toBe(button);
 
     document.body.removeChild(button);
+    unmount();
+  });
+});
+
+describe('Trace chart — laneOrder prop (Spec 15)', () => {
+  /**
+   * Verifies that `laneOrder` is forwarded to `orderLanes` and that the pipeline cache is
+   * correctly keyed on it. Uses jest.useFakeTimers() / jest.runAllTimers() to fire the
+   * componentDidMount rAF → frame() → getPipeline() path (same pattern as the RAF→draw suite).
+   * The rAF loop does not re-schedule in a static test (tweenOngoing=false, flywheelActive=false),
+   * so each runAllTimers() fires exactly one frame → at most one cache-miss call to orderLanes.
+   *
+   * Three-span fixture where tree order ≠ chronological order:
+   *   Tree:          root(0) → child(200) [child of root], sibling(50) [second root]
+   *   Chronological: root(0), sibling(50), child(200)
+   */
+  const LANE_ORDER_SPANS: TraceDatum[] = [
+    { id: 'root',    name: 'root',    traceId: 't', start: 0,   end: 1000 },
+    { id: 'sibling', name: 'sibling', traceId: 't', start: 50,  end: 900  },
+    { id: 'child',   name: 'child',   parentId: 'root', traceId: 't', start: 200, end: 800 },
+  ];
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('defaults to tree order when laneOrder is omitted', () => {
+    const orderLanesSpy = jest.spyOn(OrderLanesModule, 'orderLanes');
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="lo1" data={LANE_ORDER_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    // spec.laneOrder is undefined → getPipeline passes 'tree' via the `?? 'tree'` default.
+    expect(orderLanesSpy).toHaveBeenCalledWith(expect.any(Array), 'tree');
+    orderLanesSpy.mockRestore();
+    unmount();
+  });
+
+  it('uses chronological order when laneOrder="chronological" (reproduces prior start-ascending behaviour)', () => {
+    const orderLanesSpy = jest.spyOn(OrderLanesModule, 'orderLanes');
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="lo2" data={LANE_ORDER_SPANS} xScaleType="linear" laneOrder="chronological" />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(orderLanesSpy).toHaveBeenCalledWith(expect.any(Array), 'chronological');
+    orderLanesSpy.mockRestore();
+    unmount();
+  });
+
+  it('invalidates the pipeline cache when laneOrder changes', () => {
+    const orderLanesSpy = jest.spyOn(OrderLanesModule, 'orderLanes');
+
+    const { rerender, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="lo3" data={LANE_ORDER_SPANS} xScaleType="linear" laneOrder="tree" />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    // All pipeline recomputations on the initial frame must use 'tree'.
+    expect(orderLanesSpy).toHaveBeenCalledWith(expect.any(Array), 'tree');
+    expect(orderLanesSpy.mock.calls.every(([, mode]) => mode === 'tree')).toBe(true);
+    orderLanesSpy.mockClear();
+
+    // Change laneOrder — the cache must be invalidated. After the next frame, orderLanes must
+    // be called with 'chronological', not return the stale tree-ordered result from cache.
+    rerender(
+      <Chart size={[800, 200]}>
+        <Trace id="lo3" data={LANE_ORDER_SPANS} xScaleType="linear" laneOrder="chronological" />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(orderLanesSpy).toHaveBeenCalledWith(expect.any(Array), 'chronological');
+    // No call must have slipped through with the old mode after the prop change.
+    expect(orderLanesSpy.mock.calls.every(([, mode]) => mode === 'chronological')).toBe(true);
+
+    orderLanesSpy.mockRestore();
     unmount();
   });
 });
