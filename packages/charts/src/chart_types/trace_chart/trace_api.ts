@@ -245,6 +245,30 @@ export interface TraceSpec extends Spec {
    */
   onSelectionChange?: (next: TraceSelection, details: TraceSelectionDetail[]) => void;
   /**
+   * Controlled visible time window `[from, to]` in the chart's internal coordinates:
+   * - `'time'` x-scale: epoch-ms (same as `TraceDatum.start`/`end`).
+   * - `'linear'` x-scale: elapsed-from-zero-ms (`normalize()` re-zeros the domain to `[0, totalMs]`).
+   *
+   * Perform-and-fire (ADR 0007): local gestures (wheel-zoom, drag-pan, brush) still execute and fire
+   * `onFocusDomainChange` even when this prop is supplied — the parent decides whether to update the
+   * prop. Change the **value** to re-drive the window; re-passing an identical value after a local
+   * gesture is a no-op (does not force-restore the window). Uncontrolled when omitted.
+   *
+   * Pass a **stable or memoized reference** (same value → same object if possible) to avoid unnecessary
+   * change-detection overhead, though value comparison (`[0]`/`[1]`) makes inline literals safe.
+   */
+  focusDomain?: [number, number];
+  /**
+   * Called at RAF-loop stop with the settled visible window `[from, to]` (same coordinate space as
+   * `focusDomain`) whenever the window changes more than `epsilon = 0.001` of the visible extent.
+   * Covers all gesture sources (wheel-zoom, drag-pan, brush) and prop-driven view changes. Fires once
+   * on the initial mount fit-all settle and on each scale/traceId view reset.
+   *
+   * Echo-suppressed (ADR 0007): feeding the emitted domain back as `focusDomain` does not re-arm the
+   * loop. Update `lastFiredDomain` before invoking (re-entrant-safe).
+   */
+  onFocusDomainChange?: (domain: [number, number]) => void;
+  /**
    * Imperative control registration (ADR 0008). When supplied, called on mount and whenever this
    * prop's reference changes, with the chart's live `TraceControlCallbacks`. Store the received
    * callbacks object and call its methods to drive the chart programmatically (e.g. scroll a span

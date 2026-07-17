@@ -31,6 +31,7 @@
 
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
+import { setupJestCanvasMock } from 'jest-canvas-mock';
 
 import { Chart } from '../../components/chart';
 import { Settings } from '../../specs';
@@ -879,5 +880,174 @@ describe('Trace chart — trace-not-found empty state (Spec 18)', () => {
       unmount();
     }).not.toThrow();
     warnSpy.mockRestore();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Spec 16 — focusDomain controlled prop + onFocusDomainChange (ADR 0007)
+// ---------------------------------------------------------------------------
+
+describe('Trace chart — focusDomain prop (Spec 16)', () => {
+  /**
+   * Tests for the controlled focus-domain prop and its echo-suppressed callback.
+   *
+   * WHY setupJestCanvasMock() in beforeEach:
+   *   `clearMocks: true` in jest.config.js clears jest-canvas-mock's `getContext` spy between
+   *   tests, making `tryCanvasContext()` receive `undefined` → `this.ctx = null` → `frame()`
+   *   returns early at `if (!this.ctx) return`, so `maybeFireFocusDomainChange` is never called.
+   *   Re-calling `setupJestCanvasMock()` before each test restores `getContext` to the full mock,
+   *   allowing `frame()` to run completely (ctx non-null, all canvas draw calls are jest spies).
+   *
+   * Pattern: setupJestCanvasMock() → jest.useFakeTimers() → render → jest.runAllTimers() fires the
+   * queued RAF → frame() settles (tweenOngoing=false, flywheelActive=false) → callback fires.
+   *
+   * Coordinate space: xScaleType="linear" → domain is [0, totalMs] after normalize().
+   * The SPANS fixture spans [0, 500] in linear space after normalize() re-zeros.
+   */
+  const SPANS: TraceDatum[] = [
+    { id: 'root', name: 'HTTP GET /api', traceId: 't1', start: 0, end: 500 },
+    { id: 'db',   name: 'DB.query',     parentId: 'root', traceId: 't1', start: 100, end: 450 },
+  ];
+
+  beforeEach(() => {
+    // Re-install jest-canvas-mock (cleared by clearMocks: true) so frame() gets a real ctx.
+    setupJestCanvasMock();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('uncontrolled: onFocusDomainChange is never called when no callback is supplied', () => {
+    // No focusDomain prop, no callback — the callback must never fire.
+    const cb = jest.fn();
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="fd1" data={SPANS} xScaleType="linear" /* no onFocusDomainChange */ />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(cb).not.toHaveBeenCalled();
+    unmount();
+  });
+
+  it('uncontrolled with callback: fires once on mount settle with the full window', () => {
+    // No focusDomain prop, but callback is present. The fit-all settle fires once with [0, 500].
+    const cb = jest.fn();
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="fd2" data={SPANS} xScaleType="linear" onFocusDomainChange={cb} />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    // The fit-all settle fires exactly once. Linear domain is [0, totalMs] = [0, 500].
+    expect(cb).toHaveBeenCalledTimes(1);
+    const [from, to] = cb.mock.calls[0][0] as [number, number];
+    expect(from).toBeCloseTo(0);
+    expect(to).toBeCloseTo(500);
+    unmount();
+  });
+
+  it('controlled: supplying focusDomain does NOT fire confirming echo on settle (pre-seed)', () => {
+    // syncFocusDomain pre-seeds lastFiredDomain = fd before easing, so the settle at [100,400] is
+    // suppressed — the parent's own command does not bounce back as an echo.
+    const cb = jest.fn();
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="fd3" data={SPANS} xScaleType="linear" focusDomain={[100, 400]} onFocusDomainChange={cb} />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    // No call must carry the confirming echo [100, 400].
+    const calls = cb.mock.calls as Array<[[number, number]]>;
+    const echoCall = calls.find(([d]) => Math.abs(d[0] - 100) < 1 && Math.abs(d[1] - 400) < 1);
+    expect(echoCall).toBeUndefined();
+    unmount();
+  });
+
+  it('value comparison: re-passing the same array VALUE does not re-arm the tween', () => {
+    // Guards the inline-literal footgun (plan refinement vs spec line 27 "by reference").
+    // A fresh array object with the same [0]/[1] must be treated as a no-op.
+    const cb = jest.fn();
+    const { rerender, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="fd4" data={SPANS} xScaleType="linear" focusDomain={[50, 450]} onFocusDomainChange={cb} />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    const callsBefore = cb.mock.calls.length;
+    // Re-render with a FRESH array of the same value — value comparison must see no change.
+    rerender(
+      <Chart size={[800, 200]}>
+        <Trace id="fd4" data={SPANS} xScaleType="linear" focusDomain={[50, 450]} onFocusDomainChange={cb} />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(cb.mock.calls.length).toBe(callsBefore);
+    unmount();
+  });
+
+  it('echo-suppression round-trip: feeding emitted domain back as prop does not re-arm', () => {
+    // Simulates the overview-sync pattern: callback → setState(focusDomain) → prop update.
+    // The incoming prop value matches lastFiredDomain → echo-guard skips re-arm → no jitter loop.
+    let emitted: [number, number] | null = null;
+    const { rerender, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace
+          id="fd5"
+          data={SPANS}
+          xScaleType="linear"
+          onFocusDomainChange={(d) => { emitted = d; }}
+        />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(emitted).not.toBeNull();
+    const capturedEmit = emitted!;
+
+    const cb2 = jest.fn();
+    // Feed the emitted domain back as focusDomain — echo-guard must suppress re-arm.
+    rerender(
+      <Chart size={[800, 200]}>
+        <Trace
+          id="fd5"
+          data={SPANS}
+          xScaleType="linear"
+          focusDomain={capturedEmit}
+          onFocusDomainChange={cb2}
+        />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    // cb2 must NOT have been called with the emitted domain (echo suppressed).
+    const echoCalls = cb2.mock.calls.filter(([d]: [[number, number]]) =>
+      Math.abs(d[0] - capturedEmit[0]) < 0.1 && Math.abs(d[1] - capturedEmit[1]) < 0.1,
+    );
+    expect(echoCalls).toHaveLength(0);
+    unmount();
+  });
+
+  it('view reset fires callback with the new full window when xScaleType changes', () => {
+    // resetView() → lastFiredDomain=null → next settle fires the new full window.
+    const cb = jest.fn();
+    const { rerender, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="fd6" data={SPANS} xScaleType="linear" onFocusDomainChange={cb} />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    const callsBefore = cb.mock.calls.length;
+    expect(callsBefore).toBeGreaterThan(0); // at least the initial fit-all settle fired
+
+    rerender(
+      <Chart size={[800, 200]}>
+        <Trace id="fd6" data={SPANS} xScaleType="time" onFocusDomainChange={cb} />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    // At least one additional fire with the time-scale (epoch-ms) full window.
+    expect(cb.mock.calls.length).toBeGreaterThan(callsBefore);
+    unmount();
   });
 });

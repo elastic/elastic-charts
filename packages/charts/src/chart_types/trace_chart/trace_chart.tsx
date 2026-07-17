@@ -85,6 +85,13 @@ const KEY_PAN_FRACTION = 0.1;
  */
 const KEY_ZOOM_STEP = 0.5;
 
+/**
+ * Echo-suppression threshold for focusDomain change detection. Mirrors TWEEN_DONE_EPSILON from
+ * `timeslip/projections/domain_tween.ts:13` — scale-invariant extent-ratio. Used for both the
+ * extent-ratio and the focus-extent-relative position check (ADR 0007 §Echo-suppression).
+ */
+const FOCUS_DOMAIN_EPSILON = 0.001;
+
 /** Stable no-op for BasicTooltip callback props that trace manages internally. */
 const NOOP = () => {};
 /** Stable empty array for BasicTooltip `selected` prop (trace has no tooltip item selection). */
@@ -224,6 +231,8 @@ class TraceComponent extends React.Component<TraceProps> {
   private selection: TraceSelection = [];
   private clickTimer: ReturnType<typeof setTimeout> | null = null;
   private lastFiredSelection: TraceSelection = [];
+  /** Echo-suppression for onFocusDomainChange (Spec 16 / ADR 0007). Null until the first settle fires. */
+  private lastFiredDomain: [number, number] | null = null;
   // Memoized spanId→laneIndex Map; rebuilt when the pipeline spans reference changes. Passed into
   // buildGeometry each frame to avoid rebuilding the Map per rAF frame (plan D4 / /review-claudio).
   private spanIdToLane: Map<string, number> = new Map();
@@ -245,6 +254,9 @@ class TraceComponent extends React.Component<TraceProps> {
     this.tween = { niceDomainMin: NaN, niceDomainMax: NaN };
     this.easeZoom = false;
     this.flywheelActive = false;
+    // Null-reset so the next fit-all settle fires onFocusDomainChange with the new full window
+    // (Spec 16 / ADR 0007: "reset lastFiredDomain on data change so a fresh dataset doesn't suppress the first fire").
+    this.lastFiredDomain = null;
   }
 
   /** Builds a ViewKey from a spec. Extracted to DRY up the 4× repeated literal. */
@@ -363,7 +375,8 @@ class TraceComponent extends React.Component<TraceProps> {
 
   componentDidUpdate = (prevProps: TraceProps) => {
     if (!this.ctx) this.tryCanvasContext();
-    this.syncViewKeyReset(prevProps);
+    this.syncViewKeyReset(prevProps);     // must run first: resets zoomPan/lastFiredDomain to fit-all when scale changes
+    this.syncFocusDomain(prevProps);      // applies controlled focusDomain in the (possibly just-reset) coordinate space
     this.syncPinOnSpecChange(prevProps);
     this.syncSelectionLifecycle(prevProps);
     this.syncControlProvider(prevProps.traceSpec);
@@ -385,6 +398,37 @@ class TraceComponent extends React.Component<TraceProps> {
       this.resetView();
       this.viewKey = newKey;
     }
+  }
+
+  // Apply a controlled focusDomain prop, easing the view to the requested window (Spec 16 / ADR 0007).
+  // Ordering: must run AFTER syncViewKeyReset so that on a simultaneous scale+focusDomain change the
+  // view is reset to fit-all in the new coordinate space BEFORE applying the controlled window.
+  //
+  // Change detection uses VALUE comparison (fd[0]/fd[1]) not reference, so inline array literals are
+  // safe and do not cause yank-back on unrelated re-renders (plan refinement vs spec line 27).
+  //
+  // Echo-guard: if the incoming value matches lastFiredDomain within epsilon, this is our own
+  // emission being fed back by the overview — skip re-arming.
+  //
+  // Pre-seed: set lastFiredDomain = fd BEFORE easing so the settle does NOT fire the parent's own
+  // command back at it as a confirming echo (plan contract 5).
+  private syncFocusDomain(prevProps: TraceProps) {
+    const spec = this.props.traceSpec;
+    const fd = spec?.focusDomain;
+    const prev = prevProps.traceSpec?.focusDomain;
+    if (!fd) return;
+    // Value comparison — guard fd[0]/fd[1] against undefined (no prop) already handled by the !fd guard above.
+    if (prev && fd[0] === prev[0] && fd[1] === prev[1]) return;
+    // Echo-guard: incoming value matches our own last emission — skip (would cause jitter loop).
+    if (!this.focusDomainDiffers(fd, this.lastFiredDomain)) return;
+    const { domain } = this.getPipeline(spec);
+    // Pre-seed: suppress the confirming echo that would otherwise fire at loop-stop.
+    this.lastFiredDomain = fd;
+    this.zoomPan.focus = domainToZoomPan(fd, [domain.min, domain.max]);
+    this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min));
+    this.easeZoom = true;
+    this.flywheelActive = false;
+    this.scheduleRender?.();
   }
 
   // Unpin when the spec changes (data or view — stale frozen index may no longer be valid).
@@ -533,9 +577,11 @@ class TraceComponent extends React.Component<TraceProps> {
     // Store for picking in hover/click handlers — single source of truth for the current layout.
     this.hover.lastGeom = geom;
 
-    // Keep the loop alive only while there is work to do
+    // Keep the loop alive only while there is work to do; fire the focus-domain callback at settle.
     if (tweenOngoing || this.flywheelActive) {
       this.scheduleRender?.();
+    } else {
+      this.maybeFireFocusDomainChange(domain.min, domain.max);
     }
   };
 
@@ -583,6 +629,40 @@ class TraceComponent extends React.Component<TraceProps> {
       })
       .filter((d): d is NonNullable<typeof d> => d !== null);
     spec.onSelectionChange(next, details);
+  }
+
+  /**
+   * Returns `true` when `a` and `prev` differ by more than `FOCUS_DOMAIN_EPSILON` in either the
+   * extent ratio or the position relative to the VISIBLE extent (focus-extent-relative, so a
+   * half-window pan fires at any zoom depth).
+   *
+   * `null` prev ⇒ always differs (first fire).
+   * Guard: zero `aExtent` ⇒ posRatio = 0 (no division by zero).
+   */
+  private focusDomainDiffers(a: [number, number], prev: [number, number] | null): boolean {
+    if (!prev) return true;
+    const aExtent = a[1] - a[0];
+    const prevExtent = prev[1] - prev[0];
+    const extentRatio = prevExtent > 0 ? Math.abs(1 - aExtent / prevExtent) : 1;
+    const posRatio = aExtent > 0 ? Math.abs(a[0] - prev[0]) / aExtent : 0;
+    return extentRatio > FOCUS_DOMAIN_EPSILON || posRatio > FOCUS_DOMAIN_EPSILON;
+  }
+
+  /**
+   * Called at RAF-loop stop. Fires `onFocusDomainChange` with the settled visible window when
+   * it differs from `lastFiredDomain` by more than `FOCUS_DOMAIN_EPSILON`. Updates
+   * `lastFiredDomain` **before** invoking the callback (re-entrant safety — same pattern as
+   * `fireSelectionChange`). All gesture sources (wheel, brush, pan coast) converge here because
+   * they all flow through the same `tweenOngoing || flywheelActive` keep-going check in `frame()`.
+   */
+  private maybeFireFocusDomainChange(refFrom: number, refTo: number) {
+    const spec = this.props.traceSpec;
+    if (!spec?.onFocusDomainChange) return;
+    const { domainFrom, domainTo } = getFocusDomain(this.zoomPan, refFrom, refTo);
+    const settled: [number, number] = [domainFrom, domainTo];
+    if (!this.focusDomainDiffers(settled, this.lastFiredDomain)) return;
+    this.lastFiredDomain = settled;
+    spec.onFocusDomainChange(settled);
   }
 
   // -------------------------------------------------------------------------

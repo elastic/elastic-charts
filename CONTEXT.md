@@ -44,6 +44,9 @@ _Avoid_: sort order, row order.
 
 **Focus domain**:
 The currently-visible time window `[min, max]` of the Trace waterfall after zoom/pan, eased toward a target.
+Can be externally driven via the `focusDomain` prop and observed via the `onFocusDomainChange` callback
+(perform-and-fire, echo-suppressed — see ADR 0007). Values are in post-normalize coordinates: epoch-ms
+for `'time'`, elapsed-from-zero-ms for `'linear'`.
 _Avoid_: viewport, visible range.
 
 **Scroll offset**:

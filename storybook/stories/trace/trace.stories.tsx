@@ -32,3 +32,4 @@ export { Example as scrollToLane } from './19_scroll_to_lane.story';
 export { Example as laneOrder } from './20_lane_order.story';
 export { Example as kibanaWorkflow } from './21_kibana_workflow.story';
 export { Example as responsiveLabels } from './22_responsive.story';
+export { Example as overviewSync } from './23_overview_sync.story';
