@@ -178,5 +178,8 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "dependencies": {}
+  "dependencies": {},
+  "resolutions": {
+    "**/d3-color": "npm:@elastic/kibana-d3-color@2.0.1"
+  }
 }
