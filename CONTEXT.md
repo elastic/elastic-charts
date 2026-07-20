@@ -171,3 +171,31 @@ machinery with an empty plot and a centered message on the canvas. The combined-
 (spans present, no `traceId` filter) is never an empty state.
 _Avoid_: empty chart (ambiguous); describing the `no-data` library overlay as a "canvas" message
 (it is a DOM overlay, distinct from the `trace-not-found` canvas draw).
+
+**Time bar**:
+The horizontal strip at the top of the trace chart that renders the x-axis ticks, tick labels, and
+vertical gridlines through the plot. It is `timeBarHeight` pixels tall (a `theme.trace` token,
+default 32), and `plot.top` equals `timeBar.height`, so the plot area sits immediately below it.
+In `'time'` x-scale mode, the time bar can render **stacked tick-label rows** (see **Tick layer**):
+a fine sub-second detail row at the bottom (nearest the plot) plus coarser absolute-time rows above
+it, governed by the `theme.trace.timeAxisLayerCount` token. In `'linear'` mode, a single relative-
+elapsed row is always shown regardless of the token. The time bar reuses the same raster engine
+(`continuousTimeRasters` / `numericalRasters`) as the XY chart's multilayer time axis; it is the
+vertical mirror of that axis — ticks protrude **down** and coarser rows stack **upward**. See
+[ADR 0024](./docs/adr/trace-viz/0024-multilevel-time-bar.md).
+_Avoid_: time axis (the XY chart owns that term for its `<Axis>` component), ruler (implies
+measurement marks only, not tick labels).
+
+**Tick layer**:
+One horizontal label row within the trace time bar (time mode only). Layer 0 is the finest
+(sub-second detail, e.g. `0ms … 900ms`); higher layers are progressively coarser absolute-time rows
+(e.g. `22:51:13`, `January 13, 2022`). Each tick layer corresponds to one `AxisLayer` returned by
+`continuousTimeRasters`. Finer layers use the terse `minorTickLabelFormat`; the coarsest **shown**
+layer uses the verbose `detailedLabelFormat`. The coarsest shown layer carries a **pinned leading
+label** — the containing-interval label is clamped to the left edge so absolute-time context is always
+visible even when panned between boundaries. The number of layers is configured by
+`theme.trace.timeAxisLayerCount` (default 2; 0 = single row). Density gating may yield fewer drawn
+layers than the configured cap. See [Spec 27](./docs/adr/trace-viz/specs/spec-27-multilevel-time-bar.md)
+and [ADR 0024](./docs/adr/trace-viz/0024-multilevel-time-bar.md).
+_Avoid_: row (too generic — a lane is also a row); axis layer (reserved for the XY chart's
+`detailedLayer` / `layer` fields in `multilayer_ticks.ts`).

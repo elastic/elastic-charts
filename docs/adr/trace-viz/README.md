@@ -26,6 +26,7 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0021 — Touch interaction model: engine reuse, pinch-zoom-only, manual tap detection, long-press pin](./0021-touch-interaction-model.md)
 - [0022 — Clock-skew correction: active centering heuristic](./0022-clock-skew-heuristic.md)
 - [0023 — Running-span model: optional end, domain-max provisional edge, dashed visual](./0023-running-span-model.md)
+- [0024 — Multi-level time bar: stacked tick rows in time mode](./0024-multilevel-time-bar.md)
 
 ## Spec plans
 
@@ -61,6 +62,7 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 - [Spec 24 — Touch gestures (pinch-zoom, drag-pan, tap/double-tap selection, long-press pin)](./specs/spec-24-touch-gestures.md)
 - [Spec 25 — Clock-skew correction (active centering heuristic)](./specs/spec-25-clock-skew.md)
 - [Spec 26 — Running spans (in-progress visualization)](./specs/spec-26-running-spans.md)
+- [Spec 27 — Multi-level (stacked) time bar](./specs/spec-27-multilevel-time-bar.md)
 
 Build order (Specs 0–8): Phase 0 → Spec 0 → Spec 1 → (Spec 2 / Spec 3 / Spec 4 in parallel once
 Spec 1's `NormalizedSpan` contract is fixed) → Spec 5 → Spec 6 → Spec 7 → Spec 8.
@@ -101,5 +103,8 @@ lane-ordering question (previously open question #1) is resolved by Spec 15 + AD
   extends `project` and `resolveActive`, adds a renderer dashed-line pass, and adds a new theme
   token. Should be implemented **after** Spec 25 (the clock-skew stage runs before running-end
   synthesis, and running spans are skipped by the heuristic). Independent of Specs 22–24.
+- **Spec 27** (multi-level time bar) — depends on Specs 3 and 4 (geometry, `TraceStyle`, raster
+  engine reuse). Pure renderer + theme + geometry change; no normalize pipeline changes. Independent
+  of Specs 22–26. See [ADR 0024](./0024-multilevel-time-bar.md).
 
 See the repo root [`CONTEXT.md`](../../../CONTEXT.md) for the domain glossary.
