@@ -61,7 +61,7 @@ export type OtelInput = OtlpEnvelope | OtelSpan[];
  *
  * Returns a string for every input (never `undefined`) so callers can use the result directly
  * as a color-group key.
- * @internal
+ * @public
  */
 export function anyValueToString(value: unknown): string {
   if (value !== null && typeof value === 'object') {

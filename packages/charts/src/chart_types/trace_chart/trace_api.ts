@@ -203,7 +203,7 @@ export interface TraceSpec extends Spec {
    * or supply a custom function. Pass a **module-level or memoized reference** — a fresh arrow per
    * render will rebuild the color map on every pipeline pass.
    *
-   * Precedence per span: explicit `TraceDatum.color` > color-group color > themed default.
+   * Precedence per span: explicit `TraceDatum.color` \> color-group color \> themed default.
    */
   colorBy?: TraceColorAccessor;
   /**

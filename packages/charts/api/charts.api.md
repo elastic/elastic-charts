@@ -159,6 +159,9 @@ export const AnnotationType: Readonly<{
 // @public (undocumented)
 export type AnnotationType = $Values<typeof AnnotationType>;
 
+// @public
+export function anyValueToString(value: unknown): string;
+
 // @public (undocumented)
 export interface ArcSeriesStyle {
     // (undocumented)
@@ -761,6 +764,12 @@ export interface ColorBandValue {
     value: number;
 }
 
+// @public
+export function colorByOtelAttribute(attribute: string): TraceColorAccessor;
+
+// @public
+export function colorByOtelKind(): TraceColorAccessor;
+
 // @public (undocumented)
 export interface ColorConfig {
     // (undocumented)
@@ -1331,6 +1340,9 @@ export const FONT_STYLES: readonly ["normal", "italic", "oblique", "inherit", "i
 
 // @public (undocumented)
 export type FontStyle = (typeof FONT_STYLES)[number];
+
+// @public
+export function fromOtlp(data: OtelInput): TraceDatum[];
 
 // @public (undocumented)
 export type GenericDomain = [start: number, end: number];
@@ -2462,6 +2474,12 @@ export interface OtelSpan {
     name: string;
     // (undocumented)
     parentSpanId?: string;
+    resource?: {
+        attributes?: {
+            key: string;
+            value: unknown;
+        }[];
+    };
     // (undocumented)
     spanId: string;
     // (undocumented)
@@ -2479,6 +2497,12 @@ export interface OtelSpan {
 export interface OtlpEnvelope {
     // (undocumented)
     resourceSpans: {
+        resource?: {
+            attributes?: {
+                key: string;
+                value: unknown;
+            }[];
+        };
         scopeSpans: {
             spans: OtelSpan[];
         }[];
@@ -3381,6 +3405,8 @@ export interface Theme {
     // (undocumented)
     sharedStyle: SharedGeometryStateStyle;
     tooltip: TooltipStyle;
+    // Warning: (ae-forgotten-export) The symbol "TraceStyle" needs to be exported by the entry point index.d.ts
+    trace: TraceStyle;
 }
 
 // @public (undocumented)
@@ -3715,18 +3741,33 @@ export type TooltipValueFormatter<D extends BaseDatum = Datum, SI extends Series
 export const Trace: (props: SFProps<TraceSpec, keyof (typeof buildProps_13)["overrides"], keyof (typeof buildProps_13)["defaults"], keyof (typeof buildProps_13)["optionals"], keyof (typeof buildProps_13)["requires"]>) => null;
 
 // @public
-export interface TraceDatum {
+export interface TraceActiveSegment {
+    color?: Color;
     // (undocumented)
-    active?: {
-        start: number;
-        end: number;
-    }[];
+    end: number;
+    label?: string;
+    // (undocumented)
+    start: number;
+}
+
+// @public
+export type TraceColorAccessor = (datum: TraceDatum) => string | undefined;
+
+// @public
+export interface TraceControlCallbacks {
+    scrollToSpan: (id: string) => void;
+}
+
+// @public
+export interface TraceDatum {
+    activeSegments?: TraceActiveSegment[];
     // (undocumented)
     color?: Color;
     // (undocumented)
     end: number;
     // (undocumented)
     id: string;
+    meta?: unknown;
     // (undocumented)
     name: string;
     // (undocumented)
@@ -3739,9 +3780,8 @@ export interface TraceDatum {
 
 // @public
 export interface TraceElementEvent {
-    datum: TraceDatum | OtelSpan;
+    datum: TraceDatum;
     duration: number;
-    // (undocumented)
     end: number;
     // (undocumented)
     id: string;
@@ -3750,7 +3790,6 @@ export interface TraceElementEvent {
     // (undocumented)
     parentId?: string;
     selfTime: number;
-    // (undocumented)
     start: number;
     // (undocumented)
     traceId?: string;
@@ -3759,24 +3798,71 @@ export interface TraceElementEvent {
 }
 
 // @public
-export type TraceSpec = TraceSpecSimple | TraceSpecOtel;
+export function TraceSearchProvider({ children }: {
+    children: React_2.ReactNode;
+}): React_2.JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "TraceSpecBase" needs to be exported by the entry point index.d.ts
-//
 // @public
-export interface TraceSpecOtel extends TraceSpecBase {
+export interface TraceSegmentRef {
+    region: 'span' | 'active' | 'waiting';
+    segmentIndex: number;
     // (undocumented)
-    data: OtelInput;
-    // (undocumented)
-    format: 'otel';
+    spanId: string;
 }
 
 // @public
-export interface TraceSpecSimple extends TraceSpecBase {
+export type TraceSelection = TraceSegmentRef[];
+
+// @public
+export interface TraceSelectionDetail {
     // (undocumented)
+    datum: TraceDatum;
+    // (undocumented)
+    duration: number;
+    end: number;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    parentId?: string;
+    // (undocumented)
+    region: 'span' | 'active' | 'waiting';
+    // (undocumented)
+    segmentDuration?: number;
+    // (undocumented)
+    segmentEnd?: number;
+    // (undocumented)
+    segmentIndex: number;
+    segmentOffset?: number;
+    segmentStart?: number;
+    // (undocumented)
+    selfTime: number;
+    // (undocumented)
+    spanId: string;
+    start: number;
+    // (undocumented)
+    traceId?: string;
+}
+
+// @public
+export interface TraceSpec extends Spec {
+    // (undocumented)
+    chartType: typeof ChartType.Trace;
+    colorBy?: TraceColorAccessor;
+    controlProviderCallback?: (callbacks: TraceControlCallbacks) => void;
     data: TraceDatum[];
+    dragMode?: 'pan' | 'brush';
+    focusDomain?: [number, number];
+    laneOrder?: 'tree' | 'chronological';
+    onFocusDomainChange?: (domain: [number, number]) => void;
+    onSelectionChange?: (next: TraceSelection, details: TraceSelectionDetail[]) => void;
+    selection?: TraceSelection;
+    showKeyboardFocusBadge?: boolean;
+    showTooltipOverEmpty?: boolean;
     // (undocumented)
-    format: 'simple';
+    specType: typeof SpecType.Series;
+    traceId?: string;
+    traceNotFoundMessage?: string;
+    xScaleType: 'time' | 'linear';
 }
 
 // @public (undocumented)
@@ -3814,6 +3900,11 @@ export function useLegendAction<T extends HTMLElement>(): [ref: LegacyRef<T>, on
 
 // @public (undocumented)
 export const useTooltipContext: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>() => TooltipContext<D, SI>;
+
+// Warning: (ae-forgotten-export) The symbol "TraceSearchContextValue" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function useTraceSearch(): TraceSearchContextValue | null;
 
 // @public (undocumented)
 export type ValueAccessor<D extends BaseDatum = Datum> = (d: D) => AdditiveNumber;
