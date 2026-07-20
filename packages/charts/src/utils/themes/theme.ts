@@ -178,32 +178,25 @@ export interface AxisStyle {
        */
       offset: TextOffset;
       alignment: TextAlignment;
-      /**
-       * Max number of lines for wrapped tick labels. Set to `1` to disable wrapping.
-       * @defaultValue 1
-       */
-      wrapLines?: number;
-      /**
-       * Line height multiplier applied to `fontSize` for wrapped tick labels.
-       * @defaultValue 1.2
-       */
-      lineHeight?: number;
-      /** Max length of the tick label in pixels. */
+      /** Max number of lines for wrapped tick labels. Set to `1` to disable wrapping. */
+      wrapLines: number;
+      /** Line height multiplier applied to `fontSize` for wrapped tick labels.*/
+      lineHeight: number;
+      /** Max length of the tick label in pixels. When unset the label length is bounded by the available space. */
       maxLength?: Pixels;
       /** Min length of the tick label in pixels. */
-      minLength?: Pixels;
+      minLength: Pixels;
       /**
        * Where the tick label is truncated when it exceeds the available space.
-       * Set to `false` to disable truncation and let the label overflow.
-       * @defaultValue false
+       * When unset (or `false`) truncation is disabled and the label overflows.
        */
       truncate?: Truncate | false;
     };
   tickLine: TickStyle;
-  /** Min extent (cross-axis) of the axis in pixels or relative to the container size in the cross-axis direction, e.g. '20%'. */
-  minExtent?: Pixels | string;
+  /** Min extent (cross-axis) of the axis in pixels or relative to the container size in the cross-axis direction, e.g. '20%'.*/
+  minExtent: Pixels | string;
   /** Max extent (cross-axis) of the axis in pixels or relative to the container size in the cross-axis direction, e.g. '20%'. */
-  maxExtent?: Pixels | string;
+  maxExtent: Pixels | string;
   gridLine: {
     horizontal: GridLineStyle;
     vertical: GridLineStyle;

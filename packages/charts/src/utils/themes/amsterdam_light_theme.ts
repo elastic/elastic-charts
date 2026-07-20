@@ -189,6 +189,9 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
         vertical: 'near',
         horizontal: 'near',
       },
+      wrapLines: 1,
+      lineHeight: 1.2,
+      minLength: 12,
     },
     tickLine: {
       visible: false,
@@ -197,6 +200,8 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
       size: 10,
       padding: 10,
     },
+    minExtent: 0,
+    maxExtent: '100%',
     gridLine: {
       horizontal: {
         visible: true,

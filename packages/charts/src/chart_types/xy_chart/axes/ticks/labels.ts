@@ -22,18 +22,6 @@ import type { AxisBand } from '../dimensions';
 
 const SAFE_LABEL_MAX_LENGTH = 1_000;
 
-/**
- * Default number of lines for wrapped tick labels. `1` disables wrapping.
- * @internal
- */
-export const DEFAULT_TICK_LABEL_WRAP_LINES = 1;
-
-/**
- * Default line height multiplier applied to `fontSize` for wrapped tick labels.
- * @internal
- */
-export const DEFAULT_TICK_LABEL_LINE_HEIGHT = 1.2;
-
 /** @internal */
 export const shouldAllowWordWrap = (scale: ScaleBand | ScaleContinuous): boolean =>
   !isContinuousScale(scale) || scale.type === ScaleType.Time;
@@ -49,8 +37,6 @@ export function computeRotatedLabelDimensions(unrotatedDims: Size, degreesRotati
 
 /** @internal */
 export const MIN_LABEL_GAP = 4;
-
-const MIN_LABEL_LENGTH = 12;
 
 // Max length (in characters) of a single-word label that is shouldn't be wrapped.
 const SHORT_WORD_MAX_LENGTH = 10;
@@ -129,10 +115,8 @@ export const resolveTickLabelConstraints = ({
     ? getPercentageValue(axisSpec.tickLabelMaxLength, percentReference, 0)
     : undefined;
 
-  const minLineLength = style.tickLabel.minLength ?? MIN_LABEL_LENGTH;
-  const wrapLines = style.tickLabel.wrapLines ?? DEFAULT_TICK_LABEL_WRAP_LINES;
-  const lineHeight = style.tickLabel.lineHeight ?? DEFAULT_TICK_LABEL_LINE_HEIGHT;
-  const lineHeightPx = lineHeight * style.tickLabel.fontSize;
+  const { minLength: minLineLength, wrapLines, lineHeight, fontSize: tickLabelFontSize } = style.tickLabel;
+  const lineHeightPx = lineHeight * tickLabelFontSize;
 
   let maxLineLength = style.tickLabel.maxLength ?? maxTickLabelLength;
 
@@ -172,8 +156,7 @@ export const createTickLabelLayout = (
   maxLineLength: number,
   allowWordWrap = true,
 ) => {
-  const { fontSize, fontStyle, fontFamily, rotation } = axisStyle.tickLabel;
-  const lineHeight = axisStyle.tickLabel.lineHeight ?? DEFAULT_TICK_LABEL_LINE_HEIGHT;
+  const { fontSize, fontStyle, fontFamily, rotation, lineHeight } = axisStyle.tickLabel;
 
   const font: Font = {
     fontStyle: fontStyle ?? 'normal',

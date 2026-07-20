@@ -300,17 +300,17 @@ export interface AxisStyle {
         horizontal: GridLineStyle;
         vertical: GridLineStyle;
     };
-    maxExtent?: Pixels | string;
-    minExtent?: Pixels | string;
+    maxExtent: Pixels | string;
+    minExtent: Pixels | string;
     // (undocumented)
     tickLabel: TextStyle & Visible & {
         rotation: number;
         offset: TextOffset;
         alignment: TextAlignment;
-        wrapLines?: number;
-        lineHeight?: number;
+        wrapLines: number;
+        lineHeight: number;
         maxLength?: Pixels;
-        minLength?: Pixels;
+        minLength: Pixels;
         truncate?: Truncate | false;
     };
     // (undocumented)
