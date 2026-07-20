@@ -169,6 +169,7 @@ export interface TraceSpec extends Spec {
    * floor. When using `'time'`, ensure your `start`/`end` values are epoch-millisecond timestamps
    * (e.g. `Date.now()`); small elapsed-ms values are interpreted as 1970-01-01 dates. Use `fromOtlp`
    * (which converts OTLP nanoseconds to epoch-ms) or add your own epoch offset.
+   * @defaultValue 'time'
    */
   xScaleType: 'time' | 'linear';
   /**
@@ -181,17 +182,17 @@ export interface TraceSpec extends Spec {
   /**
    * Message drawn centered on the canvas when `traceId` is set but matches no spans
    * (the trace-not-found empty state). The time bar and axis still render around it.
-   * Defaults to `No spans found for trace "<traceId>"`.
    *
    * Note: this is a plain string, not a ReactNode — it is drawn directly on the canvas.
    * `Settings.noResults` (which handles the separate no-data empty state) does not apply here.
+   * @defaultValue 'No spans found for trace "<traceId>"'
    */
   traceNotFoundMessage?: string;
   /**
    * When `true`, the tooltip also appears while hovering the empty region of a lane
-   * (past the span's `[start, end]` extent). Defaults to `false` — the span, not the
-   * whole lane, is the hover target.
-   * @public
+   * (past the span's `[start, end]` extent). The span, not the whole lane, is the
+   * hover target when this is false.
+   * @defaultValue false
    */
   showTooltipOverEmpty?: boolean;
   /**
@@ -222,8 +223,9 @@ export interface TraceSpec extends Spec {
   laneOrder?: 'tree' | 'chronological';
   /**
    * Controls which gesture triggers the brush-to-zoom rubber-band.
-   * - `'pan'` (default): plain drag pans; `Shift`+drag draws the brush.
+   * - `'pan'`: plain drag pans; `Shift`+drag draws the brush.
    * - `'brush'`: plain drag draws the brush; `Shift`+drag pans.
+   * @defaultValue 'pan'
    */
   dragMode?: 'pan' | 'brush';
   /**
