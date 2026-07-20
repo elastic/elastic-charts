@@ -11,11 +11,30 @@ import { clamp } from '../../../utils/common';
 import type { TraceGeometry } from './types';
 
 /**
- * The finest time window the trace chart allows via zoom-in, in ms.
+ * The finest time window the trace chart allows via zoom-in for the `'time'` x-scale, in ms.
  * See ADR 0004 Decision 3.
  * @internal
  */
 export const MIN_VISIBLE_EXTENT_MS = 1;
+
+/**
+ * The finest time window the trace chart allows via zoom-in for the `'linear'` x-scale, in ms.
+ * Equals 1 ns. `normalize()` re-zeros all timestamps to `[0, totalDurationMs]`, so float64 can
+ * represent nanosecond differences without precision loss at this base.
+ * ZOOM_MAX=35 bound: reachable only for traces ≤ ~34 s (`referenceExtent / 2^35 ≈ 1 ns`).
+ * See ADR 0010.
+ * @internal
+ */
+export const MIN_VISIBLE_EXTENT_LINEAR_MS = 1e-6;
+
+/**
+ * Returns the scale-appropriate minimum visible extent floor.
+ * `'linear'` → 1 ns (`MIN_VISIBLE_EXTENT_LINEAR_MS`); everything else → 1 ms (`MIN_VISIBLE_EXTENT_MS`).
+ * @internal
+ */
+export function minVisibleExtentForScale(xScaleType: string): number {
+  return xScaleType === 'linear' ? MIN_VISIBLE_EXTENT_LINEAR_MS : MIN_VISIBLE_EXTENT_MS;
+}
 
 /**
  * Returns the zoom exponent cap for the trace wheel handler: the zoom level at which the visible

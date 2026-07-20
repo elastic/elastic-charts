@@ -104,6 +104,22 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
   // Tick lines and gridlines are still drawn for all layers; only label text is restricted to one layer.
   const labelLayer: AxisLayer<Interval> | null = layers.find((l) => l.labeled) ?? null;
 
+  // For linear mode, compute one unit for the whole axis before the render loop.
+  // numericalRasters returns a single labeled layer with a uniform step; derive the step from the
+  // first two ticks so every label is formatted consistently (ADR 0010 — one unit per axis).
+  let axisUnit: ElapsedUnit | null = null;
+  if (!isTime && labelLayer) {
+    // intervals() is a generator — pull the first two values to read the step.
+    const iter = labelLayer.intervals(domainFrom, domainTo)[Symbol.iterator]();
+    const first = iter.next().value as Interval | undefined;
+    const second = iter.next().value as Interval | undefined;
+    const stepMs =
+      first !== undefined && second !== undefined
+        ? second.minimum - first.minimum
+        : domainTo - domainFrom; // fallback: window extent
+    axisUnit = pickElapsedUnit(stepMs);
+  }
+
   withContext(ctx, () => {
     // --- Time bar background ---
     ctx.fillStyle = style.timeBarLabel.color; // will be overridden per element; set base state
@@ -112,7 +128,7 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
     for (const layer of layers) {
       const drawGrid = layer.labeled && showGridLine(layer);
 
-      for (const { minimum, supremum: _supremum } of layer.intervals(domainFrom, domainTo)) {
+      for (const { minimum } of layer.intervals(domainFrom, domainTo)) {
         // Convert tick position back to ms for `geom.scale`.
         const tickMs = isTime ? minimum * MS_PER_SECOND : minimum;
         const tickX = scale(tickMs);
@@ -120,13 +136,12 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
         // Skip ticks outside the visible plot x-range.
         if (tickX < plot.left || tickX > plot.left + plot.width) continue;
 
-        // Linear mode: 1 ms is the finest meaningful resolution (matches the zoom-depth floor,
-        // ADR 0004 Decision 3). numericalRasters subdivides below 1 ms at deep zoom, emitting
-        // fractional-ms ticks whose integer-ms labels all duplicate. Render only ticks that sit on
-        // a whole-ms boundary → at most one tick (line + gridline + label) per millisecond.
-        // Time mode is exempt: continuousTimeRasters already bottoms out at integer-ms ticks, and
-        // applying an epsilon test to large epoch-ms values risks float-precision false positives.
-        if (!isTime && Math.abs(tickMs - Math.round(tickMs)) > 1e-6) continue;
+        // In the nanosecond band, suppress sub-ns positions: only integer-ns boundaries
+        // get tick lines and labels. Mirrors the old whole-ms filter but for ns (ADR 0010).
+        if (!isTime && axisUnit?.suffix === 'ns') {
+          const nsValue = tickMs / 1e-6;
+          if (Math.abs(nsValue - Math.round(nsValue)) > 1e-6) continue;
+        }
 
         // --- Tick line: protrudes from bottom of time bar ---
         withContext(ctx, () => {
@@ -153,8 +168,8 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
         // --- Tick label (finest labeled layer only — see comment above) ---
         if (layer === labelLayer) {
           const label = isTime
-            ? layer.minorTickLabelFormat(minimum * MS_PER_SECOND) // formatters expect ms
-            : formatElapsedMs(minimum); // linear: ignore numericalRasters formatter (epoch-relative)
+            ? layer.minorTickLabelFormat(minimum * MS_PER_SECOND) // time formatters expect ms
+            : formatElapsedMs(minimum, axisUnit!); // linear: one unit per axis (ADR 0010)
           const labelY = timeBar.top + 2; // a couple of px from the top edge
 
           // Flip from center-aligned to edge-aligned when the tick is near the plot boundary, so
@@ -174,14 +189,70 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
 }
 
 /**
- * Formats an elapsed millisecond value for the linear scale time bar.
- * Produces "0ms", "250ms", "1.5s", "2m 30s", etc.
+ * Axis unit descriptor for the linear time bar. Carry it as an opaque value from
+ * `pickElapsedUnit` to `formatElapsedMs` — do not read its fields directly in callers.
+ * @internal
  */
-function formatElapsedMs(ms: number): string {
-  if (ms < 1000) return `${Math.round(ms)}ms`;
-  const s = ms / 1000;
-  if (s < 60) return `${+s.toFixed(2).replace(/\.?0+$/, '')}s`;
-  const m = Math.floor(s / 60);
-  const rem = Math.round(s % 60);
-  return rem === 0 ? `${m}m` : `${m}m ${rem}s`;
+export interface ElapsedUnit {
+  /** Divisor to convert ms to the display unit (e.g. 1000 for seconds). */
+  divisor: number;
+  /** Display suffix string (e.g. "ms", "µs", "ns", "s", or "m" for the minutes compound format). */
+  suffix: string;
+  /** Number of decimal places to render (0 = integer). No cap — ensures adjacent ticks stay distinct. */
+  decimals: number;
+}
+
+/**
+ * Picks ONE unit for the whole linear time-bar axis.
+ *
+ * `stepMs` — the uniform tick spacing — drives BOTH the unit and decimal precision.
+ * Unit thresholds: step ≥60000ms → minutes compound, step ≥1000ms → s, step ≥1ms → ms,
+ * step >1e-6ms → µs, else (≤1e-6ms, i.e. ≤1ns) → ns. Using the step (not the absolute
+ * tick value) ensures the unit reflects the zoom resolution, not the position in the trace.
+ *
+ * Nanosecond range always uses 0 decimals (integer ns). Sub-ns tick positions are
+ * suppressed in `drawTimeBar` via an integer-ns filter so no fractional-ns labels appear.
+ *
+ * Decimal precision for non-ns units: `ceil(-log10(step_in_unit))`. No cap — ensures
+ * adjacent ticks stay distinct. Guard: step ≤ 0 / NaN → 0 decimals (integer).
+ *
+ * See ADR 0010 for the one-unit-per-axis decision and rationale.
+ * @internal
+ */
+export function pickElapsedUnit(stepMs: number): ElapsedUnit {
+  const decFor = (stepInUnit: number): number => {
+    if (!(stepInUnit > 0)) return 0; // guard ≤0 / NaN
+    return stepInUnit >= 1 ? 0 : Math.ceil(-Math.log10(stepInUnit));
+  };
+  // Guard: treat ≤0 / NaN as a 1ms step (ms unit, 0 decimals).
+  if (!(stepMs > 0)) return { divisor: 1, suffix: 'ms', decimals: 0 };
+  if (stepMs >= 60_000) {
+    // Compound minutes format; decimals unused (formatElapsedMs handles it separately).
+    return { divisor: 1, suffix: 'm', decimals: 0 };
+  }
+  if (stepMs >= 1_000) return { divisor: 1000, suffix: 's', decimals: decFor(stepMs / 1000) };
+  if (stepMs >= 1e-3) return { divisor: 1, suffix: 'ms', decimals: decFor(stepMs) };
+  if (stepMs > 1e-6) return { divisor: 1e-3, suffix: 'µs', decimals: decFor(stepMs / 1e-3) };
+  // ≤ 1ns: always integer ns (no fractional nanoseconds). Sub-ns positions are filtered
+  // out in drawTimeBar so tick lines and labels only appear at integer-ns boundaries.
+  return { divisor: 1e-6, suffix: 'ns', decimals: 0 };
+}
+
+/**
+ * Formats one elapsed-ms tick value using the axis unit from `pickElapsedUnit`.
+ *
+ * The `'m'` suffix triggers the compound "Xm"/"Xm Ys" minutes format.
+ * All other suffixes use `toFixed(decimals)` for fixed-width alignment across the axis.
+ * @internal
+ */
+export function formatElapsedMs(ms: number, unit: ElapsedUnit): string {
+  if (unit.suffix === 'm') {
+    const s = ms / 1000;
+    if (s < 60) return `${+s.toFixed(2).replace(/\.?0+$/, '')}s`;
+    const m = Math.floor(s / 60);
+    const rem = Math.round(s % 60);
+    return rem === 0 ? `${m}m` : `${m}m ${rem}s`;
+  }
+  const v = ms / unit.divisor;
+  return unit.decimals === 0 ? `${Math.round(v)}${unit.suffix}` : `${v.toFixed(unit.decimals)}${unit.suffix}`;
 }

@@ -14,7 +14,7 @@
  * `isTraceElementEvent`.
  */
 
-import { buildTraceTooltipInfo, buildTraceEvent } from './tooltip';
+import { buildTraceTooltipInfo, buildTraceEvent, formatMs } from './tooltip';
 import { isTraceElementEvent } from '../../../specs/settings';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceDatum } from '../trace_api';
@@ -339,5 +339,36 @@ describe('isTraceElementEvent', () => {
 
   it('returns false for an XYChartElementEvent (tuple)', () => {
     expect(isTraceElementEvent([{} as any, {} as any])).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Spec 19 — formatMs ns branch (ADR 0010)
+// ---------------------------------------------------------------------------
+
+describe('formatMs — nanosecond branch', () => {
+  it('formats 1e-6 ms (1 ns) as "1 ns"', () => {
+    expect(formatMs(1e-6)).toBe('1 ns');
+  });
+
+  it('formats 5e-6 ms (5 ns) as "5 ns"', () => {
+    expect(formatMs(5e-6)).toBe('5 ns');
+  });
+
+  it('formats 5e-4 ms (500 ns) as "500 ns"', () => {
+    // 5e-4 ms = 0.5 µs = 500 ns — below the 1e-3 ms µs threshold
+    expect(formatMs(5e-4)).toBe('500 ns');
+  });
+
+  it('formats 1e-3 ms (1 µs) as "1 µs" (µs boundary)', () => {
+    expect(formatMs(1e-3)).toBe('1 μs');
+  });
+
+  it('formats 1.5 ms as "1.50 ms" (unchanged)', () => {
+    expect(formatMs(1.5)).toBe('1.50 ms');
+  });
+
+  it('formats 1500 ms as "1.50 s" (unchanged)', () => {
+    expect(formatMs(1500)).toBe('1.50 s');
   });
 });

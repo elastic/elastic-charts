@@ -20,7 +20,7 @@ import { canvas2dRenderer, pickRegion } from './render/canvas2d_renderer';
 import { buildGeometry } from './render/geometry';
 import { gutterPx } from './render/types';
 import type { ViewKey } from './render/interaction';
-import { computeMaxScroll, computeScrollTarget, computeZoomMax, domainToZoomPan, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, pixelRangeToDomain } from './render/interaction';
+import { computeMaxScroll, computeScrollTarget, computeZoomMax, domainToZoomPan, hasViewKeyChanged, minVisibleExtentForScale, pixelRangeToDomain } from './render/interaction';
 import { buildTraceEvent, buildTraceSelectionDetail, buildTraceTooltipInfo, formatMs } from './render/tooltip';
 import { ScreenReaderTraceTable } from './render/screen_reader_trace_table';
 import { AriaLiveRegion } from './render/aria_live_region';
@@ -425,7 +425,7 @@ class TraceComponent extends React.Component<TraceProps> {
     // Pre-seed: suppress the confirming echo that would otherwise fire at loop-stop.
     this.lastFiredDomain = fd;
     this.zoomPan.focus = domainToZoomPan(fd, [domain.min, domain.max]);
-    this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min));
+    this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min, minVisibleExtentForScale(spec.xScaleType)));
     this.easeZoom = true;
     this.flywheelActive = false;
     this.scheduleRender?.();
@@ -822,11 +822,11 @@ class TraceComponent extends React.Component<TraceProps> {
         false,
       );
 
-      // Clamp zoom so the visible extent never drops below MIN_VISIBLE_EXTENT_MS (1 ms) — the
-      // finest granularity the time-raster engine can label. See ADR 0004 Decision 3.
+      // Clamp zoom so the visible extent never drops below the scale-appropriate floor:
+      // 1 ms for 'time' (ADR 0004 Decision 3), 1 ns for 'linear' (ADR 0010).
       const { domain } = this.getPipeline(this.props.traceSpec);
       const referenceExtentMs = domain.max - domain.min;
-      this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(referenceExtentMs));
+      this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(referenceExtentMs, minVisibleExtentForScale(this.props.traceSpec.xScaleType)));
 
       this.scheduleRender?.();
     };
@@ -913,15 +913,16 @@ class TraceComponent extends React.Component<TraceProps> {
         const spec = this.props.traceSpec;
         if (!geom || !spec) { this.setState({}); return; }
         // Use the last clamped brushEnd (set in mousemove). If no mousemove fired (zero-width
-        // click), brushEnd === brushStart, giving a zero range → < MIN_VISIBLE_EXTENT_MS → no-op.
+        // click), brushEnd === brushStart, giving a zero range → below minExtent → no-op.
         const [from, to] = pixelRangeToDomain(this.brush.start, this.brush.end, geom);
-        if (to - from < MIN_VISIBLE_EXTENT_MS) { this.setState({}); return; }
+        const minExtent = minVisibleExtentForScale(spec.xScaleType);
+        if (to - from < minExtent) { this.setState({}); return; }
         const { domain } = this.getPipeline(spec);
         const clampedFrom = clamp(from, domain.min, domain.max);
         const clampedTo = clamp(to, domain.min, domain.max);
-        if (clampedTo - clampedFrom < MIN_VISIBLE_EXTENT_MS) { this.setState({}); return; }
+        if (clampedTo - clampedFrom < minExtent) { this.setState({}); return; }
         this.zoomPan.focus = domainToZoomPan([clampedFrom, clampedTo], [domain.min, domain.max]);
-        this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min));
+        this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min, minExtent));
         this.easeZoom = true;
         this.flywheelActive = false;
         this.scheduleRender?.();
@@ -1112,7 +1113,7 @@ class TraceComponent extends React.Component<TraceProps> {
           false,
         );
         const { domain } = this.getPipeline(spec);
-        this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min));
+        this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min, minVisibleExtentForScale(spec.xScaleType)));
         this.scheduleRender?.();
         return;
       }

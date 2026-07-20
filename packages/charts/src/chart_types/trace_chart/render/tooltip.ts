@@ -17,7 +17,8 @@ import type { HoverRegion } from './types';
 export function formatMs(ms: number): string {
   if (ms >= 1000) return `${(ms / 1000).toFixed(2)} s`;
   if (ms >= 1) return `${ms.toFixed(2)} ms`;
-  return `${(ms * 1000).toFixed(0)} μs`;
+  if (ms >= 1e-3) return `${(ms * 1000).toFixed(0)} μs`;
+  return `${(ms * 1e6).toFixed(0)} ns`;
 }
 
 /** @internal */

@@ -55,6 +55,26 @@ Implementation requires four local changes:
 - The `'Minimum visible extent'` glossary entry in `CONTEXT.md` is updated to reflect the
   scale-dependent floors.
 
+## Implementation notes (deviations from the original sketch above)
+
+The implementation resolved two points that were underspecified in the Decision section:
+
+1. **All four zoom-in entry points** — not just the wheel handler — apply the scale-appropriate floor.
+   The `computeZoomMax` call was duplicated at the keyboard `+`, brush-zoom, and `focusDomain` API
+   sites; leaving those at 1 ms while the wheel reached 1 ns would be inconsistent. A
+   `minVisibleExtentForScale(xScaleType)` helper centralises the floor selection.
+
+2. **One unit per axis with step-derived precision (no cap)** — the value-switch formatter sketched
+   in the Decision (`ms < 1e-3 → ns`) reintroduces the duplicate-label bug at large domain offsets:
+   a `[344, 345]` ms window with 0.1 ms steps produces ticks at 344.2, 344.4 … that all round to
+   `"344ms"` under integer-ms formatting, defeating the reason for removing the whole-ms filter.
+   The fix: choose **one unit for the whole axis** (value-magnitude — the unit "where you are") and
+   derive decimal precision from the uniform tick step so adjacent labels never collide. Decimal count
+   is not capped — capping would round neighbours to the same string and re-create the bug. Consequence
+   (accepted): extreme zoom on a large offset shows many decimals (`344.0000001ms`); common cases stay
+   clean (`100µs`, `5ns`, `344.2ms`). The illustrative `10 ns` style labels in the Consequences section
+   above are superseded by this behaviour.
+
 ## Alternatives considered
 
 - **Extend to `'time'` mode as well** — rejected: float64 at ~1.7e12 ms cannot represent ns

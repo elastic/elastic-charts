@@ -14,7 +14,7 @@
  * jsdom smoke test (getContext('2d') returns null there, so frame() early-returns).
  */
 
-import { computeZoomMax, computeMaxScroll, computeScrollTarget, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, domainToZoomPan, pixelRangeToDomain } from './interaction';
+import { computeZoomMax, computeMaxScroll, computeScrollTarget, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, MIN_VISIBLE_EXTENT_LINEAR_MS, minVisibleExtentForScale, domainToZoomPan, pixelRangeToDomain } from './interaction';
 import { getFocusDomain, initialZoomPan } from '../../timeslip/projections/zoom_pan';
 import type { TraceGeometry } from './types';
 
@@ -314,5 +314,41 @@ describe('computeScrollTarget', () => {
       // scrollOffset=0, lane 100: target = 100*30 - 200 + 30 = 2830 → clamped to 1000
       expect(computeScrollTarget(100, 0, plotHeight, laneHeight, maxScroll, 'nearest')).toBe(maxScroll);
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Spec 19 — MIN_VISIBLE_EXTENT_LINEAR_MS and minVisibleExtentForScale (ADR 0010)
+// ---------------------------------------------------------------------------
+
+describe('MIN_VISIBLE_EXTENT_LINEAR_MS', () => {
+  it('is 1e-6 ms (1 ns)', () => {
+    expect(MIN_VISIBLE_EXTENT_LINEAR_MS).toBe(1e-6);
+  });
+
+  it('is smaller than MIN_VISIBLE_EXTENT_MS', () => {
+    expect(MIN_VISIBLE_EXTENT_LINEAR_MS).toBeLessThan(MIN_VISIBLE_EXTENT_MS);
+  });
+});
+
+describe('minVisibleExtentForScale', () => {
+  it('returns MIN_VISIBLE_EXTENT_LINEAR_MS for "linear"', () => {
+    expect(minVisibleExtentForScale('linear')).toBe(MIN_VISIBLE_EXTENT_LINEAR_MS);
+  });
+
+  it('returns MIN_VISIBLE_EXTENT_MS for "time"', () => {
+    expect(minVisibleExtentForScale('time')).toBe(MIN_VISIBLE_EXTENT_MS);
+  });
+
+  it('returns MIN_VISIBLE_EXTENT_MS for any unknown scale type', () => {
+    expect(minVisibleExtentForScale('unknown')).toBe(MIN_VISIBLE_EXTENT_MS);
+  });
+
+  it('linear floor allows computeZoomMax to zoom past 1 ms on a 10 000 ms trace', () => {
+    const zoomMaxLinear = computeZoomMax(10_000, MIN_VISIBLE_EXTENT_LINEAR_MS);
+    const zoomMaxTime = computeZoomMax(10_000, MIN_VISIBLE_EXTENT_MS);
+    expect(zoomMaxLinear).toBeGreaterThan(zoomMaxTime);
+    // linear zoom cap ≈ log2(10_000 / 1e-6) = log2(1e10) ≈ 33.2 — well past the ms floor
+    expect(zoomMaxLinear).toBeCloseTo(Math.log2(10_000 / 1e-6), 3);
   });
 });

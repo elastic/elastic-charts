@@ -32,10 +32,16 @@ describe('formatMs', () => {
     expect(formatMs(0.999)).toBe('999 μs');
   });
 
-  it('formats values < 1 ms as microseconds (integer)', () => {
+  it('formats values in [1e-3, 1) ms as microseconds (integer)', () => {
     expect(formatMs(0.5)).toBe('500 μs');
     expect(formatMs(0.001)).toBe('1 μs');
     expect(formatMs(0.34)).toBe('340 μs');
+  });
+
+  it('formats values < 1e-3 ms as nanoseconds (integer)', () => {
+    expect(formatMs(0)).toBe('0 ns');
+    expect(formatMs(1e-6)).toBe('1 ns');
+    expect(formatMs(5e-4)).toBe('500 ns');
   });
 });
 
@@ -91,7 +97,7 @@ describe('SR table row data shape', () => {
     const parentName = '—'; // no parentId
     expect(totalDuration).toBe('100.00 ms');
     expect(selfTime).toBe('30.00 ms');
-    expect(startOffset).toBe('+0 μs');
+    expect(startOffset).toBe('+0 ns');
     expect(parentName).toBe('—');
   });
 
