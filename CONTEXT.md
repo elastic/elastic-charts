@@ -16,7 +16,9 @@ One horizontal row of the Trace waterfall, holding exactly one span.
 _Avoid_: row, track, swimlane (a swimlane implies grouping, which lanes do not do).
 
 **Total line**:
-The thin mark spanning a span's full `[start, end]` extent in the Trace waterfall.
+The thin mark spanning a span's full `[start, end]` extent in the Trace waterfall. For a **running
+span** the total line is drawn dashed, extending from the span's start to the trace's latest known
+finite end (the domain max) to signal an uncertain right edge.
 _Avoid_: bar, duration bar.
 
 **Active segment**:
@@ -26,7 +28,32 @@ _Avoid_: active rect (singular — a span can have more than one).
 **Self time**:
 A span's extent minus the union of its children's extents. The default source of active segments when
 a span's active range isn't supplied explicitly (see [ADR 0003](./docs/adr/0003-self-time-as-active-segments.md)).
+Self time is **not derived** for **running spans** — their synthetic end is not a real measurement, so
+fabricating active-execution segments up to it would overclaim. Running spans render the dashed total
+line only, plus any `activeSegments` the caller supplies explicitly.
 _Avoid_: exclusive time (self time is the canonical term used throughout this codebase).
+
+**Running span**:
+A span that has started but not yet finished, represented in the input by omitting `end` or passing
+`null`. The chart renders a running span's **total line** as a dashed line from `start` to the trace's
+latest known finite end (the **domain max** — a provisional right edge, not "now"). The chart has no
+wall-clock dependency; the provisional end does not animate. Duration and elapsed-time values are not
+presented for running spans (the provisional extent is not a real measurement). In the OpenTelemetry
+protocol, a running span sets `endTimeUnixNano = 0`, which the `fromOtlp` adapter maps to `null`. See
+[ADR 0023](./docs/adr/trace-viz/0023-running-span-model.md).
+_Avoid_: in-flight span (may imply network activity specifically), live span (implies the bar is live-
+animating).
+
+**Clock-skew correction**:
+An active positional adjustment applied by the normalization pipeline when a child span's recorded
+`start` precedes its parent's (a temporal impossibility caused by unsynchronized clocks). The heuristic
+centers the child within the parent: `delay = (parentDuration − childDuration) / 2`. The entire
+descendant subtree shifts by the same `offset`, preserving intra-subtree relative distances. Corrected
+spans carry a `skewCorrected` marker; the tooltip and screen-reader surface note the adjustment, and the
+original recorded times remain accessible via the source datum. Runs before domain projection and before
+running-end synthesis; running spans (no duration) are skipped. See [ADR 0022](./docs/adr/trace-viz/0022-clock-skew-heuristic.md).
+_Avoid_: clock drift (implies a gradual continuous offset rather than a fixed per-collection skew),
+timestamp fix (sounds like a data-repair step applied to the source, not a rendering adjustment).
 
 **Trace**:
 The set of spans sharing one `traceId`. The chart typically renders a single trace; pass `traceId` to
@@ -46,14 +73,16 @@ _Avoid_: sort order, row order.
 The currently-visible time window `[min, max]` of the Trace waterfall after zoom/pan, eased toward a target.
 Can be externally driven via the `focusDomain` prop and observed via the `onFocusDomainChange` callback
 (perform-and-fire, echo-suppressed — see ADR 0007). Values are in post-normalize coordinates: epoch-ms
-for `'time'`, elapsed-from-zero-ms for `'linear'`.
+for `'time'`, elapsed-from-zero-ms for `'linear'`. Changed by mouse wheel, keyboard, brush, and (on
+touch) two-finger pinch centered on the pinch midpoint (zoom-only — see ADR 0021).
 _Avoid_: viewport, visible range.
 
 **Scroll offset**:
 The vertical lane-scroll position (pixels) within the plot area. A component-instance value clamped to
 `[0, max(0, spans.length × laneHeight − plot.height)]`. Distinct from the **Focus domain** (which is
 the horizontal time window). When `scroll offset = 0` the topmost lane is flush with the top of the
-plot; increasing the offset scrolls lanes upward, revealing lower lanes.
+plot; increasing the offset scrolls lanes upward, revealing lower lanes. Adjusted by mouse drag and (on
+touch) single-finger vertical drag simultaneously with horizontal Focus-domain pan.
 _Avoid_: vertical offset (ambiguous with DPR transforms), viewport offset.
 
 **Waiting**:
@@ -77,9 +106,11 @@ _Avoid_: selected lane, active lane (active is already used for active segments)
 The set of currently selected segments in the trace waterfall. Selection is managed as a
 `TraceSelection` (an array of `TraceSegmentRef` values keyed by `spanId`). A **selected segment** is
 one active or waiting segment highlighted by a stroke outline; a **selected span** (`region:'span'`)
-is a whole-span selection spanning the full `[start, end]` extent, produced by double-click. Multiple
-refs coexist in the set (multi-select via Shift/Ctrl/Cmd-click). Distinct from the focused lane
-(keyboard nav) and the pinned tooltip (right-click detail view).
+is a whole-span selection spanning the full `[start, end]` extent, produced by double-click (or
+double-tap on touch). Multiple refs coexist in the set (multi-select via Shift/Ctrl/Cmd-click). On
+touch, tap produces a selected segment and double-tap produces a selected span (both in `'replace'`
+mode — touch has no modifier keys). Distinct from the focused lane (keyboard nav) and the pinned
+tooltip (right-click / long-press detail view).
 _Avoid_: selected lane (reserved for focused lane), highlighted span.
 
 **Brush**:
@@ -87,9 +118,11 @@ A Shift+drag gesture on the plot area that draws an X-axis rubber-band rect and,
 _Avoid_: drag-zoom, range select, lasso.
 
 **Pinned tooltip**:
-A tooltip frozen in place after the user **right-clicks** a span. Remains visible regardless of
-subsequent mouse position; dismissed by clicking elsewhere on the canvas or pressing Escape. Managed
-as local component instance state, not redux. (Left-click is reserved for **selection**.)
+A tooltip frozen in place after the user **right-clicks** a span (or **long-presses** on touch, ~500 ms
+stationary). Remains visible regardless of subsequent pointer position; dismissed by clicking (or
+tapping on touch) elsewhere on the canvas, pressing Escape, or a `visibilitychange` event. Managed as
+local component instance state, not redux. (Left-click and tap are reserved for **selection**; see ADR
+0021 for the touch-dismiss path.)
 _Avoid_: sticky tooltip (ambiguous with `stickTo` anchor positioning), locked tooltip.
 
 **Color group**:

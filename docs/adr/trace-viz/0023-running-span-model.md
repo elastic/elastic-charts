@@ -1,0 +1,157 @@
+# ADR 0023 — Running-span model: optional end, domain-max provisional edge, dashed visual
+
+**Status:** Accepted (Spec 26)
+
+## Context
+
+A distributed span that has started but not yet finished has no end timestamp. Before this ADR,
+`TraceDatum.end` was **required** (`number`, not optional), and `dropNonFinite` dropped any span with
+a non-finite end. No running span could be expressed or rendered. Additionally, the chart had — and
+deliberately maintained (ADR 0004) — **no concept of "now"**: no wall-clock read, no idle RAF
+animation, no live-updating bar.
+
+The OpenTelemetry protocol signals a running span by setting `endTimeUnixNano = 0`. Previously,
+`fromOtlp` passed this through as `nanoToMs(0) = 0` (a valid Unix epoch timestamp), so a running
+span would render as ending at the epoch — visually broken but silent.
+
+## Decision 1 — `end?: number | null` signals running; no separate `running` prop
+
+`TraceDatum.end` becomes `end?: number | null`. Omitting the field or passing `null` means the span is
+running. The `running` state is derived from this at parse time and carried as `NormalizedSpan.running`.
+
+**Alternative considered — `running?: boolean` alongside `end`:**
+An explicit boolean is clearer at the call site (`{ running: true }`) but introduces an invalid-state
+combo (`running: true` with a real `end`) and a redundant field the type system cannot enforce away.
+The `end?: number | null` design is self-consistent: the absence of a real end *is* the definition
+of running.
+
+**`end === 0` is not running.** The check is `datum.end == null` (strict null + undefined equality).
+`0` is a valid Unix-epoch end timestamp (though unusual). The `fromOtlp` adapter handles the OTel
+`endTimeUnixNano === 0` sentinel explicitly (Decision 4).
+
+## Decision 2 — Provisional right edge = latest known finite end (domain max); no wall clock
+
+A running span renders from its `start` to the **trace's domain max** — the maximum `end` among all
+finished spans in the same normalize call. Running spans themselves contribute their `start` to the
+domain computation (a running span cannot narrow the domain rightward, but it also must not extend it
+beyond what's observed). The domain max is computed in `project()` and the running span's `end` is
+synthesized there to `max(domainMax, span.start)`.
+
+This is deterministic and repeatable: given the same `TraceDatum[]` the chart always produces the
+same output. The bar does not grow between renders.
+
+**Alternative considered — consumer-supplied `now` prop:**
+A `<TraceSpec now={Date.now()} />` prop would let the caller drive the running bar's right edge and
+advance it by re-rendering. More accurate (bar extends to wall-clock "now"), but:
+- Adds a new public API field.
+- Requires the caller to drive updates (e.g. `setInterval`).
+- The chart renders identically with or without the prop for static data — two modes to maintain.
+
+Rejected in favour of the simpler, clock-free model.
+
+**Alternative considered — `Date.now()` live bar:**
+Read `Date.now()` in each RAF frame and animate the bar. Maximally live, but:
+- Introduces a wall-clock dependency the chart has never had and that ADR 0004 explicitly avoided
+  ("no idle RAF churn"). The RAF loop self-terminates after each interaction settles; a live bar would
+  require the loop to run continuously for any dataset containing a running span.
+- Non-deterministic: the same data produces different output depending on when the chart renders.
+- No test can assert a specific bar width.
+
+Rejected — both the wall-clock dependency and the continuous RAF churn violate ADR 0004's invariants.
+
+**Edge cases:**
+- All spans running (no finite end): domain max = `max(starts)`; each running bar extends from its
+  start to that max. The latest-starting span is a zero-width marker. Documented; not special-cased.
+- Running span starts after all finite ends: `max(domainMax, span.start) = span.start` →
+  zero-width marker at the right edge. Documented.
+
+## Decision 3 — Dashed total line via `setLineDash`; new `runningLineDash` theme token
+
+A running span's total-duration line is drawn with a CSS-style dash pattern using
+`ctx.setLineDash(style.runningLineDash)`. The dash is reset (`setLineDash([])`) after the span's
+draw pass via `ctx.save()` / `ctx.restore()` so completed spans are unaffected.
+
+This is the **first use** of `ctx.setLineDash` in the trace chart renderer. A new `runningLineDash:
+number[]` token (default `[4, 3]` — 4 px dash, 3 px gap) is added to `TraceStyle`, wired across the
+six theme files and `theme.ts`.
+
+**Active segments inside a running span remain solid** — they represent confirmed execution and must
+not be dashed.
+
+**No right end-cap for the running span** — the open dashed line already signals an uncertain end.
+
+**Alternatives considered:**
+
+- **Fade / gradient** (opacity fades toward the right edge): visually compelling but requires
+  `CanvasGradient` setup per span, and canvas gradients are specified in absolute pixel coordinates —
+  they must be recreated whenever the focus domain or DPR changes. Heavier than a `setLineDash` call.
+- **Arrow glyph (▶ at the right edge)**: compact and "continues" read, but requires a new draw
+  primitive and is invisible when the running span's provisional end is scrolled off-screen. Dashed is
+  legible at any zoom level regardless of whether the right edge is visible.
+- **Opacity reduction**: a dimmed solid bar. Rejected — a completed span that is waiting (inactive)
+  for most of its extent looks similar, causing ambiguity.
+
+## Decision 4 — No self-time fabrication for running spans
+
+`resolveActive` derives a span's active segments as its `[start, end]` interval minus the union of
+its children's intervals (self-time — ADR 0003). For a running span, `end` is synthesized to the
+domain max, not a real measurement. Deriving self-time to this synthetic end would paint the running
+span as *actively executing* up to an invented "now" — a claim the data cannot support.
+
+**Decision:** `resolveActive` skips self-time derivation for running spans. A running span's
+`activeSegments` are whatever the caller supplied explicitly (or empty if nothing was supplied).
+
+Callers who know a running span's partial activity (e.g. a span that has completed several phases and
+is still in the last one) can supply `activeSegments` explicitly; those segments pass through
+unchanged as they do for completed spans.
+
+## Decision 5 — Relax `dropNonFinite` while preserving the NaN/±Infinity poison guard
+
+The current `dropNonFinite` test:
+```ts
+if (!Number.isFinite(span.start) || !Number.isFinite(span.end)) return false;
+```
+
+For running spans, `span.end` starts as `null` (or `NaN` depending on the intermediate sentinel
+choice). It must not be dropped here. The relaxed condition:
+```ts
+if (!Number.isFinite(span.start)) return false;
+if (!span.running && !Number.isFinite(span.end)) return false;
+```
+
+This preserves the guard that ADR 0001 / the OTel-adapter comment depended on: a `nanoToMs` parse
+failure still yields `NaN`, which still triggers the drop. Only a **running** span with a null/NaN
+placeholder `end` is spared. Completed spans with any non-finite end still drop.
+
+**OTel adapter fix:** `endTimeUnixNano === 0` is the OTel sentinel for a running span. Previously
+`nanoToMs(0) = 0` (epoch time) was passed through — finite, not dropped, but semantically wrong. Fix:
+```ts
+end: span.endTimeUnixNano === 0 ? null : nanoToMs(span.endTimeUnixNano),
+```
+
+`endTimeUnixNano > 0` continues to use `nanoToMs`; the BigInt / string parse-error → NaN path is
+unchanged.
+
+## Decision 6 — Tooltip and SR show "running" state with no duration number
+
+`end − start` for a running span yields `provisionalEnd − start` — the time from the span's start
+to the latest observed activity elsewhere in the trace. This number:
+- Is not a real duration (it doesn't measure how long the span took).
+- Changes as the domain grows when new spans are added to the dataset.
+- Can be zero (for a zero-width marker) or confusingly large (if another span is much later).
+
+Showing it as a duration would mislead users. The tooltip and screen-reader surface instead show
+**"running"** (or "in progress") with no numeric value.
+
+## Consequences
+
+- `TraceDatum.end` is now a breaking change in the TypeScript type (`number` → `number | null`). Any
+  caller that currently hard-assigns `end: someNumber` is unaffected; callers that read and compare
+  `datum.end` must handle `null`.
+- The chart gains no wall-clock dependency. The RAF loop self-terminates identically to today for
+  datasets that contain running spans.
+- `fromOtlp` now correctly maps OTel running spans (`endTimeUnixNano === 0`) to `end: null`.
+- The `TraceSelectionDetail.duration` field (reported by `onSelectionChange`) should emit `null` or
+  `undefined` for running spans — not `provisionalEnd − start`.
+- The `CONTEXT.md` glossary gains a **Running span** entry (and the **Total line** entry is updated
+  to note the dashed variant).

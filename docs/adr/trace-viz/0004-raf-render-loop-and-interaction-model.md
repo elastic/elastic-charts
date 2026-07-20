@@ -137,8 +137,8 @@ this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, zoomMax);
 ```
 
 where `MIN_VISIBLE_EXTENT_MS = 1` and `multiplierToZoom` is the existing exported helper from
-`zoom_pan.ts`. The wheel handler is the trace chart's sole zoom entry point (no touch/pinch), so one
-clamp site covers everything.
+`zoom_pan.ts`. The zoom clamp applies to all zoom entry points — wheel and two-finger pinch (see
+[ADR 0021](./0021-touch-interaction-model.md)).
 
 **Rendering complement:** the 1 ms zoom floor prevents the *domain* from shrinking below 1 ms, but
 the linear-mode raster engine (`numericalRasters`) can still subdivide its interval list into

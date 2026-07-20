@@ -23,6 +23,9 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0018 — Lane ordering: tree (DFS) default, chronological optional](./0018-lane-ordering-tree-default.md)
 - [0019 — Empty-state ownership: `no-data` delegates to the library overlay, `trace-not-found` is a canvas message](./0019-empty-state-ownership.md)
 - [0020 — Inline labels render on a dedicated row below the bar (Kibana APM style)](./0020-inline-labels-below-bar.md)
+- [0021 — Touch interaction model: engine reuse, pinch-zoom-only, manual tap detection, long-press pin](./0021-touch-interaction-model.md)
+- [0022 — Clock-skew correction: active centering heuristic](./0022-clock-skew-heuristic.md)
+- [0023 — Running-span model: optional end, domain-max provisional edge, dashed visual](./0023-running-span-model.md)
 
 ## Spec plans
 
@@ -55,6 +58,9 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 - [Spec 21 — Collapsible nesting (design exploration)](./specs/spec-21-collapsible-nesting.md) *(design stub — not yet executable)*
 - [Spec 22 — Critical path (consumer-supplied interval-precise highlight)](./specs/spec-22-critical-path.md)
 - [Spec 23 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-23-connections.md)
+- [Spec 24 — Touch gestures (pinch-zoom, drag-pan, tap/double-tap selection, long-press pin)](./specs/spec-24-touch-gestures.md)
+- [Spec 25 — Clock-skew correction (active centering heuristic)](./specs/spec-25-clock-skew.md)
+- [Spec 26 — Running spans (in-progress visualization)](./specs/spec-26-running-spans.md)
 
 Build order (Specs 0–8): Phase 0 → Spec 0 → Spec 1 → (Spec 2 / Spec 3 / Spec 4 in parallel once
 Spec 1's `NormalizedSpan` contract is fixed) → Spec 5 → Spec 6 → Spec 7 → Spec 8.
@@ -86,5 +92,14 @@ lane-ordering question (previously open question #1) is resolved by Spec 15 + AD
 - **Spec 23** (connections / "Initiated by" arrows) — depends on Specs 5, 12, and 13 (reuses
   `TraceSegmentRef`, `waitingSegments`, and the `buildGeometry` resolved-field pattern). Independent
   of Spec 22. Pure render — no pipeline changes, no interaction state.
+- **Spec 24** (touch gestures) — depends on Specs 7, 10, and 13. See ADR 0021. Pure interaction
+  layer addition; no pipeline changes.
+- **Spec 25** (clock-skew correction) — depends on Specs 1 and 2 (`buildChildrenMap`, `gapSegments`).
+  Adds a new normalize stage between `dropNonFinite` and `project`. Independent of Specs 22–24.
+  Must be implemented **before** Spec 26 (clock-skew runs before running-end synthesis).
+- **Spec 26** (running spans) — depends on Specs 1, 3, 5, 7, and 12. Relaxes `dropNonFinite`,
+  extends `project` and `resolveActive`, adds a renderer dashed-line pass, and adds a new theme
+  token. Should be implemented **after** Spec 25 (the clock-skew stage runs before running-end
+  synthesis, and running spans are skipped by the heuristic). Independent of Specs 22–24.
 
 See the repo root [`CONTEXT.md`](../../../CONTEXT.md) for the domain glossary.
