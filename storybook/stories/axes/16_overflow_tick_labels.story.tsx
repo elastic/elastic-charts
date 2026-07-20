@@ -21,16 +21,54 @@ const CHART_CONFIG_GROUP = 'Chart config';
 const AXIS_X_GROUP = 'Axis X';
 const AXIS_Y_GROUP = 'Axis Y';
 
-const data = [
-  { category: 'this is the longest category name in this story', value: 47 },
-  { category: 'this is an even longer category name', value: 36 },
-  { category: 'this is a longer category name', value: 28 },
-  { category: 'another category', value: 16 },
-  { category: 'category name', value: 13 },
-  { category: 'category', value: 8 },
-  { category: 'category', value: 8 },
-  { category: 'ctg', value: 3 },
-];
+const values = [47, 36, 28, 16, 13, 8, 8, 3] as const;
+
+const datasets = {
+  Categories: [
+    'this is the longest category name in this story',
+    'this is an even longer category name',
+    'this is a longer category name',
+    'another category',
+    'category name',
+    'category',
+    'category',
+    'ctg',
+  ],
+  URLs: [
+    'https://analytics.example.com/dashboards/traffic/regions/north-america/overview',
+    'https://cdn.assets.io/images/products/catalog/item-48291/preview.png',
+    'https://api.metrics.dev/v2/series/latency/p99',
+    'https://docs.elastic.co/guide/en/kibana',
+    'https://github.com/elastic/charts',
+    'https://elastic.co',
+    'https://kibana.dev',
+    'https://x.io',
+  ],
+  UUIDs: [
+    'a3f8c2e1-9b4d-4e7a-8c5f-1d2e3a4b5c6d',
+    '7b2e9f4a-1c8d-4a3e-9f6b-2e5c8a1d4f7b',
+    'e5d1a8c3-6f2b-4d9e-a7c4-8b3f1e6d2a9c',
+    '4c9b2e7f-3a1d-4f8c-b5e2-9d6a3c8f1b4e',
+    'f1a6d3b8-2e9c-4b7f-8d5a-3c6e9b2f5a8d',
+    '8d4e1a7c-5b2f-4c9e-a3d6-1f8b4e7c2a5d',
+    '2b7f9c4e-8a1d-4e6b-9c3f-5d2a8e1b4c7f',
+    'c6e3a9f2-4d1b-4a8e-b7c5-2f9d6a3e8b1c',
+  ],
+  Services: [
+    'checkout.payment.processor.stripe.webhook',
+    'search.query.coordinator.elasticsearch',
+    'auth.identity.provider.oauth',
+    'ingest.pipeline.parser',
+    'metrics.aggregator',
+    'api.gateway',
+    'cache.redis',
+    'logs.shipper',
+  ],
+} as const;
+
+type DatasetKey = keyof typeof datasets;
+
+const toData = (labels: readonly string[]) => labels.map((category, i) => ({ category, value: values[i] }));
 
 function parseThemeSize(raw: string): number | string | undefined {
   const s = raw.trim();
@@ -121,6 +159,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
     0,
     CHART_CONFIG_GROUP,
   );
+  const datasetKey = select('Dataset', Object.keys(datasets) as DatasetKey[], 'Categories', CHART_CONFIG_GROUP);
+  const data = toData(datasets[datasetKey]);
   const barCount = number('Number of bars', data.length, { min: 1, max: data.length, step: 1 }, CHART_CONFIG_GROUP);
   const debug = boolean('debug', true, CHART_CONFIG_GROUP);
 
