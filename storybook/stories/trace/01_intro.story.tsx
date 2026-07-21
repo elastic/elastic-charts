@@ -23,36 +23,121 @@ interface FeatureRow {
 
 const FEATURES: FeatureRow[] = [
   // Data
-  { category: 'Data', feature: 'Span waterfall (bars + segments)', api: 'data: TraceDatum[]', stories: ['Renderer', 'Interactive'] },
-  { category: 'Data', feature: 'Self-time computation', api: 'activeSegments (implicit when omitted)', stories: ['Self Time Debug'] },
-  { category: 'Data', feature: 'OTLP / OpenTelemetry import', api: 'fromOtlp()', stories: ['Kibana Trace', 'Chrome Network', 'Lane Order'] },
+  {
+    category: 'Data',
+    feature: 'Span waterfall (bars + segments)',
+    api: 'data: TraceDatum[]',
+    stories: ['Renderer', 'Interactive'],
+  },
+  {
+    category: 'Data',
+    feature: 'Self-time computation',
+    api: 'activeSegments (implicit when omitted)',
+    stories: ['Self Time Debug'],
+  },
+  {
+    category: 'Data',
+    feature: 'OTLP / OpenTelemetry import',
+    api: 'fromOtlp()',
+    stories: ['Kibana Trace', 'Chrome Network', 'Lane Order'],
+  },
   { category: 'Data', feature: 'Multi-trace combined view', api: 'traceId filter', stories: ['Multi Trace'] },
   // Layout
-  { category: 'Layout', feature: 'Wall-clock time axis', api: "xScaleType: 'time'", stories: ['Time Bar', 'Kibana Trace'] },
-  { category: 'Layout', feature: 'Elapsed-time axis', api: "xScaleType: 'linear'", stories: ['Time Bar', 'Overview Sync'] },
+  {
+    category: 'Layout',
+    feature: 'Wall-clock time axis',
+    api: "xScaleType: 'time'",
+    stories: ['Time Bar', 'Kibana Trace'],
+  },
+  {
+    category: 'Layout',
+    feature: 'Elapsed-time axis',
+    api: "xScaleType: 'linear'",
+    stories: ['Time Bar', 'Overview Sync'],
+  },
   { category: 'Layout', feature: 'Lane ordering', api: "laneOrder: 'tree' | 'chronological'", stories: ['Lane Order'] },
-  { category: 'Layout', feature: 'Responsive labels', api: "theme.trace.labelPosition: 'gutter' | 'inline' | 'none'", stories: ['Responsive Labels'] },
+  {
+    category: 'Layout',
+    feature: 'Responsive labels',
+    api: "theme.trace.labelPosition: 'gutter' | 'inline' | 'none'",
+    stories: ['Responsive Labels'],
+  },
   // Colors
-  { category: 'Colors', feature: 'Color by attribute', api: 'colorBy, colorByOtelAttribute(), colorByOtelKind()', stories: ['Color By', 'Lane Order'] },
+  {
+    category: 'Colors',
+    feature: 'Color by attribute',
+    api: 'colorBy, colorByOtelAttribute(), colorByOtelKind()',
+    stories: ['Color By', 'Lane Order'],
+  },
   { category: 'Colors', feature: 'Segment phase palette', api: 'activeSegments[].label', stories: ['Segment Phases'] },
   // Interaction
   { category: 'Interaction', feature: 'Pan + wheel zoom', api: 'drag / wheel (built-in)', stories: ['Interactive'] },
   { category: 'Interaction', feature: 'Brush-to-zoom', api: "dragMode: 'brush'", stories: ['Brush Zoom'] },
-  { category: 'Interaction', feature: 'Hover tooltip', api: 'showTooltipOverEmpty, customTooltip', stories: ['Tooltip Events', 'Kibana Workflow'] },
-  { category: 'Interaction', feature: 'Pinnable tooltip', api: 'right-click / context-menu', stories: ['Pinned Tooltip', 'Kibana Workflow'] },
-  { category: 'Interaction', feature: 'Keyboard navigation', api: 'showKeyboardFocusBadge (↑↓←→ +− Enter Esc)', stories: ['Accessibility'] },
+  {
+    category: 'Interaction',
+    feature: 'Hover tooltip',
+    api: 'showTooltipOverEmpty, customTooltip',
+    stories: ['Tooltip Events', 'Kibana Workflow'],
+  },
+  {
+    category: 'Interaction',
+    feature: 'Pinnable tooltip',
+    api: 'right-click / context-menu',
+    stories: ['Pinned Tooltip', 'Kibana Workflow'],
+  },
+  {
+    category: 'Interaction',
+    feature: 'Keyboard navigation',
+    api: 'showKeyboardFocusBadge (↑↓←→ +− Enter Esc)',
+    stories: ['Accessibility'],
+  },
   // Selection
-  { category: 'Selection', feature: 'Click / multi-select', api: 'onElementClick, onElementOver', stories: ['Segment Selection'] },
-  { category: 'Selection', feature: 'Controlled selection', api: 'selection, onSelectionChange', stories: ['Segment Selection Controlled'] },
+  {
+    category: 'Selection',
+    feature: 'Click / multi-select',
+    api: 'onElementClick, onElementOver',
+    stories: ['Segment Selection'],
+  },
+  {
+    category: 'Selection',
+    feature: 'Controlled selection',
+    api: 'selection, onSelectionChange',
+    stories: ['Segment Selection Controlled'],
+  },
   // Navigation
-  { category: 'Navigation', feature: 'Scroll-to-span (imperative)', api: 'controlProviderCallback, TraceSearchProvider + useTraceSearch()', stories: ['Scroll To Lane'] },
+  {
+    category: 'Navigation',
+    feature: 'Scroll-to-span (imperative)',
+    api: 'controlProviderCallback, TraceSearchProvider + useTraceSearch()',
+    stories: ['Scroll To Lane'],
+  },
   // Composition
-  { category: 'Composition', feature: 'Overview + detail sync', api: 'focusDomain, onFocusDomainChange', stories: ['Overview Sync'] },
+  {
+    category: 'Composition',
+    feature: 'Overview + detail sync',
+    api: 'focusDomain, onFocusDomainChange',
+    stories: ['Overview Sync'],
+  },
   // Empty states
-  { category: 'Empty states', feature: 'No-data state (DOM overlay)', api: 'data={[]} + Settings.noResults', stories: ['Empty Trace'] },
-  { category: 'Empty states', feature: 'Trace-not-found state (canvas message)', api: 'traceId, traceNotFoundMessage', stories: ['Empty Trace'] },
+  {
+    category: 'Empty states',
+    feature: 'No-data state (DOM overlay)',
+    api: 'data={[]} + Settings.noResults',
+    stories: ['Empty Trace'],
+  },
+  {
+    category: 'Empty states',
+    feature: 'Trace-not-found state (canvas message)',
+    api: 'traceId, traceNotFoundMessage',
+    stories: ['Empty Trace'],
+  },
   // Accessibility
-  { category: 'Accessibility', feature: 'Screen-reader table + live region', api: 'aria-live, ScreenReaderTraceTable (built-in)', stories: ['Accessibility'] },
+  {
+    category: 'Accessibility',
+    feature: 'Screen-reader table + live region',
+    api: 'aria-live, ScreenReaderTraceTable (built-in)',
+    stories: ['Accessibility'],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -139,8 +224,8 @@ export const Example: ChartsStory = () => {
     <div style={containerStyle}>
       <p style={descStyle}>
         <strong>Trace (@alpha)</strong> is elastic-charts&apos; distributed-trace waterfall chart type. It renders a
-        scrollable lane-per-span waterfall to a <code style={codeStyle}>&lt;canvas&gt;</code> element via a
-        self-managed RAF loop — the same architecture as the Flame and Timeslip chart families.
+        scrollable lane-per-span waterfall to a <code style={codeStyle}>&lt;canvas&gt;</code> element via a self-managed
+        RAF loop — the same architecture as the Flame and Timeslip chart families.
       </p>
       <p style={descStyle}>
         Add a single <code style={codeStyle}>&lt;Trace id=&quot;…&quot; data={'{spans}'} /&gt;</code> inside a{' '}
@@ -186,5 +271,8 @@ export const Example: ChartsStory = () => {
     </div>
   );
 };
+// prettier-ignore
+const markdownContent = "## `<Trace>` API Reference\n\nThe `Trace` component accepts the following props via the `Trace` spec. This table is\nauto-generated from the TypeScript types — run `yarn generate:trace-api-story` to refresh it.\n\n| Name | Type | Default | Required | Description |\n|------|------|---------|----------|-------------|\n| `colorBy` | `TraceColorAccessor` |  |  | Derives the color-group key for each span's active segments. Two spans that return the same key receive the same palette color (cyclic index into `theme.colors.vizColors`). Return `undefined` to fall through to the themed `activeSegmentColor` default. — Use the built-in helpers colorByOtelAttribute or colorByOtelKind for OTel data, or supply a custom function. Pass a **module-level or memoized reference** — a fresh arrow per render will rebuild the color map on every pipeline pass. — Precedence per span: explicit `TraceDatum.color` &gt; color-group color &gt; themed default. |\n| `controlProviderCallback` | `(callbacks: TraceControlCallbacks) => void` |  |  | Imperative control registration (ADR 0008). When supplied, called on mount and whenever this prop's reference changes, with the chart's live `TraceControlCallbacks`. Store the received callbacks object and call its methods to drive the chart programmatically (e.g. scroll a span into view from an external search box). — The callback must be idempotent — it is called on every re-registration (prop reference change). |\n| `data` | `TraceDatum[]` |  | yes | Span data. Each element occupies exactly one lane in the waterfall. |\n| `dragMode` | `'pan' \\| 'brush'` | `'pan'` |  | Controls which gesture triggers the brush-to-zoom rubber-band. - `'pan'`: plain drag pans; `Shift`+drag draws the brush. - `'brush'`: plain drag draws the brush; `Shift`+drag pans. |\n| `focusDomain` | `[number, number]` |  |  | Controlled visible time window `[from, to]` in the chart's internal coordinates: - `'time'` x-scale: epoch-ms (same as `TraceDatum.start`/`end`). - `'linear'` x-scale: elapsed-from-zero-ms (`normalize()` re-zeros the domain to `[0, totalMs]`). — Perform-and-fire (ADR 0007): local gestures (wheel-zoom, drag-pan, brush) still execute and fire `onFocusDomainChange` even when this prop is supplied — the parent decides whether to update the prop. Change the **value** to re-drive the window; re-passing an identical value after a local gesture is a no-op (does not force-restore the window). Uncontrolled when omitted. — Pass a **stable or memoized reference** (same value → same object if possible) to avoid unnecessary change-detection overhead, though value comparison (`[0]`/`[1]`) makes inline literals safe. |\n| `id` | `string` |  | yes | unique Spec identifier |\n| `laneOrder` | `'tree' \\| 'chronological'` | `'tree'` |  | Controls the order in which spans are assigned to lanes (top → bottom). — - `'tree'` (**default**): depth-first `parentId` nesting — each parent is immediately followed by its descendants, recursively; siblings and roots are ordered by `start` ascending. Matches the Kibana APM trace view. In multi-trace mode (no `traceId` filter) this produces a forest: each subtree is grouped together rather than interleaved. - `'chronological'`: ascending by span `start` (Chrome DevTools Network panel style). Use this when the trace has no meaningful nesting or when start-time ordering is the primary concern. — See ADR 0018. |\n| `onFocusDomainChange` | `(domain: [number, number]) => void` |  |  | Called at RAF-loop stop with the settled visible window `[from, to]` (same coordinate space as `focusDomain`) whenever the window changes more than `epsilon = 0.001` of the visible extent. Covers all gesture sources (wheel-zoom, drag-pan, brush) and prop-driven view changes. Fires once on the initial mount fit-all settle and on each scale/traceId view reset. — Echo-suppressed (ADR 0007): feeding the emitted domain back as `focusDomain` does not re-arm the loop. Update `lastFiredDomain` before invoking (re-entrant-safe). |\n| `onSelectionChange` | `(next: TraceSelection, details: TraceSelectionDetail[]) => void` |  |  | Called once per completed gesture with the new thin `next` refs and rich `details`. Fires on single-click (after the ~250 ms debounce), double-click, keyboard Enter/Space, and Escape. Suppressed when the resulting set is identity-equal to the previous fire (no-op echo guard). |\n| `selection` | `TraceSelection` |  |  | Controlled selection. When supplied, this is the render source of truth; gestures still execute and fire `onSelectionChange` — the parent decides whether to update the prop (perform-and-fire, same model as `focusDomain`/ADR 0007). When omitted, the component manages selection internally. |\n| `showKeyboardFocusBadge` | `boolean` | `true` |  | When `true` (default), a small \"keyboard active\" badge appears in the top-left corner of the chart while the canvas has keyboard focus, giving sighted users a WCAG 2.4.7 focus-visible cue. Set to `false` to suppress the badge, e.g. in design mockups or when a custom focus indicator is provided externally. |\n| `showTooltipOverEmpty` | `boolean` | `false` |  | When `true`, the tooltip also appears while hovering the empty region of a lane (past the span's `[start, end]` extent). The span, not the whole lane, is the hover target when this is false. |\n| `traceId` | `string` |  |  | When set, only spans whose `traceId` matches this value are rendered. When omitted, all spans in `data` are rendered as one combined waterfall (one lane per span, interleaved by start time). An informational dev-mode warning is logged when spans from more than one trace are present and `traceId` is not set. |\n| `traceNotFoundMessage` | `string` | `'No spans found for trace \"<traceId>\"'` |  | Message drawn centered on the canvas when `traceId` is set but matches no spans (the trace-not-found empty state). The time bar and axis still render around it. — Note: this is a plain string, not a ReactNode — it is drawn directly on the canvas. `Settings.noResults` (which handles the separate no-data empty state) does not apply here. |\n| `xScaleType` | `'time' \\| 'linear'` | `'time'` | yes | Controls the x-axis scale and domain-origin semantics: - `'time'`: absolute epoch-ms; tick labels show wall-clock time. - `'linear'`: elapsed-from-zero (domain rezeroed to the earliest span start); tick labels show elapsed duration. — Both modes store domain values in milliseconds and share the same 1 ms minimum-visible-extent floor. When using `'time'`, ensure your `start`/`end` values are epoch-millisecond timestamps (e.g. `Date.now()`); small elapsed-ms values are interpreted as 1970-01-01 dates. Use `fromOtlp` (which converts OTLP nanoseconds to epoch-ms) or add your own epoch offset. |";
 
-Example.storyName = 'Intro';
+Example.storyName = 'Intro & API docs';
+Example.parameters = { resize: { height: '480px', overflowY: 'auto' }, markdown: markdownContent };
