@@ -21,14 +21,14 @@ import { canvas2dRenderer, pickDisclosure, pickRegion } from './render/canvas2d_
 import { buildGeometry } from './render/geometry';
 import { gutterPx } from './render/types';
 import type { ViewKey } from './render/interaction';
-import { computeMaxScroll, computeScrollTarget, computeZoomMax, domainToZoomPan, hasViewKeyChanged, minVisibleExtentForScale, pixelRangeToDomain } from './render/interaction';
+import { computeMaxScroll, computeScrollTarget, computeZoomMax, domainToZoomPan, hasViewKeyChanged, mapTouchesToCanvasX, minVisibleExtentForScale, pinchRatio, pixelRangeToDomain } from './render/interaction';
 import { buildTraceEvent, buildTraceSelectionDetail, buildTraceTooltipInfo, formatMs } from './render/tooltip';
 import { ScreenReaderTraceTable } from './render/screen_reader_trace_table';
 import { AriaLiveRegion } from './render/aria_live_region';
 import { BrushOverlay } from './render/brush_overlay';
 import { KeyboardFocusBadge } from './render/keyboard_focus_badge';
 import type { HoverRegion, PickResult } from './render/types';
-import type { BrushState, HoverState, PinState } from './trace_state';
+import type { BrushState, HoverState, PinState, TouchState } from './trace_state';
 import { ScreenReaderSummary } from '../../components/accessibility';
 import { buildTraceStyle } from './theme';
 import { clamp } from '../../utils/common';
@@ -60,10 +60,14 @@ import {
   endDrag,
   kineticFlywheel,
   getFocusDomain,
+  multiplierToZoom,
+  startTouchZoom,
+  resetTouchZoom,
 } from '../timeslip/projections/zoom_pan';
 import type { ZoomPan } from '../timeslip/projections/zoom_pan';
 import { withDeltaTime } from '../timeslip/utils/animation';
 import { zoomSafePointerX, zoomSafePointerY } from '../timeslip/utils/dom';
+import { setNewMultitouch, eraseMultitouch, touchMidpoint } from '../timeslip/utils/multitouch';
 
 /**
  * Wheel zoom velocity: maps normalized wheel distance (deltaY/plotWidth) to zoom change.
@@ -73,6 +77,12 @@ const WHEEL_ZOOM_VELOCITY = 3;
 
 /** Debounce window for single-vs-double click disambiguation (ADR 0011 Decision 6). */
 const DBLCLICK_DEBOUNCE_MS = 250;
+
+/** Movement tolerance in CSS px before a 1-finger touch is reclassified as a drag (ADR 0021 D6). */
+const TAP_MOVE_TOLERANCE_PX = 10;
+
+/** Duration in ms a stationary finger must be held before triggering a long-press pin (ADR 0021 D6). */
+const LONG_PRESS_MS = 500;
 
 /** Order-insensitive equality for two `Set<string>` collapse states. */
 function collapseSetsEqual(a: Set<string>, b: Set<string>): boolean {
@@ -264,6 +274,13 @@ class TraceComponent extends React.Component<TraceProps> {
   private spanIdToLane: Map<string, number> = new Map();
   private handleDblClick: ((e: MouseEvent) => void) | null = null;
 
+  // Touch gesture state (Spec 23 / ADR 0021).
+  private touch: TouchState = { multitouch: [], tapStart: null, moved: false, longPressFired: false };
+  private longPressTimer: ReturnType<typeof setTimeout> | null = null;
+  private handleTouchStart: ((e: TouchEvent) => void) | null = null;
+  private handleTouchMove: ((e: TouchEvent) => void) | null = null;
+  private handleTouchEnd: ((e: TouchEvent) => void) | null = null;
+
   // -------------------------------------------------------------------------
   // Lifecycle
   // -------------------------------------------------------------------------
@@ -394,6 +411,10 @@ class TraceComponent extends React.Component<TraceProps> {
     if (this.clickTimer !== null) {
       clearTimeout(this.clickTimer);
       this.clickTimer = null;
+    }
+    if (this.longPressTimer !== null) {
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
     }
     this.teardownEventHandlers();
     this.props.containerRef().current?.removeEventListener('wheel', this.preventScroll);
@@ -931,6 +952,97 @@ class TraceComponent extends React.Component<TraceProps> {
   }
 
   // -------------------------------------------------------------------------
+  // Shared selection / pin helpers (used by both mouse and touch handlers)
+  // -------------------------------------------------------------------------
+
+  private commitSegmentSelection(result: PickResult | null, geom: NonNullable<HoverState['lastGeom']>, mode: ReturnType<typeof selectionModeFromEvent>) {
+    const isHit = result && result.index >= 0 && result.region !== 'empty';
+    const current = this.getEffectiveSelection();
+    let next: TraceSelection;
+    if (!isHit || !result) {
+      next = mode === 'replace' ? [] : current;
+    } else {
+      const span = geom.spans[result.index];
+      if (!span) { next = mode === 'replace' ? [] : current; }
+      else {
+        const ref: TraceSegmentRef = {
+          spanId: span.id,
+          region: result.region as TraceSegmentRef['region'],
+          segmentIndex: result.segmentIndex,
+        };
+        next = applySelection(current, ref, mode);
+      }
+    }
+    this.selection = next;
+    this.fireSelectionChange(next);
+    this.scheduleRender?.();
+  }
+
+  private commitSpanSelection(result: PickResult, geom: NonNullable<HoverState['lastGeom']>, mode: ReturnType<typeof selectionModeFromEvent>) {
+    if (result.index < 0) return;
+    const span = geom.spans[result.index];
+    if (!span) return;
+
+    const ref: TraceSegmentRef = { spanId: span.id, region: 'span', segmentIndex: -1 };
+    const current = this.getEffectiveSelection();
+    const next = applySelection(current, ref, mode);
+
+    if (process.env.NODE_ENV !== 'production') {
+      const hasSegmentRefForSameSpan = next.some(
+        (r) => r.spanId === span.id && r.region !== 'span',
+      );
+      if (hasSegmentRefForSameSpan) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          `[elastic-charts/trace] Selection contains both a span ref and a segment ref for spanId="${span.id}". ` +
+          `The segment outline will be suppressed (deduped) in the highlight pass.`,
+        );
+      }
+    }
+
+    this.selection = next;
+    this.fireSelectionChange(next);
+    this.scheduleRender?.();
+  }
+
+  private pinAt(x: number, y: number) {
+    if (!this.hover.lastGeom) return;
+    const result = pickRegion(x, y, this.hover.lastGeom);
+    const overSpan = result && result.index >= 0 &&
+      (result.region !== 'empty' || this.props.traceSpec?.showTooltipOverEmpty === true);
+    if (!overSpan) return;
+    this.hover.pointerX = x;
+    this.hover.pointerY = y;
+    this.updateHover(result);
+    window.addEventListener('keyup', this.handleKeyUp!);
+    window.addEventListener('click', this.handleUnpinningTooltip!);
+    window.addEventListener('visibilitychange', this.handleUnpinningTooltip!);
+    this.pinTooltip(true);
+  }
+
+  private toggleDisclosureAt(x: number, y: number): boolean {
+    if (!this.hover.lastGeom) return false;
+    const caretLane = pickDisclosure(x, y, this.hover.lastGeom);
+    if (caretLane < 0) return false;
+    const caretSpan = this.hover.lastGeom.spans[caretLane];
+    if (!caretSpan) return false;
+    const next = new Set(this.collapsed);
+    const willCollapse = !next.has(caretSpan.id);
+    if (willCollapse) next.add(caretSpan.id); else next.delete(caretSpan.id);
+    this.collapsed = next;
+    this.collapseCache = null;
+    this.fireCollapseChange(next);
+    if (this.ariaLiveRef.current) {
+      const descCount = this.hover.lastGeom.disclosureByLane.get(caretLane)?.descendantCount ?? 0;
+      this.ariaLiveRef.current.textContent = willCollapse
+        ? `Collapsed ${caretSpan.name}, ${descCount} descendants hidden`
+        : `Expanded ${caretSpan.name}`;
+    }
+    this.scheduleRender?.();
+    return true;
+  }
+
+  // -------------------------------------------------------------------------
   // Event handlers
   // -------------------------------------------------------------------------
 
@@ -1092,26 +1204,7 @@ class TraceComponent extends React.Component<TraceProps> {
       // Caret click: toggle collapse for the lane under the disclosure caret (Spec 21 / ADR 0026).
       // Checked before the select/element-click path — caret clicks are consumed here and do not
       // propagate to onElementClick or the selection machinery.
-      const caretLane = pickDisclosure(cx, cy, this.hover.lastGeom);
-      if (caretLane >= 0) {
-        const caretSpan = this.hover.lastGeom.spans[caretLane];
-        if (caretSpan) {
-          const next = new Set(this.collapsed);
-          const willCollapse = !next.has(caretSpan.id);
-          if (willCollapse) next.add(caretSpan.id); else next.delete(caretSpan.id);
-          this.collapsed = next;
-          this.collapseCache = null;
-          this.fireCollapseChange(next);
-          if (this.ariaLiveRef.current) {
-            const descCount = this.hover.lastGeom.disclosureByLane.get(caretLane)?.descendantCount ?? 0;
-            this.ariaLiveRef.current.textContent = willCollapse
-              ? `Collapsed ${caretSpan.name}, ${descCount} descendants hidden`
-              : `Expanded ${caretSpan.name}`;
-          }
-          this.scheduleRender?.();
-        }
-        return;
-      }
+      if (this.toggleDisclosureAt(cx, cy)) return;
 
       const result = pickRegion(cx, cy, this.hover.lastGeom);
 
@@ -1133,28 +1226,7 @@ class TraceComponent extends React.Component<TraceProps> {
 
       this.clickTimer = setTimeout(() => {
         this.clickTimer = null;
-        const isHit = result && result.index >= 0 && result.region !== 'empty';
-        const current = this.getEffectiveSelection();
-        let next: TraceSelection;
-        if (!isHit || !result) {
-          // Empty/miss: plain click clears; modifier+miss preserves (native file-manager behaviour, G).
-          next = mode === 'replace' ? [] : current;
-        } else {
-          const span = geomSnapshot.spans[result.index];
-          if (!span) { next = mode === 'replace' ? [] : current; }
-          else {
-            const ref: TraceSegmentRef = {
-              spanId: span.id,
-              // 'empty' already excluded by isHit; 'span' is valid for collapsed-bar whole-span refs.
-              region: result.region as TraceSegmentRef['region'],
-              segmentIndex: result.segmentIndex,
-            };
-            next = applySelection(current, ref, mode);
-          }
-        }
-        this.selection = next;
-        this.fireSelectionChange(next);
-        this.scheduleRender?.();
+        this.commitSegmentSelection(result, geomSnapshot, mode);
       }, DBLCLICK_DEBOUNCE_MS);
     };
 
@@ -1170,31 +1242,8 @@ class TraceComponent extends React.Component<TraceProps> {
       }
 
       const result = pickRegion(zoomSafePointerX(e), zoomSafePointerY(e), this.hover.lastGeom);
-      if (!result || result.index < 0) return;
-      const span = this.hover.lastGeom.spans[result.index];
-      if (!span) return;
-
-      const ref: TraceSegmentRef = { spanId: span.id, region: 'span', segmentIndex: -1 };
-      const current = this.getEffectiveSelection();
-      const next = applySelection(current, ref, selectionModeFromEvent(e));
-
-      // Dev-only: warn when a gesture produces a same-span span+segment overlap (ADR 0011 D2).
-      if (process.env.NODE_ENV !== 'production') {
-        const hasSegmentRefForSameSpan = next.some(
-          (r) => r.spanId === span.id && r.region !== 'span',
-        );
-        if (hasSegmentRefForSameSpan) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            `[elastic-charts/trace] Selection contains both a span ref and a segment ref for spanId="${span.id}". ` +
-            `The segment outline will be suppressed (deduped) in the highlight pass.`,
-          );
-        }
-      }
-
-      this.selection = next;
-      this.fireSelectionChange(next);
-      this.scheduleRender?.();
+      if (!result) return;
+      this.commitSpanSelection(result, this.hover.lastGeom, selectionModeFromEvent(e));
     };
 
     this.handleCanvasLeave = () => {
@@ -1209,23 +1258,7 @@ class TraceComponent extends React.Component<TraceProps> {
         this.handleUnpinningTooltip?.();
         return;
       }
-      if (!this.hover.lastGeom) return;
-      const x = zoomSafePointerX(e);
-      const y = zoomSafePointerY(e);
-      const result = pickRegion(x, y, this.hover.lastGeom);
-      // NOP if over empty space (respects showTooltipOverEmpty; match the visible condition in render).
-      const overSpan = result && result.index >= 0 &&
-        (result.region !== 'empty' || this.props.traceSpec?.showTooltipOverEmpty === true);
-      if (!overSpan) return;
-      // Update pointer and build content while still unpinned, then pin.
-      this.hover.pointerX = x;
-      this.hover.pointerY = y;
-      this.updateHover(result);
-      // Scoped dismiss listeners: added on pin, removed on unpin / unmount.
-      window.addEventListener('keyup', this.handleKeyUp!);
-      window.addEventListener('click', this.handleUnpinningTooltip!);
-      window.addEventListener('visibilitychange', this.handleUnpinningTooltip!);
-      this.pinTooltip(true);
+      this.pinAt(zoomSafePointerX(e), zoomSafePointerY(e));
     };
 
     this.handleKeyUp = ({ key }: KeyboardEvent) => {
@@ -1421,6 +1454,195 @@ class TraceComponent extends React.Component<TraceProps> {
       }
     };
 
+    // -----------------------------------------------------------------------
+    // Touch handlers (Spec 23 / ADR 0021)
+    // -----------------------------------------------------------------------
+
+    this.handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const mapped = mapTouchesToCanvasX(e, rect.left);
+
+      // Pinned: the first touch dismisses the pin and does nothing else.
+      if (this.pin.pinned) {
+        this.handleUnpinningTooltip?.();
+        this.touch.tapStart = null;
+        return;
+      }
+
+      if (mapped.length === 2) {
+        // Pinch start
+        setNewMultitouch(this.touch.multitouch, mapped);
+        startTouchZoom(this.zoomPan);
+        markDragStartPosition(this.zoomPan, touchMidpoint(mapped));
+        if (this.longPressTimer !== null) { clearTimeout(this.longPressTimer); this.longPressTimer = null; }
+        if (this.clickTimer !== null) { clearTimeout(this.clickTimer); this.clickTimer = null; }
+        this.flywheelActive = false;
+        this.updateHover(null);
+      } else if (mapped.length === 1) {
+        // Tap / long-press / drag candidate
+        const t = e.touches[0]!;
+        const x = t.clientX - rect.left;
+        const y = t.clientY - rect.top;
+        this.easeZoom = false;
+        this.flywheelActive = false;
+        this.updateHover(null);
+        markDragStartPosition(this.zoomPan, x);
+        this.dragStartY = y;
+        this.dragStartScrollOffset = this.scrollOffset;
+        this.touch.tapStart = { x, y };
+        this.touch.moved = false;
+        this.touch.longPressFired = false;
+        this.longPressTimer = setTimeout(() => {
+          if (!this.touch.moved) {
+            this.pinAt(x, y);
+            this.touch.longPressFired = true;
+          }
+        }, LONG_PRESS_MS);
+      }
+    };
+
+    this.handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const mapped = mapTouchesToCanvasX(e, rect.left);
+
+      if (mapped.length === 2) {
+        // Pinch — zoom only (ADR 0021 Decision 2)
+        if (!this.props.traceSpec) return;
+        const style = this.getStyle();
+        const plotLeft = gutterPx(style);
+        const plotWidth = this.props.chartDimensions.width - plotLeft;
+        const ratio = pinchRatio(this.touch.multitouch, mapped);
+        doZoomAroundPosition(
+          this.zoomPan,
+          { innerSize: plotWidth, innerLeading: plotLeft },
+          touchMidpoint(mapped),
+          multiplierToZoom(ratio),
+          0,
+          true,
+        );
+        const { domain } = this.getPipeline(this.props.traceSpec);
+        this.zoomPan.focus.zoom = Math.min(
+          this.zoomPan.focus.zoom,
+          computeZoomMax(domain.max - domain.min, minVisibleExtentForScale(this.props.traceSpec.xScaleType)),
+        );
+        // Do NOT update this.touch.multitouch here — it must hold the INITIAL pinch positions.
+        // doZoomAroundPosition(touch=true) uses focusStart.zoom as its base and expects zoomChange
+        // to be the cumulative ratio from start to now. Updating multitouch per-frame would make
+        // each call compute only a tiny per-frame delta, resetting the zoom each frame.
+        this.scheduleRender?.();
+      } else if (mapped.length === 1) {
+        // 1-finger pan — inert when tapStart is null (pinned-dismiss, ≥3-finger, etc.)
+        if (this.touch.tapStart === null) return;
+
+        if (!this.props.traceSpec) return;
+        const style = this.getStyle();
+        const plotWidth = this.props.chartDimensions.width - gutterPx(style);
+        const plotHeight = this.props.chartDimensions.height - style.timeBarHeight;
+        const { spans } = this.getPipeline(this.props.traceSpec);
+
+        const t = e.touches[0]!;
+        const x = t.clientX - rect.left;
+        const y = t.clientY - rect.top;
+
+        const dx = x - this.touch.tapStart.x;
+        const dy = y - this.touch.tapStart.y;
+        if (!this.touch.moved && Math.sqrt(dx * dx + dy * dy) > TAP_MOVE_TOLERANCE_PX) {
+          this.touch.moved = true;
+          if (this.longPressTimer !== null) { clearTimeout(this.longPressTimer); this.longPressTimer = null; }
+        }
+
+        // Horizontal pan
+        doPanFromPosition(this.zoomPan, plotWidth, x);
+
+        // Vertical pan (same math as handleMouseMove)
+        const maxScroll = computeMaxScroll(spans.length, style.laneHeight, plotHeight);
+        this.scrollOffset = Math.min(
+          Math.max(0, this.dragStartScrollOffset - (y - this.dragStartY)),
+          maxScroll,
+        );
+
+        this.scheduleRender?.();
+      }
+    };
+
+    this.handleTouchEnd = (e: TouchEvent) => {
+      if (this.longPressTimer !== null) { clearTimeout(this.longPressTimer); this.longPressTimer = null; }
+
+      const prevTouchCount = this.touch.multitouch.length;
+
+      if (prevTouchCount === 2 && e.touches.length < 2) {
+        // End of pinch
+        eraseMultitouch(this.touch.multitouch);
+        resetTouchZoom(this.zoomPan);
+        if (e.touches.length === 1) {
+          // One finger remains — treat as active drag (resolution 1)
+          const rect = canvas.getBoundingClientRect();
+          const t = e.touches[0]!;
+          const x = t.clientX - rect.left;
+          const y = t.clientY - rect.top;
+          markDragStartPosition(this.zoomPan, x);
+          this.dragStartY = y;
+          this.dragStartScrollOffset = this.scrollOffset;
+          this.touch.tapStart = { x, y };
+          this.touch.moved = true; // it's a continuation of pinch → treat as drag, never as tap
+        }
+        return;
+      }
+
+      // Long-press already fired — pin is showing; suppress the release-tap
+      if (this.touch.longPressFired) {
+        this.touch.longPressFired = false;
+        this.touch.tapStart = null;
+        return;
+      }
+
+      // Inert: tapStart was never set (pinned-dismiss, ≥3-finger touches, etc.) (resolution 3)
+      if (this.touch.tapStart === null) return;
+
+      if (!this.touch.moved) {
+        // Tap
+        const { x, y } = this.touch.tapStart;
+        const geomSnapshot = this.hover.lastGeom;
+
+        // Caret tap: toggle collapse (resolution 4 — parity with mouse click)
+        if (this.toggleDisclosureAt(x, y)) {
+          this.touch.tapStart = null;
+          return;
+        }
+
+        if (geomSnapshot) {
+          const result = pickRegion(x, y, geomSnapshot);
+          if (result && result.index >= 0) {
+            const span = geomSnapshot.spans[result.index];
+            if (span) this.props.onElementClick([buildTraceEvent(span)]);
+          }
+
+          // Double-tap disambiguation via the shared clickTimer (ADR 0021 Decision 4)
+          if (this.clickTimer !== null) {
+            // Second tap within debounce window → double-tap → select whole span
+            clearTimeout(this.clickTimer);
+            this.clickTimer = null;
+            if (result) this.commitSpanSelection(result, geomSnapshot, 'replace');
+          } else {
+            // First tap → schedule segment selection (mode always 'replace' — no modifier keys on touch)
+            this.clickTimer = setTimeout(() => {
+              this.clickTimer = null;
+              this.commitSegmentSelection(result, geomSnapshot, 'replace');
+            }, DBLCLICK_DEBOUNCE_MS);
+          }
+        }
+      } else {
+        // Drag ended — start kinetic coast (mirrors handleMouseUp)
+        endDrag(this.zoomPan);
+        this.flywheelActive = true;
+        this.scheduleRender?.();
+      }
+
+      this.touch.tapStart = null;
+    };
+
     canvas.addEventListener('wheel', this.handleWheel, { passive: false });
     canvas.addEventListener('mousedown', this.handleMouseDown);
     canvas.addEventListener('mousemove', this.handleHoverMove);
@@ -1431,6 +1653,10 @@ class TraceComponent extends React.Component<TraceProps> {
     canvas.addEventListener('keydown', this.handleKeyDown);
     canvas.addEventListener('focus', this.handleFocus);
     canvas.addEventListener('blur', this.handleBlur);
+    canvas.addEventListener('touchstart', this.handleTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', this.handleTouchMove, { passive: false });
+    canvas.addEventListener('touchend', this.handleTouchEnd, { passive: false });
+    canvas.addEventListener('touchcancel', this.handleTouchEnd, { passive: false });
     // mousemove and mouseup are bound to window so a fast flick that releases the pointer outside
     // the canvas still fires endDrag and triggers the kinetic flywheel coast. Mirrors Timeslip.
     window.addEventListener('mousemove', this.handleMouseMove);
@@ -1453,6 +1679,12 @@ class TraceComponent extends React.Component<TraceProps> {
     if (this.handleBlur) canvas.removeEventListener('blur', this.handleBlur);
     if (this.handleMouseMove) window.removeEventListener('mousemove', this.handleMouseMove);
     if (this.handleMouseUp) window.removeEventListener('mouseup', this.handleMouseUp);
+    if (this.handleTouchStart) canvas.removeEventListener('touchstart', this.handleTouchStart);
+    if (this.handleTouchMove) canvas.removeEventListener('touchmove', this.handleTouchMove);
+    if (this.handleTouchEnd) {
+      canvas.removeEventListener('touchend', this.handleTouchEnd);
+      canvas.removeEventListener('touchcancel', this.handleTouchEnd);
+    }
     // Defensive: remove pin dismiss listeners in case the component unmounts while pinned.
     if (this.handleKeyUp) window.removeEventListener('keyup', this.handleKeyUp);
     if (this.handleUnpinningTooltip) {

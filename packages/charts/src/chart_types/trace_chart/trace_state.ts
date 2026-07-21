@@ -8,6 +8,7 @@
 
 import type { HoverRegion, TraceGeometry } from './render/types';
 import type { TooltipInfo } from '../../components/tooltip/types';
+import type { Multitouch } from '../timeslip/utils/multitouch';
 
 /**
  * Hover and drag state for the canvas pointer. `lastGeom` is written once per frame and read by
@@ -33,6 +34,23 @@ export interface PinState {
   pinned: boolean;
   x: number;
   y: number;
+}
+
+/**
+ * Touch gesture state (Spec 23 / ADR 0021). Tracks the current gesture so touchmove and touchend
+ * can resolve pinch vs pan vs tap vs long-press correctly.
+ * `longPressTimer` is a plain instance field on TraceComponent (not here) — it doesn't affect the
+ * gesture classification, only needs cancellation.
+ */
+export interface TouchState {
+  /** Previous frame's sorted touch positions; input to pinchRatio on each touchmove. */
+  multitouch: Multitouch;
+  /** 1-finger gesture origin for hit-testing. null = inert (pinned-dismiss, ≥3-finger, etc.). */
+  tapStart: { x: number; y: number } | null;
+  /** True once movement exceeded TAP_MOVE_TOLERANCE_PX — gesture is a drag, not a tap. */
+  moved: boolean;
+  /** True once the long-press timer fired — suppress the release-tap that follows. */
+  longPressFired: boolean;
 }
 
 /**

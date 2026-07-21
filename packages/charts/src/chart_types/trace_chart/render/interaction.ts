@@ -7,6 +7,7 @@
  */
 
 import { multiplierToZoom } from '../../timeslip/projections/zoom_pan';
+import type { Multitouch } from '../../timeslip/utils/multitouch';
 import { clamp } from '../../../utils/common';
 import type { TraceGeometry } from './types';
 
@@ -99,6 +100,37 @@ export function computeScrollTarget(
     }
   }
   return Math.max(0, Math.min(target, maxScroll));
+}
+
+/**
+ * Map a TouchEvent's active touches to canvas-relative x positions, sorted left-to-right.
+ * `rectLeft` is `canvas.getBoundingClientRect().left`.
+ *
+ * Uses `clientX - rectLeft` which equals `offsetX` when the canvas has zero border/padding
+ * (trace_chart.tsx inline style), matching the offsetX convention of the wheel/mouse paths.
+ * @internal
+ */
+export function mapTouchesToCanvasX(e: TouchEvent, rectLeft: number): Multitouch {
+  const result: Multitouch = [];
+  for (let i = 0; i < e.touches.length; i++) {
+    const t = e.touches[i];
+    if (t) result.push({ id: t.identifier, position: t.clientX - rectLeft });
+  }
+  result.sort((a, b) => a.position - b.position);
+  return result;
+}
+
+/**
+ * Pinch ratio = previous finger spread / current finger spread.
+ * A value > 1 means the fingers spread apart (zoom in); < 1 means they converged (zoom out).
+ *
+ * NOT the same as timeslip's getPinchRatio, which is buggy (see ADR 0021 Decision 3).
+ * @internal
+ */
+export function pinchRatio(prev: Multitouch, next: Multitouch): number {
+  // Caller guarantees exactly 2 touches in both arrays.
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return (prev[1]!.position - prev[0]!.position) / (next[1]!.position - next[0]!.position);
 }
 
 /**

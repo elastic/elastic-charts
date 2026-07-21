@@ -1051,3 +1051,229 @@ describe('Trace chart — focusDomain prop (Spec 16)', () => {
     unmount();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Trace chart — Touch gestures (Spec 23 / ADR 0021)
+// ---------------------------------------------------------------------------
+
+/**
+ * Strategy: jsdom provides a real TouchEvent constructor and dispatches events to DOM listeners.
+ * pickRegion always returns null (no canvas context), so selection callbacks never fire from touch
+ * tap paths — tests verify the gesture-state machinery and timers don't throw.
+ *
+ * For the long-press timer, jest.useFakeTimers() / jest.advanceTimersByTime() controls the 500 ms
+ * without real-time waiting.
+ */
+
+/** Build a TouchEvent with a fake touches list (jsdom's TouchList lacks `.item()` — use `[i]`). */
+function makeTouchInit(canvas: HTMLCanvasElement, touches: Array<{ clientX: number; clientY: number }>) {
+  const touchObjs = touches.map((t, i) => ({
+    identifier: i,
+    clientX: t.clientX,
+    clientY: t.clientY,
+    pageX: t.clientX,
+    pageY: t.clientY,
+    screenX: t.clientX,
+    screenY: t.clientY,
+    target: canvas,
+  }));
+  return {
+    bubbles: true,
+    cancelable: true,
+    touches: touchObjs,
+  };
+}
+
+describe('Trace chart — touch gestures (Spec 23)', () => {
+  const SPANS: TraceDatum[] = [
+    { id: 'root', name: 'HTTP GET /api', traceId: 't1', start: 0, end: 500 },
+    { id: 'db',   name: 'DB.query',     parentId: 'root', traceId: 't1', start: 100, end: 450 },
+  ];
+
+  beforeEach(() => {
+    setupJestCanvasMock();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('touchstart with 0 touches does not throw', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="touch1" data={SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas')!;
+    expect(() => {
+      fireEvent.touchStart(canvas, makeTouchInit(canvas, []));
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('touchstart + touchend with 1 touch (tap path) does not throw', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="touch2" data={SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas')!;
+    expect(() => {
+      fireEvent.touchStart(canvas, makeTouchInit(canvas, [{ clientX: 300, clientY: 50 }]));
+      fireEvent.touchEnd(canvas, makeTouchInit(canvas, [])); // finger lifted
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('two quick taps (double-tap path) does not throw', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="touch3" data={SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas')!;
+    expect(() => {
+      // First tap
+      fireEvent.touchStart(canvas, makeTouchInit(canvas, [{ clientX: 300, clientY: 50 }]));
+      fireEvent.touchEnd(canvas, makeTouchInit(canvas, []));
+      // Second tap within DBLCLICK_DEBOUNCE_MS (timer not advanced yet)
+      fireEvent.touchStart(canvas, makeTouchInit(canvas, [{ clientX: 300, clientY: 50 }]));
+      fireEvent.touchEnd(canvas, makeTouchInit(canvas, []));
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('single-finger drag (touchstart + touchmove + touchend) does not throw', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="touch4" data={SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas')!;
+    expect(() => {
+      fireEvent.touchStart(canvas, makeTouchInit(canvas, [{ clientX: 300, clientY: 50 }]));
+      // Move far enough to exceed TAP_MOVE_TOLERANCE_PX (10 px)
+      fireEvent.touchMove(canvas, makeTouchInit(canvas, [{ clientX: 280, clientY: 50 }]));
+      fireEvent.touchMove(canvas, makeTouchInit(canvas, [{ clientX: 260, clientY: 50 }]));
+      fireEvent.touchEnd(canvas, makeTouchInit(canvas, []));
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('two-finger pinch (touchstart + touchmove) does not throw', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="touch5" data={SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas')!;
+    expect(() => {
+      // Two-finger touch start
+      fireEvent.touchStart(canvas, makeTouchInit(canvas, [
+        { clientX: 200, clientY: 50 },
+        { clientX: 400, clientY: 50 },
+      ]));
+      // Pinch in (fingers converge)
+      fireEvent.touchMove(canvas, makeTouchInit(canvas, [
+        { clientX: 240, clientY: 50 },
+        { clientX: 360, clientY: 50 },
+      ]));
+      // Pinch end
+      fireEvent.touchEnd(canvas, makeTouchInit(canvas, []));
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('long-press (stationary finger for 500 ms) does not throw', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="touch6" data={SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas')!;
+    expect(() => {
+      fireEvent.touchStart(canvas, makeTouchInit(canvas, [{ clientX: 300, clientY: 50 }]));
+      jest.advanceTimersByTime(500); // fire the long-press timer
+      fireEvent.touchEnd(canvas, makeTouchInit(canvas, []));
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('subsequent tap after long-press does not throw (dismiss path)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="touch7" data={SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas')!;
+    expect(() => {
+      // Long-press
+      fireEvent.touchStart(canvas, makeTouchInit(canvas, [{ clientX: 300, clientY: 50 }]));
+      jest.advanceTimersByTime(500);
+      fireEvent.touchEnd(canvas, makeTouchInit(canvas, []));
+      // Next touchstart: if pinned, should dismiss and not select
+      fireEvent.touchStart(canvas, makeTouchInit(canvas, [{ clientX: 300, clientY: 50 }]));
+      fireEvent.touchEnd(canvas, makeTouchInit(canvas, []));
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('touchcancel resets gesture state without throwing', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="touch8" data={SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas')!;
+    expect(() => {
+      fireEvent.touchStart(canvas, makeTouchInit(canvas, [{ clientX: 300, clientY: 50 }]));
+      fireEvent.touchCancel(canvas, makeTouchInit(canvas, []));
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+
+  it('unmounts cleanly when longPressTimer is pending', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="touch9" data={SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas')!;
+    fireEvent.touchStart(canvas, makeTouchInit(canvas, [{ clientX: 300, clientY: 50 }]));
+    // Timer is pending — unmount before it fires
+    expect(() => unmount()).not.toThrow();
+    // Advance past the timer to confirm the cancelled timer doesn't fire on an unmounted component
+    jest.runAllTimers();
+  });
+
+  it('pinch → one-finger continuation does not throw (resolution 1)', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="touch10" data={SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    const canvas = container.querySelector('canvas')!;
+    expect(() => {
+      // Start pinch with 2 fingers
+      fireEvent.touchStart(canvas, makeTouchInit(canvas, [
+        { clientX: 200, clientY: 50 },
+        { clientX: 400, clientY: 50 },
+      ]));
+      // One finger lifts — 1 finger remains (in the touches list of the touchend event)
+      fireEvent.touchEnd(canvas, makeTouchInit(canvas, [{ clientX: 300, clientY: 50 }]));
+      // Continue panning with remaining finger
+      fireEvent.touchMove(canvas, makeTouchInit(canvas, [{ clientX: 280, clientY: 50 }]));
+      fireEvent.touchEnd(canvas, makeTouchInit(canvas, []));
+      jest.runAllTimers();
+    }).not.toThrow();
+    unmount();
+  });
+});

@@ -14,7 +14,7 @@
  * jsdom smoke test (getContext('2d') returns null there, so frame() early-returns).
  */
 
-import { computeZoomMax, computeMaxScroll, computeScrollTarget, hasViewKeyChanged, MIN_VISIBLE_EXTENT_MS, MIN_VISIBLE_EXTENT_LINEAR_MS, minVisibleExtentForScale, domainToZoomPan, pixelRangeToDomain } from './interaction';
+import { computeZoomMax, computeMaxScroll, computeScrollTarget, hasViewKeyChanged, mapTouchesToCanvasX, MIN_VISIBLE_EXTENT_MS, MIN_VISIBLE_EXTENT_LINEAR_MS, minVisibleExtentForScale, domainToZoomPan, pinchRatio, pixelRangeToDomain } from './interaction';
 import { getFocusDomain, initialZoomPan } from '../../timeslip/projections/zoom_pan';
 import type { TraceGeometry } from './types';
 
@@ -328,6 +328,92 @@ describe('MIN_VISIBLE_EXTENT_LINEAR_MS', () => {
 
   it('is smaller than MIN_VISIBLE_EXTENT_MS', () => {
     expect(MIN_VISIBLE_EXTENT_LINEAR_MS).toBeLessThan(MIN_VISIBLE_EXTENT_MS);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Spec 23 — mapTouchesToCanvasX (ADR 0021 Decision 1 + 3)
+// ---------------------------------------------------------------------------
+
+/** Build a minimal fake TouchEvent with an arbitrary set of touches. */
+function makeTouchEvent(touches: Array<{ identifier: number; clientX: number }>): TouchEvent {
+  const list = touches.map((t) => ({ identifier: t.identifier, clientX: t.clientX } as Touch));
+  const touchList = Object.assign(list, { length: list.length }) as unknown as TouchList;
+  return { touches: touchList } as unknown as TouchEvent;
+}
+
+describe('mapTouchesToCanvasX', () => {
+  it('returns [] for 0 touches', () => {
+    expect(mapTouchesToCanvasX(makeTouchEvent([]), 0)).toEqual([]);
+  });
+
+  it('returns a single entry for 1 touch, subtracting rectLeft', () => {
+    const result = mapTouchesToCanvasX(makeTouchEvent([{ identifier: 3, clientX: 150 }]), 50);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({ id: 3, position: 100 });
+  });
+
+  it('sorts 2 touches left-to-right by position regardless of input order', () => {
+    const result = mapTouchesToCanvasX(
+      makeTouchEvent([
+        { identifier: 1, clientX: 300 }, // arrives second in list, further right
+        { identifier: 0, clientX: 100 }, // arrives first, further left
+      ]),
+      0,
+    );
+    expect(result).toHaveLength(2);
+    expect(result[0]).toEqual({ id: 0, position: 100 });
+    expect(result[1]).toEqual({ id: 1, position: 300 });
+  });
+
+  it('subtracts rectLeft correctly (clientX - rectLeft = canvas-relative x)', () => {
+    const result = mapTouchesToCanvasX(
+      makeTouchEvent([{ identifier: 5, clientX: 200 }]),
+      80,
+    );
+    expect(result[0]!.position).toBe(120);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Spec 23 — pinchRatio (ADR 0021 Decision 3 — regression guard vs timeslip bug)
+// ---------------------------------------------------------------------------
+
+describe('pinchRatio', () => {
+  it('spread [100,300] → [120,280]: correct ratio is 200/160 = 1.25 (fingers spread apart)', () => {
+    const prev = [{ id: 0, position: 100 }, { id: 1, position: 300 }];
+    const next = [{ id: 0, position: 120 }, { id: 1, position: 280 }];
+    expect(pinchRatio(prev, next)).toBeCloseTo(1.25, 6);
+  });
+
+  it('regression: same inputs must NOT yield 1.875 (the timeslip getPinchRatio bug)', () => {
+    const prev = [{ id: 0, position: 100 }, { id: 1, position: 300 }];
+    const next = [{ id: 0, position: 120 }, { id: 1, position: 280 }];
+    expect(pinchRatio(prev, next)).not.toBeCloseTo(1.875, 3);
+  });
+
+  it('converging fingers (zoom out) → ratio < 1', () => {
+    const prev = [{ id: 0, position: 100 }, { id: 1, position: 300 }]; // spread 200
+    const next = [{ id: 0, position: 140 }, { id: 1, position: 260 }]; // spread 120
+    expect(pinchRatio(prev, next)).toBeCloseTo(200 / 120, 6);
+    expect(pinchRatio(prev, next)).toBeGreaterThan(1);
+  });
+
+  it('spreading fingers (zoom in) → ratio > 1', () => {
+    const prev = [{ id: 0, position: 150 }, { id: 1, position: 250 }]; // spread 100
+    const next = [{ id: 0, position: 100 }, { id: 1, position: 300 }]; // spread 200
+    expect(pinchRatio(prev, next)).toBeCloseTo(0.5, 6);
+    expect(pinchRatio(prev, next)).toBeLessThan(1);
+  });
+
+  it('is position-independent: same spread change at different canvas positions yields same ratio', () => {
+    // Pinch at left edge of canvas
+    const prevLeft = [{ id: 0, position: 10 }, { id: 1, position: 210 }];
+    const nextLeft = [{ id: 0, position: 30 }, { id: 1, position: 190 }];
+    // Same pinch at right edge
+    const prevRight = [{ id: 0, position: 400 }, { id: 1, position: 600 }];
+    const nextRight = [{ id: 0, position: 420 }, { id: 1, position: 580 }];
+    expect(pinchRatio(prevLeft, nextLeft)).toBeCloseTo(pinchRatio(prevRight, nextRight), 6);
   });
 });
 
