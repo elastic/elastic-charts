@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.10.0">
 <title data-rh="true">AxisStyle | Elastic Charts</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://elastic.github.io/elastic-charts/all-types/interfaces/AxisStyle"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="AxisStyle | Elastic Charts"><meta data-rh="true" name="description" content="@elastic/charts • Exports"><meta data-rh="true" property="og:description" content="@elastic/charts • Exports"><link data-rh="true" rel="icon" href="/elastic-charts/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://elastic.github.io/elastic-charts/all-types/interfaces/AxisStyle"><link data-rh="true" rel="alternate" href="https://elastic.github.io/elastic-charts/all-types/interfaces/AxisStyle" hreflang="en"><link data-rh="true" rel="alternate" href="https://elastic.github.io/elastic-charts/all-types/interfaces/AxisStyle" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AxisStyle","item":"https://elastic.github.io/elastic-charts/all-types/interfaces/AxisStyle"}]}</script><link rel="stylesheet" href="/elastic-charts/assets/css/styles.9ca08030.css">
-<script src="/elastic-charts/assets/js/runtime~main.a3968dfa.js" defer="defer"></script>
-<script src="/elastic-charts/assets/js/main.70a7da85.js" defer="defer"></script>
+<script src="/elastic-charts/assets/js/runtime~main.fd377224.js" defer="defer"></script>
+<script src="/elastic-charts/assets/js/main.b9afeca3.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -23,6 +23,8 @@
 <li class=""><a class="" href="/elastic-charts/all-types/interfaces/AxisStyle#axispaneltitle">axisPanelTitle</a></li>
 <li class=""><a class="" href="/elastic-charts/all-types/interfaces/AxisStyle#axistitle">axisTitle</a></li>
 <li class=""><a class="" href="/elastic-charts/all-types/interfaces/AxisStyle#gridline">gridLine</a></li>
+<li class=""><a class="" href="/elastic-charts/all-types/interfaces/AxisStyle#maxextent">maxExtent</a></li>
+<li class=""><a class="" href="/elastic-charts/all-types/interfaces/AxisStyle#minextent">minExtent</a></li>
 <li class=""><a class="" href="/elastic-charts/all-types/interfaces/AxisStyle#ticklabel">tickLabel</a></li>
 <li class=""><a class="" href="/elastic-charts/all-types/interfaces/AxisStyle#tickline">tickLine</a></li>
 </ul>
@@ -34,21 +36,21 @@
 <p><strong>axisLine</strong>: <a class="" href="/elastic-charts/all-types/interfaces/StrokeStyle"><code>StrokeStyle</code></a>&lt;<code>string</code>&gt; &amp; <a class="" href="/elastic-charts/all-types/interfaces/Visible"><code>Visible</code></a></p>
 </blockquote>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source">Source<a href="#source" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
-<p>packages/charts/src/utils/themes/theme.ts:166</p>
+<p>packages/charts/src/utils/themes/theme.ts:169</p>
 <hr>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="axispaneltitle">axisPanelTitle<a href="#axispaneltitle" class="hash-link" aria-label="Direct link to axisPanelTitle" title="Direct link to axisPanelTitle" translate="no">​</a></h3>
 <blockquote>
 <p><strong>axisPanelTitle</strong>: <a class="" href="/elastic-charts/all-types/interfaces/TextStyle"><code>TextStyle</code></a> &amp; <a class="" href="/elastic-charts/all-types/interfaces/Visible"><code>Visible</code></a></p>
 </blockquote>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-1">Source<a href="#source-1" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
-<p>packages/charts/src/utils/themes/theme.ts:165</p>
+<p>packages/charts/src/utils/themes/theme.ts:168</p>
 <hr>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="axistitle">axisTitle<a href="#axistitle" class="hash-link" aria-label="Direct link to axisTitle" title="Direct link to axisTitle" translate="no">​</a></h3>
 <blockquote>
 <p><strong>axisTitle</strong>: <a class="" href="/elastic-charts/all-types/interfaces/TextStyle"><code>TextStyle</code></a> &amp; <a class="" href="/elastic-charts/all-types/interfaces/Visible"><code>Visible</code></a></p>
 </blockquote>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-2">Source<a href="#source-2" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
-<p>packages/charts/src/utils/themes/theme.ts:164</p>
+<p>packages/charts/src/utils/themes/theme.ts:167</p>
 <hr>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="gridline">gridLine<a href="#gridline" class="hash-link" aria-label="Direct link to gridLine" title="Direct link to gridLine" translate="no">​</a></h3>
 <blockquote>
@@ -64,7 +66,23 @@
 <p><strong>vertical</strong>: <a class="" href="/elastic-charts/all-types/interfaces/GridLineStyle"><code>GridLineStyle</code></a></p>
 </blockquote>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-3">Source<a href="#source-3" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
-<p>packages/charts/src/utils/themes/theme.ts:180</p>
+<p>packages/charts/src/utils/themes/theme.ts:200</p>
+<hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="maxextent">maxExtent<a href="#maxextent" class="hash-link" aria-label="Direct link to maxExtent" title="Direct link to maxExtent" translate="no">​</a></h3>
+<blockquote>
+<p><strong>maxExtent</strong>: <code>string</code> | <code>number</code></p>
+</blockquote>
+<p>Max extent (cross-axis) of the axis in pixels or relative to the container size in the cross-axis direction, e.g. &#x27;20%&#x27;.</p>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-4">Source<a href="#source-4" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
+<p>packages/charts/src/utils/themes/theme.ts:199</p>
+<hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="minextent">minExtent<a href="#minextent" class="hash-link" aria-label="Direct link to minExtent" title="Direct link to minExtent" translate="no">​</a></h3>
+<blockquote>
+<p><strong>minExtent</strong>: <code>string</code> | <code>number</code></p>
+</blockquote>
+<p>Min extent (cross-axis) of the axis in pixels or relative to the container size in the cross-axis direction, e.g. &#x27;20%&#x27;.</p>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-5">Source<a href="#source-5" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
+<p>packages/charts/src/utils/themes/theme.ts:197</p>
 <hr>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="ticklabel">tickLabel<a href="#ticklabel" class="hash-link" aria-label="Direct link to tickLabel" title="Direct link to tickLabel" translate="no">​</a></h3>
 <blockquote>
@@ -75,6 +93,21 @@
 <blockquote>
 <p><strong>alignment</strong>: <a class="" href="/elastic-charts/all-types/interfaces/TextAlignment"><code>TextAlignment</code></a></p>
 </blockquote>
+<h5 class="anchor anchorTargetStickyNavbar_Vzrq" id="lineheight">lineHeight<a href="#lineheight" class="hash-link" aria-label="Direct link to lineHeight" title="Direct link to lineHeight" translate="no">​</a></h5>
+<blockquote>
+<p><strong>lineHeight</strong>: <code>number</code></p>
+</blockquote>
+<p>Line height multiplier applied to <code>fontSize</code> for wrapped tick labels.</p>
+<h5 class="anchor anchorTargetStickyNavbar_Vzrq" id="maxlength">maxLength?<a href="#maxlength" class="hash-link" aria-label="Direct link to maxLength?" title="Direct link to maxLength?" translate="no">​</a></h5>
+<blockquote>
+<p><strong>maxLength</strong>?: <code>number</code></p>
+</blockquote>
+<p>Max length of the tick label in pixels. When unset the label length is bounded by the available space.</p>
+<h5 class="anchor anchorTargetStickyNavbar_Vzrq" id="minlength">minLength<a href="#minlength" class="hash-link" aria-label="Direct link to minLength" title="Direct link to minLength" translate="no">​</a></h5>
+<blockquote>
+<p><strong>minLength</strong>: <code>number</code></p>
+</blockquote>
+<p>Min length of the tick label in pixels.</p>
 <h5 class="anchor anchorTargetStickyNavbar_Vzrq" id="offset">offset<a href="#offset" class="hash-link" aria-label="Direct link to offset" title="Direct link to offset" translate="no">​</a></h5>
 <blockquote>
 <p><strong>offset</strong>: <a class="" href="/elastic-charts/all-types/interfaces/TextOffset"><code>TextOffset</code></a></p>
@@ -86,16 +119,27 @@
 <p><strong>rotation</strong>: <code>number</code></p>
 </blockquote>
 <p>The degrees of rotation of the tick labels</p>
-<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-4">Source<a href="#source-4" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
-<p>packages/charts/src/utils/themes/theme.ts:167</p>
+<h5 class="anchor anchorTargetStickyNavbar_Vzrq" id="truncate">truncate<a href="#truncate" class="hash-link" aria-label="Direct link to truncate" title="Direct link to truncate" translate="no">​</a></h5>
+<blockquote>
+<p><strong>truncate</strong>: <code>false</code> | <a class="" href="/elastic-charts/all-types/type-aliases/Truncate"><code>Truncate</code></a></p>
+</blockquote>
+<p>Where the tick label is truncated when it exceeds the available space.
+Set to <code>false</code> to disable truncation and let the label overflow.</p>
+<h5 class="anchor anchorTargetStickyNavbar_Vzrq" id="wraplines">wrapLines<a href="#wraplines" class="hash-link" aria-label="Direct link to wrapLines" title="Direct link to wrapLines" translate="no">​</a></h5>
+<blockquote>
+<p><strong>wrapLines</strong>: <code>number</code></p>
+</blockquote>
+<p>Max number of lines for wrapped tick labels. Set to <code>1</code> to disable wrapping.</p>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-6">Source<a href="#source-6" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
+<p>packages/charts/src/utils/themes/theme.ts:170</p>
 <hr>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="tickline">tickLine<a href="#tickline" class="hash-link" aria-label="Direct link to tickLine" title="Direct link to tickLine" translate="no">​</a></h3>
 <blockquote>
 <p><strong>tickLine</strong>: <a class="" href="/elastic-charts/all-types/type-aliases/TickStyle"><code>TickStyle</code></a></p>
 </blockquote>
-<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-5">Source<a href="#source-5" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
-<p>packages/charts/src/utils/themes/theme.ts:179</p>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-7">Source<a href="#source-7" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
+<p>packages/charts/src/utils/themes/theme.ts:195</p>
 <hr>
-<p>Generated using <a href="https://www.npmjs.com/package/typedoc-plugin-markdown" target="_blank" rel="noopener noreferrer" class="">typedoc-plugin-markdown</a> and <a href="https://typedoc.org/" target="_blank" rel="noopener noreferrer" class="">TypeDoc</a></p></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/elastic-charts/all-types/interfaces/AxisSpec"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">AxisSpec</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/elastic-charts/all-types/interfaces/BackgroundStyle"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">BackgroundStyle</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#contents" class="table-of-contents__link toc-highlight">Contents</a></li><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a><ul><li><a href="#axisline" class="table-of-contents__link toc-highlight">axisLine</a></li><li><a href="#axispaneltitle" class="table-of-contents__link toc-highlight">axisPanelTitle</a></li><li><a href="#axistitle" class="table-of-contents__link toc-highlight">axisTitle</a></li><li><a href="#gridline" class="table-of-contents__link toc-highlight">gridLine</a></li><li><a href="#ticklabel" class="table-of-contents__link toc-highlight">tickLabel</a></li><li><a href="#tickline" class="table-of-contents__link toc-highlight">tickLine</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Elasticsearch B.V.</div></div></div></footer></div>
+<p>Generated using <a href="https://www.npmjs.com/package/typedoc-plugin-markdown" target="_blank" rel="noopener noreferrer" class="">typedoc-plugin-markdown</a> and <a href="https://typedoc.org/" target="_blank" rel="noopener noreferrer" class="">TypeDoc</a></p></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/elastic-charts/all-types/interfaces/AxisSpec"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">AxisSpec</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/elastic-charts/all-types/interfaces/BackgroundStyle"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">BackgroundStyle</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#contents" class="table-of-contents__link toc-highlight">Contents</a></li><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a><ul><li><a href="#axisline" class="table-of-contents__link toc-highlight">axisLine</a></li><li><a href="#axispaneltitle" class="table-of-contents__link toc-highlight">axisPanelTitle</a></li><li><a href="#axistitle" class="table-of-contents__link toc-highlight">axisTitle</a></li><li><a href="#gridline" class="table-of-contents__link toc-highlight">gridLine</a></li><li><a href="#maxextent" class="table-of-contents__link toc-highlight">maxExtent</a></li><li><a href="#minextent" class="table-of-contents__link toc-highlight">minExtent</a></li><li><a href="#ticklabel" class="table-of-contents__link toc-highlight">tickLabel</a></li><li><a href="#tickline" class="table-of-contents__link toc-highlight">tickLine</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Elasticsearch B.V.</div></div></div></footer></div>
 </body>
 </html>
