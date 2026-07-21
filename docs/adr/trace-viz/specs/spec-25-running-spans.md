@@ -1,4 +1,4 @@
-# Spec 26 — Running spans (in-progress visualization)
+# Spec 25 — Running spans (in-progress visualization)
 
 **Goal:** accept and visualize spans that have started but not yet finished. A running span
 (`TraceDatum.end` omitted or `null`) renders from its `start` to the trace's latest known finite end
@@ -20,10 +20,10 @@ and why the dashed visual.
 - [Spec 12](./spec-12-accessibility.md) — screen-reader span table, `totalDuration` field.
 - [ADR 0023](../0023-running-span-model.md) — all non-obvious decisions recorded there.
 
-**Ordering with Spec 25 (clock-skew correction):** the clock-skew stage runs **before** running-end
+**Ordering with Spec 24 (clock-skew correction):** the clock-skew stage runs **before** running-end
 synthesis. Running spans have no meaningful duration, so the clock-skew heuristic skips them. This
-spec's changes land after Spec 25's `correctClockSkew` stage in the normalize pipeline.
-See [Spec 25](./spec-25-clock-skew.md).
+spec's changes land after Spec 24's `correctClockSkew` stage in the normalize pipeline.
+See [Spec 24](./spec-24-clock-skew.md).
 
 ## Files
 
@@ -241,7 +241,7 @@ domain fallback.
 | `end === 0` (non-running span at the Unix epoch) | Not treated as running (`end == null` check uses strict null equality for the `null` case and the `undefined` case — `0 == null` is `false`). |
 | OTel `endTimeUnixNano === 0` | Mapped to `end: null` in `fromOtlp` before entering the pipeline; treated as running. |
 | OTel `endTimeUnixNano > 0` | `nanoToMs(endTimeUnixNano)` yields the real end ms; not running. |
-| Clock-skew correction (Spec 25) | Runs before running-end synthesis; running spans are skipped by the heuristic. |
+| Clock-skew correction (Spec 24) | Runs before running-end synthesis; running spans are skipped by the heuristic. |
 | Selection/SR of a running span | Region picking uses the provisional end as the right boundary; tooltip/SR show "running." No duration in the `TraceSelectionDetail.duration` field — emit `null` or `undefined`. |
 
 ## Tests

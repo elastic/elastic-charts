@@ -1,6 +1,6 @@
 # ADR 0022 — Clock-skew correction: active centering heuristic
 
-**Status:** Accepted (Spec 25)
+**Status:** Accepted (Spec 24)
 
 ## Context
 
@@ -60,7 +60,7 @@ correction) and was the user's explicit choice.
 **Known limitation — `childDuration > parentDuration`:** when the child is longer than the parent
 (also a data anomaly), `delay < 0`, and the corrected child still starts before the parent, overhanging
 symmetrically on both sides. The heuristic is applied as-is; `gapSegments` continues to clamp the
-overhang for self-time derivation. This case is documented in Spec 25 as an inherent limitation of the
+overhang for self-time derivation. This case is documented in Spec 24 as an inherent limitation of the
 formula.
 
 ## Decision 3 — Shift the entire subtree by one offset, preserving durations
@@ -89,7 +89,7 @@ The correction stage (`correctClockSkew`) is inserted between `dropNonFinite` an
   `offset = parentStart + delay − childStart` (all in the same epoch-ms or raw-ms units).
 - The corrected domain min/max are computed by `project` **after** correction, so shifts are
   reflected in the rendered extent.
-- Running-span end synthesis (Spec 26) happens inside `project`, **after** `correctClockSkew`, so
+- Running-span end synthesis (Spec 25) happens inside `project`, **after** `correctClockSkew`, so
   running spans have no finite `end` at correction time and are skipped by the heuristic.
 
 **DFS structure** mirrors `orderLanes` ([order_lanes.ts:42-63](../../../packages/charts/src/chart_types/trace_chart/data/order_lanes.ts#L42-L63)):

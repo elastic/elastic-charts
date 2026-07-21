@@ -1,4 +1,4 @@
-# Spec 24 — Touch gestures (pinch-zoom, drag-pan, tap/double-tap selection, long-press pin)
+# Spec 23 — Touch gestures (pinch-zoom, drag-pan, tap/double-tap selection, long-press pin)
 
 **Goal:** touch-device parity for the core gestures — two-finger pinch changes the Focus domain,
 single-finger drag pans, tap/double-tap select segments/spans, and long-press pins the tooltip.

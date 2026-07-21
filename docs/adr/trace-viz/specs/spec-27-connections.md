@@ -1,4 +1,4 @@
-# Spec 23 — Connections
+# Spec 27 — Connections
 
 **Goal:** draw a directional connector arrow from a source segment endpoint (initiator) to a target
 segment endpoint (initiated) — possibly in a different lane — expressing the Chrome DevTools

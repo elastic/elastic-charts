@@ -59,11 +59,11 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 - [Spec 20 — API documentation story (auto-extracted)](./specs/spec-20-api-docs.md)
 - [Spec 21 — Collapsible nesting](./specs/spec-21-collapsible-nesting.md)
 - [Spec 22 — Critical path (consumer-supplied interval-precise highlight)](./specs/spec-22-critical-path.md)
-- [Spec 23 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-23-connections.md)
-- [Spec 24 — Touch gestures (pinch-zoom, drag-pan, tap/double-tap selection, long-press pin)](./specs/spec-24-touch-gestures.md)
-- [Spec 25 — Clock-skew correction (active centering heuristic)](./specs/spec-25-clock-skew.md)
-- [Spec 26 — Running spans (in-progress visualization)](./specs/spec-26-running-spans.md)
-- [Spec 27 — Multi-level (stacked) time bar](./specs/spec-27-multilevel-time-bar.md)
+- [Spec 23 — Touch gestures (pinch-zoom, drag-pan, tap/double-tap selection, long-press pin)](./specs/spec-23-touch-gestures.md)
+- [Spec 24 — Clock-skew correction (active centering heuristic)](./specs/spec-24-clock-skew.md)
+- [Spec 25 — Running spans (in-progress visualization)](./specs/spec-25-running-spans.md)
+- [Spec 26 — Multi-level (stacked) time bar](./specs/spec-26-multilevel-time-bar.md)
+- [Spec 27 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-27-connections.md)
 
 Build order (Specs 0–8): Phase 0 → Spec 0 → Spec 1 → (Spec 2 / Spec 3 / Spec 4 in parallel once
 Spec 1's `NormalizedSpan` contract is fixed) → Spec 5 → Spec 6 → Spec 7 → Spec 8.
@@ -90,22 +90,22 @@ Spec 21 (collapsible nesting) builds on Spec 15 (`laneOrder: 'tree'` is the seam
 (keyboard nav and `TraceSegmentRef`). It is independent of Specs 22–27. Open questions #2–#9 from the
 original stub are resolved by [ADR 0026](./0026-collapsible-nesting.md).
 
-- **Spec 22** (critical path highlight) — depends on Specs 5, 12, and 13. Independent of Spec 23.
+- **Spec 22** (critical path highlight) — depends on Specs 5, 12, and 13. Independent of Spec 27.
   Extends the normalize pipeline (`project()`) and adds a canvas draw pass; no interaction state.
-- **Spec 23** (connections / "Initiated by" arrows) — depends on Specs 5, 12, and 13 (reuses
-  `TraceSegmentRef`, `waitingSegments`, and the `buildGeometry` resolved-field pattern). Independent
-  of Spec 22. Pure render — no pipeline changes, no interaction state.
-- **Spec 24** (touch gestures) — depends on Specs 7, 10, and 13. See ADR 0021. Pure interaction
+- **Spec 23** (touch gestures) — depends on Specs 7, 10, and 13. See ADR 0021. Pure interaction
   layer addition; no pipeline changes.
-- **Spec 25** (clock-skew correction) — depends on Specs 1 and 2 (`buildChildrenMap`, `gapSegments`).
-  Adds a new normalize stage between `dropNonFinite` and `project`. Independent of Specs 22–24.
-  Must be implemented **before** Spec 26 (clock-skew runs before running-end synthesis).
-- **Spec 26** (running spans) — depends on Specs 1, 3, 5, 7, and 12. Relaxes `dropNonFinite`,
+- **Spec 24** (clock-skew correction) — depends on Specs 1 and 2 (`buildChildrenMap`, `gapSegments`).
+  Adds a new normalize stage between `dropNonFinite` and `project`. Independent of Specs 22–23.
+  Must be implemented **before** Spec 25 (clock-skew runs before running-end synthesis).
+- **Spec 25** (running spans) — depends on Specs 1, 3, 5, 7, and 12. Relaxes `dropNonFinite`,
   extends `project` and `resolveActive`, adds a renderer dashed-line pass, and adds a new theme
-  token. Should be implemented **after** Spec 25 (the clock-skew stage runs before running-end
-  synthesis, and running spans are skipped by the heuristic). Independent of Specs 22–24.
-- **Spec 27** (multi-level time bar) — depends on Specs 3 and 4 (geometry, `TraceStyle`, raster
+  token. Should be implemented **after** Spec 24 (the clock-skew stage runs before running-end
+  synthesis, and running spans are skipped by the heuristic). Independent of Specs 22–23.
+- **Spec 26** (multi-level time bar) — depends on Specs 3 and 4 (geometry, `TraceStyle`, raster
   engine reuse). Pure renderer + theme + geometry change; no normalize pipeline changes. Independent
-  of Specs 22–26. See [ADR 0024](./0024-multilevel-time-bar.md).
+  of Specs 22–25. See [ADR 0024](./0024-multilevel-time-bar.md).
+- **Spec 27** (connections / "Initiated by" arrows) — depends on Specs 5, 12, and 13 (reuses
+  `TraceSegmentRef`, `waitingSegments`, and the `buildGeometry` resolved-field pattern). Independent
+  of Specs 22–26. Pure render — no pipeline changes, no interaction state.
 
 See the repo root [`CONTEXT.md`](../../../CONTEXT.md) for the domain glossary.

@@ -1,4 +1,4 @@
-# Spec 27 — Multi-level (stacked) time bar
+# Spec 26 — Multi-level (stacked) time bar
 
 **Goal:** when `xScaleType === 'time'`, render the trace time bar as **stacked tick-label rows**
 rather than a single row. The finest row shows the existing sub-second detail (`0ms … 900ms`); each
@@ -22,7 +22,7 @@ labels are mandatory, why the stacking is reimplemented rather than generalised 
   derived `plot.top` / `plot.height`.
 - [ADR 0024](../0024-multilevel-time-bar.md) — all non-obvious decisions recorded there.
 
-**Independent of** Specs 19 (nanosecond linear), 25 (clock-skew), 26 (running spans) — no normalize
+**Independent of** Specs 19 (nanosecond linear), 24 (clock-skew), 25 (running spans) — no normalize
 pipeline changes; pure renderer + theme + geometry.
 
 ## Files
@@ -38,7 +38,7 @@ pipeline changes; pure renderer + theme + geometry.
 - Six theme files (`light_theme.ts`, `dark_theme.ts`, `amsterdam_light_theme.ts`,
   `amsterdam_dark_theme.ts`, `legacy_light_theme.ts`, `legacy_dark_theme.ts` under
   `packages/charts/src/utils/themes/`) — add `timeAxisLayerCount: 2` to each `trace:` block
-  (same wiring pattern as Spec 26's `runningLineDash`).
+  (same wiring pattern as Spec 25's `runningLineDash`).
 - `storybook/stories/trace/26_multilevel_time_bar.story.tsx` — new Storybook story; register in
   `trace.stories.tsx`.
 

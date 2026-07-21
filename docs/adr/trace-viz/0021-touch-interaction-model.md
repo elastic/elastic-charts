@@ -7,7 +7,7 @@ The canvas already sets `touchAction: 'none'` — the CSS prerequisite for custo
 no touch handlers were wired. To support touch devices, five gestures are needed: two-finger pinch
 (zoom), single-finger drag (pan), tap (select segment), double-tap (select span), and long-press (pin
 tooltip). This ADR records the decisions that are non-obvious from the code, hard to change later, and
-the result of real trade-offs. See [Spec 24](./specs/spec-24-touch-gestures.md) for the implementation
+the result of real trade-offs. See [Spec 23](./specs/spec-23-touch-gestures.md) for the implementation
 prescription.
 
 ## Decision 1 — Reuse timeslip's zoom/pan and multitouch engine; import directly
@@ -100,7 +100,7 @@ native. 10 px tolerance accommodates natural finger tremor without accidentally 
 ## Consequences
 
 - Touch and mouse paths share `commitSegmentSelection`, `commitSpanSelection`, and `pinAt` (extracted
-  from the mouse handlers in step 1 of Spec 24) — one implementation for both input types.
+  from the mouse handlers in step 1 of Spec 23) — one implementation for both input types.
 - **Hover tooltip and brush are mouse-only.** Hover has no touch equivalent; span detail on touch is
   reachable via long-press pin. Brush (Shift+drag zoom-to-range) has no touch modifier; two-finger
   pinch covers narrowing the Focus domain on touch.

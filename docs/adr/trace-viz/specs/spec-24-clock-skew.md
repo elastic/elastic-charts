@@ -1,4 +1,4 @@
-# Spec 25 — Clock-skew correction (active centering heuristic)
+# Spec 24 — Clock-skew correction (active centering heuristic)
 
 **Goal:** actively correct child spans whose recorded `start` precedes their parent's, repositioning
 each offending child (and its entire descendant subtree) so the child is centered within its parent —
@@ -16,9 +16,9 @@ corrected spans are flagged transparently.
   (stays as a defensive fallback for any residual out-of-range child).
 - [ADR 0022](../0022-clock-skew-heuristic.md) — all non-obvious decisions are recorded there.
 
-**Ordering with Spec 26 (running spans):** the clock-skew stage runs **before** running-span
+**Ordering with Spec 25 (running spans):** the clock-skew stage runs **before** running-span
 end-synthesis (`project`). Running spans have no meaningful duration (`end == null`), so the
-heuristic is skipped for any child or parent that is running. See [Spec 26](./spec-26-running-spans.md).
+heuristic is skipped for any child or parent that is running. See [Spec 25](./spec-25-running-spans.md).
 
 ## Files
 
@@ -80,7 +80,7 @@ Implementation:
  * Shifts each span (and its entire descendant subtree) that starts before its parent, centering
  * it within the parent using the symmetric-latency heuristic:
  *   delay = (parentDuration − childDuration) / 2
- * Spans whose end is null (running — Spec 26) are skipped both as parents and as children.
+ * Spans whose end is null (running — Spec 25) are skipped both as parents and as children.
  * See ADR 0022.
  */
 function correctClockSkew(spans: NormalizedSpan[]): NormalizedSpan[] {
@@ -124,7 +124,7 @@ function correctClockSkew(spans: NormalizedSpan[]): NormalizedSpan[] {
 
     if (
       parent !== null &&
-      current.end != null &&           // skip running spans (Spec 26)
+      current.end != null &&           // skip running spans (Spec 25)
       parent.end != null &&
       current.start < parent.start
     ) {
@@ -186,7 +186,7 @@ note in the story title that the chart corrects clock skew automatically.
 | Case | Behavior |
 |---|---|
 | `childDur > parentDur` | `delay < 0`; child overhangs symmetrically on both sides. Rendered as-is per the heuristic — inherent to the formula. |
-| Running child or parent (`end == null`) | Heuristic skipped for this edge only; the running span is not shifted (no duration available). Cross-ref Spec 26. |
+| Running child or parent (`end == null`) | Heuristic skipped for this edge only; the running span is not shifted (no duration available). Cross-ref Spec 25. |
 | Right-side overhang (starts in parent, ends after) | **Out of scope.** The existing `gapSegments` clamp bounds children to the parent for self-time derivation. |
 | Cyclic `parentId` graph | DFS terminates via the `visited` guard; unreached spans pass through unchanged. |
 | Multi-level skew | Grandchild's edge is evaluated against the *corrected* parent, so nested skew resolves independently at each level. |

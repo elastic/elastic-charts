@@ -1,6 +1,6 @@
 # ADR 0023 — Running-span model: optional end, domain-max provisional edge, dashed visual
 
-**Status:** Accepted (Spec 26)
+**Status:** Accepted (Spec 25)
 
 ## Context
 
