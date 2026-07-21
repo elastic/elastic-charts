@@ -19,6 +19,8 @@ import type { AxisSpec } from '../../utils/specs';
 /** @internal */
 export type AxisLabelFormatter<V = unknown> = (value: V) => string;
 
+const toLabelString = (value: unknown): string => (value === null || value === undefined ? '' : String(value));
+
 /** @internal */
 export type AxisLabelFormatters = { x: Map<SpecId, AxisLabelFormatter>; y: Map<SpecId, AxisLabelFormatter> };
 
@@ -36,11 +38,13 @@ export const getAxisTickLabelFormatter = createCustomCachedSelector(
         const ySpecDataFormatter = (seriesByGroupId[groupId] ?? []).find(({ tickFormat }) => tickFormat)?.tickFormat;
         const axes = groupAxesByCartesianCoords(axesByGroupId[groupId] ?? [], rotation);
         axes.x.forEach((spec) => {
-          acc.x.set(spec.id, (v) => (spec?.labelFormat ?? spec?.tickFormat ?? defaultTickFormatter)(v, { timeZone }));
+          acc.x.set(spec.id, (v) =>
+            toLabelString((spec?.labelFormat ?? spec?.tickFormat ?? defaultTickFormatter)(v, { timeZone })),
+          );
         });
         axes.y.forEach((spec) => {
           acc.y.set(spec.id, (v) =>
-            (spec.labelFormat ?? spec.tickFormat ?? ySpecDataFormatter ?? defaultTickFormatter)(v, {}),
+            toLabelString((spec.labelFormat ?? spec.tickFormat ?? ySpecDataFormatter ?? defaultTickFormatter)(v, {})),
           );
         });
         return acc;
