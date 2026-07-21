@@ -33,6 +33,15 @@ fabricating active-execution segments up to it would overclaim. Running spans re
 line only, plus any `activeSegments` the caller supplies explicitly.
 _Avoid_: exclusive time (self time is the canonical term used throughout this codebase).
 
+**Rolled-up active segments**:
+The union of every span's active segments within a collapsed subtree (the collapsed parent's own
+active segments plus all descendants' active segments), merged/deduped with the same interval-merge
+pass used by `mergeSegments`, and clamped to the parent's `[start, end]` extent. Displayed as the
+filled bar of a collapsed parent lane. Idle time on the rolled-up bar is time *nobody* in the subtree
+was actively executing. A collapsed lane is still owned by exactly one span — the aggregate is a
+visual representation, not a new entity. See [ADR 0026](./docs/adr/trace-viz/0026-collapsible-nesting.md).
+_Avoid_: self time (self time is a single span's exclusive time; the rollup is a subtree aggregate).
+
 **Running span**:
 A span that has started but not yet finished, represented in the input by omitting `end` or passing
 `null`. The chart renders a running span's **total line** as a dashed line from `start` to the trace's
