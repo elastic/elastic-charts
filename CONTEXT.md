@@ -27,7 +27,7 @@ _Avoid_: active rect (singular — a span can have more than one).
 
 **Self time**:
 A span's extent minus the union of its children's extents. The default source of active segments when
-a span's active range isn't supplied explicitly (see [ADR 0003](./docs/adr/0003-self-time-as-active-segments.md)).
+a span's active range isn't supplied explicitly (see [ADR 0003](./docs/adr/trace-viz/0003-self-time-as-active-segments.md)).
 Self time is **not derived** for **running spans** — their synthetic end is not a real measurement, so
 fabricating active-execution segments up to it would overclaim. Running spans render the dashed total
 line only, plus any `activeSegments` the caller supplies explicitly.
