@@ -248,7 +248,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "integersOnly" | "gridLine" | "tickFormat" | "labelFormat" | "tickLabelTruncate" | "tickLabelMaxLength" | "ticks" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "integersOnly" | "gridLine" | "tickFormat" | "labelFormat" | "ticks" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -277,10 +277,6 @@ export interface AxisSpec extends Spec {
     specType: typeof SpecType.Axis;
     style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
     tickFormat?: TickFormatter;
-    // @deprecated (undocumented)
-    tickLabelMaxLength?: Pixels | string;
-    // @deprecated (undocumented)
-    tickLabelTruncate?: Truncate;
     ticks?: number;
     // @alpha
     timeAxisLayerCount: number;
@@ -311,7 +307,7 @@ export interface AxisStyle {
         lineHeight: number;
         maxLength?: Pixels;
         minLength: Pixels;
-        truncate?: Truncate | false;
+        truncate: Truncate | false;
     };
     // (undocumented)
     tickLine: TickStyle;

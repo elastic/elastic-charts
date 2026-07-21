@@ -166,7 +166,6 @@ describe('resolveTickLabelConstraints', () => {
       style,
       band,
       scale: continuousScale,
-      containerWidth: 100,
     });
     expect(result.maxLineLength).toBe(100);
     expect(result.maxWrapLines).toBe(5);
@@ -179,7 +178,6 @@ describe('resolveTickLabelConstraints', () => {
       style,
       band,
       scale: ordinalScale,
-      containerWidth: 100,
     });
     expect(result.maxLineLength).toBe(50 * (1 - 0.2 / 2));
   });
@@ -191,7 +189,6 @@ describe('resolveTickLabelConstraints', () => {
       style,
       band,
       scale: continuousScale,
-      containerWidth: 100,
     });
     expect(result.maxWrapLines).toBe(4);
   });
@@ -204,7 +201,6 @@ describe('resolveTickLabelConstraints', () => {
       style,
       band,
       scale: histogramScale,
-      containerWidth: 200,
       multilayerTimeAxis: true,
     });
     expect(result.maxLineLength).toBe(200);
@@ -221,7 +217,6 @@ describe('resolveTickLabelConstraints', () => {
         style: rotatedStyle(90),
         band,
         scale: ordinalScale,
-        containerWidth: 100,
       });
       expect(result.maxLineLength).toBe(200);
     });
@@ -233,7 +228,6 @@ describe('resolveTickLabelConstraints', () => {
         style: rotatedStyle(45),
         band,
         scale: ordinalScale,
-        containerWidth: 100,
       });
       // step * (1 - barsPadding / 2) === 45
       expect(result.maxLineLength).toBeGreaterThan(50 * (1 - 0.2 / 2));
@@ -253,7 +247,6 @@ describe('resolveTickLabelConstraints', () => {
         style: withLengths({ minLength: 60 }),
         band,
         scale: ordinalScale,
-        containerWidth: 100,
       });
       expect(result.maxLineLength).toBe(60);
     });
@@ -265,7 +258,6 @@ describe('resolveTickLabelConstraints', () => {
         style: withLengths({ minLength: 5 }),
         band,
         scale: ordinalScale,
-        containerWidth: 100,
       });
       expect(result.maxLineLength).toBe(step);
     });

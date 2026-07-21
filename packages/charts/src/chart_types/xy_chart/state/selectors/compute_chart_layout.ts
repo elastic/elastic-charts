@@ -63,7 +63,6 @@ const projectTicks = (
     },
     bars.groupsCount,
     bars.enableHistogramMode,
-    chartDimensions.width,
     bars.padding,
   );
 };

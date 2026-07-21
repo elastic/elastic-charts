@@ -12,7 +12,6 @@ import type { $Values } from 'utility-types';
 import type { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
 import type { ChartType } from '../..';
 import type { Color } from '../../../common/colors';
-import type { Pixels } from '../../../common/geometry';
 import type { TooltipPortalSettings } from '../../../components/portal/types';
 import type { LogScaleOptions, ScaleContinuousType } from '../../../scales';
 import type { ScaleType } from '../../../scales/constants';
@@ -32,7 +31,6 @@ import type {
   RectAnnotationStyle,
   BubbleSeriesStyle,
   AxisStyle,
-  Truncate,
 } from '../../../utils/themes/theme';
 import type { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 import type {
@@ -742,16 +740,6 @@ export interface AxisSpec extends Spec {
    * overrides tickFormat for axis labels
    */
   labelFormat?: TickFormatter;
-  /**
-   * @deprecated use `style.tickLabel.truncate` instead.
-   * The position of the ellipsis when the tick label overflows
-   */
-  tickLabelTruncate?: Truncate;
-  /**
-   * @deprecated use `style.tickLabel.maxLength` instead.
-   * The maximum size of the tick label. If a number, it is in pixels. If a string, it is relative to the container width, e.g. '20%'.
-   */
-  tickLabelMaxLength?: Pixels | string;
   /** An approximate count of how many ticks will be generated */
   ticks?: number;
   /** The axis title */

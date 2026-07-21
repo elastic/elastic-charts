@@ -80,18 +80,14 @@ function parseThemeSize(raw: string): number | string | undefined {
   return s;
 }
 
-function parseTickLabelLimit(raw: string): number | undefined {
-  const limit = parseThemeSize(raw);
-  return typeof limit === 'number' ? limit : undefined;
-}
-
 const getWrapAxisKnobs = (group: string) => {
   const rotation = number('rotation', 0, { range: true, min: -90, max: 90, step: 1 }, group);
   const alignmentVertical = customKnobs.enum.verticalTextAlignment('Alignment Vertical', undefined, { group });
   const alignmentHorizontal = customKnobs.enum.horizontalTextAlignment('Alignment Horizontal', undefined, {
     group,
   });
-  const tickLabelLimit = parseTickLabelLimit(text('Tick label limit', '', group));
+  const minLength = number('label minLength', 12, { min: 0, step: 1 }, group);
+  const maxLength = number('label maxLength (0 = auto)', 0, { min: 0, step: 1 }, group);
   const minExtent = parseThemeSize(text('minExtent', '', group));
   const maxExtent = parseThemeSize(text('maxExtent', '', group));
   const wrapLines = number('wrapLines', 1, { min: 1, max: 10, step: 1 }, group);
@@ -108,7 +104,8 @@ const getWrapAxisKnobs = (group: string) => {
     rotation,
     alignmentVertical,
     alignmentHorizontal,
-    tickLabelLimit,
+    minLength,
+    maxLength,
     minExtent,
     maxExtent,
     wrapLines,
@@ -123,7 +120,8 @@ const buildAxisStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePa
     rotation,
     lineHeight,
     wrapLines,
-    tickLabelLimit,
+    minLength,
+    maxLength,
     minExtent,
     maxExtent,
     alignmentHorizontal,
@@ -145,7 +143,8 @@ const buildAxisStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePa
       rotation,
       lineHeight,
       wrapLines,
-      ...(tickLabelLimit !== undefined && { limit: tickLabelLimit }),
+      minLength,
+      ...(maxLength > 0 && { maxLength }),
       ...(alignment !== undefined && { alignment }),
       truncate: truncate === 'disabled' ? false : truncate,
     },

@@ -12,7 +12,7 @@ import type { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { degToRad, getPercentageValue } from '../../../../utils/common';
+import { degToRad } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
 import { wrapText, type WrapTextLines } from '../../../../utils/text/wrap';
 import type { AxisStyle } from '../../../../utils/themes/theme';
@@ -93,32 +93,20 @@ export const resolveTickLabelConstraints = ({
   style,
   band,
   scale,
-  containerWidth,
   multilayerTimeAxis = false,
 }: {
   axisSpec: AxisSpec;
   style: AxisStyle;
   band: AxisBand;
   scale: ScaleBand | ScaleContinuous;
-  containerWidth: number;
   multilayerTimeAxis?: boolean;
 }) => {
   const vertical = isVerticalAxis(axisSpec.position);
 
-  // A `%` tick label length resolves against the axis' own reference size:
-  // - vertical axes use the cross-axis container size (`band.container`), matching `maxExtent`.
-  // - horizontal axes use the along-axis size (`containerWidth`, i.e. the chart/plot width).
-  // Using `band.container` for vertical axes keeps the percentage stable across layout passes, where
-  // `containerWidth` is the shrinking plot width rather than the full container width.
-  const percentReference = vertical ? band.container : containerWidth;
-  const maxTickLabelLength = axisSpec.tickLabelMaxLength
-    ? getPercentageValue(axisSpec.tickLabelMaxLength, percentReference, 0)
-    : undefined;
-
   const { minLength: minLineLength, wrapLines, lineHeight, fontSize: tickLabelFontSize } = style.tickLabel;
   const lineHeightPx = lineHeight * tickLabelFontSize;
 
-  let maxLineLength = style.tickLabel.maxLength ?? maxTickLabelLength;
+  let maxLineLength = style.tickLabel.maxLength;
 
   if (vertical || multilayerTimeAxis) {
     maxLineLength = Math.max(minLineLength, Math.min(maxLineLength ?? band.labelBudget, band.labelBudget));
@@ -170,8 +158,7 @@ export const createTickLabelLayout = (
 
   return (raw: string) => {
     const value = raw.slice(0, SAFE_LABEL_MAX_LENGTH);
-    // Truncation is opt-in; when unset the label overflows instead of being cut.
-    const truncate = axisStyle.tickLabel.truncate ?? axisSpec.tickLabelTruncate ?? false;
+    const { truncate } = axisStyle.tickLabel;
 
     let lines: WrapTextLines = Object.assign([], { meta: { truncated: false } });
 

@@ -192,6 +192,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
       wrapLines: 1,
       lineHeight: 1.2,
       minLength: 12,
+      truncate: false,
     },
     tickLine: {
       visible: false,

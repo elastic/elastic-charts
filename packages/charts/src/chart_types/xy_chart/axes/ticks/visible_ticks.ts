@@ -244,7 +244,6 @@ export function computeVisibleTickSets(
   smScales: SmallMultipleScales,
   totalGroupsCount: number,
   enableHistogramMode: boolean,
-  containerWidth: number,
   barsPadding?: number,
 ): Projections {
   const panel = getPanelSize(smScales);
@@ -271,7 +270,6 @@ export function computeVisibleTickSets(
           style: axesStyle,
           band: layout.band,
           scale,
-          containerWidth,
           multilayerTimeAxis: layout.multilayerTimeAxis,
         });
 

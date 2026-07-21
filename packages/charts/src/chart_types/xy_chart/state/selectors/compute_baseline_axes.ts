@@ -131,8 +131,8 @@ export const getJoinedVisibleAxesData = createCustomCachedSelector(
 
 /** @internal */
 export const computeBaselineAxisTicksDimensionsSelector = createCustomCachedSelector(
-  [getJoinedVisibleAxesData, getSettingsSpecSelector, getChartContainerDimensionsSelector],
-  (joinedAxesData, { locale }, containerDimensions): AxesTicksDimensions =>
+  [getJoinedVisibleAxesData, getSettingsSpecSelector],
+  (joinedAxesData, { locale }): AxesTicksDimensions =>
     withTextMeasure((textMeasure): AxesTicksDimensions => {
       return [...joinedAxesData].reduce<AxesTicksDimensions>(
         (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, labelFormatter, layout }]) => {
@@ -141,7 +141,6 @@ export const computeBaselineAxisTicksDimensionsSelector = createCustomCachedSele
             style: axesStyle,
             band: layout.band,
             scale,
-            containerWidth: containerDimensions.width,
             multilayerTimeAxis: layout.multilayerTimeAxis,
           });
 

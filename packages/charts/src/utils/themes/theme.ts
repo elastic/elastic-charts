@@ -188,9 +188,9 @@ export interface AxisStyle {
       minLength: Pixels;
       /**
        * Where the tick label is truncated when it exceeds the available space.
-       * When unset (or `false`) truncation is disabled and the label overflows.
+       * Set to `false` to disable truncation and let the label overflow.
        */
-      truncate?: Truncate | false;
+      truncate: Truncate | false;
     };
   tickLine: TickStyle;
   /** Min extent (cross-axis) of the axis in pixels or relative to the container size in the cross-axis direction, e.g. '20%'.*/
