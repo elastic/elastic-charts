@@ -32,6 +32,7 @@ const REGION_LABEL: Record<HoverRegion, string> = {
   active: 'Active',
   waiting: 'Waiting',
   empty: '—',
+  span: 'Collapsed',
 };
 
 /**

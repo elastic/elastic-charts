@@ -79,6 +79,28 @@ export function waitingSegments(span: NormalizedSpan): Segment[] {
 }
 
 /**
+ * Sorts and merges overlapping or touching intervals into a minimal non-overlapping set.
+ * Input is not mutated. O(n log n).
+ * Used by `gapSegments` (self-time / waiting) and `collapseLanes` (rolled-up active segments).
+ * @internal
+ */
+export function mergeSegments(intervals: readonly Segment[]): Segment[] {
+  if (intervals.length === 0) return [];
+  const sorted = intervals.slice().sort((a, b) => a.start - b.start);
+  const merged: Segment[] = [{ ...sorted[0]! }];
+  for (let i = 1; i < sorted.length; i++) {
+    const curr = sorted[i]!;
+    const last = merged[merged.length - 1]!;
+    if (curr.start <= last.end) {
+      last.end = Math.max(last.end, curr.end);
+    } else {
+      merged.push({ ...curr });
+    }
+  }
+  return merged;
+}
+
+/**
  * Subtracts the union of `intervals` from `[parentStart, parentEnd]`, returning the gaps.
  * Clamps each interval to the parent extent, merges overlapping intervals, then yields the
  * uncovered sub-intervals. O(n log n). Used by both `resolveActive` (self-time) and
@@ -104,18 +126,7 @@ function gapSegments(parentStart: number, parentEnd: number, intervals: readonly
     return [{ start: parentStart, end: parentEnd }];
   }
 
-  // Sort by start, then merge overlapping/touching intervals.
-  clamped.sort((a, b) => a.start - b.start);
-  const merged: Segment[] = [{ ...clamped[0]! }];
-  for (let i = 1; i < clamped.length; i++) {
-    const curr = clamped[i]!;
-    const last = merged[merged.length - 1]!;
-    if (curr.start <= last.end) {
-      last.end = Math.max(last.end, curr.end);
-    } else {
-      merged.push({ ...curr });
-    }
-  }
+  const merged = mergeSegments(clamped);
 
   // Subtract the merged union from [parentStart, parentEnd].
   const result: Segment[] = [];

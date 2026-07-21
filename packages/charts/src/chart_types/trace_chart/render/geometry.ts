@@ -8,7 +8,7 @@
 
 import type { NormalizedSpan } from '../data/types';
 import { waitingSegments } from '../data/self_time';
-import type { TraceGeometry, TraceStyle } from './types';
+import type { DisclosureEntry, TraceGeometry, TraceStyle } from './types';
 import { gutterPx } from './types';
 import type { TraceSelection } from '../trace_api';
 import type { Size } from '../../../utils/dimensions';
@@ -37,15 +37,19 @@ export function buildGeometry(
   selection: TraceSelection = [],
   spanIdToLane: ReadonlyMap<string, number> = new Map(),
   emptyMessage: string | null = null,
+  disclosureByLane: Map<number, DisclosureEntry> = new Map(),
+  hasParents = false,
+  maxDepth = 0,
 ): TraceGeometry {
   // spans is already start-sorted by the pipeline cache (O(N log N) once per data change, not per frame).
   // domain is pre-computed by normalize() and passed in; no per-frame reduce needed.
 
   const { width: canvasWidth, height: canvasHeight } = canvasSize;
   const { timeBarHeight, laneHeight } = style;
-  // gutterPx() collapses the gutter to 0 for 'inline' and 'none' label modes — the gutter region
-  // has no content in those modes, so reserving space for it would waste plot area.
-  const effectiveGutterWidth = gutterPx(style);
+  // gutterPx() reserves space for the label gutter and (when hasParents) the disclosure-caret
+  // column. In 'inline'/'none' modes the label portion collapses to 0 but the caret column is
+  // still reserved when the trace has parent spans (ADR 0026).
+  const effectiveGutterWidth = gutterPx(style, { hasParents, maxDepth });
 
   const plotLeft = effectiveGutterWidth;
   const plotTop = timeBarHeight;
@@ -99,5 +103,6 @@ export function buildGeometry(
     resolvedSelection,
     scale,
     emptyMessage,
+    disclosureByLane,
   };
 }

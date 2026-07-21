@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { buildDisclosureMap, collapseLanes, collapsibleParentIds } from '../../data/collapse';
 import { normalize } from '../../data/normalize';
 import { orderLanes } from '../../data/order_lanes';
 import { resolveActive } from '../../data/self_time';
@@ -50,11 +51,20 @@ const getNormalizedSpans = createCustomCachedSelector(
     (state: GlobalChartState) => getSpecsFromStore<TraceSpec>(state.specs, ChartType.Trace, SpecType.Series)[0],
     (state: GlobalChartState) => getChartThemeSelector(state).colors.vizColors,
   ],
-  (spec, vizColors): { spans: NormalizedSpan[]; domain: { min: number; max: number } } | null => {
+  (spec, vizColors): {
+    spans: NormalizedSpan[];
+    disclosure: Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number }>;
+    domain: { min: number; max: number };
+  } | null => {
     if (!spec || spec.data.length === 0) return null;
     const result = normalize(spec.data, spec.xScaleType, spec.traceId, spec.colorBy, vizColors);
-    const spans = orderLanes(resolveActive(result.spans), spec.laneOrder ?? 'tree');
-    return { spans, domain: result.domain };
+    const { lanes: orderedSpans, depthBySpan } = orderLanes(resolveActive(result.spans), spec.laneOrder ?? 'tree');
+    // Apply collapse (controlled prop only; uncontrolled local state is not in redux).
+    const effectiveCollapsed = new Set(spec.collapsedSpanIds ?? []);
+    const spans = collapseLanes(orderedSpans, effectiveCollapsed);
+    const parentIds = collapsibleParentIds(orderedSpans);
+    const disclosure = buildDisclosureMap(orderedSpans, spans, effectiveCollapsed, depthBySpan, parentIds);
+    return { spans, disclosure, domain: result.domain };
   },
 );
 
@@ -69,6 +79,7 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     if (!pipeline) return EMPTY_SCREEN_READER_ITEMS;
     return [
       { label: 'Chart type', id: a11ySettings.defaultSummaryId, value: 'Trace chart' },
+      // After collapse, spans.length is the visible count (mirroring the canvas lane count).
       { label: 'Spans', value: String(pipeline.spans.length) },
     ];
   },
@@ -83,16 +94,22 @@ export const getTraceTableRowsSelector = createCustomCachedSelector(
   [getNormalizedSpans],
   (pipeline): TraceTableRow[] => {
     if (!pipeline) return [];
-    const { spans, domain } = pipeline;
+    const { spans, disclosure, domain } = pipeline;
     // Build a lookup map for parent name resolution (O(N) — same spans array).
     const nameById = new Map<string, string>(spans.map((s) => [s.id, s.name]));
-    return spans.map((span): TraceTableRow => ({
-      id: span.id,
-      name: span.name,
-      totalDuration: formatMs(span.end - span.start),
-      selfTime: formatMs(computeSelfTime(span)),
-      startOffset: `+${formatMs(span.start - domain.min)}`,
-      parentName: span.parentId != null ? (nameById.get(span.parentId) ?? '—') : '—',
-    }));
+    return spans.map((span, laneIndex): TraceTableRow => {
+      const discEntry = disclosure.get(laneIndex);
+      const hiddenCount = discEntry?.state === 'collapsed' ? discEntry.descendantCount : 0;
+      // Append hidden-descendant count to the name for AT parity (collapsed parent rows).
+      const name = hiddenCount > 0 ? `${span.name} (${hiddenCount} descendants hidden)` : span.name;
+      return {
+        id: span.id,
+        name,
+        totalDuration: formatMs(span.end - span.start),
+        selfTime: formatMs(computeSelfTime(span)),
+        startOffset: `+${formatMs(span.start - domain.min)}`,
+        parentName: span.parentId != null ? (nameById.get(span.parentId) ?? '—') : '—',
+      };
+    });
   },
 );

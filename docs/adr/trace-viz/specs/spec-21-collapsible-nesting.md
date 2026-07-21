@@ -1,134 +1,175 @@
-# Spec 21 — Collapsible nesting (design exploration)
+# Spec 21 — Collapsible nesting
 
-> **Status: Design stub — not an executable spec.**
->
-> This document enumerates options, open questions, and reusable pieces for adding collapsible
-> parent-child subtrees to the trace waterfall. No implementation approach is committed here.
->
-> **Lane-ordering question resolved (2026-07-17):** Open question #1 (lane ordering A/B/C) is now
-> resolved by [Spec 15 — Lane ordering mode](./spec-15-lane-ordering.md) + [ADR 0018](../0018-lane-ordering-tree-default.md).
-> The default lane order is `'tree'` (depth-first, Option A ordering without collapse). Collapse now
-> builds on top of `laneOrder: 'tree'` — it adds a **visibility filter** (hide descendants) plus
-> gutter chevrons and optional indent; the tree order itself is already shipped.
-> Open questions 2–9 still stand and must be resolved before this stub can be promoted.
+**Goal:** allow users to collapse a parent span so that its descendant lanes are hidden, reducing
+visual noise in large traces. Each parent lane shows a depth-indented disclosure caret (`▶`/`▼`)
+that the user can click or keyboard-toggle (`c` key). Collapsed parents show a rolled-up merged bar
+(the union of the whole subtree's active segments), clamped to the parent extent. Collapse is a
+`tree`-mode feature; `chronological` ignores the props and logs a dev warning.
 
-## Goal (exploratory)
+**Depends on:**
 
-Allow users to collapse a parent span so that its descendant lanes are hidden, reducing visual noise
-in large traces. Constrained to **single-trace mode** only (`traceId` set): multi-trace has multiple
-roots and interleaved spans from different traces; that case is out of scope.
+- [Spec 1](./spec-1-normalization.md) — `parentId` on `NormalizedSpan` exists.
+- [Spec 12](./spec-12-accessibility.md) — keyboard nav handler where `c` key is added; `aria-live`.
+- [Spec 13](./spec-13-segment-selection.md) — `region: 'span'` ref type; `TraceSegmentRef`.
+- [Spec 15](./spec-15-lane-ordering.md) — `laneOrder: 'tree'` is the seam; `orderLanes` emits
+  `depthBySpan` (added here) as a free DFS byproduct.
+- [Spec 17](./spec-17-responsive-labels.md) — `gutterPx(style)` extended here to accept `{ hasParents, maxDepth }` opts.
 
-**Depends on:** [Spec 1](./spec-1-normalization.md) — `parentId` on `NormalizedSpan` exists.
-Would also interact with [Spec 12](./spec-12-accessibility.md) (keyboard nav) and
-[Spec 13](./spec-13-segment-selection.md) (selection on collapsed subtrees).
+**See also:** [ADR 0026](../0026-collapsible-nesting.md) — rolled-up semantics, tree-gating, and
+disclosure-gutter decisions.
 
-## The tension
+## Files
 
-The lane model is now **tree-ordered by default** (depth-first `parentId` nesting, per Spec 15 /
-ADR 0018). Collapse builds on top of this: it adds a visibility filter (hide descendants of a
-collapsed parent) plus gutter chevrons and optional indentation. The reordering part (Option A) is
-already shipped; what remains is the hide/show mechanism and its interaction with scroll math,
-viewport culling, accessibility, and selection.
+- `packages/charts/src/chart_types/trace_chart/data/self_time.ts` — extract & export
+  `mergeSegments(intervals): Segment[]` from the sort-and-merge block previously inlined in
+  `gapSegments`; call `mergeSegments` in `gapSegments` (behaviour-preserving). Reused by the
+  rollup in `collapseLanes`.
+- `packages/charts/src/chart_types/trace_chart/data/order_lanes.ts` — have the tree DFS also emit
+  a per-span `depth` map (root = 0) via a new `depthBySpan: Map<NormalizedSpan, number>` field on
+  the return value. Chronological mode: all depths are 0.
+- `packages/charts/src/chart_types/trace_chart/data/collapse.ts` *(new)* — three exports:
+  - `collapseLanes(orderedSpans, collapsedSpanIds): NormalizedSpan[]` — prunes descendants of
+    collapsed parents and replaces each visible collapsed parent with a spread-clone whose
+    `activeSegments` is the **rolled-up** union of the whole subtree clamped to the parent extent.
+    Handles nested collapse (a collapsed span under a collapsed ancestor is absorbed). Input not
+    mutated; output length = visible count.
+  - `collapsibleParentIds(spans): Set<string>` — set of span ids that have at least one descendant.
+  - `buildDisclosureMap(pipelineSpans, visibleSpans, effectiveCollapsed, depthBySpan, parentIds)` —
+    produces a `Map<laneIndex, DisclosureEntry>` for `TraceGeometry`, bridging the
+    object-keyed `depthBySpan` to id-keyed lookups so spread-clones from `collapseLanes` resolve.
+- `packages/charts/src/chart_types/trace_chart/trace_api.ts` — add `collapsedSpanIds?: string[]`
+  and `onCollapseChange?: (next: string[]) => void` to `TraceSpec`, beside the selection props
+  (same controlled/perform-and-fire JSDoc).
+- `packages/charts/src/chart_types/trace_chart/trace_chart.tsx` — add collapse state machinery
+  mirroring the `selection` model (instance fields, `getEffectiveCollapsed()`,
+  `fireCollapseChange()`, `syncCollapseLifecycle()`); memoize `getCollapseOutput` keyed on
+  `[pipeline identity, effective collapsed set]`; tree-gate with a dev-warn; caret hit branch at
+  the top of `handleCanvasClick` (before the select/clear path); `c` key in the keyboard handler.
+- `packages/charts/src/chart_types/trace_chart/render/types.ts` — add constants
+  `CARET_GLYPH_PX = 20`, `CARET_INDENT_STEP_PX = 8`; add `DisclosureEntry` interface; extend
+  `gutterPx(style, opts?)` to reserve a caret column (`CARET_GLYPH_PX + maxDepth × CARET_INDENT_STEP_PX`)
+  in **all** label modes when `opts.hasParents` is true; add `disclosureByLane` to `TraceGeometry`;
+  add `'span'` to `HoverRegion`.
+- `packages/charts/src/chart_types/trace_chart/render/geometry.ts` — accept `disclosureByLane`,
+  `hasParents`, and `maxDepth` params; use extended `gutterPx`; return `disclosureByLane`.
+- `packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.ts` — in the gutter pass,
+  draw the `▶`/`▼` caret at `gutter.left + depth × CARET_INDENT_STEP_PX`; add
+  `pickDisclosure(x, y, geom): number` (caret-zone hit-test → lane index or -1); make `pickRegion`
+  return `region: 'span'` for any hit on a collapsed lane's fill.
+- `packages/charts/src/chart_types/trace_chart/render/tooltip.ts` — add `'span': 'Collapsed'` to
+  `REGION_LABEL`.
+- `packages/charts/src/chart_types/trace_chart/state/selectors/get_screen_reader_data.ts` — apply
+  `collapseLanes` using `spec.collapsedSpanIds ?? []` (controlled prop only; uncontrolled local
+  state is not in redux); build `disclosure` via `buildDisclosureMap`; append `" (N descendants
+  hidden)"` suffix to collapsed parent row names.
 
-The `parentId → children` map from `buildChildrenMap`
-([self_time.ts](../../../packages/charts/src/chart_types/trace_chart/data/self_time.ts))
-is the reusable starting point — shared with `orderLanes`.
+## Contract
 
-## Options
+```ts
+/**
+ * Controlled collapse state. When supplied, this array of span IDs is the render source of truth
+ * for which parent subtrees are hidden. When omitted, collapse is managed internally (uncontrolled).
+ * Only active when `laneOrder === 'tree'`; ignored (with a dev warning) in chronological mode.
+ *
+ * Collapse follows the perform-and-fire model (ADR 0007): gestures always execute and fire
+ * `onCollapseChange` — the parent decides whether to update the prop.
+ *
+ * @defaultValue undefined (uncontrolled — starts fully expanded)
+ */
+collapsedSpanIds?: string[];
 
-### Option A — Tree-order (DFS) + gutter indentation + chevrons
+/**
+ * Called after every collapse or expand gesture with the next collapsed-id array.
+ * In controlled mode the parent should update `collapsedSpanIds` with the new value; in
+ * uncontrolled mode this is an observe-only hook.
+ */
+onCollapseChange?: (next: string[]) => void;
+```
 
-Reorder lanes into depth-first tree order (root → children → grandchildren) for single-trace mode.
-Draw a depth-proportional left indent in the gutter and a chevron (`▶`/`▼`) next to each parent.
-Collapsing a parent hides all its descendants (the lane-render loop skips their indices); expanding
-restores them.
+**`collapseLanes` contract:**
 
-**Pros:** truest visual nesting; depth is immediately legible; the collapsed/expanded state is
-unambiguous.
+- Input: ordered `NormalizedSpan[]` (post-`orderLanes`), `collapsedSpanIds: ReadonlySet<string>`.
+- Output: new flat array with descendants pruned; collapsed parents carry rolled-up `activeSegments`
+  (union of the whole subtree's segments, merged/deduped, clamped to parent extent). Input not mutated.
+- Nested collapse: a collapsed span under a collapsed ancestor is absorbed (drops from the output).
+- Output length = visible lane count (used directly by scroll math and culling without change).
 
-**Cons:** biggest blast radius — changes lane ordering (currently start-sort, which users and
-downstream tools may rely on); requires passing tree-order indices through geometry, the gutter
-renderer, `pickLane`/`pickRegion`, `computeMaxScroll` (must use visible lane count, not total), the
-viewport culling loop, the a11y screen-reader table, and `scrollOffset` math.
+**`pickDisclosure` contract:**
 
-### Option B — Hide-only, keep start-order + chevrons on parents
+- Returns the visible lane index if `(x, y)` hits the caret zone of that lane, or `-1` otherwise.
+- Must be checked **before** `pickRegion` in `handleCanvasClick` so caret clicks never fire
+  `onElementClick` or mutate selection.
 
-Keep the start-time sort; chevrons appear in the gutter for any span that has children. Collapsing a
-parent hides its descendants (visibility filter over the sorted lane list). No reordering; no indent.
+**`disclosureByLane` contract:**
 
-**Pros:** smaller scope; geometry, culling, and scroll math only need to account for the *visible* lane
-count (no reordering).
+- `Map<number, DisclosureEntry>` keyed by visible lane index. Lane absent ↔ no caret.
+- Entries: `{ state: 'collapsed' | 'expanded'; depth: number; descendantCount: number }`.
 
-**Cons:** the "nesting" relationship is less visually obvious because sibling spans of a collapsed
-parent remain interleaved by start time; a parent may appear after its children in the lane list if
-a child starts earlier.
+## Steps
 
-### Option C — Hybrid: depth indent without reordering
+1. `data/self_time.ts`: extract & export `mergeSegments`; call it in `gapSegments`. Verify tests.
+2. `data/order_lanes.ts`: emit `depthBySpan` from the tree DFS. Verify order-lanes tests.
+3. `data/collapse.ts` + `collapse.test.ts`: implement the three exports. Verify collapse tests.
+4. `trace_api.ts`: add `collapsedSpanIds` and `onCollapseChange`. Verify typecheck.
+5. `trace_chart.tsx`: state machinery, `getCollapseOutput` memoization, tree-gate dev-warn, caret
+   click branch, `c` key handler.
+6. `render/types.ts` + `render/geometry.ts`: constants, `DisclosureEntry`, extended `gutterPx`,
+   `disclosureByLane` in `TraceGeometry`.
+7. `render/canvas2d_renderer.ts`: caret draw, `pickDisclosure`, collapsed-fill → `'span'` picking.
+8. `get_screen_reader_data.ts`: apply `collapseLanes`, build `disclosure`, suffix row names.
+9. `storybook/stories/trace/24_collapsible_nesting.story.tsx` + register in `trace.stories.tsx`.
+10. Promote this spec doc; write `docs/adr/trace-viz/0026-collapsible-nesting.md`; update
+    `docs/adr/trace-viz/README.md` and `CONTEXT.md`.
 
-Keep start-time sort; add a depth-proportional gutter indent (proportional to how deep in the tree the
-span is, based on the `parentId` chain) without reordering. Chevrons on spans with children; collapse
-hides descendants as in B.
+## Storybook
 
-**Pros:** depth is hinted without full reordering; smaller scope than A.
+`24_collapsible_nesting.story.tsx`:
 
-**Cons:** depth indent can be misleading if the ordering doesn't follow the tree — a deeply-indented
-span may appear next to shallower ones because of start-time interleaving.
+- Uses the `FRONTEND_WEB_OTLP_ENVELOPE` Kibana APM dataset (same as `12_kibana_trace` / `20_lane_order`).
+- Renders in `laneOrder="tree"` uncontrolled mode — no `collapsedSpanIds` prop needed.
+- `labelPosition` knob (gutter / inline / none) shows that the caret gutter is reserved in every mode.
+- Description documents: click a caret to collapse/expand, focus a lane and press `c` to toggle,
+  collapsed parent shows the rolled-up merged bar.
 
-## Open questions (must be resolved before promotion to full spec)
+## Tests
 
-1. ~~**Lane ordering:** which option (A/B/C)?~~ **Resolved:** tree order (Option A) is the default,
-   shipped by Spec 15 + ADR 0018. Collapse adds hide/chevron/indent on top of tree order.
+- `data/self_time.test.ts` (extended): `mergeSegments` refactor leaves `gapSegments` /
+  `resolveActive` / `waitingSegments` output byte-identical; `mergeSegments` merges overlapping and
+  adjacent intervals correctly; disjoint intervals kept separate.
+- `data/order_lanes.test.ts` (extended): `depthBySpan` correct (root = 0, child = 1,
+  grandchild = 2); chronological mode: all depths are 0 (or absent).
+- `data/collapse.test.ts` (new): descendants pruned; collapsed bar = merged union of whole subtree's
+  active segments (overlaps deduped, clamped to parent extent); nested collapsed spans absorbed;
+  collapsing a childless span is a no-op; input not mutated; output length = visible count.
+- `render/geometry.test.ts` (extended): `disclosureByLane` marks parent lanes with `state` + `depth`,
+  others absent; `gutterPx` reserves the caret column in inline/none when parents exist, 0 for flat data.
+- `render/canvas2d_renderer.test.ts` (extended): caret drawn at depth-indented x for parent lanes
+  only; `pickDisclosure` hits the caret zone, -1 elsewhere; `pickRegion` on a collapsed fill → `'span'`.
+- `state/get_screen_reader_data.test.ts` (extended): collapsed descendants absent from
+  `TraceTableRow[]`; collapsed-parent row name carries `" (N descendants hidden)"`.
+- `trace_chart.test.tsx` (extended): uncontrolled toggle updates + redraws; controlled
+  `collapsedSpanIds` is render source of truth, `onCollapseChange` still fires (perform-and-fire),
+  once per toggle, echo guard; caret click toggles without clearing selection or firing
+  `onElementClick`; `c` key toggles focused lane; `laneOrder="chronological"` ignores collapse +
+  dev-warns; selecting a collapsed bar yields `region: 'span'`.
 
-2. **Chevron affordance:** the gutter is currently a pure text-label canvas region, not interactive.
-   Options: (a) extend `pickLane`/`pickRegion` to detect a chevron hit-zone in the gutter x-range;
-   (b) overlay a DOM layer with hit-zone `<div>`s; (c) draw a clickable region in the existing canvas
-   event handler and test x < `gutterWidth`. Which approach is consistent with ADR 0001 (Canvas2D +
-   minimal DOM) and ADR 0009 (CSS div for brush overlay)?
+## Review (`/review-claudio`)
 
-3. **Collapsed active time rollup:** when a parent is collapsed, should its bar show the rolled-up
-   active time of its hidden descendants, or only its own self-time (the current default)? Rollup
-   requires a new aggregation pass; self-time-only is the current behavior with no changes.
+- Verify `collapseLanes` does not mutate its input array.
+- Verify output length equals the visible count in all cases (collapsed, nested-collapsed, childless).
+- Verify `pickDisclosure` is checked **before** `pickRegion` in `handleCanvasClick`.
+- Verify `fireCollapseChange` has an echo guard (does not fire if the effective set did not change).
+- Verify `gutterPx` reserves the caret column in `inline` and `none` modes, not only `gutter`.
+- Verify `depthBySpan` is object-keyed and `buildDisclosureMap` bridges it via id before the loop.
+- Verify the SR selector uses `spec.collapsedSpanIds ?? []` (controlled-only), not `this.collapsed`.
 
-4. **Scroll math:** `computeMaxScroll` uses `spans.length` (total lane count). It must be updated to
-   use the **visible** lane count (total minus hidden descendants of collapsed parents). How does the
-   caller know the visible count efficiently? A pre-computed array of visible lane indices is one
-   approach.
+## Acceptance
 
-5. **Viewport culling:** the current `firstLane`/`lastLane` loop is contiguous (O(1) bounds). With
-   hidden lanes, culling becomes non-contiguous — iterate only visible indices. A `visibleLanes:
-   number[]` array (pre-filtered list of lane indices in render order) would replace the
-   `[firstLane, lastLane]` bounds. How does this interact with the scroll math?
-
-6. **Controlled vs uncontrolled collapse state:** the `collapsedSpanIds: Set<string>` state follows
-   the same two options as selection (Spec 13): uncontrolled instance field, or controlled prop +
-   `onCollapseChange` callback. Which model, and does the `focusDomain` perform-and-fire pattern (ADR
-   0007) apply here too?
-
-7. **Selection interaction with collapsed subtrees (Spec 13):** a `TraceSegmentRef` for a span whose
-   lane is hidden. Should selecting a hidden span auto-expand its parent? Should the controlled
-   `selection` prop silently prune refs to hidden spans? Or is selection into a collapsed subtree a
-   no-op?
-
-8. **A11y screen-reader table (Spec 12):** the hidden paginated table currently lists all spans. With
-   collapse, collapsed descendants may be hidden from the table too, or always listed regardless of
-   visual collapse. The two are independent affordances; what does AT expect?
-
-9. **Multi-trace guard:** when `traceId` is not set, the lane list is spans from multiple traces
-   interleaved. The parent-child map in `resolveActive` still applies, but roots are ambiguous.
-   Collapse is disabled in this mode — add a dev-mode warning if collapse state is supplied without
-   `traceId`.
-
-## Reusable pieces (independent of option)
-
-- `parentId → children` Map from `resolveActive` ([self_time.ts:22](../../../packages/charts/src/chart_types/trace_chart/data/self_time.ts#L22)).
-- `waitingSegments` from Spec 13 — unchanged by collapse.
-- Span `id` and `parentId` on `NormalizedSpan` — the tree structure is already in the data.
-- Controlled-prop + perform-and-fire pattern from ADR 0007 — applicable to `onCollapseChange`.
-
-## Next step
-
-Team picks **A**, **B**, or **C** and resolves the open questions above. The stub is then promoted to a
-full executable spec with:
-- Goal / Depends on / Files / Contract / Steps / Storybook / Tests / Review / Acceptance sections.
-- A dedicated ADR for the lane-ordering decision (hard to reverse, non-obvious, result of a real
-  trade-off — the three criteria from the ADR policy).
+- Open `24_collapsible_nesting` story: click a depth-indented `▶` caret — descendant lanes disappear,
+  parent bar widens to the rolled-up merged active bar; scrollbar contracts.
+- Click the caret again (now `▼`) — descendants reappear.
+- Focus a lane (arrow keys) and press `c` — subtree toggles; `aria-live` announces.
+- Switch `labelPosition` to `inline` / `none` — carets still render, gutter reserved.
+- Inspect the hidden SR table DOM: collapsed descendants absent; parent row contains `N descendants hidden`.
+- `yarn jest trace` green (16 suites, 445+ tests).
+- `yarn typecheck` green.

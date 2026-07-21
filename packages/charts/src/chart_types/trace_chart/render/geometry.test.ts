@@ -8,7 +8,8 @@
 
 import { buildGeometry } from './geometry';
 import type { NormalizedSpan } from '../data/types';
-import type { TraceStyle } from './types';
+import type { DisclosureEntry, TraceStyle } from './types';
+import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, gutterPx } from './types';
 
 const style: TraceStyle = {
   gutterWidth: 200,
@@ -149,5 +150,101 @@ describe('buildGeometry', () => {
     const geom = buildGeometry(spans, canvasSize, zeroFocus, 0, style, 'linear', domain);
     expect(geom.scale(500)).toBe(geom.plot.left);
     expect(geom.scale(0)).toBe(geom.plot.left);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// gutterPx — caret column extension (Spec 21)
+// ---------------------------------------------------------------------------
+
+describe('gutterPx', () => {
+  const gutterStyle: TraceStyle = { ...style, labelPosition: 'gutter' };
+  const inlineStyle: TraceStyle = { ...style, labelPosition: 'inline' };
+  const noneStyle: TraceStyle = { ...style, labelPosition: 'none' };
+
+  it('gutter mode, no parents → gutterWidth unchanged', () => {
+    expect(gutterPx(gutterStyle)).toBe(style.gutterWidth);
+    expect(gutterPx(gutterStyle, { hasParents: false })).toBe(style.gutterWidth);
+  });
+
+  it('inline mode, no parents → 0', () => {
+    expect(gutterPx(inlineStyle)).toBe(0);
+    expect(gutterPx(inlineStyle, { hasParents: false })).toBe(0);
+  });
+
+  it('none mode, no parents → 0', () => {
+    expect(gutterPx(noneStyle)).toBe(0);
+  });
+
+  it('gutter mode, hasParents, maxDepth=0 → gutterWidth + CARET_GLYPH_PX', () => {
+    expect(gutterPx(gutterStyle, { hasParents: true, maxDepth: 0 })).toBe(style.gutterWidth + CARET_GLYPH_PX);
+  });
+
+  it('gutter mode, hasParents, maxDepth=3 → gutterWidth + CARET_GLYPH_PX + 3×CARET_INDENT_STEP_PX', () => {
+    expect(gutterPx(gutterStyle, { hasParents: true, maxDepth: 3 })).toBe(style.gutterWidth + CARET_GLYPH_PX + 3 * CARET_INDENT_STEP_PX);
+  });
+
+  it('inline mode, hasParents, maxDepth=0 → CARET_GLYPH_PX (no label gutter, but caret reserved)', () => {
+    expect(gutterPx(inlineStyle, { hasParents: true, maxDepth: 0 })).toBe(CARET_GLYPH_PX);
+  });
+
+  it('none mode, hasParents, maxDepth=2 → CARET_GLYPH_PX + 2×CARET_INDENT_STEP_PX', () => {
+    expect(gutterPx(noneStyle, { hasParents: true, maxDepth: 2 })).toBe(CARET_GLYPH_PX + 2 * CARET_INDENT_STEP_PX);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// buildGeometry — disclosureByLane (Spec 21)
+// ---------------------------------------------------------------------------
+
+describe('buildGeometry — disclosureByLane', () => {
+  const s = [span('a', 0, 100)];
+  const d = { min: 0, max: 100 };
+
+  it('passes empty Map through when no disclosureByLane supplied', () => {
+    const geom = buildGeometry(s, canvasSize, focusDomain, 0, style, 'linear', d);
+    expect(geom.disclosureByLane.size).toBe(0);
+  });
+
+  it('threads disclosureByLane through to the geometry unchanged', () => {
+    const entry: DisclosureEntry = { state: 'expanded', depth: 0, descendantCount: 2 };
+    const disclosure = new Map<number, DisclosureEntry>([[0, entry]]);
+    const geom = buildGeometry(s, canvasSize, focusDomain, 0, style, 'linear', d, null, [], new Map(), null, disclosure);
+    expect(geom.disclosureByLane).toBe(disclosure);
+    expect(geom.disclosureByLane.get(0)).toEqual({ state: 'expanded', depth: 0, descendantCount: 2 });
+  });
+
+  it('disclosureByLane entry with state=collapsed reflects collapsed parent', () => {
+    const entry: DisclosureEntry = { state: 'collapsed', depth: 1, descendantCount: 5 };
+    const disclosure = new Map<number, DisclosureEntry>([[0, entry]]);
+    const geom = buildGeometry(s, canvasSize, focusDomain, 0, style, 'linear', d, null, [], new Map(), null, disclosure);
+    expect(geom.disclosureByLane.get(0)?.state).toBe('collapsed');
+    expect(geom.disclosureByLane.get(0)?.descendantCount).toBe(5);
+  });
+});
+
+describe('buildGeometry — gutterPx with hasParents/maxDepth', () => {
+  const s = [span('a', 100, 400)];
+  const d = { min: 100, max: 400 };
+
+  it('with hasParents=true, maxDepth=0: gutter width includes caret column', () => {
+    const geom = buildGeometry(s, canvasSize, focusDomain, 0, style, 'linear', d, null, [], new Map(), null, new Map(), true, 0);
+    expect(geom.gutter.width).toBe(style.gutterWidth + CARET_GLYPH_PX);
+    expect(geom.plot.left).toBe(style.gutterWidth + CARET_GLYPH_PX);
+  });
+
+  it('with hasParents=true, maxDepth=2: gutter width includes caret + indent', () => {
+    const geom = buildGeometry(s, canvasSize, focusDomain, 0, style, 'linear', d, null, [], new Map(), null, new Map(), true, 2);
+    const expected = style.gutterWidth + CARET_GLYPH_PX + 2 * CARET_INDENT_STEP_PX;
+    expect(geom.gutter.width).toBe(expected);
+    expect(geom.plot.left).toBe(expected);
+    expect(geom.gutter.width + geom.plot.width).toBe(canvasSize.width);
+  });
+
+  it('inline mode, hasParents=true, maxDepth=0: reserves only the caret column', () => {
+    const inlineStyle: TraceStyle = { ...style, labelPosition: 'inline' };
+    const geom = buildGeometry(s, canvasSize, focusDomain, 0, inlineStyle, 'linear', d, null, [], new Map(), null, new Map(), true, 0);
+    expect(geom.gutter.width).toBe(CARET_GLYPH_PX);
+    expect(geom.plot.left).toBe(CARET_GLYPH_PX);
   });
 });

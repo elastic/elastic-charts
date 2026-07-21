@@ -15,7 +15,7 @@
  * draw-call counts without running real canvas operations.
  */
 
-import { draw, pickLane, canvas2dRenderer } from './canvas2d_renderer';
+import { draw, pickDisclosure, pickLane, pickRegion, canvas2dRenderer } from './canvas2d_renderer';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceGeometry, TraceStyle } from './types';
 import type { TraceDatum } from '../trace_api';
@@ -114,6 +114,7 @@ function makeGeom(overrides: Partial<TraceGeometry> = {}): TraceGeometry {
     resolvedSelection: [],
     scale: defaultScale,
     emptyMessage: null,
+    disclosureByLane: new Map(),
     ...overrides,
   };
 }
@@ -640,5 +641,137 @@ describe("draw — labelPosition: 'inline'", () => {
     expect(ctx.fillText).toHaveBeenCalledTimes(1);
     const [text] = (ctx.fillText as jest.Mock).mock.calls[0] as [string];
     expect(text).toBe('PartiallyVisible');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: pickDisclosure — caret zone hit test (Spec 21)
+// ---------------------------------------------------------------------------
+
+describe('pickDisclosure', () => {
+  // Geometry: gutter [0,200], plot starts at x=200, y=[32,200]
+  // disclosureByLane: lane 0 at depth 0, lane 1 at depth 1
+  const CARET_GLYPH_PX = 20;
+  const CARET_INDENT_STEP_PX = 8;
+
+  const geomWithCarets = makeGeom({
+    disclosureByLane: new Map([
+      [0, { state: 'expanded' as const, depth: 0, descendantCount: 2 }],
+      [1, { state: 'collapsed' as const, depth: 1, descendantCount: 1 }],
+    ]),
+  });
+
+  it('returns -1 when disclosureByLane is empty', () => {
+    expect(pickDisclosure(5, 40, makeGeom())).toBe(-1);
+  });
+
+  it('returns -1 when x is in the plot area (not the gutter)', () => {
+    // x=200 is plot.left → not in gutter
+    expect(pickDisclosure(200, 40, geomWithCarets)).toBe(-1);
+    expect(pickDisclosure(300, 40, geomWithCarets)).toBe(-1);
+  });
+
+  it('returns -1 when y is above the plot top', () => {
+    expect(pickDisclosure(5, 0, geomWithCarets)).toBe(-1);
+    expect(pickDisclosure(5, 31, geomWithCarets)).toBe(-1);
+  });
+
+  it('returns -1 for a lane without a caret (leaf lane)', () => {
+    // Lane 2 (y=32+48=80) has no disclosure entry
+    expect(pickDisclosure(5, 80, geomWithCarets)).toBe(-1);
+  });
+
+  it('returns lane 0 when x is within the depth-0 caret zone [0, CARET_GLYPH_PX)', () => {
+    // lane 0 → y = 32..55; caret zone for depth 0 → x in [0, 20)
+    expect(pickDisclosure(0, 40, geomWithCarets)).toBe(0);
+    expect(pickDisclosure(19, 40, geomWithCarets)).toBe(0);
+  });
+
+  it('returns -1 when x is at the right edge of the depth-0 caret zone (exclusive)', () => {
+    expect(pickDisclosure(CARET_GLYPH_PX, 40, geomWithCarets)).toBe(-1);
+  });
+
+  it('returns lane 1 when x is within the depth-1 caret zone', () => {
+    // lane 1 → y = 56..79; depth-1 caret zone → x in [INDENT, INDENT + CARET_GLYPH_PX)
+    const left = 1 * CARET_INDENT_STEP_PX;  // = 8
+    const right = left + CARET_GLYPH_PX;    // = 28
+    expect(pickDisclosure(left, 60, geomWithCarets)).toBe(1);
+    expect(pickDisclosure(right - 1, 60, geomWithCarets)).toBe(1);
+  });
+
+  it('returns -1 when x is left of the depth-1 indent', () => {
+    // x < 8 is not in the depth-1 caret zone
+    expect(pickDisclosure(7, 60, geomWithCarets)).toBe(-1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: pickRegion — collapsed lane returns 'span' (Spec 21)
+// ---------------------------------------------------------------------------
+
+describe('pickRegion — collapsed lane', () => {
+  // Geometry: gutter [0,200], plot starts at x=200, y=[32,200]
+  // spans[0]: a span with activeSegments at [200, 400] in data coords
+  // spans[0] is a collapsed parent (disclosureByLane says 'collapsed')
+
+  function makeCollapsedGeom() {
+    const collapsedSpan: NormalizedSpan = {
+      id: 'parent',
+      name: 'Parent',
+      start: 0,
+      end: 1000,
+      // Rolled-up active segments (as produced by collapseLanes)
+      activeSegments: [{ start: 0, end: 500 }, { start: 700, end: 1000 }],
+      meta: {} as never,
+    };
+    return makeGeom({
+      spans: [collapsedSpan],
+      disclosureByLane: new Map([
+        [0, { state: 'collapsed' as const, depth: 0, descendantCount: 3 }],
+      ]),
+    });
+  }
+
+  it('returns null outside the plot area', () => {
+    expect(pickRegion(200, 0, makeCollapsedGeom())).toBeNull();
+  });
+
+  it('returns region "span" when pointer is within a collapsed bar extent', () => {
+    // focusDomain [0,1000] → x=200 maps to t≈0 (plot.left = PLOT_LEFT = 200 in makeGeom)
+    // x=500 → t=(500-200)/700 * 1000 ≈ 428ms — inside [0, 1000]
+    const result = pickRegion(500, 40, makeCollapsedGeom());
+    expect(result).not.toBeNull();
+    expect(result!.region).toBe('span');
+    expect(result!.segmentIndex).toBe(-1);
+  });
+
+  it('returns region "empty" when pointer is outside the collapsed bar extent', () => {
+    // Scale: t = (x - 200) / 700 * 1000. For t > 1000: x > 200 + 700 = 900.
+    // focusDomain.max = 1000 → x = 200 + 700 = 900 → t = 1000 = span.end (edge case)
+    // x=910 → t > 1000 > span.end → empty
+    const result = pickRegion(910, 40, makeCollapsedGeom());
+    expect(result).not.toBeNull();
+    expect(result!.region).toBe('empty');
+  });
+
+  it('returns active/waiting (not span) for a non-collapsed parent lane', () => {
+    const expandedSpan: NormalizedSpan = {
+      id: 'parent2',
+      name: 'Parent2',
+      start: 0,
+      end: 1000,
+      activeSegments: [{ start: 0, end: 500 }],
+      meta: {} as never,
+    };
+    const geomExpanded = makeGeom({
+      spans: [expandedSpan],
+      disclosureByLane: new Map([
+        [0, { state: 'expanded' as const, depth: 0, descendantCount: 1 }],
+      ]),
+    });
+    // x=300 → t = (300-200)/700*1000 ≈ 143ms — inside [0,500] active segment
+    const result = pickRegion(300, 40, geomExpanded);
+    expect(result).not.toBeNull();
+    expect(result!.region).toBe('active');
   });
 });

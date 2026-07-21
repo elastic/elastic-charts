@@ -17,6 +17,7 @@ import type { Fill, Stroke } from '../../../geoms/types';
 import { waitingSegments } from '../data/self_time';
 import { drawTimeBar } from './time_bar';
 import type { HoverRegion, PickResult, TraceGeometry, TraceRenderer, TraceStyle } from './types';
+import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX } from './types';
 
 /** Padding above/below active-segment rects within a lane (px). Mirrors TICK_HEIGHT in time_bar.ts. */
 const LANE_PADDING = 3;
@@ -32,7 +33,7 @@ const NO_STROKE: Stroke = { color: Colors.Transparent.rgba, width: 0 };
  * @internal
  */
 export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: TraceStyle): void {
-  const { gutter, plot, spans, laneHeight, scrollOffset, scale, focusedLaneIndex } = geom;
+  const { gutter, plot, spans, laneHeight, scrollOffset, scale, focusedLaneIndex, disclosureByLane } = geom;
 
   withContext(ctx, () => {
     // Transparent clear of the full canvas area. Background ownership belongs to the Spec 6
@@ -117,6 +118,25 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
     const labelBandPx =
       style.labelPosition === 'inline' ? style.gutterLabel.fontSize + LANE_PADDING : 0;
 
+    // Width of the disclosure-caret column within the gutter. Derived from gutter.width and the
+    // label mode: in 'gutter' mode the label area follows the caret column; in other modes the
+    // full gutter IS the caret column. Zero when disclosureByLane is empty (flat trace, no carets).
+    const caretColumnWidth = disclosureByLane.size > 0
+      ? (style.labelPosition === 'gutter' ? gutter.width - style.gutterWidth : gutter.width)
+      : 0;
+
+    // Caret font: reuses the gutter label settings with center-align for the glyph.
+    const caretFont: TextFont = {
+      fontStyle: 'normal',
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      fontFamily: style.gutterLabel.fontFamily,
+      textColor: style.gutterLabel.color,
+      fontSize: style.gutterLabel.fontSize,
+      align: 'center',
+      baseline: 'middle',
+    };
+
     // Lazily-built fill cache: at most one colorToRgba call per distinct segment color per
     // draw() call. Segments per lane are few, so a plain Map is sufficient.
     const segFillCache = new Map<string, Fill>();
@@ -181,14 +201,15 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
 
       // --- Label pass ---
       if (style.labelPosition === 'gutter') {
-        // Gutter label (span name, ellipsized to fit) — unchanged behaviour.
-        const { lines } = wrapLines(ctx, span.name, gutterFont, gutterFont.fontSize, gutter.width - 8, laneHeight, {
+        // Gutter label: offset right of the caret column so label and caret don't overlap.
+        const labelX = gutter.left + caretColumnWidth + 4;
+        const labelWidth = gutter.width - caretColumnWidth - 8;
+        const { lines } = wrapLines(ctx, span.name, gutterFont, gutterFont.fontSize, labelWidth, laneHeight, {
           wrapAtWord: false,
           shouldAddEllipsis: true,
         });
         if (lines[0]) {
-          // Place text at horizontal offset 4 from the gutter edge; baseline 'middle' centers it vertically.
-          renderText(ctx, { x: gutter.left + 4, y: barMidY }, lines[0], gutterFont);
+          renderText(ctx, { x: labelX, y: barMidY }, lines[0], gutterFont);
         }
       } else if (style.labelPosition === 'inline' && span.name) {
         // Inline label: drawn on a row below the bar, starting at the bar's start x (sticky-left).
@@ -201,6 +222,14 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
         }
       }
       // labelPosition === 'none': no label drawn.
+
+      // --- Disclosure caret (▶/▼) ---
+      // Drawn inside the caret column at depth-indented x. Omitted when not a parent lane.
+      const disclosure = disclosureByLane.get(i);
+      if (disclosure) {
+        const caretX = gutter.left + disclosure.depth * CARET_INDENT_STEP_PX + CARET_GLYPH_PX / 2;
+        renderText(ctx, { x: caretX, y: barMidY }, disclosure.state === 'collapsed' ? '▶' : '▼', caretFont);
+      }
     }
 
     // --- Selection-highlight pass (after all lane content) ---
@@ -274,14 +303,37 @@ export function pickLane(_x: number, y: number, geom: TraceGeometry): number {
 }
 
 /**
- * Returns the lane index and x-axis region (`active` | `waiting` | `empty`) under `(x, y)`, or
- * `null` when the pointer is outside all lanes (above/below the plot area). Supersedes `pickLane`
- * for hover/tooltip use: the `region` drives the State row in the default tooltip and the cursor.
+ * Caret-zone hit test for the disclosure gutter column (Spec 21 / ADR 0026). Returns the 0-based
+ * lane index when `(x, y)` falls within the clickable caret area of a parent lane, or `-1`
+ * otherwise. Callers should check this before the regular `pickRegion` path; a caret hit is
+ * consumed and must not propagate to the selection / `onElementClick` flow.
+ * @internal
+ */
+export function pickDisclosure(x: number, y: number, geom: TraceGeometry): number {
+  const { disclosureByLane, gutter, plot, laneHeight, scrollOffset, spans } = geom;
+  if (disclosureByLane.size === 0) return -1;
+  if (x < gutter.left || x >= plot.left) return -1; // must be in the gutter zone
+  if (y < plot.top || y >= plot.top + plot.height) return -1;
+  const lane = Math.floor((y - plot.top + scrollOffset) / laneHeight);
+  if (lane < 0 || lane >= spans.length) return -1;
+  const entry = disclosureByLane.get(lane);
+  if (!entry) return -1;
+  const caretLeft = gutter.left + entry.depth * CARET_INDENT_STEP_PX;
+  const caretRight = caretLeft + CARET_GLYPH_PX;
+  return x >= caretLeft && x < caretRight ? lane : -1;
+}
+
+/**
+ * Returns the lane index and x-axis region (`active` | `waiting` | `empty` | `span`) under
+ * `(x, y)`, or `null` when the pointer is outside all lanes (above/below the plot area).
+ * Supersedes `pickLane` for hover/tooltip use: the `region` drives the State row in the default
+ * tooltip and the cursor.
  *
- * Region semantics (per ADR 0003):
+ * Region semantics (per ADR 0003 / Spec 21):
  * - `active`  — `t` falls inside a span's active segment (self-time by default)
  * - `waiting` — `t` is inside `[start, end]` but not an active segment (in children, by default)
  * - `empty`   — `t` is outside `[start, end]`; no span activity at this x in this lane
+ * - `span`    — `t` is inside the extent of a **collapsed** parent; whole-span picking (ADR 0026)
  * @internal
  */
 export function pickRegion(x: number, y: number, geom: TraceGeometry): PickResult | null {
@@ -303,6 +355,10 @@ export function pickRegion(x: number, y: number, geom: TraceGeometry): PickResul
   let segmentIndex = -1;
   if (t < span.start || t > span.end) {
     region = 'empty';
+  } else if (geom.disclosureByLane.get(lane)?.state === 'collapsed') {
+    // Collapsed parent: sub-segment indices are ambiguous for rolled-up bars (ADR 0026).
+    // Return whole-span picking so a click creates a 'span' selection ref, not 'active'/'waiting'.
+    region = 'span';
   } else {
     segmentIndex = span.activeSegments.findIndex((seg) => t >= seg.start && t <= seg.end);
     if (segmentIndex >= 0) {

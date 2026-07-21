@@ -29,8 +29,8 @@ function span(id: string, start: number, end: number, parentId?: string): Normal
 describe('orderLanes — chronological', () => {
   it('produces ascending start order', () => {
     const spans = [span('c', 300, 400), span('a', 100, 200), span('b', 200, 300)];
-    const result = orderLanes(spans, 'chronological');
-    expect(result.map((s) => s.id)).toEqual(['a', 'b', 'c']);
+    const { lanes } = orderLanes(spans, 'chronological');
+    expect(lanes.map((s) => s.id)).toEqual(['a', 'b', 'c']);
   });
 
   it('does not mutate the input array', () => {
@@ -42,11 +42,17 @@ describe('orderLanes — chronological', () => {
 
   it('single span → unchanged', () => {
     const spans = [span('a', 0, 100)];
-    expect(orderLanes(spans, 'chronological').map((s) => s.id)).toEqual(['a']);
+    expect(orderLanes(spans, 'chronological').lanes.map((s) => s.id)).toEqual(['a']);
   });
 
   it('empty input → empty output', () => {
-    expect(orderLanes([], 'chronological')).toEqual([]);
+    expect(orderLanes([], 'chronological').lanes).toEqual([]);
+  });
+
+  it('depthBySpan is empty in chronological mode', () => {
+    const spans = [span('a', 0, 100), span('b', 10, 50, 'a')];
+    const { depthBySpan } = orderLanes(spans, 'chronological');
+    expect(depthBySpan.size).toBe(0);
   });
 });
 
@@ -57,14 +63,14 @@ describe('orderLanes — chronological', () => {
 describe('orderLanes — tree (basic)', () => {
   it('single root with no children → single span', () => {
     const spans = [span('root', 0, 100)];
-    expect(orderLanes(spans, 'tree').map((s) => s.id)).toEqual(['root']);
+    expect(orderLanes(spans, 'tree').lanes.map((s) => s.id)).toEqual(['root']);
   });
 
   it('parent immediately followed by its child', () => {
     // root starts at 0; child starts at 50 — without tree order, start-sort would still put them
     // in the same relative order, but this test checks the tree rule explicitly.
     const spans = [span('child', 50, 100, 'root'), span('root', 0, 100)];
-    expect(orderLanes(spans, 'tree').map((s) => s.id)).toEqual(['root', 'child']);
+    expect(orderLanes(spans, 'tree').lanes.map((s) => s.id)).toEqual(['root', 'child']);
   });
 
   it('parent followed by all descendants (deep chain)', () => {
@@ -73,7 +79,7 @@ describe('orderLanes — tree (basic)', () => {
       span('child', 10, 40, 'root'),
       span('root', 0, 50),
     ];
-    expect(orderLanes(spans, 'tree').map((s) => s.id)).toEqual(['root', 'child', 'grandchild']);
+    expect(orderLanes(spans, 'tree').lanes.map((s) => s.id)).toEqual(['root', 'child', 'grandchild']);
   });
 
   it('does not mutate the input array', () => {
@@ -97,7 +103,7 @@ describe('orderLanes — tree (sibling sort)', () => {
       span('b', 20, 30, 'root'),
       span('a', 10, 20, 'root'),
     ];
-    expect(orderLanes(spans, 'tree').map((s) => s.id)).toEqual(['root', 'a', 'b', 'c']);
+    expect(orderLanes(spans, 'tree').lanes.map((s) => s.id)).toEqual(['root', 'a', 'b', 'c']);
   });
 
   it('equal-start siblings preserve original data order (stable)', () => {
@@ -107,7 +113,7 @@ describe('orderLanes — tree (sibling sort)', () => {
       span('b', 10, 20, 'root'), // appears first in data
       span('a', 10, 20, 'root'), // appears second in data
     ];
-    expect(orderLanes(spans, 'tree').map((s) => s.id)).toEqual(['root', 'b', 'a']);
+    expect(orderLanes(spans, 'tree').lanes.map((s) => s.id)).toEqual(['root', 'b', 'a']);
   });
 });
 
@@ -124,7 +130,7 @@ describe('orderLanes — tree (forest / multi-root)', () => {
       span('r2c', 15, 30, 'r2'),
     ];
     // r1 (start=0) before r2 (start=10); each subtree follows its root
-    expect(orderLanes(spans, 'tree').map((s) => s.id)).toEqual(['r1', 'r1c', 'r2', 'r2c']);
+    expect(orderLanes(spans, 'tree').lanes.map((s) => s.id)).toEqual(['r1', 'r1c', 'r2', 'r2c']);
   });
 
   it('orphan spans (unknown parentId) treated as roots', () => {
@@ -133,12 +139,12 @@ describe('orderLanes — tree (forest / multi-root)', () => {
       span('root', 0, 20),
     ];
     // root (start=0) before orphan (start=5)
-    expect(orderLanes(spans, 'tree').map((s) => s.id)).toEqual(['root', 'orphan']);
+    expect(orderLanes(spans, 'tree').lanes.map((s) => s.id)).toEqual(['root', 'orphan']);
   });
 
   it('span without parentId is a root', () => {
     const spans = [span('b', 10, 20), span('a', 0, 10)];
-    expect(orderLanes(spans, 'tree').map((s) => s.id)).toEqual(['a', 'b']);
+    expect(orderLanes(spans, 'tree').lanes.map((s) => s.id)).toEqual(['a', 'b']);
   });
 });
 
@@ -155,10 +161,10 @@ describe('orderLanes — tree (cycle safety)', () => {
       span('b', 10, 40, 'a'), // b's parent is a (backward)
     ];
     // 'root' is the only true root; 'a' and 'b' reference each other so one is an orphan root
-    const result = orderLanes(spans, 'tree');
+    const { lanes } = orderLanes(spans, 'tree');
     // all three must be present
-    expect(new Set(result.map((s) => s.id))).toEqual(new Set(['root', 'a', 'b']));
-    expect(result).toHaveLength(3);
+    expect(new Set(lanes.map((s) => s.id))).toEqual(new Set(['root', 'a', 'b']));
+    expect(lanes).toHaveLength(3);
   });
 });
 
@@ -169,8 +175,10 @@ describe('orderLanes — tree (cycle safety)', () => {
 describe('orderLanes — tree == chronological for flat data', () => {
   it('flat spans (no parentId) produce start-ascending order in both modes', () => {
     const spans = [span('c', 30, 40), span('a', 10, 20), span('b', 20, 30)];
-    const tree = orderLanes(spans, 'tree').map((s) => s.id);
-    const chron = orderLanes(spans, 'chronological').map((s) => s.id);
+    const { lanes: treeLanes } = orderLanes(spans, 'tree');
+    const { lanes: chronLanes } = orderLanes(spans, 'chronological');
+    const tree = treeLanes.map((s) => s.id);
+    const chron = chronLanes.map((s) => s.id);
     expect(tree).toEqual(chron);
     expect(tree).toEqual(['a', 'b', 'c']);
   });
@@ -216,8 +224,8 @@ describe('orderLanes — Kibana APM regression', () => {
   ];
 
   it('tree order matches Kibana reference (DFS, siblings by start)', () => {
-    const result = orderLanes(kibanaNormalizedSpans, 'tree').map((s) => s.id);
-    expect(result).toEqual([
+    const { lanes } = orderLanes(kibanaNormalizedSpans, 'tree');
+    expect(lanes.map((s) => s.id)).toEqual([
       '0949', // root
       '0947', // child of 0949
       '0945', // child of 0947
@@ -233,12 +241,12 @@ describe('orderLanes — Kibana APM regression', () => {
 
   it('chronological order is different (interleaved by start)', () => {
     // All 0ms spans cluster at the top; only _search, SELECT, and user:123 stand apart
-    const result = orderLanes(kibanaNormalizedSpans, 'chronological').map((s) => s.id);
+    const { lanes } = orderLanes(kibanaNormalizedSpans, 'chronological');
     // All BASE-start spans come first (7 of them, in data order for stable); then +5ms and +30ms
-    const firstSeven = result.slice(0, 7);
-    expect(firstSeven).not.toContain('0931'); // +5ms
-    expect(firstSeven).not.toContain('0933'); // +30ms
-    expect(firstSeven).not.toContain('0937'); // +5ms
+    const firstSeven = lanes.slice(0, 7);
+    expect(firstSeven.map((s) => s.id)).not.toContain('0931'); // +5ms
+    expect(firstSeven.map((s) => s.id)).not.toContain('0933'); // +30ms
+    expect(firstSeven.map((s) => s.id)).not.toContain('0937'); // +5ms
   });
 });
 
@@ -251,19 +259,19 @@ describe('orderLanes — duplicate span id', () => {
     // Two distinct NormalizedSpan objects with identical ids (can arrive from untrusted OTel data).
     const s1 = span('dup', 0, 100);
     const s2 = span('dup', 200, 300);
-    const result = orderLanes([s1, s2], 'tree');
-    expect(result).toHaveLength(2);
-    expect(result).toContain(s1);
-    expect(result).toContain(s2);
+    const { lanes } = orderLanes([s1, s2], 'tree');
+    expect(lanes).toHaveLength(2);
+    expect(lanes).toContain(s1);
+    expect(lanes).toContain(s2);
   });
 
   it('chronological: both span objects are emitted when two spans share the same id', () => {
     const s1 = span('dup', 0, 100);
     const s2 = span('dup', 200, 300);
-    const result = orderLanes([s1, s2], 'chronological');
-    expect(result).toHaveLength(2);
-    expect(result).toContain(s1);
-    expect(result).toContain(s2);
+    const { lanes } = orderLanes([s1, s2], 'chronological');
+    expect(lanes).toHaveLength(2);
+    expect(lanes).toContain(s1);
+    expect(lanes).toContain(s2);
   });
 
   it('tree: duplicate-id spans are appended after the valid tree (safety path)', () => {
@@ -272,10 +280,64 @@ describe('orderLanes — duplicate span id', () => {
     const root = span('root', 0, 200);
     const child = span('child', 10, 50, 'root');
     const dup = span('root', 300, 400); // same id as root, different object
-    const result = orderLanes([root, child, dup], 'tree');
-    expect(result).toHaveLength(3);
-    expect(result).toContain(root);
-    expect(result).toContain(child);
-    expect(result).toContain(dup);
+    const { lanes } = orderLanes([root, child, dup], 'tree');
+    expect(lanes).toHaveLength(3);
+    expect(lanes).toContain(root);
+    expect(lanes).toContain(child);
+    expect(lanes).toContain(dup);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// depth — tree DFS emits correct depth per span
+// ---------------------------------------------------------------------------
+
+describe('orderLanes — tree depth', () => {
+  it('single root has depth 0', () => {
+    const root = span('root', 0, 100);
+    const { depthBySpan } = orderLanes([root], 'tree');
+    expect(depthBySpan.get(root)).toBe(0);
+  });
+
+  it('root=0, child=1, grandchild=2', () => {
+    const root = span('root', 0, 100);
+    const child = span('child', 10, 90, 'root');
+    const grandchild = span('grandchild', 20, 80, 'child');
+    const { depthBySpan } = orderLanes([root, child, grandchild], 'tree');
+    expect(depthBySpan.get(root)).toBe(0);
+    expect(depthBySpan.get(child)).toBe(1);
+    expect(depthBySpan.get(grandchild)).toBe(2);
+  });
+
+  it('siblings share the same depth', () => {
+    const root = span('root', 0, 100);
+    const a = span('a', 10, 40, 'root');
+    const b = span('b', 50, 80, 'root');
+    const { depthBySpan } = orderLanes([root, a, b], 'tree');
+    expect(depthBySpan.get(a)).toBe(1);
+    expect(depthBySpan.get(b)).toBe(1);
+  });
+
+  it('forest: each root has depth 0', () => {
+    const r1 = span('r1', 0, 50);
+    const r2 = span('r2', 60, 100);
+    const c = span('c', 5, 20, 'r1');
+    const { depthBySpan } = orderLanes([r1, r2, c], 'tree');
+    expect(depthBySpan.get(r1)).toBe(0);
+    expect(depthBySpan.get(r2)).toBe(0);
+    expect(depthBySpan.get(c)).toBe(1);
+  });
+
+  it('orphan spans (unknown parentId) get depth 0', () => {
+    const orphan = span('orphan', 0, 50, 'nonexistent');
+    const { depthBySpan } = orderLanes([orphan], 'tree');
+    expect(depthBySpan.get(orphan)).toBe(0);
+  });
+
+  it('chronological mode: depthBySpan is empty (all depths treated as 0)', () => {
+    const root = span('root', 0, 100);
+    const child = span('child', 10, 50, 'root');
+    const { depthBySpan } = orderLanes([root, child], 'chronological');
+    expect(depthBySpan.size).toBe(0);
   });
 });

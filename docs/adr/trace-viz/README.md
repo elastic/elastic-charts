@@ -27,6 +27,7 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0022 — Clock-skew correction: active centering heuristic](./0022-clock-skew-heuristic.md)
 - [0023 — Running-span model: optional end, domain-max provisional edge, dashed visual](./0023-running-span-model.md)
 - [0024 — Multi-level time bar: stacked tick rows in time mode](./0024-multilevel-time-bar.md)
+- [0026 — Collapsible nesting: rolled-up semantics, tree-gating, and disclosure gutter](./0026-collapsible-nesting.md)
 
 ## Spec plans
 
@@ -56,7 +57,7 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 - [Spec 18 — Empty-state distinction (no-data vs trace-not-found)](./specs/spec-18-empty-state.md)
 - [Spec 19 — Nanosecond precision for linear x-scale](./specs/spec-19-nanosecond-linear.md)
 - [Spec 20 — API documentation story (auto-extracted)](./specs/spec-20-api-docs.md)
-- [Spec 21 — Collapsible nesting (design exploration)](./specs/spec-21-collapsible-nesting.md) *(design stub — not yet executable)*
+- [Spec 21 — Collapsible nesting](./specs/spec-21-collapsible-nesting.md)
 - [Spec 22 — Critical path (consumer-supplied interval-precise highlight)](./specs/spec-22-critical-path.md)
 - [Spec 23 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-23-connections.md)
 - [Spec 24 — Touch gestures (pinch-zoom, drag-pan, tap/double-tap selection, long-press pin)](./specs/spec-24-touch-gestures.md)
@@ -85,9 +86,9 @@ graph whose numeric order **is** the dependency order:
 
 Specs 15–19 are mutually independent and can be parallelised after Spec 11.
 
-Spec 21 (collapsible nesting design exploration) is independent of all other specs; it is not
-executable until the team picks an implementation option and promotes the stub to a full spec. The
-lane-ordering question (previously open question #1) is resolved by Spec 15 + ADR 0018.
+Spec 21 (collapsible nesting) builds on Spec 15 (`laneOrder: 'tree'` is the seam) and Specs 12 and 13
+(keyboard nav and `TraceSegmentRef`). It is independent of Specs 22–27. Open questions #2–#9 from the
+original stub are resolved by [ADR 0026](./0026-collapsible-nesting.md).
 
 - **Spec 22** (critical path highlight) — depends on Specs 5, 12, and 13. Independent of Spec 23.
   Extends the normalize pipeline (`project()`) and adds a canvas draw pass; no interaction state.

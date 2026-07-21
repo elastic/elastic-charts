@@ -46,13 +46,46 @@ export interface TraceStyle {
 }
 
 /**
- * Returns the effective left gutter width for layout and coordinate math. The gutter collapses to
- * zero for `'inline'` and `'none'` label modes — in both cases the gutter region has no content,
- * so reserving horizontal space for it would waste plot area and misalign interaction coordinates.
+ * Width of the caret glyph zone (▶/▼) in the disclosure gutter, in px.
+ * Sized to provide a comfortable click/tap target. @internal
+ */
+export const CARET_GLYPH_PX = 20;
+
+/**
+ * Additional px per depth level for caret indentation in the disclosure gutter. @internal
+ */
+export const CARET_INDENT_STEP_PX = 8;
+
+/**
+ * One entry in `TraceGeometry.disclosureByLane` — describes the collapse caret for a parent lane.
  * @internal
  */
-export function gutterPx(style: TraceStyle): number {
-  return style.labelPosition === 'gutter' ? style.gutterWidth : 0;
+export interface DisclosureEntry {
+  /** Whether the parent's children are currently hidden. */
+  state: 'collapsed' | 'expanded';
+  /** Tree depth of this span (root = 0); used to indent the caret. */
+  depth: number;
+  /** Total number of descendants in the original (pre-collapse) tree; used for the aria announcement. */
+  descendantCount: number;
+}
+
+/**
+ * Returns the effective left gutter width for layout and coordinate math.
+ *
+ * In `'gutter'` mode the gutter shows span-name labels plus (when parents exist) the caret column.
+ * In `'inline'` and `'none'` modes there are no label columns but **when the trace has parent
+ * spans** a minimal disclosure-gutter column is still reserved so carets render in all label modes
+ * (Spec 21 / ADR 0026). Flat traces (no parents) reserve nothing → no regression for the common
+ * non-nested case.
+ * @internal
+ */
+export function gutterPx(style: TraceStyle, opts?: { hasParents?: boolean; maxDepth?: number }): number {
+  const caretColumnWidth = opts?.hasParents
+    ? CARET_GLYPH_PX + (opts.maxDepth ?? 0) * CARET_INDENT_STEP_PX
+    : 0;
+  return style.labelPosition === 'gutter'
+    ? style.gutterWidth + caretColumnWidth
+    : caretColumnWidth;
 }
 
 /**
@@ -100,6 +133,12 @@ export interface TraceGeometry {
    * Set by `frame()` in `trace_chart.tsx` for the `trace-not-found` empty state; `null` otherwise.
    */
   emptyMessage: string | null;
+  /**
+   * Disclosure carets for parent lanes (tree mode only). Key = lane index in the visible `spans`
+   * array. Absent for leaf lanes and in `'chronological'` mode (empty Map).
+   * Populated by `buildGeometry`; consumed by `canvas2d_renderer` and keyboard handler.
+   */
+  disclosureByLane: Map<number, DisclosureEntry>;
 }
 
 /**
@@ -107,9 +146,12 @@ export interface TraceGeometry {
  * - `active`  — inside an active segment (self-time, per ADR 0003)
  * - `waiting` — inside [start, end] but not an active segment (time spent in children, by default)
  * - `empty`   — outside [start, end]; no span activity at this x in this lane
+ * - `span`    — inside [start, end] of a **collapsed** parent (whole-span picking; Spec 21 / ADR 0026).
+ *               Sub-segment indices are ambiguous for rolled-up bars, so collapsed bars use this
+ *               region instead of `active`/`waiting`. Click selects the whole span ref.
  * @internal
  */
-export type HoverRegion = 'active' | 'waiting' | 'empty';
+export type HoverRegion = 'active' | 'waiting' | 'empty' | 'span';
 
 /**
  * Result of x-aware lane picking (`pickRegion`). `index` is the 0-based span-array index; `region`

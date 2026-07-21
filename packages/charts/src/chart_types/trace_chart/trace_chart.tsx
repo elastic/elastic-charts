@@ -12,11 +12,12 @@ import { connect } from 'react-redux';
 import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
+import { buildDisclosureMap, collapseLanes, collapsibleParentIds } from './data/collapse';
 import { normalize } from './data/normalize';
 import { orderLanes } from './data/order_lanes';
 import { resolveActive, waitingSegments } from './data/self_time';
 import type { NormalizedSpan } from './data/types';
-import { canvas2dRenderer, pickRegion } from './render/canvas2d_renderer';
+import { canvas2dRenderer, pickDisclosure, pickRegion } from './render/canvas2d_renderer';
 import { buildGeometry } from './render/geometry';
 import { gutterPx } from './render/types';
 import type { ViewKey } from './render/interaction';
@@ -73,6 +74,13 @@ const WHEEL_ZOOM_VELOCITY = 3;
 /** Debounce window for single-vs-double click disambiguation (ADR 0011 Decision 6). */
 const DBLCLICK_DEBOUNCE_MS = 250;
 
+/** Order-insensitive equality for two `Set<string>` collapse states. */
+function collapseSetsEqual(a: Set<string>, b: Set<string>): boolean {
+  if (a.size !== b.size) return false;
+  for (const id of a) if (!b.has(id)) return false;
+  return true;
+}
+
 /**
  * Keyboard pan fraction: one ←/→ keypress pans the visible time window by this fraction of its
  * current extent. 1:1 snap (easeZoom=false) per ADR 0004 Decision 2 — domainTween cannot ease pan.
@@ -128,7 +136,7 @@ interface PipelineCache {
   colorBy: TraceSpec['colorBy'];
   laneOrder: TraceSpec['laneOrder'];
   vizColors: Theme['colors']['vizColors'];
-  result: { spans: ReturnType<typeof resolveActive>; domain: { min: number; max: number }; emptyReason?: 'trace-not-found' };
+  result: { spans: ReturnType<typeof resolveActive>; depthBySpan: Map<ReturnType<typeof resolveActive>[number], number>; hasParents: boolean; maxDepth: number; domain: { min: number; max: number }; emptyReason?: 'trace-not-found' };
 }
 
 /** Tween state for domainTween. Initialised to NaN so the first frame snaps to fit-all. */
@@ -233,6 +241,20 @@ class TraceComponent extends React.Component<TraceProps> {
   private lastFiredSelection: TraceSelection = [];
   /** Echo-suppression for onFocusDomainChange (Spec 16 / ADR 0007). Null until the first settle fires. */
   private lastFiredDomain: [number, number] | null = null;
+
+  // Collapse state (Spec 21 / ADR 0026). Same self-managed + controlled + perform-and-fire model as
+  // selection (ADR 0011). Only active in laneOrder === 'tree'; ignored in chronological mode.
+  private collapsed: Set<string> = new Set();
+  private lastFiredCollapsed: Set<string> = new Set();
+  // Cache the Set built from the controlled prop array — stable reference for memoization.
+  private collapsedFromProp: { ids: string[]; asSet: Set<string> } | null = null;
+  // Memoized post-step: collapseLanes + buildDisclosureMap run only when pipeline spans or collapsed set changes.
+  private collapseCache: {
+    pipelineSpans: NormalizedSpan[];
+    collapsed: ReadonlySet<string>;
+    result: NormalizedSpan[];
+    disclosure: Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number }>;
+  } | null = null;
   // Memoized spanId→laneIndex Map; rebuilt when the pipeline spans reference changes. Passed into
   // buildGeometry each frame to avoid rebuilding the Map per rAF frame (plan D4 / /review-claudio).
   private spanIdToLane: Map<string, number> = new Map();
@@ -379,6 +401,7 @@ class TraceComponent extends React.Component<TraceProps> {
     this.syncFocusDomain(prevProps);      // applies controlled focusDomain in the (possibly just-reset) coordinate space
     this.syncPinOnSpecChange(prevProps);
     this.syncSelectionLifecycle(prevProps);
+    this.syncCollapseLifecycle(prevProps);
     this.syncControlProvider(prevProps.traceSpec);
     this.redrawIfCanvasPropsChanged(prevProps);
   };
@@ -518,7 +541,18 @@ class TraceComponent extends React.Component<TraceProps> {
     const { traceSpec, chartDimensions: { width, height } } = this.props;
     if (!traceSpec) return;
 
-    const { spans, domain, emptyReason } = this.getPipeline(traceSpec);
+    const { spans: pipelineSpans, depthBySpan, hasParents, maxDepth, domain, emptyReason } = this.getPipeline(traceSpec);
+
+    // Tree-gating: collapse is a tree-mode feature (ADR 0026). Warn and ignore in chronological.
+    const laneOrder = traceSpec.laneOrder ?? 'tree';
+    if (process.env.NODE_ENV !== 'production' && laneOrder !== 'tree' && traceSpec.collapsedSpanIds) {
+      // eslint-disable-next-line no-console
+      console.warn('[elastic-charts/trace] collapsedSpanIds is only supported in laneOrder="tree". ' +
+        'In chronological mode descendants are not contiguous, so collapse is disabled.');
+    }
+    const effectiveCollapsed = laneOrder === 'tree' ? this.getEffectiveCollapsed() : new Set<string>();
+    const { spans, disclosure: disclosureByLane } = this.getCollapseOutput(pipelineSpans, effectiveCollapsed, depthBySpan);
+
     const emptyMessage = emptyReason === 'trace-not-found'
       ? (traceSpec.traceNotFoundMessage ?? `No spans found for trace "${traceSpec.traceId}"`)
       : null;
@@ -567,6 +601,9 @@ class TraceComponent extends React.Component<TraceProps> {
       this.getEffectiveSelection(),
       this.spanIdToLane,
       emptyMessage,
+      disclosureByLane,
+      hasParents,
+      maxDepth,
     );
 
     // DPR scaling: renderer is dpr-agnostic, caller sets the transform each frame.
@@ -631,6 +668,86 @@ class TraceComponent extends React.Component<TraceProps> {
     spec.onSelectionChange(next, details);
   }
 
+  // -------------------------------------------------------------------------
+  // Collapse helpers (Spec 21 / ADR 0026)
+  // -------------------------------------------------------------------------
+
+  /**
+   * Returns a stable `Set<string>` for the effective collapsed ids. In controlled mode, caches the
+   * conversion of the prop array to a Set (same array reference → same Set → memoization cache hit).
+   */
+  private getEffectiveCollapsed(): ReadonlySet<string> {
+    const ids = this.props.traceSpec?.collapsedSpanIds;
+    if (ids === undefined) return this.collapsed;
+    if (this.collapsedFromProp && this.collapsedFromProp.ids === ids) return this.collapsedFromProp.asSet;
+    const asSet = new Set(ids);
+    this.collapsedFromProp = { ids, asSet };
+    return asSet;
+  }
+
+  /** Fires `onCollapseChange` with the new id array, guarded by set-equality echo suppression. */
+  private fireCollapseChange(next: Set<string>) {
+    if (collapseSetsEqual(next, this.lastFiredCollapsed)) return;
+    this.lastFiredCollapsed = new Set(next); // capture before calling out
+    this.props.traceSpec?.onCollapseChange?.([...next]);
+  }
+
+  /**
+   * Returns the `collapseLanes` result and the `disclosureByLane` map for the given pipeline spans
+   * + collapsed set, reusing the cached output when neither input has changed (by reference).
+   * Runs at most once per toggle or pipeline change, never per rAF frame.
+   */
+  private getCollapseOutput(
+    pipelineSpans: NormalizedSpan[],
+    collapsed: ReadonlySet<string>,
+    depthBySpan: ReadonlyMap<NormalizedSpan, number>,
+  ): { spans: NormalizedSpan[]; disclosure: Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number }> } {
+    if (
+      this.collapseCache &&
+      this.collapseCache.pipelineSpans === pipelineSpans &&
+      this.collapseCache.collapsed === collapsed
+    ) {
+      return { spans: this.collapseCache.result, disclosure: this.collapseCache.disclosure };
+    }
+    const result = collapseLanes(pipelineSpans, collapsed);
+    // parentIds computed here (on cache miss only) to avoid O(N) work every rAF frame.
+    // Gate on depthBySpan.size > 0: orderLanes returns an empty Map in chronological mode, so
+    // parentIds must also be empty there — otherwise disclosureByLane is populated and carets
+    // render even though collapse is disabled in that mode.
+    const parentIds = depthBySpan.size > 0 ? collapsibleParentIds(pipelineSpans) : new Set<string>();
+    const disclosure = buildDisclosureMap(pipelineSpans, result, collapsed, depthBySpan, parentIds);
+    this.collapseCache = { pipelineSpans, collapsed, result, disclosure };
+    return { spans: result, disclosure };
+  }
+
+  /** Prunes stale collapsed ids (span gone or no longer a parent) from the uncontrolled state. */
+  private syncCollapseLifecycle(prevProps: TraceProps) {
+    const spec = this.props.traceSpec;
+    if (!spec) return;
+
+    if (spec.data !== prevProps.traceSpec?.data && this.collapsed.size > 0) {
+      const { spans } = this.getPipeline(spec);
+      const parents = collapsibleParentIds(spans);
+      const pruned = new Set([...this.collapsed].filter((id) => parents.has(id)));
+      if (pruned.size !== this.collapsed.size) {
+        this.collapsed = pruned;
+        this.collapseCache = null;
+        this.fireCollapseChange(pruned);
+        this.scheduleRender?.();
+      }
+    }
+
+    // Echo-guard: controlled prop changed → update cache reference so memoization stays valid.
+    if (
+      spec.collapsedSpanIds !== undefined &&
+      spec.collapsedSpanIds !== prevProps.traceSpec?.collapsedSpanIds
+    ) {
+      this.collapsedFromProp = null; // force re-cache on next getEffectiveCollapsed() call
+      this.collapseCache = null;
+      this.scheduleRender?.();
+    }
+  }
+
   /**
    * Returns `true` when `a` and `prev` differ by more than `FOCUS_DOMAIN_EPSILON` in either the
    * extent ratio or the position relative to the VISIBLE extent (focus-extent-relative, so a
@@ -669,7 +786,7 @@ class TraceComponent extends React.Component<TraceProps> {
   // Memoized data pipeline
   // -------------------------------------------------------------------------
 
-  private getPipeline(spec: TraceSpec): { spans: ReturnType<typeof resolveActive>; domain: { min: number; max: number }; emptyReason?: 'trace-not-found' } {
+  private getPipeline(spec: TraceSpec) {
     const { vizColors } = this.props.theme.colors;
     const cache = this.pipelineCache;
     if (
@@ -690,8 +807,15 @@ class TraceComponent extends React.Component<TraceProps> {
     // Order lanes once here (O(N log N) per data/scale change) so buildGeometry doesn't re-order
     // on every rAF frame. buildGeometry's contract requires pre-ordered input.
     const resolved = resolveActive(normalizeResult.spans);
-    const spans = orderLanes(resolved, spec.laneOrder ?? 'tree');
-    const result = { spans, domain: normalizeResult.domain, emptyReason: normalizeResult.emptyReason };
+    const { lanes: spans, depthBySpan } = orderLanes(resolved, spec.laneOrder ?? 'tree');
+    // Derive hasParents and maxDepth from depthBySpan once per pipeline change (not per rAF frame).
+    let hasParents = false;
+    let maxDepth = 0;
+    for (const [, d] of depthBySpan) {
+      if (d > 0) hasParents = true;
+      if (d > maxDepth) maxDepth = d;
+    }
+    const result = { spans, depthBySpan, hasParents, maxDepth, domain: normalizeResult.domain, emptyReason: normalizeResult.emptyReason };
     this.pipelineCache = {
       dataRef: spec.data,
       xScaleType: spec.xScaleType,
@@ -950,7 +1074,34 @@ class TraceComponent extends React.Component<TraceProps> {
       if (this.hover.dragMoved) return;
       if (!this.hover.lastGeom || !this.props.traceSpec) return;
 
-      const result = pickRegion(zoomSafePointerX(e), zoomSafePointerY(e), this.hover.lastGeom);
+      const cx = zoomSafePointerX(e);
+      const cy = zoomSafePointerY(e);
+
+      // Caret click: toggle collapse for the lane under the disclosure caret (Spec 21 / ADR 0026).
+      // Checked before the select/element-click path — caret clicks are consumed here and do not
+      // propagate to onElementClick or the selection machinery.
+      const caretLane = pickDisclosure(cx, cy, this.hover.lastGeom);
+      if (caretLane >= 0) {
+        const caretSpan = this.hover.lastGeom.spans[caretLane];
+        if (caretSpan) {
+          const next = new Set(this.collapsed);
+          const willCollapse = !next.has(caretSpan.id);
+          if (willCollapse) next.add(caretSpan.id); else next.delete(caretSpan.id);
+          this.collapsed = next;
+          this.collapseCache = null;
+          this.fireCollapseChange(next);
+          if (this.ariaLiveRef.current) {
+            const descCount = this.hover.lastGeom.disclosureByLane.get(caretLane)?.descendantCount ?? 0;
+            this.ariaLiveRef.current.textContent = willCollapse
+              ? `Collapsed ${caretSpan.name}, ${descCount} descendants hidden`
+              : `Expanded ${caretSpan.name}`;
+          }
+          this.scheduleRender?.();
+        }
+        return;
+      }
+
+      const result = pickRegion(cx, cy, this.hover.lastGeom);
 
       // onElementClick fires immediately on every raw click (Spec 7), unchanged.
       if (result && result.index >= 0) {
@@ -982,7 +1133,8 @@ class TraceComponent extends React.Component<TraceProps> {
           else {
             const ref: TraceSegmentRef = {
               spanId: span.id,
-              region: result.region as 'active' | 'waiting',
+              // 'empty' already excluded by isHit; 'span' is valid for collapsed-bar whole-span refs.
+              region: result.region as TraceSegmentRef['region'],
               segmentIndex: result.segmentIndex,
             };
             next = applySelection(current, ref, mode);
@@ -1192,6 +1344,30 @@ class TraceComponent extends React.Component<TraceProps> {
                 utterance = `${span.name} already selected`;
               }
               this.ariaLiveRef.current.textContent = utterance;
+            }
+            this.scheduleRender?.();
+          }
+        }
+      } else if (e.key === 'c') {
+        // 'c' toggles collapse on the focused parent lane (Spec 21 / ADR 0026).
+        // ArrowLeft/Right are already time-pan; 'c' is the non-colliding mnemonic key.
+        e.preventDefault();
+        const laneOrder2 = spec?.laneOrder ?? 'tree';
+        if (this.focusedLaneIndex !== null && laneOrder2 === 'tree') {
+          const focusedSpan = geom.spans[this.focusedLaneIndex];
+          if (focusedSpan && geom.disclosureByLane?.has(this.focusedLaneIndex)) {
+            const spanId = focusedSpan.id;
+            const next = new Set(this.collapsed);
+            const willCollapse = !next.has(spanId);
+            if (willCollapse) next.add(spanId); else next.delete(spanId);
+            this.collapsed = next;
+            this.collapseCache = null;
+            this.fireCollapseChange(next);
+            if (this.ariaLiveRef.current) {
+              const descendantCount = geom.disclosureByLane.get(this.focusedLaneIndex)?.descendantCount ?? 0;
+              this.ariaLiveRef.current.textContent = willCollapse
+                ? `Collapsed ${focusedSpan.name}, ${descendantCount} descendants hidden`
+                : `Expanded ${focusedSpan.name}`;
             }
             this.scheduleRender?.();
           }

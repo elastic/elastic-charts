@@ -9,8 +9,21 @@
 import type { NormalizedSpan } from './types';
 import { buildChildrenMap } from './self_time';
 
+/** Result of {@link orderLanes}. @internal */
+export interface OrderedLanes {
+  /** Spans in lane order (top → bottom). Lane index = position in this array. */
+  lanes: NormalizedSpan[];
+  /**
+   * Tree depth of each span (root = 0). Populated only in `'tree'` mode; empty Map in
+   * `'chronological'` mode (all depths treated as 0). Keyed by object identity so spans with
+   * duplicate ids are each tracked separately.
+   */
+  depthBySpan: Map<NormalizedSpan, number>;
+}
+
 /**
- * Produces a flat array of spans in the order they should occupy lanes (top → bottom).
+ * Produces a flat array of spans in the order they should occupy lanes (top → bottom), plus a
+ * per-span tree depth used for collapsible-nesting caret indentation.
  *
  * - `'chronological'` — ascending by `start` (Chrome DevTools Network panel style).
  * - `'tree'` — depth-first `parentId` nesting (Kibana APM style, **the default**): each parent
@@ -18,14 +31,14 @@ import { buildChildrenMap } from './self_time';
  *   `start` ascending, stable by original data order on ties. Works as a **forest** in multi-trace
  *   mode: orphans (no `parentId`, or whose `parentId` is not in the span set) become roots.
  *
- * The result is a pre-ordered flat array. Lane index = position in this array. The downstream
+ * `lanes` is a pre-ordered flat array. Lane index = position in this array. The downstream
  * contract (buildGeometry, canvas2d renderer, pickLane, scroll math) is order-agnostic; this
  * function is the single place that assigns lane indices. See ADR 0018.
  * @internal
  */
-export function orderLanes(spans: NormalizedSpan[], mode: 'tree' | 'chronological'): NormalizedSpan[] {
+export function orderLanes(spans: NormalizedSpan[], mode: 'tree' | 'chronological'): OrderedLanes {
   if (mode === 'chronological') {
-    return spans.slice().sort((a, b) => a.start - b.start);
+    return { lanes: spans.slice().sort((a, b) => a.start - b.start), depthBySpan: new Map() };
   }
 
   // tree: DFS forest — shared helper keeps parentage consistent with resolveActive.
@@ -36,31 +49,33 @@ export function orderLanes(spans: NormalizedSpan[], mode: 'tree' | 'chronologica
   // Sort roots by start, stable (Array.sort is stable in ES2019+).
   const roots = spans.filter((s) => s.parentId === undefined || !ids.has(s.parentId)).sort((a, b) => a.start - b.start);
 
-  const result: NormalizedSpan[] = [];
+  const lanes: NormalizedSpan[] = [];
+  const depthBySpan = new Map<NormalizedSpan, number>();
   // Track visited by object identity rather than id so that two distinct span objects that happen
   // to share the same id are both emitted (duplicate ids from untrusted input must not be lost).
   const visited = new Set<NormalizedSpan>();
 
-  function dfs(span: NormalizedSpan): void {
+  function dfs(span: NormalizedSpan, depth: number): void {
     if (visited.has(span)) return; // cycle guard by object identity
     visited.add(span);
-    result.push(span);
+    lanes.push(span);
+    depthBySpan.set(span, depth);
     const children = childrenMap.get(span.id);
     if (children) {
       // Sort children by start, stable — same rule as roots.
-      children.slice().sort((a, b) => a.start - b.start).forEach(dfs);
+      children.slice().sort((a, b) => a.start - b.start).forEach((child) => dfs(child, depth + 1));
     }
   }
 
-  roots.forEach(dfs);
+  roots.forEach((root) => dfs(root, 0));
 
   // Safety: append any spans not reached (e.g. in a cycle or with duplicate ids), sorted by start.
-  if (result.length < spans.length) {
+  if (lanes.length < spans.length) {
     spans
       .filter((s) => !visited.has(s))
       .sort((a, b) => a.start - b.start)
-      .forEach((s) => result.push(s));
+      .forEach((s) => { lanes.push(s); depthBySpan.set(s, 0); });
   }
 
-  return result;
+  return { lanes, depthBySpan };
 }

@@ -101,6 +101,7 @@ function makeGeom(xScaleType: 'time' | 'linear'): TraceGeometry {
     focusedLaneIndex: null,
     resolvedSelection: [],
     emptyMessage: null,
+    disclosureByLane: new Map(),
     scale: (tMs: number) => plotLeft + (tMs / 10_000) * plotWidth,
   };
 }
@@ -199,6 +200,7 @@ describe('drawTimeBar — sub-ms ticks all render with distinct labels (linear m
       focusedLaneIndex: null,
       resolvedSelection: [],
       emptyMessage: null,
+      disclosureByLane: new Map(),
       scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
     };
 
@@ -299,6 +301,7 @@ describe('drawTimeBar — finest-labeled-layer selection (time mode)', () => {
       focusedLaneIndex: null,
       resolvedSelection: [],
       emptyMessage: null,
+      disclosureByLane: new Map(),
       // scale converts ms → canvas x; the domain is passed as seconds to the time engine,
       // but geom.scale always receives ms (tickMs = minimum * MS_PER_SECOND inside drawTimeBar).
       scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
@@ -492,6 +495,7 @@ describe('drawTimeBar — integer-ns filter for sub-ns steps (ADR 0010)', () => 
       focusedLaneIndex: null,
       resolvedSelection: [],
       emptyMessage: null,
+      disclosureByLane: new Map(),
       scale: (tMs: number) => plotLeft + (tMs / 1e-6) * plotWidth,
     };
 

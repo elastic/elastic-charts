@@ -249,6 +249,23 @@ export interface TraceSpec extends Spec {
    */
   onSelectionChange?: (next: TraceSelection, details: TraceSelectionDetail[]) => void;
   /**
+   * Controlled collapse state: array of span IDs whose descendant lanes are hidden. When supplied,
+   * this is the render source of truth; caret clicks and the `c` keyboard shortcut still execute
+   * and fire `onCollapseChange` — the parent decides whether to update the prop (perform-and-fire,
+   * same model as `focusDomain`/ADR 0007 and `selection`/ADR 0011). When omitted, the component
+   * manages collapse state internally (uncontrolled). Only active when `laneOrder === 'tree'`
+   * (the default); ignored with a dev-mode warning when in `'chronological'` mode. See ADR 0026.
+   * @public
+   */
+  collapsedSpanIds?: string[];
+  /**
+   * Called when a caret click or `c` keypress changes the collapsed set. `next` is the new array
+   * of collapsed span IDs after the toggle. Suppressed when the set is identity-equal to the
+   * previous fire (no-op echo guard). See ADR 0026.
+   * @public
+   */
+  onCollapseChange?: (next: string[]) => void;
+  /**
    * Controlled visible time window `[from, to]` in the chart's internal coordinates:
    * - `'time'` x-scale: epoch-ms (same as `TraceDatum.start`/`end`).
    * - `'linear'` x-scale: elapsed-from-zero-ms (`normalize()` re-zeros the domain to `[0, totalMs]`).
