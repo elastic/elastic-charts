@@ -3759,6 +3759,19 @@ export interface TraceControlCallbacks {
 }
 
 // @public
+export interface TraceCriticalInterval {
+    // (undocumented)
+    end: number;
+    // (undocumented)
+    spanId: string;
+    // (undocumented)
+    start: number;
+}
+
+// @public
+export type TraceCriticalPath = TraceCriticalInterval[];
+
+// @public
 export interface TraceDatum {
     activeSegments?: TraceActiveSegment[];
     // (undocumented)
@@ -3847,12 +3860,15 @@ export interface TraceSelectionDetail {
 export interface TraceSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartType.Trace;
+    collapsedSpanIds?: string[];
     colorBy?: TraceColorAccessor;
     controlProviderCallback?: (callbacks: TraceControlCallbacks) => void;
+    criticalPath?: TraceCriticalPath;
     data: TraceDatum[];
     dragMode?: 'pan' | 'brush';
     focusDomain?: [number, number];
     laneOrder?: 'tree' | 'chronological';
+    onCollapseChange?: (next: string[]) => void;
     onFocusDomainChange?: (domain: [number, number]) => void;
     onSelectionChange?: (next: TraceSelection, details: TraceSelectionDetail[]) => void;
     selection?: TraceSelection;

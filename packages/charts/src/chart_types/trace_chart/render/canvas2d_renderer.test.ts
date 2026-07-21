@@ -54,6 +54,8 @@ const style: TraceStyle = {
   focusedLaneBackground: 'rgba(96,146,192,0.15)',
   selectedSegmentStroke: '#f00',
   selectedSegmentStrokeWidth: 2,
+  criticalPathColor: '#C61E25',
+  criticalPathThickness: 2,
   labelPosition: 'gutter',
 };
 
@@ -115,6 +117,7 @@ function makeGeom(overrides: Partial<TraceGeometry> = {}): TraceGeometry {
     scale: defaultScale,
     emptyMessage: null,
     disclosureByLane: new Map(),
+    criticalIntervalsByLane: new Map(),
     ...overrides,
   };
 }
@@ -773,5 +776,109 @@ describe('pickRegion — collapsed lane', () => {
     const result = pickRegion(300, 40, geomExpanded);
     expect(result).not.toBeNull();
     expect(result!.region).toBe('active');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: critical-path draw pass (Spec 22)
+// ---------------------------------------------------------------------------
+
+describe('draw — critical-path pass', () => {
+  // LANE_PADDING mirrors the renderer constant (canvas2d_renderer.ts:23); not exported.
+  const LANE_PADDING = 3;
+
+  it('draws no critical-path lines when criticalIntervalsByLane is empty (default)', () => {
+    const ctx = makeCtx();
+    draw(ctx, makeGeom(), style);
+    // 3 spans → 3 total-duration renderMultiLine calls; no critical-path calls.
+    expect(ctx.moveTo).toHaveBeenCalledTimes(3);
+    expect(ctx.lineTo).toHaveBeenCalledTimes(3);
+  });
+
+  it('adds one renderMultiLine call per visible critical interval', () => {
+    const ctx = makeCtx();
+    const criticalIntervalsByLane = new Map([[0, [{ start: 200, end: 700 }]]]);
+    draw(ctx, makeGeom({ criticalIntervalsByLane }), style);
+    // 3 total-duration lines + 1 critical-path line = 4
+    expect(ctx.moveTo).toHaveBeenCalledTimes(4);
+    expect(ctx.lineTo).toHaveBeenCalledTimes(4);
+  });
+
+  it('draws critical-path line at y = laneTop + laneHeight - LANE_PADDING for lane 0 (gutter mode)', () => {
+    const ctx = makeCtx();
+    const criticalIntervalsByLane = new Map([[0, [{ start: 0, end: 1000 }]]]);
+    draw(ctx, makeGeom({ criticalIntervalsByLane }), style);
+    // Lane 0, scrollOffset=0: cpLaneTop = PLOT_TOP + 0*LANE_HEIGHT - 0 = 32
+    // labelBandPx = 0 (gutter mode) → y = 32 + 24 - 3 - 0 = 53
+    const expectedY = PLOT_TOP + 0 * LANE_HEIGHT + LANE_HEIGHT - LANE_PADDING;
+    const moveToYValues = (ctx.moveTo as jest.Mock).mock.calls.map(([, y]: [number, number]) => y);
+    expect(moveToYValues).toContain(expectedY);
+  });
+
+  it('draws critical-path line at the bar bottom edge (above the label band) in inline mode', () => {
+    // In inline mode: labelBandPx = gutterLabel.fontSize + LANE_PADDING = 11 + 3 = 14
+    // Lane 0, laneHeight=40: cpLaneTop = PLOT_TOP = 32
+    // y = 32 + 40 - 3 - 14 = 55  (= barBottom, above the 14 px label band)
+    const LABEL_BAND_PX = style.gutterLabel.fontSize + LANE_PADDING; // 11 + 3 = 14
+    const INLINE_LANE_HEIGHT = 40;
+    const styleInline: TraceStyle = { ...style, labelPosition: 'inline', gutterWidth: 0, laneHeight: INLINE_LANE_HEIGHT };
+    const scaleInline = (t: number) => (t / 1000) * PLOT_WIDTH;
+    const criticalIntervalsByLane = new Map([[0, [{ start: 0, end: 1000 }]]]);
+    const ctx = makeCtx();
+    draw(
+      ctx,
+      makeGeom({
+        spans: [spans[0]!],
+        gutter: { top: 0, left: 0, width: 0, height: PLOT_TOP + PLOT_HEIGHT },
+        plot: { top: PLOT_TOP, left: 0, width: PLOT_WIDTH, height: PLOT_HEIGHT },
+        laneHeight: INLINE_LANE_HEIGHT,
+        scale: scaleInline,
+        criticalIntervalsByLane,
+      }),
+      styleInline,
+    );
+    const expectedY = PLOT_TOP + INLINE_LANE_HEIGHT - LANE_PADDING - LABEL_BAND_PX; // 55
+    const moveToYValues = (ctx.moveTo as jest.Mock).mock.calls.map(([, y]: [number, number]) => y);
+    expect(moveToYValues).toContain(expectedY);
+    // Confirm the inline y (55) is strictly above the lane bottom (32+40-3=69) and above the gutter y (53).
+    expect(expectedY).toBeLessThan(PLOT_TOP + INLINE_LANE_HEIGHT - LANE_PADDING);
+  });
+
+  it('culls critical intervals on lanes outside the scroll viewport', () => {
+    const ctx = makeCtx();
+    // scrollOffset=48 → firstLane=floor(48/24)=2, lastLane=2 → only SpanC (lane 2) is visible.
+    // Critical intervals are on lanes 0 and 1 — both culled.
+    const criticalIntervalsByLane = new Map([
+      [0, [{ start: 0, end: 500 }]],
+      [1, [{ start: 100, end: 600 }]],
+    ]);
+    draw(ctx, makeGeom({ scrollOffset: 48, criticalIntervalsByLane }), style);
+    // Only SpanC's total-duration line (1 moveTo); no critical-path moveTo added.
+    expect(ctx.moveTo).toHaveBeenCalledTimes(1);
+    expect(ctx.lineTo).toHaveBeenCalledTimes(1);
+  });
+
+  it('sub-interval draws narrower (smaller x span) than a full-span interval', () => {
+    // Use a single span (SpanA) so moveTo[1]/lineTo[1] is always the critical-path line.
+    const spanA = spans[0]!;
+
+    const ctxFull = makeCtx();
+    draw(ctxFull, makeGeom({ spans: [spanA], criticalIntervalsByLane: new Map([[0, [{ start: 0, end: 1000 }]]]) }), style);
+    // moveTo[0]/lineTo[0] = total-duration; moveTo[1]/lineTo[1] = critical-path.
+    const fullX1 = ((ctxFull.moveTo as jest.Mock).mock.calls[1] as [number, number])[0];
+    const fullX2 = ((ctxFull.lineTo as jest.Mock).mock.calls[1] as [number, number])[0];
+
+    const ctxSub = makeCtx();
+    draw(ctxSub, makeGeom({ spans: [spanA], criticalIntervalsByLane: new Map([[0, [{ start: 200, end: 700 }]]]) }), style);
+    const subX1 = ((ctxSub.moveTo as jest.Mock).mock.calls[1] as [number, number])[0];
+    const subX2 = ((ctxSub.lineTo as jest.Mock).mock.calls[1] as [number, number])[0];
+
+    // Full interval [0,1000]: x1=scale(0)=200, x2=scale(1000)=900 → width=700
+    // Sub interval [200,700]: x1=scale(200)=340, x2=scale(700)=690 → width=350
+    expect(fullX2 - fullX1).toBeGreaterThan(subX2 - subX1);
+    // Sub-interval starts further right (deeper into the span).
+    expect(subX1).toBeGreaterThan(fullX1);
+    // Sub-interval ends further left (before the span end).
+    expect(subX2).toBeLessThan(fullX2);
   });
 });

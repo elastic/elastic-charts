@@ -81,6 +81,8 @@ const style: TraceStyle = {
   focusedLaneBackground: 'rgba(96,146,192,0.15)',
   selectedSegmentStroke: '#f00',
   selectedSegmentStrokeWidth: 2,
+  criticalPathColor: '#C61E25',
+  criticalPathThickness: 2,
   labelPosition: 'gutter',
 };
 
@@ -102,6 +104,7 @@ function makeGeom(xScaleType: 'time' | 'linear'): TraceGeometry {
     resolvedSelection: [],
     emptyMessage: null,
     disclosureByLane: new Map(),
+    criticalIntervalsByLane: new Map(),
     scale: (tMs: number) => plotLeft + (tMs / 10_000) * plotWidth,
   };
 }
@@ -201,6 +204,7 @@ describe('drawTimeBar — sub-ms ticks all render with distinct labels (linear m
       resolvedSelection: [],
       emptyMessage: null,
       disclosureByLane: new Map(),
+      criticalIntervalsByLane: new Map(),
       scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
     };
 
@@ -302,6 +306,7 @@ describe('drawTimeBar — finest-labeled-layer selection (time mode)', () => {
       resolvedSelection: [],
       emptyMessage: null,
       disclosureByLane: new Map(),
+      criticalIntervalsByLane: new Map(),
       // scale converts ms → canvas x; the domain is passed as seconds to the time engine,
       // but geom.scale always receives ms (tickMs = minimum * MS_PER_SECOND inside drawTimeBar).
       scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
@@ -496,6 +501,7 @@ describe('drawTimeBar — integer-ns filter for sub-ns steps (ADR 0010)', () => 
       resolvedSelection: [],
       emptyMessage: null,
       disclosureByLane: new Map(),
+      criticalIntervalsByLane: new Map(),
       scale: (tMs: number) => plotLeft + (tMs / 1e-6) * plotWidth,
     };
 

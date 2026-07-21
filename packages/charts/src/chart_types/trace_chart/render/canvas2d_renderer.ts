@@ -232,6 +232,30 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       }
     }
 
+    // --- Critical-path pass (after lane content, before selection outlines) ---
+    // Renders a colored line along the bottom edge of the *bar band* at y = barBottom.
+    // In gutter/none mode labelBandPx = 0 so this equals laneTop + laneHeight - LANE_PADDING.
+    // In inline mode the label band sits below the bar; subtracting labelBandPx keeps the line
+    // at the bar's bottom edge rather than inside the label text row.
+    const { criticalIntervalsByLane } = geom;
+    if (criticalIntervalsByLane.size > 0) {
+      const criticalStroke: Stroke = {
+        color: colorToRgba(style.criticalPathColor),
+        width: style.criticalPathThickness,
+      };
+      for (const [laneIndex, intervals] of criticalIntervalsByLane) {
+        if (laneIndex < firstLane || laneIndex > lastLane) continue;
+        const cpLaneTop = plot.top + laneIndex * laneHeight - scrollOffset;
+        const y = cpLaneTop + laneHeight - LANE_PADDING - labelBandPx;
+        for (const { start, end } of intervals) {
+          const x1 = Math.max(plot.left, scale(start));
+          const x2 = Math.min(plotRight, scale(end));
+          if (x2 <= x1) continue;
+          renderMultiLine(ctx, [{ x1, y1: y, x2, y2: y }], criticalStroke);
+        }
+      }
+    }
+
     // --- Selection-highlight pass (after all lane content) ---
     // Stroke-only outline per resolved selection entry; no fill so ADR 0006 colorBy fills are not distorted.
     const { resolvedSelection } = geom;

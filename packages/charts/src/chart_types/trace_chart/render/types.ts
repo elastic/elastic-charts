@@ -43,6 +43,10 @@ export interface TraceStyle {
   selectedSegmentStroke: Color;
   /** Stroke width in px for the selection-highlight outline. */
   selectedSegmentStrokeWidth: number;
+  /** Color of the critical-path line drawn along the bottom edge of affected lanes. */
+  criticalPathColor: Color;
+  /** Thickness in px of the critical-path line. */
+  criticalPathThickness: number;
 }
 
 /**
@@ -139,6 +143,12 @@ export interface TraceGeometry {
    * Populated by `buildGeometry`; consumed by `canvas2d_renderer` and keyboard handler.
    */
   disclosureByLane: Map<number, DisclosureEntry>;
+  /**
+   * Projected critical-path intervals grouped by lane index. Populated by `buildGeometry` from the
+   * rolled-up pipeline output (post-collapse). Empty map when `criticalPath` is absent or empty.
+   * Consumed by the critical-path draw pass in `canvas2d_renderer`.
+   */
+  criticalIntervalsByLane: ReadonlyMap<number, ReadonlyArray<{ start: number; end: number }>>;
 }
 
 /**

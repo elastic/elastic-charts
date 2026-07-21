@@ -486,6 +486,8 @@ export const LIGHT_THEME: Theme = {
     focusedLaneBackground: LIGHT_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
     selectedSegmentStroke: LIGHT_BACKGROUND_COLORS.backgroundFilledAccent,
     selectedSegmentStrokeWidth: 2,
+    criticalPathColor: '#C61E25',
+    criticalPathThickness: 2,
     labelPosition: 'gutter',
   },
   // TODO map colors to base color mappings

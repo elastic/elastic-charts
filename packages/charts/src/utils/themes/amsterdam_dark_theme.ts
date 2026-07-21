@@ -517,6 +517,8 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     focusedLaneBackground: 'rgba(96,146,192,0.15)',
     selectedSegmentStroke: '#BC1E70',
     selectedSegmentStrokeWidth: 2,
+    criticalPathColor: '#EE4C48',
+    criticalPathThickness: 2,
     labelPosition: 'gutter',
   },
 };

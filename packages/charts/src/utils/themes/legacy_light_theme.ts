@@ -498,6 +498,8 @@ export const LEGACY_LIGHT_THEME: Theme = {
     focusedLaneBackground: 'rgba(96,146,192,0.15)',
     selectedSegmentStroke: '#EE72A6',
     selectedSegmentStrokeWidth: 2,
+    criticalPathColor: '#C61E25',
+    criticalPathThickness: 2,
     labelPosition: 'gutter',
   },
 };

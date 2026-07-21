@@ -10,7 +10,7 @@ import type { NormalizedSpan } from './types';
 import { buildColorMap, buildSegmentColorMap } from './colors';
 import { Logger } from '../../../utils/logger';
 import type { Color } from '../../../common/colors';
-import type { TraceDatum, TraceColorAccessor, TraceSpec } from '../trace_api';
+import type { TraceDatum, TraceColorAccessor, TraceCriticalPath, TraceSpec } from '../trace_api';
 
 type XScaleType = TraceSpec['xScaleType'];
 
@@ -18,6 +18,8 @@ type XScaleType = TraceSpec['xScaleType'];
 export interface NormalizeResult {
   spans: NormalizedSpan[];
   domain: { min: number; max: number };
+  /** Projected + clamped critical intervals. Re-zeroed in `'linear'` mode; epoch-based in `'time'` mode. */
+  criticalIntervals: Array<{ spanId: string; start: number; end: number }>;
   emptyReason?: 'trace-not-found';
 }
 
@@ -43,6 +45,7 @@ export function normalize(
   traceId?: string,
   colorBy?: TraceColorAccessor,
   vizColors?: Color[],
+  criticalPath: TraceCriticalPath = [],
 ): NormalizeResult {
   // Build color maps over the full input — before traceId filtering — so colors are stable across
   // all traces/views (cross-trace color stability).
@@ -57,7 +60,7 @@ export function normalize(
   // matched spans happened to have non-finite timestamps (dropNonFinite below handles that case).
   const traceNotFound = traceId !== undefined && flat.length > 0 && selected.length === 0;
   const finite = dropNonFinite(selected);
-  const result = project(finite, xScaleType);
+  const result = project(finite, xScaleType, criticalPath);
   if (traceNotFound) result.emptyReason = 'trace-not-found';
   return result;
 }
@@ -146,15 +149,18 @@ function dropNonFinite(spans: NormalizedSpan[]): NormalizedSpan[] {
   return valid;
 }
 
-function project(spans: NormalizedSpan[], xScaleType: XScaleType): NormalizeResult {
+function project(spans: NormalizedSpan[], xScaleType: XScaleType, criticalPath: TraceCriticalPath): NormalizeResult {
   if (spans.length === 0) {
-    return { spans: [], domain: { min: 0, max: 0 } };
+    return { spans: [], domain: { min: 0, max: 0 }, criticalIntervals: [] };
   }
   const min = spans.reduce((acc, span) => Math.min(acc, span.start), Infinity);
   const max = spans.reduce((acc, span) => Math.max(acc, span.end), -Infinity);
 
   if (xScaleType === 'time') {
-    return { spans, domain: { min, max } };
+    // Time mode: no re-zero; clamp each interval to its span's [start, end] and drop invalids.
+    const spanById = new Map(spans.map((s) => [s.id, s]));
+    const criticalIntervals = projectCriticalIntervals(criticalPath, spanById, 0);
+    return { spans, domain: { min, max }, criticalIntervals };
   }
 
   const rezeroed = spans.map((span) => ({
@@ -163,5 +169,34 @@ function project(spans: NormalizedSpan[], xScaleType: XScaleType): NormalizeResu
     end: span.end - min,
     activeSegments: span.activeSegments.map((segment) => ({ ...segment, start: segment.start - min, end: segment.end - min })),
   }));
-  return { spans: rezeroed, domain: { min: 0, max: max - min } };
+  // Linear mode: re-zero intervals by the same `min`, then clamp to the projected span extent.
+  const spanById = new Map(rezeroed.map((s) => [s.id, s]));
+  const criticalIntervals = projectCriticalIntervals(criticalPath, spanById, min);
+  return { spans: rezeroed, domain: { min: 0, max: max - min }, criticalIntervals };
+}
+
+/**
+ * Projects raw `TraceCriticalPath` intervals into the post-projection coordinate space.
+ *
+ * - Re-zeros by `offset` (`domainMin` in `'linear'` mode; `0` in `'time'` mode so no shift).
+ * - Clamps each interval to its span's projected `[start, end]` (whole-span, not just active
+ *   segments — an interval may fall in a waiting region; see ADR 0015 Decision 3 and CONTEXT.md).
+ * - Drops: unknown `spanId`; `start >= end` after clamping.
+ * @internal
+ */
+function projectCriticalIntervals(
+  criticalPath: TraceCriticalPath,
+  spanById: ReadonlyMap<string, { id: string; start: number; end: number }>,
+  offset: number,
+): Array<{ spanId: string; start: number; end: number }> {
+  const result: Array<{ spanId: string; start: number; end: number }> = [];
+  for (const { spanId, start: rawStart, end: rawEnd } of criticalPath) {
+    const span = spanById.get(spanId);
+    if (span === undefined) continue; // unknown spanId — drop
+    const start = Math.max(rawStart - offset, span.start);
+    const end = Math.min(rawEnd - offset, span.end);
+    if (start >= end) continue; // fully outside or zero-width after clamp — drop
+    result.push({ spanId, start, end });
+  }
+  return result;
 }

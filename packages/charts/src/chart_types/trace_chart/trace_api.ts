@@ -152,6 +152,24 @@ export interface TraceSelectionDetail {
 }
 
 /**
+ * One interval-precise portion of the critical path within a span. May cover only a sub-range of
+ * the span's `[start, end]` extent (including waiting time). Times are in the same units as
+ * {@link TraceDatum} `start`/`end` (pre-normalization).
+ * @public
+ */
+export interface TraceCriticalInterval {
+  spanId: string;
+  start: number;
+  end: number;
+}
+
+/**
+ * Array of critical-path intervals. Empty array or omitted `criticalPath` prop → nothing drawn.
+ * @public
+ */
+export type TraceCriticalPath = TraceCriticalInterval[];
+
+/**
  * Spec for the Trace chart. Add one `<Trace>` inside a `<Chart>` to render a waterfall visualization.
  * @public
  */
@@ -265,6 +283,20 @@ export interface TraceSpec extends Spec {
    * @public
    */
   onCollapseChange?: (next: string[]) => void;
+  /**
+   * Consumer-supplied critical-path intervals. Each marks an interval-precise portion of a span
+   * that lay on the trace's critical path; rendered as a colored line along the bottom edge of the
+   * affected lane. An interval may cover only a sub-range of the span's `[start, end]` extent
+   * (including waiting regions). The presence of this prop is the on/off toggle — supply it to draw
+   * the line; omit it or pass `[]` to draw nothing. The chart never computes the critical path.
+   *
+   * Times must be in the same units as {@link TraceDatum} `start`/`end`. In `'linear'` x-scale mode
+   * the chart re-zeros them internally alongside segment timestamps — supply raw pre-normalization
+   * values. When a parent lane is collapsed, its descendants' intervals roll up onto the parent lane
+   * (mirroring rolled-up active segments — see ADR 0015 Decision 4 and ADR 0026).
+   * @public
+   */
+  criticalPath?: TraceCriticalPath;
   /**
    * Controlled visible time window `[from, to]` in the chart's internal coordinates:
    * - `'time'` x-scale: epoch-ms (same as `TraceDatum.start`/`end`).

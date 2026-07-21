@@ -207,7 +207,7 @@ describe('normalize', () => {
 
   describe('empty input', () => {
     it('returns no spans and a zeroed domain', () => {
-      expect(normalize([], 'time')).toEqual({ spans: [], domain: { min: 0, max: 0 } });
+      expect(normalize([], 'time')).toEqual({ spans: [], domain: { min: 0, max: 0 }, criticalIntervals: [] });
     });
   });
 
@@ -579,5 +579,99 @@ describe('normalize — dropNonFinite guard', () => {
     normalize([VALID, bad], 'linear');
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('dropped 1 span'));
     warnSpy.mockRestore();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// normalize — criticalIntervals projection
+// ---------------------------------------------------------------------------
+describe('normalize — criticalIntervals', () => {
+  const data: TraceDatum[] = [
+    { id: 'root', name: 'root', start: 100, end: 300 },
+    { id: 'child', name: 'child', parentId: 'root', start: 200, end: 250 },
+  ];
+
+  describe('linear mode', () => {
+    it('re-zeros a critical interval by domainMin (parity with activeSegments)', () => {
+      // domainMin = 100; interval {start:100, end:300} → {start:0, end:200}
+      const { criticalIntervals } = normalize(data, 'linear', undefined, undefined, undefined, [
+        { spanId: 'root', start: 100, end: 300 },
+      ]);
+      expect(criticalIntervals).toHaveLength(1);
+      expect(criticalIntervals[0]).toMatchObject({ spanId: 'root', start: 0, end: 200 });
+    });
+
+    it('clamps an interval that extends past the span end', () => {
+      // span 'child' projected: start=100, end=150; interval {start:100, end:300} → clamped to {100, 150}
+      const { criticalIntervals } = normalize(data, 'linear', undefined, undefined, undefined, [
+        { spanId: 'child', start: 200, end: 400 },
+      ]);
+      expect(criticalIntervals).toHaveLength(1);
+      expect(criticalIntervals[0]).toMatchObject({ spanId: 'child', start: 100, end: 150 });
+    });
+
+    it('drops an interval that is fully outside the span extent after clamping', () => {
+      // span 'child' projected: [100, 150]; interval {start:0, end:50} re-zeroed→{start:-100, end:-50} → fully outside
+      const { criticalIntervals } = normalize(data, 'linear', undefined, undefined, undefined, [
+        { spanId: 'child', start: 0, end: 50 },
+      ]);
+      expect(criticalIntervals).toHaveLength(0);
+    });
+
+    it('drops an interval where start >= end after clamping', () => {
+      // interval on 'child' clamped to [100,150]; supply start=child.end (250), end=260 → after re-zero start=150, end=160;
+      // clamp to [100,150] → start=150, end=150 → start >= end → dropped
+      const { criticalIntervals } = normalize(data, 'linear', undefined, undefined, undefined, [
+        { spanId: 'child', start: 250, end: 260 },
+      ]);
+      expect(criticalIntervals).toHaveLength(0);
+    });
+
+    it('survives a waiting-region interval (interval in [start, end] but not in activeSegments)', () => {
+      // 'root' has no activeSegments; a waiting-region interval is still within [start, end]
+      const { criticalIntervals } = normalize(data, 'linear', undefined, undefined, undefined, [
+        { spanId: 'root', start: 150, end: 200 },
+      ]);
+      expect(criticalIntervals).toHaveLength(1);
+      expect(criticalIntervals[0]).toMatchObject({ spanId: 'root', start: 50, end: 100 });
+    });
+
+    it('drops an interval with an unknown spanId', () => {
+      const { criticalIntervals } = normalize(data, 'linear', undefined, undefined, undefined, [
+        { spanId: 'unknown', start: 100, end: 200 },
+      ]);
+      expect(criticalIntervals).toHaveLength(0);
+    });
+  });
+
+  describe('time mode', () => {
+    it('does not re-zero in time mode (epoch times kept)', () => {
+      // In time mode span 'root' stays at start=100, end=300; interval should be kept as-is
+      const { criticalIntervals } = normalize(data, 'time', undefined, undefined, undefined, [
+        { spanId: 'root', start: 150, end: 250 },
+      ]);
+      expect(criticalIntervals).toHaveLength(1);
+      expect(criticalIntervals[0]).toMatchObject({ spanId: 'root', start: 150, end: 250 });
+    });
+
+    it('still clamps to span extent in time mode', () => {
+      const { criticalIntervals } = normalize(data, 'time', undefined, undefined, undefined, [
+        { spanId: 'root', start: 150, end: 400 },
+      ]);
+      expect(criticalIntervals).toHaveLength(1);
+      expect(criticalIntervals[0]).toMatchObject({ spanId: 'root', start: 150, end: 300 });
+    });
+
+    it('still drops fully-outside intervals in time mode', () => {
+      const { criticalIntervals } = normalize(data, 'time', undefined, undefined, undefined, [
+        { spanId: 'root', start: 0, end: 50 },
+      ]);
+      expect(criticalIntervals).toHaveLength(0);
+    });
+  });
+
+  it('returns empty criticalIntervals when no criticalPath is supplied', () => {
+    const { criticalIntervals } = normalize(data, 'linear');
+    expect(criticalIntervals).toEqual([]);
   });
 });

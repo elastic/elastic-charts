@@ -24,6 +24,8 @@ const style: TraceStyle = {
   focusedLaneBackground: 'rgba(96,146,192,0.15)',
   selectedSegmentStroke: '#f00',
   selectedSegmentStrokeWidth: 2,
+  criticalPathColor: '#C61E25',
+  criticalPathThickness: 2,
   labelPosition: 'gutter',
 };
 
@@ -246,5 +248,54 @@ describe('buildGeometry — gutterPx with hasParents/maxDepth', () => {
     const geom = buildGeometry(s, canvasSize, focusDomain, 0, inlineStyle, 'linear', d, null, [], new Map(), null, new Map(), true, 0);
     expect(geom.gutter.width).toBe(CARET_GLYPH_PX);
     expect(geom.plot.left).toBe(CARET_GLYPH_PX);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// buildGeometry — criticalIntervalsByLane
+// ---------------------------------------------------------------------------
+
+describe('buildGeometry — criticalIntervalsByLane', () => {
+  const spans = [span('a', 100, 400), span('b', 500, 800), span('c', 200, 300)];
+  const domain = { min: 100, max: 800 };
+  const spanIdToLane = new Map([['a', 0], ['b', 1], ['c', 2]]);
+
+  it('groups projected critical intervals by lane index via spanIdToLane', () => {
+    const criticalIntervals = [
+      { spanId: 'a', start: 100, end: 200 },
+      { spanId: 'b', start: 500, end: 700 },
+    ];
+    const geom = buildGeometry(
+      spans, canvasSize, focusDomain, 0, style, 'linear', domain,
+      null, [], spanIdToLane, null, new Map(), false, 0,
+      criticalIntervals,
+    );
+    expect(geom.criticalIntervalsByLane.get(0)).toEqual([{ start: 100, end: 200 }]);
+    expect(geom.criticalIntervalsByLane.get(1)).toEqual([{ start: 500, end: 700 }]);
+    expect(geom.criticalIntervalsByLane.get(2)).toBeUndefined();
+  });
+
+  it('returns an empty map when no criticalIntervals are supplied', () => {
+    const geom = buildGeometry(
+      spans, canvasSize, focusDomain, 0, style, 'linear', domain,
+    );
+    expect(geom.criticalIntervalsByLane.size).toBe(0);
+  });
+
+  it('returns an empty map for an empty criticalIntervals array', () => {
+    const geom = buildGeometry(
+      spans, canvasSize, focusDomain, 0, style, 'linear', domain,
+      null, [], spanIdToLane, null, new Map(), false, 0, [],
+    );
+    expect(geom.criticalIntervalsByLane.size).toBe(0);
+  });
+
+  it('silently skips intervals whose spanId is not in spanIdToLane', () => {
+    const geom = buildGeometry(
+      spans, canvasSize, focusDomain, 0, style, 'linear', domain,
+      null, [], spanIdToLane, null, new Map(), false, 0,
+      [{ spanId: 'unknown', start: 100, end: 200 }],
+    );
+    expect(geom.criticalIntervalsByLane.size).toBe(0);
   });
 });

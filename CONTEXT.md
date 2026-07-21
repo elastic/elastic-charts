@@ -155,11 +155,24 @@ _Avoid_: minimum zoom level (implies a zoom exponent, not a time window).
 **Critical path**:
 A consumer-supplied set of interval-precise **critical intervals** marking the portions of spans that
 gated the trace's total duration; rendered as a distinct colored line along the bottom edge of the
-affected lanes. Each critical interval may cover only a sub-range of a single active segment — it is
-not span-granular. Consumers supply raw pre-normalization times (same units as `TraceDatum.start/end`);
-the chart re-zeros them in `'linear'` mode alongside `activeSegments`.
+affected lanes. Each critical interval covers a sub-range of a span's `[start, end]` extent — it may
+fall in a **waiting** region (time the span was blocked on children) as well as in an active region.
+It is not span-granular. Consumers supply raw pre-normalization times (same units as `TraceDatum.start/end`);
+the chart re-zeros them in `'linear'` mode alongside `activeSegments`. When a parent lane is
+collapsed, its descendants' critical intervals become **rolled-up critical intervals** attributed to
+the collapsed parent. See [ADR 0015](./docs/adr/trace-viz/0015-critical-path-consumer-supplied-intervals.md).
 _Avoid_: critical segment (would collide with the index-addressable active/waiting **segment**),
 critical span (implies span-granular marking).
+
+**Rolled-up critical intervals**:
+The union of every critical interval within a collapsed subtree, clamped to the collapsed parent's
+`[start, end]` and merged via the same sorted-interval union used for **rolled-up active segments**.
+Displayed as the critical-path line on a collapsed parent lane; disappears (reverts to per-lane)
+when the parent is expanded. A collapsed lane is still owned by exactly one span — the rollup is a
+visual representation, not a new entity. See [ADR 0015 Decision 4](./docs/adr/trace-viz/0015-critical-path-consumer-supplied-intervals.md)
+and [ADR 0026](./docs/adr/trace-viz/0026-collapsible-nesting.md).
+_Avoid_: critical path rollup (prefer the full term for clarity), rolled-up critical path (implies
+the whole critical path is rolled up, not just intervals for hidden spans).
 
 **Connection**:
 A directed causal edge drawn as an orthogonal elbow connector from a source segment endpoint (the

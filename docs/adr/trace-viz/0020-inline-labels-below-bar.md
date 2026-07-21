@@ -40,6 +40,11 @@ No new theme field is needed; the band split is derived from `gutterLabel.fontSi
 - Tick labels near the plot edges (leftmost and rightmost visible ticks) flip their `textAlign` to
   `'left'` / `'right'` respectively, preventing labels from painting outside the canvas. This was
   latent in gutter mode (the gutter acted as a left margin) and became visible in inline/none mode.
+- Any mark that anchors to the **bottom edge of the bar** must use
+  `barBottom = laneTop + laneHeight - LANE_PADDING - labelBandPx`, not `laneTop + laneHeight - LANE_PADDING`.
+  In gutter/none mode `labelBandPx = 0` and the two expressions are identical; in inline mode
+  subtracting `labelBandPx` keeps the mark in the bar band and out of the label row below it.
+  The critical-path line (ADR 0015) is the first user of this invariant.
 
 ## Alternatives considered
 

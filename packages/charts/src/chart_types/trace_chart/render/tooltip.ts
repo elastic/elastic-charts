@@ -43,6 +43,9 @@ const REGION_LABEL: Record<HoverRegion, string> = {
  * active segment in a span with more than one — an "Active segment" row showing that segment's own
  * duration with an ordinal `(i of n)`.
  *
+ * When `criticalIntervals` is non-empty, a "Critical path" row shows the total coverage for this
+ * span (Σ of all critical intervals attributed to this lane after rollup).
+ *
  * `TooltipValue.datum` is the original `TraceDatum` (via `span.meta`), identical to the datum
  * exposed in `onElementClick` / `onElementOver` callbacks. A `customTooltip` can reach
  * source-specific data (e.g. OTel `attributes`/`status`) via `(values[0].datum as TraceDatum).meta`.
@@ -55,6 +58,7 @@ export function buildTraceTooltipInfo(
   region: HoverRegion,
   color: string,
   segmentIndex: number,
+  criticalIntervals?: ReadonlyArray<{ start: number; end: number }>,
 ): TooltipInfo {
   const total = span.end - span.start;
   const selfTime = computeSelfTime(span);
@@ -105,6 +109,12 @@ export function buildTraceTooltipInfo(
       values.splice(3, 0, row(label, segDuration, formatMs(segDuration)));
       values.splice(4, 0, row('Waiting segment offset', segOffset, `+${formatMs(segOffset)}`));
     }
+  }
+
+  // When this lane has critical intervals, show the total critical-path coverage (Σ intervals).
+  if (criticalIntervals && criticalIntervals.length > 0) {
+    const coverage = criticalIntervals.reduce((acc, { start, end }) => acc + (end - start), 0);
+    values.push(row('Critical path', coverage, formatMs(coverage)));
   }
 
   return { header: null, values };

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { collapseLanes, collapsibleParentIds } from './collapse';
+import { collapseLanes, collapsibleParentIds, rollupCriticalIntervals } from './collapse';
 import type { NormalizedSpan } from './types';
 
 /** Minimal NormalizedSpan factory. `activeSegments` defaults to the full span extent (self-time). */
@@ -230,5 +230,90 @@ describe('collapseLanes — immutability', () => {
     const originalSegments = [...root.activeSegments];
     collapseLanes([root, child], new Set(['root']));
     expect(root.activeSegments).toEqual(originalSegments);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// rollupCriticalIntervals
+// ---------------------------------------------------------------------------
+
+describe('rollupCriticalIntervals', () => {
+  const root = span('root', 0, 100);
+  const child = span('child', 20, 80, 'root');
+  const grandchild = span('grandchild', 30, 60, 'child');
+  const spans = [root, child, grandchild];
+
+  it('returns input unchanged when no spans are collapsed (fast path)', () => {
+    const intervals = [{ spanId: 'root', start: 10, end: 50 }];
+    const result = rollupCriticalIntervals(spans, new Set(), intervals);
+    expect(result).toBe(intervals); // same reference — no allocation
+  });
+
+  it('returns input unchanged when criticalIntervals is empty', () => {
+    const empty: Array<{ spanId: string; start: number; end: number }> = [];
+    const result = rollupCriticalIntervals(spans, new Set(['root']), empty);
+    expect(result).toBe(empty);
+  });
+
+  it('re-keys a hidden descendant interval to the collapsed ancestor', () => {
+    // Collapse root — child and grandchild are hidden.
+    const result = rollupCriticalIntervals(spans, new Set(['root']), [
+      { spanId: 'child', start: 20, end: 60 },
+    ]);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({ spanId: 'root', start: 20, end: 60 });
+  });
+
+  it('clamps the rolled-up interval to the ancestor extent', () => {
+    // Interval on grandchild goes 0–90 but ancestor root is [0,100]; clamp to [0,100] stays [0,90].
+    // The grandchild itself is [30,60]; ancestor clamp is [0,100].
+    const result = rollupCriticalIntervals(spans, new Set(['root']), [
+      { spanId: 'grandchild', start: 0, end: 90 },
+    ]);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({ spanId: 'root', start: 0, end: 90 });
+  });
+
+  it('drops a rolled-up interval that is fully outside the ancestor extent', () => {
+    // Interval [200, 300] is outside ancestor root [0, 100].
+    const result = rollupCriticalIntervals(spans, new Set(['root']), [
+      { spanId: 'child', start: 200, end: 300 },
+    ]);
+    expect(result).toHaveLength(0);
+  });
+
+  it('merges overlapping rolled-up intervals from sibling descendants', () => {
+    const mid1 = span('mid1', 10, 60, 'root');
+    const mid2 = span('mid2', 40, 90, 'root');
+    const twoChildren = [root, mid1, mid2];
+    const result = rollupCriticalIntervals(twoChildren, new Set(['root']), [
+      { spanId: 'mid1', start: 10, end: 60 },
+      { spanId: 'mid2', start: 40, end: 90 },
+    ]);
+    // Overlapping [10,60] and [40,90] → merged to [10,90].
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({ spanId: 'root', start: 10, end: 90 });
+  });
+
+  it('outermost visible collapsed ancestor owns under nested collapse', () => {
+    // Both root and child are in collapsedSpanIds; grandchild is hidden by root (outermost wins).
+    const result = rollupCriticalIntervals(spans, new Set(['root', 'child']), [
+      { spanId: 'grandchild', start: 30, end: 60 },
+    ]);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({ spanId: 'root', start: 30, end: 60 });
+  });
+
+  it('passes through intervals for visible spans unchanged', () => {
+    // Only child is collapsed; root interval stays on root (root is visible).
+    const result = rollupCriticalIntervals(spans, new Set(['child']), [
+      { spanId: 'root', start: 5, end: 20 },
+      { spanId: 'grandchild', start: 30, end: 60 },
+    ]);
+    expect(result).toHaveLength(2);
+    // Root interval unchanged.
+    expect(result).toContainEqual({ spanId: 'root', start: 5, end: 20 });
+    // Grandchild interval re-keyed to child (grandchild's collapsed ancestor).
+    expect(result).toContainEqual({ spanId: 'child', start: 30, end: 60 });
   });
 });

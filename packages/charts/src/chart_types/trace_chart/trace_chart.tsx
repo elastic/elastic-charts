@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
-import { buildDisclosureMap, collapseLanes, collapsibleParentIds } from './data/collapse';
+import { buildDisclosureMap, collapseLanes, collapsibleParentIds, rollupCriticalIntervals } from './data/collapse';
 import { normalize } from './data/normalize';
 import { orderLanes } from './data/order_lanes';
 import { resolveActive, waitingSegments } from './data/self_time';
@@ -128,7 +128,7 @@ interface OwnProps {
 
 type TraceProps = StateProps & DispatchProps & OwnProps;
 
-/** Memoized normalize→resolveActive output. Keyed on (data ref, xScaleType, traceId, colorBy ref, vizColors ref). */
+/** Memoized normalize→resolveActive output. Keyed on (data ref, xScaleType, traceId, colorBy ref, vizColors ref, criticalPath ref). */
 interface PipelineCache {
   dataRef: TraceSpec['data'];
   xScaleType: string;
@@ -136,7 +136,8 @@ interface PipelineCache {
   colorBy: TraceSpec['colorBy'];
   laneOrder: TraceSpec['laneOrder'];
   vizColors: Theme['colors']['vizColors'];
-  result: { spans: ReturnType<typeof resolveActive>; depthBySpan: Map<ReturnType<typeof resolveActive>[number], number>; hasParents: boolean; maxDepth: number; domain: { min: number; max: number }; emptyReason?: 'trace-not-found' };
+  criticalPath: TraceSpec['criticalPath'];
+  result: { spans: ReturnType<typeof resolveActive>; depthBySpan: Map<ReturnType<typeof resolveActive>[number], number>; hasParents: boolean; maxDepth: number; domain: { min: number; max: number }; emptyReason?: 'trace-not-found'; criticalIntervals: Array<{ spanId: string; start: number; end: number }> };
 }
 
 /** Tween state for domainTween. Initialised to NaN so the first frame snaps to fit-all. */
@@ -248,11 +249,14 @@ class TraceComponent extends React.Component<TraceProps> {
   private lastFiredCollapsed: Set<string> = new Set();
   // Cache the Set built from the controlled prop array — stable reference for memoization.
   private collapsedFromProp: { ids: string[]; asSet: Set<string> } | null = null;
-  // Memoized post-step: collapseLanes + buildDisclosureMap run only when pipeline spans or collapsed set changes.
+  // Memoized post-step: collapseLanes + rollupCriticalIntervals + buildDisclosureMap run only when
+  // pipeline spans, collapsed set, or criticalIntervals ref changes (ADR 0015 Decision 4).
   private collapseCache: {
     pipelineSpans: NormalizedSpan[];
     collapsed: ReadonlySet<string>;
+    criticalIntervals: Array<{ spanId: string; start: number; end: number }>;
     result: NormalizedSpan[];
+    rolledUpCriticalIntervals: Array<{ spanId: string; start: number; end: number }>;
     disclosure: Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number }>;
   } | null = null;
   // Memoized spanId→laneIndex Map; rebuilt when the pipeline spans reference changes. Passed into
@@ -541,7 +545,7 @@ class TraceComponent extends React.Component<TraceProps> {
     const { traceSpec, chartDimensions: { width, height } } = this.props;
     if (!traceSpec) return;
 
-    const { spans: pipelineSpans, depthBySpan, hasParents, maxDepth, domain, emptyReason } = this.getPipeline(traceSpec);
+    const { spans: pipelineSpans, depthBySpan, hasParents, maxDepth, domain, emptyReason, criticalIntervals } = this.getPipeline(traceSpec);
 
     // Tree-gating: collapse is a tree-mode feature (ADR 0026). Warn and ignore in chronological.
     const laneOrder = traceSpec.laneOrder ?? 'tree';
@@ -551,7 +555,7 @@ class TraceComponent extends React.Component<TraceProps> {
         'In chronological mode descendants are not contiguous, so collapse is disabled.');
     }
     const effectiveCollapsed = laneOrder === 'tree' ? this.getEffectiveCollapsed() : new Set<string>();
-    const { spans, disclosure: disclosureByLane } = this.getCollapseOutput(pipelineSpans, effectiveCollapsed, depthBySpan);
+    const { spans, disclosure: disclosureByLane, rolledUpCriticalIntervals } = this.getCollapseOutput(pipelineSpans, effectiveCollapsed, depthBySpan, criticalIntervals);
 
     const emptyMessage = emptyReason === 'trace-not-found'
       ? (traceSpec.traceNotFoundMessage ?? `No spans found for trace "${traceSpec.traceId}"`)
@@ -604,6 +608,7 @@ class TraceComponent extends React.Component<TraceProps> {
       disclosureByLane,
       hasParents,
       maxDepth,
+      rolledUpCriticalIntervals,
     );
 
     // DPR scaling: renderer is dpr-agnostic, caller sets the transform each frame.
@@ -701,13 +706,15 @@ class TraceComponent extends React.Component<TraceProps> {
     pipelineSpans: NormalizedSpan[],
     collapsed: ReadonlySet<string>,
     depthBySpan: ReadonlyMap<NormalizedSpan, number>,
-  ): { spans: NormalizedSpan[]; disclosure: Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number }> } {
+    criticalIntervals: Array<{ spanId: string; start: number; end: number }>,
+  ): { spans: NormalizedSpan[]; disclosure: Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number }>; rolledUpCriticalIntervals: Array<{ spanId: string; start: number; end: number }> } {
     if (
       this.collapseCache &&
       this.collapseCache.pipelineSpans === pipelineSpans &&
-      this.collapseCache.collapsed === collapsed
+      this.collapseCache.collapsed === collapsed &&
+      this.collapseCache.criticalIntervals === criticalIntervals
     ) {
-      return { spans: this.collapseCache.result, disclosure: this.collapseCache.disclosure };
+      return { spans: this.collapseCache.result, disclosure: this.collapseCache.disclosure, rolledUpCriticalIntervals: this.collapseCache.rolledUpCriticalIntervals };
     }
     const result = collapseLanes(pipelineSpans, collapsed);
     // parentIds computed here (on cache miss only) to avoid O(N) work every rAF frame.
@@ -716,8 +723,10 @@ class TraceComponent extends React.Component<TraceProps> {
     // render even though collapse is disabled in that mode.
     const parentIds = depthBySpan.size > 0 ? collapsibleParentIds(pipelineSpans) : new Set<string>();
     const disclosure = buildDisclosureMap(pipelineSpans, result, collapsed, depthBySpan, parentIds);
-    this.collapseCache = { pipelineSpans, collapsed, result, disclosure };
-    return { spans: result, disclosure };
+    // Roll up critical intervals onto their outermost visible collapsed ancestor (ADR 0015 Decision 4).
+    const rolledUpCriticalIntervals = rollupCriticalIntervals(pipelineSpans, collapsed, criticalIntervals);
+    this.collapseCache = { pipelineSpans, collapsed, criticalIntervals, result, rolledUpCriticalIntervals, disclosure };
+    return { spans: result, disclosure, rolledUpCriticalIntervals };
   }
 
   /** Prunes stale collapsed ids (span gone or no longer a parent) from the uncontrolled state. */
@@ -796,13 +805,14 @@ class TraceComponent extends React.Component<TraceProps> {
       cache.traceId === spec.traceId &&
       cache.colorBy === spec.colorBy &&
       cache.laneOrder === spec.laneOrder &&
-      cache.vizColors === vizColors
+      cache.vizColors === vizColors &&
+      cache.criticalPath === spec.criticalPath
     ) {
       return cache.result;
     }
 
     // Recompute: normalize now takes TraceDatum[] directly — OTel data arrives pre-converted by fromOtlp.
-    const normalizeResult = normalize(spec.data, spec.xScaleType, spec.traceId, spec.colorBy, vizColors);
+    const normalizeResult = normalize(spec.data, spec.xScaleType, spec.traceId, spec.colorBy, vizColors, spec.criticalPath);
 
     // Order lanes once here (O(N log N) per data/scale change) so buildGeometry doesn't re-order
     // on every rAF frame. buildGeometry's contract requires pre-ordered input.
@@ -815,7 +825,7 @@ class TraceComponent extends React.Component<TraceProps> {
       if (d > 0) hasParents = true;
       if (d > maxDepth) maxDepth = d;
     }
-    const result = { spans, depthBySpan, hasParents, maxDepth, domain: normalizeResult.domain, emptyReason: normalizeResult.emptyReason };
+    const result = { spans, depthBySpan, hasParents, maxDepth, domain: normalizeResult.domain, emptyReason: normalizeResult.emptyReason, criticalIntervals: normalizeResult.criticalIntervals };
     this.pipelineCache = {
       dataRef: spec.data,
       xScaleType: spec.xScaleType,
@@ -823,6 +833,7 @@ class TraceComponent extends React.Component<TraceProps> {
       colorBy: spec.colorBy,
       laneOrder: spec.laneOrder,
       vizColors,
+      criticalPath: spec.criticalPath,
       result,
     };
     // Rebuild spanIdToLane map on pipeline invalidation (plan D4 — not rebuilt per rAF frame).
@@ -842,7 +853,8 @@ class TraceComponent extends React.Component<TraceProps> {
 
   private rebuildTooltip(span: NormalizedSpan, index: number, domainMin: number, region: HoverRegion, segmentIndex: number) {
     const style = this.getStyle();
-    this.hover.tooltipInfo = buildTraceTooltipInfo(span, index, domainMin, region, span.color ?? style.activeSegmentColor, segmentIndex);
+    const criticalIntervals = this.hover.lastGeom?.criticalIntervalsByLane.get(index);
+    this.hover.tooltipInfo = buildTraceTooltipInfo(span, index, domainMin, region, span.color ?? style.activeSegmentColor, segmentIndex, criticalIntervals);
   }
 
   private pinTooltip = (pinned: boolean) => {

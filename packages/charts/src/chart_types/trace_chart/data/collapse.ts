@@ -80,6 +80,84 @@ export function collapseLanes(
 }
 
 /**
+ * Re-keys projected critical intervals onto the **visible owning span** after collapse, mirroring
+ * the rolled-up active segments produced by `collapseLanes`. Each hidden descendant's intervals are
+ * attributed to the outermost visible collapsed ancestor; the intervals are clamped to that
+ * ancestor's `[start, end]` and `mergeSegments`-merged. Intervals belonging to already-visible
+ * spans pass through unchanged.
+ *
+ * Empty-collapse-set fast path returns the input unchanged (no allocation). In `'chronological'`
+ * mode, `collapsedSpanIds` is always empty so this is always the fast path.
+ *
+ * See ADR 0015 Decision 4 and ADR 0026.
+ * @internal
+ */
+export function rollupCriticalIntervals(
+  orderedSpans: NormalizedSpan[],
+  collapsedSpanIds: ReadonlySet<string>,
+  criticalIntervals: ReadonlyArray<{ spanId: string; start: number; end: number }>,
+): Array<{ spanId: string; start: number; end: number }> {
+  if (collapsedSpanIds.size === 0 || criticalIntervals.length === 0) return criticalIntervals as Array<{ spanId: string; start: number; end: number }>;
+
+  const childrenMap = buildChildrenMap(orderedSpans);
+
+  // Map from each hidden span ID → the ID of its outermost visible collapsed ancestor.
+  const hiddenToOwner = new Map<string, string>();
+
+  function collectHidden(spanId: string, owningAncestorId: string): void {
+    for (const child of childrenMap.get(spanId) ?? []) {
+      hiddenToOwner.set(child.id, owningAncestorId);
+      collectHidden(child.id, owningAncestorId);
+    }
+  }
+
+  for (const span of orderedSpans) {
+    if (!collapsedSpanIds.has(span.id)) continue;
+    if (!childrenMap.has(span.id)) continue; // childless — no rollup needed
+    if (hiddenToOwner.has(span.id)) continue; // hidden by an outer collapse — outer ancestor owns
+    collectHidden(span.id, span.id);
+  }
+
+  if (hiddenToOwner.size === 0) return criticalIntervals as Array<{ spanId: string; start: number; end: number }>;
+
+  // Build a spanId→span lookup for clamping.
+  const spanById = new Map(orderedSpans.map((s) => [s.id, s]));
+
+  // Bucket intervals by their effective (possibly remapped) owner spanId.
+  const buckets = new Map<string, Array<{ start: number; end: number }>>();
+  const passThrough: Array<{ spanId: string; start: number; end: number }> = [];
+
+  for (const interval of criticalIntervals) {
+    const ownerId = hiddenToOwner.get(interval.spanId) ?? interval.spanId;
+    if (ownerId !== interval.spanId) {
+      // Remapped to a collapsed ancestor — clamp to that ancestor's extent.
+      const owner = spanById.get(ownerId);
+      if (owner === undefined) continue; // shouldn't happen but be robust
+      const start = Math.max(interval.start, owner.start);
+      const end = Math.min(interval.end, owner.end);
+      if (start >= end) continue; // clamp produced a zero-width or inverted interval
+      let bucket = buckets.get(ownerId);
+      if (bucket === undefined) {
+        bucket = [];
+        buckets.set(ownerId, bucket);
+      }
+      bucket.push({ start, end });
+    } else {
+      passThrough.push(interval);
+    }
+  }
+
+  // Merge each bucket and emit as rolled-up intervals keyed by the owner spanId.
+  const result = [...passThrough];
+  for (const [ownerId, raw] of buckets) {
+    for (const merged of mergeSegments(raw)) {
+      result.push({ spanId: ownerId, start: merged.start, end: merged.end });
+    }
+  }
+  return result;
+}
+
+/**
  * Builds a lane-index → disclosure entry map for all visible parent spans. Each entry carries the
  * caret state, tree depth (for indent rendering), and the total descendant count in the original
  * (pre-collapse) tree (used for the "N descendants hidden" aria-live announcement).

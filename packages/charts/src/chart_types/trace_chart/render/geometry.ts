@@ -40,6 +40,7 @@ export function buildGeometry(
   disclosureByLane: Map<number, DisclosureEntry> = new Map(),
   hasParents = false,
   maxDepth = 0,
+  criticalIntervals: ReadonlyArray<{ spanId: string; start: number; end: number }> = [],
 ): TraceGeometry {
   // spans is already start-sorted by the pipeline cache (O(N log N) once per data change, not per frame).
   // domain is pre-computed by normalize() and passed in; no per-frame reduce needed.
@@ -89,6 +90,20 @@ export function buildGeometry(
     })
     .filter((r): r is NonNullable<typeof r> => r !== null);
 
+  // Group projected critical intervals by lane index using the same spanIdToLane map as selection.
+  // Empty input → empty map (fast path — no allocation for charts without criticalPath).
+  const criticalIntervalsByLane: Map<number, Array<{ start: number; end: number }>> = new Map();
+  for (const { spanId, start, end } of criticalIntervals) {
+    const laneIndex = spanIdToLane.get(spanId);
+    if (laneIndex === undefined) continue;
+    let bucket = criticalIntervalsByLane.get(laneIndex);
+    if (bucket === undefined) {
+      bucket = [];
+      criticalIntervalsByLane.set(laneIndex, bucket);
+    }
+    bucket.push({ start, end });
+  }
+
   return {
     spans,
     gutter,
@@ -104,5 +119,6 @@ export function buildGeometry(
     scale,
     emptyMessage,
     disclosureByLane,
+    criticalIntervalsByLane,
   };
 }

@@ -343,6 +343,41 @@ describe('isTraceElementEvent', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Spec 22 — Critical path row in tooltip
+// ---------------------------------------------------------------------------
+
+describe('buildTraceTooltipInfo — critical path row', () => {
+  it('appends a "Critical path" row when criticalIntervals is non-empty', () => {
+    const info = buildTraceTooltipInfo(span, 0, DOMAIN_MIN, 'active', COLOR, 0, [
+      { start: 100, end: 200 },
+      { start: 300, end: 350 },
+    ]);
+    const labels = info.values.map((v) => v.label);
+    expect(labels).toContain('Critical path');
+    const cpRow = info.values.find((v) => v.label === 'Critical path')!;
+    // 100 ms + 50 ms = 150 ms total coverage
+    expect(cpRow.value).toBe(150);
+    expect(cpRow.formattedValue).toBe('150.00 ms');
+  });
+
+  it('omits the "Critical path" row when criticalIntervals is empty', () => {
+    const info = buildTraceTooltipInfo(span, 0, DOMAIN_MIN, 'active', COLOR, 0, []);
+    expect(info.values.map((v) => v.label)).not.toContain('Critical path');
+  });
+
+  it('omits the "Critical path" row when criticalIntervals is undefined (default)', () => {
+    const info = buildTraceTooltipInfo(span, 0, DOMAIN_MIN, 'active', COLOR, 0);
+    expect(info.values.map((v) => v.label)).not.toContain('Critical path');
+  });
+
+  it('appends "Critical path" after the other rows (last row)', () => {
+    const info = buildTraceTooltipInfo(span, 0, DOMAIN_MIN, 'active', COLOR, 0, [{ start: 100, end: 300 }]);
+    const labels = info.values.map((v) => v.label);
+    expect(labels[labels.length - 1]).toBe('Critical path');
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Spec 19 — formatMs ns branch (ADR 0010)
 // ---------------------------------------------------------------------------
 
