@@ -14,9 +14,7 @@ import type { ArrayEntry } from '../chart_types/partition_chart/layout/utils/gro
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 import type { TextMeasure } from '../utils/bbox/canvas_text_bbox_calculator';
 import type { Datum } from '../utils/common';
-
-/** @internal */
-export type Truncate = 'start' | 'middle' | 'end';
+import type { Truncate } from '../utils/themes/theme';
 
 const FONT_WEIGHTS_NUMERIC = [100, 200, 300, 400, 450, 500, 600, 700, 800, 900] as const;
 const FONT_WEIGHTS_ALPHA = ['normal', 'bold', 'lighter', 'bolder', 'inherit', 'initial', 'unset'] as const;
@@ -83,6 +81,18 @@ export const SPACE = ' ';
 export const DASH = '-';
 
 /** @internal */
+export interface TruncateConfig {
+  min?: {
+    /** Minimum number of visible characters. */
+    visible?: number;
+    /** Minimum number of hidden characters. */
+    hidden?: number;
+  };
+  /** Allow the minimum readable truncation to overflow. undefined defaults to false. */
+  overflow?: boolean;
+}
+
+/** @internal */
 export interface Box extends Font {
   text: string;
   isValue: boolean;
@@ -138,18 +148,35 @@ function truncate(
   font: Font,
   build: (k: number) => string,
   min: number,
+  options: TruncateConfig,
 ) {
+  const minVisible = options.min?.visible ?? min;
+  const minHidden = options.min?.hidden ?? 1;
+  const overflow = options.overflow ?? false;
+
   if (desiredText.length === 0) return { width: measure('', font, fontSize).width, text: '' };
 
   const fullWidth = measure(desiredText, font, fontSize).width;
   if (fullWidth <= allottedWidth) return { width: fullWidth, text: desiredText };
 
   const response = (k: number) => measure(build(k), font, fontSize).width;
-  const visible = monotonicHillClimb(response, desiredText.length, allottedWidth, integerSnap, min);
+  const visible = monotonicHillClimb(response, desiredText.length, allottedWidth, integerSnap, minVisible);
 
-  if (!Number.isFinite(visible) || visible < min) return { width: measure('', font, fontSize).width, text: '' };
+  const fits = Number.isFinite(visible) && visible >= minVisible;
 
-  const text = build(visible);
+  // When overflow is disabled, fitting the allotted width is more important than the minimum visible characters.
+  const relaxedVisible =
+    fits || overflow ? visible : monotonicHillClimb(response, desiredText.length, allottedWidth, integerSnap, min);
+  const kept = fits ? visible : overflow ? minVisible : relaxedVisible;
+
+  if (!Number.isFinite(kept) || kept < min) return { width: measure('', font, fontSize).width, text: '' };
+
+  // An ellipsis should replace a meaningful chunk of hidden text, otherwise show the full text.
+  if (kept >= desiredText.length || (overflow && desiredText.length - kept < minHidden)) {
+    return { width: fullWidth, text: desiredText };
+  }
+
+  const text = build(kept);
   const { width } = measure(text, font, fontSize);
 
   return { width, text };
@@ -163,9 +190,22 @@ export function fitText(
   fontSize: number,
   font: Font,
   position: Truncate = 'end',
+  truncateConfig: TruncateConfig = {},
 ) {
   const truncateText = (build: (k: number) => string, min: number) => {
-    return truncate(measure, desiredText, allottedWidth, fontSize, font, build, min);
+    // `min` is the smallest number of visible characters that still returns a meaningful ellipsis
+    // for this position (e.g. 2 for 'middle', to keep a character on each side).
+
+    return truncate(measure, desiredText, allottedWidth, fontSize, font, build, min, {
+      ...truncateConfig,
+      min: {
+        ...truncateConfig.min,
+        visible:
+          truncateConfig.min?.visible === undefined
+            ? min
+            : Math.max(min, Math.min(truncateConfig.min.visible, desiredText.length)),
+      },
+    });
   };
 
   if (position === 'start') {
@@ -178,7 +218,7 @@ export function fitText(
       return `${left}${ELLIPSIS}${right}`;
     }, 2);
   }
-  return truncateText((v) => cutToLength(desiredText, v), desiredText.length < 2 ? 1 : 2);
+  return truncateText((k) => `${desiredText.slice(0, k)}${ELLIPSIS}`, 1);
 }
 
 /** @internal */

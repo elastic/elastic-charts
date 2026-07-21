@@ -6,24 +6,24 @@
  * Side Public License, v 1.
  */
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getPickedShapes } from './picked_shapes';
 import type { AnchorPosition } from '../../../../components/portal/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { computeChartLayoutSelector } from '../../../xy_chart/state/selectors/compute_chart_layout';
 
 /** @internal */
 export const getTooltipAnchorSelector = createCustomCachedSelector(
   [
     getPickedShapes,
-    computeChartDimensionsSelector,
+    computeChartLayoutSelector,
     getActivePointerPosition,
     computeSmallMultipleScalesSelector,
     getChartThemeSelector,
   ],
-  (shapes, { chartDimensions }, position, smScales): AnchorPosition => {
+  (shapes, { dimensions: { chartDimensions } }, position, smScales): AnchorPosition => {
     const shape = Array.isArray(shapes) && shapes[0];
     if (shape) {
       const {

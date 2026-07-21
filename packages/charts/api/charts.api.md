@@ -248,7 +248,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "tickFormat" | "ticks" | "tickLabelMaxLength" | "tickLabelTruncate" | "gridLine" | "labelFormat" | "integersOnly" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "integersOnly" | "gridLine" | "tickFormat" | "labelFormat" | "ticks" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -277,8 +277,6 @@ export interface AxisSpec extends Spec {
     specType: typeof SpecType.Axis;
     style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
     tickFormat?: TickFormatter;
-    tickLabelMaxLength?: Pixels | string;
-    tickLabelTruncate?: Truncate;
     ticks?: number;
     // @alpha
     timeAxisLayerCount: number;
@@ -298,11 +296,18 @@ export interface AxisStyle {
         horizontal: GridLineStyle;
         vertical: GridLineStyle;
     };
+    maxExtent: Pixels | string;
+    minExtent: Pixels | string;
     // (undocumented)
     tickLabel: TextStyle & Visible & {
         rotation: number;
         offset: TextOffset;
         alignment: TextAlignment;
+        wrapLines: number;
+        lineHeight: number;
+        maxLength?: Pixels;
+        minLength: Pixels;
+        truncate: Truncate | false;
     };
     // (undocumented)
     tickLine: TickStyle;
@@ -3682,7 +3687,7 @@ export interface TreeNode extends AngleFromTo {
 }
 
 // @public (undocumented)
-export type Truncate = 'start' | 'middle' | 'end';
+export type Truncate = 'start' | 'end' | 'middle';
 
 // @public
 export interface UnaryAccessorFn<D extends BaseDatum = any, Return = any> {

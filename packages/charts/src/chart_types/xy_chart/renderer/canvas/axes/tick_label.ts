@@ -7,13 +7,26 @@
  */
 
 import type { AxisProps } from './axis_props';
+import type { TextFont } from '../../../../../renderers/canvas/primitives/text';
 import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRectCenterRotated } from '../../../../../renderers/canvas/utils/debug';
-import { Position } from '../../../../../utils/common';
-import type { AxisTick } from '../../../utils/axis_utils';
-import { getTickLabelPosition } from '../../../utils/axis_utils';
+import { HorizontalAlignment, Position, VerticalAlignment } from '../../../../../utils/common';
+import type { Point } from '../../../../../utils/point';
+import { getTickLabelPosition, rotateVector, type ResolvedHorizontalAlign } from '../../../axes/ticks/geometry';
+import type { AxisTick } from '../../../axes/ticks/types';
 
 const TICK_TO_LABEL_GAP = 2;
+
+function getTextAnchorX(horizontalAlign: ResolvedHorizontalAlign, textWidth: number): number {
+  switch (horizontalAlign) {
+    case HorizontalAlignment.Left:
+      return -textWidth / 2;
+    case HorizontalAlignment.Right:
+      return textWidth / 2;
+    case HorizontalAlignment.Center:
+      return 0;
+  }
+}
 
 /** @internal */
 export function renderTickLabel(
@@ -24,51 +37,71 @@ export function renderTickLabel(
   layerGirth: number,
 ) {
   const { position } = axisSpec;
-  const labelStyle = axisStyle.tickLabel;
-  const tickLabelProps = getTickLabelPosition(
+  const { tickLabel: labelStyle } = axisStyle;
+  const { width, height, bboxWidth, bboxHeight, lines } = tick.layout;
+  const { rotation } = labelStyle;
+
+  const { center, textAlign, horizontalAlign } = getTickLabelPosition(
     axisStyle,
     tick.domainClampedPosition,
     position,
-    labelStyle.rotation,
+    rotation,
     size,
     dimension,
     showTicks,
     labelStyle.offset,
     labelStyle.alignment,
+    tick.layout,
   );
 
-  const center = { x: tickLabelProps.x + tickLabelProps.offsetX, y: tickLabelProps.y + tickLabelProps.offsetY };
+  //pushes multilayer time-axis labels away from the tick edge.
+  const tickGapX = tick.multilayerTimeAxis && Number.isFinite(tick.layer) ? TICK_TO_LABEL_GAP : 0;
+  // stacks multilayer time-axis layers along the cross-axis direction.
+  const layerOffsetY = (tick.layer || 0) * layerGirth * (position === Position.Top ? -1 : 1);
 
   if (debug) {
-    const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth: width, maxLabelTextHeight: height } = dimension;
-    // full text container
-    renderDebugRectCenterRotated(ctx, center, { ...center, width, height }, undefined, undefined, labelStyle.rotation);
-    // rotated text container
-    if (labelStyle.rotation % 90 !== 0) {
-      renderDebugRectCenterRotated(ctx, center, { ...center, width: maxLabelBboxWidth, height: maxLabelBboxHeight });
+    const extraInRotated = rotateVector({ x: tickGapX, y: layerOffsetY }, rotation);
+    const debugCenter: Point = {
+      x: center.x + extraInRotated.x,
+      y: center.y + extraInRotated.y,
+    };
+
+    renderDebugRectCenterRotated(ctx, debugCenter, { ...debugCenter, width, height }, undefined, undefined, rotation);
+    if (rotation % 90 !== 0) {
+      renderDebugRectCenterRotated(ctx, debugCenter, { ...debugCenter, width: bboxWidth, height: bboxHeight });
     }
   }
 
-  const tickOnTheSide = tick.multilayerTimeAxis && Number.isFinite(tick.layer);
+  const isMultiLine = lines.length > 1;
+  const lineHeight = labelStyle.lineHeight * labelStyle.fontSize;
 
-  renderText(
-    ctx,
-    center,
-    tick.label,
-    {
-      fontFamily: labelStyle.fontFamily,
-      fontStyle: labelStyle.fontStyle ?? 'normal',
-      fontVariant: 'normal',
-      fontWeight: 'normal',
-      textColor: labelStyle.fill,
-      fontSize: labelStyle.fontSize,
-      align: tickLabelProps.horizontalAlign,
-      baseline: tickLabelProps.verticalAlign,
-    },
-    labelStyle.rotation,
-    tickLabelProps.textOffsetX + (tickOnTheSide ? TICK_TO_LABEL_GAP : 0),
-    tickLabelProps.textOffsetY + (tick.layer || 0) * layerGirth * (position === Position.Top ? -1 : 1),
-    1,
-    tick.direction,
-  );
+  const baseline = isMultiLine ? VerticalAlignment.Top : VerticalAlignment.Middle;
+  const stackBaseY = isMultiLine ? -height / 2 : 0;
+
+  const font: TextFont = {
+    fontFamily: labelStyle.fontFamily,
+    fontStyle: labelStyle.fontStyle ?? 'normal',
+    fontVariant: 'normal',
+    fontWeight: 'normal',
+    textColor: labelStyle.fill,
+    fontSize: labelStyle.fontSize,
+    align: textAlign,
+    baseline,
+  };
+
+  const anchorX = getTextAnchorX(horizontalAlign, width);
+
+  lines.forEach((line, i) => {
+    renderText(
+      ctx,
+      center,
+      line,
+      font,
+      rotation,
+      anchorX + tickGapX,
+      stackBaseY + layerOffsetY + i * lineHeight,
+      1,
+      tick.direction,
+    );
+  });
 }

@@ -11,8 +11,8 @@ import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import type { Line } from '../../../../../geoms/types';
 import { renderMultiLine } from '../../../../../renderers/canvas/primitives/line';
 import { Position } from '../../../../../utils/common';
+import type { AxisTick } from '../../../axes/ticks/types';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
-import type { AxisTick } from '../../../utils/axis_utils';
 import { HIDE_MINOR_TIME_GRID, OUTSIDE_RANGE_TOLERANCE } from '../../../utils/grid_lines';
 
 const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the bottom alignment; todo consider measuring
