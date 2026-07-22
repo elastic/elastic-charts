@@ -46,13 +46,15 @@ _Avoid_: self time (self time is a single span's exclusive time; the rollup is a
 **Running span**:
 A span that has started but not yet finished, represented in the input by omitting `end` or passing
 `null`. The chart renders a running span's **total line** as a dashed line from `start` to the trace's
-latest known finite end (the **domain max** — a provisional right edge, not "now"). The chart has no
-wall-clock dependency; the provisional end does not animate. Duration and elapsed-time values are not
-presented for running spans (the provisional extent is not a real measurement). In the OpenTelemetry
+latest known finite boundary (the **domain max** — a provisional right edge derived from completed
+span ends, running-span starts, and confirmed active-segment ends, not "now"). The chart has no
+wall-clock dependency; the provisional end does not animate. Duration and elapsed-time values are
+not presented for running spans (the provisional extent is not a real measurement). In the OpenTelemetry
 protocol, a running span sets `endTimeUnixNano = 0`, which the `fromOtlp` adapter maps to `null`. See
 [ADR 0023](./docs/adr/trace-viz/0023-running-span-model.md).
 An explicitly supplied running span remains in its structural parent-child position; it is not treated
-as a missing parent and does not trigger orphan reparenting.
+as a missing parent and does not trigger orphan reparenting. When its provisional extent has zero
+width, the chart shows a point marker at its known start without implying duration.
 _Avoid_: in-flight span (may imply network activity specifically), live span (implies the bar is live-
 animating).
 
@@ -71,17 +73,39 @@ timestamp fix (sounds like a data-repair step applied to the source, not a rende
 
 **Trace**:
 The set of spans sharing one `traceId`. The chart typically renders a single trace; pass `traceId` to
-filter to one, or omit it to render all supplied spans as one combined waterfall (one lane per span).
-Lane assignment order is controlled by the **Lane order** mode.
+filter to one **single-trace view**, or omit it to render all supplied spans as one **combined
+waterfall** (one lane per visible span). The mode is explicit: omitting `traceId` remains a combined
+waterfall even when the current data happens to contain only one trace. Lane assignment order is
+controlled by the **Lane order** mode. Parent-child relationships never cross trace boundaries; each
+trace remains a structurally independent elected tree in a combined waterfall.
+
+**Orphan span**:
+A span whose recorded `parentId` does not identify a span in the same trace. It remains an orphan
+even when the chart assigns it a synthetic **display parent** for partial-trace presentation.
+_Avoid_: root (an orphan can be displayed beneath a root), detached span.
+
+**Display parent**:
+The span beneath which another span is presented in the waterfall. It normally matches recorded
+parentage, but a partial trace may assign an orphan a synthetic display parent without changing the
+recorded `parentId`.
+_Avoid_: parent (ambiguous between recorded and synthetic parentage), repaired parent.
+
+**Partial trace**:
+A trace containing at least one orphan span because some recorded parent spans are absent from the
+supplied trace data. Partial describes data completeness, not whether every orphan can be displayed
+beneath an elected root.
+_Avoid_: invalid trace (partiality alone does not make a trace group invalid), broken trace.
 
 **Lane order**:
 The rule that assigns spans to lanes top-to-bottom. Two modes: `tree` (depth-first `parentId`
 nesting — each parent is immediately above its descendants; the default, matching Kibana APM) and
 `chronological` (by rendered span `start` ascending, after clock-skew correction, matching Chrome
-DevTools Network). In `tree` mode, roots and siblings also use corrected starts; multi-trace mode
-(no `traceId` filter) produces a **forest**: each subtree is grouped together
-rather than interleaved by start. Orphan spans (whose `parentId` is absent from the span set) are
-treated as roots. Set via `TraceSpec.laneOrder`. See [ADR 0018](./docs/adr/trace-viz/0018-lane-ordering-tree-default.md).
+DevTools Network). From partial-trace recovery onward, each trace group first elects one visible root
+using Kibana-compatible rules and omits components unreachable from it; a combined waterfall is the
+forest of the remaining per-trace trees. In `tree` mode, siblings use corrected starts and each tree
+is kept together rather than interleaved by start. Set via `TraceSpec.laneOrder`. See
+[ADR 0018](./docs/adr/trace-viz/0018-lane-ordering-tree-default.md) and
+[ADR 0028](./docs/adr/trace-viz/0028-partial-trace-synthetic-parentage.md).
 _Avoid_: sort order, row order.
 
 **Focus domain**:
@@ -104,10 +128,15 @@ _Avoid_: vertical offset (ambiguous with DPR transforms), viewport offset.
 The portion of a span's total line not covered by an active segment; time the span was not itself
 executing. By default (when active segments are self-time-derived, per ADR 0003) this is time the
 span spent in its children. When a caller supplies `active` ranges explicitly, it is
-caller-defined inactivity. One of three hover regions alongside **active** and **empty**. Each
-contiguous waiting gap is an addressable **waiting segment** (derived on demand — not stored on
+caller-defined inactivity for a completed span; uncovered time on a running span is instead a
+**Provisional region**. Each contiguous waiting gap is an addressable **waiting segment** (derived on demand — not stored on
 `NormalizedSpan`) that can be selected and highlighted independently, symmetric with active segments.
 _Avoid_: idle (implies nothing is happening globally), blocked (implies a stall or error).
+
+**Provisional region**:
+The portion of a running span's synthesized extent not covered by an explicitly supplied active
+segment. It makes no claim that the span was active or waiting.
+_Avoid_: ongoing region, in-progress region, WIP, unconfirmed region.
 
 **Label position**:
 The rendering mode for span name labels: `gutter` (drawn in the fixed left panel — the default), `inline` (drawn on a dedicated row below the bar, starting near the bar's start edge and overflowing right — the Kibana APM style), or `none` (labels omitted; accessible only via tooltip and screen-reader table). Set via `theme.trace.labelPosition`. No auto-switching — the caller sets the mode explicitly.
@@ -121,11 +150,12 @@ _Avoid_: selected lane, active lane (active is already used for active segments)
 The set of currently selected segments in the trace waterfall. Selection is managed as a
 `TraceSelection` (an array of `TraceSegmentRef` values keyed by `spanId`). A **selected segment** is
 one active or waiting segment highlighted by a stroke outline; a **selected span** (`region:'span'`)
-is a whole-span selection spanning the full `[start, end]` extent, produced by double-click (or
-double-tap on touch). Multiple refs coexist in the set (multi-select via Shift/Ctrl/Cmd-click). On
-touch, tap produces a selected segment and double-tap produces a selected span (both in `'replace'`
-mode — touch has no modifier keys). Distinct from the focused lane (keyboard nav) and the pinned
-tooltip (right-click / long-press detail view).
+is a whole-span selection spanning the full `[start, end]` extent, produced by double-click,
+double-tap on touch, or selecting a running span's **Provisional region**. Multiple refs coexist in
+the set (multi-select via Shift/Ctrl/Cmd-click). On touch, tap produces a selected segment except on
+a Provisional region, where it selects the span; double-tap always selects the span (both in
+`'replace'` mode — touch has no modifier keys). Distinct from the focused lane (keyboard nav) and
+the pinned tooltip (right-click / long-press detail view).
 _Avoid_: selected lane (reserved for focused lane), highlighted span.
 
 **Brush**:
@@ -191,13 +221,15 @@ _Avoid_: link (reserved for OTel's looser span-to-span `links` relation), depend
 blocking semantics), arrow (a rendering term, not a domain concept).
 
 **Empty state**:
-The condition when the trace chart has no lanes to render. Two distinct cases, handled differently:
+The condition when the trace chart has no lanes to render. Three cases are handled differently:
 `no-data` (the `data` prop was empty — no spans supplied at all) delegates to the **library empty
 state** — the `NoResults` DOM overlay, overridable via `Settings.noResults` — and the trace canvas
 does not mount (`isChartEmpty` returns `true`). `trace-not-found` (spans were supplied but the
 specified `traceId` matched none of them) mounts the chart and renders the full time-bar/axis
-machinery with an empty plot and a centered message on the canvas. The combined-waterfall case
-(spans present, no `traceId` filter) is never an empty state.
+machinery with an empty plot and a centered message on the canvas. **Invalid or unrenderable data**
+(spans were selected, but filtering or elected-root recovery leaves no visible lanes) also mounts the
+time bar, but leaves a blank plot with no centered message; developer warnings provide the temporary
+observability floor until application-facing diagnostics exist.
 _Avoid_: empty chart (ambiguous); describing the `no-data` library overlay as a "canvas" message
 (it is a DOM overlay, distinct from the `trace-not-found` canvas draw).
 

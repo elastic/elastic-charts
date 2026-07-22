@@ -27,14 +27,17 @@ of running.
 
 **`end === 0` is not running.** The check is `datum.end == null` (strict null + undefined equality).
 `0` is a valid Unix-epoch end timestamp (though unusual). The `fromOtlp` adapter handles the OTel
-`endTimeUnixNano === 0` sentinel explicitly (Decision 4).
+semantic-zero `endTimeUnixNano` sentinel explicitly across the adapter's supported `string |
+number | bigint` input representations (Decision 4).
 
-## Decision 2 — Provisional right edge = latest known finite end (domain max); no wall clock
+## Decision 2 — Provisional right edge = latest known finite boundary (domain max); no wall clock
 
-A running span renders from its `start` to the **trace's domain max** — the maximum `end` among all
-finished spans in the selected visible dataset. Running spans themselves contribute their `start` to the
-domain computation (a running span cannot narrow the domain rightward, but it also must not extend it
-beyond what's observed). The domain max is computed in `project()` and the running span's `end` is
+A running span renders from its `start` to the **trace's domain max** — the latest finite boundary in
+the selected visible dataset. The candidates are completed-span ends, running-span starts, and ends
+of explicitly supplied active segments on running spans. Explicit active segments are confirmed
+execution and must not be clipped by a provisional boundary derived only from siblings. A running
+span with no explicit activity contributes only its start, so it cannot extend the domain beyond
+what has been observed. The domain max is computed in `project()` and the running span's `end` is
 synthesized there to `max(domainMax, span.start)`.
 
 Spec 27 recovery runs before `project()`. Non-elected, unreachable, or invalid trace groups therefore
@@ -64,25 +67,38 @@ Read `Date.now()` in each RAF frame and animate the bar. Maximally live, but:
 Rejected — both the wall-clock dependency and the continuous RAF churn violate ADR 0004's invariants.
 
 **Edge cases:**
-- All spans running (no finite end): domain max = `max(starts)`; each running bar extends from its
-  start to that max. The latest-starting span is a zero-width marker. Documented; not special-cased.
+- All spans running (no completed end): domain max = `max(starts, explicit active-segment ends)`.
+  Each running bar extends from its start to that max. The latest-starting span is a zero-width
+  marker only when no later confirmed activity extends the boundary.
 - Running span starts after all finite ends: `max(domainMax, span.start) = span.start` →
-  zero-width marker at the right edge. Documented.
+  zero-width marker at the right edge.
 
 ## Decision 3 — Dashed total line via `setLineDash`; new `runningLineDash` theme token
 
-A running span's total-duration line is drawn with a CSS-style dash pattern using
-`ctx.setLineDash(style.runningLineDash)`. The dash is reset (`setLineDash([])`) after the span's
-draw pass via `ctx.save()` / `ctx.restore()` so completed spans are unaffected.
+A running span's total-duration line is drawn with a CSS-style dash pattern using the existing
+`renderMultiLine` primitive's `Stroke.dash` field. That primitive calls
+`ctx.setLineDash(style.runningLineDash)` inside its saved canvas context, so completed spans are
+unaffected when the context is restored.
 
 This is the **first use** of `ctx.setLineDash` in the trace chart renderer. A new `runningLineDash:
-number[]` token (default `[4, 3]` — 4 px dash, 3 px gap) is added to `TraceStyle`, wired across the
-six theme files and `theme.ts`.
+number[]` token (default `[4, 3]` — 4 px dash, 3 px gap) is added to `TraceStyle` and the six concrete
+theme values. The existing `Theme.trace` type and `buildTraceStyle` passthrough need no mapping change.
 
 **Active segments inside a running span remain solid** — they represent confirmed execution and must
 not be dashed.
 
 **No right end-cap for the running span** — the open dashed line already signals an uncertain end.
+
+**Visible zero-width marker:** Canvas does not paint a zero-length line with its default butt cap.
+When a running span's projected `start === end`, draw a small point marker at the start using the
+total-line color and thickness. This is a known timestamp with no extent: it does not alter the
+domain or imply duration. Reuse the existing rectangle primitive rather than adding a new canvas
+shape abstraction, and clamp the marker within the plot at either edge. Give it a bounded
+pixel-space hit target whose horizontal width equals the lane height. This avoids both exact-pixel
+picking in a normal domain and the existing zero-domain inversion fallback treating the whole lane
+as a hit. The hit resolves to a Provisional region and therefore selects the whole span. When that
+whole-span selection is active, draw a compact selection outline around the point marker using the
+marker thickness plus the existing selection-stroke width; do not outline the larger hit target.
 
 **Alternatives considered:**
 
@@ -127,14 +143,18 @@ This preserves the guard that ADR 0001 / the OTel-adapter comment depended on: a
 failure still yields `NaN`, which still triggers the drop. Only a **running** span with a null/NaN
 placeholder `end` is spared. Completed spans with any non-finite end still drop.
 
-**OTel adapter fix:** `endTimeUnixNano === 0` is the OTel sentinel for a running span. Previously
-`nanoToMs(0) = 0` (epoch time) was passed through — finite, not dropped, but semantically wrong. Fix:
+**OTel adapter fix:** a semantic-zero `endTimeUnixNano` is the OTel sentinel for a running span. The
+adapter accepts timestamps as `string | number | bigint`, so the sentinel may arrive as `'0'`, `0`,
+or `0n`. Previously `nanoToMs` converted each representation to `0` (epoch time), which was passed
+through — finite, not dropped, but semantically wrong. Convert once, then test the converted value:
 ```ts
-end: span.endTimeUnixNano === 0 ? null : nanoToMs(span.endTimeUnixNano),
+const end = nanoToMs(span.endTimeUnixNano);
+// ...
+end: end === 0 ? null : end,
 ```
 
-`endTimeUnixNano > 0` continues to use `nanoToMs`; the BigInt / string parse-error → NaN path is
-unchanged.
+A non-zero `endTimeUnixNano` continues to use the converted value; the BigInt / string parse-error →
+NaN path is unchanged.
 
 ## Decision 6 — Tooltip and SR show "running" state with no duration number
 
@@ -145,7 +165,29 @@ to the latest observed activity elsewhere in the trace. This number:
 - Can be zero (for a zero-width marker) or confusingly large (if another span is much later).
 
 Showing it as a duration would mislead users. The tooltip and screen-reader surface instead show
-**"running"** (or "in progress") with no numeric value.
+**"running"** with no numeric value. In the tooltip, a running span replaces the **Duration** row
+with **Status: Running**. The existing **State** row remains reserved for the hovered Active /
+Waiting / empty region on completed spans and the Active / Provisional region on running spans.
+Known durations for explicitly supplied active segments remain visible. Screen-reader table cells
+and keyboard / `scrollToSpan` aria-live announcements likewise say "running" rather than formatting
+the provisional extent.
+
+## Decision 7 — Unmeasured running extent is a Provisional region, not Waiting
+
+For completed spans, the complement of active segments within `[start, end]` is Waiting. A running
+span has no real end: its synthesized end is only a rendering boundary. Treating the complement of
+explicit active segments up to that boundary as Waiting would fabricate both an execution state and
+a selectable waiting-segment duration.
+
+The uncovered part of a running span's synthesized extent is therefore a **Provisional region**. It
+makes no claim that the span was active or waiting. The tooltip shows **State: Provisional** with no
+segment duration or offset. Selecting that region selects the whole span (`region: 'span'`) because
+there is no measured segment with stable boundaries to identify. Explicit active segments remain
+individually hoverable and selectable. A zero-width running marker uses the same Provisional-region
+semantics within its bounded pixel hit target and receives a marker-sized outline when selected.
+Collapsed-lane semantics take precedence: a collapsed running parent retains the whole-span region
+and **State: Collapsed**, alongside **Status: Running**, because its rolled-up sub-regions are
+intentionally not individually addressable.
 
 ## Consequences
 
@@ -154,8 +196,10 @@ Showing it as a duration would mislead users. The tooltip and screen-reader surf
   `datum.end` must handle `null`.
 - The chart gains no wall-clock dependency. The RAF loop self-terminates identically to today for
   datasets that contain running spans.
-- `fromOtlp` now correctly maps OTel running spans (`endTimeUnixNano === 0`) to `end: null`.
-- The `TraceSelectionDetail.duration` field (reported by `onSelectionChange`) should emit `null` or
-  `undefined` for running spans — not `provisionalEnd − start`.
-- The `CONTEXT.md` glossary gains a **Running span** entry (and the **Total line** entry is updated
-  to note the dashed variant).
+- `fromOtlp` now correctly maps OTel running spans (semantic-zero `endTimeUnixNano`, whether
+  represented as `0`, `'0'`, or `0n`) to `end: null`.
+- The `duration` field on `TraceSelectionDetail` and `TraceElementEvent` emits `null` for running
+  spans — not `provisionalEnd − start`. Their normalized `end` remains numeric for geometry-aware
+  consumers but is documented as a provisional domain boundary, not a completion timestamp.
+- The `CONTEXT.md` glossary defines **Running span** and **Provisional region**, and the **Total line**
+  entry notes the dashed variant.
