@@ -53,7 +53,7 @@ export interface TraceStyle {
  * Width of the caret glyph zone (▶/▼) in the disclosure gutter, in px.
  * Sized to provide a comfortable click/tap target. @internal
  */
-export const CARET_GLYPH_PX = 20;
+export const CARET_GLYPH_PX = 28;
 
 /**
  * Additional px per depth level for caret indentation in the disclosure gutter. @internal

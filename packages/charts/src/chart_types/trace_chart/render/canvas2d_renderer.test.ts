@@ -654,7 +654,7 @@ describe("draw — labelPosition: 'inline'", () => {
 describe('pickDisclosure', () => {
   // Geometry: gutter [0,200], plot starts at x=200, y=[32,200]
   // disclosureByLane: lane 0 at depth 0, lane 1 at depth 1
-  const CARET_GLYPH_PX = 20;
+  const CARET_GLYPH_PX = 28;
   const CARET_INDENT_STEP_PX = 8;
 
   const geomWithCarets = makeGeom({
@@ -685,9 +685,9 @@ describe('pickDisclosure', () => {
   });
 
   it('returns lane 0 when x is within the depth-0 caret zone [0, CARET_GLYPH_PX)', () => {
-    // lane 0 → y = 32..55; caret zone for depth 0 → x in [0, 20)
+    // lane 0 → y = 32..55; caret zone for depth 0 → x in [0, 28)
     expect(pickDisclosure(0, 40, geomWithCarets)).toBe(0);
-    expect(pickDisclosure(19, 40, geomWithCarets)).toBe(0);
+    expect(pickDisclosure(27, 40, geomWithCarets)).toBe(0);
   });
 
   it('returns -1 when x is at the right edge of the depth-0 caret zone (exclusive)', () => {
