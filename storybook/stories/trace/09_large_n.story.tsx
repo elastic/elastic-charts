@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { number, select } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import React, { useMemo } from 'react';
 
 import type { TraceDatum } from '@elastic/charts';
@@ -18,6 +18,7 @@ import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const theme = useBaseTheme();
+  const isTall = boolean('Make it tall', false);
   const spanCount = number('span count', 5_000, { min: 100, max: 10_000, step: 100 });
   const xScaleType = select<'linear' | 'time'>(
     'x scale',
@@ -28,7 +29,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const data: TraceDatum[] = useMemo(() => buildLargeTrace(spanCount), [spanCount]);
 
   return (
-    <Chart title={title} description={description} size={{ width: '100%', height: 300 }}>
+    <Chart
+      title={title}
+      description={description}
+      size={{ width: '100%', height: isTall ? 'calc(100vh - 230px)' : 300 }}
+    >
       <Settings baseTheme={theme} />
       <Trace id="trace_large_n" data={data} xScaleType={xScaleType} />
     </Chart>
