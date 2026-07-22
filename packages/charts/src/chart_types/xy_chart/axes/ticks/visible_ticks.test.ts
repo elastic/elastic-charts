@@ -12,11 +12,11 @@ import moment from 'moment-timezone';
 import type { TickLabelBox, TickLabelLayout } from './labels';
 import type { AxisTick } from './types';
 import type { OverflowContext } from './visible_ticks';
-import { generateTicks, getVisibleTicks, hideOverflowingTickLabels } from './visible_ticks';
+import { generateTicks, getVisibleTicks, hideCrossAxisOverflow } from './visible_ticks';
 import { MockGlobalSpec } from '../../../../mocks/specs/specs';
 import { MockXDomain } from '../../../../mocks/xy/domains';
 import { ScaleType } from '../../../../scales/constants';
-import { HorizontalAlignment, Position, VerticalAlignment } from '../../../../utils/common';
+import { Position } from '../../../../utils/common';
 import { niceTimeFormatter } from '../../../../utils/data/formatters';
 import { computeXScale } from '../../utils/scales';
 
@@ -243,57 +243,27 @@ const tickWith = (
 
 const overflowCtx = (overrides: Partial<OverflowContext> = {}): OverflowContext => ({
   position: Position.Left,
-  rotation: 0,
-  alignment: {
-    horizontal: HorizontalAlignment.Center,
-    vertical: VerticalAlignment.Middle,
-  },
   truncate: false,
   labelBudget: 100,
-  range: [0, 1000],
-  leadingMargin: 1000,
-  trailingMargin: 1000,
   ...overrides,
 });
 
-describe('hideOverflowingTickLabels', () => {
-  describe('cross-axis budget', () => {
-    test('omits vertical labels wider than the axis budget (cross-axis is label width)', () => {
-      const ticks = [tickWith('fits', 500, { bboxWidth: 40 }), tickWith('overflows', 500, { bboxWidth: 120 })];
-      const result = hideOverflowingTickLabels(ticks, overflowCtx({ position: Position.Left }));
-      expect(result.map((tick) => tick.label)).toEqual(['fits', '']);
-    });
-
-    test('omits horizontal labels taller than the axis budget (e.g. rotated, cross-axis is label height)', () => {
-      const ticks = [tickWith('fits', 500, { bboxHeight: 20 }), tickWith('rotated', 500, { bboxHeight: 120 })];
-      const result = hideOverflowingTickLabels(ticks, overflowCtx({ position: Position.Bottom }));
-      expect(result.map((tick) => tick.label)).toEqual(['fits', '']);
-    });
-
-    test('keeps all labels when truncation is enabled', () => {
-      const ticks = [tickWith('overflows', 500, { bboxWidth: 120 })];
-      const result = hideOverflowingTickLabels(ticks, overflowCtx({ position: Position.Left, truncate: 'end' }));
-      expect(result.map((tick) => tick.label)).toEqual(['overflows']);
-    });
+describe('hideCrossAxisOverflow', () => {
+  test('omits vertical labels wider than the axis budget (cross-axis is label width)', () => {
+    const ticks = [tickWith('fits', 500, { bboxWidth: 40 }), tickWith('overflows', 500, { bboxWidth: 120 })];
+    const result = hideCrossAxisOverflow(ticks, overflowCtx({ position: Position.Left }));
+    expect(result.map((tick) => tick.label)).toEqual(['fits', '']);
   });
 
-  describe('along-axis container clipping (horizontal)', () => {
-    const ctx = (overrides: Partial<OverflowContext> = {}) =>
-      overflowCtx({ position: Position.Bottom, range: [0, 200], leadingMargin: 10, trailingMargin: 10, ...overrides });
+  test('omits horizontal labels taller than the axis budget (e.g. rotated, cross-axis is label height)', () => {
+    const ticks = [tickWith('fits', 500, { bboxHeight: 20 }), tickWith('rotated', 500, { bboxHeight: 120 })];
+    const result = hideCrossAxisOverflow(ticks, overflowCtx({ position: Position.Bottom }));
+    expect(result.map((tick) => tick.label)).toEqual(['fits', '']);
+  });
 
-    test('keeps a label that stays within the range', () => {
-      const ticks = [tickWith('mid', 100, { bboxWidth: 80, bboxHeight: 20 })];
-      expect(hideOverflowingTickLabels(ticks, ctx()).map((tick) => tick.label)).toEqual(['mid']);
-    });
-
-    test('keeps an edge label that spills into the reserved outer margin', () => {
-      const ticks = [tickWith('edge', 200, { bboxWidth: 20, bboxHeight: 20 })];
-      expect(hideOverflowingTickLabels(ticks, ctx()).map((tick) => tick.label)).toEqual(['edge']);
-    });
-
-    test('omits an edge label that spills past the container edge', () => {
-      const ticks = [tickWith('edge', 200, { bboxWidth: 60, bboxHeight: 20 })];
-      expect(hideOverflowingTickLabels(ticks, ctx()).map((tick) => tick.label)).toEqual(['']);
-    });
+  test('keeps all labels when truncation is enabled', () => {
+    const ticks = [tickWith('overflows', 500, { bboxWidth: 120 })];
+    const result = hideCrossAxisOverflow(ticks, overflowCtx({ position: Position.Left, truncate: 'end' }));
+    expect(result.map((tick) => tick.label)).toEqual(['overflows']);
   });
 });

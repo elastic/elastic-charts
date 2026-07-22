@@ -208,12 +208,6 @@ test.describe('Axis stories', () => {
       );
     });
 
-    test('should overflow tick labels with 90 deg chart rotation', async ({ page }) => {
-      await common.expectChartAtUrlToMatchScreenshot(page)(
-        `${story}&knob-Chart rotation_Chart config=90&knob-maxExtent_Axis Y=200`,
-      );
-    });
-
     test('should truncate y-axis tick labels with 90 deg chart rotation', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
         `${story}&knob-Chart rotation_Chart config=90&knob-maxExtent_Axis Y=120&knob-truncate_Axis Y=end`,

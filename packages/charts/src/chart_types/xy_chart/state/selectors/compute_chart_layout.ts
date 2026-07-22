@@ -39,7 +39,7 @@ const MAX_ITERATIONS = 5;
 const LAYOUT_EPSILON_PX = 0.5;
 
 const projectTicks = (
-  { container, settings, scales, axes, sm, bars }: LayoutParameters,
+  { settings, scales, axes, sm, bars }: LayoutParameters,
   chartDimensions: Dimensions,
   textMeasure: TextMeasure,
 ) => {
@@ -63,8 +63,6 @@ const projectTicks = (
     },
     bars.groupsCount,
     bars.enableHistogramMode,
-    chartDimensions,
-    container,
     bars.padding,
   );
 };
@@ -121,13 +119,15 @@ function computeChartLayout(params: LayoutParameters): {
         const joined = axesConfig.data.get(spec.id);
         if (!joined) return [];
         const measure = measures.get(spec.id);
+        const ticks = measure && 'ticks' in measure ? measure.ticks : undefined;
         const layouts =
           measure && 'ticks' in measure ? measure.ticks.map((tick) => tick.layout) : measure?.layouts ?? [];
         return [
           {
             spec,
             style: joined.axesStyle,
-            ticks: layouts,
+            layouts,
+            ticks,
             layout: joined.layout,
             scale: measure?.scale ?? joined.scale,
             isHidden: spec.hide,
@@ -135,6 +135,15 @@ function computeChartLayout(params: LayoutParameters): {
         ];
       });
       return getAxesDimensions(theme, axes);
+    };
+
+    const finalLayout = (margins: AxesPerSide, iterations: number) => {
+      const dimensions = computeChartArea(container, margins, theme);
+      return {
+        dimensions,
+        ticks: projectTicks(params, dimensions.chartDimensions, textMeasure),
+        meta: { iterations },
+      };
     };
 
     let projections = projectTicks(
@@ -150,23 +159,13 @@ function computeChartLayout(params: LayoutParameters): {
       const nextMargins = measureMargins(nextProjections);
 
       if (isLayoutStable(margins, nextMargins)) {
-        return {
-          dimensions: computeChartArea(container, nextMargins, theme),
-          ticks: nextProjections,
-          meta: { iterations: i + 1 },
-        };
+        return finalLayout(nextMargins, i + 1);
       }
       // Logger.warn('Layout did not converge after', i + 1, 'iterations');
       projections = nextProjections;
     }
 
-    const finalMargins = measureMargins(projections);
-    const finalChartArea = computeChartArea(container, finalMargins, theme);
-    return {
-      dimensions: finalChartArea,
-      ticks: projectTicks(params, finalChartArea.chartDimensions, textMeasure),
-      meta: { iterations: MAX_ITERATIONS },
-    };
+    return finalLayout(measureMargins(projections), MAX_ITERATIONS);
   });
 }
 

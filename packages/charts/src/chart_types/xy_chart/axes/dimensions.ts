@@ -104,13 +104,46 @@ export type AxisLayoutContext = {
   multilayerTimeAxis: boolean;
 };
 
+const measureAlongAxisOverflow = (
+  isVertical: boolean,
+  leadingFraction: number,
+  layouts: AxisTick['layout'][],
+  scale?: ScaleBand | ScaleContinuous,
+  ticks?: AxisTick[],
+): { leading: number; trailing: number } => {
+  const sizeOf = (layout?: AxisTick['layout']) => (isVertical ? layout?.bboxHeight : layout?.bboxWidth) ?? 0;
+
+  // If the scale and ticks are known, we can measure the overflow of the edge labels.
+  if (scale && ticks) {
+    const [min, max] = [Math.min(scale.range[0], scale.range[1]), Math.max(scale.range[0], scale.range[1])];
+    return ticks.reduce(
+      (acc, tick) => {
+        const size = sizeOf(tick.layout);
+        return {
+          leading: Math.max(acc.leading, leadingFraction * size - (tick.position - min)),
+          trailing: Math.max(acc.trailing, (1 - leadingFraction) * size - (max - tick.position)),
+        };
+      },
+      { leading: 0, trailing: 0 },
+    );
+  }
+
+  // If the scale and ticks are not known, we assume the first/last label sits at the range end, inset by `axisPadding`.
+  const axisPadding = scale && isBandScale(scale) ? scale.outerPadding * scale.step + scale.bandwidth / 2 : 0;
+  return {
+    leading: Math.max(0, sizeOf(layouts.at(0)) * leadingFraction - axisPadding),
+    trailing: Math.max(0, sizeOf(layouts.at(-1)) * (1 - leadingFraction) - axisPadding),
+  };
+};
+
 /** @internal */
 export const getAxesDimensions = (
   theme: Theme,
   axes: Array<{
     spec: AxisSpec;
     style: AxisStyle;
-    ticks: AxisTick['layout'][];
+    layouts: AxisTick['layout'][];
+    ticks?: AxisTick[];
     layout: AxisLayoutContext;
     scale?: ScaleBand | ScaleContinuous;
     isHidden?: boolean;
@@ -119,10 +152,10 @@ export const getAxesDimensions = (
   const { chartMargins } = theme;
 
   const sizes = axes.reduce(
-    (acc, { spec, style, ticks, layout, scale, isHidden }) => {
+    (acc, { spec, style, layouts, ticks, layout, scale, isHidden }) => {
       if (isHidden) return acc;
       const isVertical = isVerticalAxis(spec.position);
-      const extent = measureAxisBand(spec, style, ticks, layout);
+      const extent = measureAxisBand(spec, style, layouts, layout);
 
       switch (spec.position) {
         case Position.Top:
@@ -149,24 +182,16 @@ export const getAxesDimensions = (
             getHorizontalAlign(spec.position, style.tickLabel.rotation, style.tickLabel.alignment.horizontal),
           );
 
-      let axisPadding = 0;
-
-      if (scale && isBandScale(scale)) {
-        axisPadding = scale.outerPadding * scale.step + scale.bandwidth / 2;
-      }
-      // Overflow accounts for the first/last tick label spilling along the axis direction.
+      // Overflow accounts for the edge tick labels spilling along the axis direction.
       // When multiple axes share an overflow side, the larger contribution wins.
+      const { leading, trailing } = measureAlongAxisOverflow(isVertical, leadingFraction, layouts, scale, ticks);
       if (isVertical) {
-        const top = Math.max(0, (ticks.at(0)?.bboxHeight ?? 0) * leadingFraction - axisPadding);
-        const bottom = Math.max(0, (ticks.at(-1)?.bboxHeight ?? 0) * (1 - leadingFraction) - axisPadding);
-        acc.overflow.top = Math.max(acc.overflow.top, top);
-        acc.overflow.bottom = Math.max(acc.overflow.bottom, bottom);
+        acc.overflow.top = Math.max(acc.overflow.top, leading);
+        acc.overflow.bottom = Math.max(acc.overflow.bottom, trailing);
         // Multilayer time axes are skipped, labels are anchored at start and drops end labels that don't fit.
       } else if (!layout.multilayerTimeAxis) {
-        const left = Math.max(0, (ticks.at(0)?.bboxWidth ?? 0) * leadingFraction - axisPadding);
-        const right = Math.max(0, (ticks.at(-1)?.bboxWidth ?? 0) * (1 - leadingFraction) - axisPadding);
-        acc.overflow.left = Math.max(acc.overflow.left, left);
-        acc.overflow.right = Math.max(acc.overflow.right, right);
+        acc.overflow.left = Math.max(acc.overflow.left, leading);
+        acc.overflow.right = Math.max(acc.overflow.right, trailing);
       }
 
       return acc;

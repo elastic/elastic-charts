@@ -12,7 +12,7 @@ exports[`computeChartLayoutSelector hidden axes do not reserve any space 1`] = `
 }
 `;
 
-exports[`computeChartLayoutSelector layout loop converges in a single iteration for long ordinal labels 1`] = `
+exports[`computeChartLayoutSelector layout loop converges for long ordinal labels that overflow the band 1`] = `
 {
   "chartDimensions": {
     "height": 65,
