@@ -29,6 +29,7 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0024 — Multi-level time bar: stacked tick rows in time mode](./0024-multilevel-time-bar.md)
 - [0026 — Collapsible nesting: rolled-up semantics, tree-gating, and disclosure gutter](./0026-collapsible-nesting.md)
 - [0027 — Span IDs are unique within one supplied dataset](./0027-span-id-uniqueness.md)
+- [0028 — Partial traces use source-preserving synthetic parentage](./0028-partial-trace-synthetic-parentage.md)
 
 ## Spec plans
 
@@ -64,7 +65,8 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 - [Spec 24 — Clock-skew correction (Kibana-compatible placement)](./specs/spec-24-clock-skew.md)
 - [Spec 25 — Running spans (in-progress visualization)](./specs/spec-25-running-spans.md)
 - [Spec 26 — Multi-level (stacked) time bar](./specs/spec-26-multilevel-time-bar.md)
-- [Spec 27 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-27-connections.md)
+- [Spec 27 — Partial-trace recovery and orphan reparenting](./specs/spec-27-partial-trace-reparenting.md)
+- [Spec 28 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-28-connections.md)
 
 Build order (Specs 0–8): Phase 0 → Spec 0 → Spec 1 → (Spec 2 / Spec 3 / Spec 4 in parallel once
 Spec 1's `NormalizedSpan` contract is fixed) → Spec 5 → Spec 6 → Spec 7 → Spec 8.
@@ -88,10 +90,10 @@ graph whose numeric order **is** the dependency order:
 Specs 15–19 are mutually independent and can be parallelised after Spec 11.
 
 Spec 21 (collapsible nesting) builds on Spec 15 (`laneOrder: 'tree'` is the seam) and Specs 12 and 13
-(keyboard nav and `TraceSegmentRef`). It is independent of Specs 22–27. Open questions #2–#9 from the
+(keyboard nav and `TraceSegmentRef`). It is independent of Specs 22–28. Open questions #2–#9 from the
 original stub are resolved by [ADR 0026](./0026-collapsible-nesting.md).
 
-- **Spec 22** (critical path highlight) — depends on Specs 5, 12, and 13. Independent of Spec 27.
+- **Spec 22** (critical path highlight) — depends on Specs 5, 12, and 13. Independent of Spec 28.
   Extends the normalize pipeline (`project()`) and adds a canvas draw pass; no interaction state.
 - **Spec 23** (touch gestures) — depends on Specs 7, 10, and 13. See ADR 0021. Pure interaction
   layer addition; no pipeline changes.
@@ -106,8 +108,12 @@ original stub are resolved by [ADR 0026](./0026-collapsible-nesting.md).
 - **Spec 26** (multi-level time bar) — depends on Specs 3 and 4 (geometry, `TraceStyle`, raster
   engine reuse). Pure renderer + theme + geometry change; no normalize pipeline changes. Independent
   of Specs 22–25. See [ADR 0024](./0024-multilevel-time-bar.md).
-- **Spec 27** (connections / "Initiated by" arrows) — depends on Specs 5, 12, and 13 (reuses
+- **Spec 27** (partial-trace recovery / orphan reparenting) — depends on Specs 1, 2, 12, 15, 21,
+  and 24. Adds a source-preserving synthetic display topology between finite filtering and
+  clock-skew correction, plus partial-trace warning/provenance surfaces. Spec 25 running spans remain
+  compatible but are not required to implement recovery.
+- **Spec 28** (connections / "Initiated by" arrows) — depends on Specs 5, 12, and 13 (reuses
   `TraceSegmentRef`, `waitingSegments`, and the `buildGeometry` resolved-field pattern). Independent
-  of Specs 22–26. Pure render — no pipeline changes, no interaction state.
+  of Specs 22–27. Pure render — no pipeline changes, no interaction state.
 
 See the repo root [`CONTEXT.md`](../../../CONTEXT.md) for the domain glossary.

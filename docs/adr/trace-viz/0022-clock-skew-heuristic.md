@@ -93,9 +93,10 @@ starts between its parent's recorded and corrected starts or after the corrected
 
 **Orphans remain outside the parity boundary:** Kibana reparents missing-parent spans under its
 elected visible root and marks the trace partial. Elastic Charts retains its established forest model,
-where a span whose `parentId` is absent from the supplied dataset is a root. Reparenting requires its
-own feature spec covering topology, provenance, warnings, interaction payloads, and accessibility; it
-is not part of clock-skew reconciliation.
+where a span whose `parentId` is absent from the supplied dataset is a root. Proposed
+[Spec 27](./specs/spec-27-partial-trace-reparenting.md) defines source-preserving reparenting,
+provenance, warnings, interaction payloads, and accessibility; it remains outside clock-skew
+reconciliation until implemented.
 
 ## Decision 4 — Correction is a `normalize` pipeline stage, before `project`; reuses the `orderLanes` DFS pattern
 

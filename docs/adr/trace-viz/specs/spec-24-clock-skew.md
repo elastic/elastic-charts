@@ -273,13 +273,13 @@ Running-child, running-parent, and completed-edge-below-running-parent datasets 
 excluded until Spec 25 makes running spans valid public input. Add those cases to the running-span
 story when Spec 25 lands rather than weakening the Spec 24 build boundary.
 
-### Follow-up reminder — missing-parent reparenting
+### Follow-up — missing-parent reparenting
 
-Generate a dedicated feature spec before implementing Kibana-style orphan reparenting. That spec must
-define root election, partial-trace provenance and warnings, whether `parentId` changes only internally
-or in public payloads, interaction/accessibility wording, focused-subtree behavior, and its relationship
-to the existing orphan-as-root forest model. Missing-parent reparenting is not part of Spec 24 or its
-Kibana clock-skew coordinate parity boundary.
+[Spec 27](./spec-27-partial-trace-reparenting.md) now defines root election, source-preserving
+synthetic parentage, partial-trace warnings and provenance, interaction/accessibility wording,
+focused-subtree boundaries, and compatibility with the existing orphan-as-root forest model.
+Missing-parent reparenting remains outside Spec 24 and its Kibana clock-skew coordinate parity
+boundary until Spec 27 is implemented.
 
 ## Edge cases
 

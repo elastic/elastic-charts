@@ -51,6 +51,11 @@ A span whose `parentId` is not present in the span set (e.g. clock-skew, partial
 malformed data) is treated as a root in the forest. This ensures no span is ever dropped from the
 lane list, and the span appears at the top level rather than being silently hidden.
 
+[ADR 0028](./0028-partial-trace-synthetic-parentage.md) proposes a source-preserving extension for
+partial traces: when an unambiguous display root exists, genuine missing-parent spans render beneath
+it through a separate synthetic parent. Until Spec 27 is implemented, and whenever root election is
+ambiguous or topology is malformed, the orphan-as-root behavior above remains authoritative.
+
 ### Sibling and root sort: start ascending, stable
 
 Within any parent (including the implicit root set), children are ordered by `start` ascending.
