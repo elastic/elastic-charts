@@ -6,11 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { normalize } from './normalize';
+import { correctClockSkew, normalize } from './normalize';
+import { orderLanes } from './order_lanes';
 import { fromOtlp, nanoToMs } from './otel_adapter';
 import type { OtelSpan, OtlpEnvelope } from './otel_adapter';
+import type { NormalizedSpan } from './types';
 import { Logger } from '../../../utils/logger';
-import type { TraceDatum, TraceColorAccessor } from '../trace_api';
+import type { TraceDatum } from '../trace_api';
 import { colorByOtelAttribute, colorByOtelKind } from '../trace_api';
 
 const simpleData: TraceDatum[] = [
@@ -28,6 +30,12 @@ const simpleData: TraceDatum[] = [
     ],
   },
 ];
+
+const normalizedSpan = (datum: TraceDatum): NormalizedSpan => ({
+  ...datum,
+  activeSegments: datum.activeSegments?.map((segment) => ({ ...segment })) ?? [],
+  meta: datum,
+});
 
 // OTel fixture — same timing as simpleData, expressed as OTLP nanos (1ms === 1_000_000ns)
 const otelSpans: OtelSpan[] = [
@@ -109,6 +117,222 @@ describe('nanoToMs', () => {
     // 1700000000123456789 ns exceeds Number.MAX_SAFE_INTEGER (9007199254740991); a naive
     // Number(nano) / 1e6 conversion would silently lose the low-order digits.
     expect(nanoToMs('1700000000123456789')).toBeCloseTo(1700000000123.456789, 6);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// correctClockSkew
+// ---------------------------------------------------------------------------
+describe('correctClockSkew', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('returns the same empty array', () => {
+    const spans: NormalizedSpan[] = [];
+
+    expect(correctClockSkew(spans)).toBe(spans);
+  });
+
+  // Local coordinate goldens for Kibana APM getClockSkew, introduced by commit 36c31d600a371.
+  it.each([
+    {
+      name: 'keeps an item without a parent unchanged',
+      data: [{ id: 'root', name: 'root', start: 0, end: 50 }],
+      expected: { start: 0, end: 50, skewCorrected: undefined },
+    },
+    {
+      name: 'keeps an item that starts after its parent unchanged',
+      data: [
+        { id: 'root', name: 'root', start: 0, end: 100 },
+        { id: 'child', name: 'child', parentId: 'root', start: 10, end: 60 },
+      ],
+      expected: { start: 10, end: 60, skewCorrected: undefined },
+    },
+    {
+      name: 'centres a shorter item that starts before its parent',
+      data: [
+        { id: 'root', name: 'root', start: 0, end: 100 },
+        { id: 'child', name: 'child', parentId: 'root', start: -20, end: 20 },
+      ],
+      expected: { start: 30, end: 70, skewCorrected: true },
+    },
+    {
+      name: 'clamps latency to zero when the item is longer than its parent',
+      data: [
+        { id: 'root', name: 'root', start: 0, end: 100 },
+        { id: 'child', name: 'child', parentId: 'root', start: -30, end: 120 },
+      ],
+      expected: { start: 0, end: 150, skewCorrected: true },
+    },
+  ])('$name', ({ data, expected }) => {
+    const spans = data.map(normalizedSpan);
+    const result = correctClockSkew(spans);
+    const item = result.at(-1);
+    const wasCorrected = expected.skewCorrected === true;
+
+    expect(item).toMatchObject({ start: expected.start, end: expected.end });
+    expect(item !== undefined && 'skewCorrected' in item).toBe(wasCorrected);
+    expect(result === spans).toBe(!wasCorrected);
+    expect(item === spans.at(-1)).toBe(!wasCorrected);
+  });
+
+  it('centres a left-skewed child and translates its active segments without mutating source data', () => {
+    const rootDatum: TraceDatum = { id: 'root', name: 'root', start: 0, end: 200 };
+    const childDatum: TraceDatum = {
+      id: 'child',
+      name: 'child',
+      parentId: 'root',
+      start: -20,
+      end: 80,
+      activeSegments: [{ start: -10, end: 30 }],
+    };
+    const root = normalizedSpan(rootDatum);
+    const child = normalizedSpan(childDatum);
+
+    const result = correctClockSkew([root, child]);
+
+    expect(result[0]).toBe(root);
+    expect(result[1]).toMatchObject({ start: 50, end: 150, skewCorrected: true });
+    expect(result[1]?.activeSegments).toEqual([{ start: 60, end: 100 }]);
+    expect(result[1]?.meta).toBe(childDatum);
+    expect(child).toMatchObject({ start: -20, end: 80 });
+    expect(child.activeSegments).toEqual([{ start: -10, end: 30 }]);
+  });
+
+  it('corrects nested spans independently against the corrected parent start', () => {
+    const spans = [
+      normalizedSpan({ id: 'root', name: 'root', start: 0, end: 200 }),
+      normalizedSpan({ id: 'http', name: 'http', parentId: 'root', start: -20, end: 80 }),
+      normalizedSpan({ id: 'before', name: 'before', parentId: 'http', start: -30, end: -10 }),
+      normalizedSpan({ id: 'between', name: 'between', parentId: 'http', start: 0, end: 20 }),
+      normalizedSpan({ id: 'after', name: 'after', parentId: 'http', start: 100, end: 120 }),
+    ];
+
+    const result = correctClockSkew(spans);
+
+    expect(result.map(({ start, end, skewCorrected }) => ({ start, end, skewCorrected }))).toEqual([
+      { start: 0, end: 200, skewCorrected: undefined },
+      { start: 50, end: 150, skewCorrected: true },
+      { start: 90, end: 110, skewCorrected: true },
+      { start: 90, end: 110, skewCorrected: true },
+      { start: 100, end: 120, skewCorrected: undefined },
+    ]);
+    expect(result[4]).toBe(spans[4]);
+    expect(result[4]).not.toHaveProperty('skewCorrected');
+  });
+
+  it('moves a left-skewed zero-duration child to the parent midpoint', () => {
+    const spans = [
+      normalizedSpan({ id: 'root', name: 'root', start: 0, end: 100 }),
+      normalizedSpan({ id: 'child', name: 'child', parentId: 'root', start: -10, end: -10 }),
+    ];
+
+    expect(correctClockSkew(spans)[1]).toMatchObject({ start: 50, end: 50, skewCorrected: true });
+  });
+
+  it('retains negative-duration spans, skips their incident edges, and resumes below a valid edge', () => {
+    const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const negativeParent = normalizedSpan({ id: 'negative-parent', name: 'negative parent', start: 100, end: 0 });
+    const child = normalizedSpan({
+      id: 'child',
+      name: 'child',
+      parentId: 'negative-parent',
+      start: 0,
+      end: 20,
+    });
+    const grandchild = normalizedSpan({
+      id: 'grandchild',
+      name: 'grandchild',
+      parentId: 'child',
+      start: -10,
+      end: 0,
+    });
+
+    const result = correctClockSkew([negativeParent, child, grandchild]);
+
+    expect(result[0]).toBe(negativeParent);
+    expect(result[1]).toBe(child);
+    expect(result[2]).toMatchObject({ start: 5, end: 15, skewCorrected: true });
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Trace chart: ignored clock-skew correction for 1 negative-duration span ("negative-parent").',
+    );
+  });
+
+  it('skips both edges incident to a negative-duration child', () => {
+    const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const root = normalizedSpan({ id: 'root', name: 'root', start: 0, end: 100 });
+    const negativeChild = normalizedSpan({
+      id: 'negative-child',
+      name: 'negative child',
+      parentId: 'root',
+      start: -10,
+      end: -20,
+    });
+    const childOfNegative = normalizedSpan({
+      id: 'child-of-negative',
+      name: 'child of negative',
+      parentId: 'negative-child',
+      start: -30,
+      end: -10,
+    });
+    const spans = [root, negativeChild, childOfNegative];
+
+    expect(correctClockSkew(spans)).toBe(spans);
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('bounds an aggregated negative-duration warning to five IDs', () => {
+    const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const spans = Array.from({ length: 7 }, (_, index) =>
+      normalizedSpan({ id: `negative-${index}`, name: `negative ${index}`, start: 10, end: 0 }),
+    );
+
+    expect(correctClockSkew(spans)).toBe(spans);
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Trace chart: ignored clock-skew correction for 7 negative-duration spans ("negative-0", "negative-1", "negative-2", "negative-3", "negative-4", and 2 more).',
+    );
+  });
+
+  it('does not warn when every duration is non-negative', () => {
+    const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const spans = [
+      normalizedSpan({ id: 'root', name: 'root', start: 0, end: 100 }),
+      normalizedSpan({ id: 'child', name: 'child', parentId: 'root', start: 10, end: 30 }),
+    ];
+
+    correctClockSkew(spans);
+
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  it('retains cyclic spans without hanging', () => {
+    const spans = [
+      normalizedSpan({ id: 'a', name: 'a', parentId: 'b', start: 0, end: 40 }),
+      normalizedSpan({ id: 'b', name: 'b', parentId: 'a', start: -10, end: 30 }),
+    ];
+
+    expect(correctClockSkew(spans)).toBe(spans);
+  });
+
+  it('retains duplicate-id objects and input order when another subtree is corrected', () => {
+    const duplicateA = normalizedSpan({ id: 'duplicate', name: 'duplicate A', start: 200, end: 220 });
+    const duplicateB = normalizedSpan({ id: 'duplicate', name: 'duplicate B', start: 230, end: 250 });
+    const spans = [
+      duplicateA,
+      normalizedSpan({ id: 'root', name: 'root', start: 0, end: 100 }),
+      duplicateB,
+      normalizedSpan({ id: 'child', name: 'child', parentId: 'root', start: -10, end: 50 }),
+    ];
+
+    const result = correctClockSkew(spans);
+
+    expect(result).toHaveLength(4);
+    expect(result[0]).toBe(duplicateA);
+    expect(result[2]).toBe(duplicateB);
+    expect(result.map(({ name }) => name)).toEqual(['duplicate A', 'root', 'duplicate B', 'child']);
   });
 });
 
@@ -212,9 +436,7 @@ describe('normalize', () => {
   });
 
   describe('emptyReason', () => {
-    const data: TraceDatum[] = [
-      { id: 'a', name: 'a', start: 0, end: 10, traceId: 't1' },
-    ];
+    const data: TraceDatum[] = [{ id: 'a', name: 'a', start: 0, end: 10, traceId: 't1' }];
 
     it('is "trace-not-found" when traceId is set but matches no spans', () => {
       const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
@@ -237,9 +459,7 @@ describe('normalize', () => {
 
     it('is undefined when traceId matches but all spans have non-finite timestamps (data-quality, not trace-not-found)', () => {
       const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
-      const badData: TraceDatum[] = [
-        { id: 'a', name: 'a', start: NaN, end: 10, traceId: 't1' },
-      ];
+      const badData: TraceDatum[] = [{ id: 'a', name: 'a', start: NaN, end: 10, traceId: 't1' }];
       // selectTrace returns the span (traceId matched) — traceNotFound is false.
       // dropNonFinite then removes it. emptyReason stays undefined.
       const result = normalize(badData, 'time', 't1');
@@ -316,13 +536,18 @@ describe('normalize', () => {
 
     it('colorByOtelAttribute reads span-level attribute before resource attribute', () => {
       // span has http.method on span.attributes AND (hypothetically) on resource — span wins
-      const data: TraceDatum[] = [{
-        id: 'a', name: 'a', start: 0, end: 10,
-        meta: {
-          attributes: [{ key: 'service.name', value: 'span-level' }],
-          resource: { attributes: [{ key: 'service.name', value: 'resource-level' }] },
+      const data: TraceDatum[] = [
+        {
+          id: 'a',
+          name: 'a',
+          start: 0,
+          end: 10,
+          meta: {
+            attributes: [{ key: 'service.name', value: 'span-level' }],
+            resource: { attributes: [{ key: 'service.name', value: 'resource-level' }] },
+          },
         },
-      }];
+      ];
       const accessor = colorByOtelAttribute('service.name');
       const key = accessor(data[0]!);
       expect(key).toBe('span-level'); // span attribute wins
@@ -361,15 +586,24 @@ describe('normalize', () => {
 
     it('colorByOtelAttribute resolves service.name from fromOtlp envelope data', () => {
       const envelope: OtlpEnvelope = {
-        resourceSpans: [{
-          resource: { attributes: [{ key: 'service.name', value: 'my-svc' }] },
-          scopeSpans: [{
-            spans: [{
-              spanId: 'x', name: 'op', traceId: 't1',
-              startTimeUnixNano: '0', endTimeUnixNano: '1000000000',
-            }],
-          }],
-        }],
+        resourceSpans: [
+          {
+            resource: { attributes: [{ key: 'service.name', value: 'my-svc' }] },
+            scopeSpans: [
+              {
+                spans: [
+                  {
+                    spanId: 'x',
+                    name: 'op',
+                    traceId: 't1',
+                    startTimeUnixNano: '0',
+                    endTimeUnixNano: '1000000000',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       };
       const data = fromOtlp(envelope);
       const { spans } = normalize(data, 'time', undefined, colorByOtelAttribute('service.name'), VIZ_COLORS);
@@ -413,19 +647,24 @@ describe('normalize', () => {
     const VIZ_COLORS = ['red', 'green', 'blue'];
 
     it('assigns palette colors to labeled segments in first-seen order', () => {
-      const data: TraceDatum[] = [{
-        id: 'a', name: 'a', start: 0, end: 100,
-        activeSegments: [
-          { start: 0, end: 30, label: 'loading' },
-          { start: 30, end: 80, label: 'process' },
-          { start: 80, end: 100, label: 'final' },
-        ],
-      }];
+      const data: TraceDatum[] = [
+        {
+          id: 'a',
+          name: 'a',
+          start: 0,
+          end: 100,
+          activeSegments: [
+            { start: 0, end: 30, label: 'loading' },
+            { start: 30, end: 80, label: 'process' },
+            { start: 80, end: 100, label: 'final' },
+          ],
+        },
+      ];
       const { spans } = normalize(data, 'time', undefined, undefined, VIZ_COLORS);
       const segs = spans[0]?.activeSegments ?? [];
-      expect(segs[0]?.color).toBe('red');   // loading → index 0
+      expect(segs[0]?.color).toBe('red'); // loading → index 0
       expect(segs[1]?.color).toBe('green'); // process → index 1
-      expect(segs[2]?.color).toBe('blue');  // final → index 2
+      expect(segs[2]?.color).toBe('blue'); // final → index 2
     });
 
     it('the same label across multiple spans maps to the same color', () => {
@@ -439,36 +678,51 @@ describe('normalize', () => {
     });
 
     it('explicit segment.color wins over the label-derived palette color', () => {
-      const data: TraceDatum[] = [{
-        id: 'a', name: 'a', start: 0, end: 100,
-        activeSegments: [
-          { start: 0, end: 50, label: 'loading', color: 'hotpink' }, // explicit override
-          { start: 50, end: 100, label: 'loading' },                  // same label, no explicit color
-        ],
-      }];
+      const data: TraceDatum[] = [
+        {
+          id: 'a',
+          name: 'a',
+          start: 0,
+          end: 100,
+          activeSegments: [
+            { start: 0, end: 50, label: 'loading', color: 'hotpink' }, // explicit override
+            { start: 50, end: 100, label: 'loading' }, // same label, no explicit color
+          ],
+        },
+      ];
       const { spans } = normalize(data, 'time', undefined, undefined, VIZ_COLORS);
       const segs = spans[0]?.activeSegments ?? [];
       expect(segs[0]?.color).toBe('hotpink'); // explicit wins
-      expect(segs[1]?.color).toBe('red');     // label-derived (loading → index 0)
+      expect(segs[1]?.color).toBe('red'); // label-derived (loading → index 0)
     });
 
     it('segment without label or color has no color property', () => {
-      const data: TraceDatum[] = [{
-        id: 'a', name: 'a', start: 0, end: 100,
-        activeSegments: [{ start: 0, end: 100 }],
-      }];
+      const data: TraceDatum[] = [
+        {
+          id: 'a',
+          name: 'a',
+          start: 0,
+          end: 100,
+          activeSegments: [{ start: 0, end: 100 }],
+        },
+      ];
       const { spans } = normalize(data, 'time', undefined, undefined, VIZ_COLORS);
       expect(spans[0]?.activeSegments[0]?.color).toBeUndefined();
     });
 
     it('project() preserves label and resolved color when re-zeroing under xScaleType "linear"', () => {
-      const data: TraceDatum[] = [{
-        id: 'a', name: 'a', start: 1000, end: 2000,
-        activeSegments: [
-          { start: 1000, end: 1300, label: 'loading' },
-          { start: 1300, end: 2000, label: 'process' },
-        ],
-      }];
+      const data: TraceDatum[] = [
+        {
+          id: 'a',
+          name: 'a',
+          start: 1000,
+          end: 2000,
+          activeSegments: [
+            { start: 1000, end: 1300, label: 'loading' },
+            { start: 1300, end: 2000, label: 'process' },
+          ],
+        },
+      ];
       const { spans } = normalize(data, 'linear', undefined, undefined, VIZ_COLORS);
       const segs = spans[0]?.activeSegments ?? [];
       // domain min is 1000; rezeroed: loading [0, 300], process [300, 1000]
@@ -479,11 +733,19 @@ describe('normalize', () => {
     it('uses a stable segment color map across traceId selection', () => {
       const data: TraceDatum[] = [
         {
-          id: 't1-a', name: 'a', start: 0, end: 100, traceId: 't1',
+          id: 't1-a',
+          name: 'a',
+          start: 0,
+          end: 100,
+          traceId: 't1',
           activeSegments: [{ start: 0, end: 50, label: 'loading' }],
         },
         {
-          id: 't2-a', name: 'a', start: 0, end: 100, traceId: 't2',
+          id: 't2-a',
+          name: 'a',
+          start: 0,
+          end: 100,
+          traceId: 't2',
           activeSegments: [{ start: 0, end: 50, label: 'loading' }],
         },
       ];
@@ -496,19 +758,24 @@ describe('normalize', () => {
 
     it('segment coloring works independently of span-level colorBy', () => {
       // Both segment labels and colorBy are active simultaneously; segment wins per precedence.
-      const data: TraceDatum[] = [{
-        id: 'a', name: 'a', start: 0, end: 100,
-        meta: { resource: { attributes: [{ key: 'service.name', value: 'checkout' }] } },
-        activeSegments: [
-          { start: 0, end: 50, label: 'loading' },
-          { start: 50, end: 100, label: 'process' },
-        ],
-      }];
+      const data: TraceDatum[] = [
+        {
+          id: 'a',
+          name: 'a',
+          start: 0,
+          end: 100,
+          meta: { resource: { attributes: [{ key: 'service.name', value: 'checkout' }] } },
+          activeSegments: [
+            { start: 0, end: 50, label: 'loading' },
+            { start: 50, end: 100, label: 'process' },
+          ],
+        },
+      ];
       const { spans } = normalize(data, 'time', undefined, colorByOtelAttribute('service.name'), VIZ_COLORS);
       // Span-level color: 'red' (first-seen 'checkout'). Segment loading → 'red' too (index 0 resets).
       // Both maps independently index from 0 — this is the documented behaviour.
       const segs = spans[0]?.activeSegments ?? [];
-      expect(segs[0]?.color).toBe('red');   // loading → segment palette index 0
+      expect(segs[0]?.color).toBe('red'); // loading → segment palette index 0
       expect(segs[1]?.color).toBe('green'); // process → segment palette index 1
     });
   });
@@ -558,12 +825,15 @@ describe('normalize — dropNonFinite guard', () => {
 
   it('strips only the non-finite activeSegments from an otherwise-valid span', () => {
     const span: TraceDatum = {
-      id: 'v', name: 'valid', start: 0, end: 100,
+      id: 'v',
+      name: 'valid',
+      start: 0,
+      end: 100,
       activeSegments: [
-        { start: 10, end: 40 },           // finite — kept
-        { start: NaN, end: 60 },          // NaN start — dropped
-        { start: 50, end: Infinity },     // Infinity end — dropped
-        { start: 70, end: 90 },           // finite — kept
+        { start: 10, end: 40 }, // finite — kept
+        { start: NaN, end: 60 }, // NaN start — dropped
+        { start: 50, end: Infinity }, // Infinity end — dropped
+        { start: 70, end: 90 }, // finite — kept
       ],
     };
     const { spans } = normalize([span], 'linear');
@@ -673,5 +943,58 @@ describe('normalize — criticalIntervals', () => {
   it('returns empty criticalIntervals when no criticalPath is supplied', () => {
     const { criticalIntervals } = normalize(data, 'linear');
     expect(criticalIntervals).toEqual([]);
+  });
+
+  it.each([
+    ['time', { spanStart: 150, spanEnd: 250, intervalStart: 170, intervalEnd: 190 }],
+    ['linear', { spanStart: 50, spanEnd: 150, intervalStart: 70, intervalEnd: 90 }],
+  ] as const)('translates an owning span critical interval by the same skew offset in %s mode', (mode, expected) => {
+    const skewedData: TraceDatum[] = [
+      { id: 'root', name: 'root', start: 100, end: 300 },
+      { id: 'child', name: 'child', parentId: 'root', start: 80, end: 180 },
+    ];
+
+    const result = normalize(skewedData, mode, undefined, undefined, undefined, [
+      { spanId: 'child', start: 100, end: 120 },
+    ]);
+
+    expect(result.spans[1]).toMatchObject({
+      start: expected.spanStart,
+      end: expected.spanEnd,
+      skewCorrected: true,
+    });
+    expect(result.criticalIntervals).toEqual([
+      { spanId: 'child', start: expected.intervalStart, end: expected.intervalEnd },
+    ]);
+  });
+});
+
+describe('normalize — corrected lane ordering', () => {
+  it('orders siblings by their corrected starts', () => {
+    const data: TraceDatum[] = [
+      { id: 'root', name: 'root', start: 0, end: 200 },
+      { id: 'a', name: 'a', parentId: 'root', start: -20, end: 80 },
+      { id: 'b', name: 'b', parentId: 'root', start: 10, end: 30 },
+    ];
+
+    const { spans } = normalize(data, 'time');
+
+    expect(orderLanes(spans, 'tree').lanes.map(({ id }) => id)).toEqual(['root', 'b', 'a']);
+    expect(orderLanes(spans, 'chronological').lanes.map(({ id }) => id)).toEqual(['root', 'b', 'a']);
+  });
+
+  it('recomputes the linear domain after clamping a long child to its parent start', () => {
+    const data: TraceDatum[] = [
+      { id: 'root', name: 'root', start: 100, end: 200 },
+      { id: 'child', name: 'child', parentId: 'root', start: 40, end: 190 },
+    ];
+
+    const result = normalize(data, 'linear');
+
+    expect(result.domain).toEqual({ min: 0, max: 150 });
+    expect(result.spans).toEqual([
+      expect.objectContaining({ id: 'root', start: 0, end: 100 }),
+      expect.objectContaining({ id: 'child', start: 0, end: 150, skewCorrected: true }),
+    ]);
   });
 });

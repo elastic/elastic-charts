@@ -85,13 +85,15 @@ criticalPath?: TraceCriticalPath;
 `criticalIntervals: Array<{ spanId: string; start: number; end: number }>` (projected, clamped).
 
 Inside `project()`, when `xScaleType === 'linear'`, for each input interval:
-1. Re-zero: `start -= min`, `end -= min`.
-2. Clamp to the span's projected `[span.start, span.end]` (look up the span by `spanId` from the
+1. If clock-skew correction moved the owning span (Spec 24), add that span's own correction offset
+   to `start` and `end`.
+2. Re-zero: `start -= min`, `end -= min`.
+3. Clamp to the span's projected `[span.start, span.end]` (look up the span by `spanId` from the
    projected spans array; if the span is not found, drop the interval).
-3. Drop if `start >= end` after clamping.
+4. Drop if `start >= end` after clamping.
 
-In `'time'` mode no re-zero is needed (times are already epoch-based); only perform step 2 (clamp
-and drop). In both modes unknown `spanId` → drop.
+In `'time'` mode no re-zero is needed (times are already epoch-based); perform the clock-skew
+translation when present, then clamp and drop. In both modes unknown `spanId` → drop.
 
 **Cache key:** `getPipeline()` must add `criticalPath: spec.criticalPath` to `PipelineCache` and
 include it in the cache-hit condition (same reference equality as `dataRef`, `colorBy`, etc.).
@@ -210,5 +212,7 @@ for each (laneIndex, intervals) of geom.criticalIntervalsByLane:
   the full segment).
 - `'linear'` x-scale: a critical interval specified in raw epoch-ms times renders at the correct
   position after normalization (same visual x as the same time on the active segment).
+- A critical interval belonging to a clock-skew-corrected span receives the same owning-span translation
+  and retains its relative position within that span.
 - Culled lanes (above/below the scroll viewport) produce no draw calls.
 - `yarn jest trace_chart normalize` and `yarn typecheck` are green.

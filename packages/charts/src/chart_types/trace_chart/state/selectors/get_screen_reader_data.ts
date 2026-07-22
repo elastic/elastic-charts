@@ -100,15 +100,16 @@ export const getTraceTableRowsSelector = createCustomCachedSelector(
     return spans.map((span, laneIndex): TraceTableRow => {
       const discEntry = disclosure.get(laneIndex);
       const hiddenCount = discEntry?.state === 'collapsed' ? discEntry.descendantCount : 0;
+      const adjustedName = span.skewCorrected ? `${span.name} (clock skew adjusted)` : span.name;
       // Append hidden-descendant count to the name for AT parity (collapsed parent rows).
-      const name = hiddenCount > 0 ? `${span.name} (${hiddenCount} descendants hidden)` : span.name;
+      const name = hiddenCount > 0 ? `${adjustedName} (${hiddenCount} descendants hidden)` : adjustedName;
       return {
         id: span.id,
         name,
         totalDuration: formatMs(span.end - span.start),
         selfTime: formatMs(computeSelfTime(span)),
         startOffset: `+${formatMs(span.start - domain.min)}`,
-        parentName: span.parentId != null ? (nameById.get(span.parentId) ?? '—') : '—',
+        parentName: span.parentId != null ? nameById.get(span.parentId) ?? '—' : '—',
       };
     });
   },

@@ -56,6 +56,9 @@ lane list, and the span appears at the top level rather than being silently hidd
 Within any parent (including the implicit root set), children are ordered by `start` ascending.
 Equal-start ties are broken by original data order (Array.sort is stable in ES2019+), which is
 deterministic for a given `data` array but should not be relied on across different data orderings.
+Lane ordering runs after normalization: when clock-skew correction moves a span (ADR 0022), this is
+the corrected rendered `start`, not the recorded source start. Chronological mode uses the same
+corrected-start rule for its whole list.
 
 ### Cycle guard
 

@@ -47,6 +47,11 @@ const FEW_SPANS: TraceDatum[] = [
   { id: 'db', name: 'DB.query', parentId: 'root', traceId: 't1', start: 100, end: 450 },
 ];
 
+const SKEWED_SPANS: TraceDatum[] = [
+  { id: 'root', name: 'root', start: 0, end: 100 },
+  { id: 'child', name: 'skewed child', parentId: 'root', start: -10, end: 50 },
+];
+
 // Importing trace_test_helpers activates jest-canvas-mock, which patches
 // HTMLCanvasElement.prototype.getContext for this file. All tests below therefore
 // run with a real canvas stub — the RAF→frame→draw path executes instead of
@@ -697,6 +702,44 @@ describe('Trace chart — scrollToSpan + controlProviderCallback (Spec 14)', () 
     const ariaLive = container.querySelector('[aria-live]');
     expect(ariaLive?.textContent).toContain('DB.query');
 
+    unmount();
+  });
+
+  it('announces clock-skew provenance for a corrected span', () => {
+    let captured: TraceControlCallbacks | null = null;
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace
+          id="scroll-skew"
+          data={SKEWED_SPANS}
+          xScaleType="linear"
+          controlProviderCallback={(cb) => {
+            captured = cb;
+          }}
+        />
+      </Chart>,
+    );
+    jest.runAllTimers();
+
+    captured!.scrollToSpan('child');
+
+    expect(container.querySelector('[aria-live]')?.textContent).toBe(
+      'skewed child — 60.00 ms — time adjusted for clock skew',
+    );
+    unmount();
+  });
+
+  it('marks corrected span names in the screen-reader table', () => {
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="sr-skew" data={SKEWED_SPANS} xScaleType="linear" />
+      </Chart>,
+    );
+    jest.runAllTimers();
+
+    const table = container.querySelector('[data-testid="echScreenReaderTraceTable"]');
+    expect(table?.textContent).toContain('skewed child (clock skew adjusted)');
+    expect(table?.textContent).not.toContain('root (clock skew adjusted)');
     unmount();
   });
 

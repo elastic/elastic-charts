@@ -330,7 +330,8 @@ class TraceComponent extends React.Component<TraceProps> {
   /** Announce a lane's span to the aria-live region. Shared by keyboard nav and scrollToSpan. */
   private announceLane(span: NormalizedSpan): void {
     if (this.ariaLiveRef.current) {
-      this.ariaLiveRef.current.textContent = `${span.name} — ${formatMs(span.end - span.start)}`;
+      const skewNote = span.skewCorrected ? ' — time adjusted for clock skew' : '';
+      this.ariaLiveRef.current.textContent = `${span.name} — ${formatMs(span.end - span.start)}${skewNote}`;
     }
   }
 

@@ -8,7 +8,8 @@ backed by a redux-driven internal chart state.
 ### Trace visualization
 
 **Span**:
-A single timed operation; the atomic datum of the Trace waterfall. One span occupies exactly one lane.
+A single timed operation; the atomic datum of the Trace waterfall. One span occupies exactly one lane,
+and its ID is unique within the complete dataset supplied to that Trace chart.
 _Avoid_: event, operation, transaction (OTel-specific terms below cover those distinctions).
 
 **Lane**:
@@ -50,17 +51,21 @@ wall-clock dependency; the provisional end does not animate. Duration and elapse
 presented for running spans (the provisional extent is not a real measurement). In the OpenTelemetry
 protocol, a running span sets `endTimeUnixNano = 0`, which the `fromOtlp` adapter maps to `null`. See
 [ADR 0023](./docs/adr/trace-viz/0023-running-span-model.md).
+An explicitly supplied running span remains in its structural parent-child position; it is not treated
+as a missing parent and does not trigger orphan reparenting.
 _Avoid_: in-flight span (may imply network activity specifically), live span (implies the bar is live-
 animating).
 
 **Clock-skew correction**:
 An active positional adjustment applied by the normalization pipeline when a child span's recorded
-`start` precedes its parent's (a temporal impossibility caused by unsynchronized clocks). The heuristic
-centers the child within the parent: `delay = (parentDuration − childDuration) / 2`. The entire
-descendant subtree shifts by the same `offset`, preserving intra-subtree relative distances. Corrected
-spans carry a `skewCorrected` marker; the tooltip and screen-reader surface note the adjustment, and the
-original recorded times remain accessible via the source datum. Runs before domain projection and before
-running-end synthesis; running spans (no duration) are skipped. See [ADR 0022](./docs/adr/trace-viz/0022-clock-skew-heuristic.md).
+`start` is temporally impossible relative to its corrected parent because their clocks were not
+synchronized. For valid, finite trace trees its placement semantics match Kibana APM: each span is
+estimated independently relative to its corrected parent rather than receiving an automatic subtree
+translation. Corrected spans and public payloads containing their adjusted timings carry a
+`skewCorrected` marker only when that span's own rendered coordinates differ from its recorded
+coordinates; the tooltip and screen-reader surface note the adjustment, and the original recorded
+times remain accessible via the source datum. See
+[ADR 0022](./docs/adr/trace-viz/0022-clock-skew-heuristic.md).
 _Avoid_: clock drift (implies a gradual continuous offset rather than a fixed per-collection skew),
 timestamp fix (sounds like a data-repair step applied to the source, not a rendering adjustment).
 
@@ -72,8 +77,9 @@ Lane assignment order is controlled by the **Lane order** mode.
 **Lane order**:
 The rule that assigns spans to lanes top-to-bottom. Two modes: `tree` (depth-first `parentId`
 nesting — each parent is immediately above its descendants; the default, matching Kibana APM) and
-`chronological` (by span `start` ascending, matching Chrome DevTools Network). In `tree` mode,
-multi-trace mode (no `traceId` filter) produces a **forest**: each subtree is grouped together
+`chronological` (by rendered span `start` ascending, after clock-skew correction, matching Chrome
+DevTools Network). In `tree` mode, roots and siblings also use corrected starts; multi-trace mode
+(no `traceId` filter) produces a **forest**: each subtree is grouped together
 rather than interleaved by start. Orphan spans (whose `parentId` is absent from the span set) are
 treated as roots. Set via `TraceSpec.laneOrder`. See [ADR 0018](./docs/adr/trace-viz/0018-lane-ordering-tree-default.md).
 _Avoid_: sort order, row order.
@@ -158,7 +164,8 @@ gated the trace's total duration; rendered as a distinct colored line along the 
 affected lanes. Each critical interval covers a sub-range of a span's `[start, end]` extent — it may
 fall in a **waiting** region (time the span was blocked on children) as well as in an active region.
 It is not span-granular. Consumers supply raw pre-normalization times (same units as `TraceDatum.start/end`);
-the chart re-zeros them in `'linear'` mode alongside `activeSegments`. When a parent lane is
+the chart applies any owning-span clock-skew translation, then re-zeros them in `'linear'` mode
+alongside `activeSegments`. When a parent lane is
 collapsed, its descendants' critical intervals become **rolled-up critical intervals** attributed to
 the collapsed parent. See [ADR 0015](./docs/adr/trace-viz/0015-critical-path-consumer-supplied-intervals.md).
 _Avoid_: critical segment (would collide with the index-addressable active/waiting **segment**),

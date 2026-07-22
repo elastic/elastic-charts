@@ -48,6 +48,10 @@ that touches the frozen `draw(ctx, geom, style)` contract (ADR 0001). Connection
 contrast, anchor to `TraceSegmentRef` and resolve against already-projected `NormalizedSpan` data, so
 they need no re-zero at all.
 
+When clock-skew correction moves a span (ADR 0022), its critical intervals receive the same total
+offset before this re-zero and clamp. The consumer contract remains raw source coordinates; the
+normalize pipeline keeps the interval's relative position within its corrected owning span.
+
 ## Decision 4: Critical intervals roll up onto collapsed parents (Spec 21 interaction)
 
 When a parent lane is collapsed (ADR 0026), its descendant spans are removed from the visible lane

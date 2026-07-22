@@ -41,7 +41,7 @@ See [ADR 0016](../0016-connections-explicit-prop.md) for the rationale: why expl
   (`light_theme.ts`, `dark_theme.ts`, `amsterdam_light_theme.ts`, `amsterdam_dark_theme.ts`,
   `legacy_light_theme.ts`, `legacy_dark_theme.ts`) — add `connectionColor` and
   `connectionThickness` to the `trace:` block.
-- `storybook/stories/trace/20_connections.story.tsx` — new story; register in `trace.stories.tsx`.
+- `storybook/stories/trace/29_connections.story.tsx` — new story; register in `trace.stories.tsx`.
 
 ## Contract
 
@@ -169,11 +169,11 @@ per-endpoint culling would require.
    resolve endpoints, and populate the field.
 4. Add the connections draw pass (with `ctx.clip()`) to `draw()` in `canvas2d_renderer.ts`.
 5. Wire in `trace_chart.tsx`: pass `traceSpec?.connections ?? []` into `buildGeometry()`.
-6. Author `20_connections.story.tsx`; register in `trace.stories.tsx`.
+6. Author `29_connections.story.tsx`; register in `trace.stories.tsx`.
 
 ## Storybook
 
-`storybook/stories/trace/20_connections.story.tsx`:
+`storybook/stories/trace/29_connections.story.tsx`:
 - Reuse the `11_chrome_network` fixture (12-span HTTP request waterfall: document, scripts,
   stylesheets, images, XHR).
 - Add `connections` wiring the "initiator" chain: e.g. the `app` script (end of its active segment)

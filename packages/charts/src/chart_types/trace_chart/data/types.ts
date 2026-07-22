@@ -33,6 +33,11 @@ export interface NormalizedSpan {
    */
   activeSegments: TraceActiveSegment[];
   color?: TraceActiveSegment['color'];
+  /**
+   * Present when normalization translated this span's timestamps to correct detected clock skew.
+   * The original recorded times remain available on `meta.start` / `meta.end`.
+   */
+  skewCorrected?: true;
   /** The original TraceDatum; exposed to tooltip datum and element-event callbacks. */
   meta: TraceDatum;
 }

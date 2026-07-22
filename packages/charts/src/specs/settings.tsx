@@ -197,6 +197,8 @@ export interface TraceElementEvent {
   duration: number;
   /** Sum of active-segment durations (self time, per ADR 0003) */
   selfTime: number;
+  /** Present when the reported timing fields were adjusted to correct detected clock skew. */
+  skewCorrected?: true;
   /**
    * The original `TraceDatum`. For data produced by {@link fromOtlp}, access the underlying
    * `OtelSpan` (with OTel `attributes`/`status`) via `datum.meta as OtelSpan`.

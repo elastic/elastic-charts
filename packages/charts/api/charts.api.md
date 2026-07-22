@@ -3778,7 +3778,6 @@ export interface TraceDatum {
     color?: Color;
     // (undocumented)
     end: number;
-    // (undocumented)
     id: string;
     meta?: unknown;
     // (undocumented)
@@ -3803,6 +3802,7 @@ export interface TraceElementEvent {
     // (undocumented)
     parentId?: string;
     selfTime: number;
+    skewCorrected?: true;
     start: number;
     // (undocumented)
     traceId?: string;
@@ -3849,6 +3849,7 @@ export interface TraceSelectionDetail {
     segmentStart?: number;
     // (undocumented)
     selfTime: number;
+    skewCorrected?: true;
     // (undocumented)
     spanId: string;
     start: number;

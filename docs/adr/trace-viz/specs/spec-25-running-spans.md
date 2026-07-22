@@ -21,8 +21,11 @@ and why the dashed visual.
 - [ADR 0023](../0023-running-span-model.md) — all non-obvious decisions recorded there.
 
 **Ordering with Spec 24 (clock-skew correction):** the clock-skew stage runs **before** running-end
-synthesis. Running spans have no meaningful duration, so the clock-skew heuristic skips them. This
-spec's changes land after Spec 24's `correctClockSkew` stage in the normalize pipeline.
+synthesis. An edge involving a running child or parent cannot originate correction because it has no
+meaningful duration. The running span remains at its recorded start, carries no `skewCorrected`, and
+is not reparented; its structural children remain attached. A deeper edge whose participants are both
+completed may be evaluated independently. This spec's changes land after Spec 24's
+`correctClockSkew` stage.
 See [Spec 24](./spec-24-clock-skew.md).
 
 ## Files
@@ -37,7 +40,7 @@ See [Spec 24](./spec-24-clock-skew.md).
 - Six theme files (`light_theme.ts`, `dark_theme.ts`, `amsterdam_light_theme.ts`, `amsterdam_dark_theme.ts`, `legacy_light_theme.ts`, `legacy_dark_theme.ts`) and `src/utils/themes/theme.ts` — add `runningLineDash` to the `trace:` block.
 - `packages/charts/src/chart_types/trace_chart/render/tooltip.ts` — running state label; suppress duration number.
 - `packages/charts/src/chart_types/trace_chart/state/selectors/get_screen_reader_data.ts` — "running" announcement; suppress numeric duration.
-- `storybook/stories/trace/25_running_spans.story.tsx` — new story; register in `trace.stories.tsx`.
+- `storybook/stories/trace/27_running_spans.story.tsx` — new story; register in `trace.stories.tsx`.
 
 ## Contract
 
@@ -216,7 +219,7 @@ When `span.running`:
 - Emit `"running"` (or `"in progress"`) in the `totalDuration` cell instead of the formatted
   millisecond value.
 
-### 9. Story (`25_running_spans.story.tsx`)
+### 9. Story (`27_running_spans.story.tsx`)
 
 Dataset:
 - `root` (completed): 0–300 ms.
@@ -241,7 +244,7 @@ domain fallback.
 | `end === 0` (non-running span at the Unix epoch) | Not treated as running (`end == null` check uses strict null equality for the `null` case and the `undefined` case — `0 == null` is `false`). |
 | OTel `endTimeUnixNano === 0` | Mapped to `end: null` in `fromOtlp` before entering the pipeline; treated as running. |
 | OTel `endTimeUnixNano > 0` | `nanoToMs(endTimeUnixNano)` yields the real end ms; not running. |
-| Clock-skew correction (Spec 24) | Runs before running-end synthesis; running spans are skipped by the heuristic. |
+| Clock-skew correction (Spec 24) | Runs before running-end synthesis. An edge involving a running participant is skipped; the running span remains structurally attached, untranslated, and unmarked. A deeper completed edge may be evaluated independently. |
 | Selection/SR of a running span | Region picking uses the provisional end as the right boundary; tooltip/SR show "running." No duration in the `TraceSelectionDetail.duration` field — emit `null` or `undefined`. |
 
 ## Tests
@@ -254,6 +257,11 @@ domain fallback.
   - All-running fallback: `end = max(starts)` for each span.
   - Start-past-all-ends case: zero-width (synthesized end clamped to start).
   - Re-zeroing under `'linear'` scale applies to the synthesized end.
+  - A running child does not originate clock-skew centering.
+  - A running span retains its recorded start, explicit active segments, and running end sentinel
+    until `project`, and carries no `skewCorrected`.
+  - Children of a supplied running span are not reparented; a deeper completed parent-child edge may
+    resume independent clock-skew evaluation.
 - `data/self_time.test.ts`:
   - A running span with no explicit segments → `activeSegments` remains empty after `resolveActive`.
   - A running span with explicit segments → those segments pass through unchanged.

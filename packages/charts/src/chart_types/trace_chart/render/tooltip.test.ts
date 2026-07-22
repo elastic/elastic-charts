@@ -14,7 +14,7 @@
  * `isTraceElementEvent`.
  */
 
-import { buildTraceTooltipInfo, buildTraceEvent, formatMs } from './tooltip';
+import { buildTraceEvent, buildTraceSelectionDetail, buildTraceTooltipInfo, formatMs } from './tooltip';
 import { isTraceElementEvent } from '../../../specs/settings';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceDatum } from '../trace_api';
@@ -228,6 +228,20 @@ describe('buildTraceTooltipInfo — edge cases', () => {
     expect(labels).not.toContain('Active segment (1 of 2)');
     expect(labels).not.toContain('Active segment offset');
   });
+
+  it('adds the exact clock-skew note only for a corrected span', () => {
+    const corrected: NormalizedSpan = { ...span, skewCorrected: true };
+    const info = buildTraceTooltipInfo(corrected, 0, DOMAIN_MIN, 'waiting', COLOR, -1);
+
+    expect(info.values.find(({ label }) => label === 'Clock skew')).toMatchObject({
+      value: 'Time adjusted for clock skew',
+      formattedValue: 'Time adjusted for clock skew',
+      datum: meta,
+    });
+    expect(buildTraceTooltipInfo(span, 0, DOMAIN_MIN, 'waiting', COLOR, -1).values).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ label: 'Clock skew' })]),
+    );
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -317,6 +331,25 @@ describe('buildTraceEvent', () => {
     const child: NormalizedSpan = { ...span, id: 'c1', parentId: 'span-1' };
     const childEvent = buildTraceEvent(child);
     expect(childEvent.parentId).toBe('span-1');
+  });
+
+  it('exposes skew provenance only for corrected spans', () => {
+    expect(buildTraceEvent({ ...span, skewCorrected: true }).skewCorrected).toBe(true);
+    expect(event).not.toHaveProperty('skewCorrected');
+  });
+});
+
+describe('buildTraceSelectionDetail', () => {
+  it('exposes skew provenance while keeping the original datum unchanged', () => {
+    const detail = buildTraceSelectionDetail({ ...span, skewCorrected: true }, DOMAIN_MIN, 'span', -1);
+
+    expect(detail.skewCorrected).toBe(true);
+    expect(detail.datum).toBe(meta);
+    expect(detail.datum).not.toHaveProperty('skewCorrected');
+  });
+
+  it('omits skew provenance for an uncorrected span', () => {
+    expect(buildTraceSelectionDetail(span, DOMAIN_MIN, 'span', -1)).not.toHaveProperty('skewCorrected');
   });
 });
 

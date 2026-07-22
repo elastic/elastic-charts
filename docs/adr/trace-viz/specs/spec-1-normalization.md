@@ -3,6 +3,10 @@
 **Goal:** turn either input format into `NormalizedSpan[]`, carrying an explicit `active` through
 when the simple format supplies one, else empty for [Spec 2](./spec-2-self-time.md) to derive.
 
+**Identity contract:** `TraceDatum.id` is unique across the complete input array, including combined
+multi-trace data. Malformed duplicates are retained defensively, but parentage and other ID-addressed
+behavior is unspecified. See [ADR 0027](../0027-span-id-uniqueness.md).
+
 **Depends on:** [Spec 0](./spec-0-scaffolding.md) (types), agreement on `NormalizedSpan` below.
 
 See [ADR 0002](../0002-single-normalized-span-dual-input.md) for why two input formats normalize to one shape.

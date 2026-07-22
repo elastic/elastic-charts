@@ -85,6 +85,10 @@ export interface TraceActiveSegment {
  * @public
  */
 export interface TraceDatum {
+  /**
+   * Span identifier. Must be unique across the complete `data` array supplied to one Trace chart,
+   * including combined multi-trace datasets.
+   */
   id: string;
   name: string;
   parentId?: string;
@@ -140,6 +144,8 @@ export interface TraceSelectionDetail {
   end: number;
   duration: number;
   selfTime: number;
+  /** Present when the reported timing fields were adjusted to correct detected clock skew. */
+  skewCorrected?: true;
   datum: TraceDatum;
   region: 'span' | 'active' | 'waiting';
   segmentIndex: number;

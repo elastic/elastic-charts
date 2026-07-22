@@ -122,7 +122,8 @@ function gapSegments(parentStart: number, parentEnd: number, intervals: readonly
   }
 
   if (clamped.length === 0) {
-    // All intervals were outside the parent (clock skew / bad data).
+    // All intervals remain outside the parent after upstream skew correction (right-side overhang
+    // or malformed data).
     return [{ start: parentStart, end: parentEnd }];
   }
 

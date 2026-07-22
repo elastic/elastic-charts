@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import type { NormalizedSpan } from './types';
 import { buildColorMap, buildSegmentColorMap } from './colors';
-import { Logger } from '../../../utils/logger';
+import { buildChildrenMap } from './self_time';
+import type { NormalizedSpan } from './types';
 import type { Color } from '../../../common/colors';
+import { Logger } from '../../../utils/logger';
 import type { TraceDatum, TraceColorAccessor, TraceCriticalPath, TraceSpec } from '../trace_api';
 
 type XScaleType = TraceSpec['xScaleType'];
@@ -24,7 +25,7 @@ export interface NormalizeResult {
 }
 
 /**
- * Prepares `TraceDatum[]` for rendering in three stages:
+ * Prepares `TraceDatum[]` for rendering in four stages:
  *
  * 1. **Shape** — maps each `TraceDatum` to a `NormalizedSpan`, ensuring `activeSegments` is always
  *    an array (empty when not supplied; filled by `resolveActive` / ADR 0003) and `meta` always
@@ -32,7 +33,9 @@ export interface NormalizeResult {
  * 2. **Filter** — when `traceId` is supplied, keeps only spans with a matching `traceId` and
  *    dev-warns when nothing matches. When omitted, all spans are rendered as one combined waterfall
  *    and a dev-warn fires if they span more than one distinct trace.
- * 3. **Project** — computes the domain `[min, max]`. Under `'linear'`, re-zeros `start`/`end`/
+ * 3. **Correct clock skew** — independently places each left-skewed child relative to its corrected
+ *    parent using Kibana APM's non-negative propagation-latency heuristic.
+ * 4. **Project** — computes the domain `[min, max]`. Under `'linear'`, re-zeros `start`/`end`/
  *    `activeSegments` relative to the domain minimum (elapsed ms); under `'time'` keeps epoch ms.
  *
  * For OpenTelemetry data, call `fromOtlp()` first — it converts OTLP spans to `TraceDatum[]` and
@@ -60,7 +63,8 @@ export function normalize(
   // matched spans happened to have non-finite timestamps (dropNonFinite below handles that case).
   const traceNotFound = traceId !== undefined && flat.length > 0 && selected.length === 0;
   const finite = dropNonFinite(selected);
-  const result = project(finite, xScaleType, criticalPath);
+  const corrected = correctClockSkew(finite);
+  const result = project(corrected, xScaleType, criticalPath);
   if (traceNotFound) result.emptyReason = 'trace-not-found';
   return result;
 }
@@ -149,6 +153,84 @@ function dropNonFinite(spans: NormalizedSpan[]): NormalizedSpan[] {
   return valid;
 }
 
+/**
+ * Places each valid completed span independently against its corrected parent using Kibana's rule:
+ * `latency = Math.max(parentDuration - childDuration, 0) / 2`.
+ * Edges involving negative-duration or running spans are ignored.
+ * @internal
+ */
+export function correctClockSkew(spans: NormalizedSpan[]): NormalizedSpan[] {
+  if (spans.length === 0) return spans;
+
+  const childrenMap = buildChildrenMap(spans);
+  const ids = new Set(spans.map((span) => span.id));
+  const roots = spans.filter((span) => span.parentId === undefined || !ids.has(span.parentId));
+  const corrected = new Map<NormalizedSpan, NormalizedSpan>();
+  const visited = new Set<NormalizedSpan>();
+  let correctionTriggered = false;
+
+  const negativeDurationSpans = spans.filter((span) => Number.isFinite(span.end) && span.end < span.start);
+  if (negativeDurationSpans.length > 0) {
+    const shownIds = negativeDurationSpans
+      .slice(0, 5)
+      .map(({ id }) => `"${id}"`)
+      .join(', ');
+    const remainingCount = negativeDurationSpans.length - 5;
+    Logger.warn(
+      `Trace chart: ignored clock-skew correction for ${negativeDurationSpans.length} negative-duration span${
+        negativeDurationSpans.length === 1 ? '' : 's'
+      } (${shownIds}${remainingCount > 0 ? `, and ${remainingCount} more` : ''}).`,
+    );
+  }
+
+  function shiftSpan(span: NormalizedSpan, offset: number): NormalizedSpan {
+    return {
+      ...span,
+      start: span.start + offset,
+      end: span.end + offset,
+      activeSegments: span.activeSegments.map((segment) => ({
+        ...segment,
+        start: segment.start + offset,
+        end: segment.end + offset,
+      })),
+      skewCorrected: true,
+    };
+  }
+
+  function dfs(span: NormalizedSpan, parent: NormalizedSpan | null): void {
+    if (visited.has(span)) return;
+    visited.add(span);
+
+    const canCorrect =
+      parent !== null &&
+      Number.isFinite(span.end) &&
+      Number.isFinite(parent.end) &&
+      span.end >= span.start &&
+      parent.end >= parent.start &&
+      span.start < parent.start;
+
+    let current = span;
+    if (canCorrect) {
+      const parentDuration = parent.end - parent.start;
+      const childDuration = span.end - span.start;
+      const latency = Math.max(parentDuration - childDuration, 0) / 2;
+      const offset = parent.start + latency - span.start;
+      current = shiftSpan(span, offset);
+      correctionTriggered = true;
+    }
+
+    corrected.set(span, current);
+    for (const child of childrenMap.get(span.id) ?? []) {
+      dfs(child, current);
+    }
+  }
+
+  roots.forEach((root) => dfs(root, null));
+
+  if (!correctionTriggered) return spans;
+  return spans.map((span) => corrected.get(span) ?? span);
+}
+
 function project(spans: NormalizedSpan[], xScaleType: XScaleType, criticalPath: TraceCriticalPath): NormalizeResult {
   if (spans.length === 0) {
     return { spans: [], domain: { min: 0, max: 0 }, criticalIntervals: [] };
@@ -167,7 +249,11 @@ function project(spans: NormalizedSpan[], xScaleType: XScaleType, criticalPath: 
     ...span,
     start: span.start - min,
     end: span.end - min,
-    activeSegments: span.activeSegments.map((segment) => ({ ...segment, start: segment.start - min, end: segment.end - min })),
+    activeSegments: span.activeSegments.map((segment) => ({
+      ...segment,
+      start: segment.start - min,
+      end: segment.end - min,
+    })),
   }));
   // Linear mode: re-zero intervals by the same `min`, then clamp to the projected span extent.
   const spanById = new Map(rezeroed.map((s) => [s.id, s]));
@@ -186,15 +272,16 @@ function project(spans: NormalizedSpan[], xScaleType: XScaleType, criticalPath: 
  */
 function projectCriticalIntervals(
   criticalPath: TraceCriticalPath,
-  spanById: ReadonlyMap<string, { id: string; start: number; end: number }>,
-  offset: number,
+  spanById: ReadonlyMap<string, NormalizedSpan>,
+  projectionOffset: number,
 ): Array<{ spanId: string; start: number; end: number }> {
   const result: Array<{ spanId: string; start: number; end: number }> = [];
   for (const { spanId, start: rawStart, end: rawEnd } of criticalPath) {
     const span = spanById.get(spanId);
     if (span === undefined) continue; // unknown spanId — drop
-    const start = Math.max(rawStart - offset, span.start);
-    const end = Math.min(rawEnd - offset, span.end);
+    const skewOffset = span.skewCorrected ? span.start + projectionOffset - span.meta.start : 0;
+    const start = Math.max(rawStart + skewOffset - projectionOffset, span.start);
+    const end = Math.min(rawEnd + skewOffset - projectionOffset, span.end);
     if (start >= end) continue; // fully outside or zero-width after clamp — drop
     result.push({ spanId, start, end });
   }

@@ -83,8 +83,11 @@ export function buildTraceTooltipInfo(
     row('Duration', total, formatMs(total)),
     row('Self time', selfTime, formatMs(selfTime)),
     row('Start', startOffset, `+${formatMs(startOffset)}`),
-    row('State', REGION_LABEL[region], REGION_LABEL[region]),
   ];
+  if (span.skewCorrected) {
+    values.push(row('Clock skew', 'Time adjusted for clock skew', 'Time adjusted for clock skew'));
+  }
+  values.push(row('State', REGION_LABEL[region], REGION_LABEL[region]));
 
   // When hovering an active segment, show that segment's own duration and its offset from trace start.
   // Omit the ordinal when there is only one segment (its duration equals self time — redundant).
@@ -189,6 +192,7 @@ export function buildTraceSelectionDetail(
     end: span.end,
     duration,
     selfTime,
+    ...(span.skewCorrected && { skewCorrected: true }),
     datum: span.meta,
     region,
     segmentIndex,
@@ -226,6 +230,7 @@ export function buildTraceEvent(span: NormalizedSpan): TraceElementEvent {
     end: span.end,
     duration: span.end - span.start,
     selfTime: computeSelfTime(span),
+    ...(span.skewCorrected && { skewCorrected: true }),
     datum: span.meta,
   };
 }

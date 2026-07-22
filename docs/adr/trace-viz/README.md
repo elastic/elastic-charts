@@ -24,10 +24,11 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0019 — Empty-state ownership: `no-data` delegates to the library overlay, `trace-not-found` is a canvas message](./0019-empty-state-ownership.md)
 - [0020 — Inline labels render on a dedicated row below the bar (Kibana APM style)](./0020-inline-labels-below-bar.md)
 - [0021 — Touch interaction model: engine reuse, pinch-zoom-only, manual tap detection, long-press pin](./0021-touch-interaction-model.md)
-- [0022 — Clock-skew correction: active centering heuristic](./0022-clock-skew-heuristic.md)
+- [0022 — Clock-skew correction: Kibana-compatible placement](./0022-clock-skew-heuristic.md)
 - [0023 — Running-span model: optional end, domain-max provisional edge, dashed visual](./0023-running-span-model.md)
 - [0024 — Multi-level time bar: stacked tick rows in time mode](./0024-multilevel-time-bar.md)
 - [0026 — Collapsible nesting: rolled-up semantics, tree-gating, and disclosure gutter](./0026-collapsible-nesting.md)
+- [0027 — Span IDs are unique within one supplied dataset](./0027-span-id-uniqueness.md)
 
 ## Spec plans
 
@@ -60,7 +61,7 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 - [Spec 21 — Collapsible nesting](./specs/spec-21-collapsible-nesting.md)
 - [Spec 22 — Critical path (consumer-supplied interval-precise highlight)](./specs/spec-22-critical-path.md)
 - [Spec 23 — Touch gestures (pinch-zoom, drag-pan, tap/double-tap selection, long-press pin)](./specs/spec-23-touch-gestures.md)
-- [Spec 24 — Clock-skew correction (active centering heuristic)](./specs/spec-24-clock-skew.md)
+- [Spec 24 — Clock-skew correction (Kibana-compatible placement)](./specs/spec-24-clock-skew.md)
 - [Spec 25 — Running spans (in-progress visualization)](./specs/spec-25-running-spans.md)
 - [Spec 26 — Multi-level (stacked) time bar](./specs/spec-26-multilevel-time-bar.md)
 - [Spec 27 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-27-connections.md)
@@ -100,7 +101,8 @@ original stub are resolved by [ADR 0026](./0026-collapsible-nesting.md).
 - **Spec 25** (running spans) — depends on Specs 1, 3, 5, 7, and 12. Relaxes `dropNonFinite`,
   extends `project` and `resolveActive`, adds a renderer dashed-line pass, and adds a new theme
   token. Should be implemented **after** Spec 24 (the clock-skew stage runs before running-end
-  synthesis, and running spans are skipped by the heuristic). Independent of Specs 22–23.
+  synthesis; an edge involving a running span cannot originate correction, while a deeper edge with
+  two completed participants may be evaluated independently). Independent of Specs 22–23.
 - **Spec 26** (multi-level time bar) — depends on Specs 3 and 4 (geometry, `TraceStyle`, raster
   engine reuse). Pure renderer + theme + geometry change; no normalize pipeline changes. Independent
   of Specs 22–25. See [ADR 0024](./0024-multilevel-time-bar.md).

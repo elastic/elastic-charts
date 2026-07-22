@@ -36,3 +36,4 @@ export { Example as responsiveLabels } from './22_responsive.story';
 export { Example as overviewSync } from './23_overview_sync.story';
 export { Example as collapsibleNesting } from './24_collapsible_nesting.story';
 export { Example as criticalPath } from './25_critical_path.story';
+export { Example as clockSkew } from './26_clock_skew.story';
