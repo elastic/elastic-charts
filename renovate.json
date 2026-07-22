@@ -1,9 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "schedule:weekends", ":dependencyDashboard"],
+  "extends": [
+    "config:recommended",
+    "schedule:weekends",
+    ":dependencyDashboard"
+  ],
   "ignorePaths": ["./.github/**"],
   "enabledManagers": ["npm"],
-  "baseBranches": ["main"],
+  "baseBranchPatterns": ["main"],
   "separateMajorMinor": false,
   "rangeStrategy": "bump",
   "assignAutomerge": true,
