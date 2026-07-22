@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getHorizontalAlign, getVerticalAlign, horizontalAlignFraction, verticalAlignFraction } from './geometry';
 import type { TickLabelLayout } from './labels';
 import {
   createTickLabelLayout,
@@ -25,8 +26,9 @@ import type { AxisSpec, SettingsSpec } from '../../../../specs';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Position, Rotation } from '../../../../utils/common';
 import { isFiniteNumber, isRTLString } from '../../../../utils/common';
-import type { Size } from '../../../../utils/dimensions';
+import type { Dimensions, Size } from '../../../../utils/dimensions';
 import type { AxisId } from '../../../../utils/ids';
+import type { TextAlignment, Truncate } from '../../../../utils/themes/theme';
 import type { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
 import type { JoinedAxisData } from '../../state/selectors/compute_baseline_axes';
 import type { ScaleConfigs } from '../../state/selectors/get_api_scale_configs';
@@ -92,6 +94,48 @@ export function generateTicks(
     });
     return acc;
   }, []);
+}
+
+/** @internal */
+export interface OverflowContext {
+  position: Position;
+  rotation: number;
+  alignment: TextAlignment;
+  truncate: Truncate | false;
+  labelBudget: number;
+  range: [number, number];
+  leadingMargin: number;
+  trailingMargin: number;
+}
+
+/**
+ * Omits tick labels that can't be rendered without spilling outside the chart. Only when truncation is disabled, as truncation
+ * already shortens labels.
+ * @internal
+ */
+export function hideOverflowingTickLabels(ticks: AxisTick[], overflow: OverflowContext): AxisTick[] {
+  const OVERFLOW_EPSILON = 0.5;
+  const { position, rotation, alignment, truncate, labelBudget, range, leadingMargin, trailingMargin } = overflow;
+  if (truncate) return ticks;
+  const vertical = isVerticalAxis(position);
+  const [min, max] = [Math.min(range[0], range[1]), Math.max(range[0], range[1])];
+  const leadingFraction = vertical
+    ? verticalAlignFraction(getVerticalAlign(position, rotation, alignment.vertical))
+    : horizontalAlignFraction(getHorizontalAlign(position, rotation, alignment.horizontal));
+
+  return ticks.map((tick) => {
+    const { bboxWidth, bboxHeight } = tick.layout;
+    const crossSize = vertical ? bboxWidth : bboxHeight;
+    if (crossSize > labelBudget + OVERFLOW_EPSILON) return withoutTickLabel(tick);
+
+    const alongSize = vertical ? bboxHeight : bboxWidth;
+    const leadingEdge = tick.position - leadingFraction * alongSize;
+    const trailingEdge = tick.position + (1 - leadingFraction) * alongSize;
+    const clippedByContainer =
+      leadingEdge < min - leadingMargin - OVERFLOW_EPSILON || trailingEdge > max + trailingMargin + OVERFLOW_EPSILON;
+
+    return clippedByContainer ? withoutTickLabel(tick) : tick;
+  });
 }
 
 /** @internal */
@@ -244,9 +288,19 @@ export function computeVisibleTickSets(
   smScales: SmallMultipleScales,
   totalGroupsCount: number,
   enableHistogramMode: boolean,
+  chartDimensions: Dimensions,
+  container: Dimensions,
   barsPadding?: number,
 ): Projections {
   const panel = getPanelSize(smScales);
+
+  const outerMargins = {
+    left: chartDimensions.left,
+    top: chartDimensions.top,
+    right: container.width - chartDimensions.left - chartDimensions.width,
+    bottom: container.height - chartDimensions.top - chartDimensions.height,
+  };
+
   return [...joinedAxesData].reduce(
     (acc, [axisId, { axisSpec, axesStyle, isXAxis, labelFormatter: userProvidedLabelFormatter, layout }]) => {
       const { groupId, maximumFractionDigits, timeAxisLayerCount } = axisSpec;
@@ -303,6 +357,21 @@ export function computeVisibleTickSets(
           scale, // tick count driving nicing; nicing drives domain; therefore scale may vary, downstream needs it
         };
       };
+
+      const vertical = isVerticalAxis(axisSpec.position);
+      const hideOverflowingLabels = (projection: Projection): Projection => ({
+        ...projection,
+        ticks: hideOverflowingTickLabels(projection.ticks, {
+          position: axisSpec.position,
+          rotation: axesStyle.tickLabel.rotation,
+          alignment: axesStyle.tickLabel.alignment,
+          truncate: axesStyle.tickLabel.truncate,
+          labelBudget: layout.band.labelBudget,
+          range,
+          leadingMargin: vertical ? outerMargins.top : outerMargins.left,
+          trailingMargin: vertical ? outerMargins.bottom : outerMargins.right,
+        }),
+      });
 
       const getScale = (desiredTickCount: number) =>
         isXAxis
@@ -382,13 +451,13 @@ export function computeVisibleTickSets(
       }
 
       const { fallbackAskedTickCount, entry } = fillLayer(maxTickCount);
-      if (entry) return acc.set(axisId, entry);
+      if (entry) return acc.set(axisId, hideOverflowingLabels(entry));
 
       // todo dry it up
       const scale = getScale(adaptiveTickCount ? fallbackAskedTickCount : maxTickCount);
       const lastResortCandidate =
         scale && getMeasuredTicks(scale, scale.ticks(), undefined, 0, userProvidedLabelFormatter);
-      return lastResortCandidate ? acc.set(axisId, lastResortCandidate) : acc;
+      return lastResortCandidate ? acc.set(axisId, hideOverflowingLabels(lastResortCandidate)) : acc;
     },
     new Map(),
   );

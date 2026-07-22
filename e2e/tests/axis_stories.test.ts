@@ -219,6 +219,14 @@ test.describe('Axis stories', () => {
         `${story}&knob-Chart rotation_Chart config=90&knob-maxExtent_Axis Y=120&knob-truncate_Axis Y=end`,
       );
     });
+
+    test('should hide y-axis tick labels overflowing a percentage maxExtent with 90 deg chart rotation', async ({
+      page,
+    }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `${story}&knob-Chart rotation_Chart config=90&knob-maxExtent_Axis Y=20%25`,
+      );
+    });
   });
 
   test.describe('Small multiples', () => {

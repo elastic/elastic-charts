@@ -39,7 +39,7 @@ const MAX_ITERATIONS = 5;
 const LAYOUT_EPSILON_PX = 0.5;
 
 const projectTicks = (
-  { settings, scales, axes, sm, bars }: LayoutParameters,
+  { container, settings, scales, axes, sm, bars }: LayoutParameters,
   chartDimensions: Dimensions,
   textMeasure: TextMeasure,
 ) => {
@@ -63,6 +63,8 @@ const projectTicks = (
     },
     bars.groupsCount,
     bars.enableHistogramMode,
+    chartDimensions,
+    container,
     bars.padding,
   );
 };
