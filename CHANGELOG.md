@@ -1,3 +1,21 @@
+# [72.0.0](https://github.com/elastic/elastic-charts/compare/v71.9.0...v72.0.0) (2026-07-22)
+
+
+### Bug Fixes
+
+* **deps:** resolve d3-color to @elastic/kibana-d3-color ([#2860](https://github.com/elastic/elastic-charts/issues/2860)) ([bd492d6](https://github.com/elastic/elastic-charts/commit/bd492d697c9771058ff4d1e24cd80d262f897272))
+* **tooltip:** Add spacing between colors in the tooltip ([#2861](https://github.com/elastic/elastic-charts/issues/2861)) ([b59720f](https://github.com/elastic/elastic-charts/commit/b59720fc1c355ed590043ce76ff8dffb812f3129))
+
+
+### Features
+
+* **axis:** improve axis label overflow ([#2845](https://github.com/elastic/elastic-charts/issues/2845)) ([2c3a06c](https://github.com/elastic/elastic-charts/commit/2c3a06c4b8509f7cf9a12d5c7d22ed61ed8de2c4)), closes [#1490](https://github.com/elastic/elastic-charts/issues/1490) [#313](https://github.com/elastic/elastic-charts/issues/313)
+
+
+### BREAKING CHANGES
+
+* **axis:** AxisSpec.tickLabelMaxLength and tickLabelTruncate are removed. Configure via theme.axes.tickLabel (wrapLines, lineHeight, minLength, maxLength, truncate) and theme.axes.minExtent/maxExtent instead.
+
 # [71.9.0](https://github.com/elastic/elastic-charts/compare/v71.8.0...v71.9.0) (2026-07-10)
 
 
