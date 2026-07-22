@@ -16,6 +16,11 @@ subtrees. Tree order groups each subtree together, matching the reference.
 [Spec 21 (collapsible nesting)](./spec-21-collapsible-nesting.md) — open question #1 resolved here;
 collapse will build on `laneOrder: 'tree'`.
 
+> **Spec 27 amendment:** root election and reachable membership now run before lane ordering. The
+> contracts below apply to that surviving array: `tree` follows trace-local display parentage and
+> `chronological` sorts the identical visible membership. Spec 27 supersedes the original
+> orphan-as-root, append-unreached, and output-length-equals-input guarantees.
+
 ## Files
 
 - `packages/charts/src/chart_types/trace_chart/data/self_time.ts` — extract `buildChildrenMap`
@@ -42,7 +47,8 @@ collapse will build on `laneOrder: 'tree'`.
  *
  * - `'tree'` (default): depth-first `parentId` nesting — each parent is immediately followed by
  *   its descendants, recursively; siblings and roots ordered by `start` ascending, stable ties.
- *   Works as a forest in multi-trace mode. Orphan spans (unknown parentId) treated as roots.
+ *   Works as a forest of elected visible trees in multi-trace mode. Synthetic display parentage is
+ *   used for recovered orphans.
  * - `'chronological'`: ascending by span `start` (Chrome DevTools Network panel style).
  *
  * See ADR 0018.
@@ -56,8 +62,9 @@ laneOrder?: 'tree' | 'chronological';
 - Input: `NormalizedSpan[]` (post-`resolveActive`), mode.
 - Output: new flat array in lane order. The caller's array is not mutated.
 - Both modes are O(N log N).
-- `'tree'` cycle guard: a `visited` Set prevents infinite recursion; unreached spans appended at end
-  sorted by start, so the output length always equals the input length.
+- `'tree'` cycle guard: a `visited` Set prevents infinite recursion. Spec 27's preceding recovery
+  stage owns cycle/duplicate invalidation and omission, so `orderLanes` receives only elected
+  reachable trees and its output length equals that visible input length.
 - Downstream contract: `buildGeometry`, the canvas renderer, `pickLane`, and scroll math are
   order-agnostic and require no changes — lane index is position in the output array.
 
@@ -93,8 +100,9 @@ laneOrder?: 'tree' | 'chronological';
 - `data/order_lanes.test.ts` (new):
   - `'chronological'` produces ascending start order and does not mutate input.
   - `'tree'`: parent before descendants; siblings by start; equal-start siblings preserve data order
-    (stable); orphan parentId → root; multi-root forest in root-start order; cycle terminates and
-    drops nothing; flat (no-nesting) data produces same result as `'chronological'`.
+    (stable); the original orphan-as-root/multi-root/cycle safety cases remain historical unit
+    coverage for the standalone helper. Spec 27 adds end-to-end coverage for display-parent orphans,
+    elected roots, and omitted/invalid topology; flat data still matches `'chronological'`.
   - Regression: Kibana APM dataset tree order matches the reference DFS sequence.
 - `data/self_time.test.ts` (extended):
   - `buildChildrenMap`: empty map for no-parentId spans; correct grouping; `resolveActive` output
@@ -106,7 +114,8 @@ laneOrder?: 'tree' | 'chronological';
 ## Review (`/review-claudio`)
 
 - Verify `orderLanes` does not mutate the input array in either mode (`.slice()` or fresh result).
-- Verify the cycle guard terminates and drops no spans (output length == input length).
+- Verify the standalone cycle guard terminates; at the integrated Spec 27 boundary, verify lane order
+  receives only the recovered visible array and does not restore omitted spans.
 - Verify `laneOrder` is in both the `PipelineCache` invalidation check and the SR selector's
   invalidation key, so changing `laneOrder` triggers a full recompute in both places.
 - Verify `buildChildrenMap` is called exactly once per `orderLanes` call (not per DFS node).

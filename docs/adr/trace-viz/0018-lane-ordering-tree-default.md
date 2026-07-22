@@ -1,6 +1,6 @@
 # ADR 0018 — Lane ordering: tree (DFS) default, chronological optional
 
-**Status:** Accepted  
+**Status:** Accepted; visible-input semantics amended by ADR 0028 / Spec 27
 **Implements:** [Spec 15 — Lane ordering mode](./specs/spec-15-lane-ordering.md)  
 **Resolves:** the deferred lane-ordering question from [Spec 21 (collapsible nesting stub)](./specs/spec-21-collapsible-nesting.md) and the README build-order note.
 
@@ -39,22 +39,19 @@ Both modes are available via the `laneOrder?: 'tree' | 'chronological'` prop on 
 
 ### Forest (multi-trace mode)
 
-When `traceId` is not set, `'tree'` still applies — the result is a **forest**: root spans (those
-with no `parentId`, or whose `parentId` is absent from the span set) are sorted by `start`
-ascending; each root's subtree is DFS'd in full before the next root begins. This groups each
-trace's spans together instead of interleaving them across traces, which is more readable in the
-combined-waterfall case.
+When `traceId` is not set, `'tree'` still applies — the result is a **forest** of the elected visible
+tree from each valid trace group. Each tree is DFS'd in full before the next tree begins. This groups
+each trace's visible spans together instead of interleaving them across traces, which is more readable
+in the combined-waterfall case.
 
-### Orphan spans treated as roots
+### Root election, orphans, and reachability
 
-A span whose `parentId` is not present in the span set (e.g. clock-skew, partial trace, or
-malformed data) is treated as a root in the forest. This ensures no span is ever dropped from the
-lane list, and the span appears at the top level rather than being silently hidden.
-
-[ADR 0028](./0028-partial-trace-synthetic-parentage.md) proposes a source-preserving extension for
-partial traces: when an unambiguous display root exists, genuine missing-parent spans render beneath
-it through a separate synthetic parent. Until Spec 27 is implemented, and whenever root election is
-ambiguous or topology is malformed, the orphan-as-root behavior above remains authoritative.
+[ADR 0028](./0028-partial-trace-synthetic-parentage.md) supersedes the original orphan-as-root and
+all-spans-visible behavior. Each trace group elects one display root using Kibana-compatible rules:
+the sole recorded root, the last recorded root when there are several, or the first orphan when no
+recorded root exists. Remaining genuine orphans receive a source-preserving synthetic display parent
+beneath that root. Only the elected root's reachable tree proceeds to lane ordering; non-elected
+roots, disconnected components, and invalid groups may therefore contribute no lanes.
 
 ### Sibling and root sort: start ascending, stable
 
@@ -63,12 +60,15 @@ Equal-start ties are broken by original data order (Array.sort is stable in ES20
 deterministic for a given `data` array but should not be relied on across different data orderings.
 Lane ordering runs after normalization: when clock-skew correction moves a span (ADR 0022), this is
 the corrected rendered `start`, not the recorded source start. Chronological mode uses the same
-corrected-start rule for its whole list.
+corrected-start rule for the whole visible list. Root election, reachability, and invalidation happen
+before this choice, so changing `laneOrder` never changes which spans are eligible for lanes.
 
 ### Cycle guard
 
-If `parentId` references form a cycle (malformed data), the DFS `visited` set terminates traversal
-and any unreached spans are appended at the end (sorted by start), so no span is dropped.
+If `parentId` references form a cycle (malformed data), traversal terminates. A disconnected or
+rootless cycle is unreachable from the elected root and is omitted. A reachable duplicate ID
+invalidates that trace group; a duplicate ID spanning selected trace groups invalidates the combined
+result. See [ADR 0027](./0027-span-id-uniqueness.md) and ADR 0028.
 
 ## Consequences
 

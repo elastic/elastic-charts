@@ -17,7 +17,8 @@ running-span, and orphan policies.
   (stays as a defensive fallback for any residual out-of-range child).
 - [ADR 0022](../0022-clock-skew-heuristic.md) — all non-obvious decisions are recorded there.
 - [ADR 0027](../0027-span-id-uniqueness.md) — span IDs are unique within one supplied dataset;
-  malformed duplicates retain only no-crash/no-loss guarantees.
+  Spec 24's direct correction seam retains no-crash/no-mutation guarantees, while Spec 27 governs
+  visible-output invalidation and omission for malformed duplicates.
 
 **Ordering with Spec 25 (running spans):** the clock-skew stage runs **before** running-span
 end-synthesis (`project`). An edge involving a running child or parent cannot originate correction
@@ -255,7 +256,7 @@ stories.
 | **Long-child clamp** | Parent 0–100 ms and child −30–120 ms. The 150 ms child moves to 0–150 ms: latency clamps to zero, its left edge equals the corrected parent start, and its overhang remains entirely on the right. Hover and click must report the correction. |
 | **No-op and malformed durations** | One 0–100 ms root has an unskewed 10–30 ms child, a right-overhanging 80–120 ms child, a zero-duration −10…−10 ms child that moves to 50…50 ms, and a negative-duration −10…−20 ms child retained unchanged. Add a negative-duration parent with a finite child to prove both incident edges are ignored. Corrected provenance appears only on the zero-duration child; the browser console receives one aggregated warning naming no more than five malformed IDs. |
 | **Projection and integrations** | Root 0–200 ms; skewed child A −20–80 ms moves to 50–150 ms; sibling B remains 10–30 ms. A's raw critical interval 0–20 ms moves by A's own `+70 ms` offset and renders at 70–90 ms. In chronological mode B precedes A; in tree mode sibling order is also B then A. Toggle `xScaleType` to verify domain and interval alignment, and use hover/click/selection plus the screen-reader table to compare provenance on A and B. |
-| **Malformed topology** | Include a missing-parent orphan (retained as a root), a two-span `parentId` cycle, and two root spans sharing a malformed duplicate ID. The chart must terminate and retain every lane. No Kibana coordinate parity, reparenting, parentage, selection, collapse, connection, or critical-path meaning is asserted for the duplicate/cyclic spans. |
+| **Malformed topology** | Include a missing-parent orphan, a two-span `parentId` cycle, and two root spans sharing a malformed duplicate ID. At Spec 24's original boundary the fixture proved termination without coordinate parity. After Spec 27, the orphan follows elected-root recovery, unreachable cycles are omitted, and reachable duplicate IDs invalidate their trace group; the Spec 27 story is authoritative for visible lanes and warnings. |
 
 Keep each fixture as a small module-level `TraceDatum[]` (and optional `criticalPath`) entry in a
 typed dataset configuration map. The selected entry supplies the chart data and any case-specific
@@ -276,10 +277,10 @@ story when Spec 25 lands rather than weakening the Spec 24 build boundary.
 ### Follow-up — missing-parent reparenting
 
 [Spec 27](./spec-27-partial-trace-reparenting.md) now defines root election, source-preserving
-synthetic parentage, partial-trace warnings and provenance, interaction/accessibility wording,
-focused-subtree boundaries, and compatibility with the existing orphan-as-root forest model.
-Missing-parent reparenting remains outside Spec 24 and its Kibana clock-skew coordinate parity
-boundary until Spec 27 is implemented.
+synthetic parentage, visible reachability, malformed-group invalidation, developer warnings,
+provenance, interaction/accessibility wording, and focused-subtree boundaries. Those rules supersede
+Spec 24's orphan-as-root/all-lanes-visible malformed-input baseline when Spec 27 is implemented;
+Spec 24 remains authoritative for clock-skew coordinates on the recovered visible tree.
 
 ## Edge cases
 
@@ -290,8 +291,8 @@ boundary until Spec 27 is implemented.
 | Negative-duration child or parent (`end < start`) | The malformed span is retained unchanged, every incident correction edge is ignored, and one normalization-call warning aggregates all such spans (count, first five IDs, and remaining count). |
 | Running child or parent (non-finite pre-projection end) | An edge involving either cannot originate correction. The running span remains structurally attached, is not translated or marked, and is not reparented. A deeper completed edge may still be evaluated independently. Cross-ref Spec 25. |
 | Right-side overhang (starts in parent, ends after) | **Out of scope.** The existing `gapSegments` clamp bounds children to the parent for self-time derivation. |
-| Missing parent | The span remains an orphan root under ADR 0018; Spec 24 does not reproduce Kibana's reparenting strategy. |
-| Cyclic `parentId` graph | DFS terminates via the `visited` guard; unreached spans pass through unchanged. |
+| Missing parent | At the Spec 24 boundary the span remains an orphan root. Spec 27 supersedes this with source-preserving fallback/reparenting before correction. |
+| Cyclic `parentId` graph | The direct correction seam terminates via its `visited` guard. Spec 27 omits cycles unreachable from the elected root before correction. |
 | Multi-level skew | Grandchild's edge is evaluated against the *corrected* parent, so nested skew resolves independently at each level. |
 | Critical intervals ([ADR 0015](../0015-critical-path-consumer-supplied-intervals.md)) | Each interval receives its owning span's own correction offset before projection and clamping, preserving its position within the corrected span. |
 
@@ -329,7 +330,8 @@ boundary until Spec 27 is implemented.
     count, at most the first five IDs in input order, and the remaining-count suffix. No warning is
     emitted when all durations are non-negative.
   - **Multi-level cascade:** three-level skew; each level corrected independently against its now-corrected parent.
-  - **Cyclic `parentId`:** terminates cleanly; no span lost.
+  - **Cyclic `parentId`:** the direct `correctClockSkew` seam terminates cleanly without mutating or
+    losing its input; Spec 27 owns end-to-end visible omission.
   - **Domain shift:** rightward correction can remove a formerly leftmost child from the domain min;
     `project()` recomputes a valid domain from corrected coordinates.
   - **Critical-interval alignment:** corrected-span intervals receive the same total offset in both
@@ -357,8 +359,9 @@ boundary until Spec 27 is implemented.
   descendants even when an ancestor moved.
 - Verify negative-duration spans and their incident edges pass through without correction; emit one
   bounded, aggregated development warning without turning this stage into a general validator.
-- Verify both the `visited` set and corrected-span map are keyed by object reference, matching
-  `orderLanes` and preserving malformed duplicate-ID inputs.
+- Verify both the `visited` set and corrected-span map are keyed by object reference so the direct
+  correction transform terminates and preserves malformed duplicate-ID inputs; do not infer the
+  post-Spec-27 visible-output contract from this lower-level guarantee.
 - Verify the final `spans.map` preserves input order (not DFS order); lane reindexing and downstream
   callers assume the normalized-span array is in the same order as the pipeline input.
 - Verify the tooltip/SR note appears only when `span.skewCorrected`; no change for uncorrected spans.
@@ -395,5 +398,5 @@ boundary until Spec 27 is implemented.
   clean `yarn api:check`.
 - The Storybook dataset knob loads all six documented suites and its markdown describes every case.
   Manual checks confirm expected coordinates, provenance across tooltip/click/hover/selection/SR,
-  critical-interval alignment, corrected lane ordering, warning behavior, and no-crash/no-loss
-  handling for malformed topology.
+  critical-interval alignment, corrected lane ordering, warning behavior, and the Spec 27 recovery/
+  invalidation outcome for malformed topology.

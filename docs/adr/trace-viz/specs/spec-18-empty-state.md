@@ -8,8 +8,10 @@ render. Two cases require different messages:
 - `"No data"` — the `data` prop was empty (no spans supplied at all).
 - `No spans found for trace "{id}"` — spans were supplied but the specified `traceId` matched none.
 
-The combined-waterfall case (spans present, no `traceId` filter) is never an empty state. The time
-bar still draws in both empty cases (it shows the axis structure even without lanes).
+At the original Spec 18 boundary, a combined waterfall with supplied spans always had lanes. Spec 27
+supersedes that assumption: invalid or unreachable selected topology may yield zero visible lanes.
+That condition mounts the canvas and time bar but intentionally receives neither existing message;
+bounded developer warnings and the future application-facing diagnostics API own its explanation.
 
 **Depends on:** [Spec 5](./spec-5-canvas2d-renderer.md) — `draw()` in `canvas2d_renderer.ts`;
 [Spec 1](./spec-1-normalization.md) — `normalize()` in `normalize.ts`.
@@ -34,6 +36,10 @@ bar still draws in both empty cases (it shows the axis structure even without la
   mirrors the exact condition that triggers `Logger.warn` in `selectTrace` (which is retained).
 - `'no-data'` — `data` was empty before filtering.
 - `undefined` — spans are present (not an empty state).
+
+From Spec 27, `undefined` also covers non-empty selected input that finite filtering or recovery
+reduces to zero visible lanes. This is invalid or unrenderable data, not `no-data` or
+`trace-not-found`, and therefore draws no centered message.
 
 **`emptyMessage` string composition (in `frame()`, not in pure geometry):**
 - `no-data` → `"No data"`
@@ -75,6 +81,8 @@ time bar remains visible.
   - `emptyReason = 'trace-not-found'` when data is non-empty, `traceId` is supplied, but no span
     matches.
   - `emptyReason = undefined` when spans are returned (normal and combined-waterfall cases).
+  - `emptyReason = undefined` when non-empty selected input becomes empty through malformed-data
+    filtering, rootless topology, or chart-wide invalidation.
 - `canvas2d_renderer.test.ts`:
   - When `emptyMessage` is set and `spans` is empty, `renderText` is called once with the message.
   - When `emptyMessage` is `null` and `spans` is empty, no text call is made.
@@ -94,4 +102,6 @@ time bar remains visible.
 - `data={[]}` renders `"No data"` centered in the plot area; time bar is visible.
 - Non-empty data with an unmatched `traceId` renders `No spans found for trace "X"` message.
 - Non-empty data with no `traceId` renders normally (no message).
+- Non-empty selected data with zero renderable lanes keeps the time bar and blank plot, emits the
+  applicable developer warning, and does not reuse either empty-state message.
 - `yarn jest trace_chart` and `yarn typecheck` green.

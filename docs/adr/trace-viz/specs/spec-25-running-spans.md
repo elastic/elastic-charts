@@ -56,7 +56,8 @@ export interface TraceDatum {
   /**
    * End time of the span in the same units as `start`. Omit (or pass `null`) to mark the span as
    * **running** — started but not yet finished. Running spans are rendered with a dashed total line
-   * extending to the latest known finite end across all spans in the trace (the domain max).
+   * extending to the latest known finite end across all visible spans in the selected trace data
+   * (the domain max). Spec 27 recovery determines visible membership before projection.
    * Duration and elapsed-time fields are not shown in the tooltip or screen reader for running spans.
    */
   end?: number | null;
@@ -253,7 +254,8 @@ domain fallback.
   - `end: null` survives `dropNonFinite` (not dropped).
   - `end: undefined` survives `dropNonFinite`.
   - `end: NaN` (non-null non-finite) still dropped — the OTel poison guard holds.
-  - Running span's synthesized `end === domain max` (max of finite ends).
+  - Running span's synthesized `end === domain max` (max of finite ends among Spec 27's surviving
+    visible spans).
   - All-running fallback: `end = max(starts)` for each span.
   - Start-past-all-ends case: zero-width (synthesized end clamped to start).
   - Re-zeroing under `'linear'` scale applies to the synthesized end.

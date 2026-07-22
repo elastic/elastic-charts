@@ -1,6 +1,6 @@
 # ADR 0023 — Running-span model: optional end, domain-max provisional edge, dashed visual
 
-**Status:** Accepted (Spec 25)
+**Status:** Accepted (Spec 25; visible-domain input amended by Spec 27)
 
 ## Context
 
@@ -32,10 +32,14 @@ of running.
 ## Decision 2 — Provisional right edge = latest known finite end (domain max); no wall clock
 
 A running span renders from its `start` to the **trace's domain max** — the maximum `end` among all
-finished spans in the same normalize call. Running spans themselves contribute their `start` to the
+finished spans in the selected visible dataset. Running spans themselves contribute their `start` to the
 domain computation (a running span cannot narrow the domain rightward, but it also must not extend it
 beyond what's observed). The domain max is computed in `project()` and the running span's `end` is
 synthesized there to `max(domainMax, span.start)`.
+
+Spec 27 recovery runs before `project()`. Non-elected, unreachable, or invalid trace groups therefore
+do not extend the provisional edge of surviving running spans; its diagnostics/warning contract
+reports that omission separately.
 
 This is deterministic and repeatable: given the same `TraceDatum[]` the chart always produces the
 same output. The bar does not grow between renders.

@@ -1,14 +1,17 @@
 # ADR 0019 — Empty-state ownership: `no-data` delegates to the library overlay, `trace-not-found` is a canvas message
 
-**Status:** Accepted  
+**Status:** Accepted; zero-visible-lane semantics amended by ADR 0028 / Spec 27
 **Implements:** [Spec 18 — Empty-state distinction](./specs/spec-18-empty-state.md)
 
 ## Context
 
-The Trace chart has two distinct "empty" conditions:
+The Trace chart has three distinct zero-lane conditions:
 
 1. **`no-data`** — `data` prop is empty; no spans were supplied at all.
 2. **`trace-not-found`** — spans were supplied but the specified `traceId` matched none of them.
+3. **Invalid or unrenderable data** — spans were selected, but finite filtering or elected-root
+   recovery leaves no visible lanes (for example all timestamps are non-finite, a rootless cycle, or
+   chart-wide duplicate-ID invalidation).
 
 Before this ADR, both cases short-circuited to the library DOM `NoResults` overlay ("No data to
 display") via `isChartEmpty`. This produced identical UI for two semantically different situations,
@@ -31,6 +34,11 @@ fires, the trace canvas does not mount.
 
 `trace-not-found` mounts the chart and renders the full time-bar/axis machinery with an empty plot
 and a centered message on the canvas.
+
+Invalid or unrenderable data also mounts the chart and retains the time bar, but the plot remains
+blank with no centered message. It is neither `no-data` nor `trace-not-found`: malformed-data stages
+emit bounded developer warnings, and the application-facing diagnostics/presentation seam is deferred
+to the dedicated follow-up from Spec 27.
 
 **Why hybrid:**
 - The library overlay is exactly what `no-data` should show: a consumer-overridable "no data"
@@ -66,7 +74,8 @@ A plain optional string prop is the simplest possible extension. It covers the c
 
 The `no-data` case is wholly owned by `isChartEmpty` / the library overlay and never needs to surface
 inside the normalize pipeline. Only the `trace-not-found` case needs a signal from the data layer to
-the UI layer.
+the UI layer. Invalid or unrenderable selected data deliberately leaves `emptyReason` undefined; it
+does not acquire a user-facing canvas message.
 
 ## Decision 4: Glossary-precise trigger
 
@@ -89,6 +98,8 @@ Only "the traceId filter matched zero spans" produces the message.
   optional parameter (default `null`), keeping existing callers unmodified.
 - The canvas2d renderer draws the message after `drawTimeBar` when `spans.length === 0` and
   `emptyMessage` is non-null; otherwise it returns immediately as before.
+- A non-empty selected dataset that yields zero visible lanes follows that no-message renderer path;
+  developer warnings explain malformed-data invalidation until the diagnostics follow-up exists.
 - `frame()` in `trace_chart.tsx` composes the string from `emptyReason` + `traceNotFoundMessage` and
   passes it to `buildGeometry` each frame. No new pipeline cache key is needed — `traceNotFoundMessage`
   only affects the rendered string, not any computed layout.

@@ -81,7 +81,7 @@ viewport).
 after each lane move. Example: `"http.get /api/users — 142 ms"`. Use `textContent` assignment,
 not `innerHTML` (XSS guard).
 
-**Screen-reader table (`screen_reader_trace_table.tsx`):** hidden paginated `<table>` of all spans.
+**Screen-reader table (`screen_reader_trace_table.tsx`):** hidden paginated `<table>` of all visible spans.
 Columns: name, total duration, self time, start offset (relative to trace start), parent name
 (`"—"` if root). 20 rows per page (`TABLE_PAGINATION = 20`). Styled with `echScreenReaderOnly`
 (visible only to AT). Model: `partition_chart/renderer/dom/screen_reader_partition_table.tsx`.
@@ -150,9 +150,10 @@ before span content (so active segments render on top). Add to `TraceStyle` + th
 
 ## Acceptance
 
-- All spans are reachable by keyboard (Tab → canvas, then arrow keys).
+- All visible spans are reachable by keyboard (Tab → canvas, then arrow keys).
 - Screen reader announces span name + total duration on each lane change.
 - A focused lane shows a full-width background highlight in `draw()`.
-- The hidden table lists all spans with correct data.
+- The hidden table lists all visible spans with correct data; Spec 27 omissions are reported through
+  its temporary developer warning and future diagnostics rather than inaccessible table rows.
 - `Esc` clears focus; canvas blur clears focus.
 - `yarn jest trace_chart` and `yarn typecheck` are green; axe check passes on the story.

@@ -110,7 +110,7 @@ original stub are resolved by [ADR 0026](./0026-collapsible-nesting.md).
   of Specs 22–25. See [ADR 0024](./0024-multilevel-time-bar.md).
 - **Spec 27** (partial-trace recovery / orphan reparenting) — depends on Specs 1, 2, 12, 15, 21,
   and 24. Adds a source-preserving synthetic display topology between finite filtering and
-  clock-skew correction, plus partial-trace warning/provenance surfaces. Spec 25 running spans remain
+  clock-skew correction, plus partial-trace provenance surfaces. Spec 25 running spans remain
   compatible but are not required to implement recovery.
 - **Spec 28** (connections / "Initiated by" arrows) — depends on Specs 5, 12, and 13 (reuses
   `TraceSegmentRef`, `waitingSegments`, and the `buildGeometry` resolved-field pattern). Independent

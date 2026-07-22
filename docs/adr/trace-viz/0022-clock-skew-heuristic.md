@@ -1,6 +1,6 @@
 # ADR 0022 — Clock-skew correction: Kibana-compatible placement
 
-**Status:** Accepted (implemented by Spec 24)
+**Status:** Accepted (implemented by Spec 24; orphan/topology traversal amended by Spec 27)
 
 ## Context
 
@@ -91,12 +91,11 @@ unchanged; one that records before it is independently placed relative to that c
 descendant preserves raw intra-subtree distances, but disagrees with Kibana whenever a descendant
 starts between its parent's recorded and corrected starts or after the corrected start.
 
-**Orphans remain outside the parity boundary:** Kibana reparents missing-parent spans under its
-elected visible root and marks the trace partial. Elastic Charts retains its established forest model,
-where a span whose `parentId` is absent from the supplied dataset is a root. Proposed
-[Spec 27](./specs/spec-27-partial-trace-reparenting.md) defines source-preserving reparenting,
-provenance, warnings, interaction payloads, and accessibility; it remains outside clock-skew
-reconciliation until implemented.
+**Spec 24's original orphan boundary is superseded by Spec 27:** Kibana reparents missing-parent spans
+under its elected visible root and marks the trace partial. Spec 27 defines Elastic Charts'
+source-preserving equivalent, including provenance and application-owned aggregate presentation.
+Recovery now precedes correction, so the coordinate heuristic in this ADR runs against the synthetic
+display parent on the elected visible tree.
 
 ## Decision 4 — Correction is a `normalize` pipeline stage, before `project`; reuses the `orderLanes` DFS pattern
 
@@ -119,13 +118,15 @@ The correction stage (`correctClockSkew`) is inserted between `dropNonFinite` an
   the Trace chart has an explicitly supplied running parent. Completed edges below a running edge may
   resume independent evaluation when both participants have finite recorded durations.
 
-**DFS structure** mirrors `orderLanes` ([order_lanes.ts:42-63](../../../packages/charts/src/chart_types/trace_chart/data/order_lanes.ts#L42-L63)):
-- Roots: spans whose `parentId` is absent or not in the id set (orphans-as-roots — ADR 0018).
-- Cycle guard: **visited-set by object identity** (not span id) — prevents infinite recursion on
-  malformed `parentId` graphs, matches the settled house pattern.
+**DFS structure** consumes Spec 27's recovered visible tree:
+- Roots: the elected root from each valid trace group; synthetic display parentage attaches the
+  remaining genuine orphans before correction.
+- Cycle guard: the direct correction seam retains its object-identity visited set, while Spec 27's
+  preceding ID-based traversal owns malformed-group invalidation and unreachable-cycle omission.
 - Parent reference: each DFS call receives the parent's corrected span, but computes the child's
   placement from the child's recorded coordinates. No ancestor offset is accumulated or inherited.
-- Safety pass: any span not reached by the DFS (e.g. in a true cycle) is appended unchanged.
+- Safety pass: a span not reached by correction remains unchanged, but Spec 27 has already removed
+  spans outside elected-root reachability from end-to-end output.
 
 `buildChildrenMap` from `data/self_time.ts` is reused without modification.
 

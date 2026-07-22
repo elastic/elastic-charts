@@ -1,6 +1,6 @@
 # ADR 0026 — Collapsible nesting: rolled-up semantics, tree-gating, and disclosure gutter
 
-**Status:** Accepted  
+**Status:** Accepted; display-topology input amended by ADR 0028 / Spec 27
 **Implements:** [Spec 21 — Collapsible nesting](./specs/spec-21-collapsible-nesting.md)  
 **Supersedes open questions:** Spec 21 stub open questions #2–#9 (resolved here in full).  
 **Cites:** [ADR 0018](./0018-lane-ordering-tree-default.md) — lane-ordering seam; [ADR 0011](./0011-segment-selection-model.md) — controlled perform-and-fire pattern; [ADR 0007](./0007-focus-domain-perform-and-fire.md) — perform-and-fire precedent.
@@ -63,11 +63,12 @@ is **ignored** and a dev-mode warning fires.
   that makes prune + re-index safe.
 
 **Multi-trace forests:** in `laneOrder: 'tree'` without a `traceId` filter, the lane list is a
-forest — each trace's subtree is grouped together. Collapse works in forests: `collapseLanes` uses
-the same `buildChildrenMap` (over the full merged span set) and the same prune logic. Roots are
-well-defined (no parentId, or parentId absent from the span set, per ADR 0018). This **supersedes
-Spec 21 open question #9** ("multi-trace guard: collapse disabled without `traceId`") — the guard
-is now `chronological` mode, not multi-trace.
+forest — each valid trace group's elected visible tree is grouped together. Collapse works in that
+forest: `collapseLanes` uses Spec 27's trace-local **display parent** map, so reparented orphan
+subtrees participate in pruning/rollup and an identically named parent in another trace cannot claim
+them. Non-elected, unreachable, or invalid components have already been omitted. This **supersedes
+Spec 21 open question #9** ("multi-trace guard: collapse disabled without `traceId`") — the guard is
+still `chronological` mode, not multi-trace.
 
 **Implementation:** a single `if (spec.laneOrder === 'chronological') { devWarn(...); return; }`
 guard in `getCollapseOutput` on the `TraceChart` instance.
