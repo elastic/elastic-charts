@@ -142,6 +142,32 @@ _Avoid_: ongoing region, in-progress region, WIP, unconfirmed region.
 The rendering mode for span name labels: `gutter` (drawn in the fixed left panel — the default), `inline` (drawn on a dedicated row below the bar, starting near the bar's start edge and overflowing right — the Kibana APM style), or `none` (labels omitted; accessible only via tooltip and screen-reader table). Set via `theme.trace.labelPosition`. No auto-switching — the caller sets the mode explicitly.
 _Avoid_: label mode, label placement.
 
+**Span badge**:
+A compact structured adornment associated with one span, containing text and optionally an image, including an SVG icon supplied as an image source. Its visibility is independent of the span's **Label position**, and it may expose hover or activation behavior.
+_Avoid_: label (a badge supplements rather than names the span), custom component (a span badge has structured content).
+
+**Badge-only gutter**:
+The compact fixed lane-aligned area used for Span badges that remain visible when the Label position is `none`. It is absent when no visible Span badge requires it and is distinct from the full label gutter.
+_Avoid_: label gutter (no span labels are shown), inline badge area.
+
+**Trace annotation**:
+A structured visual marker composed with a Trace chart to call out a time position/range, a lane/span,
+or a span hierarchy. It is independent of Span badges and does not modify trace data.
+_Avoid_: badge (badges adorn a span label), critical path (critical path marks active execution
+intervals), selection (annotations are caller-authored context).
+
+**Time annotation**:
+A Trace annotation anchored to the x-scale. It marks a timestamp or time range across the trace plot
+and can report hover or activation with its annotation metadata.
+_Avoid_: time bar tick, cursor, vertical lane annotation.
+
+**Hierarchy annotation**:
+A Trace annotation anchored to a span that marks the visible ancestry route from that span's trace
+root to the target span with a boundary rail between the gutter and span drawing area. It highlights
+only the specific root-to-target path, not sibling branches or the target's descendants, and does not
+change collapse, selection, or lane order.
+_Avoid_: subtree annotation, collapse state, critical path, span badge.
+
 **Focused lane**:
 The lane currently selected via keyboard navigation, indicated by a full-width background highlight drawn in `draw()`. Distinct from the hovered lane (which is mouse-driven and controls tooltip visibility). Only one lane is focused at a time; focus is cleared when the canvas loses keyboard focus.
 _Avoid_: selected lane, active lane (active is already used for active segments).
