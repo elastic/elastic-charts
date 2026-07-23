@@ -88,13 +88,28 @@ height is reserved for them (Decision 5). `timeAxisLayerCount` is a **cap**, not
 In `buildGeometry`, when `xScaleType === 'time'`:
 
 ```
-effectiveTimeBarHeight = max(style.timeBarHeight, timeAxisLayerCount × rowHeight)
+tickLayerHeight        = timeBarLabel.fontSize + TICK_LAYER_PADDING
+effectiveTimeBarHeight = max(style.timeBarHeight, timeAxisLayerCount × tickLayerHeight + TICK_LAYER_BOTTOM_INSET)
 ```
 
-where `rowHeight = timeBarLabel.fontSize + LABEL_ROW_PADDING`. `plot.top` = `effectiveTimeBarHeight`;
-`plot.height` = `canvasHeight − effectiveTimeBarHeight`. The height is **fixed** for the configured
-`timeAxisLayerCount`, regardless of how many rows currently have labels (density gating may reduce
-drawn labels without reducing the reservation).
+`plot.top` = `effectiveTimeBarHeight`; `plot.height` = `canvasHeight − effectiveTimeBarHeight`. The
+height is **fixed** for the configured `timeAxisLayerCount`, regardless of how many rows currently
+have labels (density gating may reduce drawn labels without reducing the reservation).
+
+**`TICK_LAYER_BOTTOM_INSET` — clearance for the tick marks (added during implementation).** The tick
+marks protrude **down** from the bottom edge of the bar (`TICK_HEIGHT` px). Because the finest tick
+layer sits nearest the plot (bottom of the stack), a stack sized to exactly `count × tickLayerHeight`
+places the finest label row directly on top of — and slightly overlapping — those tick marks. `linear`
+mode never hit this because it draws its single row at the **top** of the bar (`timeBar.top + 2`),
+leaving the whole bar as implicit clearance. To give time mode the same breathing room, the effective
+height reserves `TICK_LAYER_BOTTOM_INSET` (= `TICK_HEIGHT`) below the stack, and every row's label-y
+is lifted by the same inset. The constant is exported from `time_bar.ts` so `geometry.ts` and the
+demo story (`04_time_bar`) all size the bar from one source of truth. See
+[time_bar.ts `TICK_LAYER_BOTTOM_INSET`](../../../packages/charts/src/chart_types/trace_chart/render/time_bar.ts).
+
+**Alternative considered — shorten or move the tick marks instead of growing the bar:** would decouple
+the tick length from the shared `TICK_HEIGHT` and make the trace ticks inconsistent with the rest of
+the bar. Reserving a few px of height is simpler and keeps the tick geometry unchanged. Rejected.
 
 **Alternative considered — adaptive height (shrink when rows are empty):** the plot area (and every
 lane's y-position) would jump up/down each time the zoom crosses a density threshold and a row
@@ -108,33 +123,54 @@ recomputed on every frame. Rejected.
 axisLayerCount * maxLabelBoxGirth
 ```
 
-The default `timeBarHeight = 32` already accommodates 2 rows at 16 px each (10 px font + 6 px
-padding). 3 rows requires ~48 px — the theme files with `timeAxisLayerCount: 3` should set
-`timeBarHeight: 48`, or the effective-height formula automatically expands it.
+With the default `fontSize = 10` a tick layer is 16 px (10 px font + 6 px `TICK_LAYER_PADDING`), so 2
+rows plus the 6 px `TICK_LAYER_BOTTOM_INSET` need 38 px and 3 rows need 54 px — both exceed the default
+`timeBarHeight = 32`, so the `max()` in the formula expands the bar automatically. Theme authors do not
+need to hand-tune `timeBarHeight` per `timeAxisLayerCount`; the reservation is derived.
 
-## Decision 6 — Pinned leading (containing-interval) label for upper rows
+## Decision 6 — Pinned leading (containing-interval) label for upper rows: pin only the nearest off-left boundary
 
-For an upper row (`rowIndex ≥ 1`), the interval scan is extended one bin before the viewport
-(`iterFrom = domainFrom − oneLayerBinWidthS`). Any interval whose boundary sits off the left edge but
-whose `supremum` enters the viewport emits a label **clamped to `plot.left`**, so the current
-containing interval is always identified (e.g. always showing `22:51:13` even when panned between
-`22:51:13.000` and `22:51:14.000`). When the pinned label would overlap the next in-view boundary
-tick of the same row, the boundary tick label is suppressed.
+For an upper row (`rowIndex ≥ 1`) the row must always show the interval that **contains the left edge**
+of the viewport (e.g. always showing `22:51:13` even when panned between `22:51:13.000` and
+`22:51:14.000`, or `January 13, 2022` for a date row that changes only at midnight). That label is
+drawn **clamped to `plot.left`**. When the pinned label would overlap the next in-view boundary label
+of the same row, the boundary label is suppressed using a synchronous `ctx.measureText` width check
+(`TICK_LABEL_MIN_GAP`).
 
-The finest (ms) row does **not** use the leading-bin extension — it keeps the current hard-skip
-(`tickX < plot.left`). Dense ms ticks are always within the viewport; there is no off-screen context
-to recover.
+The finest (ms) row does **not** pin — it hard-skips off-left ticks (`tickX < plot.left`). Dense ms
+ticks are always within the viewport; there is no off-screen context to recover.
 
-**Alternative considered — boundary-only labels for all rows (no pinning):** simpler (no scan
-extension, no clamping). But a slow-changing row (date) would show nothing while panned between
-boundaries — which is exactly the failure this feature is meant to fix. A `time` trace zoomed to 1 s
-can spend multiple minutes between midnight boundaries; the date row would be blank for that entire
-time. Rejected.
+### Pin exactly one boundary — the nearest (corrected during implementation)
+
+The raster interval generators (`continuousTimeRasters`) **emit every boundary from far before the
+viewport**, not just the one containing the left edge — the single-row baseline relied on the caller
+culling all off-plot ticks (`tickX < plot.left → continue`). The first implementation of this decision
+assumed instead that extending the scan one bin (`iterFrom = domainFrom − oneLayerBinWidthS`) would
+surface a *single* off-left tick, and flagged **every** off-left tick as "pinned" and clamped it to
+`plot.left`, bypassing overlap suppression. Because the generator emits the whole pre-viewport history,
+this stacked **all** of those labels on top of each other at `plot.left` — e.g. when zoomed to a 15 s
+window on a mid-year timestamp the date row painted `January 1 … July 17` (≈200 labels) at the same
+pixel. Zooming in reduced how many boundaries fell off-left, so the general axis "spread out" while the
+top-left corner stayed garbled — the reported symptom.
+
+**Corrected approach:** iterate the full `intervals(domainFrom, domainTo)` (no scan extension), and for
+upper rows remember only the **last** (nearest, largest-`minimum`) off-left boundary as the
+pinned-leading candidate. Flush it once — at `plot.left` — when the first in-view tick appears, or at
+loop end if the whole row is off-left. All earlier off-left boundaries are dropped. This yields exactly
+one containing-interval label per upper row at any zoom, plus the normal in-view boundary labels
+(overlap-suppressed against the pinned one). The `iterFrom`/`oneLayerBinWidthS` extension and the
+`unitIntervalWidth` import it required are removed.
+
+**Alternative considered — boundary-only labels for all rows (no pinning):** simpler (no clamping). But
+a slow-changing row (date) would show nothing while panned between boundaries — exactly the failure this
+feature is meant to fix. A `time` trace zoomed to 1 s can spend minutes between midnight boundaries; the
+date row would be blank for that entire time. Rejected.
 
 **XY analogue:** [multilayer_ticks.ts:81–93](../../../packages/charts/src/chart_types/xy_chart/axes/timeslip/multilayer_ticks.ts#L81-L93)
-extends the scan with `binStartsFrom = domainFromS − binWidth` and `binStartsTo = domainToS +
-binWidth`, then `domainClampedPosition` pins labels to the axis range. This ADR follows the same
-principle, specialised for the trace bar's left-edge-clamp.
+extends the scan and uses `domainClampedPosition` to pin labels to the axis range. This ADR follows the
+same *principle* (a containing-interval label pinned to the edge) but, because the trace generators
+already emit pre-viewport boundaries, achieves it by selecting the nearest off-left boundary from the
+unextended scan rather than by widening the scan.
 
 ## Decision 7 — Single tick + finest-row gridline; rows distinguished by label text only
 
@@ -160,6 +196,12 @@ sits immediately above dense waterfall lanes. Rejected for this spec; can be rev
 - **`linear` mode and `timeAxisLayerCount = 0` are behavior-preserving** (byte-identical output):
   the effective height formula collapses to `style.timeBarHeight`, and the label draw falls into the
   single-layer path — no functional change.
-- **`unitIntervalWidth`** (from `continuous_time_rasters.ts`) must be imported in `time_bar.ts` for
-  the leading-bin computation. It is already exported; this is the first import of it from outside
-  the timeslip module into the trace chart.
+- **No new cross-module imports for tick scanning.** An earlier draft imported `unitIntervalWidth`
+  from `continuous_time_rasters.ts` to compute a leading-bin scan extension; the corrected pinned-leading
+  approach (Decision 6) iterates the unextended `intervals(domainFrom, domainTo)` and selects the
+  nearest off-left boundary, so that import was removed. `time_bar.ts` does add a `ctx.measureText`
+  width check for overlap suppression, which requires setting `ctx.font` once (via `cssFontShorthand`)
+  before the stacked-label pass.
+- **Two constants are exported from `time_bar.ts` for shared sizing:** `TICK_LAYER_PADDING` (per-row
+  padding) and `TICK_LAYER_BOTTOM_INSET` (tick-mark clearance). `geometry.ts` and the `04_time_bar`
+  story import both so the reserved bar height is computed identically everywhere.
