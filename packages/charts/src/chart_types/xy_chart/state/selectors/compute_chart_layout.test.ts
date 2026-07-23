@@ -47,8 +47,7 @@ const checkIfLayoutConverged = (
       return {
         spec,
         style: AXIS_STYLE,
-        layouts: projection?.ticks.map((tick) => tick.layout) ?? [],
-        ticks: projection?.ticks,
+        ticks: projection?.ticks.map((tick) => tick.layout) ?? [],
         layout: {
           band: getAxisBand(spec.position, AXIS_STYLE, fixedBand, container.width, container.height),
           multilayerTimeAxis: false,
@@ -81,9 +80,9 @@ describe('computeChartLayoutSelector', () => {
     getContextSpy.mockRestore();
   });
 
-  test('layout loop converges for long ordinal labels that overflow the band', () => {
-    // Two ordinal categories whose labels are wider than the band: the trailing label is culled by overlap and
-    // the edge overflow is reserved from the last visible label's real position, converging within the iteration cap.
+  test('layout loop converges in a single iteration for long ordinal labels', () => {
+    // With corrected band-scale overflow, two ordinal categories reach a fixed point on the first
+    // loop pass. Bootstrap still uses a unit-range scale, but one corrective iteration is enough.
     const container = { width: 200, height: 120, top: 0, left: 0 };
     const xSpec = MockGlobalSpec.xAxis({ id: 'x', position: Position.Bottom, title: 'X axis' });
     const ySpec = MockGlobalSpec.yAxis({
@@ -111,7 +110,7 @@ describe('computeChartLayoutSelector', () => {
 
     const { dimensions, ticks, meta } = computeChartLayoutSelector(store.getState());
 
-    expect(meta.iterations).toBe(4);
+    expect(meta.iterations).toBe(1);
     expect(dimensions.chartDimensions.width).toBeGreaterThan(0);
     expect(dimensions.chartDimensions.height).toBeGreaterThan(0);
     checkIfLayoutConverged(container, [ySpec, xSpec], dimensions, ticks);

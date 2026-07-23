@@ -162,7 +162,7 @@ describe('getAxesDimensions', () => {
     // chartMargins.left=3, chartMargins.right=4. With first/last bbox=80, half=40 → overflow wins.
     const ticks = [tickBox({ bboxWidth: 80, bboxHeight: 10 }), tickBox({ bboxWidth: 80, bboxHeight: 10 })];
     const result = getAxesDimensions(theme, [
-      { spec: xAxis, style: AXIS_STYLE, layouts: ticks, layout: layoutFor(AXIS_STYLE, Position.Bottom, 5) },
+      { spec: xAxis, style: AXIS_STYLE, ticks, layout: layoutFor(AXIS_STYLE, Position.Bottom, 5) },
     ]);
     expect(result.left).toBe(3 + 40);
     expect(result.right).toBe(4 + 40);
@@ -172,7 +172,7 @@ describe('getAxesDimensions', () => {
     const style = mergePartial(AXIS_STYLE, { tickLabel: { alignment: { horizontal: 'left' } } });
     const ticks = [tickBox({ bboxWidth: 80, bboxHeight: 10 }), tickBox({ bboxWidth: 80, bboxHeight: 10 })];
     const result = getAxesDimensions(theme, [
-      { spec: xAxis, style, layouts: ticks, layout: layoutFor(style, Position.Bottom, 5) },
+      { spec: xAxis, style, ticks, layout: layoutFor(style, Position.Bottom, 5) },
     ]);
     expect(result.left).toBe(3);
     expect(result.right).toBe(4 + 80);
@@ -182,7 +182,7 @@ describe('getAxesDimensions', () => {
     const style = mergePartial(AXIS_STYLE, { tickLabel: { alignment: { horizontal: 'right' } } });
     const ticks = [tickBox({ bboxWidth: 80, bboxHeight: 10 }), tickBox({ bboxWidth: 80, bboxHeight: 10 })];
     const result = getAxesDimensions(theme, [
-      { spec: xAxis, style, layouts: ticks, layout: layoutFor(style, Position.Bottom, 5) },
+      { spec: xAxis, style, ticks, layout: layoutFor(style, Position.Bottom, 5) },
     ]);
     expect(result.left).toBe(3 + 80);
     expect(result.right).toBe(4);
@@ -193,7 +193,7 @@ describe('getAxesDimensions', () => {
     const style = mergePartial(AXIS_STYLE, { tickLabel: { rotation: -45, alignment: { horizontal: 'near' } } });
     const ticks = [tickBox({ bboxWidth: 80, bboxHeight: 10 }), tickBox({ bboxWidth: 80, bboxHeight: 10 })];
     const result = getAxesDimensions(theme, [
-      { spec: xAxis, style, layouts: ticks, layout: layoutFor(style, Position.Bottom, 5) },
+      { spec: xAxis, style, ticks, layout: layoutFor(style, Position.Bottom, 5) },
     ]);
     expect(result.left).toBe(3 + 80);
     expect(result.right).toBe(4);
@@ -215,13 +215,13 @@ describe('getAxesDimensions', () => {
       {
         spec: yAxis,
         style: AXIS_STYLE,
-        layouts: [tickBox({ bboxWidth: 30, bboxHeight: 0 })],
+        ticks: [tickBox({ bboxWidth: 30, bboxHeight: 0 })],
         layout: layoutFor(AXIS_STYLE, Position.Left, 5),
       },
       {
         spec: yAxis2,
         style: AXIS_STYLE,
-        layouts: [tickBox({ bboxWidth: 20, bboxHeight: 0 })],
+        ticks: [tickBox({ bboxWidth: 20, bboxHeight: 0 })],
         layout: layoutFor(AXIS_STYLE, Position.Left, 5),
       },
     ]);
@@ -234,7 +234,7 @@ describe('getAxesDimensions', () => {
       {
         spec: yAxis,
         style: AXIS_STYLE,
-        layouts: [tickBox({ bboxWidth: 100 })],
+        ticks: [tickBox({ bboxWidth: 100 })],
         layout: layoutFor(AXIS_STYLE, Position.Left, 5),
         isHidden: true,
       },

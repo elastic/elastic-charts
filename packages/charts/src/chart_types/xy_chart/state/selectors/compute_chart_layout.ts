@@ -119,15 +119,13 @@ function computeChartLayout(params: LayoutParameters): {
         const joined = axesConfig.data.get(spec.id);
         if (!joined) return [];
         const measure = measures.get(spec.id);
-        const ticks = measure && 'ticks' in measure ? measure.ticks : undefined;
         const layouts =
           measure && 'ticks' in measure ? measure.ticks.map((tick) => tick.layout) : measure?.layouts ?? [];
         return [
           {
             spec,
             style: joined.axesStyle,
-            layouts,
-            ticks,
+            ticks: layouts,
             layout: joined.layout,
             scale: measure?.scale ?? joined.scale,
             isHidden: spec.hide,
@@ -135,15 +133,6 @@ function computeChartLayout(params: LayoutParameters): {
         ];
       });
       return getAxesDimensions(theme, axes);
-    };
-
-    const finalLayout = (margins: AxesPerSide, iterations: number) => {
-      const dimensions = computeChartArea(container, margins, theme);
-      return {
-        dimensions,
-        ticks: projectTicks(params, dimensions.chartDimensions, textMeasure),
-        meta: { iterations },
-      };
     };
 
     let projections = projectTicks(
@@ -159,13 +148,23 @@ function computeChartLayout(params: LayoutParameters): {
       const nextMargins = measureMargins(nextProjections);
 
       if (isLayoutStable(margins, nextMargins)) {
-        return finalLayout(nextMargins, i + 1);
+        return {
+          dimensions: computeChartArea(container, nextMargins, theme),
+          ticks: nextProjections,
+          meta: { iterations: i + 1 },
+        };
       }
       // Logger.warn('Layout did not converge after', i + 1, 'iterations');
       projections = nextProjections;
     }
 
-    return finalLayout(measureMargins(projections), MAX_ITERATIONS);
+    const finalMargins = measureMargins(projections);
+    const finalChartArea = computeChartArea(container, finalMargins, theme);
+    return {
+      dimensions: finalChartArea,
+      ticks: projectTicks(params, finalChartArea.chartDimensions, textMeasure),
+      meta: { iterations: MAX_ITERATIONS },
+    };
   });
 }
 
