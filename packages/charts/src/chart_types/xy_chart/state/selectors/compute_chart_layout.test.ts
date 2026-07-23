@@ -111,7 +111,7 @@ describe('computeChartLayoutSelector', () => {
 
     const { dimensions, ticks, meta } = computeChartLayoutSelector(store.getState());
 
-    expect(meta.iterations).toBeLessThan(5);
+    expect(meta.iterations).toBe(4);
     expect(dimensions.chartDimensions.width).toBeGreaterThan(0);
     expect(dimensions.chartDimensions.height).toBeGreaterThan(0);
     checkIfLayoutConverged(container, [ySpec, xSpec], dimensions, ticks);

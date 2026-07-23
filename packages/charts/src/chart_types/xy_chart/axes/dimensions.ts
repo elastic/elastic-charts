@@ -119,16 +119,19 @@ const measureAlongAxisOverflow = (
     return ticks.reduce(
       (acc, tick) => {
         const size = sizeOf(tick.layout);
+        // Ticks generated past the range end (e.g. band/histogram centering offset) would otherwise be read as a
+        // large overhang, so clamp the anchor to the range before measuring how far the label spills past each edge.
+        const position = Math.min(max, Math.max(min, tick.position));
         return {
-          leading: Math.max(acc.leading, leadingFraction * size - (tick.position - min)),
-          trailing: Math.max(acc.trailing, (1 - leadingFraction) * size - (max - tick.position)),
+          leading: Math.max(acc.leading, leadingFraction * size - (position - min)),
+          trailing: Math.max(acc.trailing, (1 - leadingFraction) * size - (max - position)),
         };
       },
       { leading: 0, trailing: 0 },
     );
   }
 
-  // If the scale and ticks are not known, we assume the first/last label sits at the range end, inset by `axisPadding`.
+  // If the scale and ticks are not known, we assume the first/last label sits at the range end.
   const axisPadding = scale && isBandScale(scale) ? scale.outerPadding * scale.step + scale.bandwidth / 2 : 0;
   return {
     leading: Math.max(0, sizeOf(layouts.at(0)) * leadingFraction - axisPadding),

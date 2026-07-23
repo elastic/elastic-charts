@@ -106,8 +106,7 @@ const OVERFLOW_EPSILON = 0.5;
 
 /**
  * Cross-axis overflow: removes labels too big for the axis band (wider than the budget on a vertical axis, taller on a
- * horizontal one). Along-axis (container) overflow is handled separately by reserving the edge labels' overhang as margin
- * in `getAxesDimensions`, rather than by hiding those labels.
+ * horizontal one)
  * @internal
  */
 export function hideCrossAxisOverflow(ticks: AxisTick[], overflow: OverflowContext): AxisTick[] {
