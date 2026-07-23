@@ -1,4 +1,4 @@
-# Spec 25 — Running spans (in-progress visualization)
+# Spec 30 — Running spans (in-progress visualization)
 
 **Goal:** accept and visualize spans that have started but not yet finished. A running span
 (`TraceDatum.end` omitted or `null`) renders from its `start` to the trace's latest known finite
@@ -32,7 +32,7 @@ See [Spec 24](./spec-24-clock-skew.md).
 ## Scope guardrails
 
 - No wall clock, `now` prop, polling, or continuous RAF work.
-- No Spec 27 recovery implementation; keep running-end synthesis in `project` so a future recovery
+- No Spec 26 recovery implementation; keep running-end synthesis in `project` so a future recovery
   stage can determine visible membership before projection.
 - No public `provisional` selection region. Provisional hover/click maps to the existing whole-span
   selection identity.
@@ -65,7 +65,7 @@ See [Spec 24](./spec-24-clock-skew.md).
 - `packages/charts/src/specs/settings.tsx` — `TraceElementEvent.duration` → `number | null`; document
   the provisional `end` reported for running spans.
 - `packages/charts/src/chart_types/trace_chart/state/selectors/get_screen_reader_data.ts` — "running" announcement; suppress numeric duration.
-- `storybook/stories/trace/27_running_spans.story.tsx` — new story; register in `trace.stories.tsx`.
+- `storybook/stories/trace/32_running_spans.story.tsx` — new story; register in `trace.stories.tsx`.
 - Existing trace stories that consume `TraceDatum.end` as a required number — preserve concrete
   fixture inference or narrow `end` before arithmetic / constructing full-span active segments.
 - `packages/charts/api/charts.api.md` — regenerate the public API report.
@@ -85,7 +85,7 @@ export interface TraceDatum {
    * End time of the span in the same units as `start`. Omit (or pass `null`) to mark the span as
    * **running** — started but not yet finished. Running spans are rendered with a dashed total line
    * extending to the latest known finite boundary across all visible spans in the selected trace
-   * data (completed ends, running starts, and confirmed running active-segment ends). Spec 27
+   * data (completed ends, running starts, and confirmed running active-segment ends). Spec 26
    * recovery determines visible membership before projection.
    * Duration and elapsed-time fields are not shown in the tooltip or screen reader for running spans.
    */
@@ -305,7 +305,7 @@ For both `TraceSelectionDetail` and `TraceElementEvent`:
   domain boundary, not a completion timestamp; document that caveat on both public payloads.
 - Retain numeric duration for completed spans.
 
-### 11. Story (`27_running_spans.story.tsx`)
+### 11. Story (`32_running_spans.story.tsx`)
 
 Dataset:
 - `root` (completed): 0–300 ms.
@@ -339,7 +339,7 @@ distinguishable; tooltip shows "running" with no duration.
   - `end: undefined` survives `dropNonFinite`.
   - `end: NaN` (non-null non-finite) still dropped — the OTel poison guard holds.
   - Running span's synthesized `end === domain max` (latest finite completed end, running start, or
-    running explicit-active end among Spec 27's surviving visible spans).
+    running explicit-active end among Spec 26's surviving visible spans).
   - A finite explicit active-segment end on a running span extends the domain max and synthesized end.
   - All-running fallback: `end = max(starts, explicit active-segment ends)` for each span.
   - Start-past-all-ends case: zero-width (synthesized end clamped to start).

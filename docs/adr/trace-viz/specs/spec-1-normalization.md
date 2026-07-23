@@ -4,7 +4,7 @@
 when the simple format supplies one, else empty for [Spec 2](./spec-2-self-time.md) to derive.
 
 **Identity contract:** `TraceDatum.id` is unique across the complete input array, including combined
-multi-trace data. Spec 1's base transform retains malformed duplicates defensively. From Spec 27,
+multi-trace data. Spec 1's base transform retains malformed duplicates defensively. From Spec 26,
 reachable same-group duplicates invalidate that trace group and cross-trace duplicates invalidate
 the selected combined result; duplicates in unreachable components may be omitted. See
 [ADR 0027](../0027-span-id-uniqueness.md) and

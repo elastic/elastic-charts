@@ -1,6 +1,6 @@
 # ADR 0023 — Running-span model: optional end, domain-max provisional edge, dashed visual
 
-**Status:** Accepted (Spec 25; visible-domain input amended by Spec 27)
+**Status:** Accepted (Spec 30; visible-domain input amended by Spec 26)
 
 ## Context
 
@@ -40,7 +40,7 @@ span with no explicit activity contributes only its start, so it cannot extend t
 what has been observed. The domain max is computed in `project()` and the running span's `end` is
 synthesized there to `max(domainMax, span.start)`.
 
-Spec 27 recovery runs before `project()`. Non-elected, unreachable, or invalid trace groups therefore
+Spec 26 recovery runs before `project()`. Non-elected, unreachable, or invalid trace groups therefore
 do not extend the provisional edge of surviving running spans; its diagnostics/warning contract
 reports that omission separately.
 

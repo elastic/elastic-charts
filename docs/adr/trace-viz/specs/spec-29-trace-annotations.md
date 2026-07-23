@@ -5,7 +5,7 @@ owners: []
 supersedes: []
 ---
 
-# Trace annotations — behavioral spec
+# Spec 29 — Trace annotations
 
 > **Altitude: DURABLE / product.**
 > No file paths, no line numbers, no internal function names.

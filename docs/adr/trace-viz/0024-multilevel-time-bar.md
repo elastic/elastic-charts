@@ -1,6 +1,6 @@
 # ADR 0024 — Multi-level time bar: stacked tick rows in time mode
 
-**Status:** Accepted (Spec 26)
+**Status:** Accepted (Spec 25)
 
 ## Context
 

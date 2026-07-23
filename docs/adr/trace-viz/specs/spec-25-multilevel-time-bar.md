@@ -1,4 +1,4 @@
-# Spec 26 — Multi-level (stacked) time bar
+# Spec 25 — Multi-level (stacked) time bar
 
 **Goal:** when `xScaleType === 'time'`, render the trace time bar as **stacked tick-label rows**
 rather than a single row. The finest row shows the existing sub-second detail (`0ms … 900ms`); each
@@ -38,8 +38,8 @@ pipeline changes; pure renderer + theme + geometry.
 - Six theme files (`light_theme.ts`, `dark_theme.ts`, `amsterdam_light_theme.ts`,
   `amsterdam_dark_theme.ts`, `legacy_light_theme.ts`, `legacy_dark_theme.ts` under
   `packages/charts/src/utils/themes/`) — add `timeAxisLayerCount: 2` to each `trace:` block
-  (same wiring pattern as Spec 25's `runningLineDash`).
-- `storybook/stories/trace/28_multilevel_time_bar.story.tsx` — new Storybook story; register in
+  (same wiring pattern as Spec 30's `runningLineDash`).
+- `storybook/stories/trace/27_multilevel_time_bar.story.tsx` — new Storybook story; register in
   `trace.stories.tsx`.
 
 ## Contract
@@ -228,7 +228,7 @@ timeAxisLayerCount: 2,
 as-is). `utils/themes/theme.ts` only declares the `TraceStyle` type — both will pick up the new
 field automatically from step 1 + 4.
 
-### 6. Story (`28_multilevel_time_bar.story.tsx`)
+### 6. Story (`27_multilevel_time_bar.story.tsx`)
 
 Dataset: a realistic trace with an epoch-time `start` (e.g. July 13, 2022, 22:51:00 UTC → `start =
 1657752660000`, spans of 5–300 ms). The story zooms the focus domain to a ~1 s window so the finest

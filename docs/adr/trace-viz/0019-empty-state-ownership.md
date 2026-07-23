@@ -1,6 +1,6 @@
 # ADR 0019 — Empty-state ownership: `no-data` delegates to the library overlay, `trace-not-found` is a canvas message
 
-**Status:** Accepted; zero-visible-lane semantics amended by ADR 0028 / Spec 27
+**Status:** Accepted; zero-visible-lane semantics amended by ADR 0028 / Spec 26
 **Implements:** [Spec 18 — Empty-state distinction](./specs/spec-18-empty-state.md)
 
 ## Context
@@ -38,7 +38,7 @@ and a centered message on the canvas.
 Invalid or unrenderable data also mounts the chart and retains the time bar, but the plot remains
 blank with no centered message. It is neither `no-data` nor `trace-not-found`: malformed-data stages
 emit bounded developer warnings, and the application-facing diagnostics/presentation seam is deferred
-to the dedicated follow-up from Spec 27.
+to the dedicated follow-up from Spec 26.
 
 **Why hybrid:**
 - The library overlay is exactly what `no-data` should show: a consumer-overridable "no data"

@@ -1,6 +1,6 @@
 # ADR 0018 — Lane ordering: tree (DFS) default, chronological optional
 
-**Status:** Accepted; visible-input semantics amended by ADR 0028 / Spec 27
+**Status:** Accepted; visible-input semantics amended by ADR 0028 / Spec 26
 **Implements:** [Spec 15 — Lane ordering mode](./specs/spec-15-lane-ordering.md)  
 **Resolves:** the deferred lane-ordering question from [Spec 21 (collapsible nesting stub)](./specs/spec-21-collapsible-nesting.md) and the README build-order note.
 

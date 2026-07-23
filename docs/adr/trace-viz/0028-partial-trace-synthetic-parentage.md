@@ -1,6 +1,6 @@
 # ADR 0028 — Partial traces use source-preserving synthetic parentage
 
-**Status:** Proposed (Spec 27)
+**Status:** Proposed (Spec 26)
 
 ## Context
 
@@ -52,7 +52,7 @@ a parent reference or reduce that other trace's derived self time.
 
 The Trace component continues to render while tooltip, interaction, and screen-reader surfaces
 identify each orphan. The consuming application—not the chart component—owns whether and how to
-render an aggregate warning callout. Spec 27 adds no aggregate diagnostics callback; a dedicated
+render an aggregate warning callout. Spec 26 adds no aggregate diagnostics callback; a dedicated
 cross-feature follow-up will consider partial-trace and clock-skew diagnostics together. No recovery
 opt-in flag is added: an incomplete relationship is always detected, and the synthetic relationship
 is confined to display semantics.
@@ -81,12 +81,12 @@ provenance on an elected fallback root even though Kibana removes that item from
 by leaving trace-level warning presentation to the consuming application rather than rendering
 Kibana's built-in callout. Its multi-trace extension isolates invalid same-trace groups but treats an
 ID duplicated across groups as a chart-wide identity failure. Focused-subtree selection is not
-introduced by Spec 27; a future focus-root feature must adopt Kibana's ancestor-path cycle guard
+introduced by Spec 26; a future focus-root feature must adopt Kibana's ancestor-path cycle guard
 before it can use synthetic parentage.
 
 ## Consequences
 
-- ADR 0018's orphan-as-root forest is superseded for Spec 27 output: orphan fallback/election and
+- ADR 0018's orphan-as-root forest is superseded for Spec 26 output: orphan fallback/election and
   visible reachability now follow the rules above.
 - Recovery does not introduce a second ordering policy: it preserves survivor input order and leaves
   tree DFS or chronological sorting to `orderLanes`.

@@ -16,9 +16,9 @@ subtrees. Tree order groups each subtree together, matching the reference.
 [Spec 21 (collapsible nesting)](./spec-21-collapsible-nesting.md) — open question #1 resolved here;
 collapse will build on `laneOrder: 'tree'`.
 
-> **Spec 27 amendment:** root election and reachable membership now run before lane ordering. The
+> **Spec 26 amendment:** root election and reachable membership now run before lane ordering. The
 > contracts below apply to that surviving array: `tree` follows trace-local display parentage and
-> `chronological` sorts the identical visible membership. Spec 27 supersedes the original
+> `chronological` sorts the identical visible membership. Spec 26 supersedes the original
 > orphan-as-root, append-unreached, and output-length-equals-input guarantees.
 
 ## Files
@@ -62,7 +62,7 @@ laneOrder?: 'tree' | 'chronological';
 - Input: `NormalizedSpan[]` (post-`resolveActive`), mode.
 - Output: new flat array in lane order. The caller's array is not mutated.
 - Both modes are O(N log N).
-- `'tree'` cycle guard: a `visited` Set prevents infinite recursion. Spec 27's preceding recovery
+- `'tree'` cycle guard: a `visited` Set prevents infinite recursion. Spec 26's preceding recovery
   stage owns cycle/duplicate invalidation and omission, so `orderLanes` receives only elected
   reachable trees and its output length equals that visible input length.
 - Downstream contract: `buildGeometry`, the canvas renderer, `pickLane`, and scroll math are
@@ -101,7 +101,7 @@ laneOrder?: 'tree' | 'chronological';
   - `'chronological'` produces ascending start order and does not mutate input.
   - `'tree'`: parent before descendants; siblings by start; equal-start siblings preserve data order
     (stable); the original orphan-as-root/multi-root/cycle safety cases remain historical unit
-    coverage for the standalone helper. Spec 27 adds end-to-end coverage for display-parent orphans,
+    coverage for the standalone helper. Spec 26 adds end-to-end coverage for display-parent orphans,
     elected roots, and omitted/invalid topology; flat data still matches `'chronological'`.
   - Regression: Kibana APM dataset tree order matches the reference DFS sequence.
 - `data/self_time.test.ts` (extended):
@@ -114,7 +114,7 @@ laneOrder?: 'tree' | 'chronological';
 ## Review (`/review-claudio`)
 
 - Verify `orderLanes` does not mutate the input array in either mode (`.slice()` or fresh result).
-- Verify the standalone cycle guard terminates; at the integrated Spec 27 boundary, verify lane order
+- Verify the standalone cycle guard terminates; at the integrated Spec 26 boundary, verify lane order
   receives only the recovered visible array and does not restore omitted spans.
 - Verify `laneOrder` is in both the `PipelineCache` invalidation check and the SR selector's
   invalidation key, so changing `laneOrder` triggers a full recompute in both places.

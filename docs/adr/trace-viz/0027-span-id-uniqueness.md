@@ -1,6 +1,6 @@
 # ADR 0027 — Span IDs are unique within one supplied dataset
 
-**Status:** Accepted; visible-output semantics amended by ADR 0028 / Spec 27
+**Status:** Accepted; visible-output semantics amended by ADR 0028 / Spec 26
 
 ## Context
 
@@ -16,7 +16,7 @@ combined multi-trace datasets. A consumer combining sources whose IDs can collid
 IDs and every corresponding reference (`parentId`, critical-path `spanId`, connection endpoints,
 selection refs, and collapse IDs) consistently.
 
-Malformed duplicate-ID input must terminate without mutating source data. From Spec 27 onward,
+Malformed duplicate-ID input must terminate without mutating source data. From Spec 26 onward,
 visible output follows Kibana reachability: a duplicate reached within one elected trace tree
 invalidates that trace group, while valid groups in a combined waterfall remain visible. The same ID
 appearing across selected trace groups invalidates the entire combined result because all public

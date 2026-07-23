@@ -1,6 +1,6 @@
 # ADR 0026 — Collapsible nesting: rolled-up semantics, tree-gating, and disclosure gutter
 
-**Status:** Accepted; display-topology input amended by ADR 0028 / Spec 27
+**Status:** Accepted; display-topology input amended by ADR 0028 / Spec 26
 **Implements:** [Spec 21 — Collapsible nesting](./specs/spec-21-collapsible-nesting.md)  
 **Supersedes open questions:** Spec 21 stub open questions #2–#9 (resolved here in full).  
 **Cites:** [ADR 0018](./0018-lane-ordering-tree-default.md) — lane-ordering seam; [ADR 0011](./0011-segment-selection-model.md) — controlled perform-and-fire pattern; [ADR 0007](./0007-focus-domain-perform-and-fire.md) — perform-and-fire precedent.
@@ -64,7 +64,7 @@ is **ignored** and a dev-mode warning fires.
 
 **Multi-trace forests:** in `laneOrder: 'tree'` without a `traceId` filter, the lane list is a
 forest — each valid trace group's elected visible tree is grouped together. Collapse works in that
-forest: `collapseLanes` uses Spec 27's trace-local **display parent** map, so reparented orphan
+forest: `collapseLanes` uses Spec 26's trace-local **display parent** map, so reparented orphan
 subtrees participate in pruning/rollup and an identically named parent in another trace cannot claim
 them. Non-elected, unreachable, or invalid components have already been omitted. This **supersedes
 Spec 21 open question #9** ("multi-trace guard: collapse disabled without `traceId`") — the guard is

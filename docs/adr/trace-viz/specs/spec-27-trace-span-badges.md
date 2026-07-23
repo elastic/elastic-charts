@@ -5,7 +5,7 @@ owners: []
 supersedes: []
 ---
 
-# Trace span badges — behavioral spec
+# Spec 27 — Trace span badges
 
 > **Altitude: DURABLE / product.**
 > No file paths, no line numbers, no internal function names.

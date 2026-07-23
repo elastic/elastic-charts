@@ -1,4 +1,4 @@
-# Spec 27 — Partial-trace recovery and orphan reparenting
+# Spec 26 — Partial-trace recovery and orphan reparenting
 
 **Status:** Proposed
 
@@ -44,7 +44,7 @@ subtree API. Kibana removes the fallback root from its orphan list and therefore
 orphan marker on it. Elastic Charts deliberately retains `orphaned` source provenance on the fallback
 root and uses internal fallback disposition for accurate presentation. Unlike Kibana, the Trace
 component does not render the trace-level warning. A dedicated follow-up spec will define aggregate
-diagnostics for consuming applications. Spec 27 itself exposes no selected-root input and preserves
+diagnostics for consuming applications. Spec 26 itself exposes no selected-root input and preserves
 source identity for spans that remain visible.
 
 ## Files
@@ -67,7 +67,7 @@ source identity for spans that remain visible.
 - `packages/charts/src/specs/settings.tsx` and
   `packages/charts/src/chart_types/trace_chart/trace_api.ts` — expose provenance in element and rich
   selection payloads without changing `TraceDatum` or `TraceSegmentRef`.
-- `storybook/stories/trace/29_partial_trace_reparenting.story.tsx` — visual conformance matrix;
+- `storybook/stories/trace/28_partial_trace_reparenting.story.tsx` — visual conformance matrix;
   register as `partialTraceReparenting`.
 
 ## Public API
@@ -256,7 +256,7 @@ coordinates move. `orphaned`, `reparentedToSpanId`, and `skewCorrected` are inde
 ### Per-span disclosure
 
 The Trace component renders no aggregate warning or callout. The consuming application owns wording,
-severity, placement, accessibility role, and whether to render aggregate status at all. Spec 27 adds
+severity, placement, accessibility role, and whether to render aggregate status at all. Spec 26 adds
 no aggregate callback; the required diagnostics follow-up below will define a cross-feature seam.
 
 For every orphan span:
@@ -275,7 +275,7 @@ the synthetic root was the measured caller.
 
 ## Focused and filtered datasets
 
-`traceId` filtering occurs before recovery and is fully supported. Spec 27 does not introduce a
+`traceId` filtering occurs before recovery and is fully supported. Spec 26 does not introduce a
 `rootSpanId`, `entryTransactionId`, or subtree-filtering prop. A consumer that supplies a prefiltered
 subtree gets recovery against that supplied dataset and the root-election/reachability rules above.
 Spans outside the elected root's reachable tree may be omitted exactly as they are in Kibana.
@@ -338,7 +338,7 @@ visual-indicator setting.
 
 ## Required follow-up: trace data diagnostics
 
-After Spec 27 review, write a dedicated feature spec for an application-facing diagnostics API. Do
+After Spec 26 review, write a dedicated feature spec for an application-facing diagnostics API. Do
 not add a partial-trace-specific callback in this spec. Preserve these candidates for that review:
 
 ```ts
@@ -381,7 +381,7 @@ chronological mode remain developer warnings only. Recovery-driven omission and 
 invalidation also emit the temporary developer warning required above, but still belong in the future
 application-facing diagnostics snapshot. Duplicate-ID diagnostics must report the unique duplicated
 ID values, not only a count, so consumers can identify the malformed records. No candidate name,
-shape, firing semantics, or implementation is accepted by Spec 27.
+shape, firing semantics, or implementation is accepted by Spec 26.
 
 ## Open question: visual ownership
 
@@ -394,7 +394,7 @@ If the Trace component owns a built-in canvas indicator, it should default to vi
 explicit opt-out and mark only spans with `reparentedToSpanId`. Its representation, placement, hit
 target, theme tokens, and public prop name remain undecided. It must not reuse dashed total lines,
 selection outlines, or critical-path lines, which already have established meanings. If visual
-decoration remains an application concern, Spec 27 adds no canvas-indicator prop or renderer pass.
+decoration remains an application concern, Spec 26 adds no canvas-indicator prop or renderer pass.
 
 ## Tests
 
@@ -484,9 +484,9 @@ keep expected structures local and do not import or duplicate Kibana helpers.
 - **Inferring parents by time/service:** only an unambiguous elected root is used; no heuristic causal
   matching is attempted.
 - **Diagnostics API/UI:** application-facing reporting and presentation of omitted/invalid groups and
-  cross-trace identity failures belongs to the dedicated follow-up spec; Spec 27 adds only temporary
+  cross-trace identity failures belongs to the dedicated follow-up spec; Spec 26 adds only temporary
   developer warnings for otherwise unexplained invalidation.
-- **Running-span synthesis:** Spec 25 owns missing-end behavior; present running parents are not
+- **Running-span synthesis:** Spec 30 owns missing-end behavior; present running parents are not
   orphans.
 
 ## Acceptance

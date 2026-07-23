@@ -44,7 +44,7 @@ the original offset is lost. Critical intervals carry raw consumer times (same u
 `TraceDatum.start/end`), so they **must be re-zeroed and clamped to their span's projected
 `[start, end]`** inside the normalize pipeline, alongside `activeSegments`. Placing this transform in
 `buildGeometry` would require threading the pre-projection `domainMin` backwards — a leaky abstraction
-that touches the frozen `draw(ctx, geom, style)` contract (ADR 0001). Connections (Spec 28), by
+that touches the frozen `draw(ctx, geom, style)` contract (ADR 0001). Connections (Spec 31), by
 contrast, anchor to `TraceSegmentRef` and resolve against already-projected `NormalizedSpan` data, so
 they need no re-zero at all.
 

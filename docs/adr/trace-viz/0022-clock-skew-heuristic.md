@@ -1,6 +1,6 @@
 # ADR 0022 — Clock-skew correction: Kibana-compatible placement
 
-**Status:** Accepted (implemented by Spec 24; orphan/topology traversal amended by Spec 27)
+**Status:** Accepted (implemented by Spec 24; orphan/topology traversal amended by Spec 26)
 
 ## Context
 
@@ -91,8 +91,8 @@ unchanged; one that records before it is independently placed relative to that c
 descendant preserves raw intra-subtree distances, but disagrees with Kibana whenever a descendant
 starts between its parent's recorded and corrected starts or after the corrected start.
 
-**Spec 24's original orphan boundary is superseded by Spec 27:** Kibana reparents missing-parent spans
-under its elected visible root and marks the trace partial. Spec 27 defines Elastic Charts'
+**Spec 24's original orphan boundary is superseded by Spec 26:** Kibana reparents missing-parent spans
+under its elected visible root and marks the trace partial. Spec 26 defines Elastic Charts'
 source-preserving equivalent, including provenance and application-owned aggregate presentation.
 Recovery now precedes correction, so the coordinate heuristic in this ADR runs against the synthetic
 display parent on the elected visible tree.
@@ -111,21 +111,21 @@ The correction stage (`correctClockSkew`) is inserted between `dropNonFinite` an
   itself still preserves the normalization array's input order.
 - Consumer-supplied critical intervals receive their owning span's own correction offset before
   the existing projection and clamp, so interval precision remains attached to the corrected span.
-- Running-span end synthesis (Spec 25) happens inside `project`, **after** `correctClockSkew`. A
+- Running-span end synthesis (Spec 30) happens inside `project`, **after** `correctClockSkew`. A
   running child or parent has no finite `end`, so an edge involving either cannot originate a
   correction. A running span remains at its recorded start and carries no `skewCorrected` marker.
   It is not reparented: Kibana's orphan recovery applies when a parent document is absent, whereas
   the Trace chart has an explicitly supplied running parent. Completed edges below a running edge may
   resume independent evaluation when both participants have finite recorded durations.
 
-**DFS structure** consumes Spec 27's recovered visible tree:
+**DFS structure** consumes Spec 26's recovered visible tree:
 - Roots: the elected root from each valid trace group; synthetic display parentage attaches the
   remaining genuine orphans before correction.
-- Cycle guard: the direct correction seam retains its object-identity visited set, while Spec 27's
+- Cycle guard: the direct correction seam retains its object-identity visited set, while Spec 26's
   preceding ID-based traversal owns malformed-group invalidation and unreachable-cycle omission.
 - Parent reference: each DFS call receives the parent's corrected span, but computes the child's
   placement from the child's recorded coordinates. No ancestor offset is accumulated or inherited.
-- Safety pass: a span not reached by correction remains unchanged, but Spec 27 has already removed
+- Safety pass: a span not reached by correction remains unchanged, but Spec 26 has already removed
   spans outside elected-root reachability from end-to-end output.
 
 `buildChildrenMap` from `data/self_time.ts` is reused without modification.

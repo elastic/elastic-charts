@@ -5,7 +5,7 @@ owners: []
 supersedes: []
 ---
 
-# Trace data diagnostics — behavioral spec
+# Spec 28 — Trace data diagnostics
 
 > **Altitude: DURABLE / product.**
 > No file paths, no line numbers, no internal function names.

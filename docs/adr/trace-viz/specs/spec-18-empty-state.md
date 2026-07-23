@@ -8,7 +8,7 @@ render. Two cases require different messages:
 - `"No data"` — the `data` prop was empty (no spans supplied at all).
 - `No spans found for trace "{id}"` — spans were supplied but the specified `traceId` matched none.
 
-At the original Spec 18 boundary, a combined waterfall with supplied spans always had lanes. Spec 27
+At the original Spec 18 boundary, a combined waterfall with supplied spans always had lanes. Spec 26
 supersedes that assumption: invalid or unreachable selected topology may yield zero visible lanes.
 That condition mounts the canvas and time bar but intentionally receives neither existing message;
 bounded developer warnings and the future application-facing diagnostics API own its explanation.
@@ -37,7 +37,7 @@ bounded developer warnings and the future application-facing diagnostics API own
 - `'no-data'` — `data` was empty before filtering.
 - `undefined` — spans are present (not an empty state).
 
-From Spec 27, `undefined` also covers non-empty selected input that finite filtering or recovery
+From Spec 26, `undefined` also covers non-empty selected input that finite filtering or recovery
 reduces to zero visible lanes. This is invalid or unrenderable data, not `no-data` or
 `trace-not-found`, and therefore draws no centered message.
 
