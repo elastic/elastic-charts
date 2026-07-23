@@ -507,6 +507,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
   trace: {
     gutterWidth: 200,
     timeBarHeight: 32,
+    timeAxisLayerCount: 2,
     laneHeight: 24,
     totalLineThickness: 2,
     totalLineColor: '#eaedf3',

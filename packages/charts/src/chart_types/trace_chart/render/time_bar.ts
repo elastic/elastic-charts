@@ -18,6 +18,7 @@ import {
   MAX_TIME_TICK_COUNT,
   MAX_TIME_GRID_COUNT,
 } from '../../../chart_types/xy_chart/axes/timeslip/multilayer_ticks';
+import { cssFontShorthand } from '../../../common/text_utils';
 import { withContext } from '../../../renderers/canvas';
 import { renderText } from '../../../renderers/canvas/primitives/text';
 import type { TraceGeometry, TraceStyle } from './types';
@@ -25,6 +26,28 @@ import type { TextFont } from '../../../renderers/canvas/primitives/text';
 
 const MS_PER_SECOND = 1000;
 const TICK_HEIGHT = 6; // px, tick line protruding down into the time bar
+
+/**
+ * Vertical padding added to the tick-label font size to derive one stacked tick-layer's height.
+ * Exported so `geometry.ts` reserves the same per-layer height when computing the effective
+ * time-bar height (see ADR 0024 Decision 5). @internal
+ */
+export const TICK_LAYER_PADDING = 6;
+
+/**
+ * Vertical space (px) reserved at the bottom of the time bar, below the finest tick-layer label,
+ * so the downward tick marks don't crowd it. Without this inset the finest row would butt right up
+ * against (and slightly overlap) the tick marks; `linear` mode gets this gap implicitly by drawing
+ * its single row at the top of the bar. Sized to the tick height so the label clears the marks.
+ * Exported so `geometry.ts` reserves the same room when sizing the time bar. @internal
+ */
+export const TICK_LAYER_BOTTOM_INSET = TICK_HEIGHT;
+
+/**
+ * Minimum px gap required between a pinned leading label and the next in-view boundary label on the
+ * same tick layer before the boundary label is suppressed to avoid overlap (ADR 0024 Decision 6).
+ */
+const TICK_LABEL_MIN_GAP = 4;
 
 /**
  * Distance in px from the plot edge within which a tick label switches from center-aligned to
@@ -165,8 +188,11 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
           });
         }
 
-        // --- Tick label (finest labeled layer only — see comment above) ---
-        if (layer === labelLayer) {
+        // --- Single-row tick label (finest labeled layer only — see comment above) ---
+        // Used for linear mode (any layer count) and for time mode with timeAxisLayerCount === 0
+        // (legacy single-row, byte-identical to pre-feature). Time mode with count >= 1 draws its
+        // labels in the stacked tick-layer loop below (ADR 0024).
+        if (layer === labelLayer && (!isTime || style.timeAxisLayerCount === 0)) {
           const label = isTime
             ? layer.minorTickLabelFormat(minimum * MS_PER_SECOND) // time formatters expect ms
             : formatElapsedMs(minimum, axisUnit!); // linear: one unit per axis (ADR 0010)
@@ -183,6 +209,99 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
           }
           renderText(ctx, { x: tickX, y: labelY }, label, tickLabelFont);
         }
+      }
+    }
+
+    // --- Stacked tick-layer label draw (time mode, timeAxisLayerCount >= 1, ADR 0024) ---
+    // Draws the finest `timeAxisLayerCount` labeled layers as distinct rows: layer 0 (finest) nearest
+    // the plot, coarser layers stacking upward. Tick lines and gridlines are already drawn above for
+    // all layers; this pass adds only stacked label text. `linear` mode and time-mode count === 0 use
+    // the single-row path above instead.
+    if (isTime && style.timeAxisLayerCount >= 1) {
+      const tickLayerHeight = style.timeBarLabel.fontSize + TICK_LAYER_PADDING;
+      // Set the measuring font once so ctx.measureText below reflects the actual label font.
+      ctx.font = cssFontShorthand(labelFont, labelFont.fontSize);
+
+      // Collect the finest `timeAxisLayerCount` labeled layers (finest→coarsest; raster order is
+      // finest-first). Unlabeled layers do not count toward the cap.
+      const labelLayers: Array<{ layer: AxisLayer<Interval>; tickLayerIndex: number }> = [];
+      let tickLayerIndex = -1;
+      for (const layer of layers) {
+        if (!layer.labeled) continue;
+        tickLayerIndex++;
+        if (tickLayerIndex >= style.timeAxisLayerCount) break; // cap at token
+        labelLayers.push({ layer, tickLayerIndex });
+      }
+      const coarsestTickLayerIndex = labelLayers.length - 1;
+      const plotRight = plot.left + plot.width;
+
+      for (const { layer, tickLayerIndex: ti } of labelLayers) {
+        const isFinest = ti === 0;
+        const isCoarsestShown = ti === coarsestTickLayerIndex;
+        // Coarsest shown layer uses the verbose absolute-time format; finer layers use the terse one.
+        const labelFormat = isCoarsestShown ? layer.detailedLabelFormat : layer.minorTickLabelFormat;
+
+        // Lift the whole stack up by TICK_LAYER_BOTTOM_INSET so the finest row clears the tick marks.
+        const layerLabelY =
+          timeBar.top + timeBar.height - TICK_LAYER_BOTTOM_INSET - (ti + 1) * tickLayerHeight + TICK_LAYER_PADDING / 2;
+
+        // Upper (non-finest) layers pin a single "leading" label for the interval that *contains* the
+        // left viewport edge. The raster generators emit every boundary from far before the viewport,
+        // so we cannot treat each off-left tick as pinned — that would stack the whole history at
+        // plot.left. Instead we remember only the newest (nearest) off-left label and flush it once,
+        // when the first in-view tick appears (or at the end, if the whole layer is off-left).
+        let pinnedLabel: string | null = null;
+        let prevTickX: number | null = null;
+        let prevLabel = '';
+
+        const drawPinnedLeading = (): void => {
+          if (pinnedLabel === null) return;
+          renderText(ctx, { x: plot.left, y: layerLabelY }, pinnedLabel, { ...labelFont, align: 'left' });
+          prevTickX = plot.left;
+          prevLabel = pinnedLabel;
+          pinnedLabel = null;
+        };
+
+        for (const { minimum } of layer.intervals(domainFrom, domainTo)) {
+          const tickXRaw = scale(minimum * MS_PER_SECOND);
+          const label = labelFormat(minimum * MS_PER_SECOND); // time formatters expect ms
+
+          // Off-left ticks: the finest layer drops them outright (today's behavior); upper layers
+          // keep only the last one as the pinned-leading candidate (containing interval).
+          if (tickXRaw < plot.left) {
+            if (!isFinest) pinnedLabel = label;
+            continue;
+          }
+
+          // First in-view tick: flush the pinned-leading label at the edge before drawing it.
+          if (prevTickX === null) drawPinnedLeading();
+
+          // Skip ticks past the right edge.
+          if (tickXRaw > plotRight) continue;
+
+          // Suppress a boundary label that would overlap the previous drawn (e.g. pinned) one.
+          if (
+            prevTickX !== null &&
+            tickXRaw - prevTickX < ctx.measureText(prevLabel).width + TICK_LABEL_MIN_GAP
+          ) {
+            continue; // overlap — keep the previous label, drop this one
+          }
+
+          // Flip center→edge alignment near the plot boundary so text stays on-canvas.
+          let tickLabelFont = labelFont;
+          if (tickXRaw - plot.left < TICK_LABEL_EDGE_PX) {
+            tickLabelFont = { ...labelFont, align: 'left' };
+          } else if (plotRight - tickXRaw < TICK_LABEL_EDGE_PX) {
+            tickLabelFont = { ...labelFont, align: 'right' };
+          }
+          renderText(ctx, { x: tickXRaw, y: layerLabelY }, label, tickLabelFont);
+
+          prevTickX = tickXRaw;
+          prevLabel = label;
+        }
+
+        // Whole layer was off-left (no in-view tick): still show the containing-interval label.
+        if (prevTickX === null) drawPinnedLeading();
       }
     }
   });

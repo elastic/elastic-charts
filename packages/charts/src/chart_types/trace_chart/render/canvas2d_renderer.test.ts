@@ -44,6 +44,7 @@ jest.mock('./time_bar', () => ({
 const style: TraceStyle = {
   gutterWidth: 200,
   timeBarHeight: 32,
+  timeAxisLayerCount: 2,
   laneHeight: 24,
   totalLineThickness: 2,
   totalLineColor: '#aaa',

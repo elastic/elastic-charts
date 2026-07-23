@@ -14,7 +14,7 @@ import { Chart, Settings, Trace, colorByOtelAttribute, fromOtlp } from '@elastic
 import { FRONTEND_WEB_OTLP_ENVELOPE } from './data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-import { boolean, color, select } from '@storybook/addon-knobs';
+import { boolean, color, number, select } from '@storybook/addon-knobs';
 
 /** Groups spans by the `service.name` resource attribute. Stable module-level reference (ADR 0006). */
 const BY_SERVICE: TraceColorAccessor = colorByOtelAttribute('service.name');
@@ -95,6 +95,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   const criticalPathColor = color('Critical path color', '#C61E25');
 
+  // Number of stacked tick-label rows in time mode (theme.trace.timeAxisLayerCount). Ignored in linear.
+  const timeAxisLayerCount = number('tick layers (time mode)', 2, { min: 0, max: 3, step: 1 });
+
   const isInline = labelPosition === 'inline';
 
   return (
@@ -106,6 +109,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             labelPosition,
             laneHeight: isInline ? 40 : 24,
             criticalPathColor,
+            timeAxisLayerCount,
           },
         }}
       />

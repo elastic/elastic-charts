@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, select } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import React, { useMemo } from 'react';
 
 import type { CustomTooltip, OtelSpan, TraceDatum } from '@elastic/charts';
@@ -90,6 +90,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'linear',
   );
   const showTooltipOverEmpty = boolean('tooltip over empty region', false);
+  // Number of stacked tick-label rows in time mode (theme.trace.timeAxisLayerCount). Ignored in linear.
+  const timeAxisLayerCount = number('tick layers (time mode)', 2, { min: 0, max: 3, step: 1 });
 
   // In 'time' mode shift nanosecond timestamps by EPOCH_BASE_NS so the raster engine
   // renders realistic wall-clock ticks. fromOtlp converts ns → epoch-ms and stores
@@ -110,6 +112,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description} size={{ width: '100%', height: 300 }}>
       <Settings
         baseTheme={theme}
+        theme={{ trace: { timeAxisLayerCount } }}
         onElementClick={action('onElementClick')}
         onElementOver={action('onElementOver')}
         onElementOut={action('onElementOut')}

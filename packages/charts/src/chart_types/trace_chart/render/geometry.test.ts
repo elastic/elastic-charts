@@ -7,6 +7,7 @@
  */
 
 import { buildGeometry } from './geometry';
+import { TICK_LAYER_PADDING, TICK_LAYER_BOTTOM_INSET } from './time_bar';
 import type { NormalizedSpan } from '../data/types';
 import type { DisclosureEntry, TraceStyle } from './types';
 import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, gutterPx } from './types';
@@ -14,6 +15,7 @@ import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, gutterPx } from './types';
 const style: TraceStyle = {
   gutterWidth: 200,
   timeBarHeight: 32,
+  timeAxisLayerCount: 2,
   laneHeight: 24,
   totalLineThickness: 2,
   totalLineColor: '#ccc',
@@ -297,5 +299,56 @@ describe('buildGeometry — criticalIntervalsByLane', () => {
       [{ spanId: 'unknown', start: 100, end: 200 }],
     );
     expect(geom.criticalIntervalsByLane.size).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// buildGeometry — multi-level time bar effective height (Spec 25 / ADR 0024)
+// ---------------------------------------------------------------------------
+
+describe('buildGeometry — multi-level time bar height', () => {
+  const spans = [span('a', 100, 400), span('b', 500, 800)];
+  const domain = { min: 100, max: 800 };
+  // tickLayerHeight per ADR 0024: timeBarLabel.fontSize + TICK_LAYER_PADDING (11 + 6 = 17).
+  const tickLayerHeight = style.timeBarLabel.fontSize + TICK_LAYER_PADDING;
+
+  it('time mode, timeAxisLayerCount = 2: reserves max(timeBarHeight, 2 × tickLayerHeight + inset)', () => {
+    const s: TraceStyle = { ...style, timeAxisLayerCount: 2 };
+    const geom = buildGeometry(spans, canvasSize, focusDomain, 0, s, 'time', domain);
+    const expected = Math.max(s.timeBarHeight, 2 * tickLayerHeight + TICK_LAYER_BOTTOM_INSET); // max(32, 40) = 40
+    expect(geom.timeBar.height).toBe(expected);
+    expect(geom.plot.top).toBe(expected);
+    // Height still partitions the canvas (no lost pixels).
+    expect(geom.timeBar.height + geom.plot.height).toBe(canvasSize.height);
+  });
+
+  it('time mode, timeAxisLayerCount = 3: expands the bar to fit three rows', () => {
+    const s: TraceStyle = { ...style, timeAxisLayerCount: 3 };
+    const geom = buildGeometry(spans, canvasSize, focusDomain, 0, s, 'time', domain);
+    const expected = Math.max(s.timeBarHeight, 3 * tickLayerHeight + TICK_LAYER_BOTTOM_INSET); // max(32, 57) = 57
+    expect(geom.timeBar.height).toBe(expected);
+    expect(geom.plot.top).toBe(expected);
+  });
+
+  it('time mode, timeAxisLayerCount = 0: equals the base timeBarHeight (legacy single row)', () => {
+    const s: TraceStyle = { ...style, timeAxisLayerCount: 0 };
+    const geom = buildGeometry(spans, canvasSize, focusDomain, 0, s, 'time', domain);
+    expect(geom.timeBar.height).toBe(s.timeBarHeight);
+    expect(geom.plot.top).toBe(s.timeBarHeight);
+  });
+
+  it('linear mode: token is ignored — height always equals timeBarHeight', () => {
+    const s: TraceStyle = { ...style, timeAxisLayerCount: 3 };
+    const geom = buildGeometry(spans, canvasSize, focusDomain, 0, s, 'linear', domain);
+    expect(geom.timeBar.height).toBe(s.timeBarHeight);
+    expect(geom.plot.top).toBe(s.timeBarHeight);
+  });
+
+  it('plot does not reflow across zoom: same count → same height for different focus domains', () => {
+    const s: TraceStyle = { ...style, timeAxisLayerCount: 2 };
+    const zoomedOut = buildGeometry(spans, canvasSize, { min: 100, max: 800 }, 0, s, 'time', domain);
+    const zoomedIn = buildGeometry(spans, canvasSize, { min: 300, max: 350 }, 0, s, 'time', domain);
+    expect(zoomedIn.timeBar.height).toBe(zoomedOut.timeBar.height);
+    expect(zoomedIn.plot.top).toBe(zoomedOut.plot.top);
   });
 });

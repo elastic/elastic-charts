@@ -489,6 +489,7 @@ export const LEGACY_DARK_THEME: Theme = {
   trace: {
     gutterWidth: 200,
     timeBarHeight: 32,
+    timeAxisLayerCount: 2,
     laneHeight: 24,
     totalLineThickness: 2,
     totalLineColor: '#444',

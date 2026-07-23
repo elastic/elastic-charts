@@ -65,12 +65,14 @@ function makeCtx(): CanvasRenderingContext2D {
     direction: 'ltr' as CanvasDirection,
     lineJoin: 'miter' as CanvasLineJoin,
     setLineDash: jest.fn(),
+    measureText: jest.fn((text: string) => ({ width: text.length * 6 }) as unknown as TextMetrics),
   } as unknown as CanvasRenderingContext2D;
 }
 
 const style: TraceStyle = {
   gutterWidth: 200,
   timeBarHeight: 32,
+  timeAxisLayerCount: 2,
   laneHeight: 24,
   totalLineThickness: 2,
   totalLineColor: '#ccc',
@@ -313,7 +315,10 @@ describe('drawTimeBar — finest-labeled-layer selection (time mode)', () => {
     };
 
     const ctx = makeCtx();
-    drawTimeBar(ctx, geom, style);
+    // Single-row mode (timeAxisLayerCount: 0): this test targets the legacy finest-labeled-layer
+    // selection. With the multi-level default (>= 1) the coarse layer's pinned leading label is also
+    // drawn (covered separately in the Spec 25 suite below).
+    drawTimeBar(ctx, geom, { ...style, timeAxisLayerCount: 0 });
 
     const labels: string[] = (ctx.fillText as jest.Mock).mock.calls.map((args: unknown[]) => String(args[0]));
 
@@ -324,6 +329,202 @@ describe('drawTimeBar — finest-labeled-layer selection (time mode)', () => {
     labels.forEach((label) => {
       expect(label).toMatch(/^\d+ms$/);
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Spec 25 — multi-level (stacked) time bar (ADR 0024)
+// ---------------------------------------------------------------------------
+
+describe('drawTimeBar — multi-level time bar (Spec 25)', () => {
+  // Plot spans x ∈ [200, 1000]; with focusDomain [0, 800] ms the scale is tickX = 200 + tickMs.
+  function timeGeom(focusDomain: { min: number; max: number }): TraceGeometry {
+    const plotLeft = 200;
+    const plotWidth = 800;
+    return {
+      spans: [],
+      gutter: { top: 0, left: 0, width: 200, height: 600 },
+      timeBar: { top: 0, left: plotLeft, width: plotWidth, height: 34 },
+      plot: { top: 34, left: plotLeft, width: plotWidth, height: 566 },
+      laneHeight: 24,
+      domain: { min: 0, max: 10_000 },
+      focusDomain,
+      scrollOffset: 0,
+      xScaleType: 'time' as const,
+      focusedLaneIndex: null,
+      resolvedSelection: [],
+      emptyMessage: null,
+      disclosureByLane: new Map(),
+      criticalIntervalsByLane: new Map(),
+      scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
+    };
+  }
+
+  // Minimal AxisLayer stub. `ticksS` are tick minima in SECONDS (the time-engine unit); drawTimeBar
+  // multiplies by 1000 before scaling. Formatters receive ms.
+  function layer(opts: {
+    unit: string;
+    unitMultiplier?: number;
+    ticksS: number[];
+    minor: (d: number) => string;
+    detailed: (d: number) => string;
+  }) {
+    return {
+      unit: opts.unit,
+      unitMultiplier: opts.unitMultiplier ?? 1,
+      labeled: true,
+      minimumTickPixelDistance: 24,
+      intervals: () => opts.ticksS.map((m) => ({ minimum: m, supremum: m, labelSupremum: m })),
+      minorTickLabelFormat: opts.minor,
+      detailedLabelFormat: opts.detailed,
+    };
+  }
+
+  const labelsOf = (ctx: CanvasRenderingContext2D): string[] =>
+    (ctx.fillText as jest.Mock).mock.calls.map((args: unknown[]) => String(args[0]));
+  const translateXsOf = (ctx: CanvasRenderingContext2D): number[] =>
+    (ctx.translate as jest.Mock).mock.calls.map((args: unknown[]) => Number(args[0]));
+
+  it('routes the coarsest shown layer to detailedLabelFormat and finer layers to minorTickLabelFormat', () => {
+    const fine = layer({ unit: 'millisecond', ticksS: [0.005], minor: () => 'fine-min', detailed: () => 'fine-det' });
+    const coarse = layer({ unit: 'second', ticksS: [0.003], minor: () => 'coarse-min', detailed: () => 'coarse-det' });
+    mockContinuousTimeRasters.mockReturnValueOnce(() => [fine, coarse]);
+
+    const ctx = makeCtx();
+    drawTimeBar(ctx, timeGeom({ min: 0, max: 10 }), { ...style, timeAxisLayerCount: 2 });
+    const labels = labelsOf(ctx);
+
+    expect(labels).toContain('fine-min'); // finest layer → terse
+    expect(labels).toContain('coarse-det'); // coarsest shown layer → verbose
+    expect(labels).not.toContain('fine-det');
+    expect(labels).not.toContain('coarse-min');
+  });
+
+  it('caps drawn label layers at timeAxisLayerCount (finest first), ignoring extra labeled layers', () => {
+    const layers = [0, 1, 2, 3, 4].map((i) =>
+      layer({
+        unit: 'second',
+        unitMultiplier: i + 1,
+        ticksS: [0.005],
+        minor: () => `L${i}min`,
+        detailed: () => `L${i}det`,
+      }),
+    );
+    mockContinuousTimeRasters.mockReturnValueOnce(() => layers);
+
+    const ctx = makeCtx();
+    drawTimeBar(ctx, timeGeom({ min: 0, max: 10 }), { ...style, timeAxisLayerCount: 2 });
+    const labels = labelsOf(ctx);
+
+    // Only the finest 2 labeled layers draw: L0 (minor) and L1 (coarsest shown → detailed).
+    expect(labels.sort()).toEqual(['L0min', 'L1det']);
+  });
+
+  it('timeAxisLayerCount = 0 in time mode renders a single row (finest labeled layer only)', () => {
+    const fine = layer({ unit: 'millisecond', ticksS: [0.005], minor: () => 'fine', detailed: () => 'fine-det' });
+    const coarse = layer({ unit: 'second', ticksS: [0.003], minor: () => 'coarse', detailed: () => 'coarse-det' });
+    mockContinuousTimeRasters.mockReturnValueOnce(() => [fine, coarse]);
+
+    const ctx = makeCtx();
+    drawTimeBar(ctx, timeGeom({ min: 0, max: 10 }), { ...style, timeAxisLayerCount: 0 });
+    const labels = labelsOf(ctx);
+
+    // Legacy single-row path: only the finest labeled layer, via minorTickLabelFormat.
+    expect(labels).toEqual(['fine']);
+  });
+
+  it('linear mode ignores timeAxisLayerCount: only the finest labeled layer is labeled (single row)', () => {
+    const layer0 = {
+      ...layer({ unit: 'one', ticksS: [0, 5000, 10000], minor: String, detailed: String }),
+      unitMultiplier: Infinity,
+    };
+    const layer1 = {
+      ...layer({ unit: 'one', ticksS: [2500, 7500], minor: String, detailed: String }),
+      unitMultiplier: Infinity,
+    };
+    mockNumericalRasters.mockReturnValueOnce(() => [layer0, layer1]);
+
+    const ctx = makeCtx();
+    drawTimeBar(ctx, makeGeom('linear'), { ...style, timeAxisLayerCount: 3 });
+    const labels = labelsOf(ctx);
+
+    // Only layer0 (the finest labeled layer) contributes its 3 in-window ticks; layer1 is not labeled.
+    expect(labels.length).toBe(3);
+  });
+
+  it('pins the coarsest layer leading label to plot.left when its boundary is off-screen', () => {
+    const fine = layer({ unit: 'millisecond', ticksS: [0.002], minor: () => 'fine', detailed: () => 'fine' });
+    // Coarse boundary at t=0 s → tickMs 0 → tickX = 200 + (0 - 1) = 199 (< plot.left) → clamped to 200.
+    const coarse = layer({ unit: 'second', ticksS: [0], minor: () => 'PINNED', detailed: () => 'PINNED' });
+    mockContinuousTimeRasters.mockReturnValueOnce(() => [fine, coarse]);
+
+    const ctx = makeCtx();
+    drawTimeBar(ctx, timeGeom({ min: 1, max: 3 }), { ...style, timeAxisLayerCount: 2 });
+
+    expect(labelsOf(ctx)).toContain('PINNED');
+    // renderText translates to the label origin; the pinned label must sit exactly at plot.left (200).
+    expect(translateXsOf(ctx)).toContain(200);
+  });
+
+  it('collapses many off-left coarse boundaries into a single pinned label (nearest containing interval)', () => {
+    // Regression: the raster generators emit *every* boundary before the viewport. Previously each
+    // off-left tick was treated as "pinned" and clamped to plot.left, stacking the whole history on
+    // top of itself. Only the nearest off-left boundary (the containing interval) must be pinned.
+    const fine = layer({ unit: 'millisecond', ticksS: [0.5], minor: () => 'fine', detailed: () => 'fine' });
+    // focus [1, 3] s → scale maps t=1s to plot.left(200). Coarse boundaries at 0, 0.25, 0.5, 0.75 s are
+    // ALL off-left; the nearest (0.75 s) is the containing interval. None are in-view (< 1 s).
+    const coarse = layer({
+      unit: 'second',
+      unitMultiplier: 1,
+      ticksS: [0, 0.25, 0.5, 0.75],
+      minor: (d) => `c${Math.round(d)}`,
+      detailed: (d) => `c${Math.round(d)}`, // ms values 0,250,500,750
+    });
+    mockContinuousTimeRasters.mockReturnValueOnce(() => [fine, coarse]);
+
+    const ctx = makeCtx();
+    drawTimeBar(ctx, timeGeom({ min: 1000, max: 3000 }), { ...style, timeAxisLayerCount: 2 });
+    const labels = labelsOf(ctx);
+
+    // Exactly one coarse label is drawn (the nearest off-left boundary, 750 ms), pinned at plot.left.
+    const coarseLabels = labels.filter((l) => l.startsWith('c'));
+    expect(coarseLabels).toEqual(['c750']);
+    expect(translateXsOf(ctx)).toContain(200);
+  });
+
+  it('does not extend or clamp the finest layer: an off-left finest tick is skipped, not pinned', () => {
+    // focus [5, 10] ms. Finest ticks: 2 ms (tickX = 200 + (2-5)/5*800 = -280, off-left) and 7 ms (in-view).
+    const fine = layer({
+      unit: 'millisecond',
+      ticksS: [0.002, 0.007],
+      minor: (d) => `${Math.round(d)}ms`,
+      detailed: (d) => `${Math.round(d)}ms`,
+    });
+    mockContinuousTimeRasters.mockReturnValueOnce(() => [fine]);
+
+    const ctx = makeCtx();
+    drawTimeBar(ctx, timeGeom({ min: 5, max: 10 }), { ...style, timeAxisLayerCount: 2 });
+    const labels = labelsOf(ctx);
+
+    // Only the in-view 7 ms tick is drawn; the off-left 2 ms tick is hard-skipped (no pinning).
+    expect(labels).toEqual(['7ms']);
+    // No label was clamped to plot.left for the finest layer.
+    expect(translateXsOf(ctx)).not.toContain(200);
+  });
+
+  it('suppresses a boundary label that would overlap the pinned leading label', () => {
+    const fine = layer({ unit: 'millisecond', ticksS: [0.4], minor: () => 'fine', detailed: () => 'fine' }); // tickX = 600
+    // Coarse: pinned boundary at t=-0.001 s (tickX 199 → clamp 200) and a near boundary at t=0.005 s (tickX 205).
+    // measureText width for 'SAME' (4 chars) = 24; gap 205 - 200 = 5 < 24 + TICK_LABEL_MIN_GAP(4) → suppress.
+    const coarse = layer({ unit: 'second', ticksS: [-0.001, 0.005], minor: () => 'SAME', detailed: () => 'SAME' });
+    mockContinuousTimeRasters.mockReturnValueOnce(() => [fine, coarse]);
+
+    const ctx = makeCtx();
+    drawTimeBar(ctx, timeGeom({ min: 0, max: 800 }), { ...style, timeAxisLayerCount: 2 });
+    const labels = labelsOf(ctx);
+
+    // The pinned 'SAME' is drawn once; the overlapping boundary 'SAME' is suppressed.
+    expect(labels.filter((l) => l === 'SAME').length).toBe(1);
   });
 });
 

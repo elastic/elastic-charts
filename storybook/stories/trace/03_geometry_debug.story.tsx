@@ -33,6 +33,7 @@ const LANE_PADDING = 4;
 const STYLE: TraceStyle = {
   gutterWidth: 200,
   timeBarHeight: 32,
+  timeAxisLayerCount: 2,
   laneHeight: 28,
   totalLineThickness: 2,
   totalLineColor: '#aaa',

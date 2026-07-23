@@ -8,6 +8,7 @@
 
 import type { NormalizedSpan } from '../data/types';
 import { waitingSegments } from '../data/self_time';
+import { TICK_LAYER_PADDING, TICK_LAYER_BOTTOM_INSET } from './time_bar';
 import type { DisclosureEntry, TraceGeometry, TraceStyle } from './types';
 import { gutterPx } from './types';
 import type { TraceSelection } from '../trace_api';
@@ -52,13 +53,22 @@ export function buildGeometry(
   // still reserved when the trace has parent spans (ADR 0026).
   const effectiveGutterWidth = gutterPx(style, { hasParents, maxDepth });
 
+  // In 'time' mode the time bar may render stacked tick-label rows (ADR 0024). Reserve a fixed
+  // height for the configured `timeAxisLayerCount` so the plot (and every lane's y-position) never
+  // reflows as zoom crosses a density threshold. 'linear' mode keeps the single-row height.
+  const tickLayerHeight = style.timeBarLabel.fontSize + TICK_LAYER_PADDING;
+  const effectiveTimeBarHeight =
+    xScaleType === 'time'
+      ? Math.max(timeBarHeight, style.timeAxisLayerCount * tickLayerHeight + TICK_LAYER_BOTTOM_INSET)
+      : timeBarHeight;
+
   const plotLeft = effectiveGutterWidth;
-  const plotTop = timeBarHeight;
+  const plotTop = effectiveTimeBarHeight;
   const plotWidth = Math.max(0, canvasWidth - effectiveGutterWidth);
-  const plotHeight = Math.max(0, canvasHeight - timeBarHeight);
+  const plotHeight = Math.max(0, canvasHeight - effectiveTimeBarHeight);
 
   const gutter = { top: 0, left: 0, width: effectiveGutterWidth, height: canvasHeight };
-  const timeBar = { top: 0, left: plotLeft, width: plotWidth, height: timeBarHeight };
+  const timeBar = { top: 0, left: plotLeft, width: plotWidth, height: effectiveTimeBarHeight };
   const plot = { top: plotTop, left: plotLeft, width: plotWidth, height: plotHeight };
 
   // Linear ms→px scale closure. Guards a zero-width focus domain so callers never divide by zero.

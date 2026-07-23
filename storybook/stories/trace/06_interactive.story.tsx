@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { select } from '@storybook/addon-knobs';
+import { number, select } from '@storybook/addon-knobs';
 import React, { useMemo } from 'react';
 
 import type { TraceDatum } from '@elastic/charts';
@@ -28,6 +28,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
     { 'linear (elapsed ms)': 'linear', 'time (epoch ms)': 'time' },
     'linear',
   );
+  // Number of stacked tick-label rows in time mode (theme.trace.timeAxisLayerCount). Ignored in linear.
+  const timeAxisLayerCount = number('tick layers (time mode)', 2, { min: 0, max: 3, step: 1 });
 
   // Scale durations ×10 and — in time mode — offset by EPOCH_BASE so the raster
   // engine renders realistic wall-clock ticks instead of 1970-01-01 labels.
@@ -44,7 +46,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description} size={{ width: '100%', height: 300 }}>
-      <Settings baseTheme={theme} />
+      <Settings baseTheme={theme} theme={{ trace: { timeAxisLayerCount } }} />
       <Trace id="trace_interactive" data={data} xScaleType={xScaleType} />
     </Chart>
   );

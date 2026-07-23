@@ -25,6 +25,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
     { 'linear (elapsed ms)': 'linear', 'time (epoch ms)': 'time' },
     'linear',
   );
+  // Number of stacked tick-label rows in time mode (theme.trace.timeAxisLayerCount). Ignored in linear.
+  const timeAxisLayerCount = number('tick layers (time mode)', 2, { min: 0, max: 3, step: 1 });
 
   const data: TraceDatum[] = useMemo(() => buildLargeTrace(spanCount), [spanCount]);
 
@@ -34,7 +36,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       description={description}
       size={{ width: '100%', height: isTall ? 'calc(100vh - 230px)' : 300 }}
     >
-      <Settings baseTheme={theme} />
+      <Settings baseTheme={theme} theme={{ trace: { timeAxisLayerCount } }} />
       <Trace id="trace_large_n" data={data} xScaleType={xScaleType} />
     </Chart>
   );

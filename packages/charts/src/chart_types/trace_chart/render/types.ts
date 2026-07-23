@@ -35,6 +35,16 @@ export interface TraceStyle {
   labelPosition: 'gutter' | 'inline' | 'none';
   /** Font for time-bar tick labels. */
   timeBarLabel: { fontFamily: string; fontSize: number; color: Color };
+  /**
+   * Number of stacked tick-label rows in the trace time bar.
+   * - `0` — single row (the existing sub-second detail only; today's behavior).
+   * - `2` — two rows: finest detail + absolute time (e.g. `0ms` + `22:51:13`). Default.
+   * - `3` — three rows: finest detail + time + date (e.g. `0ms` + `22:51:13` + `January 13, 2022`).
+   * Applies only when `xScaleType === 'time'`. `linear` mode is always single-row regardless.
+   * Density gating may reduce the number of rows actually drawn below this cap when zoomed out.
+   * Mirrors the XY axis `AxisSpec.timeAxisLayerCount` token so consumers have one mental model.
+   */
+  timeAxisLayerCount: number;
   /** Color of the faint gridlines drawn down through the plot area. */
   gridLineColor: Color;
   /** Background fill for the full-width highlight behind the keyboard-focused lane. */

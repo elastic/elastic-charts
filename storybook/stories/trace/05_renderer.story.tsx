@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { select } from '@storybook/addon-knobs';
+import { number, select } from '@storybook/addon-knobs';
 import React, { useEffect, useRef } from 'react';
 
 import { normalize } from '@elastic/charts/src/chart_types/trace_chart/data/normalize';
@@ -33,6 +33,8 @@ export const Example = () => {
     { 'linear (elapsed ms)': 'linear', 'time (epoch ms)': 'time' },
     'linear',
   );
+  // Number of stacked tick-label rows in time mode (theme.trace.timeAxisLayerCount). Ignored in linear.
+  const timeAxisLayerCount = number('tick layers (time mode)', 2, { min: 0, max: 3, step: 1 });
 
   useEffect(() => {
     const canvas = ref.current;
@@ -40,7 +42,7 @@ export const Example = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const style = buildTraceStyle(theme);
+    const style = { ...buildTraceStyle(theme), timeAxisLayerCount };
 
     // In 'time' mode offset spans by EPOCH_BASE so the raster engine renders realistic
     // wall-clock ticks instead of 1970-01-01 labels.
@@ -66,7 +68,7 @@ export const Example = () => {
     ctx.scale(dpr, dpr);
     canvas2dRenderer.draw(ctx, geom, style);
     ctx.restore();
-  }, [theme, dpr, xScaleType]);
+  }, [theme, dpr, xScaleType, timeAxisLayerCount]);
 
   return (
     <div className="echChart">

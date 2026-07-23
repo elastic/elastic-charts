@@ -7,10 +7,14 @@
  */
 
 import { number, select } from '@storybook/addon-knobs';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 
 import { buildGeometry } from '@elastic/charts/src/chart_types/trace_chart/render/geometry';
-import { drawTimeBar } from '@elastic/charts/src/chart_types/trace_chart/render/time_bar';
+import {
+  drawTimeBar,
+  TICK_LAYER_PADDING,
+  TICK_LAYER_BOTTOM_INSET,
+} from '@elastic/charts/src/chart_types/trace_chart/render/time_bar';
 import type { TraceStyle } from '@elastic/charts/src/chart_types/trace_chart/render/types';
 
 import { EPOCH_BASE } from './data';
@@ -22,6 +26,7 @@ const TIME_BAR_H = 32;
 const STYLE: TraceStyle = {
   gutterWidth: 0,
   timeBarHeight: TIME_BAR_H,
+  timeAxisLayerCount: 2,
   laneHeight: 28,
   totalLineThickness: 2,
   totalLineColor: '#aaa',
@@ -40,9 +45,27 @@ const STYLE: TraceStyle = {
 // ---------------------------------------------------------------------------
 // TimeBarCanvas — draws just the time bar on a canvas element
 // ---------------------------------------------------------------------------
-function TimeBarCanvas({ xScaleType, focusShiftMs }: { xScaleType: 'time' | 'linear'; focusShiftMs: number }) {
+function TimeBarCanvas({
+  xScaleType,
+  focusShiftMs,
+  timeAxisLayerCount,
+}: {
+  xScaleType: 'time' | 'linear';
+  focusShiftMs: number;
+  timeAxisLayerCount: number;
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
   const dpr = typeof window !== 'undefined' ? window.devicePixelRatio : 1;
+
+  const style: TraceStyle = useMemo(() => ({ ...STYLE, timeAxisLayerCount }), [timeAxisLayerCount]);
+
+  // Effective time-bar height: in time mode it grows to reserve a fixed slot per stacked tick layer
+  // (ADR 0024). Mirrors the formula in buildGeometry so the canvas element is tall enough not to clip.
+  const tickLayerHeight = style.timeBarLabel.fontSize + TICK_LAYER_PADDING;
+  const barH =
+    xScaleType === 'time'
+      ? Math.max(style.timeBarHeight, timeAxisLayerCount * tickLayerHeight + TICK_LAYER_BOTTOM_INSET)
+      : style.timeBarHeight;
 
   useEffect(() => {
     const canvas = ref.current;
@@ -52,7 +75,7 @@ function TimeBarCanvas({ xScaleType, focusShiftMs }: { xScaleType: 'time' | 'lin
 
     ctx.save();
     ctx.scale(dpr, dpr);
-    ctx.clearRect(0, 0, CANVAS_W, TIME_BAR_H);
+    ctx.clearRect(0, 0, CANVAS_W, barH);
 
     const fullDomainMs = 10_000; // 10 s
     const focusWidthMs = 5_000; // 5 s window
@@ -61,17 +84,17 @@ function TimeBarCanvas({ xScaleType, focusShiftMs }: { xScaleType: 'time' | 'lin
     const domain = { min: base, max: base + fullDomainMs };
 
     // Supply domain explicitly: buildGeometry sets domain=0,0 for empty spans.
-    const geom = buildGeometry([], { width: CANVAS_W, height: TIME_BAR_H }, focusDomain, 0, STYLE, xScaleType, domain);
-    drawTimeBar(ctx, geom, STYLE);
+    const geom = buildGeometry([], { width: CANVAS_W, height: barH }, focusDomain, 0, style, xScaleType, domain);
+    drawTimeBar(ctx, geom, style);
     ctx.restore();
-  }, [xScaleType, focusShiftMs, dpr]);
+  }, [xScaleType, focusShiftMs, dpr, barH, style]);
 
   return (
     <canvas
       ref={ref}
       width={CANVAS_W * dpr}
-      height={TIME_BAR_H * dpr}
-      style={{ width: CANVAS_W, height: TIME_BAR_H, display: 'block', border: '1px solid #ccc' }}
+      height={barH * dpr}
+      style={{ width: CANVAS_W, height: barH, display: 'block', border: '1px solid #ccc' }}
     />
   );
 }
@@ -86,12 +109,13 @@ export const Example = () => {
     'time',
   );
   const focusShiftMs = number('focus shift (ms)', 0, { min: 0, max: 5000, step: 100 });
+  const timeAxisLayerCount = number('tick layers (time mode)', 2, { min: 0, max: 3, step: 1 });
 
   return (
     <div className="echChart">
       <div className="echChartStatus" data-ech-render-complete={true} />
       <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
-        <TimeBarCanvas xScaleType={xScaleType} focusShiftMs={focusShiftMs} />
+        <TimeBarCanvas xScaleType={xScaleType} focusShiftMs={focusShiftMs} timeAxisLayerCount={timeAxisLayerCount} />
       </div>
     </div>
   );
@@ -101,6 +125,11 @@ Example.parameters = {
   markdown:
     'Draws only the time bar via the shared raster-axis engines (`buildGeometry` + `drawTimeBar`). ' +
     'Switch the x-scale knob and nudge the focus-shift slider to verify tick labels update.\n\n' +
+    '**Multi-level time bar (time mode):** the `tick layers` knob sets `theme.trace.timeAxisLayerCount`. ' +
+    'At `2` a coarser absolute-time row stacks above the fine sub-second row; at `3` a date row is added; ' +
+    'at `0` the bar collapses to the legacy single row. The coarsest row pins its leading label to the ' +
+    'left edge so absolute-time context stays visible between boundary ticks. `linear` mode is always ' +
+    'single-row regardless of the knob.\n\n' +
     '**Why the x-scale knob requires traces longer than 1 s:** `linear` labels elapsed ms from zero; ' +
     '`time` without an epoch offset labels wall-clock ms from 1970-01-01 — at sub-second resolution ' +
     'the two modes produce identical labels, making the knob appear broken. ' +

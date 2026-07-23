@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { select } from '@storybook/addon-knobs';
+import { number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import type { TraceCriticalPath, TraceDatum, TraceSpec } from '@elastic/charts';
@@ -191,6 +191,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'linear — elapsed from corrected domain minimum',
   );
   const laneOrderLabel = select('laneOrder', Object.keys(LANE_ORDER_OPTIONS), 'tree — corrected root/sibling starts');
+  // Number of stacked tick-label rows in time mode (theme.trace.timeAxisLayerCount). Ignored in linear.
+  const timeAxisLayerCount = number('tick layers (time mode)', 2, { min: 0, max: 3, step: 1 });
   const dataset = DATASETS[datasetKey];
   const laneOrder = dataset.forceChronological ? 'chronological' : LANE_ORDER_OPTIONS[laneOrderLabel];
 
@@ -198,6 +200,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description} size={{ width: '100%', height: 360 }}>
       <Settings
         baseTheme={useBaseTheme()}
+        theme={{ trace: { timeAxisLayerCount } }}
         onElementClick={action('onElementClick')}
         onElementOver={action('onElementOver')}
       />
