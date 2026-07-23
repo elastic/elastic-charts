@@ -61,6 +61,17 @@ timeAxisLayerCount: number;
 
 Default value `2` in all six theme files.
 
+> **Implementation drift (see [ADR 0024](../0024-multilevel-time-bar.md), authoritative).** The code
+> that shipped differs from the sketch below in two ways discovered during implementation:
+> 1. **Naming:** the module constants are `TICK_LAYER_PADDING` and `tickLayerHeight` (not
+>    `LABEL_ROW_PADDING`/`rowHeight`), aligning with the `CONTEXT.md` "tick layer" glossary.
+> 2. **Pinned leading + height:** the `oneLayerBinS`/`iterFrom` leading-bin scan extension (and the
+>    `unitIntervalWidth` import) were **removed** — the raster generators already emit every
+>    pre-viewport boundary, so upper rows iterate the unextended scan and pin only the *nearest*
+>    off-left boundary (ADR 0024 Decision 6). A `TICK_LAYER_BOTTOM_INSET` (= `TICK_HEIGHT`) is added to
+>    the effective-height formula and to each row's label-y so the finest row clears the tick marks
+>    (ADR 0024 Decision 5). Prefer the ADR over the pseudocode below where they disagree.
+
 ### Row layout rule
 
 - `rowHeight` = `timeBarLabel.fontSize + LABEL_ROW_PADDING` (e.g. 10 px font + 6 px padding = 16 px
