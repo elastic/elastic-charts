@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import type { HoverRegion } from './types';
 import type { TooltipInfo } from '../../../components/tooltip/types';
 import type { TraceElementEvent } from '../../../specs/settings';
 import { waitingSegments } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceSelectionDetail } from '../trace_api';
-import type { HoverRegion } from './types';
 
 /** @internal */
 export function formatMs(ms: number): string {
@@ -59,6 +59,7 @@ export function buildTraceTooltipInfo(
   color: string,
   segmentIndex: number,
   criticalIntervals?: ReadonlyArray<{ start: number; end: number }>,
+  displayParentName?: string,
 ): TooltipInfo {
   const total = span.end - span.start;
   const selfTime = computeSelfTime(span);
@@ -118,6 +119,18 @@ export function buildTraceTooltipInfo(
   if (criticalIntervals && criticalIntervals.length > 0) {
     const coverage = criticalIntervals.reduce((acc, { start, end }) => acc + (end - start), 0);
     values.push(row('Critical path', coverage, formatMs(coverage)));
+  }
+
+  // Partial-trace disclosure (Spec 26). The recorded (missing) parent stays inspectable via
+  // `datum.parentId`; no row claims the synthetic display root was the measured caller.
+  if (span.orphaned) {
+    values.push(row('Trace context', 'Missing parent', 'Missing parent'));
+    if (span.reparentedToSpanId !== undefined) {
+      const under = displayParentName ?? span.reparentedToSpanId;
+      values.push(row('Displayed under', under, under));
+    } else if (span.fallbackRoot) {
+      values.push(row('Display placement', 'Used as display root', 'Used as display root'));
+    }
   }
 
   return { header: null, values };
@@ -193,6 +206,8 @@ export function buildTraceSelectionDetail(
     duration,
     selfTime,
     ...(span.skewCorrected && { skewCorrected: true }),
+    ...(span.orphaned && { orphaned: true }),
+    ...(span.reparentedToSpanId !== undefined && { reparentedToSpanId: span.reparentedToSpanId }),
     datum: span.meta,
     region,
     segmentIndex,
@@ -231,6 +246,8 @@ export function buildTraceEvent(span: NormalizedSpan): TraceElementEvent {
     duration: span.end - span.start,
     selfTime: computeSelfTime(span),
     ...(span.skewCorrected && { skewCorrected: true }),
+    ...(span.orphaned && { orphaned: true }),
+    ...(span.reparentedToSpanId !== undefined && { reparentedToSpanId: span.reparentedToSpanId }),
     datum: span.meta,
   };
 }

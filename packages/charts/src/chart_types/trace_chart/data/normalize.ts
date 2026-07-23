@@ -7,7 +7,7 @@
  */
 
 import { buildColorMap, buildSegmentColorMap } from './colors';
-import { buildChildrenMap } from './self_time';
+import { buildChildrenMap, displayParentId, traceScopedId } from './self_time';
 import type { NormalizedSpan } from './types';
 import type { Color } from '../../../common/colors';
 import { Logger } from '../../../utils/logger';
@@ -33,8 +33,11 @@ export interface NormalizeResult {
  * 2. **Filter** — when `traceId` is supplied, keeps only spans with a matching `traceId` and
  *    dev-warns when nothing matches. When omitted, all spans are rendered as one combined waterfall
  *    and a dev-warn fires if they span more than one distinct trace.
+ * 2b. **Recover partial traces** — discloses orphans (missing recorded parent) and assigns them a
+ *    synthetic display parent beneath their trace group's elected root, omitting unreachable/invalid
+ *    spans (Spec 26 / ADR 0028). Recorded `parentId` and `meta` are never rewritten.
  * 3. **Correct clock skew** — independently places each left-skewed child relative to its corrected
- *    parent using Kibana APM's non-negative propagation-latency heuristic.
+ *    parent using Kibana APM's non-negative propagation-latency heuristic (over display topology).
  * 4. **Project** — computes the domain `[min, max]`. Under `'linear'`, re-zeros `start`/`end`/
  *    `activeSegments` relative to the domain minimum (elapsed ms); under `'time'` keeps epoch ms.
  *
@@ -63,7 +66,12 @@ export function normalize(
   // matched spans happened to have non-finite timestamps (dropNonFinite below handles that case).
   const traceNotFound = traceId !== undefined && flat.length > 0 && selected.length === 0;
   const finite = dropNonFinite(selected);
-  const corrected = correctClockSkew(finite);
+  // Partial-trace recovery: disclose orphans and assign synthetic display parents before clock-skew
+  // correction, which traverses display topology (Spec 26 / ADR 0028). May omit unreachable/invalid
+  // spans or, for a cross-trace duplicate ID, return no spans (blank mounted plot; emptyReason stays
+  // undefined — see ADR 0019 amendment).
+  const recovered = recoverPartialTraces(finite);
+  const corrected = correctClockSkew(recovered);
   const result = project(corrected, xScaleType, criticalPath);
   if (traceNotFound) result.emptyReason = 'trace-not-found';
   return result;
@@ -153,6 +161,211 @@ function dropNonFinite(spans: NormalizedSpan[]): NormalizedSpan[] {
   return valid;
 }
 
+/** Bounded example list `a, b, c, and N more` (max 5), matching the malformed-data warning style. */
+function boundedList(items: string[], max = 5): string {
+  const shown = items.slice(0, max).join(', ');
+  const remaining = items.length - max;
+  return remaining > 0 ? `${shown}, and ${remaining} more` : shown;
+}
+
+/** Human label for a `traceId` group; the `undefined` group is reported as `unknown`. */
+function groupLabel(traceId: string | undefined): string {
+  return traceId === undefined ? 'unknown' : `"${traceId}"`;
+}
+
+/**
+ * Partial-trace recovery and orphan reparenting (Spec 26 / ADR 0028). Pure: never mutates a
+ * `TraceDatum` or rewrites recorded `parentId`; clones only orphans that receive provenance or a
+ * synthetic display parent, and returns the input array reference unchanged for a fully complete
+ * input.
+ *
+ * Runs after `traceId` selection and non-finite filtering. Spans are partitioned by `traceId` (the
+ * `undefined` group is one group); parentage is trace-local. Within each group:
+ * - a **recorded root** has no `parentId`; an **orphan** has a `parentId` absent from the group;
+ * - exactly one recorded root → use it; none + ≥1 orphan → first orphan (input order) is the
+ *   `fallbackRoot`; more than one recorded root → elect the last (input order) and omit the rest;
+ *   none and no orphan → rootless group, renders no lanes;
+ * - genuine orphans are cloned with `orphaned` + `reparentedToSpanId = electedRoot.id`;
+ * - a depth-first traversal from the elected root computes the reachable set and detects a duplicate
+ *   ID (group-local invalidation → the group contributes no lanes).
+ *
+ * A span ID occurring in more than one selected `traceId` group invalidates the entire combined
+ * result (chart-global IDs). Survivors are materialized in normalized input order (using their clone
+ * when one exists); `orderLanes` remains the sole owner of final lane order. Every recovery-driven
+ * omission or invalidation is aggregated into one bounded `Logger.warn`; lossless orphan reparenting
+ * is silent.
+ * @internal
+ */
+export function recoverPartialTraces(spans: NormalizedSpan[]): NormalizedSpan[] {
+  if (spans.length === 0) return spans;
+
+  // --- Chart-wide pre-scan: a span ID present in more than one selected traceId group is a
+  // cross-trace duplicate and invalidates the entire combined result (chart-global span IDs). ---
+  const groupsByTraceId = new Map<string | undefined, NormalizedSpan[]>();
+  const groupKeysById = new Map<string, Set<string | undefined>>();
+  for (const span of spans) {
+    let group = groupsByTraceId.get(span.traceId);
+    if (!group) {
+      group = [];
+      groupsByTraceId.set(span.traceId, group);
+    }
+    group.push(span);
+    let keys = groupKeysById.get(span.id);
+    if (!keys) {
+      keys = new Set();
+      groupKeysById.set(span.id, keys);
+    }
+    keys.add(span.traceId);
+  }
+  const crossTraceDuplicateIds: string[] = [];
+  for (const [id, keys] of groupKeysById) {
+    if (keys.size > 1) crossTraceDuplicateIds.push(`"${id}"`);
+  }
+  if (crossTraceDuplicateIds.length > 0) {
+    Logger.warn(
+      `Trace chart: partial-trace recovery — cross-trace duplicate span IDs invalidated the entire result (${boundedList(
+        crossTraceDuplicateIds,
+      )}).`,
+    );
+    return [];
+  }
+
+  // --- Per-group recovery. ---
+  const replacement = new Map<NormalizedSpan, NormalizedSpan>(); // original → provenance clone
+  const survivors = new Set<NormalizedSpan>(); // original span objects retained
+  let changed = false;
+
+  // Warning accounting.
+  let omittedSpanCount = 0;
+  const omittedGroupLabels: string[] = [];
+  const invalidGroupLabels: string[] = [];
+  const rootlessGroupLabels: string[] = [];
+
+  for (const [traceId, groupSpans] of groupsByTraceId) {
+    const idSet = new Set(groupSpans.map((s) => s.id));
+    const recordedRoots = groupSpans.filter((s) => s.parentId === undefined);
+    const orphans = groupSpans.filter((s) => s.parentId !== undefined && !idSet.has(s.parentId));
+
+    let elected: NormalizedSpan;
+    let fallback: NormalizedSpan | undefined;
+    let orphansToReparent: NormalizedSpan[];
+
+    if (recordedRoots.length === 1) {
+      elected = recordedRoots[0]!;
+      orphansToReparent = orphans;
+    } else if (recordedRoots.length === 0) {
+      if (orphans.length === 0) {
+        // Rootless (e.g. a rootless cycle): the group renders no lanes.
+        rootlessGroupLabels.push(groupLabel(traceId));
+        if (groupSpans.length > 0) changed = true;
+        continue;
+      }
+      fallback = orphans[0]!;
+      elected = fallback;
+      orphansToReparent = orphans.slice(1);
+    } else {
+      // More than one recorded root: elect the last in normalized input order; the earlier roots
+      // and anything reachable only from them are omitted below by reachability (Kibana parity).
+      elected = recordedRoots.at(-1)!;
+      orphansToReparent = orphans;
+    }
+
+    // Clone only spans that receive provenance/synthetic placement.
+    const localReplacement = new Map<NormalizedSpan, NormalizedSpan>();
+    for (const orphan of orphansToReparent) {
+      localReplacement.set(orphan, { ...orphan, orphaned: true, reparentedToSpanId: elected.id });
+    }
+    if (fallback) {
+      localReplacement.set(fallback, { ...fallback, orphaned: true, fallbackRoot: true });
+    }
+
+    // DFS the elected root over display topology; detect duplicate IDs within the reachable tree.
+    const effective = groupSpans.map((s) => localReplacement.get(s) ?? s);
+    const childrenMap = buildChildrenMap(effective, displayParentId);
+    const electedEffective = localReplacement.get(elected) ?? elected;
+    const reachable = new Set<NormalizedSpan>();
+    const visitedIds = new Set<string>();
+    let duplicate = false;
+
+    const walk = (node: NormalizedSpan): void => {
+      if (reachable.has(node)) return; // cycle guard by object identity
+      if (visitedIds.has(node.id)) {
+        duplicate = true; // duplicate ID reached within the elected tree
+        return;
+      }
+      visitedIds.add(node.id);
+      reachable.add(node);
+      for (const child of childrenMap.get(traceScopedId(node.traceId, node.id)) ?? []) {
+        walk(child);
+      }
+    };
+    walk(electedEffective);
+
+    if (duplicate) {
+      // Group-local invalidation: this group contributes no lanes; other groups still render.
+      invalidGroupLabels.push(groupLabel(traceId));
+      if (groupSpans.length > 0) changed = true;
+      continue;
+    }
+
+    // Retain survivors in normalized input order, using the clone when one exists.
+    let survivorCount = 0;
+    for (const s of groupSpans) {
+      const eff = localReplacement.get(s) ?? s;
+      if (reachable.has(eff)) {
+        survivors.add(s);
+        survivorCount += 1;
+        const clone = localReplacement.get(s);
+        if (clone) replacement.set(s, clone);
+      }
+    }
+
+    const omitted = groupSpans.length - survivorCount;
+    if (omitted > 0) {
+      omittedSpanCount += omitted;
+      omittedGroupLabels.push(groupLabel(traceId));
+      changed = true;
+    }
+    if (localReplacement.size > 0) changed = true; // provenance added (lossless reparenting is silent)
+  }
+
+  // One aggregated developer warning covering every recovery-driven omission/invalidation.
+  const reasons: string[] = [];
+  if (omittedSpanCount > 0) {
+    reasons.push(
+      `omitted ${omittedSpanCount} span${omittedSpanCount === 1 ? '' : 's'} unreachable from the elected root in ${
+        omittedGroupLabels.length
+      } trace group${omittedGroupLabels.length === 1 ? '' : 's'} (${boundedList(omittedGroupLabels)})`,
+    );
+  }
+  if (invalidGroupLabels.length > 0) {
+    reasons.push(
+      `invalidated ${invalidGroupLabels.length} trace group${
+        invalidGroupLabels.length === 1 ? '' : 's'
+      } containing duplicate span IDs (${boundedList(invalidGroupLabels)})`,
+    );
+  }
+  if (rootlessGroupLabels.length > 0) {
+    reasons.push(
+      `${rootlessGroupLabels.length} trace group${
+        rootlessGroupLabels.length === 1 ? '' : 's'
+      } have no elected root (rootless/disconnected) and render no lanes (${boundedList(rootlessGroupLabels)})`,
+    );
+  }
+  if (reasons.length > 0) {
+    Logger.warn(`Trace chart: partial-trace recovery — ${reasons.join('; ')}.`);
+  }
+
+  if (!changed) return spans;
+
+  const result: NormalizedSpan[] = [];
+  for (const span of spans) {
+    if (!survivors.has(span)) continue;
+    result.push(replacement.get(span) ?? span);
+  }
+  return result;
+}
+
 /**
  * Places each valid completed span independently against its corrected parent using Kibana's rule:
  * `latency = Math.max(parentDuration - childDuration, 0) / 2`.
@@ -162,9 +375,12 @@ function dropNonFinite(spans: NormalizedSpan[]): NormalizedSpan[] {
 export function correctClockSkew(spans: NormalizedSpan[]): NormalizedSpan[] {
   if (spans.length === 0) return spans;
 
-  const childrenMap = buildChildrenMap(spans);
-  const ids = new Set(spans.map((span) => span.id));
-  const roots = spans.filter((span) => span.parentId === undefined || !ids.has(span.parentId));
+  const childrenMap = buildChildrenMap(spans, displayParentId);
+  const idKeys = new Set(spans.map((span) => traceScopedId(span.traceId, span.id)));
+  const roots = spans.filter((span) => {
+    const p = displayParentId(span);
+    return p === undefined || !idKeys.has(traceScopedId(span.traceId, p));
+  });
   const corrected = new Map<NormalizedSpan, NormalizedSpan>();
   const visited = new Set<NormalizedSpan>();
   let correctionTriggered = false;
@@ -220,7 +436,7 @@ export function correctClockSkew(spans: NormalizedSpan[]): NormalizedSpan[] {
     }
 
     corrected.set(span, current);
-    for (const child of childrenMap.get(span.id) ?? []) {
+    for (const child of childrenMap.get(traceScopedId(span.traceId, span.id)) ?? []) {
       dfs(child, current);
     }
   }

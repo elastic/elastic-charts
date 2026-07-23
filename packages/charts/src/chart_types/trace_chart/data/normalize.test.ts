@@ -488,7 +488,8 @@ describe('normalize', () => {
     });
 
     it('assigns group colors to active segments via NormalizedSpan.color', () => {
-      const data = [spanWithService('a', 'svc-A'), spanWithService('b', 'svc-B')];
+      // Single elected tree (a → b) so partial-trace recovery keeps both spans (Spec 26).
+      const data = [spanWithService('a', 'svc-A'), { ...spanWithService('b', 'svc-B'), parentId: 'a' }];
       const { spans } = normalize(data, 'time', undefined, colorByOtelAttribute('service.name'), VIZ_COLORS);
       expect(spans.find((s) => s.id === 'a')?.color).toBe('red');
       expect(spans.find((s) => s.id === 'b')?.color).toBe('green');
@@ -497,7 +498,7 @@ describe('normalize', () => {
     it('explicit TraceDatum.color wins over the group color', () => {
       const data: TraceDatum[] = [
         { ...spanWithService('a', 'svc-A'), color: 'hotpink' },
-        spanWithService('b', 'svc-B'),
+        { ...spanWithService('b', 'svc-B'), parentId: 'a' },
       ];
       const { spans } = normalize(data, 'time', undefined, colorByOtelAttribute('service.name'), VIZ_COLORS);
       expect(spans.find((s) => s.id === 'a')?.color).toBe('hotpink'); // explicit wins
@@ -527,7 +528,12 @@ describe('normalize', () => {
     });
 
     it('colorByOtelKind groups by kind number', () => {
-      const data = [spanWithKind('a', 2), spanWithKind('b', 3), spanWithKind('c', 2)];
+      // Single elected tree (a → b, a → c) so recovery keeps all three spans (Spec 26).
+      const data = [
+        spanWithKind('a', 2),
+        { ...spanWithKind('b', 3), parentId: 'a' },
+        { ...spanWithKind('c', 2), parentId: 'a' },
+      ];
       const { spans } = normalize(data, 'time', undefined, colorByOtelKind(), VIZ_COLORS);
       expect(spans.find((s) => s.id === 'a')?.color).toBe('red');
       expect(spans.find((s) => s.id === 'b')?.color).toBe('green');
@@ -573,7 +579,7 @@ describe('normalize', () => {
       // svc-A spans two traces; its color should be 'red' regardless of which trace is shown
       const data: TraceDatum[] = [
         { ...spanWithService('t1-a', 'svc-A', 0, 10), traceId: 't1' },
-        { ...spanWithService('t1-b', 'svc-B', 5, 10), traceId: 't1' },
+        { ...spanWithService('t1-b', 'svc-B', 5, 10), traceId: 't1', parentId: 't1-a' },
         { ...spanWithService('t2-a', 'svc-A', 0, 10), traceId: 't2' },
       ];
       const colorBy = colorByOtelAttribute('service.name');
@@ -670,7 +676,14 @@ describe('normalize', () => {
     it('the same label across multiple spans maps to the same color', () => {
       const data: TraceDatum[] = [
         { id: 'a', name: 'a', start: 0, end: 100, activeSegments: [{ start: 0, end: 50, label: 'loading' }] },
-        { id: 'b', name: 'b', start: 0, end: 100, activeSegments: [{ start: 0, end: 50, label: 'loading' }] },
+        {
+          id: 'b',
+          name: 'b',
+          start: 0,
+          end: 100,
+          parentId: 'a',
+          activeSegments: [{ start: 0, end: 50, label: 'loading' }],
+        },
       ];
       const { spans } = normalize(data, 'time', undefined, undefined, VIZ_COLORS);
       expect(spans[0]?.activeSegments[0]?.color).toBe('red');
@@ -996,5 +1009,53 @@ describe('normalize — corrected lane ordering', () => {
       expect.objectContaining({ id: 'root', start: 0, end: 100 }),
       expect.objectContaining({ id: 'child', start: 0, end: 150, skewCorrected: true }),
     ]);
+  });
+});
+
+describe('normalize — partial-trace recovery integration (Spec 26)', () => {
+  it('reparents a left-skewed orphan under the recorded root and corrects it against that display parent', () => {
+    const data: TraceDatum[] = [
+      { id: 'root', name: 'root', start: 0, end: 200 },
+      { id: 'orphan', name: 'orphan', parentId: 'missing', start: -20, end: 60 }, // left-skewed, missing parent
+    ];
+    const warn = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const { spans } = normalize(data, 'time');
+    const orphan = spans.find((s) => s.id === 'orphan')!;
+    expect(orphan).toMatchObject({ orphaned: true, reparentedToSpanId: 'root', skewCorrected: true });
+    expect(orphan.start).toBeGreaterThanOrEqual(spans.find((s) => s.id === 'root')!.start);
+    warn.mockRestore();
+  });
+
+  it('leaves emptyReason undefined when recovery invalidates the entire result (cross-trace duplicate)', () => {
+    const warn = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const data: TraceDatum[] = [
+      { id: 'a-root', name: 'a-root', traceId: 'A', start: 0, end: 10 },
+      { id: 'shared', name: 'shared', traceId: 'A', parentId: 'a-root', start: 1, end: 5 },
+      { id: 'b-root', name: 'b-root', traceId: 'B', start: 0, end: 10 },
+      { id: 'shared', name: 'shared', traceId: 'B', parentId: 'b-root', start: 1, end: 5 },
+    ];
+    const result = normalize(data, 'time');
+    expect(result.spans).toEqual([]);
+    expect(result.emptyReason).toBeUndefined(); // blank mounted plot, not "trace-not-found"
+    warn.mockRestore();
+  });
+
+  it('gives tree and chronological lane orders identical visible membership after recovery', () => {
+    const data: TraceDatum[] = [
+      { id: 'root', name: 'root', start: 0, end: 200 },
+      { id: 'o1', name: 'o1', parentId: 'gone-1', start: 40, end: 120 },
+      { id: 'o2', name: 'o2', parentId: 'gone-2', start: 10, end: 90 },
+    ];
+    const warn = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const { spans } = normalize(data, 'time');
+    const treeIds = orderLanes(spans, 'tree')
+      .lanes.map((s) => s.id)
+      .sort();
+    const chronoIds = orderLanes(spans, 'chronological')
+      .lanes.map((s) => s.id)
+      .sort();
+    expect(treeIds).toEqual(chronoIds);
+    expect(treeIds).toEqual(['o1', 'o2', 'root']);
+    warn.mockRestore();
   });
 });

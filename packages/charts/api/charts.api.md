@@ -3799,8 +3799,10 @@ export interface TraceElementEvent {
     id: string;
     // (undocumented)
     name: string;
+    orphaned?: true;
     // (undocumented)
     parentId?: string;
+    reparentedToSpanId?: string;
     selfTime: number;
     skewCorrected?: true;
     start: number;
@@ -3835,10 +3837,12 @@ export interface TraceSelectionDetail {
     end: number;
     // (undocumented)
     name: string;
+    orphaned?: true;
     // (undocumented)
     parentId?: string;
     // (undocumented)
     region: 'span' | 'active' | 'waiting';
+    reparentedToSpanId?: string;
     // (undocumented)
     segmentDuration?: number;
     // (undocumented)

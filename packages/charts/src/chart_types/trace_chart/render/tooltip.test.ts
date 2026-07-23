@@ -323,7 +323,7 @@ describe('buildTraceEvent', () => {
   });
 
   it('datum is the original TraceDatum (span.meta), not the NormalizedSpan', () => {
-    expect(event.datum).toBe(meta);    // same reference — no copy
+    expect(event.datum).toBe(meta); // same reference — no copy
     expect(event.datum).not.toBe(span); // not the internal NormalizedSpan
   });
 
@@ -336,6 +336,24 @@ describe('buildTraceEvent', () => {
   it('exposes skew provenance only for corrected spans', () => {
     expect(buildTraceEvent({ ...span, skewCorrected: true }).skewCorrected).toBe(true);
     expect(event).not.toHaveProperty('skewCorrected');
+  });
+
+  it('exposes orphan provenance (id only) while keeping the recorded parentId (Spec 26)', () => {
+    const orphanEvent = buildTraceEvent({
+      ...span,
+      id: 'o1',
+      parentId: 'missing',
+      orphaned: true,
+      reparentedToSpanId: 'root',
+    });
+    expect(orphanEvent.orphaned).toBe(true);
+    expect(orphanEvent.reparentedToSpanId).toBe('root');
+    expect(orphanEvent.parentId).toBe('missing'); // recorded (missing) parent, not the synthetic one
+  });
+
+  it('omits orphan provenance for a non-orphan span', () => {
+    expect(event).not.toHaveProperty('orphaned');
+    expect(event).not.toHaveProperty('reparentedToSpanId');
   });
 });
 
@@ -350,6 +368,66 @@ describe('buildTraceSelectionDetail', () => {
 
   it('omits skew provenance for an uncorrected span', () => {
     expect(buildTraceSelectionDetail(span, DOMAIN_MIN, 'span', -1)).not.toHaveProperty('skewCorrected');
+  });
+
+  it('exposes orphan provenance and keeps the recorded parentId (Spec 26)', () => {
+    const detail = buildTraceSelectionDetail(
+      { ...span, id: 'o1', parentId: 'missing', orphaned: true, reparentedToSpanId: 'root' },
+      DOMAIN_MIN,
+      'span',
+      -1,
+    );
+    expect(detail.orphaned).toBe(true);
+    expect(detail.reparentedToSpanId).toBe('root');
+    expect(detail.parentId).toBe('missing');
+  });
+
+  it('omits orphan provenance for a non-orphan span', () => {
+    const detail = buildTraceSelectionDetail(span, DOMAIN_MIN, 'span', -1);
+    expect(detail).not.toHaveProperty('orphaned');
+    expect(detail).not.toHaveProperty('reparentedToSpanId');
+  });
+});
+
+describe('buildTraceTooltipInfo — partial-trace disclosure (Spec 26)', () => {
+  it('adds a Missing parent row and a Displayed under row (resolved name) for a reparented orphan', () => {
+    const orphan: NormalizedSpan = {
+      ...span,
+      id: 'o1',
+      parentId: 'missing',
+      orphaned: true,
+      reparentedToSpanId: 'root',
+    };
+    const info = buildTraceTooltipInfo(orphan, 0, DOMAIN_MIN, 'span', COLOR, -1, undefined, 'root span');
+    expect(info.values.find(({ label }) => label === 'Trace context')).toMatchObject({ value: 'Missing parent' });
+    expect(info.values.find(({ label }) => label === 'Displayed under')).toMatchObject({ value: 'root span' });
+  });
+
+  it('falls back to the reparent id when no display-parent name is supplied', () => {
+    const orphan: NormalizedSpan = {
+      ...span,
+      id: 'o1',
+      parentId: 'missing',
+      orphaned: true,
+      reparentedToSpanId: 'root',
+    };
+    const info = buildTraceTooltipInfo(orphan, 0, DOMAIN_MIN, 'span', COLOR, -1);
+    expect(info.values.find(({ label }) => label === 'Displayed under')).toMatchObject({ value: 'root' });
+  });
+
+  it('adds a Display placement row for a fallback root and no Displayed under row', () => {
+    const fallback: NormalizedSpan = { ...span, id: 'o1', parentId: 'missing', orphaned: true, fallbackRoot: true };
+    const info = buildTraceTooltipInfo(fallback, 0, DOMAIN_MIN, 'span', COLOR, -1);
+    expect(info.values.find(({ label }) => label === 'Trace context')).toMatchObject({ value: 'Missing parent' });
+    expect(info.values.find(({ label }) => label === 'Display placement')).toMatchObject({
+      value: 'Used as display root',
+    });
+    expect(info.values.find(({ label }) => label === 'Displayed under')).toBeUndefined();
+  });
+
+  it('adds no disclosure rows for a non-orphan span', () => {
+    const info = buildTraceTooltipInfo(span, 0, DOMAIN_MIN, 'span', COLOR, -1);
+    expect(info.values.find(({ label }) => label === 'Trace context')).toBeUndefined();
   });
 });
 
@@ -406,7 +484,7 @@ describe('buildTraceTooltipInfo — critical path row', () => {
   it('appends "Critical path" after the other rows (last row)', () => {
     const info = buildTraceTooltipInfo(span, 0, DOMAIN_MIN, 'active', COLOR, 0, [{ start: 100, end: 300 }]);
     const labels = info.values.map((v) => v.label);
-    expect(labels[labels.length - 1]).toBe('Critical path');
+    expect(labels.at(-1)).toBe('Critical path');
   });
 });
 

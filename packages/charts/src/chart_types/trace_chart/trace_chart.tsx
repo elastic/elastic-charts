@@ -331,7 +331,20 @@ class TraceComponent extends React.Component<TraceProps> {
   private announceLane(span: NormalizedSpan): void {
     if (this.ariaLiveRef.current) {
       const skewNote = span.skewCorrected ? ' — time adjusted for clock skew' : '';
-      this.ariaLiveRef.current.textContent = `${span.name} — ${formatMs(span.end - span.start)}${skewNote}`;
+      // Partial-trace disclosure (Spec 26): announce orphan provenance and synthetic placement.
+      let orphanNote = '';
+      if (span.orphaned) {
+        if (span.reparentedToSpanId !== undefined) {
+          const traceSpec = this.props.traceSpec;
+          const parentName =
+            (traceSpec && this.getPipeline(traceSpec).spans.find((s) => s.id === span.reparentedToSpanId)?.name) ??
+            span.reparentedToSpanId;
+          orphanNote = ` — orphan; displayed under ${parentName}`;
+        } else {
+          orphanNote = ' — orphan; used as display root';
+        }
+      }
+      this.ariaLiveRef.current.textContent = `${span.name} — ${formatMs(span.end - span.start)}${skewNote}${orphanNote}`;
     }
   }
 
@@ -876,7 +889,13 @@ class TraceComponent extends React.Component<TraceProps> {
   private rebuildTooltip(span: NormalizedSpan, index: number, domainMin: number, region: HoverRegion, segmentIndex: number) {
     const style = this.getStyle();
     const criticalIntervals = this.hover.lastGeom?.criticalIntervalsByLane.get(index);
-    this.hover.tooltipInfo = buildTraceTooltipInfo(span, index, domainMin, region, span.color ?? style.activeSegmentColor, segmentIndex, criticalIntervals);
+    // Resolve the synthetic display-parent name for a reparented orphan's "Displayed under" row (Spec 26).
+    let displayParentName: string | undefined;
+    const traceSpec = this.props.traceSpec;
+    if (span.reparentedToSpanId !== undefined && traceSpec) {
+      displayParentName = this.getPipeline(traceSpec).spans.find((s) => s.id === span.reparentedToSpanId)?.name;
+    }
+    this.hover.tooltipInfo = buildTraceTooltipInfo(span, index, domainMin, region, span.color ?? style.activeSegmentColor, segmentIndex, criticalIntervals, displayParentName);
   }
 
   private pinTooltip = (pinned: boolean) => {

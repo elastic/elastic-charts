@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { anyValueToString } from './data/otel_adapter';
 import { ChartType } from '..';
 import type { Color } from '../../common/colors';
 import type { Spec } from '../../specs/spec_type';
@@ -16,9 +17,7 @@ import { stripUndefined } from '../../utils/common';
 
 // Re-export the OTel adapter so consumers don't need a separate import path.
 // Import for local use in colorByOtelAttribute; also re-exported below for consumers.
-import { anyValueToString, fromOtlp } from './data/otel_adapter';
 export type { OtelInput, OtelSpan, OtlpEnvelope } from './data/otel_adapter';
-export { anyValueToString, fromOtlp };
 
 /**
  * Imperative control callbacks handed to the caller via `controlProviderCallback`.
@@ -146,6 +145,16 @@ export interface TraceSelectionDetail {
   selfTime: number;
   /** Present when the reported timing fields were adjusted to correct detected clock skew. */
   skewCorrected?: true;
+  /**
+   * Present when this span's recorded parent is absent from its selected trace data (a partial
+   * trace). `parentId` still reports the recorded (missing) parent. See Spec 26 / ADR 0028.
+   */
+  orphaned?: true;
+  /**
+   * The synthetic display parent this orphan was placed under (its trace group's elected root).
+   * Absent when the orphan is itself used as the display root. `parentId` remains the recorded value.
+   */
+  reparentedToSpanId?: string;
   datum: TraceDatum;
   region: 'span' | 'active' | 'waiting';
   segmentIndex: number;
@@ -426,3 +435,5 @@ export function colorByOtelKind(): TraceColorAccessor {
     return span?.kind !== null && span?.kind !== undefined ? String(span.kind) : undefined;
   };
 }
+
+export { anyValueToString, fromOtlp } from './data/otel_adapter';

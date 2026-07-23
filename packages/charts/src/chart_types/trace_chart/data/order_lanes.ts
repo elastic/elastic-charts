@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { buildChildrenMap, displayParentId, traceScopedId } from './self_time';
 import type { NormalizedSpan } from './types';
-import { buildChildrenMap } from './self_time';
 
 /** Result of {@link orderLanes}. @internal */
 export interface OrderedLanes {
@@ -41,13 +41,18 @@ export function orderLanes(spans: NormalizedSpan[], mode: 'tree' | 'chronologica
     return { lanes: spans.slice().sort((a, b) => a.start - b.start), depthBySpan: new Map() };
   }
 
-  // tree: DFS forest — shared helper keeps parentage consistent with resolveActive.
-  const childrenMap = buildChildrenMap(spans);
-  const ids = new Set(spans.map((s) => s.id));
+  // tree: DFS forest over display topology (synthetic reparenting for partial traces; Spec 26).
+  const childrenMap = buildChildrenMap(spans, displayParentId);
+  const idKeys = new Set(spans.map((s) => traceScopedId(s.traceId, s.id)));
 
-  // Roots: no parentId, or parentId not present in the span set (orphan spans).
+  // Roots: no display parent, or a display parent not present in the same trace group.
   // Sort roots by start, stable (Array.sort is stable in ES2019+).
-  const roots = spans.filter((s) => s.parentId === undefined || !ids.has(s.parentId)).sort((a, b) => a.start - b.start);
+  const roots = spans
+    .filter((s) => {
+      const p = displayParentId(s);
+      return p === undefined || !idKeys.has(traceScopedId(s.traceId, p));
+    })
+    .sort((a, b) => a.start - b.start);
 
   const lanes: NormalizedSpan[] = [];
   const depthBySpan = new Map<NormalizedSpan, number>();
@@ -60,10 +65,13 @@ export function orderLanes(spans: NormalizedSpan[], mode: 'tree' | 'chronologica
     visited.add(span);
     lanes.push(span);
     depthBySpan.set(span, depth);
-    const children = childrenMap.get(span.id);
+    const children = childrenMap.get(traceScopedId(span.traceId, span.id));
     if (children) {
       // Sort children by start, stable — same rule as roots.
-      children.slice().sort((a, b) => a.start - b.start).forEach((child) => dfs(child, depth + 1));
+      children
+        .slice()
+        .sort((a, b) => a.start - b.start)
+        .forEach((child) => dfs(child, depth + 1));
     }
   }
 
@@ -74,7 +82,10 @@ export function orderLanes(spans: NormalizedSpan[], mode: 'tree' | 'chronologica
     spans
       .filter((s) => !visited.has(s))
       .sort((a, b) => a.start - b.start)
-      .forEach((s) => { lanes.push(s); depthBySpan.set(s, 0); });
+      .forEach((s) => {
+        lanes.push(s);
+        depthBySpan.set(s, 0);
+      });
   }
 
   return { lanes, depthBySpan };

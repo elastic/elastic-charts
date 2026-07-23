@@ -38,6 +38,25 @@ export interface NormalizedSpan {
    * The original recorded times remain available on `meta.start` / `meta.end`.
    */
   skewCorrected?: true;
+  /**
+   * Present on every span whose recorded `parentId` is absent from its selected trace group
+   * (a **partial trace**; see Spec 26 / ADR 0028). Recorded `parentId` and `meta` are never
+   * rewritten — this is disclosure-only provenance surfaced to tooltip/SR/interaction payloads.
+   */
+  orphaned?: true;
+  /**
+   * Synthetic **display parent** assigned to an orphan so it can be placed beneath its trace
+   * group's elected root. Used only by display-topology operations (lane ordering/depth, collapse
+   * rollups, clock-skew placement, SR indentation) via {@link displayParentId} — never by
+   * source-topology self time, and never exposed as recorded `parentId`.
+   */
+  reparentedToSpanId?: string;
+  /**
+   * Internal-only: this orphan was elected as its trace group's display root (no recorded root
+   * existed). It retains `orphaned` and has no `reparentedToSpanId`. Lets presentation distinguish
+   * the elected fallback root from synthetically reparented orphans. Never added to public payloads.
+   */
+  fallbackRoot?: true;
   /** The original TraceDatum; exposed to tooltip datum and element-event callbacks. */
   meta: TraceDatum;
 }

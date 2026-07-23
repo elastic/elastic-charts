@@ -17,10 +17,10 @@ import type { ProjectedValues, PointerOutEvent, PointerOverEvent, PointerEvent }
 import { PointerEventType } from './settings_types';
 import type { Spec } from './spec_type';
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
-import type { TraceDatum } from '../chart_types/trace_chart/trace_api';
 import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import type { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
 import type { LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
+import type { TraceDatum } from '../chart_types/trace_chart/trace_api';
 import type { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import type { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import type { CategoryLabel } from '../common/category';
@@ -199,6 +199,18 @@ export interface TraceElementEvent {
   selfTime: number;
   /** Present when the reported timing fields were adjusted to correct detected clock skew. */
   skewCorrected?: true;
+  /**
+   * Present when this span's recorded parent is absent from its selected trace data (a partial
+   * trace). `parentId` still reports the recorded (missing) parent; the chart never claims the
+   * synthetic display root was the measured caller. See Spec 26 / ADR 0028.
+   */
+  orphaned?: true;
+  /**
+   * The synthetic display parent this orphan was placed under in the waterfall (its trace group's
+   * elected root). Absent when the orphan is itself used as the display root. Purely presentational;
+   * `parentId` remains the recorded value.
+   */
+  reparentedToSpanId?: string;
   /**
    * The original `TraceDatum`. For data produced by {@link fromOtlp}, access the underlying
    * `OtelSpan` (with OTel `attributes`/`status`) via `datum.meta as OtelSpan`.

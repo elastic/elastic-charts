@@ -14,6 +14,7 @@
 
 import { formatMs, computeSelfTime } from './tooltip';
 import type { NormalizedSpan } from '../data/types';
+import { describeParent } from '../state/selectors/get_screen_reader_data';
 
 // ---------------------------------------------------------------------------
 // formatMs
@@ -73,8 +74,12 @@ describe('computeSelfTime', () => {
 
   it('sums multiple non-overlapping active segments', () => {
     const s = span({
-      start: 0, end: 200,
-      activeSegments: [{ start: 10, end: 40 }, { start: 60, end: 100 }],
+      start: 0,
+      end: 200,
+      activeSegments: [
+        { start: 10, end: 40 },
+        { start: 60, end: 100 },
+      ],
     });
     expect(computeSelfTime(s)).toBe(70); // 30 + 40
   });
@@ -88,7 +93,10 @@ describe('computeSelfTime', () => {
 describe('SR table row data shape', () => {
   it('produces correct row fields for a root span', () => {
     const s = span({
-      id: 'a', name: 'root', start: 0, end: 100,
+      id: 'a',
+      name: 'root',
+      start: 0,
+      end: 100,
       activeSegments: [{ start: 0, end: 30 }],
     });
     const totalDuration = formatMs(s.end - s.start);
@@ -107,15 +115,30 @@ describe('SR table row data shape', () => {
       span({ id: 'child', name: 'Child span', start: 10, end: 50, parentId: 'parent' }),
     ];
     const nameById = new Map(spans.map((s) => [s.id, s.name]));
-    const child = spans[1]!;
-    const parentName = child.parentId != null ? (nameById.get(child.parentId) ?? '—') : '—';
-    expect(parentName).toBe('Parent span');
+    expect(describeParent(spans[1]!, nameById)).toBe('Parent span');
   });
 
   it('falls back to "—" when parentId is not in the span list', () => {
-    const s = span({ id: 'orphan', name: 'Orphan', start: 0, end: 50, parentId: 'missing' });
-    const nameById = new Map<string, string>();
-    const parentName = s.parentId != null ? (nameById.get(s.parentId) ?? '—') : '—';
-    expect(parentName).toBe('—');
+    const s = span({ id: 'x', name: 'x', start: 0, end: 50, parentId: 'missing' });
+    expect(describeParent(s, new Map())).toBe('—');
+  });
+
+  it('discloses "orphan; displayed under <root>" for a reparented orphan (Spec 26)', () => {
+    const orphan = {
+      ...span({ id: 'o1', name: 'o1', start: 0, end: 50, parentId: 'missing' }),
+      orphaned: true as const,
+      reparentedToSpanId: 'root',
+    };
+    const nameById = new Map([['root', 'Root span']]);
+    expect(describeParent(orphan, nameById)).toBe('orphan; displayed under Root span');
+  });
+
+  it('discloses "orphan; used as display root" for a fallback root (Spec 26)', () => {
+    const fallback = {
+      ...span({ id: 'o1', name: 'o1', start: 0, end: 50, parentId: 'missing' }),
+      orphaned: true as const,
+      fallbackRoot: true as const,
+    };
+    expect(describeParent(fallback, new Map())).toBe('orphan; used as display root');
   });
 });

@@ -6,16 +6,23 @@
  * Side Public License, v 1.
  */
 
+import { buildChildrenMap, displayParentId, mergeSegments, traceScopedId } from './self_time';
 import type { NormalizedSpan } from './types';
-import { buildChildrenMap, mergeSegments } from './self_time';
 
 /**
- * Returns the set of span IDs that have at least one direct child in the span array —
- * i.e. the spans that can display a disclosure caret.
+ * Returns the set of span IDs that have at least one direct **display** child present in the same
+ * trace group — i.e. the spans that can display a disclosure caret. Uses display topology so a
+ * reparented orphan's synthetic parent (its elected root) is collapsible. See Spec 26 / ADR 0028.
  * @internal
  */
 export function collapsibleParentIds(spans: NormalizedSpan[]): Set<string> {
-  return new Set(buildChildrenMap(spans).keys());
+  const idKeys = new Set(spans.map((s) => traceScopedId(s.traceId, s.id)));
+  const result = new Set<string>();
+  for (const span of spans) {
+    const p = displayParentId(span);
+    if (p !== undefined && idKeys.has(traceScopedId(span.traceId, p))) result.add(p);
+  }
+  return result;
 }
 
 /**
@@ -34,23 +41,20 @@ export function collapsibleParentIds(spans: NormalizedSpan[]): Set<string> {
  * path that returns `orderedSpans` without allocation. See ADR 0026 for the design rationale.
  * @internal
  */
-export function collapseLanes(
-  orderedSpans: NormalizedSpan[],
-  collapsedSpanIds: ReadonlySet<string>,
-): NormalizedSpan[] {
+export function collapseLanes(orderedSpans: NormalizedSpan[], collapsedSpanIds: ReadonlySet<string>): NormalizedSpan[] {
   if (collapsedSpanIds.size === 0) return orderedSpans;
 
-  const childrenMap = buildChildrenMap(orderedSpans);
+  const childrenMap = buildChildrenMap(orderedSpans, displayParentId);
 
   // Spans hidden because they are descendants of a collapsed ancestor.
   const hiddenIds = new Set<string>();
 
-  // Collect all descendants of `spanId` into `hiddenIds` and append their activeSegments to `out`.
-  function collectDescendants(spanId: string, out: Array<{ start: number; end: number }>): void {
-    for (const child of childrenMap.get(spanId) ?? []) {
+  // Collect all display descendants of `parent` into `hiddenIds` and append their activeSegments.
+  function collectDescendants(parent: NormalizedSpan, out: Array<{ start: number; end: number }>): void {
+    for (const child of childrenMap.get(traceScopedId(parent.traceId, parent.id)) ?? []) {
       hiddenIds.add(child.id);
       out.push(...child.activeSegments);
-      collectDescendants(child.id, out);
+      collectDescendants(child, out);
     }
   }
 
@@ -59,9 +63,9 @@ export function collapseLanes(
   const rollupBySpan = new Map<NormalizedSpan, NormalizedSpan['activeSegments']>();
   for (const span of orderedSpans) {
     if (!collapsedSpanIds.has(span.id)) continue;
-    if (!childrenMap.has(span.id)) continue; // childless — pass through unchanged
+    if (!childrenMap.has(traceScopedId(span.traceId, span.id))) continue; // childless — pass through unchanged
     const subtree: Array<{ start: number; end: number }> = [...span.activeSegments];
-    collectDescendants(span.id, subtree);
+    collectDescendants(span, subtree);
     // Clamp each segment to span's [start, end] and drop zero-width intervals.
     const clamped = subtree
       .map(({ start, end, ...rest }) => ({ ...rest, start: Math.max(start, span.start), end: Math.min(end, span.end) }))
@@ -97,25 +101,26 @@ export function rollupCriticalIntervals(
   collapsedSpanIds: ReadonlySet<string>,
   criticalIntervals: ReadonlyArray<{ spanId: string; start: number; end: number }>,
 ): Array<{ spanId: string; start: number; end: number }> {
-  if (collapsedSpanIds.size === 0 || criticalIntervals.length === 0) return criticalIntervals as Array<{ spanId: string; start: number; end: number }>;
+  if (collapsedSpanIds.size === 0 || criticalIntervals.length === 0)
+    return criticalIntervals as Array<{ spanId: string; start: number; end: number }>;
 
-  const childrenMap = buildChildrenMap(orderedSpans);
+  const childrenMap = buildChildrenMap(orderedSpans, displayParentId);
 
   // Map from each hidden span ID → the ID of its outermost visible collapsed ancestor.
   const hiddenToOwner = new Map<string, string>();
 
-  function collectHidden(spanId: string, owningAncestorId: string): void {
-    for (const child of childrenMap.get(spanId) ?? []) {
+  function collectHidden(parent: NormalizedSpan, owningAncestorId: string): void {
+    for (const child of childrenMap.get(traceScopedId(parent.traceId, parent.id)) ?? []) {
       hiddenToOwner.set(child.id, owningAncestorId);
-      collectHidden(child.id, owningAncestorId);
+      collectHidden(child, owningAncestorId);
     }
   }
 
   for (const span of orderedSpans) {
     if (!collapsedSpanIds.has(span.id)) continue;
-    if (!childrenMap.has(span.id)) continue; // childless — no rollup needed
+    if (!childrenMap.has(traceScopedId(span.traceId, span.id))) continue; // childless — no rollup needed
     if (hiddenToOwner.has(span.id)) continue; // hidden by an outer collapse — outer ancestor owns
-    collectHidden(span.id, span.id);
+    collectHidden(span, span.id);
   }
 
   if (hiddenToOwner.size === 0) return criticalIntervals as Array<{ spanId: string; start: number; end: number }>;
@@ -185,12 +190,12 @@ export function buildDisclosureMap(
     if (d !== undefined) depthById.set(span.id, d);
   }
 
-  const childrenMap = buildChildrenMap(pipelineSpans);
+  const childrenMap = buildChildrenMap(pipelineSpans, displayParentId);
 
-  function countDescendants(spanId: string): number {
+  function countDescendants(parent: NormalizedSpan): number {
     let n = 0;
-    for (const child of childrenMap.get(spanId) ?? []) {
-      n += 1 + countDescendants(child.id);
+    for (const child of childrenMap.get(traceScopedId(parent.traceId, parent.id)) ?? []) {
+      n += 1 + countDescendants(child);
     }
     return n;
   }
@@ -200,7 +205,7 @@ export function buildDisclosureMap(
     if (!parentIds.has(span.id)) continue;
     const depth = depthById.get(span.id) ?? 0;
     const state: 'collapsed' | 'expanded' = effectiveCollapsed.has(span.id) ? 'collapsed' : 'expanded';
-    const descendantCount = countDescendants(span.id);
+    const descendantCount = countDescendants(span);
     result.set(i, { state, depth, descendantCount });
   }
 

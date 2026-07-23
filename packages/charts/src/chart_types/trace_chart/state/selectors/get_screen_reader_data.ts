@@ -6,20 +6,20 @@
  * Side Public License, v 1.
  */
 
+import { ChartType } from '../../..';
+import { SpecType } from '../../../../specs/spec_type';
+import type { GlobalChartState } from '../../../../state/chart_state';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { EMPTY_SCREEN_READER_ITEMS, type ScreenReaderItem } from '../../../../state/selectors/get_screenreader_data';
+import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
 import { buildDisclosureMap, collapseLanes, collapsibleParentIds } from '../../data/collapse';
 import { normalize } from '../../data/normalize';
 import { orderLanes } from '../../data/order_lanes';
 import { resolveActive } from '../../data/self_time';
 import type { NormalizedSpan } from '../../data/types';
 import { computeSelfTime, formatMs } from '../../render/tooltip';
-import { ChartType } from '../../..';
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import type { GlobalChartState } from '../../../../state/chart_state';
-import { getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
-import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { EMPTY_SCREEN_READER_ITEMS, type ScreenReaderItem } from '../../../../state/selectors/get_screenreader_data';
-import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
-import { SpecType } from '../../../../specs/spec_type';
 import type { TraceSpec } from '../../trace_api';
 
 /**
@@ -33,6 +33,21 @@ export interface TraceTableRow {
   selfTime: string;
   startOffset: string;
   parentName: string;
+}
+
+/**
+ * Screen-reader parent description for one span. For a partial-trace orphan (Spec 26) it discloses
+ * the missing recorded parent and its synthetic display placement instead of a resolved parent name;
+ * otherwise it resolves the recorded parent's name (or `—` when absent/unset).
+ * @internal
+ */
+export function describeParent(span: NormalizedSpan, nameById: Map<string, string>): string {
+  if (span.orphaned) {
+    return span.reparentedToSpanId !== undefined
+      ? `orphan; displayed under ${nameById.get(span.reparentedToSpanId) ?? span.reparentedToSpanId}`
+      : 'orphan; used as display root';
+  }
+  return span.parentId !== undefined ? nameById.get(span.parentId) ?? '—' : '—';
 }
 
 /**
@@ -51,7 +66,10 @@ const getNormalizedSpans = createCustomCachedSelector(
     (state: GlobalChartState) => getSpecsFromStore<TraceSpec>(state.specs, ChartType.Trace, SpecType.Series)[0],
     (state: GlobalChartState) => getChartThemeSelector(state).colors.vizColors,
   ],
-  (spec, vizColors): {
+  (
+    spec,
+    vizColors,
+  ): {
     spans: NormalizedSpan[];
     disclosure: Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number }>;
     domain: { min: number; max: number };
@@ -109,7 +127,8 @@ export const getTraceTableRowsSelector = createCustomCachedSelector(
         totalDuration: formatMs(span.end - span.start),
         selfTime: formatMs(computeSelfTime(span)),
         startOffset: `+${formatMs(span.start - domain.min)}`,
-        parentName: span.parentId != null ? nameById.get(span.parentId) ?? '—' : '—',
+        // Partial-trace disclosure (Spec 26) is folded into the parent description.
+        parentName: describeParent(span, nameById),
       };
     });
   },

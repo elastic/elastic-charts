@@ -6,11 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { buildChildrenMap, resolveActive } from './self_time';
+import { buildChildrenMap, resolveActive, traceScopedId } from './self_time';
 import type { NormalizedSpan } from './types';
 
 /** Minimal NormalizedSpan factory — only fields relevant to self-time derivation. */
-function span(id: string, start: number, end: number, opts: { parentId?: string; activeSegments?: { start: number; end: number }[] } = {}): NormalizedSpan {
+function span(
+  id: string,
+  start: number,
+  end: number,
+  opts: { parentId?: string; activeSegments?: { start: number; end: number }[] } = {},
+): NormalizedSpan {
   return {
     id,
     name: id,
@@ -130,11 +135,7 @@ describe('resolveActive', () => {
 
   it('output spans are sorted ascending by start when building the children map', () => {
     // resolveActive does not sort — only checks that the map is order-independent
-    const spans = [
-      span('c', 500, 700, { parentId: 'a' }),
-      span('b', 200, 400, { parentId: 'a' }),
-      span('a', 0, 1000),
-    ];
+    const spans = [span('c', 500, 700, { parentId: 'a' }), span('b', 200, 400, { parentId: 'a' }), span('a', 0, 1000)];
     const result = resolveActive(spans);
     const root = result.find((s) => s.id === 'a')!;
     // children b=[200,400] and c=[500,700]: gaps [0,200], [400,500], [700,1000]
@@ -160,12 +161,13 @@ describe('buildChildrenMap', () => {
     expect(map.size).toBe(0);
   });
 
-  it('groups children under their parentId', () => {
+  it('groups children under their trace-scoped parentId', () => {
     const spans = [span('root'), span('c1', 'root'), span('c2', 'root'), span('gc', 'c1')];
     const map = buildChildrenMap(spans);
-    expect(map.get('root')!.map((s) => s.id)).toEqual(['c1', 'c2']);
-    expect(map.get('c1')!.map((s) => s.id)).toEqual(['gc']);
-    expect(map.has('c2')).toBe(false);
+    // Keys are trace-scoped (traceId is undefined here → the unknown group). See Spec 26 / ADR 0028.
+    expect(map.get(traceScopedId(undefined, 'root'))!.map((s) => s.id)).toEqual(['c1', 'c2']);
+    expect(map.get(traceScopedId(undefined, 'c1'))!.map((s) => s.id)).toEqual(['gc']);
+    expect(map.has(traceScopedId(undefined, 'c2'))).toBe(false);
   });
 
   it('resolveActive output is unchanged by the refactor', () => {
@@ -179,5 +181,31 @@ describe('buildChildrenMap', () => {
       { start: 0, end: 2 },
       { start: 6, end: 10 },
     ]);
+  });
+
+  it('self time is trace-local: a same-id parent reference in another trace does not subtract (Spec 26)', () => {
+    // 'root' exists in trace A. A child in trace B references parentId 'root'; it must NOT be treated
+    // as A's child, so A's root keeps its full-duration self time.
+    const aRoot: NormalizedSpan = {
+      id: 'root',
+      name: 'root',
+      traceId: 'A',
+      start: 0,
+      end: 10,
+      activeSegments: [],
+      meta: {} as never,
+    };
+    const bChild: NormalizedSpan = {
+      id: 'b',
+      name: 'b',
+      traceId: 'B',
+      parentId: 'root',
+      start: 2,
+      end: 6,
+      activeSegments: [],
+      meta: {} as never,
+    };
+    const result = resolveActive([aRoot, bChild]);
+    expect(result.find((s) => s.id === 'root')!.activeSegments).toEqual([{ start: 0, end: 10 }]);
   });
 });

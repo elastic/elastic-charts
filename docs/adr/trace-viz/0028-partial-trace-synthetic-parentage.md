@@ -1,6 +1,6 @@
 # ADR 0028 — Partial traces use source-preserving synthetic parentage
 
-**Status:** Proposed (Spec 26)
+**Status:** Proposed (Spec 26); parity divergences and regression strategy refined by [ADR 0031](./0031-kibana-reparenting-parity.md)
 
 ## Context
 
@@ -29,7 +29,9 @@ relationship and any synthetic root used for display.
 Recovery is grouped by `traceId` so a span is never attached across distinct trace-ID values
 (`undefined` is one group because no finer identity exists). A group with exactly one recorded root
 uses it. A group with no recorded root elects its first orphan in normalized input order as a fallback
-root, matching Kibana's fallback rule. A group with multiple recorded roots elects the last root in
+root, matching Kibana's non-filtered `getRootItemOrFallback` rule (we deliberately do not adopt
+Kibana's filtered earliest-timestamp election — see [ADR 0031](./0031-kibana-reparenting-parity.md)).
+A group with multiple recorded roots elects the last root in
 normalized input order. Only the elected root's reachable tree is visible: non-elected roots,
 disconnected cycles, and their unreachable components are omitted, matching Kibana even in a
 combined waterfall.
@@ -81,8 +83,10 @@ provenance on an elected fallback root even though Kibana removes that item from
 by leaving trace-level warning presentation to the consuming application rather than rendering
 Kibana's built-in callout. Its multi-trace extension isolates invalid same-trace groups but treats an
 ID duplicated across groups as a chart-wide identity failure. Focused-subtree selection is not
-introduced by Spec 26; a future focus-root feature must adopt Kibana's ancestor-path cycle guard
-before it can use synthetic parentage.
+introduced by Spec 26; because our elected root is always parentless within its group, reparenting
+cannot form a cycle and Kibana's ancestor-path cycle guard is unnecessary here — a future focus-root
+feature must add it back before it can use synthetic parentage
+(rationale in [ADR 0031](./0031-kibana-reparenting-parity.md)).
 
 ## Consequences
 

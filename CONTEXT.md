@@ -96,6 +96,20 @@ supplied trace data. Partial describes data completeness, not whether every orph
 beneath an elected root.
 _Avoid_: invalid trace (partiality alone does not make a trace group invalid), broken trace.
 
+**Elected root**:
+The single span each trace group is displayed beneath. A group with exactly one recorded root uses
+it; a group with more than one recorded root elects the last in normalized input order (earlier
+roots and anything reachable only from them are omitted); a group with no recorded root elects a
+**fallback root**. Only the elected root's reachable subtree is visible. See
+[ADR 0028](./docs/adr/trace-viz/0028-partial-trace-synthetic-parentage.md).
+_Avoid_: main root (there is only ever one visible root per group), primary span.
+
+**Fallback root**:
+The first orphan span (in normalized input order) elected as its trace group's elected root when the
+group has no recorded root. It keeps its **orphan span** provenance and is not given a synthetic
+display parent; the remaining orphans are displayed beneath it.
+_Avoid_: synthetic root (the fallback root is a real supplied span, not fabricated), default root.
+
 **Lane order**:
 The rule that assigns spans to lanes top-to-bottom. Two modes: `tree` (depth-first `parentId`
 nesting — each parent is immediately above its descendants; the default, matching Kibana APM) and

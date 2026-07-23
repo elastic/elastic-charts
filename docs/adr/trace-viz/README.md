@@ -30,6 +30,9 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0026 — Collapsible nesting: rolled-up semantics, tree-gating, and disclosure gutter](./0026-collapsible-nesting.md)
 - [0027 — Span IDs are unique within one supplied dataset](./0027-span-id-uniqueness.md)
 - [0028 — Partial traces use source-preserving synthetic parentage](./0028-partial-trace-synthetic-parentage.md)
+- [0029 — Trace badge rendering architecture](./0029-trace-badge-rendering-architecture.md)
+- [0030 — Trace annotations compose as child specs](./0030-trace-annotation-composition.md)
+- [0031 — Kibana reparenting parity: intentional divergences, cycle-safety, and a ported regression suite](./0031-kibana-reparenting-parity.md)
 
 ## Spec plans
 
