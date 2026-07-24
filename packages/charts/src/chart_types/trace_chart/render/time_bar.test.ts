@@ -17,6 +17,7 @@
 import { drawTimeBar, pickElapsedUnit, formatElapsedMs } from './time_bar';
 import type { TraceGeometry } from './types';
 import type { TraceStyle } from './types';
+import { DEFAULT_TRACE_BADGE_STYLE } from './types';
 
 // ---------------------------------------------------------------------------
 // Mocks: intercept raster factory calls so we can assert which was selected.
@@ -86,6 +87,7 @@ const style: TraceStyle = {
   criticalPathColor: '#C61E25',
   criticalPathThickness: 2,
   labelPosition: 'gutter',
+  badge: DEFAULT_TRACE_BADGE_STYLE,
 };
 
 function makeGeom(xScaleType: 'time' | 'linear'): TraceGeometry {
@@ -98,6 +100,7 @@ function makeGeom(xScaleType: 'time' | 'linear'): TraceGeometry {
     timeBar: { top: 0, left: plotLeft, width: plotWidth, height: 32 },
     plot: { top: 32, left: plotLeft, width: plotWidth, height: 568 },
     laneHeight: 24,
+    labelBandPx: 0,
     domain: { min: 0, max: 10_000 },
     focusDomain,
     scrollOffset: 0,
@@ -107,6 +110,7 @@ function makeGeom(xScaleType: 'time' | 'linear'): TraceGeometry {
     emptyMessage: null,
     disclosureByLane: new Map(),
     criticalIntervalsByLane: new Map(),
+    badgesByLane: new Map(),
     scale: (tMs: number) => plotLeft + (tMs / 10_000) * plotWidth,
   };
 }
@@ -198,6 +202,7 @@ describe('drawTimeBar — sub-ms ticks all render with distinct labels (linear m
       timeBar: { top: 0, left: plotLeft, width: plotWidth, height: 32 },
       plot: { top: 32, left: plotLeft, width: plotWidth, height: 568 },
       laneHeight: 24,
+      labelBandPx: 0,
       domain: { min: 0, max: 10_000 },
       focusDomain,
       scrollOffset: 0,
@@ -207,6 +212,7 @@ describe('drawTimeBar — sub-ms ticks all render with distinct labels (linear m
       emptyMessage: null,
       disclosureByLane: new Map(),
       criticalIntervalsByLane: new Map(),
+      badgesByLane: new Map(),
       scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
     };
 
@@ -300,6 +306,7 @@ describe('drawTimeBar — finest-labeled-layer selection (time mode)', () => {
       timeBar: { top: 0, left: plotLeft, width: plotWidth, height: 32 },
       plot: { top: 32, left: plotLeft, width: plotWidth, height: 568 },
       laneHeight: 24,
+      labelBandPx: 0,
       domain: { min: 0, max: 10_000 },
       focusDomain,
       scrollOffset: 0,
@@ -309,6 +316,7 @@ describe('drawTimeBar — finest-labeled-layer selection (time mode)', () => {
       emptyMessage: null,
       disclosureByLane: new Map(),
       criticalIntervalsByLane: new Map(),
+      badgesByLane: new Map(),
       // scale converts ms → canvas x; the domain is passed as seconds to the time engine,
       // but geom.scale always receives ms (tickMs = minimum * MS_PER_SECOND inside drawTimeBar).
       scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
@@ -347,6 +355,7 @@ describe('drawTimeBar — multi-level time bar (Spec 25)', () => {
       timeBar: { top: 0, left: plotLeft, width: plotWidth, height: 34 },
       plot: { top: 34, left: plotLeft, width: plotWidth, height: 566 },
       laneHeight: 24,
+      labelBandPx: 0,
       domain: { min: 0, max: 10_000 },
       focusDomain,
       scrollOffset: 0,
@@ -356,6 +365,7 @@ describe('drawTimeBar — multi-level time bar (Spec 25)', () => {
       emptyMessage: null,
       disclosureByLane: new Map(),
       criticalIntervalsByLane: new Map(),
+      badgesByLane: new Map(),
       scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
     };
   }
@@ -694,6 +704,7 @@ describe('drawTimeBar — integer-ns filter for sub-ns steps (ADR 0010)', () => 
       timeBar: { top: 0, left: plotLeft, width: plotWidth, height: 32 },
       plot: { top: 32, left: plotLeft, width: plotWidth, height: 568 },
       laneHeight: 24,
+      labelBandPx: 0,
       domain: { min: 0, max: 1e-6 },
       focusDomain,
       scrollOffset: 0,
@@ -703,6 +714,7 @@ describe('drawTimeBar — integer-ns filter for sub-ns steps (ADR 0010)', () => 
       emptyMessage: null,
       disclosureByLane: new Map(),
       criticalIntervalsByLane: new Map(),
+      badgesByLane: new Map(),
       scale: (tMs: number) => plotLeft + (tMs / 1e-6) * plotWidth,
     };
 

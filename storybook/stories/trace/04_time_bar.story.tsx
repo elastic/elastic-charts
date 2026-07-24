@@ -15,6 +15,7 @@ import {
   TICK_LAYER_PADDING,
   TICK_LAYER_BOTTOM_INSET,
 } from '@elastic/charts/src/chart_types/trace_chart/render/time_bar';
+import { DEFAULT_TRACE_BADGE_STYLE } from '@elastic/charts/src/chart_types/trace_chart/render/types';
 import type { TraceStyle } from '@elastic/charts/src/chart_types/trace_chart/render/types';
 
 import { EPOCH_BASE } from './data';
@@ -40,6 +41,7 @@ const STYLE: TraceStyle = {
   criticalPathColor: '#c61e25',
   criticalPathThickness: 2,
   labelPosition: 'gutter',
+  badge: DEFAULT_TRACE_BADGE_STYLE,
 };
 
 // ---------------------------------------------------------------------------

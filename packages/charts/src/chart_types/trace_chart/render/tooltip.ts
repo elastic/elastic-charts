@@ -11,7 +11,7 @@ import type { TooltipInfo } from '../../../components/tooltip/types';
 import type { TraceElementEvent } from '../../../specs/settings';
 import { waitingSegments } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
-import type { TraceSelectionDetail } from '../trace_api';
+import type { TraceSelectionDetail, TraceSpanBadgeEventSpan } from '../trace_api';
 
 /** @internal */
 export function formatMs(ms: number): string {
@@ -250,4 +250,15 @@ export function buildTraceEvent(span: NormalizedSpan): TraceElementEvent {
     ...(span.reparentedToSpanId !== undefined && { reparentedToSpanId: span.reparentedToSpanId }),
     datum: span.meta,
   };
+}
+
+/**
+ * Builds the owning-span metadata carried by a `TraceSpanBadgeEvent` (Spec 27). Identical to
+ * `buildTraceEvent` minus the `type` discriminator — Span badge events report the span for context
+ * but are not themselves `TraceElementEvent`s.
+ * @internal
+ */
+export function buildTraceSpanBadgeEventSpan(span: NormalizedSpan): TraceSpanBadgeEventSpan {
+  const { type: _type, ...spanMeta } = buildTraceEvent(span);
+  return spanMeta;
 }

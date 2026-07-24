@@ -38,3 +38,4 @@ export { Example as collapsibleNesting } from './24_collapsible_nesting.story';
 export { Example as criticalPath } from './25_critical_path.story';
 export { Example as clockSkew } from './26_clock_skew.story';
 export { Example as partialTraceReparenting } from './27_partial_trace_reparenting.story';
+export { Example as spanBadges } from './28_span_badges.story';

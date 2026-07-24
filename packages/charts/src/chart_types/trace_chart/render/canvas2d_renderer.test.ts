@@ -15,9 +15,19 @@
  * draw-call counts without running real canvas operations.
  */
 
-import { draw, pickDisclosure, pickLane, pickRegion, canvas2dRenderer } from './canvas2d_renderer';
+import {
+  draw,
+  drawBadges,
+  pickBadge,
+  pickDisclosure,
+  pickLane,
+  pickRegion,
+  resolveBadgeColors,
+  canvas2dRenderer,
+} from './canvas2d_renderer';
 import type { NormalizedSpan } from '../data/types';
-import type { TraceGeometry, TraceStyle } from './types';
+import type { BadgeLayoutItem, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
+import { DEFAULT_TRACE_BADGE_STYLE } from './types';
 import type { TraceDatum } from '../trace_api';
 import { makeCtx } from '../trace_test_helpers';
 
@@ -58,6 +68,7 @@ const style: TraceStyle = {
   criticalPathColor: '#C61E25',
   criticalPathThickness: 2,
   labelPosition: 'gutter',
+  badge: DEFAULT_TRACE_BADGE_STYLE,
 };
 
 // Canvas partition dimensions — must be consistent with the style above.
@@ -109,6 +120,7 @@ function makeGeom(overrides: Partial<TraceGeometry> = {}): TraceGeometry {
     timeBar: { top: 0, left: PLOT_LEFT, width: PLOT_WIDTH, height: PLOT_TOP },
     plot: { top: PLOT_TOP, left: PLOT_LEFT, width: PLOT_WIDTH, height: PLOT_HEIGHT },
     laneHeight: LANE_HEIGHT,
+    labelBandPx: 0,
     domain: { min: 0, max: 1000 },
     focusDomain: { min: 0, max: 1000 },
     scrollOffset: 0,
@@ -119,6 +131,7 @@ function makeGeom(overrides: Partial<TraceGeometry> = {}): TraceGeometry {
     emptyMessage: null,
     disclosureByLane: new Map(),
     criticalIntervalsByLane: new Map(),
+    badgesByLane: new Map(),
     ...overrides,
   };
 }
@@ -416,7 +429,7 @@ describe('draw — per-segment color override', () => {
         end: 1000,
         activeSegments: [
           { start: 0, end: 500, color: '#ff0000' }, // explicit color
-          { start: 500, end: 1000 },                 // no color → span fallback
+          { start: 500, end: 1000 }, // no color → span fallback
         ],
         meta: { id: 'mixed', name: 'Mixed', traceId: 't1', start: 0, end: 1000 } satisfies TraceDatum,
       },
@@ -697,8 +710,8 @@ describe('pickDisclosure', () => {
 
   it('returns lane 1 when x is within the depth-1 caret zone', () => {
     // lane 1 → y = 56..79; depth-1 caret zone → x in [INDENT, INDENT + CARET_GLYPH_PX)
-    const left = 1 * CARET_INDENT_STEP_PX;  // = 8
-    const right = left + CARET_GLYPH_PX;    // = 28
+    const left = 1 * CARET_INDENT_STEP_PX; // = 8
+    const right = left + CARET_GLYPH_PX; // = 28
     expect(pickDisclosure(left, 60, geomWithCarets)).toBe(1);
     expect(pickDisclosure(right - 1, 60, geomWithCarets)).toBe(1);
   });
@@ -725,14 +738,15 @@ describe('pickRegion — collapsed lane', () => {
       start: 0,
       end: 1000,
       // Rolled-up active segments (as produced by collapseLanes)
-      activeSegments: [{ start: 0, end: 500 }, { start: 700, end: 1000 }],
+      activeSegments: [
+        { start: 0, end: 500 },
+        { start: 700, end: 1000 },
+      ],
       meta: {} as never,
     };
     return makeGeom({
       spans: [collapsedSpan],
-      disclosureByLane: new Map([
-        [0, { state: 'collapsed' as const, depth: 0, descendantCount: 3 }],
-      ]),
+      disclosureByLane: new Map([[0, { state: 'collapsed' as const, depth: 0, descendantCount: 3 }]]),
     });
   }
 
@@ -769,9 +783,7 @@ describe('pickRegion — collapsed lane', () => {
     };
     const geomExpanded = makeGeom({
       spans: [expandedSpan],
-      disclosureByLane: new Map([
-        [0, { state: 'expanded' as const, depth: 0, descendantCount: 1 }],
-      ]),
+      disclosureByLane: new Map([[0, { state: 'expanded' as const, depth: 0, descendantCount: 1 }]]),
     });
     // x=300 → t = (300-200)/700*1000 ≈ 143ms — inside [0,500] active segment
     const result = pickRegion(300, 40, geomExpanded);
@@ -822,7 +834,12 @@ describe('draw — critical-path pass', () => {
     // y = 32 + 40 - 3 - 14 = 55  (= barBottom, above the 14 px label band)
     const LABEL_BAND_PX = style.gutterLabel.fontSize + LANE_PADDING; // 11 + 3 = 14
     const INLINE_LANE_HEIGHT = 40;
-    const styleInline: TraceStyle = { ...style, labelPosition: 'inline', gutterWidth: 0, laneHeight: INLINE_LANE_HEIGHT };
+    const styleInline: TraceStyle = {
+      ...style,
+      labelPosition: 'inline',
+      gutterWidth: 0,
+      laneHeight: INLINE_LANE_HEIGHT,
+    };
     const scaleInline = (t: number) => (t / 1000) * PLOT_WIDTH;
     const criticalIntervalsByLane = new Map([[0, [{ start: 0, end: 1000 }]]]);
     const ctx = makeCtx();
@@ -833,6 +850,7 @@ describe('draw — critical-path pass', () => {
         gutter: { top: 0, left: 0, width: 0, height: PLOT_TOP + PLOT_HEIGHT },
         plot: { top: PLOT_TOP, left: 0, width: PLOT_WIDTH, height: PLOT_HEIGHT },
         laneHeight: INLINE_LANE_HEIGHT,
+        labelBandPx: LABEL_BAND_PX,
         scale: scaleInline,
         criticalIntervalsByLane,
       }),
@@ -864,13 +882,21 @@ describe('draw — critical-path pass', () => {
     const spanA = spans[0]!;
 
     const ctxFull = makeCtx();
-    draw(ctxFull, makeGeom({ spans: [spanA], criticalIntervalsByLane: new Map([[0, [{ start: 0, end: 1000 }]]]) }), style);
+    draw(
+      ctxFull,
+      makeGeom({ spans: [spanA], criticalIntervalsByLane: new Map([[0, [{ start: 0, end: 1000 }]]]) }),
+      style,
+    );
     // moveTo[0]/lineTo[0] = total-duration; moveTo[1]/lineTo[1] = critical-path.
     const fullX1 = ((ctxFull.moveTo as jest.Mock).mock.calls[1] as [number, number])[0];
     const fullX2 = ((ctxFull.lineTo as jest.Mock).mock.calls[1] as [number, number])[0];
 
     const ctxSub = makeCtx();
-    draw(ctxSub, makeGeom({ spans: [spanA], criticalIntervalsByLane: new Map([[0, [{ start: 200, end: 700 }]]]) }), style);
+    draw(
+      ctxSub,
+      makeGeom({ spans: [spanA], criticalIntervalsByLane: new Map([[0, [{ start: 200, end: 700 }]]]) }),
+      style,
+    );
     const subX1 = ((ctxSub.moveTo as jest.Mock).mock.calls[1] as [number, number])[0];
     const subX2 = ((ctxSub.lineTo as jest.Mock).mock.calls[1] as [number, number])[0];
 
@@ -881,5 +907,160 @@ describe('draw — critical-path pass', () => {
     expect(subX1).toBeGreaterThan(fullX1);
     // Sub-interval ends further left (before the span end).
     expect(subX2).toBeLessThan(fullX2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: Span badges (Spec 27) — palette resolution + draw pass
+// ---------------------------------------------------------------------------
+
+describe('resolveBadgeColors', () => {
+  const palette = DEFAULT_TRACE_BADGE_STYLE.palette;
+
+  it('uses the default token when no color is given', () => {
+    expect(resolveBadgeColors(undefined, palette)).toBe(palette.default);
+  });
+
+  it('maps a named token to its palette entry', () => {
+    expect(resolveBadgeColors('success', palette)).toBe(palette.success);
+  });
+
+  it('treats a custom Color as the background with auto-contrasting text', () => {
+    expect(resolveBadgeColors('#000000', palette)).toEqual({ background: '#000000', text: '#ffffff' });
+    expect(resolveBadgeColors('#ffffff', palette)).toEqual({ background: '#ffffff', text: '#1a1c21' });
+  });
+});
+
+describe('drawBadges', () => {
+  const badgeItem = (overrides: Partial<BadgeLayoutItem> = {}): BadgeLayoutItem => ({
+    badge: { id: 'b', text: 'GET' },
+    x: 210,
+    y: 40,
+    width: 40,
+    height: 20,
+    text: 'GET',
+    textX: 216,
+    fontSize: 12,
+    ariaLabel: 'GET',
+    ...overrides,
+  });
+
+  const geomWithBadges = (items: BadgeLayoutItem[]): TraceGeometry =>
+    makeGeom({ badgesByLane: new Map<number, LaneBadgeLayout>([[0, { items }]]) });
+
+  it('is a no-op when no badges are laid out', () => {
+    const ctx = makeCtx();
+    drawBadges(ctx, makeGeom(), style, () => undefined);
+    expect(ctx.drawImage).not.toHaveBeenCalled();
+    expect(ctx.fillText).not.toHaveBeenCalled();
+  });
+
+  it('draws the (already-truncated) badge text', () => {
+    const ctx = makeCtx();
+    drawBadges(ctx, geomWithBadges([badgeItem({ text: 'GE…' })]), style, () => undefined);
+    expect(ctx.fillText).toHaveBeenCalledWith('GE…', expect.any(Number), expect.any(Number));
+  });
+
+  it('draws a decoded image when the resolver returns one', () => {
+    const ctx = makeCtx();
+    // A real canvas is a valid CanvasImageSource (jest-canvas-mock rejects plain objects).
+    const fakeImage = document.createElement('canvas') as CanvasImageSource;
+    const item = badgeItem({
+      text: undefined,
+      image: { src: 'i.svg', crossOrigin: 'anonymous', x: 214, y: 44, size: 12 },
+    });
+    drawBadges(ctx, geomWithBadges([item]), style, () => fakeImage);
+    expect(ctx.drawImage).toHaveBeenCalledWith(fakeImage, 214, 44, 12, 12);
+  });
+
+  it('draws a placeholder (no drawImage) while the image is unresolved', () => {
+    const ctx = makeCtx();
+    const item = badgeItem({
+      text: undefined,
+      image: { src: 'i.svg', crossOrigin: 'anonymous', x: 214, y: 44, size: 12 },
+    });
+    drawBadges(ctx, geomWithBadges([item]), style, () => undefined);
+    expect(ctx.drawImage).not.toHaveBeenCalled();
+    expect(ctx.fill).toHaveBeenCalled(); // placeholder box filled via renderRect
+  });
+
+  it('skips the pill fill for a transparent (hollow) treatment but strokes a border', () => {
+    const ctx = makeCtx();
+    drawBadges(
+      ctx,
+      geomWithBadges([badgeItem({ badge: { id: 'b', text: 'x', color: 'hollow' } })]),
+      style,
+      () => undefined,
+    );
+    expect(ctx.stroke).toHaveBeenCalled(); // border stroked
+  });
+
+  it('badge media inherits badge size', () => {
+    const ctx = makeCtx();
+    const img = document.createElement('canvas') as CanvasImageSource;
+    // The image box is a square driven by the shared badge size (here 16), independent of the
+    // image's intrinsic dimensions — so the media scales with the badge, not vice versa.
+    const item = badgeItem({
+      text: undefined,
+      image: { src: 'i.svg', crossOrigin: 'anonymous', x: 214, y: 42, size: 16 },
+    });
+    drawBadges(ctx, geomWithBadges([item]), style, () => img);
+    const [, , , w, h] = (ctx.drawImage as jest.Mock).mock.calls[0]!;
+    expect(w).toBe(16);
+    expect(h).toBe(16); // square box = the badge-size media box
+  });
+
+  it('badges render without interaction handlers', () => {
+    const ctx = makeCtx();
+    // drawBadges takes only geometry, style, and an image resolver — never interaction handlers —
+    // so badges are drawn as pure adornments regardless of whether onBadge* handlers are supplied.
+    drawBadges(ctx, geomWithBadges([badgeItem()]), style, () => undefined);
+    expect(ctx.fillText).toHaveBeenCalledWith('GET', expect.any(Number), expect.any(Number));
+  });
+
+  it('badge visibility is independent of label drawing', () => {
+    const ctx = makeCtx();
+    // Even with labels omitted (`labelPosition: 'none'`), laid-out badges still draw: badge
+    // visibility is decided during layout, not gated on whether span labels are rendered.
+    const noneStyle = { ...style, labelPosition: 'none' as const };
+    drawBadges(ctx, geomWithBadges([badgeItem()]), noneStyle, () => undefined);
+    expect(ctx.fillText).toHaveBeenCalledWith('GET', expect.any(Number), expect.any(Number));
+  });
+});
+
+describe('pickBadge', () => {
+  const item = (id: string, x: number): BadgeLayoutItem => ({
+    badge: { id, text: id },
+    x,
+    y: 40,
+    width: 30,
+    height: 20,
+    text: id,
+    textX: x + 6,
+    fontSize: 12,
+    ariaLabel: id,
+  });
+
+  const geomWith = (map: Map<number, LaneBadgeLayout>): TraceGeometry => makeGeom({ badgesByLane: map });
+
+  it('returns null when there are no badges', () => {
+    expect(pickBadge(10, 45, makeGeom())).toBeNull();
+  });
+
+  it('returns the badge whose rect contains the point', () => {
+    const hit = pickBadge(220, 45, geomWith(new Map([[0, { items: [item('a', 210), item('b', 250)] }]])));
+    expect(hit?.item.badge.id).toBe('a');
+    expect(hit?.laneIndex).toBe(0);
+  });
+
+  it('returns null when the point is between badges', () => {
+    expect(pickBadge(245, 45, geomWith(new Map([[0, { items: [item('a', 210), item('b', 250)] }]])))).toBeNull();
+  });
+
+  it('resolves duplicate-id badges to the first match (accessor order)', () => {
+    // Two overlapping badges with the same id → first wins for deterministic interaction.
+    const dup: BadgeLayoutItem[] = [item('same', 210), { ...item('same', 210), badge: { id: 'same', text: 'second' } }];
+    const hit = pickBadge(215, 45, geomWith(new Map([[0, { items: dup }]])));
+    expect(hit?.item.badge.text).toBe('same');
   });
 });

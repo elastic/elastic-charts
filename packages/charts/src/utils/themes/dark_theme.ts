@@ -20,6 +20,7 @@ import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES }
 import { DARK_THEME_BULLET_STYLE } from '../../chart_types/bullet_graph/theme';
 import { Colors } from '../../common/colors';
 import { TAU } from '../../common/constants';
+import { DEFAULT_TRACE_BADGE_STYLE } from '../../chart_types/trace_chart/render/types';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
 
@@ -491,6 +492,7 @@ export const DARK_THEME: Theme = {
     criticalPathColor: '#EE4C48',
     criticalPathThickness: 2,
     labelPosition: 'gutter',
+    badge: DEFAULT_TRACE_BADGE_STYLE,
   },
   // TODO map colors to base color mappings
   flamegraph: {

@@ -12,28 +12,32 @@ import { connect } from 'react-redux';
 import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
+import { resolveSpanBadges } from './data/badges';
 import { buildDisclosureMap, collapseLanes, collapsibleParentIds, rollupCriticalIntervals } from './data/collapse';
 import { normalize } from './data/normalize';
 import { orderLanes } from './data/order_lanes';
 import { resolveActive, waitingSegments } from './data/self_time';
 import type { NormalizedSpan } from './data/types';
-import { canvas2dRenderer, pickDisclosure, pickRegion } from './render/canvas2d_renderer';
+import { computeBadgeGutterWidth, layoutBadges } from './render/badge_layout';
+import type { BadgeTextMeasurer } from './render/badge_layout';
+import { BadgeImageCache } from './render/badge_images';
+import { canvas2dRenderer, drawBadges, pickBadge, pickDisclosure, pickRegion } from './render/canvas2d_renderer';
 import { buildGeometry } from './render/geometry';
 import { gutterPx } from './render/types';
 import type { ViewKey } from './render/interaction';
 import { computeMaxScroll, computeScrollTarget, computeZoomMax, domainToZoomPan, hasViewKeyChanged, mapTouchesToCanvasX, minVisibleExtentForScale, pinchRatio, pixelRangeToDomain } from './render/interaction';
-import { buildTraceEvent, buildTraceSelectionDetail, buildTraceTooltipInfo, formatMs } from './render/tooltip';
+import { buildTraceEvent, buildTraceSelectionDetail, buildTraceSpanBadgeEventSpan, buildTraceTooltipInfo, formatMs } from './render/tooltip';
 import { ScreenReaderTraceTable } from './render/screen_reader_trace_table';
 import { AriaLiveRegion } from './render/aria_live_region';
 import { BrushOverlay } from './render/brush_overlay';
 import { KeyboardFocusBadge } from './render/keyboard_focus_badge';
-import type { HoverRegion, PickResult } from './render/types';
+import type { BadgeLayoutItem, HoverRegion, PickResult, TraceGeometry } from './render/types';
 import type { BrushState, HoverState, PinState, TouchState } from './trace_state';
 import { ScreenReaderSummary } from '../../components/accessibility';
 import { buildTraceStyle } from './theme';
 import { clamp } from '../../utils/common';
 import { Logger } from '../../utils/logger';
-import type { TraceSegmentRef, TraceSelection, TraceSpec } from './trace_api';
+import type { TraceSegmentRef, TraceSelection, TraceSpanBadgeEvent, TraceSpec } from './trace_api';
 import { applySelection, selectionModeFromEvent, selectionSetEqual } from './selection_helpers';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
@@ -138,7 +142,7 @@ interface OwnProps {
 
 type TraceProps = StateProps & DispatchProps & OwnProps;
 
-/** Memoized normalize→resolveActive output. Keyed on (data ref, xScaleType, traceId, colorBy ref, vizColors ref, criticalPath ref). */
+/** Memoized normalize→resolveActive output. Keyed on (data ref, xScaleType, traceId, colorBy ref, vizColors ref, criticalPath ref, badgeAccessor ref). */
 interface PipelineCache {
   dataRef: TraceSpec['data'];
   xScaleType: string;
@@ -147,6 +151,7 @@ interface PipelineCache {
   laneOrder: TraceSpec['laneOrder'];
   vizColors: Theme['colors']['vizColors'];
   criticalPath: TraceSpec['criticalPath'];
+  badgeAccessor: TraceSpec['badgeAccessor'];
   result: { spans: ReturnType<typeof resolveActive>; depthBySpan: Map<ReturnType<typeof resolveActive>[number], number>; hasParents: boolean; maxDepth: number; domain: { min: number; max: number }; emptyReason?: 'trace-not-found'; criticalIntervals: Array<{ spanId: string; start: number; end: number }> };
 }
 
@@ -193,6 +198,14 @@ class TraceComponent extends React.Component<TraceProps> {
   // Memoized pipeline (normalize→resolveActive) — recomputed only when data/format/xScaleType change
   private pipelineCache: PipelineCache | null = null;
 
+  // Memoized badge-only-gutter width (Spec 27, 'none' mode). Recomputed only when the post-collapse
+  // spans, badge size, or label position change — never per frame — since it scans all spans.
+  private badgeGutterCache: { spansRef: NormalizedSpan[]; badgeSize: string; labelPosition: string; width: number } | null = null;
+
+  // Async cache for Span-badge images (Spec 27 / ADR 0029). A decoded image finishing off-frame
+  // schedules a redraw so the placeholder is replaced without blocking the animation loop.
+  private badgeImages = new BadgeImageCache(() => this.scheduleRender?.());
+
   // Memoized style — recomputed only when the theme reference changes (mirrors pipelineCache pattern)
   private styleCache: { theme: Theme; style: ReturnType<typeof buildTraceStyle> } | null = null;
 
@@ -215,6 +228,14 @@ class TraceComponent extends React.Component<TraceProps> {
   // Hover / tooltip state — self-managed (not redux), following the Flame/Timeslip canvas family pattern.
   // hover.lastGeom is written once per frame; all mouse handlers read it for picking without rebuilding geometry.
   private hover: HoverState = { lastGeom: null, index: -1, region: null, pointerX: NaN, pointerY: NaN, tooltipInfo: { header: null, values: [] }, dragMoved: false };
+
+  // --- Span-badge pointer interaction state (Spec 27) ---
+  // The badge currently under the pointer (drives onBadgeOver/onBadgeOut and the clickable cursor).
+  private hoveredBadge: { spanId: string; badgeId: string; item: BadgeLayoutItem; span: NormalizedSpan } | null = null;
+
+  // The badge under the pointer at mousedown; badge activation requires the pointer-up to resolve to
+  // the same (spanId, badgeId) with no viewport gesture in between.
+  private badgePointerDown: { spanId: string; badgeId: string } | null = null;
   private handleHoverMove: ((e: MouseEvent) => void) | null = null;
   private handleCanvasClick: ((e: MouseEvent) => void) | null = null;
   private handleCanvasLeave: (() => void) | null = null;
@@ -626,9 +647,32 @@ class TraceComponent extends React.Component<TraceProps> {
       computeMaxScroll(spans.length, style.laneHeight, height - style.timeBarHeight),
     );
 
+    // --- Span badges (Spec 27) ---
+    // Text measurers backed by the draw context; measureText is transform-independent so this is
+    // safe before the DPR setTransform below. Reused for the badge-only-gutter width and the layout.
+    const badgeSize = traceSpec.badgeSize ?? 'm';
+    const measureBadgeText: BadgeTextMeasurer = (text, fontSize) => {
+      this.ctx!.font = `${fontSize}px ${style.badge.fontFamily}`;
+      return this.ctx!.measureText(text).width;
+    };
+    const measureLabelText: BadgeTextMeasurer = (text, fontSize) => {
+      this.ctx!.font = `${fontSize}px ${style.gutterLabel.fontFamily}`;
+      return this.ctx!.measureText(text).width;
+    };
+    // Reserve the badge-only gutter ('none' mode) before partitioning so the plot accounts for it.
+    const badgeGutterWidth = traceSpec.badgeAccessor
+      ? this.getBadgeGutterWidth(spans, style, badgeSize, measureBadgeText)
+      : 0;
+    // In 'inline' mode, grow the label/badge row to the active badge height so inline badges sit in
+    // their own row rather than spilling into the bar band (Spec 27). Only when badges are present.
+    const badgeRowHeight =
+      traceSpec.badgeAccessor && style.labelPosition === 'inline' && spans.some((s) => s.badges && s.badges.length > 0)
+        ? style.badge[badgeSize].height
+        : 0;
+
     // Build geometry and draw (spans are pre-sorted and domain pre-computed — no per-frame sort/reduce)
     const focusDomain = this.tweenDomain;
-    const geom = buildGeometry(
+    const geomBase = buildGeometry(
       spans,
       { width, height },
       focusDomain,
@@ -644,15 +688,32 @@ class TraceComponent extends React.Component<TraceProps> {
       hasParents,
       maxDepth,
       rolledUpCriticalIntervals,
+      badgeGutterWidth,
+      badgeRowHeight,
     );
+
+    // Lay out badges over the visible lane range (measurement-dependent, so kept out of buildGeometry).
+    let geom = geomBase;
+    if (traceSpec.badgeAccessor) {
+      const firstLane = Math.max(0, Math.floor(this.scrollOffset / style.laneHeight));
+      const lastLane = Math.min(spans.length - 1, Math.floor((this.scrollOffset + geomBase.plot.height) / style.laneHeight));
+      const badgesByLane = layoutBadges(geomBase, style, badgeSize, measureBadgeText, measureLabelText, firstLane, lastLane);
+      if (badgesByLane.size > 0) geom = { ...geomBase, badgesByLane };
+    }
 
     // DPR scaling: renderer is dpr-agnostic, caller sets the transform each frame.
     const dpr = window.devicePixelRatio ?? 1;
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     canvas2dRenderer.draw(this.ctx, geom, style);
+    // Span badges are drawn in a second pass (Spec 27) so the frozen TraceRenderer.draw signature
+    // (ADR 0001) stays image-resolver-free; no-op when no badge is laid out.
+    drawBadges(this.ctx, geom, style, (src, crossOrigin) => this.badgeImages.get(src, crossOrigin));
 
     // Store for picking in hover/click handlers — single source of truth for the current layout.
     this.hover.lastGeom = geom;
+
+    // If a data/spec change removed or hid the hovered Span badge, emit one onBadgeOut (Spec 27).
+    this.reconcileHoveredBadge(geom);
 
     // Keep the loop alive only while there is work to do; fire the focus-domain callback at settle.
     if (tweenOngoing || this.flywheelActive) {
@@ -841,7 +902,8 @@ class TraceComponent extends React.Component<TraceProps> {
       cache.colorBy === spec.colorBy &&
       cache.laneOrder === spec.laneOrder &&
       cache.vizColors === vizColors &&
-      cache.criticalPath === spec.criticalPath
+      cache.criticalPath === spec.criticalPath &&
+      cache.badgeAccessor === spec.badgeAccessor
     ) {
       return cache.result;
     }
@@ -849,9 +911,14 @@ class TraceComponent extends React.Component<TraceProps> {
     // Recompute: normalize now takes TraceDatum[] directly — OTel data arrives pre-converted by fromOtlp.
     const normalizeResult = normalize(spec.data, spec.xScaleType, spec.traceId, spec.colorBy, vizColors, spec.criticalPath);
 
+    // Derive Span badges from each span's TraceDatum (Spec 27), once per prepared-data change. Runs
+    // before resolveActive/orderLanes/collapse, all of which preserve span fields, so badges flow
+    // through to geometry and hit testing. Diagnostics are not surfaced yet (Spec 28 phase).
+    const withBadges = resolveSpanBadges(normalizeResult.spans, spec.badgeAccessor);
+
     // Order lanes once here (O(N log N) per data/scale change) so buildGeometry doesn't re-order
     // on every rAF frame. buildGeometry's contract requires pre-ordered input.
-    const resolved = resolveActive(normalizeResult.spans);
+    const resolved = resolveActive(withBadges);
     const { lanes: spans, depthBySpan } = orderLanes(resolved, spec.laneOrder ?? 'tree');
     // Derive hasParents and maxDepth from depthBySpan once per pipeline change (not per rAF frame).
     let hasParents = false;
@@ -869,11 +936,33 @@ class TraceComponent extends React.Component<TraceProps> {
       laneOrder: spec.laneOrder,
       vizColors,
       criticalPath: spec.criticalPath,
+      badgeAccessor: spec.badgeAccessor,
       result,
     };
     // Rebuild spanIdToLane map on pipeline invalidation (plan D4 — not rebuilt per rAF frame).
     this.spanIdToLane = new Map(spans.map((s, i) => [s.id, i]));
     return result;
+  }
+
+  /**
+   * Memoized badge-only-gutter width (Spec 27). `0` outside `'none'` mode. Recomputed only when the
+   * post-collapse spans, badge size, or label position change — the scan touches every span, so it
+   * must not run per frame.
+   */
+  private getBadgeGutterWidth(
+    spans: NormalizedSpan[],
+    style: ReturnType<typeof buildTraceStyle>,
+    badgeSize: 's' | 'm',
+    measure: BadgeTextMeasurer,
+  ): number {
+    if (style.labelPosition !== 'none') return 0;
+    const cache = this.badgeGutterCache;
+    if (cache && cache.spansRef === spans && cache.badgeSize === badgeSize && cache.labelPosition === style.labelPosition) {
+      return cache.width;
+    }
+    const width = computeBadgeGutterWidth(spans, style, badgeSize, measure);
+    this.badgeGutterCache = { spansRef: spans, badgeSize, labelPosition: style.labelPosition, width };
+    return width;
   }
 
   // -------------------------------------------------------------------------
@@ -882,6 +971,9 @@ class TraceComponent extends React.Component<TraceProps> {
 
   /** Cursor is `pointer` when over an active or waiting region (inside the span's extent). */
   private getActiveCursor(): CSSProperties['cursor'] {
+    // A hovered Span badge shows the interactive cursor only when it is clickable (Spec 27):
+    // hover-only badges report transitions but must not imply activation via the cursor.
+    if (this.hoveredBadge && this.props.traceSpec?.onBadgeClick) return 'pointer';
     if (this.hover.index >= 0 && this.hover.region !== 'empty') return 'pointer';
     return DEFAULT_CSS_CURSOR;
   }
@@ -969,6 +1061,82 @@ class TraceComponent extends React.Component<TraceProps> {
       }
       this.setState({});
     }
+  }
+
+  // -------------------------------------------------------------------------
+  // Span-badge pointer interaction (Spec 27)
+  // -------------------------------------------------------------------------
+
+  /**
+   * Updates the hovered Span badge from the pointer position and dispatches `onBadgeOver`/`onBadgeOut`
+   * on entry/exit (Spec 27). Returns `true` when a badge is under the pointer — the caller then skips
+   * span hover so the badge owns the pointer (no double-dispatch). A badge event is fired only when a
+   * handler is supplied; the clickable cursor is refreshed via `setState` on any hover change.
+   */
+  private updateBadgeHover(x: number, y: number): boolean {
+    const geom = this.hover.lastGeom;
+    const hit = geom ? pickBadge(x, y, geom) : null;
+    if (!hit) {
+      this.clearHoveredBadge();
+      return false;
+    }
+    const span = geom!.spans[hit.laneIndex];
+    if (!span) {
+      this.clearHoveredBadge();
+      return false;
+    }
+    const badgeId = String(hit.item.badge.id);
+    const prev = this.hoveredBadge;
+    if (prev && prev.spanId === span.id && prev.badgeId === badgeId) return true; // unchanged
+
+    // Entering a different badge: exit the previous one first, then enter the new one.
+    this.clearHoveredBadge();
+    this.hoveredBadge = { spanId: span.id, badgeId, item: hit.item, span };
+    this.dispatchBadgeEvent(this.props.traceSpec?.onBadgeOver, hit.item.badge, span, x, y);
+    // Refresh the cursor (pointer only when clickable). setState is cheap and DOM-only here.
+    this.setState({});
+    return true;
+  }
+
+  /** Emits one `onBadgeOut` for the currently-hovered badge (if any) and clears the hover state. */
+  private clearHoveredBadge(): void {
+    const hovered = this.hoveredBadge;
+    if (!hovered) return;
+    this.hoveredBadge = null;
+    this.dispatchBadgeEvent(this.props.traceSpec?.onBadgeOut, hovered.item.badge, hovered.span, this.hover.pointerX, this.hover.pointerY);
+    this.setState({});
+  }
+
+  /**
+   * Emits one `onBadgeOut` if the hovered badge is no longer present/visible in `geom` (Spec 27) —
+   * e.g. a data/spec change removed it or scrolled it out of the laid-out range. Called once per
+   * frame with the freshly-built geometry.
+   */
+  private reconcileHoveredBadge(geom: TraceGeometry): void {
+    const hovered = this.hoveredBadge;
+    if (!hovered) return;
+    // Identity is by badge object reference (retained through the pipeline), so a re-derived badge
+    // with the same id but a new object also counts as "removed" and correctly emits one onBadgeOut.
+    const stillVisible = [...geom.badgesByLane.values()].some((lane) =>
+      lane.items.some((item) => item.badge === hovered.item.badge),
+    );
+    if (!stillVisible) this.clearHoveredBadge();
+  }
+
+  /**
+   * Dispatches a pointer-source badge event to `handler` (a no-op when no handler is supplied). The
+   * caller's original `badge` and its opaque `meta` are returned by reference; pointer coordinates
+   * are chart-relative px. Used for `onBadgeOver`/`onBadgeOut`/pointer `onBadgeClick`.
+   */
+  private dispatchBadgeEvent(
+    handler: ((event: TraceSpanBadgeEvent) => void) | undefined,
+    badge: BadgeLayoutItem['badge'],
+    span: NormalizedSpan,
+    chartX: number,
+    chartY: number,
+  ): void {
+    if (!handler) return;
+    handler({ source: 'pointer', badge, span: buildTraceSpanBadgeEventSpan(span), chartX, chartY });
   }
 
   // -------------------------------------------------------------------------
@@ -1100,6 +1268,16 @@ class TraceComponent extends React.Component<TraceProps> {
     };
 
     this.handleMouseDown = (e: MouseEvent) => {
+      // Span badge press (Spec 27): remember the badge under pointer-down so a same-badge pointer-up
+      // can activate it. Recorded for every badge press; a subsequent drag invalidates activation via
+      // the `dragMoved` guard on click. Does not itself suppress pan/brush — a drag from a badge pans.
+      this.badgePointerDown = null;
+      if (this.hover.lastGeom && this.hover.lastGeom.badgesByLane.size > 0) {
+        const bp = pickBadge(zoomSafePointerX(e), zoomSafePointerY(e), this.hover.lastGeom);
+        const bpSpan = bp ? this.hover.lastGeom.spans[bp.laneIndex] : undefined;
+        if (bp && bpSpan) this.badgePointerDown = { spanId: bpSpan.id, badgeId: String(bp.item.badge.id) };
+      }
+
       const dragMode = this.props.traceSpec?.dragMode ?? 'pan';
       // isBrushMode: XOR — Shift inverts the configured gesture so both dragMode values are
       // reachable from the keyboard. dragMode='pan' default: Shift+drag → brush, plain drag → pan.
@@ -1116,6 +1294,9 @@ class TraceComponent extends React.Component<TraceProps> {
           this.brush.overlay = { x: this.brush.start, width: 0, top: plot.top, height: plot.height };
         }
         this.updateHover(null);
+        // A brush gesture owns the pointer immediately: exit any hovered badge (one onBadgeOut) and
+        // suspend badge hit testing until the gesture ends (Spec 27).
+        this.clearHoveredBadge();
         this.setState({});
         return;
       }
@@ -1153,6 +1334,9 @@ class TraceComponent extends React.Component<TraceProps> {
       }
 
       this.hover.dragMoved = true; // distinguish a genuine click from a pan-then-release
+      // A pan gesture is now recognized: exit any hovered badge (one onBadgeOut) and suspend badge
+      // hit testing until the gesture ends (Spec 27). Idempotent while the drag continues.
+      this.clearHoveredBadge();
 
       if (!this.props.traceSpec) return;
       const style = this.getStyle();
@@ -1208,6 +1392,12 @@ class TraceComponent extends React.Component<TraceProps> {
       if (!this.hover.lastGeom) return;
       this.hover.pointerX = zoomSafePointerX(e); // canvas-relative CSS px, DPR-agnostic → matches geom units
       this.hover.pointerY = zoomSafePointerY(e);
+      // Span badges own the pointer (Spec 27): when one is under the cursor, dispatch badge hover and
+      // suppress the underlying span hover so the two never double-dispatch for the same transition.
+      if (this.updateBadgeHover(this.hover.pointerX, this.hover.pointerY)) {
+        this.updateHover(null);
+        return;
+      }
       this.updateHover(pickRegion(this.hover.pointerX, this.hover.pointerY, this.hover.lastGeom));
     };
 
@@ -1220,6 +1410,28 @@ class TraceComponent extends React.Component<TraceProps> {
 
       const cx = zoomSafePointerX(e);
       const cy = zoomSafePointerY(e);
+
+      // Span badge activation (Spec 27): a badge owns the click. When pointer-down and pointer-up
+      // resolved to the same badge (no drag — guarded above), fire `onBadgeClick`; either way the
+      // click is consumed and never falls through to the span click / selection machinery.
+      if (this.hover.lastGeom.badgesByLane.size > 0) {
+        const bp = pickBadge(cx, cy, this.hover.lastGeom);
+        const down = this.badgePointerDown;
+        this.badgePointerDown = null;
+        if (bp) {
+          const span = this.hover.lastGeom.spans[bp.laneIndex];
+          if (span && down && down.spanId === span.id && down.badgeId === String(bp.item.badge.id)) {
+            this.props.traceSpec.onBadgeClick?.({
+              source: 'pointer',
+              badge: bp.item.badge,
+              span: buildTraceSpanBadgeEventSpan(span),
+              chartX: cx,
+              chartY: cy,
+            });
+          }
+          return;
+        }
+      }
 
       // Caret click: toggle collapse for the lane under the disclosure caret (Spec 21 / ADR 0026).
       // Checked before the select/element-click path — caret clicks are consumed here and do not
@@ -1267,6 +1479,8 @@ class TraceComponent extends React.Component<TraceProps> {
     };
 
     this.handleCanvasLeave = () => {
+      // Leaving the chart while a Span badge is hovered emits one onBadgeOut (Spec 27).
+      this.clearHoveredBadge();
       this.updateHover(null);
     };
 
@@ -1630,6 +1844,26 @@ class TraceComponent extends React.Component<TraceProps> {
         if (this.toggleDisclosureAt(x, y)) {
           this.touch.tapStart = null;
           return;
+        }
+
+        // Span badge tap (Spec 27): a tap is a same-location down+up, so a badge under it activates.
+        // The badge owns the tap — it does not fall through to the span click / selection path.
+        if (geomSnapshot && geomSnapshot.badgesByLane.size > 0) {
+          const bp = pickBadge(x, y, geomSnapshot);
+          if (bp) {
+            const span = geomSnapshot.spans[bp.laneIndex];
+            if (span) {
+              this.props.traceSpec?.onBadgeClick?.({
+                source: 'pointer',
+                badge: bp.item.badge,
+                span: buildTraceSpanBadgeEventSpan(span),
+                chartX: x,
+                chartY: y,
+              });
+            }
+            this.touch.tapStart = null;
+            return;
+          }
         }
 
         if (geomSnapshot) {

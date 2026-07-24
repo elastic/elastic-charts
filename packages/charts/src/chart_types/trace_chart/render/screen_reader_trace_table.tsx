@@ -9,22 +9,64 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 
-import { getTraceTableRowsSelector, type TraceTableRow } from '../state/selectors/get_screen_reader_data';
+import {
+  getTraceBadgeClickHandlerSelector,
+  getTraceTableRowsSelector,
+  type TraceTableBadge,
+  type TraceTableRow,
+} from '../state/selectors/get_screen_reader_data';
 import type { GlobalChartState } from '../../../state/chart_state';
 import type { A11ySettings } from '../../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { isNil } from '../../../utils/common';
+import type { TraceSpec } from '../trace_api';
 
 interface ScreenReaderTraceTableProps {
   a11ySettings: A11ySettings;
   rows: TraceTableRow[];
+  onBadgeClick: TraceSpec['onBadgeClick'];
 }
 
 /** Number of rows shown per "show more" page. */
 const TABLE_PAGINATION = 20;
 
-const ScreenReaderTraceTableComponent = ({ a11ySettings, rows }: ScreenReaderTraceTableProps) => {
+/**
+ * Renders one span's Span badges into its SR-table cell (Spec 27). With an `onBadgeClick` handler the
+ * badges are keyboard-activatable `<button>`s (activation dispatches a `keyboard`-source badge event,
+ * never synthesizing hover); without one they are inert, informational text. Accessible names come
+ * from the resolved badge aria labels — assistive tech reads full names even for truncated badges.
+ * @internal
+ */
+export const TraceTableBadgeCell = ({
+  badges,
+  onBadgeClick,
+}: {
+  badges: TraceTableBadge[];
+  onBadgeClick: TraceSpec['onBadgeClick'];
+}) => {
+  if (badges.length === 0) return <>—</>;
+  return (
+    <>
+      {badges.map(({ id, ariaLabel, badge, span }) =>
+        onBadgeClick ? (
+          <button
+            key={id}
+            type="button"
+            tabIndex={-1}
+            onClick={() => onBadgeClick({ source: 'keyboard', badge, span })}
+          >
+            {ariaLabel}
+          </button>
+        ) : (
+          <span key={id}>{ariaLabel}</span>
+        ),
+      )}
+    </>
+  );
+};
+
+const ScreenReaderTraceTableComponent = ({ a11ySettings, rows, onBadgeClick }: ScreenReaderTraceTableProps) => {
   const [count, setCount] = useState(1);
   const tableRowRef = useRef<HTMLTableRowElement>(null);
   const prevCountRef = useRef(1);
@@ -67,27 +109,29 @@ const ScreenReaderTraceTableComponent = ({ a11ySettings, rows }: ScreenReaderTra
             <th scope="col">Self time</th>
             <th scope="col">Start offset</th>
             <th scope="col">Parent</th>
+            <th scope="col">Badges</th>
           </tr>
         </thead>
         <tbody>
-          {rows.slice(0, rowLimit).map(({ id, name, totalDuration, selfTime, startOffset, parentName }, index) => (
-            <tr
-              key={id}
-              ref={index === rowLimit - TABLE_PAGINATION ? tableRowRef : undefined}
-              tabIndex={-1}
-            >
-              <th scope="row">{name}</th>
-              <td>{totalDuration}</td>
-              <td>{selfTime}</td>
-              <td>{startOffset}</td>
-              <td>{parentName}</td>
-            </tr>
-          ))}
+          {rows
+            .slice(0, rowLimit)
+            .map(({ id, name, totalDuration, selfTime, startOffset, parentName, badges }, index) => (
+              <tr key={id} ref={index === rowLimit - TABLE_PAGINATION ? tableRowRef : undefined} tabIndex={-1}>
+                <th scope="row">{name}</th>
+                <td>{totalDuration}</td>
+                <td>{selfTime}</td>
+                <td>{startOffset}</td>
+                <td>{parentName}</td>
+                <td>
+                  <TraceTableBadgeCell badges={badges} onBadgeClick={onBadgeClick} />
+                </td>
+              </tr>
+            ))}
         </tbody>
         {showMoreRows && (
           <tfoot>
             <tr>
-              <td colSpan={5}>
+              <td colSpan={6}>
                 <button type="button" onClick={handleMoreData} tabIndex={-1}>
                   Click to show more data
                 </button>
@@ -103,6 +147,7 @@ const ScreenReaderTraceTableComponent = ({ a11ySettings, rows }: ScreenReaderTra
 const DEFAULT_PROPS: ScreenReaderTraceTableProps = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   rows: [],
+  onBadgeClick: undefined,
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderTraceTableProps => {
@@ -112,6 +157,7 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderTraceTableProps =
   return {
     a11ySettings: getA11ySettingsSelector(state),
     rows: getTraceTableRowsSelector(state),
+    onBadgeClick: getTraceBadgeClickHandlerSelector(state),
   };
 };
 

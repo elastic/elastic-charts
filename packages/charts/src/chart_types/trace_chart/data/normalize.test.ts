@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { resolveSpanBadges } from './badges';
 import { correctClockSkew, normalize } from './normalize';
 import { orderLanes } from './order_lanes';
 import { fromOtlp, nanoToMs } from './otel_adapter';
 import type { OtelSpan, OtlpEnvelope } from './otel_adapter';
 import type { NormalizedSpan } from './types';
 import { Logger } from '../../../utils/logger';
-import type { TraceDatum } from '../trace_api';
+import type { TraceDatum, TraceSpanBadge } from '../trace_api';
 import { colorByOtelAttribute, colorByOtelKind } from '../trace_api';
 
 const simpleData: TraceDatum[] = [
@@ -1057,5 +1058,30 @@ describe('normalize — partial-trace recovery integration (Spec 26)', () => {
     expect(treeIds).toEqual(chronoIds);
     expect(treeIds).toEqual(['o1', 'o2', 'root']);
     warn.mockRestore();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Span badges are presentation, not data (Spec 27)
+// ---------------------------------------------------------------------------
+
+describe('span badges do not modify source data', () => {
+  it('derives span badges without changing source data', () => {
+    // badgeAccessor output is application presentation: normalizing then resolving badges must leave
+    // the caller's TraceDatum array (and each datum's meta) byte-for-byte unchanged.
+    const data: TraceDatum[] = [
+      { id: 'a', name: 'root', start: 0, end: 100, traceId: 't1', meta: { attributes: [{ key: 'http.method', value: 'GET' }] } },
+      { id: 'b', name: 'child', parentId: 'a', start: 10, end: 60, traceId: 't1' },
+    ];
+    const snapshot = JSON.stringify(data);
+
+    const { spans } = normalize(data, 'linear');
+    const accessor = (d: TraceDatum): readonly TraceSpanBadge[] =>
+      d.id === 'a' ? [{ id: 'method', text: 'GET' }] : [];
+    const withBadges = resolveSpanBadges(spans, accessor);
+
+    // Badges attach to the normalized span, never to the source datum.
+    expect(withBadges.find((s) => s.id === 'a')!.badges).toHaveLength(1);
+    expect(JSON.stringify(data)).toBe(snapshot);
   });
 });

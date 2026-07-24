@@ -17,7 +17,11 @@ import { resolveActive, waitingSegments } from '@elastic/charts/src/chart_types/
 import { pickDisclosure, pickRegion } from '@elastic/charts/src/chart_types/trace_chart/render/canvas2d_renderer';
 import { buildGeometry } from '@elastic/charts/src/chart_types/trace_chart/render/geometry';
 import type { TraceGeometry, TraceStyle } from '@elastic/charts/src/chart_types/trace_chart/render/types';
-import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX } from '@elastic/charts/src/chart_types/trace_chart/render/types';
+import {
+  CARET_GLYPH_PX,
+  CARET_INDENT_STEP_PX,
+  DEFAULT_TRACE_BADGE_STYLE,
+} from '@elastic/charts/src/chart_types/trace_chart/render/types';
 
 import { CHECKOUT_SPANS } from './data';
 import type { ChartsStory } from '../../types';
@@ -47,6 +51,7 @@ const STYLE: TraceStyle = {
   criticalPathColor: '#c61e25',
   criticalPathThickness: 2,
   labelPosition: 'gutter',
+  badge: DEFAULT_TRACE_BADGE_STYLE,
 };
 
 const SELECTION: TraceSelection = [

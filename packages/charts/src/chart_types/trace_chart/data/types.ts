@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { TraceDatum, TraceActiveSegment } from '../trace_api';
+import type { TraceDatum, TraceActiveSegment, TraceSpanBadge } from '../trace_api';
 
 /**
  * A span prepared for rendering: filtered by `traceId`, projected onto the x-scale
@@ -59,4 +59,12 @@ export interface NormalizedSpan {
   fallbackRoot?: true;
   /** The original TraceDatum; exposed to tooltip datum and element-event callbacks. */
   meta: TraceDatum;
+  /**
+   * Structurally-valid Span badges derived from this span's `TraceDatum` by `TraceSpec.badgeAccessor`
+   * (Spec 27), in accessor order. Absent when no accessor is supplied or the span has no badges.
+   * The original badge objects are retained **by reference** (never cloned) so interaction events can
+   * return the caller's `badge` and its opaque `meta` unchanged. Structurally-empty badges (neither
+   * text nor image) are already dropped here; effective text/visibility resolution happens at layout.
+   */
+  badges?: readonly TraceSpanBadge[];
 }

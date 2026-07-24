@@ -10,7 +10,7 @@ import { buildGeometry } from './geometry';
 import { TICK_LAYER_PADDING, TICK_LAYER_BOTTOM_INSET } from './time_bar';
 import type { NormalizedSpan } from '../data/types';
 import type { DisclosureEntry, TraceStyle } from './types';
-import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, gutterPx } from './types';
+import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, DEFAULT_TRACE_BADGE_STYLE, gutterPx } from './types';
 
 const style: TraceStyle = {
   gutterWidth: 200,
@@ -29,6 +29,7 @@ const style: TraceStyle = {
   criticalPathColor: '#C61E25',
   criticalPathThickness: 2,
   labelPosition: 'gutter',
+  badge: DEFAULT_TRACE_BADGE_STYLE,
 };
 
 function span(id: string, start: number, end: number): NormalizedSpan {
@@ -154,6 +155,35 @@ describe('buildGeometry', () => {
     const geom = buildGeometry(spans, canvasSize, zeroFocus, 0, style, 'linear', domain);
     expect(geom.scale(500)).toBe(geom.plot.left);
     expect(geom.scale(0)).toBe(geom.plot.left);
+  });
+
+  // Spec 27 — the badge-only gutter in `labelPosition: 'none'`.
+  const noneStyle: TraceStyle = { ...style, labelPosition: 'none' };
+  // buildGeometry's badge-gutter reservation is its last positional arg; spell the defaults out.
+  const buildNone = (badgeGutterWidth: number) =>
+    buildGeometry(
+      spans, canvasSize, focusDomain, 0, noneStyle, 'linear', domain,
+      null, [], new Map(), null, new Map(), false, 0, [], badgeGutterWidth,
+    );
+
+  it('badge-only gutter is conditional', () => {
+    // No `'none'`-visible badges → no reservation: the plot keeps the full width it has without badges.
+    const noGutter = buildNone(0);
+    expect(noGutter.plot.left).toBe(0);
+    expect(noGutter.plot.width).toBe(canvasSize.width);
+    // With a badge-only gutter reserved, the plot shifts right by exactly that width.
+    const withGutter = buildNone(28);
+    expect(withGutter.plot.left).toBe(28);
+    expect(withGutter.plot.width).toBe(canvasSize.width - 28);
+  });
+
+  it('vertical annotations do not create gutter width', () => {
+    // Annotations are not a geometry input, so nothing but Span badges can reserve left width. In
+    // `'none'` with no badge gutter, the plot starts at x=0 — vertical rails render at the plot's
+    // left edge rather than behind an annotation-reserved column.
+    const geom = buildNone(0);
+    expect(geom.gutter.width).toBe(0);
+    expect(geom.plot.left).toBe(0);
   });
 });
 

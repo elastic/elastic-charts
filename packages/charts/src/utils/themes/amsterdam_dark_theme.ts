@@ -11,6 +11,7 @@ import type { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
 import { Colors } from '../../common/colors';
 import { TAU } from '../../common/constants';
+import { DEFAULT_TRACE_BADGE_STYLE } from '../../chart_types/trace_chart/render/types';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
 
@@ -521,5 +522,6 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     criticalPathColor: '#EE4C48',
     criticalPathThickness: 2,
     labelPosition: 'gutter',
+    badge: DEFAULT_TRACE_BADGE_STYLE,
   },
 };

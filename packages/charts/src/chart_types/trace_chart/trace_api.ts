@@ -185,6 +185,136 @@ export interface TraceCriticalInterval {
 export type TraceCriticalPath = TraceCriticalInterval[];
 
 /**
+ * Shared size token for every Span badge in a Trace. Controls the badge's text, padding, height,
+ * and image box as one design unit; individual badges cannot select a different size (Spec 27).
+ * @public
+ */
+export type TraceSpanBadgeSize = 's' | 'm';
+
+/**
+ * A Span badge color: one EUI-like named color or a custom Charts {@link Color}. Charts derives
+ * readable text contrast and any necessary border consistently across the derived color.
+ * @public
+ */
+export type TraceSpanBadgeColor = 'default' | 'hollow' | 'primary' | 'success' | 'warning' | 'danger' | Color;
+
+/**
+ * A CORS-safe image source for a Span badge, including SVG icons supplied as image sources
+ * (e.g. an inline-SVG data URL). Charts never draws an unsafe cross-origin image that would taint
+ * the chart canvas.
+ * @public
+ */
+export interface TraceSpanBadgeImage {
+  /** Any normal browser-supported image URL string, including data URLs. */
+  src: string;
+  /**
+   * CORS mode applied when loading the image, matching the DOM `crossOrigin` attribute.
+   * @defaultValue 'anonymous'
+   */
+  crossOrigin?: 'anonymous' | 'use-credentials';
+}
+
+/**
+ * A structured adornment derived from one span. A badge must contain text, an image, or both;
+ * badges are inert data (they never carry event-handler functions — interaction handlers live on
+ * the {@link TraceSpec}). See Spec 27.
+ * @public
+ */
+export interface TraceSpanBadge {
+  /**
+   * Stable identity, unique within the owning span. Event identity is the pair of owning span id
+   * and badge id, not a globally unique badge id.
+   */
+  id: string;
+  /**
+   * Badge text. Consumers format numbers, durations, and statuses to strings before returning
+   * badges. Whitespace-only text is treated as absent.
+   */
+  text?: string;
+  /** Optional image; when a badge has both image and text, the image always precedes the text. */
+  image?: TraceSpanBadgeImage;
+  /** Badge color; defaults to the themed `'default'` treatment when omitted. */
+  color?: TraceSpanBadgeColor;
+  /**
+   * Accessible name override. Defaults to the visible badge text; required for an image-only badge
+   * (an image-only badge without `ariaLabel` is reported through diagnostics but still renders).
+   */
+  ariaLabel?: string;
+  /**
+   * The Label positions in which this badge participates.
+   * @defaultValue ['gutter', 'inline']
+   */
+  visibleIn?: readonly ('gutter' | 'inline' | 'none')[];
+  /**
+   * Opaque consumer metadata returned by reference in {@link TraceSpanBadgeEvent}. Charts never
+   * inspects, clones, serializes, diffs, or validates this payload.
+   */
+  meta?: unknown;
+}
+
+/**
+ * Derives the ordered, readonly Span badges associated with one source `TraceDatum`. Evaluated as
+ * part of preparing trace data, not per animation frame. Pass a **stable reference** (module-level
+ * const or memoized value).
+ * @public
+ */
+export type TraceSpanBadgeAccessor = (datum: TraceDatum) => readonly TraceSpanBadge[];
+
+/**
+ * The owning-span metadata reported alongside a Span badge in {@link TraceSpanBadgeEvent}. Mirrors
+ * the span fields of a trace element event so consumers get span-level context without a second lookup.
+ * @public
+ */
+export interface TraceSpanBadgeEventSpan {
+  id: string;
+  name: string;
+  parentId?: string;
+  traceId?: string;
+  /** Span start in ms (elapsed-from-zero in `'linear'` mode). */
+  start: number;
+  /** Span end in ms (same rezeroing caveat as `start`). */
+  end: number;
+  /** `end - start`. */
+  duration: number;
+  /** Sum of active-segment durations (self time, per ADR 0003). */
+  selfTime: number;
+  /** Present when the reported timing fields were adjusted to correct detected clock skew. */
+  skewCorrected?: true;
+  /** Present when this span's recorded parent is absent from its selected trace data (Spec 26). */
+  orphaned?: true;
+  /** The synthetic display parent this orphan was placed under, when applicable. */
+  reparentedToSpanId?: string;
+  /** The original `TraceDatum`. */
+  datum: TraceDatum;
+}
+
+/**
+ * Reports the resolved Span badge and its owning span metadata. Source-discriminated: pointer-origin
+ * events include chart-relative coordinates; keyboard-origin activation events do not synthesize
+ * coordinates. Raw native DOM events are not exposed in v1. See Spec 27.
+ * @public
+ */
+export type TraceSpanBadgeEvent =
+  | {
+      /** Pointer-origin transition or activation. */
+      source: 'pointer';
+      /** The resolved badge, including its `meta`, returned by reference. */
+      badge: TraceSpanBadge;
+      /** The owning span's metadata. */
+      span: TraceSpanBadgeEventSpan;
+      /** Chart-relative x coordinate in px (pointer source only). */
+      chartX: number;
+      /** Chart-relative y coordinate in px (pointer source only). */
+      chartY: number;
+    }
+  | {
+      /** Keyboard-origin activation (no synthesized coordinates). */
+      source: 'keyboard';
+      badge: TraceSpanBadge;
+      span: TraceSpanBadgeEventSpan;
+    };
+
+/**
  * Spec for the Trace chart. Add one `<Trace>` inside a `<Chart>` to render a waterfall visualization.
  * @public
  */
@@ -345,6 +475,29 @@ export interface TraceSpec extends Spec {
    * The callback must be idempotent — it is called on every re-registration (prop reference change).
    */
   controlProviderCallback?: (callbacks: TraceControlCallbacks) => void;
+  /**
+   * Derives the ordered {@link TraceSpanBadge}s for each span from its source `TraceDatum`. Evaluated
+   * while preparing trace data (not per animation frame), so pass a **stable or memoized reference**.
+   * Span badges are application presentation derived from a span; they do not modify the source
+   * `TraceDatum` or data produced by {@link fromOtlp}. See Spec 27.
+   */
+  badgeAccessor?: TraceSpanBadgeAccessor;
+  /**
+   * One shared size for every Span badge in the Trace. Controls each badge's text, padding, height,
+   * and image box as one design unit; individual badges cannot select a different size.
+   * @defaultValue 'm'
+   */
+  badgeSize?: TraceSpanBadgeSize;
+  /** Reports pointer entry for a Span badge. Optional and independent of `onBadgeClick`. */
+  onBadgeOver?: (event: TraceSpanBadgeEvent) => void;
+  /** Reports pointer exit for a Span badge. Optional and independent of `onBadgeClick`. */
+  onBadgeOut?: (event: TraceSpanBadgeEvent) => void;
+  /**
+   * Reports activation of a Span badge (pointer down+up on the same badge, or keyboard activation).
+   * When supplied, badges become interactive: pointer targets use an interactive cursor and the badge
+   * is exposed as a keyboard-activatable control in the screen-reader surface.
+   */
+  onBadgeClick?: (event: TraceSpanBadgeEvent) => void;
 }
 
 const buildProps = buildSFProps<TraceSpec>()(

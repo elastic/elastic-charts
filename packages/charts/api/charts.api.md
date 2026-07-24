@@ -3862,7 +3862,68 @@ export interface TraceSelectionDetail {
 }
 
 // @public
+export interface TraceSpanBadge {
+    ariaLabel?: string;
+    color?: TraceSpanBadgeColor;
+    id: string;
+    image?: TraceSpanBadgeImage;
+    meta?: unknown;
+    text?: string;
+    visibleIn?: readonly ('gutter' | 'inline' | 'none')[];
+}
+
+// @public
+export type TraceSpanBadgeAccessor = (datum: TraceDatum) => readonly TraceSpanBadge[];
+
+// @public
+export type TraceSpanBadgeColor = 'default' | 'hollow' | 'primary' | 'success' | 'warning' | 'danger' | Color;
+
+// @public
+export type TraceSpanBadgeEvent = {
+    source: 'pointer';
+    badge: TraceSpanBadge;
+    span: TraceSpanBadgeEventSpan;
+    chartX: number;
+    chartY: number;
+} | {
+    source: 'keyboard';
+    badge: TraceSpanBadge;
+    span: TraceSpanBadgeEventSpan;
+};
+
+// @public
+export interface TraceSpanBadgeEventSpan {
+    datum: TraceDatum;
+    duration: number;
+    end: number;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    name: string;
+    orphaned?: true;
+    // (undocumented)
+    parentId?: string;
+    reparentedToSpanId?: string;
+    selfTime: number;
+    skewCorrected?: true;
+    start: number;
+    // (undocumented)
+    traceId?: string;
+}
+
+// @public
+export interface TraceSpanBadgeImage {
+    crossOrigin?: 'anonymous' | 'use-credentials';
+    src: string;
+}
+
+// @public
+export type TraceSpanBadgeSize = 's' | 'm';
+
+// @public
 export interface TraceSpec extends Spec {
+    badgeAccessor?: TraceSpanBadgeAccessor;
+    badgeSize?: TraceSpanBadgeSize;
     // (undocumented)
     chartType: typeof ChartType.Trace;
     collapsedSpanIds?: string[];
@@ -3873,6 +3934,9 @@ export interface TraceSpec extends Spec {
     dragMode?: 'pan' | 'brush';
     focusDomain?: [number, number];
     laneOrder?: 'tree' | 'chronological';
+    onBadgeClick?: (event: TraceSpanBadgeEvent) => void;
+    onBadgeOut?: (event: TraceSpanBadgeEvent) => void;
+    onBadgeOver?: (event: TraceSpanBadgeEvent) => void;
     onCollapseChange?: (next: string[]) => void;
     onFocusDomainChange?: (domain: [number, number]) => void;
     onSelectionChange?: (next: TraceSelection, details: TraceSelectionDetail[]) => void;

@@ -12,9 +12,15 @@
  * trace_chart.test.tsx); these tests cover the pure data transformation.
  */
 
+import { fireEvent, render } from '@testing-library/react';
+import React from 'react';
+
+import { resolveBadgeAriaLabel } from './badge_layout';
+import { TraceTableBadgeCell } from './screen_reader_trace_table';
 import { formatMs, computeSelfTime } from './tooltip';
 import type { NormalizedSpan } from '../data/types';
-import { describeParent } from '../state/selectors/get_screen_reader_data';
+import { describeParent, type TraceTableBadge } from '../state/selectors/get_screen_reader_data';
+import type { TraceSpanBadge, TraceSpanBadgeEvent, TraceSpanBadgeEventSpan } from '../trace_api';
 
 // ---------------------------------------------------------------------------
 // formatMs
@@ -140,5 +146,82 @@ describe('SR table row data shape', () => {
       fallbackRoot: true as const,
     };
     expect(describeParent(fallback, new Map())).toBe('orphan; used as display root');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// TraceTableBadgeCell — Span badge accessibility surface (Spec 27)
+// ---------------------------------------------------------------------------
+
+describe('TraceTableBadgeCell', () => {
+  const eventSpan: TraceSpanBadgeEventSpan = {
+    id: 's1',
+    name: 'HTTP GET /api',
+    start: 0,
+    end: 100,
+    duration: 100,
+    selfTime: 40,
+    datum: { id: 's1', name: 'HTTP GET /api', start: 0, end: 100 },
+  };
+
+  /** Builds a TraceTableBadge exactly as the selector would (aria name via resolveBadgeAriaLabel). */
+  const tableBadge = (badge: TraceSpanBadge, index = 0): TraceTableBadge => ({
+    id: String(badge.id),
+    ariaLabel: resolveBadgeAriaLabel(badge, index),
+    badge,
+    span: eventSpan,
+  });
+
+  it('names image-only span badges', () => {
+    // An image-only badge with no ariaLabel gets a generated accessible name; an explicit ariaLabel wins.
+    const generated = tableBadge({ id: 'g', image: { src: 'flag.svg' } }, 2);
+    const overridden = tableBadge({ id: 'o', image: { src: 'js.svg' }, ariaLabel: 'JavaScript' });
+    const { getByText } = render(<TraceTableBadgeCell badges={[generated, overridden]} onBadgeClick={undefined} />);
+    expect(getByText('Badge 3')).toBeTruthy(); // index 2 → "Badge 3"
+    expect(getByText('JavaScript')).toBeTruthy();
+  });
+
+  it('non-clickable badges are informational for keyboard users', () => {
+    // Without onBadgeClick, badges are inert text — no <button> controls are added.
+    const { container, getByText } = render(
+      <TraceTableBadgeCell badges={[tableBadge({ id: 'b', text: 'OK' })]} onBadgeClick={undefined} />,
+    );
+    expect(container.querySelector('button')).toBeNull();
+    expect(getByText('OK')).toBeTruthy();
+  });
+
+  it('keyboard activation dispatches badge click events', () => {
+    const badge: TraceSpanBadge = { id: 'status', text: 'OK', color: 'success', meta: { code: 200 } };
+    const onBadgeClick = jest.fn();
+    const { container } = render(<TraceTableBadgeCell badges={[tableBadge(badge)]} onBadgeClick={onBadgeClick} />);
+
+    const button = container.querySelector('button')!;
+    expect(button).not.toBeNull();
+    fireEvent.click(button);
+
+    expect(onBadgeClick).toHaveBeenCalledTimes(1);
+    const event: TraceSpanBadgeEvent = onBadgeClick.mock.calls[0][0];
+    // Keyboard-origin activation: same shape as pointer minus coordinates, badge/meta by reference.
+    expect(event.source).toBe('keyboard');
+    expect(event.badge).toBe(badge);
+    expect(event.span.id).toBe('s1');
+    expect(Object.keys(event).sort()).toEqual(['badge', 'source', 'span']);
+  });
+
+  it('badge keyboard activation does not synthesize hover', () => {
+    // The SR surface only exposes activation. Firing repeated clicks never produces hover semantics:
+    // the only handler invoked is onBadgeClick, and no chart-relative coordinates are synthesized.
+    const onBadgeClick = jest.fn();
+    const { container } = render(
+      <TraceTableBadgeCell badges={[tableBadge({ id: 'b', text: 'x' })]} onBadgeClick={onBadgeClick} />,
+    );
+    const button = container.querySelector('button')!;
+    fireEvent.click(button);
+    fireEvent.click(button);
+    expect(onBadgeClick).toHaveBeenCalledTimes(2);
+    for (const [event] of onBadgeClick.mock.calls) {
+      expect(event).not.toHaveProperty('chartX');
+      expect(event).not.toHaveProperty('chartY');
+    }
   });
 });

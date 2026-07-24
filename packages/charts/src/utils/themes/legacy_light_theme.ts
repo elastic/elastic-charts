@@ -16,6 +16,7 @@ import {
   LEGACY_CHART_PADDING,
 } from './theme_common';
 import { LIGHT_THEME_BULLET_STYLE } from '../../chart_types/bullet_graph/theme';
+import { DEFAULT_TRACE_BADGE_STYLE } from '../../chart_types/trace_chart/render/types';
 import { Colors } from '../../common/colors';
 import { GOLDEN_RATIO, TAU } from '../../common/constants';
 import { ColorVariant } from '../common';
@@ -502,5 +503,6 @@ export const LEGACY_LIGHT_THEME: Theme = {
     criticalPathColor: '#C61E25',
     criticalPathThickness: 2,
     labelPosition: 'gutter',
+    badge: DEFAULT_TRACE_BADGE_STYLE,
   },
 };

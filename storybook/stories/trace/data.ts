@@ -425,7 +425,13 @@ export const FRONTEND_WEB_OTLP_ENVELOPE: OtlpEnvelope = {
   resourceSpans: [
     // ── frontend-web (rum-js) ────────────────────────────────────────────────
     {
-      resource: { attributes: [{ key: 'service.name', value: 'frontend-web' }] },
+      resource: {
+        attributes: [
+          { key: 'service.name', value: 'frontend-web' },
+          // Drives the language icon Span badge in stories 12 & 28 (Spec 27).
+          { key: 'telemetry.sdk.language', value: 'javascript' },
+        ],
+      },
       scopeSpans: [
         {
           spans: [
@@ -457,7 +463,12 @@ export const FRONTEND_WEB_OTLP_ENVELOPE: OtlpEnvelope = {
     },
     // ── product-recommendation (go) ─────────────────────────────────────────
     {
-      resource: { attributes: [{ key: 'service.name', value: 'product-recommendation' }] },
+      resource: {
+        attributes: [
+          { key: 'service.name', value: 'product-recommendation' },
+          { key: 'telemetry.sdk.language', value: 'go' },
+        ],
+      },
       scopeSpans: [
         {
           spans: [
@@ -494,7 +505,12 @@ export const FRONTEND_WEB_OTLP_ENVELOPE: OtlpEnvelope = {
     },
     // ── inventory-service (nodejs) ───────────────────────────────────────────
     {
-      resource: { attributes: [{ key: 'service.name', value: 'inventory-service' }] },
+      resource: {
+        attributes: [
+          { key: 'service.name', value: 'inventory-service' },
+          { key: 'telemetry.sdk.language', value: 'nodejs' },
+        ],
+      },
       scopeSpans: [
         {
           spans: [
@@ -536,7 +552,12 @@ export const FRONTEND_WEB_OTLP_ENVELOPE: OtlpEnvelope = {
     },
     // ── user-preference-service (python) ────────────────────────────────────
     {
-      resource: { attributes: [{ key: 'service.name', value: 'user-preference-service' }] },
+      resource: {
+        attributes: [
+          { key: 'service.name', value: 'user-preference-service' },
+          { key: 'telemetry.sdk.language', value: 'python' },
+        ],
+      },
       scopeSpans: [
         {
           spans: [
@@ -565,6 +586,35 @@ export const FRONTEND_WEB_OTLP_ENVELOPE: OtlpEnvelope = {
     },
   ],
 };
+
+// ---------------------------------------------------------------------------
+// LANGUAGE_BADGE_ICONS — inline-SVG language icons for Span badge stories (Spec 27)
+// ---------------------------------------------------------------------------
+
+/**
+ * Builds a tiny inline-SVG data URL for a language chip. Data URLs are same-origin, so they load
+ * without CORS concerns — exactly the CORS-safe image source contract Span badges expect (Spec 27).
+ */
+const languageBadgeSvg = (label: string, bg: string, fg = '#000000'): string =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">` +
+      `<rect width="16" height="16" rx="3" fill="${bg}"/>` +
+      `<text x="8" y="12" font-family="Verdana,sans-serif" font-size="8" font-weight="700" ` +
+      `text-anchor="middle" fill="${fg}">${label}</text></svg>`,
+  )}`;
+
+/**
+ * Language icons keyed by the OTel `telemetry.sdk.language` resource attribute value. Each entry
+ * carries an image `src` (inline-SVG data URL) and the accessible `label` a badge should announce.
+ */
+export const LANGUAGE_BADGE_ICONS: Record<string, { src: string; label: string }> = {
+  javascript: { src: languageBadgeSvg('JS', '#f7df1e'), label: 'JavaScript' },
+  go: { src: languageBadgeSvg('Go', '#00add8', '#ffffff'), label: 'Go' },
+  nodejs: { src: languageBadgeSvg('Nd', '#3c873a', '#ffffff'), label: 'Node.js' },
+  python: { src: languageBadgeSvg('Py', '#3776ab', '#ffffff'), label: 'Python' },
+};
+
+export const DURATION_BADGE_ICON = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" class="euiIcon euiBadge__icon css-i67kng-euiIcon-s-inherit-isLoaded-euiBadge__icon-left" role="presentation" data-icon-type="clock" data-is-loaded="true"><path d="M8.5 7.5V4h-1v4.5H12v-1H8.5Z"></path><path fill-rule="evenodd" d="M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0Zm-1 0A6 6 0 1 1 2 8a6 6 0 0 1 12 0Z" clip-rule="evenodd"></path></svg>`)}`;
 
 // ---------------------------------------------------------------------------
 // OTEL_TOOLTIP_SPANS — 4-span OTel fixture for tooltip story (07)

@@ -7,8 +7,10 @@
  */
 
 import type { Color } from '../../../common/colors';
+import { DEFAULT_FONT_FAMILY } from '../../../common/default_theme_attributes';
 import type { Dimensions, Size } from '../../../utils/dimensions';
 import type { NormalizedSpan } from '../data/types';
+import type { TraceSpanBadge } from '../trace_api';
 
 export type { Dimensions, Size };
 
@@ -57,7 +59,96 @@ export interface TraceStyle {
   criticalPathColor: Color;
   /** Thickness in px of the critical-path line. */
   criticalPathThickness: number;
+  /** Span-badge sizing, spacing, and color treatments (Spec 27). */
+  badge: TraceBadgeStyle;
 }
+
+/**
+ * Per-size badge metrics in px (Spec 27). One shared `TraceSpanBadgeSize` applies to every badge in
+ * a Trace; these values own the badge's text, padding, height, and image box as one design unit.
+ * @public
+ */
+export interface TraceBadgeSizeMetrics {
+  /** Total pill height. */
+  height: number;
+  /** Badge text font size. */
+  fontSize: number;
+  /** Horizontal padding inside the pill (each side). */
+  paddingX: number;
+  /** Square side of the image/icon box. */
+  imageSize: number;
+  /** Gap between the image box and the text within a badge. */
+  imageTextGap: number;
+}
+
+/**
+ * Resolved fill/text/border for one badge color treatment. `border` is drawn only when present
+ * (e.g. the `hollow` treatment or a derived border for contrast).
+ * @public
+ */
+export interface TraceBadgeColorStyle {
+  background: Color;
+  text: Color;
+  border?: Color;
+}
+
+/**
+ * Span-badge style tokens (Spec 27): per-size metrics, inter-badge spacing, the pill radius, the
+ * minimum readable label/text widths used by overflow, and the named-color palette. A custom
+ * `Color` badge is resolved at draw time (background = the color, text/border derived for contrast).
+ * @public
+ */
+export interface TraceBadgeStyle {
+  /** Metrics for the small size token. */
+  s: TraceBadgeSizeMetrics;
+  /** Metrics for the medium (default) size token. */
+  m: TraceBadgeSizeMetrics;
+  /** Font family for badge text. */
+  fontFamily: string;
+  /** Gap between adjacent badges in a cluster. */
+  gap: number;
+  /** Gap between the owning label (or bar start) and the first badge. */
+  labelGap: number;
+  /** Corner radius of the badge pill. */
+  borderRadius: number;
+  /** Minimum readable label width preserved before badges are laid out (overflow). */
+  minLabelWidth: number;
+  /** Minimum truncated badge text width; below this a badge is omitted rather than shown. */
+  minTextWidth: number;
+  /** Named EUI-like color treatments. */
+  palette: Record<'default' | 'hollow' | 'primary' | 'success' | 'warning' | 'danger', TraceBadgeColorStyle>;
+}
+
+/**
+ * Default Span-badge style tokens, shared by every base theme (Spec 27 / ADR 0029). Sizes mirror
+ * EUI badge density; the palette uses theme-neutral EUI-like hues. Individual base themes may
+ * override `theme.trace.badge` if a palette needs dark/light-specific tuning.
+ * @internal
+ */
+export const DEFAULT_TRACE_BADGE_STYLE: TraceBadgeStyle = {
+  s: { height: 16, fontSize: 10, paddingX: 4, imageSize: 10, imageTextGap: 3 },
+  m: { height: 20, fontSize: 12, paddingX: 6, imageSize: 12, imageTextGap: 4 },
+  fontFamily: DEFAULT_FONT_FAMILY,
+  gap: 4,
+  labelGap: 6,
+  borderRadius: 3,
+  minLabelWidth: 40,
+  minTextWidth: 16,
+  palette: {
+    default: { background: '#e3e8f2', text: '#1a1c21' },
+    hollow: { background: 'transparent', text: '#1a1c21', border: '#c2cbd6' },
+    primary: { background: '#0b64dd', text: '#ffffff' },
+    success: { background: '#00785a', text: '#ffffff' },
+    warning: { background: '#f5a700', text: '#1a1c21' },
+    danger: { background: '#bd271e', text: '#ffffff' },
+  },
+};
+
+/**
+ * Padding above/below the bar band within a lane (px). Shared by the renderer's bar/label geometry
+ * and the badge-layout pass so both agree on where the label row and badge rows sit. @internal
+ */
+export const LANE_PADDING = 3;
 
 /**
  * Width of the caret glyph zone (▶/▼) in the disclosure gutter, in px.
@@ -103,6 +194,49 @@ export function gutterPx(style: TraceStyle, opts?: { hasParents?: boolean; maxDe
 }
 
 /**
+ * One laid-out Span badge within a lane (Spec 27). Produced by the badge-layout pass with a text
+ * measurer, then consumed by the badge draw pass (Phase 4) and `pickBadge` (Phase 5). Coordinates
+ * are canvas px in the same space as `TraceGeometry.plot`/`gutter` (already scroll-adjusted for y).
+ * @internal
+ */
+export interface BadgeLayoutItem {
+  /** The original badge object, retained by reference for interaction events. */
+  badge: TraceSpanBadge;
+  /** Pill rectangle (hit-test + fill bounds). */
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  /**
+   * The text actually drawn — already trimmed and, when space is tight, truncated with an ellipsis.
+   * `undefined` for an image-only badge (or a badge whose text did not fit its minimum width).
+   */
+  text?: string;
+  /** Image box (canvas px) when the badge has a usable image; `undefined` otherwise. */
+  image?: { src: string; crossOrigin: 'anonymous' | 'use-credentials'; x: number; y: number; size: number };
+  /** X where badge text begins (after the image box + gap when an image is present). */
+  textX: number;
+  /** Font size (px) for the badge text — from the active size token; carried so the draw pass need not re-derive it. */
+  fontSize: number;
+  /** The resolved accessible name (visible text, else `ariaLabel`, else a generated fallback). */
+  ariaLabel: string;
+}
+
+/**
+ * The laid-out Span badges for one lane, plus any inline-label adjustment they force (Spec 27).
+ * In `'inline'` mode a badge cluster is drawn adjacent to the label; when the label+badges combination
+ * would overflow the right edge, the whole group is shifted left (breaking bar-start alignment), which
+ * the renderer applies via `labelX`. `gutter`/`none` modes leave `labelX` undefined.
+ * @internal
+ */
+export interface LaneBadgeLayout {
+  /** Inline-mode label draw x after any right-edge shift; `undefined` → renderer uses the bar start. */
+  labelX?: number;
+  /** Laid-out badge items in accessor order (overflow already truncated/omitted from the end). */
+  items: readonly BadgeLayoutItem[];
+}
+
+/**
  * The pure layout model produced by `buildGeometry`. Every field downstream consumers (time bar,
  * canvas renderer, picking) need is present here; no external mutable state is read at draw time.
  * @internal
@@ -118,6 +252,13 @@ export interface TraceGeometry {
   plot: Dimensions;
   /** Lane height in px (same as TraceStyle.laneHeight). */
   laneHeight: number;
+  /**
+   * Height (px) of the inline label/badge row at the bottom of each lane in `'inline'` Label position
+   * (0 in `'gutter'`/`'none'`). Sized to fit the taller of the label text and — when the trace has
+   * Span badges — the active badge size, so inline badges never spill into the bar band (Spec 27).
+   * The renderer's bar/label split and the badge-layout pass both read this so they agree.
+   */
+  labelBandPx: number;
   /** Full trace extent across all spans (used for reset/fit). */
   domain: { min: number; max: number };
   /** Current zoom window (eased by the caller; identical to domain when no zoom is active). */
@@ -159,6 +300,12 @@ export interface TraceGeometry {
    * Consumed by the critical-path draw pass in `canvas2d_renderer`.
    */
   criticalIntervalsByLane: ReadonlyMap<number, ReadonlyArray<{ start: number; end: number }>>;
+  /**
+   * Laid-out Span badges grouped by lane index (Spec 27), for the visible lane range only. Populated
+   * by the badge-layout pass after partitioning; empty when no `badgeAccessor` is supplied or no
+   * badge participates in the current label mode. Consumed by the badge draw pass and `pickBadge`.
+   */
+  badgesByLane: ReadonlyMap<number, LaneBadgeLayout>;
 }
 
 /**

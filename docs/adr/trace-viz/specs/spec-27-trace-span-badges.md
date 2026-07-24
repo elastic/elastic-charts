@@ -1,5 +1,5 @@
 ---
-status: provisional
+status: accepted
 domain: trace-viz
 owners: []
 supersedes: []
@@ -184,10 +184,12 @@ interaction semantics independent of the label's position or presence.
   badges create a compact badge-only gutter, vertical annotation rails use that gutter's boundary with
   the span drawing area; otherwise rails render at the plot's left edge.
   {test:packages/charts/src/chart_types/trace_chart/render/geometry.test.ts#"vertical annotations do not create gutter width"}
-- In `inline` Label position, participating Span badges are adjacent to the inline span label.
-  In `gutter`, every badge for a span uses the same library-defined placement: either adjacent to
-  the label or on a row below it. The final placement is pending a two-variant design evaluation;
-  consumers cannot configure or mix placements. {story:spanBadgePlacement}
+- In `inline` Label position, participating Span badges are adjacent to the inline span label, sharing
+  a label/badge row that the library sizes to the taller of the label text and the badge so badges
+  never overlap the bar. In `gutter`, every badge for a span uses the same library-defined placement:
+  beside the gutter label, sharing its row (vertically centered on the lane) and right-aligned within
+  the gutter, with the label kept to at least its minimum readable width on the left. Consumers cannot
+  configure or mix placements. {story:spanBadgePlacement}
 - When the label and participating Span badges do not all fit, the layout preserves a
   design-defined minimum readable label area, then lays out badges in accessor order. Badge text may
   truncate with an ellipsis down to a design-defined minimum; badges that still do not fit are
@@ -197,10 +199,12 @@ interaction semantics independent of the label's position or presence.
 
 ## Decisions
 
-- [ADR 0029 — Trace badge rendering architecture](../0029-trace-badge-rendering-architecture.md): pending measured
-  DOM, Canvas2D, and hybrid investigation.
-- Badge export and screenshot fidelity depend on the eventual rendering architecture decision and are
-  not promised by this behavioral spec until that ADR resolves DOM, Canvas2D, or hybrid rendering.
+- [ADR 0029 — Trace badge rendering architecture](../0029-trace-badge-rendering-architecture.md): **accepted —
+  Canvas2D.** Span badges are drawn in the Trace chart's own Canvas2D draw loop, with Charts-owned text
+  measurement, image loading state, placeholder rendering, and hit testing, resolved by measured DOM and
+  Canvas2D spikes on the large-N story.
+- Badge export and screenshot fidelity follow the same Canvas2D path as spans and annotations: because
+  badges share the chart's single canvas, they are captured by the existing export/screenshot flow.
 
 ## Non-goals
 

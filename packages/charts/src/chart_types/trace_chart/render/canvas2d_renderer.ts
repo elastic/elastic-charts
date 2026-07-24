@@ -16,11 +16,10 @@ import type { TextFont } from '../../../renderers/canvas/primitives/text';
 import type { Fill, Stroke } from '../../../geoms/types';
 import { waitingSegments } from '../data/self_time';
 import { drawTimeBar } from './time_bar';
-import type { HoverRegion, PickResult, TraceGeometry, TraceRenderer, TraceStyle } from './types';
-import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX } from './types';
-
-/** Padding above/below active-segment rects within a lane (px). Mirrors TICK_HEIGHT in time_bar.ts. */
-const LANE_PADDING = 3;
+import type { BadgeLayoutItem, HoverRegion, PickResult, TraceBadgeColorStyle, TraceGeometry, TraceRenderer, TraceStyle } from './types';
+import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, LANE_PADDING } from './types';
+import type { BadgeImageCrossOrigin } from './badge_images';
+import type { TraceSpanBadgeColor } from '../trace_api';
 
 /** Zero-width stroke used for active-segment rects (filled only, no visible border). */
 const NO_STROKE: Stroke = { color: Colors.Transparent.rgba, width: 0 };
@@ -115,8 +114,8 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
 
     // In inline mode each lane is split vertically: a bar band at the top and a label band beneath.
     // For gutter/none the label band is zero-height and all geometry reduces to today's behaviour.
-    const labelBandPx =
-      style.labelPosition === 'inline' ? style.gutterLabel.fontSize + LANE_PADDING : 0;
+    // Sourced from geometry so the band grows to fit Span badges (Spec 27) and both passes agree.
+    const labelBandPx = geom.labelBandPx;
 
     // Width of the disclosure-caret column within the gutter. Derived from gutter.width and the
     // label mode: in 'gutter' mode the label area follows the caret column; in other modes the
@@ -147,9 +146,10 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
 
       const laneTop = plot.top + i * laneHeight - scrollOffset;
 
-      // Bar band: occupies the top portion of the lane (full lane when labelBandPx = 0).
+      // Bar band: occupies the top portion of the lane (full lane when labelBandPx = 0). Clamp so a
+      // tall inline label/badge row on a short lane cannot invert the band (badge Spec 27 sizing).
       const barTop = laneTop + LANE_PADDING;
-      const barBottom = laneTop + laneHeight - LANE_PADDING - labelBandPx;
+      const barBottom = Math.max(barTop, laneTop + laneHeight - LANE_PADDING - labelBandPx);
       const barMidY = (barTop + barBottom) / 2;
 
       // --- Total-duration line (thin horizontal rule for the full span extent) ---
@@ -203,7 +203,13 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       if (style.labelPosition === 'gutter') {
         // Gutter label: offset right of the caret column so label and caret don't overlap.
         const labelX = gutter.left + caretColumnWidth + 4;
-        const labelWidth = gutter.width - caretColumnWidth - 8;
+        let labelWidth = gutter.width - caretColumnWidth - 8;
+        // When this lane hosts badges beside the label (Spec 27), stop the label before the first
+        // badge so text and badges never overlap; the badge-layout pass right-aligns the cluster.
+        const laneBadges = geom.badgesByLane.get(i);
+        if (laneBadges && laneBadges.items.length > 0) {
+          labelWidth = Math.max(0, laneBadges.items[0]!.x - labelX - style.badge.labelGap);
+        }
         const { lines } = wrapLines(ctx, span.name, gutterFont, gutterFont.fontSize, labelWidth, laneHeight, {
           wrapAtWord: false,
           shouldAddEllipsis: true,
@@ -216,9 +222,11 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
         // Cull when the bar is entirely outside the visible x-range (no bar to anchor to).
         // Right-edge clipping is handled by the outer lane-area ctx.clip() above.
         if (rawX2 >= plot.left && rawX1 <= plotRight) {
-          const barStartX = Math.max(plot.left, rawX1);
+          // When this lane's badges forced a left shift (Spec 27), the label follows them via `labelX`
+          // so the "label + badges" group stays together; otherwise it anchors at the bar start.
+          const labelX = geom.badgesByLane.get(i)?.labelX ?? Math.max(plot.left, rawX1);
           const labelMidY = laneTop + laneHeight - LANE_PADDING - labelBandPx / 2;
-          renderText(ctx, { x: barStartX, y: labelMidY }, span.name, gutterFont);
+          renderText(ctx, { x: labelX, y: labelMidY }, span.name, gutterFont);
         }
       }
       // labelPosition === 'none': no label drawn.
@@ -397,6 +405,157 @@ export function pickRegion(x: number, y: number, geom: TraceGeometry): PickResul
   }
 
   return { index: lane, region, segmentIndex };
+}
+
+/** Neutral fill for the placeholder box drawn while a badge image is loading or has failed. */
+const BADGE_IMAGE_PLACEHOLDER: Fill = { color: colorToRgba('#d3dae6') };
+
+/**
+ * Resolves a badge's `color` (Spec 27) to concrete fill/text/border values. Named tokens map to
+ * `style.trace.badge.palette`; a custom `Color` becomes the background with an auto-contrasting text
+ * color (dark or light by relative luminance) and no border. `undefined` uses the `default` token.
+ * @internal
+ */
+export function resolveBadgeColors(
+  color: TraceSpanBadgeColor | undefined,
+  palette: TraceStyle['badge']['palette'],
+): TraceBadgeColorStyle {
+  if (color === undefined) return palette.default;
+  if (typeof color === 'string' && color in palette) return palette[color as keyof typeof palette];
+  // Custom Color: derive readable text from luminance (ITU-R BT.601 weights).
+  const [r, g, b] = colorToRgba(color as string);
+  const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+  return { background: color as string, text: luminance > 140 ? '#1a1c21' : '#ffffff' };
+}
+
+/** Traces a rounded-rectangle path (radius clamped to half the smaller side). Uses `arcTo` for corners. */
+function roundRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  const radius = Math.max(0, Math.min(r, w / 2, h / 2));
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + w, y, x + w, y + h, radius);
+  ctx.arcTo(x + w, y + h, x, y + h, radius);
+  ctx.arcTo(x, y + h, x, y, radius);
+  ctx.arcTo(x, y, x + w, y, radius);
+  ctx.closePath();
+}
+
+/** Draws one laid-out badge: pill fill + optional border, then image (or placeholder) and text. */
+function drawOneBadge(
+  ctx: CanvasRenderingContext2D,
+  item: BadgeLayoutItem,
+  style: TraceStyle,
+  badgeFont: TextFont,
+  resolveImage: (src: string, crossOrigin: BadgeImageCrossOrigin) => CanvasImageSource | undefined,
+): void {
+  const colors = resolveBadgeColors(item.badge.color, style.badge.palette);
+  const radius = style.badge.borderRadius;
+
+  // Pill background (skip a fully transparent treatment, e.g. `hollow`).
+  if (colors.background !== 'transparent' && colors.background !== Colors.Transparent.keyword) {
+    roundRectPath(ctx, item.x, item.y, item.width, item.height, radius);
+    ctx.fillStyle = typeof colors.background === 'string' ? colors.background : String(colors.background);
+    ctx.fill();
+  }
+  // Optional border.
+  if (colors.border) {
+    roundRectPath(ctx, item.x, item.y, item.width, item.height, radius);
+    ctx.strokeStyle = colors.border;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Image (or a neutral placeholder box while loading / on failure).
+  if (item.image) {
+    const { src, crossOrigin, x, y, size } = item.image;
+    const decoded = resolveImage(src, crossOrigin);
+    if (decoded) {
+      ctx.drawImage(decoded, x, y, size, size);
+    } else {
+      renderRect(ctx, { x, y, width: size, height: size }, BADGE_IMAGE_PLACEHOLDER, NO_STROKE, true);
+    }
+  }
+
+  // Text (already truncated by layout).
+  if (item.text) {
+    renderText(ctx, { x: item.textX, y: item.y + item.height / 2 }, item.text, {
+      ...badgeFont,
+      fontSize: item.fontSize,
+      textColor: colors.text,
+    });
+  }
+}
+
+/**
+ * Draws the laid-out Span badges (Spec 27) onto `ctx`, on top of the waterfall. Kept separate from
+ * `draw()` so the frozen `TraceRenderer` seam (ADR 0001) is unchanged and so the chart can supply the
+ * per-frame image resolver (`BadgeImageCache.get`) without threading it through the pure geometry.
+ * Clipped to the lane area so badges never paint over the time bar. No-op when no badges are laid out.
+ * @internal
+ */
+export function drawBadges(
+  ctx: CanvasRenderingContext2D,
+  geom: TraceGeometry,
+  style: TraceStyle,
+  resolveImage: (src: string, crossOrigin: BadgeImageCrossOrigin) => CanvasImageSource | undefined,
+): void {
+  const { badgesByLane, plot, gutter } = geom;
+  if (badgesByLane.size === 0) return;
+
+  withContext(ctx, () => {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, plot.top, gutter.width + plot.width, plot.height);
+    ctx.clip();
+
+    const badgeFont: TextFont = {
+      fontStyle: 'normal',
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      fontFamily: style.badge.fontFamily,
+      textColor: style.badge.palette.default.text,
+      // Per-badge size overrides this in drawOneBadge; the base value is just a sensible default.
+      fontSize: style.badge.m.fontSize,
+      align: 'left',
+      baseline: 'middle',
+    };
+
+    for (const lane of badgesByLane.values()) {
+      for (const item of lane.items) {
+        drawOneBadge(ctx, item, style, badgeFont, resolveImage);
+      }
+    }
+    ctx.restore();
+  });
+}
+
+/**
+ * Hit-test result for a Span badge (Spec 27): the owning lane index and the laid-out badge item.
+ * @internal
+ */
+export interface BadgePickResult {
+  laneIndex: number;
+  item: BadgeLayoutItem;
+}
+
+/**
+ * Returns the Span badge under `(x, y)`, or `null` when the pointer is over no badge (Spec 27).
+ * Iterated in lane/accessor order so a duplicate-id badge deterministically resolves to the first
+ * visual match. Callers must check this **before** `pickDisclosure`/`pickRegion` so a badge owns the
+ * pointer (no double-dispatch of the underlying span's hover/click for the same transition).
+ * @internal
+ */
+export function pickBadge(x: number, y: number, geom: TraceGeometry): BadgePickResult | null {
+  const { badgesByLane } = geom;
+  if (badgesByLane.size === 0) return null;
+  for (const [laneIndex, lane] of badgesByLane) {
+    for (const item of lane.items) {
+      if (x >= item.x && x <= item.x + item.width && y >= item.y && y <= item.y + item.height) {
+        return { laneIndex, item };
+      }
+    }
+  }
+  return null;
 }
 
 /** @internal */

@@ -9,8 +9,8 @@
 import type { NormalizedSpan } from '../data/types';
 import { waitingSegments } from '../data/self_time';
 import { TICK_LAYER_PADDING, TICK_LAYER_BOTTOM_INSET } from './time_bar';
-import type { DisclosureEntry, TraceGeometry, TraceStyle } from './types';
-import { gutterPx } from './types';
+import type { DisclosureEntry, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
+import { gutterPx, LANE_PADDING } from './types';
 import type { TraceSelection } from '../trace_api';
 import type { Size } from '../../../utils/dimensions';
 
@@ -42,6 +42,19 @@ export function buildGeometry(
   hasParents = false,
   maxDepth = 0,
   criticalIntervals: ReadonlyArray<{ spanId: string; start: number; end: number }> = [],
+  /**
+   * Width (px) of the compact badge-only gutter reserved in `'none'` Label position when spans have
+   * badges visible in `'none'` (Spec 27). Added to the plot's left offset so the fixed, lane-aligned
+   * badge column sits between the disclosure gutter and the scrollable plot. `0` (no reservation) in
+   * every other case, so charts without `'none'`-visible badges keep their full plot width.
+   */
+  badgeGutterWidth = 0,
+  /**
+   * Height (px) of the active Span badge in `'inline'` mode, or `0` when the trace has no inline
+   * badges (Spec 27). The inline label/badge row is sized to the taller of the label text and this,
+   * so badges never overflow into the bar band. Ignored in `'gutter'`/`'none'`.
+   */
+  badgeRowHeight = 0,
 ): TraceGeometry {
   // spans is already start-sorted by the pipeline cache (O(N log N) once per data change, not per frame).
   // domain is pre-computed by normalize() and passed in; no per-frame reduce needed.
@@ -62,14 +75,25 @@ export function buildGeometry(
       ? Math.max(timeBarHeight, style.timeAxisLayerCount * tickLayerHeight + TICK_LAYER_BOTTOM_INSET)
       : timeBarHeight;
 
-  const plotLeft = effectiveGutterWidth;
+  // The badge-only gutter (Spec 27) widens the fixed left region in 'none' mode. It shifts the plot
+  // right (and shrinks its width) but is not part of the disclosure `gutter` region — laid-out badge
+  // items carry their own absolute x within [effectiveGutterWidth, effectiveGutterWidth + badgeGutter].
+  const leftReserved = effectiveGutterWidth + Math.max(0, badgeGutterWidth);
+  const plotLeft = leftReserved;
   const plotTop = effectiveTimeBarHeight;
-  const plotWidth = Math.max(0, canvasWidth - effectiveGutterWidth);
+  const plotWidth = Math.max(0, canvasWidth - leftReserved);
   const plotHeight = Math.max(0, canvasHeight - effectiveTimeBarHeight);
 
   const gutter = { top: 0, left: 0, width: effectiveGutterWidth, height: canvasHeight };
   const timeBar = { top: 0, left: plotLeft, width: plotWidth, height: effectiveTimeBarHeight };
   const plot = { top: plotTop, left: plotLeft, width: plotWidth, height: plotHeight };
+
+  // Inline mode splits each lane into a bar band (top) and a label/badge row (bottom). Size the row
+  // to the taller of the label text and the active badge (Spec 27) so inline badges never spill into
+  // the bar band. Zero in 'gutter'/'none'. Both the renderer's band split and the badge-layout pass
+  // read `geom.labelBandPx` so they cannot disagree.
+  const labelBandPx =
+    style.labelPosition === 'inline' ? Math.max(style.gutterLabel.fontSize, badgeRowHeight) + LANE_PADDING : 0;
 
   // Linear ms→px scale closure. Guards a zero-width focus domain so callers never divide by zero.
   const focusSpan = focusDomain.max - focusDomain.min;
@@ -120,6 +144,7 @@ export function buildGeometry(
     timeBar,
     plot,
     laneHeight,
+    labelBandPx,
     domain,
     focusDomain,
     scrollOffset,
@@ -130,5 +155,10 @@ export function buildGeometry(
     emptyMessage,
     disclosureByLane,
     criticalIntervalsByLane,
+    // Populated by the badge-layout pass (layoutBadges) after partitioning; empty here so buildGeometry
+    // stays pure (no text measurement). The chart frame replaces this with the measured layout.
+    badgesByLane: EMPTY_BADGES,
   };
 }
+
+const EMPTY_BADGES: ReadonlyMap<number, LaneBadgeLayout> = new Map();

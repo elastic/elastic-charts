@@ -29,7 +29,7 @@
  * change / left-click. Visual pin behavior is confirmed in the story (14_pinned_tooltip).
  */
 
-import { fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { setupJestCanvasMock } from 'jest-canvas-mock';
 
@@ -38,7 +38,7 @@ import { Settings } from '../../specs';
 import { Logger } from '../../utils/logger';
 import * as OrderLanesModule from './data/order_lanes';
 import { Trace } from './trace_api';
-import type { TraceDatum, TraceControlCallbacks } from './trace_api';
+import type { TraceDatum, TraceControlCallbacks, TraceSpanBadge, TraceSpanBadgeEvent } from './trace_api';
 import { makeCtx } from './trace_test_helpers';
 
 /** Minimal fixture: root + one child, enough to exercise normalize → resolveActive. */
@@ -107,9 +107,7 @@ describe('Trace chart — smoke mount', () => {
   });
 
   it('re-renders cleanly when data prop changes', () => {
-    const NEW_SPANS: TraceDatum[] = [
-      { id: 'root2', name: 'POST /checkout', traceId: 't2', start: 0, end: 300 },
-    ];
+    const NEW_SPANS: TraceDatum[] = [{ id: 'root2', name: 'POST /checkout', traceId: 't2', start: 0, end: 300 }];
 
     const { rerender } = render(
       <Chart size={[800, 200]}>
@@ -573,12 +571,7 @@ describe('Trace chart — scrollToSpan + controlProviderCallback (Spec 14)', () 
     const received: TraceControlCallbacks[] = [];
     const { unmount } = render(
       <Chart size={[800, 200]}>
-        <Trace
-          id="cp1"
-          data={FEW_SPANS}
-          xScaleType="linear"
-          controlProviderCallback={(cb) => received.push(cb)}
-        />
+        <Trace id="cp1" data={FEW_SPANS} xScaleType="linear" controlProviderCallback={(cb) => received.push(cb)} />
       </Chart>,
     );
     jest.runAllTimers();
@@ -642,7 +635,9 @@ describe('Trace chart — scrollToSpan + controlProviderCallback (Spec 14)', () 
           id="scroll1"
           data={FEW_SPANS}
           xScaleType="linear"
-          controlProviderCallback={(cb) => { captured = cb; }}
+          controlProviderCallback={(cb) => {
+            captured = cb;
+          }}
         />
       </Chart>,
     );
@@ -666,7 +661,9 @@ describe('Trace chart — scrollToSpan + controlProviderCallback (Spec 14)', () 
           id="scroll2"
           data={FEW_SPANS}
           xScaleType="linear"
-          controlProviderCallback={(cb) => { captured = cb; }}
+          controlProviderCallback={(cb) => {
+            captured = cb;
+          }}
         />
       </Chart>,
     );
@@ -689,7 +686,9 @@ describe('Trace chart — scrollToSpan + controlProviderCallback (Spec 14)', () 
           id="scroll3"
           data={FEW_SPANS}
           xScaleType="linear"
-          controlProviderCallback={(cb) => { captured = cb; }}
+          controlProviderCallback={(cb) => {
+            captured = cb;
+          }}
         />
       </Chart>,
     );
@@ -751,7 +750,9 @@ describe('Trace chart — scrollToSpan + controlProviderCallback (Spec 14)', () 
           id="scroll4"
           data={FEW_SPANS}
           xScaleType="linear"
-          controlProviderCallback={(cb) => { captured = cb; }}
+          controlProviderCallback={(cb) => {
+            captured = cb;
+          }}
         />
       </Chart>,
     );
@@ -782,7 +783,9 @@ describe('Trace chart — scrollToSpan + controlProviderCallback (Spec 14)', () 
           id="scroll5"
           data={FEW_SPANS}
           xScaleType="linear"
-          controlProviderCallback={(cb) => { captured = cb; }}
+          controlProviderCallback={(cb) => {
+            captured = cb;
+          }}
         />
       </Chart>,
     );
@@ -812,9 +815,9 @@ describe('Trace chart — laneOrder prop (Spec 15)', () => {
    *   Chronological: root(0), sibling(50), child(200)
    */
   const LANE_ORDER_SPANS: TraceDatum[] = [
-    { id: 'root',    name: 'root',    traceId: 't', start: 0,   end: 1000 },
-    { id: 'sibling', name: 'sibling', traceId: 't', start: 50,  end: 900  },
-    { id: 'child',   name: 'child',   parentId: 'root', traceId: 't', start: 200, end: 800 },
+    { id: 'root', name: 'root', traceId: 't', start: 0, end: 1000 },
+    { id: 'sibling', name: 'sibling', traceId: 't', start: 50, end: 900 },
+    { id: 'child', name: 'child', parentId: 'root', traceId: 't', start: 200, end: 800 },
   ];
 
   beforeEach(() => {
@@ -949,7 +952,7 @@ describe('Trace chart — focusDomain prop (Spec 16)', () => {
    */
   const SPANS: TraceDatum[] = [
     { id: 'root', name: 'HTTP GET /api', traceId: 't1', start: 0, end: 500 },
-    { id: 'db',   name: 'DB.query',     parentId: 'root', traceId: 't1', start: 100, end: 450 },
+    { id: 'db', name: 'DB.query', parentId: 'root', traceId: 't1', start: 100, end: 450 },
   ];
 
   beforeEach(() => {
@@ -1041,7 +1044,9 @@ describe('Trace chart — focusDomain prop (Spec 16)', () => {
           id="fd5"
           data={SPANS}
           xScaleType="linear"
-          onFocusDomainChange={(d) => { emitted = d; }}
+          onFocusDomainChange={(d) => {
+            emitted = d;
+          }}
         />
       </Chart>,
     );
@@ -1053,19 +1058,13 @@ describe('Trace chart — focusDomain prop (Spec 16)', () => {
     // Feed the emitted domain back as focusDomain — echo-guard must suppress re-arm.
     rerender(
       <Chart size={[800, 200]}>
-        <Trace
-          id="fd5"
-          data={SPANS}
-          xScaleType="linear"
-          focusDomain={capturedEmit}
-          onFocusDomainChange={cb2}
-        />
+        <Trace id="fd5" data={SPANS} xScaleType="linear" focusDomain={capturedEmit} onFocusDomainChange={cb2} />
       </Chart>,
     );
     jest.runAllTimers();
     // cb2 must NOT have been called with the emitted domain (echo suppressed).
-    const echoCalls = cb2.mock.calls.filter(([d]: [[number, number]]) =>
-      Math.abs(d[0] - capturedEmit[0]) < 0.1 && Math.abs(d[1] - capturedEmit[1]) < 0.1,
+    const echoCalls = cb2.mock.calls.filter(
+      ([d]: [[number, number]]) => Math.abs(d[0] - capturedEmit[0]) < 0.1 && Math.abs(d[1] - capturedEmit[1]) < 0.1,
     );
     expect(echoCalls).toHaveLength(0);
     unmount();
@@ -1130,7 +1129,7 @@ function makeTouchInit(canvas: HTMLCanvasElement, touches: Array<{ clientX: numb
 describe('Trace chart — touch gestures (Spec 23)', () => {
   const SPANS: TraceDatum[] = [
     { id: 'root', name: 'HTTP GET /api', traceId: 't1', start: 0, end: 500 },
-    { id: 'db',   name: 'DB.query',     parentId: 'root', traceId: 't1', start: 100, end: 450 },
+    { id: 'db', name: 'DB.query', parentId: 'root', traceId: 't1', start: 100, end: 450 },
   ];
 
   beforeEach(() => {
@@ -1216,15 +1215,21 @@ describe('Trace chart — touch gestures (Spec 23)', () => {
     const canvas = container.querySelector('canvas')!;
     expect(() => {
       // Two-finger touch start
-      fireEvent.touchStart(canvas, makeTouchInit(canvas, [
-        { clientX: 200, clientY: 50 },
-        { clientX: 400, clientY: 50 },
-      ]));
+      fireEvent.touchStart(
+        canvas,
+        makeTouchInit(canvas, [
+          { clientX: 200, clientY: 50 },
+          { clientX: 400, clientY: 50 },
+        ]),
+      );
       // Pinch in (fingers converge)
-      fireEvent.touchMove(canvas, makeTouchInit(canvas, [
-        { clientX: 240, clientY: 50 },
-        { clientX: 360, clientY: 50 },
-      ]));
+      fireEvent.touchMove(
+        canvas,
+        makeTouchInit(canvas, [
+          { clientX: 240, clientY: 50 },
+          { clientX: 360, clientY: 50 },
+        ]),
+      );
       // Pinch end
       fireEvent.touchEnd(canvas, makeTouchInit(canvas, []));
       jest.runAllTimers();
@@ -1306,10 +1311,13 @@ describe('Trace chart — touch gestures (Spec 23)', () => {
     const canvas = container.querySelector('canvas')!;
     expect(() => {
       // Start pinch with 2 fingers
-      fireEvent.touchStart(canvas, makeTouchInit(canvas, [
-        { clientX: 200, clientY: 50 },
-        { clientX: 400, clientY: 50 },
-      ]));
+      fireEvent.touchStart(
+        canvas,
+        makeTouchInit(canvas, [
+          { clientX: 200, clientY: 50 },
+          { clientX: 400, clientY: 50 },
+        ]),
+      );
       // One finger lifts — 1 finger remains (in the touches list of the touchend event)
       fireEvent.touchEnd(canvas, makeTouchInit(canvas, [{ clientX: 300, clientY: 50 }]));
       // Continue panning with remaining finger
@@ -1317,6 +1325,306 @@ describe('Trace chart — touch gestures (Spec 23)', () => {
       fireEvent.touchEnd(canvas, makeTouchInit(canvas, []));
       jest.runAllTimers();
     }).not.toThrow();
+    unmount();
+  });
+});
+
+/**
+ * Spec 27 — Span badge pointer interaction.
+ *
+ * These tests mount a real `<Chart><Trace>` with a `badgeAccessor` and drive raw pointer events to
+ * assert badge hover/click semantics: badge precedence over the span, activation only on a same-badge
+ * down→up, suspension during viewport gestures, and the clickable cursor. jsdom's `MouseEvent` ignores
+ * `offsetX/offsetY` in its constructor (and the chart reads `e.offsetX`), so we dispatch native events
+ * with those fields defined — plain `fireEvent(node, { clientX })` would land every pointer at (0, 0).
+ *
+ * Geometry (default light theme, `labelPosition: 'gutter'`, one root span → no caret column):
+ *   plot.top = timeBarHeight (32), laneHeight = 24, badge 'm': paddingX 6, height 20. `measureText`
+ *   under the canvas mock returns `text.length`, so 'OK' → fullWidth = 6·2 + 2 = 14. Gutter badges are
+ *   right-aligned beside the label (Spec 27): rightBound = gutterWidth(200) − inset(4) = 196, so the
+ *   cluster sits at x∈[182, 196]; centerY = laneTop(32) + laneHeight(24)/2 = 44 (shared with the label).
+ * So (189, 44) lands on the badge, (300, 44) on the span bar (plot starts at x=200).
+ */
+describe('Trace chart — Span badge interaction (Spec 27)', () => {
+  const BADGE_SPANS: TraceDatum[] = [{ id: 'root', name: 'HTTP GET /api', traceId: 't1', start: 0, end: 500 }];
+  const BADGE: TraceSpanBadge = { id: 'status', text: 'OK', color: 'success', meta: { code: 200 } };
+  const accessor = (d: TraceDatum): readonly TraceSpanBadge[] => (d.id === 'root' ? [BADGE] : []);
+  const noBadges = (): readonly TraceSpanBadge[] => [];
+
+  const AT_BADGE = { x: 189, y: 44 };
+  const OFF_BADGE_ON_SPAN = { x: 300, y: 44 };
+
+  beforeEach(() => {
+    setupJestCanvasMock();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  /** Dispatch a native mouse event with `offsetX/offsetY` set (jsdom drops them from the constructor). */
+  function firePointer(
+    canvas: HTMLElement,
+    type: 'mousedown' | 'mousemove' | 'click',
+    { x, y, buttons = 0 }: { x: number; y: number; buttons?: number },
+  ) {
+    const e = new MouseEvent(type, { bubbles: true, cancelable: true, buttons, view: window });
+    Object.defineProperty(e, 'offsetX', { value: x });
+    Object.defineProperty(e, 'offsetY', { value: y });
+    act(() => {
+      canvas.dispatchEvent(e);
+    });
+  }
+
+  interface Handlers {
+    onBadgeOver?: jest.Mock;
+    onBadgeOut?: jest.Mock;
+    onBadgeClick?: jest.Mock;
+    onElementOver?: jest.Mock;
+    onElementClick?: jest.Mock;
+    badgeAccessor?: (d: TraceDatum) => readonly TraceSpanBadge[];
+    badgeSize?: 's' | 'm';
+  }
+
+  function mountBadges(h: Handlers, data: TraceDatum[] = BADGE_SPANS) {
+    const result = render(
+      <Chart size={[800, 200]}>
+        <Settings onElementOver={h.onElementOver} onElementClick={h.onElementClick} />
+        <Trace
+          id="badges"
+          data={data}
+          xScaleType="linear"
+          badgeSize={h.badgeSize}
+          badgeAccessor={h.badgeAccessor ?? accessor}
+          onBadgeOver={h.onBadgeOver}
+          onBadgeOut={h.onBadgeOut}
+          onBadgeClick={h.onBadgeClick}
+        />
+      </Chart>,
+    );
+    act(() => {
+      jest.runAllTimers();
+    });
+    return { ...result, canvas: result.container.querySelector('canvas')! };
+  }
+
+  it('identifies badges by span and badge id', () => {
+    const onBadgeOver = jest.fn();
+    const { canvas, unmount } = mountBadges({ onBadgeOver });
+
+    firePointer(canvas, 'mousemove', AT_BADGE);
+
+    // Event identity is the (owning span id, badge id) pair.
+    const event: TraceSpanBadgeEvent = onBadgeOver.mock.calls[0][0];
+    expect(event.span.id).toBe('root');
+    expect(event.badge.id).toBe('status');
+    unmount();
+  });
+
+  it('reports badge and span metadata through central handlers', () => {
+    const onBadgeOver = jest.fn();
+    const { canvas, unmount } = mountBadges({ onBadgeOver });
+
+    firePointer(canvas, 'mousemove', AT_BADGE);
+
+    expect(onBadgeOver).toHaveBeenCalledTimes(1);
+    const event: TraceSpanBadgeEvent = onBadgeOver.mock.calls[0][0];
+    expect(event.badge).toBe(BADGE); // the resolved badge, by reference
+    // The owning span's rich metadata rides along so consumers need no second lookup.
+    expect(event.span.id).toBe('root');
+    expect(event.span.name).toBe('HTTP GET /api');
+    expect(event.span.duration).toBe(500);
+    expect(typeof event.span.selfTime).toBe('number');
+    unmount();
+  });
+
+  it('passes badge metadata through events', () => {
+    const onBadgeOver = jest.fn();
+    const { canvas, unmount } = mountBadges({ onBadgeOver });
+
+    firePointer(canvas, 'mousemove', AT_BADGE);
+
+    // Opaque meta is returned by reference, never cloned or reshaped.
+    const event: TraceSpanBadgeEvent = onBadgeOver.mock.calls[0][0];
+    expect(event.badge.meta).toBe(BADGE.meta);
+    unmount();
+  });
+
+  it('badge events do not expose native events', () => {
+    const onBadgeOver = jest.fn();
+    const { canvas, unmount } = mountBadges({ onBadgeOver });
+
+    firePointer(canvas, 'mousemove', AT_BADGE);
+
+    const event: TraceSpanBadgeEvent = onBadgeOver.mock.calls[0][0];
+    expect(Object.keys(event).sort()).toEqual(['badge', 'chartX', 'chartY', 'source', 'span']);
+    expect(event).not.toHaveProperty('nativeEvent');
+    expect(event).not.toHaveProperty('preventDefault');
+    expect(event).not.toHaveProperty('stopPropagation');
+    unmount();
+  });
+
+  it('badge events include coordinates only for pointer source', () => {
+    const onBadgeOver = jest.fn();
+    const { canvas, unmount } = mountBadges({ onBadgeOver });
+
+    firePointer(canvas, 'mousemove', AT_BADGE);
+
+    // Pointer-origin transitions carry chart-relative coordinates. (Keyboard activation — which
+    // synthesizes no coordinates — is covered in screen_reader_trace_table.test.tsx.)
+    const event: TraceSpanBadgeEvent = onBadgeOver.mock.calls[0][0];
+    expect(event.source).toBe('pointer');
+    expect(event).toMatchObject({ chartX: 189, chartY: 44 });
+    unmount();
+  });
+
+  it('badge handlers are independently optional', () => {
+    // Only onBadgeClick supplied: hovering must not throw despite no onBadgeOver/onBadgeOut.
+    const { canvas, unmount } = mountBadges({ onBadgeClick: jest.fn() });
+    expect(() => {
+      firePointer(canvas, 'mousemove', AT_BADGE);
+      firePointer(canvas, 'mousedown', AT_BADGE);
+      firePointer(canvas, 'click', AT_BADGE);
+    }).not.toThrow();
+    unmount();
+
+    // Only onBadgeOver supplied: clicking a badge with no onBadgeClick must not throw.
+    const { canvas: c2, unmount: u2 } = mountBadges({ onBadgeOver: jest.fn() });
+    expect(() => {
+      firePointer(c2, 'mousedown', AT_BADGE);
+      firePointer(c2, 'click', AT_BADGE);
+    }).not.toThrow();
+    u2();
+  });
+
+  it('does not double-dispatch badge and span pointer events', () => {
+    const onBadgeOver = jest.fn();
+    const onElementOver = jest.fn();
+    const { canvas, unmount } = mountBadges({ onBadgeOver, onElementOver });
+
+    firePointer(canvas, 'mousemove', AT_BADGE);
+
+    // The badge owns the pointer: the underlying span hover is suppressed for the same transition.
+    expect(onBadgeOver).toHaveBeenCalledTimes(1);
+    expect(onElementOver).not.toHaveBeenCalled();
+    unmount();
+  });
+
+  it('badge click requires down and up on the same badge', () => {
+    const onBadgeClick = jest.fn();
+    const onElementClick = jest.fn();
+    const { canvas, unmount } = mountBadges({ onBadgeClick, onElementClick });
+
+    // down + up on the same badge → activation.
+    firePointer(canvas, 'mousedown', AT_BADGE);
+    firePointer(canvas, 'click', AT_BADGE);
+    expect(onBadgeClick).toHaveBeenCalledTimes(1);
+    expect(onBadgeClick.mock.calls[0][0].badge).toBe(BADGE);
+
+    // down off the badge (on the span bar), up on the badge → no activation, and the badge still
+    // consumes the click so the span's onElementClick does not fire either.
+    onBadgeClick.mockClear();
+    firePointer(canvas, 'mousedown', OFF_BADGE_ON_SPAN);
+    firePointer(canvas, 'click', AT_BADGE);
+    expect(onBadgeClick).not.toHaveBeenCalled();
+    expect(onElementClick).not.toHaveBeenCalled();
+    unmount();
+  });
+
+  it('badge cursor reflects clickability', () => {
+    const clickable = mountBadges({ onBadgeClick: jest.fn() });
+    firePointer(clickable.canvas, 'mousemove', AT_BADGE);
+    expect(clickable.canvas.style.cursor).toBe('pointer');
+    clickable.unmount();
+
+    // No onBadgeClick → badge is informational, cursor must not become a pointer on hover.
+    const informational = mountBadges({ onBadgeOver: jest.fn() });
+    firePointer(informational.canvas, 'mousemove', AT_BADGE);
+    expect(informational.canvas.style.cursor).not.toBe('pointer');
+    informational.unmount();
+  });
+
+  it('suspends badge events during viewport gestures', () => {
+    const onBadgeOver = jest.fn();
+    const { canvas, unmount } = mountBadges({ onBadgeOver, onBadgeOut: jest.fn() });
+
+    firePointer(canvas, 'mousemove', AT_BADGE); // enter badge
+    expect(onBadgeOver).toHaveBeenCalledTimes(1);
+
+    // Start a pan (button held), then keep moving over the badge coordinates: hit testing is
+    // suspended, so no new onBadgeOver fires until the gesture ends.
+    firePointer(canvas, 'mousedown', AT_BADGE);
+    firePointer(canvas, 'mousemove', { ...AT_BADGE, x: 12, buttons: 1 });
+    firePointer(canvas, 'mousemove', { ...AT_BADGE, buttons: 1 });
+    expect(onBadgeOver).toHaveBeenCalledTimes(1);
+    unmount();
+  });
+
+  it('clears hovered badge when viewport gesture starts', () => {
+    const onBadgeOut = jest.fn();
+    const { canvas, unmount } = mountBadges({ onBadgeOver: jest.fn(), onBadgeOut });
+
+    firePointer(canvas, 'mousemove', AT_BADGE); // enter badge
+    // Press on the badge, then drag (button held) → pan recognized → exactly one onBadgeOut.
+    firePointer(canvas, 'mousedown', AT_BADGE);
+    firePointer(canvas, 'mousemove', { ...AT_BADGE, x: 12, buttons: 1 });
+    expect(onBadgeOut).toHaveBeenCalledTimes(1);
+    unmount();
+  });
+
+  it('clears hovered badge when pointer leaves chart', () => {
+    const onBadgeOut = jest.fn();
+    const { canvas, unmount } = mountBadges({ onBadgeOver: jest.fn(), onBadgeOut });
+
+    firePointer(canvas, 'mousemove', AT_BADGE);
+    act(() => {
+      fireEvent.mouseLeave(canvas);
+    });
+    expect(onBadgeOut).toHaveBeenCalledTimes(1);
+    unmount();
+  });
+
+  it('clears hovered badge when it is removed', () => {
+    const onBadgeOut = jest.fn();
+    const { canvas, rerender, unmount } = mountBadges({ onBadgeOver: jest.fn(), onBadgeOut });
+
+    firePointer(canvas, 'mousemove', AT_BADGE);
+    expect(onBadgeOut).not.toHaveBeenCalled();
+
+    // Re-render with an accessor that yields no badges → the next frame reconciles the stale hover.
+    rerender(
+      <Chart size={[800, 200]}>
+        <Settings />
+        <Trace id="badges" data={BADGE_SPANS} xScaleType="linear" badgeAccessor={noBadges} onBadgeOut={onBadgeOut} />
+      </Chart>,
+    );
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(onBadgeOut).toHaveBeenCalledTimes(1);
+    unmount();
+  });
+
+  it('uses one badge size across lanes', () => {
+    // A parent+child trace → two lanes and a disclosure caret column. With one shared badgeSize ('s'),
+    // both lanes lay out a badge at the same 's' geometry, so both are hittable (proving the single
+    // library-fixed size applies to every lane — no per-lane variation).
+    const nested: TraceDatum[] = [
+      { id: 'root', name: 'root', traceId: 't1', start: 0, end: 500 },
+      { id: 'child', name: 'child', parentId: 'root', traceId: 't1', start: 0, end: 500 },
+    ];
+    const perSpan = (d: TraceDatum): readonly TraceSpanBadge[] => [{ id: `${d.id}-b`, text: 'x' }];
+    const onBadgeOver = jest.fn();
+    const { canvas, unmount } = mountBadges({ onBadgeOver, badgeAccessor: perSpan, badgeSize: 's' }, nested);
+
+    // Caret column (28 + maxDepth·8 = 36) widens the gutter to 236; badges are right-aligned beside
+    // the label, so the 's' cluster ('x' → 4·2 + 1 = 9 wide) sits at x∈[223, 232]. Shared lane-center
+    // baseline: lane 0 centerY = 32 + 24/2 = 44; lane 1 centerY = 56 + 24/2 = 68.
+    firePointer(canvas, 'mousemove', { x: 227, y: 44 });
+    firePointer(canvas, 'mousemove', { x: 227, y: 68 });
+    const ids = onBadgeOver.mock.calls.map((c) => (c[0] as TraceSpanBadgeEvent).badge.id);
+    expect(ids).toEqual(['root-b', 'child-b']);
     unmount();
   });
 });
