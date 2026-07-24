@@ -27,6 +27,7 @@ import type { Position, Rotation } from '../../../../utils/common';
 import { isFiniteNumber, isRTLString } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
 import type { AxisId } from '../../../../utils/ids';
+import type { Truncate } from '../../../../utils/themes/theme';
 import type { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
 import type { JoinedAxisData } from '../../state/selectors/compute_baseline_axes';
 import type { ScaleConfigs } from '../../state/selectors/get_api_scale_configs';
@@ -92,6 +93,33 @@ export function generateTicks(
     });
     return acc;
   }, []);
+}
+
+/** @internal */
+export interface OverflowContext {
+  position: Position;
+  truncate: Truncate | false;
+  labelBudget: number;
+}
+
+const OVERFLOW_EPSILON = 0.5;
+
+/**
+ * Cross-axis overflow: removes labels too big for the axis band (wider than the budget on a vertical axis, taller on a
+ * horizontal one)
+ * @internal
+ */
+export function hideCrossAxisOverflow(ticks: AxisTick[], overflow: OverflowContext): AxisTick[] {
+  const { position, truncate, labelBudget } = overflow;
+
+  if (truncate) return ticks;
+
+  const vertical = isVerticalAxis(position);
+
+  return ticks.map((tick) => {
+    const crossSize = vertical ? tick.layout.bboxWidth : tick.layout.bboxHeight;
+    return crossSize > labelBudget + OVERFLOW_EPSILON ? withoutTickLabel(tick) : tick;
+  });
 }
 
 /** @internal */
@@ -247,6 +275,7 @@ export function computeVisibleTickSets(
   barsPadding?: number,
 ): Projections {
   const panel = getPanelSize(smScales);
+
   return [...joinedAxesData].reduce(
     (acc, [axisId, { axisSpec, axesStyle, isXAxis, labelFormatter: userProvidedLabelFormatter, layout }]) => {
       const { groupId, maximumFractionDigits, timeAxisLayerCount } = axisSpec;
@@ -381,14 +410,23 @@ export function computeVisibleTickSets(
         );
       }
 
+      const hideOverflowingLabels = (projection: Projection): Projection => ({
+        ...projection,
+        ticks: hideCrossAxisOverflow(projection.ticks, {
+          position: axisSpec.position,
+          truncate: axesStyle.tickLabel.truncate,
+          labelBudget: layout.band.labelBudget,
+        }),
+      });
+
       const { fallbackAskedTickCount, entry } = fillLayer(maxTickCount);
-      if (entry) return acc.set(axisId, entry);
+      if (entry) return acc.set(axisId, hideOverflowingLabels(entry));
 
       // todo dry it up
       const scale = getScale(adaptiveTickCount ? fallbackAskedTickCount : maxTickCount);
       const lastResortCandidate =
         scale && getMeasuredTicks(scale, scale.ticks(), undefined, 0, userProvidedLabelFormatter);
-      return lastResortCandidate ? acc.set(axisId, lastResortCandidate) : acc;
+      return lastResortCandidate ? acc.set(axisId, hideOverflowingLabels(lastResortCandidate)) : acc;
     },
     new Map(),
   );

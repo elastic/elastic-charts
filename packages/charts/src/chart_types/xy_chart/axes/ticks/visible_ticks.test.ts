@@ -10,7 +10,9 @@ import { DateTime } from 'luxon';
 import moment from 'moment-timezone';
 
 import type { TickLabelBox, TickLabelLayout } from './labels';
-import { generateTicks, getVisibleTicks } from './visible_ticks';
+import type { AxisTick } from './types';
+import type { OverflowContext } from './visible_ticks';
+import { generateTicks, getVisibleTicks, hideCrossAxisOverflow } from './visible_ticks';
 import { MockGlobalSpec } from '../../../../mocks/specs/specs';
 import { MockXDomain } from '../../../../mocks/xy/domains';
 import { ScaleType } from '../../../../scales/constants';
@@ -213,5 +215,55 @@ describe('getVisibleTicks', () => {
     );
 
     expect(result.map((tick) => tick.label)).toEqual(['0', '25', '50', '75', '100']);
+  });
+});
+
+const tickWith = (
+  label: string,
+  position: number,
+  { bboxWidth = 0, bboxHeight = 0 }: { bboxWidth?: number; bboxHeight?: number },
+): AxisTick => ({
+  value: label,
+  domainClampedValue: label,
+  label,
+  position,
+  domainClampedPosition: position,
+  detailedLayer: 0,
+  showGrid: true,
+  direction: 'ltr',
+  multilayerTimeAxis: false,
+  layout: {
+    width: bboxWidth,
+    height: bboxHeight,
+    bboxWidth,
+    bboxHeight,
+    lines: Object.assign([label], { meta: { truncated: false } }),
+  },
+});
+
+const overflowCtx = (overrides: Partial<OverflowContext> = {}): OverflowContext => ({
+  position: Position.Left,
+  truncate: false,
+  labelBudget: 100,
+  ...overrides,
+});
+
+describe('hideCrossAxisOverflow', () => {
+  test('omits vertical labels wider than the axis budget (cross-axis is label width)', () => {
+    const ticks = [tickWith('fits', 500, { bboxWidth: 40 }), tickWith('overflows', 500, { bboxWidth: 120 })];
+    const result = hideCrossAxisOverflow(ticks, overflowCtx({ position: Position.Left }));
+    expect(result.map((tick) => tick.label)).toEqual(['fits', '']);
+  });
+
+  test('omits horizontal labels taller than the axis budget (e.g. rotated, cross-axis is label height)', () => {
+    const ticks = [tickWith('fits', 500, { bboxHeight: 20 }), tickWith('rotated', 500, { bboxHeight: 120 })];
+    const result = hideCrossAxisOverflow(ticks, overflowCtx({ position: Position.Bottom }));
+    expect(result.map((tick) => tick.label)).toEqual(['fits', '']);
+  });
+
+  test('keeps all labels when truncation is enabled', () => {
+    const ticks = [tickWith('overflows', 500, { bboxWidth: 120 })];
+    const result = hideCrossAxisOverflow(ticks, overflowCtx({ position: Position.Left, truncate: 'end' }));
+    expect(result.map((tick) => tick.label)).toEqual(['overflows']);
   });
 });
