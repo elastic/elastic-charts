@@ -1628,3 +1628,92 @@ describe('Trace chart — Span badge interaction (Spec 27)', () => {
     unmount();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Spec 28 — trace data diagnostics emission (onDataDiagnosticsChange)
+// ---------------------------------------------------------------------------
+
+describe('Trace chart — data diagnostics (Spec 28)', () => {
+  /**
+   * onDataDiagnosticsChange is emitted from the RAF frame after getPipeline, content-guarded so it
+   * fires on prepared-data change, not per animation frame, and never as a render-phase side effect.
+   * Same canvas-mock + fake-timers harness as the focusDomain suite.
+   */
+  const MALFORMED: TraceDatum[] = [
+    { id: 'root', name: 'root', traceId: 't1', start: 0, end: 500 },
+    { id: 'bad', name: 'bad', traceId: 't1', parentId: 'root', start: 100, end: NaN }, // non-finite → dropped
+  ];
+
+  beforeEach(() => {
+    setupJestCanvasMock();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('emits an empty diagnostics report once for clean data', () => {
+    const onDataDiagnosticsChange = jest.fn();
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="diag1" data={FEW_SPANS} xScaleType="linear" onDataDiagnosticsChange={onDataDiagnosticsChange} />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(onDataDiagnosticsChange).toHaveBeenCalledTimes(1);
+    expect(onDataDiagnosticsChange.mock.calls[0][0]).toEqual({ issues: [] });
+    unmount();
+  });
+
+  it('emits a populated report for malformed data', () => {
+    const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const onDataDiagnosticsChange = jest.fn();
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="diag2" data={MALFORMED} xScaleType="linear" onDataDiagnosticsChange={onDataDiagnosticsChange} />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(onDataDiagnosticsChange).toHaveBeenCalledTimes(1);
+    const report = onDataDiagnosticsChange.mock.calls[0][0];
+    expect(report.issues.map((i: { kind: string }) => i.kind)).toContain('span_non_finite_dropped');
+    warnSpy.mockRestore();
+    unmount();
+  });
+
+  it('does not emit diagnostics on every frame (viewport gestures are suppressed)', () => {
+    const onDataDiagnosticsChange = jest.fn();
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="diag3" data={FEW_SPANS} xScaleType="linear" onDataDiagnosticsChange={onDataDiagnosticsChange} />
+      </Chart>,
+    );
+    jest.runAllTimers();
+    expect(onDataDiagnosticsChange).toHaveBeenCalledTimes(1);
+
+    // A wheel zoom drives many additional frames; the report content is unchanged (cache hit) so no
+    // further emissions fire.
+    const canvas = container.querySelector('canvas')!;
+    fireEvent.wheel(canvas, { deltaY: -120 });
+    jest.runAllTimers();
+    fireEvent.wheel(canvas, { deltaY: -120 });
+    jest.runAllTimers();
+    expect(onDataDiagnosticsChange).toHaveBeenCalledTimes(1);
+    unmount();
+  });
+
+  it('does not emit diagnostics during render (no synchronous, render-phase callback)', () => {
+    const onDataDiagnosticsChange = jest.fn();
+    const { unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="diag4" data={FEW_SPANS} xScaleType="linear" onDataDiagnosticsChange={onDataDiagnosticsChange} />
+      </Chart>,
+    );
+    // Before the scheduled RAF fires, render() has run but the callback must not have been invoked.
+    expect(onDataDiagnosticsChange).not.toHaveBeenCalled();
+    jest.runAllTimers();
+    expect(onDataDiagnosticsChange).toHaveBeenCalledTimes(1);
+    unmount();
+  });
+});

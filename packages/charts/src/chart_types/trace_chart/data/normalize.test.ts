@@ -7,6 +7,7 @@
  */
 
 import { resolveSpanBadges } from './badges';
+import { TraceDiagnosticsCollector } from './diagnostics';
 import { correctClockSkew, normalize } from './normalize';
 import { orderLanes } from './order_lanes';
 import { fromOtlp, nanoToMs } from './otel_adapter';
@@ -232,8 +233,9 @@ describe('correctClockSkew', () => {
     expect(correctClockSkew(spans)[1]).toMatchObject({ start: 50, end: 50, skewCorrected: true });
   });
 
-  it('retains negative-duration spans, skips their incident edges, and resumes below a valid edge', () => {
+  it('retains negative-duration spans, skips their incident edges, and reports a diagnostic (not a log)', () => {
     const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const diagnostics = new TraceDiagnosticsCollector();
     const negativeParent = normalizedSpan({ id: 'negative-parent', name: 'negative parent', start: 100, end: 0 });
     const child = normalizedSpan({
       id: 'child',
@@ -250,19 +252,25 @@ describe('correctClockSkew', () => {
       end: 0,
     });
 
-    const result = correctClockSkew([negativeParent, child, grandchild]);
+    const result = correctClockSkew([negativeParent, child, grandchild], diagnostics);
 
     expect(result[0]).toBe(negativeParent);
     expect(result[1]).toBe(child);
     expect(result[2]).toMatchObject({ start: 5, end: 15, skewCorrected: true });
-    expect(warnSpy).toHaveBeenCalledTimes(1);
-    expect(warnSpy).toHaveBeenCalledWith(
-      'Trace chart: ignored clock-skew correction for 1 negative-duration span ("negative-parent").',
-    );
+    // Spec 28: the negative-duration developer warning is migrated to a diagnostic.
+    expect(warnSpy).not.toHaveBeenCalled();
+    expect(diagnostics.list().find((i) => i.kind === 'span_negative_duration')).toMatchObject({
+      severity: 'warning',
+      scope: 'span',
+      count: 1,
+      examples: ['negative-parent'],
+    });
+    warnSpy.mockRestore();
   });
 
-  it('skips both edges incident to a negative-duration child', () => {
+  it('skips both edges incident to a negative-duration child (diagnostic, not a log)', () => {
     const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const diagnostics = new TraceDiagnosticsCollector();
     const root = normalizedSpan({ id: 'root', name: 'root', start: 0, end: 100 });
     const negativeChild = normalizedSpan({
       id: 'negative-child',
@@ -280,33 +288,42 @@ describe('correctClockSkew', () => {
     });
     const spans = [root, negativeChild, childOfNegative];
 
-    expect(correctClockSkew(spans)).toBe(spans);
-    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(correctClockSkew(spans, diagnostics)).toBe(spans);
+    expect(warnSpy).not.toHaveBeenCalled();
+    expect(diagnostics.list().find((i) => i.kind === 'span_negative_duration')).toMatchObject({
+      count: 1,
+      examples: ['negative-child'],
+    });
+    warnSpy.mockRestore();
   });
 
-  it('bounds an aggregated negative-duration warning to five IDs', () => {
+  it('records a negative-duration diagnostic per span, bounded by the example cap', () => {
     const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const diagnostics = new TraceDiagnosticsCollector();
     const spans = Array.from({ length: 7 }, (_, index) =>
       normalizedSpan({ id: `negative-${index}`, name: `negative ${index}`, start: 10, end: 0 }),
     );
 
-    expect(correctClockSkew(spans)).toBe(spans);
-    expect(warnSpy).toHaveBeenCalledTimes(1);
-    expect(warnSpy).toHaveBeenCalledWith(
-      'Trace chart: ignored clock-skew correction for 7 negative-duration spans ("negative-0", "negative-1", "negative-2", "negative-3", "negative-4", and 2 more).',
-    );
+    expect(correctClockSkew(spans, diagnostics)).toBe(spans);
+    expect(warnSpy).not.toHaveBeenCalled();
+    const issue = diagnostics.list().find((i) => i.kind === 'span_negative_duration')!;
+    expect(issue.count).toBe(7); // every occurrence counted
+    expect(issue.examples).toEqual(['negative-0', 'negative-1', 'negative-2', 'negative-3', 'negative-4']); // bounded
+    warnSpy.mockRestore();
   });
 
-  it('does not warn when every duration is non-negative', () => {
+  it('does not warn or record a diagnostic when every duration is non-negative', () => {
     const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const diagnostics = new TraceDiagnosticsCollector();
     const spans = [
       normalizedSpan({ id: 'root', name: 'root', start: 0, end: 100 }),
       normalizedSpan({ id: 'child', name: 'child', parentId: 'root', start: 10, end: 30 }),
     ];
 
-    correctClockSkew(spans);
+    correctClockSkew(spans, diagnostics);
 
     expect(warnSpy).not.toHaveBeenCalled();
+    expect(diagnostics.isEmpty()).toBe(true);
   });
 
   it('retains cyclic spans without hanging', () => {

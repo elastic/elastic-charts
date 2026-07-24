@@ -3772,6 +3772,63 @@ export interface TraceCriticalInterval {
 export type TraceCriticalPath = TraceCriticalInterval[];
 
 // @public
+export interface TraceDataDiagnosticIssue {
+    count: number;
+    examples: string[];
+    // (undocumented)
+    kind: TraceDataDiagnosticKind;
+    // (undocumented)
+    scope: TraceDataDiagnosticScope;
+    // (undocumented)
+    severity: TraceDataDiagnosticSeverity;
+}
+
+// @public
+export type TraceDataDiagnosticKind =
+/** The same span id appeared in more than one selected trace group; the whole combined result is invalidated. */
+'span_duplicate_id_cross_trace'
+/** A duplicate span id was reached within one elected trace tree; that trace group contributes no lanes. */
+| 'trace_group_invalidated_duplicate_span_id'
+/** A trace group has no elected root (rootless / disconnected / a rootless cycle) and renders no lanes. */
+| 'trace_group_rootless'
+/** Spans were omitted as unreachable from the elected root (includes earlier-root omission from root election). */
+| 'trace_spans_omitted'
+/** An orphan was given a synthetic display parent or elected as the fallback root (a recovery). */
+| 'span_reparented'
+/** A span's timings were shifted to correct detected clock skew. */
+| 'span_clock_skew_corrected'
+/** A negative-duration span was left uncorrected (clock-skew correction ignored for it). */
+| 'span_negative_duration'
+/** A span was dropped because its `start`/`end` was non-finite (NaN or ±Infinity). */
+| 'span_non_finite_dropped'
+/** One or more active segments with non-finite bounds were stripped from an otherwise-valid span. */
+| 'span_segment_non_finite_dropped'
+/** A critical-path interval referenced a span id that is not present in the prepared data. */
+| 'reference_unresolved_span'
+/** One span returned multiple badges with the same `id` (Spec 27). */
+| 'badge_duplicate_id'
+/** A badge had neither text nor image (whitespace-only text counts as absent). */
+| 'badge_empty'
+/** A badge's `text` was present but not a string. */
+| 'badge_non_string_text'
+/** A badge's `visibleIn` contained values outside the Label-position set. */
+| 'badge_invalid_visibility'
+/** An image-only badge had no `ariaLabel`; it still renders with a generated name. */
+| 'badge_missing_aria_label';
+
+// @public
+export interface TraceDataDiagnostics {
+    // (undocumented)
+    issues: TraceDataDiagnosticIssue[];
+}
+
+// @public
+export type TraceDataDiagnosticScope = 'chart' | 'trace' | 'span' | 'badge' | 'annotation' | 'reference';
+
+// @public
+export type TraceDataDiagnosticSeverity = 'info' | 'warning' | 'error';
+
+// @public
 export interface TraceDatum {
     activeSegments?: TraceActiveSegment[];
     // (undocumented)
@@ -3938,6 +3995,7 @@ export interface TraceSpec extends Spec {
     onBadgeOut?: (event: TraceSpanBadgeEvent) => void;
     onBadgeOver?: (event: TraceSpanBadgeEvent) => void;
     onCollapseChange?: (next: string[]) => void;
+    onDataDiagnosticsChange?: (diagnostics: TraceDataDiagnostics) => void;
     onFocusDomainChange?: (domain: [number, number]) => void;
     onSelectionChange?: (next: TraceSelection, details: TraceSelectionDetail[]) => void;
     selection?: TraceSelection;

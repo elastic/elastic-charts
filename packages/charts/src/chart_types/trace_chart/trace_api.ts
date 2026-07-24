@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import type { TraceDataDiagnostics } from './data/diagnostics';
 import { anyValueToString } from './data/otel_adapter';
 import { ChartType } from '..';
 import type { Color } from '../../common/colors';
@@ -18,6 +19,16 @@ import { stripUndefined } from '../../utils/common';
 // Re-export the OTel adapter so consumers don't need a separate import path.
 // Import for local use in colorByOtelAttribute; also re-exported below for consumers.
 export type { OtelInput, OtelSpan, OtlpEnvelope } from './data/otel_adapter';
+
+// Re-export the public Trace data diagnostics types (Spec 28) so consumers of `onDataDiagnosticsChange`
+// have a single import path. Picked up by the `export *` in src/index.ts.
+export type {
+  TraceDataDiagnostics,
+  TraceDataDiagnosticIssue,
+  TraceDataDiagnosticKind,
+  TraceDataDiagnosticSeverity,
+  TraceDataDiagnosticScope,
+} from './data/diagnostics';
 
 /**
  * Imperative control callbacks handed to the caller via `controlProviderCallback`.
@@ -498,6 +509,19 @@ export interface TraceSpec extends Spec {
    * is exposed as a keyboard-activatable control in the screen-reader surface.
    */
   onBadgeClick?: (event: TraceSpanBadgeEvent) => void;
+  /**
+   * Called with a structured {@link TraceDataDiagnostics} report describing malformed, corrected,
+   * omitted, or invalid trace input found while preparing the visible output (Spec 28). This is the
+   * application-facing channel that supersedes developer-console warnings for these conditions.
+   *
+   * Data-change driven: fires from the render pipeline only when the prepared data or spec changes
+   * the report's content, not on every animation frame and never as a render-phase side effect.
+   * Content-guarded like `onFocusDomainChange`/`onSelectionChange` — an unchanged report is not
+   * re-emitted. An empty report (`{ issues: [] }`) is emitted once for clean, non-empty prepared
+   * data so consumers can clear stale diagnostics UI. The separate no-data empty state (`data: []`)
+   * does not emit (the canvas is unmounted).
+   */
+  onDataDiagnosticsChange?: (diagnostics: TraceDataDiagnostics) => void;
 }
 
 const buildProps = buildSFProps<TraceSpec>()(

@@ -120,4 +120,20 @@ describe('BadgeImageCache', () => {
     expect(warn.mock.calls[0]![0]).toContain('bad-1.png');
     expect(warn.mock.calls[1]![0]).toContain('bad-2.png');
   });
+
+  it('image load failures are a render-time console warning, not a trace data diagnostic (Spec 28)', () => {
+    // The async badge-image decode failure path (a runtime/CORS concern) stays a developer
+    // console.warn. It is deliberately outside the prepared-data diagnostics report: the cache takes
+    // only a redraw callback, never a TraceDiagnosticsCollector, so a broken image URL cannot appear
+    // as a TraceDataDiagnostics issue.
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const onLoad = jest.fn();
+    const cache = new BadgeImageCache(onLoad);
+    cache.get('broken.png', 'anonymous');
+    FakeImage.instances[0]!.onerror!();
+    expect(warn).toHaveBeenCalledTimes(1);
+    // The redraw callback is unrelated to diagnostics and is not invoked by a failure.
+    expect(onLoad).not.toHaveBeenCalled();
+    expect(cache.statusOf('broken.png', 'anonymous')).toBe('error');
+  });
 });

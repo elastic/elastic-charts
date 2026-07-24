@@ -7,6 +7,7 @@
  */
 
 import { buildColorMap, buildSegmentColorMap } from './colors';
+import type { TraceDiagnosticsCollector } from './diagnostics';
 import { buildChildrenMap, displayParentId, traceScopedId } from './self_time';
 import type { NormalizedSpan } from './types';
 import type { Color } from '../../../common/colors';
@@ -52,6 +53,7 @@ export function normalize(
   colorBy?: TraceColorAccessor,
   vizColors?: Color[],
   criticalPath: TraceCriticalPath = [],
+  diagnostics?: TraceDiagnosticsCollector,
 ): NormalizeResult {
   // Build color maps over the full input — before traceId filtering — so colors are stable across
   // all traces/views (cross-trace color stability).
@@ -65,14 +67,14 @@ export function normalize(
   // Glossary-precise: trace-not-found means the traceId filter matched nothing, not that all
   // matched spans happened to have non-finite timestamps (dropNonFinite below handles that case).
   const traceNotFound = traceId !== undefined && flat.length > 0 && selected.length === 0;
-  const finite = dropNonFinite(selected);
+  const finite = dropNonFinite(selected, diagnostics);
   // Partial-trace recovery: disclose orphans and assign synthetic display parents before clock-skew
   // correction, which traverses display topology (Spec 26 / ADR 0028). May omit unreachable/invalid
   // spans or, for a cross-trace duplicate ID, return no spans (blank mounted plot; emptyReason stays
   // undefined — see ADR 0019 amendment).
-  const recovered = recoverPartialTraces(finite);
-  const corrected = correctClockSkew(recovered);
-  const result = project(corrected, xScaleType, criticalPath);
+  const recovered = recoverPartialTraces(finite, diagnostics);
+  const corrected = correctClockSkew(recovered, diagnostics);
+  const result = project(corrected, xScaleType, criticalPath, diagnostics);
   if (traceNotFound) result.emptyReason = 'trace-not-found';
   return result;
 }
@@ -137,35 +139,30 @@ function selectTrace(spans: NormalizedSpan[], traceId?: string): NormalizedSpan[
  * Downstream safety: colorMaps are built over the full pre-filter input (color stability is
  * unaffected), and selection refs are spanId-based (lane reindexing after a drop is correct).
  */
-function dropNonFinite(spans: NormalizedSpan[]): NormalizedSpan[] {
-  const valid = spans
-    .filter((span) => {
-      if (!Number.isFinite(span.start) || !Number.isFinite(span.end)) {
-        return false;
-      }
-      return true;
-    })
-    .map((span) => {
-      const finiteSegments = span.activeSegments.filter(
-        (seg) => Number.isFinite(seg.start) && Number.isFinite(seg.end),
-      );
-      return finiteSegments.length === span.activeSegments.length ? span : { ...span, activeSegments: finiteSegments };
-    });
+function dropNonFinite(spans: NormalizedSpan[], diagnostics?: TraceDiagnosticsCollector): NormalizedSpan[] {
+  const valid: NormalizedSpan[] = [];
+  let droppedSpans = 0;
+  for (const span of spans) {
+    if (!Number.isFinite(span.start) || !Number.isFinite(span.end)) {
+      droppedSpans += 1;
+      diagnostics?.add('span_non_finite_dropped', 'warning', 'span', span.id);
+      continue;
+    }
+    const finiteSegments = span.activeSegments.filter((seg) => Number.isFinite(seg.start) && Number.isFinite(seg.end));
+    if (finiteSegments.length === span.activeSegments.length) {
+      valid.push(span);
+    } else {
+      diagnostics?.add('span_segment_non_finite_dropped', 'warning', 'span', span.id);
+      valid.push({ ...span, activeSegments: finiteSegments });
+    }
+  }
 
-  const droppedSpans = spans.length - valid.length;
   if (droppedSpans > 0) {
     Logger.warn(
       `Trace chart: dropped ${droppedSpans} span${droppedSpans === 1 ? '' : 's'} with non-finite start/end timestamps (NaN or ±Infinity). Check your data source for failed timestamp conversions.`,
     );
   }
   return valid;
-}
-
-/** Bounded example list `a, b, c, and N more` (max 5), matching the malformed-data warning style. */
-function boundedList(items: string[], max = 5): string {
-  const shown = items.slice(0, max).join(', ');
-  const remaining = items.length - max;
-  return remaining > 0 ? `${shown}, and ${remaining} more` : shown;
 }
 
 /** Human label for a `traceId` group; the `undefined` group is reported as `unknown`. */
@@ -192,11 +189,14 @@ function groupLabel(traceId: string | undefined): string {
  * A span ID occurring in more than one selected `traceId` group invalidates the entire combined
  * result (chart-global IDs). Survivors are materialized in normalized input order (using their clone
  * when one exists); `orderLanes` remains the sole owner of final lane order. Every recovery-driven
- * omission or invalidation is aggregated into one bounded `Logger.warn`; lossless orphan reparenting
- * is silent.
+ * omission or invalidation is reported through the diagnostics collector (Spec 28); lossless orphan
+ * reparenting is reported as an `info` diagnostic rather than staying silent.
  * @internal
  */
-export function recoverPartialTraces(spans: NormalizedSpan[]): NormalizedSpan[] {
+export function recoverPartialTraces(
+  spans: NormalizedSpan[],
+  diagnostics?: TraceDiagnosticsCollector,
+): NormalizedSpan[] {
   if (spans.length === 0) return spans;
 
   // --- Chart-wide pre-scan: a span ID present in more than one selected traceId group is a
@@ -217,16 +217,14 @@ export function recoverPartialTraces(spans: NormalizedSpan[]): NormalizedSpan[] 
     }
     keys.add(span.traceId);
   }
-  const crossTraceDuplicateIds: string[] = [];
+  let hasCrossTraceDuplicate = false;
   for (const [id, keys] of groupKeysById) {
-    if (keys.size > 1) crossTraceDuplicateIds.push(`"${id}"`);
+    if (keys.size > 1) {
+      hasCrossTraceDuplicate = true;
+      diagnostics?.add('span_duplicate_id_cross_trace', 'error', 'chart', id);
+    }
   }
-  if (crossTraceDuplicateIds.length > 0) {
-    Logger.warn(
-      `Trace chart: partial-trace recovery — cross-trace duplicate span IDs invalidated the entire result (${boundedList(
-        crossTraceDuplicateIds,
-      )}).`,
-    );
+  if (hasCrossTraceDuplicate) {
     return [];
   }
 
@@ -234,12 +232,6 @@ export function recoverPartialTraces(spans: NormalizedSpan[]): NormalizedSpan[] 
   const replacement = new Map<NormalizedSpan, NormalizedSpan>(); // original → provenance clone
   const survivors = new Set<NormalizedSpan>(); // original span objects retained
   let changed = false;
-
-  // Warning accounting.
-  let omittedSpanCount = 0;
-  const omittedGroupLabels: string[] = [];
-  const invalidGroupLabels: string[] = [];
-  const rootlessGroupLabels: string[] = [];
 
   for (const [traceId, groupSpans] of groupsByTraceId) {
     const idSet = new Set(groupSpans.map((s) => s.id));
@@ -256,7 +248,7 @@ export function recoverPartialTraces(spans: NormalizedSpan[]): NormalizedSpan[] 
     } else if (recordedRoots.length === 0) {
       if (orphans.length === 0) {
         // Rootless (e.g. a rootless cycle): the group renders no lanes.
-        rootlessGroupLabels.push(groupLabel(traceId));
+        diagnostics?.add('trace_group_rootless', 'warning', 'trace', groupLabel(traceId));
         if (groupSpans.length > 0) changed = true;
         continue;
       }
@@ -303,7 +295,7 @@ export function recoverPartialTraces(spans: NormalizedSpan[]): NormalizedSpan[] 
 
     if (duplicate) {
       // Group-local invalidation: this group contributes no lanes; other groups still render.
-      invalidGroupLabels.push(groupLabel(traceId));
+      diagnostics?.add('trace_group_invalidated_duplicate_span_id', 'error', 'trace', groupLabel(traceId));
       if (groupSpans.length > 0) changed = true;
       continue;
     }
@@ -316,44 +308,24 @@ export function recoverPartialTraces(spans: NormalizedSpan[]): NormalizedSpan[] 
         survivors.add(s);
         survivorCount += 1;
         const clone = localReplacement.get(s);
-        if (clone) replacement.set(s, clone);
+        if (clone) {
+          replacement.set(s, clone);
+          // Lossless partial-trace recovery: an orphan reparented under the elected root, or the
+          // elected fallback root itself (Spec 26). Surfaced as an info diagnostic (Spec 28).
+          diagnostics?.add('span_reparented', 'info', 'span', s.id);
+        }
       }
     }
 
     const omitted = groupSpans.length - survivorCount;
     if (omitted > 0) {
-      omittedSpanCount += omitted;
-      omittedGroupLabels.push(groupLabel(traceId));
+      // Count each omitted span; examples identify the affected trace group (Spec 28).
+      for (let i = 0; i < omitted; i++) {
+        diagnostics?.add('trace_spans_omitted', 'warning', 'trace', groupLabel(traceId));
+      }
       changed = true;
     }
-    if (localReplacement.size > 0) changed = true; // provenance added (lossless reparenting is silent)
-  }
-
-  // One aggregated developer warning covering every recovery-driven omission/invalidation.
-  const reasons: string[] = [];
-  if (omittedSpanCount > 0) {
-    reasons.push(
-      `omitted ${omittedSpanCount} span${omittedSpanCount === 1 ? '' : 's'} unreachable from the elected root in ${
-        omittedGroupLabels.length
-      } trace group${omittedGroupLabels.length === 1 ? '' : 's'} (${boundedList(omittedGroupLabels)})`,
-    );
-  }
-  if (invalidGroupLabels.length > 0) {
-    reasons.push(
-      `invalidated ${invalidGroupLabels.length} trace group${
-        invalidGroupLabels.length === 1 ? '' : 's'
-      } containing duplicate span IDs (${boundedList(invalidGroupLabels)})`,
-    );
-  }
-  if (rootlessGroupLabels.length > 0) {
-    reasons.push(
-      `${rootlessGroupLabels.length} trace group${
-        rootlessGroupLabels.length === 1 ? '' : 's'
-      } have no elected root (rootless/disconnected) and render no lanes (${boundedList(rootlessGroupLabels)})`,
-    );
-  }
-  if (reasons.length > 0) {
-    Logger.warn(`Trace chart: partial-trace recovery — ${reasons.join('; ')}.`);
+    if (localReplacement.size > 0) changed = true; // provenance added
   }
 
   if (!changed) return spans;
@@ -372,7 +344,10 @@ export function recoverPartialTraces(spans: NormalizedSpan[]): NormalizedSpan[] 
  * Edges involving negative-duration or running spans are ignored.
  * @internal
  */
-export function correctClockSkew(spans: NormalizedSpan[]): NormalizedSpan[] {
+export function correctClockSkew(
+  spans: NormalizedSpan[],
+  diagnostics?: TraceDiagnosticsCollector,
+): NormalizedSpan[] {
   if (spans.length === 0) return spans;
 
   const childrenMap = buildChildrenMap(spans, displayParentId);
@@ -385,18 +360,10 @@ export function correctClockSkew(spans: NormalizedSpan[]): NormalizedSpan[] {
   const visited = new Set<NormalizedSpan>();
   let correctionTriggered = false;
 
-  const negativeDurationSpans = spans.filter((span) => Number.isFinite(span.end) && span.end < span.start);
-  if (negativeDurationSpans.length > 0) {
-    const shownIds = negativeDurationSpans
-      .slice(0, 5)
-      .map(({ id }) => `"${id}"`)
-      .join(', ');
-    const remainingCount = negativeDurationSpans.length - 5;
-    Logger.warn(
-      `Trace chart: ignored clock-skew correction for ${negativeDurationSpans.length} negative-duration span${
-        negativeDurationSpans.length === 1 ? '' : 's'
-      } (${shownIds}${remainingCount > 0 ? `, and ${remainingCount} more` : ''}).`,
-    );
+  for (const span of spans) {
+    if (Number.isFinite(span.end) && span.end < span.start) {
+      diagnostics?.add('span_negative_duration', 'warning', 'span', span.id);
+    }
   }
 
   function shiftSpan(span: NormalizedSpan, offset: number): NormalizedSpan {
@@ -433,6 +400,7 @@ export function correctClockSkew(spans: NormalizedSpan[]): NormalizedSpan[] {
       const offset = parent.start + latency - span.start;
       current = shiftSpan(span, offset);
       correctionTriggered = true;
+      diagnostics?.add('span_clock_skew_corrected', 'info', 'span', span.id);
     }
 
     corrected.set(span, current);
@@ -447,7 +415,12 @@ export function correctClockSkew(spans: NormalizedSpan[]): NormalizedSpan[] {
   return spans.map((span) => corrected.get(span) ?? span);
 }
 
-function project(spans: NormalizedSpan[], xScaleType: XScaleType, criticalPath: TraceCriticalPath): NormalizeResult {
+function project(
+  spans: NormalizedSpan[],
+  xScaleType: XScaleType,
+  criticalPath: TraceCriticalPath,
+  diagnostics?: TraceDiagnosticsCollector,
+): NormalizeResult {
   if (spans.length === 0) {
     return { spans: [], domain: { min: 0, max: 0 }, criticalIntervals: [] };
   }
@@ -457,7 +430,7 @@ function project(spans: NormalizedSpan[], xScaleType: XScaleType, criticalPath: 
   if (xScaleType === 'time') {
     // Time mode: no re-zero; clamp each interval to its span's [start, end] and drop invalids.
     const spanById = new Map(spans.map((s) => [s.id, s]));
-    const criticalIntervals = projectCriticalIntervals(criticalPath, spanById, 0);
+    const criticalIntervals = projectCriticalIntervals(criticalPath, spanById, 0, diagnostics);
     return { spans, domain: { min, max }, criticalIntervals };
   }
 
@@ -473,7 +446,7 @@ function project(spans: NormalizedSpan[], xScaleType: XScaleType, criticalPath: 
   }));
   // Linear mode: re-zero intervals by the same `min`, then clamp to the projected span extent.
   const spanById = new Map(rezeroed.map((s) => [s.id, s]));
-  const criticalIntervals = projectCriticalIntervals(criticalPath, spanById, min);
+  const criticalIntervals = projectCriticalIntervals(criticalPath, spanById, min, diagnostics);
   return { spans: rezeroed, domain: { min: 0, max: max - min }, criticalIntervals };
 }
 
@@ -483,18 +456,22 @@ function project(spans: NormalizedSpan[], xScaleType: XScaleType, criticalPath: 
  * - Re-zeros by `offset` (`domainMin` in `'linear'` mode; `0` in `'time'` mode so no shift).
  * - Clamps each interval to its span's projected `[start, end]` (whole-span, not just active
  *   segments — an interval may fall in a waiting region; see ADR 0015 Decision 3 and CONTEXT.md).
- * - Drops: unknown `spanId`; `start >= end` after clamping.
+ * - Drops: unknown `spanId` (reported as `reference_unresolved_span`); `start >= end` after clamping.
  * @internal
  */
 function projectCriticalIntervals(
   criticalPath: TraceCriticalPath,
   spanById: ReadonlyMap<string, NormalizedSpan>,
   projectionOffset: number,
+  diagnostics?: TraceDiagnosticsCollector,
 ): Array<{ spanId: string; start: number; end: number }> {
   const result: Array<{ spanId: string; start: number; end: number }> = [];
   for (const { spanId, start: rawStart, end: rawEnd } of criticalPath) {
     const span = spanById.get(spanId);
-    if (span === undefined) continue; // unknown spanId — drop
+    if (span === undefined) {
+      diagnostics?.add('reference_unresolved_span', 'warning', 'reference', `criticalPath/${spanId}`);
+      continue; // unknown spanId — drop
+    }
     const skewOffset = span.skewCorrected ? span.start + projectionOffset - span.meta.start : 0;
     const start = Math.max(rawStart + skewOffset - projectionOffset, span.start);
     const end = Math.min(rawEnd + skewOffset - projectionOffset, span.end);

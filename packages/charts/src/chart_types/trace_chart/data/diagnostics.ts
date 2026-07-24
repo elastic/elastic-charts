@@ -7,35 +7,64 @@
  */
 
 /**
- * Structured Trace data diagnostics (Spec 28), scoped in this phase to the Span badge issues raised
- * during data preparation (Spec 27). The public report surface (`TraceDataDiagnostics`,
- * `TraceSpec.onDataDiagnosticsChange`, and the core trace-data kinds) is intentionally **not exposed
- * yet** — these types stay `@internal` so the eventual Spec 28 phase can promote and extend them
- * without a breaking rename. Everything here is machine-readable only: no localized/user-facing prose.
+ * Structured Trace data diagnostics (Spec 28). Charts computes a {@link TraceDataDiagnostics} report
+ * from the same prepared trace data that drives visible output, tooltip metadata, screen-reader rows,
+ * and interaction metadata, and hands it to `TraceSpec.onDataDiagnosticsChange`. The report explains
+ * malformed, corrected, omitted, or invalid trace input without applications scraping developer logs.
+ *
+ * Everything here is machine-readable only: no localized/user-facing prose. Applications own
+ * user-visible copy, grouping, and remediation text.
  */
 
 /**
  * Severity of one diagnostic issue: `info` for successful corrections/recoveries, `warning` for
  * recoverable omissions or degraded semantics, `error` for issues that invalidate a trace group or
  * the selected combined result (Spec 28).
- * @internal
+ * @public
  */
 export type TraceDataDiagnosticSeverity = 'info' | 'warning' | 'error';
 
 /**
  * The level a diagnostic issue affects, so consumers need not decode the issue kind (Spec 28).
- * @internal
+ * `'annotation'` is reserved for Trace annotations and `'reference'` covers caller-supplied
+ * references such as critical-path intervals or connections.
+ * @public
  */
 export type TraceDataDiagnosticScope = 'chart' | 'trace' | 'span' | 'badge' | 'annotation' | 'reference';
 
 /**
- * Closed union of supported diagnostic issue kinds. Only the Span badge kinds exist in this phase;
- * the core trace-data kinds (clock skew, omitted/invalid groups, duplicate span ids, unresolved
- * references, …) are added when Spec 28's public report lands. Arbitrary string kinds are not
- * accepted.
- * @internal
+ * Closed union of supported diagnostic issue kinds (Spec 28). New kinds may be added deliberately as
+ * the Trace diagnostics surface expands, but arbitrary string kinds are not accepted. Annotation and
+ * connection kinds are intentionally deferred until those features land.
+ * @public
  */
 export type TraceDataDiagnosticKind =
+  // --- Trace topology / duplicate ids -----------------------------------------------------------
+  /** The same span id appeared in more than one selected trace group; the whole combined result is invalidated. */
+  | 'span_duplicate_id_cross_trace'
+  /** A duplicate span id was reached within one elected trace tree; that trace group contributes no lanes. */
+  | 'trace_group_invalidated_duplicate_span_id'
+  /** A trace group has no elected root (rootless / disconnected / a rootless cycle) and renders no lanes. */
+  | 'trace_group_rootless'
+  /** Spans were omitted as unreachable from the elected root (includes earlier-root omission from root election). */
+  | 'trace_spans_omitted'
+  // --- Partial-trace recovery (Spec 26) ---------------------------------------------------------
+  /** An orphan was given a synthetic display parent or elected as the fallback root (a recovery). */
+  | 'span_reparented'
+  // --- Clock skew (Spec 22 / ADR 0022) ----------------------------------------------------------
+  /** A span's timings were shifted to correct detected clock skew. */
+  | 'span_clock_skew_corrected'
+  /** A negative-duration span was left uncorrected (clock-skew correction ignored for it). */
+  | 'span_negative_duration'
+  // --- Non-finite input -------------------------------------------------------------------------
+  /** A span was dropped because its `start`/`end` was non-finite (NaN or ±Infinity). */
+  | 'span_non_finite_dropped'
+  /** One or more active segments with non-finite bounds were stripped from an otherwise-valid span. */
+  | 'span_segment_non_finite_dropped'
+  // --- Caller-supplied references ---------------------------------------------------------------
+  /** A critical-path interval referenced a span id that is not present in the prepared data. */
+  | 'reference_unresolved_span'
+  // --- Span badges (Spec 27) --------------------------------------------------------------------
   /** One span returned multiple badges with the same `id` (Spec 27). */
   | 'badge_duplicate_id'
   /** A badge had neither text nor image (whitespace-only text counts as absent). */
@@ -50,7 +79,7 @@ export type TraceDataDiagnosticKind =
 /**
  * One aggregated diagnostic issue: a kind + severity + scope, the total occurrence `count`, and a
  * bounded, stable list of `examples`. Not an exhaustive occurrence list (Spec 28).
- * @internal
+ * @public
  */
 export interface TraceDataDiagnosticIssue {
   kind: TraceDataDiagnosticKind;
@@ -60,6 +89,18 @@ export interface TraceDataDiagnosticIssue {
   count: number;
   /** Bounded, insertion-ordered, de-duplicated example identities (e.g. `spanId/badgeId`). */
   examples: string[];
+}
+
+/**
+ * Structured report describing trace data issues found while preparing visible Trace output.
+ * `issues` is the canonical, flat diagnostics surface: each entry carries a kind, severity, scope,
+ * total `count`, and bounded stable `examples`. There are no kind-specific top-level buckets so new
+ * kinds can be added without expanding the public shape sideways (Spec 28). A derived summary is not
+ * exposed in v1 — consumers derive counts from `issues` when needed.
+ * @public
+ */
+export interface TraceDataDiagnostics {
+  issues: TraceDataDiagnosticIssue[];
 }
 
 /**
@@ -114,5 +155,10 @@ export class TraceDiagnosticsCollector {
   /** The canonical flat issue list, in first-occurrence order. */
   list(): TraceDataDiagnosticIssue[] {
     return [...this.issues.values()];
+  }
+
+  /** The public {@link TraceDataDiagnostics} report. Issues-only in v1 (no derived summary). */
+  report(): TraceDataDiagnostics {
+    return { issues: this.list() };
   }
 }

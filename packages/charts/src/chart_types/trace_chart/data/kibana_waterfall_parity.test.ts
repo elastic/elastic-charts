@@ -35,6 +35,7 @@
  *   orphan in input order (documented Spec 26 decision) and disclose it as the fallback root.
  */
 
+import { TraceDiagnosticsCollector } from './diagnostics';
 import { normalize, recoverPartialTraces } from './normalize';
 import { orderLanes } from './order_lanes';
 import type { NormalizedSpan } from './types';
@@ -155,16 +156,19 @@ describe('Kibana waterfall parity — getTraceWaterfall (reparenting + preorder)
   it('invalidates the trace when it encounters a duplicate span id (Kibana throws → we drop)', () => {
     // Kibana: a span id that is both a root and a child throws "Duplicate span id detected", which the
     // hook maps to TraceDataState.Invalid + empty waterfall. Our single-group equivalent invalidates
-    // that group → no visible spans (blank plot), and logs one recovery warning.
+    // that group → no visible spans (blank plot), recorded as one trace-data diagnostic (Spec 28) and
+    // no longer a developer warning.
     const warn = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const diagnostics = new TraceDiagnosticsCollector();
     const spans = [
       nspan('b5', { start: 0, duration: 22750 }), // root (no parent)
       nspan('d8', { parentId: 'b5', start: 100, duration: 140000 }),
       nspan('9d', { parentId: 'd8', start: 200, duration: 54000 }),
       nspan('b5', { parentId: 'd8', start: 300, duration: 24000 }), // duplicate id, reachable
     ];
-    expect(recoverPartialTraces(spans)).toEqual([]);
-    expect(warn).toHaveBeenCalledTimes(1);
+    expect(recoverPartialTraces(spans, diagnostics)).toEqual([]);
+    expect(diagnostics.list().map((i) => i.kind)).toContain('trace_group_invalidated_duplicate_span_id');
+    expect(warn).not.toHaveBeenCalled();
     warn.mockRestore();
   });
 });

@@ -8,7 +8,9 @@
 
 import { resolveSpanBadges } from './badges';
 import { DIAGNOSTICS_EXAMPLE_CAP, TraceDiagnosticsCollector } from './diagnostics';
+import { normalize } from './normalize';
 import type { NormalizedSpan } from './types';
+import { Logger } from '../../../utils/logger';
 import type { TraceDatum, TraceSpanBadge, TraceSpanBadgeAccessor } from '../trace_api';
 
 // --- Fixtures -------------------------------------------------------------------------------------
@@ -60,6 +62,94 @@ describe('TraceDiagnosticsCollector', () => {
     const issue = c.list()[0]!;
     expect(issue.count).toBe(2);
     expect(issue.examples).toEqual(['a/dup']);
+  });
+
+  it('preserves first-occurrence order across kinds so the report is deterministic', () => {
+    const c = new TraceDiagnosticsCollector();
+    c.add('span_reparented', 'info', 'span', 's1');
+    c.add('span_negative_duration', 'warning', 'span', 's2');
+    c.add('span_reparented', 'info', 'span', 's3');
+    expect(kinds(c)).toEqual(['span_reparented', 'span_negative_duration']);
+  });
+});
+
+// --- report(): public issues-only shape (Spec 28) ------------------------------------------------
+
+describe('TraceDiagnosticsCollector.report', () => {
+  it('returns an issues-only report with an empty list for a clean collector', () => {
+    const c = new TraceDiagnosticsCollector();
+    expect(c.report()).toEqual({ issues: [] });
+  });
+
+  it('returns the canonical flat issue list under `issues`', () => {
+    const c = new TraceDiagnosticsCollector();
+    c.add('span_non_finite_dropped', 'warning', 'span', 'x');
+    expect(c.report()).toEqual({ issues: c.list() });
+    expect(c.report().issues[0]).toMatchObject({
+      kind: 'span_non_finite_dropped',
+      severity: 'warning',
+      scope: 'span',
+      count: 1,
+      examples: ['x'],
+    });
+  });
+
+  it('classifies severities across the core kinds (info / warning / error)', () => {
+    const c = new TraceDiagnosticsCollector();
+    c.add('span_reparented', 'info', 'span', 's');
+    c.add('trace_spans_omitted', 'warning', 'trace', '"t1"');
+    c.add('span_duplicate_id_cross_trace', 'error', 'chart', 'dup');
+    const bySeverity = Object.fromEntries(c.list().map((i) => [i.kind, i.severity]));
+    expect(bySeverity).toEqual({
+      span_reparented: 'info',
+      trace_spans_omitted: 'warning',
+      span_duplicate_id_cross_trace: 'error',
+    });
+  });
+});
+
+// --- examples identity contract, driven through normalize (Spec 28 §1) ---------------------------
+
+describe('trace data diagnostics examples identity (via normalize)', () => {
+  it('identifies an unresolved critical-path reference by `criticalPath/<spanId>`', () => {
+    const warn = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const c = new TraceDiagnosticsCollector();
+    const data: TraceDatum[] = [{ id: 'root', name: 'root', start: 0, end: 100 }];
+    normalize(data, 'time', undefined, undefined, undefined, [{ spanId: 'ghost', start: 0, end: 10 }], c);
+    expect(c.list().find((i) => i.kind === 'reference_unresolved_span')).toMatchObject({
+      severity: 'warning',
+      scope: 'reference',
+      examples: ['criticalPath/ghost'],
+    });
+    warn.mockRestore();
+  });
+
+  it('identifies a dropped non-finite span by its spanId and keeps the developer warning', () => {
+    const warn = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    const c = new TraceDiagnosticsCollector();
+    const data: TraceDatum[] = [
+      { id: 'root', name: 'root', start: 0, end: 100 },
+      { id: 'bad', name: 'bad', start: NaN, end: 10 },
+    ];
+    normalize(data, 'time', undefined, undefined, undefined, [], c);
+    expect(c.list().find((i) => i.kind === 'span_non_finite_dropped')).toMatchObject({ examples: ['bad'] });
+    // Non-finite is a scenario-owned log kept alongside the diagnostic (Spec 28).
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('dropped 1 span'));
+    warn.mockRestore();
+  });
+
+  it('identifies a clock-skew-corrected span by its spanId (info)', () => {
+    const c = new TraceDiagnosticsCollector();
+    const data: TraceDatum[] = [
+      { id: 'root', name: 'root', start: 100, end: 300 },
+      { id: 'child', name: 'child', parentId: 'root', start: 80, end: 180 },
+    ];
+    normalize(data, 'time', undefined, undefined, undefined, [], c);
+    expect(c.list().find((i) => i.kind === 'span_clock_skew_corrected')).toMatchObject({
+      severity: 'info',
+      scope: 'span',
+      examples: ['child'],
+    });
   });
 });
 

@@ -268,10 +268,26 @@ does not mount (`isChartEmpty` returns `true`). `trace-not-found` (spans were su
 specified `traceId` matched none of them) mounts the chart and renders the full time-bar/axis
 machinery with an empty plot and a centered message on the canvas. **Invalid or unrenderable data**
 (spans were selected, but filtering or elected-root recovery leaves no visible lanes) also mounts the
-time bar, but leaves a blank plot with no centered message; developer warnings provide the temporary
-observability floor until application-facing diagnostics exist.
+time bar, but leaves a blank plot with no centered message; the emitted **Trace data diagnostics**
+report explains why (e.g. every group invalidated or rootless), with developer warnings remaining as
+a secondary observability floor for the non-migrated scenarios.
 _Avoid_: empty chart (ambiguous); describing the `no-data` library overlay as a "canvas" message
 (it is a DOM overlay, distinct from the `trace-not-found` canvas draw).
+
+**Trace data diagnostics**:
+A structured, machine-readable report (`TraceDataDiagnostics`) describing malformed, corrected,
+omitted, or invalid prepared trace data — the application-facing channel, delivered via
+`onDataDiagnosticsChange`, that supersedes developer-console warnings for those conditions. It is
+computed from the same prepared data that drives visible output (so it explains what the chart
+actually rendered, not raw input), is content-guarded (emitted only when the report's issues change,
+never per animation frame), and carries no localized or user-facing prose (applications own remediation
+copy). Each entry is a `TraceDataDiagnosticIssue` with a `kind`, `severity` (`info`/`warning`/`error`),
+`scope`, total `count`, and a bounded list of stable `examples`. Genuine malformations and corrections
+only: the `trace-not-found` **Empty state** and the valid combined-multi-trace mode are not diagnostics.
+See [ADR 0032](./docs/adr/trace-viz/0032-trace-data-diagnostics-report.md) and Spec 28.
+_Avoid_: error (severity is one axis; the report also carries info/warning), log (a diagnostic is
+structured application data, not a developer console line), validation (the chart recovers and renders;
+it does not reject input).
 
 **Time bar**:
 The horizontal strip at the top of the trace chart that renders the x-axis ticks, tick labels, and

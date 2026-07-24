@@ -14,6 +14,8 @@ import { bindActionCreators } from 'redux';
 
 import { resolveSpanBadges } from './data/badges';
 import { buildDisclosureMap, collapseLanes, collapsibleParentIds, rollupCriticalIntervals } from './data/collapse';
+import type { TraceDataDiagnostics } from './data/diagnostics';
+import { TraceDiagnosticsCollector } from './data/diagnostics';
 import { normalize } from './data/normalize';
 import { orderLanes } from './data/order_lanes';
 import { resolveActive, waitingSegments } from './data/self_time';
@@ -152,7 +154,7 @@ interface PipelineCache {
   vizColors: Theme['colors']['vizColors'];
   criticalPath: TraceSpec['criticalPath'];
   badgeAccessor: TraceSpec['badgeAccessor'];
-  result: { spans: ReturnType<typeof resolveActive>; depthBySpan: Map<ReturnType<typeof resolveActive>[number], number>; hasParents: boolean; maxDepth: number; domain: { min: number; max: number }; emptyReason?: 'trace-not-found'; criticalIntervals: Array<{ spanId: string; start: number; end: number }> };
+  result: { spans: ReturnType<typeof resolveActive>; depthBySpan: Map<ReturnType<typeof resolveActive>[number], number>; hasParents: boolean; maxDepth: number; domain: { min: number; max: number }; emptyReason?: 'trace-not-found'; criticalIntervals: Array<{ spanId: string; start: number; end: number }>; diagnostics: TraceDataDiagnostics; diagnosticsKey: string };
 }
 
 /** Tween state for domainTween. Initialised to NaN so the first frame snaps to fit-all. */
@@ -273,6 +275,13 @@ class TraceComponent extends React.Component<TraceProps> {
   private lastFiredSelection: TraceSelection = [];
   /** Echo-suppression for onFocusDomainChange (Spec 16 / ADR 0007). Null until the first settle fires. */
   private lastFiredDomain: [number, number] | null = null;
+
+  /**
+   * Content-guard for onDataDiagnosticsChange (Spec 28). Holds the serialized `issues` of the last
+   * emitted report. `null` until the first frame fires, so a clean (empty) report emits once on
+   * mount; identical reports on every subsequent zoom/pan/animation frame are suppressed.
+   */
+  private lastFiredDiagnosticsKey: string | null = null;
 
   // Collapse state (Spec 21 / ADR 0026). Same self-managed + controlled + perform-and-fire model as
   // selection (ADR 0011). Only active in laneOrder === 'tree'; ignored in chronological mode.
@@ -601,7 +610,11 @@ class TraceComponent extends React.Component<TraceProps> {
     const { traceSpec, chartDimensions: { width, height } } = this.props;
     if (!traceSpec) return;
 
-    const { spans: pipelineSpans, depthBySpan, hasParents, maxDepth, domain, emptyReason, criticalIntervals } = this.getPipeline(traceSpec);
+    const { spans: pipelineSpans, depthBySpan, hasParents, maxDepth, domain, emptyReason, criticalIntervals, diagnostics: diagnosticsReport, diagnosticsKey } = this.getPipeline(traceSpec);
+
+    // Data-change-driven diagnostics (Spec 28): getPipeline is a cache hit on viewport-only frames
+    // (zoom/pan/focus are component-instance state), so this only fires when prepared data/spec change.
+    this.maybeEmitDiagnostics(traceSpec, diagnosticsReport, diagnosticsKey);
 
     // Tree-gating: collapse is a tree-mode feature (ADR 0026). Warn and ignore in chronological.
     const laneOrder = traceSpec.laneOrder ?? 'tree';
@@ -887,6 +900,21 @@ class TraceComponent extends React.Component<TraceProps> {
     spec.onFocusDomainChange(settled);
   }
 
+  /**
+   * Fires `onDataDiagnosticsChange` when the report's content changed since the last emission
+   * (Spec 28). Content-guarded via the precomputed `key` (serialized issues) so identical reports
+   * on repeated frames (zoom/pan/animation) are suppressed, matching the onFocusDomainChange /
+   * onSelectionChange echo-guard pattern. `lastFiredDiagnosticsKey` is updated **before** the
+   * callback for re-entrant safety. The first mount frame fires once even for a clean empty report
+   * (`null` → any key differs), so consumers can clear stale UI for freshly-prepared clean data.
+   */
+  private maybeEmitDiagnostics(spec: TraceSpec, report: TraceDataDiagnostics, key: string) {
+    if (!spec.onDataDiagnosticsChange) return;
+    if (key === this.lastFiredDiagnosticsKey) return;
+    this.lastFiredDiagnosticsKey = key;
+    spec.onDataDiagnosticsChange(report);
+  }
+
   // -------------------------------------------------------------------------
   // Memoized data pipeline
   // -------------------------------------------------------------------------
@@ -908,13 +936,18 @@ class TraceComponent extends React.Component<TraceProps> {
       return cache.result;
     }
 
+    // One collector rides the pipeline the component already runs, so core trace-data issues and
+    // Span-badge issues share a single report (Spec 28). getPipeline stays a pure memoizer: the
+    // report is part of the cached result and the callback is fired from frame(), never from here.
+    const diagnostics = new TraceDiagnosticsCollector();
+
     // Recompute: normalize now takes TraceDatum[] directly — OTel data arrives pre-converted by fromOtlp.
-    const normalizeResult = normalize(spec.data, spec.xScaleType, spec.traceId, spec.colorBy, vizColors, spec.criticalPath);
+    const normalizeResult = normalize(spec.data, spec.xScaleType, spec.traceId, spec.colorBy, vizColors, spec.criticalPath, diagnostics);
 
     // Derive Span badges from each span's TraceDatum (Spec 27), once per prepared-data change. Runs
     // before resolveActive/orderLanes/collapse, all of which preserve span fields, so badges flow
-    // through to geometry and hit testing. Diagnostics are not surfaced yet (Spec 28 phase).
-    const withBadges = resolveSpanBadges(normalizeResult.spans, spec.badgeAccessor);
+    // through to geometry and hit testing. Badge issues join the same diagnostics report (Spec 28).
+    const withBadges = resolveSpanBadges(normalizeResult.spans, spec.badgeAccessor, diagnostics);
 
     // Order lanes once here (O(N log N) per data/scale change) so buildGeometry doesn't re-order
     // on every rAF frame. buildGeometry's contract requires pre-ordered input.
@@ -927,7 +960,11 @@ class TraceComponent extends React.Component<TraceProps> {
       if (d > 0) hasParents = true;
       if (d > maxDepth) maxDepth = d;
     }
-    const result = { spans, depthBySpan, hasParents, maxDepth, domain: normalizeResult.domain, emptyReason: normalizeResult.emptyReason, criticalIntervals: normalizeResult.criticalIntervals };
+    // Build the report once (pure) and precompute a stable content key for the frame()-side,
+    // content-guarded emission. Issue order is first-occurrence, so the key is deterministic.
+    const report = diagnostics.report();
+    const diagnosticsKey = JSON.stringify(report.issues);
+    const result = { spans, depthBySpan, hasParents, maxDepth, domain: normalizeResult.domain, emptyReason: normalizeResult.emptyReason, criticalIntervals: normalizeResult.criticalIntervals, diagnostics: report, diagnosticsKey };
     this.pipelineCache = {
       dataRef: spec.data,
       xScaleType: spec.xScaleType,

@@ -33,6 +33,7 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0029 — Trace badge rendering architecture](./0029-trace-badge-rendering-architecture.md)
 - [0030 — Trace annotations compose as child specs](./0030-trace-annotation-composition.md)
 - [0031 — Kibana reparenting parity: intentional divergences, cycle-safety, and a ported regression suite](./0031-kibana-reparenting-parity.md)
+- [0032 — Trace data diagnostics: component-owned report, RAF-pipeline emission, and log migration](./0032-trace-data-diagnostics-report.md)
 
 ## Spec plans
 
