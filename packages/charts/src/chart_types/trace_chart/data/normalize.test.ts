@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { resolveTraceAnnotations } from './annotations';
 import { resolveSpanBadges } from './badges';
 import { TraceDiagnosticsCollector } from './diagnostics';
 import { correctClockSkew, normalize } from './normalize';
@@ -13,8 +14,10 @@ import { orderLanes } from './order_lanes';
 import { fromOtlp, nanoToMs } from './otel_adapter';
 import type { OtelSpan, OtlpEnvelope } from './otel_adapter';
 import type { NormalizedSpan } from './types';
+import { ChartType } from '../../..';
+import { SpecType } from '../../../specs/spec_type';
 import { Logger } from '../../../utils/logger';
-import type { TraceDatum, TraceSpanBadge } from '../trace_api';
+import type { TraceAnnotationSpec, TraceDatum, TraceSpanBadge } from '../trace_api';
 import { colorByOtelAttribute, colorByOtelKind } from '../trace_api';
 
 const simpleData: TraceDatum[] = [
@@ -449,7 +452,7 @@ describe('normalize', () => {
 
   describe('empty input', () => {
     it('returns no spans and a zeroed domain', () => {
-      expect(normalize([], 'time')).toEqual({ spans: [], domain: { min: 0, max: 0 }, criticalIntervals: [] });
+      expect(normalize([], 'time')).toEqual({ spans: [], domain: { min: 0, max: 0 }, criticalIntervals: [], projectionOffset: 0 });
     });
   });
 
@@ -1100,5 +1103,32 @@ describe('span badges do not modify source data', () => {
     // Badges attach to the normalized span, never to the source datum.
     expect(withBadges.find((s) => s.id === 'a')!.badges).toHaveLength(1);
     expect(JSON.stringify(data)).toBe(snapshot);
+  });
+});
+
+describe('trace annotations do not change prepared trace data (Spec 29)', () => {
+  it('resolving annotations leaves the prepared spans byte-for-byte unchanged', () => {
+    const data: TraceDatum[] = [
+      { id: 'a', name: 'root', start: 0, end: 100, traceId: 't1' },
+      { id: 'b', name: 'child', parentId: 'a', start: 10, end: 60, traceId: 't1' },
+    ];
+    const { spans, projectionOffset } = normalize(data, 'linear');
+    const snapshot = JSON.stringify(spans);
+    resolveTraceAnnotations(
+      spans,
+      [
+        { chartType: ChartType.Trace, specType: SpecType.Annotation, annotationKind: 'lane', id: 'l', spanId: 'b', ariaLabel: 'Lane' },
+        { chartType: ChartType.Trace, specType: SpecType.Annotation, annotationKind: 'hierarchy', id: 'h', spanId: 'b', ariaLabel: 'Route' },
+        { chartType: ChartType.Trace, specType: SpecType.Annotation, annotationKind: 'time', id: 't', time: 50, ariaLabel: 'When' },
+      ] as TraceAnnotationSpec[],
+      projectionOffset,
+    );
+    expect(JSON.stringify(spans)).toBe(snapshot);
+  });
+
+  it('exposes a projection offset that re-zeros linear coordinates (0 in time mode)', () => {
+    const data: TraceDatum[] = [{ id: 'a', name: 'root', start: 1000, end: 2000, traceId: 't1' }];
+    expect(normalize(data, 'linear').projectionOffset).toBe(1000);
+    expect(normalize(data, 'time').projectionOffset).toBe(0);
   });
 });

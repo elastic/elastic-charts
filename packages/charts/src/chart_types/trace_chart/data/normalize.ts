@@ -22,6 +22,12 @@ export interface NormalizeResult {
   domain: { min: number; max: number };
   /** Projected + clamped critical intervals. Re-zeroed in `'linear'` mode; epoch-based in `'time'` mode. */
   criticalIntervals: Array<{ spanId: string; start: number; end: number }>;
+  /**
+   * The amount subtracted from raw caller-supplied timestamps to reach the projected coordinate space:
+   * the original domain min in `'linear'` mode, `0` in `'time'` mode. Trace annotations (Spec 29) use
+   * it to re-zero their caller-supplied `time`/`range` the same way critical-path intervals are.
+   */
+  projectionOffset: number;
   emptyReason?: 'trace-not-found';
 }
 
@@ -422,7 +428,7 @@ function project(
   diagnostics?: TraceDiagnosticsCollector,
 ): NormalizeResult {
   if (spans.length === 0) {
-    return { spans: [], domain: { min: 0, max: 0 }, criticalIntervals: [] };
+    return { spans: [], domain: { min: 0, max: 0 }, criticalIntervals: [], projectionOffset: 0 };
   }
   const min = spans.reduce((acc, span) => Math.min(acc, span.start), Infinity);
   const max = spans.reduce((acc, span) => Math.max(acc, span.end), -Infinity);
@@ -431,7 +437,7 @@ function project(
     // Time mode: no re-zero; clamp each interval to its span's [start, end] and drop invalids.
     const spanById = new Map(spans.map((s) => [s.id, s]));
     const criticalIntervals = projectCriticalIntervals(criticalPath, spanById, 0, diagnostics);
-    return { spans, domain: { min, max }, criticalIntervals };
+    return { spans, domain: { min, max }, criticalIntervals, projectionOffset: 0 };
   }
 
   const rezeroed = spans.map((span) => ({
@@ -447,7 +453,7 @@ function project(
   // Linear mode: re-zero intervals by the same `min`, then clamp to the projected span extent.
   const spanById = new Map(rezeroed.map((s) => [s.id, s]));
   const criticalIntervals = projectCriticalIntervals(criticalPath, spanById, min, diagnostics);
-  return { spans: rezeroed, domain: { min: 0, max: max - min }, criticalIntervals };
+  return { spans: rezeroed, domain: { min: 0, max: max - min }, criticalIntervals, projectionOffset: min };
 }
 
 /**

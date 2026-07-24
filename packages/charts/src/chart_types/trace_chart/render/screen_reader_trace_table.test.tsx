@@ -16,11 +16,19 @@ import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
 import { resolveBadgeAriaLabel } from './badge_layout';
+import { ScreenReaderTraceAnnotationsComponent } from './screen_reader_trace_annotations';
 import { TraceTableBadgeCell } from './screen_reader_trace_table';
 import { formatMs, computeSelfTime } from './tooltip';
+import type { ResolvedTraceAnnotation } from '../data/annotations';
 import type { NormalizedSpan } from '../data/types';
 import { describeParent, type TraceTableBadge } from '../state/selectors/get_screen_reader_data';
-import type { TraceSpanBadge, TraceSpanBadgeEvent, TraceSpanBadgeEventSpan } from '../trace_api';
+import type {
+  TraceAnnotationEvent,
+  TraceDatum,
+  TraceSpanBadge,
+  TraceSpanBadgeEvent,
+  TraceSpanBadgeEventSpan,
+} from '../trace_api';
 
 // ---------------------------------------------------------------------------
 // formatMs
@@ -220,6 +228,134 @@ describe('TraceTableBadgeCell', () => {
     fireEvent.click(button);
     expect(onBadgeClick).toHaveBeenCalledTimes(2);
     for (const [event] of onBadgeClick.mock.calls) {
+      expect(event).not.toHaveProperty('chartX');
+      expect(event).not.toHaveProperty('chartY');
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Spec 29 — annotation screen-reader surface
+//
+// The presentational `ScreenReaderTraceAnnotationsComponent` is rendered directly (the redux-connected
+// wrapper is smoke-covered by the trace_chart integration mount). Covers a table separate from the span
+// rows, generated accessible names, keyboard activation dispatching a `keyboard`-source click (no
+// synthesized hover or coordinates), and non-clickable informational text.
+// ---------------------------------------------------------------------------
+
+describe('ScreenReaderTraceAnnotations', () => {
+  const dbSpan: NormalizedSpan = {
+    id: 'db',
+    name: 'DB.query',
+    start: 100,
+    end: 450,
+    activeSegments: [],
+    meta: { id: 'db', name: 'DB.query', traceId: 't1', start: 100, end: 450 } satisfies TraceDatum,
+  };
+
+  const timeAnnotation: ResolvedTraceAnnotation = {
+    id: 'deploy',
+    kind: 'time',
+    placement: 'timebar',
+    datum: { id: 'deploy', meta: { rev: 42 } },
+    ariaLabel: 'Deploy',
+    time: 200,
+    authoredTime: 200,
+  };
+
+  const laneAnnotation: ResolvedTraceAnnotation = {
+    id: 'slow',
+    kind: 'lane',
+    datum: { id: 'slow' },
+    ariaLabel: 'Slow query',
+    spanId: 'db',
+    routeSpanIds: ['db'],
+    span: dbSpan,
+  };
+
+  it('renders nothing when no annotation resolves', () => {
+    const { container } = render(
+      <ScreenReaderTraceAnnotationsComponent annotations={[]} onAnnotationClick={undefined} />,
+    );
+    expect(container.querySelector('[data-testid="echScreenReaderTraceAnnotations"]')).toBeNull();
+  });
+
+  it('exposes trace annotations separately from span rows', () => {
+    const { container, getByText } = render(
+      <ScreenReaderTraceAnnotationsComponent
+        annotations={[timeAnnotation, laneAnnotation]}
+        onAnnotationClick={undefined}
+      />,
+    );
+    // Its own SR surface, not folded into the span-row table (echScreenReaderTraceTable).
+    expect(container.querySelector('[data-testid="echScreenReaderTraceAnnotations"]')).not.toBeNull();
+    expect(container.querySelector('[data-testid="echScreenReaderTraceTable"]')).toBeNull();
+    expect(getByText('Deploy')).toBeTruthy();
+    expect(getByText('Slow query')).toBeTruthy();
+    // Related-span column: named for lane/hierarchy, blank (—) for time annotations.
+    expect(getByText('DB.query')).toBeTruthy();
+  });
+
+  it('reports annotations without accessible names', () => {
+    // The resolver supplies a generic fallback name (and reports it via diagnostics); the surface still
+    // lists the annotation using that name so AT never encounters an unnamed control.
+    const unnamed: ResolvedTraceAnnotation = { ...laneAnnotation, id: 'x', ariaLabel: 'Trace annotation x' };
+    const { getByText } = render(
+      <ScreenReaderTraceAnnotationsComponent annotations={[unnamed]} onAnnotationClick={undefined} />,
+    );
+    expect(getByText('Trace annotation x')).toBeTruthy();
+  });
+
+  it('non-clickable annotations are informational for keyboard users', () => {
+    const { container, getByText } = render(
+      <ScreenReaderTraceAnnotationsComponent annotations={[laneAnnotation]} onAnnotationClick={undefined} />,
+    );
+    expect(container.querySelector('button')).toBeNull();
+    expect(getByText('Slow query')).toBeTruthy();
+  });
+
+  it('keyboard activation dispatches annotation click events', () => {
+    const onAnnotationClick = jest.fn();
+    const { getByText } = render(
+      <ScreenReaderTraceAnnotationsComponent annotations={[laneAnnotation]} onAnnotationClick={onAnnotationClick} />,
+    );
+
+    fireEvent.click(getByText('Slow query'));
+
+    expect(onAnnotationClick).toHaveBeenCalledTimes(1);
+    const event: TraceAnnotationEvent = onAnnotationClick.mock.calls[0][0];
+    // Keyboard-origin activation: same shape as pointer minus coordinates, datum/span by reference.
+    expect(event.source).toBe('keyboard');
+    expect(event.type).toBe('lane');
+    expect(event.annotation).toBe(laneAnnotation.datum);
+    expect(event.span?.id).toBe('db');
+    expect(Object.keys(event).sort()).toEqual(['annotation', 'source', 'span', 'type']);
+  });
+
+  it('dispatches a time-annotation keyboard click with no related span', () => {
+    const onAnnotationClick = jest.fn();
+    const { getByText } = render(
+      <ScreenReaderTraceAnnotationsComponent annotations={[timeAnnotation]} onAnnotationClick={onAnnotationClick} />,
+    );
+
+    fireEvent.click(getByText('Deploy'));
+
+    const event: TraceAnnotationEvent = onAnnotationClick.mock.calls[0][0];
+    expect(event.type).toBe('time');
+    expect(event.span).toBeUndefined();
+    expect(event.annotation.meta).toEqual({ rev: 42 });
+  });
+
+  it('annotation keyboard activation does not synthesize hover', () => {
+    const onAnnotationClick = jest.fn();
+    const { getByText } = render(
+      <ScreenReaderTraceAnnotationsComponent annotations={[laneAnnotation]} onAnnotationClick={onAnnotationClick} />,
+    );
+    const button = getByText('Slow query');
+    fireEvent.click(button);
+    fireEvent.click(button);
+    expect(onAnnotationClick).toHaveBeenCalledTimes(2);
+    for (const [event] of onAnnotationClick.mock.calls) {
       expect(event).not.toHaveProperty('chartX');
       expect(event).not.toHaveProperty('chartY');
     }

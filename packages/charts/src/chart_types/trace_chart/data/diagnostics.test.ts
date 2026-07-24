@@ -6,12 +6,15 @@
  * Side Public License, v 1.
  */
 
+import { resolveTraceAnnotations } from './annotations';
 import { resolveSpanBadges } from './badges';
 import { DIAGNOSTICS_EXAMPLE_CAP, TraceDiagnosticsCollector } from './diagnostics';
 import { normalize } from './normalize';
 import type { NormalizedSpan } from './types';
+import { ChartType } from '../../..';
+import { SpecType } from '../../../specs/spec_type';
 import { Logger } from '../../../utils/logger';
-import type { TraceDatum, TraceSpanBadge, TraceSpanBadgeAccessor } from '../trace_api';
+import type { TraceAnnotationSpec, TraceDatum, TraceSpanBadge, TraceSpanBadgeAccessor } from '../trace_api';
 
 // --- Fixtures -------------------------------------------------------------------------------------
 
@@ -300,5 +303,174 @@ describe('resolveSpanBadges diagnostics', () => {
     expect(report.length).toBeGreaterThan(0);
     expect(report.every((i) => i.scope === 'badge')).toBe(true);
     expect(kinds(c)).toEqual(expect.arrayContaining(['badge_empty', 'badge_non_string_text', 'badge_missing_aria_label']));
+  });
+});
+
+// --- resolveTraceAnnotations: resolution & diagnostics (Spec 29) ----------------------------------
+
+/** A span carrying a display parent, for hierarchy-route tests. */
+const spanWithParent = (id: string, parentId?: string): NormalizedSpan => ({
+  id,
+  name: id,
+  start: 0,
+  end: 100,
+  activeSegments: [],
+  meta: datum(id),
+  parentId,
+});
+
+const timeAnn = (
+  id: string,
+  position: { time?: number; range?: [number, number] },
+  extra: Partial<TraceAnnotationSpec> = {},
+): TraceAnnotationSpec =>
+  ({
+    chartType: ChartType.Trace,
+    specType: SpecType.Annotation,
+    annotationKind: 'time',
+    id,
+    ariaLabel: id,
+    ...position,
+    ...extra,
+  }) as TraceAnnotationSpec;
+
+const spanAnn = (
+  kind: 'lane' | 'hierarchy',
+  id: string,
+  spanId: string,
+  extra: Partial<TraceAnnotationSpec> = {},
+): TraceAnnotationSpec =>
+  ({
+    chartType: ChartType.Trace,
+    specType: SpecType.Annotation,
+    annotationKind: kind,
+    id,
+    spanId,
+    ariaLabel: id,
+    ...extra,
+  }) as TraceAnnotationSpec;
+
+describe('resolveTraceAnnotations', () => {
+  it('returns an empty array (and no diagnostics) when there are no annotation specs', () => {
+    const c = new TraceDiagnosticsCollector();
+    expect(resolveTraceAnnotations([span('a')], [], 0, c)).toEqual([]);
+    expect(c.isEmpty()).toBe(true);
+  });
+
+  it('resolves a time-point annotation and re-zeros it by the projection offset', () => {
+    const c = new TraceDiagnosticsCollector();
+    const [resolved] = resolveTraceAnnotations([span('a')], [timeAnn('t', { time: 150 })], 100, c);
+    expect(resolved).toMatchObject({ id: 't', kind: 'time', time: 50, authoredTime: 150 });
+    expect(c.isEmpty()).toBe(true);
+  });
+
+  it('resolves a time-range annotation, projecting both edges while reporting the authored range', () => {
+    const [resolved] = resolveTraceAnnotations([span('a')], [timeAnn('r', { range: [120, 180] })], 100);
+    expect(resolved).toMatchObject({ kind: 'time', range: [20, 80], authoredRange: [120, 180] });
+  });
+
+  it("defaults a time annotation's placement to 'timebar'", () => {
+    const [resolved] = resolveTraceAnnotations([span('a')], [timeAnn('t', { time: 10 })], 0);
+    expect(resolved).toMatchObject({ kind: 'time', placement: 'timebar' });
+  });
+
+  it("passes an explicit 'plot' placement through", () => {
+    const [resolved] = resolveTraceAnnotations([span('a')], [timeAnn('t', { time: 10 }, { placement: 'plot' })], 0);
+    expect(resolved).toMatchObject({ kind: 'time', placement: 'plot' });
+  });
+
+  it('reports annotation_invalid_time when both time and range are supplied', () => {
+    const c = new TraceDiagnosticsCollector();
+    const out = resolveTraceAnnotations([span('a')], [timeAnn('x', { time: 1, range: [0, 2] })], 0, c);
+    expect(out).toEqual([]);
+    expect(c.list().find((i) => i.kind === 'annotation_invalid_time')).toMatchObject({
+      severity: 'warning',
+      scope: 'annotation',
+      examples: ['x'],
+    });
+  });
+
+  it('reports annotation_invalid_time when neither time nor range is supplied', () => {
+    const c = new TraceDiagnosticsCollector();
+    expect(resolveTraceAnnotations([span('a')], [timeAnn('x', {})], 0, c)).toEqual([]);
+    expect(kinds(c)).toContain('annotation_invalid_time');
+  });
+
+  it.each<[string, { time?: number; range?: [number, number] }]>([
+    ['non-finite time', { time: NaN }],
+    ['non-finite range edge', { range: [0, Infinity] }],
+    ['empty range', { range: [50, 50] }],
+    ['reversed range', { range: [80, 20] }],
+  ])('reports annotation_invalid_time for %s and omits the annotation', (_label, position) => {
+    const c = new TraceDiagnosticsCollector();
+    expect(resolveTraceAnnotations([span('a')], [timeAnn('x', position)], 0, c)).toEqual([]);
+    expect(kinds(c)).toEqual(['annotation_invalid_time']);
+  });
+
+  it('reports annotation_unresolved_span for a lane annotation targeting an unknown span', () => {
+    const c = new TraceDiagnosticsCollector();
+    expect(resolveTraceAnnotations([span('a')], [spanAnn('lane', 'l', 'ghost')], 0, c)).toEqual([]);
+    expect(c.list().find((i) => i.kind === 'annotation_unresolved_span')).toMatchObject({
+      severity: 'warning',
+      scope: 'annotation',
+      examples: ['lane/ghost'],
+    });
+  });
+
+  it('resolves a lane annotation against the target span with a single-element route', () => {
+    const [resolved] = resolveTraceAnnotations([span('a')], [spanAnn('lane', 'l', 'a')], 0);
+    expect(resolved).toMatchObject({ kind: 'lane', spanId: 'a', routeSpanIds: ['a'] });
+  });
+
+  it('resolves a hierarchy annotation route root→target through the display hierarchy', () => {
+    const spans = [spanWithParent('a'), spanWithParent('b', 'a'), spanWithParent('c', 'b')];
+    const [resolved] = resolveTraceAnnotations(spans, [spanAnn('hierarchy', 'h', 'c')], 0);
+    expect(resolved).toMatchObject({ kind: 'hierarchy', spanId: 'c', routeSpanIds: ['a', 'b', 'c'] });
+  });
+
+  it('reports annotation_duplicate_id across specs while keeping the resolved entries', () => {
+    const c = new TraceDiagnosticsCollector();
+    const out = resolveTraceAnnotations([span('a')], [spanAnn('lane', 'dup', 'a'), spanAnn('lane', 'dup', 'a')], 0, c);
+    expect(out).toHaveLength(2);
+    expect(c.list().find((i) => i.kind === 'annotation_duplicate_id')).toMatchObject({ count: 1, examples: ['dup'] });
+  });
+
+  it('reports annotation_missing_aria_label but still resolves with a generated name', () => {
+    const c = new TraceDiagnosticsCollector();
+    const [resolved] = resolveTraceAnnotations([span('a')], [spanAnn('lane', 'l', 'a', { ariaLabel: undefined })], 0, c);
+    expect(resolved!.ariaLabel).toBe('Trace annotation l');
+    expect(kinds(c)).toContain('annotation_missing_aria_label');
+  });
+
+  it('treats whitespace-only aria labels as missing', () => {
+    const c = new TraceDiagnosticsCollector();
+    resolveTraceAnnotations([span('a')], [spanAnn('lane', 'l', 'a', { ariaLabel: '   ' })], 0, c);
+    expect(kinds(c)).toContain('annotation_missing_aria_label');
+  });
+
+  it('skips hidden annotations entirely (no resolution, no diagnostics)', () => {
+    const c = new TraceDiagnosticsCollector();
+    const out = resolveTraceAnnotations([span('a')], [spanAnn('lane', 'l', 'ghost', { hidden: true })], 0, c);
+    expect(out).toEqual([]);
+    expect(c.isEmpty()).toBe(true);
+  });
+
+  it('returns consumer meta by reference in the event datum', () => {
+    const meta = { foo: 1 };
+    const [resolved] = resolveTraceAnnotations([span('a')], [spanAnn('lane', 'l', 'a', { meta })], 0);
+    expect(resolved!.datum.meta).toBe(meta);
+  });
+
+  it('works without a diagnostics collector', () => {
+    expect(() => resolveTraceAnnotations([span('a')], [timeAnn('x', {})], 0)).not.toThrow();
+    const [resolved] = resolveTraceAnnotations([span('a')], [spanAnn('lane', 'l', 'a')], 0);
+    expect(resolved).toMatchObject({ id: 'l', kind: 'lane' });
+  });
+
+  it('does not mutate the input spans', () => {
+    const spans = [spanWithParent('a'), spanWithParent('b', 'a')];
+    const before = JSON.stringify(spans);
+    resolveTraceAnnotations(spans, [spanAnn('hierarchy', 'h', 'b'), timeAnn('t', { time: 1 })], 0);
+    expect(JSON.stringify(spans)).toBe(before);
   });
 });

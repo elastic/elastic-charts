@@ -37,8 +37,14 @@ import { Chart } from '../../components/chart';
 import { Settings } from '../../specs';
 import { Logger } from '../../utils/logger';
 import * as OrderLanesModule from './data/order_lanes';
-import { Trace } from './trace_api';
-import type { TraceDatum, TraceControlCallbacks, TraceSpanBadge, TraceSpanBadgeEvent } from './trace_api';
+import { Trace, TraceLaneAnnotation, TraceTimeAnnotation } from './trace_api';
+import type {
+  TraceAnnotationEvent,
+  TraceDatum,
+  TraceControlCallbacks,
+  TraceSpanBadge,
+  TraceSpanBadgeEvent,
+} from './trace_api';
 import { makeCtx } from './trace_test_helpers';
 
 /** Minimal fixture: root + one child, enough to exercise normalize → resolveActive. */
@@ -1625,6 +1631,338 @@ describe('Trace chart — Span badge interaction (Spec 27)', () => {
     firePointer(canvas, 'mousemove', { x: 227, y: 68 });
     const ids = onBadgeOver.mock.calls.map((c) => (c[0] as TraceSpanBadgeEvent).badge.id);
     expect(ids).toEqual(['root-b', 'child-b']);
+    unmount();
+  });
+});
+
+/*
+ * Spec 29 — Trace annotation pointer interaction.
+ *
+ * Mounts a real `<Chart><Trace>` with composed annotation child specs and drives raw pointer events
+ * to assert annotation hover/click semantics: annotation-first precedence over span/badge, activation
+ * only on a same-annotation down→up, suspension during viewport gestures, the clickable cursor, and
+ * the event shape (kind discriminator, related-span metadata, pointer-only coordinates, no native
+ * events). Same jsdom native-event harness as the Spec 27 badge suite.
+ *
+ * Geometry (default light theme, flat single-root trace → `labelPosition: 'gutter'`, no caret column):
+ *   plot.left = gutterWidth (200), plot.top = timeBarHeight (32), laneHeight = 24. A lane annotation's
+ *   rail sits at the gutter↔plot boundary x = 200; lane 0 center y = 32 + 24/2 = 44. So (200, 44) lands
+ *   on the rail's ~10px hit band and (400, 44) on the span bar away from it. For a time range [0, 500]
+ *   over domain [0, 500] the start edge maps to x = scale(0) = plot.left = 200.
+ */
+describe('Trace chart — annotation interaction (Spec 29)', () => {
+  const ANNO_SPANS: TraceDatum[] = [{ id: 'root', name: 'HTTP GET /api', traceId: 't1', start: 0, end: 500 }];
+  const META = { note: 'lane-meta' };
+
+  const AT_LANE = { x: 200, y: 44 }; // on the lane rail (gutter↔plot boundary)
+  const OFF_ANNOTATION = { x: 400, y: 44 }; // on the span bar, away from the rail
+
+  beforeEach(() => {
+    setupJestCanvasMock();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  /** Dispatch a native mouse event with `offsetX/offsetY` set (jsdom drops them from the constructor). */
+  function firePointer(
+    canvas: HTMLElement,
+    type: 'mousedown' | 'mousemove' | 'click',
+    { x, y, buttons = 0 }: { x: number; y: number; buttons?: number },
+  ) {
+    const e = new MouseEvent(type, { bubbles: true, cancelable: true, buttons, view: window });
+    Object.defineProperty(e, 'offsetX', { value: x });
+    Object.defineProperty(e, 'offsetY', { value: y });
+    act(() => {
+      canvas.dispatchEvent(e);
+    });
+  }
+
+  interface Handlers {
+    onAnnotationOver?: jest.Mock;
+    onAnnotationOut?: jest.Mock;
+    onAnnotationClick?: jest.Mock;
+    onElementOver?: jest.Mock;
+    onElementClick?: jest.Mock;
+  }
+
+  function mount(h: Handlers, children?: React.ReactNode) {
+    const result = render(
+      <Chart size={[800, 200]}>
+        <Settings onElementOver={h.onElementOver} onElementClick={h.onElementClick} />
+        <Trace
+          id="anno"
+          data={ANNO_SPANS}
+          xScaleType="linear"
+          onAnnotationOver={h.onAnnotationOver}
+          onAnnotationOut={h.onAnnotationOut}
+          onAnnotationClick={h.onAnnotationClick}
+        >
+          {children ?? <TraceLaneAnnotation id="a1" spanId="root" ariaLabel="Lane note" meta={META} />}
+        </Trace>
+      </Chart>,
+    );
+    act(() => {
+      jest.runAllTimers();
+    });
+    return { ...result, canvas: result.container.querySelector('canvas')! };
+  }
+
+  it('resolves composed trace annotations', () => {
+    const onAnnotationOver = jest.fn();
+    const { canvas, unmount } = mount({ onAnnotationOver });
+
+    firePointer(canvas, 'mousemove', AT_LANE);
+
+    // The JSX-composed child spec is resolved and interactive through the flat spec store.
+    expect(onAnnotationOver).toHaveBeenCalledTimes(1);
+    const event: TraceAnnotationEvent = onAnnotationOver.mock.calls[0][0];
+    expect(event.type).toBe('lane');
+    expect(event.annotation.id).toBe('a1');
+    unmount();
+  });
+
+  it('reports trace annotation events through central handlers', () => {
+    const onAnnotationOver = jest.fn();
+    const { canvas, unmount } = mount({ onAnnotationOver });
+
+    firePointer(canvas, 'mousemove', AT_LANE);
+
+    // The central <Trace> handler receives the resolved annotation plus related span metadata.
+    expect(onAnnotationOver).toHaveBeenCalledTimes(1);
+    const event: TraceAnnotationEvent = onAnnotationOver.mock.calls[0][0];
+    expect(event.annotation.id).toBe('a1');
+    expect(event.span?.name).toBe('HTTP GET /api');
+    unmount();
+  });
+
+  it('trace annotations target span ids rather than lane indices', () => {
+    const onAnnotationOver = jest.fn();
+    const { canvas, unmount } = mount({ onAnnotationOver });
+
+    firePointer(canvas, 'mousemove', AT_LANE);
+
+    const event: TraceAnnotationEvent = onAnnotationOver.mock.calls[0][0];
+    expect(event.span?.id).toBe('root');
+    expect(event).not.toHaveProperty('laneIndex');
+    unmount();
+  });
+
+  it('passes annotation metadata through events', () => {
+    const onAnnotationOver = jest.fn();
+    const { canvas, unmount } = mount({ onAnnotationOver });
+
+    firePointer(canvas, 'mousemove', AT_LANE);
+
+    // Opaque meta is returned by reference, never cloned or reshaped.
+    const event: TraceAnnotationEvent = onAnnotationOver.mock.calls[0][0];
+    expect(event.annotation.meta).toBe(META);
+    unmount();
+  });
+
+  it('trace annotation specs do not store handlers', () => {
+    // Annotations are inert data: interaction handlers live on <Trace>, never on the child specs. The
+    // reported annotation datum therefore carries only data — no function-valued properties.
+    const onAnnotationOver = jest.fn();
+    const { canvas, unmount } = mount({ onAnnotationOver });
+
+    firePointer(canvas, 'mousemove', AT_LANE);
+
+    const event: TraceAnnotationEvent = onAnnotationOver.mock.calls[0][0];
+    expect(Object.values(event.annotation).some((v) => typeof v === 'function')).toBe(false);
+    unmount();
+  });
+
+  it('annotation events do not expose native events', () => {
+    const onAnnotationOver = jest.fn();
+    const { canvas, unmount } = mount({ onAnnotationOver });
+
+    firePointer(canvas, 'mousemove', AT_LANE);
+
+    const event: TraceAnnotationEvent = onAnnotationOver.mock.calls[0][0];
+    expect(Object.keys(event).sort()).toEqual(['annotation', 'chartX', 'chartY', 'source', 'span', 'type']);
+    expect(event).not.toHaveProperty('nativeEvent');
+    expect(event).not.toHaveProperty('preventDefault');
+    unmount();
+  });
+
+  it('annotation events include coordinates only for pointer source', () => {
+    const onAnnotationOver = jest.fn();
+    const { canvas, unmount } = mount({ onAnnotationOver });
+
+    firePointer(canvas, 'mousemove', AT_LANE);
+
+    const event: TraceAnnotationEvent = onAnnotationOver.mock.calls[0][0];
+    expect(event.source).toBe('pointer');
+    expect(event).toMatchObject({ chartX: 200, chartY: 44 });
+    unmount();
+  });
+
+  it('uses one annotation handler family', () => {
+    // One handler set covers every kind, branching on the `type` discriminator: the same
+    // onAnnotationOver reports a `lane` event for a rail and a `time` event (no related span) for a
+    // time marker.
+    const onAnnotationOver = jest.fn();
+
+    const lane = mount({ onAnnotationOver });
+    firePointer(lane.canvas, 'mousemove', AT_LANE);
+    expect((onAnnotationOver.mock.calls.at(-1)![0] as TraceAnnotationEvent).type).toBe('lane');
+    lane.unmount();
+
+    const time = mount({ onAnnotationOver }, <TraceTimeAnnotation id="t1" time={250} ariaLabel="Midpoint" />);
+    // The marker's exact x depends on the niced focus domain, so scan the width for its hit band. A
+    // 'timebar' marker is hit in the lower half of the time bar (y in [16, 32)), never in the plot.
+    for (let x = 200; x <= 800 && !onAnnotationOver.mock.calls.some((c) => c[0].type === 'time'); x += 2) {
+      firePointer(time.canvas, 'mousemove', { x, y: 24 });
+    }
+
+    const types = onAnnotationOver.mock.calls.map((c) => (c[0] as TraceAnnotationEvent).type);
+    expect(types).toContain('lane');
+    expect(types).toContain('time');
+    const timeEvent = onAnnotationOver.mock.calls.map((c) => c[0] as TraceAnnotationEvent).find((e) => e.type === 'time');
+    expect(timeEvent!.span).toBeUndefined();
+    time.unmount();
+  });
+
+  it('makes a default time annotation hoverable over the time-bar region', () => {
+    // A time annotation defaults to 'timebar' placement: its marker sits in the lower half of the time
+    // bar (y in [16, 32) for the 32px bar) and is hoverable there — nothing is drawn/hit in the plot.
+    const onAnnotationOver = jest.fn();
+    const time = mount({ onAnnotationOver }, <TraceTimeAnnotation id="t1" time={250} ariaLabel="Midpoint" />);
+    for (let x = 200; x <= 800 && onAnnotationOver.mock.calls.length === 0; x += 2) {
+      firePointer(time.canvas, 'mousemove', { x, y: 24 }); // lower half of the 32px time bar
+    }
+    expect(onAnnotationOver).toHaveBeenCalled();
+    expect((onAnnotationOver.mock.calls.at(-1)![0] as TraceAnnotationEvent).type).toBe('time');
+    time.unmount();
+  });
+
+  it('does not double-dispatch annotation and span pointer events', () => {
+    const onAnnotationOver = jest.fn();
+    const onElementOver = jest.fn();
+    const { canvas, unmount } = mount({ onAnnotationOver, onElementOver });
+
+    firePointer(canvas, 'mousemove', AT_LANE);
+
+    // The annotation owns the pointer: the underlying span hover is suppressed for the same transition.
+    expect(onAnnotationOver).toHaveBeenCalledTimes(1);
+    expect(onElementOver).not.toHaveBeenCalled();
+    unmount();
+  });
+
+  it('annotation click requires down and up on the same annotation', () => {
+    const onAnnotationClick = jest.fn();
+    const onElementClick = jest.fn();
+    const { canvas, unmount } = mount({ onAnnotationClick, onElementClick });
+
+    // down + up on the same annotation → activation.
+    firePointer(canvas, 'mousedown', AT_LANE);
+    firePointer(canvas, 'click', AT_LANE);
+    expect(onAnnotationClick).toHaveBeenCalledTimes(1);
+    expect(onAnnotationClick.mock.calls[0][0].annotation.id).toBe('a1');
+
+    // down off the annotation (on the span bar), up on the rail → no activation, and the annotation
+    // still consumes the click so the span's onElementClick does not fire either.
+    onAnnotationClick.mockClear();
+    firePointer(canvas, 'mousedown', OFF_ANNOTATION);
+    firePointer(canvas, 'click', AT_LANE);
+    expect(onAnnotationClick).not.toHaveBeenCalled();
+    expect(onElementClick).not.toHaveBeenCalled();
+    unmount();
+  });
+
+  it('annotation cursor reflects clickability', () => {
+    const clickable = mount({ onAnnotationClick: jest.fn() });
+    firePointer(clickable.canvas, 'mousemove', AT_LANE);
+    expect(clickable.canvas.style.cursor).toBe('pointer');
+    clickable.unmount();
+
+    // No onAnnotationClick → annotation is informational, cursor must not become a pointer on hover.
+    const informational = mount({ onAnnotationOver: jest.fn() });
+    firePointer(informational.canvas, 'mousemove', AT_LANE);
+    expect(informational.canvas.style.cursor).not.toBe('pointer');
+    informational.unmount();
+  });
+
+  it('annotation handlers are independently optional', () => {
+    // Only onAnnotationClick supplied: hovering must not throw despite no over/out handlers.
+    const { canvas, unmount } = mount({ onAnnotationClick: jest.fn() });
+    expect(() => {
+      firePointer(canvas, 'mousemove', AT_LANE);
+      firePointer(canvas, 'mousedown', AT_LANE);
+      firePointer(canvas, 'click', AT_LANE);
+    }).not.toThrow();
+    unmount();
+
+    // Only onAnnotationOver supplied: clicking with no onAnnotationClick must not throw.
+    const { canvas: c2, unmount: u2 } = mount({ onAnnotationOver: jest.fn() });
+    expect(() => {
+      firePointer(c2, 'mousedown', AT_LANE);
+      firePointer(c2, 'click', AT_LANE);
+    }).not.toThrow();
+    u2();
+  });
+
+  it('suspends annotation events during viewport gestures', () => {
+    const onAnnotationOver = jest.fn();
+    const { canvas, unmount } = mount({ onAnnotationOver, onAnnotationOut: jest.fn() });
+
+    firePointer(canvas, 'mousemove', AT_LANE); // enter annotation
+    expect(onAnnotationOver).toHaveBeenCalledTimes(1);
+
+    // Start a pan (button held), then keep moving over the rail coordinates: hit testing is suspended,
+    // so no new onAnnotationOver fires until the gesture ends.
+    firePointer(canvas, 'mousedown', AT_LANE);
+    firePointer(canvas, 'mousemove', { ...AT_LANE, x: 260, buttons: 1 });
+    firePointer(canvas, 'mousemove', { ...AT_LANE, buttons: 1 });
+    expect(onAnnotationOver).toHaveBeenCalledTimes(1);
+    unmount();
+  });
+
+  it('clears hovered annotation when viewport gesture starts', () => {
+    const onAnnotationOut = jest.fn();
+    const { canvas, unmount } = mount({ onAnnotationOver: jest.fn(), onAnnotationOut });
+
+    firePointer(canvas, 'mousemove', AT_LANE); // enter annotation
+    // Press on the rail, then drag (button held) → pan recognized → exactly one onAnnotationOut.
+    firePointer(canvas, 'mousedown', AT_LANE);
+    firePointer(canvas, 'mousemove', { ...AT_LANE, x: 260, buttons: 1 });
+    expect(onAnnotationOut).toHaveBeenCalledTimes(1);
+    unmount();
+  });
+
+  it('clears hovered annotation when pointer leaves chart', () => {
+    const onAnnotationOut = jest.fn();
+    const { canvas, unmount } = mount({ onAnnotationOver: jest.fn(), onAnnotationOut });
+
+    firePointer(canvas, 'mousemove', AT_LANE);
+    act(() => {
+      fireEvent.mouseLeave(canvas);
+    });
+    expect(onAnnotationOut).toHaveBeenCalledTimes(1);
+    unmount();
+  });
+
+  it('clears hovered annotation when it is removed', () => {
+    const onAnnotationOut = jest.fn();
+    const { canvas, rerender, unmount } = mount({ onAnnotationOver: jest.fn(), onAnnotationOut });
+
+    firePointer(canvas, 'mousemove', AT_LANE);
+    expect(onAnnotationOut).not.toHaveBeenCalled();
+
+    // Re-render without the annotation child → the next frame reconciles the stale hover.
+    rerender(
+      <Chart size={[800, 200]}>
+        <Settings />
+        <Trace id="anno" data={ANNO_SPANS} xScaleType="linear" onAnnotationOut={onAnnotationOut} />
+      </Chart>,
+    );
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(onAnnotationOut).toHaveBeenCalledTimes(1);
     unmount();
   });
 });

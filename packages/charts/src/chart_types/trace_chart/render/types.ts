@@ -9,8 +9,9 @@
 import type { Color } from '../../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../../common/default_theme_attributes';
 import type { Dimensions, Size } from '../../../utils/dimensions';
+import type { ResolvedTraceAnnotation } from '../data/annotations';
 import type { NormalizedSpan } from '../data/types';
-import type { TraceSpanBadge } from '../trace_api';
+import type { TraceAnnotationType, TraceSpanBadge } from '../trace_api';
 
 export type { Dimensions, Size };
 
@@ -61,7 +62,58 @@ export interface TraceStyle {
   criticalPathThickness: number;
   /** Span-badge sizing, spacing, and color treatments (Spec 27). */
   badge: TraceBadgeStyle;
+  /** Trace-annotation rail/marker sizing and color treatments (Spec 29). */
+  annotation: TraceAnnotationStyle;
 }
+
+/**
+ * Resolved stroke/fill for one Trace-annotation color treatment (Spec 29). `stroke` draws the rail
+ * or marker line; `fill` tints a time-range band at {@link TraceAnnotationStyle.fillOpacity}.
+ * @public
+ */
+export interface TraceAnnotationColorStyle {
+  stroke: Color;
+  fill: Color;
+}
+
+/**
+ * Trace-annotation style tokens (Spec 29): rail/marker thickness, range-band fill opacity (idle and
+ * hover), and the named-color palette. A custom `Color` annotation is resolved at draw time
+ * (`stroke` = the color, `fill` = the color tinted by `fillOpacity`). The minimum interactive hit
+ * width is intentionally not a token — it is a private renderer constant (Spec 29 / ADR 0033).
+ * @public
+ */
+export interface TraceAnnotationStyle {
+  /** Thickness of the vertical boundary rail and time markers, in px. */
+  railThickness: number;
+  /** Fill opacity (0..1) applied to a time-range band when idle. */
+  fillOpacity: number;
+  /** Fill opacity (0..1) applied to a time-range band while hovered. */
+  hoverFillOpacity: number;
+  /** Size (px) of the time-bar annotation's triangular marker head at the gutter/plot boundary. */
+  markerSize: number;
+  /** Named EUI-like color treatments. */
+  palette: Record<'default' | 'primary' | 'success' | 'warning' | 'danger', TraceAnnotationColorStyle>;
+}
+
+/**
+ * Default Trace-annotation style tokens, shared by every base theme (Spec 29 / ADR 0033). The palette
+ * uses theme-neutral EUI-like hues; individual base themes may override `theme.trace.annotation`.
+ * @internal
+ */
+export const DEFAULT_TRACE_ANNOTATION_STYLE: TraceAnnotationStyle = {
+  railThickness: 2,
+  fillOpacity: 0.15,
+  hoverFillOpacity: 0.3,
+  markerSize: 6,
+  palette: {
+    default: { stroke: '#69707d', fill: '#69707d' },
+    primary: { stroke: '#0b64dd', fill: '#0b64dd' },
+    success: { stroke: '#00785a', fill: '#00785a' },
+    warning: { stroke: '#f5a700', fill: '#f5a700' },
+    danger: { stroke: '#bd271e', fill: '#bd271e' },
+  },
+};
 
 /**
  * Per-size badge metrics in px (Spec 27). One shared `TraceSpanBadgeSize` applies to every badge in
@@ -236,6 +288,48 @@ export interface LaneBadgeLayout {
   items: readonly BadgeLayoutItem[];
 }
 
+/** An axis-aligned rectangle in canvas px (fill band or hit band). @internal */
+export interface AnnotationRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/** A straight line segment in canvas px (a rail segment, time marker, or range edge). @internal */
+export interface AnnotationLine {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+
+/**
+ * One laid-out Trace annotation (Spec 29), produced per frame by `layoutAnnotations` and consumed by
+ * `drawAnnotations` and `pickAnnotation`. Coordinates are canvas px in the same space as
+ * `TraceGeometry.plot` (already scroll-adjusted for y). Domain culling, viewport clipping, and
+ * collapse omission have already been applied — an item here is visible and interactive.
+ * @internal
+ */
+export interface AnnotationLayoutItem {
+  id: string;
+  kind: TraceAnnotationType;
+  /** The resolved annotation, retained by reference for interaction events. */
+  annotation: ResolvedTraceAnnotation;
+  /** Resolved stroke/fill for the annotation's color intent. */
+  colors: TraceAnnotationColorStyle;
+  /** Filled range band across the plot ('plot'-placement time ranges only). */
+  band?: AnnotationRect;
+  /** Filled band in the lower half of the time bar ('timebar'-placement time ranges only, Spec 29). */
+  timeBarBand?: AnnotationRect;
+  /** Rail/marker lines to stroke: time point/edges, or lane/hierarchy rail segments. */
+  lines: AnnotationLine[];
+  /** Time-bar triangular marker heads at the gutter/plot boundary ('timebar' placement, Spec 29). */
+  markers?: { x: number; y: number }[];
+  /** Thin hit bands (min interactive width applied): point band, range edges, or rail bands. */
+  hitRects: AnnotationRect[];
+}
+
 /**
  * The pure layout model produced by `buildGeometry`. Every field downstream consumers (time bar,
  * canvas renderer, picking) need is present here; no external mutable state is read at draw time.
@@ -306,6 +400,13 @@ export interface TraceGeometry {
    * badge participates in the current label mode. Consumed by the badge draw pass and `pickBadge`.
    */
   badgesByLane: ReadonlyMap<number, LaneBadgeLayout>;
+  /**
+   * Laid-out Trace annotations (Spec 29) for the current frame — already domain-culled, viewport-
+   * clipped, and collapse-omitted. Empty when no annotation resolves or participates. Consumed by the
+   * annotation draw pass and `pickAnnotation`. Kept off `buildGeometry` (like `badgesByLane`) because
+   * it depends on the separately-memoized annotation resolution, not the span pipeline.
+   */
+  annotationsLayout: readonly AnnotationLayoutItem[];
 }
 
 /**

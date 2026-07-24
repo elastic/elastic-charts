@@ -20,6 +20,7 @@ import type { TraceGeometry, TraceStyle } from '@elastic/charts/src/chart_types/
 import {
   CARET_GLYPH_PX,
   CARET_INDENT_STEP_PX,
+  DEFAULT_TRACE_ANNOTATION_STYLE,
   DEFAULT_TRACE_BADGE_STYLE,
 } from '@elastic/charts/src/chart_types/trace_chart/render/types';
 
@@ -52,6 +53,7 @@ const STYLE: TraceStyle = {
   criticalPathThickness: 2,
   labelPosition: 'gutter',
   badge: DEFAULT_TRACE_BADGE_STYLE,
+  annotation: DEFAULT_TRACE_ANNOTATION_STYLE,
 };
 
 const SELECTION: TraceSelection = [

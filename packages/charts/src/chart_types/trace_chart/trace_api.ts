@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import type { ReactNode } from 'react';
+
 import type { TraceDataDiagnostics } from './data/diagnostics';
 import { anyValueToString } from './data/otel_adapter';
 import { ChartType } from '..';
@@ -326,6 +328,143 @@ export type TraceSpanBadgeEvent =
     };
 
 /**
+ * Discriminates the three Trace annotation kinds. `'time'` marks an x-scale position/range;
+ * `'lane'` marks one resolved span lane; `'hierarchy'` marks the visible root-to-target route for one
+ * resolved span. Reported on {@link TraceAnnotationEvent} so a single handler family can branch by kind.
+ * @public
+ */
+export type TraceAnnotationType = 'time' | 'lane' | 'hierarchy';
+
+/**
+ * A Trace annotation color: one EUI-like named color or a custom Charts {@link Color}. Charts derives
+ * stroke, fill, opacity, hover, and contrast treatment consistently from the color intent (Spec 29).
+ * @public
+ */
+export type TraceAnnotationColor = 'default' | 'primary' | 'success' | 'warning' | 'danger' | Color;
+
+/**
+ * Structured annotation identity, metadata, style intent, and accessibility fields shared by every
+ * Trace annotation kind. Positional fields (`time`/`range` for time annotations, `spanId` for
+ * lane/hierarchy annotations) live on the individual annotation child specs. Annotations are inert
+ * data — they never carry event-handler functions; interaction handlers live on the {@link TraceSpec}.
+ * See Spec 29.
+ * @public
+ */
+export type TraceAnnotationDatum = {
+  /** Stable identity, unique across all Trace annotation child specs in one chart. */
+  id: string;
+  /** When `true`, the annotation is not rendered, hit tested, or exposed. Defaults to visible. */
+  hidden?: boolean;
+  /** Annotation color intent; defaults to the themed `'default'` treatment when omitted. */
+  color?: TraceAnnotationColor;
+  /**
+   * Accessible name. Required by contract; an annotation without an accessible name is reported
+   * through diagnostics but still renders and stays interactive using a generic generated name.
+   */
+  ariaLabel?: string;
+  /**
+   * Opaque consumer metadata returned by reference in {@link TraceAnnotationEvent}. Charts never
+   * inspects, clones, serializes, diffs, or validates this payload.
+   */
+  meta?: unknown;
+};
+
+/**
+ * Internal stored spec base for a Trace annotation child spec.
+ * @internal
+ */
+export interface TraceAnnotationSpecBase extends Spec, TraceAnnotationDatum {
+  chartType: typeof ChartType.Trace;
+  specType: typeof SpecType.Annotation;
+  annotationKind: TraceAnnotationType;
+}
+
+/**
+ * Where a {@link TraceTimeAnnotation} is anchored (Spec 29):
+ * - `'timebar'` — a marker in the time bar plus a faint full-height guide line down the plot (a range
+ *   also draws a band across the time bar). Mirrors the Kibana APM waterfall marker. The default.
+ * - `'plot'` — a solid full-height rail across the plot (a range fills a tinted plot band with edge
+ *   rails). The "spans the whole chart vertically" treatment.
+ *
+ * Lane and hierarchy annotations are always plot-anchored; placement applies to time annotations only.
+ * @public
+ */
+export type TraceTimeAnnotationPlacement = 'plot' | 'timebar';
+
+/**
+ * Stored spec for {@link TraceTimeAnnotation}. A time annotation supplies either `time` or `range`,
+ * never both (enforced at author time by {@link TraceTimeAnnotationProps}; a runtime violation is
+ * reported as an invalid-time diagnostic).
+ * @internal
+ */
+export interface TraceTimeAnnotationSpec extends TraceAnnotationSpecBase {
+  annotationKind: 'time';
+  /** Single x-scale timestamp (same units as {@link TraceDatum} `start`/`end`). */
+  time?: number;
+  /** Inclusive x-scale range `[from, to]` (same units as {@link TraceDatum} `start`/`end`). */
+  range?: [number, number];
+  /** Anchor placement; defaults to `'timebar'`. See {@link TraceTimeAnnotationPlacement}. */
+  placement?: TraceTimeAnnotationPlacement;
+}
+
+/**
+ * Stored spec for {@link TraceLaneAnnotation}.
+ * @internal
+ */
+export interface TraceLaneAnnotationSpec extends TraceAnnotationSpecBase {
+  annotationKind: 'lane';
+  /** The target span id (lane annotations target spans by id, never by lane index). */
+  spanId: string;
+}
+
+/**
+ * Stored spec for {@link TraceHierarchyAnnotation}.
+ * @internal
+ */
+export interface TraceHierarchyAnnotationSpec extends TraceAnnotationSpecBase {
+  annotationKind: 'hierarchy';
+  /** The target span id whose visible root-to-target route is marked. */
+  spanId: string;
+}
+
+/**
+ * Discriminated union of the three stored Trace annotation specs.
+ * @internal
+ */
+export type TraceAnnotationSpec = TraceTimeAnnotationSpec | TraceLaneAnnotationSpec | TraceHierarchyAnnotationSpec;
+
+/**
+ * Reports a resolved Trace annotation and, when applicable, its related span metadata (lane and
+ * hierarchy annotations). Source-discriminated: pointer-origin events include chart-relative
+ * coordinates; keyboard-origin activation events do not synthesize coordinates. Raw native DOM events
+ * are not exposed in v1. Carries a `type` discriminator so one handler family covers all kinds. See
+ * Spec 29.
+ * @public
+ */
+export type TraceAnnotationEvent =
+  | {
+      /** Pointer-origin transition or activation. */
+      source: 'pointer';
+      /** The annotation kind. */
+      type: TraceAnnotationType;
+      /** The resolved annotation, including its `meta`, returned by reference. */
+      annotation: TraceAnnotationDatum;
+      /** Related span metadata for `'lane'` / `'hierarchy'` annotations; absent for `'time'`. */
+      span?: TraceSpanBadgeEventSpan;
+      /** Chart-relative x coordinate in px (pointer source only). */
+      chartX: number;
+      /** Chart-relative y coordinate in px (pointer source only). */
+      chartY: number;
+    }
+  | {
+      /** Keyboard-origin activation (no synthesized coordinates). */
+      source: 'keyboard';
+      type: TraceAnnotationType;
+      annotation: TraceAnnotationDatum;
+      span?: TraceSpanBadgeEventSpan;
+    };
+
+/**
  * Spec for the Trace chart. Add one `<Trace>` inside a `<Chart>` to render a waterfall visualization.
  * @public
  */
@@ -522,6 +661,16 @@ export interface TraceSpec extends Spec {
    * does not emit (the canvas is unmounted).
    */
   onDataDiagnosticsChange?: (diagnostics: TraceDataDiagnostics) => void;
+  /** Reports pointer entry for an interactive Trace annotation. Optional and independent of the others. */
+  onAnnotationOver?: (event: TraceAnnotationEvent) => void;
+  /** Reports pointer exit for an interactive Trace annotation. Optional and independent of the others. */
+  onAnnotationOut?: (event: TraceAnnotationEvent) => void;
+  /**
+   * Reports activation of a Trace annotation (pointer down+up on the same annotation, or keyboard
+   * activation). When supplied, annotations become interactive: pointer targets use an interactive
+   * cursor and the annotation is exposed as a keyboard-activatable control in the screen-reader surface.
+   */
+  onAnnotationClick?: (event: TraceAnnotationEvent) => void;
 }
 
 const buildProps = buildSFProps<TraceSpec>()(
@@ -557,10 +706,95 @@ export const Trace = (
     keyof (typeof buildProps)['defaults'],
     keyof (typeof buildProps)['optionals'],
     keyof (typeof buildProps)['requires']
-  >,
+  > & {
+    /**
+     * Composed Trace annotation child specs (Spec 29): {@link TraceTimeAnnotation},
+     * {@link TraceLaneAnnotation}, {@link TraceHierarchyAnnotation}. Rendered so the child specs
+     * self-register; `children` never becomes part of the stored Trace spec.
+     */
+    children?: ReactNode;
+  },
 ) => {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<TraceSpec>({ ...defaults, ...stripUndefined(props), ...overrides });
+  // Keep React children out of the stored spec: useSpecFactory spreads the whole props object into
+  // Redux on every render, so the annotation child nodes must be split off first (Spec 29).
+  const { children, ...specProps } = props;
+  useSpecFactory<TraceSpec>({ ...defaults, ...stripUndefined(specProps), ...overrides });
+  return children ?? null;
+};
+
+const timeAnnotationDefaults = { hidden: false as boolean, placement: 'timebar' as TraceTimeAnnotationPlacement };
+const laneAnnotationDefaults = { hidden: false as boolean };
+
+/**
+ * Author-time props for {@link TraceTimeAnnotation}. Supplies either `time` (a point) or `range`
+ * (a span), never both — the union forbids expressing both at once.
+ * @public
+ */
+export type TraceTimeAnnotationProps = TraceAnnotationDatum & {
+  /** Anchor placement; defaults to `'timebar'`. See {@link TraceTimeAnnotationPlacement}. */
+  placement?: TraceTimeAnnotationPlacement;
+} & ({ time: number; range?: undefined } | { range: [number, number]; time?: undefined });
+
+/**
+ * Author-time props for {@link TraceLaneAnnotation} / {@link TraceHierarchyAnnotation}.
+ * @public
+ */
+export type TraceSpanAnnotationProps = TraceAnnotationDatum & {
+  /** The target span id (annotations target spans by id, never by lane index). */
+  spanId: string;
+};
+
+/**
+ * Marks a timestamp or time range on the Trace x-scale. Compose as a child of `<Trace>` (Spec 29):
+ *
+ * ```tsx
+ * <Trace data={data} xScaleType="linear">
+ *   <TraceTimeAnnotation id="deploy" time={deployTime} ariaLabel="Deploy" />
+ * </Trace>
+ * ```
+ * @public
+ */
+export const TraceTimeAnnotation = (props: TraceTimeAnnotationProps) => {
+  useSpecFactory<TraceTimeAnnotationSpec>({
+    ...timeAnnotationDefaults,
+    ...stripUndefined(props),
+    chartType: ChartType.Trace,
+    specType: SpecType.Annotation,
+    annotationKind: 'time',
+  });
+  return null;
+};
+
+/**
+ * Marks one resolved span lane with a boundary rail between the gutter and the span drawing area.
+ * Targets the span by `spanId`. Compose as a child of `<Trace>` (Spec 29).
+ * @public
+ */
+export const TraceLaneAnnotation = (props: TraceSpanAnnotationProps) => {
+  useSpecFactory<TraceLaneAnnotationSpec>({
+    ...laneAnnotationDefaults,
+    ...stripUndefined(props),
+    chartType: ChartType.Trace,
+    specType: SpecType.Annotation,
+    annotationKind: 'lane',
+  });
+  return null;
+};
+
+/**
+ * Marks the visible root-to-target ancestry route for one resolved span with a segmented boundary
+ * rail. Targets the span by `spanId`. Compose as a child of `<Trace>` (Spec 29).
+ * @public
+ */
+export const TraceHierarchyAnnotation = (props: TraceSpanAnnotationProps) => {
+  useSpecFactory<TraceHierarchyAnnotationSpec>({
+    ...laneAnnotationDefaults,
+    ...stripUndefined(props),
+    chartType: ChartType.Trace,
+    specType: SpecType.Annotation,
+    annotationKind: 'hierarchy',
+  });
   return null;
 };
 

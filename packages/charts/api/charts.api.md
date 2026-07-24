@@ -11,12 +11,13 @@ import type { ComponentProps } from 'react';
 import type { ComponentType } from 'react';
 import type { CSSProperties } from 'react';
 import { FC } from 'react';
+import { JSXElementConstructor } from 'react';
 import type { LegacyRef } from 'react';
 import type { Optional } from 'utility-types';
 import type { OptionalKeys } from 'utility-types';
 import type { PropsWithChildren as PropsWithChildren_2 } from 'react';
 import { default as React_2 } from 'react';
-import type { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import type { ReactNode } from 'react';
 import type { Required as Required_2 } from 'utility-types';
 import type { RequiredKeys } from 'utility-types';
@@ -2836,7 +2837,7 @@ export type Ratio = number;
 export type RawTextGetter = (node: ShapeTreeNode) => string;
 
 // @public (undocumented)
-export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "zIndex" | "groupId" | "annotationType" | "outside", "style" | "offset" | "customTooltip" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
+export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "zIndex" | "groupId" | "annotationType" | "outside", "style" | "offset" | "placement" | "customTooltip" | "fallbackPlacements" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
 
 // @public
 export interface RectAnnotationDatum {
@@ -3093,7 +3094,7 @@ export const Settings: (props: SFProps<SettingsSpec, keyof (typeof settingsBuild
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "debug" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "locale" | "dow" | "showLegend" | "legendPosition" | "legendValues" | "legendMaxDepth" | "legendSize" | "flatLegend" | "legendActionOnHover", "theme" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "xDomain" | "onAnnotationClick" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "orderOrdinalBinsBy" | "renderingSort" | "noResults" | "ariaLabel" | "ariaLabelledBy" | "ariaDescription" | "ariaDescribedBy" | "ariaTableCaption" | "legendLayout" | "legendStrategy" | "onLegendItemOver" | "onLegendItemOut" | "onLegendItemClick" | "onLegendItemPlusClick" | "onLegendItemMinusClick" | "legendAction" | "legendColorPicker" | "legendSort" | "customLegend" | "legendTitle", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "debug" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "locale" | "dow" | "showLegend" | "legendPosition" | "legendValues" | "legendMaxDepth" | "legendSize" | "flatLegend" | "legendActionOnHover", "onAnnotationClick" | "ariaLabel" | "theme" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "xDomain" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "orderOrdinalBinsBy" | "renderingSort" | "noResults" | "ariaLabelledBy" | "ariaDescription" | "ariaDescribedBy" | "ariaTableCaption" | "legendLayout" | "legendStrategy" | "onLegendItemOver" | "onLegendItemOut" | "onLegendItemClick" | "onLegendItemPlusClick" | "onLegendItemMinusClick" | "legendAction" | "legendColorPicker" | "legendSort" | "customLegend" | "legendTitle", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -3480,7 +3481,7 @@ export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifi
 };
 
 // @public
-export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "body" | "footer" | "header" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "sort" | "offset" | "headerFormatter" | "unit" | "customTooltip" | "stickTo" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding", never>;
+export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "body" | "footer" | "header" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "sort" | "offset" | "placement" | "headerFormatter" | "unit" | "customTooltip" | "stickTo" | "fallbackPlacements" | "boundary" | "boundaryPadding", never>;
 
 // @public
 export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
@@ -3738,7 +3739,9 @@ export type TooltipValueFormatter<D extends BaseDatum = Datum, SI extends Series
 // Warning: (ae-forgotten-export) The symbol "buildProps_13" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const Trace: (props: SFProps<TraceSpec, keyof (typeof buildProps_13)["overrides"], keyof (typeof buildProps_13)["defaults"], keyof (typeof buildProps_13)["optionals"], keyof (typeof buildProps_13)["requires"]>) => null;
+export const Trace: (props: SFProps<TraceSpec, keyof (typeof buildProps_13)["overrides"], keyof (typeof buildProps_13)["defaults"], keyof (typeof buildProps_13)["optionals"], keyof (typeof buildProps_13)["requires"]> & {
+    children?: ReactNode;
+}) => string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null;
 
 // @public
 export interface TraceActiveSegment {
@@ -3749,6 +3752,36 @@ export interface TraceActiveSegment {
     // (undocumented)
     start: number;
 }
+
+// @public
+export type TraceAnnotationColor = 'default' | 'primary' | 'success' | 'warning' | 'danger' | Color;
+
+// @public
+export type TraceAnnotationDatum = {
+    id: string;
+    hidden?: boolean;
+    color?: TraceAnnotationColor;
+    ariaLabel?: string;
+    meta?: unknown;
+};
+
+// @public
+export type TraceAnnotationEvent = {
+    source: 'pointer';
+    type: TraceAnnotationType;
+    annotation: TraceAnnotationDatum;
+    span?: TraceSpanBadgeEventSpan;
+    chartX: number;
+    chartY: number;
+} | {
+    source: 'keyboard';
+    type: TraceAnnotationType;
+    annotation: TraceAnnotationDatum;
+    span?: TraceSpanBadgeEventSpan;
+};
+
+// @public
+export type TraceAnnotationType = 'time' | 'lane' | 'hierarchy';
 
 // @public
 export type TraceColorAccessor = (datum: TraceDatum) => string | undefined;
@@ -3814,7 +3847,15 @@ export type TraceDataDiagnosticKind =
 /** A badge's `visibleIn` contained values outside the Label-position set. */
 | 'badge_invalid_visibility'
 /** An image-only badge had no `ariaLabel`; it still renders with a generated name. */
-| 'badge_missing_aria_label';
+| 'badge_missing_aria_label'
+/** More than one Trace annotation child spec shared the same `id`. */
+| 'annotation_duplicate_id'
+/** A time annotation had an invalid position: non-finite value, both `time` and `range`, or an empty/reversed range. */
+| 'annotation_invalid_time'
+/** A lane/hierarchy annotation referenced a span id not present in the prepared data; it is omitted. */
+| 'annotation_unresolved_span'
+/** An annotation had no accessible name; it still renders with a generic generated name. */
+| 'annotation_missing_aria_label';
 
 // @public
 export interface TraceDataDiagnostics {
@@ -3870,6 +3911,12 @@ export interface TraceElementEvent {
 }
 
 // @public
+export const TraceHierarchyAnnotation: (props: TraceSpanAnnotationProps) => null;
+
+// @public
+export const TraceLaneAnnotation: (props: TraceSpanAnnotationProps) => null;
+
+// @public
 export function TraceSearchProvider({ children }: {
     children: React_2.ReactNode;
 }): React_2.JSX.Element;
@@ -3917,6 +3964,11 @@ export interface TraceSelectionDetail {
     // (undocumented)
     traceId?: string;
 }
+
+// @public
+export type TraceSpanAnnotationProps = TraceAnnotationDatum & {
+    spanId: string;
+};
 
 // @public
 export interface TraceSpanBadge {
@@ -3991,6 +4043,9 @@ export interface TraceSpec extends Spec {
     dragMode?: 'pan' | 'brush';
     focusDomain?: [number, number];
     laneOrder?: 'tree' | 'chronological';
+    onAnnotationClick?: (event: TraceAnnotationEvent) => void;
+    onAnnotationOut?: (event: TraceAnnotationEvent) => void;
+    onAnnotationOver?: (event: TraceAnnotationEvent) => void;
     onBadgeClick?: (event: TraceSpanBadgeEvent) => void;
     onBadgeOut?: (event: TraceSpanBadgeEvent) => void;
     onBadgeOver?: (event: TraceSpanBadgeEvent) => void;
@@ -4007,6 +4062,23 @@ export interface TraceSpec extends Spec {
     traceNotFoundMessage?: string;
     xScaleType: 'time' | 'linear';
 }
+
+// @public
+export const TraceTimeAnnotation: (props: TraceTimeAnnotationProps) => null;
+
+// @public
+export type TraceTimeAnnotationPlacement = 'plot' | 'timebar';
+
+// @public
+export type TraceTimeAnnotationProps = TraceAnnotationDatum & {
+    placement?: TraceTimeAnnotationPlacement;
+} & ({
+    time: number;
+    range?: undefined;
+} | {
+    range: [number, number];
+    time?: undefined;
+});
 
 // @public (undocumented)
 export type TreeLevel = number;

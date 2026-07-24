@@ -15,8 +15,10 @@
  * draw-call counts without running real canvas operations.
  */
 
+import { ANNOTATION_MIN_HIT_WIDTH, layoutAnnotations, resolveAnnotationColors } from './annotation_layout';
 import {
   draw,
+  drawAnnotations,
   drawBadges,
   pickBadge,
   pickDisclosure,
@@ -25,9 +27,10 @@ import {
   resolveBadgeColors,
   canvas2dRenderer,
 } from './canvas2d_renderer';
+import type { ResolvedTraceAnnotation } from '../data/annotations';
 import type { NormalizedSpan } from '../data/types';
 import type { BadgeLayoutItem, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
-import { DEFAULT_TRACE_BADGE_STYLE } from './types';
+import { DEFAULT_TRACE_ANNOTATION_STYLE, DEFAULT_TRACE_BADGE_STYLE } from './types';
 import type { TraceDatum } from '../trace_api';
 import { makeCtx } from '../trace_test_helpers';
 
@@ -69,6 +72,7 @@ const style: TraceStyle = {
   criticalPathThickness: 2,
   labelPosition: 'gutter',
   badge: DEFAULT_TRACE_BADGE_STYLE,
+  annotation: DEFAULT_TRACE_ANNOTATION_STYLE,
 };
 
 // Canvas partition dimensions — must be consistent with the style above.
@@ -132,6 +136,7 @@ function makeGeom(overrides: Partial<TraceGeometry> = {}): TraceGeometry {
     disclosureByLane: new Map(),
     criticalIntervalsByLane: new Map(),
     badgesByLane: new Map(),
+    annotationsLayout: [],
     ...overrides,
   };
 }
@@ -1083,5 +1088,193 @@ describe('pickBadge', () => {
     const dup: BadgeLayoutItem[] = [item('same', 210), { ...item('same', 210), badge: { id: 'same', text: 'second' } }];
     const hit = pickBadge(215, 45, geomWith(new Map([[0, { items: dup }]])));
     expect(hit?.item.badge.text).toBe('same');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: layoutAnnotations (Spec 29)
+// ---------------------------------------------------------------------------
+
+const timeResolved = (
+  id: string,
+  position: { time?: number; range?: [number, number] },
+  color?: ResolvedTraceAnnotation['color'],
+  placement: 'plot' | 'timebar' = 'plot',
+): ResolvedTraceAnnotation => ({ id, kind: 'time', placement, datum: { id }, ariaLabel: id, color, ...position });
+
+const spanResolved = (
+  kind: 'lane' | 'hierarchy',
+  id: string,
+  spanId: string,
+  routeSpanIds: string[],
+): ResolvedTraceAnnotation => ({
+  id,
+  kind,
+  datum: { id },
+  ariaLabel: id,
+  spanId,
+  routeSpanIds,
+  span: spans.find((s) => s.id === spanId) ?? spans[0]!,
+});
+
+describe('layoutAnnotations', () => {
+  it('returns [] when there are no annotations', () => {
+    expect(layoutAnnotations(makeGeom(), style, [])).toEqual([]);
+  });
+
+  it('lays out a time-point marker spanning the full plot height with a min-width hit band', () => {
+    const [item] = layoutAnnotations(makeGeom(), style, [timeResolved('t', { time: 500 })]);
+    expect(item!.lines).toEqual([{ x1: 550, y1: PLOT_TOP, x2: 550, y2: PLOT_TOP + PLOT_HEIGHT }]);
+    expect(item!.hitRects).toEqual([
+      { x: 550 - ANNOTATION_MIN_HIT_WIDTH / 2, y: PLOT_TOP, width: ANNOTATION_MIN_HIT_WIDTH, height: PLOT_HEIGHT },
+    ]);
+    expect(item!.band).toBeUndefined();
+  });
+
+  it('culls a time-point annotation outside the focus domain', () => {
+    const geom = makeGeom({ focusDomain: { min: 0, max: 400 } });
+    expect(layoutAnnotations(geom, style, [timeResolved('t', { time: 800 })])).toEqual([]);
+  });
+
+  it('lays out a time-range band with an edge rail on each visible edge', () => {
+    const [item] = layoutAnnotations(makeGeom(), style, [timeResolved('r', { range: [200, 600] })]);
+    expect(item!.band).toEqual({ x: 340, y: PLOT_TOP, width: 280, height: PLOT_HEIGHT });
+    expect(item!.lines).toHaveLength(2);
+    expect(item!.hitRects).toHaveLength(2);
+  });
+
+  it('clips a partially-visible range and drops the off-screen edge rail (edges-only)', () => {
+    // Range starts before the visible domain (min 300): only the end edge (600) is a rail/hit target.
+    // A focus-domain-honoring scale maps [300,1000] onto the plot, so scale(100) falls left of plot.left.
+    const scale = (t: number) => PLOT_LEFT + ((t - 300) / (1000 - 300)) * PLOT_WIDTH;
+    const geom = makeGeom({ focusDomain: { min: 300, max: 1000 }, scale });
+    const [item] = layoutAnnotations(geom, style, [timeResolved('r', { range: [100, 600] })]);
+    expect(item!.band!.x).toBe(PLOT_LEFT); // clipped to plot left
+    expect(item!.lines).toHaveLength(1);
+    expect(item!.hitRects).toHaveLength(1);
+  });
+
+  it('lays out a lane annotation as a boundary rail at plot.left on the target lane', () => {
+    const [item] = layoutAnnotations(makeGeom(), style, [spanResolved('lane', 'l', 'b', ['b'])]);
+    const laneTop = PLOT_TOP + 1 * LANE_HEIGHT; // lane index 1 (span 'b')
+    expect(item!.lines).toEqual([{ x1: PLOT_LEFT, y1: laneTop, x2: PLOT_LEFT, y2: laneTop + LANE_HEIGHT }]);
+    expect(item!.hitRects[0]).toMatchObject({ x: PLOT_LEFT - ANNOTATION_MIN_HIT_WIDTH / 2, y: laneTop });
+  });
+
+  it('omits a lane annotation whose target span is not visible (collapse-hidden)', () => {
+    expect(layoutAnnotations(makeGeom(), style, [spanResolved('lane', 'l', 'ghost', ['ghost'])])).toEqual([]);
+  });
+
+  it('lays out a hierarchy annotation as segmented rails, skipping route lanes not visible', () => {
+    // Route a→x→c; 'x' is not in the visible spans, so only lanes 0 (a) and 2 (c) get a segment.
+    const [item] = layoutAnnotations(makeGeom(), style, [spanResolved('hierarchy', 'h', 'c', ['a', 'x', 'c'])]);
+    expect(item!.lines).toHaveLength(2);
+    const ys = item!.lines.map((l) => l.y1);
+    expect(ys).toEqual([PLOT_TOP + 0 * LANE_HEIGHT, PLOT_TOP + 2 * LANE_HEIGHT]);
+  });
+
+  describe('time-bar placement (Spec 29)', () => {
+    // Time bar spans y=[0, PLOT_TOP]; 'timebar' marks occupy its lower half only (over the ticks).
+    const TICK_TOP = PLOT_TOP / 2; // 16
+    const TICK_HEIGHT = PLOT_TOP - TICK_TOP; // 16
+
+    it('lays out a time-bar point as a lower-half tick and a marker head, with a lower-half hit and no plot rail', () => {
+      const [item] = layoutAnnotations(makeGeom(), style, [timeResolved('t', { time: 500 }, undefined, 'timebar')]);
+      // Tick lives in the lower half of the time bar (tick top → plot.top); no full-plot rail, no guide.
+      expect(item!.lines).toEqual([{ x1: 550, y1: TICK_TOP, x2: 550, y2: PLOT_TOP }]);
+      // Marker head sits at the gutter/plot boundary.
+      expect(item!.markers).toEqual([{ x: 550, y: PLOT_TOP }]);
+      // Hit band covers only the lower-half tick region (time bar), never the plot.
+      expect(item!.hitRects).toEqual([
+        { x: 550 - ANNOTATION_MIN_HIT_WIDTH / 2, y: TICK_TOP, width: ANNOTATION_MIN_HIT_WIDTH, height: TICK_HEIGHT },
+      ]);
+      expect(item!.band).toBeUndefined();
+    });
+
+    it('lays out a time-bar range as a lower-half band with edge ticks and lower-half edges-only hits', () => {
+      const [item] = layoutAnnotations(makeGeom(), style, [timeResolved('r', { range: [200, 600] }, undefined, 'timebar')]);
+      // Band is tinted across the lower half of the time bar only (not the plot).
+      expect(item!.timeBarBand).toEqual({ x: 340, y: TICK_TOP, width: 280, height: TICK_HEIGHT });
+      expect(item!.band).toBeUndefined();
+      // Edge ticks in the lower half; no plot guides.
+      expect(item!.lines).toHaveLength(2);
+      // Edges-only, lower-half hit bands.
+      expect(item!.hitRects).toHaveLength(2);
+      expect(item!.hitRects[0]).toMatchObject({ y: TICK_TOP, height: TICK_HEIGHT });
+    });
+
+    it('clips a partially-visible time-bar range and drops the off-screen edge (edges-only)', () => {
+      const scale = (t: number) => PLOT_LEFT + ((t - 300) / (1000 - 300)) * PLOT_WIDTH;
+      const geom = makeGeom({ focusDomain: { min: 300, max: 1000 }, scale });
+      const [item] = layoutAnnotations(geom, style, [timeResolved('r', { range: [100, 600] }, undefined, 'timebar')]);
+      expect(item!.timeBarBand!.x).toBe(PLOT_LEFT); // clipped to plot left
+      expect(item!.lines).toHaveLength(1);
+      expect(item!.hitRects).toHaveLength(1);
+    });
+  });
+});
+
+describe('resolveAnnotationColors', () => {
+  const palette = DEFAULT_TRACE_ANNOTATION_STYLE.palette;
+
+  it('uses the default token when no color is given', () => {
+    expect(resolveAnnotationColors(undefined, palette)).toBe(palette.default);
+  });
+
+  it('maps a named token to its palette entry', () => {
+    expect(resolveAnnotationColors('danger', palette)).toBe(palette.danger);
+  });
+
+  it('uses a custom Color for both stroke and fill', () => {
+    expect(resolveAnnotationColors('#123456', palette)).toEqual({ stroke: '#123456', fill: '#123456' });
+  });
+});
+
+describe('drawAnnotations', () => {
+  const geomWithAnnotations = (annotations: ResolvedTraceAnnotation[]): TraceGeometry => {
+    const base = makeGeom();
+    return { ...base, annotationsLayout: layoutAnnotations(base, style, annotations) };
+  };
+
+  it('is a no-op when nothing is laid out', () => {
+    const ctx = makeCtx();
+    drawAnnotations(ctx, makeGeom(), style);
+    expect(ctx.moveTo).not.toHaveBeenCalled();
+    expect(ctx.fill).not.toHaveBeenCalled();
+  });
+
+  it('strokes a rail for a time-point annotation', () => {
+    const ctx = makeCtx();
+    drawAnnotations(ctx, geomWithAnnotations([timeResolved('t', { time: 500 })]), style);
+    expect(ctx.moveTo).toHaveBeenCalledTimes(1);
+    expect(ctx.stroke).toHaveBeenCalled();
+  });
+
+  it('fills the range band for a time-range annotation', () => {
+    const ctx = makeCtx();
+    drawAnnotations(ctx, geomWithAnnotations([timeResolved('r', { range: [200, 600] })]), style);
+    expect(ctx.fill).toHaveBeenCalled();
+  });
+
+  it('renders without any interaction handlers (annotations are pure adornments)', () => {
+    const ctx = makeCtx();
+    drawAnnotations(ctx, geomWithAnnotations([spanResolved('lane', 'l', 'b', ['b'])]), style);
+    expect(ctx.stroke).toHaveBeenCalled();
+  });
+
+  it('draws a triangular marker head and strokes the lower-half tick for a time-bar point', () => {
+    const ctx = makeCtx();
+    drawAnnotations(ctx, geomWithAnnotations([timeResolved('t', { time: 500 }, undefined, 'timebar')]), style);
+    // Filled triangle marker head.
+    expect(ctx.fill).toHaveBeenCalled();
+    // Lower-half tick stroke.
+    expect(ctx.stroke).toHaveBeenCalled();
+  });
+
+  it('fills the time-bar band for a time-bar range', () => {
+    const ctx = makeCtx();
+    drawAnnotations(ctx, geomWithAnnotations([timeResolved('r', { range: [200, 600] }, undefined, 'timebar')]), style);
+    expect(ctx.fill).toHaveBeenCalled();
+    expect(ctx.stroke).toHaveBeenCalled();
   });
 });

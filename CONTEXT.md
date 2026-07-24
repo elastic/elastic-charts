@@ -171,9 +171,26 @@ _Avoid_: badge (badges adorn a span label), critical path (critical path marks a
 intervals), selection (annotations are caller-authored context).
 
 **Time annotation**:
-A Trace annotation anchored to the x-scale. It marks a timestamp or time range across the trace plot
-and can report hover or activation with its annotation metadata.
+A Trace annotation anchored to the x-scale, marking a timestamp or time range and reporting hover or
+activation with its annotation metadata. Its `placement` selects the anchor: `'timebar'` (default) draws
+a marker in the lower half of the time bar (over the axis ticks, clear of the time labels) and nothing
+in the plot — a range tints a band across that time-bar region — mirroring the Kibana APM waterfall
+marker; `'plot'` draws a solid full-height rail across the plot (a range fills a tinted plot band with
+edge rails). Lane and hierarchy annotations are always plot-anchored.
 _Avoid_: time bar tick, cursor, vertical lane annotation.
+
+**Annotation marker**:
+The time-bar treatment of a `'timebar'` time annotation — a solid tick and downward-triangle head in
+the lower half of the time bar at the gutter/plot boundary, drawn over the axis ticks and never into
+the plot or the time labels. The `markerSize` theme token sizes the triangle.
+_Avoid_: span badge, plot rail (the `'plot'` placement's full-height line), cursor.
+
+**Lane annotation**:
+A Trace annotation anchored to a single span that marks that span's lane with a boundary rail between
+the gutter and the span drawing area. It targets the span by `spanId` (never lane index), is omitted
+without diagnostics when the target is hidden by collapse, and does not tint span bars or change
+collapse, selection, or lane order.
+_Avoid_: row annotation; hierarchy annotation (which marks a whole root-to-target route); span badge.
 
 **Hierarchy annotation**:
 A Trace annotation anchored to a span that marks the visible ancestry route from that span's trace

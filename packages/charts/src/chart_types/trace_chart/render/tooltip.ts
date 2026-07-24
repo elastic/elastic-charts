@@ -9,9 +9,10 @@
 import type { HoverRegion } from './types';
 import type { TooltipInfo } from '../../../components/tooltip/types';
 import type { TraceElementEvent } from '../../../specs/settings';
+import type { ResolvedTraceAnnotation } from '../data/annotations';
 import { waitingSegments } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
-import type { TraceSelectionDetail, TraceSpanBadgeEventSpan } from '../trace_api';
+import type { TraceAnnotationEvent, TraceSelectionDetail, TraceSpanBadgeEventSpan } from '../trace_api';
 
 /** @internal */
 export function formatMs(ms: number): string {
@@ -261,4 +262,31 @@ export function buildTraceEvent(span: NormalizedSpan): TraceElementEvent {
 export function buildTraceSpanBadgeEventSpan(span: NormalizedSpan): TraceSpanBadgeEventSpan {
   const { type: _type, ...spanMeta } = buildTraceEvent(span);
   return spanMeta;
+}
+
+/**
+ * Builds a {@link TraceAnnotationEvent} for a resolved Trace annotation (Spec 29). Shared by the
+ * pointer interaction handlers and the screen-reader keyboard activation so both report an identical
+ * event shape. Pointer events carry chart-relative coordinates; keyboard events carry none. Lane and
+ * hierarchy annotations report the related span's metadata; time annotations omit it. The annotation's
+ * caller `meta` is returned by reference via `annotation.datum`.
+ * @internal
+ */
+export function buildTraceAnnotationEvent(
+  annotation: ResolvedTraceAnnotation,
+  source: 'pointer' | 'keyboard',
+  coords?: { chartX: number; chartY: number },
+): TraceAnnotationEvent {
+  const span = annotation.kind === 'time' ? undefined : buildTraceSpanBadgeEventSpan(annotation.span);
+  if (source === 'keyboard') {
+    return { source: 'keyboard', type: annotation.kind, annotation: annotation.datum, span };
+  }
+  return {
+    source: 'pointer',
+    type: annotation.kind,
+    annotation: annotation.datum,
+    span,
+    chartX: coords!.chartX,
+    chartY: coords!.chartY,
+  };
 }

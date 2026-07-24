@@ -10,7 +10,13 @@ import { buildGeometry } from './geometry';
 import { TICK_LAYER_PADDING, TICK_LAYER_BOTTOM_INSET } from './time_bar';
 import type { NormalizedSpan } from '../data/types';
 import type { DisclosureEntry, TraceStyle } from './types';
-import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, DEFAULT_TRACE_BADGE_STYLE, gutterPx } from './types';
+import {
+  CARET_GLYPH_PX,
+  CARET_INDENT_STEP_PX,
+  DEFAULT_TRACE_ANNOTATION_STYLE,
+  DEFAULT_TRACE_BADGE_STYLE,
+  gutterPx,
+} from './types';
 
 const style: TraceStyle = {
   gutterWidth: 200,
@@ -30,6 +36,7 @@ const style: TraceStyle = {
   criticalPathThickness: 2,
   labelPosition: 'gutter',
   badge: DEFAULT_TRACE_BADGE_STYLE,
+  annotation: DEFAULT_TRACE_ANNOTATION_STYLE,
 };
 
 function span(id: string, start: number, end: number): NormalizedSpan {

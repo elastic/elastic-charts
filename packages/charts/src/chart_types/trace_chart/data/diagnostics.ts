@@ -26,16 +26,16 @@ export type TraceDataDiagnosticSeverity = 'info' | 'warning' | 'error';
 
 /**
  * The level a diagnostic issue affects, so consumers need not decode the issue kind (Spec 28).
- * `'annotation'` is reserved for Trace annotations and `'reference'` covers caller-supplied
+ * `'annotation'` covers Trace annotations (Spec 29) and `'reference'` covers other caller-supplied
  * references such as critical-path intervals or connections.
  * @public
  */
 export type TraceDataDiagnosticScope = 'chart' | 'trace' | 'span' | 'badge' | 'annotation' | 'reference';
 
 /**
- * Closed union of supported diagnostic issue kinds (Spec 28). New kinds may be added deliberately as
- * the Trace diagnostics surface expands, but arbitrary string kinds are not accepted. Annotation and
- * connection kinds are intentionally deferred until those features land.
+ * Closed union of supported diagnostic issue kinds (Spec 28 / Spec 29). New kinds may be added
+ * deliberately as the Trace diagnostics surface expands, but arbitrary string kinds are not accepted.
+ * Connection kinds are intentionally deferred until that feature lands.
  * @public
  */
 export type TraceDataDiagnosticKind =
@@ -74,7 +74,16 @@ export type TraceDataDiagnosticKind =
   /** A badge's `visibleIn` contained values outside the Label-position set. */
   | 'badge_invalid_visibility'
   /** An image-only badge had no `ariaLabel`; it still renders with a generated name. */
-  | 'badge_missing_aria_label';
+  | 'badge_missing_aria_label'
+  // --- Trace annotations (Spec 29) --------------------------------------------------------------
+  /** More than one Trace annotation child spec shared the same `id`. */
+  | 'annotation_duplicate_id'
+  /** A time annotation had an invalid position: non-finite value, both `time` and `range`, or an empty/reversed range. */
+  | 'annotation_invalid_time'
+  /** A lane/hierarchy annotation referenced a span id not present in the prepared data; it is omitted. */
+  | 'annotation_unresolved_span'
+  /** An annotation had no accessible name; it still renders with a generic generated name. */
+  | 'annotation_missing_aria_label';
 
 /**
  * One aggregated diagnostic issue: a kind + severity + scope, the total occurrence `count`, and a

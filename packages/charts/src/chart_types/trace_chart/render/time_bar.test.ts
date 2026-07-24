@@ -17,7 +17,7 @@
 import { drawTimeBar, pickElapsedUnit, formatElapsedMs } from './time_bar';
 import type { TraceGeometry } from './types';
 import type { TraceStyle } from './types';
-import { DEFAULT_TRACE_BADGE_STYLE } from './types';
+import { DEFAULT_TRACE_ANNOTATION_STYLE, DEFAULT_TRACE_BADGE_STYLE } from './types';
 
 // ---------------------------------------------------------------------------
 // Mocks: intercept raster factory calls so we can assert which was selected.
@@ -88,6 +88,7 @@ const style: TraceStyle = {
   criticalPathThickness: 2,
   labelPosition: 'gutter',
   badge: DEFAULT_TRACE_BADGE_STYLE,
+  annotation: DEFAULT_TRACE_ANNOTATION_STYLE,
 };
 
 function makeGeom(xScaleType: 'time' | 'linear'): TraceGeometry {
@@ -111,6 +112,7 @@ function makeGeom(xScaleType: 'time' | 'linear'): TraceGeometry {
     disclosureByLane: new Map(),
     criticalIntervalsByLane: new Map(),
     badgesByLane: new Map(),
+    annotationsLayout: [],
     scale: (tMs: number) => plotLeft + (tMs / 10_000) * plotWidth,
   };
 }
@@ -213,6 +215,7 @@ describe('drawTimeBar — sub-ms ticks all render with distinct labels (linear m
       disclosureByLane: new Map(),
       criticalIntervalsByLane: new Map(),
       badgesByLane: new Map(),
+      annotationsLayout: [],
       scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
     };
 
@@ -317,6 +320,7 @@ describe('drawTimeBar — finest-labeled-layer selection (time mode)', () => {
       disclosureByLane: new Map(),
       criticalIntervalsByLane: new Map(),
       badgesByLane: new Map(),
+      annotationsLayout: [],
       // scale converts ms → canvas x; the domain is passed as seconds to the time engine,
       // but geom.scale always receives ms (tickMs = minimum * MS_PER_SECOND inside drawTimeBar).
       scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
@@ -366,6 +370,7 @@ describe('drawTimeBar — multi-level time bar (Spec 25)', () => {
       disclosureByLane: new Map(),
       criticalIntervalsByLane: new Map(),
       badgesByLane: new Map(),
+      annotationsLayout: [],
       scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
     };
   }
@@ -715,6 +720,7 @@ describe('drawTimeBar — integer-ns filter for sub-ns steps (ADR 0010)', () => 
       disclosureByLane: new Map(),
       criticalIntervalsByLane: new Map(),
       badgesByLane: new Map(),
+      annotationsLayout: [],
       scale: (tMs: number) => plotLeft + (tMs / 1e-6) * plotWidth,
     };
 

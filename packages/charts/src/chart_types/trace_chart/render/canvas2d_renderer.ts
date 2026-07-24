@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba } from '../../../common/color_library_wrappers';
+import { colorToRgba, RGBATupleToString } from '../../../common/color_library_wrappers';
+import type { RgbaTuple } from '../../../common/color_library_wrappers';
 import { Colors } from '../../../common/colors';
 import { withContext } from '../../../renderers/canvas';
 import { renderMultiLine } from '../../../renderers/canvas/primitives/line';
@@ -16,7 +17,7 @@ import type { TextFont } from '../../../renderers/canvas/primitives/text';
 import type { Fill, Stroke } from '../../../geoms/types';
 import { waitingSegments } from '../data/self_time';
 import { drawTimeBar } from './time_bar';
-import type { BadgeLayoutItem, HoverRegion, PickResult, TraceBadgeColorStyle, TraceGeometry, TraceRenderer, TraceStyle } from './types';
+import type { AnnotationLayoutItem, BadgeLayoutItem, HoverRegion, PickResult, TraceBadgeColorStyle, TraceGeometry, TraceRenderer, TraceStyle } from './types';
 import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, LANE_PADDING } from './types';
 import type { BadgeImageCrossOrigin } from './badge_images';
 import type { TraceSpanBadgeColor } from '../trace_api';
@@ -533,6 +534,100 @@ export function drawBadges(
     }
     ctx.restore();
   });
+}
+
+/**
+ * Draws the laid-out Trace annotations (Spec 29) onto `ctx`, on top of the waterfall and badges. Kept
+ * separate from `draw()` so the frozen `TraceRenderer` seam (ADR 0001) is unchanged. Clipped to the
+ * time bar + plot (full canvas width so a boundary rail at `plot.left` is not clipped at its center);
+ * 'plot'-placement time marks/bands paint over the plot, 'timebar'-placement marks/bands paint in the
+ * lower half of the time bar, and lane/hierarchy rails paint at the gutter↔plot boundary. The hovered
+ * annotation (by id) gets the intensified range-band fill. No-op when nothing is laid out.
+ * @internal
+ */
+export function drawAnnotations(
+  ctx: CanvasRenderingContext2D,
+  geom: TraceGeometry,
+  style: TraceStyle,
+  hoveredId?: string,
+): void {
+  const { annotationsLayout, plot, timeBar } = geom;
+  if (annotationsLayout.length === 0) return;
+
+  withContext(ctx, () => {
+    ctx.save();
+    ctx.beginPath();
+    // Clip to the time bar + plot (full canvas width so a boundary rail at plot.left is not clipped at
+    // its center). Time-bar markers/bands paint over the axis region, so the clip starts at timeBar.top.
+    ctx.rect(0, timeBar.top, plot.left + plot.width, plot.top + plot.height - timeBar.top);
+    ctx.clip();
+
+    for (const item of annotationsLayout) {
+      const [r, g, b, a] = colorToRgba(item.colors.fill);
+      const fillOpacity = (item.id === hoveredId ? style.annotation.hoverFillOpacity : style.annotation.fillOpacity) * a;
+      // Time-bar range band (tinted, in the axis region).
+      if (item.timeBarBand) {
+        const fillColor: RgbaTuple = [r, g, b, fillOpacity];
+        renderRect(ctx, item.timeBarBand, { color: fillColor }, NO_STROKE, true);
+      }
+      // Plot range band ('plot' placement only), tinted by the idle/hover fill opacity.
+      if (item.band) {
+        const fillColor: RgbaTuple = [r, g, b, fillOpacity];
+        renderRect(ctx, item.band, { color: fillColor }, NO_STROKE, true);
+      }
+      // Rail/marker/edge lines.
+      if (item.lines.length > 0) {
+        const stroke: Stroke = { color: colorToRgba(item.colors.stroke), width: style.annotation.railThickness };
+        renderMultiLine(ctx, item.lines, stroke);
+      }
+      // Time-bar triangular marker heads at the gutter/plot boundary.
+      if (item.markers && item.markers.length > 0) {
+        for (const marker of item.markers) {
+          drawTriangleMarker(ctx, marker.x, marker.y, style.annotation.markerSize, item.colors.stroke);
+        }
+      }
+    }
+    ctx.restore();
+  });
+}
+
+/**
+ * Draws a downward-pointing filled triangle whose apex sits at `(x, y)` (the gutter/plot boundary),
+ * with its base of width `size` resting `size` px above in the time bar — the time-bar annotation
+ * marker head (Spec 29).
+ * @internal
+ */
+function drawTriangleMarker(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, color: string): void {
+  const half = size / 2;
+  withContext(ctx, () => {
+    ctx.fillStyle = RGBATupleToString(colorToRgba(color));
+    ctx.beginPath();
+    ctx.moveTo(x - half, y - size);
+    ctx.lineTo(x + half, y - size);
+    ctx.lineTo(x, y);
+    ctx.closePath();
+    ctx.fill();
+  });
+}
+
+/**
+ * Returns the Trace annotation under `(x, y)` using the uniform thin-band hit model (Spec 29), or
+ * `null` when the pointer is over no annotation. Iterated in resolved order; callers must run this
+ * **before** `pickBadge`/`pickDisclosure`/`pickRegion` so an annotation owns the pointer and never
+ * double-dispatches the underlying span/badge for the same transition (ADR 0033).
+ * @internal
+ */
+export function pickAnnotation(x: number, y: number, geom: TraceGeometry): AnnotationLayoutItem | null {
+  const { annotationsLayout } = geom;
+  if (annotationsLayout.length === 0) return null;
+  for (const item of annotationsLayout) {
+    for (const rect of item.hitRects) {
+      if (x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height) {
+        return item;
+      }
+    }
+  }
+  return null;
 }
 
 /**

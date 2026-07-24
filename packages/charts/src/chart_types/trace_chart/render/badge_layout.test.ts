@@ -8,7 +8,7 @@
 
 import { computeBadgeGutterWidth, layoutBadges, resolveBadgeAriaLabel } from './badge_layout';
 import type { BadgeTextMeasurer } from './badge_layout';
-import { DEFAULT_TRACE_BADGE_STYLE, LANE_PADDING } from './types';
+import { DEFAULT_TRACE_ANNOTATION_STYLE, DEFAULT_TRACE_BADGE_STYLE, LANE_PADDING } from './types';
 import type { TraceGeometry, TraceStyle } from './types';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceDatum, TraceSpanBadge } from '../trace_api';
@@ -35,6 +35,7 @@ const baseStyle = (labelPosition: TraceStyle['labelPosition']): TraceStyle =>
     criticalPathColor: '#000',
     criticalPathThickness: 2,
     badge: DEFAULT_TRACE_BADGE_STYLE,
+    annotation: DEFAULT_TRACE_ANNOTATION_STYLE,
   }) as TraceStyle;
 
 const span = (id: string, badges: TraceSpanBadge[], name = id, start = 0, end = 100): NormalizedSpan => {
@@ -77,6 +78,7 @@ const geom = (
     disclosureByLane: new Map(),
     criticalIntervalsByLane: new Map(),
     badgesByLane: new Map(),
+    annotationsLayout: [],
   }) as TraceGeometry;
 
 describe('resolveBadgeAriaLabel', () => {

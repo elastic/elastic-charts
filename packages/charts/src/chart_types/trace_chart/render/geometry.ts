@@ -9,7 +9,7 @@
 import type { NormalizedSpan } from '../data/types';
 import { waitingSegments } from '../data/self_time';
 import { TICK_LAYER_PADDING, TICK_LAYER_BOTTOM_INSET } from './time_bar';
-import type { DisclosureEntry, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
+import type { AnnotationLayoutItem, DisclosureEntry, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
 import { gutterPx, LANE_PADDING } from './types';
 import type { TraceSelection } from '../trace_api';
 import type { Size } from '../../../utils/dimensions';
@@ -158,7 +158,11 @@ export function buildGeometry(
     // Populated by the badge-layout pass (layoutBadges) after partitioning; empty here so buildGeometry
     // stays pure (no text measurement). The chart frame replaces this with the measured layout.
     badgesByLane: EMPTY_BADGES,
+    // Populated by the annotation-layout pass (layoutAnnotations); empty here so buildGeometry stays
+    // independent of the separately-memoized annotation resolution (Spec 29).
+    annotationsLayout: EMPTY_ANNOTATIONS,
   };
 }
 
 const EMPTY_BADGES: ReadonlyMap<number, LaneBadgeLayout> = new Map();
+const EMPTY_ANNOTATIONS: readonly AnnotationLayoutItem[] = [];

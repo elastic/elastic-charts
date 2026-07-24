@@ -1,5 +1,5 @@
 ---
-status: provisional
+status: accepted
 domain: trace-viz
 owners: []
 supersedes: []

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getTraceAnnotationSpecsSelector } from './get_annotation_specs';
 import { ChartType } from '../../..';
 import { SpecType } from '../../../../specs/spec_type';
 import type { GlobalChartState } from '../../../../state/chart_state';
@@ -14,6 +15,8 @@ import { getA11ySettingsSelector } from '../../../../state/selectors/get_accessi
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { EMPTY_SCREEN_READER_ITEMS, type ScreenReaderItem } from '../../../../state/selectors/get_screenreader_data';
 import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
+import type { ResolvedTraceAnnotation } from '../../data/annotations';
+import { resolveTraceAnnotations } from '../../data/annotations';
 import { resolveSpanBadges } from '../../data/badges';
 import { buildDisclosureMap, collapseLanes, collapsibleParentIds } from '../../data/collapse';
 import { normalize } from '../../data/normalize';
@@ -91,8 +94,12 @@ const getNormalizedSpans = createCustomCachedSelector(
     vizColors,
   ): {
     spans: NormalizedSpan[];
+    /** Pre-collapse ordered lanes — the prepared data annotation resolution validates against (Spec 29). */
+    orderedSpans: NormalizedSpan[];
     disclosure: Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number }>;
     domain: { min: number; max: number };
+    /** Re-zero offset for caller-supplied annotation `time`/`range` (Spec 29). */
+    projectionOffset: number;
   } | null => {
     if (!spec || spec.data.length === 0) return null;
     const result = normalize(spec.data, spec.xScaleType, spec.traceId, spec.colorBy, vizColors);
@@ -105,7 +112,7 @@ const getNormalizedSpans = createCustomCachedSelector(
     const spans = collapseLanes(orderedSpans, effectiveCollapsed);
     const parentIds = collapsibleParentIds(orderedSpans);
     const disclosure = buildDisclosureMap(orderedSpans, spans, effectiveCollapsed, depthBySpan, parentIds);
-    return { spans, disclosure, domain: result.domain };
+    return { spans, orderedSpans, disclosure, domain: result.domain, projectionOffset: result.projectionOffset };
   },
 );
 
@@ -140,6 +147,31 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
 export const getTraceBadgeClickHandlerSelector = createCustomCachedSelector(
   [(state: GlobalChartState) => getSpecsFromStore<TraceSpec>(state.specs, ChartType.Trace, SpecType.Series)[0]],
   (spec): TraceSpec['onBadgeClick'] => spec?.onBadgeClick,
+);
+
+/**
+ * Resolves composed Trace annotations (Spec 29) for the screen-reader surface. This is the SR-side
+ * mirror of the visual `getResolvedAnnotations` memo (ADR 0004 two-pass parity): same resolver, same
+ * pre-collapse prepared spans, no diagnostics collector (diagnostics are owned by the visual pass).
+ * @internal
+ */
+export const getResolvedTraceAnnotationsSelector = createCustomCachedSelector(
+  [getNormalizedSpans, getTraceAnnotationSpecsSelector],
+  (pipeline, annotationSpecs): ResolvedTraceAnnotation[] => {
+    if (!pipeline) return [];
+    return resolveTraceAnnotations(pipeline.orderedSpans, annotationSpecs, pipeline.projectionOffset);
+  },
+);
+
+/**
+ * The Trace spec's `onAnnotationClick` handler, or `undefined` when none is supplied. Drives whether
+ * the screen-reader surface renders annotations as keyboard-activatable `<button>` controls (handler
+ * present) or inert informational text (Spec 29).
+ * @internal
+ */
+export const getTraceAnnotationClickHandlerSelector = createCustomCachedSelector(
+  [(state: GlobalChartState) => getSpecsFromStore<TraceSpec>(state.specs, ChartType.Trace, SpecType.Series)[0]],
+  (spec): TraceSpec['onAnnotationClick'] => spec?.onAnnotationClick,
 );
 
 export const getTraceTableRowsSelector = createCustomCachedSelector(

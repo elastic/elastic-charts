@@ -40,3 +40,4 @@ export { Example as clockSkew } from './26_clock_skew.story';
 export { Example as partialTraceReparenting } from './27_partial_trace_reparenting.story';
 export { Example as spanBadges } from './28_span_badges.story';
 export { Example as traceDataDiagnostics } from './29_data_diagnostics.story';
+export { Example as traceAnnotations } from './30_trace_annotations.story';

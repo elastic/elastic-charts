@@ -1,5 +1,5 @@
 ---
-status: provisional
+status: accepted
 domain: trace-viz
 owners: []
 supersedes: []
@@ -22,6 +22,8 @@ prepared trace output; they do not modify trace data, selection, collapse state,
 | Symbol | Kind | Description |
 |---|---|---|
 | `TraceTimeAnnotation` | component | Child spec that marks a timestamp or time range on the Trace x-scale. |
+| `TraceTimeAnnotationPlacement` | type | Where a time annotation is anchored: `'timebar'` (marker + faint guide, the default) or `'plot'` (full-height rail). |
+| `TraceTimeAnnotation.placement` | prop | Selects the time annotation's placement; defaults to `'timebar'`. |
 | `TraceLaneAnnotation` | component | Child spec that marks one resolved span lane. |
 | `TraceHierarchyAnnotation` | component | Child spec that marks the visible root-to-target route for one resolved span. |
 | `TraceAnnotationDatum` | type | Structured annotation identity, metadata, style intent, and accessibility fields. |
@@ -63,9 +65,16 @@ prepared trace output; they do not modify trace data, selection, collapse state,
   A time annotation supplies either `time` or `range`, but not both. It remains horizontally anchored
   to its time value through zoom and pan and may report hover and activation with annotation metadata.
   {story:traceTimeAnnotations}
-- Time annotations render over the trace plot and visible lane area only. V1 does not extend them
-  into the time bar, label gutter, badge-only gutter, or chart chrome.
-  {test:packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.test.ts#"time annotations are clipped to the plot area"}
+- A time annotation selects a `placement`: `'timebar'` (default) draws a marker head plus a tick in
+  the **lower half of the time bar** (over the axis ticks, clear of the time labels) and draws
+  nothing in the plot — a range tints a band across that time-bar region — mirroring the Kibana APM
+  waterfall marker; `'plot'` draws a solid full-height rail across the plot (a range fills a tinted
+  plot band with edge rails). Lane and hierarchy annotations are always plot-anchored.
+  {test:packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.test.ts#"lays out a time-bar point as a lower-half tick and a marker head, with a lower-half hit and no plot rail"}
+- A time annotation stays synchronized with zoom, pan, scroll, and export whether anchored in the
+  time bar or the plot. The time labels, label gutter, badge-only gutter, and chart chrome remain
+  free of time annotations; a `'timebar'` mark is hoverable only in its lower-half time-bar region.
+  {test:packages/charts/src/chart_types/trace_chart/render/picking.test.ts#"time-bar marker is hoverable in the axis (lower-half) region"}
 - A structurally valid time annotation outside the current visible x-domain is omitted from the
   visual layout and hit testing without diagnostics. Non-finite time values, empty ranges, and
   reversed ranges are invalid annotation structure and are reported through diagnostics.
@@ -187,6 +196,7 @@ prepared trace output; they do not modify trace data, selection, collapse state,
 ## Decisions
 
 - [ADR 0030 — Trace annotations compose as child specs](../0030-trace-annotation-composition.md)
+- [ADR 0033 — Trace annotation geometry, layering, and the uniform thin-band hit model](../0033-trace-annotation-geometry-and-hit-testing.md)
 
 ## Non-goals
 
@@ -203,7 +213,9 @@ prepared trace output; they do not modify trace data, selection, collapse state,
   popover, and hover-card presentation to consumers.
 - **XY annotation reuse as-is:** XY annotations can inform API language, but Trace annotation
   geometry and hierarchy semantics are Trace-specific.
-- **Time-bar annotation markers:** v1 time annotations mark the trace plot; dedicated time-bar or
-  axis-marker integration is reserved for a future variant.
 - **Annotation-driven trace mutation:** annotations call out existing trace output; they do not
   change collapse, selection, or lane ordering.
+
+Note: time-bar annotation markers were an early non-goal but are now **supported** — a time
+annotation defaults to `placement: 'timebar'` (a marker in the lower half of the time bar, nothing in
+the plot), with `placement: 'plot'` retaining the original full-height rail. See ADR 0033.
