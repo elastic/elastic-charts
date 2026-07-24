@@ -36,8 +36,11 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
 
   withContext(ctx, () => {
     // Transparent clear of the full canvas area. Background ownership belongs to the Spec 6
-    // wrapping component; the renderer only paints its own marks.
-    ctx.clearRect(0, 0, gutter.width + plot.width, gutter.height);
+    // wrapping component; the renderer only paints its own marks. Use `plot.left + plot.width`
+    // (the true canvas width) rather than `gutter.width + plot.width`: in 'none' mode the badge
+    // gutter shifts `plot.left` past `gutter.width`, so the latter would leave the rightmost
+    // `badgeGutterWidth` strip uncleared and time-bar gridlines would accumulate there (Spec 27).
+    ctx.clearRect(0, 0, plot.left + plot.width, gutter.height);
 
     // Delegate time bar (raster tick engine + vertical gridlines) — Spec 4 module.
     drawTimeBar(ctx, geom, style);
@@ -71,11 +74,12 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
 
     // Clip the lane area so that a fractional scrollOffset cannot let lane content
     // (total-line, active segments, labels, focus highlight, selection outlines)
-    // overpaint the time bar above plot.top. The clip rect covers the full gutter + plot
-    // width so the focused-lane background highlight still paints into the gutter column.
+    // overpaint the time bar above plot.top. The clip rect covers the full canvas
+    // width (`plot.left + plot.width`) so the focused-lane background highlight still paints into
+    // the gutter column and bars are not truncated by the 'none'-mode badge gutter (Spec 27).
     ctx.save();
     ctx.beginPath();
-    ctx.rect(0, plot.top, gutter.width + plot.width, plot.height);
+    ctx.rect(0, plot.top, plot.left + plot.width, plot.height);
     ctx.clip();
 
     // --- Focused-lane background highlight (keyboard nav) ---
@@ -84,7 +88,7 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       const focusTop = plot.top + focusedLaneIndex * laneHeight - scrollOffset;
       renderRect(
         ctx,
-        { x: 0, y: focusTop, width: gutter.width + plot.width, height: laneHeight },
+        { x: 0, y: focusTop, width: plot.left + plot.width, height: laneHeight },
         { color: colorToRgba(style.focusedLaneBackground) },
         NO_STROKE,
         true,
@@ -499,13 +503,15 @@ export function drawBadges(
   style: TraceStyle,
   resolveImage: (src: string, crossOrigin: BadgeImageCrossOrigin) => CanvasImageSource | undefined,
 ): void {
-  const { badgesByLane, plot, gutter } = geom;
+  const { badgesByLane, plot } = geom;
   if (badgesByLane.size === 0) return;
 
   withContext(ctx, () => {
     ctx.save();
     ctx.beginPath();
-    ctx.rect(0, plot.top, gutter.width + plot.width, plot.height);
+    // Full canvas width (`plot.left + plot.width`); `gutter.width + plot.width` would omit the
+    // 'none'-mode badge gutter's rightmost strip (Spec 27).
+    ctx.rect(0, plot.top, plot.left + plot.width, plot.height);
     ctx.clip();
 
     const badgeFont: TextFont = {

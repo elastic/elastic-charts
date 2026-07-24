@@ -64,17 +64,23 @@ export const Example: ChartsStory = (_, { title, description }) => {
         { id: 'dur', text: '1000 ms', image: { src: DURATION_BADGE_ICON } },
       ],
       db: [
-        { id: 'db', text: 'postgresql', color: 'primary' },
+        { id: 'db', text: 'postgresql', color: 'primary', visibleIn: ['gutter', 'inline', 'none'] },
         { id: 'rows', text: '128 rows' },
       ],
       // Image-only badge (no text): its accessible name comes from ariaLabel.
       cache: [
         { id: 'redis', image: { src: iconSrc }, ariaLabel: 'Redis cache' },
-        { id: 'miss', text: 'MISS', color: 'danger' },
+        { id: 'miss', text: 'MISS', color: 'danger', visibleIn: ['gutter', 'inline', 'none'] },
       ],
-      palette: PALETTE.map((color, i) => ({ id: `c${i}`, text: String(color), color })),
+      palette: PALETTE.map((color, i) => ({
+        id: `c${i}`,
+        text: String(color),
+        color,
+        // Keep the primary chip in the badge-only gutter so the palette lane renders in `none`.
+        ...(color === 'primary' ? { visibleIn: ['gutter', 'inline', 'none'] as const } : {}),
+      })),
       overflow: [
-        { id: 'o1', text: 'authentication', color: 'primary' },
+        { id: 'o1', text: 'authentication', color: 'primary', visibleIn: ['gutter', 'inline', 'none'] },
         { id: 'o2', text: 'authorization', color: 'success' },
         { id: 'o3', text: 'rate-limiting', color: 'warning' },
         { id: 'o4', text: 'circuit-breaker', color: 'danger' },
@@ -108,7 +114,9 @@ Example.parameters = {
     'This demo exercises every facet via knobs:\n\n' +
     '- **badgeSize** — one shared `s` / `m` size for the whole Trace (controls text, padding, and image box).\n' +
     '- **labelPosition** — `gutter` / `inline` / `none`. In `none`, only badges with `visibleIn` ' +
-    "including `'none'` (the JS icon and `200` status here) render, in a compact badge-only gutter.\n" +
+    "including `'none'` render, in a compact badge-only gutter. Each lane opts one representative " +
+    'badge into `none` here (e.g. the JS icon and `200` status on the root, `postgresql`, `MISS`, ' +
+    'the `primary` color chip, and `authentication`), so every lane still surfaces a badge.\n' +
     '- **colors** — the `Color palette` lane shows the six named colors ' +
     '(`default`, `hollow`, `primary`, `success`, `warning`, `danger`).\n' +
     '- **images** — the JS icon and the image-only `Redis cache` badge load inline-SVG data URLs. ' +

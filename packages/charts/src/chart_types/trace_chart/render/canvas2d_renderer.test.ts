@@ -162,6 +162,27 @@ describe('draw — canvas cleared and time bar delegated', () => {
     );
   });
 
+  it("clears the full canvas width when a 'none'-mode badge gutter shifts plot.left past gutter.width", () => {
+    // In 'none' mode the badge-only gutter (Spec 27) widens the fixed left region: plot.left moves
+    // right of gutter.width. The clear must cover `plot.left + plot.width` (the true canvas width),
+    // not `gutter.width + plot.width`, or the rightmost badge-gutter-wide strip is never cleared and
+    // time-bar gridlines accumulate there across zoom/pan.
+    const BADGE_GUTTER = 40;
+    const ctx = makeCtx();
+    const geom = makeGeom({
+      gutter: { top: 0, left: 0, width: PLOT_LEFT - BADGE_GUTTER, height: PLOT_TOP + PLOT_HEIGHT },
+    });
+    draw(ctx, geom, style);
+    expect(ctx.clearRect).toHaveBeenCalledWith(0, 0, PLOT_LEFT + PLOT_WIDTH, PLOT_TOP + PLOT_HEIGHT);
+    // Guard against the regression: the narrower width must not be used.
+    expect(ctx.clearRect).not.toHaveBeenCalledWith(
+      0,
+      0,
+      PLOT_LEFT - BADGE_GUTTER + PLOT_WIDTH,
+      PLOT_TOP + PLOT_HEIGHT,
+    );
+  });
+
   it('delegates time bar rendering to drawTimeBar', () => {
     const ctx = makeCtx();
     const geom = makeGeom();
