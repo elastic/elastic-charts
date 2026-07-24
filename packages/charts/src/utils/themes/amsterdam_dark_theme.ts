@@ -443,7 +443,7 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     barBackground: '#343741',
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
-    minHeight: 64,
+    minHeight: 80,
     titleWeight: 500,
   },
   bulletGraph: {
