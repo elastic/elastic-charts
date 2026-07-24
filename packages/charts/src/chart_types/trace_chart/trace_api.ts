@@ -1,0 +1,850 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+import type { ReactNode } from 'react';
+
+import type { TraceDataDiagnostics } from './data/diagnostics';
+import { anyValueToString } from './data/otel_adapter';
+import { ChartType } from '..';
+import type { Color } from '../../common/colors';
+import type { Spec } from '../../specs/spec_type';
+import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { SFProps } from '../../state/spec_factory';
+import { buildSFProps, useSpecFactory } from '../../state/spec_factory';
+import { stripUndefined } from '../../utils/common';
+
+// Re-export the OTel adapter so consumers don't need a separate import path.
+// Import for local use in colorByOtelAttribute; also re-exported below for consumers.
+export type { OtelInput, OtelSpan, OtlpEnvelope } from './data/otel_adapter';
+
+// Re-export the public Trace data diagnostics types (Spec 28) so consumers of `onDataDiagnosticsChange`
+// have a single import path. Picked up by the `export *` in src/index.ts.
+export type {
+  TraceDataDiagnostics,
+  TraceDataDiagnosticIssue,
+  TraceDataDiagnosticKind,
+  TraceDataDiagnosticSeverity,
+  TraceDataDiagnosticScope,
+} from './data/diagnostics';
+
+/**
+ * Imperative control callbacks handed to the caller via `controlProviderCallback`.
+ * Re-calling `scrollToSpan` with the same id re-triggers (no prop-diffing guard).
+ * @public
+ */
+export interface TraceControlCallbacks {
+  /**
+   * Scroll the lane for the span with the given id into view (centered) and highlight it.
+   * Does NOT move DOM keyboard focus (no focus-steal). Unknown id → dev-warn, no-op.
+   * Imperative: re-calling with the same id re-triggers the scroll.
+   */
+  scrollToSpan: (id: string) => void;
+}
+
+/**
+ * Shaped to match the OtelSpan fields read by the color-by helpers. Defined locally to avoid
+ * a type-import cycle between trace_api ↔ otel_adapter.
+ * @internal
+ */
+type SpanMeta = {
+  attributes?: { key: string; value: unknown }[];
+  resource?: { attributes?: { key: string; value: unknown }[] };
+  kind?: number;
+};
+
+/**
+ * Derives the color-group key for a span's active segments. Return `undefined` to fall through
+ * to the themed default color. Two spans that return the same string receive the same palette color.
+ *
+ * Pass a **stable reference** (module-level const or memoized value) — a fresh function on every
+ * render would rebuild the color map on every pipeline pass.
+ * @public
+ */
+export type TraceColorAccessor = (datum: TraceDatum) => string | undefined;
+
+/**
+ * A single active-execution segment within a span.
+ *
+ * Segments sharing the same `label` are assigned the same palette color (cyclic index into
+ * `theme.colors.vizColors`) and the label is shown in the tooltip as
+ * "Active segment: <label> (i of n)". An explicit `color` wins over the label-derived palette
+ * color, the span-level `TraceDatum.color`, and the themed `activeSegmentColor` default.
+ * @public
+ */
+export interface TraceActiveSegment {
+  start: number;
+  end: number;
+  /**
+   * Phase name (e.g. `'loading'`, `'process'`, `'final'`). All segments with the same label
+   * across every span receive the same palette color. Shows in the tooltip as
+   * "Active segment: <label>".
+   */
+  label?: string;
+  /**
+   * Explicit per-segment color override. Wins over the label-derived palette color, the
+   * span-level `TraceDatum.color`, and the themed `activeSegmentColor` default.
+   */
+  color?: Color;
+}
+
+/**
+ * A single span in the Trace chart input.
+ * @public
+ */
+export interface TraceDatum {
+  /**
+   * Span identifier. Must be unique across the complete `data` array supplied to one Trace chart,
+   * including combined multi-trace datasets.
+   */
+  id: string;
+  name: string;
+  parentId?: string;
+  traceId?: string;
+  start: number;
+  end: number;
+  /**
+   * Explicit active-execution segments for this span (the solid marks drawn inside the total-duration
+   * line). When omitted, defaults to the span's self time — its `[start, end]` extent minus the union
+   * of its direct children's extents (see ADR 0003). When supplied, the values are taken verbatim.
+   *
+   * Each segment may carry an optional `label` (phase name) and an optional `color` override; see
+   * {@link TraceActiveSegment} for precedence rules.
+   */
+  activeSegments?: TraceActiveSegment[];
+  color?: Color;
+  /**
+   * Arbitrary per-span payload passed through unchanged to tooltip `datum` and element-event
+   * callbacks. Use this to carry source-specific data (e.g. OTel `attributes`/`status` when the
+   * data was produced by {@link fromOtlp}) without modifying the `TraceDatum` structure.
+   */
+  meta?: unknown;
+}
+
+/**
+ * Identity of one selected segment (thin — used in the controlled `selection` prop).
+ * @public
+ */
+export interface TraceSegmentRef {
+  spanId: string;
+  /** `'span'` = whole span selected (double-click). `'active'` | `'waiting'` = one segment. */
+  region: 'span' | 'active' | 'waiting';
+  /** 0-based index into `span.activeSegments` or `waitingSegments(span)`. -1 when `region === 'span'`. */
+  segmentIndex: number;
+}
+
+/** Array of selected refs. Empty array = nothing selected. @public */
+export type TraceSelection = TraceSegmentRef[];
+
+/**
+ * Rich per-entry detail fired via `onSelectionChange`. Carries all tooltip-equivalent data so
+ * consumers don't need to re-derive durations. See ADR 0011 Decision 3.
+ * @public
+ */
+export interface TraceSelectionDetail {
+  spanId: string;
+  name: string;
+  parentId?: string;
+  traceId?: string;
+  /** Span start, rezeroed in `'linear'` mode. */
+  start: number;
+  /** Span end, same caveat. */
+  end: number;
+  duration: number;
+  selfTime: number;
+  /** Present when the reported timing fields were adjusted to correct detected clock skew. */
+  skewCorrected?: true;
+  /**
+   * Present when this span's recorded parent is absent from its selected trace data (a partial
+   * trace). `parentId` still reports the recorded (missing) parent. See Spec 26 / ADR 0028.
+   */
+  orphaned?: true;
+  /**
+   * The synthetic display parent this orphan was placed under (its trace group's elected root).
+   * Absent when the orphan is itself used as the display root. `parentId` remains the recorded value.
+   */
+  reparentedToSpanId?: string;
+  datum: TraceDatum;
+  region: 'span' | 'active' | 'waiting';
+  segmentIndex: number;
+  /** Present when `region !== 'span'`. */
+  segmentStart?: number;
+  segmentEnd?: number;
+  segmentDuration?: number;
+  /** Offset of the segment's start from the trace domain start, in ms. */
+  segmentOffset?: number;
+}
+
+/**
+ * One interval-precise portion of the critical path within a span. May cover only a sub-range of
+ * the span's `[start, end]` extent (including waiting time). Times are in the same units as
+ * {@link TraceDatum} `start`/`end` (pre-normalization).
+ * @public
+ */
+export interface TraceCriticalInterval {
+  spanId: string;
+  start: number;
+  end: number;
+}
+
+/**
+ * Array of critical-path intervals. Empty array or omitted `criticalPath` prop → nothing drawn.
+ * @public
+ */
+export type TraceCriticalPath = TraceCriticalInterval[];
+
+/**
+ * Shared size token for every Span badge in a Trace. Controls the badge's text, padding, height,
+ * and image box as one design unit; individual badges cannot select a different size (Spec 27).
+ * @public
+ */
+export type TraceSpanBadgeSize = 's' | 'm';
+
+/**
+ * A Span badge color: one EUI-like named color or a custom Charts {@link Color}. Charts derives
+ * readable text contrast and any necessary border consistently across the derived color.
+ * @public
+ */
+export type TraceSpanBadgeColor = 'default' | 'hollow' | 'primary' | 'success' | 'warning' | 'danger' | Color;
+
+/**
+ * A CORS-safe image source for a Span badge, including SVG icons supplied as image sources
+ * (e.g. an inline-SVG data URL). Charts never draws an unsafe cross-origin image that would taint
+ * the chart canvas.
+ * @public
+ */
+export interface TraceSpanBadgeImage {
+  /** Any normal browser-supported image URL string, including data URLs. */
+  src: string;
+  /**
+   * CORS mode applied when loading the image, matching the DOM `crossOrigin` attribute.
+   * @defaultValue 'anonymous'
+   */
+  crossOrigin?: 'anonymous' | 'use-credentials';
+}
+
+/**
+ * A structured adornment derived from one span. A badge must contain text, an image, or both;
+ * badges are inert data (they never carry event-handler functions — interaction handlers live on
+ * the {@link TraceSpec}). See Spec 27.
+ * @public
+ */
+export interface TraceSpanBadge {
+  /**
+   * Stable identity, unique within the owning span. Event identity is the pair of owning span id
+   * and badge id, not a globally unique badge id.
+   */
+  id: string;
+  /**
+   * Badge text. Consumers format numbers, durations, and statuses to strings before returning
+   * badges. Whitespace-only text is treated as absent.
+   */
+  text?: string;
+  /** Optional image; when a badge has both image and text, the image always precedes the text. */
+  image?: TraceSpanBadgeImage;
+  /** Badge color; defaults to the themed `'default'` treatment when omitted. */
+  color?: TraceSpanBadgeColor;
+  /**
+   * Accessible name override. Defaults to the visible badge text; required for an image-only badge
+   * (an image-only badge without `ariaLabel` is reported through diagnostics but still renders).
+   */
+  ariaLabel?: string;
+  /**
+   * The Label positions in which this badge participates.
+   * @defaultValue ['gutter', 'inline']
+   */
+  visibleIn?: readonly ('gutter' | 'inline' | 'none')[];
+  /**
+   * Opaque consumer metadata returned by reference in {@link TraceSpanBadgeEvent}. Charts never
+   * inspects, clones, serializes, diffs, or validates this payload.
+   */
+  meta?: unknown;
+}
+
+/**
+ * Derives the ordered, readonly Span badges associated with one source `TraceDatum`. Evaluated as
+ * part of preparing trace data, not per animation frame. Pass a **stable reference** (module-level
+ * const or memoized value).
+ * @public
+ */
+export type TraceSpanBadgeAccessor = (datum: TraceDatum) => readonly TraceSpanBadge[];
+
+/**
+ * The owning-span metadata reported alongside a Span badge in {@link TraceSpanBadgeEvent}. Mirrors
+ * the span fields of a trace element event so consumers get span-level context without a second lookup.
+ * @public
+ */
+export interface TraceSpanBadgeEventSpan {
+  id: string;
+  name: string;
+  parentId?: string;
+  traceId?: string;
+  /** Span start in ms (elapsed-from-zero in `'linear'` mode). */
+  start: number;
+  /** Span end in ms (same rezeroing caveat as `start`). */
+  end: number;
+  /** `end - start`. */
+  duration: number;
+  /** Sum of active-segment durations (self time, per ADR 0003). */
+  selfTime: number;
+  /** Present when the reported timing fields were adjusted to correct detected clock skew. */
+  skewCorrected?: true;
+  /** Present when this span's recorded parent is absent from its selected trace data (Spec 26). */
+  orphaned?: true;
+  /** The synthetic display parent this orphan was placed under, when applicable. */
+  reparentedToSpanId?: string;
+  /** The original `TraceDatum`. */
+  datum: TraceDatum;
+}
+
+/**
+ * Reports the resolved Span badge and its owning span metadata. Source-discriminated: pointer-origin
+ * events include chart-relative coordinates; keyboard-origin activation events do not synthesize
+ * coordinates. Raw native DOM events are not exposed in v1. See Spec 27.
+ * @public
+ */
+export type TraceSpanBadgeEvent =
+  | {
+      /** Pointer-origin transition or activation. */
+      source: 'pointer';
+      /** The resolved badge, including its `meta`, returned by reference. */
+      badge: TraceSpanBadge;
+      /** The owning span's metadata. */
+      span: TraceSpanBadgeEventSpan;
+      /** Chart-relative x coordinate in px (pointer source only). */
+      chartX: number;
+      /** Chart-relative y coordinate in px (pointer source only). */
+      chartY: number;
+    }
+  | {
+      /** Keyboard-origin activation (no synthesized coordinates). */
+      source: 'keyboard';
+      badge: TraceSpanBadge;
+      span: TraceSpanBadgeEventSpan;
+    };
+
+/**
+ * Discriminates the three Trace annotation kinds. `'time'` marks an x-scale position/range;
+ * `'lane'` marks one resolved span lane; `'hierarchy'` marks the visible root-to-target route for one
+ * resolved span. Reported on {@link TraceAnnotationEvent} so a single handler family can branch by kind.
+ * @public
+ */
+export type TraceAnnotationType = 'time' | 'lane' | 'hierarchy';
+
+/**
+ * A Trace annotation color: one EUI-like named color or a custom Charts {@link Color}. Charts derives
+ * stroke, fill, opacity, hover, and contrast treatment consistently from the color intent (Spec 29).
+ * @public
+ */
+export type TraceAnnotationColor = 'default' | 'primary' | 'success' | 'warning' | 'danger' | Color;
+
+/**
+ * Structured annotation identity, metadata, style intent, and accessibility fields shared by every
+ * Trace annotation kind. Positional fields (`time`/`range` for time annotations, `spanId` for
+ * lane/hierarchy annotations) live on the individual annotation child specs. Annotations are inert
+ * data — they never carry event-handler functions; interaction handlers live on the {@link TraceSpec}.
+ * See Spec 29.
+ * @public
+ */
+export type TraceAnnotationDatum = {
+  /** Stable identity, unique across all Trace annotation child specs in one chart. */
+  id: string;
+  /** When `true`, the annotation is not rendered, hit tested, or exposed. Defaults to visible. */
+  hidden?: boolean;
+  /** Annotation color intent; defaults to the themed `'default'` treatment when omitted. */
+  color?: TraceAnnotationColor;
+  /**
+   * Accessible name. Required by contract; an annotation without an accessible name is reported
+   * through diagnostics but still renders and stays interactive using a generic generated name.
+   */
+  ariaLabel?: string;
+  /**
+   * Opaque consumer metadata returned by reference in {@link TraceAnnotationEvent}. Charts never
+   * inspects, clones, serializes, diffs, or validates this payload.
+   */
+  meta?: unknown;
+};
+
+/**
+ * Internal stored spec base for a Trace annotation child spec.
+ * @internal
+ */
+export interface TraceAnnotationSpecBase extends Spec, TraceAnnotationDatum {
+  chartType: typeof ChartType.Trace;
+  specType: typeof SpecType.Annotation;
+  annotationKind: TraceAnnotationType;
+}
+
+/**
+ * Where a {@link TraceTimeAnnotation} is anchored (Spec 29):
+ * - `'timebar'` — a marker in the time bar plus a faint full-height guide line down the plot (a range
+ *   also draws a band across the time bar). Mirrors the Kibana APM waterfall marker. The default.
+ * - `'plot'` — a solid full-height rail across the plot (a range fills a tinted plot band with edge
+ *   rails). The "spans the whole chart vertically" treatment.
+ *
+ * Lane and hierarchy annotations are always plot-anchored; placement applies to time annotations only.
+ * @public
+ */
+export type TraceTimeAnnotationPlacement = 'plot' | 'timebar';
+
+/**
+ * Stored spec for {@link TraceTimeAnnotation}. A time annotation supplies either `time` or `range`,
+ * never both (enforced at author time by {@link TraceTimeAnnotationProps}; a runtime violation is
+ * reported as an invalid-time diagnostic).
+ * @internal
+ */
+export interface TraceTimeAnnotationSpec extends TraceAnnotationSpecBase {
+  annotationKind: 'time';
+  /** Single x-scale timestamp (same units as {@link TraceDatum} `start`/`end`). */
+  time?: number;
+  /** Inclusive x-scale range `[from, to]` (same units as {@link TraceDatum} `start`/`end`). */
+  range?: [number, number];
+  /** Anchor placement; defaults to `'timebar'`. See {@link TraceTimeAnnotationPlacement}. */
+  placement?: TraceTimeAnnotationPlacement;
+}
+
+/**
+ * Stored spec for {@link TraceLaneAnnotation}.
+ * @internal
+ */
+export interface TraceLaneAnnotationSpec extends TraceAnnotationSpecBase {
+  annotationKind: 'lane';
+  /** The target span id (lane annotations target spans by id, never by lane index). */
+  spanId: string;
+}
+
+/**
+ * Stored spec for {@link TraceHierarchyAnnotation}.
+ * @internal
+ */
+export interface TraceHierarchyAnnotationSpec extends TraceAnnotationSpecBase {
+  annotationKind: 'hierarchy';
+  /** The target span id whose visible root-to-target route is marked. */
+  spanId: string;
+}
+
+/**
+ * Discriminated union of the three stored Trace annotation specs.
+ * @internal
+ */
+export type TraceAnnotationSpec = TraceTimeAnnotationSpec | TraceLaneAnnotationSpec | TraceHierarchyAnnotationSpec;
+
+/**
+ * Reports a resolved Trace annotation and, when applicable, its related span metadata (lane and
+ * hierarchy annotations). Source-discriminated: pointer-origin events include chart-relative
+ * coordinates; keyboard-origin activation events do not synthesize coordinates. Raw native DOM events
+ * are not exposed in v1. Carries a `type` discriminator so one handler family covers all kinds. See
+ * Spec 29.
+ * @public
+ */
+export type TraceAnnotationEvent =
+  | {
+      /** Pointer-origin transition or activation. */
+      source: 'pointer';
+      /** The annotation kind. */
+      type: TraceAnnotationType;
+      /** The resolved annotation, including its `meta`, returned by reference. */
+      annotation: TraceAnnotationDatum;
+      /** Related span metadata for `'lane'` / `'hierarchy'` annotations; absent for `'time'`. */
+      span?: TraceSpanBadgeEventSpan;
+      /** Chart-relative x coordinate in px (pointer source only). */
+      chartX: number;
+      /** Chart-relative y coordinate in px (pointer source only). */
+      chartY: number;
+    }
+  | {
+      /** Keyboard-origin activation (no synthesized coordinates). */
+      source: 'keyboard';
+      type: TraceAnnotationType;
+      annotation: TraceAnnotationDatum;
+      span?: TraceSpanBadgeEventSpan;
+    };
+
+/**
+ * Spec for the Trace chart. Add one `<Trace>` inside a `<Chart>` to render a waterfall visualization.
+ * @public
+ */
+export interface TraceSpec extends Spec {
+  specType: typeof SpecType.Series;
+  chartType: typeof ChartType.Trace;
+  /** Span data. Each element occupies exactly one lane in the waterfall. */
+  data: TraceDatum[];
+  /**
+   * Controls the x-axis scale and domain-origin semantics:
+   * - `'time'`: absolute epoch-ms; tick labels show wall-clock time.
+   * - `'linear'`: elapsed-from-zero (domain rezeroed to the earliest span start); tick labels show elapsed duration.
+   *
+   * Both modes store domain values in milliseconds and share the same 1 ms minimum-visible-extent
+   * floor. When using `'time'`, ensure your `start`/`end` values are epoch-millisecond timestamps
+   * (e.g. `Date.now()`); small elapsed-ms values are interpreted as 1970-01-01 dates. Use `fromOtlp`
+   * (which converts OTLP nanoseconds to epoch-ms) or add your own epoch offset.
+   * @defaultValue 'time'
+   */
+  xScaleType: 'time' | 'linear';
+  /**
+   * When set, only spans whose `traceId` matches this value are rendered. When omitted, all spans in
+   * `data` are rendered as one combined waterfall (one lane per span, interleaved by start time).
+   * An informational dev-mode warning is logged when spans from more than one trace are present and
+   * `traceId` is not set.
+   */
+  traceId?: string;
+  /**
+   * Message drawn centered on the canvas when `traceId` is set but matches no spans
+   * (the trace-not-found empty state). The time bar and axis still render around it.
+   *
+   * Note: this is a plain string, not a ReactNode — it is drawn directly on the canvas.
+   * `Settings.noResults` (which handles the separate no-data empty state) does not apply here.
+   * @defaultValue 'No spans found for trace "<traceId>"'
+   */
+  traceNotFoundMessage?: string;
+  /**
+   * When `true`, the tooltip also appears while hovering the empty region of a lane
+   * (past the span's `[start, end]` extent). The span, not the whole lane, is the
+   * hover target when this is false.
+   * @defaultValue false
+   */
+  showTooltipOverEmpty?: boolean;
+  /**
+   * Derives the color-group key for each span's active segments. Two spans that return the same
+   * key receive the same palette color (cyclic index into `theme.colors.vizColors`). Return
+   * `undefined` to fall through to the themed `activeSegmentColor` default.
+   *
+   * Use the built-in helpers {@link colorByOtelAttribute} or {@link colorByOtelKind} for OTel data,
+   * or supply a custom function. Pass a **module-level or memoized reference** — a fresh arrow per
+   * render will rebuild the color map on every pipeline pass.
+   *
+   * Precedence per span: explicit `TraceDatum.color` \> color-group color \> themed default.
+   */
+  colorBy?: TraceColorAccessor;
+  /**
+   * Controls the order in which spans are assigned to lanes (top → bottom).
+   *
+   * - `'tree'` (**default**): depth-first `parentId` nesting — each parent is immediately followed
+   *   by its descendants, recursively; siblings and roots are ordered by `start` ascending.
+   *   Matches the Kibana APM trace view. In multi-trace mode (no `traceId` filter) this produces
+   *   a forest: each subtree is grouped together rather than interleaved.
+   * - `'chronological'`: ascending by span `start` (Chrome DevTools Network panel style). Use this
+   *   when the trace has no meaningful nesting or when start-time ordering is the primary concern.
+   *
+   * See [ADR 0018](../../../../../../../docs/adr/trace-viz/0018-lane-ordering-tree-default.md).
+   * @defaultValue 'tree'
+   */
+  laneOrder?: 'tree' | 'chronological';
+  /**
+   * Controls which gesture triggers the brush-to-zoom rubber-band.
+   * - `'pan'`: plain drag pans; `Shift`+drag draws the brush.
+   * - `'brush'`: plain drag draws the brush; `Shift`+drag pans.
+   * @defaultValue 'pan'
+   */
+  dragMode?: 'pan' | 'brush';
+  /**
+   * When `true` (default), a small "keyboard active" badge appears in the top-left corner of the
+   * chart while the canvas has keyboard focus, giving sighted users a WCAG 2.4.7 focus-visible cue.
+   * Set to `false` to suppress the badge, e.g. in design mockups or when a custom focus indicator
+   * is provided externally.
+   * @defaultValue true
+   */
+  showKeyboardFocusBadge?: boolean;
+  /**
+   * Controlled selection. When supplied, this is the render source of truth; gestures still execute
+   * and fire `onSelectionChange` — the parent decides whether to update the prop (perform-and-fire,
+   * same model as `focusDomain`/ADR 0007). When omitted, the component manages selection internally.
+   */
+  selection?: TraceSelection;
+  /**
+   * Called once per completed gesture with the new thin `next` refs and rich `details`. Fires on
+   * single-click (after the ~250 ms debounce), double-click, keyboard Enter/Space, and Escape.
+   * Suppressed when the resulting set is identity-equal to the previous fire (no-op echo guard).
+   */
+  onSelectionChange?: (next: TraceSelection, details: TraceSelectionDetail[]) => void;
+  /**
+   * Controlled collapse state: array of span IDs whose descendant lanes are hidden. When supplied,
+   * this is the render source of truth; caret clicks and the `c` keyboard shortcut still execute
+   * and fire `onCollapseChange` — the parent decides whether to update the prop (perform-and-fire,
+   * same model as `focusDomain`/ADR 0007 and `selection`/ADR 0011). When omitted, the component
+   * manages collapse state internally (uncontrolled). Only active when `laneOrder === 'tree'`
+   * (the default); ignored with a dev-mode warning when in `'chronological'` mode. See ADR 0026.
+   * @public
+   */
+  collapsedSpanIds?: string[];
+  /**
+   * Called when a caret click or `c` keypress changes the collapsed set. `next` is the new array
+   * of collapsed span IDs after the toggle. Suppressed when the set is identity-equal to the
+   * previous fire (no-op echo guard). See ADR 0026.
+   * @public
+   */
+  onCollapseChange?: (next: string[]) => void;
+  /**
+   * Consumer-supplied critical-path intervals. Each marks an interval-precise portion of a span
+   * that lay on the trace's critical path; rendered as a colored line along the bottom edge of the
+   * affected lane. An interval may cover only a sub-range of the span's `[start, end]` extent
+   * (including waiting regions). The presence of this prop is the on/off toggle — supply it to draw
+   * the line; omit it or pass `[]` to draw nothing. The chart never computes the critical path.
+   *
+   * Times must be in the same units as {@link TraceDatum} `start`/`end`. In `'linear'` x-scale mode
+   * the chart re-zeros them internally alongside segment timestamps — supply raw pre-normalization
+   * values. When a parent lane is collapsed, its descendants' intervals roll up onto the parent lane
+   * (mirroring rolled-up active segments — see ADR 0015 Decision 4 and ADR 0026).
+   * @public
+   */
+  criticalPath?: TraceCriticalPath;
+  /**
+   * Controlled visible time window `[from, to]` in the chart's internal coordinates:
+   * - `'time'` x-scale: epoch-ms (same as `TraceDatum.start`/`end`).
+   * - `'linear'` x-scale: elapsed-from-zero-ms (`normalize()` re-zeros the domain to `[0, totalMs]`).
+   *
+   * Perform-and-fire (ADR 0007): local gestures (wheel-zoom, drag-pan, brush) still execute and fire
+   * `onFocusDomainChange` even when this prop is supplied — the parent decides whether to update the
+   * prop. Change the **value** to re-drive the window; re-passing an identical value after a local
+   * gesture is a no-op (does not force-restore the window). Uncontrolled when omitted.
+   *
+   * Pass a **stable or memoized reference** (same value → same object if possible) to avoid unnecessary
+   * change-detection overhead, though value comparison (`[0]`/`[1]`) makes inline literals safe.
+   */
+  focusDomain?: [number, number];
+  /**
+   * Called at RAF-loop stop with the settled visible window `[from, to]` (same coordinate space as
+   * `focusDomain`) whenever the window changes more than `epsilon = 0.001` of the visible extent.
+   * Covers all gesture sources (wheel-zoom, drag-pan, brush) and prop-driven view changes. Fires once
+   * on the initial mount fit-all settle and on each scale/traceId view reset.
+   *
+   * Echo-suppressed (ADR 0007): feeding the emitted domain back as `focusDomain` does not re-arm the
+   * loop. Update `lastFiredDomain` before invoking (re-entrant-safe).
+   */
+  onFocusDomainChange?: (domain: [number, number]) => void;
+  /**
+   * Imperative control registration (ADR 0008). When supplied, called on mount and whenever this
+   * prop's reference changes, with the chart's live `TraceControlCallbacks`. Store the received
+   * callbacks object and call its methods to drive the chart programmatically (e.g. scroll a span
+   * into view from an external search box).
+   *
+   * The callback must be idempotent — it is called on every re-registration (prop reference change).
+   */
+  controlProviderCallback?: (callbacks: TraceControlCallbacks) => void;
+  /**
+   * Derives the ordered {@link TraceSpanBadge}s for each span from its source `TraceDatum`. Evaluated
+   * while preparing trace data (not per animation frame), so pass a **stable or memoized reference**.
+   * Span badges are application presentation derived from a span; they do not modify the source
+   * `TraceDatum` or data produced by {@link fromOtlp}. See Spec 27.
+   */
+  badgeAccessor?: TraceSpanBadgeAccessor;
+  /**
+   * One shared size for every Span badge in the Trace. Controls each badge's text, padding, height,
+   * and image box as one design unit; individual badges cannot select a different size.
+   * @defaultValue 'm'
+   */
+  badgeSize?: TraceSpanBadgeSize;
+  /** Reports pointer entry for a Span badge. Optional and independent of `onBadgeClick`. */
+  onBadgeOver?: (event: TraceSpanBadgeEvent) => void;
+  /** Reports pointer exit for a Span badge. Optional and independent of `onBadgeClick`. */
+  onBadgeOut?: (event: TraceSpanBadgeEvent) => void;
+  /**
+   * Reports activation of a Span badge (pointer down+up on the same badge, or keyboard activation).
+   * When supplied, badges become interactive: pointer targets use an interactive cursor and the badge
+   * is exposed as a keyboard-activatable control in the screen-reader surface.
+   */
+  onBadgeClick?: (event: TraceSpanBadgeEvent) => void;
+  /**
+   * Called with a structured {@link TraceDataDiagnostics} report describing malformed, corrected,
+   * omitted, or invalid trace input found while preparing the visible output (Spec 28). This is the
+   * application-facing channel that supersedes developer-console warnings for these conditions.
+   *
+   * Data-change driven: fires from the render pipeline only when the prepared data or spec changes
+   * the report's content, not on every animation frame and never as a render-phase side effect.
+   * Content-guarded like `onFocusDomainChange`/`onSelectionChange` — an unchanged report is not
+   * re-emitted. An empty report (`{ issues: [] }`) is emitted once for clean, non-empty prepared
+   * data so consumers can clear stale diagnostics UI. The separate no-data empty state (`data: []`)
+   * does not emit (the canvas is unmounted).
+   */
+  onDataDiagnosticsChange?: (diagnostics: TraceDataDiagnostics) => void;
+  /** Reports pointer entry for an interactive Trace annotation. Optional and independent of the others. */
+  onAnnotationOver?: (event: TraceAnnotationEvent) => void;
+  /** Reports pointer exit for an interactive Trace annotation. Optional and independent of the others. */
+  onAnnotationOut?: (event: TraceAnnotationEvent) => void;
+  /**
+   * Reports activation of a Trace annotation (pointer down+up on the same annotation, or keyboard
+   * activation). When supplied, annotations become interactive: pointer targets use an interactive
+   * cursor and the annotation is exposed as a keyboard-activatable control in the screen-reader surface.
+   */
+  onAnnotationClick?: (event: TraceAnnotationEvent) => void;
+}
+
+const buildProps = buildSFProps<TraceSpec>()(
+  {
+    chartType: ChartType.Trace,
+    specType: SpecType.Series,
+  },
+  {
+    xScaleType: 'time',
+  },
+);
+
+/**
+ * Adds a trace spec to the chart. Place inside a `<Chart>` component.
+ *
+ * ```tsx
+ * <Chart>
+ *   <Settings baseTheme={theme} />
+ *   <Trace id="my-trace" data={spans} xScaleType="linear" />
+ * </Chart>
+ * ```
+ *
+ * For OpenTelemetry data, convert first with {@link fromOtlp}:
+ * ```tsx
+ * <Trace id="my-trace" data={fromOtlp(otlpEnvelope)} xScaleType="time" />
+ * ```
+ * @public
+ */
+export const Trace = (
+  props: SFProps<
+    TraceSpec,
+    keyof (typeof buildProps)['overrides'],
+    keyof (typeof buildProps)['defaults'],
+    keyof (typeof buildProps)['optionals'],
+    keyof (typeof buildProps)['requires']
+  > & {
+    /**
+     * Composed Trace annotation child specs (Spec 29): {@link TraceTimeAnnotation},
+     * {@link TraceLaneAnnotation}, {@link TraceHierarchyAnnotation}. Rendered so the child specs
+     * self-register; `children` never becomes part of the stored Trace spec.
+     */
+    children?: ReactNode;
+  },
+) => {
+  const { defaults, overrides } = buildProps;
+  // Keep React children out of the stored spec: useSpecFactory spreads the whole props object into
+  // Redux on every render, so the annotation child nodes must be split off first (Spec 29).
+  const { children, ...specProps } = props;
+  useSpecFactory<TraceSpec>({ ...defaults, ...stripUndefined(specProps), ...overrides });
+  return children ?? null;
+};
+
+const timeAnnotationDefaults = { hidden: false as boolean, placement: 'timebar' as TraceTimeAnnotationPlacement };
+const laneAnnotationDefaults = { hidden: false as boolean };
+
+/**
+ * Author-time props for {@link TraceTimeAnnotation}. Supplies either `time` (a point) or `range`
+ * (a span), never both — the union forbids expressing both at once.
+ * @public
+ */
+export type TraceTimeAnnotationProps = TraceAnnotationDatum & {
+  /** Anchor placement; defaults to `'timebar'`. See {@link TraceTimeAnnotationPlacement}. */
+  placement?: TraceTimeAnnotationPlacement;
+} & ({ time: number; range?: undefined } | { range: [number, number]; time?: undefined });
+
+/**
+ * Author-time props for {@link TraceLaneAnnotation} / {@link TraceHierarchyAnnotation}.
+ * @public
+ */
+export type TraceSpanAnnotationProps = TraceAnnotationDatum & {
+  /** The target span id (annotations target spans by id, never by lane index). */
+  spanId: string;
+};
+
+/**
+ * Marks a timestamp or time range on the Trace x-scale. Compose as a child of `<Trace>` (Spec 29):
+ *
+ * ```tsx
+ * <Trace data={data} xScaleType="linear">
+ *   <TraceTimeAnnotation id="deploy" time={deployTime} ariaLabel="Deploy" />
+ * </Trace>
+ * ```
+ * @public
+ */
+export const TraceTimeAnnotation = (props: TraceTimeAnnotationProps) => {
+  useSpecFactory<TraceTimeAnnotationSpec>({
+    ...timeAnnotationDefaults,
+    ...stripUndefined(props),
+    chartType: ChartType.Trace,
+    specType: SpecType.Annotation,
+    annotationKind: 'time',
+  });
+  return null;
+};
+
+/**
+ * Marks one resolved span lane with a boundary rail between the gutter and the span drawing area.
+ * Targets the span by `spanId`. Compose as a child of `<Trace>` (Spec 29).
+ * @public
+ */
+export const TraceLaneAnnotation = (props: TraceSpanAnnotationProps) => {
+  useSpecFactory<TraceLaneAnnotationSpec>({
+    ...laneAnnotationDefaults,
+    ...stripUndefined(props),
+    chartType: ChartType.Trace,
+    specType: SpecType.Annotation,
+    annotationKind: 'lane',
+  });
+  return null;
+};
+
+/**
+ * Marks the visible root-to-target ancestry route for one resolved span with a segmented boundary
+ * rail. Targets the span by `spanId`. Compose as a child of `<Trace>` (Spec 29).
+ * @public
+ */
+export const TraceHierarchyAnnotation = (props: TraceSpanAnnotationProps) => {
+  useSpecFactory<TraceHierarchyAnnotationSpec>({
+    ...laneAnnotationDefaults,
+    ...stripUndefined(props),
+    chartType: ChartType.Trace,
+    specType: SpecType.Annotation,
+    annotationKind: 'hierarchy',
+  });
+  return null;
+};
+
+/**
+ * Returns a {@link TraceColorAccessor} that reads the given OTel attribute from each span.
+ *
+ * **Lookup precedence (span-level wins):** checks the span's own `attributes` first; if the key
+ * is absent there, falls back to the span's resource `attributes` (where OTel resource-level
+ * attributes such as `service.name` live after a {@link fromOtlp} conversion). Returns `undefined`
+ * when the attribute is absent from both.
+ *
+ * Intended for use with data produced by {@link fromOtlp}. Assign the returned function to a
+ * **module-level or memoized const** — a fresh call per render rebuilds the color map needlessly.
+ *
+ * ```ts
+ * const BY_SERVICE = colorByOtelAttribute('service.name');
+ * <Trace data={data} colorBy={BY_SERVICE} />
+ * ```
+ * @public
+ */
+export function colorByOtelAttribute(attribute: string): TraceColorAccessor {
+  return (datum: TraceDatum): string | undefined => {
+    const span = datum.meta as SpanMeta | undefined;
+    if (span === undefined || span === null) return undefined;
+    const spanAttr = span.attributes?.find((a) => a.key === attribute);
+    if (spanAttr !== undefined) return anyValueToString(spanAttr.value);
+    const resourceAttr = span.resource?.attributes?.find((a) => a.key === attribute);
+    if (resourceAttr !== undefined) return anyValueToString(resourceAttr.value);
+    return undefined;
+  };
+}
+
+/**
+ * Returns a {@link TraceColorAccessor} that groups spans by OTel span kind.
+ *
+ * Returns `String(span.kind)` when `kind` is present on the span; `undefined` otherwise (falls
+ * through to the themed default). Intended for use with data produced by {@link fromOtlp}.
+ *
+ * Assign the returned function to a **module-level or memoized const**:
+ * ```ts
+ * const BY_KIND = colorByOtelKind();
+ * <Trace data={data} colorBy={BY_KIND} />
+ * ```
+ * @public
+ */
+export function colorByOtelKind(): TraceColorAccessor {
+  return (datum: TraceDatum): string | undefined => {
+    const span = datum.meta as SpanMeta | undefined;
+    return span?.kind !== null && span?.kind !== undefined ? String(span.kind) : undefined;
+  };
+}
+
+export { anyValueToString, fromOtlp } from './data/otel_adapter';

@@ -16,6 +16,7 @@ import {
   LEGACY_CHART_PADDING,
 } from './theme_common';
 import { DARK_THEME_BULLET_STYLE } from '../../chart_types/bullet_graph/theme';
+import { DEFAULT_TRACE_ANNOTATION_STYLE, DEFAULT_TRACE_BADGE_STYLE } from '../../chart_types/trace_chart/render/types';
 import { Colors } from '../../common/colors';
 import { GOLDEN_RATIO, TAU } from '../../common/constants';
 import { ColorVariant } from '../common';
@@ -491,5 +492,25 @@ export const LEGACY_DARK_THEME: Theme = {
     opacity: 0.6,
     stroke: Colors.Transparent.keyword,
     strokeWidth: 0,
+  },
+  trace: {
+    gutterWidth: 200,
+    timeBarHeight: 32,
+    timeAxisLayerCount: 2,
+    laneHeight: 24,
+    totalLineThickness: 2,
+    totalLineColor: '#444',
+    activeSegmentColor: '#6092C0',
+    gutterLabel: { fontFamily: 'sans-serif', fontSize: 10, color: '#999' },
+    timeBarLabel: { fontFamily: 'sans-serif', fontSize: 10, color: '#999' },
+    gridLineColor: '#444',
+    focusedLaneBackground: 'rgba(96,146,192,0.15)',
+    selectedSegmentStroke: '#BC1E70',
+    selectedSegmentStrokeWidth: 2,
+    criticalPathColor: '#EE4C48',
+    criticalPathThickness: 2,
+    labelPosition: 'gutter',
+    badge: DEFAULT_TRACE_BADGE_STYLE,
+    annotation: DEFAULT_TRACE_ANNOTATION_STYLE,
   },
 };

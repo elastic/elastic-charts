@@ -11,6 +11,7 @@ import type { $Values } from 'utility-types';
 
 import type { PartitionStyle } from './partition';
 import type { BulletStyle } from '../../chart_types/bullet_graph/theme';
+import type { TraceStyle } from '../../chart_types/trace_chart/render/types';
 import type { Color } from '../../common/colors';
 import type { Pixels, Radian, Ratio } from '../../common/geometry';
 import type { Font, FontStyle, FontWeight, TextAlign } from '../../common/text_utils';
@@ -558,6 +559,11 @@ export interface Theme {
 
   /** @alpha */
   flamegraph: FlamegraphStyle;
+
+  /**
+   * Theme styles for the trace waterfall chart.
+   */
+  trace: TraceStyle;
 
   highlighter: HighlighterStyle;
 

@@ -20,6 +20,7 @@ import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES }
 import { DARK_THEME_BULLET_STYLE } from '../../chart_types/bullet_graph/theme';
 import { Colors } from '../../common/colors';
 import { TAU } from '../../common/constants';
+import { DEFAULT_TRACE_ANNOTATION_STYLE, DEFAULT_TRACE_BADGE_STYLE } from '../../chart_types/trace_chart/render/types';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
 
@@ -479,6 +480,26 @@ export const DARK_THEME: Theme = {
     maxWidth: 500,
     maxTableHeight: 120,
     defaultDotColor: Colors.White.keyword,
+  },
+  trace: {
+    gutterWidth: 200,
+    timeBarHeight: 32,
+    timeAxisLayerCount: 2,
+    laneHeight: 24,
+    totalLineThickness: 2,
+    totalLineColor: DARK_BORDER_COLORS.borderBaseSubdued,
+    activeSegmentColor: DARK_BORDER_COLORS.borderBaseSubdued,
+    gutterLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: DARK_TEXT_COLORS.textSubdued },
+    timeBarLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: DARK_TEXT_COLORS.textSubdued },
+    gridLineColor: DARK_BORDER_COLORS.borderBaseSubdued,
+    focusedLaneBackground: DARK_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
+    selectedSegmentStroke: DARK_BACKGROUND_COLORS.backgroundFilledAccent,
+    selectedSegmentStrokeWidth: 2,
+    criticalPathColor: '#EE4C48',
+    criticalPathThickness: 2,
+    labelPosition: 'gutter',
+    badge: DEFAULT_TRACE_BADGE_STYLE,
+    annotation: DEFAULT_TRACE_ANNOTATION_STYLE,
   },
   // TODO map colors to base color mappings
   flamegraph: {

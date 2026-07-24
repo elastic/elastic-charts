@@ -20,6 +20,7 @@ import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import type { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
 import type { LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
+import type { TraceDatum } from '../chart_types/trace_chart/trace_api';
 import type { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import type { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import type { CategoryLabel } from '../common/category';
@@ -167,6 +168,65 @@ export function isMetricElementEvent(e: Parameters<ElementClickListener>[0][0]):
 }
 
 /**
+ * Represents an interaction event with a span in a trace waterfall chart.
+ *
+ * Exposes format-agnostic identity + timing fields so callers are never forced to branch on the
+ * The original `TraceDatum` is available via `datum`. For data produced by {@link fromOtlp}, the
+ * underlying `OtelSpan` (with `attributes`/`status`) is on `datum.meta`.
+ *
+ * Note: `settings.tsx` importing a trace type follows the same pattern as `Cell` (heatmap) and
+ * `WordModel` (wordcloud) already present in this file.
+ * @public
+ */
+export interface TraceElementEvent {
+  type: 'traceElementEvent';
+  id: string;
+  name: string;
+  parentId?: string;
+  traceId?: string;
+  /**
+   * Span start in ms. In `xScaleType: 'linear'` mode this is elapsed-from-zero (rezeroed to the
+   * earliest span start in the data), not the original `TraceDatum.start`.
+   */
+  start: number;
+  /**
+   * Span end in ms. Same rezeroing caveat as `start` for `xScaleType: 'linear'` mode.
+   */
+  end: number;
+  /** `end - start` */
+  duration: number;
+  /** Sum of active-segment durations (self time, per ADR 0003) */
+  selfTime: number;
+  /** Present when the reported timing fields were adjusted to correct detected clock skew. */
+  skewCorrected?: true;
+  /**
+   * Present when this span's recorded parent is absent from its selected trace data (a partial
+   * trace). `parentId` still reports the recorded (missing) parent; the chart never claims the
+   * synthetic display root was the measured caller. See Spec 26 / ADR 0028.
+   */
+  orphaned?: true;
+  /**
+   * The synthetic display parent this orphan was placed under in the waterfall (its trace group's
+   * elected root). Absent when the orphan is itself used as the display root. Purely presentational;
+   * `parentId` remains the recorded value.
+   */
+  reparentedToSpanId?: string;
+  /**
+   * The original `TraceDatum`. For data produced by {@link fromOtlp}, access the underlying
+   * `OtelSpan` (with OTel `attributes`/`status`) via `datum.meta as OtelSpan`.
+   */
+  datum: TraceDatum;
+}
+
+/**
+ * A type-guard for {@link TraceElementEvent}.
+ * @public
+ */
+export function isTraceElementEvent(e: Parameters<ElementClickListener>[0][0]): e is TraceElementEvent {
+  return 'type' in e && (e as { type?: string }).type === 'traceElementEvent';
+}
+
+/**
  * @public
  * The listener type for click on the projection area.
  */
@@ -191,6 +251,7 @@ export type ElementClickListener = (
     | HeatmapElementEvent
     | WordCloudElementEvent
     | MetricElementEvent
+    | TraceElementEvent
   >,
   options?: { keyPressed: KeyPressed },
 ) => void;
@@ -204,6 +265,7 @@ export type ElementOverListener = (
     | HeatmapElementEvent
     | WordCloudElementEvent
     | MetricElementEvent
+    | TraceElementEvent
   >,
 ) => void;
 
