@@ -4061,6 +4061,7 @@ export interface TraceSpec extends Spec {
     dragMode?: 'pan' | 'brush';
     focusDomain?: [number, number];
     laneOrder?: 'tree' | 'chronological';
+    minVisibleExtentMs?: number;
     onCollapseChange?: (next: string[]) => void;
     onDataDiagnosticsChange?: (diagnostics: TraceDataDiagnostics) => void;
     onFocusDomainChange?: (domain: [number, number]) => void;

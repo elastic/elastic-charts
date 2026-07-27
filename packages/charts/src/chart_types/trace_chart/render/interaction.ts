@@ -38,6 +38,22 @@ export function minVisibleExtentForScale(xScaleType: string): number {
 }
 
 /**
+ * Resolves the effective minimum visible extent for a scale, applying the optional coarsen-only
+ * `minVisibleExtentMs` override (Spec 31). The floor is `max(overrideMs, scaleDefault)` so the
+ * override can only raise the floor, never breach the scale-appropriate precision guarantee.
+ *
+ * Invalid overrides (`undefined`, `0`, negative, `NaN`, or non-finite) fall back to the scale default.
+ * Every trace zoom-in clamp (wheel, `+` key, pinch, brush commit, and the `focusDomain` clamp) routes
+ * through this single resolver, so no entry point can resolve finer than the returned floor.
+ * @internal
+ */
+export function resolveMinVisibleExtent(xScaleType: string, overrideMs?: number): number {
+  const scaleDefault = minVisibleExtentForScale(xScaleType);
+  if (overrideMs === undefined || !Number.isFinite(overrideMs) || overrideMs <= 0) return scaleDefault;
+  return Math.max(overrideMs, scaleDefault);
+}
+
+/**
  * Returns the zoom exponent cap for the trace wheel handler: the zoom level at which the visible
  * extent would equal `minVisibleExtentMs`. Callers must clamp `focus.zoom` to this value after
  * `doZoomAroundPosition` to prevent the domain shrinking below the finest time-raster interval.

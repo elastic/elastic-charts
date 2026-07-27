@@ -14,7 +14,7 @@
  * jsdom smoke test (getContext('2d') returns null there, so frame() early-returns).
  */
 
-import { computeZoomMax, computeMaxScroll, computeScrollTarget, hasViewKeyChanged, mapTouchesToCanvasX, MIN_VISIBLE_EXTENT_MS, MIN_VISIBLE_EXTENT_LINEAR_MS, minVisibleExtentForScale, domainToZoomPan, pinchRatio, pixelRangeToDomain } from './interaction';
+import { computeZoomMax, computeMaxScroll, computeScrollTarget, hasViewKeyChanged, mapTouchesToCanvasX, MIN_VISIBLE_EXTENT_MS, MIN_VISIBLE_EXTENT_LINEAR_MS, minVisibleExtentForScale, resolveMinVisibleExtent, domainToZoomPan, pinchRatio, pixelRangeToDomain } from './interaction';
 import { getFocusDomain, initialZoomPan } from '../../timeslip/projections/zoom_pan';
 import type { TraceGeometry } from './types';
 
@@ -444,5 +444,48 @@ describe('minVisibleExtentForScale', () => {
     expect(zoomMaxLinear).toBeGreaterThan(zoomMaxTime);
     // linear zoom cap ≈ log2(10_000 / 1e-6) = log2(1e10) ≈ 33.2 — well past the ms floor
     expect(zoomMaxLinear).toBeCloseTo(Math.log2(10_000 / 1e-6), 3);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Spec 31 — resolveMinVisibleExtent (configurable minimum visible extent)
+// ---------------------------------------------------------------------------
+
+describe('resolveMinVisibleExtent', () => {
+  it('override coarsens the linear floor to 1 ms', () => {
+    // Default linear floor is 1 ns; an explicit 1 ms override raises it to 1 ms.
+    expect(resolveMinVisibleExtent('linear', 1)).toBe(1);
+    expect(resolveMinVisibleExtent('linear')).toBe(MIN_VISIBLE_EXTENT_LINEAR_MS);
+  });
+
+  it('finer override clamps to scale default', () => {
+    // 'time' default is 1 ms; a finer 0.001 ms override is coarsen-only → clamped up to 1 ms.
+    expect(resolveMinVisibleExtent('time', 0.001)).toBe(MIN_VISIBLE_EXTENT_MS);
+    // 'linear' default is 1 ns; an even finer 1e-9 ms override clamps to 1 ns.
+    expect(resolveMinVisibleExtent('linear', 1e-9)).toBe(MIN_VISIBLE_EXTENT_LINEAR_MS);
+  });
+
+  it('invalid override falls back to scale default', () => {
+    for (const bad of [0, -5, NaN, Infinity, -Infinity]) {
+      expect(resolveMinVisibleExtent('time', bad)).toBe(MIN_VISIBLE_EXTENT_MS);
+      expect(resolveMinVisibleExtent('linear', bad)).toBe(MIN_VISIBLE_EXTENT_LINEAR_MS);
+    }
+    expect(resolveMinVisibleExtent('time', undefined)).toBe(MIN_VISIBLE_EXTENT_MS);
+  });
+
+  it('override applies to all zoom-in entry points', () => {
+    // Every clamp site (wheel, +/= key, pinch, brush commit, focusDomain) routes through the single
+    // resolver, so each derives the identical cap: computeZoomMax(ref, max(override, scaleDefault)).
+    const ref = 10_000;
+    for (const scale of ['time', 'linear']) {
+      for (const override of [undefined, 0, 5, 1e-9, NaN]) {
+        const viaResolver = computeZoomMax(ref, resolveMinVisibleExtent(scale, override));
+        const expectedFloor =
+          override !== undefined && Number.isFinite(override) && override > 0
+            ? Math.max(override, minVisibleExtentForScale(scale))
+            : minVisibleExtentForScale(scale);
+        expect(viaResolver).toBe(computeZoomMax(ref, expectedFloor));
+      }
+    }
   });
 });
