@@ -4074,6 +4074,7 @@ export interface TraceSpec extends Spec {
     traceId?: string;
     traceNotFoundMessage?: string;
     xScaleType: 'time' | 'linear';
+    zoomable?: boolean;
 }
 
 // @public

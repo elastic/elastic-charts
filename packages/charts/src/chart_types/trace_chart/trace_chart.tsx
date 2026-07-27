@@ -378,6 +378,11 @@ class TraceComponent extends React.Component<TraceProps> {
     return { min: this.tween.niceDomainMin, max: this.tween.niceDomainMax };
   }
 
+  /** True when zoom gestures are locked (`zoomable: false`). Pan and all other interactions stay active (Spec 30). */
+  private zoomLocked(): boolean {
+    return this.props.traceSpec?.zoomable === false;
+  }
+
   /**
    * Scrolls lane `index` into view using `computeScrollTarget`, then schedules a repaint.
    * Called by keyboard nav (align:'nearest') and reused by Spec 14 `scrollToSpan` (align:'center').
@@ -673,6 +678,12 @@ class TraceComponent extends React.Component<TraceProps> {
       // eslint-disable-next-line no-console
       console.warn('[elastic-charts/trace] collapsedSpanIds is only supported in laneOrder="tree". ' +
         'In chronological mode descendants are not contiguous, so collapse is disabled.');
+    }
+    // Spec 30: dragMode="brush" is unreachable while zoom is locked — all drags pan. Warn (dev only).
+    if (process.env.NODE_ENV !== 'production' && traceSpec.zoomable === false && (traceSpec.dragMode ?? 'pan') === 'brush') {
+      // eslint-disable-next-line no-console
+      console.warn('[elastic-charts/trace] dragMode="brush" has no effect when zoomable={false}; ' +
+        'all drags pan while zoom is locked.');
     }
     const effectiveCollapsed = laneOrder === 'tree' ? this.getEffectiveCollapsed() : new Set<string>();
     const { spans, disclosure: disclosureByLane, rolledUpCriticalIntervals } = this.getCollapseOutput(pipelineSpans, effectiveCollapsed, depthBySpan, criticalIntervals);
@@ -1445,6 +1456,7 @@ class TraceComponent extends React.Component<TraceProps> {
       this.updateHover(null);
 
       if (!this.props.traceSpec) return;
+      if (this.zoomLocked()) return; // Spec 30: wheel is a no-op while zoom is locked
       const style = this.getStyle();
       const plotLeft = gutterPx(style);
       const plotWidth = this.props.chartDimensions.width - plotLeft;
@@ -1492,7 +1504,8 @@ class TraceComponent extends React.Component<TraceProps> {
       const dragMode = this.props.traceSpec?.dragMode ?? 'pan';
       // isBrushMode: XOR — Shift inverts the configured gesture so both dragMode values are
       // reachable from the keyboard. dragMode='pan' default: Shift+drag → brush, plain drag → pan.
-      const isBrushMode = (dragMode === 'brush') !== e.shiftKey;
+      // Spec 30: brush-to-zoom is a zoom gesture, so a locked chart pans for every dragMode/modifier.
+      const isBrushMode = !this.zoomLocked() && ((dragMode === 'brush') !== e.shiftKey);
       if (isBrushMode) {
         this.brush.active = true;
         this.brush.start = zoomSafePointerX(e);
@@ -1774,6 +1787,8 @@ class TraceComponent extends React.Component<TraceProps> {
         this.scheduleRender?.();
         return;
       }
+      // Spec 30: the +/=/- zoom keys no-op while zoom is locked; Arrow-key pan (above) still works.
+      if ((e.key === '+' || e.key === '=' || e.key === '-') && this.zoomLocked()) return;
       if (e.key === '+' || e.key === '=') {
         e.preventDefault();
         if (!spec) return;
@@ -1991,6 +2006,7 @@ class TraceComponent extends React.Component<TraceProps> {
       if (mapped.length === 2) {
         // Pinch — zoom only (ADR 0021 Decision 2)
         if (!this.props.traceSpec) return;
+        if (this.zoomLocked()) return; // Spec 30: pinch-zoom no-ops while locked; one-finger pan still works
         const style = this.getStyle();
         const plotLeft = gutterPx(style);
         const plotWidth = this.props.chartDimensions.width - plotLeft;

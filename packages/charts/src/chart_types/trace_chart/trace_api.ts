@@ -515,6 +515,13 @@ export interface TraceSpec extends Spec {
    */
   dragMode?: 'pan' | 'brush';
   /**
+   * When `false`, disables all zoom gestures (mouse wheel, `+`/`=`/`-` keys, two-finger pinch,
+   * brush-to-zoom). Pan (drag / arrow keys / one-finger), selection, tooltip, and collapse are
+   * unaffected, and a programmatic `focusDomain` still re-drives the window (ADR 0007). See Spec 30.
+   * @defaultValue true
+   */
+  zoomable?: boolean;
+  /**
    * When `true` (default), a small "keyboard active" badge appears in the top-left corner of the
    * chart while the canvas has keyboard focus, giving sighted users a WCAG 2.4.7 focus-visible cue.
    * Set to `false` to suppress the badge, e.g. in design mockups or when a custom focus indicator

@@ -2043,3 +2043,285 @@ describe('Trace chart — data diagnostics (Spec 28)', () => {
     unmount();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Trace chart — Zoom lock (Spec 30)
+// ---------------------------------------------------------------------------
+
+describe('Trace chart — zoom lock (Spec 30)', () => {
+  /**
+   * `zoomable: false` gates the four zoom gestures (wheel, +/=/- keys, pinch, brush-to-zoom) while
+   * leaving pan, selection, tooltip, collapse, and the programmatic `focusDomain` window drive active.
+   *
+   * Assertions are behavioral on the emitted `onFocusDomainChange` domain: a zoom changes the window
+   * EXTENT (max - min); a pan changes the OFFSET but preserves the extent. The full linear domain for
+   * SPANS is [0, 500] (extent 500); a programmatic `focusDomain` gives a zoomed-in extent to make pans
+   * observable (at fit-all there is no room to pan).
+   */
+  const SPANS: TraceDatum[] = [
+    { id: 'root', name: 'HTTP GET /api', traceId: 't1', start: 0, end: 500 },
+    { id: 'db', name: 'DB.query', parentId: 'root', traceId: 't1', start: 100, end: 450 },
+  ];
+
+  beforeEach(() => {
+    setupJestCanvasMock();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  const extentOf = (d: [number, number]) => d[1] - d[0];
+  const lastDomain = (cb: jest.Mock): [number, number] => cb.mock.calls[cb.mock.calls.length - 1][0];
+
+  /** Dispatch a native mouse event with `offsetX/offsetY`/`buttons`/`shiftKey` (jsdom drops offsets). */
+  function fireNativeMouse(
+    target: HTMLElement | Window,
+    type: 'mousedown' | 'mousemove' | 'mouseup',
+    { x = 0, y = 0, buttons = 0, shiftKey = false }: { x?: number; y?: number; buttons?: number; shiftKey?: boolean } = {},
+  ) {
+    const e = new MouseEvent(type, { bubbles: true, cancelable: true, buttons, shiftKey, view: window });
+    Object.defineProperty(e, 'offsetX', { value: x });
+    Object.defineProperty(e, 'offsetY', { value: y });
+    act(() => {
+      target.dispatchEvent(e);
+    });
+  }
+
+  function touchInit(canvas: HTMLCanvasElement, touches: Array<{ clientX: number; clientY: number }>) {
+    return {
+      bubbles: true,
+      cancelable: true,
+      touches: touches.map((t, i) => ({ identifier: i, target: canvas, ...t })),
+    };
+  }
+
+  it('wheel does not zoom when zoomable is false', () => {
+    // Locked: every emitted window keeps the full extent — the wheel never zooms in or out.
+    const cbLocked = jest.fn();
+    const locked = render(
+      <Chart size={[800, 200]}>
+        <Trace id="zl-wheel" data={SPANS} xScaleType="linear" zoomable={false} onFocusDomainChange={cbLocked} />
+      </Chart>,
+    );
+    act(() => jest.runAllTimers());
+    const lockedCanvas = locked.container.querySelector('canvas')!;
+    fireEvent.wheel(lockedCanvas, { deltaY: -200 });
+    act(() => jest.runAllTimers());
+    fireEvent.wheel(lockedCanvas, { deltaY: 200 });
+    act(() => jest.runAllTimers());
+    cbLocked.mock.calls.forEach(([d]: [[number, number]]) => expect(extentOf(d)).toBeCloseTo(500));
+    locked.unmount();
+
+    // Control: with zoomable defaulting to true, the same wheel zooms in (extent shrinks).
+    const cbFree = jest.fn();
+    const free = render(
+      <Chart size={[800, 200]}>
+        <Trace id="zf-wheel" data={SPANS} xScaleType="linear" onFocusDomainChange={cbFree} />
+      </Chart>,
+    );
+    act(() => jest.runAllTimers());
+    fireEvent.wheel(free.container.querySelector('canvas')!, { deltaY: -200 });
+    act(() => jest.runAllTimers());
+    expect(extentOf(lastDomain(cbFree))).toBeLessThan(500);
+    free.unmount();
+  });
+
+  it('zoom keys no-op but arrow pan works when locked', () => {
+    const cb = jest.fn();
+    // A controlled focusDomain applies on update (not initial mount), so zoom in via a rerender to
+    // create the room needed to observe a pan.
+    const { container, rerender, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="zl-keys" data={SPANS} xScaleType="linear" zoomable={false} onFocusDomainChange={cb} />
+      </Chart>,
+    );
+    act(() => jest.runAllTimers());
+    rerender(
+      <Chart size={[800, 200]}>
+        <Trace id="zl-keys" data={SPANS} xScaleType="linear" zoomable={false} focusDomain={[100, 300]} onFocusDomainChange={cb} />
+      </Chart>,
+    );
+    act(() => jest.runAllTimers());
+    const canvas = container.querySelector('canvas')!;
+
+    // +/=/- are inert while locked → no domain change is emitted.
+    const callsBefore = cb.mock.calls.length;
+    fireEvent.keyDown(canvas, { key: '+' });
+    act(() => jest.runAllTimers());
+    fireEvent.keyDown(canvas, { key: '=' });
+    act(() => jest.runAllTimers());
+    fireEvent.keyDown(canvas, { key: '-' });
+    act(() => jest.runAllTimers());
+    expect(cb.mock.calls.length).toBe(callsBefore);
+
+    // Arrow-key pan still moves the window (offset changes, extent preserved).
+    fireEvent.keyDown(canvas, { key: 'ArrowRight' });
+    act(() => jest.runAllTimers());
+    const after = lastDomain(cb);
+    expect(after[0]).toBeGreaterThan(100);
+    expect(extentOf(after)).toBeCloseTo(200, 0);
+    unmount();
+  });
+
+  it('pinch no-ops but one-finger pan works when locked', () => {
+    const cb = jest.fn();
+    const { container, rerender, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="zl-pinch" data={SPANS} xScaleType="linear" zoomable={false} onFocusDomainChange={cb} />
+      </Chart>,
+    );
+    act(() => jest.runAllTimers());
+    rerender(
+      <Chart size={[800, 200]}>
+        <Trace id="zl-pinch" data={SPANS} xScaleType="linear" zoomable={false} focusDomain={[100, 300]} onFocusDomainChange={cb} />
+      </Chart>,
+    );
+    act(() => jest.runAllTimers());
+    const canvas = container.querySelector('canvas')!;
+
+    // Two-finger pinch is inert while locked → no domain change is emitted.
+    const callsBefore = cb.mock.calls.length;
+    fireEvent.touchStart(canvas, touchInit(canvas, [{ clientX: 250, clientY: 50 }, { clientX: 350, clientY: 50 }]));
+    fireEvent.touchMove(canvas, touchInit(canvas, [{ clientX: 150, clientY: 50 }, { clientX: 450, clientY: 50 }]));
+    fireEvent.touchEnd(canvas, touchInit(canvas, []));
+    act(() => jest.runAllTimers());
+    expect(cb.mock.calls.length).toBe(callsBefore);
+
+    // One-finger pan still moves the window (offset changes, extent preserved).
+    fireEvent.touchStart(canvas, touchInit(canvas, [{ clientX: 300, clientY: 50 }]));
+    fireEvent.touchMove(canvas, touchInit(canvas, [{ clientX: 240, clientY: 50 }]));
+    fireEvent.touchEnd(canvas, touchInit(canvas, []));
+    act(() => jest.runAllTimers());
+    expect(cb.mock.calls.length).toBeGreaterThan(callsBefore);
+    const after = lastDomain(cb);
+    expect(Math.abs(after[0] - 100)).toBeGreaterThan(1);
+    expect(extentOf(after)).toBeCloseTo(200, 0);
+    unmount();
+  });
+
+  it('brush drag pans when zoomable is false', () => {
+    // Every dragMode/modifier combination pans (never brushes) while locked: extent preserved, offset moves.
+    const combos: Array<{ dragMode: 'pan' | 'brush'; shiftKey: boolean }> = [
+      { dragMode: 'pan', shiftKey: false },
+      { dragMode: 'pan', shiftKey: true },
+      { dragMode: 'brush', shiftKey: false },
+      { dragMode: 'brush', shiftKey: true },
+    ];
+    combos.forEach(({ dragMode, shiftKey }, i) => {
+      const cb = jest.fn();
+      const { container, rerender, unmount } = render(
+        <Chart size={[800, 200]}>
+          <Trace id={`zl-brush-${i}`} data={SPANS} xScaleType="linear" zoomable={false} dragMode={dragMode} onFocusDomainChange={cb} />
+        </Chart>,
+      );
+      act(() => jest.runAllTimers());
+      rerender(
+        <Chart size={[800, 200]}>
+          <Trace id={`zl-brush-${i}`} data={SPANS} xScaleType="linear" zoomable={false} dragMode={dragMode} focusDomain={[100, 300]} onFocusDomainChange={cb} />
+        </Chart>,
+      );
+      act(() => jest.runAllTimers());
+      const canvas = container.querySelector('canvas')!;
+
+      fireNativeMouse(canvas, 'mousedown', { x: 400, y: 100, buttons: 1, shiftKey });
+      fireNativeMouse(window, 'mousemove', { x: 200, y: 100, buttons: 1, shiftKey });
+      fireNativeMouse(window, 'mouseup');
+      act(() => jest.runAllTimers());
+
+      // The drag panned instead of drawing the brush: extent is preserved (a brush commit would
+      // narrow it), and the window offset moved.
+      const after = lastDomain(cb);
+      expect(extentOf(after)).toBeCloseTo(200, 0);
+      expect(Math.abs(after[0] - 100)).toBeGreaterThan(1);
+      unmount();
+    });
+  });
+
+  it('programmatic focusDomain still zooms when locked', () => {
+    const cb = jest.fn();
+    const { container, rerender, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Trace id="zl-fd" data={SPANS} xScaleType="linear" zoomable={false} onFocusDomainChange={cb} />
+      </Chart>,
+    );
+    act(() => jest.runAllTimers());
+
+    // Drive a zoomed-in window programmatically — the lock gates gestures, not the focusDomain drive.
+    rerender(
+      <Chart size={[800, 200]}>
+        <Trace id="zl-fd" data={SPANS} xScaleType="linear" zoomable={false} focusDomain={[200, 300]} onFocusDomainChange={cb} />
+      </Chart>,
+    );
+    act(() => jest.runAllTimers());
+
+    // The window is now at the zoomed-in extent (100), not fit-all (500): an allowed arrow pan reads it back.
+    fireEvent.keyDown(container.querySelector('canvas')!, { key: 'ArrowLeft' });
+    act(() => jest.runAllTimers());
+    expect(extentOf(lastDomain(cb))).toBeCloseTo(100, 0);
+    unmount();
+  });
+
+  it('selection and tooltip unaffected by zoomable', () => {
+    const onElementOver = jest.fn();
+    const onSelectionChange = jest.fn();
+    const { container, unmount } = render(
+      <Chart size={[800, 200]}>
+        <Settings onElementOver={onElementOver} />
+        <Trace id="zl-sel" data={SPANS} xScaleType="linear" zoomable={false} onSelectionChange={onSelectionChange} />
+      </Chart>,
+    );
+    act(() => jest.runAllTimers());
+    const canvas = container.querySelector('canvas')!;
+
+    // Hover over the span bar (plot starts at x=200; lane 0 centered at y=44) → tooltip/hover path fires.
+    fireNativeMouse(canvas, 'mousemove', { x: 300, y: 44 });
+    expect(onElementOver).toHaveBeenCalled();
+
+    // Clicking the span still commits a selection (after the double-click debounce).
+    const click = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+    Object.defineProperty(click, 'offsetX', { value: 300 });
+    Object.defineProperty(click, 'offsetY', { value: 44 });
+    act(() => {
+      canvas.dispatchEvent(click);
+      jest.runAllTimers();
+    });
+    expect(onSelectionChange).toHaveBeenCalled();
+    unmount();
+  });
+
+  it("dev-warns when dragMode='brush' and zoomable is false", () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const brushMsg = () =>
+      warnSpy.mock.calls.some(([m]) => typeof m === 'string' && m.includes('dragMode="brush" has no effect'));
+
+    const locked = render(
+      <Chart size={[800, 200]}>
+        <Trace id="zl-warn-1" data={SPANS} xScaleType="linear" zoomable={false} dragMode="brush" />
+      </Chart>,
+    );
+    act(() => jest.runAllTimers());
+    expect(brushMsg()).toBe(true);
+    locked.unmount();
+
+    warnSpy.mockClear();
+    // Not warned when brush is reachable (zoomable) or when dragMode is the default 'pan'.
+    const free = render(
+      <Chart size={[800, 200]}>
+        <Trace id="zl-warn-2" data={SPANS} xScaleType="linear" dragMode="brush" />
+      </Chart>,
+    );
+    act(() => jest.runAllTimers());
+    const lockedPan = render(
+      <Chart size={[800, 200]}>
+        <Trace id="zl-warn-3" data={SPANS} xScaleType="linear" zoomable={false} />
+      </Chart>,
+    );
+    act(() => jest.runAllTimers());
+    expect(brushMsg()).toBe(false);
+    free.unmount();
+    lockedPan.unmount();
+    warnSpy.mockRestore();
+  });
+});
