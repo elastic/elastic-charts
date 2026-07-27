@@ -74,6 +74,7 @@ function makeGeom(annotations: ResolvedTraceAnnotation[]): TraceGeometry {
     focusDomain: { min: 0, max: 1000 },
     scrollOffset: 0,
     xScaleType: 'linear',
+    spanDisplay: 'segments',
     focusedLaneIndex: null,
     resolvedSelection: [],
     scale,

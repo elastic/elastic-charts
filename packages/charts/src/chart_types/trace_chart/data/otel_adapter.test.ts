@@ -8,6 +8,7 @@
 
 import { anyValueToString, fromOtlp, nanoToMs } from './otel_adapter';
 import type { OtlpEnvelope, OtelSpan } from './otel_adapter';
+import { Logger } from '../../../utils/logger';
 
 // ---------------------------------------------------------------------------
 // anyValueToString — real OTLP AnyValue wrappers
@@ -66,6 +67,28 @@ describe('nanoToMs', () => {
   it('returns NaN and warns for malformed strings', () => {
     expect(nanoToMs('abc')).toBeNaN();
     expect(nanoToMs('12.5')).toBeNaN(); // non-integer string
+  });
+
+  it('preserves exact ms precision for string nanos beyond Number.MAX_SAFE_INTEGER', () => {
+    // Real epoch nanos (~1.9e18) exceed the 9.0e15 safe-integer ceiling. The bigint path keeps the
+    // integer-ms magnitude exact; the sub-ms tail is carried as a separate fractional term.
+    // 1_700_000_000_123_456_789 ns = 1_700_000_000_123.456789 ms.
+    expect(nanoToMs('1700000000123456789')).toBeCloseTo(1_700_000_000_123.456789, 3);
+  });
+
+  it('warns and falls back to float division for a number input past the safe-integer ceiling', () => {
+    const warnSpy = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    // A number this large already lost its low-order digits to IEEE-754 before nanoToMs ran; the
+    // ms-scale result is still correct, and we warn so callers pass strings/bigints for full fidelity.
+    const unsafe = 1_700_000_000_123_456_789; // not a safe integer
+    expect(nanoToMs(unsafe)).toBeCloseTo(unsafe / 1_000_000, 0);
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    warnSpy.mockRestore();
+  });
+
+  it('returns NaN for a non-finite number without throwing', () => {
+    expect(nanoToMs(Number.POSITIVE_INFINITY)).toBeNaN();
+    expect(nanoToMs(Number.NaN)).toBeNaN();
   });
 });
 

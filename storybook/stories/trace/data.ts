@@ -409,7 +409,7 @@ export const CHROME_NETWORK_SPANS: TraceDatum[] = [
 /**
  * OtlpEnvelope extracted from a real Kibana APM `frontend-web` trace
  * (traceId `68822000000000000000000000080950`, sampled 2026-07-16T14:28:20Z).
- * Used by story 12 to exercise `fromOtlp()` + `colorByOtelAttribute('service.name')`.
+ * Used by story 12 to exercise `fromOtlp()` + `colorBy={{ otelAttribute: 'service.name' }}`.
  *
  * Service topology (10 spans, 200 ms total):
  *   frontend-web → product-recommendation → inventory-service

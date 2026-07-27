@@ -9,23 +9,19 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type { TraceColorAccessor, TraceSpec } from '@elastic/charts';
-import { Chart, Settings, Trace, colorByOtelAttribute, fromOtlp } from '@elastic/charts';
+import type { TraceSpec } from '@elastic/charts';
+import { Chart, Settings, Trace, fromOtlp } from '@elastic/charts';
 
 import { FRONTEND_WEB_OTLP_ENVELOPE } from './data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-const BY_SERVICE: TraceColorAccessor = colorByOtelAttribute('service.name');
 /**
  * Pre-converted at module load: fromOtlp attaches resource.attributes to each span's meta.
- * activeSegments is set to the full span extent so each lane shows the total duration (Kibana
- * APM waterfall style) rather than self-time (the default when activeSegments is omitted).
+ * `spanDisplay="duration"` (below) renders each lane as a full-extent bar (Kibana APM waterfall
+ * style) while self-time-derived active segments still drive selfTime/tooltip/SR (ADR 0035).
  */
-const DATA = fromOtlp(FRONTEND_WEB_OTLP_ENVELOPE).map((datum) => ({
-  ...datum,
-  activeSegments: [{ start: datum.start, end: datum.end }],
-}));
+const DATA = fromOtlp(FRONTEND_WEB_OTLP_ENVELOPE);
 
 const LANE_ORDER_OPTIONS: Record<string, TraceSpec['laneOrder']> = {
   'tree — depth-first nesting (Kibana APM default)': 'tree',
@@ -43,7 +39,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
   return (
     <Chart title={title} description={description} size={{ width: '100%', height: 350 }}>
       <Settings baseTheme={useBaseTheme()} />
-      <Trace id="trace_lane_order" data={DATA} xScaleType="linear" colorBy={BY_SERVICE} laneOrder={laneOrder} />
+      <Trace
+        id="trace_lane_order"
+        data={DATA}
+        xScaleType="linear"
+        spanDisplay="duration"
+        colorBy={{ otelAttribute: 'service.name' }}
+        laneOrder={laneOrder}
+      />
     </Chart>
   );
 };

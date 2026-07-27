@@ -75,6 +75,9 @@ export function resolveTraceAnnotations(
 ): ResolvedTraceAnnotation[] {
   if (annotationSpecs.length === 0) return [];
 
+  // Keyed by chart-global span id (ADR 0028): annotation `spanId`/route references are chart-global,
+  // and the partial-trace recovery stage guarantees these ids are unique across the rendered set, so
+  // there is no same-id span in another trace group to shadow the intended target.
   const spanById = new Map(spans.map((s) => [s.id, s]));
   const seenIds = new Set<string>();
   const resolved: ResolvedTraceAnnotation[] = [];

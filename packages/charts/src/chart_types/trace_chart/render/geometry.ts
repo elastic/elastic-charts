@@ -55,6 +55,13 @@ export function buildGeometry(
    * so badges never overflow into the bar band. Ignored in `'gutter'`/`'none'`.
    */
   badgeRowHeight = 0,
+  /**
+   * How each span bar is drawn (ADR 0035): `'segments'` (default) draws the thin total line plus
+   * self-time-derived active-segment rects; `'duration'` fills the full `[start, end]` extent with
+   * the span's color-group color (Kibana APM waterfall look). Purely visual — `activeSegments` stay
+   * self-time-derived so `selfTime`/tooltip/events/SR are unaffected.
+   */
+  spanDisplay: 'segments' | 'duration' = 'segments',
 ): TraceGeometry {
   // spans is already start-sorted by the pipeline cache (O(N log N) once per data change, not per frame).
   // domain is pre-computed by normalize() and passed in; no per-frame reduce needed.
@@ -116,11 +123,15 @@ export function buildGeometry(
       if (laneIndex === undefined) return null;
       const span = spans[laneIndex];
       if (!span) return null;
-      if (ref.region === 'active' && ref.segmentIndex >= span.activeSegments.length) return null;
-      if (ref.region === 'waiting' && ref.segmentIndex >= waitingSegments(span).length) return null;
+      if (ref.region === 'span') return { laneIndex, region: ref.region };
+      // Segment refs (active/waiting) must carry a concrete in-range index.
+      const { segmentIndex } = ref;
+      if (segmentIndex === undefined) return null;
+      if (ref.region === 'active' && segmentIndex >= span.activeSegments.length) return null;
+      if (ref.region === 'waiting' && segmentIndex >= waitingSegments(span).length) return null;
       // Dedup (D2): drop segment entries subsumed by a same-span 'span' ref.
-      if (ref.region !== 'span' && spanIdsWithSpanRef.has(ref.spanId)) return null;
-      return { laneIndex, region: ref.region, segmentIndex: ref.segmentIndex };
+      if (spanIdsWithSpanRef.has(ref.spanId)) return null;
+      return { laneIndex, region: ref.region, segmentIndex };
     })
     .filter((r): r is NonNullable<typeof r> => r !== null);
 
@@ -149,6 +160,7 @@ export function buildGeometry(
     focusDomain,
     scrollOffset,
     xScaleType,
+    spanDisplay,
     focusedLaneIndex,
     resolvedSelection,
     scale,

@@ -86,11 +86,25 @@ export function anyValueToString(value: unknown): string {
  * inside `BigInt()`. Since OTLP data arrives from external pipelines, we guard with a try/catch and
  * return `NaN`. The `normalize` pipeline's `dropNonFinite` stage filters out any spans whose
  * `start`/`end` are `NaN` before they reach geometry/rendering.
+ *
+ * Precision note: a `number` input larger than `Number.MAX_SAFE_INTEGER` (epoch nanos are ~1.9e18,
+ * far past the 9.0e15 safe-integer ceiling) has already lost its low-order digits to IEEE-754 before
+ * this function runs — routing it through `BigInt` would only fabricate false precision. We therefore
+ * divide such values in floating point (ms-scale magnitudes stay exact; only the unrecoverable
+ * sub-ms tail is approximate) and warn the caller to pass a string/bigint for full fidelity. Integer
+ * `number`s within the safe range, and all `string`/`bigint` inputs, use exact bigint arithmetic.
  * @internal
  */
 export function nanoToMs(nano: string | number | bigint): number {
+  if (typeof nano === 'number' && !Number.isSafeInteger(nano)) {
+    if (!Number.isFinite(nano)) return NaN;
+    Logger.warn(
+      `nanoToMs: numeric timestamp ${nano} exceeds Number.MAX_SAFE_INTEGER; sub-millisecond precision was already lost by the caller. Pass OTLP nanos as a string or bigint for exact conversion.`,
+    );
+    return nano / 1_000_000;
+  }
   try {
-    const nanoBigInt = typeof nano === 'number' ? BigInt(Math.trunc(nano)) : BigInt(nano);
+    const nanoBigInt = BigInt(nano);
     const ms = nanoBigInt / 1_000_000n;
     const remainderNs = nanoBigInt % 1_000_000n;
     return Number(ms) + Number(remainderNs) / 1_000_000;

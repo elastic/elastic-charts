@@ -26,12 +26,13 @@ import { computeBadgeGutterWidth, layoutBadges } from './render/badge_layout';
 import type { BadgeTextMeasurer } from './render/badge_layout';
 import { BadgeImageCache } from './render/badge_images';
 import { layoutAnnotations } from './render/annotation_layout';
+import type { BadgePickResult } from './render/canvas2d_renderer';
 import { canvas2dRenderer, drawAnnotations, drawBadges, pickAnnotation, pickBadge, pickDisclosure, pickRegion } from './render/canvas2d_renderer';
 import { buildGeometry } from './render/geometry';
 import { gutterPx } from './render/types';
 import type { ViewKey } from './render/interaction';
 import { computeMaxScroll, computeScrollTarget, computeZoomMax, domainToZoomPan, hasViewKeyChanged, mapTouchesToCanvasX, minVisibleExtentForScale, pinchRatio, pixelRangeToDomain } from './render/interaction';
-import { buildTraceAnnotationEvent, buildTraceEvent, buildTraceSelectionDetail, buildTraceSpanBadgeEventSpan, buildTraceTooltipInfo, formatMs } from './render/tooltip';
+import { buildTraceAnnotationEvent, buildTraceBadgeEvent, buildTraceEvent, buildTraceSelectionDetail, buildTraceTooltipInfo, formatMs } from './render/tooltip';
 import { ScreenReaderTraceAnnotations } from './render/screen_reader_trace_annotations';
 import { ScreenReaderTraceTable } from './render/screen_reader_trace_table';
 import { AriaLiveRegion } from './render/aria_live_region';
@@ -45,20 +46,21 @@ import { buildTraceStyle } from './theme';
 import { clamp } from '../../utils/common';
 import { Logger } from '../../utils/logger';
 import type {
-  TraceAnnotationEvent,
   TraceAnnotationSpec,
   TraceSegmentRef,
   TraceSelection,
-  TraceSpanBadgeEvent,
   TraceSpec,
 } from './trace_api';
+import { resolveTraceColorBy, traceColorByEqual } from './trace_api';
 import { applySelection, selectionModeFromEvent, selectionSetEqual } from './selection_helpers';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import type { SettingsSpec } from '../../specs';
 import { TooltipType } from '../../specs';
+import type { TraceBadgeElementEvent } from '../../specs/settings';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onChartRendered } from '../../state/actions/chart';
+import { setTraceUncontrolledCollapsed } from '../../state/actions/trace';
 import type { GlobalChartState } from '../../state/chart_state';
 import type { BackwardRef, ChartRenderer } from '../../state/internal_chart_renderer';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
@@ -148,6 +150,7 @@ interface StateProps {
 
 interface DispatchProps {
   onChartRendered: typeof onChartRendered;
+  setTraceUncontrolledCollapsed: typeof setTraceUncontrolledCollapsed;
 }
 
 interface OwnProps {
@@ -257,7 +260,7 @@ class TraceComponent extends React.Component<TraceProps> {
 
   // --- Span-badge pointer interaction state (Spec 27) ---
   // The badge currently under the pointer (drives onBadgeOver/onBadgeOut and the clickable cursor).
-  private hoveredBadge: { spanId: string; badgeId: string; item: BadgeLayoutItem; span: NormalizedSpan } | null = null;
+  private hoveredBadge: { spanId: string; badgeId: string; laneIndex: number; item: BadgeLayoutItem; span: NormalizedSpan } | null = null;
 
   // The badge under the pointer at mousedown; badge activation requires the pointer-up to resolve to
   // the same (spanId, badgeId) with no viewport gesture in between.
@@ -557,10 +560,11 @@ class TraceComponent extends React.Component<TraceProps> {
   }
 
   // Unpin when the spec changes (data or view — stale frozen index may no longer be valid).
-  // Only call unpinTooltip when already pinned to avoid an unnecessary setState.
+  // Only unpin when already pinned to avoid an unnecessary setState. Routed through
+  // handleUnpinningTooltip so the window click/visibilitychange listeners are removed too.
   private syncPinOnSpecChange(prevProps: TraceProps) {
     if (this.pin.pinned && this.props.traceSpec !== prevProps.traceSpec) {
-      this.unpinTooltip();
+      this.handleUnpinningTooltip?.();
     }
   }
 
@@ -578,7 +582,7 @@ class TraceComponent extends React.Component<TraceProps> {
       // Fire onSelectionChange([]) only if selection was non-empty.
       const current = this.getEffectiveSelection();
       if (current.length > 0) {
-        this.selection = [];
+        this.setLocalSelection([]);
         this.fireSelectionChange([]);
         this.scheduleRender?.();
       }
@@ -592,6 +596,9 @@ class TraceComponent extends React.Component<TraceProps> {
           if (laneIndex === undefined) return false;
           const s = spans[laneIndex];
           if (!s) return false;
+          if (ref.region === 'span') return true;
+          // Segment refs must carry a concrete in-range index; a missing one is a stale/invalid ref.
+          if (ref.segmentIndex === undefined) return false;
           if (ref.region === 'active' && ref.segmentIndex >= s.activeSegments.length) return false;
           // waitingSegments is cheap (inline gap loop) so computing it once to validate is fine.
           if (ref.region === 'waiting' && ref.segmentIndex >= waitingSegments(s).length) return false;
@@ -599,9 +606,7 @@ class TraceComponent extends React.Component<TraceProps> {
         });
         if (pruned.length !== current.length) {
           // In controlled mode: fire only, don't write the field (parent owns the prop).
-          if (this.props.traceSpec?.selection === undefined) {
-            this.selection = pruned;
-          }
+          this.setLocalSelection(pruned);
           this.fireSelectionChange(pruned);
           this.scheduleRender?.();
         }
@@ -626,7 +631,10 @@ class TraceComponent extends React.Component<TraceProps> {
     if (
       this.props.traceSpec !== prevProps.traceSpec ||
       this.props.theme !== prevProps.theme ||
-      this.props.chartDimensions !== prevProps.chartDimensions
+      this.props.chartDimensions !== prevProps.chartDimensions ||
+      // Annotations (Spec 29) live on a separate prop from traceSpec; a change to the composed
+      // annotation child specs must redraw the canvas even when traceSpec is unchanged.
+      this.props.annotationSpecs !== prevProps.annotationSpecs
     ) {
       this.scheduleRender?.();
     }
@@ -746,6 +754,7 @@ class TraceComponent extends React.Component<TraceProps> {
       rolledUpCriticalIntervals,
       badgeGutterWidth,
       badgeRowHeight,
+      traceSpec.spanDisplay ?? 'segments',
     );
 
     // Lay out badges over the visible lane range (measurement-dependent, so kept out of buildGeometry).
@@ -837,6 +846,15 @@ class TraceComponent extends React.Component<TraceProps> {
     spec.onSelectionChange(next, details);
   }
 
+  /**
+   * Writes the local (uncontrolled) selection field. In **controlled** mode (`spec.selection` set)
+   * the parent owns the value, so this is a no-op — writing it would let the local field drift out of
+   * sync with the prop and shadow it on the next uncontrolled read. Mirrors the prune path guard.
+   */
+  private setLocalSelection(next: TraceSelection) {
+    if (this.props.traceSpec?.selection === undefined) this.selection = next;
+  }
+
   // -------------------------------------------------------------------------
   // Collapse helpers (Spec 21 / ADR 0026)
   // -------------------------------------------------------------------------
@@ -859,6 +877,21 @@ class TraceComponent extends React.Component<TraceProps> {
     if (collapseSetsEqual(next, this.lastFiredCollapsed)) return;
     this.lastFiredCollapsed = new Set(next); // capture before calling out
     this.props.traceSpec?.onCollapseChange?.([...next]);
+  }
+
+  /**
+   * Writes the local (uncontrolled) collapsed field and invalidates the collapse cache. In
+   * **controlled** mode (`spec.collapsedSpanIds` set) the parent owns the value, so this is a no-op —
+   * `syncCollapseLifecycle` re-syncs the cache when the prop echoes back. Mirrors {@link setLocalSelection}.
+   */
+  private setLocalCollapsed(next: Set<string>) {
+    if (this.props.traceSpec?.collapsedSpanIds === undefined) {
+      this.collapsed = next;
+      this.collapseCache = null;
+      // Publish the uncontrolled collapse into redux so the screen-reader table matches the canvas
+      // (ADR 0013). In controlled mode the `collapsedSpanIds` prop is already selector-visible.
+      this.props.setTraceUncontrolledCollapsed([...next]);
+    }
   }
 
   /**
@@ -903,18 +936,23 @@ class TraceComponent extends React.Component<TraceProps> {
       const parents = collapsibleParentIds(spans);
       const pruned = new Set([...this.collapsed].filter((id) => parents.has(id)));
       if (pruned.size !== this.collapsed.size) {
-        this.collapsed = pruned;
-        this.collapseCache = null;
+        this.setLocalCollapsed(pruned);
         this.fireCollapseChange(pruned);
         this.scheduleRender?.();
       }
     }
 
-    // Echo-guard: controlled prop changed → update cache reference so memoization stays valid.
+    // Echo-guard: controlled prop changed → update cache reference so memoization stays valid, and
+    // sync lastFiredCollapsed so a parent-driven change is recognized as an echo and does not fire a
+    // redundant onCollapseChange on the next toggle (mirrors the selection echo-sync above).
     if (
       spec.collapsedSpanIds !== undefined &&
       spec.collapsedSpanIds !== prevProps.traceSpec?.collapsedSpanIds
     ) {
+      const asSet = new Set(spec.collapsedSpanIds);
+      if (!collapseSetsEqual(asSet, this.lastFiredCollapsed)) {
+        this.lastFiredCollapsed = asSet;
+      }
       this.collapsedFromProp = null; // force re-cache on next getEffectiveCollapsed() call
       this.collapseCache = null;
       this.scheduleRender?.();
@@ -982,7 +1020,7 @@ class TraceComponent extends React.Component<TraceProps> {
       cache.dataRef === spec.data &&
       cache.xScaleType === spec.xScaleType &&
       cache.traceId === spec.traceId &&
-      cache.colorBy === spec.colorBy &&
+      traceColorByEqual(cache.colorBy, spec.colorBy) &&
       cache.laneOrder === spec.laneOrder &&
       cache.vizColors === vizColors &&
       cache.criticalPath === spec.criticalPath &&
@@ -997,7 +1035,7 @@ class TraceComponent extends React.Component<TraceProps> {
     const diagnostics = new TraceDiagnosticsCollector();
 
     // Recompute: normalize now takes TraceDatum[] directly — OTel data arrives pre-converted by fromOtlp.
-    const normalizeResult = normalize(spec.data, spec.xScaleType, spec.traceId, spec.colorBy, vizColors, spec.criticalPath, diagnostics);
+    const normalizeResult = normalize(spec.data, spec.xScaleType, spec.traceId, resolveTraceColorBy(spec.colorBy), vizColors, spec.criticalPath, diagnostics);
 
     // Derive Span badges from each span's TraceDatum (Spec 27), once per prepared-data change. Runs
     // before resolveActive/orderLanes/collapse, all of which preserve span fields, so badges flow
@@ -1088,14 +1126,23 @@ class TraceComponent extends React.Component<TraceProps> {
 
   /** Cursor is `pointer` when over an active or waiting region (inside the span's extent). */
   private getActiveCursor(): CSSProperties['cursor'] {
-    // A hovered annotation shows the interactive cursor only when it is clickable (Spec 29), and takes
-    // precedence over badge/span cursors since the annotation owns the pointer (ADR 0033).
-    if (this.hoveredAnnotation && this.props.traceSpec?.onAnnotationClick) return 'pointer';
-    // A hovered Span badge shows the interactive cursor only when it is clickable (Spec 27):
-    // hover-only badges report transitions but must not imply activation via the cursor.
-    if (this.hoveredBadge && this.props.traceSpec?.onBadgeClick) return 'pointer';
+    // Badges/annotations become interactive (pointer cursor, keyboard activation) when the consumer
+    // wires the shared `Settings.onElementClick` handler — the single interaction channel in the
+    // reshaped API. A hovered annotation takes precedence over badge/span cursors since it owns the
+    // pointer (ADR 0033).
+    const interactive = this.elementClickIsInteractive();
+    if (this.hoveredAnnotation && interactive) return 'pointer';
+    if (this.hoveredBadge && interactive) return 'pointer';
     if (this.hover.index >= 0 && this.hover.region !== 'empty') return 'pointer';
     return DEFAULT_CSS_CURSOR;
+  }
+
+  /**
+   * True when the consumer supplied a real `Settings.onElementClick` handler (not the stable no-op
+   * fallback), which is what makes badges and annotations interactive in the unified event model.
+   */
+  private elementClickIsInteractive(): boolean {
+    return this.props.onElementClick !== NOOP;
   }
 
   private rebuildTooltip(span: NormalizedSpan, index: number, domainMin: number, region: HoverRegion, segmentIndex: number) {
@@ -1188,47 +1235,35 @@ class TraceComponent extends React.Component<TraceProps> {
   // -------------------------------------------------------------------------
 
   /**
-   * Updates the hovered Span badge from the pointer position and dispatches `onBadgeOver`/`onBadgeOut`
-   * on entry/exit (Spec 27). Returns `true` when a badge is under the pointer — the caller then skips
-   * span hover so the badge owns the pointer (no double-dispatch). A badge event is fired only when a
-   * handler is supplied; the clickable cursor is refreshed via `setState` on any hover change.
+   * Enters a hovered Span badge from a resolved hit, dispatching one `traceBadgeEvent` through
+   * `Settings.onElementOver` on entry (Spec 27). The caller (handleHoverMove) has already cleared
+   * span/annotation hover so the shared `onElementOut` fires before this `onElementOver`. Idempotent
+   * when the same badge is still hovered. The clickable cursor is refreshed via `setState`.
    */
-  private updateBadgeHover(x: number, y: number): boolean {
-    const geom = this.hover.lastGeom;
-    const hit = geom ? pickBadge(x, y, geom) : null;
-    if (!hit) {
-      this.clearHoveredBadge();
-      return false;
-    }
-    const span = geom!.spans[hit.laneIndex];
-    if (!span) {
-      this.clearHoveredBadge();
-      return false;
-    }
+  private enterBadgeHover(hit: BadgePickResult, span: NormalizedSpan, x: number, y: number): void {
     const badgeId = String(hit.item.badge.id);
     const prev = this.hoveredBadge;
-    if (prev && prev.spanId === span.id && prev.badgeId === badgeId) return true; // unchanged
+    if (prev && prev.spanId === span.id && prev.badgeId === badgeId) return; // unchanged
 
     // Entering a different badge: exit the previous one first, then enter the new one.
     this.clearHoveredBadge();
-    this.hoveredBadge = { spanId: span.id, badgeId, item: hit.item, span };
-    this.dispatchBadgeEvent(this.props.traceSpec?.onBadgeOver, hit.item.badge, span, x, y);
+    this.hoveredBadge = { spanId: span.id, badgeId, laneIndex: hit.laneIndex, item: hit.item, span };
+    this.props.onElementOver([this.buildBadgeEvent(hit.item.badge, span, x, y)]);
     // Refresh the cursor (pointer only when clickable). setState is cheap and DOM-only here.
     this.setState({});
-    return true;
   }
 
-  /** Emits one `onBadgeOut` for the currently-hovered badge (if any) and clears the hover state. */
+  /** Emits one `onElementOut` for the currently-hovered badge (if any) and clears the hover state. */
   private clearHoveredBadge(): void {
     const hovered = this.hoveredBadge;
     if (!hovered) return;
     this.hoveredBadge = null;
-    this.dispatchBadgeEvent(this.props.traceSpec?.onBadgeOut, hovered.item.badge, hovered.span, this.hover.pointerX, this.hover.pointerY);
+    this.props.onElementOut();
     this.setState({});
   }
 
   /**
-   * Emits one `onBadgeOut` if the hovered badge is no longer present/visible in `geom` (Spec 27) —
+   * Emits one `onElementOut` if the hovered badge is no longer present/visible in `geom` (Spec 27) —
    * e.g. a data/spec change removed it or scrolled it out of the laid-out range. Called once per
    * frame with the freshly-built geometry.
    */
@@ -1236,27 +1271,20 @@ class TraceComponent extends React.Component<TraceProps> {
     const hovered = this.hoveredBadge;
     if (!hovered) return;
     // Identity is by badge object reference (retained through the pipeline), so a re-derived badge
-    // with the same id but a new object also counts as "removed" and correctly emits one onBadgeOut.
-    const stillVisible = [...geom.badgesByLane.values()].some((lane) =>
-      lane.items.some((item) => item.badge === hovered.item.badge),
-    );
+    // with the same id but a new object also counts as "removed" and correctly emits one onElementOut.
+    const lane = geom.badgesByLane.get(hovered.laneIndex);
+    const stillVisible = lane ? lane.items.some((item) => item.badge === hovered.item.badge) : false;
     if (!stillVisible) this.clearHoveredBadge();
   }
 
-  /**
-   * Dispatches a pointer-source badge event to `handler` (a no-op when no handler is supplied). The
-   * caller's original `badge` and its opaque `meta` are returned by reference; pointer coordinates
-   * are chart-relative px. Used for `onBadgeOver`/`onBadgeOut`/pointer `onBadgeClick`.
-   */
-  private dispatchBadgeEvent(
-    handler: ((event: TraceSpanBadgeEvent) => void) | undefined,
+  /** Builds a pointer-source {@link TraceBadgeElementEvent} (carries chart-relative coordinates). */
+  private buildBadgeEvent(
     badge: BadgeLayoutItem['badge'],
     span: NormalizedSpan,
     chartX: number,
     chartY: number,
-  ): void {
-    if (!handler) return;
-    handler({ source: 'pointer', badge, span: buildTraceSpanBadgeEventSpan(span), chartX, chartY });
+  ): TraceBadgeElementEvent {
+    return buildTraceBadgeEvent(badge, span, { chartX, chartY });
   }
 
   // -------------------------------------------------------------------------
@@ -1264,42 +1292,34 @@ class TraceComponent extends React.Component<TraceProps> {
   // -------------------------------------------------------------------------
 
   /**
-   * Updates the hovered annotation from the pointer position and dispatches `onAnnotationOver`/
-   * `onAnnotationOut` on entry/exit (Spec 29). Returns `true` when an annotation is under the pointer —
-   * the caller then skips badge and span hover so the annotation owns the pointer (no double-dispatch,
-   * annotation-first precedence per ADR 0033). An event is fired only when a handler is supplied; the
-   * clickable cursor is refreshed via `setState` on any hover change.
+   * Enters a hovered annotation from a resolved hit, dispatching one `traceAnnotationEvent` through
+   * `Settings.onElementOver` on entry (Spec 29). The caller (handleHoverMove) has already cleared
+   * span/badge hover so the shared `onElementOut` fires before this `onElementOver`. Idempotent when
+   * the same annotation is still hovered. The clickable cursor is refreshed via `setState`.
    */
-  private updateAnnotationHover(x: number, y: number): boolean {
-    const geom = this.hover.lastGeom;
-    const hit = geom ? pickAnnotation(x, y, geom) : null;
-    if (!hit) {
-      this.clearHoveredAnnotation();
-      return false;
-    }
+  private enterAnnotationHover(hit: AnnotationLayoutItem, x: number, y: number): void {
     const prev = this.hoveredAnnotation;
-    if (prev && prev.id === hit.id) return true; // unchanged — same annotation still owns the pointer
+    if (prev && prev.id === hit.id) return; // unchanged — same annotation still owns the pointer
 
     // Entering a different annotation: exit the previous one first, then enter the new one.
     this.clearHoveredAnnotation();
     this.hoveredAnnotation = { id: hit.id, item: hit };
-    this.dispatchAnnotationEvent(this.props.traceSpec?.onAnnotationOver, hit, x, y);
+    this.props.onElementOver([buildTraceAnnotationEvent(hit.annotation, { chartX: x, chartY: y })]);
     // Refresh the cursor (pointer only when clickable). setState is cheap and DOM-only here.
     this.setState({});
-    return true;
   }
 
-  /** Emits one `onAnnotationOut` for the currently-hovered annotation (if any) and clears the state. */
+  /** Emits one `onElementOut` for the currently-hovered annotation (if any) and clears the state. */
   private clearHoveredAnnotation(): void {
     const hovered = this.hoveredAnnotation;
     if (!hovered) return;
     this.hoveredAnnotation = null;
-    this.dispatchAnnotationEvent(this.props.traceSpec?.onAnnotationOut, hovered.item, this.hover.pointerX, this.hover.pointerY);
+    this.props.onElementOut();
     this.setState({});
   }
 
   /**
-   * Emits one `onAnnotationOut` if the hovered annotation is no longer present in `geom` (Spec 29) —
+   * Emits one `onElementOut` if the hovered annotation is no longer present in `geom` (Spec 29) —
    * e.g. a data/spec change removed it or it was culled from the laid-out (visible) set. Called once
    * per frame with the freshly-built geometry. Identity is by annotation id.
    */
@@ -1310,24 +1330,23 @@ class TraceComponent extends React.Component<TraceProps> {
     if (!stillVisible) this.clearHoveredAnnotation();
   }
 
-  /**
-   * Dispatches a pointer-source annotation event to `handler` (a no-op when no handler is supplied).
-   * The caller's original annotation `meta` is returned by reference; pointer coordinates are
-   * chart-relative px. Used for `onAnnotationOver`/`onAnnotationOut`/pointer `onAnnotationClick`.
-   */
-  private dispatchAnnotationEvent(
-    handler: ((event: TraceAnnotationEvent) => void) | undefined,
-    item: AnnotationLayoutItem,
-    chartX: number,
-    chartY: number,
-  ): void {
-    if (!handler) return;
-    handler(buildTraceAnnotationEvent(item.annotation, 'pointer', { chartX, chartY }));
-  }
-
   // -------------------------------------------------------------------------
   // Shared selection / pin helpers (used by both mouse and touch handlers)
   // -------------------------------------------------------------------------
+
+  /**
+   * Converts an internal {@link PickResult} region+segmentIndex (which uses `-1` for "no segment")
+   * into a public {@link TraceSegmentRef}. Span/empty regions become a span-level ref with no
+   * `segmentIndex`; active/waiting regions carry the concrete index (dropping the `-1` sentinel so it
+   * never leaks into the public selection model). Type-guarding `region` here replaces an unchecked
+   * cast (types-hygiene).
+   */
+  private buildSegmentRef(spanId: string, region: HoverRegion, segmentIndex: number): TraceSegmentRef {
+    if ((region === 'active' || region === 'waiting') && segmentIndex >= 0) {
+      return { spanId, region, segmentIndex };
+    }
+    return { spanId, region: 'span' };
+  }
 
   private commitSegmentSelection(result: PickResult | null, geom: NonNullable<HoverState['lastGeom']>, mode: ReturnType<typeof selectionModeFromEvent>) {
     const isHit = result && result.index >= 0 && result.region !== 'empty';
@@ -1339,15 +1358,10 @@ class TraceComponent extends React.Component<TraceProps> {
       const span = geom.spans[result.index];
       if (!span) { next = mode === 'replace' ? [] : current; }
       else {
-        const ref: TraceSegmentRef = {
-          spanId: span.id,
-          region: result.region as TraceSegmentRef['region'],
-          segmentIndex: result.segmentIndex,
-        };
-        next = applySelection(current, ref, mode);
+        next = applySelection(current, this.buildSegmentRef(span.id, result.region, result.segmentIndex), mode);
       }
     }
-    this.selection = next;
+    this.setLocalSelection(next);
     this.fireSelectionChange(next);
     this.scheduleRender?.();
   }
@@ -1357,7 +1371,7 @@ class TraceComponent extends React.Component<TraceProps> {
     const span = geom.spans[result.index];
     if (!span) return;
 
-    const ref: TraceSegmentRef = { spanId: span.id, region: 'span', segmentIndex: -1 };
+    const ref: TraceSegmentRef = { spanId: span.id, region: 'span' };
     const current = this.getEffectiveSelection();
     const next = applySelection(current, ref, mode);
 
@@ -1374,7 +1388,7 @@ class TraceComponent extends React.Component<TraceProps> {
       }
     }
 
-    this.selection = next;
+    this.setLocalSelection(next);
     this.fireSelectionChange(next);
     this.scheduleRender?.();
   }
@@ -1400,11 +1414,12 @@ class TraceComponent extends React.Component<TraceProps> {
     if (caretLane < 0) return false;
     const caretSpan = this.hover.lastGeom.spans[caretLane];
     if (!caretSpan) return false;
-    const next = new Set(this.collapsed);
+    // Read the effective (controlled prop or local) collapsed set, not the local field, so a
+    // controlled toggle computes the next set from the source of truth (plan controlled-state-fixes).
+    const next = new Set(this.getEffectiveCollapsed());
     const willCollapse = !next.has(caretSpan.id);
     if (willCollapse) next.add(caretSpan.id); else next.delete(caretSpan.id);
-    this.collapsed = next;
-    this.collapseCache = null;
+    this.setLocalCollapsed(next);
     this.fireCollapseChange(next);
     if (this.ariaLiveRef.current) {
       const descCount = this.hover.lastGeom.disclosureByLane.get(caretLane)?.descendantCount ?? 0;
@@ -1589,23 +1604,33 @@ class TraceComponent extends React.Component<TraceProps> {
     this.handleHoverMove = (e: MouseEvent) => {
       if (e.buttons === 1) return; // dragging → window handler owns it
       if (!this.hover.lastGeom) return;
-      this.hover.pointerX = zoomSafePointerX(e); // canvas-relative CSS px, DPR-agnostic → matches geom units
-      this.hover.pointerY = zoomSafePointerY(e);
-      // Annotations own the pointer first (Spec 29 / ADR 0033): when one is under the cursor, dispatch
-      // annotation hover and suppress the underlying badge and span hover so a single transition never
-      // double-dispatches. Checked before badges.
-      if (this.updateAnnotationHover(this.hover.pointerX, this.hover.pointerY)) {
-        this.clearHoveredBadge();
-        this.updateHover(null);
+      const px = (this.hover.pointerX = zoomSafePointerX(e)); // canvas-relative CSS px, DPR-agnostic → matches geom units
+      const py = (this.hover.pointerY = zoomSafePointerY(e));
+      const geom = this.hover.lastGeom;
+      // Resolve which drawn element owns the pointer before emitting anything. Precedence:
+      // annotation > badge > span (Spec 29 / ADR 0033, then Spec 27). Because badge/annotation/span
+      // hover all funnel through the shared `Settings.onElementOver`/`onElementOut` channel, we must
+      // clear the lower-priority hovers (each emitting at most one `onElementOut`) BEFORE emitting the
+      // owner's `onElementOver`, so a single transition never emits an over followed by a stray out.
+      const annHit = geom.annotationsLayout.length > 0 ? pickAnnotation(px, py, geom) : null;
+      if (annHit) {
+        this.updateHover(null); // span out (idempotent)
+        this.clearHoveredBadge(); // badge out (idempotent)
+        this.enterAnnotationHover(annHit, px, py); // annotation over (or unchanged)
         return;
       }
-      // Span badges own the pointer (Spec 27): when one is under the cursor, dispatch badge hover and
-      // suppress the underlying span hover so the two never double-dispatch for the same transition.
-      if (this.updateBadgeHover(this.hover.pointerX, this.hover.pointerY)) {
-        this.updateHover(null);
+      this.clearHoveredAnnotation(); // annotation out if one was hovered
+
+      const badgeHit = geom.badgesByLane.size > 0 ? pickBadge(px, py, geom) : null;
+      const badgeSpan = badgeHit ? geom.spans[badgeHit.laneIndex] : undefined;
+      if (badgeHit && badgeSpan) {
+        this.updateHover(null); // span out (idempotent)
+        this.enterBadgeHover(badgeHit, badgeSpan, px, py); // badge over (or unchanged)
         return;
       }
-      this.updateHover(pickRegion(this.hover.pointerX, this.hover.pointerY, this.hover.lastGeom));
+      this.clearHoveredBadge(); // badge out if one was hovered
+
+      this.updateHover(pickRegion(px, py, geom));
     };
 
     // Click: only fires for genuine clicks — not for pan-then-release (dragMoved guards this).
@@ -1628,15 +1653,16 @@ class TraceComponent extends React.Component<TraceProps> {
         this.annotationPointerDown = null;
         if (ap) {
           if (adown && adown.id === ap.id) {
-            this.props.traceSpec.onAnnotationClick?.(buildTraceAnnotationEvent(ap.annotation, 'pointer', { chartX: cx, chartY: cy }));
+            this.props.onElementClick([buildTraceAnnotationEvent(ap.annotation, { chartX: cx, chartY: cy })]);
           }
           return;
         }
       }
 
       // Span badge activation (Spec 27): a badge owns the click. When pointer-down and pointer-up
-      // resolved to the same badge (no drag — guarded above), fire `onBadgeClick`; either way the
-      // click is consumed and never falls through to the span click / selection machinery.
+      // resolved to the same badge (no drag — guarded above), fire `Settings.onElementClick` with a
+      // `traceBadgeEvent`; either way the click is consumed and never falls through to the span click /
+      // selection machinery.
       if (this.hover.lastGeom.badgesByLane.size > 0) {
         const bp = pickBadge(cx, cy, this.hover.lastGeom);
         const down = this.badgePointerDown;
@@ -1644,13 +1670,7 @@ class TraceComponent extends React.Component<TraceProps> {
         if (bp) {
           const span = this.hover.lastGeom.spans[bp.laneIndex];
           if (span && down && down.spanId === span.id && down.badgeId === String(bp.item.badge.id)) {
-            this.props.traceSpec.onBadgeClick?.({
-              source: 'pointer',
-              badge: bp.item.badge,
-              span: buildTraceSpanBadgeEventSpan(span),
-              chartX: cx,
-              chartY: cy,
-            });
+            this.props.onElementClick([this.buildBadgeEvent(bp.item.badge, span, cx, cy)]);
           }
           return;
         }
@@ -1722,8 +1742,9 @@ class TraceComponent extends React.Component<TraceProps> {
 
     this.handleKeyUp = ({ key }: KeyboardEvent) => {
       if (key !== 'Escape') return;
-      window.removeEventListener('keyup', this.handleKeyUp!);
-      this.unpinTooltip();
+      // Route through the single unpin path so every window listener (keyup/click/visibilitychange)
+      // added in pinAt is removed — unpinning directly here leaked the click/visibilitychange pair.
+      this.handleUnpinningTooltip?.();
     };
 
     this.handleUnpinningTooltip = () => {
@@ -1828,11 +1849,11 @@ class TraceComponent extends React.Component<TraceProps> {
             // Keyboard: whole-span selection — plain = replace (aligns spec-13 line 102, G3).
             // Shift = additive, Cmd(Mac)/Ctrl(other) = toggle (G2 normalisation).
             // No clickTimer needed — keyboard has no double-click ambiguity.
-            const ref: TraceSegmentRef = { spanId: span.id, region: 'span', segmentIndex: -1 };
+            const ref: TraceSegmentRef = { spanId: span.id, region: 'span' };
             const current = this.getEffectiveSelection();
             const mode = selectionModeFromEvent(e);
             const next = applySelection(current, ref, mode);
-            this.selection = next;
+            this.setLocalSelection(next);
             this.fireSelectionChange(next);
             // Announce keyboard-initiated selection via aria-live (G4). Mouse stays silent.
             if (this.ariaLiveRef.current) {
@@ -1861,11 +1882,10 @@ class TraceComponent extends React.Component<TraceProps> {
           const focusedSpan = geom.spans[this.focusedLaneIndex];
           if (focusedSpan && geom.disclosureByLane?.has(this.focusedLaneIndex)) {
             const spanId = focusedSpan.id;
-            const next = new Set(this.collapsed);
+            const next = new Set(this.getEffectiveCollapsed());
             const willCollapse = !next.has(spanId);
             if (willCollapse) next.add(spanId); else next.delete(spanId);
-            this.collapsed = next;
-            this.collapseCache = null;
+            this.setLocalCollapsed(next);
             this.fireCollapseChange(next);
             if (this.ariaLiveRef.current) {
               const descendantCount = geom.disclosureByLane.get(this.focusedLaneIndex)?.descendantCount ?? 0;
@@ -1879,11 +1899,13 @@ class TraceComponent extends React.Component<TraceProps> {
       } else if (e.key === 'Escape') {
         e.preventDefault();
         this.focusedLaneIndex = null;
-        this.unpinTooltip(); // idempotent — existing window keyup unpin (Spec 10) is a no-op after this
+        // Route through the single unpin path so the window listeners are removed (idempotent when
+        // not pinned — the removeEventListener calls are no-ops and pinTooltip(false) unpins).
+        this.handleUnpinningTooltip?.();
         // Clear selection on Escape (ADR 0011 / plan step 8).
         const current = this.getEffectiveSelection();
         if (current.length > 0) {
-          this.selection = [];
+          this.setLocalSelection([]);
           this.fireSelectionChange([]);
           // Announce keyboard-initiated selection clear via aria-live (G4).
           if (this.ariaLiveRef.current) {
@@ -2076,7 +2098,7 @@ class TraceComponent extends React.Component<TraceProps> {
         if (geomSnapshot && geomSnapshot.annotationsLayout.length > 0) {
           const ap = pickAnnotation(x, y, geomSnapshot);
           if (ap) {
-            this.props.traceSpec?.onAnnotationClick?.(buildTraceAnnotationEvent(ap.annotation, 'pointer', { chartX: x, chartY: y }));
+            this.props.onElementClick([buildTraceAnnotationEvent(ap.annotation, { chartX: x, chartY: y })]);
             this.touch.tapStart = null;
             return;
           }
@@ -2089,13 +2111,7 @@ class TraceComponent extends React.Component<TraceProps> {
           if (bp) {
             const span = geomSnapshot.spans[bp.laneIndex];
             if (span) {
-              this.props.traceSpec?.onBadgeClick?.({
-                source: 'pointer',
-                badge: bp.item.badge,
-                span: buildTraceSpanBadgeEventSpan(span),
-                chartX: x,
-                chartY: y,
-              });
+              this.props.onElementClick([this.buildBadgeEvent(bp.item.badge, span, x, y)]);
             }
             this.touch.tapStart = null;
             return;
@@ -2278,11 +2294,13 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     a11ySettings: getA11ySettingsSelector(state),
     tooltipRequired: getTooltipSpecSelector(state).type !== TooltipType.None,
 
-    // mandatory charts API protocol; todo extract these mappings once there are other charts like Trace
-    onElementOver: settingsSpec.onElementOver ?? (() => {}),
-    onElementClick: settingsSpec.onElementClick ?? (() => {}),
-    onElementOut: settingsSpec.onElementOut ?? (() => {}),
-    onRenderChange: settingsSpec.onRenderChange ?? (() => {}), // todo eventually also update data props on a local .echChartStatus element: data-ech-render-complete={rendered} data-ech-render-count={renderedCount} data-ech-debug-state={debugStateString}
+    // mandatory charts API protocol; todo extract these mappings once there are other charts like Trace.
+    // Fall back to the module-level stable NOOP (not a fresh arrow) so `connect` doesn't see changed
+    // props on unrelated redux churn, and so `elementClickIsInteractive()` can identity-compare.
+    onElementOver: settingsSpec.onElementOver ?? NOOP,
+    onElementClick: settingsSpec.onElementClick ?? NOOP,
+    onElementOut: settingsSpec.onElementOut ?? NOOP,
+    onRenderChange: settingsSpec.onRenderChange ?? NOOP, // todo eventually also update data props on a local .echChartStatus element: data-ech-render-complete={rendered} data-ech-render-count={renderedCount} data-ech-debug-state={debugStateString}
   };
 };
 
@@ -2290,6 +2308,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators(
     {
       onChartRendered,
+      setTraceUncontrolledCollapsed,
     },
     dispatch,
   );

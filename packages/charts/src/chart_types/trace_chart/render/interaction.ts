@@ -129,8 +129,13 @@ export function mapTouchesToCanvasX(e: TouchEvent, rectLeft: number): Multitouch
  */
 export function pinchRatio(prev: Multitouch, next: Multitouch): number {
   // Caller guarantees exactly 2 touches in both arrays.
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return (prev[1]!.position - prev[0]!.position) / (next[1]!.position - next[0]!.position);
+  /* eslint-disable @typescript-eslint/no-non-null-assertion */
+  const nextSpread = next[1]!.position - next[0]!.position;
+  // Coincident current touches (spread 0) would yield ±Infinity/NaN and blow up the zoom math;
+  // treat it as no scale change so the gesture is a no-op until the fingers separate again.
+  if (nextSpread === 0) return 1;
+  return (prev[1]!.position - prev[0]!.position) / nextSpread;
+  /* eslint-enable @typescript-eslint/no-non-null-assertion */
 }
 
 /**

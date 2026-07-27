@@ -68,6 +68,29 @@ type SpanMeta = {
 export type TraceColorAccessor = (datum: TraceDatum) => string | undefined;
 
 /**
+ * Declarative color-group descriptor for OTel data — the ergonomic form of the built-in
+ * {@link colorByOtelAttribute} / {@link colorByOtelKind} helpers. Unlike a bare attribute string
+ * (rejected in ADR 0006 as ambiguous), each member is an explicit, self-describing shape:
+ *
+ * - `{ otelAttribute: 'service.name' }` — group by an OTel attribute (span-level, then resource-level).
+ * - `{ otelKind: true }` — group by OTel span kind.
+ *
+ * Descriptors are compared **by value** internally, so an inline literal
+ * (`colorBy={{ otelAttribute: 'service.name' }}`) is safe: it does not rebuild the color map on
+ * every render the way a fresh arrow function would.
+ * @public
+ */
+export type TraceColorByDescriptor = { otelAttribute: string } | { otelKind: true };
+
+/**
+ * Accepted forms for {@link TraceSpec.colorBy}: a {@link TraceColorAccessor} function (compared by
+ * reference — pass a stable/memoized ref) or a declarative {@link TraceColorByDescriptor} (compared
+ * by value — inline literals are safe).
+ * @public
+ */
+export type TraceColorBy = TraceColorAccessor | TraceColorByDescriptor;
+
+/**
  * A single active-execution segment within a span.
  *
  * Segments sharing the same `label` are assigned the same palette color (cyclic index into
@@ -126,35 +149,28 @@ export interface TraceDatum {
 }
 
 /**
- * Identity of one selected segment (thin — used in the controlled `selection` prop).
+ * Format-agnostic identity, timing, and provenance fields for one resolved span. Reused wherever a
+ * span is reported — the `span` field of {@link TraceElementEvent}, {@link TraceBadgeElementEvent},
+ * {@link TraceAnnotationElementEvent}, and {@link TraceSelectionDetail} — so consumers learn one shape.
+ * The original {@link TraceDatum} is always available via `datum` (for {@link fromOtlp} data, the
+ * underlying `OtelSpan` is on `datum.meta`).
  * @public
  */
-export interface TraceSegmentRef {
-  spanId: string;
-  /** `'span'` = whole span selected (double-click). `'active'` | `'waiting'` = one segment. */
-  region: 'span' | 'active' | 'waiting';
-  /** 0-based index into `span.activeSegments` or `waitingSegments(span)`. -1 when `region === 'span'`. */
-  segmentIndex: number;
-}
-
-/** Array of selected refs. Empty array = nothing selected. @public */
-export type TraceSelection = TraceSegmentRef[];
-
-/**
- * Rich per-entry detail fired via `onSelectionChange`. Carries all tooltip-equivalent data so
- * consumers don't need to re-derive durations. See ADR 0011 Decision 3.
- * @public
- */
-export interface TraceSelectionDetail {
-  spanId: string;
+export interface TraceSpanInfo {
+  id: string;
   name: string;
   parentId?: string;
   traceId?: string;
-  /** Span start, rezeroed in `'linear'` mode. */
+  /**
+   * Span start in ms. In `xScaleType: 'linear'` mode this is elapsed-from-zero (rezeroed to the
+   * earliest span start), not the original `TraceDatum.start`.
+   */
   start: number;
-  /** Span end, same caveat. */
+  /** Span end in ms. Same rezeroing caveat as `start`. */
   end: number;
+  /** `end - start`. */
   duration: number;
+  /** Sum of active-segment durations (self time, per ADR 0003). */
   selfTime: number;
   /** Present when the reported timing fields were adjusted to correct detected clock skew. */
   skewCorrected?: true;
@@ -168,9 +184,39 @@ export interface TraceSelectionDetail {
    * Absent when the orphan is itself used as the display root. `parentId` remains the recorded value.
    */
   reparentedToSpanId?: string;
+  /** The original `TraceDatum`. */
   datum: TraceDatum;
+}
+
+/**
+ * Identity of one selected segment (thin — used in the controlled `selection` prop).
+ * @public
+ */
+export interface TraceSegmentRef {
+  spanId: string;
+  /** `'span'` = whole span selected (double-click). `'active'` | `'waiting'` = one segment. */
   region: 'span' | 'active' | 'waiting';
-  segmentIndex: number;
+  /**
+   * 0-based index into `span.activeSegments` or `waitingSegments(span)`. Omitted (`undefined`) when
+   * `region === 'span'` (whole-span selection has no segment index).
+   */
+  segmentIndex?: number;
+}
+
+/** Array of selected refs. Empty array = nothing selected. @public */
+export type TraceSelection = TraceSegmentRef[];
+
+/**
+ * Rich per-entry detail fired via `onSelectionChange`. Carries all tooltip-equivalent data so
+ * consumers don't need to re-derive durations. See ADR 0011 Decision 3.
+ * @public
+ */
+export interface TraceSelectionDetail {
+  /** The selected span's identity, timing, and provenance. */
+  span: TraceSpanInfo;
+  region: 'span' | 'active' | 'waiting';
+  /** Omitted when `region === 'span'`. */
+  segmentIndex?: number;
   /** Present when `region !== 'span'`. */
   segmentStart?: number;
   segmentEnd?: number;
@@ -259,7 +305,7 @@ export interface TraceSpanBadge {
    */
   visibleIn?: readonly ('gutter' | 'inline' | 'none')[];
   /**
-   * Opaque consumer metadata returned by reference in {@link TraceSpanBadgeEvent}. Charts never
+   * Opaque consumer metadata returned by reference in {@link TraceBadgeElementEvent}. Charts never
    * inspects, clones, serializes, diffs, or validates this payload.
    */
   meta?: unknown;
@@ -274,63 +320,9 @@ export interface TraceSpanBadge {
 export type TraceSpanBadgeAccessor = (datum: TraceDatum) => readonly TraceSpanBadge[];
 
 /**
- * The owning-span metadata reported alongside a Span badge in {@link TraceSpanBadgeEvent}. Mirrors
- * the span fields of a trace element event so consumers get span-level context without a second lookup.
- * @public
- */
-export interface TraceSpanBadgeEventSpan {
-  id: string;
-  name: string;
-  parentId?: string;
-  traceId?: string;
-  /** Span start in ms (elapsed-from-zero in `'linear'` mode). */
-  start: number;
-  /** Span end in ms (same rezeroing caveat as `start`). */
-  end: number;
-  /** `end - start`. */
-  duration: number;
-  /** Sum of active-segment durations (self time, per ADR 0003). */
-  selfTime: number;
-  /** Present when the reported timing fields were adjusted to correct detected clock skew. */
-  skewCorrected?: true;
-  /** Present when this span's recorded parent is absent from its selected trace data (Spec 26). */
-  orphaned?: true;
-  /** The synthetic display parent this orphan was placed under, when applicable. */
-  reparentedToSpanId?: string;
-  /** The original `TraceDatum`. */
-  datum: TraceDatum;
-}
-
-/**
- * Reports the resolved Span badge and its owning span metadata. Source-discriminated: pointer-origin
- * events include chart-relative coordinates; keyboard-origin activation events do not synthesize
- * coordinates. Raw native DOM events are not exposed in v1. See Spec 27.
- * @public
- */
-export type TraceSpanBadgeEvent =
-  | {
-      /** Pointer-origin transition or activation. */
-      source: 'pointer';
-      /** The resolved badge, including its `meta`, returned by reference. */
-      badge: TraceSpanBadge;
-      /** The owning span's metadata. */
-      span: TraceSpanBadgeEventSpan;
-      /** Chart-relative x coordinate in px (pointer source only). */
-      chartX: number;
-      /** Chart-relative y coordinate in px (pointer source only). */
-      chartY: number;
-    }
-  | {
-      /** Keyboard-origin activation (no synthesized coordinates). */
-      source: 'keyboard';
-      badge: TraceSpanBadge;
-      span: TraceSpanBadgeEventSpan;
-    };
-
-/**
  * Discriminates the three Trace annotation kinds. `'time'` marks an x-scale position/range;
  * `'lane'` marks one resolved span lane; `'hierarchy'` marks the visible root-to-target route for one
- * resolved span. Reported on {@link TraceAnnotationEvent} so a single handler family can branch by kind.
+ * resolved span. Reported on {@link TraceAnnotationElementEvent} so a single handler family can branch by kind.
  * @public
  */
 export type TraceAnnotationType = 'time' | 'lane' | 'hierarchy';
@@ -363,7 +355,7 @@ export type TraceAnnotationDatum = {
    */
   ariaLabel?: string;
   /**
-   * Opaque consumer metadata returned by reference in {@link TraceAnnotationEvent}. Charts never
+   * Opaque consumer metadata returned by reference in {@link TraceAnnotationElementEvent}. Charts never
    * inspects, clones, serializes, diffs, or validates this payload.
    */
   meta?: unknown;
@@ -434,37 +426,6 @@ export interface TraceHierarchyAnnotationSpec extends TraceAnnotationSpecBase {
 export type TraceAnnotationSpec = TraceTimeAnnotationSpec | TraceLaneAnnotationSpec | TraceHierarchyAnnotationSpec;
 
 /**
- * Reports a resolved Trace annotation and, when applicable, its related span metadata (lane and
- * hierarchy annotations). Source-discriminated: pointer-origin events include chart-relative
- * coordinates; keyboard-origin activation events do not synthesize coordinates. Raw native DOM events
- * are not exposed in v1. Carries a `type` discriminator so one handler family covers all kinds. See
- * Spec 29.
- * @public
- */
-export type TraceAnnotationEvent =
-  | {
-      /** Pointer-origin transition or activation. */
-      source: 'pointer';
-      /** The annotation kind. */
-      type: TraceAnnotationType;
-      /** The resolved annotation, including its `meta`, returned by reference. */
-      annotation: TraceAnnotationDatum;
-      /** Related span metadata for `'lane'` / `'hierarchy'` annotations; absent for `'time'`. */
-      span?: TraceSpanBadgeEventSpan;
-      /** Chart-relative x coordinate in px (pointer source only). */
-      chartX: number;
-      /** Chart-relative y coordinate in px (pointer source only). */
-      chartY: number;
-    }
-  | {
-      /** Keyboard-origin activation (no synthesized coordinates). */
-      source: 'keyboard';
-      type: TraceAnnotationType;
-      annotation: TraceAnnotationDatum;
-      span?: TraceSpanBadgeEventSpan;
-    };
-
-/**
  * Spec for the Trace chart. Add one `<Trace>` inside a `<Chart>` to render a waterfall visualization.
  * @public
  */
@@ -482,7 +443,11 @@ export interface TraceSpec extends Spec {
    * floor. When using `'time'`, ensure your `start`/`end` values are epoch-millisecond timestamps
    * (e.g. `Date.now()`); small elapsed-ms values are interpreted as 1970-01-01 dates. Use `fromOtlp`
    * (which converts OTLP nanoseconds to epoch-ms) or add your own epoch offset.
-   * @defaultValue 'time'
+   *
+   * Defaults to `'linear'` so arbitrary elapsed-ms data renders sensibly out of the box; epoch-ms
+   * data (including `fromOtlp` output) should opt into `'time'` for wall-clock tick labels — though
+   * `'linear'` still renders epoch-ms correctly as elapsed-from-zero.
+   * @defaultValue 'linear'
    */
   xScaleType: 'time' | 'linear';
   /**
@@ -496,8 +461,11 @@ export interface TraceSpec extends Spec {
    * Message drawn centered on the canvas when `traceId` is set but matches no spans
    * (the trace-not-found empty state). The time bar and axis still render around it.
    *
-   * Note: this is a plain string, not a ReactNode — it is drawn directly on the canvas.
-   * `Settings.noResults` (which handles the separate no-data empty state) does not apply here.
+   * **Intentional divergence from `Settings.noResults` (which accepts a `ReactNode`):** this is a
+   * plain `string`, not a `ReactNode`, because the trace-not-found state is painted on the chart
+   * canvas (`fillText`) rather than composed as DOM (ADR 0019 — the chart owns this empty state).
+   * A `ReactNode` cannot be rendered onto a 2D canvas, so a string is the honest type here. Callers
+   * needing rich empty-state DOM should detect emptiness themselves and render their own overlay.
    * @defaultValue 'No spans found for trace "<traceId>"'
    */
   traceNotFoundMessage?: string;
@@ -513,13 +481,18 @@ export interface TraceSpec extends Spec {
    * key receive the same palette color (cyclic index into `theme.colors.vizColors`). Return
    * `undefined` to fall through to the themed `activeSegmentColor` default.
    *
-   * Use the built-in helpers {@link colorByOtelAttribute} or {@link colorByOtelKind} for OTel data,
-   * or supply a custom function. Pass a **module-level or memoized reference** — a fresh arrow per
-   * render will rebuild the color map on every pipeline pass.
+   * Accepts either:
+   * - a declarative {@link TraceColorByDescriptor} — `{ otelAttribute: 'service.name' }` or
+   *   `{ otelKind: true }` — for OTel data. Descriptors are compared by value, so an **inline
+   *   literal is safe** and does not rebuild the color map each render; or
+   * - a {@link TraceColorAccessor} function (the built-in {@link colorByOtelAttribute} /
+   *   {@link colorByOtelKind} helpers return one, or supply your own). Functions are compared by
+   *   reference, so pass a **module-level or memoized reference** — a fresh arrow per render will
+   *   rebuild the color map on every pipeline pass.
    *
    * Precedence per span: explicit `TraceDatum.color` \> color-group color \> themed default.
    */
-  colorBy?: TraceColorAccessor;
+  colorBy?: TraceColorBy;
   /**
    * Controls the order in which spans are assigned to lanes (top → bottom).
    *
@@ -638,16 +611,17 @@ export interface TraceSpec extends Spec {
    * @defaultValue 'm'
    */
   badgeSize?: TraceSpanBadgeSize;
-  /** Reports pointer entry for a Span badge. Optional and independent of `onBadgeClick`. */
-  onBadgeOver?: (event: TraceSpanBadgeEvent) => void;
-  /** Reports pointer exit for a Span badge. Optional and independent of `onBadgeClick`. */
-  onBadgeOut?: (event: TraceSpanBadgeEvent) => void;
   /**
-   * Reports activation of a Span badge (pointer down+up on the same badge, or keyboard activation).
-   * When supplied, badges become interactive: pointer targets use an interactive cursor and the badge
-   * is exposed as a keyboard-activatable control in the screen-reader surface.
+   * Controls how each span's bar is drawn:
+   * - `'segments'` (**default**): a thin total line across the full `[start, end]` extent with solid
+   *   active segments inside it (self-time-derived unless `activeSegments` is supplied). See ADR 0003.
+   * - `'duration'`: the full `[start, end]` extent is filled with the span's color-group color as a
+   *   single duration bar (the Kibana APM waterfall look). `activeSegments` remain self-time-derived
+   *   internally, so `selfTime` in the tooltip, element events, selection details, and the
+   *   screen-reader table stay correct — only the visual treatment changes. See ADR 0035.
+   * @defaultValue 'segments'
    */
-  onBadgeClick?: (event: TraceSpanBadgeEvent) => void;
+  spanDisplay?: 'segments' | 'duration';
   /**
    * Called with a structured {@link TraceDataDiagnostics} report describing malformed, corrected,
    * omitted, or invalid trace input found while preparing the visible output (Spec 28). This is the
@@ -661,16 +635,6 @@ export interface TraceSpec extends Spec {
    * does not emit (the canvas is unmounted).
    */
   onDataDiagnosticsChange?: (diagnostics: TraceDataDiagnostics) => void;
-  /** Reports pointer entry for an interactive Trace annotation. Optional and independent of the others. */
-  onAnnotationOver?: (event: TraceAnnotationEvent) => void;
-  /** Reports pointer exit for an interactive Trace annotation. Optional and independent of the others. */
-  onAnnotationOut?: (event: TraceAnnotationEvent) => void;
-  /**
-   * Reports activation of a Trace annotation (pointer down+up on the same annotation, or keyboard
-   * activation). When supplied, annotations become interactive: pointer targets use an interactive
-   * cursor and the annotation is exposed as a keyboard-activatable control in the screen-reader surface.
-   */
-  onAnnotationClick?: (event: TraceAnnotationEvent) => void;
 }
 
 const buildProps = buildSFProps<TraceSpec>()(
@@ -679,7 +643,7 @@ const buildProps = buildSFProps<TraceSpec>()(
     specType: SpecType.Series,
   },
   {
-    xScaleType: 'time',
+    xScaleType: 'linear',
   },
 );
 
@@ -845,6 +809,31 @@ export function colorByOtelKind(): TraceColorAccessor {
     const span = datum.meta as SpanMeta | undefined;
     return span?.kind !== null && span?.kind !== undefined ? String(span.kind) : undefined;
   };
+}
+
+/**
+ * Resolves a {@link TraceColorBy} (function or descriptor) into a concrete {@link TraceColorAccessor},
+ * or `undefined` when no `colorBy` is set. A descriptor is turned into the matching built-in helper.
+ * @internal
+ */
+export function resolveTraceColorBy(colorBy: TraceColorBy | undefined): TraceColorAccessor | undefined {
+  if (colorBy === undefined) return undefined;
+  if (typeof colorBy === 'function') return colorBy;
+  if ('otelAttribute' in colorBy) return colorByOtelAttribute(colorBy.otelAttribute);
+  return colorByOtelKind();
+}
+
+/**
+ * Equality for {@link TraceColorBy} used by the pipeline cache: functions compare by reference
+ * (a fresh arrow is a new accessor); descriptors compare by value (so inline literals are stable).
+ * @internal
+ */
+export function traceColorByEqual(a: TraceColorBy | undefined, b: TraceColorBy | undefined): boolean {
+  if (a === b) return true;
+  if (a === undefined || b === undefined) return false;
+  if (typeof a === 'function' || typeof b === 'function') return a === b;
+  if ('otelAttribute' in a && 'otelAttribute' in b) return a.otelAttribute === b.otelAttribute;
+  return 'otelKind' in a && 'otelKind' in b;
 }
 
 export { anyValueToString, fromOtlp } from './data/otel_adapter';

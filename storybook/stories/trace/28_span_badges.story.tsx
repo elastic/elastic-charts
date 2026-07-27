@@ -10,8 +10,15 @@ import { action } from '@storybook/addon-actions';
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React, { useMemo } from 'react';
 
-import type { TraceDatum, TraceSpanBadge, TraceSpanBadgeAccessor, TraceSpanBadgeSize } from '@elastic/charts';
-import { Chart, Settings, Trace } from '@elastic/charts';
+import type {
+  ElementClickListener,
+  ElementOverListener,
+  TraceDatum,
+  TraceSpanBadge,
+  TraceSpanBadgeAccessor,
+  TraceSpanBadgeSize,
+} from '@elastic/charts';
+import { Chart, isTraceBadgeElementEvent, Settings, Trace } from '@elastic/charts';
 
 import { LANGUAGE_BADGE_ICONS, DURATION_BADGE_ICON } from './data';
 import type { ChartsStory } from '../../types';
@@ -40,7 +47,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     { gutter: 'gutter', inline: 'inline', none: 'none' },
     'inline',
   );
-  const clickable = boolean('clickable badges (onBadgeClick)', true);
+  const clickable = boolean('clickable badges (Settings.onElementClick)', true);
   const brokenImage = boolean('simulate image load failure', false);
   const width = number('chart width (px) — narrow to force overflow', 900, { min: 320, max: 1200, step: 20 });
 
@@ -89,19 +96,36 @@ export const Example: ChartsStory = (_, { title, description }) => {
     return (datum) => byId[datum.id] ?? [];
   }, [brokenImage]);
 
+  // Pointer events flow through the library-wide Settings element-event union (ADR 0034); filter to
+  // badge events with the exported `isTraceBadgeElementEvent` guard. The pointer cursor turns
+  // interactive only when `onElementClick` is supplied, so the `clickable` knob gates it.
+  const logBadgeOver = action('badge over');
+  const onElementOver: ElementOverListener = (elements) => {
+    const badge = elements.find(isTraceBadgeElementEvent);
+    if (badge) logBadgeOver(badge);
+  };
+  const logBadgeClick = action('badge click');
+  const onElementClick: ElementClickListener = (elements) => {
+    const badge = elements.find(isTraceBadgeElementEvent);
+    if (badge) logBadgeClick(badge);
+  };
+
   return (
     <div style={{ width, maxWidth: '100%' }}>
       <Chart title={title} description={description} size={{ width: '100%', height: 320 }}>
-        <Settings baseTheme={useBaseTheme()} theme={{ trace: { labelPosition, laneHeight: 44 } }} />
+        <Settings
+          baseTheme={useBaseTheme()}
+          theme={{ trace: { labelPosition, laneHeight: 44 } }}
+          onElementOver={onElementOver}
+          onElementOut={action('element out')}
+          {...(clickable ? { onElementClick } : {})}
+        />
         <Trace
           id="trace_span_badges"
           data={DATA}
           xScaleType="linear"
           badgeSize={badgeSize}
           badgeAccessor={badgeAccessor}
-          onBadgeOver={action('onBadgeOver')}
-          onBadgeOut={action('onBadgeOut')}
-          {...(clickable ? { onBadgeClick: action('onBadgeClick') } : {})}
         />
       </Chart>
     </div>
@@ -124,7 +148,9 @@ Example.parameters = {
     'interaction stay available).\n' +
     '- **overflow** — narrow **chart width** to watch the `Overflowing badge cluster` lane truncate ' +
     'then omit trailing badges (omitted badges remain in the screen-reader table).\n' +
-    '- **events** — hover and (when **clickable**) click a badge to log `onBadgeOver` / `onBadgeOut` / ' +
-    '`onBadgeClick` in the **Actions** panel. The pointer cursor turns interactive only when ' +
-    '`onBadgeClick` is supplied.',
+    '- **events** — Trace pointer events flow through the library-wide `Settings.onElementOver` / ' +
+    '`onElementOut` / `onElementClick` union (ADR 0034); this demo filters to badge events with the ' +
+    'exported `isTraceBadgeElementEvent` guard. Hover and (when **clickable**) click a badge to log ' +
+    'them in the **Actions** panel. The pointer cursor turns interactive only when ' +
+    '`Settings.onElementClick` is supplied.',
 };

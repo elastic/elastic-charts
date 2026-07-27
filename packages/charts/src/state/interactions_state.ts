@@ -28,4 +28,10 @@ export interface InteractionsState {
   drilldown: CategoryKey[];
   prevDrilldown: CategoryKey[];
   tooltip: TooltipInteractionState;
+  /**
+   * Trace chart uncontrolled collapsed span ids (Spec 21 / ADR 0026), published by the component so
+   * the screen-reader selectors mirror the visual collapse. Empty in controlled mode (the
+   * `collapsedSpanIds` prop is used instead) and for every non-Trace chart type.
+   */
+  traceCollapsedSpanIds: string[];
 }

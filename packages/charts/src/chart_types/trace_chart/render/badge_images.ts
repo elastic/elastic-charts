@@ -30,6 +30,14 @@ interface BadgeImageRecord {
 /** The CORS modes a badge image may request (mirrors `TraceSpanBadgeImage.crossOrigin`). */
 export type BadgeImageCrossOrigin = 'anonymous' | 'use-credentials';
 
+/**
+ * Upper bound on retained decoded images. A trace only shows a handful of distinct badge images at
+ * once, so this ceiling is generous; it exists only so a long-lived chart cycling through many
+ * distinct URLs (e.g. per-row avatars over a paginated stream) cannot grow the cache without limit.
+ * Eviction is LRU (see `get`).
+ */
+const MAX_CACHE_ENTRIES = 256;
+
 /** @internal */
 export class BadgeImageCache {
   private readonly cache = new Map<string, BadgeImageRecord>();
@@ -49,7 +57,19 @@ export class BadgeImageCache {
   get(src: string, crossOrigin: BadgeImageCrossOrigin): CanvasImageSource | undefined {
     const key = `${crossOrigin}|${src}`;
     const existing = this.cache.get(key);
-    if (existing) return existing.status === 'loaded' ? existing.image : undefined;
+    if (existing) {
+      // LRU touch: re-insert so the most-recently-used key moves to the end of the Map's iteration
+      // order, keeping on-screen images out of the eviction window.
+      this.cache.delete(key);
+      this.cache.set(key, existing);
+      return existing.status === 'loaded' ? existing.image : undefined;
+    }
+
+    // Evict the least-recently-used entry (Map iteration is insertion order) once at capacity.
+    if (this.cache.size >= MAX_CACHE_ENTRIES) {
+      const oldest = this.cache.keys().next().value;
+      if (oldest !== undefined) this.cache.delete(oldest);
+    }
 
     const image = new Image();
     image.crossOrigin = crossOrigin;

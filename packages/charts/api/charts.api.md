@@ -1189,12 +1189,12 @@ export interface DomainRange {
 }
 
 // @public
-export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent | TraceElementEvent>, options?: {
+export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent | TraceElementEvent | TraceBadgeElementEvent | TraceAnnotationElementEvent>, options?: {
     keyPressed: KeyPressed;
 }) => void;
 
 // @public (undocumented)
-export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent | TraceElementEvent>) => void;
+export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent | TraceElementEvent | TraceBadgeElementEvent | TraceAnnotationElementEvent>) => void;
 
 // @public (undocumented)
 export const entryKey: ([key]: ArrayEntry) => string;
@@ -1786,6 +1786,12 @@ export type IsAny<T, True, False = never> = True | False extends (T extends neve
 
 // @public
 export function isMetricElementEvent(e: Parameters<ElementClickListener>[0][0]): e is MetricElementEvent;
+
+// @public
+export function isTraceAnnotationElementEvent(e: Parameters<ElementClickListener>[0][0]): e is TraceAnnotationElementEvent;
+
+// @public
+export function isTraceBadgeElementEvent(e: Parameters<ElementClickListener>[0][0]): e is TraceBadgeElementEvent;
 
 // @public
 export function isTraceElementEvent(e: Parameters<ElementClickListener>[0][0]): e is TraceElementEvent;
@@ -3094,7 +3100,7 @@ export const Settings: (props: SFProps<SettingsSpec, keyof (typeof settingsBuild
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "debug" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "locale" | "dow" | "showLegend" | "legendPosition" | "legendValues" | "legendMaxDepth" | "legendSize" | "flatLegend" | "legendActionOnHover", "onAnnotationClick" | "ariaLabel" | "theme" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "xDomain" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "orderOrdinalBinsBy" | "renderingSort" | "noResults" | "ariaLabelledBy" | "ariaDescription" | "ariaDescribedBy" | "ariaTableCaption" | "legendLayout" | "legendStrategy" | "onLegendItemOver" | "onLegendItemOut" | "onLegendItemClick" | "onLegendItemPlusClick" | "onLegendItemMinusClick" | "legendAction" | "legendColorPicker" | "legendSort" | "customLegend" | "legendTitle", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "debug" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "locale" | "dow" | "showLegend" | "legendPosition" | "legendValues" | "legendMaxDepth" | "legendSize" | "flatLegend" | "legendActionOnHover", "ariaLabel" | "theme" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "xDomain" | "onAnnotationClick" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "orderOrdinalBinsBy" | "renderingSort" | "noResults" | "ariaLabelledBy" | "ariaDescription" | "ariaDescribedBy" | "ariaTableCaption" | "legendLayout" | "legendStrategy" | "onLegendItemOver" | "onLegendItemOut" | "onLegendItemClick" | "onLegendItemPlusClick" | "onLegendItemMinusClick" | "legendAction" | "legendColorPicker" | "legendSort" | "customLegend" | "legendTitle", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -3406,7 +3412,6 @@ export interface Theme {
     // (undocumented)
     sharedStyle: SharedGeometryStateStyle;
     tooltip: TooltipStyle;
-    // Warning: (ae-forgotten-export) The symbol "TraceStyle" needs to be exported by the entry point index.d.ts
     trace: TraceStyle;
 }
 
@@ -3757,6 +3762,14 @@ export interface TraceActiveSegment {
 export type TraceAnnotationColor = 'default' | 'primary' | 'success' | 'warning' | 'danger' | Color;
 
 // @public
+export interface TraceAnnotationColorStyle {
+    // (undocumented)
+    fill: Color;
+    // (undocumented)
+    stroke: Color;
+}
+
+// @public
 export type TraceAnnotationDatum = {
     id: string;
     hidden?: boolean;
@@ -3766,25 +3779,82 @@ export type TraceAnnotationDatum = {
 };
 
 // @public
-export type TraceAnnotationEvent = {
-    source: 'pointer';
-    type: TraceAnnotationType;
+export interface TraceAnnotationElementEvent {
     annotation: TraceAnnotationDatum;
-    span?: TraceSpanBadgeEventSpan;
-    chartX: number;
-    chartY: number;
-} | {
-    source: 'keyboard';
-    type: TraceAnnotationType;
-    annotation: TraceAnnotationDatum;
-    span?: TraceSpanBadgeEventSpan;
-};
+    annotationType: TraceAnnotationType;
+    chartX?: number;
+    chartY?: number;
+    span?: TraceSpanInfo;
+    // (undocumented)
+    type: 'traceAnnotationEvent';
+}
+
+// @public
+export interface TraceAnnotationStyle {
+    fillOpacity: number;
+    hoverFillOpacity: number;
+    markerSize: number;
+    palette: Record<'default' | 'primary' | 'success' | 'warning' | 'danger', TraceAnnotationColorStyle>;
+    railThickness: number;
+}
 
 // @public
 export type TraceAnnotationType = 'time' | 'lane' | 'hierarchy';
 
 // @public
+export interface TraceBadgeColorStyle {
+    // (undocumented)
+    background: Color;
+    // (undocumented)
+    border?: Color;
+    // (undocumented)
+    text: Color;
+}
+
+// @public
+export interface TraceBadgeElementEvent {
+    badge: TraceSpanBadge;
+    chartX?: number;
+    chartY?: number;
+    span: TraceSpanInfo;
+    // (undocumented)
+    type: 'traceBadgeEvent';
+}
+
+// @public
+export interface TraceBadgeSizeMetrics {
+    fontSize: number;
+    height: number;
+    imageSize: number;
+    imageTextGap: number;
+    paddingX: number;
+}
+
+// @public
+export interface TraceBadgeStyle {
+    borderRadius: number;
+    fontFamily: string;
+    gap: number;
+    labelGap: number;
+    m: TraceBadgeSizeMetrics;
+    minLabelWidth: number;
+    minTextWidth: number;
+    palette: Record<'default' | 'hollow' | 'primary' | 'success' | 'warning' | 'danger', TraceBadgeColorStyle>;
+    s: TraceBadgeSizeMetrics;
+}
+
+// @public
 export type TraceColorAccessor = (datum: TraceDatum) => string | undefined;
+
+// @public
+export type TraceColorBy = TraceColorAccessor | TraceColorByDescriptor;
+
+// @public
+export type TraceColorByDescriptor = {
+    otelAttribute: string;
+} | {
+    otelKind: true;
+};
 
 // @public
 export interface TraceControlCallbacks {
@@ -3890,22 +3960,7 @@ export interface TraceDatum {
 
 // @public
 export interface TraceElementEvent {
-    datum: TraceDatum;
-    duration: number;
-    end: number;
-    // (undocumented)
-    id: string;
-    // (undocumented)
-    name: string;
-    orphaned?: true;
-    // (undocumented)
-    parentId?: string;
-    reparentedToSpanId?: string;
-    selfTime: number;
-    skewCorrected?: true;
-    start: number;
-    // (undocumented)
-    traceId?: string;
+    span: TraceSpanInfo;
     // (undocumented)
     type: 'traceElementEvent';
 }
@@ -3917,14 +3972,9 @@ export const TraceHierarchyAnnotation: (props: TraceSpanAnnotationProps) => null
 export const TraceLaneAnnotation: (props: TraceSpanAnnotationProps) => null;
 
 // @public
-export function TraceSearchProvider({ children }: {
-    children: React_2.ReactNode;
-}): React_2.JSX.Element;
-
-// @public
 export interface TraceSegmentRef {
     region: 'span' | 'active' | 'waiting';
-    segmentIndex: number;
+    segmentIndex?: number;
     // (undocumented)
     spanId: string;
 }
@@ -3935,34 +3985,15 @@ export type TraceSelection = TraceSegmentRef[];
 // @public
 export interface TraceSelectionDetail {
     // (undocumented)
-    datum: TraceDatum;
-    // (undocumented)
-    duration: number;
-    end: number;
-    // (undocumented)
-    name: string;
-    orphaned?: true;
-    // (undocumented)
-    parentId?: string;
-    // (undocumented)
     region: 'span' | 'active' | 'waiting';
-    reparentedToSpanId?: string;
     // (undocumented)
     segmentDuration?: number;
     // (undocumented)
     segmentEnd?: number;
-    // (undocumented)
-    segmentIndex: number;
+    segmentIndex?: number;
     segmentOffset?: number;
     segmentStart?: number;
-    // (undocumented)
-    selfTime: number;
-    skewCorrected?: true;
-    // (undocumented)
-    spanId: string;
-    start: number;
-    // (undocumented)
-    traceId?: string;
+    span: TraceSpanInfo;
 }
 
 // @public
@@ -3988,20 +4019,16 @@ export type TraceSpanBadgeAccessor = (datum: TraceDatum) => readonly TraceSpanBa
 export type TraceSpanBadgeColor = 'default' | 'hollow' | 'primary' | 'success' | 'warning' | 'danger' | Color;
 
 // @public
-export type TraceSpanBadgeEvent = {
-    source: 'pointer';
-    badge: TraceSpanBadge;
-    span: TraceSpanBadgeEventSpan;
-    chartX: number;
-    chartY: number;
-} | {
-    source: 'keyboard';
-    badge: TraceSpanBadge;
-    span: TraceSpanBadgeEventSpan;
-};
+export interface TraceSpanBadgeImage {
+    crossOrigin?: 'anonymous' | 'use-credentials';
+    src: string;
+}
 
 // @public
-export interface TraceSpanBadgeEventSpan {
+export type TraceSpanBadgeSize = 's' | 'm';
+
+// @public
+export interface TraceSpanInfo {
     datum: TraceDatum;
     duration: number;
     end: number;
@@ -4021,34 +4048,19 @@ export interface TraceSpanBadgeEventSpan {
 }
 
 // @public
-export interface TraceSpanBadgeImage {
-    crossOrigin?: 'anonymous' | 'use-credentials';
-    src: string;
-}
-
-// @public
-export type TraceSpanBadgeSize = 's' | 'm';
-
-// @public
 export interface TraceSpec extends Spec {
     badgeAccessor?: TraceSpanBadgeAccessor;
     badgeSize?: TraceSpanBadgeSize;
     // (undocumented)
     chartType: typeof ChartType.Trace;
     collapsedSpanIds?: string[];
-    colorBy?: TraceColorAccessor;
+    colorBy?: TraceColorBy;
     controlProviderCallback?: (callbacks: TraceControlCallbacks) => void;
     criticalPath?: TraceCriticalPath;
     data: TraceDatum[];
     dragMode?: 'pan' | 'brush';
     focusDomain?: [number, number];
     laneOrder?: 'tree' | 'chronological';
-    onAnnotationClick?: (event: TraceAnnotationEvent) => void;
-    onAnnotationOut?: (event: TraceAnnotationEvent) => void;
-    onAnnotationOver?: (event: TraceAnnotationEvent) => void;
-    onBadgeClick?: (event: TraceSpanBadgeEvent) => void;
-    onBadgeOut?: (event: TraceSpanBadgeEvent) => void;
-    onBadgeOver?: (event: TraceSpanBadgeEvent) => void;
     onCollapseChange?: (next: string[]) => void;
     onDataDiagnosticsChange?: (diagnostics: TraceDataDiagnostics) => void;
     onFocusDomainChange?: (domain: [number, number]) => void;
@@ -4056,11 +4068,42 @@ export interface TraceSpec extends Spec {
     selection?: TraceSelection;
     showKeyboardFocusBadge?: boolean;
     showTooltipOverEmpty?: boolean;
+    spanDisplay?: 'segments' | 'duration';
     // (undocumented)
     specType: typeof SpecType.Series;
     traceId?: string;
     traceNotFoundMessage?: string;
     xScaleType: 'time' | 'linear';
+}
+
+// @public
+export interface TraceStyle {
+    activeSegmentColor: Color;
+    annotation: TraceAnnotationStyle;
+    badge: TraceBadgeStyle;
+    criticalPathColor: Color;
+    criticalPathThickness: number;
+    focusedLaneBackground: Color;
+    gridLineColor: Color;
+    gutterLabel: {
+        fontFamily: string;
+        fontSize: number;
+        color: Color;
+    };
+    gutterWidth: number;
+    labelPosition: 'gutter' | 'inline' | 'none';
+    laneHeight: number;
+    selectedSegmentStroke: Color;
+    selectedSegmentStrokeWidth: number;
+    timeAxisLayerCount: number;
+    timeBarHeight: number;
+    timeBarLabel: {
+        fontFamily: string;
+        fontSize: number;
+        color: Color;
+    };
+    totalLineColor: Color;
+    totalLineThickness: number;
 }
 
 // @public
@@ -4115,11 +4158,6 @@ export function useLegendAction<T extends HTMLElement>(): [ref: LegacyRef<T>, on
 
 // @public (undocumented)
 export const useTooltipContext: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>() => TooltipContext<D, SI>;
-
-// Warning: (ae-forgotten-export) The symbol "TraceSearchContextValue" needs to be exported by the entry point index.d.ts
-//
-// @public
-export function useTraceSearch(): TraceSearchContextValue | null;
 
 // @public (undocumented)
 export type ValueAccessor<D extends BaseDatum = Datum> = (d: D) => AdditiveNumber;

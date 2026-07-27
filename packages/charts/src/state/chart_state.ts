@@ -24,6 +24,7 @@ import {
   handleLegendActions,
   handleDOMElementActions,
   handleTooltipActions,
+  handleTraceActions,
 } from './reducers/interactions';
 import { getInitialPointerState } from './utils/get_initial_pointer_state';
 import { getInitialTooltipState } from './utils/get_initial_tooltip_state';
@@ -162,6 +163,7 @@ const createChartSlice = (initialState: ChartSliceState) =>
       handleLegendActions(builder);
       handleDOMElementActions(builder);
       handleTooltipActions(builder);
+      handleTraceActions(builder);
     },
   });
 

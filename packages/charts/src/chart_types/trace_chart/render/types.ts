@@ -336,7 +336,7 @@ export interface AnnotationLayoutItem {
  * @internal
  */
 export interface TraceGeometry {
-  /** Spans sorted ascending by `start`. */
+  /** Spans in visible lane order (tree topology, or start-ascending in chronological mode); post-collapse. */
   spans: NormalizedSpan[];
   /** The fixed left gutter region (x=0, y=0, width=gutterWidth, height=canvasHeight). */
   gutter: Dimensions;
@@ -362,6 +362,12 @@ export interface TraceGeometry {
   /** Which x-scale the trace uses; controls raster-engine and time-bar unit selection. */
   xScaleType: 'time' | 'linear';
   /**
+   * How each span bar is drawn (ADR 0035): `'segments'` draws the thin total line plus active-segment
+   * rects; `'duration'` fills the full `[start, end]` extent with the span's color-group color. Purely
+   * visual — `activeSegments` (and therefore `selfTime`, tooltip, events, SR) are unaffected.
+   */
+  spanDisplay: 'segments' | 'duration';
+  /**
    * The lane currently focused by keyboard navigation, or `null` when no lane is focused.
    * Distinct from `hoverIndex` (mouse-driven). Drawn as a full-width background highlight.
    */
@@ -371,7 +377,7 @@ export interface TraceGeometry {
    * valid `segmentIndex` values. Deduplicated: segment entries subsumed by a same-span `'span'`
    * entry are dropped. Built by `buildGeometry`; consumed by the selection-highlight draw pass.
    */
-  resolvedSelection: ReadonlyArray<{ laneIndex: number; region: 'span' | 'active' | 'waiting'; segmentIndex: number }>;
+  resolvedSelection: ReadonlyArray<{ laneIndex: number; region: 'span' | 'active' | 'waiting'; segmentIndex?: number }>;
   /**
    * Maps a time value (ms) to an x pixel coordinate within the plot, based on `focusDomain`.
    * Returns `plot.left` when the domain is zero-width (degenerate guard).

@@ -13,15 +13,15 @@ import { buildTraceAnnotationEvent } from './tooltip';
 import type { ResolvedTraceAnnotation } from '../data/annotations';
 import {
   getResolvedTraceAnnotationsSelector,
-  getTraceAnnotationClickHandlerSelector,
+  getTraceElementClickHandlerSelector,
 } from '../state/selectors/get_screen_reader_data';
+import type { ElementClickListener } from '../../../specs/settings';
 import type { GlobalChartState } from '../../../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import type { TraceSpec } from '../trace_api';
 
 interface ScreenReaderTraceAnnotationsProps {
   annotations: ResolvedTraceAnnotation[];
-  onAnnotationClick: TraceSpec['onAnnotationClick'];
+  onElementClick: ElementClickListener | undefined;
 }
 
 /** Human-readable label for an annotation kind, used in the SR "Type" column. */
@@ -41,14 +41,14 @@ function relatedSpanName(annotation: ResolvedTraceAnnotation): string {
  * after `ScreenReaderTraceTable` in the same `<figure>`. Kept out of the span rows so AT can browse
  * annotations as their own structured surface (columns: Name, Type, Related span). Each entry uses its
  * accessible name (a generated fallback when the author omitted one — also reported via diagnostics).
- * With an `onAnnotationClick` handler, entries are keyboard-activatable `<button tabIndex={-1}>`s that
- * dispatch a `keyboard`-source event (never synthesizing hover); without one they are inert text.
- * Renders nothing when no annotation resolves.
+ * With a `Settings.onElementClick` handler, entries are keyboard-activatable `<button tabIndex={-1}>`s
+ * that dispatch a coordinate-free `traceAnnotationEvent` (never synthesizing hover); without one they
+ * are inert text. Renders nothing when no annotation resolves.
  * @internal
  */
 export const ScreenReaderTraceAnnotationsComponent = ({
   annotations,
-  onAnnotationClick,
+  onElementClick,
 }: ScreenReaderTraceAnnotationsProps) => {
   if (annotations.length === 0) return null;
 
@@ -72,11 +72,11 @@ export const ScreenReaderTraceAnnotationsComponent = ({
           {annotations.map((annotation) => (
             <tr key={annotation.id} tabIndex={-1}>
               <th scope="row">
-                {onAnnotationClick ? (
+                {onElementClick ? (
                   <button
                     type="button"
                     tabIndex={-1}
-                    onClick={() => onAnnotationClick(buildTraceAnnotationEvent(annotation, 'keyboard'))}
+                    onClick={() => onElementClick([buildTraceAnnotationEvent(annotation)])}
                   >
                     {annotation.ariaLabel}
                   </button>
@@ -96,7 +96,7 @@ export const ScreenReaderTraceAnnotationsComponent = ({
 
 const DEFAULT_PROPS: ScreenReaderTraceAnnotationsProps = {
   annotations: [],
-  onAnnotationClick: undefined,
+  onElementClick: undefined,
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderTraceAnnotationsProps => {
@@ -105,7 +105,7 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderTraceAnnotationsP
   }
   return {
     annotations: getResolvedTraceAnnotationsSelector(state),
-    onAnnotationClick: getTraceAnnotationClickHandlerSelector(state),
+    onElementClick: getTraceElementClickHandlerSelector(state),
   };
 };
 

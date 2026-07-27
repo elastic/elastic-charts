@@ -887,6 +887,40 @@ describe('normalize — dropNonFinite guard', () => {
 });
 
 // ---------------------------------------------------------------------------
+// normalize — inverted-span domain guard (project clamps end < start)
+// ---------------------------------------------------------------------------
+
+describe('normalize — inverted / zero-duration spans', () => {
+  it('never yields an inverted domain (min <= max) for a lone inverted span', () => {
+    // A single span with end < start would previously make domain.min (=start=100) exceed
+    // domain.max (=end=50), inverting the scale and breaking every downstream projection.
+    const inverted: TraceDatum = { id: 'inv', name: 'inverted', start: 100, end: 50 };
+    const { spans, domain } = normalize([inverted], 'time');
+    expect(domain.min).toBeLessThanOrEqual(domain.max);
+    // The span is clamped to zero-duration at its start.
+    expect(spans[0]).toMatchObject({ start: 100, end: 100 });
+  });
+
+  it('clamps an inverted span to zero-duration while keeping its valid parent intact (linear)', () => {
+    // `inv` is a child of the root so both survive recovery (two rootless spans would elect one).
+    const valid: TraceDatum = { id: 'v', name: 'valid', start: 0, end: 100 };
+    const inverted: TraceDatum = { id: 'inv', name: 'inverted', parentId: 'v', start: 80, end: 20 };
+    const { spans, domain } = normalize([valid, inverted], 'linear');
+    expect(domain).toEqual({ min: 0, max: 100 });
+    const invOut = spans.find((s) => s.id === 'inv')!;
+    // Re-zeroed by the domain min (0): start stays 80, end clamped up to start.
+    expect(invOut.end).toBeGreaterThanOrEqual(invOut.start);
+  });
+
+  it('leaves zero-duration (instantaneous) spans untouched', () => {
+    const instant: TraceDatum = { id: 'z', name: 'instant', start: 40, end: 40 };
+    const { spans, domain } = normalize([instant], 'time');
+    expect(spans[0]).toMatchObject({ start: 40, end: 40 });
+    expect(domain.min).toBeLessThanOrEqual(domain.max);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // normalize — criticalIntervals projection
 // ---------------------------------------------------------------------------
 describe('normalize — criticalIntervals', () => {

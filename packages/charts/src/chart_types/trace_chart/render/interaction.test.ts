@@ -415,6 +415,14 @@ describe('pinchRatio', () => {
     const nextRight = [{ id: 0, position: 420 }, { id: 1, position: 580 }];
     expect(pinchRatio(prevLeft, nextLeft)).toBeCloseTo(pinchRatio(prevRight, nextRight), 6);
   });
+
+  it('returns a no-op ratio of 1 when the current touches coincide (divide-by-zero guard)', () => {
+    const prev = [{ id: 0, position: 100 }, { id: 1, position: 200 }]; // spread 100
+    const next = [{ id: 0, position: 150 }, { id: 1, position: 150 }]; // spread 0 → would be ±Infinity
+    const ratio = pinchRatio(prev, next);
+    expect(Number.isFinite(ratio)).toBe(true);
+    expect(ratio).toBe(1);
+  });
 });
 
 describe('minVisibleExtentForScale', () => {

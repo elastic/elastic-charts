@@ -8,29 +8,24 @@
 
 import React from 'react';
 
-import type { TraceCriticalPath, TraceColorAccessor } from '@elastic/charts';
-import { Chart, Settings, Trace, colorByOtelAttribute, fromOtlp } from '@elastic/charts';
+import type { TraceCriticalPath } from '@elastic/charts';
+import { Chart, Settings, Trace, fromOtlp } from '@elastic/charts';
 
 import { FRONTEND_WEB_OTLP_ENVELOPE } from './data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 
-/** Groups spans by the `service.name` resource attribute. Stable module-level reference (ADR 0006). */
-const BY_SERVICE: TraceColorAccessor = colorByOtelAttribute('service.name');
-
 /**
- * Pre-converted from OTel. activeSegments set to the full span extent (Kibana APM waterfall style).
+ * Pre-converted from OTel. `spanDisplay="duration"` (below) renders full-extent bars (Kibana APM
+ * waterfall style) while self-time-derived active segments still drive selfTime/tooltip/SR (ADR 0035).
  * Span IDs and epoch-ms timestamps come from the FRONTEND_WEB_OTLP_ENVELOPE fixture (story 12).
  *
  * Service topology (10 spans, 200 ms total):
  *   frontend-web → product-recommendation → inventory-service
  *                                         → user-preference-service
  */
-const DATA = fromOtlp(FRONTEND_WEB_OTLP_ENVELOPE).map((datum) => ({
-  ...datum,
-  activeSegments: [{ start: datum.start, end: datum.end }],
-}));
+const DATA = fromOtlp(FRONTEND_WEB_OTLP_ENVELOPE);
 
 // The trace starts at this epoch-ms value (derived from the OTel fixture).
 // All criticalPath times below are raw epoch-ms (the chart re-zeros them in 'linear' mode).
@@ -98,16 +93,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
   // Number of stacked tick-label rows in time mode (theme.trace.timeAxisLayerCount). Ignored in linear.
   const timeAxisLayerCount = number('tick layers (time mode)', 2, { min: 0, max: 3, step: 1 });
 
-  const isInline = labelPosition === 'inline';
-
   return (
     <Chart title={title} description={description} size={{ width: '100%', height: 350 }}>
+      {/* Inline mode auto-derives a taller laneHeight for the label row; no override needed. */}
       <Settings
         baseTheme={useBaseTheme()}
         theme={{
           trace: {
             labelPosition,
-            laneHeight: isInline ? 40 : 24,
             criticalPathColor,
             timeAxisLayerCount,
           },
@@ -117,7 +110,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
         id="trace_critical_path"
         data={DATA}
         xScaleType={xScaleType}
-        colorBy={BY_SERVICE}
+        spanDisplay="duration"
+        colorBy={{ otelAttribute: 'service.name' }}
         criticalPath={showCriticalPath ? CRITICAL_PATH : undefined}
       />
     </Chart>

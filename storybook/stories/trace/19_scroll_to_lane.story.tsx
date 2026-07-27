@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
-import { Chart, Settings, Trace, TraceSearchProvider, useTraceSearch } from '@elastic/charts';
+import type { TraceControlCallbacks } from '@elastic/charts';
+import { Chart, Settings, Trace } from '@elastic/charts';
 
 import { CHECKOUT_WATERFALL } from './data';
 import { LogPanel } from './story_components';
@@ -25,19 +26,19 @@ const SCROLL_DATA = CHECKOUT_WATERFALL.map((s) => ({
 
 const AVAILABLE_LABELS = CHECKOUT_WATERFALL.map((s) => s.name);
 
-/**
- * Inner component: must live inside <TraceSearchProvider> so that useTraceSearch() resolves.
- * Renders the chart (wired to the provider) and the external search box.
- */
-function ScrollToLaneDemo({ baseTheme }: { baseTheme: ReturnType<typeof useBaseTheme> }) {
-  const search = useTraceSearch();
+export const Example: ChartsStory = (_, { title: _title, description: _description }) => {
+  const baseTheme = useBaseTheme();
   const [input, setInput] = useState('');
   const [lastSubmit, setLastSubmit] = useState('—');
+
+  // Hold the chart's imperative controls (ADR 0008). `controlProviderCallback` fires on mount with a
+  // live `TraceControlCallbacks`; we stash it in a ref so the external search box can call it.
+  const controls = useRef<TraceControlCallbacks | null>(null);
 
   const submit = () => {
     const id = input.trim();
     if (!id) return;
-    search?.scrollToSpan(id);
+    controls.current?.scrollToSpan(id);
     setLastSubmit(id);
   };
 
@@ -53,7 +54,9 @@ function ScrollToLaneDemo({ baseTheme }: { baseTheme: ReturnType<typeof useBaseT
           id="trace_scroll_to_lane"
           data={SCROLL_DATA}
           xScaleType="linear"
-          controlProviderCallback={search?.register}
+          controlProviderCallback={(callbacks) => {
+            controls.current = callbacks;
+          }}
         />
       </Chart>
 
@@ -77,16 +80,6 @@ function ScrollToLaneDemo({ baseTheme }: { baseTheme: ReturnType<typeof useBaseT
       </div>
     </div>
   );
-}
-
-export const Example: ChartsStory = (_, { title: _title, description: _description }) => {
-  const theme = useBaseTheme();
-
-  return (
-    <TraceSearchProvider>
-      <ScrollToLaneDemo baseTheme={theme} />
-    </TraceSearchProvider>
-  );
 };
 
 Example.parameters = {
@@ -96,7 +89,8 @@ Example.parameters = {
     'press **Go** (or Enter) to snap to that lane (centered, highlighted). Re-submitting the same ' +
     'name re-triggers the scroll. An unknown name emits a dev-warn in the console and does nothing.\n\n' +
     'Span ids in this demo match span labels — `id === name` — so the search box input matches ' +
-    'exactly what you see in the chart. The box uses `TraceSearchProvider` + `useTraceSearch()` — ' +
-    'no prop threading required. Keyboard focus stays on the search box; a screen reader hears ' +
-    "the located span via the trace chart's `aria-live` region.",
+    'exactly what you see in the chart. The chart hands its imperative controls to ' +
+    '`controlProviderCallback` (ADR 0008); the story stashes them in a `useRef` and the search box ' +
+    "calls `scrollToSpan`. Keyboard focus stays on the search box; a screen reader hears the located " +
+    "span via the trace chart's `aria-live` region.",
 };

@@ -1,6 +1,7 @@
 # ADR 0011 — Segment selection model
 
-**Status:** Accepted (Spec 13)
+**Status:** Accepted (Spec 13)  
+**Amended by:** [ADR 0034](./0034-pointer-events-via-settings-element-union.md) — `segmentIndex` is now **optional** (present only for `region: 'active' | 'waiting'`, absent for `region: 'span'`), replacing the `-1` sentinel; and `TraceSelectionDetail` now nests the span fields under a single `span: TraceSpanInfo` rather than flattening them. The thin-refs-in / rich-details-out duality (Decision 3) is unchanged.
 
 ## Context
 
@@ -38,11 +39,14 @@ The controlled **`selection` prop** is identity-only — an array of `TraceSegme
 interface TraceSegmentRef {
   spanId: string;
   region: 'span' | 'active' | 'waiting';
-  /** 0-based index into span.activeSegments or waitingSegments(); -1 when region === 'span'. */
-  segmentIndex: number;
+  /** 0-based index into span.activeSegments or waitingSegments(); omitted when region === 'span'. */
+  segmentIndex?: number;
 }
 type TraceSelection = TraceSegmentRef[];
 ```
+
+> **Amendment (ADR 0034):** `segmentIndex` is optional — present for `'active'`/`'waiting'` refs,
+> omitted for `'span'` refs (no `-1` sentinel).
 
 This is intentionally thin: consumers can round-trip the callback's `next` value directly back into the
 prop without constructing anything. They never know lane indices.
@@ -53,10 +57,13 @@ The **`onSelectionChange` callback** is richer:
 onSelectionChange?: (next: TraceSelection, details: TraceSelectionDetail[]) => void;
 ```
 
-`TraceSelectionDetail` carries all the data the tooltip shows (span name, total duration, self time,
-start offset, `datum` with `TraceDatum.meta`) plus `region`, `segmentIndex`, and — when
+`TraceSelectionDetail` carries all the data the tooltip shows nested under a single
+`span: TraceSpanInfo` (span name, total duration, self time, start offset, `datum` with
+`TraceDatum.meta`, plus skew/orphan provenance) plus `region`, an optional `segmentIndex`, and — when
 `region !== 'span'` — `segmentStart`, `segmentEnd`, `segmentDuration`, and `segmentOffset`, satisfying
 the "all the details like tooltips" requirement without the consumer re-deriving durations.
+`TraceSpanInfo` is the same shape carried by `event.span` on every trace element/badge/annotation
+event, so a consumer learns it once (see [ADR 0034](./0034-pointer-events-via-settings-element-union.md)).
 
 **Rejected: symmetric thin-thin.** `onSelectionChange` would require the caller to look up segment
 details themselves, adding boilerplate at every consumer callsite and defeating the purpose.
@@ -129,7 +136,7 @@ The selection set holds refs keyed by exact identity (`spanId` + `region` + `seg
 - There is **no keyboard path for single-segment (sub-span) selection** — keyboard navigation is
   span-granular (arrows move focus between whole lanes); segment-level keyboard nav is out of scope.
 
-Double-click replaces or adds/toggles the whole-span ref (`region: 'span'`, `segmentIndex: -1`).
+Double-click replaces or adds/toggles the whole-span ref (`region: 'span'`, no `segmentIndex`).
 A span-level ref and per-segment refs of the same span may coexist in the set; the renderer
 deduplicates overlapping highlight outlines (the whole-span extent subsumes its segment extents
 visually).

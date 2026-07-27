@@ -9,19 +9,15 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type { TraceColorAccessor } from '@elastic/charts';
-import { Chart, Settings, Trace, colorByOtelAttribute, fromOtlp } from '@elastic/charts';
+import { Chart, Settings, Trace, fromOtlp } from '@elastic/charts';
 
 import { FRONTEND_WEB_OTLP_ENVELOPE } from './data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-const BY_SERVICE: TraceColorAccessor = colorByOtelAttribute('service.name');
-
-const DATA = fromOtlp(FRONTEND_WEB_OTLP_ENVELOPE).map((datum) => ({
-  ...datum,
-  activeSegments: [{ start: datum.start, end: datum.end }],
-}));
+// `spanDisplay="duration"` (below) renders full-extent bars (Kibana APM waterfall look) while
+// self-time-derived active segments still drive selfTime/tooltip/SR (ADR 0035).
+const DATA = fromOtlp(FRONTEND_WEB_OTLP_ENVELOPE);
 
 const LABEL_POSITION_OPTIONS = {
   'gutter — fixed left panel (default)': 'gutter',
@@ -49,22 +45,18 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const widthKey = select('width', Object.keys(WIDTH_OPTIONS), 'fill container');
   const chartWidth = WIDTH_OPTIONS[widthKey];
 
-  const isInline = labelPosition === 'inline';
-
   return (
     <Chart title={title} description={description} size={{ width: chartWidth, height: 350 }}>
-      <Settings
-        baseTheme={useBaseTheme()}
-        theme={{
-          trace: {
-            // Inline mode: gutter is collapsed automatically (gutterPx() returns 0 for non-gutter
-            // modes); only laneHeight needs to increase to accommodate the bar + label row.
-            laneHeight: isInline ? 40 : 24,
-            labelPosition,
-          },
-        }}
+      {/* Inline mode collapses the gutter and auto-derives a taller laneHeight for the label row,
+          so no laneHeight override is needed here. */}
+      <Settings baseTheme={useBaseTheme()} theme={{ trace: { labelPosition } }} />
+      <Trace
+        id="trace_responsive"
+        data={DATA}
+        xScaleType="linear"
+        spanDisplay="duration"
+        colorBy={{ otelAttribute: 'service.name' }}
       />
-      <Trace id="trace_responsive" data={DATA} xScaleType="linear" colorBy={BY_SERVICE} />
     </Chart>
   );
 };
@@ -74,8 +66,9 @@ Example.parameters = {
     'Demonstrates `theme.trace.labelPosition` — the responsive label control.\n\n' +
     '- **`gutter`** (default): span names drawn in a fixed left panel. `gutterWidth=200`, `laneHeight=24`.\n' +
     "- **`inline`**: span names drawn on a row below the bar, starting near the bar's start edge and " +
-    'overflowing right (Kibana APM style). `gutterWidth=0` and `laneHeight=40` are set to accommodate ' +
-    "the two-band lane. Labels are not cropped to the bar width; they clip only at the plot's right edge.\n" +
+    'overflowing right (Kibana APM style). The gutter collapses to `0` and the lane height is ' +
+    'auto-derived taller (min 40) to fit the two-band lane — no `laneHeight` override needed. ' +
+    "Labels are not cropped to the bar width; they clip only at the plot's right edge.\n" +
     '- **`none`**: no canvas labels. Names remain accessible via the tooltip and the screen-reader table.\n\n' +
     'Use the **width** knob to try mobile (320 px) and side-panel (480 px) presets with `inline` mode. ' +
     'Auto-switching based on container width is not yet implemented.',

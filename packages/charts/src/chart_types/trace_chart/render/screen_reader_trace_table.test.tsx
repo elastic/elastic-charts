@@ -18,17 +18,12 @@ import React from 'react';
 import { resolveBadgeAriaLabel } from './badge_layout';
 import { ScreenReaderTraceAnnotationsComponent } from './screen_reader_trace_annotations';
 import { TraceTableBadgeCell } from './screen_reader_trace_table';
-import { formatMs, computeSelfTime } from './tooltip';
+import { buildTraceBadgeEvent, formatMs, computeSelfTime } from './tooltip';
+import type { TraceAnnotationElementEvent, TraceBadgeElementEvent } from '../../../specs/settings';
 import type { ResolvedTraceAnnotation } from '../data/annotations';
 import type { NormalizedSpan } from '../data/types';
 import { describeParent, type TraceTableBadge } from '../state/selectors/get_screen_reader_data';
-import type {
-  TraceAnnotationEvent,
-  TraceDatum,
-  TraceSpanBadge,
-  TraceSpanBadgeEvent,
-  TraceSpanBadgeEventSpan,
-} from '../trace_api';
+import type { TraceDatum, TraceSpanBadge } from '../trace_api';
 
 // ---------------------------------------------------------------------------
 // formatMs
@@ -162,74 +157,73 @@ describe('SR table row data shape', () => {
 // ---------------------------------------------------------------------------
 
 describe('TraceTableBadgeCell', () => {
-  const eventSpan: TraceSpanBadgeEventSpan = {
+  const badgeSpan: NormalizedSpan = {
     id: 's1',
     name: 'HTTP GET /api',
     start: 0,
     end: 100,
-    duration: 100,
-    selfTime: 40,
-    datum: { id: 's1', name: 'HTTP GET /api', start: 0, end: 100 },
+    activeSegments: [{ start: 0, end: 40 }], // selfTime 40
+    meta: { id: 's1', name: 'HTTP GET /api', start: 0, end: 100 } satisfies TraceDatum,
   };
 
-  /** Builds a TraceTableBadge exactly as the selector would (aria name via resolveBadgeAriaLabel). */
+  /** Builds a TraceTableBadge exactly as the selector would (aria name + pre-built keyboard event). */
   const tableBadge = (badge: TraceSpanBadge, index = 0): TraceTableBadge => ({
     id: String(badge.id),
     ariaLabel: resolveBadgeAriaLabel(badge, index),
-    badge,
-    span: eventSpan,
+    event: buildTraceBadgeEvent(badge, badgeSpan),
   });
 
   it('names image-only span badges', () => {
     // An image-only badge with no ariaLabel gets a generated accessible name; an explicit ariaLabel wins.
     const generated = tableBadge({ id: 'g', image: { src: 'flag.svg' } }, 2);
     const overridden = tableBadge({ id: 'o', image: { src: 'js.svg' }, ariaLabel: 'JavaScript' });
-    const { getByText } = render(<TraceTableBadgeCell badges={[generated, overridden]} onBadgeClick={undefined} />);
+    const { getByText } = render(<TraceTableBadgeCell badges={[generated, overridden]} onElementClick={undefined} />);
     expect(getByText('Badge 3')).toBeTruthy(); // index 2 → "Badge 3"
     expect(getByText('JavaScript')).toBeTruthy();
   });
 
   it('non-clickable badges are informational for keyboard users', () => {
-    // Without onBadgeClick, badges are inert text — no <button> controls are added.
+    // Without a Settings.onElementClick handler, badges are inert text — no <button> controls are added.
     const { container, getByText } = render(
-      <TraceTableBadgeCell badges={[tableBadge({ id: 'b', text: 'OK' })]} onBadgeClick={undefined} />,
+      <TraceTableBadgeCell badges={[tableBadge({ id: 'b', text: 'OK' })]} onElementClick={undefined} />,
     );
     expect(container.querySelector('button')).toBeNull();
     expect(getByText('OK')).toBeTruthy();
   });
 
-  it('keyboard activation dispatches badge click events', () => {
+  it('keyboard activation dispatches a traceBadgeEvent through onElementClick', () => {
     const badge: TraceSpanBadge = { id: 'status', text: 'OK', color: 'success', meta: { code: 200 } };
-    const onBadgeClick = jest.fn();
-    const { container } = render(<TraceTableBadgeCell badges={[tableBadge(badge)]} onBadgeClick={onBadgeClick} />);
+    const onElementClick = jest.fn();
+    const { container } = render(<TraceTableBadgeCell badges={[tableBadge(badge)]} onElementClick={onElementClick} />);
 
     const button = container.querySelector('button')!;
     expect(button).not.toBeNull();
     fireEvent.click(button);
 
-    expect(onBadgeClick).toHaveBeenCalledTimes(1);
-    const event: TraceSpanBadgeEvent = onBadgeClick.mock.calls[0][0];
+    expect(onElementClick).toHaveBeenCalledTimes(1);
+    const [elements] = onElementClick.mock.calls[0];
+    const event = elements[0] as TraceBadgeElementEvent;
     // Keyboard-origin activation: same shape as pointer minus coordinates, badge/meta by reference.
-    expect(event.source).toBe('keyboard');
+    expect(event.type).toBe('traceBadgeEvent');
     expect(event.badge).toBe(badge);
     expect(event.span.id).toBe('s1');
-    expect(Object.keys(event).sort()).toEqual(['badge', 'source', 'span']);
+    expect(Object.keys(event).sort()).toEqual(['badge', 'span', 'type']);
   });
 
   it('badge keyboard activation does not synthesize hover', () => {
     // The SR surface only exposes activation. Firing repeated clicks never produces hover semantics:
-    // the only handler invoked is onBadgeClick, and no chart-relative coordinates are synthesized.
-    const onBadgeClick = jest.fn();
+    // the only handler invoked is onElementClick, and no chart-relative coordinates are synthesized.
+    const onElementClick = jest.fn();
     const { container } = render(
-      <TraceTableBadgeCell badges={[tableBadge({ id: 'b', text: 'x' })]} onBadgeClick={onBadgeClick} />,
+      <TraceTableBadgeCell badges={[tableBadge({ id: 'b', text: 'x' })]} onElementClick={onElementClick} />,
     );
     const button = container.querySelector('button')!;
     fireEvent.click(button);
     fireEvent.click(button);
-    expect(onBadgeClick).toHaveBeenCalledTimes(2);
-    for (const [event] of onBadgeClick.mock.calls) {
-      expect(event).not.toHaveProperty('chartX');
-      expect(event).not.toHaveProperty('chartY');
+    expect(onElementClick).toHaveBeenCalledTimes(2);
+    for (const [elements] of onElementClick.mock.calls) {
+      expect(elements[0]).not.toHaveProperty('chartX');
+      expect(elements[0]).not.toHaveProperty('chartY');
     }
   });
 });
@@ -275,7 +269,7 @@ describe('ScreenReaderTraceAnnotations', () => {
 
   it('renders nothing when no annotation resolves', () => {
     const { container } = render(
-      <ScreenReaderTraceAnnotationsComponent annotations={[]} onAnnotationClick={undefined} />,
+      <ScreenReaderTraceAnnotationsComponent annotations={[]} onElementClick={undefined} />,
     );
     expect(container.querySelector('[data-testid="echScreenReaderTraceAnnotations"]')).toBeNull();
   });
@@ -284,7 +278,7 @@ describe('ScreenReaderTraceAnnotations', () => {
     const { container, getByText } = render(
       <ScreenReaderTraceAnnotationsComponent
         annotations={[timeAnnotation, laneAnnotation]}
-        onAnnotationClick={undefined}
+        onElementClick={undefined}
       />,
     );
     // Its own SR surface, not folded into the span-row table (echScreenReaderTraceTable).
@@ -301,63 +295,64 @@ describe('ScreenReaderTraceAnnotations', () => {
     // lists the annotation using that name so AT never encounters an unnamed control.
     const unnamed: ResolvedTraceAnnotation = { ...laneAnnotation, id: 'x', ariaLabel: 'Trace annotation x' };
     const { getByText } = render(
-      <ScreenReaderTraceAnnotationsComponent annotations={[unnamed]} onAnnotationClick={undefined} />,
+      <ScreenReaderTraceAnnotationsComponent annotations={[unnamed]} onElementClick={undefined} />,
     );
     expect(getByText('Trace annotation x')).toBeTruthy();
   });
 
   it('non-clickable annotations are informational for keyboard users', () => {
     const { container, getByText } = render(
-      <ScreenReaderTraceAnnotationsComponent annotations={[laneAnnotation]} onAnnotationClick={undefined} />,
+      <ScreenReaderTraceAnnotationsComponent annotations={[laneAnnotation]} onElementClick={undefined} />,
     );
     expect(container.querySelector('button')).toBeNull();
     expect(getByText('Slow query')).toBeTruthy();
   });
 
-  it('keyboard activation dispatches annotation click events', () => {
-    const onAnnotationClick = jest.fn();
+  it('keyboard activation dispatches a traceAnnotationEvent through onElementClick', () => {
+    const onElementClick = jest.fn();
     const { getByText } = render(
-      <ScreenReaderTraceAnnotationsComponent annotations={[laneAnnotation]} onAnnotationClick={onAnnotationClick} />,
+      <ScreenReaderTraceAnnotationsComponent annotations={[laneAnnotation]} onElementClick={onElementClick} />,
     );
 
     fireEvent.click(getByText('Slow query'));
 
-    expect(onAnnotationClick).toHaveBeenCalledTimes(1);
-    const event: TraceAnnotationEvent = onAnnotationClick.mock.calls[0][0];
+    expect(onElementClick).toHaveBeenCalledTimes(1);
+    const [elements] = onElementClick.mock.calls[0];
+    const event = elements[0] as TraceAnnotationElementEvent;
     // Keyboard-origin activation: same shape as pointer minus coordinates, datum/span by reference.
-    expect(event.source).toBe('keyboard');
-    expect(event.type).toBe('lane');
+    expect(event.type).toBe('traceAnnotationEvent');
+    expect(event.annotationType).toBe('lane');
     expect(event.annotation).toBe(laneAnnotation.datum);
     expect(event.span?.id).toBe('db');
-    expect(Object.keys(event).sort()).toEqual(['annotation', 'source', 'span', 'type']);
+    expect(Object.keys(event).sort()).toEqual(['annotation', 'annotationType', 'span', 'type']);
   });
 
   it('dispatches a time-annotation keyboard click with no related span', () => {
-    const onAnnotationClick = jest.fn();
+    const onElementClick = jest.fn();
     const { getByText } = render(
-      <ScreenReaderTraceAnnotationsComponent annotations={[timeAnnotation]} onAnnotationClick={onAnnotationClick} />,
+      <ScreenReaderTraceAnnotationsComponent annotations={[timeAnnotation]} onElementClick={onElementClick} />,
     );
 
     fireEvent.click(getByText('Deploy'));
 
-    const event: TraceAnnotationEvent = onAnnotationClick.mock.calls[0][0];
-    expect(event.type).toBe('time');
+    const event = onElementClick.mock.calls[0][0][0] as TraceAnnotationElementEvent;
+    expect(event.annotationType).toBe('time');
     expect(event.span).toBeUndefined();
     expect(event.annotation.meta).toEqual({ rev: 42 });
   });
 
   it('annotation keyboard activation does not synthesize hover', () => {
-    const onAnnotationClick = jest.fn();
+    const onElementClick = jest.fn();
     const { getByText } = render(
-      <ScreenReaderTraceAnnotationsComponent annotations={[laneAnnotation]} onAnnotationClick={onAnnotationClick} />,
+      <ScreenReaderTraceAnnotationsComponent annotations={[laneAnnotation]} onElementClick={onElementClick} />,
     );
     const button = getByText('Slow query');
     fireEvent.click(button);
     fireEvent.click(button);
-    expect(onAnnotationClick).toHaveBeenCalledTimes(2);
-    for (const [event] of onAnnotationClick.mock.calls) {
-      expect(event).not.toHaveProperty('chartX');
-      expect(event).not.toHaveProperty('chartY');
+    expect(onElementClick).toHaveBeenCalledTimes(2);
+    for (const [elements] of onElementClick.mock.calls) {
+      expect(elements[0]).not.toHaveProperty('chartX');
+      expect(elements[0]).not.toHaveProperty('chartY');
     }
   });
 });

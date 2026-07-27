@@ -421,15 +421,36 @@ export function correctClockSkew(
   return spans.map((span) => corrected.get(span) ?? span);
 }
 
+/**
+ * Clamps an inverted span (`end < start`, e.g. from an upstream clock-skew or export bug) to a
+ * zero-duration span at its `start`. `correctClockSkew` has already surfaced the
+ * `span_negative_duration` diagnostic; this keeps the geometry sound — an un-clamped inverted span
+ * produces a negative-width bar and, when it is the extremum, a `domain.min > domain.max` scale that
+ * breaks every downstream projection. `activeSegments` are left to `gapSegments`, which already
+ * returns `[]` for a zero/negative parent extent. Returns the same reference when nothing is inverted.
+ */
+function clampInvertedSpans(spans: NormalizedSpan[]): NormalizedSpan[] {
+  let inverted = false;
+  const clamped = spans.map((span) => {
+    if (span.end < span.start) {
+      inverted = true;
+      return { ...span, end: span.start };
+    }
+    return span;
+  });
+  return inverted ? clamped : spans;
+}
+
 function project(
-  spans: NormalizedSpan[],
+  input: NormalizedSpan[],
   xScaleType: XScaleType,
   criticalPath: TraceCriticalPath,
   diagnostics?: TraceDiagnosticsCollector,
 ): NormalizeResult {
-  if (spans.length === 0) {
+  if (input.length === 0) {
     return { spans: [], domain: { min: 0, max: 0 }, criticalIntervals: [], projectionOffset: 0 };
   }
+  const spans = clampInvertedSpans(input);
   const min = spans.reduce((acc, span) => Math.min(acc, span.start), Infinity);
   const max = spans.reduce((acc, span) => Math.max(acc, span.end), -Infinity);
 

@@ -7,7 +7,9 @@
  */
 
 import { chartSelectorsFactory } from './chart_selectors';
+import { getTraceTableRowsSelector } from './state/selectors/get_screen_reader_data';
 import { MockStore } from '../../mocks/store/store';
+import { setTraceUncontrolledCollapsed } from '../../state/actions/trace';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { ChartType } from '..';
 import { SpecType } from '../../specs/spec_type';
@@ -84,5 +86,41 @@ describe('isChartEmpty — hybrid routing', () => {
     }));
     // The canvas mounts; isChartEmpty must NOT return true here.
     expect(selectors.isChartEmpty(state)).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Screen-reader table mirrors the visual collapse (ADR 0013 / redraw-a11y)
+// ---------------------------------------------------------------------------
+
+describe('getTraceTableRowsSelector — collapse parity', () => {
+  const NESTED_DATA = [
+    { id: 'p', name: 'parent', start: 0, end: 100, traceId: 't1' },
+    { id: 'c', name: 'child', parentId: 'p', start: 10, end: 50, traceId: 't1' },
+  ];
+
+  it('reads uncontrolled collapse from redux so the SR table hides the same descendants as the canvas', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(makeTraceSpec({ data: NESTED_DATA, traceId: 't1', laneOrder: 'tree' }), store);
+
+    // Expanded: both parent and child rows are present.
+    expect(getTraceTableRowsSelector(store.getState()).map((r) => r.id)).toEqual(['p', 'c']);
+
+    // The component publishes its uncontrolled collapse into redux; the SR table must follow.
+    store.dispatch(setTraceUncontrolledCollapsed(['p']));
+    const collapsed = getTraceTableRowsSelector(store.getState());
+    expect(collapsed.map((r) => r.id)).toEqual(['p']);
+    expect(collapsed[0]?.name).toContain('descendants hidden');
+  });
+
+  it('prefers the controlled collapsedSpanIds prop over the redux value when present', () => {
+    const store = MockStore.default();
+    // Controlled: prop says nothing collapsed, redux says collapse 'p' — the prop wins.
+    MockStore.addSpecs(
+      makeTraceSpec({ data: NESTED_DATA, traceId: 't1', laneOrder: 'tree', collapsedSpanIds: [] }),
+      store,
+    );
+    store.dispatch(setTraceUncontrolledCollapsed(['p']));
+    expect(getTraceTableRowsSelector(store.getState()).map((r) => r.id)).toEqual(['p', 'c']);
   });
 });

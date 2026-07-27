@@ -33,7 +33,8 @@ const NO_STROKE: Stroke = { color: Colors.Transparent.rgba, width: 0 };
  * @internal
  */
 export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: TraceStyle): void {
-  const { gutter, plot, spans, laneHeight, scrollOffset, scale, focusedLaneIndex, disclosureByLane } = geom;
+  const { gutter, plot, spans, laneHeight, scrollOffset, scale, focusedLaneIndex, disclosureByLane, spanDisplay } =
+    geom;
 
   withContext(ctx, () => {
     // Transparent clear of the full canvas area. Background ownership belongs to the Spec 6
@@ -157,51 +158,72 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       const barBottom = Math.max(barTop, laneTop + laneHeight - LANE_PADDING - labelBandPx);
       const barMidY = (barTop + barBottom) / 2;
 
-      // --- Total-duration line (thin horizontal rule for the full span extent) ---
-      const rawX1 = scale(span.start);
-      const rawX2 = scale(span.end);
-      // Cull entirely-out-of-range spans, then clamp to plot bounds so the line
-      // never paints leftward into the gutter over the span-name labels. Mirrors
-      // the clamp already applied to active-segment rects below.
-      if (rawX2 >= plot.left && rawX1 <= plotRight) {
-        const lineX1 = Math.max(plot.left, rawX1);
-        const lineX2 = Math.min(plotRight, rawX2);
-        renderMultiLine(ctx, [{ x1: lineX1, y1: barMidY, x2: lineX2, y2: barMidY }], totalLineStroke);
-      }
-
-      // --- Active segments (solid rects showing self-time) ---
       // Span-level color (Spec 9 colorBy or explicit TraceDatum.color) is the lane-wide fallback.
       // Per-segment colors (label-palette or explicit segment.color, both resolved in the pipeline)
       // override the fallback for individual segments.
       const activeFill: Fill = span.color != null ? { color: colorToRgba(span.color) } : defaultActiveFill;
-      for (const seg of span.activeSegments) {
-        const segX1 = scale(seg.start);
-        const segX2 = scale(seg.end);
-        // Skip segments entirely outside the visible plot x-range.
-        if (segX2 < plot.left || segX1 > plotRight) continue;
-        // Clamp to plot bounds so a partially-visible mark does not paint into the gutter.
-        const clampedX = Math.max(plot.left, segX1);
-        const clampedW = Math.min(plotRight, segX2) - clampedX;
-        if (clampedW <= 0) continue;
-        // Resolve per-segment fill: explicit/label-derived color wins over span-level fallback.
-        let segFill: Fill;
-        if (seg.color != null) {
-          let cached = segFillCache.get(seg.color);
-          if (cached === undefined) {
-            cached = { color: colorToRgba(seg.color) };
-            segFillCache.set(seg.color, cached);
+
+      const rawX1 = scale(span.start);
+      const rawX2 = scale(span.end);
+
+      if (spanDisplay === 'duration') {
+        // --- Duration bar (ADR 0035): one filled rect spanning the full [start, end] extent ---
+        // The "Kibana APM waterfall" look. `activeSegments` are intentionally NOT drawn here (they
+        // still drive selfTime/tooltip/events/SR); the bar uses the span-level color-group fill.
+        if (rawX2 >= plot.left && rawX1 <= plotRight) {
+          const clampedX = Math.max(plot.left, rawX1);
+          const clampedW = Math.min(plotRight, rawX2) - clampedX;
+          if (clampedW > 0) {
+            renderRect(
+              ctx,
+              { x: clampedX, y: barTop, width: clampedW, height: barBottom - barTop },
+              activeFill,
+              NO_STROKE,
+              true,
+            );
           }
-          segFill = cached;
-        } else {
-          segFill = activeFill;
         }
-        renderRect(
-          ctx,
-          { x: clampedX, y: barTop, width: clampedW, height: barBottom - barTop },
-          segFill,
-          NO_STROKE,
-          true, // disableBorderOffset — no stroke, so inset is irrelevant; explicit for clarity
-        );
+      } else {
+        // --- Total-duration line (thin horizontal rule for the full span extent) ---
+        // Cull entirely-out-of-range spans, then clamp to plot bounds so the line
+        // never paints leftward into the gutter over the span-name labels. Mirrors
+        // the clamp already applied to active-segment rects below.
+        if (rawX2 >= plot.left && rawX1 <= plotRight) {
+          const lineX1 = Math.max(plot.left, rawX1);
+          const lineX2 = Math.min(plotRight, rawX2);
+          renderMultiLine(ctx, [{ x1: lineX1, y1: barMidY, x2: lineX2, y2: barMidY }], totalLineStroke);
+        }
+
+        // --- Active segments (solid rects showing self-time) ---
+        for (const seg of span.activeSegments) {
+          const segX1 = scale(seg.start);
+          const segX2 = scale(seg.end);
+          // Skip segments entirely outside the visible plot x-range.
+          if (segX2 < plot.left || segX1 > plotRight) continue;
+          // Clamp to plot bounds so a partially-visible mark does not paint into the gutter.
+          const clampedX = Math.max(plot.left, segX1);
+          const clampedW = Math.min(plotRight, segX2) - clampedX;
+          if (clampedW <= 0) continue;
+          // Resolve per-segment fill: explicit/label-derived color wins over span-level fallback.
+          let segFill: Fill;
+          if (seg.color != null) {
+            let cached = segFillCache.get(seg.color);
+            if (cached === undefined) {
+              cached = { color: colorToRgba(seg.color) };
+              segFillCache.set(seg.color, cached);
+            }
+            segFill = cached;
+          } else {
+            segFill = activeFill;
+          }
+          renderRect(
+            ctx,
+            { x: clampedX, y: barTop, width: clampedW, height: barBottom - barTop },
+            segFill,
+            NO_STROKE,
+            true, // disableBorderOffset — no stroke, so inset is irrelevant; explicit for clarity
+          );
+        }
       }
 
       // --- Label pass ---
@@ -288,13 +310,13 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
         let hlX1: number;
         let hlX2: number;
         if (region === 'active') {
-          const seg = hlSpan.activeSegments[segmentIndex];
+          const seg = segmentIndex === undefined ? undefined : hlSpan.activeSegments[segmentIndex];
           if (!seg) continue;
           hlX1 = scale(seg.start);
           hlX2 = scale(seg.end);
         } else if (region === 'waiting') {
           const gaps = waitingSegments(hlSpan);
-          const gap = gaps[segmentIndex];
+          const gap = segmentIndex === undefined ? undefined : gaps[segmentIndex];
           if (!gap) continue;
           hlX1 = scale(gap.start);
           hlX2 = scale(gap.end);

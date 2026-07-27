@@ -129,6 +129,7 @@ function makeGeom(overrides: Partial<TraceGeometry> = {}): TraceGeometry {
     focusDomain: { min: 0, max: 1000 },
     scrollOffset: 0,
     xScaleType: 'linear',
+    spanDisplay: 'segments',
     focusedLaneIndex: null,
     resolvedSelection: [],
     scale: defaultScale,
@@ -223,6 +224,33 @@ describe('draw — visible lanes (no scroll, all 3 spans visible)', () => {
     // SpanA: 1 active, SpanB: 2 active, SpanC: 0 active → 3 segment rects.
     // +1 for the lane-area clip rect drawn once per draw() call.
     expect(ctx.rect).toHaveBeenCalledTimes(4);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: spanDisplay 'duration' mode (ADR 0035)
+// ---------------------------------------------------------------------------
+
+describe("draw — spanDisplay 'duration'", () => {
+  it('draws one full-extent bar per span and no total line', () => {
+    const ctx = makeCtx();
+    draw(ctx, makeGeom({ spanDisplay: 'duration' }), style);
+    // No thin total line in duration mode → no moveTo/lineTo.
+    expect(ctx.moveTo).not.toHaveBeenCalled();
+    expect(ctx.lineTo).not.toHaveBeenCalled();
+    // One duration bar per span (SpanC has 0-length? no — it has extent 200..700) → 3 bars,
+    // regardless of how many activeSegments each span has. +1 lane-area clip rect.
+    expect(ctx.rect).toHaveBeenCalledTimes(4);
+  });
+
+  it('does not draw active segments in duration mode (SpanB has 2 segments)', () => {
+    const ctx = makeCtx();
+    // In 'segments' mode SpanB draws 2 segment rects; in 'duration' mode it draws exactly 1 bar.
+    // Total rects: 3 spans × 1 bar + 1 clip = 4 (vs 3 segments + 1 clip = 4 here by coincidence),
+    // so assert the fill count instead: duration mode fills 3 bars (one per span).
+    draw(ctx, makeGeom({ spanDisplay: 'duration' }), style);
+    // renderRect fills each bar. SpanA/B/C each get exactly one filled bar.
+    expect(ctx.fill).toHaveBeenCalledTimes(3);
   });
 });
 

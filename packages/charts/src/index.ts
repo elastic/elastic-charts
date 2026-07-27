@@ -153,7 +153,14 @@ export { TimeFunction } from './utils/time_functions';
 export * from './chart_types/flame_chart/flame_api';
 export * from './chart_types/timeslip/timeslip_api';
 export * from './chart_types/trace_chart/trace_api';
-export { TraceSearchProvider, useTraceSearch } from './chart_types/trace_chart/trace_search_context';
+export type {
+  TraceStyle,
+  TraceAnnotationStyle,
+  TraceAnnotationColorStyle,
+  TraceBadgeStyle,
+  TraceBadgeSizeMetrics,
+  TraceBadgeColorStyle,
+} from './chart_types/trace_chart/render/types';
 export { LegacyAnimationConfig } from './common/animation';
 
 // Bullet

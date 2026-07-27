@@ -14,7 +14,7 @@
  * `isTraceElementEvent`.
  */
 
-import { buildTraceEvent, buildTraceSelectionDetail, buildTraceTooltipInfo, formatMs } from './tooltip';
+import { buildTraceEvent, buildTraceSelectionDetail, buildTraceTooltipInfo, computeSelfTime, formatMs } from './tooltip';
 import { isTraceElementEvent } from '../../../specs/settings';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceDatum } from '../trace_api';
@@ -309,33 +309,33 @@ describe('buildTraceEvent', () => {
   });
 
   it('carries the format-agnostic identity fields', () => {
-    expect(event.id).toBe(span.id);
-    expect(event.name).toBe(span.name);
-    expect(event.traceId).toBe(span.traceId);
-    expect(event.parentId).toBeUndefined(); // span.parentId is undefined
+    expect(event.span.id).toBe(span.id);
+    expect(event.span.name).toBe(span.name);
+    expect(event.span.traceId).toBe(span.traceId);
+    expect(event.span.parentId).toBeUndefined(); // span.parentId is undefined
   });
 
   it('carries the timing fields', () => {
-    expect(event.start).toBe(span.start);
-    expect(event.end).toBe(span.end);
-    expect(event.duration).toBe(500); // 600 - 100
-    expect(event.selfTime).toBe(150); // Σ activeSegments
+    expect(event.span.start).toBe(span.start);
+    expect(event.span.end).toBe(span.end);
+    expect(event.span.duration).toBe(500); // 600 - 100
+    expect(event.span.selfTime).toBe(150); // Σ activeSegments
   });
 
   it('datum is the original TraceDatum (span.meta), not the NormalizedSpan', () => {
-    expect(event.datum).toBe(meta); // same reference — no copy
-    expect(event.datum).not.toBe(span); // not the internal NormalizedSpan
+    expect(event.span.datum).toBe(meta); // same reference — no copy
+    expect(event.span.datum).not.toBe(span); // not the internal NormalizedSpan
   });
 
   it('includes parentId when set', () => {
     const child: NormalizedSpan = { ...span, id: 'c1', parentId: 'span-1' };
     const childEvent = buildTraceEvent(child);
-    expect(childEvent.parentId).toBe('span-1');
+    expect(childEvent.span.parentId).toBe('span-1');
   });
 
   it('exposes skew provenance only for corrected spans', () => {
-    expect(buildTraceEvent({ ...span, skewCorrected: true }).skewCorrected).toBe(true);
-    expect(event).not.toHaveProperty('skewCorrected');
+    expect(buildTraceEvent({ ...span, skewCorrected: true }).span.skewCorrected).toBe(true);
+    expect(event.span).not.toHaveProperty('skewCorrected');
   });
 
   it('exposes orphan provenance (id only) while keeping the recorded parentId (Spec 26)', () => {
@@ -346,28 +346,28 @@ describe('buildTraceEvent', () => {
       orphaned: true,
       reparentedToSpanId: 'root',
     });
-    expect(orphanEvent.orphaned).toBe(true);
-    expect(orphanEvent.reparentedToSpanId).toBe('root');
-    expect(orphanEvent.parentId).toBe('missing'); // recorded (missing) parent, not the synthetic one
+    expect(orphanEvent.span.orphaned).toBe(true);
+    expect(orphanEvent.span.reparentedToSpanId).toBe('root');
+    expect(orphanEvent.span.parentId).toBe('missing'); // recorded (missing) parent, not the synthetic one
   });
 
   it('omits orphan provenance for a non-orphan span', () => {
-    expect(event).not.toHaveProperty('orphaned');
-    expect(event).not.toHaveProperty('reparentedToSpanId');
+    expect(event.span).not.toHaveProperty('orphaned');
+    expect(event.span).not.toHaveProperty('reparentedToSpanId');
   });
 });
 
 describe('buildTraceSelectionDetail', () => {
   it('exposes skew provenance while keeping the original datum unchanged', () => {
-    const detail = buildTraceSelectionDetail({ ...span, skewCorrected: true }, DOMAIN_MIN, 'span', -1);
+    const detail = buildTraceSelectionDetail({ ...span, skewCorrected: true }, DOMAIN_MIN, 'span', undefined);
 
-    expect(detail.skewCorrected).toBe(true);
-    expect(detail.datum).toBe(meta);
-    expect(detail.datum).not.toHaveProperty('skewCorrected');
+    expect(detail.span.skewCorrected).toBe(true);
+    expect(detail.span.datum).toBe(meta);
+    expect(detail.span.datum).not.toHaveProperty('skewCorrected');
   });
 
   it('omits skew provenance for an uncorrected span', () => {
-    expect(buildTraceSelectionDetail(span, DOMAIN_MIN, 'span', -1)).not.toHaveProperty('skewCorrected');
+    expect(buildTraceSelectionDetail(span, DOMAIN_MIN, 'span', undefined).span).not.toHaveProperty('skewCorrected');
   });
 
   it('exposes orphan provenance and keeps the recorded parentId (Spec 26)', () => {
@@ -375,17 +375,17 @@ describe('buildTraceSelectionDetail', () => {
       { ...span, id: 'o1', parentId: 'missing', orphaned: true, reparentedToSpanId: 'root' },
       DOMAIN_MIN,
       'span',
-      -1,
+      undefined,
     );
-    expect(detail.orphaned).toBe(true);
-    expect(detail.reparentedToSpanId).toBe('root');
-    expect(detail.parentId).toBe('missing');
+    expect(detail.span.orphaned).toBe(true);
+    expect(detail.span.reparentedToSpanId).toBe('root');
+    expect(detail.span.parentId).toBe('missing');
   });
 
   it('omits orphan provenance for a non-orphan span', () => {
-    const detail = buildTraceSelectionDetail(span, DOMAIN_MIN, 'span', -1);
-    expect(detail).not.toHaveProperty('orphaned');
-    expect(detail).not.toHaveProperty('reparentedToSpanId');
+    const detail = buildTraceSelectionDetail(span, DOMAIN_MIN, 'span', undefined);
+    expect(detail.span).not.toHaveProperty('orphaned');
+    expect(detail.span).not.toHaveProperty('reparentedToSpanId');
   });
 });
 
@@ -485,6 +485,42 @@ describe('buildTraceTooltipInfo — critical path row', () => {
     const info = buildTraceTooltipInfo(span, 0, DOMAIN_MIN, 'active', COLOR, 0, [{ start: 100, end: 300 }]);
     const labels = info.values.map((v) => v.label);
     expect(labels.at(-1)).toBe('Critical path');
+  });
+
+  it('merges overlapping critical intervals so coverage counts covered duration once', () => {
+    // [100,200] ∪ [150,250] covers [100,250] = 150 ms, not the naive 100+100 = 200 ms sum.
+    const info = buildTraceTooltipInfo(span, 0, DOMAIN_MIN, 'active', COLOR, 0, [
+      { start: 100, end: 200 },
+      { start: 150, end: 250 },
+    ]);
+    const cpRow = info.values.find((v) => v.label === 'Critical path')!;
+    expect(cpRow.value).toBe(150);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// computeSelfTime — overlapping active segments (merge before summing)
+// ---------------------------------------------------------------------------
+
+describe('computeSelfTime', () => {
+  it('sums disjoint active segments directly', () => {
+    expect(computeSelfTime(span)).toBe(150); // 100 ms + 50 ms
+  });
+
+  it('merges overlapping active segments so self time is covered duration, not summed duration', () => {
+    const overlapping: NormalizedSpan = {
+      ...span,
+      // [100,200] ∪ [150,300] covers [100,300] = 200 ms, not the naive 100 + 150 = 250 ms.
+      activeSegments: [
+        { start: 100, end: 200 },
+        { start: 150, end: 300 },
+      ],
+    };
+    expect(computeSelfTime(overlapping)).toBe(200);
+  });
+
+  it('returns 0 for a span with no active segments', () => {
+    expect(computeSelfTime({ ...span, activeSegments: [] })).toBe(0);
   });
 });
 

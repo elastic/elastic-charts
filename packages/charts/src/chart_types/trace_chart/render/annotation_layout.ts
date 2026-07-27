@@ -71,6 +71,8 @@ export function layoutAnnotations(
   const timeBarTickHeight = plot.top - timeBarTickTop;
 
   // Post-collapse spanId → visible lane index. Rebuilt per frame because collapse changes indices.
+  // Keyed by chart-global span id (ADR 0028); resolved annotation `spanId`/`routeSpanIds` are
+  // chart-global and recovery-unique, so a same-id span in another trace group cannot mis-target.
   const laneBySpanId = new Map<string, number>();
   for (let i = 0; i < spans.length; i++) laneBySpanId.set(spans[i]!.id, i);
 

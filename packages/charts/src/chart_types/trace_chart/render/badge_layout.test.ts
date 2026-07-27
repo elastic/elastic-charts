@@ -71,6 +71,7 @@ const geom = (
     focusDomain: { min: 0, max: 100 },
     scrollOffset: 0,
     xScaleType: 'linear',
+    spanDisplay: 'segments',
     focusedLaneIndex: null,
     resolvedSelection: [],
     scale,

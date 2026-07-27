@@ -17,13 +17,23 @@ One horizontal row of the Trace waterfall, holding exactly one span.
 _Avoid_: row, track, swimlane (a swimlane implies grouping, which lanes do not do).
 
 **Total line**:
-The thin mark spanning a span's full `[start, end]` extent in the Trace waterfall. For a **running
-span** the total line is drawn dashed, extending from the span's start to the trace's latest known
-finite end (the domain max) to signal an uncertain right edge.
-_Avoid_: bar, duration bar.
+The thin mark spanning a span's full `[start, end]` extent in the Trace waterfall, drawn in the
+default `spanDisplay: 'segments'` mode. For a **running span** the total line is drawn dashed,
+extending from the span's start to the trace's latest known finite end (the domain max) to signal an
+uncertain right edge.
+_Avoid_: bar.
+
+**Duration bar**:
+The single filled rectangle spanning a span's full `[start, end]` extent drawn in the
+`spanDisplay: 'duration'` mode (the "Kibana APM waterfall" look, ADR 0035), in place of the total
+line + active segments. Purely a visual treatment: **self time** and **active segments** stay
+self-time-derived internally, so the tooltip, element events, selection details, and screen-reader
+table report the same values in either display mode.
 
 **Active segment**:
-A solid mark inside a span's total line indicating active execution; a span has 0..N of them.
+A solid mark inside a span's total line indicating active execution; a span has 0..N of them. Drawn
+only in the default `spanDisplay: 'segments'` mode (the **duration bar** mode replaces them with one
+filled bar, but they remain the source of self time either way).
 _Avoid_: active rect (singular — a span can have more than one).
 
 **Self time**:

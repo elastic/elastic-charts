@@ -11,13 +11,15 @@ import { boolean, select } from '@storybook/addon-knobs';
 import React, { useState } from 'react';
 
 import type {
+  ElementClickListener,
+  ElementOverListener,
   TraceAnnotationColor,
-  TraceAnnotationEvent,
   TraceDatum,
   TraceTimeAnnotationPlacement,
 } from '@elastic/charts';
 import {
   Chart,
+  isTraceAnnotationElementEvent,
   Settings,
   Trace,
   TraceHierarchyAnnotation,
@@ -61,7 +63,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const showTimeRange = boolean('time range annotation', true);
   const showLane = boolean('lane annotation', true);
   const showHierarchy = boolean('hierarchy annotation', true);
-  const clickable = boolean('clickable annotations (onAnnotationClick)', true);
+  const clickable = boolean('clickable annotations (Settings.onElementClick)', true);
   const markerColor = select('time marker color', COLORS, 'primary');
   const timePlacement = select<TraceTimeAnnotationPlacement>(
     'time annotation placement',
@@ -72,28 +74,37 @@ export const Example: ChartsStory = (_, { title, description }) => {
   // Consumer-owned tooltip: annotations carry no built-in tooltip; hover metadata drives this overlay.
   const [hovered, setHovered] = useState<string | null>(null);
 
-  const onAnnotationOver = (e: TraceAnnotationEvent) => {
-    action('onAnnotationOver')(e);
+  // Pointer events flow through the library-wide Settings element-event union (ADR 0034); filter to
+  // annotation events with the exported `isTraceAnnotationElementEvent` guard.
+  const logOver = action('annotation over');
+  const onElementOver: ElementOverListener = (elements) => {
+    const e = elements.find(isTraceAnnotationElementEvent);
+    if (!e) return;
+    logOver(e);
     const meta = e.annotation.meta as { tip?: string } | undefined;
     setHovered(meta?.tip ?? e.annotation.ariaLabel ?? e.annotation.id);
   };
-  const onAnnotationOut = (e: TraceAnnotationEvent) => {
-    action('onAnnotationOut')(e);
+  const onElementOut = () => {
+    action('annotation out')();
     setHovered(null);
+  };
+  const logClick = action('annotation click');
+  const onElementClick: ElementClickListener = (elements) => {
+    const e = elements.find(isTraceAnnotationElementEvent);
+    if (e) logClick(e);
   };
 
   return (
     <div style={{ position: 'relative', width: 900, maxWidth: '100%' }}>
       <Chart title={title} description={description} size={{ width: '100%', height: 320 }}>
-        <Settings baseTheme={useBaseTheme()} theme={{ trace: { labelPosition, laneHeight: 40 } }} />
-        <Trace
-          id="trace_annotations"
-          data={DATA}
-          xScaleType="linear"
-          onAnnotationOver={onAnnotationOver}
-          onAnnotationOut={onAnnotationOut}
-          {...(clickable ? { onAnnotationClick: action('onAnnotationClick') } : {})}
-        >
+        <Settings
+          baseTheme={useBaseTheme()}
+          theme={{ trace: { labelPosition } }}
+          onElementOver={onElementOver}
+          onElementOut={onElementOut}
+          {...(clickable ? { onElementClick } : {})}
+        />
+        <Trace id="trace_annotations" data={DATA} xScaleType="linear">
           {showTimePoint && (
             <TraceTimeAnnotation
               id="deploy"
@@ -160,8 +171,8 @@ Example.parameters = {
     'Trace annotations (Spec 29): declarative marks composed as children of `<Trace>`. Three kinds — ' +
     '`TraceTimeAnnotation` (a **time point** or **time range** on the x-scale), `TraceLaneAnnotation` ' +
     "(a boundary rail on one span's lane), and `TraceHierarchyAnnotation` (a **segmented** rail along " +
-    "the visible root-to-target route). Annotations are inert data; interaction handlers live on " +
-    '`<Trace>`.\n\n' +
+    "the visible root-to-target route). Annotations are inert data; pointer events flow through the " +
+    'library-wide `Settings` element-event channel.\n\n' +
     '- **colors** — each annotation takes a `color` intent: a named token ' +
     '(`default` / `primary` / `success` / `warning` / `danger`) or a custom color. Toggle the ' +
     '**time marker color** knob to see the palette (and a custom `#8a2be2`).\n' +
@@ -175,10 +186,11 @@ Example.parameters = {
     '- **hierarchy** — the `db.query` route is rendered as a segmented rail: only the route lanes ' +
     '(`root`, `SELECT orders`, `execute query`) get a segment; the interleaved `auth` / `render` ' +
     'siblings do not.\n' +
-    '- **events** — hover any annotation to log `onAnnotationOver` / `onAnnotationOut` and drive the ' +
-    'consumer-owned tooltip overlay (top-right) from `annotation.meta`. When **clickable**, click to ' +
-    'log `onAnnotationClick`; the pointer cursor turns interactive only when `onAnnotationClick` is ' +
-    'supplied.\n' +
+    '- **events** — Trace pointer events flow through `Settings.onElementOver` / `onElementOut` / ' +
+    '`onElementClick` (ADR 0034); this demo filters to annotation events with the exported ' +
+    '`isTraceAnnotationElementEvent` guard. Hover any annotation to drive the consumer-owned tooltip ' +
+    'overlay (top-right) from `annotation.meta`. When **clickable**, click to log the event; the ' +
+    'pointer cursor turns interactive only when `Settings.onElementClick` is supplied.\n' +
     '- **accessibility** — resolved annotations are listed in a dedicated screen-reader table, ' +
     'separate from the span rows.',
 };

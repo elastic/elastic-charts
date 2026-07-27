@@ -24,10 +24,19 @@ export function refsEqual(a: TraceSegmentRef, b: TraceSegmentRef): boolean {
   return a.spanId === b.spanId && a.region === b.region && a.segmentIndex === b.segmentIndex;
 }
 
-/** Order-insensitive set equality for TraceSelection (ADR 0011 / plan D1). */
+/** Stable per-ref key for set membership. `\u0000` separates fields so ids can't collide with region. */
+function refKey(ref: TraceSegmentRef): string {
+  return `${ref.spanId}\u0000${ref.region}\u0000${ref.segmentIndex ?? ''}`;
+}
+
+/**
+ * Order-insensitive set equality for TraceSelection (ADR 0011 / plan D1). O(n) via a key set rather
+ * than the previous O(n²) nested scan — this runs on every selection change and echo-guard check.
+ */
 export function selectionSetEqual(a: TraceSelection, b: TraceSelection): boolean {
   if (a.length !== b.length) return false;
-  return a.every((refA) => b.some((refB) => refsEqual(refA, refB)));
+  const keys = new Set(a.map(refKey));
+  return b.every((ref) => keys.has(refKey(ref)));
 }
 
 // ---------------------------------------------------------------------------

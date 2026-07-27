@@ -7,7 +7,8 @@
  */
 
 import { buildColorMap, buildSegmentColorMap } from './colors';
-import type { TraceDatum } from '../trace_api';
+import type { TraceColorBy, TraceDatum } from '../trace_api';
+import { colorByOtelAttribute, colorByOtelKind, resolveTraceColorBy, traceColorByEqual } from '../trace_api';
 
 const VIZ_COLORS = ['red', 'green', 'blue'];
 
@@ -176,5 +177,69 @@ describe('buildSegmentColorMap', () => {
       const map = buildSegmentColorMap(data, VIZ_COLORS);
       expect(map.size).toBe(0);
     });
+  });
+});
+
+describe('resolveTraceColorBy', () => {
+  it('returns undefined for undefined', () => {
+    expect(resolveTraceColorBy(undefined)).toBeUndefined();
+  });
+
+  it('returns the same function reference for a function accessor', () => {
+    const fn = colorByOtelAttribute('service.name');
+    expect(resolveTraceColorBy(fn)).toBe(fn);
+  });
+
+  it('resolves an { otelAttribute } descriptor to an accessor reading that attribute', () => {
+    const accessor = resolveTraceColorBy({ otelAttribute: 'service.name' })!;
+    const datum: TraceDatum = {
+      id: 'a',
+      name: 'a',
+      start: 0,
+      end: 1,
+      meta: { attributes: [{ key: 'service.name', value: { stringValue: 'frontend' } }] },
+    };
+    expect(accessor(datum)).toBe('frontend');
+  });
+
+  it('resolves an { otelKind } descriptor to an accessor reading span kind', () => {
+    const accessor = resolveTraceColorBy({ otelKind: true })!;
+    const datum: TraceDatum = { id: 'a', name: 'a', start: 0, end: 1, meta: { kind: 2 } };
+    expect(accessor(datum)).toBe('2');
+  });
+});
+
+describe('traceColorByEqual', () => {
+  it('treats two undefineds as equal', () => {
+    expect(traceColorByEqual(undefined, undefined)).toBe(true);
+  });
+
+  it('treats undefined vs a value as unequal', () => {
+    expect(traceColorByEqual(undefined, { otelKind: true })).toBe(false);
+  });
+
+  it('compares functions by reference', () => {
+    const a = colorByOtelAttribute('service.name');
+    const b = colorByOtelAttribute('service.name');
+    expect(traceColorByEqual(a, a)).toBe(true);
+    expect(traceColorByEqual(a, b)).toBe(false);
+  });
+
+  it('compares { otelAttribute } descriptors by value (inline literals are stable)', () => {
+    expect(traceColorByEqual({ otelAttribute: 'service.name' }, { otelAttribute: 'service.name' })).toBe(true);
+    expect(traceColorByEqual({ otelAttribute: 'service.name' }, { otelAttribute: 'host.name' })).toBe(false);
+  });
+
+  it('compares { otelKind } descriptors by value', () => {
+    expect(traceColorByEqual({ otelKind: true }, { otelKind: true })).toBe(true);
+  });
+
+  it('treats a descriptor and a function as unequal', () => {
+    const fn: TraceColorBy = colorByOtelKind();
+    expect(traceColorByEqual(fn, { otelKind: true })).toBe(false);
+  });
+
+  it('treats differently-shaped descriptors as unequal', () => {
+    expect(traceColorByEqual({ otelAttribute: 'service.name' }, { otelKind: true })).toBe(false);
   });
 });

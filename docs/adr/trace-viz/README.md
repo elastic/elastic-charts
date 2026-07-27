@@ -8,7 +8,7 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0003 — A span's active segment(s) default to its self time, not its full duration](./0003-self-time-as-active-segments.md)
 - [0004 — Self-managed RAF render loop & the zoom-eases / pan-1:1 interaction model](./0004-raf-render-loop-and-interaction-model.md)
 - [0005 — Trace chart takes a single input format; OTel is consumed via a `fromOtlp` adapter](./0005-single-input-format-otel-adapter.md)
-- [0006 — `colorBy` is a function; no string shorthand](./0006-color-group-accessor-function-only.md)
+- [0006 — `colorBy` accepts a function or an explicit descriptor; no bare string shorthand](./0006-color-group-accessor-function-only.md)
 - [0007 — Controlled `focusDomain` is perform-and-fire; one callback for all gesture sources](./0007-focus-domain-perform-and-fire.md)
 - [0008 — Scroll-to-span uses controlProviderCallback + TraceSearchProvider](./0008-scroll-to-span-control-provider.md)
 - [0009 — Brush rubber-band is a CSS `<div>`, not a canvas draw](./0009-brush-overlay-css-div.md)
@@ -35,6 +35,8 @@ and the result of a real trade-off. See the individual files for context and rat
 - [0031 — Kibana reparenting parity: intentional divergences, cycle-safety, and a ported regression suite](./0031-kibana-reparenting-parity.md)
 - [0032 — Trace data diagnostics: component-owned report, RAF-pipeline emission, and log migration](./0032-trace-data-diagnostics-report.md)
 - [0033 — Trace annotation geometry, layering, and the uniform thin-band hit model](./0033-trace-annotation-geometry-and-hit-testing.md)
+- [0034 — Trace pointer events flow through the `Settings` element-event union; `Trace` owns only controlled state](./0034-pointer-events-via-settings-element-union.md)
+- [0035 — `spanDisplay: 'duration'` is a visual mode; self time stays segment-derived](./0035-span-display-duration-bar-mode.md)
 
 ## Spec plans
 

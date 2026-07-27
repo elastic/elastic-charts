@@ -10,52 +10,48 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 
 import {
-  getTraceBadgeClickHandlerSelector,
+  getTraceElementClickHandlerSelector,
   getTraceTableRowsSelector,
   type TraceTableBadge,
   type TraceTableRow,
 } from '../state/selectors/get_screen_reader_data';
+import type { ElementClickListener } from '../../../specs/settings';
 import type { GlobalChartState } from '../../../state/chart_state';
 import type { A11ySettings } from '../../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { isNil } from '../../../utils/common';
-import type { TraceSpec } from '../trace_api';
 
 interface ScreenReaderTraceTableProps {
   a11ySettings: A11ySettings;
   rows: TraceTableRow[];
-  onBadgeClick: TraceSpec['onBadgeClick'];
+  onElementClick: ElementClickListener | undefined;
 }
 
 /** Number of rows shown per "show more" page. */
 const TABLE_PAGINATION = 20;
 
 /**
- * Renders one span's Span badges into its SR-table cell (Spec 27). With an `onBadgeClick` handler the
- * badges are keyboard-activatable `<button>`s (activation dispatches a `keyboard`-source badge event,
- * never synthesizing hover); without one they are inert, informational text. Accessible names come
- * from the resolved badge aria labels — assistive tech reads full names even for truncated badges.
+ * Renders one span's Span badges into its SR-table cell (Spec 27). With a `Settings.onElementClick`
+ * handler the badges are keyboard-activatable `<button>`s (activation dispatches the pre-built,
+ * coordinate-free `traceBadgeEvent`, never synthesizing hover); without one they are inert,
+ * informational text. Accessible names come from the resolved badge aria labels — assistive tech
+ * reads full names even for truncated badges.
  * @internal
  */
 export const TraceTableBadgeCell = ({
   badges,
-  onBadgeClick,
+  onElementClick,
 }: {
   badges: TraceTableBadge[];
-  onBadgeClick: TraceSpec['onBadgeClick'];
+  onElementClick: ElementClickListener | undefined;
 }) => {
   if (badges.length === 0) return <>—</>;
   return (
     <>
-      {badges.map(({ id, ariaLabel, badge, span }) =>
-        onBadgeClick ? (
-          <button
-            key={id}
-            type="button"
-            tabIndex={-1}
-            onClick={() => onBadgeClick({ source: 'keyboard', badge, span })}
-          >
+      {badges.map(({ id, ariaLabel, event }) =>
+        onElementClick ? (
+          <button key={id} type="button" tabIndex={-1} onClick={() => onElementClick([event])}>
             {ariaLabel}
           </button>
         ) : (
@@ -66,7 +62,7 @@ export const TraceTableBadgeCell = ({
   );
 };
 
-const ScreenReaderTraceTableComponent = ({ a11ySettings, rows, onBadgeClick }: ScreenReaderTraceTableProps) => {
+const ScreenReaderTraceTableComponent = ({ a11ySettings, rows, onElementClick }: ScreenReaderTraceTableProps) => {
   const [count, setCount] = useState(1);
   const tableRowRef = useRef<HTMLTableRowElement>(null);
   const prevCountRef = useRef(1);
@@ -123,7 +119,7 @@ const ScreenReaderTraceTableComponent = ({ a11ySettings, rows, onBadgeClick }: S
                 <td>{startOffset}</td>
                 <td>{parentName}</td>
                 <td>
-                  <TraceTableBadgeCell badges={badges} onBadgeClick={onBadgeClick} />
+                  <TraceTableBadgeCell badges={badges} onElementClick={onElementClick} />
                 </td>
               </tr>
             ))}
@@ -147,7 +143,7 @@ const ScreenReaderTraceTableComponent = ({ a11ySettings, rows, onBadgeClick }: S
 const DEFAULT_PROPS: ScreenReaderTraceTableProps = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   rows: [],
-  onBadgeClick: undefined,
+  onElementClick: undefined,
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderTraceTableProps => {
@@ -157,7 +153,7 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderTraceTableProps =
   return {
     a11ySettings: getA11ySettingsSelector(state),
     rows: getTraceTableRowsSelector(state),
-    onBadgeClick: getTraceBadgeClickHandlerSelector(state),
+    onElementClick: getTraceElementClickHandlerSelector(state),
   };
 };
 

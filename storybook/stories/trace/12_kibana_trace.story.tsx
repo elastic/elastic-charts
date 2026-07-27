@@ -9,15 +9,12 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
 
-import type { TraceColorAccessor, TraceDatum, TraceSpanBadge, TraceSpanBadgeAccessor } from '@elastic/charts';
-import { Chart, Settings, Trace, anyValueToString, colorByOtelAttribute, fromOtlp } from '@elastic/charts';
+import type { TraceDatum, TraceSpanBadge, TraceSpanBadgeAccessor } from '@elastic/charts';
+import { Chart, Settings, Trace, anyValueToString, fromOtlp } from '@elastic/charts';
 
 import { FRONTEND_WEB_OTLP_ENVELOPE, LANGUAGE_BADGE_ICONS, DURATION_BADGE_ICON } from './data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-
-/** Groups spans by the `service.name` resource attribute set per resourceSpans entry. */
-const BY_SERVICE: TraceColorAccessor = colorByOtelAttribute('service.name');
 
 /** OTel meta shape after `fromOtlp`: span-level `attributes`, `kind`, and a `resource` block. */
 interface OtelMeta {
@@ -75,13 +72,10 @@ const OTLP_BADGES: TraceSpanBadgeAccessor = (datum) => {
 
 /**
  * Pre-converted at module load: fromOtlp attaches resource.attributes to each span's meta.
- * activeSegments is set to the full span extent so each lane shows the total duration (Kibana
- * APM waterfall style) rather than self-time (the default when activeSegments is omitted).
+ * `spanDisplay="duration"` (below) renders each lane as a full-extent bar (Kibana APM waterfall
+ * style) while self-time-derived active segments still drive selfTime/tooltip/SR (ADR 0035).
  */
-const DATA = fromOtlp(FRONTEND_WEB_OTLP_ENVELOPE).map((datum) => ({
-  ...datum,
-  activeSegments: [{ start: datum.start, end: datum.end }],
-}));
+const DATA = fromOtlp(FRONTEND_WEB_OTLP_ENVELOPE);
 
 export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description} size={{ width: '100%', height: 350 }}>
@@ -90,20 +84,21 @@ export const Example: ChartsStory = (_, { title, description }) => (
       theme={{
         trace: {
           // Inline mode: label on a row below the bar, gutter collapsed (Kibana APM style).
+          // laneHeight is auto-derived taller for inline mode, so no override is needed here.
           labelPosition: 'inline',
-          laneHeight: 40,
         },
       }}
+      onElementClick={action('onElementClick')}
+      onElementOver={action('onElementOver')}
+      onElementOut={action('onElementOut')}
     />
     <Trace
       id="trace_kibana"
       data={DATA}
       xScaleType="linear"
-      colorBy={BY_SERVICE}
+      spanDisplay="duration"
+      colorBy={{ otelAttribute: 'service.name' }}
       badgeAccessor={OTLP_BADGES}
-      onBadgeClick={action('onBadgeClick')}
-      onBadgeOver={action('onBadgeOver')}
-      onBadgeOut={action('onBadgeOut')}
     />
   </Chart>
 );
@@ -112,11 +107,15 @@ Example.parameters = {
   markdown:
     'Real 4-service distributed trace from Kibana APM `frontend-web` service ' +
     '(`frontend-web → product-recommendation → inventory-service / user-preference-service`), ' +
-    "200 ms total, colored by `service.name` via `colorByOtelAttribute('service.name')`. " +
+    "200 ms total, colored by `service.name` via `colorBy={{ otelAttribute: 'service.name' }}`. " +
     'Data is a faithful `OtlpEnvelope` extracted from ES ' +
     '(traceId `68822000000000000000000000080950`), converted by `fromOtlp()`.\n\n' +
     '**Span badges (Spec 27)** are derived from OTel attributes by `badgeAccessor`: a language icon ' +
     '(`telemetry.sdk.language`) on each service entry span, the HTTP method, a color-coded status ' +
     'code, the datastore system, and the total duration. Hover or click a badge to log ' +
-    '`onBadgeOver` / `onBadgeOut` / `onBadgeClick` in the **Actions** panel.',
+    '`onElementOver` / `onElementOut` / `onElementClick` (a `traceBadgeEvent`) in the **Actions** ' +
+    'panel.\n\n' +
+    '**Duration bars** — `spanDisplay="duration"` renders each lane as a full-extent color-group bar ' +
+    '(the Kibana APM waterfall look). Self time is still derived internally, so tooltips and the ' +
+    'screen-reader table report correct self time (ADR 0035).',
 };

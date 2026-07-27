@@ -8,11 +8,11 @@
 
 import type { HoverRegion } from './types';
 import type { TooltipInfo } from '../../../components/tooltip/types';
-import type { TraceElementEvent } from '../../../specs/settings';
+import type { TraceAnnotationElementEvent, TraceBadgeElementEvent, TraceElementEvent } from '../../../specs/settings';
 import type { ResolvedTraceAnnotation } from '../data/annotations';
-import { waitingSegments } from '../data/self_time';
+import { mergeSegments, waitingSegments } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
-import type { TraceAnnotationEvent, TraceSelectionDetail, TraceSpanBadgeEventSpan } from '../trace_api';
+import type { TraceSelectionDetail, TraceSpanBadge, TraceSpanInfo } from '../trace_api';
 
 /** @internal */
 export function formatMs(ms: number): string {
@@ -22,9 +22,15 @@ export function formatMs(ms: number): string {
   return `${(ms * 1e6).toFixed(0)} ns`;
 }
 
-/** @internal */
+/**
+ * Self time = total length covered by a span's active segments. Merges overlapping/touching segments
+ * before summing so explicitly-supplied overlapping `activeSegments` are counted once (covered
+ * duration, not summed duration). Derived segments from `resolveActive` are already disjoint, so the
+ * merge is a no-op for them.
+ * @internal
+ */
 export function computeSelfTime(span: NormalizedSpan): number {
-  return span.activeSegments.reduce((acc, seg) => acc + (seg.end - seg.start), 0);
+  return mergeSegments(span.activeSegments).reduce((acc, seg) => acc + (seg.end - seg.start), 0);
 }
 
 const EMPTY_SERIES_ID = { specId: '', key: '' };
@@ -116,9 +122,11 @@ export function buildTraceTooltipInfo(
     }
   }
 
-  // When this lane has critical intervals, show the total critical-path coverage (Σ intervals).
+  // When this lane has critical intervals, show the total critical-path coverage. Merge overlapping
+  // intervals first so rolled-up intervals from collapsed descendants (ADR 0015) count covered
+  // duration once rather than summing overlaps.
   if (criticalIntervals && criticalIntervals.length > 0) {
-    const coverage = criticalIntervals.reduce((acc, { start, end }) => acc + (end - start), 0);
+    const coverage = mergeSegments(criticalIntervals).reduce((acc, { start, end }) => acc + (end - start), 0);
     values.push(row('Critical path', coverage, formatMs(coverage)));
   }
 
@@ -192,29 +200,15 @@ export function buildTraceSelectionDetail(
   span: NormalizedSpan,
   domainMin: number,
   region: 'span' | 'active' | 'waiting',
-  segmentIndex: number,
+  segmentIndex: number | undefined,
 ): TraceSelectionDetail {
-  const duration = span.end - span.start;
-  const selfTime = computeSelfTime(span);
-
   const detail: TraceSelectionDetail = {
-    spanId: span.id,
-    name: span.name,
-    ...(span.parentId !== undefined && { parentId: span.parentId }),
-    ...(span.traceId !== undefined && { traceId: span.traceId }),
-    start: span.start,
-    end: span.end,
-    duration,
-    selfTime,
-    ...(span.skewCorrected && { skewCorrected: true }),
-    ...(span.orphaned && { orphaned: true }),
-    ...(span.reparentedToSpanId !== undefined && { reparentedToSpanId: span.reparentedToSpanId }),
-    datum: span.meta,
+    span: buildTraceSpanInfo(span),
     region,
-    segmentIndex,
+    ...(region !== 'span' && segmentIndex !== undefined && { segmentIndex }),
   };
 
-  if (region !== 'span' && segmentIndex >= 0) {
+  if (region !== 'span' && segmentIndex !== undefined) {
     const seg = segmentRowDetail(span, region, segmentIndex, domainMin);
     if (seg) {
       detail.segmentStart = seg.segStart;
@@ -228,16 +222,14 @@ export function buildTraceSelectionDetail(
 }
 
 /**
- * Builds the `TraceElementEvent` payload fired via `onElementClick` / `onElementOver`.
- *
- * Exposes the format-agnostic identity and timing fields plus the original `TraceDatum` (`datum`)
- * so callers can access source-specific data (e.g. OTel `attributes`/`status` via `datum.meta`)
- * without importing any `@internal` type.
+ * Builds the format-agnostic {@link TraceSpanInfo} for one resolved span. Reused for the `span` field
+ * of every trace element/badge/annotation event and selection detail so callers learn one shape. The
+ * original `TraceDatum` is exposed via `datum` (for {@link fromOtlp} data, the underlying `OtelSpan`
+ * with `attributes`/`status` is on `datum.meta`).
  * @internal
  */
-export function buildTraceEvent(span: NormalizedSpan): TraceElementEvent {
+export function buildTraceSpanInfo(span: NormalizedSpan): TraceSpanInfo {
   return {
-    type: 'traceElementEvent',
     id: span.id,
     name: span.name,
     ...(span.parentId !== undefined && { parentId: span.parentId }),
@@ -254,39 +246,51 @@ export function buildTraceEvent(span: NormalizedSpan): TraceElementEvent {
 }
 
 /**
- * Builds the owning-span metadata carried by a `TraceSpanBadgeEvent` (Spec 27). Identical to
- * `buildTraceEvent` minus the `type` discriminator — Span badge events report the span for context
- * but are not themselves `TraceElementEvent`s.
+ * Builds the {@link TraceElementEvent} payload fired via `Settings.onElementClick`/`onElementOver`.
  * @internal
  */
-export function buildTraceSpanBadgeEventSpan(span: NormalizedSpan): TraceSpanBadgeEventSpan {
-  const { type: _type, ...spanMeta } = buildTraceEvent(span);
-  return spanMeta;
+export function buildTraceEvent(span: NormalizedSpan): TraceElementEvent {
+  return { type: 'traceElementEvent', span: buildTraceSpanInfo(span) };
 }
 
 /**
- * Builds a {@link TraceAnnotationEvent} for a resolved Trace annotation (Spec 29). Shared by the
+ * Builds a {@link TraceBadgeElementEvent} for a Span badge interaction (Spec 27). Shared by the
  * pointer interaction handlers and the screen-reader keyboard activation so both report an identical
- * event shape. Pointer events carry chart-relative coordinates; keyboard events carry none. Lane and
- * hierarchy annotations report the related span's metadata; time annotations omit it. The annotation's
- * caller `meta` is returned by reference via `annotation.datum`.
+ * event shape. Pointer events carry chart-relative coordinates; keyboard events omit them. The
+ * badge's caller `meta` is returned by reference via `badge.meta`.
+ * @internal
+ */
+export function buildTraceBadgeEvent(
+  badge: TraceSpanBadge,
+  span: NormalizedSpan,
+  coords?: { chartX: number; chartY: number },
+): TraceBadgeElementEvent {
+  return {
+    type: 'traceBadgeEvent',
+    badge,
+    span: buildTraceSpanInfo(span),
+    ...(coords !== undefined && { chartX: coords.chartX, chartY: coords.chartY }),
+  };
+}
+
+/**
+ * Builds a {@link TraceAnnotationElementEvent} for a resolved Trace annotation (Spec 29). Shared by
+ * the pointer interaction handlers and the screen-reader keyboard activation so both report an
+ * identical event shape. Pointer events carry chart-relative coordinates; keyboard events omit them.
+ * Lane and hierarchy annotations report the related span's metadata; time annotations omit it. The
+ * annotation's caller `meta` is returned by reference via `annotation.meta`.
  * @internal
  */
 export function buildTraceAnnotationEvent(
   annotation: ResolvedTraceAnnotation,
-  source: 'pointer' | 'keyboard',
   coords?: { chartX: number; chartY: number },
-): TraceAnnotationEvent {
-  const span = annotation.kind === 'time' ? undefined : buildTraceSpanBadgeEventSpan(annotation.span);
-  if (source === 'keyboard') {
-    return { source: 'keyboard', type: annotation.kind, annotation: annotation.datum, span };
-  }
+): TraceAnnotationElementEvent {
+  const span = annotation.kind === 'time' ? undefined : buildTraceSpanInfo(annotation.span);
   return {
-    source: 'pointer',
-    type: annotation.kind,
+    type: 'traceAnnotationEvent',
+    annotationType: annotation.kind,
     annotation: annotation.datum,
-    span,
-    chartX: coords!.chartX,
-    chartY: coords!.chartY,
+    ...(span !== undefined && { span }),
+    ...(coords !== undefined && { chartX: coords.chartX, chartY: coords.chartY }),
   };
 }

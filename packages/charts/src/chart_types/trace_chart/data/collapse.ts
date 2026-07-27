@@ -46,13 +46,15 @@ export function collapseLanes(orderedSpans: NormalizedSpan[], collapsedSpanIds: 
 
   const childrenMap = buildChildrenMap(orderedSpans, displayParentId);
 
-  // Spans hidden because they are descendants of a collapsed ancestor.
+  // Spans hidden because they are descendants of a collapsed ancestor. Keyed by trace-scoped id to
+  // match `childrenMap` (both walk the display tree) so the hidden/visible partition can never be
+  // mis-targeted by a same-id span in another trace group of a combined waterfall.
   const hiddenIds = new Set<string>();
 
   // Collect all display descendants of `parent` into `hiddenIds` and append their activeSegments.
   function collectDescendants(parent: NormalizedSpan, out: Array<{ start: number; end: number }>): void {
     for (const child of childrenMap.get(traceScopedId(parent.traceId, parent.id)) ?? []) {
-      hiddenIds.add(child.id);
+      hiddenIds.add(traceScopedId(child.traceId, child.id));
       out.push(...child.activeSegments);
       collectDescendants(child, out);
     }
@@ -76,7 +78,7 @@ export function collapseLanes(orderedSpans: NormalizedSpan[], collapsedSpanIds: 
   // Build output: skip hidden spans; replace collapsed spans with their rollup clone.
   const result: NormalizedSpan[] = [];
   for (const span of orderedSpans) {
-    if (hiddenIds.has(span.id)) continue;
+    if (hiddenIds.has(traceScopedId(span.traceId, span.id))) continue;
     const rollup = rollupBySpan.get(span);
     result.push(rollup !== undefined ? { ...span, activeSegments: rollup } : span);
   }
@@ -106,7 +108,9 @@ export function rollupCriticalIntervals(
 
   const childrenMap = buildChildrenMap(orderedSpans, displayParentId);
 
-  // Map from each hidden span ID → the ID of its outermost visible collapsed ancestor.
+  // Map from each hidden span ID → the ID of its outermost visible collapsed ancestor. Keyed by the
+  // chart-global span id (ADR 0028) because it is looked up by the public `criticalPath[].spanId`
+  // reference below; recovery guarantees these ids are unique, so no same-id ancestor can clobber it.
   const hiddenToOwner = new Map<string, string>();
 
   function collectHidden(parent: NormalizedSpan, owningAncestorId: string): void {
@@ -192,11 +196,17 @@ export function buildDisclosureMap(
 
   const childrenMap = buildChildrenMap(pipelineSpans, displayParentId);
 
+  // Memoize per span: a parent's descendant count reuses its children's counts, turning the
+  // otherwise O(N) per-node recursion (O(N²) across all parents in a deep tree) into O(N) overall.
+  const descendantCountCache = new Map<NormalizedSpan, number>();
   function countDescendants(parent: NormalizedSpan): number {
+    const cached = descendantCountCache.get(parent);
+    if (cached !== undefined) return cached;
     let n = 0;
     for (const child of childrenMap.get(traceScopedId(parent.traceId, parent.id)) ?? []) {
       n += 1 + countDescendants(child);
     }
+    descendantCountCache.set(parent, n);
     return n;
   }
 

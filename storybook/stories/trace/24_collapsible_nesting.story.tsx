@@ -9,24 +9,18 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type { TraceColorAccessor, TraceSpec } from '@elastic/charts';
-import { Chart, Settings, Trace, colorByOtelAttribute, fromOtlp } from '@elastic/charts';
+import { Chart, Settings, Trace, fromOtlp } from '@elastic/charts';
 
 import { FRONTEND_WEB_OTLP_ENVELOPE } from './data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-const BY_SERVICE: TraceColorAccessor = colorByOtelAttribute('service.name');
-
 /**
  * Pre-converted at module load: fromOtlp attaches resource.attributes to each span's meta.
- * activeSegments is set to the full span extent so each lane shows the total duration (Kibana
- * APM waterfall style) rather than self-time (the default when activeSegments is omitted).
+ * `spanDisplay="duration"` (below) renders each lane as a full-extent bar (Kibana APM waterfall
+ * style) while self-time-derived active segments still drive selfTime/tooltip/SR (ADR 0035).
  */
-const DATA = fromOtlp(FRONTEND_WEB_OTLP_ENVELOPE).map((datum) => ({
-  ...datum,
-  activeSegments: [{ start: datum.start, end: datum.end }],
-}));
+const DATA = fromOtlp(FRONTEND_WEB_OTLP_ENVELOPE);
 
 const LABEL_POSITION_OPTIONS = {
   'gutter — fixed left panel (default)': 'gutter',
@@ -44,24 +38,16 @@ export const Example: ChartsStory = (_, { title, description }) => {
   );
   const labelPosition = LABEL_POSITION_OPTIONS[labelKey];
 
-  const isInline = labelPosition === 'inline';
-
   return (
     <Chart title={title} description={description} size={{ width: '100%', height: 400 }}>
-      <Settings
-        baseTheme={useBaseTheme()}
-        theme={{
-          trace: {
-            laneHeight: isInline ? 40 : 24,
-            labelPosition,
-          },
-        }}
-      />
+      {/* Inline mode auto-derives a taller laneHeight for the label row; no override needed. */}
+      <Settings baseTheme={useBaseTheme()} theme={{ trace: { labelPosition } }} />
       <Trace
         id="trace_collapsible"
         data={DATA}
         xScaleType="linear"
-        colorBy={BY_SERVICE}
+        spanDisplay="duration"
+        colorBy={{ otelAttribute: 'service.name' }}
         laneOrder="tree"
       />
     </Chart>

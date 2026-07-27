@@ -144,8 +144,7 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
   }
 
   withContext(ctx, () => {
-    // --- Time bar background ---
-    ctx.fillStyle = style.timeBarLabel.color; // will be overridden per element; set base state
+    // --- Time bar background: transparent clear only; every mark below sets its own style. ---
     ctx.clearRect(timeBar.left, timeBar.top, timeBar.width, timeBar.height);
 
     for (const layer of layers) {
