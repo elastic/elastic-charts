@@ -5,7 +5,7 @@ owners: []
 supersedes: []
 ---
 
-# Spec 31 — Connections
+# Spec 33 — Connections
 
 > **Altitude: DURABLE / product.**
 > No file paths, no line numbers, no internal function names.

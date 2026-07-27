@@ -38,7 +38,7 @@ pipeline changes; pure renderer + theme + geometry.
 - Six theme files (`light_theme.ts`, `dark_theme.ts`, `amsterdam_light_theme.ts`,
   `amsterdam_dark_theme.ts`, `legacy_light_theme.ts`, `legacy_dark_theme.ts` under
   `packages/charts/src/utils/themes/`) — add `timeAxisLayerCount: 2` to each `trace:` block
-  (same wiring pattern as Spec 30's `runningLineDash`).
+  (same wiring pattern as Spec 32's `runningLineDash`).
 - `storybook/stories/trace/27_multilevel_time_bar.story.tsx` — new Storybook story; register in
   `trace.stories.tsx`.
 

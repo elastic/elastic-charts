@@ -20,16 +20,16 @@ running-span, and orphan policies.
   Spec 24's direct correction seam retains no-crash/no-mutation guarantees, while Spec 26 governs
   visible-output invalidation and omission for malformed duplicates.
 
-**Ordering with Spec 30 (running spans):** the clock-skew stage runs **before** running-span
+**Ordering with Spec 32 (running spans):** the clock-skew stage runs **before** running-span
 end-synthesis (`project`). An edge involving a running child or parent cannot originate correction
 because it has no meaningful duration. The running span remains structurally attached, stays at its
 recorded start, and carries no `skewCorrected` marker; it is not treated as a missing parent or
 reparented. A deeper completed edge may be evaluated independently. See
-[Spec 30](./spec-30-running-spans.md).
+[Spec 32](./spec-32-running-spans.md).
 
 Spec 24 lands before the public running-span model exists. Its correction stage therefore uses
-finite-end guards so it is compatible with Spec 30's pre-projection sentinel, but observable
-running-span behavior and its end-to-end tests land with Spec 30 rather than pulling a partial
+finite-end guards so it is compatible with Spec 32's pre-projection sentinel, but observable
+running-span behavior and its end-to-end tests land with Spec 32 rather than pulling a partial
 running-span API into this spec.
 
 ## Files
@@ -203,7 +203,7 @@ export function correctClockSkew(spans: NormalizedSpan[]): NormalizedSpan[] {
   stage emits one aggregated `Logger.warn` per normalization call with the count, at most five IDs,
   and a remaining-count suffix. `Logger.warn` is already development-only.
 - A running span is not translated and does not receive `skewCorrected`. Its non-finite end sentinel
-  is synthesized by Spec 30's `project` stage. Its structural children remain attached; a deeper
+  is synthesized by Spec 32's `project` stage. Its structural children remain attached; a deeper
   completed edge may be evaluated independently.
 - The final `spans.map` preserves input order; the no-correction fast path returns the original array.
 
@@ -271,8 +271,8 @@ share a dataset when the documentation identifies them individually. Do not simu
 mode by removing `parentId`, and do not hand-render a second waterfall that duplicates chart logic.
 
 Running-child, running-parent, and completed-edge-below-running-parent datasets are deliberately
-excluded until Spec 30 makes running spans valid public input. Add those cases to the running-span
-story when Spec 30 lands rather than weakening the Spec 24 build boundary.
+excluded until Spec 32 makes running spans valid public input. Add those cases to the running-span
+story when Spec 32 lands rather than weakening the Spec 24 build boundary.
 
 ### Follow-up — missing-parent reparenting
 
@@ -289,7 +289,7 @@ Spec 24 remains authoritative for clock-skew coordinates on the recovered visibl
 | `childDur > parentDur` | Latency clamps to zero. A left-skewed child moves to the corrected parent start and may overhang to the right. |
 | Zero-duration child | Valid duration. If left-skewed, it moves to the parent's temporal midpoint and carries `skewCorrected`. |
 | Negative-duration child or parent (`end < start`) | The malformed span is retained unchanged, every incident correction edge is ignored, and one normalization-call warning aggregates all such spans (count, first five IDs, and remaining count). |
-| Running child or parent (non-finite pre-projection end) | An edge involving either cannot originate correction. The running span remains structurally attached, is not translated or marked, and is not reparented. A deeper completed edge may still be evaluated independently. Cross-ref Spec 30. |
+| Running child or parent (non-finite pre-projection end) | An edge involving either cannot originate correction. The running span remains structurally attached, is not translated or marked, and is not reparented. A deeper completed edge may still be evaluated independently. Cross-ref Spec 32. |
 | Right-side overhang (starts in parent, ends after) | **Out of scope.** The existing `gapSegments` clamp bounds children to the parent for self-time derivation. |
 | Missing parent | At the Spec 24 boundary the span remains an orphan root. Spec 26 supersedes this with source-preserving fallback/reparenting before correction. |
 | Cyclic `parentId` graph | The direct correction seam terminates via its `visited` guard. Spec 26 omits cycles unreachable from the elected root before correction. |
@@ -318,10 +318,10 @@ Spec 24 remains authoritative for clock-skew coordinates on the recovered visibl
     parent and does not inherit the parent's offset. Assert moved and unmoved nested examples.
   - **Unskewed pass-through:** `child.start >= parent.start` → neither span has `skewCorrected`.
   - **Right-side overhang not corrected:** `child.start >= parent.start, child.end > parent.end` → no change.
-  - **Running child edge skipped (Spec 30):** a running child with `child.start < parent.start` does not originate a correction.
-  - **Running parent edge skipped (Spec 30):** a running parent does not originate a correction for its children.
-  - **Running span remains unchanged (Spec 30):** an edge involving a running participant is skipped; the running span retains its start, explicit active segments, and end sentinel, and carries no `skewCorrected` marker.
-  - **Completed edge below running span (Spec 30):** structural descendants are not reparented; a deeper edge whose parent and child are both completed is evaluated independently.
+  - **Running child edge skipped (Spec 32):** a running child with `child.start < parent.start` does not originate a correction.
+  - **Running parent edge skipped (Spec 32):** a running parent does not originate a correction for its children.
+  - **Running span remains unchanged (Spec 32):** an edge involving a running participant is skipped; the running span retains its start, explicit active segments, and end sentinel, and carries no `skewCorrected` marker.
+  - **Completed edge below running span (Spec 32):** structural descendants are not reparented; a deeper edge whose parent and child are both completed is evaluated independently.
   - **`childDur > parentDur` clamp:** a left-skewed longer child starts exactly at the corrected
     parent start, overhangs right, and carries `skewCorrected`.
   - **Zero duration:** a left-skewed zero-duration child moves to the parent's midpoint.

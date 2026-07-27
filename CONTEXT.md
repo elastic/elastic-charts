@@ -137,7 +137,9 @@ The currently-visible time window `[min, max]` of the Trace waterfall after zoom
 Can be externally driven via the `focusDomain` prop and observed via the `onFocusDomainChange` callback
 (perform-and-fire, echo-suppressed — see ADR 0007). Values are in post-normalize coordinates: epoch-ms
 for `'time'`, elapsed-from-zero-ms for `'linear'`. Changed by mouse wheel, keyboard, brush, and (on
-touch) two-finger pinch centered on the pinch midpoint (zoom-only — see ADR 0021).
+touch) two-finger pinch centered on the pinch midpoint (zoom-only — see ADR 0021). Zoom gestures
+(wheel, `+`/`-` keys, brush, pinch) can be disabled via `TraceSpec.zoomable` (pan is preserved);
+when zoom is locked the window can still be driven programmatically through `focusDomain`.
 _Avoid_: viewport, visible range.
 
 **Scroll offset**:
@@ -251,6 +253,9 @@ The smallest meaningful time window the trace chart allows via zoom-in. Scale-de
 - **`time` x-scale:** **1 ms**. Epoch-based domain values are ~1.7 × 10¹² ms; float64 at that
   magnitude cannot represent sub-ms differences, making 1 ms a hard precision limit.
 
+Overridable via `TraceSpec.minVisibleExtentMs` to coarsen the floor (e.g. cap `'linear'` at 1 ms
+instead of 1 ns). The override is **coarsen-only**: the effective floor is `max(override, scale
+default)`, so a finer value is clamped and the documented precision guarantees are never breached.
 Distinct from the **Focus domain** (the current window, always ≥ the minimum visible extent after
 clamping).
 _Avoid_: minimum zoom level (implies a zoom exponent, not a time window).

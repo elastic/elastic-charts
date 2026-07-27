@@ -486,7 +486,7 @@ keep expected structures local and do not import or duplicate Kibana helpers.
 - **Diagnostics API/UI:** application-facing reporting and presentation of omitted/invalid groups and
   cross-trace identity failures belongs to the dedicated follow-up spec; Spec 26 adds only temporary
   developer warnings for otherwise unexplained invalidation.
-- **Running-span synthesis:** Spec 30 owns missing-end behavior; present running parents are not
+- **Running-span synthesis:** Spec 32 owns missing-end behavior; present running parents are not
   orphans.
 
 ## Acceptance

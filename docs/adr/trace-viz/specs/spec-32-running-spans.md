@@ -5,7 +5,7 @@ owners: []
 supersedes: []
 ---
 
-# Spec 30 — Running spans (in-progress visualization)
+# Spec 32 — Running spans (in-progress visualization)
 
 > **Altitude: DURABLE / product.**
 > No file paths, no line numbers, no internal function names.

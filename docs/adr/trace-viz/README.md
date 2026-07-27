@@ -75,8 +75,10 @@ implementation steps, Storybook story, tests, `/review-claudio` review focus, an
 - [Spec 27 — Trace span badges](./specs/spec-27-trace-span-badges.md)
 - [Spec 28 — Trace data diagnostics](./specs/spec-28-trace-data-diagnostics.md)
 - [Spec 29 — Trace annotations](./specs/spec-29-trace-annotations.md)
-- [Spec 30 — Running spans (in-progress visualization)](./specs/spec-30-running-spans.md)
-- [Spec 31 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-31-connections.md)
+- [Spec 30 — Zoom lock](./specs/spec-30-zoom-lock.md)
+- [Spec 31 — Configurable minimum visible extent](./specs/spec-31-min-visible-extent.md)
+- [Spec 32 — Running spans (in-progress visualization)](./specs/spec-32-running-spans.md)
+- [Spec 33 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-33-connections.md)
 
 Build order (Specs 0–8): Phase 0 → Spec 0 → Spec 1 → (Spec 2 / Spec 3 / Spec 4 in parallel once
 Spec 1's `NormalizedSpan` contract is fixed) → Spec 5 → Spec 6 → Spec 7 → Spec 8.
@@ -100,32 +102,37 @@ graph whose numeric order **is** the dependency order:
 Specs 15–19 are mutually independent and can be parallelised after Spec 11.
 
 Spec 21 (collapsible nesting) builds on Spec 15 (`laneOrder: 'tree'` is the seam) and Specs 12 and 13
-(keyboard nav and `TraceSegmentRef`). It is independent of Specs 22–31. Open questions #2–#9 from the
+(keyboard nav and `TraceSegmentRef`). It is independent of Specs 22–33. Open questions #2–#9 from the
 original stub are resolved by [ADR 0026](./0026-collapsible-nesting.md).
 
-- **Spec 22** (critical path highlight) — depends on Specs 5, 12, and 13. Independent of Spec 31.
+- **Spec 22** (critical path highlight) — depends on Specs 5, 12, and 13. Independent of Spec 33.
   Extends the normalize pipeline (`project()`) and adds a canvas draw pass; no interaction state.
 - **Spec 23** (touch gestures) — depends on Specs 7, 10, and 13. See ADR 0021. Pure interaction
   layer addition; no pipeline changes.
 - **Spec 24** (clock-skew correction) — depends on Specs 1 and 2 (`buildChildrenMap`, `gapSegments`).
   Adds a new normalize stage between `dropNonFinite` and `project`. Independent of Specs 22–23.
-  Must be implemented **before** Spec 30 (clock-skew runs before running-end synthesis).
+  Must be implemented **before** Spec 32 (clock-skew runs before running-end synthesis).
 - **Spec 25** (multi-level time bar) — depends on Specs 3 and 4 (geometry, `TraceStyle`, raster
   engine reuse). Pure renderer + theme + geometry change; no normalize pipeline changes. Independent
   of Specs 22–24. See [ADR 0024](./0024-multilevel-time-bar.md).
 - **Spec 26** (partial-trace recovery / orphan reparenting) — depends on Specs 1, 2, 12, 15, 21,
   and 24. Adds a source-preserving synthetic display topology between finite filtering and
-  clock-skew correction, plus partial-trace provenance surfaces. Spec 30 running spans remain
+  clock-skew correction, plus partial-trace provenance surfaces. Spec 32 running spans remain
   compatible but are not required to implement recovery.
 - **Spec 27** (trace span badges) — behavior spec for structured span badges and badge events.
 - **Spec 28** (trace data diagnostics) — behavior spec for structured diagnostics emitted from
   prepared trace data.
 - **Spec 29** (trace annotations) — behavior spec for composed trace annotation child specs.
-- **Spec 30** (running spans) — depends on Specs 1, 3, 5, 7, 12, and 24. Relaxes `dropNonFinite`,
+- **Spec 30** (zoom lock) — depends on Specs 6 and 11 (RAF zoom/pan and brush-to-zoom, the gestures
+  it gates). Pure interaction gating — no pipeline changes, no new render. Independent of Specs 22–33.
+- **Spec 31** (configurable minimum visible extent) — depends on Specs 6 and 19 (the zoom clamp and
+  the nanosecond `'linear'` floor it coarsens). Pure zoom-clamp parameterization. Independent of
+  Specs 22–33.
+- **Spec 32** (running spans) — depends on Specs 1, 3, 5, 7, 12, and 24. Relaxes `dropNonFinite`,
   extends `project` and `resolveActive`, adds a renderer dashed-line pass, and adds a new theme
   token. Placed late because no later spec depends on it.
-- **Spec 31** (connections / "Initiated by" arrows) — depends on Specs 5, 12, and 13 (reuses
+- **Spec 33** (connections / "Initiated by" arrows) — depends on Specs 5, 12, and 13 (reuses
   `TraceSegmentRef`, `waitingSegments`, and the `buildGeometry` resolved-field pattern). Independent
-  of Specs 22–30. Pure render — no pipeline changes, no interaction state.
+  of Specs 22–32. Pure render — no pipeline changes, no interaction state.
 
 See the repo root [`CONTEXT.md`](../../../CONTEXT.md) for the domain glossary.
