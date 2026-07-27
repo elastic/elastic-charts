@@ -13,7 +13,7 @@ supersedes: []
 
 ## Summary
 
-A Trace chart may **coarsen its finest zoom-in window** via `minVisibleExtentMs`. By default the
+A Trace chart may **coarsen its finest zoom-in window** via `minVisibleExtent`. By default the
 **Minimum visible extent** is scale-dependent (1 ms in `'time'`, 1 ns in `'linear'`); a consumer can
 raise that floor — for example capping `'linear'` zoom-in at a 1 ms window instead of 1 ns — so the
 chart never resolves finer than a chosen granularity. The override is **coarsen-only**: it can only
@@ -23,13 +23,13 @@ raise the floor, never lower it below the scale default, so the documented preci
 
 | Symbol | Kind | Description |
 |---|---|---|
-| `TraceSpec.minVisibleExtentMs` | prop | `number` (ms). Raises the finest visible zoom-in window above the scale default. Omitted, or any value not finer-coarsening, leaves the scale default (1 ms `'time'`, 1 ns `'linear'`). |
+| `TraceSpec.minVisibleExtent` | prop | `number` (ms, in both x-scale modes). Raises the finest visible zoom-in window above the scale default. Omitted, or any value not finer-coarsening, leaves the scale default (1 ms `'time'`, 1 ns `'linear'`). |
 
 ## Behavior & acceptance
 
 - With the prop omitted, the finest zoom-in window is the scale default: 1 ms in `'time'`, 1 ns in
   `'linear'`. {story:minVisibleExtent}
-- A value coarser than the scale default raises the floor: `minVisibleExtentMs: 1` stops `'linear'`
+- A value coarser than the scale default raises the floor: `minVisibleExtent: 1` stops `'linear'`
   zoom-in at a 1 ms window rather than the default 1 ns.
   {test:packages/charts/src/chart_types/trace_chart/render/interaction.test.ts#"override coarsens the linear floor to 1 ms"}
 - The override is coarsen-only: a value finer than the scale default is clamped to the default, so the

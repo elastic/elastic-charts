@@ -522,18 +522,19 @@ export interface TraceSpec extends Spec {
    */
   zoomable?: boolean;
   /**
-   * Coarsens the finest zoom-in window. By default the minimum visible extent is scale-dependent
-   * (1 ms in `'time'`, 1 ns in `'linear'`); this raises that floor — for example `minVisibleExtentMs: 1`
-   * caps `'linear'` zoom-in at a 1 ms window instead of 1 ns — so the chart never resolves finer than
-   * the chosen granularity.
+   * Coarsens the finest zoom-in window. The value is in **milliseconds in both x-scale modes** (same
+   * unit as `focusDomain`). By default the minimum visible extent is scale-dependent (1 ms in
+   * `'time'`, 1 ns in `'linear'`); this raises that floor — for example `minVisibleExtent: 1` caps
+   * `'linear'` zoom-in at a 1 ms window instead of 1 ns — so the chart never resolves finer than the
+   * chosen granularity.
    *
-   * Coarsen-only: the effective floor is `max(minVisibleExtentMs, scaleDefault)`, so a value finer than
+   * Coarsen-only: the effective floor is `max(minVisibleExtent, scaleDefault)`, so a value finer than
    * the scale default is ignored and the documented precision guarantees hold. Invalid values (`0`,
    * negative, `NaN`, or non-finite) fall back to the scale default. The floor applies uniformly to every
    * zoom-in path — mouse wheel, `+` key, pinch, and brush commit — as well as the `focusDomain` clamp.
    * See Spec 31.
    */
-  minVisibleExtentMs?: number;
+  minVisibleExtent?: number;
   /**
    * When `true` (default), a small "keyboard active" badge appears in the top-left corner of the
    * chart while the canvas has keyboard focus, giving sighted users a WCAG 2.4.7 focus-visible cue.

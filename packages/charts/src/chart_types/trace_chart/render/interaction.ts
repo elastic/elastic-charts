@@ -39,7 +39,7 @@ export function minVisibleExtentForScale(xScaleType: string): number {
 
 /**
  * Resolves the effective minimum visible extent for a scale, applying the optional coarsen-only
- * `minVisibleExtentMs` override (Spec 31). The floor is `max(overrideMs, scaleDefault)` so the
+ * `minVisibleExtent` override (Spec 31). The floor is `max(overrideMs, scaleDefault)` so the
  * override can only raise the floor, never breach the scale-appropriate precision guarantee.
  *
  * Invalid overrides (`undefined`, `0`, negative, `NaN`, or non-finite) fall back to the scale default.

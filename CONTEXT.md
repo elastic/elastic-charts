@@ -253,7 +253,7 @@ The smallest meaningful time window the trace chart allows via zoom-in. Scale-de
 - **`time` x-scale:** **1 ms**. Epoch-based domain values are ~1.7 × 10¹² ms; float64 at that
   magnitude cannot represent sub-ms differences, making 1 ms a hard precision limit.
 
-Overridable via `TraceSpec.minVisibleExtentMs` to coarsen the floor (e.g. cap `'linear'` at 1 ms
+Overridable via `TraceSpec.minVisibleExtent` (in ms) to coarsen the floor (e.g. cap `'linear'` at 1 ms
 instead of 1 ns). The override is **coarsen-only**: the effective floor is `max(override, scale
 default)`, so a finer value is clamped and the documented precision guarantees are never breached.
 Distinct from the **Focus domain** (the current window, always ≥ the minimum visible extent after

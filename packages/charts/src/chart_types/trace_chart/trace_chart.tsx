@@ -558,7 +558,7 @@ class TraceComponent extends React.Component<TraceProps> {
     // Pre-seed: suppress the confirming echo that would otherwise fire at loop-stop.
     this.lastFiredDomain = fd;
     this.zoomPan.focus = domainToZoomPan(fd, [domain.min, domain.max]);
-    this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min, resolveMinVisibleExtent(spec.xScaleType, spec.minVisibleExtentMs)));
+    this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min, resolveMinVisibleExtent(spec.xScaleType, spec.minVisibleExtent)));
     this.easeZoom = true;
     this.flywheelActive = false;
     this.scheduleRender?.();
@@ -1475,7 +1475,7 @@ class TraceComponent extends React.Component<TraceProps> {
       // 1 ms for 'time' (ADR 0004 Decision 3), 1 ns for 'linear' (ADR 0010).
       const { domain } = this.getPipeline(this.props.traceSpec);
       const referenceExtentMs = domain.max - domain.min;
-      this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(referenceExtentMs, resolveMinVisibleExtent(this.props.traceSpec.xScaleType, this.props.traceSpec.minVisibleExtentMs)));
+      this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(referenceExtentMs, resolveMinVisibleExtent(this.props.traceSpec.xScaleType, this.props.traceSpec.minVisibleExtent)));
 
       this.scheduleRender?.();
     };
@@ -1594,7 +1594,7 @@ class TraceComponent extends React.Component<TraceProps> {
         // Use the last clamped brushEnd (set in mousemove). If no mousemove fired (zero-width
         // click), brushEnd === brushStart, giving a zero range → below minExtent → no-op.
         const [from, to] = pixelRangeToDomain(this.brush.start, this.brush.end, geom);
-        const minExtent = resolveMinVisibleExtent(spec.xScaleType, spec.minVisibleExtentMs);
+        const minExtent = resolveMinVisibleExtent(spec.xScaleType, spec.minVisibleExtent);
         if (to - from < minExtent) { this.setState({}); return; }
         const { domain } = this.getPipeline(spec);
         const clampedFrom = clamp(from, domain.min, domain.max);
@@ -1805,7 +1805,7 @@ class TraceComponent extends React.Component<TraceProps> {
           false,
         );
         const { domain } = this.getPipeline(spec);
-        this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min, resolveMinVisibleExtent(spec.xScaleType, spec.minVisibleExtentMs)));
+        this.zoomPan.focus.zoom = Math.min(this.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min, resolveMinVisibleExtent(spec.xScaleType, spec.minVisibleExtent)));
         this.scheduleRender?.();
         return;
       }
@@ -2022,7 +2022,7 @@ class TraceComponent extends React.Component<TraceProps> {
         const { domain } = this.getPipeline(this.props.traceSpec);
         this.zoomPan.focus.zoom = Math.min(
           this.zoomPan.focus.zoom,
-          computeZoomMax(domain.max - domain.min, resolveMinVisibleExtent(this.props.traceSpec.xScaleType, this.props.traceSpec.minVisibleExtentMs)),
+          computeZoomMax(domain.max - domain.min, resolveMinVisibleExtent(this.props.traceSpec.xScaleType, this.props.traceSpec.minVisibleExtent)),
         );
         // Do NOT update this.touch.multitouch here — it must hold the INITIAL pinch positions.
         // doZoomAroundPosition(touch=true) uses focusStart.zoom as its base and expects zoomChange

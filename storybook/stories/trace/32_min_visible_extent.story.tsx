@@ -21,8 +21,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <div>
         <p style={{ margin: '0 0 4px' }}>
-          <strong>Default floor</strong> — <code>minVisibleExtentMs</code> omitted (1 ns in{' '}
-          <code>linear</code>)
+          <strong>Default floor</strong> — <code>minVisibleExtent</code> omitted (1 ns in <code>linear</code>)
         </p>
         <Chart title={title} description={description} size={{ width: '100%', height: 200 }}>
           <Settings baseTheme={baseTheme} />
@@ -31,12 +30,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
       </div>
       <div>
         <p style={{ margin: '0 0 4px' }}>
-          <strong>Raised floor</strong> — <code>minVisibleExtentMs={'{1}'}</code> (capped at a 1 ms
-          window)
+          <strong>Raised floor</strong> — <code>minVisibleExtent={'{1}'}</code> (capped at a 1 ms window)
         </p>
         <Chart size={{ width: '100%', height: 200 }}>
           <Settings baseTheme={baseTheme} />
-          <Trace id="trace_mve_capped" data={CHECKOUT_SPANS} xScaleType="linear" minVisibleExtentMs={1} />
+          <Trace id="trace_mve_capped" data={CHECKOUT_SPANS} xScaleType="linear" minVisibleExtent={1} />
         </Chart>
       </div>
     </div>
@@ -45,10 +43,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
 Example.parameters = {
   markdown:
-    'The `minVisibleExtentMs` prop **coarsens** the finest zoom-in window. By default the minimum ' +
+    'The `minVisibleExtent` prop **coarsens** the finest zoom-in window. By default the minimum ' +
     'visible extent is scale-dependent (1 ms in `time`, 1 ns in `linear`); this raises that floor so ' +
     'the chart never resolves finer than the chosen granularity.\n\n' +
-    'The override is **coarsen-only** — the effective floor is `max(minVisibleExtentMs, scaleDefault)` ' +
+    'The override is **coarsen-only** — the effective floor is `max(minVisibleExtent, scaleDefault)` ' +
     '— so a value finer than the scale default is ignored and the documented precision guarantees ' +
     'hold. Invalid values (`0`, negative, `NaN`, non-finite) fall back to the scale default.\n\n' +
     'Zoom both `linear` charts all the way in: the top one keeps resolving down to nanoseconds, while ' +
