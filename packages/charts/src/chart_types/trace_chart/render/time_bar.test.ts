@@ -265,6 +265,98 @@ describe('drawTimeBar — sub-ms ticks all render with distinct labels (linear m
   });
 });
 
+describe('drawTimeBar — linear label density gating (viewport-independent stride)', () => {
+  /**
+   * numericalRasters emits a fixed ~20 labeled ticks regardless of label width, so as elapsed values
+   * grow the single-row labels collide. drawTimeBar labels only every `labelStride`-th tick — keyed off
+   * the tick's absolute ordinal (multiples of the base step from 0), NOT the leftmost visible tick — so
+   * the labeled set is stable under pan/zoom (no "label dance"). The gridline follows the label; the fine
+   * tick lines stay dense as minor marks (parity with time mode). This suite exercises a crowded axis.
+   *
+   * Scenario: 41 ticks at 0, 250, …, 10000 ms across the 800px plot → 20px spacing. One unit per axis:
+   * step 250 ms → ms unit, 0 decimals → labels "0ms" … "10000ms" (3–7 chars). The mock measureText
+   * returns length*6 px, so the widest ("10000ms") is 42px — far wider than 20px spacing → must thin.
+   */
+  const STEP_MS = 250;
+
+  function crowdedLayer() {
+    const ticks = Array.from({ length: 41 }, (_, i) => i * STEP_MS); // 0, 250, …, 10000
+    return {
+      unit: 'one',
+      unitMultiplier: Infinity,
+      labeled: true,
+      minimumTickPixelDistance: 24,
+      intervals: () =>
+        ticks.map((v, i, a) => ({
+          minimum: v,
+          supremum: a[i + 1] ?? v + STEP_MS,
+          labelSupremum: a[i + 1] ?? v + STEP_MS,
+        })),
+      detailedLabelFormat: String,
+      minorTickLabelFormat: String,
+    };
+  }
+
+  it('thins labels to a uniform ordinal stride while keeping every in-range tick line', () => {
+    mockNumericalRasters.mockReturnValueOnce(() => [crowdedLayer()]);
+    const ctx = makeCtx();
+    // makeGeom('linear') maps tMs → 200 + (tMs / 10000) * 800, focusDomain [0, 10000].
+    drawTimeBar(ctx, makeGeom('linear'), style);
+
+    const labels: string[] = (ctx.fillText as jest.Mock).mock.calls.map((args: unknown[]) => String(args[0]));
+
+    // Gating happened: fewer labels drawn than the 41 in-range ticks, but not collapsed to nothing.
+    expect(labels.length).toBeLessThan(41);
+    expect(labels.length).toBeGreaterThanOrEqual(2);
+
+    // Anti-dance invariant: drawn labels sit on a uniform stride anchored to ordinal 0 — every drawn
+    // tick's ordinal (value / step) is a multiple of a single stride k > 1. Because selection keys off
+    // the absolute ordinal (not the viewport), a given value is always-or-never labeled → no flicker.
+    const ordinals = labels.map((l) => Math.round(Number(l.replace('ms', '')) / STEP_MS));
+    const stride = Math.min(...ordinals.filter((o) => o > 0));
+    expect(stride).toBeGreaterThan(1);
+    ordinals.forEach((o) => expect(o % stride).toBe(0));
+
+    // Fine tick lines stay dense: one tick line per in-range tick (41), independent of label gating.
+    // Tick lines move to y = timeBar.top + timeBar.height - TICK_HEIGHT = 0 + 32 - 6 = 26; gridlines
+    // move to plot.top (32), so filtering by y isolates tick lines.
+    const tickLineMoveTos = (ctx.moveTo as jest.Mock).mock.calls.filter((args: unknown[]) => Number(args[1]) === 26);
+    expect(tickLineMoveTos.length).toBe(41);
+  });
+
+  it('labels the same tick values regardless of viewport offset (no label dance)', () => {
+    // Render the identical tick set under two different focus windows (a pan). Ordinal-anchored
+    // selection must label the same tick *values* wherever they are in view — a greedy, viewport-
+    // anchored gate would instead shift the surviving subset as the window moves.
+    const drawnValuesFor = (focusDomain: { min: number; max: number }): Set<number> => {
+      mockNumericalRasters.mockReturnValueOnce(() => [crowdedLayer()]);
+      const ctx = makeCtx();
+      const plotLeft = 200;
+      const plotWidth = 800;
+      const geom = {
+        ...makeGeom('linear'),
+        focusDomain,
+        scale: (tMs: number) => plotLeft + ((tMs - focusDomain.min) / (focusDomain.max - focusDomain.min)) * plotWidth,
+      };
+      drawTimeBar(ctx, geom, style);
+      return new Set(
+        (ctx.fillText as jest.Mock).mock.calls
+          .map((args: unknown[]) => Math.round(Number(String(args[0]).replace('ms', '')) / STEP_MS))
+          .filter((o) => Number.isFinite(o)),
+      );
+    };
+
+    // Two windows of equal width (same zoom, hence same stride) but shifted origin.
+    const a = drawnValuesFor({ min: 0, max: 5000 });
+    const b = drawnValuesFor({ min: 2000, max: 7000 });
+
+    // Ordinals visible in BOTH windows (2000..5000 ms → ordinals 8..20) must be labeled identically.
+    const overlap = [...a].filter((o) => o >= 8 && o <= 20);
+    overlap.forEach((o) => expect(b.has(o)).toBe(true));
+    expect(overlap.length).toBeGreaterThan(0);
+  });
+});
+
 describe('drawTimeBar — finest-labeled-layer selection (time mode)', () => {
   /**
    * continuousTimeRasters returns layers finest-first. The trace time bar must label the
@@ -666,6 +758,24 @@ describe('formatElapsedMs — format with pickElapsedUnit result', () => {
     const unit = pickElapsedUnit(60_000);
     expect(formatElapsedMs(150_000, unit)).toBe('2m 30s');
     expect(formatElapsedMs(60_000, unit)).toBe('1m');
+  });
+
+  it('rolls the duration compound up into hours and days (graspable long spans)', () => {
+    const unit = pickElapsedUnit(60_000); // any step >= 1 min routes through the "m" compound format
+    // Sub-minute still trims to seconds.
+    expect(formatElapsedMs(0, unit)).toBe('0s');
+    expect(formatElapsedMs(30_000, unit)).toBe('30s');
+    // Minutes range keeps the seconds component.
+    expect(formatElapsedMs(2_700_000, unit)).toBe('45m'); // 45m exactly
+    expect(formatElapsedMs(2_730_000, unit)).toBe('45m 30s');
+    // Hours range: two most-significant units (hours + minutes), no seconds noise.
+    expect(formatElapsedMs(3_600_000, unit)).toBe('1h'); // 1h exactly
+    expect(formatElapsedMs(19_980_000, unit)).toBe('5h 33m'); // was "333m …" before
+    expect(formatElapsedMs(6 * 3_600_000, unit)).toBe('6h'); // 6h span edge
+    // Days range: days + hours.
+    expect(formatElapsedMs(86_400_000, unit)).toBe('1d'); // 1d exactly
+    expect(formatElapsedMs(194_400_000, unit)).toBe('2d 6h'); // 2 days 6 hours
+    expect(formatElapsedMs(10 * 86_400_000 + 5 * 3_600_000, unit)).toBe('10d 5h');
   });
 
   it('produces distinct labels for a large-offset deep-zoom window (no duplicates)', () => {

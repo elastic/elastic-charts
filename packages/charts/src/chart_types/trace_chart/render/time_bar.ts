@@ -131,21 +131,47 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
   // numericalRasters returns a single labeled layer with a uniform step; derive the step from the
   // first two ticks so every label is formatted consistently (ADR 0010 — one unit per axis).
   let axisUnit: ElapsedUnit | null = null;
+  let axisStepMs = 0; // uniform ms spacing between labeled-layer ticks (linear); 0 when unknown
   if (!isTime && labelLayer) {
     // intervals() is a generator — pull the first two values to read the step.
     const iter = labelLayer.intervals(domainFrom, domainTo)[Symbol.iterator]();
     const first = iter.next().value as Interval | undefined;
     const second = iter.next().value as Interval | undefined;
-    const stepMs =
+    axisStepMs =
       first !== undefined && second !== undefined
         ? second.minimum - first.minimum
         : domainTo - domainFrom; // fallback: window extent
-    axisUnit = pickElapsedUnit(stepMs);
+    axisUnit = pickElapsedUnit(axisStepMs);
   }
 
   withContext(ctx, () => {
     // --- Time bar background: transparent clear only; every mark below sets its own style. ---
     ctx.clearRect(timeBar.left, timeBar.top, timeBar.width, timeBar.height);
+
+    // Linear label density gate. numericalRasters emits a fixed ~20 labeled ticks regardless of label
+    // width, so as elapsed values grow (wider labels) the single-row labels collide. We label only
+    // every `labelStride`-th tick (its gridline follows) while the fine tick lines below stay dense as
+    // minor measurement marks (parity with time mode).
+    //
+    // The stride is derived from the widest label and anchored to absolute tick ordinals (multiples of
+    // the base step from 0), NOT to the leftmost visible tick. This is deliberate: a greedy left-to-
+    // right suppression re-anchors on whichever tick is first in view, so panning/zooming shifts which
+    // labels survive — the visible "label dance". Ordinal anchoring makes a given tick value always-or-
+    // never labeled within a zoom band, so labels only slide with the viewport instead of flickering.
+    if (!isTime) ctx.font = cssFontShorthand(labelFont, labelFont.fontSize);
+    let labelStride = 1;
+    if (!isTime && labelLayer && axisUnit && axisStepMs > 0) {
+      // Widest label on the axis: the domain endpoints carry the largest magnitude / digit count, and
+      // decimals are constant per axis (one unit per axis), so measuring both bounds is a stable proxy.
+      const maxLabelWidth = Math.max(
+        ctx.measureText(formatElapsedMs(domainFrom, axisUnit)).width,
+        ctx.measureText(formatElapsedMs(domainTo, axisUnit)).width,
+      );
+      const pixelStep = Math.abs(scale(domainFrom + axisStepMs) - scale(domainFrom));
+      if (pixelStep > 0) {
+        labelStride = Math.max(1, Math.ceil((maxLabelWidth + TICK_LABEL_MIN_GAP) / pixelStep));
+      }
+    }
 
     for (const layer of layers) {
       const drawGrid = layer.labeled && showGridLine(layer);
@@ -165,6 +191,22 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
           if (Math.abs(nsValue - Math.round(nsValue)) > 1e-6) continue;
         }
 
+        // --- Linear label density gate (viewport-independent, ordinal-anchored) ---
+        // Label (and gridline) only every `labelStride`-th tick, keyed off the tick's absolute ordinal
+        // (its index in the multiples-of-base-step sequence from 0). This keeps the labeled set stable
+        // under pan/zoom — no "label dance". The tick line below is drawn regardless, keeping fine
+        // measurement marks dense (parity with time mode).
+        const isLinearLabelTick = !isTime && layer === labelLayer;
+        let linearLabel = '';
+        let suppressLinearLabel = false;
+        if (isLinearLabelTick) {
+          if (labelStride > 1 && axisStepMs > 0) {
+            const ordinal = Math.round(tickMs / axisStepMs);
+            suppressLinearLabel = ordinal % labelStride !== 0;
+          }
+          if (!suppressLinearLabel) linearLabel = formatElapsedMs(minimum, axisUnit!); // one unit per axis (ADR 0010)
+        }
+
         // --- Tick line: protrudes from bottom of time bar ---
         withContext(ctx, () => {
           ctx.strokeStyle = style.timeBarLabel.color;
@@ -175,8 +217,8 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
           ctx.stroke();
         });
 
-        // --- Faint gridline through the plot area ---
-        if (drawGrid) {
+        // --- Faint gridline through the plot area (suppressed with its density-gated label) ---
+        if (drawGrid && !suppressLinearLabel) {
           withContext(ctx, () => {
             ctx.strokeStyle = style.gridLineColor;
             ctx.lineWidth = 1;
@@ -191,10 +233,10 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
         // Used for linear mode (any layer count) and for time mode with timeAxisLayerCount === 0
         // (legacy single-row, byte-identical to pre-feature). Time mode with count >= 1 draws its
         // labels in the stacked tick-layer loop below (ADR 0024).
-        if (layer === labelLayer && (!isTime || style.timeAxisLayerCount === 0)) {
+        if (layer === labelLayer && (!isTime || style.timeAxisLayerCount === 0) && !suppressLinearLabel) {
           const label = isTime
             ? layer.minorTickLabelFormat(minimum * MS_PER_SECOND) // time formatters expect ms
-            : formatElapsedMs(minimum, axisUnit!); // linear: one unit per axis (ADR 0010)
+            : linearLabel; // linear: reuse the label computed for the density gate above (ADR 0010)
           const labelY = timeBar.top + 2; // a couple of px from the top edge
 
           // Flip from center-aligned to edge-aligned when the tick is near the plot boundary, so
@@ -314,7 +356,10 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
 export interface ElapsedUnit {
   /** Divisor to convert ms to the display unit (e.g. 1000 for seconds). */
   divisor: number;
-  /** Display suffix string (e.g. "ms", "µs", "ns", "s", or "m" for the minutes compound format). */
+  /**
+   * Display suffix string (e.g. "ms", "µs", "ns", "s"), or "m" which selects the humanized
+   * duration compound format (minutes/hours/days, e.g. "45m", "5h 33m", "2d 6h").
+   */
   suffix: string;
   /** Number of decimal places to render (0 = integer). No cap — ensures adjacent ticks stay distinct. */
   decimals: number;
@@ -324,7 +369,8 @@ export interface ElapsedUnit {
  * Picks ONE unit for the whole linear time-bar axis.
  *
  * `stepMs` — the uniform tick spacing — drives BOTH the unit and decimal precision.
- * Unit thresholds: step ≥60000ms → minutes compound, step ≥1000ms → s, step ≥1ms → ms,
+ * Unit thresholds: step ≥60000ms → duration compound (the "m" suffix; `formatElapsedMs` renders it as
+ * minutes/hours/days, e.g. "5h 33m", "2d 6h"), step ≥1000ms → s, step ≥1ms → ms,
  * step >1e-6ms → µs, else (≤1e-6ms, i.e. ≤1ns) → ns. Using the step (not the absolute
  * tick value) ensures the unit reflects the zoom resolution, not the position in the trace.
  *
@@ -345,7 +391,7 @@ export function pickElapsedUnit(stepMs: number): ElapsedUnit {
   // Guard: treat ≤0 / NaN as a 1ms step (ms unit, 0 decimals).
   if (!(stepMs > 0)) return { divisor: 1, suffix: 'ms', decimals: 0 };
   if (stepMs >= 60_000) {
-    // Compound minutes format; decimals unused (formatElapsedMs handles it separately).
+    // Humanized duration compound (minutes/hours/days); decimals unused (formatElapsedMs handles it).
     return { divisor: 1, suffix: 'm', decimals: 0 };
   }
   if (stepMs >= 1_000) return { divisor: 1000, suffix: 's', decimals: decFor(stepMs / 1000) };
@@ -365,11 +411,22 @@ export function pickElapsedUnit(stepMs: number): ElapsedUnit {
  */
 export function formatElapsedMs(ms: number, unit: ElapsedUnit): string {
   if (unit.suffix === 'm') {
-    const s = ms / 1000;
-    if (s < 60) return `${+s.toFixed(2).replace(/\.?0+$/, '')}s`;
-    const m = Math.floor(s / 60);
-    const rem = Math.round(s % 60);
-    return rem === 0 ? `${m}m` : `${m}m ${rem}s`;
+    // Humanized elapsed duration for the coarse regime (step >= 1 min). Roll the value up through
+    // minutes -> hours -> days and render the two most-significant non-zero units, so large elapsed
+    // spans stay graspable ("5h 33m", "2d 6h") instead of piling into minutes ("333m 52s"). Sub-minute
+    // values fall back to a trimmed seconds label. Because nice tick steps are ~span/20, the two shown
+    // units always resolve adjacent ticks (no duplicate labels — see ADR 0010).
+    const totalSeconds = ms / 1000;
+    if (totalSeconds < 60) return `${+totalSeconds.toFixed(2).replace(/\.?0+$/, '')}s`;
+    const totalMinutes = Math.floor(totalSeconds / 60);
+    const totalHours = Math.floor(totalMinutes / 60);
+    const days = Math.floor(totalHours / 24);
+    const hours = totalHours % 24;
+    const minutes = totalMinutes % 60;
+    const seconds = Math.round(totalSeconds % 60);
+    if (days > 0) return hours === 0 ? `${days}d` : `${days}d ${hours}h`;
+    if (totalHours > 0) return minutes === 0 ? `${totalHours}h` : `${totalHours}h ${minutes}m`;
+    return seconds === 0 ? `${totalMinutes}m` : `${totalMinutes}m ${seconds}s`;
   }
   const v = ms / unit.divisor;
   return unit.decimals === 0 ? `${Math.round(v)}${unit.suffix}` : `${v.toFixed(unit.decimals)}${unit.suffix}`;
