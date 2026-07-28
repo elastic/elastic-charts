@@ -187,6 +187,54 @@ cheap, and correctness is not negotiable.
   oversized canvas box, and the benefit (avoiding Canvas2D realloc on resize) does not justify the
   complexity for this chart type.
 
+## Decision 5: Trace canvas controller extraction
+
+> **Amended (post-Spec 30 refactor).** Decision 1 above describes the component as directly holding
+> the mutable instance state and driving the rAF loop. That state and loop still exist and behave
+> identically — they have simply been **relocated** out of the React class into a framework-agnostic
+> controller. This decision records why, and pins the invariants that must not drift.
+
+The `connect`ed `TraceComponent` had grown to ~2,360 LoC: a single class mixing the rAF loop, all
+pointer/keyboard/touch handlers, the memoized data pipeline, selection/collapse, hover/pin/tooltip,
+accessibility, and the React glue. It was hard to navigate and its interaction logic could only be
+tested through a fully-mounted component.
+
+**Decision:** extract a framework-agnostic `TraceCanvasController` (under
+[`controller/`](../../../packages/charts/src/chart_types/trace_chart/controller)) that owns every
+mutable interaction/render/pipeline/selection field and the rAF loop. Its logic is split into small
+concern modules — `pipeline`, `selection`, `hover_pin`, `accessibility`, `frame`, `interactions` —
+written as free functions over the controller instance (public fields; the class is `@internal` and
+never exported, so there is **no public API change**). `TraceComponent` becomes a thin shell that
+renders the canvas/DOM siblings and forwards lifecycle to the controller.
+
+**Component <-> controller bridge:**
+
+- `deps.getProps = () => this.props` — the controller reads props **live** at frame/handler call
+  time, exactly preserving Decision 1's "reads `this.props` at frame-call time so redux re-renders are
+  seen without an extra selector subscription". `componentDidUpdate` calls `controller.update(prevProps)`
+  solely to run the ordered sync sequence (`syncViewKeyReset` -> `syncFocusDomain` ->
+  `syncPinOnSpecChange` -> `syncSelectionLifecycle` -> `syncCollapseLifecycle` -> `syncControlProvider`
+  -> `redrawIfCanvasPropsChanged`).
+- `deps.requestRender = () => this.forceUpdate()` — replaces every `this.setState({})` re-render
+  trigger. The component holds no React state (`extends React.Component<TraceProps>`), so this is an
+  exact equivalent.
+- Lifecycle: `start()` runs the old `componentDidMount` body, idempotent `destroy()` runs the
+  `componentWillUnmount` body (safe under React 18 StrictMode double-mount).
+
+**Invariants preserved (must not drift):** the self-managed rAF loop and the zoom-eases / pan-1:1
+model (Decisions 1-2) are unchanged — only relocated; `onChartRendered` still fires **once** in
+`start()` (never in `update()`, per the infinite-loop note in Decision 1); the exact-`chartDimensions`
+layout (Decision 4) is unchanged.
+
+**Alternatives considered:**
+
+- **Keep the god component** — rejected: untestable interaction seams and poor navigability.
+- **Record this in a new ADR** — rejected: the interaction-model history belongs in one document, so
+  this is an in-place amendment.
+- **Store a props snapshot on the controller** (refresh in `update()`) instead of a live `getProps`
+  callback — rejected: reintroduces a staleness window between a redux change and `componentDidUpdate`
+  and diverges from Decision 1's live-read wording.
+
 ## Consequences
 
 - The frame loop terminates after one frame on mount and after each interaction settles. No idle RAF
