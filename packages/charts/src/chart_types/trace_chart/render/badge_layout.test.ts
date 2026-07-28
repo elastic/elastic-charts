@@ -139,6 +139,7 @@ describe('layoutBadges — inline', () => {
 
     for (const item of lane.items) {
       if (item.text) {
+        // eslint-disable-next-line jest/no-conditional-expect
         expect(item.text.endsWith('…')).toBe(item.text.length < 10);
       }
     }

@@ -22,7 +22,9 @@ class FakeImage {
   // Mirror the DOM `Image` API the cache uses (`addEventListener('load', ...)`) by routing it to the
   // same `onload`/`onerror` slots the tests fire directly.
   addEventListener(type: 'load' | 'error', listener: () => void) {
+    // eslint-disable-next-line unicorn/prefer-add-event-listener
     if (type === 'load') this.onload = listener;
+    // eslint-disable-next-line unicorn/prefer-add-event-listener
     else this.onerror = listener;
   }
 }
