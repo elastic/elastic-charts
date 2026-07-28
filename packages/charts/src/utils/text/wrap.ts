@@ -6,11 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { ELLIPSIS, type Font } from '../../common/text_utils';
+import { fitText, type Font, type TruncateConfig } from '../../common/text_utils';
 import { monotonicHillClimb } from '../../solvers/monotonic_hill_climb';
 import type { TextMeasure } from '../bbox/canvas_text_bbox_calculator';
+import type { Truncate } from '../themes/theme';
 
-interface WrapTextLines extends Array<string> {
+/** @internal */
+export interface WrapTextLines extends Array<string> {
   meta: {
     truncated: boolean;
   };
@@ -28,25 +30,137 @@ export function wrapText(
   measure: TextMeasure,
   locale: string,
   granularity: Granularity = 'word',
+  truncate: Truncate | false = 'end',
+  truncateConfig?: TruncateConfig,
 ): WrapTextLines {
-  const lines: WrapTextLines = [] as any;
-  lines.meta = {
-    truncated: false,
-  };
+  if (maxLines <= 0) return Object.assign([], { meta: { truncated: false } });
 
-  if (maxLines <= 0) {
-    return lines;
-  }
-  const segmenter = textSegmenter(locale, granularity);
-  // remove new lines and multi-spaces.
   const cleanedText = text.replaceAll('\n', ' ').replaceAll(/ +(?= )/g, '');
+  const lines = wrapTextLines(cleanedText, font, fontSize, maxLineWidth, measure, locale, granularity);
 
+  if (lines.length <= maxLines) return Object.assign(lines, { meta: { truncated: false } });
+
+  if (!truncate) {
+    const head = lines.slice(0, Math.max(0, maxLines - 1));
+    const overflow = lines.slice(Math.max(0, maxLines - 1)).join('');
+    return Object.assign([...head, overflow], { meta: { truncated: false } });
+  }
+
+  // 'end' and 'start' truncate at a line edge, so we keep the wrapped lines on the visible
+  // side intact and only fit the one that shares its line with the ellipsis.
+  if (truncate === 'end' || truncate === 'start') {
+    return truncateLinesAtEdge(lines, maxLines, font, fontSize, maxLineWidth, measure, truncate, truncateConfig);
+  }
+
+  // find the width of the text that will fit within the maxLineWidth * maxLines budget
+  const allottedWidth = findAllottedWidth(
+    cleanedText,
+    font,
+    fontSize,
+    maxLineWidth,
+    maxLines,
+    measure,
+    locale,
+    granularity,
+    truncate,
+  );
+
+  // truncate the text to the allotted width
+  const { text: truncatedText } = fitText(
+    measure,
+    cleanedText,
+    allottedWidth,
+    fontSize,
+    font,
+    truncate,
+    truncateConfig,
+  );
+
+  // wrap the truncated text to the maxLineWidth
+  const rewrapped = wrapTextLines(truncatedText, font, fontSize, maxLineWidth, measure, locale, granularity);
+
+  // options.overflow could keep more text than the budget search assumed which would make rewrap go over
+  // maxLines. So we need to fold the overflown lines into the last visible line and let it overflow horizontally.
+  if (rewrapped.length > maxLines) {
+    if (!truncateConfig?.overflow) {
+      const { text: fittedText } = fitText(measure, cleanedText, allottedWidth, fontSize, font, truncate);
+      const fittedLines = wrapTextLines(fittedText, font, fontSize, maxLineWidth, measure, locale, granularity);
+      return Object.assign(fittedLines, { meta: { truncated: fittedText !== cleanedText } });
+    }
+
+    const head = rewrapped.slice(0, maxLines - 1);
+    const lastLine = rewrapped.slice(maxLines - 1).join('');
+    return Object.assign([...head, lastLine], { meta: { truncated: truncatedText !== cleanedText } });
+  }
+
+  return Object.assign(rewrapped, { meta: { truncated: truncatedText !== cleanedText } });
+}
+
+function truncateLinesAtEdge(
+  lines: string[],
+  maxLines: number,
+  font: Font,
+  fontSize: number,
+  maxLineWidth: number,
+  measure: TextMeasure,
+  edge: 'start' | 'end',
+  truncateConfig?: TruncateConfig,
+): WrapTextLines {
+  const overflow =
+    edge === 'end' ? lines.slice(maxLines - 1).join('') : lines.slice(0, lines.length - maxLines + 1).join('');
+  const { text: truncatedLine } = fitText(measure, overflow, maxLineWidth, fontSize, font, edge, truncateConfig);
+  const result =
+    edge === 'end'
+      ? [...lines.slice(0, maxLines - 1), truncatedLine]
+      : [truncatedLine, ...lines.slice(lines.length - maxLines + 1)];
+  return Object.assign(result, { meta: { truncated: truncatedLine !== overflow } });
+}
+
+function findAllottedWidth(
+  cleanedText: string,
+  font: Font,
+  fontSize: number,
+  maxLineWidth: number,
+  maxLines: number,
+  measure: TextMeasure,
+  locale: string,
+  granularity: Granularity,
+  truncate: Truncate,
+): number {
+  const wrapLineCount = (budget: number) =>
+    wrapTextLines(
+      fitText(measure, cleanedText, budget, fontSize, font, truncate).text,
+      font,
+      fontSize,
+      maxLineWidth,
+      measure,
+      locale,
+      granularity,
+    ).length;
+
+  const maxBudget = maxLineWidth * maxLines;
+  const allottedWidth = monotonicHillClimb(wrapLineCount, maxBudget, maxLines, (n) => n, 0);
+
+  return allottedWidth;
+}
+
+function wrapTextLines(
+  cleanedText: string,
+  font: Font,
+  fontSize: number,
+  maxLineWidth: number,
+  measure: TextMeasure,
+  locale: string,
+  granularity: Granularity,
+): string[] {
+  const lines: string[] = [];
+
+  const segmenter = textSegmenter(locale, granularity);
   const segments = Array.from(segmenter(cleanedText)).map((d) => ({
     ...d,
     width: measure(d.segment, font, fontSize).width,
   }));
 
-  const ellipsisWidth = measure(ELLIPSIS, font, fontSize).width;
   let currentLineWidth = 0;
   for (const segment of segments) {
     // the word is longer then the available space and is not a space
@@ -66,22 +180,7 @@ export function wrapText(
       currentLineWidth += segment.width;
     }
   }
-  if (lines.length > maxLines) {
-    lines.meta.truncated = true;
-    const lastLineMaxLineWidth = maxLineWidth - ellipsisWidth;
-    const lineToTruncate = lines[maxLines - 1] ?? '';
-    const lastLine = clipTextToWidth(lineToTruncate, font, fontSize, lastLineMaxLineWidth, measure);
-    if (lastLine.length > 0) {
-      lines.splice(maxLines - 1, Infinity, `${lastLine}${ELLIPSIS}`);
-    } else {
-      if (lastLineMaxLineWidth > 0) {
-        // Not enough space for both a character and ellipsis; if 1 line → first char; if >1 lines → only ellipsis
-        lines.splice(maxLines - 1, Infinity, maxLines > 1 ? ELLIPSIS : lineToTruncate.slice(0, 1));
-      } else {
-        lines.splice(maxLines, Infinity);
-      }
-    }
-  }
+
   return lines;
 }
 

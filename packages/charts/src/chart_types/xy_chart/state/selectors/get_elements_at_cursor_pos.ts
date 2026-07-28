@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getGeometriesIndexSelector } from './get_geometries_index';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
@@ -17,7 +17,7 @@ import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
-import type { ChartDimensions } from '../../../../utils/dimensions';
+import type { Dimensions } from '../../../../utils/dimensions';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import type { IndexedGeometry } from '../../../../utils/geometry';
 import type { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
@@ -34,7 +34,7 @@ export const getElementAtCursorPositionSelector = createCustomCachedSelector(
     getGeometriesIndexKeysSelector,
     getGeometriesIndexSelector,
     getExternalPointerEventStateSelector,
-    computeChartDimensionsSelector,
+    computeChartLayoutSelector,
     getSettingsSpecSelector,
   ],
   getElementAtCursorPosition,
@@ -46,7 +46,7 @@ function getElementAtCursorPosition(
   geometriesIndexKeys: (string | number)[],
   geometriesIndex: IndexedGeometryMap,
   externalPointerEvent: PointerEvent | null,
-  { chartDimensions }: ChartDimensions,
+  { dimensions: { chartDimensions } }: { dimensions: { chartDimensions: Dimensions } },
   { pointBuffer }: SettingsSpec,
 ): IndexedGeometry[] {
   if (isValidPointerOverEvent(scales.xScale, externalPointerEvent)) {

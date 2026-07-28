@@ -107,7 +107,7 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
         );
       }
 
-      const layerGirth = dimension.maxLabelBboxHeight;
+      const layerGirth = dimension.bboxHeight;
 
       renderPanel(
         ctx,

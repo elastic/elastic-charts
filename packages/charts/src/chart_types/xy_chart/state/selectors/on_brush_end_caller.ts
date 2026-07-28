@@ -8,7 +8,7 @@
 
 import type { Selector } from '@reduxjs/toolkit';
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import type { PanelPoints } from './get_brush_area';
 import { getPlotAreaRestrictedPoint, getPointsConstraintToSinglePanel } from './get_brush_area';
 import { getComputedScalesSelector } from './get_computed_scales';
@@ -59,7 +59,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
           getLastDragSelector,
           getSettingsSpecSelector,
           getComputedScalesSelector,
-          computeChartDimensionsSelector,
+          computeChartLayoutSelector,
           isHistogramModeEnabledSelector,
           computeSmallMultipleScalesSelector,
           getSeriesSpecsSelector,
@@ -69,7 +69,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
           lastDrag,
           { onBrushEnd, rotation, brushAxis, minBrushDelta, roundHistogramBrushValues, allowBrushingLastHistogramBin },
           computedScales,
-          { chartDimensions },
+          { dimensions: { chartDimensions } },
           histogramMode,
           smallMultipleScales,
           seriesSpec,

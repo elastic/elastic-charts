@@ -8,7 +8,7 @@
 
 import type { CSSProperties } from 'react';
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import { getAnnotationTooltipStateSelector } from './get_annotation_tooltip_state';
 import { getProjectedScaledValues } from './get_projected_scaled_values';
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
@@ -29,7 +29,7 @@ export const getPointerCursorSelector = createCustomCachedSelector(
     getSettingsSpecSelector,
     getCurrentPointerPositionSelector,
     getProjectedScaledValues,
-    computeChartDimensionsSelector,
+    computeChartLayoutSelector,
     isBrushAvailableSelector,
     getAnnotationTooltipStateSelector,
     getTooltipInteractionStateSelector,
@@ -40,7 +40,7 @@ export const getPointerCursorSelector = createCustomCachedSelector(
     settingsSpec,
     currentPointerPosition,
     projectedValues,
-    { chartDimensions },
+    { dimensions: { chartDimensions } },
     isBrushAvailable,
     annotationTooltipState,
     tooltipState,
