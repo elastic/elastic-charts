@@ -10,7 +10,7 @@ import { boolean } from '@storybook/addon-knobs';
 import React, { useRef, useState } from 'react';
 
 import type { TraceDatum } from '@elastic/charts';
-import { Chart, Settings, Trace } from '@elastic/charts';
+import { Chart, isTraceElementEvent, Settings, Trace } from '@elastic/charts';
 
 import { A11Y_TRACE } from './data';
 import { AriaLiveMirror, KeyboardReference, LogPanel } from './story_components';
@@ -31,7 +31,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             baseTheme={theme}
             onElementClick={(elements) => {
               const el = elements[0];
-              if (el && 'name' in el) setClickLog(`"${el.name}" (id: ${el.id})`);
+              if (el && isTraceElementEvent(el)) setClickLog(`"${el.span.name}" (id: ${el.span.id})`);
             }}
           />
           <Trace

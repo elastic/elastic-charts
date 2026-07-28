@@ -275,7 +275,7 @@ export function formatSelectionDetail(details: TraceSelectionDetail[]): string {
     : details
         .map(
           (d) =>
-            `"${d.name}" region=${d.region} segIdx=${d.segmentIndex}${
+            `"${d.span.name}" region=${d.region} segIdx=${d.segmentIndex}${
               d.segmentDuration !== undefined ? ` segDur=${d.segmentDuration.toFixed(0)}ms` : ''
             }`,
         )

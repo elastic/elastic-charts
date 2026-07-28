@@ -107,7 +107,7 @@ function selectionInterval(g: TraceGeometry, entry: TraceGeometry['resolvedSelec
   if (!span) return null;
   if (entry.region === 'span') return span;
   const segments = entry.region === 'active' ? span.activeSegments : waitingSegments(span);
-  return segments[entry.segmentIndex] ?? null;
+  return entry.segmentIndex ? segments[entry.segmentIndex] ?? null : null;
 }
 
 function within(x: number, y: number, region: TraceGeometry['plot']): boolean {
