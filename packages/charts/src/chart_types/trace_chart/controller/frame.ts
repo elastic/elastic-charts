@@ -19,8 +19,8 @@ import { layoutAnnotations } from '../render/annotation_layout';
 import { layoutBadges } from '../render/badge_layout';
 import { canvas2dRenderer, drawAnnotations, drawBadges } from '../render/canvas2d_renderer';
 import { buildGeometry } from '../render/geometry';
-import type { ViewKey } from '../render/interaction';
 import {
+  buildViewKey,
   computeMaxScroll,
   computeZoomMax,
   domainToZoomPan,
@@ -28,14 +28,6 @@ import {
   resolveMinVisibleExtent,
 } from '../render/interaction';
 import type { TraceSpec } from '../trace_api';
-
-/**
- * Builds a ViewKey from a spec. Extracted to DRY up the repeated literal.
- * @internal
- */
-export function buildViewKey(spec: TraceSpec): ViewKey {
-  return { xScaleType: spec.xScaleType, format: 'simple', traceId: spec.traceId };
-}
 
 /**
  * Snap the horizontal view to fit-all: zoom=0, NaN tween → one RAF frame snaps to the full

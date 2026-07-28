@@ -10,7 +10,6 @@ import type { CSSProperties } from 'react';
 
 import { scrollToSpanById, syncControlProvider } from './accessibility';
 import {
-  buildViewKey,
   redrawIfCanvasPropsChanged,
   resetView,
   runFrame,
@@ -37,6 +36,7 @@ import { withDeltaTime } from '../../timeslip/utils/animation';
 import type { NormalizedSpan } from '../data/types';
 import { BadgeImageCache } from '../render/badge_images';
 import type { BadgeTextMeasurer } from '../render/badge_layout';
+import { buildViewKey } from '../render/interaction';
 import type { ViewKey } from '../render/interaction';
 import type { AnnotationLayoutItem, BadgeLayoutItem } from '../render/types';
 import type { buildTraceStyle } from '../theme';

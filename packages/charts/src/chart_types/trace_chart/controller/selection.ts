@@ -7,7 +7,6 @@
  */
 
 import { collapseSetsEqual } from './constants';
-import { buildViewKey } from './frame';
 import { getPipeline } from './pipeline';
 import type { TraceCanvasController } from './trace_canvas_controller';
 import type { DisclosureEntry, TraceProps } from './types';
@@ -15,7 +14,7 @@ import { buildDisclosureMap, collapseLanes, collapsibleParentIds, rollupCritical
 import { waitingSegments } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
 import { pickDisclosure } from '../render/canvas2d_renderer';
-import { hasViewKeyChanged } from '../render/interaction';
+import { buildViewKey, hasViewKeyChanged } from '../render/interaction';
 import { buildTraceSelectionDetail } from '../render/tooltip';
 import type { HoverRegion, PickResult } from '../render/types';
 import type { selectionModeFromEvent } from '../selection_helpers';

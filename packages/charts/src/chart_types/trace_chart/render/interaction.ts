@@ -10,6 +10,7 @@ import type { TraceGeometry } from './types';
 import { clamp } from '../../../utils/common';
 import { multiplierToZoom } from '../../timeslip/projections/zoom_pan';
 import type { Multitouch } from '../../timeslip/utils/multitouch';
+import type { TraceSpec } from '../trace_api';
 
 /**
  * The finest time window the trace chart allows via zoom-in for the `'time'` x-scale, in ms.
@@ -163,6 +164,14 @@ export interface ViewKey {
   xScaleType: string;
   format: string;
   traceId?: string;
+}
+
+/**
+ * Builds a ViewKey from a spec. Extracted to DRY up the repeated literal.
+ * @internal
+ */
+export function buildViewKey(spec: TraceSpec): ViewKey {
+  return { xScaleType: spec.xScaleType, format: 'simple', traceId: spec.traceId };
 }
 
 /**
