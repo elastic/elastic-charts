@@ -99,20 +99,26 @@ describe('nanoToMs', () => {
 describe('fromOtlp — AnyValue attributes', () => {
   it('preserves span attributes with real OTLP AnyValue wrappers on the meta field', () => {
     const envelope: OtlpEnvelope = {
-      resourceSpans: [{
-        resource: {
-          attributes: [{ key: 'service.name', value: { stringValue: 'checkout-service' } }],
+      resourceSpans: [
+        {
+          resource: {
+            attributes: [{ key: 'service.name', value: { stringValue: 'checkout-service' } }],
+          },
+          scopeSpans: [
+            {
+              spans: [
+                {
+                  spanId: 'span1',
+                  name: 'GET /cart',
+                  startTimeUnixNano: '1000000000',
+                  endTimeUnixNano: '2000000000',
+                  attributes: [{ key: 'http.method', value: { stringValue: 'GET' } }],
+                } satisfies OtelSpan,
+              ],
+            },
+          ],
         },
-        scopeSpans: [{
-          spans: [{
-            spanId: 'span1',
-            name: 'GET /cart',
-            startTimeUnixNano: '1000000000',
-            endTimeUnixNano:   '2000000000',
-            attributes: [{ key: 'http.method', value: { stringValue: 'GET' } }],
-          } satisfies OtelSpan],
-        }],
-      }],
+      ],
     };
 
     const [datum] = fromOtlp(envelope);

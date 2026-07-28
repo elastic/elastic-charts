@@ -171,7 +171,7 @@ Example.parameters = {
     'Trace annotations (Spec 29): declarative marks composed as children of `<Trace>`. Three kinds — ' +
     '`TraceTimeAnnotation` (a **time point** or **time range** on the x-scale), `TraceLaneAnnotation` ' +
     "(a boundary rail on one span's lane), and `TraceHierarchyAnnotation` (a **segmented** rail along " +
-    "the visible root-to-target route). Annotations are inert data; pointer events flow through the " +
+    'the visible root-to-target route). Annotations are inert data; pointer events flow through the ' +
     'library-wide `Settings` element-event channel.\n\n' +
     '- **colors** — each annotation takes a `color` intent: a named token ' +
     '(`default` / `primary` / `success` / `warning` / `danger`) or a custom color. Toggle the ' +
@@ -179,7 +179,7 @@ Example.parameters = {
     '- **time annotations** — a point marker (`Deploy`) and a range (`SLA window`). ' +
     'Range bands are hit-tested on their **edges only**, so spans inside the band stay interactive.\n' +
     '- **placement** — the **time annotation placement** knob switches time annotations between ' +
-    "`timebar` (default: a marker head plus a tick in the lower half of the time bar, over the axis " +
+    '`timebar` (default: a marker head plus a tick in the lower half of the time bar, over the axis ' +
     'ticks — nothing is drawn in the plot; a range tints a band across that time-bar region) and ' +
     '`plot` (a solid full-height rail, or a tinted plot band with edge rails for a range). Lane and ' +
     'hierarchy annotations are always plot-anchored.\n' +

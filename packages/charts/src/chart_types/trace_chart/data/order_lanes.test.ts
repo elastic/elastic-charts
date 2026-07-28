@@ -74,11 +74,7 @@ describe('orderLanes — tree (basic)', () => {
   });
 
   it('parent followed by all descendants (deep chain)', () => {
-    const spans = [
-      span('grandchild', 20, 30, 'child'),
-      span('child', 10, 40, 'root'),
-      span('root', 0, 50),
-    ];
+    const spans = [span('grandchild', 20, 30, 'child'), span('child', 10, 40, 'root'), span('root', 0, 50)];
     expect(orderLanes(spans, 'tree').lanes.map((s) => s.id)).toEqual(['root', 'child', 'grandchild']);
   });
 
@@ -123,21 +119,13 @@ describe('orderLanes — tree (sibling sort)', () => {
 
 describe('orderLanes — tree (forest / multi-root)', () => {
   it('two independent roots → subtrees in root-start order', () => {
-    const spans = [
-      span('r2', 10, 50),
-      span('r1', 0, 60),
-      span('r1c', 5, 20, 'r1'),
-      span('r2c', 15, 30, 'r2'),
-    ];
+    const spans = [span('r2', 10, 50), span('r1', 0, 60), span('r1c', 5, 20, 'r1'), span('r2c', 15, 30, 'r2')];
     // r1 (start=0) before r2 (start=10); each subtree follows its root
     expect(orderLanes(spans, 'tree').lanes.map((s) => s.id)).toEqual(['r1', 'r1c', 'r2', 'r2c']);
   });
 
   it('orphan spans (unknown parentId) treated as roots', () => {
-    const spans = [
-      span('orphan', 5, 10, 'nonexistent'),
-      span('root', 0, 20),
-    ];
+    const spans = [span('orphan', 5, 10, 'nonexistent'), span('root', 0, 20)];
     // root (start=0) before orphan (start=5)
     expect(orderLanes(spans, 'tree').lanes.map((s) => s.id)).toEqual(['root', 'orphan']);
   });
@@ -208,19 +196,19 @@ describe('orderLanes — Kibana APM regression', () => {
 
   const kibanaNormalizedSpans: NormalizedSpan[] = [
     // frontend-web
-    span('0949', BASE,      BASE + 200),
-    span('0947', BASE,      BASE + 200, '0949'),
+    span('0949', BASE, BASE + 200),
+    span('0947', BASE, BASE + 200, '0949'),
     // product-recommendation
-    span('0945', BASE,      BASE + 150, '0947'),
-    span('0941', BASE,      BASE + 150, '0945'),
-    span('0943', BASE,      BASE + 75,  '0945'),
+    span('0945', BASE, BASE + 150, '0947'),
+    span('0941', BASE, BASE + 150, '0945'),
+    span('0943', BASE, BASE + 75, '0945'),
     // inventory-service
-    span('0935', BASE,      BASE + 100, '0941'),
-    span('0931', BASE + 5,  BASE + 25,  '0935'),
+    span('0935', BASE, BASE + 100, '0941'),
+    span('0931', BASE + 5, BASE + 25, '0935'),
     span('0933', BASE + 30, BASE + 110, '0935'),
     // user-preference-service
-    span('0939', BASE,      BASE + 25,  '0943'),
-    span('0937', BASE + 5,  BASE + 20,  '0939'),
+    span('0939', BASE, BASE + 25, '0943'),
+    span('0937', BASE + 5, BASE + 20, '0939'),
   ];
 
   it('tree order matches Kibana reference (DFS, siblings by start)', () => {

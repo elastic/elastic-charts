@@ -8,18 +8,6 @@
 
 import type { CSSProperties } from 'react';
 
-import type { NormalizedSpan } from '../data/types';
-import { BadgeImageCache } from '../render/badge_images';
-import type { BadgeTextMeasurer } from '../render/badge_layout';
-import type { ViewKey } from '../render/interaction';
-import type { AnnotationLayoutItem, BadgeLayoutItem } from '../render/types';
-import { buildTraceStyle } from '../theme';
-import type { TraceSelection } from '../trace_api';
-import type { BrushState, HoverState, PinState, TouchState } from '../trace_state';
-import type { Theme } from '../../../utils/themes/theme';
-import { initialZoomPan } from '../../timeslip/projections/zoom_pan';
-import type { ZoomPan } from '../../timeslip/projections/zoom_pan';
-import { withDeltaTime } from '../../timeslip/utils/animation';
 import { scrollToSpanById, syncControlProvider } from './accessibility';
 import {
   buildViewKey,
@@ -42,6 +30,18 @@ import type {
   TraceProps,
   TweenState,
 } from './types';
+import type { Theme } from '../../../utils/themes/theme';
+import { initialZoomPan } from '../../timeslip/projections/zoom_pan';
+import type { ZoomPan } from '../../timeslip/projections/zoom_pan';
+import { withDeltaTime } from '../../timeslip/utils/animation';
+import type { NormalizedSpan } from '../data/types';
+import { BadgeImageCache } from '../render/badge_images';
+import type { BadgeTextMeasurer } from '../render/badge_layout';
+import type { ViewKey } from '../render/interaction';
+import type { AnnotationLayoutItem, BadgeLayoutItem } from '../render/types';
+import type { buildTraceStyle } from '../theme';
+import type { TraceSelection } from '../trace_api';
+import type { BrushState, HoverState, PinState, TouchState } from '../trace_state';
 
 /**
  * Framework-agnostic controller that owns every mutable interaction/render/pipeline/selection field
@@ -91,7 +91,8 @@ export class TraceCanvasController {
   annotationCache: AnnotationCache | null = null;
 
   // Memoized badge-only-gutter width (Spec 27, 'none' mode).
-  badgeGutterCache: { spansRef: NormalizedSpan[]; badgeSize: string; labelPosition: string; width: number } | null = null;
+  badgeGutterCache: { spansRef: NormalizedSpan[]; badgeSize: string; labelPosition: string; width: number } | null =
+    null;
 
   // Async cache for Span-badge images (Spec 27 / ADR 0029). A decoded image finishing off-frame
   // schedules a redraw so the placeholder is replaced without blocking the animation loop.
@@ -130,10 +131,25 @@ export class TraceCanvasController {
   handleMouseUp: (() => void) | null = null;
 
   // Hover / tooltip state — self-managed (not redux), following the Flame/Timeslip canvas family pattern.
-  hover: HoverState = { lastGeom: null, index: -1, region: null, pointerX: NaN, pointerY: NaN, tooltipInfo: { header: null, values: [] }, dragMoved: false };
+  hover: HoverState = {
+    lastGeom: null,
+    index: -1,
+    region: null,
+    pointerX: NaN,
+    pointerY: NaN,
+    tooltipInfo: { header: null, values: [] },
+    dragMoved: false,
+  };
 
   // --- Span-badge pointer interaction state (Spec 27) ---
-  hoveredBadge: { spanId: string; badgeId: string; laneIndex: number; item: BadgeLayoutItem; span: NormalizedSpan } | null = null;
+  hoveredBadge: {
+    spanId: string;
+    badgeId: string;
+    laneIndex: number;
+    item: BadgeLayoutItem;
+    span: NormalizedSpan;
+  } | null = null;
+
   badgePointerDown: { spanId: string; badgeId: string } | null = null;
 
   // --- Trace-annotation pointer interaction state (Spec 29) ---
@@ -271,8 +287,8 @@ export class TraceCanvasController {
 
   update(prevProps: TraceProps): void {
     if (!this.ctx) tryCanvasContext(this);
-    syncViewKeyReset(this);            // must run first: resets zoomPan/lastFiredDomain when scale changes
-    syncFocusDomain(this, prevProps);  // applies controlled focusDomain in the (possibly just-reset) space
+    syncViewKeyReset(this); // must run first: resets zoomPan/lastFiredDomain when scale changes
+    syncFocusDomain(this, prevProps); // applies controlled focusDomain in the (possibly just-reset) space
     syncPinOnSpecChange(this, prevProps);
     syncSelectionLifecycle(this, prevProps);
     syncCollapseLifecycle(this, prevProps);

@@ -8,11 +8,6 @@
 
 import type { RefObject } from 'react';
 
-import type { ResolvedTraceAnnotation } from '../data/annotations';
-import type { TraceDataDiagnostics } from '../data/diagnostics';
-import type { resolveActive } from '../data/self_time';
-import type { NormalizedSpan } from '../data/types';
-import type { TraceAnnotationSpec, TraceSpec } from '../trace_api';
 import type { SettingsSpec } from '../../../specs';
 import type { onChartRendered } from '../../../state/actions/chart';
 import type { setTraceUncontrolledCollapsed } from '../../../state/actions/trace';
@@ -20,6 +15,11 @@ import type { BackwardRef } from '../../../state/internal_chart_renderer';
 import type { getA11ySettingsSelector } from '../../../state/selectors/get_accessibility_config';
 import type { Size } from '../../../utils/dimensions';
 import type { Theme } from '../../../utils/themes/theme';
+import type { ResolvedTraceAnnotation } from '../data/annotations';
+import type { TraceDataDiagnostics } from '../data/diagnostics';
+import type { resolveActive } from '../data/self_time';
+import type { NormalizedSpan } from '../data/types';
+import type { TraceAnnotationSpec, TraceSpec } from '../trace_api';
 
 /** @internal */
 export interface StateProps {
@@ -69,7 +69,10 @@ export interface TraceControllerDeps {
   requestRender: () => void;
 }
 
-/** Memoized normalize→resolveActive output. Keyed on (data ref, xScaleType, traceId, colorBy ref, vizColors ref, criticalPath ref, badgeAccessor ref). */
+/**
+ * Memoized normalize→resolveActive output. Keyed on (data ref, xScaleType, traceId, colorBy ref, vizColors ref, criticalPath ref, badgeAccessor ref).
+ * @internal
+ */
 export interface PipelineCache {
   dataRef: TraceSpec['data'];
   xScaleType: string;
@@ -93,27 +96,39 @@ export interface PipelineCache {
   };
 }
 
-/** Tween state for domainTween. Initialised to NaN so the first frame snaps to fit-all. */
+/**
+ * Tween state for domainTween. Initialised to NaN so the first frame snaps to fit-all.
+ * @internal
+ */
 export interface TweenState {
   niceDomainMin: number;
   niceDomainMax: number;
 }
 
-/** Resolved annotation memoization entry (Spec 29). */
+/**
+ * Resolved annotation memoization entry (Spec 29).
+ * @internal
+ */
 export interface AnnotationCache {
   annotationSpecsRef: TraceAnnotationSpec[];
   spansRef: NormalizedSpan[];
   result: { annotations: ResolvedTraceAnnotation[]; diagnostics: TraceDataDiagnostics; diagnosticsKey: string };
 }
 
-/** Disclosure state for one visible parent lane (caret + rolled-up descendant count). */
+/**
+ * Disclosure state for one visible parent lane (caret + rolled-up descendant count).
+ * @internal
+ */
 export interface DisclosureEntry {
   state: 'collapsed' | 'expanded';
   depth: number;
   descendantCount: number;
 }
 
-/** Memoized post-collapse step (collapseLanes + rollupCriticalIntervals + buildDisclosureMap). */
+/**
+ * Memoized post-collapse step (collapseLanes + rollupCriticalIntervals + buildDisclosureMap).
+ * @internal
+ */
 export interface CollapseCache {
   pipelineSpans: NormalizedSpan[];
   collapsed: ReadonlySet<string>;

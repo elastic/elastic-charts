@@ -27,7 +27,10 @@ interface BadgeImageRecord {
   image: HTMLImageElement;
 }
 
-/** The CORS modes a badge image may request (mirrors `TraceSpanBadgeImage.crossOrigin`). */
+/**
+ * The CORS modes a badge image may request (mirrors `TraceSpanBadgeImage.crossOrigin`).
+ * @internal
+ */
 export type BadgeImageCrossOrigin = 'anonymous' | 'use-credentials';
 
 /**
@@ -76,10 +79,11 @@ export class BadgeImageCache {
     const record: BadgeImageRecord = { status: 'loading', image };
     this.cache.set(key, record);
 
-    image.onload = () => {
+    image.addEventListener('load', () => {
       record.status = 'loaded';
       this.onLoad();
-    };
+    });
+    // eslint-disable-next-line unicorn/prefer-add-event-listener
     image.onerror = () => {
       record.status = 'error';
       if (!this.warned.has(key)) {

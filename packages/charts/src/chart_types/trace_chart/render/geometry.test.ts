@@ -8,7 +8,6 @@
 
 import { buildGeometry } from './geometry';
 import { TICK_LAYER_PADDING, TICK_LAYER_BOTTOM_INSET } from './time_bar';
-import type { NormalizedSpan } from '../data/types';
 import type { DisclosureEntry, TraceStyle } from './types';
 import {
   CARET_GLYPH_PX,
@@ -17,6 +16,7 @@ import {
   DEFAULT_TRACE_BADGE_STYLE,
   gutterPx,
 } from './types';
+import type { NormalizedSpan } from '../data/types';
 
 const style: TraceStyle = {
   gutterWidth: 200,
@@ -169,8 +169,22 @@ describe('buildGeometry', () => {
   // buildGeometry's badge-gutter reservation is its last positional arg; spell the defaults out.
   const buildNone = (badgeGutterWidth: number) =>
     buildGeometry(
-      spans, canvasSize, focusDomain, 0, noneStyle, 'linear', domain,
-      null, [], new Map(), null, new Map(), false, 0, [], badgeGutterWidth,
+      spans,
+      canvasSize,
+      focusDomain,
+      0,
+      noneStyle,
+      'linear',
+      domain,
+      null,
+      [],
+      new Map(),
+      null,
+      new Map(),
+      false,
+      0,
+      [],
+      badgeGutterWidth,
     );
 
   it('badge-only gutter is conditional', () => {
@@ -222,7 +236,9 @@ describe('gutterPx', () => {
   });
 
   it('gutter mode, hasParents, maxDepth=3 → gutterWidth + CARET_GLYPH_PX + 3×CARET_INDENT_STEP_PX', () => {
-    expect(gutterPx(gutterStyle, { hasParents: true, maxDepth: 3 })).toBe(style.gutterWidth + CARET_GLYPH_PX + 3 * CARET_INDENT_STEP_PX);
+    expect(gutterPx(gutterStyle, { hasParents: true, maxDepth: 3 })).toBe(
+      style.gutterWidth + CARET_GLYPH_PX + 3 * CARET_INDENT_STEP_PX,
+    );
   });
 
   it('inline mode, hasParents, maxDepth=0 → CARET_GLYPH_PX (no label gutter, but caret reserved)', () => {
@@ -250,7 +266,20 @@ describe('buildGeometry — disclosureByLane', () => {
   it('threads disclosureByLane through to the geometry unchanged', () => {
     const entry: DisclosureEntry = { state: 'expanded', depth: 0, descendantCount: 2 };
     const disclosure = new Map<number, DisclosureEntry>([[0, entry]]);
-    const geom = buildGeometry(s, canvasSize, focusDomain, 0, style, 'linear', d, null, [], new Map(), null, disclosure);
+    const geom = buildGeometry(
+      s,
+      canvasSize,
+      focusDomain,
+      0,
+      style,
+      'linear',
+      d,
+      null,
+      [],
+      new Map(),
+      null,
+      disclosure,
+    );
     expect(geom.disclosureByLane).toBe(disclosure);
     expect(geom.disclosureByLane.get(0)).toEqual({ state: 'expanded', depth: 0, descendantCount: 2 });
   });
@@ -258,7 +287,20 @@ describe('buildGeometry — disclosureByLane', () => {
   it('disclosureByLane entry with state=collapsed reflects collapsed parent', () => {
     const entry: DisclosureEntry = { state: 'collapsed', depth: 1, descendantCount: 5 };
     const disclosure = new Map<number, DisclosureEntry>([[0, entry]]);
-    const geom = buildGeometry(s, canvasSize, focusDomain, 0, style, 'linear', d, null, [], new Map(), null, disclosure);
+    const geom = buildGeometry(
+      s,
+      canvasSize,
+      focusDomain,
+      0,
+      style,
+      'linear',
+      d,
+      null,
+      [],
+      new Map(),
+      null,
+      disclosure,
+    );
     expect(geom.disclosureByLane.get(0)?.state).toBe('collapsed');
     expect(geom.disclosureByLane.get(0)?.descendantCount).toBe(5);
   });
@@ -269,13 +311,43 @@ describe('buildGeometry — gutterPx with hasParents/maxDepth', () => {
   const d = { min: 100, max: 400 };
 
   it('with hasParents=true, maxDepth=0: gutter width includes caret column', () => {
-    const geom = buildGeometry(s, canvasSize, focusDomain, 0, style, 'linear', d, null, [], new Map(), null, new Map(), true, 0);
+    const geom = buildGeometry(
+      s,
+      canvasSize,
+      focusDomain,
+      0,
+      style,
+      'linear',
+      d,
+      null,
+      [],
+      new Map(),
+      null,
+      new Map(),
+      true,
+      0,
+    );
     expect(geom.gutter.width).toBe(style.gutterWidth + CARET_GLYPH_PX);
     expect(geom.plot.left).toBe(style.gutterWidth + CARET_GLYPH_PX);
   });
 
   it('with hasParents=true, maxDepth=2: gutter width includes caret + indent', () => {
-    const geom = buildGeometry(s, canvasSize, focusDomain, 0, style, 'linear', d, null, [], new Map(), null, new Map(), true, 2);
+    const geom = buildGeometry(
+      s,
+      canvasSize,
+      focusDomain,
+      0,
+      style,
+      'linear',
+      d,
+      null,
+      [],
+      new Map(),
+      null,
+      new Map(),
+      true,
+      2,
+    );
     const expected = style.gutterWidth + CARET_GLYPH_PX + 2 * CARET_INDENT_STEP_PX;
     expect(geom.gutter.width).toBe(expected);
     expect(geom.plot.left).toBe(expected);
@@ -284,7 +356,22 @@ describe('buildGeometry — gutterPx with hasParents/maxDepth', () => {
 
   it('inline mode, hasParents=true, maxDepth=0: reserves only the caret column', () => {
     const inlineStyle: TraceStyle = { ...style, labelPosition: 'inline' };
-    const geom = buildGeometry(s, canvasSize, focusDomain, 0, inlineStyle, 'linear', d, null, [], new Map(), null, new Map(), true, 0);
+    const geom = buildGeometry(
+      s,
+      canvasSize,
+      focusDomain,
+      0,
+      inlineStyle,
+      'linear',
+      d,
+      null,
+      [],
+      new Map(),
+      null,
+      new Map(),
+      true,
+      0,
+    );
     expect(geom.gutter.width).toBe(CARET_GLYPH_PX);
     expect(geom.plot.left).toBe(CARET_GLYPH_PX);
   });
@@ -297,7 +384,11 @@ describe('buildGeometry — gutterPx with hasParents/maxDepth', () => {
 describe('buildGeometry — criticalIntervalsByLane', () => {
   const spans = [span('a', 100, 400), span('b', 500, 800), span('c', 200, 300)];
   const domain = { min: 100, max: 800 };
-  const spanIdToLane = new Map([['a', 0], ['b', 1], ['c', 2]]);
+  const spanIdToLane = new Map([
+    ['a', 0],
+    ['b', 1],
+    ['c', 2],
+  ]);
 
   it('groups projected critical intervals by lane index via spanIdToLane', () => {
     const criticalIntervals = [
@@ -305,8 +396,20 @@ describe('buildGeometry — criticalIntervalsByLane', () => {
       { spanId: 'b', start: 500, end: 700 },
     ];
     const geom = buildGeometry(
-      spans, canvasSize, focusDomain, 0, style, 'linear', domain,
-      null, [], spanIdToLane, null, new Map(), false, 0,
+      spans,
+      canvasSize,
+      focusDomain,
+      0,
+      style,
+      'linear',
+      domain,
+      null,
+      [],
+      spanIdToLane,
+      null,
+      new Map(),
+      false,
+      0,
       criticalIntervals,
     );
     expect(geom.criticalIntervalsByLane.get(0)).toEqual([{ start: 100, end: 200 }]);
@@ -315,24 +418,47 @@ describe('buildGeometry — criticalIntervalsByLane', () => {
   });
 
   it('returns an empty map when no criticalIntervals are supplied', () => {
-    const geom = buildGeometry(
-      spans, canvasSize, focusDomain, 0, style, 'linear', domain,
-    );
+    const geom = buildGeometry(spans, canvasSize, focusDomain, 0, style, 'linear', domain);
     expect(geom.criticalIntervalsByLane.size).toBe(0);
   });
 
   it('returns an empty map for an empty criticalIntervals array', () => {
     const geom = buildGeometry(
-      spans, canvasSize, focusDomain, 0, style, 'linear', domain,
-      null, [], spanIdToLane, null, new Map(), false, 0, [],
+      spans,
+      canvasSize,
+      focusDomain,
+      0,
+      style,
+      'linear',
+      domain,
+      null,
+      [],
+      spanIdToLane,
+      null,
+      new Map(),
+      false,
+      0,
+      [],
     );
     expect(geom.criticalIntervalsByLane.size).toBe(0);
   });
 
   it('silently skips intervals whose spanId is not in spanIdToLane', () => {
     const geom = buildGeometry(
-      spans, canvasSize, focusDomain, 0, style, 'linear', domain,
-      null, [], spanIdToLane, null, new Map(), false, 0,
+      spans,
+      canvasSize,
+      focusDomain,
+      0,
+      style,
+      'linear',
+      domain,
+      null,
+      [],
+      spanIdToLane,
+      null,
+      new Map(),
+      false,
+      0,
       [{ spanId: 'unknown', start: 100, end: 200 }],
     );
     expect(geom.criticalIntervalsByLane.size).toBe(0);

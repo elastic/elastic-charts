@@ -17,10 +17,10 @@
 
 import { ANNOTATION_MIN_HIT_WIDTH, layoutAnnotations } from './annotation_layout';
 import { pickAnnotation } from './canvas2d_renderer';
-import type { ResolvedTraceAnnotation } from '../data/annotations';
-import type { NormalizedSpan } from '../data/types';
 import type { TraceGeometry, TraceStyle } from './types';
 import { DEFAULT_TRACE_ANNOTATION_STYLE, DEFAULT_TRACE_BADGE_STYLE } from './types';
+import type { ResolvedTraceAnnotation } from '../data/annotations';
+import type { NormalizedSpan } from '../data/types';
 import type { TraceDatum } from '../trace_api';
 
 const PLOT_LEFT = 200;

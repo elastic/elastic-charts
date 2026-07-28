@@ -17,11 +17,13 @@
  */
 
 // Patches HTMLCanvasElement.prototype.getContext for the entire test file that imports this module.
+// eslint-disable-next-line import/no-extraneous-dependencies
 import 'jest-canvas-mock';
 
 /**
  * Returns a `jest-canvas-mock`-backed `CanvasRenderingContext2D`. Use this in unit tests that call
  * `draw()` / `pick*()` directly and need to inspect individual canvas API call counts or arguments.
+ * @internal
  */
 export function makeCtx(): CanvasRenderingContext2D {
   return document.createElement('canvas').getContext('2d') as CanvasRenderingContext2D;

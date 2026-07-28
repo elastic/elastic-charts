@@ -6,10 +6,17 @@
  * Side Public License, v 1.
  */
 
+import type {
+  AnnotationLayoutItem,
+  AnnotationLine,
+  AnnotationRect,
+  TraceAnnotationColorStyle,
+  TraceGeometry,
+  TraceStyle,
+} from './types';
 import { colorToRgba } from '../../../common/color_library_wrappers';
 import type { ResolvedTraceAnnotation } from '../data/annotations';
 import type { TraceAnnotationColor } from '../trace_api';
-import type { AnnotationLayoutItem, AnnotationLine, AnnotationRect, TraceAnnotationColorStyle, TraceGeometry, TraceStyle } from './types';
 
 /**
  * Minimum interactive width (px) of an annotation hit band (Spec 29 / ADR 0033). Deliberately a
@@ -154,12 +161,22 @@ export function layoutAnnotations(
       if (fromVisible) {
         const xs = scale(from);
         lines.push({ x1: xs, y1: timeBarTickTop, x2: xs, y2: plot.top });
-        hitRects.push({ x: xs - halfHit, y: timeBarTickTop, width: ANNOTATION_MIN_HIT_WIDTH, height: timeBarTickHeight });
+        hitRects.push({
+          x: xs - halfHit,
+          y: timeBarTickTop,
+          width: ANNOTATION_MIN_HIT_WIDTH,
+          height: timeBarTickHeight,
+        });
       }
       if (toVisible) {
         const xe = scale(to);
         lines.push({ x1: xe, y1: timeBarTickTop, x2: xe, y2: plot.top });
-        hitRects.push({ x: xe - halfHit, y: timeBarTickTop, width: ANNOTATION_MIN_HIT_WIDTH, height: timeBarTickHeight });
+        hitRects.push({
+          x: xe - halfHit,
+          y: timeBarTickTop,
+          width: ANNOTATION_MIN_HIT_WIDTH,
+          height: timeBarTickHeight,
+        });
       }
       items.push({
         id: annotation.id,

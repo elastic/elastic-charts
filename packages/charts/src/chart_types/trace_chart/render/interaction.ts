@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
+import type { TraceGeometry } from './types';
+import { clamp } from '../../../utils/common';
 import { multiplierToZoom } from '../../timeslip/projections/zoom_pan';
 import type { Multitouch } from '../../timeslip/utils/multitouch';
-import { clamp } from '../../../utils/common';
-import type { TraceGeometry } from './types';
 
 /**
  * The finest time window the trace chart allows via zoom-in for the `'time'` x-scale, in ms.
@@ -109,11 +109,7 @@ export function computeScrollTarget(
     if (top >= 0 && top + laneHeight <= plotHeight) {
       return scrollOffset; // lane is fully visible — no-op
     }
-    if (top < 0) {
-      target = laneIndex * laneHeight;
-    } else {
-      target = laneIndex * laneHeight - plotHeight + laneHeight;
-    }
+    target = top < 0 ? laneIndex * laneHeight : laneIndex * laneHeight - plotHeight + laneHeight;
   }
   return Math.max(0, Math.min(target, maxScroll));
 }
@@ -223,8 +219,7 @@ export function pixelRangeToDomain(x0: number, x1: number, geometry: TraceGeomet
   const focusSpan = focusDomain.max - focusDomain.min;
   if (focusSpan <= 0) return [focusDomain.min, focusDomain.max];
   const plotRight = plot.left + plot.width;
-  const toMs = (x: number) =>
-    focusDomain.min + ((clamp(x, plot.left, plotRight) - plot.left) / plot.width) * focusSpan;
+  const toMs = (x: number) => focusDomain.min + ((clamp(x, plot.left, plotRight) - plot.left) / plot.width) * focusSpan;
   const a = toMs(x0);
   const b = toMs(x1);
   return a <= b ? [a, b] : [b, a];

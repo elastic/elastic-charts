@@ -6,6 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { collapseSetsEqual } from './constants';
+import { buildViewKey } from './frame';
+import { getPipeline } from './pipeline';
+import type { TraceCanvasController } from './trace_canvas_controller';
+import type { DisclosureEntry, TraceProps } from './types';
 import { buildDisclosureMap, collapseLanes, collapsibleParentIds, rollupCriticalIntervals } from '../data/collapse';
 import { waitingSegments } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
@@ -13,20 +18,19 @@ import { pickDisclosure } from '../render/canvas2d_renderer';
 import { hasViewKeyChanged } from '../render/interaction';
 import { buildTraceSelectionDetail } from '../render/tooltip';
 import type { HoverRegion, PickResult } from '../render/types';
-import { applySelection, selectionModeFromEvent, selectionSetEqual } from '../selection_helpers';
+import type { selectionModeFromEvent } from '../selection_helpers';
+import { applySelection, selectionSetEqual } from '../selection_helpers';
 import type { TraceSegmentRef, TraceSelection } from '../trace_api';
 import type { HoverState } from '../trace_state';
-import { collapseSetsEqual } from './constants';
-import { buildViewKey } from './frame';
-import { getPipeline } from './pipeline';
-import type { TraceCanvasController } from './trace_canvas_controller';
-import type { DisclosureEntry, TraceProps } from './types';
 
 // -------------------------------------------------------------------------
 // Selection helpers (ADR 0011)
 // -------------------------------------------------------------------------
 
-/** Returns the controlled prop when present (perform-and-fire model), else the local field. */
+/**
+ * Returns the controlled prop when present (perform-and-fire model), else the local field.
+ * @internal
+ */
 export function getEffectiveSelection(c: TraceCanvasController): TraceSelection {
   return c.deps.getProps().traceSpec?.selection ?? c.selection;
 }
@@ -36,6 +40,7 @@ export function getEffectiveSelection(c: TraceCanvasController): TraceSelection 
  * order-insensitive set-equality echo guard (plan D1 / ADR 0011 Decision 2). Updates
  * `lastFiredSelection` **before** invoking the callback so a re-entrant controlled-prop update
  * is recognized as an echo and does not trigger a redundant redraw.
+ * @internal
  */
 export function fireSelectionChange(c: TraceCanvasController, next: TraceSelection) {
   if (selectionSetEqual(next, c.lastFiredSelection)) return;
@@ -59,6 +64,7 @@ export function fireSelectionChange(c: TraceCanvasController, next: TraceSelecti
  * Writes the local (uncontrolled) selection field. In **controlled** mode (`spec.selection` set)
  * the parent owns the value, so this is a no-op — writing it would let the local field drift out of
  * sync with the prop and shadow it on the next uncontrolled read. Mirrors the prune path guard.
+ * @internal
  */
 export function setLocalSelection(c: TraceCanvasController, next: TraceSelection) {
   if (c.deps.getProps().traceSpec?.selection === undefined) c.selection = next;
@@ -71,17 +77,21 @@ export function setLocalSelection(c: TraceCanvasController, next: TraceSelection
 /**
  * Returns a stable `Set<string>` for the effective collapsed ids. In controlled mode, caches the
  * conversion of the prop array to a Set (same array reference → same Set → memoization cache hit).
+ * @internal
  */
 export function getEffectiveCollapsed(c: TraceCanvasController): ReadonlySet<string> {
   const ids = c.deps.getProps().traceSpec?.collapsedSpanIds;
   if (ids === undefined) return c.collapsed;
   if (c.collapsedFromProp && c.collapsedFromProp.ids === ids) return c.collapsedFromProp.asSet;
-  const asSet = new Set(ids);
+  const asSet = new Set<string>(ids);
   c.collapsedFromProp = { ids, asSet };
   return asSet;
 }
 
-/** Fires `onCollapseChange` with the new id array, guarded by set-equality echo suppression. */
+/**
+ * Fires `onCollapseChange` with the new id array, guarded by set-equality echo suppression.
+ * @internal
+ */
 export function fireCollapseChange(c: TraceCanvasController, next: Set<string>) {
   if (collapseSetsEqual(next, c.lastFiredCollapsed)) return;
   c.lastFiredCollapsed = new Set(next); // capture before calling out
@@ -92,6 +102,7 @@ export function fireCollapseChange(c: TraceCanvasController, next: Set<string>) 
  * Writes the local (uncontrolled) collapsed field and invalidates the collapse cache. In
  * **controlled** mode (`spec.collapsedSpanIds` set) the parent owns the value, so this is a no-op —
  * `syncCollapseLifecycle` re-syncs the cache when the prop echoes back. Mirrors {@link setLocalSelection}.
+ * @internal
  */
 export function setLocalCollapsed(c: TraceCanvasController, next: Set<string>) {
   const props = c.deps.getProps();
@@ -108,6 +119,7 @@ export function setLocalCollapsed(c: TraceCanvasController, next: Set<string>) {
  * Returns the `collapseLanes` result and the `disclosureByLane` map for the given pipeline spans
  * + collapsed set, reusing the cached output when neither input has changed (by reference).
  * Runs at most once per toggle or pipeline change, never per rAF frame.
+ * @internal
  */
 export function getCollapseOutput(
   c: TraceCanvasController,
@@ -115,14 +127,22 @@ export function getCollapseOutput(
   collapsed: ReadonlySet<string>,
   depthBySpan: ReadonlyMap<NormalizedSpan, number>,
   criticalIntervals: Array<{ spanId: string; start: number; end: number }>,
-): { spans: NormalizedSpan[]; disclosure: Map<number, DisclosureEntry>; rolledUpCriticalIntervals: Array<{ spanId: string; start: number; end: number }> } {
+): {
+  spans: NormalizedSpan[];
+  disclosure: Map<number, DisclosureEntry>;
+  rolledUpCriticalIntervals: Array<{ spanId: string; start: number; end: number }>;
+} {
   if (
     c.collapseCache &&
     c.collapseCache.pipelineSpans === pipelineSpans &&
     c.collapseCache.collapsed === collapsed &&
     c.collapseCache.criticalIntervals === criticalIntervals
   ) {
-    return { spans: c.collapseCache.result, disclosure: c.collapseCache.disclosure, rolledUpCriticalIntervals: c.collapseCache.rolledUpCriticalIntervals };
+    return {
+      spans: c.collapseCache.result,
+      disclosure: c.collapseCache.disclosure,
+      rolledUpCriticalIntervals: c.collapseCache.rolledUpCriticalIntervals,
+    };
   }
   const result = collapseLanes(pipelineSpans, collapsed);
   // parentIds computed here (on cache miss only) to avoid O(N) work every rAF frame.
@@ -141,7 +161,10 @@ export function getCollapseOutput(
 // Lifecycle sync (data/view changes)
 // -------------------------------------------------------------------------
 
-// Selection lifecycle on data/view changes (ADR 0011 Decision 4 / plan D3).
+/**
+ * Selection lifecycle on data/view changes (ADR 0011 Decision 4 / plan D3).
+ * @internal
+ */
 export function syncSelectionLifecycle(c: TraceCanvasController, prevProps: TraceProps) {
   const spec = c.deps.getProps().traceSpec;
   if (!spec) return;
@@ -197,7 +220,10 @@ export function syncSelectionLifecycle(c: TraceCanvasController, prevProps: Trac
   }
 }
 
-/** Prunes stale collapsed ids (span gone or no longer a parent) from the uncontrolled state. */
+/**
+ * Prunes stale collapsed ids (span gone or no longer a parent) from the uncontrolled state.
+ * @internal
+ */
 export function syncCollapseLifecycle(c: TraceCanvasController, prevProps: TraceProps) {
   const spec = c.deps.getProps().traceSpec;
   if (!spec) return;
@@ -216,10 +242,7 @@ export function syncCollapseLifecycle(c: TraceCanvasController, prevProps: Trace
   // Echo-guard: controlled prop changed → update cache reference so memoization stays valid, and
   // sync lastFiredCollapsed so a parent-driven change is recognized as an echo and does not fire a
   // redundant onCollapseChange on the next toggle (mirrors the selection echo-sync above).
-  if (
-    spec.collapsedSpanIds !== undefined &&
-    spec.collapsedSpanIds !== prevProps.traceSpec?.collapsedSpanIds
-  ) {
+  if (spec.collapsedSpanIds !== undefined && spec.collapsedSpanIds !== prevProps.traceSpec?.collapsedSpanIds) {
     const asSet = new Set(spec.collapsedSpanIds);
     if (!collapseSetsEqual(asSet, c.lastFiredCollapsed)) {
       c.lastFiredCollapsed = asSet;
@@ -239,6 +262,7 @@ export function syncCollapseLifecycle(c: TraceCanvasController, prevProps: Trace
  * into a public {@link TraceSegmentRef}. Span/empty regions become a span-level ref with no
  * `segmentIndex`; active/waiting regions carry the concrete index (dropping the `-1` sentinel so it
  * never leaks into the public selection model).
+ * @internal
  */
 export function buildSegmentRef(spanId: string, region: HoverRegion, segmentIndex: number): TraceSegmentRef {
   if ((region === 'active' || region === 'waiting') && segmentIndex >= 0) {
@@ -247,6 +271,7 @@ export function buildSegmentRef(spanId: string, region: HoverRegion, segmentInde
   return { spanId, region: 'span' };
 }
 
+/** @internal */
 export function commitSegmentSelection(
   c: TraceCanvasController,
   result: PickResult | null,
@@ -260,8 +285,9 @@ export function commitSegmentSelection(
     next = mode === 'replace' ? [] : current;
   } else {
     const span = geom.spans[result.index];
-    if (!span) { next = mode === 'replace' ? [] : current; }
-    else {
+    if (!span) {
+      next = mode === 'replace' ? [] : current;
+    } else {
       next = applySelection(current, buildSegmentRef(span.id, result.region, result.segmentIndex), mode);
     }
   }
@@ -270,6 +296,7 @@ export function commitSegmentSelection(
   c.scheduleRender?.();
 }
 
+/** @internal */
 export function commitSpanSelection(
   c: TraceCanvasController,
   result: PickResult,
@@ -285,14 +312,12 @@ export function commitSpanSelection(
   const next = applySelection(current, ref, mode);
 
   if (process.env.NODE_ENV !== 'production') {
-    const hasSegmentRefForSameSpan = next.some(
-      (r) => r.spanId === span.id && r.region !== 'span',
-    );
+    const hasSegmentRefForSameSpan = next.some((r) => r.spanId === span.id && r.region !== 'span');
     if (hasSegmentRefForSameSpan) {
       // eslint-disable-next-line no-console
       console.warn(
         `[elastic-charts/trace] Selection contains both a span ref and a segment ref for spanId="${span.id}". ` +
-        `The segment outline will be suppressed (deduped) in the highlight pass.`,
+          `The segment outline will be suppressed (deduped) in the highlight pass.`,
       );
     }
   }
@@ -302,7 +327,10 @@ export function commitSpanSelection(
   c.scheduleRender?.();
 }
 
-/** Toggles collapse for the lane under a disclosure caret at (x, y). Returns true if a caret was hit. */
+/**
+ * Toggles collapse for the lane under a disclosure caret at (x, y). Returns true if a caret was hit.
+ * @internal
+ */
 export function toggleDisclosureAt(c: TraceCanvasController, x: number, y: number): boolean {
   if (!c.hover.lastGeom) return false;
   const caretLane = pickDisclosure(x, y, c.hover.lastGeom);
@@ -313,7 +341,8 @@ export function toggleDisclosureAt(c: TraceCanvasController, x: number, y: numbe
   // controlled toggle computes the next set from the source of truth (plan controlled-state-fixes).
   const next = new Set(getEffectiveCollapsed(c));
   const willCollapse = !next.has(caretSpan.id);
-  if (willCollapse) next.add(caretSpan.id); else next.delete(caretSpan.id);
+  if (willCollapse) next.add(caretSpan.id);
+  else next.delete(caretSpan.id);
   setLocalCollapsed(c, next);
   fireCollapseChange(c, next);
   const ariaLive = c.deps.getAriaLive();

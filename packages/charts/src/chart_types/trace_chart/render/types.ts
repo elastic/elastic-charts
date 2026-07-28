@@ -8,12 +8,10 @@
 
 import type { Color } from '../../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../../common/default_theme_attributes';
-import type { Dimensions, Size } from '../../../utils/dimensions';
+import type { Dimensions } from '../../../utils/dimensions';
 import type { ResolvedTraceAnnotation } from '../data/annotations';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceAnnotationType, TraceSpanBadge } from '../trace_api';
-
-export type { Dimensions, Size };
 
 /**
  * Style configuration for the trace waterfall chart. Set via `theme.trace` on the global `Theme`.
@@ -267,12 +265,8 @@ export interface DisclosureEntry {
  * @internal
  */
 export function gutterPx(style: TraceStyle, opts?: { hasParents?: boolean; maxDepth?: number }): number {
-  const caretColumnWidth = opts?.hasParents
-    ? CARET_GLYPH_PX + (opts.maxDepth ?? 0) * CARET_INDENT_STEP_PX
-    : 0;
-  return style.labelPosition === 'gutter'
-    ? style.gutterWidth + caretColumnWidth
-    : caretColumnWidth;
+  const caretColumnWidth = opts?.hasParents ? CARET_GLYPH_PX + (opts.maxDepth ?? 0) * CARET_INDENT_STEP_PX : 0;
+  return style.labelPosition === 'gutter' ? style.gutterWidth + caretColumnWidth : caretColumnWidth;
 }
 
 /**
@@ -488,3 +482,5 @@ export interface TraceRenderer {
    */
   pickRegion(x: number, y: number, geom: TraceGeometry): PickResult | null;
 }
+
+export { type Size, type Dimensions } from '../../../utils/dimensions';

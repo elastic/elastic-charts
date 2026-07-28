@@ -64,6 +64,7 @@ function flattenDocNode(node) {
       return ' ';
     case 'EscapedText':
       // TSDoc escape sequences like \> → decoded to the actual character
+      // eslint-disable-next-line eqeqeq
       return node.decodedText != null ? node.decodedText : '';
     case 'HtmlStartTag':
       // Reconstruct HTML tag syntax from the parsed node name, e.g. <traceId>
@@ -132,7 +133,7 @@ function extractDefaultValue(tsdocComment) {
  * @returns {import('@microsoft/api-extractor-model').ApiInterface | null}
  */
 function findTraceSpec(item) {
-  if (item.kind === 'Interface' && item.displayName === 'TraceSpec') return item;
+  if (item.kind === ApiItemKind.Interface && item.displayName === 'TraceSpec') return item;
   for (const child of item.members || []) {
     const found = findTraceSpec(child);
     if (found) return found;
@@ -160,7 +161,7 @@ function traceSpecRows(apiModel) {
 
   const rows = [];
   for (const member of items) {
-    if (member.kind !== 'PropertySignature') continue;
+    if (member.kind !== ApiItemKind.PropertySignature) continue;
     if (SKIP_PROPS.has(member.displayName)) continue;
 
     const typeText = member.propertyTypeExcerpt ? member.propertyTypeExcerpt.text.replaceAll(/\s+/g, ' ').trim() : '';
@@ -266,6 +267,7 @@ function patchIntroStory(existingContent, replacement) {
 
 if (require.main === module) {
   if (!fs.existsSync(API_JSON)) {
+    // eslint-disable-next-line no-console
     console.error(
       `\nError: ${API_JSON} not found.\n` +
         'Run `yarn api:extract` first to generate the doc model, then re-run this script.\n',
@@ -283,6 +285,7 @@ if (require.main === module) {
   const updated = patchIntroStory(existing, replacement);
 
   fs.writeFileSync(STORY_OUT, updated, 'utf8');
+  // eslint-disable-next-line no-console
   console.log(`Updated markdownContent in ${path.relative(REPO_ROOT, STORY_OUT)} (${rows.length} rows)`);
 }
 

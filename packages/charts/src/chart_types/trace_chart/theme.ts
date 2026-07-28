@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import type { Theme } from '../../utils/themes/theme';
 import type { TraceStyle } from './render/types';
+import type { Theme } from '../../utils/themes/theme';
 
 /**
  * Minimum lane height (px) applied in `'inline'` label mode. Inline mode stacks a span-name row
@@ -26,11 +26,11 @@ const INLINE_MIN_LANE_HEIGHT = 40;
  * @internal
  */
 export function buildTraceStyle(theme: Theme): TraceStyle {
-  const trace = theme.trace;
+  const { trace } = theme;
   if (trace.labelPosition === 'inline' && trace.laneHeight < INLINE_MIN_LANE_HEIGHT) {
     return { ...trace, laneHeight: INLINE_MIN_LANE_HEIGHT };
   }
   return trace;
 }
 
-export type { TraceStyle };
+export { type TraceStyle } from './render/types';

@@ -6,23 +6,23 @@
  * Side Public License, v 1.
  */
 
+import type { TraceGeometry, TraceStyle } from './types';
+import { cssFontShorthand } from '../../../common/text_utils';
+import { withContext } from '../../../renderers/canvas';
+import { renderText } from '../../../renderers/canvas/primitives/text';
+import type { TextFont } from '../../../renderers/canvas/primitives/text';
 import {
   continuousTimeRasters,
   type AxisLayer,
   type Interval,
-} from '../../../chart_types/xy_chart/axes/timeslip/continuous_time_rasters';
-import { numericalRasters } from '../../../chart_types/xy_chart/axes/timeslip/numerical_rasters';
+} from '../../xy_chart/axes/timeslip/continuous_time_rasters';
 import {
   notTooDense,
   MINIMUM_TICK_PIXEL_DISTANCE,
   MAX_TIME_TICK_COUNT,
   MAX_TIME_GRID_COUNT,
-} from '../../../chart_types/xy_chart/axes/timeslip/multilayer_ticks';
-import { cssFontShorthand } from '../../../common/text_utils';
-import { withContext } from '../../../renderers/canvas';
-import { renderText } from '../../../renderers/canvas/primitives/text';
-import type { TraceGeometry, TraceStyle } from './types';
-import type { TextFont } from '../../../renderers/canvas/primitives/text';
+} from '../../xy_chart/axes/timeslip/multilayer_ticks';
+import { numericalRasters } from '../../xy_chart/axes/timeslip/numerical_rasters';
 
 const MS_PER_SECOND = 1000;
 const TICK_HEIGHT = 6; // px, tick line protruding down into the time bar
@@ -99,9 +99,7 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
 
   // Select raster engine by scale type, exactly as timeslip does (timeslip_render.ts:120).
   const isTime = xScaleType === 'time';
-  const rasterSelector = isTime
-    ? continuousTimeRasters(rasterConfig, TIME_ZONE)
-    : numericalRasters(rasterConfig);
+  const rasterSelector = isTime ? continuousTimeRasters(rasterConfig, TIME_ZONE) : numericalRasters(rasterConfig);
 
   // Convert focusDomain to the units the engine expects.
   // Time engine: seconds. Linear engine: numeric domain (ms elapsed) unchanged.
@@ -137,10 +135,7 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
     const iter = labelLayer.intervals(domainFrom, domainTo)[Symbol.iterator]();
     const first = iter.next().value as Interval | undefined;
     const second = iter.next().value as Interval | undefined;
-    axisStepMs =
-      first !== undefined && second !== undefined
-        ? second.minimum - first.minimum
-        : domainTo - domainFrom; // fallback: window extent
+    axisStepMs = first !== undefined && second !== undefined ? second.minimum - first.minimum : domainTo - domainFrom; // fallback: window extent
     axisUnit = pickElapsedUnit(axisStepMs);
   }
 
@@ -362,10 +357,7 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
           if (tickXRaw > plotRight) continue;
 
           // Suppress a boundary label that would overlap the previous drawn (e.g. pinned) one.
-          if (
-            prevTickX !== null &&
-            tickXRaw - prevTickX < labelWidth(prevLabel) + TICK_LABEL_MIN_GAP
-          ) {
+          if (prevTickX !== null && tickXRaw - prevTickX < labelWidth(prevLabel) + TICK_LABEL_MIN_GAP) {
             continue; // overlap — keep the previous label, drop this one
           }
 

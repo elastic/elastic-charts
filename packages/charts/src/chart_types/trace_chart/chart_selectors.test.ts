@@ -8,12 +8,12 @@
 
 import { chartSelectorsFactory } from './chart_selectors';
 import { getTraceTableRowsSelector } from './state/selectors/get_screen_reader_data';
+import type { TraceSpec } from './trace_api';
+import { ChartType } from '..';
 import { MockStore } from '../../mocks/store/store';
+import { SpecType } from '../../specs/spec_type';
 import { setTraceUncontrolledCollapsed } from '../../state/actions/trace';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
-import { ChartType } from '..';
-import { SpecType } from '../../specs/spec_type';
-import type { TraceSpec } from './trace_api';
 
 /** Build a minimal TraceSpec ready for upsert into the mock store. */
 function makeTraceSpec(overrides: Partial<TraceSpec> = {}): TraceSpec {
@@ -65,25 +65,31 @@ describe('isChartEmpty — hybrid routing', () => {
   });
 
   it('returns false when data is present and no traceId is set (combined waterfall)', () => {
-    const state = storeWithSpec(makeTraceSpec({
-      data: [{ id: 'a', name: 'a', start: 0, end: 10, traceId: 't1' }],
-    }));
+    const state = storeWithSpec(
+      makeTraceSpec({
+        data: [{ id: 'a', name: 'a', start: 0, end: 10, traceId: 't1' }],
+      }),
+    );
     expect(selectors.isChartEmpty(state)).toBe(false);
   });
 
   it('returns false when data is present and traceId matches (normal render)', () => {
-    const state = storeWithSpec(makeTraceSpec({
-      data: [{ id: 'a', name: 'a', start: 0, end: 10, traceId: 't1' }],
-      traceId: 't1',
-    }));
+    const state = storeWithSpec(
+      makeTraceSpec({
+        data: [{ id: 'a', name: 'a', start: 0, end: 10, traceId: 't1' }],
+        traceId: 't1',
+      }),
+    );
     expect(selectors.isChartEmpty(state)).toBe(false);
   });
 
   it('returns false when data is present and traceId does NOT match (trace-not-found → canvas message, not overlay)', () => {
-    const state = storeWithSpec(makeTraceSpec({
-      data: [{ id: 'a', name: 'a', start: 0, end: 10, traceId: 't1' }],
-      traceId: 'does-not-exist',
-    }));
+    const state = storeWithSpec(
+      makeTraceSpec({
+        data: [{ id: 'a', name: 'a', start: 0, end: 10, traceId: 't1' }],
+        traceId: 'does-not-exist',
+      }),
+    );
     // The canvas mounts; isChartEmpty must NOT return true here.
     expect(selectors.isChartEmpty(state)).toBe(false);
   });

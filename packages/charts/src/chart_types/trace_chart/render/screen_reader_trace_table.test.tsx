@@ -268,9 +268,7 @@ describe('ScreenReaderTraceAnnotations', () => {
   };
 
   it('renders nothing when no annotation resolves', () => {
-    const { container } = render(
-      <ScreenReaderTraceAnnotationsComponent annotations={[]} onElementClick={undefined} />,
-    );
+    const { container } = render(<ScreenReaderTraceAnnotationsComponent annotations={[]} onElementClick={undefined} />);
     expect(container.querySelector('[data-testid="echScreenReaderTraceAnnotations"]')).toBeNull();
   });
 

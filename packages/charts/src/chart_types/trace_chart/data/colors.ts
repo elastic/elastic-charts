@@ -22,11 +22,7 @@ import type { TraceColorAccessor, TraceDatum } from '../trace_api';
  * `packages/charts/src/chart_types/xy_chart/utils/series.ts`.
  * @internal
  */
-export function buildColorMap(
-  data: TraceDatum[],
-  colorBy: TraceColorAccessor,
-  vizColors: Color[],
-): Map<string, Color> {
+export function buildColorMap(data: TraceDatum[], colorBy: TraceColorAccessor, vizColors: Color[]): Map<string, Color> {
   const map = new Map<string, Color>();
   if (vizColors.length === 0) return map;
 
@@ -58,7 +54,7 @@ export function buildSegmentColorMap(data: TraceDatum[], vizColors: Color[]): Ma
 
   let counter = 0;
   for (const datum of data) {
-    for (const segment of (datum.activeSegments ?? [])) {
+    for (const segment of datum.activeSegments ?? []) {
       const label = segment.label;
       if (label === undefined || map.has(label)) continue;
       map.set(label, vizColors[counter % vizColors.length]!);

@@ -14,11 +14,11 @@ import { orderLanes } from './order_lanes';
 import { fromOtlp, nanoToMs } from './otel_adapter';
 import type { OtelSpan, OtlpEnvelope } from './otel_adapter';
 import type { NormalizedSpan } from './types';
-import { ChartType } from '../../..';
 import { SpecType } from '../../../specs/spec_type';
 import { Logger } from '../../../utils/logger';
 import type { TraceAnnotationSpec, TraceDatum, TraceSpanBadge } from '../trace_api';
 import { colorByOtelAttribute, colorByOtelKind } from '../trace_api';
+const chartType = 'trace';
 
 const simpleData: TraceDatum[] = [
   { id: 'a', name: 'root', start: 1000, end: 2000, traceId: 't1' },
@@ -452,7 +452,12 @@ describe('normalize', () => {
 
   describe('empty input', () => {
     it('returns no spans and a zeroed domain', () => {
-      expect(normalize([], 'time')).toEqual({ spans: [], domain: { min: 0, max: 0 }, criticalIntervals: [], projectionOffset: 0 });
+      expect(normalize([], 'time')).toEqual({
+        spans: [],
+        domain: { min: 0, max: 0 },
+        criticalIntervals: [],
+        projectionOffset: 0,
+      });
     });
   });
 
@@ -1124,7 +1129,14 @@ describe('span badges do not modify source data', () => {
     // badgeAccessor output is application presentation: normalizing then resolving badges must leave
     // the caller's TraceDatum array (and each datum's meta) byte-for-byte unchanged.
     const data: TraceDatum[] = [
-      { id: 'a', name: 'root', start: 0, end: 100, traceId: 't1', meta: { attributes: [{ key: 'http.method', value: 'GET' }] } },
+      {
+        id: 'a',
+        name: 'root',
+        start: 0,
+        end: 100,
+        traceId: 't1',
+        meta: { attributes: [{ key: 'http.method', value: 'GET' }] },
+      },
       { id: 'b', name: 'child', parentId: 'a', start: 10, end: 60, traceId: 't1' },
     ];
     const snapshot = JSON.stringify(data);
@@ -1151,9 +1163,30 @@ describe('trace annotations do not change prepared trace data (Spec 29)', () => 
     resolveTraceAnnotations(
       spans,
       [
-        { chartType: ChartType.Trace, specType: SpecType.Annotation, annotationKind: 'lane', id: 'l', spanId: 'b', ariaLabel: 'Lane' },
-        { chartType: ChartType.Trace, specType: SpecType.Annotation, annotationKind: 'hierarchy', id: 'h', spanId: 'b', ariaLabel: 'Route' },
-        { chartType: ChartType.Trace, specType: SpecType.Annotation, annotationKind: 'time', id: 't', time: 50, ariaLabel: 'When' },
+        {
+          chartType,
+          specType: SpecType.Annotation,
+          annotationKind: 'lane',
+          id: 'l',
+          spanId: 'b',
+          ariaLabel: 'Lane',
+        },
+        {
+          chartType,
+          specType: SpecType.Annotation,
+          annotationKind: 'hierarchy',
+          id: 'h',
+          spanId: 'b',
+          ariaLabel: 'Route',
+        },
+        {
+          chartType,
+          specType: SpecType.Annotation,
+          annotationKind: 'time',
+          id: 't',
+          time: 50,
+          ariaLabel: 'When',
+        },
       ] as TraceAnnotationSpec[],
       projectionOffset,
     );

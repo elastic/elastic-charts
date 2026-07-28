@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import type { TraceCanvasController } from './trace_canvas_controller';
 import { resolveTraceAnnotations } from '../data/annotations';
 import { resolveSpanBadges } from '../data/badges';
 import { TraceDiagnosticsCollector } from '../data/diagnostics';
@@ -18,9 +19,11 @@ import { computeBadgeGutterWidth } from '../render/badge_layout';
 import { buildTraceStyle } from '../theme';
 import type { TraceAnnotationSpec, TraceSpec } from '../trace_api';
 import { resolveTraceColorBy, traceColorByEqual } from '../trace_api';
-import type { TraceCanvasController } from './trace_canvas_controller';
 
-/** Returns `buildTraceStyle(theme)`, recomputing only when the theme reference changes. */
+/**
+ * Returns `buildTraceStyle(theme)`, recomputing only when the theme reference changes.
+ * @internal
+ */
 export function getStyle(c: TraceCanvasController): ReturnType<typeof buildTraceStyle> {
   const { theme } = c.deps.getProps();
   if (!c.styleCache || c.styleCache.theme !== theme) {
@@ -34,6 +37,7 @@ export function getStyle(c: TraceCanvasController): ReturnType<typeof buildTrace
  * (and the other keyed inputs) change — never on a viewport-only frame. Also refreshes the
  * `spanIdToLane` map on invalidation. Stays a pure memoizer: the diagnostics report is part of the
  * cached result and the callback is fired from `frame()`, never from here.
+ * @internal
  */
 export function getPipeline(c: TraceCanvasController, spec: TraceSpec) {
   const { vizColors } = c.deps.getProps().theme.colors;
@@ -57,7 +61,15 @@ export function getPipeline(c: TraceCanvasController, spec: TraceSpec) {
   const diagnostics = new TraceDiagnosticsCollector();
 
   // normalize takes TraceDatum[] directly — OTel data arrives pre-converted by fromOtlp.
-  const normalizeResult = normalize(spec.data, spec.xScaleType, spec.traceId, resolveTraceColorBy(spec.colorBy), vizColors, spec.criticalPath, diagnostics);
+  const normalizeResult = normalize(
+    spec.data,
+    spec.xScaleType,
+    spec.traceId,
+    resolveTraceColorBy(spec.colorBy),
+    vizColors,
+    spec.criticalPath,
+    diagnostics,
+  );
 
   // Derive Span badges from each span's TraceDatum (Spec 27), once per prepared-data change. Runs
   // before resolveActive/orderLanes/collapse, all of which preserve span fields, so badges flow
@@ -79,7 +91,18 @@ export function getPipeline(c: TraceCanvasController, spec: TraceSpec) {
   // content-guarded emission. Issue order is first-occurrence, so the key is deterministic.
   const report = diagnostics.report();
   const diagnosticsKey = JSON.stringify(report.issues);
-  const result = { spans, depthBySpan, hasParents, maxDepth, domain: normalizeResult.domain, projectionOffset: normalizeResult.projectionOffset, emptyReason: normalizeResult.emptyReason, criticalIntervals: normalizeResult.criticalIntervals, diagnostics: report, diagnosticsKey };
+  const result = {
+    spans,
+    depthBySpan,
+    hasParents,
+    maxDepth,
+    domain: normalizeResult.domain,
+    projectionOffset: normalizeResult.projectionOffset,
+    emptyReason: normalizeResult.emptyReason,
+    criticalIntervals: normalizeResult.criticalIntervals,
+    diagnostics: report,
+    diagnosticsKey,
+  };
   c.pipelineCache = {
     dataRef: spec.data,
     xScaleType: spec.xScaleType,
@@ -100,6 +123,7 @@ export function getPipeline(c: TraceCanvasController, spec: TraceSpec) {
  * Memoized annotation resolution (Spec 29), keyed on the annotation-spec array ref and the resolved
  * (pre-collapse) spans ref. Structural validation, span/route resolution, and annotation diagnostics
  * happen once per real input change here — never on viewport-only frames.
+ * @internal
  */
 export function getResolvedAnnotations(
   c: TraceCanvasController,
@@ -124,6 +148,7 @@ export function getResolvedAnnotations(
  * Memoized badge-only-gutter width (Spec 27). `0` outside `'none'` mode. Recomputed only when the
  * post-collapse spans, badge size, or label position change — the scan touches every span, so it
  * must not run per frame.
+ * @internal
  */
 export function getBadgeGutterWidth(
   c: TraceCanvasController,
@@ -134,7 +159,12 @@ export function getBadgeGutterWidth(
 ): number {
   if (style.labelPosition !== 'none') return 0;
   const cache = c.badgeGutterCache;
-  if (cache && cache.spansRef === spans && cache.badgeSize === badgeSize && cache.labelPosition === style.labelPosition) {
+  if (
+    cache &&
+    cache.spansRef === spans &&
+    cache.badgeSize === badgeSize &&
+    cache.labelPosition === style.labelPosition
+  ) {
     return cache.width;
   }
   const width = computeBadgeGutterWidth(spans, style, badgeSize, measure);

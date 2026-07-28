@@ -22,9 +22,11 @@ import { ScreenReaderTraceAnnotations } from './render/screen_reader_trace_annot
 import { ScreenReaderTraceTable } from './render/screen_reader_trace_table';
 import { getTraceAnnotationSpecsSelector } from './state/selectors/get_annotation_specs';
 import type { TraceSpec } from './trace_api';
+import { ChartType } from '..';
 import { ScreenReaderSummary } from '../../components/accessibility';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
 import { TooltipType } from '../../specs';
+import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onChartRendered } from '../../state/actions/chart';
 import { setTraceUncontrolledCollapsed } from '../../state/actions/trace';
 import type { GlobalChartState } from '../../state/chart_state';
@@ -34,8 +36,6 @@ import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
-import { ChartType } from '..';
-import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 
 /**
  * Thin React shell over {@link TraceCanvasController}. It owns the JSX / DOM refs and forwards the
@@ -97,7 +97,9 @@ class TraceComponent extends React.Component<TraceProps> {
       : { x: c.hover.pointerX, y: c.hover.pointerY, width: 0, height: 0 };
     const tooltipVisible =
       c.pin.pinned ||
-      (tooltipRequired && c.hover.index >= 0 && (c.hover.region !== 'empty' || this.props.traceSpec?.showTooltipOverEmpty === true));
+      (tooltipRequired &&
+        c.hover.index >= 0 &&
+        (c.hover.region !== 'empty' || this.props.traceSpec?.showTooltipOverEmpty === true));
 
     return (
       <>
@@ -116,6 +118,7 @@ class TraceComponent extends React.Component<TraceProps> {
             width={width * dpr}
             height={height * dpr}
             style={canvasStyle}
+            // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
             role="application"
           />
           <KeyboardFocusBadge visible={c.hasFocus && this.props.traceSpec?.showKeyboardFocusBadge !== false} />

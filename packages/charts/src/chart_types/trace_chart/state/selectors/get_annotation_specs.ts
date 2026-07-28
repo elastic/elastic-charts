@@ -23,6 +23,5 @@ import type { TraceAnnotationSpec } from '../../trace_api';
  */
 export const getTraceAnnotationSpecsSelector = createCustomCachedSelector(
   [(state: GlobalChartState) => state.specs],
-  (specs): TraceAnnotationSpec[] =>
-    getSpecsFromStore<TraceAnnotationSpec>(specs, ChartType.Trace, SpecType.Annotation),
+  (specs): TraceAnnotationSpec[] => getSpecsFromStore<TraceAnnotationSpec>(specs, ChartType.Trace, SpecType.Annotation),
 );

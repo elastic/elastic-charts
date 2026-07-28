@@ -14,6 +14,7 @@ import type { Multitouch } from '../timeslip/utils/multitouch';
  * Hover and drag state for the canvas pointer. `lastGeom` is written once per frame and read by
  * all mouse/click handlers for picking — single source of truth for the current layout.
  * `index` is −1 when no span is hovered (matches pickLane/pickRegion sentinel).
+ * @internal
  */
 export interface HoverState {
   lastGeom: TraceGeometry | null;
@@ -29,6 +30,7 @@ export interface HoverState {
 /**
  * Pin (sticky tooltip) state. `pinned=true` freezes `updateHover` so the content and index stay
  * as-is while the pointer moves elsewhere or zoom/pan runs.
+ * @internal
  */
 export interface PinState {
   pinned: boolean;
@@ -41,6 +43,7 @@ export interface PinState {
  * can resolve pinch vs pan vs tap vs long-press correctly.
  * `longPressTimer` is a plain instance field on TraceComponent (not here) — it doesn't affect the
  * gesture classification, only needs cancellation.
+ * @internal
  */
 export interface TouchState {
   /** Previous frame's sorted touch positions; input to pinchRatio on each touchmove. */
@@ -57,6 +60,7 @@ export interface TouchState {
  * Brush-to-zoom state (Spec 11). `active` gates the window drag handlers so a brush gesture never
  * also pans. `end` tracks the last clamped x so mouseup has it even if the pointer released
  * outside the canvas. `overlay` is read in render() with setState({}) as the invalidation trigger.
+ * @internal
  */
 export interface BrushState {
   active: boolean;

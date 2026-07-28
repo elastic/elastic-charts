@@ -359,10 +359,7 @@ export function recoverPartialTraces(
  * Edges involving negative-duration or running spans are ignored.
  * @internal
  */
-export function correctClockSkew(
-  spans: NormalizedSpan[],
-  diagnostics?: TraceDiagnosticsCollector,
-): NormalizedSpan[] {
+export function correctClockSkew(spans: NormalizedSpan[], diagnostics?: TraceDiagnosticsCollector): NormalizedSpan[] {
   if (spans.length === 0) return spans;
 
   const childrenMap = buildChildrenMap(spans, displayParentId);

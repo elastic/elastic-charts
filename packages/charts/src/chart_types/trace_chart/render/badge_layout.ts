@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import type { NormalizedSpan } from '../data/types';
-import type { TraceSpanBadge, TraceSpanBadgeSize } from '../trace_api';
 import type { BadgeLayoutItem, LaneBadgeLayout, TraceBadgeSizeMetrics, TraceGeometry, TraceStyle } from './types';
 import { LANE_PADDING } from './types';
+import type { NormalizedSpan } from '../data/types';
+import type { TraceSpanBadge, TraceSpanBadgeSize } from '../trace_api';
 
 /** Inset (px) between a label column edge and its text/badges (matches the renderer's label inset). */
 const LABEL_INSET = 4;
@@ -20,7 +20,10 @@ const DEFAULT_VISIBLE_IN: ReadonlyArray<'gutter' | 'inline' | 'none'> = ['gutter
 /** Upper bound (px) on the badge-only gutter width so a pathological badge cannot dominate the plot. */
 const MAX_BADGE_GUTTER_PX = 240;
 
-/** Measures the pixel width of `text` at the badge font/size. Backed by `ctx.measureText` at draw time. */
+/**
+ * Measures the pixel width of `text` at the badge font/size. Backed by `ctx.measureText` at draw time.
+ * @internal
+ */
 export type BadgeTextMeasurer = (text: string, fontSize: number) => number;
 
 /** The label position values a badge may participate in. */
@@ -46,7 +49,8 @@ function badgeImage(badge: TraceSpanBadge): { src: string; crossOrigin: 'anonymo
  * @internal
  */
 export function resolveBadgeAriaLabel(badge: TraceSpanBadge, index: number): string {
-  const aria = typeof badge.ariaLabel === 'string' && badge.ariaLabel.trim() !== '' ? badge.ariaLabel.trim() : undefined;
+  const aria =
+    typeof badge.ariaLabel === 'string' && badge.ariaLabel.trim() !== '' ? badge.ariaLabel.trim() : undefined;
   return aria ?? visibleText(badge) ?? `Badge ${index + 1}`;
 }
 
@@ -242,8 +246,7 @@ export function layoutBadges(
       const clusterNatural = naturalClusterWidth(participating, m, bstyle.gap, measure);
       const groupWidth = labelWidth + bstyle.labelGap + clusterNatural;
       // Right-edge shift: push the whole label+badges group left when it would overflow.
-      const groupLeft =
-        barStartX + groupWidth <= plotRight ? barStartX : Math.max(plot.left, plotRight - groupWidth);
+      const groupLeft = barStartX + groupWidth <= plotRight ? barStartX : Math.max(plot.left, plotRight - groupWidth);
       const clusterStartX = groupLeft + labelWidth + bstyle.labelGap;
       const centerY = laneTop + laneHeight - LANE_PADDING - labelBandPx / 2;
       const items = layoutCluster(participating, clusterStartX, centerY, plotRight - LABEL_INSET, m, bstyle, measure);

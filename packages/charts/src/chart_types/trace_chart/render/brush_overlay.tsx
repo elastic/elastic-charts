@@ -11,7 +11,10 @@ import React from 'react';
 import { colorToRgba } from '../../../common/color_library_wrappers';
 import type { BrushStyle } from '../../../utils/themes/theme';
 
-/** Geometry of the brush rubber-band overlay (CSS coordinates, DPR-agnostic). */
+/**
+ * Geometry of the brush rubber-band overlay (CSS coordinates, DPR-agnostic).
+ * @internal
+ */
 export interface BrushOverlayProps {
   overlay: { x: number; width: number; top: number; height: number };
   brushTheme: BrushStyle;

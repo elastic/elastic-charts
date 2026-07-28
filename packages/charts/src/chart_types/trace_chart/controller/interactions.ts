@@ -6,27 +6,69 @@
  * Side Public License, v 1.
  */
 
+import { announceLane, scrollLaneIntoView } from './accessibility';
+import {
+  DBLCLICK_DEBOUNCE_MS,
+  KEY_PAN_FRACTION,
+  KEY_ZOOM_STEP,
+  LONG_PRESS_MS,
+  TAP_MOVE_TOLERANCE_PX,
+  WHEEL_ZOOM_VELOCITY,
+} from './constants';
+import { zoomLocked } from './frame';
+import {
+  buildBadgeEvent,
+  clearHoveredAnnotation,
+  clearHoveredBadge,
+  enterAnnotationHover,
+  enterBadgeHover,
+  pinAt,
+  updateHover,
+} from './hover_pin';
+import { getPipeline, getStyle } from './pipeline';
+import {
+  commitSegmentSelection,
+  commitSpanSelection,
+  fireCollapseChange,
+  fireSelectionChange,
+  getEffectiveCollapsed,
+  getEffectiveSelection,
+  setLocalCollapsed,
+  setLocalSelection,
+  toggleDisclosureAt,
+} from './selection';
+import type { TraceCanvasController } from './trace_canvas_controller';
+import { clamp } from '../../../utils/common';
+import {
+  doPanFromPosition,
+  doZoomAroundPosition,
+  endDrag,
+  markDragStartPosition,
+  multiplierToZoom,
+  resetTouchZoom,
+  startTouchZoom,
+} from '../../timeslip/projections/zoom_pan';
+import { zoomSafePointerX, zoomSafePointerY } from '../../timeslip/utils/dom';
+import { eraseMultitouch, setNewMultitouch, touchMidpoint } from '../../timeslip/utils/multitouch';
 import { pickAnnotation, pickBadge, pickRegion } from '../render/canvas2d_renderer';
-import { computeMaxScroll, computeZoomMax, domainToZoomPan, mapTouchesToCanvasX, pinchRatio, pixelRangeToDomain, resolveMinVisibleExtent } from '../render/interaction';
+import {
+  computeMaxScroll,
+  computeZoomMax,
+  domainToZoomPan,
+  mapTouchesToCanvasX,
+  pinchRatio,
+  pixelRangeToDomain,
+  resolveMinVisibleExtent,
+} from '../render/interaction';
 import { buildTraceAnnotationEvent, buildTraceEvent } from '../render/tooltip';
 import { gutterPx } from '../render/types';
 import { applySelection, selectionModeFromEvent } from '../selection_helpers';
 import type { TraceSegmentRef } from '../trace_api';
-import { clamp } from '../../../utils/common';
-import { doPanFromPosition, doZoomAroundPosition, endDrag, markDragStartPosition, multiplierToZoom, resetTouchZoom, startTouchZoom } from '../../timeslip/projections/zoom_pan';
-import { zoomSafePointerX, zoomSafePointerY } from '../../timeslip/utils/dom';
-import { eraseMultitouch, setNewMultitouch, touchMidpoint } from '../../timeslip/utils/multitouch';
-import { announceLane, scrollLaneIntoView } from './accessibility';
-import { DBLCLICK_DEBOUNCE_MS, KEY_PAN_FRACTION, KEY_ZOOM_STEP, LONG_PRESS_MS, TAP_MOVE_TOLERANCE_PX, WHEEL_ZOOM_VELOCITY } from './constants';
-import { zoomLocked } from './frame';
-import { buildBadgeEvent, clearHoveredAnnotation, clearHoveredBadge, enterAnnotationHover, enterBadgeHover, pinAt, updateHover } from './hover_pin';
-import { getPipeline, getStyle } from './pipeline';
-import { commitSegmentSelection, commitSpanSelection, fireCollapseChange, fireSelectionChange, getEffectiveCollapsed, getEffectiveSelection, setLocalCollapsed, setLocalSelection, toggleDisclosureAt } from './selection';
-import type { TraceCanvasController } from './trace_canvas_controller';
 
 /**
  * Assigns all canvas/window event handlers onto the controller and attaches them. Idempotent
  * per instance: called once from `start()`. Mirrors the previous component `setupEventHandlers`.
+ * @internal
  */
 export function setupEventHandlers(c: TraceCanvasController) {
   const canvas = c.deps.getCanvas();
@@ -58,7 +100,13 @@ export function setupEventHandlers(c: TraceCanvasController) {
     // 1 ms for 'time' (ADR 0004 Decision 3), 1 ns for 'linear' (ADR 0010).
     const { domain } = getPipeline(c, props.traceSpec);
     const referenceExtentMs = domain.max - domain.min;
-    c.zoomPan.focus.zoom = Math.min(c.zoomPan.focus.zoom, computeZoomMax(referenceExtentMs, resolveMinVisibleExtent(props.traceSpec.xScaleType, props.traceSpec.minVisibleExtent)));
+    c.zoomPan.focus.zoom = Math.min(
+      c.zoomPan.focus.zoom,
+      computeZoomMax(
+        referenceExtentMs,
+        resolveMinVisibleExtent(props.traceSpec.xScaleType, props.traceSpec.minVisibleExtent),
+      ),
+    );
 
     c.scheduleRender?.();
   };
@@ -85,14 +133,17 @@ export function setupEventHandlers(c: TraceCanvasController) {
     const dragMode = props.traceSpec?.dragMode ?? 'pan';
     // isBrushMode: XOR — Shift inverts the configured gesture so both dragMode values are reachable
     // from the keyboard. Spec 30: a locked chart pans for every dragMode/modifier.
-    const isBrushMode = !zoomLocked(c) && ((dragMode === 'brush') !== e.shiftKey);
+    const isBrushMode = !zoomLocked(c) && (dragMode === 'brush') !== e.shiftKey;
     if (isBrushMode) {
       c.brush.active = true;
       c.brush.start = zoomSafePointerX(e);
       c.brush.end = c.brush.start; // zero-width seed so mouseup no-ops a plain click
       c.flywheelActive = false; // stop any coast before the brush gesture
       c.hover.dragMoved = false;
-      if (c.clickTimer !== null) { clearTimeout(c.clickTimer); c.clickTimer = null; }
+      if (c.clickTimer !== null) {
+        clearTimeout(c.clickTimer);
+        c.clickTimer = null;
+      }
       if (c.hover.lastGeom) {
         const { plot } = c.hover.lastGeom;
         c.brush.overlay = { x: c.brush.start, width: 0, top: plot.top, height: plot.height };
@@ -156,10 +207,7 @@ export function setupEventHandlers(c: TraceCanvasController) {
 
     // Vertical pan: direct scrollOffset adjustment, clamped (no kinetics)
     const maxScroll = computeMaxScroll(spans.length, style.laneHeight, plotHeight);
-    c.scrollOffset = Math.min(
-      Math.max(0, c.dragStartScrollOffset - (zoomSafePointerY(e) - c.dragStartY)),
-      maxScroll,
-    );
+    c.scrollOffset = Math.min(Math.max(0, c.dragStartScrollOffset - (zoomSafePointerY(e) - c.dragStartY)), maxScroll);
 
     c.scheduleRender?.();
   };
@@ -170,16 +218,25 @@ export function setupEventHandlers(c: TraceCanvasController) {
       c.brush.overlay = null;
       const geom = c.hover.lastGeom;
       const spec = c.deps.getProps().traceSpec;
-      if (!geom || !spec) { c.deps.requestRender(); return; }
+      if (!geom || !spec) {
+        c.deps.requestRender();
+        return;
+      }
       // Use the last clamped brushEnd (set in mousemove). If no mousemove fired (zero-width click),
       // brushEnd === brushStart, giving a zero range → below minExtent → no-op.
       const [from, to] = pixelRangeToDomain(c.brush.start, c.brush.end, geom);
       const minExtent = resolveMinVisibleExtent(spec.xScaleType, spec.minVisibleExtent);
-      if (to - from < minExtent) { c.deps.requestRender(); return; }
+      if (to - from < minExtent) {
+        c.deps.requestRender();
+        return;
+      }
       const { domain } = getPipeline(c, spec);
       const clampedFrom = clamp(from, domain.min, domain.max);
       const clampedTo = clamp(to, domain.min, domain.max);
-      if (clampedTo - clampedFrom < minExtent) { c.deps.requestRender(); return; }
+      if (clampedTo - clampedFrom < minExtent) {
+        c.deps.requestRender();
+        return;
+      }
       c.zoomPan.focus = domainToZoomPan([clampedFrom, clampedTo], [domain.min, domain.max]);
       c.zoomPan.focus.zoom = Math.min(c.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min, minExtent));
       c.easeZoom = true;
@@ -375,7 +432,10 @@ export function setupEventHandlers(c: TraceCanvasController) {
         false,
       );
       const { domain } = getPipeline(c, spec);
-      c.zoomPan.focus.zoom = Math.min(c.zoomPan.focus.zoom, computeZoomMax(domain.max - domain.min, resolveMinVisibleExtent(spec.xScaleType, spec.minVisibleExtent)));
+      c.zoomPan.focus.zoom = Math.min(
+        c.zoomPan.focus.zoom,
+        computeZoomMax(domain.max - domain.min, resolveMinVisibleExtent(spec.xScaleType, spec.minVisibleExtent)),
+      );
       c.scheduleRender?.();
       return;
     }
@@ -411,93 +471,116 @@ export function setupEventHandlers(c: TraceCanvasController) {
       c.scheduleRender?.();
     };
 
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      const current = c.focusedLaneIndex ?? 0;
-      moveFocus(Math.max(0, current - 1));
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      const current = c.focusedLaneIndex ?? -1;
-      moveFocus(Math.min(lastIndex, current + 1));
-    } else if (e.key === 'Home') {
-      e.preventDefault();
-      moveFocus(0);
-    } else if (e.key === 'End') {
-      e.preventDefault();
-      moveFocus(lastIndex);
-    } else if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      if (c.focusedLaneIndex !== null) {
-        const span = geom.spans[c.focusedLaneIndex];
-        if (span) {
-          c.deps.getProps().onElementClick([buildTraceEvent(span)]);
-          // Keyboard: whole-span selection — plain = replace, Shift = additive, Cmd/Ctrl = toggle.
-          const ref: TraceSegmentRef = { spanId: span.id, region: 'span' };
-          const current = getEffectiveSelection(c);
-          const mode = selectionModeFromEvent(e);
-          const next = applySelection(current, ref, mode);
-          setLocalSelection(c, next);
-          fireSelectionChange(c, next);
-          // Announce keyboard-initiated selection via aria-live (G4). Mouse stays silent.
-          const ariaLive = c.deps.getAriaLive();
-          if (ariaLive) {
-            let utterance: string;
-            if (next.length > current.length) {
-              utterance = next.length === 1
-                ? `Selected ${span.name}`
-                : `${span.name} added, ${next.length} selected`;
-            } else if (next.length < current.length) {
-              utterance = `${span.name} removed, ${next.length} selected`;
-            } else {
-              // additive no-op (Shift on already-selected ref)
-              utterance = `${span.name} already selected`;
+    switch (e.key) {
+      case 'ArrowUp': {
+        e.preventDefault();
+        const current = c.focusedLaneIndex ?? 0;
+        moveFocus(Math.max(0, current - 1));
+
+        break;
+      }
+      case 'ArrowDown': {
+        e.preventDefault();
+        const current = c.focusedLaneIndex ?? -1;
+        moveFocus(Math.min(lastIndex, current + 1));
+
+        break;
+      }
+      case 'Home': {
+        e.preventDefault();
+        moveFocus(0);
+
+        break;
+      }
+      case 'End': {
+        e.preventDefault();
+        moveFocus(lastIndex);
+
+        break;
+      }
+      case 'Enter':
+      case ' ': {
+        e.preventDefault();
+        if (c.focusedLaneIndex !== null) {
+          const span = geom.spans[c.focusedLaneIndex];
+          if (span) {
+            c.deps.getProps().onElementClick([buildTraceEvent(span)]);
+            // Keyboard: whole-span selection — plain = replace, Shift = additive, Cmd/Ctrl = toggle.
+            const ref: TraceSegmentRef = { spanId: span.id, region: 'span' };
+            const current = getEffectiveSelection(c);
+            const mode = selectionModeFromEvent(e);
+            const next = applySelection(current, ref, mode);
+            setLocalSelection(c, next);
+            fireSelectionChange(c, next);
+            // Announce keyboard-initiated selection via aria-live (G4). Mouse stays silent.
+            const ariaLive = c.deps.getAriaLive();
+            if (ariaLive) {
+              let utterance: string;
+              if (next.length > current.length) {
+                utterance = next.length === 1 ? `Selected ${span.name}` : `${span.name} added, ${next.length} selected`;
+              } else if (next.length < current.length) {
+                utterance = `${span.name} removed, ${next.length} selected`;
+              } else {
+                // additive no-op (Shift on already-selected ref)
+                utterance = `${span.name} already selected`;
+              }
+              ariaLive.textContent = utterance;
             }
-            ariaLive.textContent = utterance;
+            c.scheduleRender?.();
           }
-          c.scheduleRender?.();
         }
+
+        break;
       }
-    } else if (e.key === 'c') {
-      // 'c' toggles collapse on the focused parent lane (Spec 21 / ADR 0026).
-      e.preventDefault();
-      const laneOrder2 = spec?.laneOrder ?? 'tree';
-      if (c.focusedLaneIndex !== null && laneOrder2 === 'tree') {
-        const focusedSpan = geom.spans[c.focusedLaneIndex];
-        if (focusedSpan && geom.disclosureByLane?.has(c.focusedLaneIndex)) {
-          const spanId = focusedSpan.id;
-          const next = new Set(getEffectiveCollapsed(c));
-          const willCollapse = !next.has(spanId);
-          if (willCollapse) next.add(spanId); else next.delete(spanId);
-          setLocalCollapsed(c, next);
-          fireCollapseChange(c, next);
+      case 'c': {
+        // 'c' toggles collapse on the focused parent lane (Spec 21 / ADR 0026).
+        e.preventDefault();
+        const laneOrder2 = spec?.laneOrder ?? 'tree';
+        if (c.focusedLaneIndex !== null && laneOrder2 === 'tree') {
+          const focusedSpan = geom.spans[c.focusedLaneIndex];
+          if (focusedSpan && geom.disclosureByLane?.has(c.focusedLaneIndex)) {
+            const spanId = focusedSpan.id;
+            const next = new Set(getEffectiveCollapsed(c));
+            const willCollapse = !next.has(spanId);
+            if (willCollapse) next.add(spanId);
+            else next.delete(spanId);
+            setLocalCollapsed(c, next);
+            fireCollapseChange(c, next);
+            const ariaLive = c.deps.getAriaLive();
+            if (ariaLive) {
+              const descendantCount = geom.disclosureByLane.get(c.focusedLaneIndex)?.descendantCount ?? 0;
+              ariaLive.textContent = willCollapse
+                ? `Collapsed ${focusedSpan.name}, ${descendantCount} descendants hidden`
+                : `Expanded ${focusedSpan.name}`;
+            }
+            c.scheduleRender?.();
+          }
+        }
+
+        break;
+      }
+      case 'Escape': {
+        e.preventDefault();
+        c.focusedLaneIndex = null;
+        // Route through the single unpin path so the window listeners are removed (idempotent when
+        // not pinned).
+        c.handleUnpinningTooltip?.();
+        // Clear selection on Escape (ADR 0011 / plan step 8).
+        const current = getEffectiveSelection(c);
+        if (current.length > 0) {
+          setLocalSelection(c, []);
+          fireSelectionChange(c, []);
+          // Announce keyboard-initiated selection clear via aria-live (G4).
           const ariaLive = c.deps.getAriaLive();
           if (ariaLive) {
-            const descendantCount = geom.disclosureByLane.get(c.focusedLaneIndex)?.descendantCount ?? 0;
-            ariaLive.textContent = willCollapse
-              ? `Collapsed ${focusedSpan.name}, ${descendantCount} descendants hidden`
-              : `Expanded ${focusedSpan.name}`;
+            ariaLive.textContent = 'Selection cleared';
           }
-          c.scheduleRender?.();
         }
+        c.scheduleRender?.();
+
+        break;
       }
-    } else if (e.key === 'Escape') {
-      e.preventDefault();
-      c.focusedLaneIndex = null;
-      // Route through the single unpin path so the window listeners are removed (idempotent when
-      // not pinned).
-      c.handleUnpinningTooltip?.();
-      // Clear selection on Escape (ADR 0011 / plan step 8).
-      const current = getEffectiveSelection(c);
-      if (current.length > 0) {
-        setLocalSelection(c, []);
-        fireSelectionChange(c, []);
-        // Announce keyboard-initiated selection clear via aria-live (G4).
-        const ariaLive = c.deps.getAriaLive();
-        if (ariaLive) {
-          ariaLive.textContent = 'Selection cleared';
-        }
-      }
-      c.scheduleRender?.();
+      // No default
     }
   };
 
@@ -540,8 +623,14 @@ export function setupEventHandlers(c: TraceCanvasController) {
       setNewMultitouch(c.touch.multitouch, mapped);
       startTouchZoom(c.zoomPan);
       markDragStartPosition(c.zoomPan, touchMidpoint(mapped));
-      if (c.longPressTimer !== null) { clearTimeout(c.longPressTimer); c.longPressTimer = null; }
-      if (c.clickTimer !== null) { clearTimeout(c.clickTimer); c.clickTimer = null; }
+      if (c.longPressTimer !== null) {
+        clearTimeout(c.longPressTimer);
+        c.longPressTimer = null;
+      }
+      if (c.clickTimer !== null) {
+        clearTimeout(c.clickTimer);
+        c.clickTimer = null;
+      }
       c.flywheelActive = false;
       updateHover(c, null);
     } else if (mapped.length === 1) {
@@ -592,7 +681,10 @@ export function setupEventHandlers(c: TraceCanvasController) {
       const { domain } = getPipeline(c, props.traceSpec);
       c.zoomPan.focus.zoom = Math.min(
         c.zoomPan.focus.zoom,
-        computeZoomMax(domain.max - domain.min, resolveMinVisibleExtent(props.traceSpec.xScaleType, props.traceSpec.minVisibleExtent)),
+        computeZoomMax(
+          domain.max - domain.min,
+          resolveMinVisibleExtent(props.traceSpec.xScaleType, props.traceSpec.minVisibleExtent),
+        ),
       );
       // Do NOT update c.touch.multitouch here — it must hold the INITIAL pinch positions.
       c.scheduleRender?.();
@@ -613,9 +705,12 @@ export function setupEventHandlers(c: TraceCanvasController) {
 
       const dx = x - c.touch.tapStart.x;
       const dy = y - c.touch.tapStart.y;
-      if (!c.touch.moved && Math.sqrt(dx * dx + dy * dy) > TAP_MOVE_TOLERANCE_PX) {
+      if (!c.touch.moved && Math.hypot(dx, dy) > TAP_MOVE_TOLERANCE_PX) {
         c.touch.moved = true;
-        if (c.longPressTimer !== null) { clearTimeout(c.longPressTimer); c.longPressTimer = null; }
+        if (c.longPressTimer !== null) {
+          clearTimeout(c.longPressTimer);
+          c.longPressTimer = null;
+        }
       }
 
       // Horizontal pan
@@ -623,17 +718,17 @@ export function setupEventHandlers(c: TraceCanvasController) {
 
       // Vertical pan (same math as handleMouseMove)
       const maxScroll = computeMaxScroll(spans.length, style.laneHeight, plotHeight);
-      c.scrollOffset = Math.min(
-        Math.max(0, c.dragStartScrollOffset - (y - c.dragStartY)),
-        maxScroll,
-      );
+      c.scrollOffset = Math.min(Math.max(0, c.dragStartScrollOffset - (y - c.dragStartY)), maxScroll);
 
       c.scheduleRender?.();
     }
   };
 
   c.handleTouchEnd = (e: TouchEvent) => {
-    if (c.longPressTimer !== null) { clearTimeout(c.longPressTimer); c.longPressTimer = null; }
+    if (c.longPressTimer !== null) {
+      clearTimeout(c.longPressTimer);
+      c.longPressTimer = null;
+    }
 
     const prevTouchCount = c.touch.multitouch.length;
 
@@ -751,7 +846,10 @@ export function setupEventHandlers(c: TraceCanvasController) {
   window.addEventListener('mouseup', c.handleMouseUp);
 }
 
-/** Detaches all listeners assigned by {@link setupEventHandlers}. Idempotent (safe to call twice). */
+/**
+ * Detaches all listeners assigned by {@link setupEventHandlers}. Idempotent (safe to call twice).
+ * @internal
+ */
 export function teardownEventHandlers(c: TraceCanvasController) {
   const canvas = c.deps.getCanvas();
   if (!canvas) return;

@@ -11,10 +11,11 @@ import { resolveSpanBadges } from './badges';
 import { DIAGNOSTICS_EXAMPLE_CAP, TraceDiagnosticsCollector } from './diagnostics';
 import { normalize } from './normalize';
 import type { NormalizedSpan } from './types';
-import { ChartType } from '../../..';
 import { SpecType } from '../../../specs/spec_type';
 import { Logger } from '../../../utils/logger';
 import type { TraceAnnotationSpec, TraceDatum, TraceSpanBadge, TraceSpanBadgeAccessor } from '../trace_api';
+
+const chartType = 'trace';
 
 // --- Fixtures -------------------------------------------------------------------------------------
 
@@ -302,7 +303,9 @@ describe('resolveSpanBadges diagnostics', () => {
     const report = c.list();
     expect(report.length).toBeGreaterThan(0);
     expect(report.every((i) => i.scope === 'badge')).toBe(true);
-    expect(kinds(c)).toEqual(expect.arrayContaining(['badge_empty', 'badge_non_string_text', 'badge_missing_aria_label']));
+    expect(kinds(c)).toEqual(
+      expect.arrayContaining(['badge_empty', 'badge_non_string_text', 'badge_missing_aria_label']),
+    );
   });
 });
 
@@ -325,7 +328,7 @@ const timeAnn = (
   extra: Partial<TraceAnnotationSpec> = {},
 ): TraceAnnotationSpec =>
   ({
-    chartType: ChartType.Trace,
+    chartType,
     specType: SpecType.Annotation,
     annotationKind: 'time',
     id,
@@ -341,7 +344,7 @@ const spanAnn = (
   extra: Partial<TraceAnnotationSpec> = {},
 ): TraceAnnotationSpec =>
   ({
-    chartType: ChartType.Trace,
+    chartType,
     specType: SpecType.Annotation,
     annotationKind: kind,
     id,
@@ -439,7 +442,12 @@ describe('resolveTraceAnnotations', () => {
 
   it('reports annotation_missing_aria_label but still resolves with a generated name', () => {
     const c = new TraceDiagnosticsCollector();
-    const [resolved] = resolveTraceAnnotations([span('a')], [spanAnn('lane', 'l', 'a', { ariaLabel: undefined })], 0, c);
+    const [resolved] = resolveTraceAnnotations(
+      [span('a')],
+      [spanAnn('lane', 'l', 'a', { ariaLabel: undefined })],
+      0,
+      c,
+    );
     expect(resolved!.ariaLabel).toBe('Trace annotation l');
     expect(kinds(c)).toContain('annotation_missing_aria_label');
   });

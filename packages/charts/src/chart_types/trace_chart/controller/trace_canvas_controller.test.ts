@@ -6,15 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
-import type { AnnotationLayoutItem, BadgeLayoutItem } from '../render/types';
-import type { TraceDatum, TraceSpec } from '../trace_api';
 import { NOOP } from './constants';
 import { getActiveCursor } from './hover_pin';
 import { setupEventHandlers, teardownEventHandlers } from './interactions';
 import { getPipeline } from './pipeline';
 import { TraceCanvasController } from './trace_canvas_controller';
 import type { TraceControllerDeps, TraceProps } from './types';
+import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
+import type { AnnotationLayoutItem, BadgeLayoutItem } from '../render/types';
+import type { TraceDatum, TraceSpec } from '../trace_api';
 
 /**
  * These tests cover only the NEW seams introduced by the controller extraction (ADR 0004 Decision 5):
@@ -128,8 +128,7 @@ describe('TraceCanvasController — view-state getters', () => {
 describe('TraceCanvasController — pipeline memoization', () => {
   const vizColors = ['#54B399', '#6092C0'];
   const props = () => ({ theme: { colors: { vizColors } } }) as unknown as TraceProps;
-  const makeSpec = (data: TraceDatum[]): TraceSpec =>
-    ({ data, xScaleType: 'linear' }) as unknown as TraceSpec;
+  const makeSpec = (data: TraceDatum[]): TraceSpec => ({ data, xScaleType: 'linear' }) as unknown as TraceSpec;
 
   it('returns the same cached result for the same spec (cache hit)', () => {
     const c = makeController(props);

@@ -172,7 +172,7 @@ Example.parameters = {
     '- **Nanosecond precision (`linear` only):** pick `100 ns` … `1 ns` with `focus shift = 0`. The ' +
     'linear axis re-zeros at 0, so float64 resolves nanosecond steps near the origin; labels switch to ' +
     '`µs`/`ns` units and stay distinct (ADR 0010). Keep shift at 0 — large offsets lose sub-ms ' +
-    'precision. In `time` mode sub-ms widths collapse (epoch magnitudes can\'t resolve them).\n' +
+    "precision. In `time` mode sub-ms widths collapse (epoch magnitudes can't resolve them).\n" +
     '- **Day precision (both modes):** pick `1 day` / `7 days`. `time` mode shows calendar day/hour ' +
     'rows; `linear` mode shows the elapsed value in its coarsest unit (minutes/compound).\n\n' +
     '**Linear label density gating:** at wide zooms the single elapsed row thins labels to a uniform ' +

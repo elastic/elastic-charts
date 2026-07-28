@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import type { NormalizedSpan } from '../data/types';
-import { waitingSegments } from '../data/self_time';
 import { TICK_LAYER_PADDING, TICK_LAYER_BOTTOM_INSET } from './time_bar';
 import type { AnnotationLayoutItem, DisclosureEntry, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
 import { gutterPx, LANE_PADDING } from './types';
-import type { TraceSelection } from '../trace_api';
 import type { Size } from '../../../utils/dimensions';
+import { waitingSegments } from '../data/self_time';
+import type { NormalizedSpan } from '../data/types';
+import type { TraceSelection } from '../trace_api';
 
 /**
  * Pure layout builder for the trace waterfall chart. Partitions the canvas and builds a linear
@@ -106,7 +106,8 @@ export function buildGeometry(
   const focusSpan = focusDomain.max - focusDomain.min;
   const scale =
     focusSpan <= 0
-      ? (_tMs: number) => plot.left
+      ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        (_tMs: number) => plot.left
       : (tMs: number) => plot.left + ((tMs - focusDomain.min) / focusSpan) * plot.width;
 
   // Resolve selection refs to lane indices, dropping dangling/out-of-range refs (defensive filter

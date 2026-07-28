@@ -28,7 +28,7 @@ const pct = (ms: number) => `${((ms / TOTAL_MS) * 100).toFixed(2)}%`;
 // ---------------------------------------------------------------------------
 function SpanRow({ span }: { span: NormalizedSpan }) {
   const totalWidth = ((span.end - span.start) / TOTAL_MS) * 100;
-  const totalLeft  = (span.start / TOTAL_MS) * 100;
+  const totalLeft = (span.start / TOTAL_MS) * 100;
   return (
     <div style={{ marginBottom: 20 }}>
       <div style={{ fontFamily: 'monospace', fontSize: 13, marginBottom: 6 }}>
@@ -39,17 +39,39 @@ function SpanRow({ span }: { span: NormalizedSpan }) {
           ? '(none)'
           : span.activeSegments.map((a) => `[${a.start}–${a.end}ms]`).join(', ')}
       </div>
-      <div style={{ position: 'relative', height: 16, background: '#f0f0f0', border: '1px solid #ccc', width: 600, borderRadius: 2 }}>
+      <div
+        style={{
+          position: 'relative',
+          height: 16,
+          background: '#f0f0f0',
+          border: '1px solid #ccc',
+          width: 600,
+          borderRadius: 2,
+        }}
+      >
         {/* Total duration (muted) */}
         <div
-          style={{ position: 'absolute', left: `${totalLeft}%`, width: `${totalWidth}%`, height: '100%', background: '#b0c4de', opacity: 0.5 }}
+          style={{
+            position: 'absolute',
+            left: `${totalLeft}%`,
+            width: `${totalWidth}%`,
+            height: '100%',
+            background: '#b0c4de',
+            opacity: 0.5,
+          }}
           title={`Total: ${span.start}–${span.end}ms`}
         />
         {/* Active (self-time) segments */}
         {span.activeSegments.map((seg, i) => (
           <div
             key={i}
-            style={{ position: 'absolute', left: pct(seg.start), width: pct(seg.end - seg.start), height: '100%', background: '#1f6feb' }}
+            style={{
+              position: 'absolute',
+              left: pct(seg.start),
+              width: pct(seg.end - seg.start),
+              height: '100%',
+              background: '#1f6feb',
+            }}
             title={`Active: ${seg.start}–${seg.end}ms`}
           />
         ))}
@@ -65,7 +87,9 @@ export const Example = () => (
   <div className="echChart">
     <div className="echChartStatus" data-ech-render-complete={true} />
     <div style={{ padding: 24, fontFamily: 'sans-serif' }}>
-      {resolved.map((span) => <SpanRow key={span.id} span={span} />)}
+      {resolved.map((span) => (
+        <SpanRow key={span.id} span={span} />
+      ))}
     </div>
   </div>
 );

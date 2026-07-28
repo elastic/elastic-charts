@@ -6,19 +6,24 @@
  * Side Public License, v 1.
  */
 
+import { getPipeline, getStyle } from './pipeline';
+import type { TraceCanvasController } from './trace_canvas_controller';
+import { Logger } from '../../../utils/logger';
 import type { NormalizedSpan } from '../data/types';
 import { computeMaxScroll, computeScrollTarget } from '../render/interaction';
 import { formatMs } from '../render/tooltip';
 import type { TraceSpec } from '../trace_api';
-import { Logger } from '../../../utils/logger';
-import { getPipeline, getStyle } from './pipeline';
-import type { TraceCanvasController } from './trace_canvas_controller';
 
 /**
  * Scrolls lane `index` into view using `computeScrollTarget`, then schedules a repaint.
  * Called by keyboard nav (align:'nearest') and reused by Spec 14 `scrollToSpan` (align:'center').
+ * @internal
  */
-export function scrollLaneIntoView(c: TraceCanvasController, index: number, { align }: { align: 'center' | 'nearest' }) {
+export function scrollLaneIntoView(
+  c: TraceCanvasController,
+  index: number,
+  { align }: { align: 'center' | 'nearest' },
+) {
   const spec = c.deps.getProps().traceSpec;
   if (!spec) return;
   const style = getStyle(c);
@@ -30,7 +35,10 @@ export function scrollLaneIntoView(c: TraceCanvasController, index: number, { al
   c.scheduleRender?.();
 }
 
-/** Announce a lane's span to the aria-live region. Shared by keyboard nav and scrollToSpan. */
+/**
+ * Announce a lane's span to the aria-live region. Shared by keyboard nav and scrollToSpan.
+ * @internal
+ */
 export function announceLane(c: TraceCanvasController, span: NormalizedSpan): void {
   const ariaLive = c.deps.getAriaLive();
   if (ariaLive) {
@@ -39,9 +47,10 @@ export function announceLane(c: TraceCanvasController, span: NormalizedSpan): vo
     let orphanNote = '';
     if (span.orphaned) {
       if (span.reparentedToSpanId !== undefined) {
-        const traceSpec = c.deps.getProps().traceSpec;
+        const { traceSpec } = c.deps.getProps();
         const parentName =
-          (traceSpec && getPipeline(c, traceSpec).spans.find((s) => s.id === span.reparentedToSpanId)?.name) ??
+          (traceSpec &&
+            getPipeline(c, traceSpec).spans.find((s: NormalizedSpan) => s.id === span.reparentedToSpanId)?.name) ??
           span.reparentedToSpanId;
         orphanNote = ` — orphan; displayed under ${parentName}`;
       } else {
@@ -55,6 +64,7 @@ export function announceLane(c: TraceCanvasController, span: NormalizedSpan): vo
 /**
  * Spec 14: scroll the lane for span `id` into view (centered), set the focused-lane highlight,
  * and announce via the aria-live region. Does NOT move DOM keyboard focus (no focus-steal).
+ * @internal
  */
 export function scrollToSpanById(c: TraceCanvasController, id: string): void {
   const spec = c.deps.getProps().traceSpec;
@@ -74,6 +84,7 @@ export function scrollToSpanById(c: TraceCanvasController, id: string): void {
 /**
  * Re-registers the controlProviderCallback when its reference changes (idempotent per ADR 0008).
  * Called from `start()` (initial registration) and `update()`.
+ * @internal
  */
 export function syncControlProvider(c: TraceCanvasController, prevSpec: TraceSpec | undefined): void {
   const cb = c.deps.getProps().traceSpec?.controlProviderCallback;

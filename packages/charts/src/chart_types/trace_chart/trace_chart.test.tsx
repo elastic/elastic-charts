@@ -28,19 +28,19 @@
  * runs without throwing: mount → right-click (dispatched as contextmenu) → Escape / data
  * change / left-click. Visual pin behavior is confirmed in the story (14_pinned_tooltip).
  */
-
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'jest-canvas-mock';
 import { act, fireEvent, render } from '@testing-library/react';
-import React from 'react';
 import { setupJestCanvasMock } from 'jest-canvas-mock';
+import React from 'react';
 
-import { Chart } from '../../components/chart';
-import { Settings } from '../../specs';
-import { Logger } from '../../utils/logger';
 import * as OrderLanesModule from './data/order_lanes';
 import { Trace, TraceLaneAnnotation, TraceTimeAnnotation } from './trace_api';
 import type { TraceDatum, TraceControlCallbacks, TraceSpanBadge } from './trace_api';
+import { Chart } from '../../components/chart';
+import { Settings } from '../../specs';
 import type { TraceAnnotationElementEvent, TraceBadgeElementEvent } from '../../specs/settings';
-import { makeCtx } from './trace_test_helpers';
+import { Logger } from '../../utils/logger';
 
 /** Minimal fixture: root + one child, enough to exercise normalize → resolveActive. */
 const FEW_SPANS: TraceDatum[] = [
@@ -1798,7 +1798,8 @@ describe('Trace chart — annotation interaction (Spec 29)', () => {
     const time = mount({ onElementOver }, <TraceTimeAnnotation id="t1" time={250} ariaLabel="Midpoint" />);
     // The marker's exact x depends on the niced focus domain, so scan the width for its hit band. A
     // 'timebar' marker is hit in the lower half of the time bar (y in [16, 32)), never in the plot.
-    const annotationTypes = () => onElementOver.mock.calls.map((c) => (c[0][0] as TraceAnnotationElementEvent).annotationType);
+    const annotationTypes = () =>
+      onElementOver.mock.calls.map((c) => (c[0][0] as TraceAnnotationElementEvent).annotationType);
     for (let x = 200; x <= 800 && !annotationTypes().includes('time'); x += 2) {
       firePointer(time.canvas, 'mousemove', { x, y: 24 });
     }
@@ -2073,13 +2074,18 @@ describe('Trace chart — zoom lock (Spec 30)', () => {
   });
 
   const extentOf = (d: [number, number]) => d[1] - d[0];
-  const lastDomain = (cb: jest.Mock): [number, number] => cb.mock.calls[cb.mock.calls.length - 1][0];
+  const lastDomain = (cb: jest.Mock): [number, number] => cb.mock.calls.at(-1)[0];
 
   /** Dispatch a native mouse event with `offsetX/offsetY`/`buttons`/`shiftKey` (jsdom drops offsets). */
   function fireNativeMouse(
     target: HTMLElement | Window,
     type: 'mousedown' | 'mousemove' | 'mouseup',
-    { x = 0, y = 0, buttons = 0, shiftKey = false }: { x?: number; y?: number; buttons?: number; shiftKey?: boolean } = {},
+    {
+      x = 0,
+      y = 0,
+      buttons = 0,
+      shiftKey = false,
+    }: { x?: number; y?: number; buttons?: number; shiftKey?: boolean } = {},
   ) {
     const e = new MouseEvent(type, { bubbles: true, cancelable: true, buttons, shiftKey, view: window });
     Object.defineProperty(e, 'offsetX', { value: x });
@@ -2140,7 +2146,14 @@ describe('Trace chart — zoom lock (Spec 30)', () => {
     act(() => jest.runAllTimers());
     rerender(
       <Chart size={[800, 200]}>
-        <Trace id="zl-keys" data={SPANS} xScaleType="linear" zoomable={false} focusDomain={[100, 300]} onFocusDomainChange={cb} />
+        <Trace
+          id="zl-keys"
+          data={SPANS}
+          xScaleType="linear"
+          zoomable={false}
+          focusDomain={[100, 300]}
+          onFocusDomainChange={cb}
+        />
       </Chart>,
     );
     act(() => jest.runAllTimers());
@@ -2175,7 +2188,14 @@ describe('Trace chart — zoom lock (Spec 30)', () => {
     act(() => jest.runAllTimers());
     rerender(
       <Chart size={[800, 200]}>
-        <Trace id="zl-pinch" data={SPANS} xScaleType="linear" zoomable={false} focusDomain={[100, 300]} onFocusDomainChange={cb} />
+        <Trace
+          id="zl-pinch"
+          data={SPANS}
+          xScaleType="linear"
+          zoomable={false}
+          focusDomain={[100, 300]}
+          onFocusDomainChange={cb}
+        />
       </Chart>,
     );
     act(() => jest.runAllTimers());
@@ -2183,8 +2203,20 @@ describe('Trace chart — zoom lock (Spec 30)', () => {
 
     // Two-finger pinch is inert while locked → no domain change is emitted.
     const callsBefore = cb.mock.calls.length;
-    fireEvent.touchStart(canvas, touchInit(canvas, [{ clientX: 250, clientY: 50 }, { clientX: 350, clientY: 50 }]));
-    fireEvent.touchMove(canvas, touchInit(canvas, [{ clientX: 150, clientY: 50 }, { clientX: 450, clientY: 50 }]));
+    fireEvent.touchStart(
+      canvas,
+      touchInit(canvas, [
+        { clientX: 250, clientY: 50 },
+        { clientX: 350, clientY: 50 },
+      ]),
+    );
+    fireEvent.touchMove(
+      canvas,
+      touchInit(canvas, [
+        { clientX: 150, clientY: 50 },
+        { clientX: 450, clientY: 50 },
+      ]),
+    );
     fireEvent.touchEnd(canvas, touchInit(canvas, []));
     act(() => jest.runAllTimers());
     expect(cb.mock.calls.length).toBe(callsBefore);
@@ -2213,13 +2245,28 @@ describe('Trace chart — zoom lock (Spec 30)', () => {
       const cb = jest.fn();
       const { container, rerender, unmount } = render(
         <Chart size={[800, 200]}>
-          <Trace id={`zl-brush-${i}`} data={SPANS} xScaleType="linear" zoomable={false} dragMode={dragMode} onFocusDomainChange={cb} />
+          <Trace
+            id={`zl-brush-${i}`}
+            data={SPANS}
+            xScaleType="linear"
+            zoomable={false}
+            dragMode={dragMode}
+            onFocusDomainChange={cb}
+          />
         </Chart>,
       );
       act(() => jest.runAllTimers());
       rerender(
         <Chart size={[800, 200]}>
-          <Trace id={`zl-brush-${i}`} data={SPANS} xScaleType="linear" zoomable={false} dragMode={dragMode} focusDomain={[100, 300]} onFocusDomainChange={cb} />
+          <Trace
+            id={`zl-brush-${i}`}
+            data={SPANS}
+            xScaleType="linear"
+            zoomable={false}
+            dragMode={dragMode}
+            focusDomain={[100, 300]}
+            onFocusDomainChange={cb}
+          />
         </Chart>,
       );
       act(() => jest.runAllTimers());
@@ -2251,7 +2298,14 @@ describe('Trace chart — zoom lock (Spec 30)', () => {
     // Drive a zoomed-in window programmatically — the lock gates gestures, not the focusDomain drive.
     rerender(
       <Chart size={[800, 200]}>
-        <Trace id="zl-fd" data={SPANS} xScaleType="linear" zoomable={false} focusDomain={[200, 300]} onFocusDomainChange={cb} />
+        <Trace
+          id="zl-fd"
+          data={SPANS}
+          xScaleType="linear"
+          zoomable={false}
+          focusDomain={[200, 300]}
+          onFocusDomainChange={cb}
+        />
       </Chart>,
     );
     act(() => jest.runAllTimers());

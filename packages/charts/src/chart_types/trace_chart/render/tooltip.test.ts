@@ -14,7 +14,13 @@
  * `isTraceElementEvent`.
  */
 
-import { buildTraceEvent, buildTraceSelectionDetail, buildTraceTooltipInfo, computeSelfTime, formatMs } from './tooltip';
+import {
+  buildTraceEvent,
+  buildTraceSelectionDetail,
+  buildTraceTooltipInfo,
+  computeSelfTime,
+  formatMs,
+} from './tooltip';
 import { isTraceElementEvent } from '../../../specs/settings';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceDatum } from '../trace_api';

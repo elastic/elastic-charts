@@ -170,7 +170,12 @@ describe('resolveActive', () => {
 
 describe('waitingSegments', () => {
   it('returns the gaps between active segments within [start, end]', () => {
-    const s = span('a', 0, 1000, { activeSegments: [{ start: 0, end: 300 }, { start: 700, end: 1000 }] });
+    const s = span('a', 0, 1000, {
+      activeSegments: [
+        { start: 0, end: 300 },
+        { start: 700, end: 1000 },
+      ],
+    });
     expect(waitingSegments(s)).toEqual([{ start: 300, end: 700 }]);
   });
 

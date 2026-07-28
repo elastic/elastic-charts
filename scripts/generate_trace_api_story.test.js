@@ -9,8 +9,10 @@
 'use strict';
 
 const path = require('path');
+
 const { ApiModel } = require('@microsoft/api-extractor-model');
-const { traceSpecRows, renderStory, patchIntroStory, flattenSummary, extractDefaultValue } = require('./generate_trace_api_story');
+
+const { traceSpecRows, renderStory, patchIntroStory } = require('./generate_trace_api_story');
 
 const FIXTURE = path.join(__dirname, '__fixtures__/trace_api_fixture.api.json');
 
@@ -104,7 +106,7 @@ describe('renderStory', () => {
   });
 
   it('marks required props with "yes" in the Required column', () => {
-    expect(output).toMatch(/\| `id` \|[^|]*\|[^|]*\| yes \|/);
+    expect(output).toMatch(/\| `id` (?:\|[^|]*){2}\| yes \|/);
   });
 
   it('leaves the Required column blank for optional props', () => {
@@ -134,7 +136,7 @@ describe('patchIntroStory', () => {
     '// some hand-written content',
     '// prettier-ignore',
     'const markdownContent = "old content";',
-    'Example.storyName = \'Intro & API docs\';',
+    "Example.storyName = 'Intro & API docs';",
     '',
   ].join('\n');
 

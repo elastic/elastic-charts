@@ -19,7 +19,10 @@ import type { TraceSegmentRef, TraceSelection } from './trace_api';
 // Ref equality
 // ---------------------------------------------------------------------------
 
-/** Deep-equal comparison for two TraceSegmentRef values. */
+/**
+ * Deep-equal comparison for two TraceSegmentRef values.
+ * @internal
+ */
 export function refsEqual(a: TraceSegmentRef, b: TraceSegmentRef): boolean {
   return a.spanId === b.spanId && a.region === b.region && a.segmentIndex === b.segmentIndex;
 }
@@ -32,6 +35,7 @@ function refKey(ref: TraceSegmentRef): string {
 /**
  * Order-insensitive set equality for TraceSelection (ADR 0011 / plan D1). O(n) via a key set rather
  * than the previous O(n²) nested scan — this runs on every selection change and echo-guard check.
+ * @internal
  */
 export function selectionSetEqual(a: TraceSelection, b: TraceSelection): boolean {
   if (a.length !== b.length) return false;
@@ -48,13 +52,16 @@ export function selectionSetEqual(a: TraceSelection, b: TraceSelection): boolean
  * Mirrors src/components/legend/label.tsx — no shared util exists; a local const matches the pattern.
  * Used to normalise Cmd (Mac) ↔ Ctrl (other) for the toggle modifier: macOS Ctrl+click fires
  * `contextmenu` (the tooltip-pin handler), so we must use metaKey there instead.
+ * @internal
  */
 export const isAppleDevice = typeof window !== 'undefined' && /Mac|iPhone|iPad/.test(window.navigator.userAgent);
 
 // ---------------------------------------------------------------------------
 // Selection mode
-// ---------------------------------------------------------------------------
-
+/**
+ * ---------------------------------------------------------------------------
+ * @internal
+ */
 export type SelectionMode = 'replace' | 'additive' | 'toggle';
 
 /**
@@ -67,6 +74,7 @@ export type SelectionMode = 'replace' | 'additive' | 'toggle';
  * The optional `isApple` parameter defaults to the module-level `isAppleDevice` const.
  * Tests pass `true`/`false` to table-test both platforms without global UA mocking
  * (ADR 0011 §13.1 G2 seam).
+ * @internal
  */
 export function selectionModeFromEvent(e: MouseEvent | KeyboardEvent, isApple = isAppleDevice): SelectionMode {
   if (isApple ? e.metaKey : e.ctrlKey) return 'toggle'; // toggle wins when both held
@@ -84,6 +92,7 @@ export function selectionModeFromEvent(e: MouseEvent | KeyboardEvent, isApple = 
  *   replace  → [ref]  (always replaces, regardless of membership)
  *   additive → adds ref if absent; no-op if already present (never removes)
  *   toggle   → removes ref if present; adds if absent
+ * @internal
  */
 export function applySelection(current: TraceSelection, ref: TraceSegmentRef, mode: SelectionMode): TraceSelection {
   const existingIdx = current.findIndex((r) => refsEqual(r, ref));

@@ -112,7 +112,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
             {diagnostics.issues.map((issue) => (
               <li
                 key={`${issue.kind}|${issue.scope}|${issue.severity}`}
-                style={{ borderLeft: `3px solid ${SEVERITY_COLOR[issue.severity]}`, padding: '4px 8px', marginBottom: 6 }}
+                style={{
+                  borderLeft: `3px solid ${SEVERITY_COLOR[issue.severity]}`,
+                  padding: '4px 8px',
+                  marginBottom: 6,
+                }}
               >
                 <div style={{ fontWeight: 600 }}>
                   {issue.kind} <span style={{ color: SEVERITY_COLOR[issue.severity] }}>({issue.severity})</span>

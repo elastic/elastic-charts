@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import type { TraceCriticalPath } from '@elastic/charts';
@@ -14,7 +15,6 @@ import { Chart, Settings, Trace, fromOtlp } from '@elastic/charts';
 import { FRONTEND_WEB_OTLP_ENVELOPE } from './data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
-import { boolean, color, number, select } from '@storybook/addon-knobs';
 
 /**
  * Pre-converted from OTel. `spanDisplay="duration"` (below) renders full-extent bars (Kibana APM

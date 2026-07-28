@@ -9,18 +9,18 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 
-import {
-  getTraceElementClickHandlerSelector,
-  getTraceTableRowsSelector,
-  type TraceTableBadge,
-  type TraceTableRow,
-} from '../state/selectors/get_screen_reader_data';
 import type { ElementClickListener } from '../../../specs/settings';
 import type { GlobalChartState } from '../../../state/chart_state';
 import type { A11ySettings } from '../../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { isNil } from '../../../utils/common';
+import {
+  getTraceElementClickHandlerSelector,
+  getTraceTableRowsSelector,
+  type TraceTableBadge,
+  type TraceTableRow,
+} from '../state/selectors/get_screen_reader_data';
 
 interface ScreenReaderTraceTableProps {
   a11ySettings: A11ySettings;

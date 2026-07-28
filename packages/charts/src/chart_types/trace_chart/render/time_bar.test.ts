@@ -15,17 +15,20 @@
  */
 
 import { drawTimeBar, pickElapsedUnit, formatElapsedMs } from './time_bar';
-import type { TraceGeometry } from './types';
-import type { TraceStyle } from './types';
+import type { TraceGeometry, TraceStyle } from './types';
 import { DEFAULT_TRACE_ANNOTATION_STYLE, DEFAULT_TRACE_BADGE_STYLE } from './types';
 
 // ---------------------------------------------------------------------------
 // Mocks: intercept raster factory calls so we can assert which was selected.
 // ---------------------------------------------------------------------------
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockContinuousTimeRasters: jest.MockedFunction<(...args: any[]) => (...args: any[]) => any[]> = jest.fn(() => () => []);
+const mockContinuousTimeRasters: jest.MockedFunction<(...args: any[]) => (...args: any[]) => any[]> = jest.fn(
+  () => () => [],
+);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockNumericalRasters: jest.MockedFunction<(...args: any[]) => (...args: any[]) => any[]> = jest.fn(() => () => []);
+const mockNumericalRasters: jest.MockedFunction<(...args: any[]) => (...args: any[]) => any[]> = jest.fn(
+  () => () => [],
+);
 
 jest.mock('../../../chart_types/xy_chart/axes/timeslip/continuous_time_rasters', () => ({
   ...jest.requireActual('../../../chart_types/xy_chart/axes/timeslip/continuous_time_rasters'),
@@ -158,7 +161,7 @@ describe('drawTimeBar — robustness', () => {
     // Un-mock for this test to exercise the real raster path end-to-end.
     jest.isolateModules(() => {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { drawTimeBar: real } = require('./time_bar');
+      const { drawTimeBar: real } = jest.requireActual('./time_bar');
       expect(() => real(makeCtx(), makeGeom('time'), style)).not.toThrow();
       expect(() => real(makeCtx(), makeGeom('linear'), style)).not.toThrow();
     });
@@ -180,9 +183,11 @@ describe('drawTimeBar — sub-ms ticks all render with distinct labels (linear m
    */
   it('renders all sub-ms ticks with distinct step-precise labels in linear mode at deep zoom', () => {
     // Simulate what numericalRasters returns for a ~1 ms window: sub-ms ticks at 0.1 ms spacing.
-    const subMsTicks = [344.0, 344.1, 344.2, 344.3, 344.4, 344.5, 344.6, 344.7, 344.8, 344.9, 345.0].map(
-      (v, i, a) => ({ minimum: v, supremum: a[i + 1] ?? v + 0.1, labelSupremum: a[i + 1] ?? v + 0.1 }),
-    );
+    const subMsTicks = [344.0, 344.1, 344.2, 344.3, 344.4, 344.5, 344.6, 344.7, 344.8, 344.9, 345.0].map((v, i, a) => ({
+      minimum: v,
+      supremum: a[i + 1] ?? v + 0.1,
+      labelSupremum: a[i + 1] ?? v + 0.1,
+    }));
     const subMsLayer = {
       unit: 'one',
       unitMultiplier: Infinity,
@@ -230,7 +235,19 @@ describe('drawTimeBar — sub-ms ticks all render with distinct labels (linear m
     // All 11 ticks render — no filter suppresses them.
     expect(labels.length).toBe(11);
     // One unit per axis: maxAbs≈345 → ms, step 0.1 ms → 1 decimal.
-    expect(labels).toEqual(['344.0ms', '344.1ms', '344.2ms', '344.3ms', '344.4ms', '344.5ms', '344.6ms', '344.7ms', '344.8ms', '344.9ms', '345.0ms']);
+    expect(labels).toEqual([
+      '344.0ms',
+      '344.1ms',
+      '344.2ms',
+      '344.3ms',
+      '344.4ms',
+      '344.5ms',
+      '344.6ms',
+      '344.7ms',
+      '344.8ms',
+      '344.9ms',
+      '345.0ms',
+    ]);
     // No duplicates — each rendered tick has a unique label.
     expect(new Set(labels).size).toBe(labels.length);
   });
@@ -387,8 +404,8 @@ describe('drawTimeBar — finest-labeled-layer selection (time mode)', () => {
       minimumTickPixelDistance: 24,
       // Tick at t=0 s — the epoch boundary; it will be outside the focus window [4ms, 6ms] and culled.
       intervals: () => [{ minimum: 0, supremum: 1, labelSupremum: 1 }],
-      detailedLabelFormat: (_d: number) => `0s`,
-      minorTickLabelFormat: (_d: number) => `0s`,
+      detailedLabelFormat: () => `0s`,
+      minorTickLabelFormat: () => `0s`,
     };
     // Fine layer at index 0 (finest-first order), coarse at index 1.
     mockContinuousTimeRasters.mockReturnValueOnce(() => [fineLayer, coarseLayer]);
@@ -781,7 +798,7 @@ describe('formatElapsedMs — format with pickElapsedUnit result', () => {
   it('produces distinct labels for a large-offset deep-zoom window (no duplicates)', () => {
     // step 0.01ms → ms, 2 decimals; ticks 344.00, 344.01, … 344.05
     const unit = pickElapsedUnit(0.01);
-    const ticks = [344.00, 344.01, 344.02, 344.03, 344.04, 344.05];
+    const ticks = [344.0, 344.01, 344.02, 344.03, 344.04, 344.05];
     const labels = ticks.map((v) => formatElapsedMs(v, unit));
     expect(new Set(labels).size).toBe(labels.length);
     expect(labels[0]).toBe('344.00ms');

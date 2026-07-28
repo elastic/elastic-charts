@@ -6,20 +6,29 @@
  * Side Public License, v 1.
  */
 
+import type { BadgeImageCrossOrigin } from './badge_images';
+import { drawTimeBar } from './time_bar';
+import type {
+  AnnotationLayoutItem,
+  BadgeLayoutItem,
+  HoverRegion,
+  PickResult,
+  TraceBadgeColorStyle,
+  TraceGeometry,
+  TraceRenderer,
+  TraceStyle,
+} from './types';
+import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, LANE_PADDING } from './types';
 import { colorToRgba, RGBATupleToString } from '../../../common/color_library_wrappers';
 import type { RgbaTuple } from '../../../common/color_library_wrappers';
 import { Colors } from '../../../common/colors';
+import type { Fill, Stroke } from '../../../geoms/types';
 import { withContext } from '../../../renderers/canvas';
 import { renderMultiLine } from '../../../renderers/canvas/primitives/line';
 import { renderRect } from '../../../renderers/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../renderers/canvas/primitives/text';
 import type { TextFont } from '../../../renderers/canvas/primitives/text';
-import type { Fill, Stroke } from '../../../geoms/types';
 import { waitingSegments } from '../data/self_time';
-import { drawTimeBar } from './time_bar';
-import type { AnnotationLayoutItem, BadgeLayoutItem, HoverRegion, PickResult, TraceBadgeColorStyle, TraceGeometry, TraceRenderer, TraceStyle } from './types';
-import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, LANE_PADDING } from './types';
-import type { BadgeImageCrossOrigin } from './badge_images';
 import type { TraceSpanBadgeColor } from '../trace_api';
 
 /** Zero-width stroke used for active-segment rects (filled only, no visible border). */
@@ -91,12 +100,7 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
           align: 'center',
           baseline: 'middle',
         };
-        renderText(
-          ctx,
-          { x: plot.left + plot.width / 2, y: plot.top + plot.height / 2 },
-          geom.emptyMessage,
-          emptyFont,
-        );
+        renderText(ctx, { x: plot.left + plot.width / 2, y: plot.top + plot.height / 2 }, geom.emptyMessage, emptyFont);
       }
       return;
     }
@@ -153,14 +157,17 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
     // In inline mode each lane is split vertically: a bar band at the top and a label band beneath.
     // For gutter/none the label band is zero-height and all geometry reduces to today's behaviour.
     // Sourced from geometry so the band grows to fit Span badges (Spec 27) and both passes agree.
-    const labelBandPx = geom.labelBandPx;
+    const { labelBandPx } = geom;
 
     // Width of the disclosure-caret column within the gutter. Derived from gutter.width and the
     // label mode: in 'gutter' mode the label area follows the caret column; in other modes the
     // full gutter IS the caret column. Zero when disclosureByLane is empty (flat trace, no carets).
-    const caretColumnWidth = disclosureByLane.size > 0
-      ? (style.labelPosition === 'gutter' ? gutter.width - style.gutterWidth : gutter.width)
-      : 0;
+    const caretColumnWidth =
+      disclosureByLane.size > 0
+        ? style.labelPosition === 'gutter'
+          ? gutter.width - style.gutterWidth
+          : gutter.width
+        : 0;
 
     // Caret font: reuses the gutter label settings with center-align for the glyph.
     const caretFont: TextFont = {
@@ -195,6 +202,7 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       // override the fallback for individual segments. Span colors share `segFillCache` (keyed by
       // color string) so a repeated span/segment color is only `colorToRgba`'d once per draw().
       let activeFill: Fill;
+      // eslint-disable-next-line eqeqeq
       if (span.color != null) {
         let cached = segFillCache.get(span.color);
         if (cached === undefined) {
@@ -249,6 +257,7 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
           if (clampedW <= 0) continue;
           // Resolve per-segment fill: explicit/label-derived color wins over span-level fallback.
           let segFill: Fill;
+          // eslint-disable-next-line eqeqeq
           if (seg.color != null) {
             let cached = segFillCache.get(seg.color);
             if (cached === undefined) {
@@ -284,17 +293,19 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
         if (lines[0]) {
           renderText(ctx, { x: labelX, y: barMidY }, lines[0], gutterFont);
         }
-      } else if (style.labelPosition === 'inline' && span.name) {
-        // Inline label: drawn on a row below the bar, starting at the bar's start x (sticky-left).
+      } else if (
+        style.labelPosition === 'inline' &&
+        span.name && // Inline label: drawn on a row below the bar, starting at the bar's start x (sticky-left).
         // Cull when the bar is entirely outside the visible x-range (no bar to anchor to).
         // Right-edge clipping is handled by the outer lane-area ctx.clip() above.
-        if (rawX2 >= plot.left && rawX1 <= plotRight) {
-          // When this lane's badges forced a left shift (Spec 27), the label follows them via `labelX`
-          // so the "label + badges" group stays together; otherwise it anchors at the bar start.
-          const labelX = geom.badgesByLane.get(i)?.labelX ?? Math.max(plot.left, rawX1);
-          const labelMidY = laneTop + laneHeight - LANE_PADDING - labelBandPx / 2;
-          renderText(ctx, { x: labelX, y: labelMidY }, span.name, gutterFont);
-        }
+        rawX2 >= plot.left &&
+        rawX1 <= plotRight
+      ) {
+        // When this lane's badges forced a left shift (Spec 27), the label follows them via `labelX`
+        // so the "label + badges" group stays together; otherwise it anchors at the bar start.
+        const labelX = geom.badgesByLane.get(i)?.labelX ?? Math.max(plot.left, rawX1);
+        const labelMidY = laneTop + laneHeight - LANE_PADDING - labelBandPx / 2;
+        renderText(ctx, { x: labelX, y: labelMidY }, span.name, gutterFont);
       }
       // labelPosition === 'none': no label drawn.
 
@@ -445,10 +456,7 @@ export function pickRegion(x: number, y: number, geom: TraceGeometry): PickResul
 
   // Invert the linear scale: map x-pixel → time value. Guard degenerate zero-width domain/plot.
   const extent = focusDomain.max - focusDomain.min;
-  const t =
-    plot.width > 0 && extent > 0
-      ? focusDomain.min + ((x - plot.left) / plot.width) * extent
-      : focusDomain.min;
+  const t = plot.width > 0 && extent > 0 ? focusDomain.min + ((x - plot.left) / plot.width) * extent : focusDomain.min;
 
   let region: HoverRegion;
   let segmentIndex = -1;
@@ -627,7 +635,8 @@ export function drawAnnotations(
 
     for (const item of annotationsLayout) {
       const [r, g, b, a] = colorToRgba(item.colors.fill);
-      const fillOpacity = (item.id === hoveredId ? style.annotation.hoverFillOpacity : style.annotation.fillOpacity) * a;
+      const fillOpacity =
+        (item.id === hoveredId ? style.annotation.hoverFillOpacity : style.annotation.fillOpacity) * a;
       // Time-bar range band (tinted, in the axis region).
       if (item.timeBarBand) {
         const fillColor: RgbaTuple = [r, g, b, fillOpacity];

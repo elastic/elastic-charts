@@ -27,10 +27,10 @@ import {
   resolveBadgeColors,
   canvas2dRenderer,
 } from './canvas2d_renderer';
-import type { ResolvedTraceAnnotation } from '../data/annotations';
-import type { NormalizedSpan } from '../data/types';
 import type { BadgeLayoutItem, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
 import { DEFAULT_TRACE_ANNOTATION_STYLE, DEFAULT_TRACE_BADGE_STYLE } from './types';
+import type { ResolvedTraceAnnotation } from '../data/annotations';
+import type { NormalizedSpan } from '../data/types';
 import type { TraceDatum } from '../trace_api';
 import { makeCtx } from '../trace_test_helpers';
 
@@ -181,12 +181,7 @@ describe('draw — canvas cleared and time bar delegated', () => {
     draw(ctx, geom, style);
     expect(ctx.clearRect).toHaveBeenCalledWith(0, 0, PLOT_LEFT + PLOT_WIDTH, PLOT_TOP + PLOT_HEIGHT);
     // Guard against the regression: the narrower width must not be used.
-    expect(ctx.clearRect).not.toHaveBeenCalledWith(
-      0,
-      0,
-      PLOT_LEFT - BADGE_GUTTER + PLOT_WIDTH,
-      PLOT_TOP + PLOT_HEIGHT,
-    );
+    expect(ctx.clearRect).not.toHaveBeenCalledWith(0, 0, PLOT_LEFT - BADGE_GUTTER + PLOT_WIDTH, PLOT_TOP + PLOT_HEIGHT);
   });
 
   it('delegates time bar rendering to drawTimeBar', () => {
@@ -1259,7 +1254,9 @@ describe('layoutAnnotations', () => {
     });
 
     it('lays out a time-bar range as a lower-half band with edge ticks and lower-half edges-only hits', () => {
-      const [item] = layoutAnnotations(makeGeom(), style, [timeResolved('r', { range: [200, 600] }, undefined, 'timebar')]);
+      const [item] = layoutAnnotations(makeGeom(), style, [
+        timeResolved('r', { range: [200, 600] }, undefined, 'timebar'),
+      ]);
       // Band is tinted across the lower half of the time bar only (not the plot).
       expect(item!.timeBarBand).toEqual({ x: 340, y: TICK_TOP, width: 280, height: TICK_HEIGHT });
       expect(item!.band).toBeUndefined();

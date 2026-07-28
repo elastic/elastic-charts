@@ -26,7 +26,7 @@ const SCROLL_DATA = CHECKOUT_WATERFALL.map((s) => ({
 
 const AVAILABLE_LABELS = CHECKOUT_WATERFALL.map((s) => s.name);
 
-export const Example: ChartsStory = (_, { title: _title, description: _description }) => {
+export const Example: ChartsStory = () => {
   const baseTheme = useBaseTheme();
   const [input, setInput] = useState('');
   const [lastSubmit, setLastSubmit] = useState('—');
@@ -91,6 +91,6 @@ Example.parameters = {
     'Span ids in this demo match span labels — `id === name` — so the search box input matches ' +
     'exactly what you see in the chart. The chart hands its imperative controls to ' +
     '`controlProviderCallback` (ADR 0008); the story stashes them in a `useRef` and the search box ' +
-    "calls `scrollToSpan`. Keyboard focus stays on the search box; a screen reader hears the located " +
+    'calls `scrollToSpan`. Keyboard focus stays on the search box; a screen reader hears the located ' +
     "span via the trace chart's `aria-live` region.",
 };

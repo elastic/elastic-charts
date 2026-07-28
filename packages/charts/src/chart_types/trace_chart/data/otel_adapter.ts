@@ -71,11 +71,11 @@ export function anyValueToString(value: unknown): string {
   if (value !== null && typeof value === 'object') {
     const v = value as Record<string, unknown>;
     // Check well-known OTLP AnyValue keys in precedence order.
-    if (typeof v['stringValue'] === 'string') return v['stringValue'];
-    if (typeof v['intValue'] === 'number') return String(v['intValue']);
-    if (typeof v['intValue'] === 'string') return v['intValue']; // some exporters keep it as string
-    if (typeof v['doubleValue'] === 'number') return String(v['doubleValue']);
-    if (typeof v['boolValue'] === 'boolean') return String(v['boolValue']);
+    if (typeof v.stringValue === 'string') return v.stringValue;
+    if (typeof v.intValue === 'number') return String(v.intValue);
+    if (typeof v.intValue === 'string') return v.intValue; // some exporters keep it as string
+    if (typeof v.doubleValue === 'number') return String(v.doubleValue);
+    if (typeof v.boolValue === 'boolean') return String(v.boolValue);
     // arrayValue / kvlistValue → not useful as a color group key; fall through to String()
   }
   return String(value);

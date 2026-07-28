@@ -10,14 +10,14 @@ import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
 import { buildTraceAnnotationEvent } from './tooltip';
+import type { ElementClickListener } from '../../../specs/settings';
+import type { GlobalChartState } from '../../../state/chart_state';
+import { getInternalIsInitializedSelector, InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import type { ResolvedTraceAnnotation } from '../data/annotations';
 import {
   getResolvedTraceAnnotationsSelector,
   getTraceElementClickHandlerSelector,
 } from '../state/selectors/get_screen_reader_data';
-import type { ElementClickListener } from '../../../specs/settings';
-import type { GlobalChartState } from '../../../state/chart_state';
-import { getInternalIsInitializedSelector, InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 
 interface ScreenReaderTraceAnnotationsProps {
   annotations: ResolvedTraceAnnotation[];
@@ -53,10 +53,7 @@ export const ScreenReaderTraceAnnotationsComponent = ({
   if (annotations.length === 0) return null;
 
   return (
-    <div
-      className="echScreenReaderOnly echScreenReaderTable"
-      data-testid="echScreenReaderTraceAnnotations"
-    >
+    <div className="echScreenReaderOnly echScreenReaderTable" data-testid="echScreenReaderTraceAnnotations">
       <table>
         <caption>{`The table lists the ${annotations.length} annotation${
           annotations.length !== 1 ? 's' : ''

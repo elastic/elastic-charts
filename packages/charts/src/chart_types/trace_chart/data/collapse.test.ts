@@ -114,7 +114,10 @@ describe('collapseLanes — rolled-up active segments', () => {
   it('collapsed bar shows the union of own + child active segments', () => {
     // parent [0,100], self-time active: [0,10] and [80,100]
     // child [10,80], active: [10,80]
-    const parent = span('parent', 0, 100, undefined, [{ start: 0, end: 10 }, { start: 80, end: 100 }]);
+    const parent = span('parent', 0, 100, undefined, [
+      { start: 0, end: 10 },
+      { start: 80, end: 100 },
+    ]);
     const child = span('child', 10, 80, 'parent', [{ start: 10, end: 80 }]);
     const [collapsed] = collapseLanes([parent, child], new Set(['parent']));
     // union: [0,10] ∪ [10,80] ∪ [80,100] → merged → [0,100]
@@ -177,7 +180,10 @@ describe('collapseLanes — nested collapse (absorption)', () => {
 
   it('inner collapsed span subtree is included in the outer rollup', () => {
     // root [0,100] self-time: [0,10][80,100]; mid [10,80]: [10,40]; leaf [40,80]: [40,80]
-    const root = span('root', 0, 100, undefined, [{ start: 0, end: 10 }, { start: 80, end: 100 }]);
+    const root = span('root', 0, 100, undefined, [
+      { start: 0, end: 10 },
+      { start: 80, end: 100 },
+    ]);
     const mid = span('mid', 10, 80, 'root', [{ start: 10, end: 40 }]);
     const leaf = span('leaf', 40, 80, 'mid', [{ start: 40, end: 80 }]);
     const [collapsed] = collapseLanes([root, mid, leaf], new Set(['root', 'mid']));
@@ -258,9 +264,7 @@ describe('rollupCriticalIntervals', () => {
 
   it('re-keys a hidden descendant interval to the collapsed ancestor', () => {
     // Collapse root — child and grandchild are hidden.
-    const result = rollupCriticalIntervals(spans, new Set(['root']), [
-      { spanId: 'child', start: 20, end: 60 },
-    ]);
+    const result = rollupCriticalIntervals(spans, new Set(['root']), [{ spanId: 'child', start: 20, end: 60 }]);
     expect(result).toHaveLength(1);
     expect(result[0]).toMatchObject({ spanId: 'root', start: 20, end: 60 });
   });
@@ -268,18 +272,14 @@ describe('rollupCriticalIntervals', () => {
   it('clamps the rolled-up interval to the ancestor extent', () => {
     // Interval on grandchild goes 0–90 but ancestor root is [0,100]; clamp to [0,100] stays [0,90].
     // The grandchild itself is [30,60]; ancestor clamp is [0,100].
-    const result = rollupCriticalIntervals(spans, new Set(['root']), [
-      { spanId: 'grandchild', start: 0, end: 90 },
-    ]);
+    const result = rollupCriticalIntervals(spans, new Set(['root']), [{ spanId: 'grandchild', start: 0, end: 90 }]);
     expect(result).toHaveLength(1);
     expect(result[0]).toMatchObject({ spanId: 'root', start: 0, end: 90 });
   });
 
   it('drops a rolled-up interval that is fully outside the ancestor extent', () => {
     // Interval [200, 300] is outside ancestor root [0, 100].
-    const result = rollupCriticalIntervals(spans, new Set(['root']), [
-      { spanId: 'child', start: 200, end: 300 },
-    ]);
+    const result = rollupCriticalIntervals(spans, new Set(['root']), [{ spanId: 'child', start: 200, end: 300 }]);
     expect(result).toHaveLength(0);
   });
 

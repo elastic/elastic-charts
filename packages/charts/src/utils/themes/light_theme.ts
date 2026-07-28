@@ -18,9 +18,9 @@ import { BOREALIS_COLORS_PALETTE } from './borealis_colors';
 import type { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
 import { LIGHT_THEME_BULLET_STYLE } from '../../chart_types/bullet_graph/theme';
+import { DEFAULT_TRACE_LAYOUT } from '../../chart_types/trace_chart/render/types';
 import { Colors } from '../../common/colors';
 import { TAU } from '../../common/constants';
-import { DEFAULT_TRACE_LAYOUT } from '../../chart_types/trace_chart/render/types';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
 
