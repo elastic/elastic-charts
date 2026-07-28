@@ -249,7 +249,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "integersOnly" | "gridLine" | "tickFormat" | "labelFormat" | "ticks" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "timeAxisLayerCount" | "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels", "style" | "title" | "domain" | "maximumFractionDigits" | "integersOnly" | "gridLine" | "tickFormat" | "labelFormat" | "ticks" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
