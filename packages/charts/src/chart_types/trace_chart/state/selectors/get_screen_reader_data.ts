@@ -113,7 +113,7 @@ const getNormalizedSpans = createCustomCachedSelector(
     const { lanes: orderedSpans, depthBySpan } = orderLanes(resolveActive(withBadges), spec.laneOrder ?? 'tree');
     // Apply collapse. Controlled mode: the `collapsedSpanIds` prop is authoritative. Uncontrolled
     // mode: the component publishes its local collapse into redux (`setTraceUncontrolledCollapsed`)
-    // so this SR table matches the visual collapse (ADR 0013 canvas/store seam).
+    // so this SR table matches the visual collapse (ADR 0012 canvas/store seam).
     const effectiveCollapsed = new Set(spec.collapsedSpanIds ?? uncontrolledCollapsedSpanIds);
     const spans = collapseLanes(orderedSpans, effectiveCollapsed);
     const parentIds = collapsibleParentIds(orderedSpans);

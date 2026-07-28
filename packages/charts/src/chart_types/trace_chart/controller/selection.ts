@@ -110,7 +110,7 @@ export function setLocalCollapsed(c: TraceCanvasController, next: Set<string>) {
     c.collapsed = next;
     c.collapseCache = null;
     // Publish the uncontrolled collapse into redux so the screen-reader table matches the canvas
-    // (ADR 0013). In controlled mode the `collapsedSpanIds` prop is already selector-visible.
+    // (ADR 0012). In controlled mode the `collapsedSpanIds` prop is already selector-visible.
     props.setTraceUncontrolledCollapsed([...next]);
   }
 }

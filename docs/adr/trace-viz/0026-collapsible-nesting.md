@@ -1,7 +1,7 @@
 # ADR 0026 — Collapsible nesting: rolled-up semantics, tree-gating, and disclosure gutter
 
 **Status:** Accepted; display-topology input amended by ADR 0028 / Spec 26
-**Implements:** [Spec 21 — Collapsible nesting](./specs/spec-21-collapsible-nesting.md)  
+**Implements:** [Trace chart spec — Collapsible nesting](./trace-chart.md#collapsible-nesting)  
 **Supersedes open questions:** Spec 21 stub open questions #2–#9 (resolved here in full).  
 **Cites:** [ADR 0018](./0018-lane-ordering-tree-default.md) — lane-ordering seam; [ADR 0011](./0011-segment-selection-model.md) — controlled perform-and-fire pattern; [ADR 0007](./0007-focus-domain-perform-and-fire.md) — perform-and-fire precedent.
 

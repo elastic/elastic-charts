@@ -1,6 +1,9 @@
-# ADR 0028 — Partial traces use source-preserving synthetic parentage
+# ADR 0028 — Partial traces use source-preserving synthetic parentage (with Kibana reparenting parity)
 
-**Status:** Proposed (Spec 26); parity divergences and regression strategy refined by [ADR 0031](./0031-kibana-reparenting-parity.md)
+**Status:** Accepted (Spec 26)
+
+> Consolidates former ADR 0031 (Kibana reparenting parity: intentional divergences, cycle-safety, and
+> a ported regression suite) — see the "Kibana reparenting parity" section below.
 
 ## Context
 
@@ -30,7 +33,7 @@ Recovery is grouped by `traceId` so a span is never attached across distinct tra
 (`undefined` is one group because no finer identity exists). A group with exactly one recorded root
 uses it. A group with no recorded root elects its first orphan in normalized input order as a fallback
 root, matching Kibana's non-filtered `getRootItemOrFallback` rule (we deliberately do not adopt
-Kibana's filtered earliest-timestamp election — see [ADR 0031](./0031-kibana-reparenting-parity.md)).
+Kibana's filtered earliest-timestamp election — see the "Kibana reparenting parity" section below).
 A group with multiple recorded roots elects the last root in
 normalized input order. Only the elected root's reachable tree is visible: non-elected roots,
 disconnected cycles, and their unreachable components are omitted, matching Kibana even in a
@@ -54,16 +57,10 @@ a parent reference or reduce that other trace's derived self time.
 
 The Trace component continues to render while tooltip, interaction, and screen-reader surfaces
 identify each orphan. The consuming application—not the chart component—owns whether and how to
-render an aggregate warning callout. Spec 26 adds no aggregate diagnostics callback; a dedicated
-cross-feature follow-up will consider partial-trace and clock-skew diagnostics together. No recovery
-opt-in flag is added: an incomplete relationship is always detected, and the synthetic relationship
-is confined to display semantics.
-
-Until that diagnostics API exists, any recovery-driven omission or invalidation emits one bounded,
-aggregated developer warning per normalization call. This includes non-elected roots, unreachable or
-rootless components, and duplicate-driven group/chart invalidation; lossless orphan reparenting does
-not warn. This prevents silent blank or partial output without making the warning a user-facing chart
-feature; the future diagnostics snapshot supersedes the warning as the application integration seam.
+render an aggregate warning callout. Spec 26 adds no aggregate diagnostics callback; recovery-driven
+omissions and invalidations are reported through the Trace data diagnostics report ([ADR 0032](./0032-trace-data-diagnostics-report.md)).
+No recovery opt-in flag is added: an incomplete relationship is always detected, and the synthetic
+relationship is confined to display semantics.
 
 When an orphan is elected as the fallback display root, it retains `orphaned` provenance and receives
 an internal-only fallback disposition so presentation can distinguish it from synthetically
@@ -85,8 +82,49 @@ Kibana's built-in callout. Its multi-trace extension isolates invalid same-trace
 ID duplicated across groups as a chart-wide identity failure. Focused-subtree selection is not
 introduced by Spec 26; because our elected root is always parentless within its group, reparenting
 cannot form a cycle and Kibana's ancestor-path cycle guard is unnecessary here — a future focus-root
-feature must add it back before it can use synthetic parentage
-(rationale in [ADR 0031](./0031-kibana-reparenting-parity.md)).
+feature must add it back before it can use synthetic parentage (rationale in the "Kibana reparenting
+parity" section below).
+
+## Kibana reparenting parity: intentional divergences, cycle-safety, and a ported regression suite
+
+Our recovery stage is a prose-level port of Kibana APM's `TraceWaterfall`
+(`@kbn/apm-ui-shared` → `components/trace_waterfall/use_trace_waterfall.ts`: `getTraceParentChildrenMap`,
+`getRootItemOrFallback`, `reparentOrphansToRoot`, `getTraceWaterfall`). Verifying that port against
+Kibana's own unit tests surfaced three decisions that the recovery rules above either left implicit or
+stated imprecisely, and which are easy to get wrong or silently regress:
+
+1. Kibana guards reparenting with `hasPathToTarget` so an orphan *ancestor* of a focus-selected root
+   is not reparented beneath it (would create a cycle). We do not carry that guard, and it is not
+   obvious from the code why that is safe.
+2. Kibana has **two** distinct no-root fallbacks; the recovery rules must say which one we adopt.
+3. Because our port and Kibana's source evolve independently, prose parity is not self-enforcing.
+
+**Ported parity suite is the anti-drift mechanism.** `kibana_waterfall_parity.test.ts` (colocated with
+the recovery stage) translates Kibana's reparenting test cases onto our public shapes
+(`recoverPartialTraces`, and `normalize` + `orderLanes` for order/depth). Each intentional divergence
+is encoded and commented in that suite so a behavioral drift on either side fails a test rather than
+passing silently. The suite — not this prose — is the executable contract for parity.
+
+**Cycle-safety: we intentionally omit the ancestor-path guard.** Our elected display root is always
+parentless *within its trace group*: a recorded root has no `parentId`, and a fallback root is the
+first orphan, whose recorded parent is by definition absent from the group. No reparented orphan can
+therefore be an ancestor of the elected root, so attaching orphans beneath it cannot form a cycle.
+The depth-first reachability walk additionally guards by object identity. Kibana needs
+`hasPathToTarget` only because its focus-trace feature can elect a *descendant* as the visible root;
+that feature is a Spec 26 non-goal. **If a focus-root / `entryTransaction` selection is ever added,
+the ancestor-path guard becomes mandatory before synthetic parentage may be applied.**
+
+**Fallback-election scope is deliberately narrow.** Kibana elects a no-root fallback two ways:
+`getRootItemOrFallback` takes the first orphan in input order; `getTraceParentChildrenMap` (only when
+its trace is *filtered*) elects the earliest-`timestamp` item. We adopt the input-order rule only and
+do **not** implement the filtered earliest-timestamp election, because Elastic Charts has no
+focused/filtered-trace concept. Our fallback root additionally retains orphan/`fallbackRoot`
+provenance where Kibana drops the item from its orphan list.
+
+**Ordering parity is achieved by composition, not by sorting inside recovery.** Recovery preserves
+survivor input order and never sorts; `orderLanes` (tree) reproduces Kibana's preorder-by-start with
+identical per-node depths. `recoverPartialTraces` + `orderLanes` together equal Kibana's single-pass
+preorder traversal, while keeping ordering owned by one stage (per ADR 0018).
 
 ## Consequences
 
@@ -100,5 +138,21 @@ feature must add it back before it can use synthetic parentage
   the root's derived self time still excludes them from causal child subtraction.
 - Duplicate IDs and cycles retain termination and no-mutation guarantees, but not visible
   cardinality: invalid groups and unreachable components are intentionally omitted.
-- Omitted or invalid output is temporarily observable through one aggregated developer warning;
-  aggregate user-facing presentation remains outside the Trace component.
+- Omitted or invalid output is reported through the data diagnostics report; aggregate user-facing
+  presentation remains outside the Trace component.
+- Divergence from Kibana is allowed only when intentional, and must be reflected both here and in the
+  parity suite; an unplanned divergence is a failing test.
+- Duplicate-id semantics stay aligned: our per-`traceId` group invalidation equals Kibana's
+  whole-waterfall invalidation for single-trace input, and is a strict superset for combined
+  multi-trace input.
+- A future focus-root feature must revisit two things this ADR pins as currently unnecessary: the
+  ancestor-path cycle guard, and possibly Kibana's earliest-timestamp fallback election.
+- The parity suite intentionally does not mirror Kibana's color/legend or React-hook tests; those are
+  outside reparenting and are covered by our own colour and component tests.
+
+## Kibana reference
+
+- Source: `src/platform/packages/shared/kbn-apm-ui-shared/src/components/trace_waterfall/use_trace_waterfall.ts`.
+- Ported cases: `getTraceWaterfall`, `getTraceParentChildrenMap`, `getRootItemOrFallback` (and the
+  focus-trace cases, adapted to our non-goal set) from the adjacent `use_trace_watefall.test.ts`.
+- Commit lineage for the underlying behavior: `c96a8839e018`, `36c31d600a371`, `3843218ee070`.

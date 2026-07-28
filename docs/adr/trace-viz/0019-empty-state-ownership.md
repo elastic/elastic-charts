@@ -1,7 +1,7 @@
 # ADR 0019 — Empty-state ownership: `no-data` delegates to the library overlay, `trace-not-found` is a canvas message
 
 **Status:** Accepted; zero-visible-lane semantics amended by ADR 0028 / Spec 26
-**Implements:** [Spec 18 — Empty-state distinction](./specs/spec-18-empty-state.md)
+**Implements:** [Trace chart spec — Empty states](./trace-chart.md#empty-states)
 
 ## Context
 

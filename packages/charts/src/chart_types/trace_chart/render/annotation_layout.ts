@@ -19,7 +19,7 @@ import type { ResolvedTraceAnnotation } from '../data/annotations';
 import type { TraceAnnotationColor } from '../trace_api';
 
 /**
- * Minimum interactive width (px) of an annotation hit band (Spec 29 / ADR 0033). Deliberately a
+ * Minimum interactive width (px) of an annotation hit band (Spec 29 / ADR 0030). Deliberately a
  * private renderer constant, not a theme token: it is a fixed usability floor, not a design knob.
  * @internal
  */

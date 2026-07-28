@@ -10,7 +10,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 /**
  * Publishes the Trace chart's **uncontrolled** collapsed span ids into redux so the screen-reader
- * selectors (which run off the store, ADR 0013) render the same collapsed tree the canvas shows.
+ * selectors (which run off the store, ADR 0012) render the same collapsed tree the canvas shows.
  * In controlled mode the `TraceSpec.collapsedSpanIds` prop is already visible to the selectors, so
  * the component does not dispatch this — the selector prefers the prop when present.
  * @internal

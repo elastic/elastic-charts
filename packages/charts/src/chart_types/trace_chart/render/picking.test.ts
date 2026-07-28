@@ -9,7 +9,7 @@
 /**
  * Spec 29 — Annotation hit-testing unit tests for `pickAnnotation`.
  *
- * `pickAnnotation` implements the uniform thin-band hit model (ADR 0033): time-point = ~10px
+ * `pickAnnotation` implements the uniform thin-band hit model (ADR 0030): time-point = ~10px
  * min-width band, time-range = start/end edge rails only (the band interior stays interactive),
  * lane/hierarchy = rail-only (route-lane segments union for hierarchy). These tests build the
  * per-frame layout via `layoutAnnotations` so the pick geometry is exercised end-to-end.

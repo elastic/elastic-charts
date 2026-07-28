@@ -96,7 +96,7 @@ describe('isChartEmpty — hybrid routing', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Screen-reader table mirrors the visual collapse (ADR 0013 / redraw-a11y)
+// Screen-reader table mirrors the visual collapse (ADR 0012 / redraw-a11y)
 // ---------------------------------------------------------------------------
 
 describe('getTraceTableRowsSelector — collapse parity', () => {

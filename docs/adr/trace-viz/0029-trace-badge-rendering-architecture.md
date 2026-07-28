@@ -85,7 +85,7 @@ millisecond window is the reported metric.)
 - **Pan/zoom sync:** Canvas2D badges are re-laid-out from geometry in the same frame as the spans
   they adorn, so they never lag the waterfall (0 ms stale, measured). A real (geometry-synced) DOM
   overlay could only reposition at the public settle signal, leaving the ~120 ms typical / up-to-~2.5 s
-  sustained stale window measured above — reintroducing the sync class of bug ADR 0009 and ADR 0014
+  sustained stale window measured above — reintroducing the sync class of bug ADR 0009 and ADR 0012
   already pay for with their overlays.
 - **Hit testing:** a single `pickBadge` over geometry composes cleanly with the existing
   `pickDisclosure` / `pickRegion` ordering and the gesture-suspension model. The DOM path splits hit

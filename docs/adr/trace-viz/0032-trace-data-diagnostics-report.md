@@ -33,7 +33,7 @@ created there and threaded through both `normalize` and `resolveSpanBadges`, giv
 covers core trace-data issues *and* badge issues.
 
 **Rejected alternative — a Redux selector.** Modeling diagnostics as a memoized Redux selector (like
-the screen-reader data selector, [ADR 0013](./0013-sr-data-second-redux-selector.md)) would require a
+the screen-reader data selector, [ADR 0012](./0012-role-application-canvas-only-sr-siblings.md)) would require a
 selector to run its own preparation pass to fill a collector. Combined with the component's
 `getPipeline` and the existing SR selector, that is a **third** full `normalize` pass over the same
 data. The collector-rides-the-existing-pipeline approach keeps it at two passes (component +

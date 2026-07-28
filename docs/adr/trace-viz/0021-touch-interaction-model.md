@@ -7,7 +7,7 @@ The canvas already sets `touchAction: 'none'` — the CSS prerequisite for custo
 no touch handlers were wired. To support touch devices, five gestures are needed: two-finger pinch
 (zoom), single-finger drag (pan), tap (select segment), double-tap (select span), and long-press (pin
 tooltip). This ADR records the decisions that are non-obvious from the code, hard to change later, and
-the result of real trade-offs. See [Spec 23](./specs/spec-23-touch-gestures.md) for the implementation
+the result of real trade-offs. See the [Trace chart spec — Touch gestures](./trace-chart.md#touch-gestures) for the implementation
 prescription.
 
 ## Decision 1 — Reuse timeslip's zoom/pan and multitouch engine; import directly

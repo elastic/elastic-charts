@@ -344,7 +344,7 @@ layer uses the verbose `detailedLabelFormat`. The coarsest shown layer carries a
 label** — the containing-interval label is clamped to the left edge so absolute-time context is always
 visible even when panned between boundaries. The number of layers is configured by
 `theme.trace.timeAxisLayerCount` (default 2; 0 = single row). Density gating may yield fewer drawn
-layers than the configured cap. See [Spec 25](./docs/adr/trace-viz/specs/spec-25-multilevel-time-bar.md)
+layers than the configured cap. See the [Trace chart spec — Time bar](./docs/adr/trace-viz/trace-chart.md#time-bar)
 and [ADR 0024](./docs/adr/trace-viz/0024-multilevel-time-bar.md).
 _Avoid_: row (too generic — a lane is also a row); axis layer (reserved for the XY chart's
 `detailedLayer` / `layer` fields in `multilayer_ticks.ts`).

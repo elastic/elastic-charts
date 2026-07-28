@@ -686,7 +686,7 @@ function drawTriangleMarker(ctx: CanvasRenderingContext2D, x: number, y: number,
  * Returns the Trace annotation under `(x, y)` using the uniform thin-band hit model (Spec 29), or
  * `null` when the pointer is over no annotation. Iterated in resolved order; callers must run this
  * **before** `pickBadge`/`pickDisclosure`/`pickRegion` so an annotation owns the pointer and never
- * double-dispatches the underlying span/badge for the same transition (ADR 0033).
+ * double-dispatches the underlying span/badge for the same transition (ADR 0030).
  * @internal
  */
 export function pickAnnotation(x: number, y: number, geom: TraceGeometry): AnnotationLayoutItem | null {

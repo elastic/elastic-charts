@@ -1,7 +1,7 @@
 # ADR 0034 — Trace pointer events flow through the `Settings` element-event union; `Trace` owns only controlled state
 
 **Status:** Accepted  
-**Relates to:** [ADR 0007](./0007-focus-domain-perform-and-fire.md) (controlled perform-and-fire), [ADR 0011](./0011-segment-selection-model.md) (segment selection: thin refs in, rich details out), [ADR 0029](./0029-trace-badge-rendering-architecture.md) (Span badges), [ADR 0030](./0030-trace-annotation-composition.md) (annotations compose as child specs), [ADR 0033](./0033-trace-annotation-geometry-and-hit-testing.md) (annotation hit model)  
+**Relates to:** [ADR 0007](./0007-focus-domain-perform-and-fire.md) (controlled perform-and-fire), [ADR 0011](./0011-segment-selection-model.md) (segment selection: thin refs in, rich details out), [ADR 0029](./0029-trace-badge-rendering-architecture.md) (Span badges), [ADR 0030](./0030-trace-annotation-composition.md) (annotations: composition, geometry, and hit model)  
 **Supersedes:** the per-feature `onBadgeOver/Out/Click` and `onAnnotationOver/Out/Click` props previously declared on `TraceSpec` (never released).
 
 ## Context
@@ -20,7 +20,7 @@ problems, all visible once the v1 feature set was complete and the stories were 
   unrelated handler families and reconcile their orderings.
 - **Ambiguous precedence and double-dispatch risk.** Badges sit on top of spans and annotations sit
   on top of both ([ADR 0029](./0029-trace-badge-rendering-architecture.md),
-  [ADR 0033](./0033-trace-annotation-geometry-and-hit-testing.md)). With independent handler
+  [ADR 0030](./0030-trace-annotation-composition.md)). With independent handler
   families it was easy to emit both a badge `over` and a span `over` for a single pointer
   transition.
 - **Duplicated payloads.** `TraceElementEvent`, the badge event, the annotation event, and

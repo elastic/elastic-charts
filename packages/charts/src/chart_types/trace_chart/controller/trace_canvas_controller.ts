@@ -248,7 +248,7 @@ export class TraceCanvasController {
 
     const props = this.deps.getProps();
 
-    // Uncontrolled collapse: seed redux to match this fresh instance's fully-expanded canvas (ADR 0013).
+    // Uncontrolled collapse: seed redux to match this fresh instance's fully-expanded canvas (ADR 0012).
     if (props.traceSpec?.collapsedSpanIds === undefined) {
       props.setTraceUncontrolledCollapsed([]);
     }

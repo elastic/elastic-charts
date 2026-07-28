@@ -37,7 +37,7 @@ export function getActiveCursor(c: TraceCanvasController): CSSProperties['cursor
   // Badges/annotations become interactive (pointer cursor, keyboard activation) when the consumer
   // wires the shared `Settings.onElementClick` handler — the single interaction channel in the
   // reshaped API. A hovered annotation takes precedence over badge/span cursors since it owns the
-  // pointer (ADR 0033).
+  // pointer (ADR 0030).
   const interactive = elementClickIsInteractive(c);
   if (c.hoveredAnnotation && interactive) return 'pointer';
   if (c.hoveredBadge && interactive) return 'pointer';

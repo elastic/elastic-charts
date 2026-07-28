@@ -258,7 +258,7 @@ export function setupEventHandlers(c: TraceCanvasController) {
     const py = (c.hover.pointerY = zoomSafePointerY(e));
     const geom = c.hover.lastGeom;
     // Resolve which drawn element owns the pointer before emitting anything. Precedence:
-    // annotation > badge > span (Spec 29 / ADR 0033, then Spec 27). Because badge/annotation/span
+    // annotation > badge > span (Spec 29 / ADR 0030, then Spec 27). Because badge/annotation/span
     // hover all funnel through the shared channel, we must clear the lower-priority hovers (each
     // emitting at most one `onElementOut`) BEFORE emitting the owner's `onElementOver`.
     const annHit = geom.annotationsLayout.length > 0 ? pickAnnotation(px, py, geom) : null;
@@ -292,7 +292,7 @@ export function setupEventHandlers(c: TraceCanvasController) {
     const cx = zoomSafePointerX(e);
     const cy = zoomSafePointerY(e);
 
-    // Annotation activation (Spec 29 / ADR 0033): an annotation owns the click and takes precedence
+    // Annotation activation (Spec 29 / ADR 0030): an annotation owns the click and takes precedence
     // over badge and span clicks.
     if (c.hover.lastGeom.annotationsLayout.length > 0) {
       const ap = pickAnnotation(cx, cy, c.hover.lastGeom);
@@ -772,7 +772,7 @@ export function setupEventHandlers(c: TraceCanvasController) {
         return;
       }
 
-      // Annotation tap (Spec 29 / ADR 0033): an annotation under it activates and owns the tap.
+      // Annotation tap (Spec 29 / ADR 0030): an annotation under it activates and owns the tap.
       if (geomSnapshot && geomSnapshot.annotationsLayout.length > 0) {
         const ap = pickAnnotation(x, y, geomSnapshot);
         if (ap) {

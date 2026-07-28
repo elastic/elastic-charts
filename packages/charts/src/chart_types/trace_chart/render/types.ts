@@ -78,7 +78,7 @@ export interface TraceAnnotationColorStyle {
  * Trace-annotation style tokens (Spec 29): rail/marker thickness, range-band fill opacity (idle and
  * hover), and the named-color palette. A custom `Color` annotation is resolved at draw time
  * (`stroke` = the color, `fill` = the color tinted by `fillOpacity`). The minimum interactive hit
- * width is intentionally not a token — it is a private renderer constant (Spec 29 / ADR 0033).
+ * width is intentionally not a token — it is a private renderer constant (Spec 29 / ADR 0030).
  * @public
  */
 export interface TraceAnnotationStyle {
@@ -95,7 +95,7 @@ export interface TraceAnnotationStyle {
 }
 
 /**
- * Default Trace-annotation style tokens, shared by every base theme (Spec 29 / ADR 0033). The palette
+ * Default Trace-annotation style tokens, shared by every base theme (Spec 29 / ADR 0030). The palette
  * uses theme-neutral EUI-like hues; individual base themes may override `theme.trace.annotation`.
  * @internal
  */
