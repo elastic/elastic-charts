@@ -9,8 +9,8 @@
       "noStandardTags": true,
       "tagDefinitions": [
         { "tagName": "@defaultValue", "syntaxKind": "block" },
-        { "tagName": "@internal",     "syntaxKind": "modifier" },
-        { "tagName": "@public",       "syntaxKind": "modifier" }
+        { "tagName": "@internal", "syntaxKind": "modifier" },
+        { "tagName": "@public", "syntaxKind": "modifier" }
       ],
       "supportForTags": {
         "@defaultValue": true,
@@ -36,9 +36,7 @@
           "kind": "Interface",
           "canonicalReference": "@elastic/charts!Spec:interface",
           "docComment": "/** @public */\n",
-          "excerptTokens": [
-            { "kind": "Content", "text": "export interface Spec " }
-          ],
+          "excerptTokens": [{ "kind": "Content", "text": "export interface Spec " }],
           "fileUrlPath": "src/specs/spec.d.ts",
           "releaseTag": "Public",
           "name": "Spec",
