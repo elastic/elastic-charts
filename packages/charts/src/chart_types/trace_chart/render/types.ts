@@ -197,6 +197,36 @@ export const DEFAULT_TRACE_BADGE_STYLE: TraceBadgeStyle = {
 };
 
 /**
+ * Theme-invariant `TraceStyle` fields: dimensions, thicknesses, label position, and the shared
+ * badge/annotation sub-styles. Every built-in theme's `trace` block spreads this and overrides only
+ * the theme-specific colors and fonts, so these layout constants live in exactly one place. @internal
+ */
+export const DEFAULT_TRACE_LAYOUT: Pick<
+  TraceStyle,
+  | 'gutterWidth'
+  | 'timeBarHeight'
+  | 'timeAxisLayerCount'
+  | 'laneHeight'
+  | 'totalLineThickness'
+  | 'selectedSegmentStrokeWidth'
+  | 'criticalPathThickness'
+  | 'labelPosition'
+  | 'badge'
+  | 'annotation'
+> = {
+  gutterWidth: 200,
+  timeBarHeight: 32,
+  timeAxisLayerCount: 2,
+  laneHeight: 24,
+  totalLineThickness: 2,
+  selectedSegmentStrokeWidth: 2,
+  criticalPathThickness: 2,
+  labelPosition: 'gutter',
+  badge: DEFAULT_TRACE_BADGE_STYLE,
+  annotation: DEFAULT_TRACE_ANNOTATION_STYLE,
+};
+
+/**
  * Padding above/below the bar band within a lane (px). Shared by the renderer's bar/label geometry
  * and the badge-layout pass so both agree on where the label row and badge rows sit. @internal
  */

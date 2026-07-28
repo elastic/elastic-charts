@@ -208,25 +208,40 @@ export interface TraceBadgeElementEvent {
 }
 
 /**
- * Represents a pointer/keyboard interaction with a Trace annotation (Spec 29). Dispatched through the
- * shared `Settings` element-event channel and discriminated by `type`. `annotationType` branches the
- * three annotation kinds; `span` carries related span metadata for `'lane'`/`'hierarchy'` annotations
- * and is absent for `'time'`. `chartX`/`chartY` are present for pointer-origin events only.
+ * Fields shared by every {@link TraceAnnotationElementEvent} variant, regardless of `annotationType`.
  * @public
  */
-export interface TraceAnnotationElementEvent {
+export interface TraceAnnotationElementEventBase {
   type: 'traceAnnotationEvent';
-  /** The annotation kind. */
-  annotationType: TraceAnnotationType;
   /** The resolved annotation, including its `meta`, returned by reference. */
   annotation: TraceAnnotationDatum;
-  /** Related span metadata for `'lane'`/`'hierarchy'` annotations; absent for `'time'`. */
-  span?: TraceSpanInfo;
   /** Chart-relative x coordinate in px (pointer source only). */
   chartX?: number;
   /** Chart-relative y coordinate in px (pointer source only). */
   chartY?: number;
 }
+
+/**
+ * Represents a pointer/keyboard interaction with a Trace annotation (Spec 29). Dispatched through the
+ * shared `Settings` element-event channel and discriminated by `type`. Modelled as a discriminated
+ * union on `annotationType` so the relationship between the kind and `span` is enforced at compile
+ * time: `'time'` annotations never carry a `span`, while `'lane'`/`'hierarchy'` annotations always do.
+ * `chartX`/`chartY` are present for pointer-origin events only.
+ * @public
+ */
+export type TraceAnnotationElementEvent =
+  | (TraceAnnotationElementEventBase & {
+      /** The annotation kind. */
+      annotationType: 'time';
+      /** Time annotations are not anchored to a span. */
+      span?: never;
+    })
+  | (TraceAnnotationElementEventBase & {
+      /** The annotation kind. */
+      annotationType: Exclude<TraceAnnotationType, 'time'>;
+      /** Related span metadata for `'lane'`/`'hierarchy'` annotations. */
+      span: TraceSpanInfo;
+    });
 
 /**
  * A type-guard for {@link TraceElementEvent}.

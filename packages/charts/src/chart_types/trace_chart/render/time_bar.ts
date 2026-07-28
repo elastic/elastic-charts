@@ -173,8 +173,22 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
       }
     }
 
+    // Tick/grid geometry is layer-invariant; hoist it out of the per-tick loop.
+    const tickTop = timeBar.top + timeBar.height - TICK_HEIGHT;
+    const tickBottom = timeBar.top + timeBar.height;
+    const gridTop = plot.top;
+    const gridBottom = plot.top + plot.height;
+    const plotRight = plot.left + plot.width;
+    const labelY = timeBar.top + 2; // a couple of px from the top edge
+
     for (const layer of layers) {
       const drawGrid = layer.labeled && showGridLine(layer);
+
+      // Collect per-frame draw work in one interval pass, then emit each category as a single batched
+      // path (one save/restore + one stroke per layer) instead of a save/restore + stroke per tick.
+      const tickXs: number[] = [];
+      const gridXs: number[] = [];
+      const labelDraws: Array<{ x: number; text: string; font: TextFont }> = [];
 
       for (const { minimum } of layer.intervals(domainFrom, domainTo)) {
         // Convert tick position back to ms for `geom.scale`.
@@ -207,27 +221,11 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
           if (!suppressLinearLabel) linearLabel = formatElapsedMs(minimum, axisUnit!); // one unit per axis (ADR 0010)
         }
 
-        // --- Tick line: protrudes from bottom of time bar ---
-        withContext(ctx, () => {
-          ctx.strokeStyle = style.timeBarLabel.color;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(tickX, timeBar.top + timeBar.height - TICK_HEIGHT);
-          ctx.lineTo(tickX, timeBar.top + timeBar.height);
-          ctx.stroke();
-        });
+        // --- Tick line: protrudes from bottom of time bar (drawn for every visible tick) ---
+        tickXs.push(tickX);
 
         // --- Faint gridline through the plot area (suppressed with its density-gated label) ---
-        if (drawGrid && !suppressLinearLabel) {
-          withContext(ctx, () => {
-            ctx.strokeStyle = style.gridLineColor;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(tickX, plot.top);
-            ctx.lineTo(tickX, plot.top + plot.height);
-            ctx.stroke();
-          });
-        }
+        if (drawGrid && !suppressLinearLabel) gridXs.push(tickX);
 
         // --- Single-row tick label (finest labeled layer only — see comment above) ---
         // Used for linear mode (any layer count) and for time mode with timeAxisLayerCount === 0
@@ -237,19 +235,50 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
           const label = isTime
             ? layer.minorTickLabelFormat(minimum * MS_PER_SECOND) // time formatters expect ms
             : linearLabel; // linear: reuse the label computed for the density gate above (ADR 0010)
-          const labelY = timeBar.top + 2; // a couple of px from the top edge
 
           // Flip from center-aligned to edge-aligned when the tick is near the plot boundary, so
           // label text doesn't paint outside the canvas. Affects leftmost and rightmost visible ticks.
-          const plotRight = plot.left + plot.width;
           let tickLabelFont = labelFont;
           if (tickX - plot.left < TICK_LABEL_EDGE_PX) {
             tickLabelFont = { ...labelFont, align: 'left' };
           } else if (plotRight - tickX < TICK_LABEL_EDGE_PX) {
             tickLabelFont = { ...labelFont, align: 'right' };
           }
-          renderText(ctx, { x: tickX, y: labelY }, label, tickLabelFont);
+          labelDraws.push({ x: tickX, text: label, font: tickLabelFont });
         }
+      }
+
+      // --- Batched tick lines: one path, one stroke for the whole layer ---
+      if (tickXs.length > 0) {
+        withContext(ctx, () => {
+          ctx.strokeStyle = style.timeBarLabel.color;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          for (const x of tickXs) {
+            ctx.moveTo(x, tickTop);
+            ctx.lineTo(x, tickBottom);
+          }
+          ctx.stroke();
+        });
+      }
+
+      // --- Batched gridlines: one path, one stroke for the whole layer ---
+      if (gridXs.length > 0) {
+        withContext(ctx, () => {
+          ctx.strokeStyle = style.gridLineColor;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          for (const x of gridXs) {
+            ctx.moveTo(x, gridTop);
+            ctx.lineTo(x, gridBottom);
+          }
+          ctx.stroke();
+        });
+      }
+
+      // --- Labels last (kept out of the path passes so renderText's state changes never split a path) ---
+      for (const d of labelDraws) {
+        renderText(ctx, { x: d.x, y: labelY }, d.text, d.font);
       }
     }
 
@@ -262,6 +291,18 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
       const tickLayerHeight = style.timeBarLabel.fontSize + TICK_LAYER_PADDING;
       // Set the measuring font once so ctx.measureText below reflects the actual label font.
       ctx.font = cssFontShorthand(labelFont, labelFont.fontSize);
+
+      // Per-frame label-width memo: the overlap check below re-measures the previous label for every
+      // in-view tick on every coarse layer. Cache by label string (font is fixed for the whole pass).
+      const widthCache = new Map<string, number>();
+      const labelWidth = (label: string): number => {
+        let w = widthCache.get(label);
+        if (w === undefined) {
+          w = ctx.measureText(label).width;
+          widthCache.set(label, w);
+        }
+        return w;
+      };
 
       // Collect the finest `timeAxisLayerCount` labeled layers (finest→coarsest; raster order is
       // finest-first). Unlabeled layers do not count toward the cap.
@@ -323,7 +364,7 @@ export function drawTimeBar(ctx: CanvasRenderingContext2D, geom: TraceGeometry, 
           // Suppress a boundary label that would overlap the previous drawn (e.g. pinned) one.
           if (
             prevTickX !== null &&
-            tickXRaw - prevTickX < ctx.measureText(prevLabel).width + TICK_LABEL_MIN_GAP
+            tickXRaw - prevTickX < labelWidth(prevLabel) + TICK_LABEL_MIN_GAP
           ) {
             continue; // overlap — keep the previous label, drop this one
           }

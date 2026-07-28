@@ -796,7 +796,7 @@ describe('pickRegion — collapsed lane', () => {
         { start: 0, end: 500 },
         { start: 700, end: 1000 },
       ],
-      meta: {} as never,
+      meta: { id: 'parent', name: 'Parent', start: 0, end: 1000 },
     };
     return makeGeom({
       spans: [collapsedSpan],
@@ -833,7 +833,7 @@ describe('pickRegion — collapsed lane', () => {
       start: 0,
       end: 1000,
       activeSegments: [{ start: 0, end: 500 }],
-      meta: {} as never,
+      meta: { id: 'parent2', name: 'Parent2', start: 0, end: 1000 },
     };
     const geomExpanded = makeGeom({
       spans: [expandedSpan],
@@ -843,6 +843,45 @@ describe('pickRegion — collapsed lane', () => {
     const result = pickRegion(300, 40, geomExpanded);
     expect(result).not.toBeNull();
     expect(result!.region).toBe('active');
+  });
+
+  it('returns region "active" carrying the index of the hit active segment', () => {
+    // Two active segments with a waiting gap [200,600] between them.
+    const s: NormalizedSpan = {
+      id: 'p3',
+      name: 'P3',
+      start: 0,
+      end: 1000,
+      activeSegments: [
+        { start: 0, end: 200 },
+        { start: 600, end: 1000 },
+      ],
+      meta: { id: 'p3', name: 'P3', start: 0, end: 1000 },
+    };
+    const geom = makeGeom({ spans: [s] });
+    // x=690 → t = (690-200)/700*1000 = 700ms — inside the *second* active segment [600,1000] (index 1)
+    const result = pickRegion(690, 40, geom);
+    expect(result).not.toBeNull();
+    expect(result!.region).toBe('active');
+    expect(result!.segmentIndex).toBe(1);
+  });
+
+  it('returns region "waiting" carrying the index of the hit waiting gap', () => {
+    // A single active segment leaves one waiting gap [500,1000] (self-time derived on demand).
+    const s: NormalizedSpan = {
+      id: 'p4',
+      name: 'P4',
+      start: 0,
+      end: 1000,
+      activeSegments: [{ start: 0, end: 500 }],
+      meta: { id: 'p4', name: 'P4', start: 0, end: 1000 },
+    };
+    const geom = makeGeom({ spans: [s] });
+    // x=725 → t = (725-200)/700*1000 = 750ms — inside the waiting gap [500,1000] (index 0)
+    const result = pickRegion(725, 40, geom);
+    expect(result).not.toBeNull();
+    expect(result!.region).toBe('waiting');
+    expect(result!.segmentIndex).toBe(0);
   });
 });
 

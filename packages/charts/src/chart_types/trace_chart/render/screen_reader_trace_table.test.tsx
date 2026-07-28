@@ -66,7 +66,7 @@ function span(opts: Partial<NormalizedSpan> & { start: number; end: number }): N
     start: opts.start,
     end: opts.end,
     activeSegments: opts.activeSegments ?? [],
-    meta: opts.meta ?? ({} as never),
+    meta: opts.meta ?? { id: opts.id ?? 'x', name: opts.name ?? 'x', start: opts.start, end: opts.end },
     ...(opts.parentId !== undefined && { parentId: opts.parentId }),
     ...(opts.color !== undefined && { color: opts.color }),
   };

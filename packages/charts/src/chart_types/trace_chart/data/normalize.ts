@@ -16,6 +16,15 @@ import type { TraceDatum, TraceColorAccessor, TraceCriticalPath, TraceSpec } fro
 
 type XScaleType = TraceSpec['xScaleType'];
 
+/**
+ * Caps a caller-controlled string embedded in a dev log message so an arbitrarily long `traceId`
+ * (or similar identifier) cannot flood the console. Purely cosmetic — the value is not used for
+ * matching, only for the human-readable warning.
+ */
+function truncateForLog(value: string, max = 80): string {
+  return value.length > max ? `${value.slice(0, max)}…` : value;
+}
+
 /** @internal */
 export interface NormalizeResult {
   spans: NormalizedSpan[];
@@ -120,7 +129,7 @@ function selectTrace(spans: NormalizedSpan[], traceId?: string): NormalizedSpan[
   if (traceId !== undefined) {
     const kept = spans.filter((span) => span.traceId === traceId);
     if (kept.length === 0 && spans.length > 0) {
-      Logger.warn(`Trace chart: traceId "${traceId}" matched no spans; rendering empty.`);
+      Logger.warn(`Trace chart: traceId "${truncateForLog(traceId)}" matched no spans; rendering empty.`);
     }
     return kept;
   }
@@ -456,6 +465,9 @@ function project(
 
   if (xScaleType === 'time') {
     // Time mode: no re-zero; clamp each interval to its span's [start, end] and drop invalids.
+    // `id` is unique across `spans` here: `project` runs after `recoverPartialTraces`, which
+    // invalidates any trace group (or the whole chart) containing a duplicate span id
+    // (ADR 0027/0028), so this Map never silently drops a colliding span in valid output.
     const spanById = new Map(spans.map((s) => [s.id, s]));
     const criticalIntervals = projectCriticalIntervals(criticalPath, spanById, 0, diagnostics);
     return { spans, domain: { min, max }, criticalIntervals, projectionOffset: 0 };
@@ -472,6 +484,8 @@ function project(
     })),
   }));
   // Linear mode: re-zero intervals by the same `min`, then clamp to the projected span extent.
+  // Unique-id invariant as above: post-recovery input guarantees no id collision in this Map
+  // (ADR 0027/0028).
   const spanById = new Map(rezeroed.map((s) => [s.id, s]));
   const criticalIntervals = projectCriticalIntervals(criticalPath, spanById, min, diagnostics);
   return { spans: rezeroed, domain: { min: 0, max: max - min }, criticalIntervals, projectionOffset: min };

@@ -708,8 +708,11 @@ export const Trace = (
   return children ?? null;
 };
 
-const timeAnnotationDefaults = { hidden: false as boolean, placement: 'timebar' as TraceTimeAnnotationPlacement };
-const laneAnnotationDefaults = { hidden: false as boolean };
+const timeAnnotationDefaults: { hidden: boolean; placement: TraceTimeAnnotationPlacement } = {
+  hidden: false,
+  placement: 'timebar',
+};
+const laneAnnotationDefaults: { hidden: boolean } = { hidden: false };
 
 /**
  * Author-time props for {@link TraceTimeAnnotation}. Supplies either `time` (a point) or `range`
@@ -857,4 +860,4 @@ export function traceColorByEqual(a: TraceColorBy | undefined, b: TraceColorBy |
   return 'otelKind' in a && 'otelKind' in b;
 }
 
-export { anyValueToString, fromOtlp } from './data/otel_adapter';
+export { fromOtlp } from './data/otel_adapter';

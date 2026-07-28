@@ -98,6 +98,12 @@ export function resolveActive(spans: NormalizedSpan[]): NormalizedSpan[] {
  *
  * Without this cache, `waitingSegments` (O(n log n) via `gapSegments`) is recomputed at ~4 call
  * sites per hover event: canvas2d draw pass, geometry resolveSelection, tooltip builder, pickRegion.
+ *
+ * Correctness precondition: a `NormalizedSpan`'s `start`/`end`/`activeSegments` are immutable after
+ * the normalize→resolveActive pipeline prepares it. The cache keys on object identity, so mutating
+ * those fields in place would return stale gaps; the pipeline never does (collapse rollups allocate
+ * fresh span objects, which become new cache keys). See CONTEXT.md "Waiting" (derived on demand — not
+ * stored on `NormalizedSpan`).
  */
 const waitingSegmentsCache = new WeakMap<NormalizedSpan, Segment[]>();
 

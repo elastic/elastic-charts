@@ -160,9 +160,6 @@ export const AnnotationType: Readonly<{
 // @public (undocumented)
 export type AnnotationType = $Values<typeof AnnotationType>;
 
-// @public
-export function anyValueToString(value: unknown): string;
-
 // @public (undocumented)
 export interface ArcSeriesStyle {
     // (undocumented)
@@ -3779,12 +3776,19 @@ export type TraceAnnotationDatum = {
 };
 
 // @public
-export interface TraceAnnotationElementEvent {
+export type TraceAnnotationElementEvent = (TraceAnnotationElementEventBase & {
+    annotationType: 'time';
+    span?: never;
+}) | (TraceAnnotationElementEventBase & {
+    annotationType: Exclude<TraceAnnotationType, 'time'>;
+    span: TraceSpanInfo;
+});
+
+// @public
+export interface TraceAnnotationElementEventBase {
     annotation: TraceAnnotationDatum;
-    annotationType: TraceAnnotationType;
     chartX?: number;
     chartY?: number;
-    span?: TraceSpanInfo;
     // (undocumented)
     type: 'traceAnnotationEvent';
 }

@@ -238,6 +238,21 @@ class TraceComponent extends React.Component<TraceProps> {
   // Memoized style — recomputed only when the theme reference changes (mirrors pipelineCache pattern)
   private styleCache: { theme: Theme; style: ReturnType<typeof buildTraceStyle> } | null = null;
 
+  // Badge/label text measurers, backed by the draw context. Declared as instance fields (not
+  // per-frame closures) so `frame()` doesn't reallocate them each rAF tick; `measureText` is
+  // transform-independent, and the memoized `getStyle()` keeps the font lookup cheap.
+  private measureBadgeText: BadgeTextMeasurer = (text, fontSize) => {
+    const style = this.getStyle();
+    this.ctx!.font = `${fontSize}px ${style.badge.fontFamily}`;
+    return this.ctx!.measureText(text).width;
+  };
+
+  private measureLabelText: BadgeTextMeasurer = (text, fontSize) => {
+    const style = this.getStyle();
+    this.ctx!.font = `${fontSize}px ${style.gutterLabel.fontFamily}`;
+    return this.ctx!.measureText(text).width;
+  };
+
   /**
    * Identifies the reference-domain semantics in effect. Compared on each componentDidUpdate;
    * when it changes the horizontal view resets to fit-all. Preserves zoom across same-scale
@@ -283,8 +298,10 @@ class TraceComponent extends React.Component<TraceProps> {
   // the tooltip while the pointer moves elsewhere or zoom/pan runs.
   private pin: PinState = { pinned: false, x: NaN, y: NaN };
   private handleContextMenu: ((e: MouseEvent) => void) | null = null;
-  private handleKeyUp: ((e: KeyboardEvent) => void) | null = null;
-  private handleUnpinningTooltip: (() => void) | null = null;
+  // Assigned unconditionally in setupEventHandlers() (called from componentDidMount) before any pin
+  // interaction can run, so these use definite-assignment fields rather than nullable-plus-`!`.
+  private handleKeyUp!: (e: KeyboardEvent) => void;
+  private handleUnpinningTooltip!: () => void;
 
   // Brush-to-zoom state (Spec 11). brush.active gates the window drag handlers so a brush gesture
   // never also pans. brush.end tracks the last clamped x so mouseup has it even if the pointer
@@ -453,6 +470,14 @@ class TraceComponent extends React.Component<TraceProps> {
     this.mounted = true;
     this.tryCanvasContext();
 
+    // Uncontrolled collapse: seed redux to match this fresh instance's fully-expanded canvas. The
+    // screen-reader table reads state.interactions.traceCollapsedSpanIds (ADR 0013 canvas/store seam);
+    // without this seed a remount reusing the same store would leave a prior instance's collapse set
+    // visible to assistive tech until the first toggle. No-op in controlled mode (prop is authoritative).
+    if (this.props.traceSpec?.collapsedSpanIds === undefined) {
+      this.props.setTraceUncontrolledCollapsed([]);
+    }
+
     // Fit-all snap (zoom=0, NaN tween → one RAF tick, then stops).
     this.resetView();
     // Seed the domain-semantics key so the first componentDidUpdate doesn't spuriously reset.
@@ -503,6 +528,12 @@ class TraceComponent extends React.Component<TraceProps> {
     }
     this.teardownEventHandlers();
     this.props.containerRef().current?.removeEventListener('wheel', this.preventScroll);
+
+    // Clear the uncontrolled collapse published to redux so a later remount on the same store does not
+    // inherit this instance's collapse set (screen-reader drift). No-op in controlled mode.
+    if (this.props.traceSpec?.collapsedSpanIds === undefined) {
+      this.props.setTraceUncontrolledCollapsed([]);
+    }
   }
 
   componentDidUpdate = (prevProps: TraceProps) => {
@@ -723,20 +754,12 @@ class TraceComponent extends React.Component<TraceProps> {
     );
 
     // --- Span badges (Spec 27) ---
-    // Text measurers backed by the draw context; measureText is transform-independent so this is
-    // safe before the DPR setTransform below. Reused for the badge-only-gutter width and the layout.
+    // Text measurers are instance fields (see `measureBadgeText`/`measureLabelText`); measureText is
+    // transform-independent so this is safe before the DPR setTransform below.
     const badgeSize = traceSpec.badgeSize ?? 'm';
-    const measureBadgeText: BadgeTextMeasurer = (text, fontSize) => {
-      this.ctx!.font = `${fontSize}px ${style.badge.fontFamily}`;
-      return this.ctx!.measureText(text).width;
-    };
-    const measureLabelText: BadgeTextMeasurer = (text, fontSize) => {
-      this.ctx!.font = `${fontSize}px ${style.gutterLabel.fontFamily}`;
-      return this.ctx!.measureText(text).width;
-    };
     // Reserve the badge-only gutter ('none' mode) before partitioning so the plot accounts for it.
     const badgeGutterWidth = traceSpec.badgeAccessor
-      ? this.getBadgeGutterWidth(spans, style, badgeSize, measureBadgeText)
+      ? this.getBadgeGutterWidth(spans, style, badgeSize, this.measureBadgeText)
       : 0;
     // In 'inline' mode, grow the label/badge row to the active badge height so inline badges sit in
     // their own row rather than spilling into the bar band (Spec 27). Only when badges are present.
@@ -773,7 +796,7 @@ class TraceComponent extends React.Component<TraceProps> {
     if (traceSpec.badgeAccessor) {
       const firstLane = Math.max(0, Math.floor(this.scrollOffset / style.laneHeight));
       const lastLane = Math.min(spans.length - 1, Math.floor((this.scrollOffset + geomBase.plot.height) / style.laneHeight));
-      const badgesByLane = layoutBadges(geomBase, style, badgeSize, measureBadgeText, measureLabelText, firstLane, lastLane);
+      const badgesByLane = layoutBadges(geomBase, style, badgeSize, this.measureBadgeText, this.measureLabelText, firstLane, lastLane);
       if (badgesByLane.size > 0) geom = { ...geomBase, badgesByLane };
     }
 
@@ -1413,9 +1436,9 @@ class TraceComponent extends React.Component<TraceProps> {
     this.hover.pointerX = x;
     this.hover.pointerY = y;
     this.updateHover(result);
-    window.addEventListener('keyup', this.handleKeyUp!);
-    window.addEventListener('click', this.handleUnpinningTooltip!);
-    window.addEventListener('visibilitychange', this.handleUnpinningTooltip!);
+    window.addEventListener('keyup', this.handleKeyUp);
+    window.addEventListener('click', this.handleUnpinningTooltip);
+    window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
     this.pinTooltip(true);
   }
 
@@ -1761,9 +1784,9 @@ class TraceComponent extends React.Component<TraceProps> {
     };
 
     this.handleUnpinningTooltip = () => {
-      window.removeEventListener('keyup', this.handleKeyUp!);
-      window.removeEventListener('click', this.handleUnpinningTooltip!);
-      window.removeEventListener('visibilitychange', this.handleUnpinningTooltip!);
+      window.removeEventListener('keyup', this.handleKeyUp);
+      window.removeEventListener('click', this.handleUnpinningTooltip);
+      window.removeEventListener('visibilitychange', this.handleUnpinningTooltip);
       this.pinTooltip(false);
     };
 

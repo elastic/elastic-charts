@@ -78,6 +78,11 @@ export function orderLanes(spans: NormalizedSpan[], mode: 'tree' | 'chronologica
   roots.forEach((root) => dfs(root, 0));
 
   // Safety: append any spans not reached (e.g. in a cycle or with duplicate ids), sorted by start.
+  // Defensive only: in the production pipeline `orderLanes` runs on post-recovery spans, and ADR
+  // 0027/0028 guarantee duplicate-id groups/chart are invalidated and unreachable components omitted
+  // before lane ordering — so this branch is not expected to fire on valid prepared data. It exists
+  // purely so a malformed direct call cannot silently drop a lane (ADR 0027: "prevents crashes and
+  // lane loss").
   if (lanes.length < spans.length) {
     spans
       .filter((s) => !visited.has(s))

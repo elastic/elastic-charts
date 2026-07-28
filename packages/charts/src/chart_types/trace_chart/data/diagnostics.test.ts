@@ -428,10 +428,12 @@ describe('resolveTraceAnnotations', () => {
     expect(resolved).toMatchObject({ kind: 'hierarchy', spanId: 'c', routeSpanIds: ['a', 'b', 'c'] });
   });
 
-  it('reports annotation_duplicate_id across specs while keeping the resolved entries', () => {
+  it('reports annotation_duplicate_id and keeps only the first duplicate (first-wins)', () => {
     const c = new TraceDiagnosticsCollector();
     const out = resolveTraceAnnotations([span('a')], [spanAnn('lane', 'dup', 'a'), spanAnn('lane', 'dup', 'a')], 0, c);
-    expect(out).toHaveLength(2);
+    // First-wins: the second annotation sharing the id is reported and skipped so id-keyed hover /
+    // activation / reconciliation stays unambiguous.
+    expect(out).toHaveLength(1);
     expect(c.list().find((i) => i.kind === 'annotation_duplicate_id')).toMatchObject({ count: 1, examples: ['dup'] });
   });
 

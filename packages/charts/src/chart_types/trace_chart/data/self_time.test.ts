@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { buildChildrenMap, resolveActive, traceScopedId } from './self_time';
+import { buildChildrenMap, resolveActive, traceScopedId, waitingSegments } from './self_time';
 import type { NormalizedSpan } from './types';
 
 /** Minimal NormalizedSpan factory — only fields relevant to self-time derivation. */
@@ -23,7 +23,7 @@ function span(
     start,
     end,
     activeSegments: opts.activeSegments ?? [],
-    meta: {} as never,
+    meta: { id, name: id, start, end },
   };
 }
 
@@ -145,6 +145,67 @@ describe('resolveActive', () => {
       { start: 700, end: 1000 },
     ]);
   });
+
+  it('uses source topology, not display reparenting (ADR 0028): a reparented orphan is not subtracted from the elected root', () => {
+    // The elected display root. An orphan whose *source* parent is missing is reparented onto it for
+    // display (reparentedToSpanId), but its recorded parentId still points at the absent span.
+    const root = span('root', 0, 100);
+    const orphan: NormalizedSpan = {
+      ...span('orphan', 20, 80, { parentId: 'missing' }),
+      orphaned: true,
+      reparentedToSpanId: 'root',
+    };
+
+    const result = resolveActive([root, orphan]);
+
+    // Self time follows source parentId, so the orphan is NOT a child of root: root keeps its full
+    // extent as active. If self time (incorrectly) used displayParentId it would read [0,20],[80,100].
+    expect(result.find((s) => s.id === 'root')!.activeSegments).toEqual([{ start: 0, end: 100 }]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// waitingSegments (complement of active segments + per-span-object memoization)
+// ---------------------------------------------------------------------------
+
+describe('waitingSegments', () => {
+  it('returns the gaps between active segments within [start, end]', () => {
+    const s = span('a', 0, 1000, { activeSegments: [{ start: 0, end: 300 }, { start: 700, end: 1000 }] });
+    expect(waitingSegments(s)).toEqual([{ start: 300, end: 700 }]);
+  });
+
+  it('a span with no active segments is entirely waiting', () => {
+    const s = span('a', 100, 500);
+    expect(waitingSegments(s)).toEqual([{ start: 100, end: 500 }]);
+  });
+
+  it('a fully-active span has no waiting segments', () => {
+    const s = span('a', 0, 500, { activeSegments: [{ start: 0, end: 500 }] });
+    expect(waitingSegments(s)).toEqual([]);
+  });
+
+  it('a zero- or negative-duration span has no waiting segments', () => {
+    expect(waitingSegments(span('a', 200, 200))).toEqual([]);
+    expect(waitingSegments(span('a', 200, 100))).toEqual([]);
+  });
+
+  it('memoizes per span object: repeated calls return the identical array instance (cache hit)', () => {
+    const s = span('a', 0, 1000, { activeSegments: [{ start: 200, end: 400 }] });
+    const first = waitingSegments(s);
+    const second = waitingSegments(s);
+    // Same reference proves the WeakMap cache served the second call rather than recomputing.
+    expect(second).toBe(first);
+  });
+
+  it('keys on object identity: a distinct span object recomputes (fresh pipeline run is never stale)', () => {
+    const opts = { activeSegments: [{ start: 200, end: 400 }] };
+    const a = span('a', 0, 1000, opts);
+    const b = span('a', 0, 1000, opts); // identical field values, different object → different cache key
+    const resultA = waitingSegments(a);
+    const resultB = waitingSegments(b);
+    expect(resultB).not.toBe(resultA); // independent entries, so a re-normalized span is recomputed
+    expect(resultB).toEqual(resultA); // ...but the value is equal for equal inputs
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -153,7 +214,7 @@ describe('resolveActive', () => {
 
 describe('buildChildrenMap', () => {
   function span(id: string, parentId?: string): NormalizedSpan {
-    return { id, name: id, parentId, start: 0, end: 10, activeSegments: [], meta: {} as never };
+    return { id, name: id, parentId, start: 0, end: 10, activeSegments: [], meta: { id, name: id, start: 0, end: 10 } };
   }
 
   it('returns empty map for spans with no parentId', () => {
@@ -193,7 +254,7 @@ describe('buildChildrenMap', () => {
       start: 0,
       end: 10,
       activeSegments: [],
-      meta: {} as never,
+      meta: { id: 'root', name: 'root', traceId: 'A', start: 0, end: 10 },
     };
     const bChild: NormalizedSpan = {
       id: 'b',
@@ -203,7 +264,7 @@ describe('buildChildrenMap', () => {
       start: 2,
       end: 6,
       activeSegments: [],
-      meta: {} as never,
+      meta: { id: 'b', name: 'b', traceId: 'B', parentId: 'root', start: 2, end: 6 },
     };
     const result = resolveActive([aRoot, bChild]);
     expect(result.find((s) => s.id === 'root')!.activeSegments).toEqual([{ start: 0, end: 10 }]);

@@ -10,11 +10,28 @@ import { action } from '@storybook/addon-actions';
 import React from 'react';
 
 import type { TraceDatum, TraceSpanBadge, TraceSpanBadgeAccessor } from '@elastic/charts';
-import { Chart, Settings, Trace, anyValueToString, fromOtlp } from '@elastic/charts';
+import { Chart, Settings, Trace, fromOtlp } from '@elastic/charts';
 
 import { FRONTEND_WEB_OTLP_ENVELOPE, LANGUAGE_BADGE_ICONS, DURATION_BADGE_ICON } from './data';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+
+/**
+ * Coerces an OTLP `AnyValue` (or an already-flat scalar) to a display string. Consumer-side helper:
+ * the library keeps its equivalent internal, so a consumer reading raw OTel attributes for badges
+ * provides their own extraction (checking the well-known AnyValue keys in precedence order).
+ */
+function anyValueToString(value: unknown): string {
+  if (value !== null && typeof value === 'object') {
+    const v = value as Record<string, unknown>;
+    if (typeof v.stringValue === 'string') return v.stringValue;
+    if (typeof v.intValue === 'number') return String(v.intValue);
+    if (typeof v.intValue === 'string') return v.intValue;
+    if (typeof v.doubleValue === 'number') return String(v.doubleValue);
+    if (typeof v.boolValue === 'boolean') return String(v.boolValue);
+  }
+  return String(value);
+}
 
 /** OTel meta shape after `fromOtlp`: span-level `attributes`, `kind`, and a `resource` block. */
 interface OtelMeta {

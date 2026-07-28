@@ -285,12 +285,20 @@ export function buildTraceAnnotationEvent(
   annotation: ResolvedTraceAnnotation,
   coords?: { chartX: number; chartY: number },
 ): TraceAnnotationElementEvent {
-  const span = annotation.kind === 'time' ? undefined : buildTraceSpanInfo(annotation.span);
+  const coordFields = coords !== undefined ? { chartX: coords.chartX, chartY: coords.chartY } : {};
+  if (annotation.kind === 'time') {
+    return {
+      type: 'traceAnnotationEvent',
+      annotationType: 'time',
+      annotation: annotation.datum,
+      ...coordFields,
+    };
+  }
   return {
     type: 'traceAnnotationEvent',
     annotationType: annotation.kind,
     annotation: annotation.datum,
-    ...(span !== undefined && { span }),
-    ...(coords !== undefined && { chartX: coords.chartX, chartY: coords.chartY }),
+    span: buildTraceSpanInfo(annotation.span),
+    ...coordFields,
   };
 }

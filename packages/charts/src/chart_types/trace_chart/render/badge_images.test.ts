@@ -97,6 +97,34 @@ describe('BadgeImageCache', () => {
     expect(FakeImage.instances).toHaveLength(1);
   });
 
+  it('evicts the least-recently-used entry at capacity, keeping touched entries resident (LRU)', () => {
+    // MAX_CACHE_ENTRIES in badge_images.ts. The cache is bounded so a trace with many distinct badge
+    // image sources cannot grow the cache without limit.
+    const CAP = 256;
+    const cache = new BadgeImageCache(jest.fn());
+
+    // Fill exactly to capacity with distinct, decoded images.
+    for (let i = 0; i < CAP; i++) {
+      cache.get(`img${i}.png`, 'anonymous');
+      FakeImage.instances[i]!.onload!();
+    }
+    expect(cache.statusOf('img0.png', 'anonymous')).toBe('loaded');
+    expect(cache.statusOf('img1.png', 'anonymous')).toBe('loaded');
+
+    // Touch img0 so it becomes most-recently-used; img1 is now the least-recently-used victim.
+    cache.get('img0.png', 'anonymous');
+
+    // A brand-new source at capacity evicts exactly one entry — the LRU (img1), not the touched img0.
+    cache.get('imgNew.png', 'anonymous');
+    expect(cache.statusOf('img1.png', 'anonymous')).toBeUndefined(); // evicted
+    expect(cache.statusOf('img0.png', 'anonymous')).toBe('loaded'); // retained by the LRU touch
+
+    // Re-requesting the evicted source starts a fresh browser image load (proving it was dropped).
+    const beforeReload = FakeImage.instances.length;
+    expect(cache.get('img1.png', 'anonymous')).toBeUndefined();
+    expect(FakeImage.instances.length).toBe(beforeReload + 1);
+  });
+
   it('deduplicates image failure warnings', () => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
     const cache = new BadgeImageCache(jest.fn());

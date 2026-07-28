@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { collapseLanes, collapsibleParentIds, rollupCriticalIntervals } from './collapse';
+import { buildDisclosureMap, collapseLanes, collapsibleParentIds, rollupCriticalIntervals } from './collapse';
+import { orderLanes } from './order_lanes';
 import type { NormalizedSpan } from './types';
 
 /** Minimal NormalizedSpan factory. `activeSegments` defaults to the full span extent (self-time). */
@@ -24,7 +25,7 @@ function span(
     start,
     end,
     activeSegments: activeSegments ?? [{ start, end }],
-    meta: {} as never,
+    meta: { id, name: id, start, end },
   };
 }
 
@@ -315,5 +316,55 @@ describe('rollupCriticalIntervals', () => {
     expect(result).toContainEqual({ spanId: 'root', start: 5, end: 20 });
     // Grandchild interval re-keyed to child (grandchild's collapsed ancestor).
     expect(result).toContainEqual({ spanId: 'child', start: 30, end: 60 });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// buildDisclosureMap
+// ---------------------------------------------------------------------------
+
+describe('buildDisclosureMap', () => {
+  // root(0-100) → child(10-90) → leaf(20-80): two collapsible parents, one leaf.
+  const root = span('root', 0, 100);
+  const child = span('child', 10, 90, 'root');
+  const leaf = span('leaf', 20, 80, 'child');
+
+  it('maps every visible parent lane to its state, depth, and pre-collapse descendant count', () => {
+    const { lanes, depthBySpan } = orderLanes([root, child, leaf], 'tree');
+    const parentIds = collapsibleParentIds(lanes);
+    const collapsed = new Set<string>();
+    const visible = collapseLanes(lanes, collapsed);
+
+    const map = buildDisclosureMap(lanes, visible, collapsed, depthBySpan, parentIds);
+
+    // root (lane 0) and child (lane 1) are parents; leaf (lane 2) is not in the map.
+    expect(map.get(0)).toEqual({ state: 'expanded', depth: 0, descendantCount: 2 });
+    expect(map.get(1)).toEqual({ state: 'expanded', depth: 1, descendantCount: 1 });
+    expect(map.has(2)).toBe(false);
+  });
+
+  it('reports collapsed state and still counts descendants from the pre-collapse tree', () => {
+    const { lanes, depthBySpan } = orderLanes([root, child, leaf], 'tree');
+    const parentIds = collapsibleParentIds(lanes);
+    const collapsed = new Set(['child']);
+    // Post-collapse visible lanes: [root, child] (leaf hidden under the collapsed child).
+    const visible = collapseLanes(lanes, collapsed);
+
+    const map = buildDisclosureMap(lanes, visible, collapsed, depthBySpan, parentIds);
+
+    expect(map.get(0)).toEqual({ state: 'expanded', depth: 0, descendantCount: 2 });
+    // descendantCount is counted from the pre-collapse tree (leaf), even though it is now hidden.
+    // Exercises the id-bridge for collapseLanes's spread-cloned collapsed parent.
+    expect(map.get(1)).toEqual({ state: 'collapsed', depth: 1, descendantCount: 1 });
+  });
+
+  it('returns an empty map when there are no collapsible parents', () => {
+    const flat = [span('a', 0, 10), span('b', 20, 30)];
+    const { lanes, depthBySpan } = orderLanes(flat, 'tree');
+    const parentIds = collapsibleParentIds(lanes);
+
+    const map = buildDisclosureMap(lanes, lanes, new Set(), depthBySpan, parentIds);
+
+    expect(map.size).toBe(0);
   });
 });

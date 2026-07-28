@@ -30,11 +30,11 @@ export function resolveAnnotationColors(
   palette: TraceStyle['annotation']['palette'],
 ): TraceAnnotationColorStyle {
   if (color === undefined) return palette.default;
-  if (typeof color === 'string' && color in palette) return palette[color as keyof typeof palette];
-  // Custom Color: use it verbatim for both stroke and fill (validated by colorToRgba for safety).
-  const resolved = color as string;
-  colorToRgba(resolved);
-  return { stroke: resolved, fill: resolved };
+  if (color in palette) return palette[color as keyof typeof palette];
+  // Custom Color (`Color` is a plain string): use it verbatim for both stroke and fill (validated by
+  // colorToRgba for safety).
+  colorToRgba(color);
+  return { stroke: color, fill: color };
 }
 
 /**

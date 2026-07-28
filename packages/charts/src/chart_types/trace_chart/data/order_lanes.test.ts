@@ -18,7 +18,7 @@ function span(id: string, start: number, end: number, parentId?: string): Normal
     start,
     end,
     activeSegments: [],
-    meta: {} as never,
+    meta: { id, name: id, start, end },
   };
 }
 

@@ -138,7 +138,11 @@ export function mapTouchesToCanvasX(e: TouchEvent, rectLeft: number): Multitouch
 
 /**
  * Pinch ratio = previous finger spread / current finger spread.
- * A value > 1 means the fingers spread apart (zoom in); < 1 means they converged (zoom out).
+ * Because the current spread is the denominator, a value > 1 means the fingers *converged* (the
+ * spread shrank → zoom out) and a value < 1 means they *spread apart* (the spread grew → zoom in).
+ * This matches ADR 0021 Decision 3's worked example (spread 200 → 160 ⇒ ratio 1.25) and the way the
+ * result feeds `multiplierToZoom` (`log2(1 / ratio)`): converge → negative zoomChange (out), spread
+ * → positive zoomChange (in).
  *
  * NOT the same as timeslip's getPinchRatio, which is buggy (see ADR 0021 Decision 3).
  * @internal

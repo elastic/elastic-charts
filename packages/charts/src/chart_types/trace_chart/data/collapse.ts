@@ -129,7 +129,9 @@ export function rollupCriticalIntervals(
 
   if (hiddenToOwner.size === 0) return criticalIntervals as Array<{ spanId: string; start: number; end: number }>;
 
-  // Build a spanId→span lookup for clamping.
+  // Build a spanId→span lookup for clamping. `orderedSpans` is post-recovery output, so span ids are
+  // unique across it (duplicate-id groups/chart are invalidated upstream by ADR 0027/0028) and this
+  // Map never silently shadows a colliding span.
   const spanById = new Map(orderedSpans.map((s) => [s.id, s]));
 
   // Bucket intervals by their effective (possibly remapped) owner spanId.

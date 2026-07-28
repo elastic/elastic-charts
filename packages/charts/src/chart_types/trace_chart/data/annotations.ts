@@ -85,13 +85,16 @@ export function resolveTraceAnnotations(
   for (const spec of annotationSpecs) {
     if (spec.hidden) continue;
 
-    // Duplicate id detection runs before structural validation so a duplicate is reported even when
-    // the offending annotation is later dropped for an invalid position or unresolved span.
+    // First-wins on duplicate ids: only the first annotation with a given id resolves; subsequent
+    // duplicates are reported and skipped. Annotation ids key hover/activation events and
+    // `reconcileHoveredAnnotation`, so letting two annotations share an id would make hit-testing and
+    // the emitted event payload ambiguous. Detection runs before structural validation so a duplicate
+    // is still reported even when the first (kept) annotation is later dropped for an invalid position.
     if (seenIds.has(spec.id)) {
       diagnostics?.add('annotation_duplicate_id', 'warning', 'annotation', spec.id);
-    } else {
-      seenIds.add(spec.id);
+      continue;
     }
+    seenIds.add(spec.id);
 
     const datum: TraceAnnotationDatum = {
       id: spec.id,
@@ -146,27 +149,31 @@ function resolveTimePosition(
   projectionOffset: number,
   diagnostics?: TraceDiagnosticsCollector,
 ): Pick<ResolvedTimeAnnotation, 'time' | 'range' | 'authoredTime' | 'authoredRange'> | null {
-  const hasTime = spec.time !== undefined;
-  const hasRange = spec.range !== undefined;
-  if (hasTime === hasRange) {
+  const time = spec.time;
+  const range = spec.range;
+  if ((time === undefined) === (range === undefined)) {
     // Neither supplied, or both supplied (the public props union forbids both at author time).
     diagnostics?.add('annotation_invalid_time', 'warning', 'annotation', spec.id);
     return null;
   }
-  if (hasTime) {
-    const t = spec.time as number;
-    if (!Number.isFinite(t)) {
+  if (time !== undefined) {
+    if (!Number.isFinite(time)) {
       diagnostics?.add('annotation_invalid_time', 'warning', 'annotation', spec.id);
       return null;
     }
-    return { time: t - projectionOffset, authoredTime: t };
+    return { time: time - projectionOffset, authoredTime: time };
   }
-  const [from, to] = spec.range as [number, number];
-  if (!Number.isFinite(from) || !Number.isFinite(to) || from >= to) {
-    diagnostics?.add('annotation_invalid_time', 'warning', 'annotation', spec.id);
-    return null;
+  if (range !== undefined) {
+    const [from, to] = range;
+    if (!Number.isFinite(from) || !Number.isFinite(to) || from >= to) {
+      diagnostics?.add('annotation_invalid_time', 'warning', 'annotation', spec.id);
+      return null;
+    }
+    return { range: [from - projectionOffset, to - projectionOffset], authoredRange: [from, to] };
   }
-  return { range: [from - projectionOffset, to - projectionOffset], authoredRange: [from, to] };
+  // Unreachable: the XOR guard above guarantees exactly one of time/range is defined. Kept so the
+  // function is total without re-asserting a non-null on `range`.
+  return null;
 }
 
 /**

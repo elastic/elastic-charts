@@ -392,14 +392,14 @@ describe('pinchRatio', () => {
     expect(pinchRatio(prev, next)).not.toBeCloseTo(1.875, 3);
   });
 
-  it('converging fingers (zoom out) → ratio < 1', () => {
+  it('converging fingers (zoom out) → ratio > 1', () => {
     const prev = [{ id: 0, position: 100 }, { id: 1, position: 300 }]; // spread 200
     const next = [{ id: 0, position: 140 }, { id: 1, position: 260 }]; // spread 120
     expect(pinchRatio(prev, next)).toBeCloseTo(200 / 120, 6);
     expect(pinchRatio(prev, next)).toBeGreaterThan(1);
   });
 
-  it('spreading fingers (zoom in) → ratio > 1', () => {
+  it('spreading fingers (zoom in) → ratio < 1', () => {
     const prev = [{ id: 0, position: 150 }, { id: 1, position: 250 }]; // spread 100
     const next = [{ id: 0, position: 100 }, { id: 1, position: 300 }]; // spread 200
     expect(pinchRatio(prev, next)).toBeCloseTo(0.5, 6);

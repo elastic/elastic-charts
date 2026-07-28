@@ -25,6 +25,38 @@ import type { TraceSpanBadgeColor } from '../trace_api';
 /** Zero-width stroke used for active-segment rects (filled only, no visible border). */
 const NO_STROKE: Stroke = { color: Colors.Transparent.rgba, width: 0 };
 
+/** The element type of `TraceGeometry.spans` (a prepared, immutable `NormalizedSpan`). */
+type TraceGeometrySpan = TraceGeometry['spans'][number];
+
+/**
+ * Cross-frame memo for gutter-label wrapping. Keyed on the span object, which is stable for the
+ * lifetime of a pipeline cache entry and GC-eligible once a new `normalize` run replaces it (same
+ * lifecycle as `waitingSegmentsCache`). The `sig` captures the width/font/laneHeight the lines were
+ * wrapped for, so a changed gutter width (e.g. badge layout) or theme font recomputes. Avoids
+ * re-running `wrapLines` (a `measureText` loop) for every visible lane on every frame during
+ * zoom/pan/scroll, when the label geometry is unchanged. A span's `name` is immutable, so it does
+ * not need to be part of the signature.
+ */
+const labelWrapCache = new WeakMap<TraceGeometrySpan, { sig: string; lines: string[] }>();
+
+function wrapGutterLabel(
+  ctx: CanvasRenderingContext2D,
+  span: TraceGeometrySpan,
+  font: TextFont,
+  labelWidth: number,
+  laneHeight: number,
+): string[] {
+  const sig = `${font.fontFamily}|${font.fontSize}|${laneHeight}|${labelWidth}`;
+  const cached = labelWrapCache.get(span);
+  if (cached !== undefined && cached.sig === sig) return cached.lines;
+  const { lines } = wrapLines(ctx, span.name, font, font.fontSize, labelWidth, laneHeight, {
+    wrapAtWord: false,
+    shouldAddEllipsis: true,
+  });
+  labelWrapCache.set(span, { sig, lines });
+  return lines;
+}
+
 /**
  * Draw the full trace waterfall onto `ctx`. **DPR-agnostic**: the caller must call
  * `ctx.scale(dpr, dpr)` once before invoking this. The frozen `(ctx, geom, style)` contract is
@@ -160,8 +192,19 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
 
       // Span-level color (Spec 9 colorBy or explicit TraceDatum.color) is the lane-wide fallback.
       // Per-segment colors (label-palette or explicit segment.color, both resolved in the pipeline)
-      // override the fallback for individual segments.
-      const activeFill: Fill = span.color != null ? { color: colorToRgba(span.color) } : defaultActiveFill;
+      // override the fallback for individual segments. Span colors share `segFillCache` (keyed by
+      // color string) so a repeated span/segment color is only `colorToRgba`'d once per draw().
+      let activeFill: Fill;
+      if (span.color != null) {
+        let cached = segFillCache.get(span.color);
+        if (cached === undefined) {
+          cached = { color: colorToRgba(span.color) };
+          segFillCache.set(span.color, cached);
+        }
+        activeFill = cached;
+      } else {
+        activeFill = defaultActiveFill;
+      }
 
       const rawX1 = scale(span.start);
       const rawX2 = scale(span.end);
@@ -237,10 +280,7 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
         if (laneBadges && laneBadges.items.length > 0) {
           labelWidth = Math.max(0, laneBadges.items[0]!.x - labelX - style.badge.labelGap);
         }
-        const { lines } = wrapLines(ctx, span.name, gutterFont, gutterFont.fontSize, labelWidth, laneHeight, {
-          wrapAtWord: false,
-          shouldAddEllipsis: true,
-        });
+        const lines = wrapGutterLabel(ctx, span, gutterFont, labelWidth, laneHeight);
         if (lines[0]) {
           renderText(ctx, { x: labelX, y: barMidY }, lines[0], gutterFont);
         }
@@ -448,11 +488,12 @@ export function resolveBadgeColors(
   palette: TraceStyle['badge']['palette'],
 ): TraceBadgeColorStyle {
   if (color === undefined) return palette.default;
-  if (typeof color === 'string' && color in palette) return palette[color as keyof typeof palette];
-  // Custom Color: derive readable text from luminance (ITU-R BT.601 weights).
-  const [r, g, b] = colorToRgba(color as string);
+  if (color in palette) return palette[color as keyof typeof palette];
+  // Custom Color (`Color` is a plain string, so no `as string` narrowing is needed): derive readable
+  // text from luminance (ITU-R BT.601 weights).
+  const [r, g, b] = colorToRgba(color);
   const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-  return { background: color as string, text: luminance > 140 ? '#1a1c21' : '#ffffff' };
+  return { background: color, text: luminance > 140 ? '#1a1c21' : '#ffffff' };
 }
 
 /** Traces a rounded-rectangle path (radius clamped to half the smaller side). Uses `arcTo` for corners. */

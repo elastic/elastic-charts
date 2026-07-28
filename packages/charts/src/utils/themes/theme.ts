@@ -542,6 +542,10 @@ export interface Theme {
 
   /**
    * Theme styles for the trace waterfall chart.
+   *
+   * Migration note: like every other chart-type block on `Theme`, this field is required. Consumers
+   * that extend a built-in base theme (`LIGHT_THEME`/`DARK_THEME`) via `PartialTheme` are unaffected;
+   * only code that hand-rolls a complete `Theme` object from scratch must add a `trace` block.
    */
   trace: TraceStyle;
 

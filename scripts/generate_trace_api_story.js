@@ -12,7 +12,7 @@
  * Reads `packages/charts/tmp/charts.api.json` (produced by `yarn api:extract` with
  * `docModel.enabled: true`), walks the `TraceSpec` interface via
  * `findMembersWithInheritance()` to include inherited props like `id`, and emits
- * `storybook/stories/trace/24_api_docs.story.tsx`.
+ * `storybook/stories/trace/01_intro.story.tsx`.
  *
  * Usage:
  *   yarn api:extract && node scripts/generate_trace_api_story.js

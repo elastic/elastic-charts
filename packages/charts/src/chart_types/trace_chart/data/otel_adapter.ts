@@ -61,7 +61,11 @@ export type OtelInput = OtlpEnvelope | OtelSpan[];
  *
  * Returns a string for every input (never `undefined`) so callers can use the result directly
  * as a color-group key.
- * @public
+ *
+ * Internal helper: consumers reach OTel attribute values through the `colorByOtel*` descriptors and
+ * `fromOtlp`, so this serializer is deliberately kept off the public API surface (it is not
+ * re-exported from `trace_api`).
+ * @internal
  */
 export function anyValueToString(value: unknown): string {
   if (value !== null && typeof value === 'object') {
