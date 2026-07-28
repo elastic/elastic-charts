@@ -6,28 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
-import { getAxesStylesSelector } from './get_axis_styles';
-import { axisSpecsLookupSelector } from './get_specs';
-import { getVisibleTickSetsSelector } from './visible_ticks';
+import { getJoinedVisibleAxesData } from './compute_baseline_axes';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { getAxesGeometries } from '../../utils/axis_utils';
+import { getAxesGeometries } from '../../axes/geometry';
 
 /** @internal */
 export const computeAxesGeometriesSelector = createCustomCachedSelector(
-  [
-    computeChartDimensionsSelector,
-    getChartThemeSelector,
-    axisSpecsLookupSelector,
-    getAxesStylesSelector,
-    computeSmallMultipleScalesSelector,
-    getVisibleTickSetsSelector,
-    getScaleConfigsFromSpecsSelector,
-    getSettingsSpecSelector,
-  ],
-  getAxesGeometries,
+  [getChartThemeSelector, getJoinedVisibleAxesData, computeSmallMultipleScalesSelector, computeChartLayoutSelector],
+  (theme, joinedAxesData, smScales, chartLayout) =>
+    getAxesGeometries(chartLayout.dimensions, theme, joinedAxesData, smScales, chartLayout.ticks),
 );

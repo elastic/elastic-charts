@@ -53,4 +53,94 @@ describe('fitText', () => {
       text: 'ab…f',
     });
   });
+
+  describe('minimum readable truncation', () => {
+    it('keeps at least the min visible chars and overflows rather than truncating shorter (end)', () => {
+      expect(
+        fitText(monospaceMeasure, 'abcdefghij', 3, fontSize, font, 'end', {
+          min: { visible: 5 },
+          overflow: true,
+        }),
+      ).toEqual({
+        width: 6,
+        text: 'abcde…',
+      });
+    });
+
+    it('keeps the min visible chars split on both sides for middle truncation', () => {
+      expect(
+        fitText(monospaceMeasure, 'abcdefghij', 3, fontSize, font, 'middle', {
+          min: { visible: 5 },
+          overflow: true,
+        }),
+      ).toEqual({
+        width: 6,
+        text: 'abc…ij',
+      });
+    });
+
+    it('still fits within the budget when more than the min visible chars fits', () => {
+      expect(
+        fitText(monospaceMeasure, 'abcdefghij', 6, fontSize, font, 'end', {
+          min: { visible: 5 },
+          overflow: true,
+        }),
+      ).toEqual({
+        width: 6,
+        text: 'abcde…',
+      });
+    });
+
+    it('does not returns an empty string when overflow is allowed', () => {
+      const { text } = fitText(monospaceMeasure, 'abcdefghij', 0, fontSize, font, 'end', {
+        min: { visible: 5 },
+        overflow: true,
+      });
+      expect(text).toBe('abcde…');
+    });
+
+    it('does not truncate when it would hide fewer than 3 characters (overflows in full instead)', () => {
+      // Budget of 5 would keep "abcd…" (4 visible), hiding only 2 chars, not enough for an ellipsis.
+      expect(
+        fitText(monospaceMeasure, 'abcdef', 5, fontSize, font, 'end', {
+          min: { visible: 4, hidden: 3 },
+          overflow: true,
+        }),
+      ).toEqual({
+        width: 6,
+        text: 'abcdef',
+      });
+    });
+
+    it('truncates once it hides at least 3 characters', () => {
+      // "abcdefg" (7) kept at the min visible chars of 4 hides that hides 3 chars.
+      expect(
+        fitText(monospaceMeasure, 'abcdefg', 5, fontSize, font, 'end', {
+          min: { visible: 4, hidden: 3 },
+          overflow: true,
+        }),
+      ).toEqual({
+        width: 5,
+        text: 'abcd…',
+      });
+    });
+
+    it('relaxes the visible chars when overflow is disabled and the min visible chars does not fit', () => {
+      // Without overflow, min visible chars loses to the allotted width.
+      expect(fitText(monospaceMeasure, 'abcdefghij', 3, fontSize, font, 'end', { min: { visible: 5 } })).toEqual({
+        width: 3,
+        text: 'ab…',
+      });
+    });
+
+    it('relaxes the hidden chars when overflow is disabled', () => {
+      // 5 keeps "abcd…" that only hides 2 chars, but fitting wins if overflow is not enabled.
+      expect(fitText(monospaceMeasure, 'abcdef', 5, fontSize, font, 'end', { min: { visible: 4, hidden: 3 } })).toEqual(
+        {
+          width: 5,
+          text: 'abcd…',
+        },
+      );
+    });
+  });
 });

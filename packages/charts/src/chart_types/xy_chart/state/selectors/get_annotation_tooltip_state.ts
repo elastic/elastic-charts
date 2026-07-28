@@ -7,7 +7,7 @@
  */
 
 import { computeAnnotationDimensionsSelector } from './compute_annotations';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getAnnotationSpecsSelector } from './get_specs';
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
@@ -36,7 +36,7 @@ const getHoveredDOMElement = (state: GlobalChartState) => state.interactions.hov
 export const getAnnotationTooltipStateSelector = createCustomCachedSelector(
   [
     getCurrentPointerPosition,
-    computeChartDimensionsSelector,
+    computeChartLayoutSelector,
     computeSeriesGeometriesSelector,
     getChartRotationSelector,
     getAnnotationSpecsSelector,
@@ -50,9 +50,11 @@ export const getAnnotationTooltipStateSelector = createCustomCachedSelector(
 function getAnnotationTooltipState(
   cursorPosition: Point,
   {
-    chartDimensions,
+    dimensions: { chartDimensions },
   }: {
-    chartDimensions: Dimensions;
+    dimensions: {
+      chartDimensions: Dimensions;
+    };
   },
   geometries: ComputedGeometries,
   chartRotation: Rotation,

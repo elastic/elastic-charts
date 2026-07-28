@@ -7,7 +7,6 @@
  */
 
 import { isVerticalAxis } from './axis_type_utils';
-import type { AxisGeometry, AxisTick } from './axis_utils';
 import type { AxisSpec } from './specs';
 import { colorToRgba, overrideOpacity } from '../../../common/color_library_wrappers';
 import type { SmallMultipleScales } from '../../../common/panel_utils';
@@ -20,6 +19,8 @@ import type { Size } from '../../../utils/dimensions';
 import type { AxisId } from '../../../utils/ids';
 import type { Point } from '../../../utils/point';
 import type { AxisStyle, Theme } from '../../../utils/themes/theme';
+import type { AxisGeometry } from '../axes/geometry';
+import type { AxisTick } from '../axes/ticks/types';
 
 /** @internal */
 export const OUTSIDE_RANGE_TOLERANCE = 0.01; // can protrude from the scale range by a max of 0.1px, to allow for FP imprecision

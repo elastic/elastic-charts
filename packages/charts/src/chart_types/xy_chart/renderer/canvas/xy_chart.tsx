@@ -37,7 +37,7 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { Theme, AxisStyle } from '../../../../utils/themes/theme';
 import type { AnnotationDimensions } from '../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
-import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
+import { computeChartLayoutSelector } from '../../state/selectors/compute_chart_layout';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
 import type { PerPanelAxisGeoms } from '../../state/selectors/compute_per_panel_axes_geoms';
 import { computePerPanelAxesGeomsSelector } from '../../state/selectors/compute_per_panel_axes_geoms';
@@ -261,7 +261,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     highlightedLegendItem: getHighlightedSeriesSelector(state),
     hoveredAnnotationIds: getHighlightedAnnotationIdsSelector(state),
     rotation: getChartRotationSelector(state),
-    renderingArea: computeChartDimensionsSelector(state).chartDimensions,
+    renderingArea: computeChartLayoutSelector(state).dimensions.chartDimensions,
     chartTransform: computeChartTransformSelector(state),
     axesSpecs: getAxisSpecsSelector(state),
     perPanelAxisGeoms,

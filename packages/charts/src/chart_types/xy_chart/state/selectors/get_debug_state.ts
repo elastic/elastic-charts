@@ -33,8 +33,8 @@ import type { AreaGeometry, BarGeometry, LineGeometry, PerPanel } from '../../..
 import { BandedAccessorType } from '../../../../utils/geometry';
 import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from '../../../../utils/themes/merge_utils';
 import type { FillStyle, Opacity, StrokeStyle, Theme, Visible } from '../../../../utils/themes/theme';
+import type { AxisGeometry } from '../../axes/geometry';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
-import type { AxisGeometry } from '../../utils/axis_utils';
 import type { LinesGrid } from '../../utils/grid_lines';
 import { isHorizontalRotation, isVerticalRotation } from '../utils/common';
 
