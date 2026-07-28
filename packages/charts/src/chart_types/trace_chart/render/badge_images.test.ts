@@ -18,6 +18,13 @@ class FakeImage {
   constructor() {
     FakeImage.instances.push(this);
   }
+
+  // Mirror the DOM `Image` API the cache uses (`addEventListener('load', ...)`) by routing it to the
+  // same `onload`/`onerror` slots the tests fire directly.
+  addEventListener(type: 'load' | 'error', listener: () => void) {
+    if (type === 'load') this.onload = listener;
+    else this.onerror = listener;
+  }
 }
 
 let originalImage: unknown;

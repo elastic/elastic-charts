@@ -26,7 +26,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const { ApiModel } = require('@microsoft/api-extractor-model');
+const { ApiModel, ApiItemKind } = require('@microsoft/api-extractor-model');
 
 // ---------------------------------------------------------------------------
 // Paths (relative to repo root)
