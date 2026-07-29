@@ -79,7 +79,6 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
         dimension,
         visibleTicks: ticks,
         parentSize,
-        layout,
       } = geometry;
       const axisSpec = getSpecsById<AxisSpec>(axesSpecs, id);
 
@@ -120,7 +119,6 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
           anchorPoint,
           size,
           dimension,
-          layout,
           ticks,
           axisStyle,
           debug,
