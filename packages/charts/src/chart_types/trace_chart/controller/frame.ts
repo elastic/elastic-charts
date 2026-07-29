@@ -373,5 +373,12 @@ export function runFrame(c: TraceCanvasController, deltaT: number) {
     c.scheduleRender?.();
   } else {
     maybeFireFocusDomainChange(c, domain.min, domain.max);
+    // Re-arm render-complete at settle. onChartRendered fires on mount in start(), but a post-mount
+    // spec re-upsert (any consumer re-render — useSpecFactory upserts on every render, resetting
+    // state.chartRendered=false) would otherwise strand data-ech-render-complete at false forever
+    // (see ADR 0004). Loop-safe: the settle branch never schedules a frame and TraceComponent does
+    // not subscribe to chartRendered, so the CHART_RENDERED dispatch cannot re-enter this loop; a
+    // dispatch while already-true is a redux no-op.
+    props.onChartRendered();
   }
 }

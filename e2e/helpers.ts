@@ -48,6 +48,7 @@ const storiesToSkip: Map<string, string[]> = new Map(
     'Test Cases': ['noSeries', 'errorBoundary'],
     Interactions: ['multiChartCursorSync'],
     'Metric (@alpha)': ['bodyContent'],
+    'Trace (@alpha)': ['intro'],
   }),
 );
 

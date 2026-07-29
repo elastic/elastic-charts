@@ -2043,6 +2043,41 @@ describe('Trace chart — data diagnostics (Spec 28)', () => {
     expect(onDataDiagnosticsChange).toHaveBeenCalledTimes(1);
     unmount();
   });
+
+  it('re-arms render-complete after an onDataDiagnosticsChange-driven re-render (ADR 0004)', () => {
+    // Regression guard for the render-complete re-arm (ADR 0004 render-complete amendment). The
+    // diagnostics callback stores the report in state, so its emission triggers a consumer re-render.
+    // useSpecFactory upserts on every render, which resets state.chartRendered=false; onChartRendered
+    // fires on mount only, so without the rAF-settle re-arm data-ech-render-complete would strand at
+    // false forever. Settings.onRenderChange mirrors state.chartRendered, so its last observed value
+    // must return to true once the post-re-render frame settles.
+    const onRenderChange = jest.fn();
+
+    function Host() {
+      const [, setReport] = React.useState<unknown>(null);
+      return (
+        <Chart size={[800, 200]}>
+          <Settings onRenderChange={onRenderChange} />
+          <Trace
+            id="diag-rearm"
+            data={FEW_SPANS}
+            xScaleType="linear"
+            onDataDiagnosticsChange={(report) => setReport(report)}
+          />
+        </Chart>
+      );
+    }
+
+    const { unmount } = render(<Host />);
+    act(() => {
+      jest.runAllTimers();
+    });
+
+    // The diagnostics-driven setState cleared render-complete; the settle re-arm restored it.
+    expect(onRenderChange).toHaveBeenCalledWith(false);
+    expect(onRenderChange).toHaveBeenLastCalledWith(true);
+    unmount();
+  });
 });
 
 // ---------------------------------------------------------------------------

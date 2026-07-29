@@ -25,7 +25,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const selectedLabel = select<EmptyStateKey>(
     'empty state',
     Object.keys(EMPTY_STATE_OPTIONS) as EmptyStateKey[],
-    'no data — empty data prop (DOM overlay)',
+    'trace not found — traceId matches nothing (canvas message)',
   );
   const variant = EMPTY_STATE_OPTIONS[selectedLabel];
   const customMessage = text('traceNotFoundMessage (trace-not-found only)', '');

@@ -40,11 +40,29 @@ extra selector subscription.
   `preventScroll` as a stable bound method for proper listener removal, `onChartRendered` fired once
   on mount with the note that firing it in `componentDidUpdate` creates an infinite update loop).
 
-**Render-complete protocol:** `onChartRendered()` is dispatched once in `componentDidMount`, which
-sets `state.chartRendered` in redux. The `ChartStatus` react component reads this state and owns
-the `data-ech-render-complete` attribute — the Trace component does **not** render its own status div
-(the same `todo` comment as in Timeslip and Flame, deferred to Spec 8/VRT). This is safe because the
-mount frame is already settled (see Decision 2).
+**Render-complete protocol:** `onChartRendered()` is dispatched in `componentDidMount` (via the
+controller's `start()`), which sets `state.chartRendered` in redux. The `ChartStatus` react component
+reads this state and owns the `data-ech-render-complete` attribute — the Trace component does **not**
+render its own status div (the same `todo` comment as in Timeslip and Flame, deferred to Spec 8/VRT).
+The mount frame is already settled (see Decision 2), so render-complete is true after the first frame.
+
+> **Amended (VRT round):** the mount-only dispatch is not sufficient. `useSpecFactory` dispatches
+> `upsertSpec` from a **dependency-less `useEffect`**, so *every* React re-render — including any
+> unrelated consumer re-render — re-upserts the spec, and `upsertSpec` resets `state.chartRendered`
+> to `false`. Because the controller only dispatched `onChartRendered()` once on mount, a single
+> post-mount re-render stranded `data-ech-render-complete` at `false` forever (surfaced by the
+> `onDataDiagnosticsChange` -> `setState` story: the callback drives a re-render whose spec re-upsert
+> cleared the flag, and the VRT `waitForSelector` timed out). **Fix:** the rAF frame **re-arms
+> render-complete on every loop settle** — `onChartRendered()` is dispatched in the same
+> settle branch that fires `onFocusDomainChange` (`frame.ts`, the `else` of
+> `tweenOngoing || flywheelActive`), so the frame scheduled by the spec re-upsert restores the flag.
+> This is loop-safe for Trace and does **not** reintroduce the `componentDidUpdate` infinite loop
+> (Decision 5): the settle branch never calls `scheduleRender()` (no idle RAF churn),
+> `TraceComponent.mapStateToProps` does not subscribe to `chartRendered` so the `CHART_RENDERED`
+> dispatch cannot re-enter `update()`/`runFrame`, and a dispatch while already-`true` is a redux
+> no-op (the reducer only increments the count on a `false -> true` transition). Dispatching from the
+> rAF settle — not from React `update()` — is exactly what keeps it safe, unlike Flame, whose
+> `connect`ed `componentDidUpdate` re-renders on the resulting state change.
 
 ## Decision 2: Zoom eases via domainTween; drag-pan is 1:1
 
@@ -222,9 +240,10 @@ renders the canvas/DOM siblings and forwards lifecycle to the controller.
   `componentWillUnmount` body (safe under React 18 StrictMode double-mount).
 
 **Invariants preserved (must not drift):** the self-managed rAF loop and the zoom-eases / pan-1:1
-model (Decisions 1-2) are unchanged — only relocated; `onChartRendered` still fires **once** in
-`start()` (never in `update()`, per the infinite-loop note in Decision 1); the exact-`chartDimensions`
-layout (Decision 4) is unchanged.
+model (Decisions 1-2) are unchanged — only relocated; `onChartRendered` fires from `start()` on mount
+and is **re-armed on every rAF-loop settle** (the render-complete amendment in Decision 1) — but never
+from the React `update()`/`componentDidUpdate` path, per the infinite-loop note in Decision 1; the
+exact-`chartDimensions` layout (Decision 4) is unchanged.
 
 **Alternatives considered:**
 
