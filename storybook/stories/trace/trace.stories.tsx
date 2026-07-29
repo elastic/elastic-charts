@@ -43,3 +43,4 @@ export { Example as traceDataDiagnostics } from './29_data_diagnostics.story';
 export { Example as traceAnnotations } from './30_trace_annotations.story';
 export { Example as zoomLock } from './31_zoom_lock.story';
 export { Example as minVisibleExtent } from './32_min_visible_extent.story';
+export { Example as kibanaWorkflowConnectors } from './33_kibana_workflow_connectors.story';
