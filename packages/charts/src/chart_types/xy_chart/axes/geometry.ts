@@ -69,6 +69,7 @@ export interface AxisGeometry {
   };
   dimension: TickLabelBox;
   visibleTicks: AxisTick[];
+  layout: AxisLayoutContext;
 }
 
 /**
@@ -114,6 +115,7 @@ export function getAxesGeometries(
           dimension: labelBox,
           visibleTicks: ticks,
           parentSize: { height: dimensions.height, width: dimensions.width },
+          layout,
           size: {
             width: axisSpec.hide ? 0 : vertical ? dimensions.width : panel.width,
             height: axisSpec.hide ? 0 : vertical ? panel.height : dimensions.height,
