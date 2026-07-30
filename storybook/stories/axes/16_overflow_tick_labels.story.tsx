@@ -99,6 +99,7 @@ const getWrapAxisKnobs = (group: string) => {
     'disabled',
     group,
   );
+  const visible = boolean('visible', true, group);
 
   return {
     rotation,
@@ -111,6 +112,7 @@ const getWrapAxisKnobs = (group: string) => {
     wrapLines,
     lineHeight,
     showOverlapping,
+    visible,
     truncate,
   };
 };
@@ -127,6 +129,7 @@ const buildAxisStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePa
     alignmentHorizontal,
     alignmentVertical,
     truncate,
+    visible,
   } = knobs;
   const alignment =
     alignmentHorizontal !== undefined || alignmentVertical !== undefined
@@ -144,6 +147,7 @@ const buildAxisStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePa
       lineHeight,
       wrapLines,
       minLength,
+      visible,
       ...(maxLength > 0 && { maxLength }),
       ...(alignment !== undefined && { alignment }),
       truncate: truncate === 'disabled' ? false : truncate,

@@ -219,6 +219,9 @@ test.describe('Axis stories', () => {
         `${story}&knob-Chart rotation_Chart config=90&knob-maxExtent_Axis Y=120&knob-truncate_Axis Y=end`,
       );
     });
+    test('hidden tick labels should not take up space in the chart layout', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(`${story}&knob-visible_Axis X=false`);
+    });
   });
 
   test.describe('Small multiples', () => {
