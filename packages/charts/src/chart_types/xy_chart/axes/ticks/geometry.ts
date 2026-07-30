@@ -16,13 +16,10 @@ import {
   VerticalAlignment,
 } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
-import { innerPad, outerPad } from '../../../../utils/dimensions';
+import { innerPad } from '../../../../utils/dimensions';
 import type { Point } from '../../../../utils/point';
 import type { AxisStyle, TextAlignment, TextOffset } from '../../../../utils/themes/theme';
 import { isHorizontalAxis } from '../../utils/axis_type_utils';
-import { shouldShowTicks } from '../../utils/axis_utils';
-import type { AxisSpec } from '../../utils/specs';
-import { getTitleDimension } from '../dimensions';
 
 type TickLabelProps = {
   center: Point;
@@ -248,36 +245,3 @@ export function getTickLabelPosition(
     textAlign: horizontalAlign,
   };
 }
-
-/** @internal */
-export const tickLabelClipRect = ({
-  spec,
-  style,
-  size,
-  maxLabelBox,
-}: {
-  spec: AxisSpec;
-  style: AxisStyle;
-  size: Size;
-  maxLabelBox: TickLabelBox;
-}) => {
-  const showTicks = shouldShowTicks(style.tickLine, spec.hide);
-
-  const isHorizontal = isHorizontalAxis(spec.position);
-  const hasTitle = style.axisTitle?.visible && spec.title && spec.title.length > 0;
-  const titleDimension = hasTitle ? getTitleDimension(style.axisTitle) : 0;
-
-  const inner = (showTicks ? style.tickLine.size + style.tickLine.padding : 0) + innerPad(style.tickLabel.padding);
-
-  const outer = titleDimension + outerPad(style.tickLabel.padding);
-
-  const [start, end] =
-    spec.position === Position.Left || spec.position === Position.Top ? [outer, inner] : [inner, outer];
-
-  return {
-    x: isHorizontal ? -maxLabelBox.bboxWidth / 2 : start,
-    y: isHorizontal ? start : -maxLabelBox.bboxHeight / 2,
-    width: isHorizontal ? size.width + maxLabelBox.bboxWidth : size.width - start - end,
-    height: isHorizontal ? size.height - start - end : size.height + maxLabelBox.bboxHeight,
-  };
-};

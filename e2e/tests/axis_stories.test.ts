@@ -204,7 +204,7 @@ test.describe('Axis stories', () => {
 
     test('should constrain tick labels with maxExtent', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        `${story}&knob-maxExtent_Axis X=40&knob-wrapLines_Axis X=1&knob-truncate_Axis X=end`,
+        `${story}&knob-maxExtent_Axis X=50&knob-wrapLines_Axis X=1&knob-truncate_Axis X=end`,
       );
     });
 

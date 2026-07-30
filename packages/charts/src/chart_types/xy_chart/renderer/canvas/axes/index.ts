@@ -11,7 +11,7 @@ import { renderAxisLine } from './line';
 import { renderTicks } from './tick';
 import { renderTickLabel } from './tick_label';
 import { withClip } from '../../../../../renderers/canvas';
-import { tickLabelClipRect } from '../../../axes/ticks/geometry';
+import { tickLabelsClippingBox } from '../../../axes/ticks/clip';
 import { shouldShowTicks } from '../../../utils/axis_utils';
 
 /** @internal */
@@ -26,7 +26,7 @@ export function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
   if (!secondary && axisStyle.tickLabel.visible) {
     withClip(
       ctx,
-      tickLabelClipRect({ spec: axisSpec, style: axisStyle, size: props.size, maxLabelBox: props.dimension }),
+      tickLabelsClippingBox({ spec: axisSpec, style: axisStyle, size: props.size, maxLabelBox: props.dimension }),
       () => {
         ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props, layerGirth ?? 0));
       },
