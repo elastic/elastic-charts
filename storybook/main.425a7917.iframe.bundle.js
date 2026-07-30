@@ -35754,7 +35754,7 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.array.reduce.js */ ".
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getMaxLabelDimensions = exports.createTickLabelLayout = exports.resolveTickLabelConstraints = exports.withoutTickLabel = exports.MIN_LABEL_GAP = exports.shouldAllowWordWrap = void 0;
+exports.getMaxLabelDimensions = exports.createTickLabelLayout = exports.resolveTickLabelConstraints = exports.withoutTickLabel = exports.emptyTickLabelBox = exports.MIN_LABEL_GAP = exports.shouldAllowWordWrap = void 0;
 exports.computeRotatedLabelDimensions = computeRotatedLabelDimensions;
 
 var text_utils_1 = __webpack_require__(/*! ../../../../common/text_utils */ "../packages/charts/src/common/text_utils.ts");
@@ -35814,20 +35814,27 @@ var isCompactSingleWord = function isCompactSingleWord(value) {
 /** @internal */
 
 
+var emptyTickLabelBox = function emptyTickLabelBox() {
+  return {
+    width: 0,
+    height: 0,
+    bboxWidth: 0,
+    bboxHeight: 0,
+    lines: Object.assign([], {
+      meta: {
+        truncated: false
+      }
+    })
+  };
+};
+
+exports.emptyTickLabelBox = emptyTickLabelBox;
+/** @internal */
+
 var withoutTickLabel = function withoutTickLabel(tick) {
   return Object.assign({}, tick, {
     label: '',
-    layout: {
-      width: 0,
-      height: 0,
-      bboxWidth: 0,
-      bboxHeight: 0,
-      lines: Object.assign([], {
-        meta: {
-          truncated: false
-        }
-      })
-    }
+    layout: (0, exports.emptyTickLabelBox)()
   });
 };
 
@@ -36188,6 +36195,7 @@ function generateTicks(scale, ticks, offset, layoutTickLabel, formatTickLabel, l
 function getVisibleTicks(axisSpec, layoutTickLabel, formatTickLabel, totalBarsInCluster, rotationOffset, scale, enableHistogramMode, layer, detailedLayer, ticks, adaptiveTickCount, labelRotation) {
   var multilayerTimeAxis = arguments.length > 12 && arguments[12] !== undefined ? arguments[12] : false;
   var showGrid = arguments.length > 13 && arguments[13] !== undefined ? arguments[13] : true;
+  var labelsHidden = arguments.length > 14 && arguments[14] !== undefined ? arguments[14] : false;
   var isSingleValueScale = scale.domain[0] === scale.domain[1];
   var makeRaster = enableHistogramMode && scale.bandwidth > 0 && !multilayerTimeAxis;
   var ultimateTick = ticks.at(-1);
@@ -36240,7 +36248,7 @@ function getVisibleTicks(axisSpec, layoutTickLabel, formatTickLabel, totalBarsIn
   var showOverlappingTicks = axisSpec.showOverlappingTicks,
       showOverlappingLabels = axisSpec.showOverlappingLabels,
       position = axisSpec.position;
-  var bypassOverlapCheck = showOverlappingLabels || multilayerTimeAxis;
+  var bypassOverlapCheck = showOverlappingLabels || multilayerTimeAxis || labelsHidden;
   if (bypassOverlapCheck) return allTicks;
   return allTicks.slice().sort(function (a, b) {
     return a.position - b.position;
@@ -36266,11 +36274,12 @@ function getVisibleTickSet(scale, layoutTickLabel, formatTickLabel, _ref3, axisS
   var chartRotation = _ref3.rotation;
   var multilayerTimeAxis = arguments.length > 12 && arguments[12] !== undefined ? arguments[12] : false;
   var showGrid = arguments.length > 13 && arguments[13] !== undefined ? arguments[13] : true;
+  var labelsHidden = arguments.length > 14 && arguments[14] !== undefined ? arguments[14] : false;
   var vertical = (0, axis_type_utils_1.isVerticalAxis)(axisSpec.position);
   var somehowRotated = vertical && chartRotation === -90 || !vertical && chartRotation === 180;
   var rotationOffset = histogramMode && somehowRotated ? scale.step : 0; // todo find the true cause of the this offset issue
 
-  return getVisibleTicks(axisSpec, layoutTickLabel, formatTickLabel, groupCount, rotationOffset, scale, histogramMode, layer, detailedLayer, ticks, adaptiveTickCount, labelRotation, multilayerTimeAxis, showGrid);
+  return getVisibleTicks(axisSpec, layoutTickLabel, formatTickLabel, groupCount, rotationOffset, scale, histogramMode, layer, detailedLayer, ticks, adaptiveTickCount, labelRotation, multilayerTimeAxis, showGrid, labelsHidden);
 }
 /** @internal */
 
@@ -36305,6 +36314,7 @@ function computeVisibleTickSets(textMeasure, _ref4, scaleConfigs, joinedAxesData
     var maxTickCount = (_domain$desiredTickCo = domain === null || domain === void 0 ? void 0 : domain.desiredTickCount) !== null && _domain$desiredTickCo !== void 0 ? _domain$desiredTickCo : 0;
     var isNice = (_ref8 = isXAxis ? scaleConfigs.x.nice : (_scaleConfigs$y$group = scaleConfigs.y[groupId]) === null || _scaleConfigs$y$group === void 0 ? void 0 : _scaleConfigs$y$group.nice) !== null && _ref8 !== void 0 ? _ref8 : false;
     var adaptiveTickCount = !isNice && USE_ADAPTIVE_TICK_COUNT;
+    var labelsHidden = !axesStyle.tickLabel.visible && !layout.multilayerTimeAxis;
 
     var getMeasuredTicks = function getMeasuredTicks(scale, ticks, layer, detailedLayer, labelFormatter) {
       var showGrid = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
@@ -36345,7 +36355,20 @@ function computeVisibleTickSets(textMeasure, _ref4, scaleConfigs, joinedAxesData
         desiredTickCount: desiredTickCount,
         maximumFractionDigits: maximumFractionDigits
       }));
-    };
+    }; // Hidden tick labels take no part in the layout but are needed here for tick and the grid lines.
+
+
+    if (labelsHidden) {
+      var _scale = getScale(maxTickCount);
+
+      if (!_scale) return acc;
+      return acc.set(axisId, {
+        scale: _scale,
+        ticks: getVisibleTickSet(_scale, labels_1.emptyTickLabelBox, userProvidedLabelFormatter, {
+          rotation: chartRotation
+        }, axisSpec, totalGroupsCount, enableHistogramMode, undefined, 0, _scale.ticks(), adaptiveTickCount, axesStyle.tickLabel.rotation, layout.multilayerTimeAxis, true, labelsHidden)
+      });
+    }
 
     var fillLayer = function fillLayer(maxTickCountForLayer) {
       var fallbackAskedTickCount = 2;
@@ -36355,13 +36378,13 @@ function computeVisibleTickSets(textMeasure, _ref4, scaleConfigs, joinedAxesData
         var previousActualTickCount = NaN;
 
         for (var triedTickCount = maxTickCountForLayer; triedTickCount >= 1; triedTickCount--) {
-          var _scale$ticks$length;
+          var _scale2$ticks$length;
 
-          var _scale = getScale(triedTickCount);
+          var _scale2 = getScale(triedTickCount);
 
-          var actualTickCount = (_scale$ticks$length = _scale === null || _scale === void 0 ? void 0 : _scale.ticks().length) !== null && _scale$ticks$length !== void 0 ? _scale$ticks$length : 0;
-          if (!_scale || actualTickCount === previousActualTickCount || actualTickCount < 2) continue;
-          var raster = getMeasuredTicks(_scale, _scale.ticks(), undefined, 0, userProvidedLabelFormatter);
+          var actualTickCount = (_scale2$ticks$length = _scale2 === null || _scale2 === void 0 ? void 0 : _scale2.ticks().length) !== null && _scale2$ticks$length !== void 0 ? _scale2$ticks$length : 0;
+          if (!_scale2 || actualTickCount === previousActualTickCount || actualTickCount < 2) continue;
+          var raster = getMeasuredTicks(_scale2, _scale2.ticks(), undefined, 0, userProvidedLabelFormatter);
           var nonZeroLengthTicks = raster.ticks.filter(function (tick) {
             return tick.label.length > 0;
           });
@@ -36369,14 +36392,14 @@ function computeVisibleTickSets(textMeasure, _ref4, scaleConfigs, joinedAxesData
             return tick.label;
           }));
           var areLabelsUnique = nonZeroLengthTicks.length === uniqueLabels.size;
-          var areAdjacentTimeLabelsUnique = _scale.type === constants_1.ScaleType.Time && !axisSpec.showDuplicatedTicks && (areLabelsUnique || nonZeroLengthTicks.every(function (d, i, a) {
+          var areAdjacentTimeLabelsUnique = _scale2.type === constants_1.ScaleType.Time && !axisSpec.showDuplicatedTicks && (areLabelsUnique || nonZeroLengthTicks.every(function (d, i, a) {
             var _a;
 
             return i === 0 || d.label !== ((_a = a[i - 1]) === null || _a === void 0 ? void 0 : _a.label);
           }));
           var atLeastTwoTicks = uniqueLabels.size >= 2;
           var allTicksFit = nonZeroLengthTicks.length === raster.ticks.length;
-          var compliant = axisSpec && (_scale.type === constants_1.ScaleType.Time || atLeastTwoTicks) && (_scale.type === constants_1.ScaleType.Log || allTicksFit) && (_scale.type === constants_1.ScaleType.Time && (axisSpec.showDuplicatedTicks || areAdjacentTimeLabelsUnique) || (_scale.type === constants_1.ScaleType.Log ? new Set(nonZeroLengthTicks.map(function (tick) {
+          var compliant = axisSpec && (_scale2.type === constants_1.ScaleType.Time || atLeastTwoTicks) && (_scale2.type === constants_1.ScaleType.Log || allTicksFit) && (_scale2.type === constants_1.ScaleType.Time && (axisSpec.showDuplicatedTicks || areAdjacentTimeLabelsUnique) || (_scale2.type === constants_1.ScaleType.Log ? new Set(nonZeroLengthTicks.map(function (tick) {
             return tick.label;
           })).size === nonZeroLengthTicks.length : areLabelsUnique));
           previousActualTickCount = actualTickCount;
@@ -36384,7 +36407,7 @@ function computeVisibleTickSets(textMeasure, _ref4, scaleConfigs, joinedAxesData
           if (raster && compliant) {
             return {
               entry: Object.assign({}, raster, {
-                ticks: _scale.type === constants_1.ScaleType.Log ? raster.ticks : nonZeroLengthTicks
+                ticks: _scale2.type === constants_1.ScaleType.Log ? raster.ticks : nonZeroLengthTicks
               }),
               fallbackAskedTickCount: fallbackAskedTickCount
             };
@@ -36402,11 +36425,11 @@ function computeVisibleTickSets(textMeasure, _ref4, scaleConfigs, joinedAxesData
     };
 
     if (layout.multilayerTimeAxis) {
-      var _scale2 = getScale(0); // the scale is only needed for its non-tick props like step, bandwidth, ...
+      var _scale3 = getScale(0); // the scale is only needed for its non-tick props like step, bandwidth, ...
 
 
-      if (!_scale2 || !(0, types_1.isContinuousScale)(_scale2)) throw new Error('Scale generation for the multilayer axis failed');
-      return acc.set(axisId, (0, multilayer_ticks_1.multilayerAxisEntry)(xDomain, isXAxis && xDomain.isBandScale && enableHistogramMode, range, timeAxisLayerCount, _scale2, getMeasuredTicks, locale, dow));
+      if (!_scale3 || !(0, types_1.isContinuousScale)(_scale3)) throw new Error('Scale generation for the multilayer axis failed');
+      return acc.set(axisId, (0, multilayer_ticks_1.multilayerAxisEntry)(xDomain, isXAxis && xDomain.isBandScale && enableHistogramMode, range, timeAxisLayerCount, _scale3, getMeasuredTicks, locale, dow));
     }
 
     var _fillLayer = fillLayer(maxTickCount),
@@ -108106,25 +108129,25 @@ exports.Example = void 0;
 // @ts-nocheck
 // @ts-ignore
 
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport { boolean, number, select, text } from '@storybook/addon-knobs';\nimport React from 'react';\n\nimport type { AxisStyle, RecursivePartial, Rotation } from '@elastic/charts';\nimport { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { customKnobs } from '../utils/knobs';\nimport { getNumberSelectKnob } from '../utils/knobs/custom';\n\nconst CHART_CONFIG_GROUP = 'Chart config';\nconst AXIS_X_GROUP = 'Axis X';\nconst AXIS_Y_GROUP = 'Axis Y';\n\nconst values = [47, 36, 28, 16, 13, 8, 8, 3] as const;\n\nconst datasets = {\n  Categories: [\n    'this is the longest category name in this story',\n    'this is an even longer category name',\n    'this is a longer category name',\n    'another category',\n    'category name',\n    'category',\n    'category',\n    'ctg',\n  ],\n  URLs: [\n    'https://analytics.example.com/dashboards/traffic/regions/north-america/overview',\n    'https://cdn.assets.io/images/products/catalog/item-48291/preview.png',\n    'https://api.metrics.dev/v2/series/latency/p99',\n    'https://docs.elastic.co/guide/en/kibana',\n    'https://github.com/elastic/charts',\n    'https://elastic.co',\n    'https://kibana.dev',\n    'https://x.io',\n  ],\n  UUIDs: [\n    'a3f8c2e1-9b4d-4e7a-8c5f-1d2e3a4b5c6d',\n    '7b2e9f4a-1c8d-4a3e-9f6b-2e5c8a1d4f7b',\n    'e5d1a8c3-6f2b-4d9e-a7c4-8b3f1e6d2a9c',\n    '4c9b2e7f-3a1d-4f8c-b5e2-9d6a3c8f1b4e',\n    'f1a6d3b8-2e9c-4b7f-8d5a-3c6e9b2f5a8d',\n    '8d4e1a7c-5b2f-4c9e-a3d6-1f8b4e7c2a5d',\n    '2b7f9c4e-8a1d-4e6b-9c3f-5d2a8e1b4c7f',\n    'c6e3a9f2-4d1b-4a8e-b7c5-2f9d6a3e8b1c',\n  ],\n  Services: [\n    'checkout.payment.processor.stripe.webhook',\n    'search.query.coordinator.elasticsearch',\n    'auth.identity.provider.oauth',\n    'ingest.pipeline.parser',\n    'metrics.aggregator',\n    'api.gateway',\n    'cache.redis',\n    'logs.shipper',\n  ],\n} as const;\n\ntype DatasetKey = keyof typeof datasets;\n\nconst toData = (labels: readonly string[]) => labels.map((category, i) => ({ category, value: values[i] }));\n\nfunction parseThemeSize(raw: string): number | string | undefined {\n  const s = raw.trim();\n  if (!s) return undefined;\n  const pct = s.match(/^([\\d.]+)\\s*%$/);\n  if (pct) return `${pct[1]}%`;\n  const n = Number(s);\n  if (Number.isFinite(n)) return n;\n  return s;\n}\n\nconst getWrapAxisKnobs = (group: string) => {\n  const rotation = number('rotation', 0, { range: true, min: -90, max: 90, step: 1 }, group);\n  const alignmentVertical = customKnobs.enum.verticalTextAlignment('Alignment Vertical', undefined, { group });\n  const alignmentHorizontal = customKnobs.enum.horizontalTextAlignment('Alignment Horizontal', undefined, {\n    group,\n  });\n  const minLength = number('label minLength', 12, { min: 0, step: 1 }, group);\n  const maxLength = number('label maxLength (0 = auto)', 0, { min: 0, step: 1 }, group);\n  const minExtent = parseThemeSize(text('minExtent', '', group));\n  const maxExtent = parseThemeSize(text('maxExtent', '', group));\n  const wrapLines = number('wrapLines', 1, { min: 1, max: 10, step: 1 }, group);\n  const lineHeight = number('lineHeight', 1.2, { min: 0, max: 2, step: 0.1 }, group);\n  const showOverlapping = boolean('show overlapping', false, group);\n  const truncate = select(\n    'truncate',\n    { disabled: 'disabled', end: 'end', start: 'start', middle: 'middle' },\n    'disabled',\n    group,\n  );\n\n  return {\n    rotation,\n    alignmentVertical,\n    alignmentHorizontal,\n    minLength,\n    maxLength,\n    minExtent,\n    maxExtent,\n    wrapLines,\n    lineHeight,\n    showOverlapping,\n    truncate,\n  };\n};\n\nconst buildAxisStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePartial<AxisStyle> => {\n  const {\n    rotation,\n    lineHeight,\n    wrapLines,\n    minLength,\n    maxLength,\n    minExtent,\n    maxExtent,\n    alignmentHorizontal,\n    alignmentVertical,\n    truncate,\n  } = knobs;\n  const alignment =\n    alignmentHorizontal !== undefined || alignmentVertical !== undefined\n      ? {\n          ...(alignmentHorizontal !== undefined && { horizontal: alignmentHorizontal }),\n          ...(alignmentVertical !== undefined && { vertical: alignmentVertical }),\n        }\n      : undefined;\n\n  return {\n    ...(minExtent !== undefined && { minExtent }),\n    ...(maxExtent !== undefined && { maxExtent }),\n    tickLabel: {\n      rotation,\n      lineHeight,\n      wrapLines,\n      minLength,\n      ...(maxLength > 0 && { maxLength }),\n      ...(alignment !== undefined && { alignment }),\n      truncate: truncate === 'disabled' ? false : truncate,\n    },\n  };\n};\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const chartRotation = getNumberSelectKnob<Rotation>(\n    'Chart rotation',\n    { '0 deg': 0, '90 deg': 90, '-90 deg': -90, '180 deg': 180 },\n    0,\n    CHART_CONFIG_GROUP,\n  );\n  const datasetKey = select('Dataset', Object.keys(datasets) as DatasetKey[], 'Categories', CHART_CONFIG_GROUP);\n  const data = toData(datasets[datasetKey]);\n  const barCount = number('Number of bars', data.length, { min: 1, max: data.length, step: 1 }, CHART_CONFIG_GROUP);\n  const debug = boolean('debug', true, CHART_CONFIG_GROUP);\n\n  const xPosition = select('Position', { Bottom: Position.Bottom, Top: Position.Top }, Position.Bottom, AXIS_X_GROUP);\n  const yPosition = select('Position', { Left: Position.Left, Right: Position.Right }, Position.Left, AXIS_Y_GROUP);\n\n  const axisXKnobs = getWrapAxisKnobs(AXIS_X_GROUP);\n  const axisYKnobs = getWrapAxisKnobs(AXIS_Y_GROUP);\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings debug={debug} baseTheme={useBaseTheme()} rotation={chartRotation} />\n      <Axis\n        id=\"x-axis\"\n        position={xPosition}\n        title=\"X axis\"\n        showOverlappingLabels={axisXKnobs.showOverlapping}\n        style={buildAxisStyle(axisXKnobs)}\n      />\n      <Axis\n        id=\"y-axis\"\n        position={yPosition}\n        title=\"Y axis\"\n        showOverlappingTicks={axisYKnobs.showOverlapping}\n        style={buildAxisStyle(axisYKnobs)}\n      />\n      <BarSeries\n        id=\"bars\"\n        xScaleType={ScaleType.Ordinal}\n        yScaleType={ScaleType.Linear}\n        xAccessor=\"category\"\n        yAccessors={['value']}\n        data={data.slice(0, barCount)}\n      />\n    </Chart>\n  );\n};\n"; // @ts-ignore
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport { boolean, number, select, text } from '@storybook/addon-knobs';\nimport React from 'react';\n\nimport type { AxisStyle, RecursivePartial, Rotation } from '@elastic/charts';\nimport { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { customKnobs } from '../utils/knobs';\nimport { getNumberSelectKnob } from '../utils/knobs/custom';\n\nconst CHART_CONFIG_GROUP = 'Chart config';\nconst AXIS_X_GROUP = 'Axis X';\nconst AXIS_Y_GROUP = 'Axis Y';\n\nconst values = [47, 36, 28, 16, 13, 8, 8, 3] as const;\n\nconst datasets = {\n  Categories: [\n    'this is the longest category name in this story',\n    'this is an even longer category name',\n    'this is a longer category name',\n    'another category',\n    'category name',\n    'category',\n    'category',\n    'ctg',\n  ],\n  URLs: [\n    'https://analytics.example.com/dashboards/traffic/regions/north-america/overview',\n    'https://cdn.assets.io/images/products/catalog/item-48291/preview.png',\n    'https://api.metrics.dev/v2/series/latency/p99',\n    'https://docs.elastic.co/guide/en/kibana',\n    'https://github.com/elastic/charts',\n    'https://elastic.co',\n    'https://kibana.dev',\n    'https://x.io',\n  ],\n  UUIDs: [\n    'a3f8c2e1-9b4d-4e7a-8c5f-1d2e3a4b5c6d',\n    '7b2e9f4a-1c8d-4a3e-9f6b-2e5c8a1d4f7b',\n    'e5d1a8c3-6f2b-4d9e-a7c4-8b3f1e6d2a9c',\n    '4c9b2e7f-3a1d-4f8c-b5e2-9d6a3c8f1b4e',\n    'f1a6d3b8-2e9c-4b7f-8d5a-3c6e9b2f5a8d',\n    '8d4e1a7c-5b2f-4c9e-a3d6-1f8b4e7c2a5d',\n    '2b7f9c4e-8a1d-4e6b-9c3f-5d2a8e1b4c7f',\n    'c6e3a9f2-4d1b-4a8e-b7c5-2f9d6a3e8b1c',\n  ],\n  Services: [\n    'checkout.payment.processor.stripe.webhook',\n    'search.query.coordinator.elasticsearch',\n    'auth.identity.provider.oauth',\n    'ingest.pipeline.parser',\n    'metrics.aggregator',\n    'api.gateway',\n    'cache.redis',\n    'logs.shipper',\n  ],\n} as const;\n\ntype DatasetKey = keyof typeof datasets;\n\nconst toData = (labels: readonly string[]) => labels.map((category, i) => ({ category, value: values[i] }));\n\nfunction parseThemeSize(raw: string): number | string | undefined {\n  const s = raw.trim();\n  if (!s) return undefined;\n  const pct = s.match(/^([\\d.]+)\\s*%$/);\n  if (pct) return `${pct[1]}%`;\n  const n = Number(s);\n  if (Number.isFinite(n)) return n;\n  return s;\n}\n\nconst getWrapAxisKnobs = (group: string) => {\n  const rotation = number('rotation', 0, { range: true, min: -90, max: 90, step: 1 }, group);\n  const alignmentVertical = customKnobs.enum.verticalTextAlignment('Alignment Vertical', undefined, { group });\n  const alignmentHorizontal = customKnobs.enum.horizontalTextAlignment('Alignment Horizontal', undefined, {\n    group,\n  });\n  const minLength = number('label minLength', 12, { min: 0, step: 1 }, group);\n  const maxLength = number('label maxLength (0 = auto)', 0, { min: 0, step: 1 }, group);\n  const minExtent = parseThemeSize(text('minExtent', '', group));\n  const maxExtent = parseThemeSize(text('maxExtent', '', group));\n  const wrapLines = number('wrapLines', 1, { min: 1, max: 10, step: 1 }, group);\n  const lineHeight = number('lineHeight', 1.2, { min: 0, max: 2, step: 0.1 }, group);\n  const showOverlapping = boolean('show overlapping', false, group);\n  const truncate = select(\n    'truncate',\n    { disabled: 'disabled', end: 'end', start: 'start', middle: 'middle' },\n    'disabled',\n    group,\n  );\n  const visible = boolean('visible', true, group);\n\n  return {\n    rotation,\n    alignmentVertical,\n    alignmentHorizontal,\n    minLength,\n    maxLength,\n    minExtent,\n    maxExtent,\n    wrapLines,\n    lineHeight,\n    showOverlapping,\n    visible,\n    truncate,\n  };\n};\n\nconst buildAxisStyle = (knobs: ReturnType<typeof getWrapAxisKnobs>): RecursivePartial<AxisStyle> => {\n  const {\n    rotation,\n    lineHeight,\n    wrapLines,\n    minLength,\n    maxLength,\n    minExtent,\n    maxExtent,\n    alignmentHorizontal,\n    alignmentVertical,\n    truncate,\n    visible,\n  } = knobs;\n  const alignment =\n    alignmentHorizontal !== undefined || alignmentVertical !== undefined\n      ? {\n          ...(alignmentHorizontal !== undefined && { horizontal: alignmentHorizontal }),\n          ...(alignmentVertical !== undefined && { vertical: alignmentVertical }),\n        }\n      : undefined;\n\n  return {\n    ...(minExtent !== undefined && { minExtent }),\n    ...(maxExtent !== undefined && { maxExtent }),\n    tickLabel: {\n      rotation,\n      lineHeight,\n      wrapLines,\n      minLength,\n      visible,\n      ...(maxLength > 0 && { maxLength }),\n      ...(alignment !== undefined && { alignment }),\n      truncate: truncate === 'disabled' ? false : truncate,\n    },\n  };\n};\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const chartRotation = getNumberSelectKnob<Rotation>(\n    'Chart rotation',\n    { '0 deg': 0, '90 deg': 90, '-90 deg': -90, '180 deg': 180 },\n    0,\n    CHART_CONFIG_GROUP,\n  );\n  const datasetKey = select('Dataset', Object.keys(datasets) as DatasetKey[], 'Categories', CHART_CONFIG_GROUP);\n  const data = toData(datasets[datasetKey]);\n  const barCount = number('Number of bars', data.length, { min: 1, max: data.length, step: 1 }, CHART_CONFIG_GROUP);\n  const debug = boolean('debug', true, CHART_CONFIG_GROUP);\n\n  const xPosition = select('Position', { Bottom: Position.Bottom, Top: Position.Top }, Position.Bottom, AXIS_X_GROUP);\n  const yPosition = select('Position', { Left: Position.Left, Right: Position.Right }, Position.Left, AXIS_Y_GROUP);\n\n  const axisXKnobs = getWrapAxisKnobs(AXIS_X_GROUP);\n  const axisYKnobs = getWrapAxisKnobs(AXIS_Y_GROUP);\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings debug={debug} baseTheme={useBaseTheme()} rotation={chartRotation} />\n      <Axis\n        id=\"x-axis\"\n        position={xPosition}\n        title=\"X axis\"\n        showOverlappingLabels={axisXKnobs.showOverlapping}\n        style={buildAxisStyle(axisXKnobs)}\n      />\n      <Axis\n        id=\"y-axis\"\n        position={yPosition}\n        title=\"Y axis\"\n        showOverlappingTicks={axisYKnobs.showOverlapping}\n        style={buildAxisStyle(axisYKnobs)}\n      />\n      <BarSeries\n        id=\"bars\"\n        xScaleType={ScaleType.Ordinal}\n        yScaleType={ScaleType.Linear}\n        xAccessor=\"category\"\n        yAccessors={['value']}\n        data={data.slice(0, barCount)}\n      />\n    </Chart>\n  );\n};\n"; // @ts-ignore
 
 var __LOCATIONS_MAP__ = {
   "Example": {
     "startLoc": {
       "col": 36,
-      "line": 154
+      "line": 158
     },
     "endLoc": {
       "col": 1,
-      "line": 199
+      "line": 203
     },
     "startBody": {
       "col": 36,
-      "line": 154
+      "line": 158
     },
     "endBody": {
       "col": 1,
-      "line": 199
+      "line": 203
     }
   }
 };
@@ -108218,6 +108241,7 @@ var getWrapAxisKnobs = function getWrapAxisKnobs(group) {
     start: 'start',
     middle: 'middle'
   }, 'disabled', group);
+  var visible = (0, addon_knobs_1["boolean"])('visible', true, group);
   return {
     rotation: rotation,
     alignmentVertical: alignmentVertical,
@@ -108229,6 +108253,7 @@ var getWrapAxisKnobs = function getWrapAxisKnobs(group) {
     wrapLines: wrapLines,
     lineHeight: lineHeight,
     showOverlapping: showOverlapping,
+    visible: visible,
     truncate: truncate
   };
 };
@@ -108243,7 +108268,8 @@ var buildAxisStyle = function buildAxisStyle(knobs) {
       maxExtent = knobs.maxExtent,
       alignmentHorizontal = knobs.alignmentHorizontal,
       alignmentVertical = knobs.alignmentVertical,
-      truncate = knobs.truncate;
+      truncate = knobs.truncate,
+      visible = knobs.visible;
   var alignment = alignmentHorizontal !== undefined || alignmentVertical !== undefined ? Object.assign({}, alignmentHorizontal !== undefined && {
     horizontal: alignmentHorizontal
   }, alignmentVertical !== undefined && {
@@ -108258,7 +108284,8 @@ var buildAxisStyle = function buildAxisStyle(knobs) {
       rotation: rotation,
       lineHeight: lineHeight,
       wrapLines: wrapLines,
-      minLength: minLength
+      minLength: minLength,
+      visible: visible
     }, maxLength > 0 && {
       maxLength: maxLength
     }, alignment !== undefined && {
@@ -180001,4 +180028,4 @@ module.exports = __webpack_require__(/*! /app/storybook/generated-stories-entry.
 /***/ })
 
 },[[0,"runtime~main","vendors~main"]]]);
-//# sourceMappingURL=main.1a150321.iframe.bundle.js.map
+//# sourceMappingURL=main.425a7917.iframe.bundle.js.map
