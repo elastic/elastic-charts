@@ -20954,6 +20954,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.PROGRESS_BAR_TARGET_SIZE = void 0;
 exports.getFitValueFontSize = getFitValueFontSize;
 exports.getMetricTextPartDimensions = getMetricTextPartDimensions;
+exports.getMinimumMetricHeight = getMinimumMetricHeight;
 exports.getFittedFontSizes = getFittedFontSizes;
 exports.getFixedFontSizes = getFixedFontSizes;
 exports.getSnappedFontSizes = getSnappedFontSizes;
@@ -21245,9 +21246,30 @@ function getMetricTextPartDimensions(datum, panel, style, locale) {
     iconGridColumnWidth: iconGridColumnWidth
   };
 }
+/**
+ * Computes the minimum height required to render a metric tile without clipping
+ * @internal
+ */
+
+
+function getMinimumMetricHeight(style) {
+  var _ranges$0$2, _ranges$2;
+
+  var ranges = getHeightBpRanges(style.spacing);
+  var smallestBreakpoint = (_ranges$0$2 = (_ranges$2 = ranges[0]) === null || _ranges$2 === void 0 ? void 0 : _ranges$2[2]) !== null && _ranges$0$2 !== void 0 ? _ranges$0$2 : 's';
+  var sizes = getHeightBasedFontSizes(smallestBreakpoint, style);
+  var valueFontSize = style.valueFontSize === 'fit' ? style.minValueFontSize : sizes.valueFontSize;
+
+  var _ref4 = style.spacing === 'large' ? getLargeMetricSpacingLayout(smallestBreakpoint) : getSmallMetricSpacingLayout(style.valuePosition),
+      panelPadding = _ref4.panelPadding;
+
+  var valueHeight = valueFontSize * LINE_HEIGHT;
+  var titleHeight = sizes.titleFontSize * LINE_HEIGHT;
+  return Math.ceil(valueHeight + titleHeight + panelPadding);
+}
 
 function getHeightBasedFontSizes(size, style, progressBarSizeOverride) {
-  var _ref4;
+  var _ref5;
 
   var spacingMode = style.spacing;
   var valueFontSizeMap = getValueFontSizeMap(spacingMode);
@@ -21261,7 +21283,7 @@ function getHeightBasedFontSizes(size, style, progressBarSizeOverride) {
     extraFontSize: extraFontSize,
     valueFontSize: valueFontSize,
     valuePartFontSize: valuePartFontSize,
-    progressBarThickness: (_ref4 = (0, progress_1.getMetricProgressBarThickness)(progressBarSizeOverride !== null && progressBarSizeOverride !== void 0 ? progressBarSizeOverride : PROGRESS_BAR_SIZE[size])) !== null && _ref4 !== void 0 ? _ref4 : 4
+    progressBarThickness: (_ref5 = (0, progress_1.getMetricProgressBarThickness)(progressBarSizeOverride !== null && progressBarSizeOverride !== void 0 ? progressBarSizeOverride : PROGRESS_BAR_SIZE[size])) !== null && _ref5 !== void 0 ? _ref5 : 4
   };
 }
 /** @internal */
@@ -95052,7 +95074,7 @@ exports.AMSTERDAM_DARK_THEME = {
     barBackground: '#343741',
     emptyBackground: colors_1.Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
-    minHeight: 64,
+    minHeight: 80,
     titleWeight: 500
   },
   bulletGraph: {
@@ -95626,7 +95648,7 @@ exports.AMSTERDAM_LIGHT_THEME = {
     barBackground: '#EDF0F5',
     emptyBackground: colors_1.Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
-    minHeight: 64,
+    minHeight: 80,
     titleWeight: 500
   },
   bulletGraph: {
@@ -96501,7 +96523,7 @@ exports.DARK_THEME = {
     barBackground: base_colors_1.DARK_BACKGROUND_COLORS.backgroundBaseDisabled,
     emptyBackground: colors_1.Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
-    minHeight: 64,
+    minHeight: 80,
     titleWeight: 500
   },
   bulletGraph: theme_1.DARK_THEME_BULLET_STYLE,
@@ -97258,7 +97280,7 @@ exports.LEGACY_DARK_THEME = {
     barBackground: '#343741',
     emptyBackground: colors_1.Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
-    minHeight: 64,
+    minHeight: 80,
     titleWeight: 500
   },
   bulletGraph: theme_1.DARK_THEME_BULLET_STYLE,
@@ -97804,7 +97826,7 @@ exports.LEGACY_LIGHT_THEME = {
     barBackground: '#EDF0F5',
     emptyBackground: colors_1.Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
-    minHeight: 64,
+    minHeight: 80,
     titleWeight: 500
   },
   bulletGraph: theme_1.LIGHT_THEME_BULLET_STYLE,
@@ -98372,7 +98394,7 @@ exports.LIGHT_THEME = {
     barBackground: base_colors_1.LIGHT_BACKGROUND_COLORS.backgroundBaseDisabled,
     emptyBackground: colors_1.Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
-    minHeight: 64,
+    minHeight: 80,
     titleWeight: 500
   },
   bulletGraph: theme_1.LIGHT_THEME_BULLET_STYLE,
@@ -180028,4 +180050,4 @@ module.exports = __webpack_require__(/*! /app/storybook/generated-stories-entry.
 /***/ })
 
 },[[0,"runtime~main","vendors~main"]]]);
-//# sourceMappingURL=main.425a7917.iframe.bundle.js.map
+//# sourceMappingURL=main.9e6eeb52.iframe.bundle.js.map
