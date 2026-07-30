@@ -326,8 +326,10 @@ export function runFrame(c: TraceCanvasController, deltaT: number) {
   );
 
   // Lay out badges over the visible lane range (measurement-dependent, so kept out of buildGeometry).
+  // Also runs in 'inline' label mode without a badgeAccessor: the pass computes the inline-label
+  // right-edge shift (labelX) for every visible label, badge-bearing or not (supersedes ADR 0020).
   let geom = geomBase;
-  if (traceSpec.badgeAccessor) {
+  if (traceSpec.badgeAccessor || style.labelPosition === 'inline') {
     const firstLane = Math.max(0, Math.floor(c.scrollOffset / style.laneHeight));
     const lastLane = Math.min(spans.length - 1, Math.floor((c.scrollOffset + geomBase.plot.height) / style.laneHeight));
     const badgesByLane = layoutBadges(

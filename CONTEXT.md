@@ -165,7 +165,7 @@ segment. It makes no claim that the span was active or waiting.
 _Avoid_: ongoing region, in-progress region, WIP, unconfirmed region.
 
 **Label position**:
-The rendering mode for span name labels: `gutter` (drawn in the fixed left panel — the default), `inline` (drawn on a dedicated row below the bar, starting near the bar's start edge and overflowing right — the Kibana APM style), or `none` (labels omitted; accessible only via tooltip and screen-reader table). Set via `theme.trace.labelPosition`. No auto-switching — the caller sets the mode explicitly.
+The rendering mode for span name labels: `gutter` (drawn in the fixed left panel — the default), `inline` (drawn on a dedicated row below the bar, anchored at the bar's start edge; when the label — with any adjacent **Span badge** cluster — would overflow the plot's right edge it is shifted left to stay fully on-screen rather than clipping, so a span that starts near the right edge keeps a readable name — the Kibana APM style), or `none` (labels omitted; accessible only via tooltip and screen-reader table). Set via `theme.trace.labelPosition`. No auto-switching — the caller sets the mode explicitly. The on-screen shift is unified across bare labels and label+badge groups (see [ADR 0020](./docs/adr/trace-viz/0020-inline-labels-below-bar.md) addendum, which supersedes the original clip-at-edge behavior).
 _Avoid_: label mode, label placement.
 
 **Span badge**:

@@ -26,6 +26,15 @@ export interface TraceStyle {
   laneHeight: number;
   /** Thickness of the total-duration line drawn for each span, in px. */
   totalLineThickness: number;
+  /**
+   * Minimum rendered width (px) of a span's mark, so a very short span stays visible instead of
+   * collapsing to a sub-pixel sliver on a skewed trace. Applies to the duration bar
+   * (`spanDisplay: 'duration'`) and, in the default `'segments'` mode, to the total line plus a
+   * guaranteed active mark for a sub-floor span. Hit-testing mirrors the floor so the whole visible
+   * mark is hoverable; the span's `start`/`end` timing values are unchanged.
+   * See [ADR 0036](../../../../../../../docs/adr/trace-viz/0036-skewed-duration-readability.md).
+   */
+  minSpanWidthPx: number;
   /** Color of the total-duration line (muted). */
   totalLineColor: Color;
   /** Color of the active (self-time) segments (stronger). */
@@ -206,6 +215,7 @@ export const DEFAULT_TRACE_LAYOUT: Pick<
   | 'timeAxisLayerCount'
   | 'laneHeight'
   | 'totalLineThickness'
+  | 'minSpanWidthPx'
   | 'selectedSegmentStrokeWidth'
   | 'criticalPathThickness'
   | 'labelPosition'
@@ -217,6 +227,7 @@ export const DEFAULT_TRACE_LAYOUT: Pick<
   timeAxisLayerCount: 2,
   laneHeight: 24,
   totalLineThickness: 2,
+  minSpanWidthPx: 5,
   selectedSegmentStrokeWidth: 2,
   criticalPathThickness: 2,
   labelPosition: 'gutter',
@@ -391,6 +402,12 @@ export interface TraceGeometry {
    * visual — `activeSegments` (and therefore `selfTime`, tooltip, events, SR) are unaffected.
    */
   spanDisplay: 'segments' | 'duration';
+  /**
+   * Minimum rendered/hit width (px) of a span's mark (ADR 0036 / B1); mirrors `TraceStyle.minSpanWidthPx`.
+   * The draw pass floors a short span's mark to this width and `pickRegion` widens the span's hit area
+   * to match, so a floored (sub-pixel) span is hoverable across the whole visible mark.
+   */
+  minSpanWidthPx: number;
   /**
    * The lane currently focused by keyboard navigation, or `null` when no lane is focused.
    * Distinct from `hoverIndex` (mouse-driven). Drawn as a full-width background highlight.

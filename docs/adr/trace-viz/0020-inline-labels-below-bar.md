@@ -60,3 +60,30 @@ the `measureText` cost per visible label.
 **Auto-collapse breakpoint:** Automatically switch `labelPosition` to `'inline'` when
 `chartDimensions.width < responsiveBreakpointPx`. Considered during implementation; scoped out to a
 future spec. The explicit `labelPosition` prop is sufficient for current use cases.
+
+## Addendum — inline labels now shift left to stay on-screen (supersedes the "clip, no flip" decision)
+
+**Status:** the *Not implemented → Right-edge flip* and *`measureText` per label* consequences above
+are **superseded**; the below-bar two-band layout is unchanged.
+
+Spec 27 (Span badges, ADR 0029) reintroduced label movement: an inline **label + badge** group is
+shifted left when it would overflow the right edge, so the group stays fully visible. That left bare
+inline labels (no badge) still clipping at the plot edge per the original decision — an inconsistency
+made obvious by a skew stress case (story `34_min_span_width`), where many short built-in
+steps start just left of the right edge behind a long dominating span and their names clipped away
+while the badge-bearing steps beside them stayed readable.
+
+**Decision:** unify on the **shift**. Every visible inline label is pushed left to stay on-screen when
+it (with any badge cluster) would overflow the plot's right edge — bare labels and label+badge groups
+share one rule. This applies in all inline traces, including those with **no `badgeAccessor`**.
+
+**Consequences (reversing the two superseded points):**
+- A **`measureText` per visible inline label** is now paid (the shift needs the label width). It is
+  bounded to the visible lane range and reuses the label measurer already used for badge layout, so
+  the cost is the same order as gutter-mode label wrapping. The original "no measureText" saving is
+  intentionally given up for on-screen readability.
+- The shift is computed in the badge/label **layout pass** (reported via `LaneBadgeLayout.labelX`), so
+  the renderer still consumes a single `labelX` and the geometry→renderer seam (ADR 0001) is unchanged.
+  A label-only lane that needs a shift produces an `items: []`, `labelX`-only entry.
+- Bar-start alignment is still the default; the shift only engages on overflow. Labels that fit are
+  drawn at the bar start exactly as before, so non-overflowing traces are visually unchanged.

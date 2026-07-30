@@ -4104,6 +4104,7 @@ export interface TraceStyle {
     gutterWidth: number;
     labelPosition: 'gutter' | 'inline' | 'none';
     laneHeight: number;
+    minSpanWidthPx: number;
     selectedSegmentStroke: Color;
     selectedSegmentStrokeWidth: number;
     timeAxisLayerCount: number;

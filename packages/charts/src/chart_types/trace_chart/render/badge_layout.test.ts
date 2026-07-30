@@ -23,6 +23,7 @@ const baseStyle = (labelPosition: TraceStyle['labelPosition']): TraceStyle =>
     timeAxisLayerCount: 2,
     laneHeight: 24,
     totalLineThickness: 2,
+    minSpanWidthPx: 5,
     totalLineColor: '#000',
     activeSegmentColor: '#000',
     gutterLabel: { fontFamily: 'x', fontSize: 10, color: '#000' },
@@ -72,6 +73,7 @@ const geom = (
     scrollOffset: 0,
     xScaleType: 'linear',
     spanDisplay: 'segments',
+    minSpanWidthPx: 5,
     focusedLaneIndex: null,
     resolvedSelection: [],
     scale,
@@ -123,6 +125,26 @@ describe('layoutBadges — inline', () => {
     expect(lane.labelX!).toBeLessThan(770); // pushed left of the bar start
     const last = lane.items.at(-1)!;
     expect(last.x + last.width).toBeLessThanOrEqual(800); // stays within the plot right edge
+  });
+
+  it('shifts a label-only lane (no badges) left when the label would overflow the right edge', () => {
+    // Bar starts near the right edge (x=780); the long name overflows plotRight (800).
+    const g = geom([span('s', [], 'a-very-long-span-name', 0, 10)], () => 780, 'inline');
+    const out = layoutBadges(g, baseStyle('inline'), 'm', measure, measure, 0, 0);
+    const lane = out.get(0)!;
+    expect(lane).toBeDefined();
+    expect(lane.items).toHaveLength(0); // label-only lane carries no badge items
+    expect(lane.labelX).toBeDefined();
+    expect(lane.labelX!).toBeLessThan(780); // pushed left of the bar start
+    // The shifted label ends at or before the plot right edge.
+    const labelWidth = measure('a-very-long-span-name', 10);
+    expect(lane.labelX! + labelWidth).toBeLessThanOrEqual(800 + 1e-6);
+  });
+
+  it('records no entry for a label-only lane whose label fits without a shift', () => {
+    const g = geom([span('s', [], 'root', 0, 10)], () => 200, 'inline'); // bar at plot.left, fits
+    const out = layoutBadges(g, baseStyle('inline'), 'm', measure, measure, 0, 0);
+    expect(out.has(0)).toBe(false);
   });
 
   it('truncates then omits trailing badges that do not fit', () => {

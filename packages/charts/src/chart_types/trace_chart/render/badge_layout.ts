@@ -202,8 +202,10 @@ export function computeBadgeGutterWidth(
  * The pure badge-layout pass (Spec 27). For each **visible** lane, resolves the participating Span
  * badges for the current Label position and lays them out into pill rectangles the renderer draws and
  * `pickBadge` hit-tests. Modes:
- * - `inline`: badges sit adjacent to the inline label (below the bar); if the label+badges group would
- *   overflow the right edge it is shifted left (reported via `labelX`), breaking bar-start alignment.
+ * - `inline`: badges sit adjacent to the inline label (below the bar); if the label(+badges) group
+ *   would overflow the right edge it is shifted left (reported via `labelX`), breaking bar-start
+ *   alignment. The shift applies to **every** visible inline label, including label-only lanes with no
+ *   participating badge (which produce an `items: []`, `labelX`-only entry) — supersedes ADR 0020.
  * - `gutter`: badges sit on a row below the gutter label, at the label's x (library-fixed placement).
  * - `none`: badges sit in the fixed, lane-aligned badge-only gutter (does not move on zoom/pan).
  *
@@ -231,27 +233,39 @@ export function layoutBadges(
 
   for (let i = Math.max(0, firstLane); i <= lastLane && i < spans.length; i++) {
     const span = spans[i]!;
-    if (!span.badges || span.badges.length === 0) continue;
-    const participating = span.badges.filter((b) => participatesIn(b, position));
-    if (participating.length === 0) continue;
+    // Inline mode shifts label-only lanes too, so it must not be gated on the presence of badges;
+    // gutter/none still require a participating badge before producing an entry.
+    const participating = span.badges ? span.badges.filter((b) => participatesIn(b, position)) : [];
+    if (position !== 'inline' && participating.length === 0) continue;
 
     const laneTop = plot.top + i * laneHeight - scrollOffset;
 
     if (position === 'inline') {
+      // Inline: the label (and any badge cluster) is pushed left to stay fully on-screen for EVERY
+      // lane with a visible inline label, not only badge-bearing ones — the badge-group shift and the
+      // bare-label shift share one rule (supersedes ADR 0020's clip-at-edge decision). A lane with
+      // neither a name nor a participating badge has nothing to place or shift.
+      if (!span.name && participating.length === 0) continue;
       const rawX1 = scale(span.start);
       const rawX2 = scale(span.end);
       if (rawX2 < plot.left || rawX1 > plotRight) continue; // no visible bar to anchor to
       const barStartX = Math.max(plot.left, rawX1);
+      const hasBadges = participating.length > 0;
       const labelWidth = span.name ? labelMeasure(span.name, style.gutterLabel.fontSize) : 0;
-      const clusterNatural = naturalClusterWidth(participating, m, bstyle.gap, measure);
-      const groupWidth = labelWidth + bstyle.labelGap + clusterNatural;
-      // Right-edge shift: push the whole label+badges group left when it would overflow.
+      const clusterNatural = hasBadges ? naturalClusterWidth(participating, m, bstyle.gap, measure) : 0;
+      // labelGap separates the label from the badge cluster only when there are badges to separate.
+      const labelGap = hasBadges ? bstyle.labelGap : 0;
+      const groupWidth = labelWidth + labelGap + clusterNatural;
+      // Right-edge shift: push the whole label(+badges) group left when it would overflow.
       const groupLeft = barStartX + groupWidth <= plotRight ? barStartX : Math.max(plot.left, plotRight - groupWidth);
-      const clusterStartX = groupLeft + labelWidth + bstyle.labelGap;
+      const labelX = groupLeft === barStartX ? undefined : groupLeft;
       const centerY = laneTop + laneHeight - LANE_PADDING - labelBandPx / 2;
-      const items = layoutCluster(participating, clusterStartX, centerY, plotRight - LABEL_INSET, m, bstyle, measure);
-      if (items.length === 0) continue;
-      result.set(i, { labelX: groupLeft === barStartX ? undefined : groupLeft, items });
+      const items = hasBadges
+        ? layoutCluster(participating, groupLeft + labelWidth + labelGap, centerY, plotRight - LABEL_INSET, m, bstyle, measure)
+        : [];
+      // Record only when there is something to draw (badges) or a shift to apply (label pushed left).
+      if (items.length === 0 && labelX === undefined) continue;
+      result.set(i, { labelX, items });
     } else if (position === 'gutter') {
       // Beside the gutter label, sharing its row (vertically centered on the lane, like the label).
       // Badges are right-aligned in the gutter; the label keeps at least `minLabelWidth` on the left

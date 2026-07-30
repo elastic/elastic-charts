@@ -58,6 +58,7 @@ stable and never reused; the list below is grouped by theme for readability only
 
 - [0016 — Connections are an explicit consumer-supplied prop, not derived from OTel links](./0016-connections-explicit-prop.md) *(deferred; Spec 33)*
 - [0023 — Running-span model: optional end, domain-max provisional edge, dashed visual](./0023-running-span-model.md) *(deferred; Spec 32)*
+- [0036 — Skewed-duration readability: minimum span mark + interactive inverse-fisheye time compression](./0036-skewed-duration-readability.md) *(B1 implemented; B2 deferred, see Spec 34)*
 
 ## Spec plans
 
@@ -71,5 +72,6 @@ Only the two not-yet-implemented features remain as standalone spec plans, track
 
 - [Spec 32 — Running spans (in-progress visualization)](./specs/spec-32-running-spans.md)
 - [Spec 33 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-33-connections.md)
+- [Spec 34 — Time-range compression (interactive inverse fisheye)](./specs/spec-34-time-range-compression.md) *(design-only; rationale in ADR 0036)*
 
 See the repo root [`CONTEXT.md`](../../../CONTEXT.md) for the domain glossary.

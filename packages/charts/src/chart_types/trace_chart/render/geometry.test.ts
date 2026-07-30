@@ -24,6 +24,7 @@ const style: TraceStyle = {
   timeAxisLayerCount: 2,
   laneHeight: 24,
   totalLineThickness: 2,
+  minSpanWidthPx: 5,
   totalLineColor: '#ccc',
   activeSegmentColor: '#007',
   gutterLabel: { fontFamily: 'monospace', fontSize: 11, color: '#333' },

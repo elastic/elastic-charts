@@ -162,6 +162,7 @@ export function buildGeometry(
     scrollOffset,
     xScaleType,
     spanDisplay,
+    minSpanWidthPx: style.minSpanWidthPx,
     focusedLaneIndex,
     resolvedSelection,
     scale,

@@ -60,6 +60,7 @@ const style: TraceStyle = {
   timeAxisLayerCount: 2,
   laneHeight: 24,
   totalLineThickness: 2,
+  minSpanWidthPx: 5,
   totalLineColor: '#aaa',
   activeSegmentColor: '#1f6feb',
   gutterLabel: { fontFamily: 'monospace', fontSize: 11, color: '#333' },
@@ -130,6 +131,7 @@ function makeGeom(overrides: Partial<TraceGeometry> = {}): TraceGeometry {
     scrollOffset: 0,
     xScaleType: 'linear',
     spanDisplay: 'segments',
+    minSpanWidthPx: 5,
     focusedLaneIndex: null,
     resolvedSelection: [],
     scale: defaultScale,
@@ -246,6 +248,92 @@ describe("draw — spanDisplay 'duration'", () => {
     draw(ctx, makeGeom({ spanDisplay: 'duration' }), style);
     // renderRect fills each bar. SpanA/B/C each get exactly one filled bar.
     expect(ctx.fill).toHaveBeenCalledTimes(3);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: minimum span width (ADR 0036 / B1)
+// ---------------------------------------------------------------------------
+
+describe('draw — minimum span width (ADR 0036 / B1)', () => {
+  // defaultScale maps 1ms → 0.7px, so a 2ms extent is 1.4px — well below the 5px floor.
+  const tinySpan = (activeSegments: NormalizedSpan['activeSegments'], start = 500, end = 502): NormalizedSpan[] => [
+    {
+      id: 't',
+      name: 'Tiny',
+      start,
+      end,
+      activeSegments,
+      meta: { id: 't', name: 'Tiny', traceId: 't1', start, end } satisfies TraceDatum,
+    },
+  ];
+
+  it("duration mode floors a sub-5px span's bar to minSpanWidthPx", () => {
+    const ctx = makeCtx();
+    draw(ctx, makeGeom({ spans: tinySpan([{ start: 500, end: 502 }]), spanDisplay: 'duration' }), style);
+    // rect calls: [lane-area clip (width 700), floored bar (width 5)].
+    const widths = (ctx.rect as jest.Mock).mock.calls.map(([, , w]: [number, number, number]) => w);
+    expect(widths).toContain(style.minSpanWidthPx);
+  });
+
+  it('segments mode floors the total line and draws one floored active mark for a sub-floor active leaf', () => {
+    const ctx = makeCtx();
+    draw(ctx, makeGeom({ spans: tinySpan([{ start: 500, end: 502 }]) }), style);
+    // Total line floored to minSpanWidthPx.
+    const [mx] = (ctx.moveTo as jest.Mock).mock.calls[0] as [number, number];
+    const [lx] = (ctx.lineTo as jest.Mock).mock.calls[0] as [number, number];
+    expect(lx - mx).toBe(style.minSpanWidthPx);
+    // The sub-pixel active segment collapses into a single floored active mark: 1 active rect + 1 clip.
+    expect(ctx.rect).toHaveBeenCalledTimes(2);
+    const widths = (ctx.rect as jest.Mock).mock.calls.map(([, , w]: [number, number, number]) => w);
+    expect(widths).toContain(style.minSpanWidthPx);
+  });
+
+  it('segments mode draws only the muted total line (no active mark) for a sub-floor span with no active execution', () => {
+    const ctx = makeCtx();
+    draw(ctx, makeGeom({ spans: tinySpan([]) }), style);
+    const [mx] = (ctx.moveTo as jest.Mock).mock.calls[0] as [number, number];
+    const [lx] = (ctx.lineTo as jest.Mock).mock.calls[0] as [number, number];
+    expect(lx - mx).toBe(style.minSpanWidthPx);
+    // No active execution → no floored active mark: only the lane-area clip rect is drawn.
+    expect(ctx.rect).toHaveBeenCalledTimes(1);
+  });
+
+  it('anchors a floored mark inside the plot at the right edge instead of spilling past plotRight', () => {
+    const ctx = makeCtx();
+    // start=999, end=1000 → scale(999)=899.3, scale(1000)=900 (=plotRight). Left-anchoring the 5px
+    // floor would end at 904.3 > 900, so the mark is nudged left to sit flush inside the plot.
+    draw(ctx, makeGeom({ spans: tinySpan([{ start: 999, end: 1000 }], 999, 1000), spanDisplay: 'duration' }), style);
+    const barCall = (ctx.rect as jest.Mock).mock.calls.find(
+      ([, , w]: [number, number, number]) => w === style.minSpanWidthPx,
+    ) as [number, number, number] | undefined;
+    expect(barCall).toBeDefined();
+    const [x, , w] = barCall!;
+    expect(x + w).toBeLessThanOrEqual(PLOT_LEFT + PLOT_WIDTH);
+    expect(x).toBe(PLOT_LEFT + PLOT_WIDTH - style.minSpanWidthPx);
+  });
+
+  it('leaves a wide span with tiny internal active segments proportional (does not floor segments)', () => {
+    const ctx = makeCtx();
+    // Wide span (700px) whose lone active segment is only 2ms (1.4px). The span is already visible, so
+    // B1 must not inflate the segment — it stays sub-floor (proportional), not floored to 5px.
+    const wide: NormalizedSpan[] = [
+      {
+        id: 'w',
+        name: 'Wide',
+        start: 0,
+        end: 1000,
+        activeSegments: [{ start: 500, end: 502 }],
+        meta: { id: 'w', name: 'Wide', traceId: 't1', start: 0, end: 1000 } satisfies TraceDatum,
+      },
+    ];
+    draw(ctx, makeGeom({ spans: wide }), style);
+    // The one drawn active-segment rect keeps its true (sub-floor) width, well under minSpanWidthPx.
+    const segWidths = (ctx.rect as jest.Mock).mock.calls
+      .map(([, , w]: [number, number, number]) => w)
+      .filter((w: number) => w < PLOT_WIDTH); // exclude the full-width lane-area clip rect
+    expect(segWidths).toHaveLength(1);
+    expect(segWidths[0]).toBeLessThan(style.minSpanWidthPx);
   });
 });
 
@@ -877,6 +965,50 @@ describe('pickRegion — collapsed lane', () => {
     expect(result).not.toBeNull();
     expect(result!.region).toBe('waiting');
     expect(result!.segmentIndex).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: pickRegion — min-span-width hit area (ADR 0036 / B1)
+// ---------------------------------------------------------------------------
+
+describe('pickRegion — min-span-width hit area (ADR 0036 / B1)', () => {
+  // A 2 ms span → 1.4 px wide on defaultScale, floored to a 5 px mark. scale(500)=550, so the floored
+  // mark spans x ∈ [550, 555]. The true extent ends at x≈551.4, so most of the visible mark maps to a
+  // time past span.end and would read as 'empty' without the floor-aware hit area.
+  const tiny: NormalizedSpan[] = [
+    {
+      id: 't',
+      name: 'Tiny',
+      start: 500,
+      end: 502,
+      activeSegments: [{ start: 500, end: 502 }],
+      meta: { id: 't', name: 'Tiny', traceId: 't1', start: 500, end: 502 } satisfies TraceDatum,
+    },
+  ];
+
+  it('resolves a real region (not empty) anywhere under the floored mark', () => {
+    const geom = makeGeom({ spans: tiny });
+    // x=554 is inside the floored mark [550,555] but maps to t≈505.7 > span.end (502).
+    const result = pickRegion(554, 40, geom);
+    expect(result).not.toBeNull();
+    expect(result!.index).toBe(0);
+    expect(result!.region).not.toBe('empty');
+    expect(result!.region).toBe('active');
+  });
+
+  it('still returns empty just outside the floored mark', () => {
+    const geom = makeGeom({ spans: tiny });
+    // x=560 is past the floored mark's right edge (555) and maps to t≈514 > span.end → empty.
+    const result = pickRegion(560, 40, geom);
+    expect(result).not.toBeNull();
+    expect(result!.region).toBe('empty');
+  });
+
+  it('does not widen a wide span (floored mark equals its natural extent)', () => {
+    // SpanA spans [0,1000] → [200,900]; x=910 is outside both the natural and floored extent → empty.
+    const result = pickRegion(910, 40, makeGeom());
+    expect(result!.region).toBe('empty');
   });
 });
 

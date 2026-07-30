@@ -34,6 +34,29 @@ import type { TraceSpanBadgeColor } from '../trace_api';
 /** Zero-width stroke used for active-segment rects (filled only, no visible border). */
 const NO_STROKE: Stroke = { color: Colors.Transparent.rgba, width: 0 };
 
+/**
+ * Clamps a mark's `[rawStartX, rawEndX]` to the plot and floors its width to `minW` so a very short
+ * span never collapses to a sub-pixel sliver (ADR 0036 / B1). Left-anchored at the true start; when the
+ * floored mark would spill past the right edge it is nudged left to sit flush inside the plot. Returns
+ * `null` when the mark is entirely outside `[plotLeft, plotRight]`. Purely visual — picking and timing
+ * read the unfloored scale, so a floored mark can be wider than its hit area (accepted, ADR 0036).
+ * @internal
+ */
+function flooredMarkX(
+  rawStartX: number,
+  rawEndX: number,
+  plotLeft: number,
+  plotRight: number,
+  minW: number,
+): { x: number; width: number } | null {
+  if (rawEndX < plotLeft || rawStartX > plotRight) return null;
+  const x = Math.max(plotLeft, rawStartX);
+  const naturalW = Math.min(plotRight, rawEndX) - x;
+  if (naturalW >= minW) return { x, width: naturalW };
+  // Floor the width, keeping the true start where possible but never spilling past the right edge.
+  return { x: Math.max(plotLeft, Math.min(rawStartX, plotRight - minW)), width: minW };
+}
+
 /** The element type of `TraceGeometry.spans` (a prepared, immutable `NormalizedSpan`). */
 type TraceGeometrySpan = TraceGeometry['spans'][number];
 
@@ -153,6 +176,8 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
     };
 
     const plotRight = plot.left + plot.width;
+    // Minimum rendered span-mark width (ADR 0036 / B1): floors a very short span so it stays visible.
+    const minSpanWidthPx = style.minSpanWidthPx;
 
     // In inline mode each lane is split vertically: a bar band at the top and a label band beneath.
     // For gutter/none the label band is zero-height and all geometry reduces to today's behaviour.
@@ -221,60 +246,76 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
         // --- Duration bar (ADR 0035): one filled rect spanning the full [start, end] extent ---
         // The "Kibana APM waterfall" look. `activeSegments` are intentionally NOT drawn here (they
         // still drive selfTime/tooltip/events/SR); the bar uses the span-level color-group fill.
-        if (rawX2 >= plot.left && rawX1 <= plotRight) {
-          const clampedX = Math.max(plot.left, rawX1);
-          const clampedW = Math.min(plotRight, rawX2) - clampedX;
-          if (clampedW > 0) {
-            renderRect(
-              ctx,
-              { x: clampedX, y: barTop, width: clampedW, height: barBottom - barTop },
-              activeFill,
-              NO_STROKE,
-              true,
-            );
-          }
+        // The bar width is floored to minSpanWidthPx so a sub-pixel span stays visible (ADR 0036 / B1).
+        const mark = flooredMarkX(rawX1, rawX2, plot.left, plotRight, minSpanWidthPx);
+        if (mark) {
+          renderRect(
+            ctx,
+            { x: mark.x, y: barTop, width: mark.width, height: barBottom - barTop },
+            activeFill,
+            NO_STROKE,
+            true,
+          );
         }
       } else {
         // --- Total-duration line (thin horizontal rule for the full span extent) ---
-        // Cull entirely-out-of-range spans, then clamp to plot bounds so the line
-        // never paints leftward into the gutter over the span-name labels. Mirrors
-        // the clamp already applied to active-segment rects below.
-        if (rawX2 >= plot.left && rawX1 <= plotRight) {
-          const lineX1 = Math.max(plot.left, rawX1);
-          const lineX2 = Math.min(plotRight, rawX2);
-          renderMultiLine(ctx, [{ x1: lineX1, y1: barMidY, x2: lineX2, y2: barMidY }], totalLineStroke);
-        }
+        // Cull entirely-out-of-range spans, then clamp to plot bounds so the line never paints
+        // leftward into the gutter over the span-name labels. Floored to minSpanWidthPx so a
+        // sub-pixel span still reads as a locatable mark (ADR 0036 / B1).
+        const mark = flooredMarkX(rawX1, rawX2, plot.left, plotRight, minSpanWidthPx);
+        if (mark) {
+          renderMultiLine(ctx, [{ x1: mark.x, y1: barMidY, x2: mark.x + mark.width, y2: barMidY }], totalLineStroke);
 
-        // --- Active segments (solid rects showing self-time) ---
-        for (const seg of span.activeSegments) {
-          const segX1 = scale(seg.start);
-          const segX2 = scale(seg.end);
-          // Skip segments entirely outside the visible plot x-range.
-          if (segX2 < plot.left || segX1 > plotRight) continue;
-          // Clamp to plot bounds so a partially-visible mark does not paint into the gutter.
-          const clampedX = Math.max(plot.left, segX1);
-          const clampedW = Math.min(plotRight, segX2) - clampedX;
-          if (clampedW <= 0) continue;
-          // Resolve per-segment fill: explicit/label-derived color wins over span-level fallback.
-          let segFill: Fill;
-          // eslint-disable-next-line eqeqeq
-          if (seg.color != null) {
-            let cached = segFillCache.get(seg.color);
-            if (cached === undefined) {
-              cached = { color: colorToRgba(seg.color) };
-              segFillCache.set(seg.color, cached);
+          // Natural (unfloored) clamped extent decides whether this is a sub-floor span.
+          const naturalW = Math.min(plotRight, rawX2) - Math.max(plot.left, rawX1);
+          if (naturalW < minSpanWidthPx) {
+            // Sub-floor span: its active segments would be sub-pixel, so collapse them into one
+            // floored active mark — an active leaf then reads as active, not idle (ADR 0036 / B1).
+            // A span with no active execution keeps only the muted total line above (stays honest).
+            if (span.activeSegments.length > 0) {
+              renderRect(
+                ctx,
+                { x: mark.x, y: barTop, width: mark.width, height: barBottom - barTop },
+                activeFill,
+                NO_STROKE,
+                true,
+              );
             }
-            segFill = cached;
           } else {
-            segFill = activeFill;
+            // --- Active segments (solid rects showing self-time) ---
+            // Wide-enough span: draw segments at their true proportions. B1 floors short spans, not
+            // short segments inside an already-visible span (flooring those would overclaim activity).
+            for (const seg of span.activeSegments) {
+              const segX1 = scale(seg.start);
+              const segX2 = scale(seg.end);
+              // Skip segments entirely outside the visible plot x-range.
+              if (segX2 < plot.left || segX1 > plotRight) continue;
+              // Clamp to plot bounds so a partially-visible mark does not paint into the gutter.
+              const clampedX = Math.max(plot.left, segX1);
+              const clampedW = Math.min(plotRight, segX2) - clampedX;
+              if (clampedW <= 0) continue;
+              // Resolve per-segment fill: explicit/label-derived color wins over span-level fallback.
+              let segFill: Fill;
+              // eslint-disable-next-line eqeqeq
+              if (seg.color != null) {
+                let cached = segFillCache.get(seg.color);
+                if (cached === undefined) {
+                  cached = { color: colorToRgba(seg.color) };
+                  segFillCache.set(seg.color, cached);
+                }
+                segFill = cached;
+              } else {
+                segFill = activeFill;
+              }
+              renderRect(
+                ctx,
+                { x: clampedX, y: barTop, width: clampedW, height: barBottom - barTop },
+                segFill,
+                NO_STROKE,
+                true, // disableBorderOffset — no stroke, so inset is irrelevant; explicit for clarity
+              );
+            }
           }
-          renderRect(
-            ctx,
-            { x: clampedX, y: barTop, width: clampedW, height: barBottom - barTop },
-            segFill,
-            NO_STROKE,
-            true, // disableBorderOffset — no stroke, so inset is irrelevant; explicit for clarity
-          );
         }
       }
 
@@ -447,7 +488,7 @@ export function pickDisclosure(x: number, y: number, geom: TraceGeometry): numbe
  * @internal
  */
 export function pickRegion(x: number, y: number, geom: TraceGeometry): PickResult | null {
-  const { plot, laneHeight, scrollOffset, spans, focusDomain } = geom;
+  const { plot, laneHeight, scrollOffset, spans, focusDomain, scale, minSpanWidthPx } = geom;
   if (y < plot.top || y > plot.top + plot.height) return null;
   const lane = Math.floor((y - plot.top + scrollOffset) / laneHeight);
   if (lane < 0 || lane >= spans.length) return null;
@@ -456,7 +497,18 @@ export function pickRegion(x: number, y: number, geom: TraceGeometry): PickResul
 
   // Invert the linear scale: map x-pixel → time value. Guard degenerate zero-width domain/plot.
   const extent = focusDomain.max - focusDomain.min;
-  const t = plot.width > 0 && extent > 0 ? focusDomain.min + ((x - plot.left) / plot.width) * extent : focusDomain.min;
+  let t = plot.width > 0 && extent > 0 ? focusDomain.min + ((x - plot.left) / plot.width) * extent : focusDomain.min;
+
+  // Mirror the min-span-width floor (ADR 0036 / B1): a span drawn as a >= minSpanWidthPx mark must be
+  // hoverable across that whole mark, otherwise the tooltip feels broken over a clearly visible bar.
+  // When the pointer is within the floored pixel mark, snap the inverted time into `[start, end]` so
+  // the region resolves to a real span region instead of 'empty'. Wide spans are unaffected: their
+  // floored mark equals their natural extent, so `t` is already inside the span there.
+  const plotRight = plot.left + plot.width;
+  const mark = flooredMarkX(scale(span.start), scale(span.end), plot.left, plotRight, minSpanWidthPx);
+  if (mark && x >= mark.x && x <= mark.x + mark.width) {
+    t = Math.min(Math.max(t, span.start), span.end);
+  }
 
   let region: HoverRegion;
   let segmentIndex = -1;
