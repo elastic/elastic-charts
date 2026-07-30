@@ -9,10 +9,8 @@
 import type { TickLabelBox } from './labels';
 import { Position } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
-import { innerPad, outerPad } from '../../../../utils/dimensions';
 import type { AxisStyle } from '../../../../utils/themes/theme';
 import { isHorizontalAxis } from '../../utils/axis_type_utils';
-import { shouldShowTicks } from '../../utils/axis_utils';
 import type { AxisSpec } from '../../utils/specs';
 import { getTitleDimension } from '../dimensions';
 
@@ -28,18 +26,12 @@ export const tickLabelsClippingBox = ({
   size: Size;
   maxLabelBox: TickLabelBox;
 }) => {
-  const showTicks = shouldShowTicks(style.tickLine, spec.hide);
-
   const isHorizontal = isHorizontalAxis(spec.position);
   const hasTitle = style.axisTitle?.visible && spec.title && spec.title.length > 0;
   const titleDimension = hasTitle ? getTitleDimension(style.axisTitle) : 0;
 
-  const inner = (showTicks ? style.tickLine.size + style.tickLine.padding : 0) + innerPad(style.tickLabel.padding);
-
-  const outer = titleDimension + outerPad(style.tickLabel.padding);
-
   const [start, end] =
-    spec.position === Position.Left || spec.position === Position.Top ? [outer, inner] : [inner, outer];
+    spec.position === Position.Left || spec.position === Position.Top ? [titleDimension, 0] : [0, titleDimension];
 
   return {
     x: isHorizontal ? -maxLabelBox.bboxWidth : start,
