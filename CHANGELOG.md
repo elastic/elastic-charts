@@ -1,3 +1,13 @@
+## [72.0.1](https://github.com/elastic/elastic-charts/compare/v72.0.0...v72.0.1) (2026-07-31)
+
+
+### Bug Fixes
+
+* **axis:** clip tick labels that overflow chart ([#2866](https://github.com/elastic/elastic-charts/issues/2866)) ([aebe7ba](https://github.com/elastic/elastic-charts/commit/aebe7bafd57f707e8b95e672e7e768983bf0682c))
+* **axis:** no longer reserve space for hidden tick labels ([#2868](https://github.com/elastic/elastic-charts/issues/2868)) ([3357441](https://github.com/elastic/elastic-charts/commit/3357441cbbd1212b4fea0d3ebae07c7c5ab9d056))
+* **deps:** update dependency @playwright/test to ^1.61.1 ([#2858](https://github.com/elastic/elastic-charts/issues/2858)) ([a118800](https://github.com/elastic/elastic-charts/commit/a1188009b904fcc9e48d19d6c3f9569b97ad2935))
+* **metric:** increase metric `minHeight` in theme to avoid clipped metric tiles  ([#2864](https://github.com/elastic/elastic-charts/issues/2864)) ([f70cf98](https://github.com/elastic/elastic-charts/commit/f70cf9865568e08fd25cd98a1457d33a3c9758cc))
+
 # [72.0.0](https://github.com/elastic/elastic-charts/compare/v71.9.0...v72.0.0) (2026-07-22)
 
 
