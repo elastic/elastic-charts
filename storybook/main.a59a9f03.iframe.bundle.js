@@ -35505,6 +35505,101 @@ function getAxesGeometries(chartDims, _ref3, joinedAxesData, smScales, visibleTi
 
 /***/ }),
 
+/***/ "../packages/charts/src/chart_types/xy_chart/axes/ticks/clip.ts":
+/*!**********************************************************************!*\
+  !*** ../packages/charts/src/chart_types/xy_chart/axes/ticks/clip.ts ***!
+  \**********************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) { n[e] = r[e]; } return n; }
+
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0) { ; } } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-property.js */ "../node_modules/core-js/modules/es.object.define-property.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.is-array.js */ "../node_modules/core-js/modules/es.array.is-array.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.js */ "../node_modules/core-js/modules/es.symbol.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.description.js */ "../node_modules/core-js/modules/es.symbol.description.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.to-string.js */ "../node_modules/core-js/modules/es.object.to-string.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.iterator.js */ "../node_modules/core-js/modules/es.symbol.iterator.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.string.iterator.js */ "../node_modules/core-js/modules/es.string.iterator.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.iterator.js */ "../node_modules/core-js/modules/es.array.iterator.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/web.dom-collections.iterator.js */ "../node_modules/core-js/modules/web.dom-collections.iterator.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.slice.js */ "../node_modules/core-js/modules/es.array.slice.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.function.name.js */ "../node_modules/core-js/modules/es.function.name.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.from.js */ "../node_modules/core-js/modules/es.array.from.js");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tickLabelsClippingBox = void 0;
+
+var common_1 = __webpack_require__(/*! ../../../../utils/common */ "../packages/charts/src/utils/common.tsx");
+
+var axis_type_utils_1 = __webpack_require__(/*! ../../utils/axis_type_utils */ "../packages/charts/src/chart_types/xy_chart/utils/axis_type_utils.ts");
+
+var dimensions_1 = __webpack_require__(/*! ../dimensions */ "../packages/charts/src/chart_types/xy_chart/axes/dimensions.ts");
+/** @internal */
+
+
+var tickLabelsClippingBox = function tickLabelsClippingBox(_ref) {
+  var _style$axisTitle;
+
+  var spec = _ref.spec,
+      style = _ref.style,
+      size = _ref.size,
+      maxLabelBox = _ref.maxLabelBox;
+  var isHorizontal = (0, axis_type_utils_1.isHorizontalAxis)(spec.position);
+  var hasTitle = ((_style$axisTitle = style.axisTitle) === null || _style$axisTitle === void 0 ? void 0 : _style$axisTitle.visible) && spec.title && spec.title.length > 0;
+  var titleDimension = hasTitle ? (0, dimensions_1.getTitleDimension)(style.axisTitle) : 0;
+
+  var _ref2 = spec.position === common_1.Position.Left || spec.position === common_1.Position.Top ? [titleDimension, 0] : [0, titleDimension],
+      _ref3 = _slicedToArray(_ref2, 2),
+      start = _ref3[0],
+      end = _ref3[1];
+
+  return {
+    x: isHorizontal ? -maxLabelBox.bboxWidth : start,
+    y: isHorizontal ? start : -maxLabelBox.bboxHeight,
+    width: isHorizontal ? size.width + 2 * maxLabelBox.bboxWidth : size.width - start - end,
+    height: isHorizontal ? size.height - start - end : size.height + 2 * maxLabelBox.bboxHeight
+  };
+};
+
+exports.tickLabelsClippingBox = tickLabelsClippingBox;
+
+/***/ }),
+
 /***/ "../packages/charts/src/chart_types/xy_chart/axes/ticks/geometry.ts":
 /*!**************************************************************************!*\
   !*** ../packages/charts/src/chart_types/xy_chart/axes/ticks/geometry.ts ***!
@@ -39822,6 +39917,10 @@ var tick_1 = __webpack_require__(/*! ./tick */ "../packages/charts/src/chart_typ
 
 var tick_label_1 = __webpack_require__(/*! ./tick_label */ "../packages/charts/src/chart_types/xy_chart/renderer/canvas/axes/tick_label.ts");
 
+var canvas_1 = __webpack_require__(/*! ../../../../../renderers/canvas */ "../packages/charts/src/renderers/canvas/index.ts");
+
+var clip_1 = __webpack_require__(/*! ../../../axes/ticks/clip */ "../packages/charts/src/chart_types/xy_chart/axes/ticks/clip.ts");
+
 var axis_utils_1 = __webpack_require__(/*! ../../../utils/axis_utils */ "../packages/charts/src/chart_types/xy_chart/utils/axis_utils.ts");
 /** @internal */
 
@@ -39831,16 +39930,27 @@ function renderAxis(ctx, props) {
       axisStyle = props.axisStyle,
       axisSpec = props.axisSpec,
       secondary = props.secondary,
-      layerGirth = props.layerGirth;
+      layerGirth = props.layerGirth,
+      multilayerTimeAxis = props.multilayerTimeAxis;
   var showTicks = (0, axis_utils_1.shouldShowTicks)(axisStyle.tickLine, axisSpec.hide);
 
   if (!secondary && showTicks) {
     (0, tick_1.renderTicks)(ctx, ticks, props);
   }
 
-  if (!secondary && axisStyle.tickLabel.visible) ticks.forEach(function (tick) {
-    return (0, tick_label_1.renderTickLabel)(ctx, tick, showTicks, props, layerGirth !== null && layerGirth !== void 0 ? layerGirth : 0);
-  });
+  if (!secondary && axisStyle.tickLabel.visible) {
+    (0, canvas_1.withClip)(ctx, (0, clip_1.tickLabelsClippingBox)({
+      spec: axisSpec,
+      style: axisStyle,
+      size: props.size,
+      maxLabelBox: props.dimension
+    }), function () {
+      ticks.forEach(function (tick) {
+        return (0, tick_label_1.renderTickLabel)(ctx, tick, showTicks, props, layerGirth !== null && layerGirth !== void 0 ? layerGirth : 0);
+      });
+    }, !multilayerTimeAxis);
+  }
+
   (0, line_1.renderAxisLine)(ctx, props);
 }
 
@@ -180050,4 +180160,4 @@ module.exports = __webpack_require__(/*! /app/storybook/generated-stories-entry.
 /***/ })
 
 },[[0,"runtime~main","vendors~main"]]]);
-//# sourceMappingURL=main.9e6eeb52.iframe.bundle.js.map
+//# sourceMappingURL=main.a59a9f03.iframe.bundle.js.map
