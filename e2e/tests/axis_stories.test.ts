@@ -204,13 +204,7 @@ test.describe('Axis stories', () => {
 
     test('should constrain tick labels with maxExtent', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        `${story}&knob-maxExtent_Axis X=40&knob-wrapLines_Axis X=1&knob-truncate_Axis X=end`,
-      );
-    });
-
-    test('should overflow tick labels with 90 deg chart rotation', async ({ page }) => {
-      await common.expectChartAtUrlToMatchScreenshot(page)(
-        `${story}&knob-Chart rotation_Chart config=90&knob-maxExtent_Axis Y=200`,
+        `${story}&knob-maxExtent_Axis X=50&knob-wrapLines_Axis X=1&knob-truncate_Axis X=end`,
       );
     });
 
@@ -219,6 +213,15 @@ test.describe('Axis stories', () => {
         `${story}&knob-Chart rotation_Chart config=90&knob-maxExtent_Axis Y=120&knob-truncate_Axis Y=end`,
       );
     });
+
+    test('should clip y-axis tick labels overflowing a percentage maxExtent with 90 deg chart rotation', async ({
+      page,
+    }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `${story}&knob-Chart rotation_Chart config=90&knob-maxExtent_Axis Y=20%25`,
+      );
+    });
+
     test('hidden tick labels should not take up space in the chart layout', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(`${story}&knob-visible_Axis X=false`);
     });

@@ -251,6 +251,7 @@ export function computeVisibleTickSets(
   barsPadding?: number,
 ): Projections {
   const panel = getPanelSize(smScales);
+
   return [...joinedAxesData].reduce(
     (acc, [axisId, { axisSpec, axesStyle, isXAxis, labelFormatter: userProvidedLabelFormatter, layout }]) => {
       const { groupId, maximumFractionDigits, timeAxisLayerCount } = axisSpec;
