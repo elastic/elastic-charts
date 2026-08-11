@@ -7,7 +7,7 @@
  */
 
 import type { RefObject } from 'react';
-import React from 'react';
+import React, { useLayoutEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
@@ -31,7 +31,6 @@ import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
-import { deepEqual } from '../../../../utils/fast_deep_equal';
 import type { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { MetricStyle } from '../../../../utils/themes/theme';
@@ -83,176 +82,267 @@ interface OwnProps {
 
 type Props = DispatchProps & StateProps & OwnProps;
 
-class Component extends React.Component<Props> {
-  static displayName = 'Bullet';
-  private ctx: CanvasRenderingContext2D | null;
-  private readonly devicePixelRatio: number;
+interface BulletMetricContentProps {
+  datum: BulletDatum;
+  stats: { rows: number; rowIndex: number; columns: number; columnIndex: number };
+  dimensions: BulletDimensions;
+  style: BulletStyle;
+  spec: BulletSpec;
+  metricStyle: MetricStyle;
+  size: Size;
+  locale: string;
+  chartId: string;
+  hasTitles: boolean;
+  backgroundColor: Color;
+  contrastOptions: ColorContrastOptions;
+}
 
-  constructor(props: Readonly<Props>) {
-    super(props);
-    this.ctx = null;
-    this.devicePixelRatio = window.devicePixelRatio;
-  }
+const BulletMetricContent = ({
+  datum,
+  stats,
+  dimensions,
+  style,
+  spec,
+  metricStyle,
+  size,
+  locale,
+  chartId,
+  hasTitles,
+  backgroundColor,
+  contrastOptions,
+}: BulletMetricContentProps) => {
+  const width = size.width / stats.columns;
+  const height = size.height / stats.rows;
 
-  componentDidMount() {
-    this.tryCanvasContext();
-    if (this.props.initialized) {
-      this.drawCanvas();
-      this.props.onChartRendered();
-    }
-  }
-
-  shouldComponentUpdate(nextProps: Props) {
-    return !deepEqual(this.props, nextProps);
-  }
-
-  componentDidUpdate() {
-    if (!this.ctx) {
-      this.tryCanvasContext();
-    }
-    if (this.props.initialized) {
-      this.drawCanvas();
-      this.props.onChartRendered();
-    }
-  }
-
-  private tryCanvasContext() {
-    const canvas = this.props.forwardStageRef.current;
-    this.ctx = canvas && canvas.getContext('2d');
-  }
-
-  private drawCanvas() {
-    if (this.ctx) {
-      renderBullet(this.ctx, this.devicePixelRatio, this.props);
-    }
-  }
-
-  render() {
-    /* eslint-disable prettier/prettier */
-    // TODO - Prettier is going crazy on this line, need to investigate
-    const {
-      initialized,
-      size,
-      forwardStageRef,
-      a11y,
-      dimensions,
-      spec,
-      style,
-      backgroundColor,
-      locale,
-      metricStyle,
-    } = this.props;
-    /* eslint-enable prettier/prettier */
-    const contrastOptions: ColorContrastOptions = {
-      lightColor: colorToRgba(metricStyle.textLightColor),
-      darkColor: colorToRgba(metricStyle.textDarkColor),
-    };
-
-    if (!initialized || size.width === 0 || size.height === 0 || !spec) {
-      return null;
-    }
-
+  const bulletDatum: BulletMetricWProgress = useMemo(() => {
     const valueLabels = mergeValueLabels(spec.valueLabels);
 
-    return (
-      <figure
-        aria-labelledby={a11y.labelId}
-        aria-describedby={a11y.descriptionId}
-        style={{ width: '100%', height: '100%' }}
-      >
-        <canvas
-          ref={forwardStageRef}
-          className="echCanvasRenderer"
-          width={size.width * this.devicePixelRatio}
-          height={size.height * this.devicePixelRatio}
-          style={size}
-          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-          role="presentation"
-        >
-          <ScreenReaderSummary />
-        </canvas>
-        {dimensions.shouldRenderMetric && (
-          <div className="echBulletAsMetric" style={{ width: '100%', height: '100%' }}>
-            <AlignedGrid<BulletDatum>
-              data={spec.data}
-              contentComponent={({ datum, stats }) => {
-                const colorScale =
-                  this.props.dimensions.rows[stats.rowIndex]?.[stats.columnIndex]?.colorScale ??
-                  (() => ({ hex: () => this.props.style.fallbackBandColor })); // should never happen
-                const bulletDatum: BulletMetricWProgress = {
-                  value: datum.value,
-                  target: datum.target,
-                  valueFormatter: datum.valueFormatter,
-                  targetFormatter: datum.targetFormatter,
-                  color: style.barBackground,
-                  progressBarDirection: spec.subtype === BulletSubtype.vertical ? 'vertical' : 'horizontal',
-                  title: datum.title,
-                  subtitle: datum.subtitle,
-                  domain: datum.domain,
-                  niceDomain: datum.niceDomain,
-                  valueLabels,
-                  extra: datum.target
-                    ? {
-                        value: datum.target.toString(),
-                        label: `${valueLabels.target}:`,
-                      }
-                    : undefined,
-                };
+    return {
+      value: datum.value,
+      target: datum.target,
+      valueFormatter: datum.valueFormatter,
+      targetFormatter: datum.targetFormatter,
+      color: style.barBackground,
+      progressBarDirection: spec.subtype === BulletSubtype.vertical ? 'vertical' : 'horizontal',
+      title: datum.title,
+      subtitle: datum.subtitle,
+      domain: datum.domain,
+      niceDomain: datum.niceDomain,
+      valueLabels,
+      extra: datum.target
+        ? {
+            value: datum.target.toString(),
+            label: `${valueLabels.target}:`,
+          }
+        : undefined,
+    };
+  }, [datum, style.barBackground, spec.subtype, spec.valueLabels]);
 
-                const bulletToMetricStyle = mergePartial(metricStyle, {
-                  fontFamily: style.fontFamily,
-                  barBackground: colorScale(datum.value).hex(),
-                  emptyBackground: Colors.Transparent.keyword,
-                  border: 'gray',
-                  minHeight: 0,
-                  textLightColor: 'white',
-                  textDarkColor: 'black',
-                  nonFiniteText: 'N/A',
-                  valueFontSize: 'default',
-                });
+  const colorScale = useMemo(
+    () =>
+      dimensions.rows[stats.rowIndex]?.[stats.columnIndex]?.colorScale ??
+      (() => ({ hex: () => style.fallbackBandColor })), // should never happen
+    [dimensions.rows, stats.rowIndex, stats.columnIndex, style.fallbackBandColor],
+  );
 
-                const panel = { width: size.width / stats.columns, height: size.height / stats.rows };
-                const textDimensions = getMetricTextPartDimensions(bulletDatum, panel, bulletToMetricStyle, locale);
-                const fittedValueFontSize = getFitValueFontSize(
-                  textDimensions.heightBasedSizes.valueFontSize,
-                  panel.width - textDimensions.progressBarWidth,
-                  textDimensions.visibility.availableHeightWithoutValue,
-                  textDimensions.textParts,
-                  bulletToMetricStyle.minValueFontSize,
-                  false,
-                  false,
-                  textDimensions.metricSpacing.panelPadding,
-                  bulletToMetricStyle.fontFamily,
-                );
-                const sizes = getSnappedFontSizes(fittedValueFontSize, panel.height, bulletToMetricStyle);
+  const bulletToMetricStyle = useMemo(
+    () =>
+      mergePartial(metricStyle, {
+        fontFamily: style.fontFamily,
+        barBackground: colorScale(datum.value).hex(),
+        emptyBackground: Colors.Transparent.keyword,
+        border: 'gray',
+        minHeight: 0,
+        textLightColor: 'white',
+        textDarkColor: 'black',
+        nonFiniteText: 'N/A',
+        valueFontSize: 'default',
+      }),
+    [metricStyle, style.fontFamily, colorScale, datum.value],
+  );
 
-                textDimensions.heightBasedSizes.valueFontSize = sizes.valueFontSize;
-                textDimensions.heightBasedSizes.valuePartFontSize = sizes.valuePartFontSize;
-
-                return (
-                  <Metric
-                    chartId={`${this.props.chartId}-${stats.rowIndex}-${stats.columnIndex}`}
-                    datum={bulletDatum}
-                    hasTitles={this.props.hasTitles}
-                    totalRows={stats.rows}
-                    totalColumns={stats.columns}
-                    columnIndex={stats.columnIndex}
-                    rowIndex={stats.rowIndex}
-                    style={bulletToMetricStyle}
-                    backgroundColor={backgroundColor}
-                    contrastOptions={contrastOptions}
-                    textDimensions={textDimensions}
-                  />
-                );
-              }}
-            />
-            );
-          </div>
-        )}
-      </figure>
+  const textDimensions = useMemo(() => {
+    const dimensionsForText = getMetricTextPartDimensions(bulletDatum, { width, height }, bulletToMetricStyle, locale);
+    const fittedValueFontSize = getFitValueFontSize(
+      dimensionsForText.heightBasedSizes.valueFontSize,
+      width - dimensionsForText.progressBarWidth,
+      dimensionsForText.visibility.availableHeightWithoutValue,
+      dimensionsForText.textParts,
+      bulletToMetricStyle.minValueFontSize,
+      false,
+      false,
+      dimensionsForText.metricSpacing.panelPadding,
+      bulletToMetricStyle.fontFamily,
     );
+    const sizes = getSnappedFontSizes(fittedValueFontSize, height, bulletToMetricStyle);
+
+    dimensionsForText.heightBasedSizes.valueFontSize = sizes.valueFontSize;
+    dimensionsForText.heightBasedSizes.valuePartFontSize = sizes.valuePartFontSize;
+
+    return dimensionsForText;
+  }, [bulletDatum, bulletToMetricStyle, locale, width, height]);
+
+  return (
+    <Metric
+      chartId={`${chartId}-${stats.rowIndex}-${stats.columnIndex}`}
+      datum={bulletDatum}
+      hasTitles={hasTitles}
+      totalRows={stats.rows}
+      totalColumns={stats.columns}
+      columnIndex={stats.columnIndex}
+      rowIndex={stats.rowIndex}
+      style={bulletToMetricStyle}
+      backgroundColor={backgroundColor}
+      contrastOptions={contrastOptions}
+      textDimensions={textDimensions}
+    />
+  );
+};
+
+type BulletMetricGridProps = Omit<BulletMetricContentProps, 'datum' | 'stats' | 'contrastOptions'>;
+
+const BulletMetricGrid = React.memo(
+  ({
+    dimensions,
+    style,
+    spec,
+    metricStyle,
+    size,
+    locale,
+    chartId,
+    hasTitles,
+    backgroundColor,
+  }: BulletMetricGridProps) => {
+    const contrastOptions: ColorContrastOptions = useMemo(
+      () => ({
+        lightColor: colorToRgba(metricStyle.textLightColor),
+        darkColor: colorToRgba(metricStyle.textDarkColor),
+      }),
+      [metricStyle.textLightColor, metricStyle.textDarkColor],
+    );
+
+    const renderMetricContent = ({
+      datum,
+      stats,
+    }: {
+      datum: BulletDatum;
+      stats: { rows: number; rowIndex: number; columns: number; columnIndex: number };
+    }) => (
+      <BulletMetricContent
+        datum={datum}
+        stats={stats}
+        dimensions={dimensions}
+        style={style}
+        spec={spec}
+        metricStyle={metricStyle}
+        size={size}
+        locale={locale}
+        chartId={chartId}
+        hasTitles={hasTitles}
+        backgroundColor={backgroundColor}
+        contrastOptions={contrastOptions}
+      />
+    );
+
+    return <AlignedGrid<BulletDatum> data={spec.data} contentComponent={renderMetricContent} />;
+  },
+);
+
+BulletMetricGrid.displayName = 'BulletMetricGrid';
+
+const Component = (props: Props) => {
+  const { devicePixelRatio } = window;
+
+  const {
+    initialized,
+    debug,
+    size,
+    forwardStageRef,
+    a11y,
+    dimensions,
+    activeValues,
+    spec,
+    style,
+    backgroundColor,
+    locale,
+    metricStyle,
+    chartId,
+    hasTitles,
+    onChartRendered: dispatchOnChartRendered,
+  } = props;
+
+  useLayoutEffect(() => {
+    const ctx = forwardStageRef.current?.getContext('2d');
+
+    if (!initialized || !ctx) {
+      return;
+    }
+
+    renderBullet(ctx, devicePixelRatio, {
+      debug,
+      spec,
+      a11y,
+      dimensions,
+      activeValues,
+      style,
+      backgroundColor,
+    });
+    dispatchOnChartRendered();
+  }, [
+    initialized,
+    devicePixelRatio,
+    forwardStageRef,
+    debug,
+    spec,
+    a11y,
+    dimensions,
+    activeValues,
+    style,
+    backgroundColor,
+    dispatchOnChartRendered,
+  ]);
+
+  if (!initialized || size.width === 0 || size.height === 0 || !spec) {
+    return null;
   }
-}
+
+  return (
+    <figure
+      aria-labelledby={a11y.labelId}
+      aria-describedby={a11y.descriptionId}
+      style={{ width: '100%', height: '100%' }}
+    >
+      <canvas
+        ref={forwardStageRef}
+        className="echCanvasRenderer"
+        width={size.width * devicePixelRatio}
+        height={size.height * devicePixelRatio}
+        style={size}
+        // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+        role="presentation"
+      >
+        <ScreenReaderSummary />
+      </canvas>
+      {dimensions.shouldRenderMetric && (
+        <div className="echBulletAsMetric" style={{ width: '100%', height: '100%' }}>
+          <BulletMetricGrid
+            dimensions={dimensions}
+            style={style}
+            spec={spec}
+            metricStyle={metricStyle}
+            size={size}
+            locale={locale}
+            chartId={chartId}
+            hasTitles={hasTitles}
+            backgroundColor={backgroundColor}
+          />
+        </div>
+      )}
+    </figure>
+  );
+};
+
+Component.displayName = 'Bullet';
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators(

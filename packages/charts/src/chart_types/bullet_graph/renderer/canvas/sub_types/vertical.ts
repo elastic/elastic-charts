@@ -35,15 +35,18 @@ export function verticalBullet(
   const graphPaddedHeight = graphArea.size.height - GRAPH_PADDING.bottom - GRAPH_PADDING.top;
 
   // color bands
-  colorBands.reverse().forEach((band) => {
-    ctx.fillStyle = band.color;
-    ctx.fillRect(
-      graphArea.size.width / 2 - BULLET_SIZE / 2,
-      graphPaddedHeight - band.start - band.size,
-      BULLET_SIZE,
-      band.size,
-    );
-  });
+  colorBands
+    .slice()
+    .reverse()
+    .forEach((band) => {
+      ctx.fillStyle = band.color;
+      ctx.fillRect(
+        graphArea.size.width / 2 - BULLET_SIZE / 2,
+        graphPaddedHeight - band.start - band.size,
+        BULLET_SIZE,
+        band.size,
+      );
+    });
 
   // Ticks
   ctx.beginPath();
