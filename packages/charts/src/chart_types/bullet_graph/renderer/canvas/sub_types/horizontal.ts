@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { renderLinearBar } from './common';
 import type { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -23,6 +24,7 @@ export function horizontalBullet(
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,
+  strokeColor: Color,
   activeValue?: ActiveValue | null,
 ) {
   const tickFont = getTickFont(style.fontFamily);
@@ -54,13 +56,11 @@ export function horizontalBullet(
   // Bar
   const confinedValue = clamp(datum.value, min, max);
   const adjustedZero = clamp(0, min, max);
-  ctx.fillStyle = style.barBackground;
-  ctx.fillRect(
-    datum.value > 0 ? scale(adjustedZero) : scale(confinedValue),
-    verticalAlignment - BAR_SIZE / 2,
-    confinedValue > 0 ? scale(confinedValue) - scale(adjustedZero) : scale(adjustedZero) - scale(confinedValue),
-    BAR_SIZE,
-  );
+  const x0 = Number(scale(adjustedZero));
+  const x1 = Number(scale(confinedValue));
+  const y = verticalAlignment - BAR_SIZE / 2;
+
+  renderLinearBar(ctx, style, strokeColor, { start: x0, end: x1, position: y }, 'horizontal');
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {

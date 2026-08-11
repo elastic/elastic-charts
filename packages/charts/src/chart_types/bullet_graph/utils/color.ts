@@ -12,6 +12,7 @@ import type { ScaleLinear } from 'd3-scale';
 import type { $Values, Required } from 'utility-types';
 
 import type { BaseBoundsConfig, OpenClosedBoundsConfig } from './bounds';
+import { APCAContrast } from '../../../common/apca_color_contrast';
 import { combineColors } from '../../../common/color_calcs';
 import { RGBATupleToString, colorToRgba, getChromaColor } from '../../../common/color_library_wrappers';
 import type { ChromaColorScale, Color } from '../../../common/colors';
@@ -362,4 +363,16 @@ function getColorBands(
   }
 
   return scaledColorBands;
+}
+
+/** @internal */
+export function getStrokeContrastColor(bands: ColorTick[], bar: Color, background: Color): Color {
+  // 30, minimum contrast for large/solid semantic & understandable non-text elements,
+  // as per https://git.apcacontrast.com/documentation/APCA_in_a_Nutshell.html.
+  const contrastThreshold = 30;
+  const check = bands.every(
+    (band) => Math.abs(APCAContrast(colorToRgba(band.color), colorToRgba(bar))) > contrastThreshold,
+  );
+  if (check) return bar;
+  return background;
 }

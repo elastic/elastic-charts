@@ -20,7 +20,7 @@ import { BulletSubtype } from '../../../spec';
 import type { BulletStyle } from '../../../theme';
 import { GRAPH_PADDING, TICK_FONT_SIZE, getTickFont } from '../../../theme';
 import { getAngledChartSizing } from '../../../utils/angular';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, BAR_STROKE_WIDTH, TARGET_STROKE_WIDTH } from '../constants';
 
 /** @internal */
 export function angularBullet(
@@ -28,6 +28,7 @@ export function angularBullet(
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,
+  strokeColor: Color,
   spec: BulletSpec,
   debug: boolean,
   activeValue?: ActiveValue | null,
@@ -82,18 +83,28 @@ export function angularBullet(
   // Bar
   const confinedValue = clamp(datum.value, min, max);
   const adjustedZero = clamp(0, min, max);
+  const degStart = confinedValue > 0 ? scale(adjustedZero) : scale(confinedValue);
+  const degEnd = confinedValue > 0 ? scale(confinedValue) : scale(adjustedZero);
+  const arcDirection = counterClockwise ? -1 : 1;
+  const innerArcOffset = BAR_STROKE_WIDTH / radius;
+
+  // Bar stroke
+  ctx.save();
+  ctx.lineCap = 'butt';
   ctx.beginPath();
   ctx.lineWidth = BAR_SIZE;
-  ctx.strokeStyle = style.barBackground;
-  ctx.arc(
-    center.x,
-    center.y,
-    radius,
-    confinedValue > 0 ? scale(adjustedZero) : scale(confinedValue),
-    confinedValue > 0 ? scale(confinedValue) : scale(adjustedZero),
-    counterClockwise,
-  );
+  ctx.strokeStyle = strokeColor;
+  ctx.arc(center.x, center.y, radius, degStart, degEnd, counterClockwise);
   ctx.stroke();
+
+  // Bar background
+  ctx.beginPath();
+  ctx.lineWidth = BAR_SIZE - BAR_STROKE_WIDTH * 2;
+  ctx.strokeStyle = style.barBackground;
+  ctx.arc(center.x, center.y, radius, degStart, degEnd - arcDirection * innerArcOffset, counterClockwise);
+  ctx.stroke();
+
+  ctx.restore();
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
@@ -133,9 +144,9 @@ export function angularBullet(
     .forEach((tick) => {
       ctx.textAlign = 'center';
       const textPadding = style.angularTickLabelPadding + maxTickWidth / 2;
-      const start = scale(tick.value);
-      const y1 = Math.sin(start) * (radius - BULLET_SIZE / 2 - textPadding);
-      const x1 = Math.cos(start) * (radius - BULLET_SIZE / 2 - textPadding);
+      const tickAngle = scale(tick.value);
+      const y1 = Math.sin(tickAngle) * (radius - BULLET_SIZE / 2 - textPadding);
+      const x1 = Math.cos(tickAngle) * (radius - BULLET_SIZE / 2 - textPadding);
 
       ctx.fillText(tick.formattedValue, center.x + x1, center.y + y1);
     });

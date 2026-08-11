@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { renderLinearBar } from './common';
 import type { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
@@ -22,6 +23,7 @@ export function verticalBullet(
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,
+  strokeColor: Color,
   activeValue?: ActiveValue | null,
 ) {
   const tickFont = getTickFont(style.fontFamily);
@@ -59,13 +61,12 @@ export function verticalBullet(
   // Bar
   const confinedValue = clamp(datum.value, min, max);
   const adjustedZero = clamp(0, min, max);
-  ctx.fillStyle = style.barBackground;
-  ctx.fillRect(
-    graphArea.size.width / 2 - BAR_SIZE / 2,
-    confinedValue > 0 ? graphPaddedHeight - scale(confinedValue) : graphPaddedHeight - scale(adjustedZero),
-    BAR_SIZE,
-    confinedValue > 0 ? scale(confinedValue) - scale(adjustedZero) : scale(adjustedZero) - scale(confinedValue),
-  );
+
+  const x = graphArea.size.width / 2 - BAR_SIZE / 2;
+  const y0 = graphPaddedHeight - Number(scale(adjustedZero));
+  const y1 = graphPaddedHeight - Number(scale(confinedValue));
+
+  renderLinearBar(ctx, style, strokeColor, { start: y0, end: y1, position: x }, 'vertical' as const);
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
