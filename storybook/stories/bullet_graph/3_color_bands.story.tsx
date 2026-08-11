@@ -19,20 +19,21 @@ import {
   euiPaletteGreen,
   euiPaletteWarm,
 } from '@elastic/eui';
-import { number, boolean, object, color } from '@storybook/addon-knobs';
+import { number, boolean, object, color, select } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React, { useCallback } from 'react';
 
 import type { BulletColorConfig, ColorBandSimpleConfig, ColorBandComplexConfig } from '@elastic/charts';
-import { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';
+import { Chart, Bullet, BulletSubtype, DARK_THEME, LIGHT_THEME, Settings } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
-import { useBaseTheme, useThemeId } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const isDarkTheme = useThemeId().includes('dark');
+  const themeMode = select('theme', { Light: 'light', Dark: 'dark' }, 'light');
+  const baseTheme = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
+  const isDarkTheme = themeMode === 'dark';
   const getPalettes = useCallback(
     (steps: number) => [
       ['#164863', '#427D9D', '#9BBEC8', '#DDF2FD'],
@@ -72,14 +73,15 @@ export const Example: ChartsStory = (_, { title, description }) => {
       Pink: 1,
       Mixed: 2,
       'eui Palette color blind': 3,
-      'eui Palette For Temperature': 4,
-      'eui Palette For Status': 5,
-      'eui Palette Complementary': 6,
-      'eui Palette Negative': 7,
-      'eui Palette Positive': 8,
-      'eui Palette Cool': 9,
-      'eui Palette Warm': 10,
-      'eui Palette Gray': 11,
+      'eui Palette For Background': 4,
+      'eui Palette For Temperature': 5,
+      'eui Palette For Status': 6,
+      'eui Palette Complementary': 7,
+      'eui Palette Negative': 8,
+      'eui Palette Positive': 9,
+      'eui Palette Cool': 10,
+      'eui Palette Warm': 11,
+      'eui Palette Gray': 12,
     },
     0,
     { group: 'Color Bands' },
@@ -143,13 +145,23 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   // Other
   const debug = boolean('debug', false);
-  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.horizontal);
+  const subtype = select(
+    'subtype',
+    {
+      Linear: BulletSubtype.horizontal,
+      Angular: BulletSubtype.twoThirdsCircle,
+      vertical: BulletSubtype.vertical,
+      circle: BulletSubtype.circle,
+      'half-circle': BulletSubtype.halfCircle,
+    },
+    BulletSubtype.horizontal,
+  );
 
   const formatter = (d: number) => numeral(d).format('0.[0]');
 
   return (
     <Chart title={title} description={description}>
-      <Settings debug={debug} baseTheme={useBaseTheme()} />
+      <Settings debug={debug} baseTheme={baseTheme} />
       <Bullet
         id="bullet"
         subtype={subtype}
