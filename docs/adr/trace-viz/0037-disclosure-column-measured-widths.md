@@ -1,7 +1,7 @@
 # ADR 0037 — Disclosure column sub-widths are measured and published, not re-derived
 
 **Status:** Accepted  
-**Implements:** [Spec 32 — Collapse child count](./specs/spec-32-child-count.md), [Spec 33 — Tree guides](./specs/spec-33-tree-guides.md)  
+**Implements:** [Spec 32 (harvested) — Collapse child count](./trace-chart.md#collapsible-nesting), [Spec 33 — Tree guides](./specs/spec-33-tree-guides.md)  
 **Cites:** [ADR 0026](./0026-collapsible-nesting.md) — disclosure gutter; [ADR 0029](./0029-trace-badge-rendering-architecture.md) — `computeBadgeGutterWidth` precedent.
 
 ## Context
@@ -78,14 +78,20 @@ step is chosen in `buildGeometry` based on the prop, and published as part of `d
 ## Consequences
 
 - `canvas2d_renderer.caretColumnWidth` (the locally-derived variable) is removed; call sites read
-  `geom.disclosureColumn.caretPx + geom.disclosureColumn.countPx` instead.
-- `badge_layout.caretColumnWidth()` (the mirror function) is removed; call sites read the same
-  geometry field.
+  `disclosureColumnWidth(geom.disclosureColumn)` — i.e. `maxDepth * indentStepPx + caretPx + countPx`.
+  `pickDisclosure` instead adds the per-lane `entry.depth * indentStepPx`, so the two sums differ by
+  design and neither re-derives the parts.
+- `badge_layout.caretColumnWidth()` (the mirror function) is removed; call sites read
+  `disclosureColumnWidth(geom.disclosureColumn)` via the same exported helper.
 - `pickDisclosure`'s right-hand x bound becomes
   `gutter.left + entry.depth * disclosureColumn.indentStepPx + disclosureColumn.caretPx + disclosureColumn.countPx`,
-  so the click/tap zone precisely covers the drawn mark.
+  so the click/tap zone covers the drawn mark plus the count reserve.
+- The disclosure hit zone spans the whole count reserve, not each lane's rendered digits: a parent
+  showing `5` on a chart whose widest count is `128` is still clickable across the full reserve.
+  Uniform target width, no per-lane measurement at pick time; same deliberate hit-exceeds-ink
+  asymmetry as the `minSpanWidthPx` floor.
 - `gutterPx(style, opts)` signature is unchanged; it still returns the total gutter width for the
-  `gutter` rect. The `opts` shape gains the count reserve and guide flag so the total is correct.
+  `gutter` rect. The `opts` shape gains `childCountPx` so the total includes the count reserve.
 - Callers that hand-roll a `TraceGeometry` in tests must supply `disclosureColumn`; the existing
   `new Map()` pattern for `disclosureByLane` is the precedent — an empty/zero value is the safe
   default for tests that do not exercise the disclosure column.

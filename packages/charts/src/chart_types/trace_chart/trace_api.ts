@@ -573,6 +573,15 @@ export interface TraceSpec extends Spec {
    */
   onCollapseChange?: (next: string[]) => void;
   /**
+   * When `true`, draws each parent span's direct **display-child count** immediately right of its
+   * caret in the disclosure gutter. The count is measured from the pre-collapse display-parentage
+   * tree (ADR 0028), so the gutter width does not reflow when carets are toggled. Inert when
+   * `laneOrder === 'chronological'` (no carets are drawn). See ADR 0026, ADR 0038, Spec 32.
+   * @defaultValue false
+   * @public
+   */
+  showDisplayChildCount?: boolean;
+  /**
    * Consumer-supplied critical-path intervals. Each marks an interval-precise portion of a span
    * that lay on the trace's critical path; rendered as a colored line along the bottom edge of the
    * affected lane. An interval may cover only a sub-range of the span's `[start, end]` extent

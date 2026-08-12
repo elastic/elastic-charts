@@ -79,6 +79,7 @@ const geom = (
     scale,
     emptyMessage: null,
     disclosureByLane: new Map(),
+    disclosureColumn: { caretPx: 0, countPx: 0, indentStepPx: 8, maxDepth: 0 },
     criticalIntervalsByLane: new Map(),
     badgesByLane: new Map(),
     annotationsLayout: [],

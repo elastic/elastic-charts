@@ -54,6 +54,7 @@ stable and never reused; the list below is grouped by theme for readability only
 
 - [0017 — Trace viz story organisation principles](./0017-story-organisation-principles.md)
 - [0025 — Auto-generated API table: in-place patch of intro story, not a standalone file](./0025-api-docs-in-place-patch.md)
+- [0038 — Public props name display topology when their value derives from it](./0038-prop-naming-display-topology.md)
 
 ### Deferred features
 
@@ -70,7 +71,6 @@ were removed once absorbed.
 
 Active spec plans (next up):
 
-- [Spec 32 — Collapse child count (display-child count beside the disclosure caret)](./specs/spec-32-child-count.md)
 - [Spec 33 — Tree guides (spine + elbow lines in the disclosure gutter)](./specs/spec-33-tree-guides.md)
 
 Deferred spec plans (tracked for future work):

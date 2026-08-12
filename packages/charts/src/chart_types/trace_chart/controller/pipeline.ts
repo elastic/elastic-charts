@@ -15,7 +15,9 @@ import { orderLanes } from '../data/order_lanes';
 import { resolveActive } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
 import type { BadgeTextMeasurer } from '../render/badge_layout';
+import { distinctChildCounts } from '../data/collapse';
 import { computeBadgeGutterWidth } from '../render/badge_layout';
+import { CHILD_COUNT_INSET_PX } from '../render/types';
 import { buildTraceStyle } from '../theme';
 import type { TraceAnnotationSpec, TraceSpec } from '../trace_api';
 import { resolveTraceColorBy, traceColorByEqual } from '../trace_api';
@@ -169,5 +171,32 @@ export function getBadgeGutterWidth(
   }
   const width = computeBadgeGutterWidth(spans, style, badgeSize, measure);
   c.badgeGutterCache = { spansRef: spans, badgeSize, labelPosition: style.labelPosition, width };
+  return width;
+}
+
+/**
+ * Memoized display-child-count column reserve (Spec 32). Measures the widest distinct count string
+ * at the `gutterLabel` font and adds {@link CHILD_COUNT_INSET_PX} of trailing inset.
+ * Returns `0` when the prop is off or the trace has no parents (no measurement needed).
+ * Keyed on `(pipelineSpans, style)` refs — stricter than the badge memo because the gutterLabel
+ * font is inside `style`, so a theme change must invalidate the cache (decision 8 from plan).
+ * @internal
+ */
+export function getChildCountReserve(
+  c: TraceCanvasController,
+  pipelineSpans: NormalizedSpan[],
+  style: ReturnType<typeof buildTraceStyle>,
+  measure: BadgeTextMeasurer,
+): number {
+  const cache = c.childCountCache;
+  if (cache && cache.spansRef === pipelineSpans && cache.styleRef === style) {
+    return cache.width;
+  }
+  const counts = distinctChildCounts(pipelineSpans);
+  const width =
+    counts.length === 0
+      ? 0
+      : Math.max(...counts.map((n) => measure(String(n), style.gutterLabel.fontSize))) + CHILD_COUNT_INSET_PX;
+  c.childCountCache = { spansRef: pipelineSpans, styleRef: style, width };
   return width;
 }

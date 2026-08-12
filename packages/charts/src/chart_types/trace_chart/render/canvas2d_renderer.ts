@@ -18,7 +18,7 @@ import type {
   TraceRenderer,
   TraceStyle,
 } from './types';
-import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, LANE_PADDING } from './types';
+import { disclosureColumnWidth, LANE_PADDING } from './types';
 import { colorToRgba, RGBATupleToString } from '../../../common/color_library_wrappers';
 import type { RgbaTuple } from '../../../common/color_library_wrappers';
 import { Colors } from '../../../common/colors';
@@ -97,7 +97,7 @@ function wrapGutterLabel(
  * @internal
  */
 export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: TraceStyle): void {
-  const { gutter, plot, spans, laneHeight, scrollOffset, scale, focusedLaneIndex, disclosureByLane, spanDisplay } =
+  const { gutter, plot, spans, laneHeight, scrollOffset, scale, focusedLaneIndex, disclosureByLane, disclosureColumn, spanDisplay } =
     geom;
 
   withContext(ctx, () => {
@@ -184,15 +184,9 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
     // Sourced from geometry so the band grows to fit Span badges (Spec 27) and both passes agree.
     const { labelBandPx } = geom;
 
-    // Width of the disclosure-caret column within the gutter. Derived from gutter.width and the
-    // label mode: in 'gutter' mode the label area follows the caret column; in other modes the
-    // full gutter IS the caret column. Zero when disclosureByLane is empty (flat trace, no carets).
-    const caretColumnWidth =
-      disclosureByLane.size > 0
-        ? style.labelPosition === 'gutter'
-          ? gutter.width - style.gutterWidth
-          : gutter.width
-        : 0;
+    // Width of the disclosure column within the gutter (ADR 0037 D1). Published on TraceGeometry
+    // so the label pass, badge layout, and pick all share one source of truth.
+    const caretColumnWidth = disclosureColumnWidth(disclosureColumn);
 
     // Caret font: reuses the gutter label settings with center-align for the glyph.
     const caretFont: TextFont = {
@@ -205,6 +199,8 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       align: 'center',
       baseline: 'middle',
     };
+    // Count font: same theme as the caret but left-aligned so the digit anchors at the count zone left edge.
+    const countFont: TextFont = { ...caretFont, align: 'left' };
 
     // Lazily-built fill cache: at most one colorToRgba call per distinct segment color per
     // draw() call. Segments per lane are few, so a plain Map is sufficient.
@@ -321,7 +317,7 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
 
       // --- Label pass ---
       if (style.labelPosition === 'gutter') {
-        // Gutter label: offset right of the caret column so label and caret don't overlap.
+        // Gutter label: offset right of the disclosure column so label and caret don't overlap.
         const labelX = gutter.left + caretColumnWidth + 4;
         let labelWidth = gutter.width - caretColumnWidth - 8;
         // When this lane hosts badges beside the label (Spec 27), stop the label before the first
@@ -350,12 +346,17 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
       }
       // labelPosition === 'none': no label drawn.
 
-      // --- Disclosure caret (▶/▼) ---
-      // Drawn inside the caret column at depth-indented x. Omitted when not a parent lane.
+      // --- Disclosure caret (▶/▼) and optional child-count ---
+      // Drawn inside the disclosure column at depth-indented x. Omitted when not a parent lane.
       const disclosure = disclosureByLane.get(i);
       if (disclosure) {
-        const caretX = gutter.left + disclosure.depth * CARET_INDENT_STEP_PX + CARET_GLYPH_PX / 2;
+        const { indentStepPx, caretPx, countPx } = disclosureColumn;
+        const caretX = gutter.left + disclosure.depth * indentStepPx + caretPx / 2;
         renderText(ctx, { x: caretX, y: barMidY }, disclosure.state === 'collapsed' ? '▶' : '▼', caretFont);
+        if (countPx > 0) {
+          const countX = gutter.left + disclosure.depth * indentStepPx + caretPx;
+          renderText(ctx, { x: countX, y: barMidY }, String(disclosure.childCount), countFont);
+        }
       }
     }
 
@@ -469,8 +470,9 @@ export function pickDisclosure(x: number, y: number, geom: TraceGeometry): numbe
   if (lane < 0 || lane >= spans.length) return -1;
   const entry = disclosureByLane.get(lane);
   if (!entry) return -1;
-  const caretLeft = gutter.left + entry.depth * CARET_INDENT_STEP_PX;
-  const caretRight = caretLeft + CARET_GLYPH_PX;
+  const { indentStepPx, caretPx, countPx } = geom.disclosureColumn;
+  const caretLeft = gutter.left + entry.depth * indentStepPx;
+  const caretRight = caretLeft + caretPx + countPx;
   return x >= caretLeft && x < caretRight ? lane : -1;
 }
 

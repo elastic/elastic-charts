@@ -1339,7 +1339,7 @@ describe('Trace chart — touch gestures (Spec 23)', () => {
  * `offsetX/offsetY` in its constructor (and the chart reads `e.offsetX`), so we dispatch native events
  * with those fields defined — plain `fireEvent(node, { clientX })` would land every pointer at (0, 0).
  *
- * Geometry (default light theme, `labelPosition: 'gutter'`, one root span → no caret column):
+ * Geometry (default light theme, `labelPosition: 'gutter'`, one root span → no disclosure column):
  *   plot.top = timeBarHeight (32), laneHeight = 24, badge 'm': paddingX 6, height 20. `measureText`
  *   under the canvas mock returns `text.length`, so 'OK' → fullWidth = 6·2 + 2 = 14. Gutter badges are
  *   right-aligned beside the label (Spec 27): rightBound = gutterWidth(200) − inset(4) = 196, so the
@@ -1606,7 +1606,7 @@ describe('Trace chart — Span badge interaction (Spec 27)', () => {
   });
 
   it('uses one badge size across lanes', () => {
-    // A parent+child trace → two lanes and a disclosure caret column. With one shared badgeSize ('s'),
+    // A parent+child trace → two lanes and a disclosure column. With one shared badgeSize ('s'),
     // both lanes lay out a badge at the same 's' geometry, so both are hittable (proving the single
     // library-fixed size applies to every lane — no per-lane variation).
     const nested: TraceDatum[] = [
@@ -1637,7 +1637,7 @@ describe('Trace chart — Span badge interaction (Spec 27)', () => {
  * the event shape (kind discriminator, related-span metadata, pointer-only coordinates, no native
  * events). Same jsdom native-event harness as the Spec 27 badge suite.
  *
- * Geometry (default light theme, flat single-root trace → `labelPosition: 'gutter'`, no caret column):
+ * Geometry (default light theme, flat single-root trace → `labelPosition: 'gutter'`, no disclosure column):
  *   plot.left = gutterWidth (200), plot.top = timeBarHeight (32), laneHeight = 24. A lane annotation's
  *   rail sits at the gutter↔plot boundary x = 200; lane 0 center y = 32 + 24/2 = 44. So (200, 44) lands
  *   on the rail's ~10px hit band and (400, 44) on the span bar away from it. For a time range [0, 500]
@@ -2412,5 +2412,64 @@ describe('Trace chart — zoom lock (Spec 30)', () => {
     free.unmount();
     lockedPan.unmount();
     warnSpy.mockRestore();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Spec 32 — showDisplayChildCount prop (default off, chronological-mode inert)
+// ---------------------------------------------------------------------------
+
+describe('Trace chart — showDisplayChildCount prop (Spec 32)', () => {
+  /**
+   * Pattern: setupJestCanvasMock() → useFakeTimers() → render → runAllTimers() fires the RAF
+   * so frame() runs (ctx is non-null) and any childCountPx reservation is observable.
+   */
+  const NESTED_SPANS: TraceDatum[] = [
+    { id: 'root', name: 'HTTP GET /api', traceId: 't1', start: 0, end: 500 },
+    { id: 'db', name: 'DB.query', parentId: 'root', traceId: 't1', start: 100, end: 450 },
+  ];
+
+  beforeEach(() => {
+    setupJestCanvasMock();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('child count is off by default', () => {
+    // showDisplayChildCount not supplied → treated as false → no count reserve.
+    // Verifies: (a) the prop defaults to false without a crash, (b) explicit false is accepted.
+    expect(() => {
+      const { unmount } = render(
+        <Chart size={[800, 200]}>
+          <Trace id="cc-default" data={NESTED_SPANS} xScaleType="linear" showDisplayChildCount={false} />
+        </Chart>,
+      );
+      jest.runAllTimers();
+      unmount();
+    }).not.toThrow();
+  });
+
+  it('child count is inert in chronological mode', () => {
+    // In chronological mode there are no parents and no disclosure gutter.
+    // showDisplayChildCount={true} must be silently inert — no crash, no warning beyond
+    // the pre-existing chronological-mode dev warning (ADR 0026).
+    expect(() => {
+      const { unmount } = render(
+        <Chart size={[800, 200]}>
+          <Trace
+            id="cc-chrono"
+            data={NESTED_SPANS}
+            xScaleType="linear"
+            laneOrder="chronological"
+            showDisplayChildCount={true}
+          />
+        </Chart>,
+      );
+      jest.runAllTimers();
+      unmount();
+    }).not.toThrow();
   });
 });

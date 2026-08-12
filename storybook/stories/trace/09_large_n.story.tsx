@@ -61,6 +61,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   // on every visible lane. Off by default so the baseline perf gate and VRT snapshots are unaffected.
   const showBadges = boolean('show badges (stress test)', false);
   const badgeSize = select<'s' | 'm'>('badge size', { small: 's', medium: 'm' }, 'm');
+  const showDisplayChildCount = boolean('showDisplayChildCount', false);
 
   const data: TraceDatum[] = useMemo(() => buildLargeTrace(spanCount), [spanCount]);
 
@@ -75,6 +76,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           xScaleType={xScaleType}
           badgeAccessor={showBadges ? STRESS_BADGES : undefined}
           badgeSize={badgeSize}
+          showDisplayChildCount={showDisplayChildCount}
         />
       </Chart>
     </div>

@@ -68,7 +68,7 @@ child's lane. The guides make parent↔child membership readable without relying
   or off.
   {test:packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.test.ts#"tree guides are not pickable"}
 
-- `showTreeGuides` and `showChildCount` compose: the spine runs at the caret's indent depth,
+- `showTreeGuides` and `showDisplayChildCount` compose: the spine runs at the caret's indent depth,
   and the count text appears to the right of the caret glyph. Neither feature's geometry
   overlaps the other's. {story:treeGuides}
 

@@ -4076,6 +4076,7 @@ export interface TraceSpec extends Spec {
     onFocusDomainChange?: (domain: [number, number]) => void;
     onSelectionChange?: (next: TraceSelection, details: TraceSelectionDetail[]) => void;
     selection?: TraceSelection;
+    showDisplayChildCount?: boolean;
     showKeyboardFocusBadge?: boolean;
     showTooltipOverEmpty?: boolean;
     spanDisplay?: 'segments' | 'duration';

@@ -338,8 +338,8 @@ describe('buildDisclosureMap', () => {
     const map = buildDisclosureMap(lanes, visible, collapsed, depthBySpan, parentIds);
 
     // root (lane 0) and child (lane 1) are parents; leaf (lane 2) is not in the map.
-    expect(map.get(0)).toEqual({ state: 'expanded', depth: 0, descendantCount: 2 });
-    expect(map.get(1)).toEqual({ state: 'expanded', depth: 1, descendantCount: 1 });
+    expect(map.get(0)).toEqual({ state: 'expanded', depth: 0, descendantCount: 2, childCount: 1 });
+    expect(map.get(1)).toEqual({ state: 'expanded', depth: 1, descendantCount: 1, childCount: 1 });
     expect(map.has(2)).toBe(false);
   });
 
@@ -352,10 +352,10 @@ describe('buildDisclosureMap', () => {
 
     const map = buildDisclosureMap(lanes, visible, collapsed, depthBySpan, parentIds);
 
-    expect(map.get(0)).toEqual({ state: 'expanded', depth: 0, descendantCount: 2 });
+    expect(map.get(0)).toEqual({ state: 'expanded', depth: 0, descendantCount: 2, childCount: 1 });
     // descendantCount is counted from the pre-collapse tree (leaf), even though it is now hidden.
     // Exercises the id-bridge for collapseLanes's spread-cloned collapsed parent.
-    expect(map.get(1)).toEqual({ state: 'collapsed', depth: 1, descendantCount: 1 });
+    expect(map.get(1)).toEqual({ state: 'collapsed', depth: 1, descendantCount: 1, childCount: 1 });
   });
 
   it('returns an empty map when there are no collapsible parents', () => {
@@ -366,5 +366,75 @@ describe('buildDisclosureMap', () => {
     const map = buildDisclosureMap(lanes, lanes, new Set(), depthBySpan, parentIds);
 
     expect(map.size).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// buildDisclosureMap — display-child count (Spec 32)
+// ---------------------------------------------------------------------------
+
+describe('buildDisclosureMap — display-child count', () => {
+  it('child count uses display parentage', () => {
+    // root has two display children: one recorded child and one orphan reparented to root.
+    // The recorded child count would be 1; the display child count must be 2.
+    const root: NormalizedSpan = { id: 'root', name: 'root', start: 0, end: 100, activeSegments: [], meta: { id: 'root', name: 'root', start: 0, end: 100 } };
+    const recorded: NormalizedSpan = { id: 'c', name: 'c', parentId: 'root', start: 10, end: 90, activeSegments: [], meta: { id: 'c', name: 'c', start: 10, end: 90 } };
+    // Orphan: no parentId, but reparentedToSpanId points to root (display parent).
+    const orphan: NormalizedSpan = { id: 'orphan', name: 'orphan', reparentedToSpanId: 'root', start: 20, end: 80, activeSegments: [], meta: { id: 'orphan', name: 'orphan', start: 20, end: 80 } };
+    const pipelineSpans = [root, recorded, orphan];
+    const { lanes, depthBySpan } = orderLanes(pipelineSpans, 'tree');
+    const parentIds = collapsibleParentIds(lanes);
+    const map = buildDisclosureMap(pipelineSpans, lanes, new Set(), depthBySpan, parentIds);
+
+    // root is at lane 0 and has 2 display children (recorded + orphan).
+    expect(map.get(0)?.childCount).toBe(2);
+    // The recorded child and orphan are leaves — they have no childCount entry.
+    expect(map.has(1)).toBe(false);
+    expect(map.has(2)).toBe(false);
+  });
+
+  it('child count is unchanged by collapse state', () => {
+    // r → c1, c2 (r has 2 direct display children)
+    // Collapse r → c1 and c2 disappear from visibleSpans, but r's childCount must stay 2.
+    const r = span('r', 0, 100);
+    const c1 = span('c1', 10, 50, 'r');
+    const c2 = span('c2', 60, 90, 'r');
+    const pipelineSpans = [r, c1, c2];
+    const { lanes, depthBySpan } = orderLanes(pipelineSpans, 'tree');
+    const parentIds = collapsibleParentIds(lanes);
+
+    const expandedVisible = collapseLanes(lanes, new Set());
+    const expandedMap = buildDisclosureMap(pipelineSpans, expandedVisible, new Set(), depthBySpan, parentIds);
+
+    const collapsed = new Set(['r']);
+    const collapsedVisible = collapseLanes(lanes, collapsed);
+    const collapsedMap = buildDisclosureMap(pipelineSpans, collapsedVisible, collapsed, depthBySpan, parentIds);
+
+    expect(expandedMap.get(0)?.childCount).toBe(2);
+    expect(collapsedMap.get(0)?.childCount).toBe(2);
+  });
+
+  it('child count ignores hidden lanes', () => {
+    // parent → child, child → ca, child → cb
+    // Collapsing 'child' hides ca and cb. parent's childCount = 1 (just child).
+    // child's childCount = 2 (ca and cb), counted from pipelineSpans even though they are hidden.
+    const parent = span('parent', 0, 100);
+    const child = span('child', 10, 90, 'parent');
+    const ca = span('ca', 20, 50, 'child');
+    const cb = span('cb', 60, 80, 'child');
+    const pipelineSpans = [parent, child, ca, cb];
+    const { lanes, depthBySpan } = orderLanes(pipelineSpans, 'tree');
+    const parentIds = collapsibleParentIds(lanes);
+
+    // Collapse child — ca and cb vanish from visibleSpans.
+    const collapsed = new Set(['child']);
+    const visible = collapseLanes(lanes, collapsed);
+    const map = buildDisclosureMap(pipelineSpans, visible, collapsed, depthBySpan, parentIds);
+
+    // parent's direct display children: just child → childCount = 1
+    expect(map.get(0)?.childCount).toBe(1);
+    // child's direct display children: ca and cb → childCount = 2
+    // (child is at lane 1 in the visible list since its parent is lane 0)
+    expect(map.get(1)?.childCount).toBe(2);
   });
 });

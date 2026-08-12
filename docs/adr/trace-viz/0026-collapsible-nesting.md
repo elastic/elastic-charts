@@ -79,12 +79,12 @@ Three related UI decisions bundled here because each is a direct consequence of 
 
 ### 3a. Disclosure gutter reserved in all label modes when parents exist
 
-In `tree` mode with ≥1 parent span, a fixed-width caret column is reserved in the gutter **in
+In `tree` mode with ≥1 parent span, a fixed-width disclosure column is reserved in the gutter **in
 every label mode** (`gutter`, `inline`, `none`) by extending `gutterPx(style, opts?)`. Flat traces
 (no parents → `hasParents = false`) reserve nothing, so there is no regression for non-nested data.
 
 **Why all label modes:** users of `inline` and `none` label modes can still have nested data and
-need the collapse affordance. Reserving the caret column only in `gutter` mode would silently
+need the collapse affordance. Reserving the disclosure column only in `gutter` mode would silently
 disable collapse for users who chose `inline` or `none` for aesthetic reasons.
 
 **Implementation:** `gutterPx(style, { hasParents, maxDepth })` adds

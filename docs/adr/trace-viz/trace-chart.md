@@ -256,8 +256,23 @@ Changing `laneOrder` invalidates the pipeline cache and resets zoom/pan to fit-a
 - **`collapsedSpanIds` prop**: controlled set of span IDs whose descendants are hidden. Perform-and-fire (same model as `focusDomain`/ADR 0007): toggles execute locally and fire `onCollapseChange` with the new array; the parent decides whether to update the prop. Omit the prop to let the component manage collapse state internally.
 - **`onCollapseChange`**: fired once per toggle with the next collapsed-ID array; suppressed when the set is identity-equal to the previous fire.
 - When a parent is collapsed, its descendants' active segments and critical-path intervals roll up onto the parent lane (merged, clamped to the parent's `[start, end]`). Expanding restores per-lane rendering.
-
-{story:collapsibleNesting}
+- **`showDisplayChildCount` prop**: when `true`, renders each parent's direct **display-child count** to the right of its caret glyph in the themed gutter-label font; leaf lanes render nothing. Defaults to `false`. Inert when `laneOrder: 'chronological'` (no disclosure gutter exists). See ADR 0037, ADR 0038.
+  {story:collapsibleNesting}
+- The count uses **display topology** (ADR 0028): a reparented orphan counts toward its elected synthetic display parent; spans from other trace groups in a combined waterfall never share children across group boundaries.
+  {test:packages/charts/src/chart_types/trace_chart/data/collapse.test.ts#"child count uses display parentage"}
+- The count reflects direct display children only, not the subtree total. It is unchanged by collapse state — a collapsed parent shows the same count as when expanded. The subtree total remains exclusive to the aria-live "N descendants hidden" announcement.
+  {test:packages/charts/src/chart_types/trace_chart/data/collapse.test.ts#"child count is unchanged by collapse state"}
+- A display child that is itself collapsed still counts as one direct child of its parent — the count is derived from the pre-collapse pipeline output.
+  {test:packages/charts/src/chart_types/trace_chart/data/collapse.test.ts#"child count ignores hidden lanes"}
+- The disclosure gutter widens by a measured reserve sized to the widest count string across all parent spans. Gutter width, plot origin, labels, and badges do not reflow when a caret is toggled — the reserve is computed once per data change (ADR 0037 D1).
+  {test:packages/charts/src/chart_types/trace_chart/render/geometry.test.ts#"child count widens the disclosure column"}
+- The caret glyph and count text form one disclosure click/tap target: clicking the count toggles collapse and is consumed before selection, exactly like a direct caret click (ADR 0026 §3e).
+  {test:packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.test.ts#"pickDisclosure includes the child-count zone"}
+- The draw zone and pick zone are both derived from the disclosure column geometry published on `TraceGeometry` (ADR 0037 D1). The pick range spans the full reserve; the drawn text occupies only its own digits — no per-lane measurement at pick time.
+  {test:packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.test.ts#"child count draw and pick zones agree"}
+- With `showDisplayChildCount` omitted or `false`, layout and rendering are identical to the prop-off baseline: no reserve, no count text.
+  {test:packages/charts/src/chart_types/trace_chart/trace_chart.test.tsx#"child count is off by default"}
+  {test:packages/charts/src/chart_types/trace_chart/trace_chart.test.tsx#"child count is inert in chronological mode"}
 
 ### Empty states
 
@@ -424,6 +439,8 @@ All non-obvious design decisions are recorded in the ADRs below. Consult them fo
 - [ADR 0032 — Trace data diagnostics report](./0032-trace-data-diagnostics-report.md)
 - [ADR 0034 — Trace pointer events flow through the `Settings` element-event union](./0034-pointer-events-via-settings-element-union.md)
 - [ADR 0035 — `spanDisplay` duration-bar mode](./0035-span-display-duration-bar-mode.md)
+- [ADR 0037 — Disclosure column sub-widths are measured and published, not re-derived](./0037-disclosure-column-measured-widths.md)
+- [ADR 0038 — Public props name display topology when their value derives from it](./0038-prop-naming-display-topology.md)
 
 ## Non-goals
 
@@ -438,3 +455,7 @@ All non-obvious design decisions are recorded in the ADRs below. Consult them fo
 | Right-side clock-skew correction | Only `child.start < parent.start` (left-side overhang) is corrected. A child that starts inside its parent but ends after it is not repositioned. |
 | Running (in-progress) span visualization | Deferred beyond v1 — `TraceDatum.end` is required; no `null`/running model, dashed provisional visual, domain-max edge, or wall-clock behavior is exposed. The design rationale (optional end, provisional domain edge, no live clock) is preserved in ADR 0023 and Spec 34 for when the feature lands. |
 | Screen-reader announcement of critical-path membership | Planned follow-up; see ADR 0012 open items. |
+| Subtree totals in the disclosure gutter | The direct display-child count answers "what's one level down"; the subtree total is already surfaced on collapse via the aria-live announcement. Showing both inside a narrow gutter column is noise. |
+| Screen-reader surfacing of the display-child count | The SR table already carries a `parentName` column per row and appends "(N descendants hidden)" to collapsed parent rows; a spoken count would duplicate information AT users already have. |
+| Count formatting / i18n | The count is a plain integer; no locale grouping, abbreviation, or upper-bound clamp. |
+| Counting spans hidden by anything other than collapse | The count reflects what expanding the caret would reveal — only the direct display-child count in the pre-collapse pipeline output. |

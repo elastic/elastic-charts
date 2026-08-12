@@ -184,8 +184,11 @@ export function buildDisclosureMap(
   effectiveCollapsed: ReadonlySet<string>,
   depthBySpan: ReadonlyMap<NormalizedSpan, number>,
   parentIds: ReadonlySet<string>,
-): Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number }> {
-  const result = new Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number }>();
+): Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number; childCount: number }> {
+  const result = new Map<
+    number,
+    { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number; childCount: number }
+  >();
   if (parentIds.size === 0) return result;
 
   // Bridge to ID-keyed depth: handles the case where collapseLanes returns a spread-clone of the
@@ -218,8 +221,32 @@ export function buildDisclosureMap(
     const depth = depthById.get(span.id) ?? 0;
     const state: 'collapsed' | 'expanded' = effectiveCollapsed.has(span.id) ? 'collapsed' : 'expanded';
     const descendantCount = countDescendants(span);
-    result.set(i, { state, depth, descendantCount });
+    // Direct display-child count: from pipelineSpans (pre-collapse), so it is collapse-invariant.
+    // childrenMap uses displayParentId, matching the display topology the spec requires (Spec 32).
+    const childCount = (childrenMap.get(traceScopedId(span.traceId, span.id)) ?? []).length;
+    result.set(i, { state, depth, descendantCount, childCount });
   }
 
   return result;
+}
+
+/**
+ * Returns the set of distinct direct display-child counts across all parent spans in the
+ * pre-collapse pipeline output. Used by `getChildCountReserve` in the pipeline to size the count
+ * column: measuring every distinct string is necessary because proportional-figure fonts can make
+ * a shorter digit string wider than the max integer (e.g. `width("88") > width("91")`).
+ *
+ * Returns an empty array when there are no parent spans.
+ * @internal
+ */
+export function distinctChildCounts(pipelineSpans: NormalizedSpan[]): number[] {
+  const childrenMap = buildChildrenMap(pipelineSpans, displayParentId);
+  const seen = new Set<number>();
+  for (const span of pipelineSpans) {
+    const children = childrenMap.get(traceScopedId(span.traceId, span.id));
+    if (children && children.length > 0) {
+      seen.add(children.length);
+    }
+  }
+  return Array.from(seen);
 }

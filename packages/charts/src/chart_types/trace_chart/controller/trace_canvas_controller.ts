@@ -94,6 +94,9 @@ export class TraceCanvasController {
   badgeGutterCache: { spansRef: NormalizedSpan[]; badgeSize: string; labelPosition: string; width: number } | null =
     null;
 
+  // Memoized display-child-count reserve (Spec 32). Keyed on (pipelineSpans, style) refs.
+  childCountCache: { spansRef: NormalizedSpan[]; styleRef: object; width: number } | null = null;
+
   // Async cache for Span-badge images (Spec 27 / ADR 0029). A decoded image finishing off-frame
   // schedules a redraw so the placeholder is replaced without blocking the animation loop.
   badgeImages = new BadgeImageCache(() => this.scheduleRender?.());

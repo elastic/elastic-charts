@@ -7,8 +7,8 @@
  */
 
 import { TICK_LAYER_PADDING, TICK_LAYER_BOTTOM_INSET } from './time_bar';
-import type { AnnotationLayoutItem, DisclosureEntry, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
-import { gutterPx, LANE_PADDING } from './types';
+import type { AnnotationLayoutItem, DisclosureColumnGeometry, DisclosureEntry, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
+import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, gutterPx, LANE_PADDING } from './types';
 import type { Size } from '../../../utils/dimensions';
 import { waitingSegments } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
@@ -62,16 +62,34 @@ export function buildGeometry(
    * self-time-derived so `selfTime`/tooltip/events/SR are unaffected.
    */
   spanDisplay: 'segments' | 'duration' = 'segments',
+  /**
+   * Measured reserve (px) for the widest display-child-count string across all parent spans. 0 when
+   * `showDisplayChildCount` is false or the trace has no parents. Supplied by the pipeline measurer
+   * (`getChildCountReserve` in `controller/pipeline.ts`) — `buildGeometry` stays pure.
+   * See Spec 32 / ADR 0037 D1.
+   */
+  childCountPx = 0,
 ): TraceGeometry {
   // spans is already start-sorted by the pipeline cache (O(N log N) once per data change, not per frame).
   // domain is pre-computed by normalize() and passed in; no per-frame reduce needed.
 
   const { width: canvasWidth, height: canvasHeight } = canvasSize;
   const { timeBarHeight, laneHeight } = style;
-  // gutterPx() reserves space for the label gutter and (when hasParents) the disclosure-caret
-  // column. In 'inline'/'none' modes the label portion collapses to 0 but the caret column is
+  // gutterPx() reserves space for the label gutter and (when hasParents) the disclosure column.
+  // In 'inline'/'none' modes the label portion collapses to 0 but the disclosure column is
   // still reserved when the trace has parent spans (ADR 0026).
-  const effectiveGutterWidth = gutterPx(style, { hasParents, maxDepth });
+  // Build the disclosure column geometry (ADR 0037 D1). All fields are 0 for flat/chronological
+  // traces. countPx comes from the pipeline measurer; buildGeometry stays pure (no canvas access).
+  const disclosureColumn: DisclosureColumnGeometry = hasParents
+    ? {
+        caretPx: CARET_GLYPH_PX,
+        countPx: childCountPx,
+        indentStepPx: CARET_INDENT_STEP_PX,
+        maxDepth,
+      }
+    : { caretPx: 0, countPx: 0, indentStepPx: CARET_INDENT_STEP_PX, maxDepth: 0 };
+
+  const effectiveGutterWidth = gutterPx(style, { hasParents, maxDepth, childCountPx });
 
   // In 'time' mode the time bar may render stacked tick-label rows (ADR 0024). Reserve a fixed
   // height for the configured `timeAxisLayerCount` so the plot (and every lane's y-position) never
@@ -168,6 +186,7 @@ export function buildGeometry(
     scale,
     emptyMessage,
     disclosureByLane,
+    disclosureColumn,
     criticalIntervalsByLane,
     // Populated by the badge-layout pass (layoutBadges) after partitioning; empty here so buildGeometry
     // stays pure (no text measurement). The chart frame replaces this with the measured layout.

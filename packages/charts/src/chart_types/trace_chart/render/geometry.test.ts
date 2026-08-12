@@ -8,12 +8,14 @@
 
 import { buildGeometry } from './geometry';
 import { TICK_LAYER_PADDING, TICK_LAYER_BOTTOM_INSET } from './time_bar';
-import type { DisclosureEntry, TraceStyle } from './types';
+import type { DisclosureColumnGeometry, DisclosureEntry, TraceStyle } from './types';
 import {
   CARET_GLYPH_PX,
   CARET_INDENT_STEP_PX,
+  CHILD_COUNT_INSET_PX,
   DEFAULT_TRACE_ANNOTATION_STYLE,
   DEFAULT_TRACE_BADGE_STYLE,
+  disclosureColumnWidth,
   gutterPx,
 } from './types';
 import type { NormalizedSpan } from '../data/types';
@@ -210,7 +212,7 @@ describe('buildGeometry', () => {
 });
 
 // ---------------------------------------------------------------------------
-// gutterPx — caret column extension (Spec 21)
+// gutterPx — disclosure column extension (Spec 21)
 // ---------------------------------------------------------------------------
 
 describe('gutterPx', () => {
@@ -265,7 +267,7 @@ describe('buildGeometry — disclosureByLane', () => {
   });
 
   it('threads disclosureByLane through to the geometry unchanged', () => {
-    const entry: DisclosureEntry = { state: 'expanded', depth: 0, descendantCount: 2 };
+    const entry: DisclosureEntry = { state: 'expanded', depth: 0, descendantCount: 2, childCount: 1 };
     const disclosure = new Map<number, DisclosureEntry>([[0, entry]]);
     const geom = buildGeometry(
       s,
@@ -282,11 +284,11 @@ describe('buildGeometry — disclosureByLane', () => {
       disclosure,
     );
     expect(geom.disclosureByLane).toBe(disclosure);
-    expect(geom.disclosureByLane.get(0)).toEqual({ state: 'expanded', depth: 0, descendantCount: 2 });
+    expect(geom.disclosureByLane.get(0)).toEqual({ state: 'expanded', depth: 0, descendantCount: 2, childCount: 1 });
   });
 
   it('disclosureByLane entry with state=collapsed reflects collapsed parent', () => {
-    const entry: DisclosureEntry = { state: 'collapsed', depth: 1, descendantCount: 5 };
+    const entry: DisclosureEntry = { state: 'collapsed', depth: 1, descendantCount: 5, childCount: 2 };
     const disclosure = new Map<number, DisclosureEntry>([[0, entry]]);
     const geom = buildGeometry(
       s,
@@ -311,7 +313,7 @@ describe('buildGeometry — gutterPx with hasParents/maxDepth', () => {
   const s = [span('a', 100, 400)];
   const d = { min: 100, max: 400 };
 
-  it('with hasParents=true, maxDepth=0: gutter width includes caret column', () => {
+  it('with hasParents=true, maxDepth=0: gutter width includes disclosure column', () => {
     const geom = buildGeometry(
       s,
       canvasSize,
@@ -355,7 +357,7 @@ describe('buildGeometry — gutterPx with hasParents/maxDepth', () => {
     expect(geom.gutter.width + geom.plot.width).toBe(canvasSize.width);
   });
 
-  it('inline mode, hasParents=true, maxDepth=0: reserves only the caret column', () => {
+  it('inline mode, hasParents=true, maxDepth=0: reserves only the disclosure column', () => {
     const inlineStyle: TraceStyle = { ...style, labelPosition: 'inline' };
     const geom = buildGeometry(
       s,
@@ -514,5 +516,76 @@ describe('buildGeometry — multi-level time bar height', () => {
     const zoomedIn = buildGeometry(spans, canvasSize, { min: 300, max: 350 }, 0, s, 'time', domain);
     expect(zoomedIn.timeBar.height).toBe(zoomedOut.timeBar.height);
     expect(zoomedIn.plot.top).toBe(zoomedOut.plot.top);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// buildGeometry — disclosure column (Spec 32 / ADR 0037 D1)
+// ---------------------------------------------------------------------------
+
+describe('buildGeometry — disclosure column', () => {
+  // Span fixture: parent → child (hasParents = true, maxDepth = 1)
+  const parentSpan = span('parent', 0, 100);
+  const childSpan = span('child', 10, 90);
+  const nestedSpans = [parentSpan, childSpan];
+  const nestedDomain = { min: 0, max: 100 };
+
+  // Helper that calls buildGeometry with all positional defaults spelled out plus childCountPx.
+  function buildWithCount(childCountPx: number): ReturnType<typeof buildGeometry> {
+    const entry: DisclosureEntry = { state: 'expanded', depth: 0, descendantCount: 1, childCount: 1 };
+    return buildGeometry(
+      nestedSpans,
+      canvasSize,
+      focusDomain,
+      0,
+      style,
+      'linear',
+      nestedDomain,
+      null,
+      [],
+      new Map(),
+      null,
+      new Map([[0, entry]]),
+      /* hasParents */ true,
+      /* maxDepth */ 1,
+      [],
+      /* badgeGutterWidth */ 0,
+      /* badgeRowHeight */ 0,
+      /* spanDisplay */ 'segments',
+      /* childCountPx */ childCountPx,
+    );
+  }
+
+  it('child count widens the disclosure column', () => {
+    const COUNT_PX = 24; // arbitrary positive reserve
+    const geomWithCount = buildWithCount(COUNT_PX);
+    const geomNoCount = buildWithCount(0);
+
+    // The disclosureColumn must be published on the geometry.
+    expect(geomWithCount.disclosureColumn).toBeDefined();
+    // countPx must equal the value threaded in.
+    expect(geomWithCount.disclosureColumn.countPx).toBe(COUNT_PX);
+    // caretPx must equal CARET_GLYPH_PX (always, when hasParents).
+    expect(geomWithCount.disclosureColumn.caretPx).toBe(CARET_GLYPH_PX);
+    // indentStepPx equals the constant baseline.
+    expect(geomWithCount.disclosureColumn.indentStepPx).toBe(CARET_INDENT_STEP_PX);
+    // maxDepth is threaded through.
+    expect(geomWithCount.disclosureColumn.maxDepth).toBe(1);
+
+    // disclosureColumnWidth must equal maxDepth*indentStepPx + caretPx + countPx.
+    const expected = disclosureColumnWidth(geomWithCount.disclosureColumn);
+    expect(expected).toBe(1 * CARET_INDENT_STEP_PX + CARET_GLYPH_PX + COUNT_PX);
+
+    // The gutter must be wider with countPx than without.
+    expect(geomWithCount.gutter.width).toBeGreaterThan(geomNoCount.gutter.width);
+    // The difference must equal exactly COUNT_PX.
+    expect(geomWithCount.gutter.width - geomNoCount.gutter.width).toBe(COUNT_PX);
+  });
+
+  it('CHILD_COUNT_INSET_PX is exported from types', () => {
+    // Verifies the constant is reachable by pipeline code (controller/pipeline.ts uses it to compute
+    // childCountPx = max(measured) + CHILD_COUNT_INSET_PX).
+    expect(typeof CHILD_COUNT_INSET_PX).toBe('number');
+    expect(CHILD_COUNT_INSET_PX).toBeGreaterThan(0);
   });
 });

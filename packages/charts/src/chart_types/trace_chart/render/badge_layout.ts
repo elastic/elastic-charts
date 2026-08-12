@@ -7,7 +7,7 @@
  */
 
 import type { BadgeLayoutItem, LaneBadgeLayout, TraceBadgeSizeMetrics, TraceGeometry, TraceStyle } from './types';
-import { LANE_PADDING } from './types';
+import { disclosureColumnWidth, LANE_PADDING } from './types';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceSpanBadge, TraceSpanBadgeSize } from '../trace_api';
 
@@ -165,11 +165,6 @@ function naturalClusterWidth(
   return total + gap * (badges.length - 1);
 }
 
-/** The caret column width within the gutter, mirroring the renderer's derivation. */
-function caretColumnWidth(geom: TraceGeometry, style: TraceStyle): number {
-  if (geom.disclosureByLane.size === 0) return 0;
-  return style.labelPosition === 'gutter' ? geom.gutter.width - style.gutterWidth : geom.gutter.width;
-}
 
 /**
  * Computes the fixed width (px) of the badge-only gutter for `'none'` Label position (Spec 27), or
@@ -229,7 +224,7 @@ export function layoutBadges(
   const m = style.badge[badgeSize];
   const bstyle = style.badge;
   const plotRight = plot.left + plot.width;
-  const caretW = caretColumnWidth(geom, style);
+  const caretW = disclosureColumnWidth(geom.disclosureColumn);
 
   for (let i = Math.max(0, firstLane); i <= lastLane && i < spans.length; i++) {
     const span = spans[i]!;

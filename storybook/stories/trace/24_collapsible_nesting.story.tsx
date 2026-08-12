@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { select } from '@storybook/addon-knobs';
+import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Settings, Trace, fromOtlp } from '@elastic/charts';
@@ -37,6 +37,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'gutter — fixed left panel (default)',
   );
   const labelPosition = LABEL_POSITION_OPTIONS[labelKey];
+  const showDisplayChildCount = boolean('showDisplayChildCount', false);
 
   return (
     <Chart title={title} description={description} size={{ width: '100%', height: 400 }}>
@@ -49,6 +50,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         spanDisplay="duration"
         colorBy={{ otelAttribute: 'service.name' }}
         laneOrder="tree"
+        showDisplayChildCount={showDisplayChildCount}
       />
     </Chart>
   );

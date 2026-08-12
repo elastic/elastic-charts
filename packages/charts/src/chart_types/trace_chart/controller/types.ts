@@ -123,6 +123,7 @@ export interface DisclosureEntry {
   state: 'collapsed' | 'expanded';
   depth: number;
   descendantCount: number;
+  childCount: number;
 }
 
 /**

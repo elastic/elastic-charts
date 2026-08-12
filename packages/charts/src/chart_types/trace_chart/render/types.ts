@@ -253,6 +253,42 @@ export const CARET_GLYPH_PX = 28;
 export const CARET_INDENT_STEP_PX = 8;
 
 /**
+ * Trailing inset (px) inside the child-count reserve so the count text never crowds the gutter
+ * label. Added to the measured ink width to produce `countPx`. See Spec 32 / ADR 0037 D1.
+ * @internal
+ */
+export const CHILD_COUNT_INSET_PX = 4;
+
+/**
+ * Published disclosure-gutter sub-widths (ADR 0037 D1). Single source of truth for the caret/count
+ * draw passes, `pickDisclosure`, and badge layout — none of them re-derive it.
+ * @internal
+ */
+export interface DisclosureColumnGeometry {
+  /** Caret glyph zone width (px). `CARET_GLYPH_PX` when the trace has parents; 0 otherwise. */
+  caretPx: number;
+  /** Measured reserve for the widest display-child-count string (px). 0 when the prop is off or
+   * the trace has no parents. */
+  countPx: number;
+  /** Effective px per depth level. `CARET_INDENT_STEP_PX` for Spec 32; Spec 33 may raise it. */
+  indentStepPx: number;
+  /** Deepest lane depth — sizes the total indent allocation. */
+  maxDepth: number;
+}
+
+/**
+ * Total width of the disclosure column: indent allocation + caret + count.
+ *
+ * Used by label-position consumers (gutter label `labelX`/`labelWidth`) that need the full
+ * reserved width. `pickDisclosure` instead adds `entry.depth * indentStepPx` per lane, so the
+ * two sums differ by design — see ADR 0037 Consequences.
+ * @internal
+ */
+export function disclosureColumnWidth(c: DisclosureColumnGeometry): number {
+  return c.maxDepth * c.indentStepPx + c.caretPx + c.countPx;
+}
+
+/**
  * One entry in `TraceGeometry.disclosureByLane` — describes the collapse caret for a parent lane.
  * @internal
  */
@@ -263,20 +299,28 @@ export interface DisclosureEntry {
   depth: number;
   /** Total number of descendants in the original (pre-collapse) tree; used for the aria announcement. */
   descendantCount: number;
+  /** Number of direct display children in the pre-collapse tree. Used to draw the count beside the
+   * caret when `showDisplayChildCount` is true (Spec 32 / ADR 0037 D1). */
+  childCount: number;
 }
 
 /**
  * Returns the effective left gutter width for layout and coordinate math.
  *
- * In `'gutter'` mode the gutter shows span-name labels plus (when parents exist) the caret column.
+ * In `'gutter'` mode the gutter shows span-name labels plus (when parents exist) the disclosure column.
  * In `'inline'` and `'none'` modes there are no label columns but **when the trace has parent
  * spans** a minimal disclosure-gutter column is still reserved so carets render in all label modes
  * (Spec 21 / ADR 0026). Flat traces (no parents) reserve nothing → no regression for the common
  * non-nested case.
  * @internal
  */
-export function gutterPx(style: TraceStyle, opts?: { hasParents?: boolean; maxDepth?: number }): number {
-  const caretColumnWidth = opts?.hasParents ? CARET_GLYPH_PX + (opts.maxDepth ?? 0) * CARET_INDENT_STEP_PX : 0;
+export function gutterPx(
+  style: TraceStyle,
+  opts?: { hasParents?: boolean; maxDepth?: number; childCountPx?: number },
+): number {
+  const caretColumnWidth = opts?.hasParents
+    ? CARET_GLYPH_PX + (opts.maxDepth ?? 0) * CARET_INDENT_STEP_PX + (opts.childCountPx ?? 0)
+    : 0;
   return style.labelPosition === 'gutter' ? style.gutterWidth + caretColumnWidth : caretColumnWidth;
 }
 
@@ -435,6 +479,12 @@ export interface TraceGeometry {
    * Populated by `buildGeometry`; consumed by `canvas2d_renderer` and keyboard handler.
    */
   disclosureByLane: Map<number, DisclosureEntry>;
+  /**
+   * Published disclosure-column sub-widths (ADR 0037 D1). Single source of truth for the caret draw
+   * pass, the count draw pass, `pickDisclosure`, and badge layout — none of them re-derive it.
+   * All fields are 0 when the trace has no parents (flat trace, chronological mode, or no data).
+   */
+  disclosureColumn: DisclosureColumnGeometry;
   /**
    * Projected critical-path intervals grouped by lane index. Populated by `buildGeometry` from the
    * rolled-up pipeline output (post-collapse). Empty map when `criticalPath` is absent or empty.

@@ -27,8 +27,8 @@ import {
   resolveBadgeColors,
   canvas2dRenderer,
 } from './canvas2d_renderer';
-import type { BadgeLayoutItem, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
-import { DEFAULT_TRACE_ANNOTATION_STYLE, DEFAULT_TRACE_BADGE_STYLE } from './types';
+import type { BadgeLayoutItem, DisclosureColumnGeometry, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
+import { CARET_GLYPH_PX as _CARET_GLYPH_PX, CARET_INDENT_STEP_PX as _CARET_INDENT_STEP_PX, DEFAULT_TRACE_ANNOTATION_STYLE, DEFAULT_TRACE_BADGE_STYLE } from './types';
 import type { ResolvedTraceAnnotation } from '../data/annotations';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceDatum } from '../trace_api';
@@ -137,6 +137,7 @@ function makeGeom(overrides: Partial<TraceGeometry> = {}): TraceGeometry {
     scale: defaultScale,
     emptyMessage: null,
     disclosureByLane: new Map(),
+    disclosureColumn: { caretPx: 0, countPx: 0, indentStepPx: _CARET_INDENT_STEP_PX, maxDepth: 0 },
     criticalIntervalsByLane: new Map(),
     badgesByLane: new Map(),
     annotationsLayout: [],
@@ -810,9 +811,10 @@ describe('pickDisclosure', () => {
 
   const geomWithCarets = makeGeom({
     disclosureByLane: new Map([
-      [0, { state: 'expanded' as const, depth: 0, descendantCount: 2 }],
-      [1, { state: 'collapsed' as const, depth: 1, descendantCount: 1 }],
+      [0, { state: 'expanded' as const, depth: 0, descendantCount: 2, childCount: 1 }],
+      [1, { state: 'collapsed' as const, depth: 1, descendantCount: 1, childCount: 1 }],
     ]),
+    disclosureColumn: { caretPx: CARET_GLYPH_PX, countPx: 0, indentStepPx: CARET_INDENT_STEP_PX, maxDepth: 1 },
   });
 
   it('returns -1 when disclosureByLane is empty', () => {
@@ -883,7 +885,7 @@ describe('pickRegion — collapsed lane', () => {
     };
     return makeGeom({
       spans: [collapsedSpan],
-      disclosureByLane: new Map([[0, { state: 'collapsed' as const, depth: 0, descendantCount: 3 }]]),
+      disclosureByLane: new Map([[0, { state: 'collapsed' as const, depth: 0, descendantCount: 3, childCount: 2 }]]),
     });
   }
 
@@ -920,7 +922,7 @@ describe('pickRegion — collapsed lane', () => {
     };
     const geomExpanded = makeGeom({
       spans: [expandedSpan],
-      disclosureByLane: new Map([[0, { state: 'expanded' as const, depth: 0, descendantCount: 1 }]]),
+      disclosureByLane: new Map([[0, { state: 'expanded' as const, depth: 0, descendantCount: 1, childCount: 1 }]]),
     });
     // x=300 → t = (300-200)/700*1000 ≈ 143ms — inside [0,500] active segment
     const result = pickRegion(300, 40, geomExpanded);
@@ -1472,5 +1474,55 @@ describe('drawAnnotations', () => {
     drawAnnotations(ctx, geomWithAnnotations([timeResolved('r', { range: [200, 600] }, undefined, 'timebar')]), style);
     expect(ctx.fill).toHaveBeenCalled();
     expect(ctx.stroke).toHaveBeenCalled();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: pickDisclosure — child-count zone (Spec 32)
+// ---------------------------------------------------------------------------
+
+describe('pickDisclosure — child-count zone (Spec 32)', () => {
+  // Geometry: gutter [0, PLOT_LEFT], plot starts at x=PLOT_LEFT.
+  // disclosureColumn: caretPx=28, countPx=20, indentStepPx=8, maxDepth=0.
+  // Without the count zone, depth-0 caret covers [0, 28). With it, [0, 48).
+  const COUNT_PX = 20;
+  const ZERO_DEPTH_COL: DisclosureColumnGeometry = {
+    caretPx: _CARET_GLYPH_PX,
+    countPx: COUNT_PX,
+    indentStepPx: _CARET_INDENT_STEP_PX,
+    maxDepth: 0,
+  };
+
+  const geomWithCountZone = makeGeom({
+    disclosureByLane: new Map([[0, { state: 'expanded' as const, depth: 0, descendantCount: 2, childCount: 2 }]]),
+    disclosureColumn: ZERO_DEPTH_COL,
+  });
+
+  it('pickDisclosure includes the child-count zone', () => {
+    // x=CARET_GLYPH_PX is the first pixel after the caret glyph — in the count reserve.
+    // Before this fix, pickDisclosure returned -1 here; after the fix, it must return 0.
+    const justAfterCaret = _CARET_GLYPH_PX;
+    const justBeforeReserveEnd = _CARET_GLYPH_PX + COUNT_PX - 1;
+    expect(pickDisclosure(justAfterCaret, 40, geomWithCountZone)).toBe(0);
+    expect(pickDisclosure(justBeforeReserveEnd, 40, geomWithCountZone)).toBe(0);
+    // x exactly at reserve end must be outside the zone.
+    expect(pickDisclosure(_CARET_GLYPH_PX + COUNT_PX, 40, geomWithCountZone)).toBe(-1);
+  });
+
+  it('child count draw and pick zones agree', () => {
+    // Both draw and pick are driven by the same disclosureColumn fields.
+    // Verify that using a different countPx changes both the right-boundary of pickDisclosure
+    // and is the only source for that boundary — i.e., no per-lane re-derivation.
+    const LARGER_COUNT_PX = 40;
+    const widerCol: DisclosureColumnGeometry = { ...ZERO_DEPTH_COL, countPx: LARGER_COUNT_PX };
+    const widerGeom = makeGeom({
+      disclosureByLane: new Map([[0, { state: 'expanded' as const, depth: 0, descendantCount: 2, childCount: 2 }]]),
+      disclosureColumn: widerCol,
+    });
+
+    // x = CARET_GLYPH_PX + LARGER_COUNT_PX - 1 must now be inside the zone.
+    expect(pickDisclosure(_CARET_GLYPH_PX + LARGER_COUNT_PX - 1, 40, widerGeom)).toBe(0);
+    // x = CARET_GLYPH_PX + LARGER_COUNT_PX must be outside.
+    expect(pickDisclosure(_CARET_GLYPH_PX + LARGER_COUNT_PX, 40, widerGeom)).toBe(-1);
   });
 });

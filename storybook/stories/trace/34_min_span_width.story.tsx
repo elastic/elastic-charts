@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import type { TraceDatum } from '@elastic/charts';
@@ -72,12 +73,22 @@ const DATA: TraceDatum[] = [
 // Color lanes by step type so each family reads as its own hue (the multi-hue "workflow" look).
 const BY_TYPE = (datum: TraceDatum) => (datum.meta as StepMeta | undefined)?.type ?? 'workflow';
 
-export const Example: ChartsStory = (_, { title, description }) => (
-  <Chart title={title} description={description} size={{ width: '100%', height: 600 }}>
-    <Settings baseTheme={useBaseTheme()} theme={{ trace: { labelPosition: 'inline' } }} />
-    <Trace id="trace_min_span_width" data={DATA} xScaleType="time" traceId={ROOT} colorBy={BY_TYPE} />
-  </Chart>
-);
+export const Example: ChartsStory = (_, { title, description }) => {
+  const showDisplayChildCount = boolean('showDisplayChildCount', false);
+  return (
+    <Chart title={title} description={description} size={{ width: '100%', height: 600 }}>
+      <Settings baseTheme={useBaseTheme()} theme={{ trace: { labelPosition: 'inline' } }} />
+      <Trace
+        id="trace_min_span_width"
+        data={DATA}
+        xScaleType="time"
+        traceId={ROOT}
+        colorBy={BY_TYPE}
+        showDisplayChildCount={showDisplayChildCount}
+      />
+    </Chart>
+  );
+};
 
 Example.parameters = {
   // Give the story root an explicit height so it grows to fit the 600 px chart; without this the

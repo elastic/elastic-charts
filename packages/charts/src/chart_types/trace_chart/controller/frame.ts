@@ -8,7 +8,7 @@
 
 import { FOCUS_DOMAIN_EPSILON } from './constants';
 import { reconcileHoveredAnnotation, reconcileHoveredBadge } from './hover_pin';
-import { getBadgeGutterWidth, getPipeline, getResolvedAnnotations, getStyle } from './pipeline';
+import { getBadgeGutterWidth, getChildCountReserve, getPipeline, getResolvedAnnotations, getStyle } from './pipeline';
 import { getCollapseOutput, getEffectiveCollapsed, getEffectiveSelection } from './selection';
 import type { TraceCanvasController } from './trace_canvas_controller';
 import type { TraceProps } from './types';
@@ -302,6 +302,11 @@ export function runFrame(c: TraceCanvasController, deltaT: number) {
       ? style.badge[badgeSize].height
       : 0;
 
+  // Reserve the display-child-count column (Spec 32 / ADR 0037 D1). Zero when the prop is off.
+  const childCountPx = traceSpec.showDisplayChildCount
+    ? getChildCountReserve(c, pipelineSpans, style, c.measureLabelText)
+    : 0;
+
   // Build geometry and draw (spans are pre-sorted and domain pre-computed — no per-frame sort/reduce)
   const focusDomain = c.tweenDomain;
   const geomBase = buildGeometry(
@@ -323,6 +328,7 @@ export function runFrame(c: TraceCanvasController, deltaT: number) {
     badgeGutterWidth,
     badgeRowHeight,
     traceSpec.spanDisplay ?? 'segments',
+    childCountPx,
   );
 
   // Lay out badges over the visible lane range (measurement-dependent, so kept out of buildGeometry).

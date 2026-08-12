@@ -100,7 +100,7 @@ const getNormalizedSpans = createCustomCachedSelector(
     spans: NormalizedSpan[];
     /** Pre-collapse ordered lanes — the prepared data annotation resolution validates against (Spec 29). */
     orderedSpans: NormalizedSpan[];
-    disclosure: Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number }>;
+    disclosure: Map<number, { state: 'collapsed' | 'expanded'; depth: number; descendantCount: number; childCount: number }>;
     domain: { min: number; max: number };
     /** Re-zero offset for caller-supplied annotation `time`/`range` (Spec 29). */
     projectionOffset: number;

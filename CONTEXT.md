@@ -105,6 +105,13 @@ A span whose **display parent** is a given span; the inverse relation. A reparen
 display child of its elected root without being a recorded child.
 _Avoid_: child (ambiguous between recorded and synthetic parentage, mirroring the ban on bare "parent"), subspan.
 
+**Display-child count**:
+The number of direct **display children** a span has in the pre-collapse tree — what expanding its
+caret would reveal. Constant across collapse toggles, and distinct from the subtree total announced
+when a parent collapses (the aria-live "N descendants hidden" figure). Shown beside the caret in the
+**disclosure gutter** via `TraceSpec.showDisplayChildCount`.
+_Avoid_: child count (bare "child" is ambiguous between recorded and synthetic parentage), descendant count, subtree size, rolled-up count.
+
 **Partial trace**:
 A trace containing at least one orphan span because some recorded parent spans are absent from the
 supplied trace data. Partial describes data completeness, not whether every orphan can be displayed
