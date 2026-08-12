@@ -367,9 +367,9 @@ function getColorBands(
 
 /** @internal */
 export function getStrokeContrastColor(bands: ColorTick[], bar: Color, background: Color): Color {
-  // 30, minimum contrast for large/solid semantic & understandable non-text elements,
-  // as per https://git.apcacontrast.com/documentation/APCA_in_a_Nutshell.html.
-  const contrastThreshold = 30;
+  // as per recommendation in https://github.com/Myndex/SAPC-APCA/discussions/117#discussioncomment-9244796 for
+  // semantic non-text elements and considering BAR_SIZE is 12,
+  const contrastThreshold = 20;
   const check = bands.every(
     (band) => Math.abs(APCAContrast(colorToRgba(band.color), colorToRgba(bar))) > contrastThreshold,
   );

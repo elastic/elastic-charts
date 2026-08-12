@@ -19,7 +19,7 @@ export const BULLET_SIZE = 32;
 export const BAR_STROKE_WIDTH = 1;
 
 /** @internal */
-export const BAR_SIZE = 12 - BAR_STROKE_WIDTH * 2;
+export const BAR_SIZE = 12;
 
 /** @internal */
 export const TICK_WIDTH = 1;

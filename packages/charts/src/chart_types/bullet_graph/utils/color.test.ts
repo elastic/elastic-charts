@@ -28,12 +28,25 @@ describe('Bullet color utils', () => {
       expect(getStrokeContrastColor(bands, bar, background)).toBe(bar);
     });
 
-    it('should return the background color when any band fails the contrast threshold', () => {
-      const bar = Colors.Black.keyword;
-      // #468260 passes APCA > 30 with black; #0802A3 does not
-      const bands = [band('#468260'), band('#0802A3')];
+    it('should return the background color when the bar does not contrast with a band', () => {
+      const bar = Colors.White.keyword;
+      const bands = [band('#e0e0e0')];
 
       expect(getStrokeContrastColor(bands, bar, background)).toBe(background);
+    });
+
+    it('should return the background color when any band fails the contrast threshold', () => {
+      const bar = Colors.Black.keyword;
+      // #646464 passes APCA > 20 with black; #555555 does not
+      const bands = [band('#646464'), band('#555555')];
+
+      expect(getStrokeContrastColor(bands, bar, background)).toBe(background);
+    });
+
+    it('should return the bar color when there are no bands', () => {
+      const bar = Colors.Black.keyword;
+
+      expect(getStrokeContrastColor([], bar, background)).toBe(bar);
     });
   });
 });
