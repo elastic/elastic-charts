@@ -28,7 +28,7 @@ export function angularBullet(
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,
-  strokeColor: Color,
+  hasStroke: boolean,
   spec: BulletSpec,
   debug: boolean,
   activeValue?: ActiveValue | null,
@@ -88,21 +88,28 @@ export function angularBullet(
   const arcDirection = counterClockwise ? -1 : 1;
   const innerArcOffset = BAR_STROKE_WIDTH / radius;
 
-  // Bar stroke
   ctx.save();
   ctx.lineCap = 'butt';
-  ctx.beginPath();
-  ctx.lineWidth = BAR_SIZE;
-  ctx.strokeStyle = strokeColor;
-  ctx.arc(center.x, center.y, radius, degStart, degEnd, counterClockwise);
-  ctx.stroke();
 
-  // Bar background
-  ctx.beginPath();
-  ctx.lineWidth = BAR_SIZE - BAR_STROKE_WIDTH * 2;
-  ctx.strokeStyle = style.barBackground;
-  ctx.arc(center.x, center.y, radius, degStart, degEnd - arcDirection * innerArcOffset, counterClockwise);
-  ctx.stroke();
+  if (hasStroke) {
+    ctx.beginPath();
+    ctx.lineWidth = BAR_SIZE;
+    ctx.strokeStyle = backgroundColor;
+    ctx.arc(center.x, center.y, radius, degStart, degEnd, counterClockwise);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.lineWidth = BAR_SIZE - BAR_STROKE_WIDTH * 2;
+    ctx.strokeStyle = style.barBackground;
+    ctx.arc(center.x, center.y, radius, degStart, degEnd - arcDirection * innerArcOffset, counterClockwise);
+    ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.lineWidth = BAR_SIZE;
+    ctx.strokeStyle = style.barBackground;
+    ctx.arc(center.x, center.y, radius, degStart, degEnd, counterClockwise);
+    ctx.stroke();
+  }
 
   ctx.restore();
 

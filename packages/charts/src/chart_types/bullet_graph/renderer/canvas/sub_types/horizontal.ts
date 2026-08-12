@@ -24,7 +24,7 @@ export function horizontalBullet(
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,
-  strokeColor: Color,
+  hasStroke: boolean,
   activeValue?: ActiveValue | null,
 ) {
   const tickFont = getTickFont(style.fontFamily);
@@ -60,7 +60,13 @@ export function horizontalBullet(
   const x1 = Number(scale(confinedValue));
   const y = verticalAlignment - BAR_SIZE / 2;
 
-  renderLinearBar(ctx, style, strokeColor, { start: x0, end: x1, position: y }, 'horizontal');
+  renderLinearBar(
+    ctx,
+    style,
+    { start: x0, end: x1, position: y },
+    'horizontal',
+    hasStroke ? backgroundColor : undefined,
+  );
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {

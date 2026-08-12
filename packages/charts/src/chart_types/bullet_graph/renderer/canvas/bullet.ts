@@ -34,7 +34,7 @@ import {
   getMaxTargetValueAssent,
   getTextAscentHeight,
 } from '../../theme';
-import { getStrokeContrastColor } from '../../utils/color';
+import { checkBarContrast } from '../../utils/color';
 
 /** @internal */
 export function renderBullet(
@@ -172,14 +172,14 @@ export function renderBullet(
 
           withContext(ctx, (ctx) => {
             ctx.translate(graphArea.origin.x, graphArea.origin.y);
-            const strokeColor = getStrokeContrastColor(bulletGraph.colorBands, style.barBackground, backgroundColor);
+            const hasStroke = !checkBarContrast(bulletGraph.colorBands, style.barBackground);
 
             if (spec.subtype === BulletSubtype.horizontal) {
-              horizontalBullet(ctx, bulletGraph, style, backgroundColor, strokeColor, activeValue);
+              horizontalBullet(ctx, bulletGraph, style, backgroundColor, hasStroke, activeValue);
             } else if (spec.subtype === BulletSubtype.vertical) {
-              verticalBullet(ctx, bulletGraph, style, backgroundColor, strokeColor, activeValue);
+              verticalBullet(ctx, bulletGraph, style, backgroundColor, hasStroke, activeValue);
             } else {
-              angularBullet(ctx, bulletGraph, style, backgroundColor, strokeColor, spec, debug, activeValue);
+              angularBullet(ctx, bulletGraph, style, backgroundColor, hasStroke, spec, debug, activeValue);
             }
           });
 

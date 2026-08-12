@@ -20,15 +20,21 @@ type BarGeometry = {
 export function renderLinearBar(
   ctx: CanvasRenderingContext2D,
   style: BulletStyle,
-  barStroke: Color,
   bar: BarGeometry,
   orientation: 'horizontal' | 'vertical',
+  barStroke?: Color,
 ) {
   const length = Math.abs(bar.end - bar.start);
   const x = orientation === 'horizontal' ? Math.min(bar.start, bar.end) : bar.position;
   const y = orientation === 'horizontal' ? bar.position : Math.min(bar.start, bar.end);
   const width = orientation === 'horizontal' ? length : BAR_SIZE;
   const height = orientation === 'horizontal' ? BAR_SIZE : length;
+
+  if (!barStroke) {
+    ctx.fillStyle = style.barBackground;
+    ctx.fillRect(x, y, width, height);
+    return;
+  }
 
   ctx.fillStyle = barStroke;
   ctx.fillRect(x, y, width, height);

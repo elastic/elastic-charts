@@ -366,13 +366,9 @@ function getColorBands(
 }
 
 /** @internal */
-export function getStrokeContrastColor(bands: ColorTick[], bar: Color, background: Color): Color {
+export function checkBarContrast(bands: ColorTick[], bar: Color): boolean {
   // as per recommendation in https://github.com/Myndex/SAPC-APCA/discussions/117#discussioncomment-9244796 for
   // semantic non-text elements and considering BAR_SIZE is 12,
   const contrastThreshold = 20;
-  const check = bands.every(
-    (band) => Math.abs(APCAContrast(colorToRgba(band.color), colorToRgba(bar))) > contrastThreshold,
-  );
-  if (check) return bar;
-  return background;
+  return bands.every((band) => Math.abs(APCAContrast(colorToRgba(band.color), colorToRgba(bar))) >= contrastThreshold);
 }

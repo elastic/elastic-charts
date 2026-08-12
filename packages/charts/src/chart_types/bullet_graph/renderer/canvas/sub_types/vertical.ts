@@ -23,7 +23,7 @@ export function verticalBullet(
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,
-  strokeColor: Color,
+  hasStroke: boolean,
   activeValue?: ActiveValue | null,
 ) {
   const tickFont = getTickFont(style.fontFamily);
@@ -69,7 +69,7 @@ export function verticalBullet(
   const y0 = graphPaddedHeight - Number(scale(adjustedZero));
   const y1 = graphPaddedHeight - Number(scale(confinedValue));
 
-  renderLinearBar(ctx, style, strokeColor, { start: y0, end: y1, position: x }, 'vertical' as const);
+  renderLinearBar(ctx, style, { start: y0, end: y1, position: x }, 'vertical', hasStroke ? backgroundColor : undefined);
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
