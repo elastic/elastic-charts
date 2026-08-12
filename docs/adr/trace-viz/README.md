@@ -13,6 +13,7 @@ stable and never reused; the list below is grouped by theme for readability only
 - [0029 — Trace badge rendering architecture](./0029-trace-badge-rendering-architecture.md)
 - [0030 — Trace annotations compose as child specs (composition, geometry, layering, and hit testing)](./0030-trace-annotation-composition.md)
 - [0035 — `spanDisplay: 'duration'` is a visual mode; self time stays segment-derived](./0035-span-display-duration-bar-mode.md)
+- [0037 — Disclosure column sub-widths are measured and published, not re-derived](./0037-disclosure-column-measured-widths.md)
 
 ### Data & normalization
 
@@ -56,9 +57,9 @@ stable and never reused; the list below is grouped by theme for readability only
 
 ### Deferred features
 
-- [0016 — Connections are an explicit consumer-supplied prop, not derived from OTel links](./0016-connections-explicit-prop.md) *(deferred; Spec 33)*
-- [0023 — Running-span model: optional end, domain-max provisional edge, dashed visual](./0023-running-span-model.md) *(deferred; Spec 32)*
-- [0036 — Skewed-duration readability: minimum span mark + interactive inverse-fisheye time compression](./0036-skewed-duration-readability.md) *(B1 implemented; B2 deferred, see Spec 34)*
+- [0016 — Connections are an explicit consumer-supplied prop, not derived from OTel links](./0016-connections-explicit-prop.md) *(deferred; Spec 35)*
+- [0023 — Running-span model: optional end, domain-max provisional edge, dashed visual](./0023-running-span-model.md) *(deferred; Spec 34)*
+- [0036 — Skewed-duration readability: minimum span mark + interactive inverse-fisheye time compression](./0036-skewed-duration-readability.md) *(B1 implemented; B2 deferred, see Spec 36)*
 
 ## Spec plans
 
@@ -67,11 +68,15 @@ durable [`trace-chart.md`](./trace-chart.md) spec — its behavior sections desc
 feature, and the ADRs above hold the rationale. The former per-spec plans under [`specs/`](./specs/)
 were removed once absorbed.
 
-Only the two not-yet-implemented features remain as standalone spec plans, tracked for future work
-(to be moved to GitHub issues once the PR merges):
+Active spec plans (next up):
 
-- [Spec 32 — Running spans (in-progress visualization)](./specs/spec-32-running-spans.md)
-- [Spec 33 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-33-connections.md)
-- [Spec 34 — Time-range compression (interactive inverse fisheye)](./specs/spec-34-time-range-compression.md) *(design-only; rationale in ADR 0036)*
+- [Spec 32 — Collapse child count (display-child count beside the disclosure caret)](./specs/spec-32-child-count.md)
+- [Spec 33 — Tree guides (spine + elbow lines in the disclosure gutter)](./specs/spec-33-tree-guides.md)
+
+Deferred spec plans (tracked for future work):
+
+- [Spec 34 — Running spans (in-progress visualization)](./specs/spec-34-running-spans.md)
+- [Spec 35 — Connections (directed "Initiated by" arrows between segment endpoints)](./specs/spec-35-connections.md)
+- [Spec 36 — Time-range compression (interactive inverse fisheye)](./specs/spec-36-time-range-compression.md) *(design-only; rationale in ADR 0036)*
 
 See the repo root [`CONTEXT.md`](../../../CONTEXT.md) for the domain glossary.

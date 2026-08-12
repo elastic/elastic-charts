@@ -100,6 +100,11 @@ parentage, but a partial trace may assign an orphan a synthetic display parent w
 recorded `parentId`.
 _Avoid_: parent (ambiguous between recorded and synthetic parentage), repaired parent.
 
+**Display child**:
+A span whose **display parent** is a given span; the inverse relation. A reparented orphan is a
+display child of its elected root without being a recorded child.
+_Avoid_: child (ambiguous between recorded and synthetic parentage, mirroring the ban on bare "parent"), subspan.
+
 **Partial trace**:
 A trace containing at least one orphan span because some recorded parent spans are absent from the
 supplied trace data. Partial describes data completeness, not whether every orphan can be displayed
@@ -131,6 +136,13 @@ is kept together rather than interleaved by start. Set via `TraceSpec.laneOrder`
 [ADR 0018](./docs/adr/trace-viz/0018-lane-ordering-tree-default.md) and
 [ADR 0028](./docs/adr/trace-viz/0028-partial-trace-synthetic-parentage.md).
 _Avoid_: sort order, row order.
+
+**Disclosure gutter**:
+The fixed left column reserved in `tree` lane order when a trace has at least one parent span, holding
+each parent's caret (the `▶`/`▼` disclosure control) at an indent proportional to its tree depth.
+Reserved in every **Label position** mode so the collapse affordance is available regardless of whether
+span-name labels are shown. See [ADR 0026](./docs/adr/trace-viz/0026-collapsible-nesting.md).
+_Avoid_: label gutter (the label portion of the gutter is a distinct sub-region), badge-only gutter, caret column.
 
 **Focus domain**:
 The currently-visible time window `[min, max]` of the Trace waterfall after zoom/pan, eased toward a target.
@@ -209,7 +221,13 @@ A Trace annotation anchored to a span that marks the visible ancestry route from
 root to the target span with a boundary rail between the gutter and span drawing area. It highlights
 only the specific root-to-target path, not sibling branches or the target's descendants, and does not
 change collapse, selection, or lane order.
-_Avoid_: subtree annotation, collapse state, critical path, span badge.
+_Avoid_: subtree annotation, collapse state, critical path, span badge, tree guide (chart-owned structural marks in the disclosure gutter, not caller-supplied annotations).
+
+**Tree guide**:
+A chart-owned vertical line in the **disclosure gutter** connecting an expanded span to each of its
+**display children**, with a short horizontal elbow into each child's lane. Structural and
+non-interactive; never caller-supplied and never a hit target. Enabled via `TraceSpec.showTreeGuides`.
+_Avoid_: hierarchy annotation (caller-supplied, marks one root-to-target route at the gutter/plot boundary), tree line, indent guide.
 
 **Focused lane**:
 The lane currently selected via keyboard navigation, indicated by a full-width background highlight drawn in `draw()`. Distinct from the hovered lane (which is mouse-driven and controls tooltip visibility). Only one lane is focused at a time; focus is cleared when the canvas loses keyboard focus.

@@ -8,7 +8,7 @@ supersedes: []
 # Skewed-duration readability: minimum span mark + interactive inverse-fisheye time compression
 
 **Status:** **B1 implemented** (minimum span mark, `minSpanWidthPx`); **B2 deferred**, its behavior
-specified in [Spec 34](./specs/spec-34-time-range-compression.md). This record captures the two
+specified in [Spec 36](./specs/spec-36-time-range-compression.md). This record captures the two
 complementary moves agreed for the skewed-duration problem and the rationale behind each.
 
 ## Context
@@ -56,7 +56,7 @@ Guarantee that a span never renders narrower than a small floor so it stays loca
 ### B2 — Interactive inverse-fisheye time-range compression (design; deferred)
 
 The normative product behavior and public API for B2 live in its own behavioral spec —
-[Spec 34 — Time-range compression](./specs/spec-34-time-range-compression.md). This ADR records only
+[Spec 36 — Time-range compression](./specs/spec-36-time-range-compression.md). This ADR records only
 the *decisions* behind that shape and the internal blast radius; see the spec for the observable contract.
 
 The agreed decisions (rationale in **Alternatives considered** below):
@@ -94,7 +94,7 @@ underneath it. A `buildViewKey` entry gates a view reset when the compressed set
 - B1 is a small, low-risk, themeable change that can ship independently and immediately improves the
   skew case's visibility.
 - B2 is a larger, opt-in feature with a real scale-seam blast radius; its behavior is specified in
-  [Spec 34](./specs/spec-34-time-range-compression.md) but not built. It follows the established
+  [Spec 36](./specs/spec-36-time-range-compression.md) but not built. It follows the established
   controlled-prop + built-in-gesture pattern, so it does not introduce a new interaction paradigm.
 - Together they cover the two failure modes of skewed traces: *invisible* short spans (B1) and
   *uninspectable* dense regions crowded out by dead air (B2).

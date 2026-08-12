@@ -407,14 +407,14 @@ All non-obvious design decisions are recorded in the ADRs below. Consult them fo
 - [ADR 0011 — Segment selection model: thin refs in, rich details out; controlled perform-and-fire](./0011-segment-selection-model.md)
 - [ADR 0012 — Trace accessibility architecture: `role="application"` on the canvas, SR data via a second selector, keyboard focus badge as a DOM sibling](./0012-role-application-canvas-only-sr-siblings.md)
 - [ADR 0015 — Critical path is consumer-supplied, interval-precise (not computed, not a boolean)](./0015-critical-path-consumer-supplied-intervals.md)
-- [ADR 0016 — Connections are an explicit consumer-supplied prop, not derived from OTel links *(deferred; Spec 33)*](./0016-connections-explicit-prop.md)
+- [ADR 0016 — Connections are an explicit consumer-supplied prop, not derived from OTel links *(deferred; Spec 35)*](./0016-connections-explicit-prop.md)
 - [ADR 0017 — Trace viz story organisation principles](./0017-story-organisation-principles.md)
 - [ADR 0018 — Lane ordering: tree (DFS) default, chronological optional](./0018-lane-ordering-tree-default.md)
 - [ADR 0019 — Empty-state ownership: `no-data` delegates to the library overlay, `trace-not-found` is a canvas message](./0019-empty-state-ownership.md)
 - [ADR 0020 — Inline labels render on a dedicated row below the bar (Kibana APM style)](./0020-inline-labels-below-bar.md)
 - [ADR 0021 — Touch interaction model: engine reuse, pinch-zoom-only, manual tap detection, long-press pin](./0021-touch-interaction-model.md)
 - [ADR 0022 — Clock-skew correction: active centering heuristic](./0022-clock-skew-heuristic.md)
-- [ADR 0023 — Running-span model: optional end, domain-max provisional edge, dashed visual *(deferred; Spec 32)*](./0023-running-span-model.md)
+- [ADR 0023 — Running-span model: optional end, domain-max provisional edge, dashed visual *(deferred; Spec 34)*](./0023-running-span-model.md)
 - [ADR 0024 — Multi-level time bar: stacked tick rows in time mode](./0024-multilevel-time-bar.md)
 - [ADR 0026 — Collapsible nesting: rolled-up semantics, tree-gating, and disclosure gutter](./0026-collapsible-nesting.md)
 - [ADR 0027 — Span IDs are unique within one supplied dataset](./0027-span-id-uniqueness.md)
@@ -436,5 +436,5 @@ All non-obvious design decisions are recorded in the ADRs below. Consult them fo
 | Brush gesture on touch | Pinch-zoom covers narrowing the focus domain. Touch has no modifier key to invert gesture mode (ADR 0021). |
 | Keyboard path for single-segment (sub-span) selection | Keyboard navigation is span-granular (arrow keys move between whole lanes). Segment-level keyboard selection is out of scope. |
 | Right-side clock-skew correction | Only `child.start < parent.start` (left-side overhang) is corrected. A child that starts inside its parent but ends after it is not repositioned. |
-| Running (in-progress) span visualization | Deferred beyond v1 — `TraceDatum.end` is required; no `null`/running model, dashed provisional visual, domain-max edge, or wall-clock behavior is exposed. The design rationale (optional end, provisional domain edge, no live clock) is preserved in ADR 0023 and Spec 32 for when the feature lands. |
+| Running (in-progress) span visualization | Deferred beyond v1 — `TraceDatum.end` is required; no `null`/running model, dashed provisional visual, domain-max edge, or wall-clock behavior is exposed. The design rationale (optional end, provisional domain edge, no live clock) is preserved in ADR 0023 and Spec 34 for when the feature lands. |
 | Screen-reader announcement of critical-path membership | Planned follow-up; see ADR 0012 open items. |

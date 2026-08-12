@@ -111,7 +111,7 @@ The correction stage (`correctClockSkew`) is inserted between `dropNonFinite` an
   itself still preserves the normalization array's input order.
 - Consumer-supplied critical intervals receive their owning span's own correction offset before
   the existing projection and clamp, so interval precision remains attached to the corrected span.
-- Running-span end synthesis (Spec 32) happens inside `project`, **after** `correctClockSkew`. A
+- Running-span end synthesis (Spec 34) happens inside `project`, **after** `correctClockSkew`. A
   running child or parent has no finite `end`, so an edge involving either cannot originate a
   correction. A running span remains at its recorded start and carries no `skewCorrected` marker.
   It is not reparented: Kibana's orphan recovery applies when a parent document is absent, whereas

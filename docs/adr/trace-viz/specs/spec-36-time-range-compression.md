@@ -5,7 +5,7 @@ owners: []
 supersedes: []
 ---
 
-# Spec 34 — Time-range compression (interactive inverse fisheye)
+# Spec 36 — Time-range compression (interactive inverse fisheye)
 
 > **Altitude: DURABLE / product.**
 > No file paths, no line numbers, no internal function names.
