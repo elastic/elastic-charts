@@ -12,8 +12,7 @@ import type { ScaleLinear } from 'd3-scale';
 import type { $Values, Required } from 'utility-types';
 
 import type { BaseBoundsConfig, OpenClosedBoundsConfig } from './bounds';
-import { APCAContrast } from '../../../common/apca_color_contrast';
-import { combineColors } from '../../../common/color_calcs';
+import { combineColors, getContrastRecommendation } from '../../../common/color_calcs';
 import { RGBATupleToString, colorToRgba, getChromaColor } from '../../../common/color_library_wrappers';
 import type { ChromaColorScale, Color } from '../../../common/colors';
 import { Colors } from '../../../common/colors';
@@ -366,9 +365,11 @@ function getColorBands(
 }
 
 /** @internal */
-export function checkBarContrast(bands: ColorTick[], bar: Color): boolean {
-  // as per recommendation in https://github.com/Myndex/SAPC-APCA/discussions/117#discussioncomment-9244796 for
-  // semantic non-text elements and considering BAR_SIZE is 12,
-  const contrastThreshold = 20;
-  return bands.every((band) => Math.abs(APCAContrast(colorToRgba(band.color), colorToRgba(bar))) >= contrastThreshold);
+export function needsBarBorder(bands: ColorTick[], bar: Color): boolean {
+  return bands.some(
+    (band) =>
+      // 20, as per recommendation in https://github.com/Myndex/SAPC-APCA/discussions/117#discussioncomment-9244796 for
+      // semantic non-text elements and considering BAR_SIZE is 12,
+      getContrastRecommendation(band.color, bar, { contrastMode: 'WCAG3', contrastThreshold: 20 }).needsBorder,
+  );
 }

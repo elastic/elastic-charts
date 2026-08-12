@@ -34,7 +34,7 @@ import {
   getMaxTargetValueAssent,
   getTextAscentHeight,
 } from '../../theme';
-import { checkBarContrast } from '../../utils/color';
+import { needsBarBorder } from '../../utils/color';
 
 /** @internal */
 export function renderBullet(
@@ -172,7 +172,7 @@ export function renderBullet(
 
           withContext(ctx, (ctx) => {
             ctx.translate(graphArea.origin.x, graphArea.origin.y);
-            const hasStroke = !checkBarContrast(bulletGraph.colorBands, style.barBackground);
+            const hasStroke = needsBarBorder(bulletGraph.colorBands, style.barBackground);
 
             if (spec.subtype === BulletSubtype.horizontal) {
               horizontalBullet(ctx, bulletGraph, style, backgroundColor, hasStroke, activeValue);
