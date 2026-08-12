@@ -148,62 +148,62 @@ test.describe('Bullet stories', () => {
   test.describe('Bar stroke contrast', () => {
     // Config 2 palette indices from color-bands story
     const euiPaletteCool = 10;
-    const euiPaletteColorBlind = 3;
+    const darkGrayPalette = 13;
 
     pwEach.test([
       {
-        label: 'linear light theme with eui Palette Cool',
+        label: 'linear light theme without stroke',
         subtype: 'horizontal',
         theme: 'light',
         palette: euiPaletteCool,
       },
       {
-        label: 'linear light theme with eui Palette color blind',
+        label: 'linear light theme with stroke',
         subtype: 'horizontal',
         theme: 'light',
-        palette: euiPaletteColorBlind,
+        palette: darkGrayPalette,
       },
       {
-        label: 'linear dark theme with eui Palette Cool',
+        label: 'linear dark theme without stroke',
+        subtype: 'horizontal',
+        theme: 'dark',
+        palette: darkGrayPalette,
+      },
+      {
+        label: 'linear dark theme with stroke',
         subtype: 'horizontal',
         theme: 'dark',
         palette: euiPaletteCool,
       },
       {
-        label: 'linear dark theme with eui Palette color blind',
-        subtype: 'horizontal',
-        theme: 'dark',
-        palette: euiPaletteColorBlind,
-      },
-      {
-        label: 'angular light theme with eui Palette Cool',
+        label: 'angular light theme without stroke',
         subtype: 'two-thirds-circle',
         theme: 'light',
         palette: euiPaletteCool,
       },
       {
-        label: 'angular light theme with eui Palette color blind',
+        label: 'angular light theme with stroke',
         subtype: 'two-thirds-circle',
         theme: 'light',
-        palette: euiPaletteColorBlind,
+        palette: darkGrayPalette,
       },
       {
-        label: 'angular dark theme with eui Palette Cool',
+        label: 'angular dark theme without stroke',
+        subtype: 'two-thirds-circle',
+        theme: 'dark',
+        palette: darkGrayPalette,
+      },
+      {
+        label: 'angular dark theme with stroke',
         subtype: 'two-thirds-circle',
         theme: 'dark',
         palette: euiPaletteCool,
-      },
-      {
-        label: 'angular dark theme with eui Palette color blind',
-        subtype: 'two-thirds-circle',
-        theme: 'dark',
-        palette: euiPaletteColorBlind,
       },
     ] as const)(
       ({ label }) => `should render ${label}`,
       async (page, { subtype, theme, palette }) => {
         await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/bullet-graph--color-bands&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:${theme}&knob-theme=${theme}&knob-color config_Color Bands=2&knob-Config 2 - Palette_Color Bands=${palette}&knob-Config 2 - Steps_Color Bands=5&knob-Config 2 - Reverse_Color Bands=&knob-start_Domain=0&knob-end_Domain=100&knob-value_Domain=56&knob-target_Domain=75&knob-subtype=${subtype}&knob-debug=`,
+          `http://localhost:9001/?path=/story/bullet-graph--color-bands&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:${theme}&knob-color config_Color Bands=2&knob-Config 2 - Palette_Color Bands=${palette}&knob-Config 2 - Steps_Color Bands=5&knob-Config 2 - Reverse_Color Bands=&knob-start_Domain=0&knob-end_Domain=100&knob-value_Domain=56&knob-target_Domain=75&knob-subtype=${subtype}&knob-debug=`,
         );
       },
     );

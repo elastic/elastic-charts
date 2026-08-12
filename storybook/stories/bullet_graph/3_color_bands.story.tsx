@@ -24,16 +24,17 @@ import numeral from 'numeral';
 import React, { useCallback } from 'react';
 
 import type { BulletColorConfig, ColorBandSimpleConfig, ColorBandComplexConfig } from '@elastic/charts';
-import { Chart, Bullet, BulletSubtype, DARK_THEME, LIGHT_THEME, Settings } from '@elastic/charts';
+import { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
+import { useBaseTheme, useThemeId } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const themeMode = select('theme', { Light: 'light', Dark: 'dark' }, 'light');
-  const baseTheme = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
-  const isDarkTheme = themeMode === 'dark';
+  const baseTheme = useBaseTheme();
+  const themeId = useThemeId();
+  const isDarkTheme = themeId.includes('dark');
   const getPalettes = useCallback(
     (steps: number) => [
       ['#164863', '#427D9D', '#9BBEC8', '#DDF2FD'],
@@ -49,6 +50,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       euiPaletteCool(steps),
       euiPaletteWarm(steps),
       euiPaletteGray(steps),
+      ['#202020', '#404040', '#606060', '#808080'],
     ],
     [isDarkTheme],
   );
@@ -82,6 +84,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       'eui Palette Cool': 10,
       'eui Palette Warm': 11,
       'eui Palette Gray': 12,
+      'Dark Gray': 13,
     },
     0,
     { group: 'Color Bands' },
