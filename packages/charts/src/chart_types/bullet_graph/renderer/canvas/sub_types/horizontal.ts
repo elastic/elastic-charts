@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { renderLinearBar } from './common';
+import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import type { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
+import { renderRectStroke } from '../../../../../renderers/canvas/primitives/rect';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
 import type { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
@@ -16,7 +17,15 @@ import type { ActiveValue } from '../../../selectors/get_active_values';
 import type { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import type { BulletStyle } from '../../../theme';
 import { GRAPH_PADDING, TICK_FONT_SIZE, getTickFont } from '../../../theme';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH, TICK_LABEL_PADDING } from '../constants';
+import {
+  TARGET_SIZE,
+  BULLET_SIZE,
+  TICK_WIDTH,
+  BAR_SIZE,
+  TARGET_STROKE_WIDTH,
+  TICK_LABEL_PADDING,
+  BAR_STROKE_WIDTH,
+} from '../constants';
 
 /** @internal */
 export function horizontalBullet(
@@ -56,17 +65,32 @@ export function horizontalBullet(
   // Bar
   const confinedValue = clamp(datum.value, min, max);
   const adjustedZero = clamp(0, min, max);
-  const x0 = Number(scale(adjustedZero));
-  const x1 = Number(scale(confinedValue));
+  const x0 = scale(adjustedZero);
+  const x1 = scale(confinedValue);
   const y = verticalAlignment - BAR_SIZE / 2;
 
-  renderLinearBar(
-    ctx,
-    style,
-    { start: x0, end: x1, position: y },
-    'horizontal',
-    hasStroke ? backgroundColor : undefined,
+  ctx.fillStyle = style.barBackground;
+  ctx.fillRect(
+    datum.value > 0 ? x0 : x1,
+    verticalAlignment - BAR_SIZE / 2,
+    confinedValue > 0 ? x1 - x0 : x0 - x1,
+    BAR_SIZE,
   );
+
+  if (hasStroke) {
+    const strokedSides = {
+      top: true,
+      bottom: true,
+      right: x1 > x0 ? true : false,
+      left: x1 > x0 ? false : true,
+    };
+    renderRectStroke(
+      ctx,
+      { x: x0, y, width: x1 - x0, height: BAR_SIZE },
+      { color: colorToRgba(backgroundColor), width: BAR_STROKE_WIDTH },
+      strokedSides,
+    );
+  }
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {

@@ -47,6 +47,7 @@ export function angularBullet(
   const [start, end] = scale.domain() as GenericDomain;
   // const counterClockwise = true;
   const counterClockwise = startAngle < endAngle && start > end;
+
   const [min, max] = sortNumbers([start, end]) as ContinuousDomain;
   const filteredTicks =
     spec.subtype !== BulletSubtype.circle
@@ -85,13 +86,14 @@ export function angularBullet(
   const adjustedZero = clamp(0, min, max);
   const degStart = confinedValue > 0 ? scale(adjustedZero) : scale(confinedValue);
   const degEnd = confinedValue > 0 ? scale(confinedValue) : scale(adjustedZero);
-  const arcDirection = counterClockwise ? -1 : 1;
-  const innerArcOffset = BAR_STROKE_WIDTH / radius;
 
   ctx.save();
   ctx.lineCap = 'butt';
 
   if (hasStroke) {
+    const arcDirection = confinedValue > 0 ? 1 : -1;
+    const innerArcOffset = BAR_STROKE_WIDTH / radius;
+
     ctx.beginPath();
     ctx.lineWidth = BAR_SIZE;
     ctx.strokeStyle = backgroundColor;
@@ -101,7 +103,14 @@ export function angularBullet(
     ctx.beginPath();
     ctx.lineWidth = BAR_SIZE - BAR_STROKE_WIDTH * 2;
     ctx.strokeStyle = style.barBackground;
-    ctx.arc(center.x, center.y, radius, degStart, degEnd - arcDirection * innerArcOffset, counterClockwise);
+    ctx.arc(
+      center.x,
+      center.y,
+      radius,
+      degStart - arcDirection * innerArcOffset,
+      degEnd - arcDirection * innerArcOffset,
+      counterClockwise,
+    );
     ctx.stroke();
   } else {
     ctx.beginPath();

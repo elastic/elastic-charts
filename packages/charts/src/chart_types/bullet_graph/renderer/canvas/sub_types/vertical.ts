@@ -6,16 +6,25 @@
  * Side Public License, v 1.
  */
 
-import { renderLinearBar } from './common';
+import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import type { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
+import { renderRectStroke } from '../../../../../renderers/canvas/primitives/rect';
 import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
 import type { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
 import type { ActiveValue } from '../../../selectors/get_active_values';
 import type { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import type { BulletStyle } from '../../../theme';
 import { GRAPH_PADDING, TICK_FONT_SIZE, getTickFont } from '../../../theme';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH, TICK_LABEL_PADDING } from '../constants';
+import {
+  TARGET_SIZE,
+  BULLET_SIZE,
+  TICK_WIDTH,
+  BAR_SIZE,
+  TARGET_STROKE_WIDTH,
+  TICK_LABEL_PADDING,
+  BAR_STROKE_WIDTH,
+} from '../constants';
 
 /** @internal */
 export function verticalBullet(
@@ -66,10 +75,26 @@ export function verticalBullet(
   const adjustedZero = clamp(0, min, max);
 
   const x = graphArea.size.width / 2 - BAR_SIZE / 2;
-  const y0 = graphPaddedHeight - Number(scale(adjustedZero));
-  const y1 = graphPaddedHeight - Number(scale(confinedValue));
+  const y0 = graphPaddedHeight - scale(adjustedZero);
+  const y1 = graphPaddedHeight - scale(confinedValue);
 
-  renderLinearBar(ctx, style, { start: y0, end: y1, position: x }, 'vertical', hasStroke ? backgroundColor : undefined);
+  ctx.fillStyle = style.barBackground;
+  ctx.fillRect(x, y0, BAR_SIZE, y1 - y0);
+
+  if (hasStroke) {
+    const strokedSides = {
+      top: y0 > y1 ? true : false,
+      right: true,
+      bottom: y0 > y1 ? false : true,
+      left: true,
+    };
+    renderRectStroke(
+      ctx,
+      { x, y: y0, width: BAR_SIZE, height: y1 - y0 },
+      { color: colorToRgba(backgroundColor), width: BAR_STROKE_WIDTH },
+      strokedSides,
+    );
+  }
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
