@@ -165,7 +165,6 @@ function naturalClusterWidth(
   return total + gap * (badges.length - 1);
 }
 
-
 /**
  * Computes the fixed width (px) of the badge-only gutter for `'none'` Label position (Spec 27), or
  * `0` when no span has a badge visible in `'none'` (the gutter is then absent and the plot keeps its
@@ -256,7 +255,15 @@ export function layoutBadges(
       const labelX = groupLeft === barStartX ? undefined : groupLeft;
       const centerY = laneTop + laneHeight - LANE_PADDING - labelBandPx / 2;
       const items = hasBadges
-        ? layoutCluster(participating, groupLeft + labelWidth + labelGap, centerY, plotRight - LABEL_INSET, m, bstyle, measure)
+        ? layoutCluster(
+            participating,
+            groupLeft + labelWidth + labelGap,
+            centerY,
+            plotRight - LABEL_INSET,
+            m,
+            bstyle,
+            measure,
+          )
         : [];
       // Record only when there is something to draw (badges) or a shift to apply (label pushed left).
       if (items.length === 0 && labelX === undefined) continue;

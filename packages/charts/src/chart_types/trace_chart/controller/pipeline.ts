@@ -9,13 +9,13 @@
 import type { TraceCanvasController } from './trace_canvas_controller';
 import { resolveTraceAnnotations } from '../data/annotations';
 import { resolveSpanBadges } from '../data/badges';
+import { distinctChildCounts } from '../data/collapse';
 import { TraceDiagnosticsCollector } from '../data/diagnostics';
 import { normalize } from '../data/normalize';
 import { orderLanes } from '../data/order_lanes';
 import { resolveActive } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
 import type { BadgeTextMeasurer } from '../render/badge_layout';
-import { distinctChildCounts } from '../data/collapse';
 import { computeBadgeGutterWidth } from '../render/badge_layout';
 import { CHILD_COUNT_INSET_PX } from '../render/types';
 import { buildTraceStyle } from '../theme';

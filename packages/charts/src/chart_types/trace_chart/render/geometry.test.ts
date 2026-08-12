@@ -8,7 +8,7 @@
 
 import { buildGeometry } from './geometry';
 import { TICK_LAYER_PADDING, TICK_LAYER_BOTTOM_INSET } from './time_bar';
-import type { DisclosureColumnGeometry, DisclosureEntry, TraceStyle } from './types';
+import type { DisclosureEntry, TraceStyle } from './types';
 import {
   CARET_GLYPH_PX,
   CARET_INDENT_STEP_PX,

@@ -97,8 +97,18 @@ function wrapGutterLabel(
  * @internal
  */
 export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: TraceStyle): void {
-  const { gutter, plot, spans, laneHeight, scrollOffset, scale, focusedLaneIndex, disclosureByLane, disclosureColumn, spanDisplay } =
-    geom;
+  const {
+    gutter,
+    plot,
+    spans,
+    laneHeight,
+    scrollOffset,
+    scale,
+    focusedLaneIndex,
+    disclosureByLane,
+    disclosureColumn,
+    spanDisplay,
+  } = geom;
 
   withContext(ctx, () => {
     // Transparent clear of the full canvas area. Background ownership belongs to the Spec 6

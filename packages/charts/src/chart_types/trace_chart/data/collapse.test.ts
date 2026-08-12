@@ -377,10 +377,33 @@ describe('buildDisclosureMap — display-child count', () => {
   it('child count uses display parentage', () => {
     // root has two display children: one recorded child and one orphan reparented to root.
     // The recorded child count would be 1; the display child count must be 2.
-    const root: NormalizedSpan = { id: 'root', name: 'root', start: 0, end: 100, activeSegments: [], meta: { id: 'root', name: 'root', start: 0, end: 100 } };
-    const recorded: NormalizedSpan = { id: 'c', name: 'c', parentId: 'root', start: 10, end: 90, activeSegments: [], meta: { id: 'c', name: 'c', start: 10, end: 90 } };
+    const root: NormalizedSpan = {
+      id: 'root',
+      name: 'root',
+      start: 0,
+      end: 100,
+      activeSegments: [],
+      meta: { id: 'root', name: 'root', start: 0, end: 100 },
+    };
+    const recorded: NormalizedSpan = {
+      id: 'c',
+      name: 'c',
+      parentId: 'root',
+      start: 10,
+      end: 90,
+      activeSegments: [],
+      meta: { id: 'c', name: 'c', start: 10, end: 90 },
+    };
     // Orphan: no parentId, but reparentedToSpanId points to root (display parent).
-    const orphan: NormalizedSpan = { id: 'orphan', name: 'orphan', reparentedToSpanId: 'root', start: 20, end: 80, activeSegments: [], meta: { id: 'orphan', name: 'orphan', start: 20, end: 80 } };
+    const orphan: NormalizedSpan = {
+      id: 'orphan',
+      name: 'orphan',
+      reparentedToSpanId: 'root',
+      start: 20,
+      end: 80,
+      activeSegments: [],
+      meta: { id: 'orphan', name: 'orphan', start: 20, end: 80 },
+    };
     const pipelineSpans = [root, recorded, orphan];
     const { lanes, depthBySpan } = orderLanes(pipelineSpans, 'tree');
     const parentIds = collapsibleParentIds(lanes);

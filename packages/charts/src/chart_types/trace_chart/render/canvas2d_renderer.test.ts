@@ -28,7 +28,12 @@ import {
   canvas2dRenderer,
 } from './canvas2d_renderer';
 import type { BadgeLayoutItem, DisclosureColumnGeometry, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
-import { CARET_GLYPH_PX as _CARET_GLYPH_PX, CARET_INDENT_STEP_PX as _CARET_INDENT_STEP_PX, DEFAULT_TRACE_ANNOTATION_STYLE, DEFAULT_TRACE_BADGE_STYLE } from './types';
+import {
+  CARET_GLYPH_PX as _CARET_GLYPH_PX,
+  CARET_INDENT_STEP_PX as _CARET_INDENT_STEP_PX,
+  DEFAULT_TRACE_ANNOTATION_STYLE,
+  DEFAULT_TRACE_BADGE_STYLE,
+} from './types';
 import type { ResolvedTraceAnnotation } from '../data/annotations';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceDatum } from '../trace_api';

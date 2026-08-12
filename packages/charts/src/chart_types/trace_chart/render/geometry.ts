@@ -7,7 +7,14 @@
  */
 
 import { TICK_LAYER_PADDING, TICK_LAYER_BOTTOM_INSET } from './time_bar';
-import type { AnnotationLayoutItem, DisclosureColumnGeometry, DisclosureEntry, LaneBadgeLayout, TraceGeometry, TraceStyle } from './types';
+import type {
+  AnnotationLayoutItem,
+  DisclosureColumnGeometry,
+  DisclosureEntry,
+  LaneBadgeLayout,
+  TraceGeometry,
+  TraceStyle,
+} from './types';
 import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, gutterPx, LANE_PADDING } from './types';
 import type { Size } from '../../../utils/dimensions';
 import { waitingSegments } from '../data/self_time';
