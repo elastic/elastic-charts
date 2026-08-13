@@ -41,7 +41,6 @@ export const storybookParameters: Parameters = {
   theme: {
     default: 'light',
     clearable: false,
-    ignoreQueryParams: false,
     selector: 'html',
     themes: [
       {

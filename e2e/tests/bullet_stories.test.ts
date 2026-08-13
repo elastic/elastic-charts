@@ -8,7 +8,7 @@
 
 import { test } from '@playwright/test';
 
-import { pwEach } from '../helpers';
+import { eachTheme, pwEach } from '../helpers';
 import { common } from '../page_objects/common';
 
 export const BulletSubtype = ['vertical', 'horizontal', 'circle', 'half-circle', 'two-thirds-circle'];
@@ -150,62 +150,28 @@ test.describe('Bullet stories', () => {
     const euiPaletteCool = 10;
     const darkGrayPalette = 13;
 
-    pwEach.test([
-      {
-        label: 'linear light theme without stroke',
-        subtype: 'horizontal',
-        theme: 'light',
-        palette: euiPaletteCool,
-      },
-      {
-        label: 'linear light theme with stroke',
-        subtype: 'horizontal',
-        theme: 'light',
-        palette: darkGrayPalette,
-      },
-      {
-        label: 'linear dark theme without stroke',
-        subtype: 'horizontal',
-        theme: 'dark',
-        palette: darkGrayPalette,
-      },
-      {
-        label: 'linear dark theme with stroke',
-        subtype: 'horizontal',
-        theme: 'dark',
-        palette: euiPaletteCool,
-      },
-      {
-        label: 'angular light theme without stroke',
-        subtype: 'two-thirds-circle',
-        theme: 'light',
-        palette: euiPaletteCool,
-      },
-      {
-        label: 'angular light theme with stroke',
-        subtype: 'two-thirds-circle',
-        theme: 'light',
-        palette: darkGrayPalette,
-      },
-      {
-        label: 'angular dark theme without stroke',
-        subtype: 'two-thirds-circle',
-        theme: 'dark',
-        palette: darkGrayPalette,
-      },
-      {
-        label: 'angular dark theme with stroke',
-        subtype: 'two-thirds-circle',
-        theme: 'dark',
-        palette: euiPaletteCool,
-      },
-    ] as const)(
-      ({ label }) => `should render ${label}`,
-      async (page, { subtype, theme, palette }) => {
-        await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/bullet-graph--color-bands&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:${theme}&knob-color config_Color Bands=2&knob-Config 2 - Palette_Color Bands=${palette}&knob-Config 2 - Steps_Color Bands=5&knob-Config 2 - Reverse_Color Bands=&knob-start_Domain=0&knob-end_Domain=100&knob-value_Domain=56&knob-target_Domain=75&knob-subtype=${subtype}&knob-debug=`,
-        );
-      },
-    );
+    eachTheme.describe(({ theme }) => {
+      const withStrokePalette = theme === 'light' ? darkGrayPalette : euiPaletteCool;
+      const withoutStrokePalette = theme === 'light' ? euiPaletteCool : darkGrayPalette;
+
+      const palettes = [withStrokePalette, withoutStrokePalette];
+
+      const cases = palettes.flatMap((palette, index) => {
+        const version = index === 0 ? 'with stroke' : 'without stroke';
+        return [
+          { label: `linear ${theme} theme ${version}`, subtype: 'horizontal', palette },
+          { label: `angular ${theme} theme ${version}`, subtype: 'two-thirds-circle', palette },
+        ];
+      });
+
+      pwEach.test(cases)(
+        ({ label }) => `should render ${label}`,
+        async (page, { subtype, palette }) => {
+          await common.expectChartAtUrlToMatchScreenshot(page)(
+            `http://localhost:9001/?path=/story/bullet-graph--color-bands&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:${theme}&knob-color config_Color Bands=2&knob-Config 2 - Palette_Color Bands=${palette}&knob-Config 2 - Steps_Color Bands=5&knob-Config 2 - Reverse_Color Bands=&knob-start_Domain=0&knob-end_Domain=100&knob-value_Domain=56&knob-target_Domain=75&knob-subtype=${subtype}&knob-debug=`,
+          );
+        },
+      );
+    });
   });
 });

@@ -19,7 +19,7 @@ import {
   euiPaletteGreen,
   euiPaletteWarm,
 } from '@elastic/eui';
-import { number, boolean, object, color, select } from '@storybook/addon-knobs';
+import { number, boolean, object, color } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React, { useCallback } from 'react';
 
@@ -148,17 +148,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   // Other
   const debug = boolean('debug', false);
-  const subtype = select(
-    'subtype',
-    {
-      Linear: BulletSubtype.horizontal,
-      Angular: BulletSubtype.twoThirdsCircle,
-      vertical: BulletSubtype.vertical,
-      circle: BulletSubtype.circle,
-      'half-circle': BulletSubtype.halfCircle,
-    },
-    BulletSubtype.horizontal,
-  );
+  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.horizontal);
 
   const formatter = (d: number) => numeral(d).format('0.[0]');
 
