@@ -81,6 +81,7 @@ const geom = (
     disclosureByLane: new Map(),
     disclosureColumn: { caretPx: 0, countPx: 0, indentStepPx: 8, maxDepth: 0 },
     criticalIntervalsByLane: new Map(),
+    treeGuidesByLane: new Map(),
     badgesByLane: new Map(),
     annotationsLayout: [],
   }) as TraceGeometry;

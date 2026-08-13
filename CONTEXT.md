@@ -234,6 +234,9 @@ _Avoid_: subtree annotation, collapse state, critical path, span badge, tree gui
 A chart-owned vertical line in the **disclosure gutter** connecting an expanded span to each of its
 **display children**, with a short horizontal elbow into each child's lane. Structural and
 non-interactive; never caller-supplied and never a hit target. Enabled via `TraceSpec.showTreeGuides`.
+Two named parts: the **spine** (vertical run from the parent's caret downward) and the **elbow**
+(short horizontal stub from the spine to the child's lane). A terminating elbow (last child, `└`) uses
+a rounded corner; a tee (non-last child, `├`) uses a straight corner.
 _Avoid_: hierarchy annotation (caller-supplied, marks one root-to-target route at the gutter/plot boundary), tree line, indent guide.
 
 **Focused lane**:

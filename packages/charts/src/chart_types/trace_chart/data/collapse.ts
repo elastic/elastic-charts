@@ -8,6 +8,7 @@
 
 import { buildChildrenMap, displayParentId, mergeSegments, traceScopedId } from './self_time';
 import type { NormalizedSpan } from './types';
+import type { TreeGuideEntry } from '../render/types';
 
 /**
  * Returns the set of span IDs that have at least one direct **display** child present in the same
@@ -169,6 +170,23 @@ export function rollupCriticalIntervals(
 }
 
 /**
+ * Bridges from span-object-keyed `depthBySpan` to a span-id-keyed map. Needed because
+ * `collapseLanes` spread-clones collapsed parents (new object reference not in `depthBySpan`).
+ * Both `buildDisclosureMap` and `buildTreeGuideMap` have the same problem, so this is shared.
+ */
+function buildDepthById(
+  pipelineSpans: NormalizedSpan[],
+  depthBySpan: ReadonlyMap<NormalizedSpan, number>,
+): Map<string, number> {
+  const depthById = new Map<string, number>();
+  for (const span of pipelineSpans) {
+    const d = depthBySpan.get(span);
+    if (d !== undefined) depthById.set(span.id, d);
+  }
+  return depthById;
+}
+
+/**
  * Builds a lane-index → disclosure entry map for all visible parent spans. Each entry carries the
  * caret state, tree depth (for indent rendering), and the total descendant count in the original
  * (pre-collapse) tree (used for the "N descendants hidden" aria-live announcement).
@@ -193,11 +211,7 @@ export function buildDisclosureMap(
 
   // Bridge to ID-keyed depth: handles the case where collapseLanes returns a spread-clone of the
   // collapsed parent (new object reference) that is not a key in depthBySpan.
-  const depthById = new Map<string, number>();
-  for (const span of pipelineSpans) {
-    const d = depthBySpan.get(span);
-    if (d !== undefined) depthById.set(span.id, d);
-  }
+  const depthById = buildDepthById(pipelineSpans, depthBySpan);
 
   const childrenMap = buildChildrenMap(pipelineSpans, displayParentId);
 
@@ -225,6 +239,69 @@ export function buildDisclosureMap(
     // childrenMap uses displayParentId, matching the display topology the spec requires (Spec 32).
     const childCount = (childrenMap.get(traceScopedId(span.traceId, span.id)) ?? []).length;
     result.set(i, { state, depth, descendantCount, childCount });
+  }
+
+  return result;
+}
+
+/**
+ * Builds a lane-index → tree-guide entry map for all visible non-root lanes (Spec 33 / ADR 0039).
+ * Each entry carries the lane's depth, whether it is the last visible display child of its parent,
+ * and the parent's lane index. The draw pass uses `parentLane` to walk the ancestor chain upward and
+ * draws passthrough verticals for every non-last ancestor.
+ *
+ * Must be called with the **post-collapse** `visibleSpans` (for correct lane indices) and the
+ * **pre-collapse** `pipelineSpans` (for the depth bridge). Signature mirrors `buildDisclosureMap`.
+ *
+ * Returns an empty Map immediately when `depthBySpan.size === 0` (chronological mode / flat trace),
+ * so the prop-off fast path allocates nothing beyond a single empty-map check.
+ * @internal
+ */
+export function buildTreeGuideMap(
+  pipelineSpans: NormalizedSpan[],
+  visibleSpans: NormalizedSpan[],
+  depthBySpan: ReadonlyMap<NormalizedSpan, number>,
+): Map<number, TreeGuideEntry> {
+  const result = new Map<number, TreeGuideEntry>();
+  if (depthBySpan.size === 0) return result;
+
+  // Bridge from span-object-keyed to span-id-keyed depth (same reason as buildDisclosureMap).
+  const depthById = buildDepthById(pipelineSpans, depthBySpan);
+
+  // parentLaneByDepth[d] tracks the most recently seen lane index at depth d.
+  // Used to identify the parent (at d-1) and the previous sibling (at d, same parent).
+  const parentLaneByDepth: number[] = [];
+
+  for (let i = 0; i < visibleSpans.length; i++) {
+    const span = visibleSpans[i]!;
+    const d = depthById.get(span.id) ?? 0;
+    if (d === 0) {
+      // Root lane: no entry (no spine above a root). Record the slot so the next depth-1 child
+      // knows its parent, and reset the slot so a new forest root doesn't inherit the prior group's.
+      parentLaneByDepth[0] = i;
+      continue;
+    }
+    const parentLane = parentLaneByDepth[d - 1];
+    if (parentLane === undefined) {
+      // Malformed display topology: a span at depth d with no visible ancestor at d-1.
+      // depthBySpan sets unreachable spans to 0 (order_lanes.ts:92), so this should not occur for
+      // valid data. Degrade gracefully: skip (no spine for this lane).
+      parentLaneByDepth[d] = i;
+      continue;
+    }
+    // Flip the previous sibling at this depth to isLastChild=false if it has the same parent.
+    // This is the `tree(1)` forward-pass trick: each new sibling retroactively marks the prior one
+    // as non-terminal. The parent-equality check ensures forest boundaries are respected without
+    // clearing the depth slot (stale slots from a prior group have a different parentLane value).
+    const prevSiblingLane = parentLaneByDepth[d];
+    if (prevSiblingLane !== undefined) {
+      const prevEntry = result.get(prevSiblingLane);
+      if (prevEntry !== undefined && prevEntry.parentLane === parentLane) {
+        prevEntry.isLastChild = false;
+      }
+    }
+    result.set(i, { depth: d, isLastChild: true, parentLane });
+    parentLaneByDepth[d] = i;
   }
 
   return result;

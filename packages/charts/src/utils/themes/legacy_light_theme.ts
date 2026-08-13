@@ -499,6 +499,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
     gutterLabel: { fontFamily: 'sans-serif', fontSize: 10, color: '#777' },
     timeBarLabel: { fontFamily: 'sans-serif', fontSize: 10, color: '#777' },
     gridLineColor: '#eaeaea',
+    treeGuideColor: '#d9d9d9',
     focusedLaneBackground: 'rgba(96,146,192,0.15)',
     selectedSegmentStroke: '#EE72A6',
     criticalPathColor: '#C61E25',

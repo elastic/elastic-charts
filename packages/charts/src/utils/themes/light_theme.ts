@@ -487,6 +487,7 @@ export const LIGHT_THEME: Theme = {
     gutterLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: LIGHT_TEXT_COLORS.textSubdued },
     timeBarLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: LIGHT_TEXT_COLORS.textSubdued },
     gridLineColor: LIGHT_BORDER_COLORS.borderBaseSubdued,
+    treeGuideColor: LIGHT_BORDER_COLORS.borderBasePlain,
     focusedLaneBackground: LIGHT_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
     selectedSegmentStroke: LIGHT_BACKGROUND_COLORS.backgroundFilledAccent,
     criticalPathColor: '#C61E25',

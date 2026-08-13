@@ -500,6 +500,7 @@ export const LEGACY_DARK_THEME: Theme = {
     gutterLabel: { fontFamily: 'sans-serif', fontSize: 10, color: '#999' },
     timeBarLabel: { fontFamily: 'sans-serif', fontSize: 10, color: '#999' },
     gridLineColor: '#444',
+    treeGuideColor: '#555',
     focusedLaneBackground: 'rgba(96,146,192,0.15)',
     selectedSegmentStroke: '#BC1E70',
     criticalPathColor: '#EE4C48',

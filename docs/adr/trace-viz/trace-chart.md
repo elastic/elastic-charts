@@ -274,6 +274,36 @@ Changing `laneOrder` invalidates the pipeline cache and resets zoom/pan to fit-a
   {test:packages/charts/src/chart_types/trace_chart/trace_chart.test.tsx#"child count is off by default"}
   {test:packages/charts/src/chart_types/trace_chart/trace_chart.test.tsx#"child count is inert in chronological mode"}
 
+### Tree guides
+
+- **`showTreeGuides` prop**: when `true`, draws a solid 1 px **spine** (vertical run) + **elbow** (horizontal stub) in the disclosure gutter connecting each expanded parent span to its visible display children. The terminating elbow (last child, `└`) uses a rounded `quadraticCurveTo` corner; a non-terminating tee (non-last, `├`) uses a straight vertical plus a straight horizontal. Defaults to `false`. Inert when `laneOrder === 'chronological'` (no disclosure gutter exists). See ADR 0037, ADR 0039.
+  {story:collapsibleNesting}
+  {test:packages/charts/src/chart_types/trace_chart/trace_chart.test.tsx#"tree guides are off by default"}
+  {test:packages/charts/src/chart_types/trace_chart/trace_chart.test.tsx#"tree guides are inert in chronological mode"}
+- Enabling the prop widens the disclosure gutter by `maxDepth × 8 px` (once at mount, when the prop is supplied) and shifts the plot origin by the same amount. The gutter never reflows on collapse toggles — the widened step is chosen once in `buildGeometry` and published on `disclosureColumn.indentStepPx` (ADR 0037 D2).
+  {test:packages/charts/src/chart_types/trace_chart/render/geometry.test.ts#"tree guides widen the indent step"}
+- A collapsed parent draws no spine: its children are absent from the visible lane list, so no guide entry is emitted for them.
+  {test:packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.test.ts#"collapsed parent draws no spine"}
+- A nested lane draws one spine segment per open ancestor (ancestor passthrough), so the column reads as a continuous tree hierarchy.
+  {test:packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.test.ts#"nested lane shows one guide per open ancestor"}
+- The spine terminates at the last child with a rounded elbow; non-last children draw a continuous vertical through to the next sibling.
+  {test:packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.test.ts#"spine terminates at the last child"}
+- Tree guides are clipped to the plot rectangle (inside the existing `ctx.clip()`) and drawn in one pass before the per-lane loop. Every guide x coordinate is strictly inside the disclosure column — never the label area, count zone, or plot.
+  {test:packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.test.ts#"tree guides stay within the disclosure gutter"}
+- The spine draws even when its parent lane is scrolled above the visible window: `parentLane` is a plain index so the parent's `barMidY` is computable regardless of scroll position; the clip trims the overhang at the time bar.
+  {test:packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.test.ts#"spine draws when its parent is scrolled out of view"}
+- Forest roots (depth 0) have no spine: no guide entry is emitted for them, so no segment can bridge two trace groups in a combined waterfall.
+  {test:packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.test.ts#"forest roots have no spine"}
+- Guides are non-interactive: `pickDisclosure`, `pickRegion`, and `pickBadge` return identical results whether `treeGuidesByLane` is populated or empty.
+  {test:packages/charts/src/chart_types/trace_chart/render/canvas2d_renderer.test.ts#"tree guides are not pickable"}
+
+**Non-goals:**
+
+| Non-goal | Notes |
+|---|---|
+| Per-guide style configuration (color, width, dash) | `theme.trace.treeGuideColor` is the one tunable; structural properties are internal constants. |
+| Guides into collapsed subtrees | A collapsed parent hides its children; the guide stops at the collapsed parent's lane. |
+
 ### Empty states
 
 | Condition | Message |

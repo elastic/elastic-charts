@@ -75,6 +75,7 @@ const BY_TYPE = (datum: TraceDatum) => (datum.meta as StepMeta | undefined)?.typ
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const showDisplayChildCount = boolean('showDisplayChildCount', false);
+  const showTreeGuides = boolean('showTreeGuides', false);
   return (
     <Chart title={title} description={description} size={{ width: '100%', height: 600 }}>
       <Settings baseTheme={useBaseTheme()} theme={{ trace: { labelPosition: 'inline' } }} />
@@ -85,6 +86,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         traceId={ROOT}
         colorBy={BY_TYPE}
         showDisplayChildCount={showDisplayChildCount}
+        showTreeGuides={showTreeGuides}
       />
     </Chart>
   );

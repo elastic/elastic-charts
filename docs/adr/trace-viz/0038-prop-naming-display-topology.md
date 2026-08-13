@@ -2,7 +2,7 @@
 
 **Status:** Accepted  
 **Implements:** [Spec 32 (harvested) — Collapse child count](./trace-chart.md#collapsible-nesting)  
-**Cites:** [ADR 0028](./0028-partial-trace-synthetic-parentage.md) — display topology; [Spec 33 — Tree guides](./specs/spec-33-tree-guides.md).
+**Cites:** [ADR 0028](./0028-partial-trace-synthetic-parentage.md) — display topology; [Spec 33 (harvested) — Tree guides](./trace-chart.md#tree-guides).
 
 ## Context
 

@@ -33,6 +33,7 @@ import {
   CARET_INDENT_STEP_PX as _CARET_INDENT_STEP_PX,
   DEFAULT_TRACE_ANNOTATION_STYLE,
   DEFAULT_TRACE_BADGE_STYLE,
+  TREE_GUIDE_INDENT_STEP_PX as _TREE_GUIDE_INDENT_STEP_PX,
 } from './types';
 import type { ResolvedTraceAnnotation } from '../data/annotations';
 import type { NormalizedSpan } from '../data/types';
@@ -71,6 +72,7 @@ const style: TraceStyle = {
   gutterLabel: { fontFamily: 'monospace', fontSize: 11, color: '#333' },
   timeBarLabel: { fontFamily: 'monospace', fontSize: 11, color: '#555' },
   gridLineColor: '#e8e8e8',
+  treeGuideColor: '#d3dae6',
   focusedLaneBackground: 'rgba(96,146,192,0.15)',
   selectedSegmentStroke: '#f00',
   selectedSegmentStrokeWidth: 2,
@@ -144,6 +146,7 @@ function makeGeom(overrides: Partial<TraceGeometry> = {}): TraceGeometry {
     disclosureByLane: new Map(),
     disclosureColumn: { caretPx: 0, countPx: 0, indentStepPx: _CARET_INDENT_STEP_PX, maxDepth: 0 },
     criticalIntervalsByLane: new Map(),
+    treeGuidesByLane: new Map(),
     badgesByLane: new Map(),
     annotationsLayout: [],
     ...overrides,
@@ -1529,5 +1532,236 @@ describe('pickDisclosure — child-count zone (Spec 32)', () => {
     expect(pickDisclosure(_CARET_GLYPH_PX + LARGER_COUNT_PX - 1, 40, widerGeom)).toBe(0);
     // x = CARET_GLYPH_PX + LARGER_COUNT_PX must be outside.
     expect(pickDisclosure(_CARET_GLYPH_PX + LARGER_COUNT_PX, 40, widerGeom)).toBe(-1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: drawTreeGuides — spine + elbow (Spec 33 / ADR 0039)
+// ---------------------------------------------------------------------------
+// All tests use spanDisplay:'duration' so the only moveTo/lineTo/quadraticCurveTo
+// calls come from the tree-guide pass (duration bars use fillRect, not path ops).
+// criticalIntervalsByLane, badgesByLane, and annotationsLayout are kept empty
+// to eliminate other path contributors.
+
+describe('drawTreeGuides — spine + elbow (Spec 33)', () => {
+  // Mirror the file-local constants from the renderer (not exported).
+  const CORNER_R = 3;
+  const CARET_CLEARANCE = 6;
+
+  // Resolved caretPx and indentStepPx for guides-on geometry.
+  const CARET_PX = _CARET_GLYPH_PX; // 28
+  const STEP = _TREE_GUIDE_INDENT_STEP_PX; // 16
+
+  // spineX mirrors the renderer formula (gutter.left = 0 in makeGeom).
+  const spineX = (level: number) => level * STEP + CARET_PX / 2;
+
+  // Lane geometry (PLOT_TOP=32, LANE_HEIGHT=24).
+  const laneTopY = (i: number, scrollOffset = 0) => PLOT_TOP + i * LANE_HEIGHT - scrollOffset;
+  const barMidY = (i: number, scrollOffset = 0) => laneTopY(i, scrollOffset) + LANE_HEIGHT / 2;
+
+  // Disclosure column for guides-on tests (maxDepth=1 unless overridden).
+  const guideCol = (maxDepth = 1): DisclosureColumnGeometry => ({
+    caretPx: CARET_PX,
+    countPx: 0,
+    indentStepPx: STEP,
+    maxDepth,
+  });
+
+  // Geometry helper: overrides spanDisplay and disclosureColumn for guide tests.
+  function guideGeom(
+    treeGuidesByLane: TraceGeometry['treeGuidesByLane'],
+    extra: Partial<TraceGeometry> = {},
+  ): TraceGeometry {
+    return makeGeom({
+      spanDisplay: 'duration',
+      disclosureColumn: guideCol((extra.disclosureColumn ?? guideCol()).maxDepth),
+      treeGuidesByLane,
+      criticalIntervalsByLane: new Map(),
+      badgesByLane: new Map(),
+      annotationsLayout: [],
+      ...extra,
+    });
+  }
+
+  it('collapsed parent draws no spine', () => {
+    // A collapsed parent's children are absent from treeGuidesByLane (size=0 → early return).
+    const ctx = makeCtx();
+    draw(ctx, guideGeom(new Map()), style);
+    // In duration mode with an empty guide map, no path operations from guides.
+    expect((ctx.moveTo as jest.Mock).mock.calls).toHaveLength(0);
+    expect((ctx.quadraticCurveTo as jest.Mock).mock.calls).toHaveLength(0);
+  });
+
+  it('spine terminates at the last child', () => {
+    // Lane 1 = only child (last child) of lane 0. Expect quadraticCurveTo for the rounded elbow.
+    const ctx = makeCtx();
+    const map = new Map([[1, { depth: 1, isLastChild: true, parentLane: 0 }]]);
+    draw(ctx, guideGeom(map), style);
+    // Last child → quadraticCurveTo must be called once.
+    expect((ctx.quadraticCurveTo as jest.Mock).mock.calls).toHaveLength(1);
+    const [qx1, qy1, qx2, qy2] = (ctx.quadraticCurveTo as jest.Mock).mock.calls[0] as [number, number, number, number];
+    const px = spineX(0); // 14
+    const mid = barMidY(1); // 44 + 24 = 68
+    expect(qx1).toBe(px);
+    expect(qy1).toBe(mid);
+    expect(qx2).toBeCloseTo(px + CORNER_R, 5);
+    expect(qy2).toBe(mid);
+  });
+
+  it('non-last child uses straight tee (no quadraticCurveTo)', () => {
+    // Lane 1 = first sibling (not last child) → vertical + horizontal straight tee.
+    // Lane 2 = last child (is last child).
+    const ctx = makeCtx();
+    const map = new Map([
+      [1, { depth: 1, isLastChild: false, parentLane: 0 }],
+      [2, { depth: 1, isLastChild: true, parentLane: 0 }],
+    ]);
+    draw(ctx, guideGeom(map, { disclosureColumn: guideCol(1) }), style);
+    // Only one quadraticCurveTo: for lane 2 (the last child).
+    expect((ctx.quadraticCurveTo as jest.Mock).mock.calls).toHaveLength(1);
+  });
+
+  it('nested lane shows one guide per open ancestor', () => {
+    // Lane 1 = non-last child of root (lane 0).
+    // Lane 2 = child of lane 1. Lane 2 gets its own elbow plus a passthrough vertical for lane 1
+    // (because lane 1 has isLastChild=false → its spine continues through lane 2's row).
+    const ctx = makeCtx();
+    const map = new Map([
+      [1, { depth: 1, isLastChild: false, parentLane: 0 }],
+      [2, { depth: 2, isLastChild: true, parentLane: 1 }],
+    ]);
+    draw(ctx, guideGeom(map, { disclosureColumn: guideCol(2) }), style);
+    // Lane 2's ancestor passthrough: one vertical for lane 1 (isLastChild=false).
+    // The passthrough draws: moveTo(spineX(0), laneTop(2)), lineTo(spineX(0), bottom(2))
+    // plus lane 2's own elbow: moveTo, lineTo, quadraticCurveTo, lineTo
+    // plus lane 1's own tee: moveTo(vertical), lineTo, moveTo(horizontal), lineTo
+    // Total quadraticCurveTo: 1 (lane 2's last-child elbow).
+    expect((ctx.quadraticCurveTo as jest.Mock).mock.calls).toHaveLength(1);
+  });
+
+  it('tree guides stay within the disclosure gutter', () => {
+    // With depth-1 guides, all x coordinates must be < gutter.left + caretColumnWidth.
+    const ctx = makeCtx();
+    const map = new Map([
+      [1, { depth: 1, isLastChild: false, parentLane: 0 }],
+      [2, { depth: 1, isLastChild: true, parentLane: 0 }],
+    ]);
+    draw(ctx, guideGeom(map), style);
+    // caretColumnWidth = maxDepth * indentStepPx + caretPx + countPx = 1*16 + 28 + 0 = 44.
+    const caretColumnWidth = 1 * STEP + CARET_PX + 0;
+    const moveToCalls = (ctx.moveTo as jest.Mock).mock.calls as [number, number][];
+    const lineToCalls = (ctx.lineTo as jest.Mock).mock.calls as [number, number][];
+    const quadCalls = (ctx.quadraticCurveTo as jest.Mock).mock.calls as [number, number, number, number][];
+    for (const [x] of moveToCalls) expect(x).toBeLessThanOrEqual(caretColumnWidth);
+    for (const [x] of lineToCalls) expect(x).toBeLessThanOrEqual(caretColumnWidth);
+    // For quadraticCurveTo(cpx, cpy, x, y) both cpx and x must be within bounds.
+    for (const [cpx, , x] of quadCalls) {
+      expect(cpx).toBeLessThanOrEqual(caretColumnWidth);
+      expect(x).toBeLessThanOrEqual(caretColumnWidth);
+    }
+  });
+
+  it('spine draws when its parent is scrolled out of view', () => {
+    // Scroll lane 0 above the viewport. firstLane=1 (lane 0 gone), but the child at lane 1
+    // still draws its guide (startY computed from barMidY(parentLane=0), clipped by ctx.clip()).
+    const ctx = makeCtx();
+    const scrollOffset = LANE_HEIGHT; // 24px → firstLane = floor(24/24) = 1
+    const map = new Map([[1, { depth: 1, isLastChild: true, parentLane: 0 }]]);
+    draw(ctx, guideGeom(map, { scrollOffset }), style);
+    // The guide at lane 1 still calls moveTo for the spine (startY may be above clip top — that's fine).
+    expect((ctx.moveTo as jest.Mock).mock.calls.length).toBeGreaterThan(0);
+    // And a quadraticCurveTo for the terminating elbow.
+    expect((ctx.quadraticCurveTo as jest.Mock).mock.calls).toHaveLength(1);
+  });
+
+  it('forest roots have no spine', () => {
+    // Two depth-0 roots each with one child. Neither root has a treeGuidesByLane entry,
+    // so no guide can bridge the two groups.
+    // Guide map: lane 1 (child of lane 0) and lane 3 (child of lane 2).
+    // Lanes 0 and 2 are roots → no entry → no guide for them.
+    // We need 4 spans so lastLane covers all 4 lanes. Override makeGeom spans count.
+    const root1: NormalizedSpan = {
+      id: 'r1',
+      name: 'root1',
+      start: 0,
+      end: 100,
+      activeSegments: [{ start: 0, end: 100 }],
+      meta: { id: 'r1', name: 'root1', traceId: 't1', start: 0, end: 100 },
+    };
+    const c1: NormalizedSpan = {
+      id: 'c1',
+      name: 'c1',
+      start: 10,
+      end: 90,
+      parentId: 'r1',
+      activeSegments: [{ start: 10, end: 90 }],
+      meta: { id: 'c1', name: 'c1', traceId: 't1', start: 10, end: 90 },
+    };
+    const root2: NormalizedSpan = {
+      id: 'r2',
+      name: 'root2',
+      start: 101,
+      end: 200,
+      activeSegments: [{ start: 101, end: 200 }],
+      meta: { id: 'r2', name: 'root2', traceId: 't2', start: 101, end: 200 },
+    };
+    const c2: NormalizedSpan = {
+      id: 'c2',
+      name: 'c2',
+      start: 110,
+      end: 190,
+      parentId: 'r2',
+      activeSegments: [{ start: 110, end: 190 }],
+      meta: { id: 'c2', name: 'c2', traceId: 't2', start: 110, end: 190 },
+    };
+    const map = new Map([
+      [1, { depth: 1, isLastChild: true, parentLane: 0 }],
+      [3, { depth: 1, isLastChild: true, parentLane: 2 }],
+    ]);
+    const ctx = makeCtx();
+    draw(ctx, guideGeom(map, { spans: [root1, c1, root2, c2] }), style);
+    // Both children draw their own elbow → 2 quadraticCurveTo calls.
+    expect((ctx.quadraticCurveTo as jest.Mock).mock.calls).toHaveLength(2);
+    // No moveTo x outside either child's own depth-0 spineX (= spineX(0) = 14).
+    // Critically: no spine at spineX(-1) (which would be negative) or any cross-group passthrough.
+    const moveToCalls = (ctx.moveTo as jest.Mock).mock.calls as [number, number][];
+    for (const [x] of moveToCalls) expect(x).toBeGreaterThanOrEqual(0);
+  });
+
+  it('tree guides are not pickable', () => {
+    // pickDisclosure, pickRegion, pickBadge return identical results regardless of treeGuidesByLane.
+    const emptyMap = new Map<number, { depth: number; isLastChild: boolean; parentLane: number }>();
+    const populatedMap = new Map([[1, { depth: 1, isLastChild: true, parentLane: 0 }]]);
+    const emptyGeom = guideGeom(emptyMap);
+    const populatedGeom = guideGeom(populatedMap);
+
+    // pickDisclosure: test an x inside the caret zone (lane 0 at y=40 = first lane mid).
+    expect(pickDisclosure(5, 40, emptyGeom)).toBe(pickDisclosure(5, 40, populatedGeom));
+    // pickRegion: test a point in the plot area.
+    expect(pickRegion(500, 50, emptyGeom)).toEqual(pickRegion(500, 50, populatedGeom));
+    // pickBadge: no badges in either geom → both null.
+    expect(pickBadge(100, 50, emptyGeom)).toBeNull();
+    expect(pickBadge(100, 50, populatedGeom)).toBeNull();
+  });
+
+  it('first child spine starts at barMidY(parentLane) + clearance; later siblings start at laneTop', () => {
+    // Lane 1 is the first child (parentLane + 1 = 0 + 1 = 1). Its spine startY = barMidY(0) + 6.
+    // Lane 2 is the second child (parentLane + 1 ≠ 2). Its spine startY = laneTopY(2).
+    const ctx = makeCtx();
+    const map = new Map([
+      [1, { depth: 1, isLastChild: false, parentLane: 0 }], // first child, non-last
+      [2, { depth: 1, isLastChild: true, parentLane: 0 }], // second child, last
+    ]);
+    draw(ctx, guideGeom(map), style);
+    const moveToCalls = (ctx.moveTo as jest.Mock).mock.calls as [number, number][];
+    // The first moveTo for lane 1 (the first child's spine): startY = barMidY(0) + CARET_CLEARANCE.
+    const firstChildStartY = barMidY(0) + CARET_CLEARANCE;
+    // The first moveTo for lane 2 (second child's spine): startY = laneTopY(2).
+    const secondChildStartY = laneTopY(2);
+    // moveToCalls may include ancestor-passthrough calls; filter to spine calls at spineX(0)=14.
+    const spineAtDepth0 = moveToCalls.filter(([x]) => x === spineX(0));
+    const startYs = spineAtDepth0.map(([, y]) => y);
+    expect(startYs).toContain(firstChildStartY);
+    expect(startYs).toContain(secondChildStartY);
   });
 });

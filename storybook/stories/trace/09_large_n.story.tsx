@@ -62,6 +62,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const showBadges = boolean('show badges (stress test)', false);
   const badgeSize = select<'s' | 'm'>('badge size', { small: 's', medium: 'm' }, 'm');
   const showDisplayChildCount = boolean('showDisplayChildCount', false);
+  const showTreeGuides = boolean('showTreeGuides', false);
 
   const data: TraceDatum[] = useMemo(() => buildLargeTrace(spanCount), [spanCount]);
 
@@ -77,6 +78,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           badgeAccessor={showBadges ? STRESS_BADGES : undefined}
           badgeSize={badgeSize}
           showDisplayChildCount={showDisplayChildCount}
+          showTreeGuides={showTreeGuides}
         />
       </Chart>
     </div>

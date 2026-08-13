@@ -42,6 +42,7 @@ const style: TraceStyle = {
   gutterLabel: { fontFamily: 'monospace', fontSize: 11, color: '#333' },
   timeBarLabel: { fontFamily: 'monospace', fontSize: 11, color: '#555' },
   gridLineColor: '#e8e8e8',
+  treeGuideColor: '#d3dae6',
   focusedLaneBackground: 'rgba(96,146,192,0.15)',
   selectedSegmentStroke: '#f00',
   selectedSegmentStrokeWidth: 2,
@@ -84,6 +85,7 @@ function makeGeom(annotations: ResolvedTraceAnnotation[]): TraceGeometry {
     disclosureByLane: new Map(),
     disclosureColumn: { caretPx: 0, countPx: 0, indentStepPx: 8, maxDepth: 0 },
     criticalIntervalsByLane: new Map(),
+    treeGuidesByLane: new Map(),
     badgesByLane: new Map(),
     annotationsLayout: [],
   };

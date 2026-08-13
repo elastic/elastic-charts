@@ -57,6 +57,12 @@ export interface TraceStyle {
   timeAxisLayerCount: number;
   /** Color of the faint gridlines drawn down through the plot area. */
   gridLineColor: Color;
+  /**
+   * Color of the tree-guide spine and elbow lines in the disclosure gutter when `showTreeGuides` is
+   * true (Spec 33 / ADR 0039). Uses the theme's `borderBasePlain` hairline token so guides read as
+   * faint structural marks without competing with span bars. Consumers override via `PartialTheme`.
+   */
+  treeGuideColor: Color;
   /** Background fill for the full-width highlight behind the keyboard-focused lane. */
   focusedLaneBackground: Color;
   /** Stroke color for the selection-highlight outline drawn around selected segments. */
@@ -253,6 +259,16 @@ export const CARET_GLYPH_PX = 28;
 export const CARET_INDENT_STEP_PX = 8;
 
 /**
+ * Additional px per depth level when `showTreeGuides` is on (Spec 33 / ADR 0037 D2 / ADR 0039).
+ * Wider than `CARET_INDENT_STEP_PX` so the elbow's straight run is:
+ *   step − gap − corner = 16 − 7 − 3 = 9 px
+ * which reads as a connector. The 8 px default would leave a 1 px stub, and an earlier draft of 14
+ * would leave 4 px — exactly the "reads as a tick mark" defect ADR 0037 D2 was written to prevent.
+ * @internal
+ */
+export const TREE_GUIDE_INDENT_STEP_PX = 16;
+
+/**
  * Trailing inset (px) inside the child-count reserve so the count text never crowds the gutter
  * label. Added to the measured ink width to produce `countPx`. See Spec 32 / ADR 0037 D1.
  * @internal
@@ -270,7 +286,12 @@ export interface DisclosureColumnGeometry {
   /** Measured reserve for the widest display-child-count string (px). 0 when the prop is off or
    * the trace has no parents. */
   countPx: number;
-  /** Effective px per depth level. `CARET_INDENT_STEP_PX` for Spec 32; Spec 33 may raise it. */
+  /**
+   * Effective px per depth level. `CARET_INDENT_STEP_PX` when `showTreeGuides` is false;
+   * `TREE_GUIDE_INDENT_STEP_PX` when on, so the elbow has a 9 px straight run instead of the stub
+   * that ADR 0037 D2 explicitly rejects. Set once in `buildGeometry`; never changes on collapse
+   * toggles (ADR 0037 D2 no-reflow guarantee). See Spec 33 / ADR 0039.
+   */
   indentStepPx: number;
   /** Deepest lane depth — sizes the total indent allocation. */
   maxDepth: number;
@@ -286,6 +307,30 @@ export interface DisclosureColumnGeometry {
  */
 export function disclosureColumnWidth(c: DisclosureColumnGeometry): number {
   return c.maxDepth * c.indentStepPx + c.caretPx + c.countPx;
+}
+
+/**
+ * Per-lane guide-mask entry published on `TraceGeometry.treeGuidesByLane` (Spec 33 / ADR 0039).
+ * Absent for root lanes (depth 0) and when `showTreeGuides` is false (empty shared Map).
+ * Built by `buildTreeGuideMap` in a single forward pass over the visible-lane DFS sequence.
+ * @internal
+ */
+export interface TreeGuideEntry {
+  /** Tree depth of this lane (≥ 1; root lanes have no entry). */
+  depth: number;
+  /**
+   * True when this lane is the last visible display child of its parent below this lane; false means
+   * the parent has at least one later child and the spine continues past this lane as a tee (`├`).
+   * Determines whether the parent-spine segment uses a rounded terminating elbow (`└`) or a straight
+   * tee (`├`) per ADR 0039.
+   */
+  isLastChild: boolean;
+  /**
+   * Lane index (in the current visible-lane array) of the display parent. Used to derive the spine's
+   * start y for the first child: DFS guarantees the first child is always at `parentLane + 1`, so the
+   * spine can join just below the parent's caret ink without an extra field. See ADR 0039.
+   */
+  parentLane: number;
 }
 
 /**
@@ -316,10 +361,10 @@ export interface DisclosureEntry {
  */
 export function gutterPx(
   style: TraceStyle,
-  opts?: { hasParents?: boolean; maxDepth?: number; childCountPx?: number },
+  opts?: { hasParents?: boolean; maxDepth?: number; childCountPx?: number; indentStepPx?: number },
 ): number {
   const caretColumnWidth = opts?.hasParents
-    ? CARET_GLYPH_PX + (opts.maxDepth ?? 0) * CARET_INDENT_STEP_PX + (opts.childCountPx ?? 0)
+    ? CARET_GLYPH_PX + (opts.maxDepth ?? 0) * (opts.indentStepPx ?? CARET_INDENT_STEP_PX) + (opts.childCountPx ?? 0)
     : 0;
   return style.labelPosition === 'gutter' ? style.gutterWidth + caretColumnWidth : caretColumnWidth;
 }
@@ -497,6 +542,13 @@ export interface TraceGeometry {
    * badge participates in the current label mode. Consumed by the badge draw pass and `pickBadge`.
    */
   badgesByLane: ReadonlyMap<number, LaneBadgeLayout>;
+  /**
+   * Per-lane guide mask for the tree-guide draw pass (Spec 33 / ADR 0039). Absent for root lanes and
+   * when `showTreeGuides` is false (empty shared Map — no allocation on the prop-off path). Published
+   * by `buildGeometry`; consumed by `drawTreeGuides` in `canvas2d_renderer`. `pickDisclosure`,
+   * `pickRegion`, and `pickBadge` are untouched — guides are non-interactive by construction.
+   */
+  treeGuidesByLane: ReadonlyMap<number, TreeGuideEntry>;
   /**
    * Laid-out Trace annotations (Spec 29) for the current frame — already domain-culled, viewport-
    * clipped, and collapse-omitted. Empty when no annotation resolves or participates. Consumed by the

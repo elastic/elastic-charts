@@ -246,11 +246,14 @@ export function runFrame(c: TraceCanvasController, deltaT: number) {
     );
   }
   const effectiveCollapsed = laneOrder === 'tree' ? getEffectiveCollapsed(c) : new Set<string>();
+  // Tree guides are a tree-mode feature, inert in chronological mode (ADR 0026 / Spec 33).
+  const treeGuidesOn = laneOrder === 'tree' && traceSpec.showTreeGuides === true;
   const {
     spans,
     disclosure: disclosureByLane,
     rolledUpCriticalIntervals,
-  } = getCollapseOutput(c, pipelineSpans, effectiveCollapsed, depthBySpan, criticalIntervals);
+    treeGuides,
+  } = getCollapseOutput(c, pipelineSpans, effectiveCollapsed, depthBySpan, criticalIntervals, treeGuidesOn);
 
   const emptyMessage =
     emptyReason === 'trace-not-found'
@@ -329,6 +332,8 @@ export function runFrame(c: TraceCanvasController, deltaT: number) {
     badgeRowHeight,
     traceSpec.spanDisplay ?? 'segments',
     childCountPx,
+    treeGuidesOn,
+    treeGuides,
   );
 
   // Lay out badges over the visible lane range (measurement-dependent, so kept out of buildGeometry).

@@ -34,6 +34,103 @@ import type { TraceSpanBadgeColor } from '../trace_api';
 /** Zero-width stroke used for active-segment rects (filled only, no visible border). */
 const NO_STROKE: Stroke = { color: Colors.Transparent.rgba, width: 0 };
 
+// --- Tree-guide draw pass constants (Spec 33 / ADR 0039) ---
+/** Gap (px) between the elbow terminus and the child's caret glyph ink. */
+const TREE_GUIDE_ELBOW_GAP_PX = 7;
+/** Quadratic-curve radius (px) on the terminating elbow (`└`). */
+const TREE_GUIDE_CORNER_PX = 3;
+/** Clearance (px) below the parent caret's glyph ink where the first child's spine starts. */
+const TREE_GUIDE_CARET_CLEARANCE_PX = 6;
+/** Stroke width (px) for tree guide lines. */
+const TREE_GUIDE_THICKNESS_PX = 1;
+
+/**
+ * Draws the tree-guide spine + elbow lines in the disclosure gutter (Spec 33 / ADR 0039). Called
+ * after the focused-lane background highlight and before the per-lane loop, so guides are visible
+ * on the focused lane but never overdraw span bars. The existing lane-area `ctx.clip()` trims
+ * guides at `plot.top`, so a parent scrolled above the viewport only shows the stub below.
+ *
+ * Builds a single `Path2D`-equivalent (`beginPath` → series of `moveTo`/`lineTo`/`quadraticCurveTo`)
+ * and strokes once — never per-lane. There is no arc primitive in `renderers/canvas`, so rounded
+ * elbows use `quadraticCurveTo` directly (ADR 0039).
+ */
+function drawTreeGuides(
+  ctx: CanvasRenderingContext2D,
+  geom: TraceGeometry,
+  style: TraceStyle,
+  firstLane: number,
+  lastLane: number,
+): void {
+  const { treeGuidesByLane, gutter, plot, laneHeight, scrollOffset, disclosureColumn } = geom;
+  if (treeGuidesByLane.size === 0) return;
+
+  const { indentStepPx, caretPx } = disclosureColumn;
+  const r = TREE_GUIDE_CORNER_PX;
+
+  // spineX: the caret-centre x for a given depth level. "Spine from its caret" per Spec 33.
+  const spineX = (level: number) => gutter.left + level * indentStepPx + caretPx / 2;
+  // anchorX: where the elbow terminates, stopping short of the child's caret ink.
+  const anchorX = (depth: number) => spineX(depth) - TREE_GUIDE_ELBOW_GAP_PX;
+
+  const laneTopY = (i: number) => plot.top + i * laneHeight - scrollOffset;
+  const barMidY = (i: number) => laneTopY(i) + laneHeight / 2;
+
+  withContext(ctx, () => {
+    ctx.beginPath();
+    ctx.lineWidth = TREE_GUIDE_THICKNESS_PX;
+    ctx.strokeStyle = style.treeGuideColor;
+
+    for (let i = firstLane; i <= lastLane; i++) {
+      const entry = treeGuidesByLane.get(i);
+      if (!entry) continue;
+
+      const top = laneTopY(i);
+      const bottom = top + laneHeight;
+      const mid = barMidY(i);
+
+      // Ancestor passthroughs: walk the parentLane chain upward. For each ancestor that is not the
+      // last child of its own parent (isLastChild=false), the spine at that ancestor's level
+      // continues through this lane as a full-height vertical. Stops when we reach a root (no entry).
+      let current = entry;
+      for (;;) {
+        const ancestor = treeGuidesByLane.get(current.parentLane);
+        if (!ancestor) break;
+        if (!ancestor.isLastChild) {
+          const px = spineX(ancestor.depth - 1);
+          ctx.moveTo(px, top);
+          ctx.lineTo(px, bottom);
+        }
+        current = ancestor;
+      }
+
+      // Parent-spine segment. The spine starts just below the parent's caret ink on the first child
+      // of a parent (DFS: first child is always parentLane + 1), and at laneTop on later siblings,
+      // where the spine is continuous from the passthrough drawn for this lane in the prior iteration.
+      const px = spineX(entry.depth - 1);
+      const startY =
+        i === entry.parentLane + 1
+          ? barMidY(entry.parentLane) + TREE_GUIDE_CARET_CLEARANCE_PX // below the ▼ ink
+          : top; // continuous from the sibling above
+
+      if (entry.isLastChild) {
+        // Terminating elbow (`└`): vertical down to just above mid, rounded curve, horizontal to anchorX.
+        ctx.moveTo(px, startY);
+        ctx.lineTo(px, mid - r);
+        ctx.quadraticCurveTo(px, mid, px + r, mid);
+        ctx.lineTo(anchorX(entry.depth), mid);
+      } else {
+        // Tee (`├`): full-height vertical from startY plus a straight horizontal stub at mid.
+        ctx.moveTo(px, startY);
+        ctx.lineTo(px, bottom);
+        ctx.moveTo(px, mid);
+        ctx.lineTo(anchorX(entry.depth), mid);
+      }
+    }
+
+    ctx.stroke();
+  });
+}
+
 /**
  * Clamps a mark's `[rawStartX, rawEndX]` to the plot and floors its width to `minW` so a very short
  * span never collapses to a sub-pixel sliver (ADR 0036 / B1). Left-anchored at the true start; when the
@@ -165,6 +262,11 @@ export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: 
         true,
       );
     }
+
+    // Tree-guide pass: spine + elbow lines in the disclosure gutter (Spec 33 / ADR 0039).
+    // After the focused-lane highlight so guides remain visible on the focused lane, and before
+    // span bars so bars are never obscured by a guide in the gutter column.
+    drawTreeGuides(ctx, geom, style, firstLane, lastLane);
 
     // Hoist shared immutable style objects outside the per-lane loop to avoid per-frame allocations.
     const totalLineStroke: Stroke = {

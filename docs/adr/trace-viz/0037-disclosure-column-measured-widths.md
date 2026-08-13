@@ -1,7 +1,7 @@
 # ADR 0037 — Disclosure column sub-widths are measured and published, not re-derived
 
 **Status:** Accepted  
-**Implements:** [Spec 32 (harvested) — Collapse child count](./trace-chart.md#collapsible-nesting), [Spec 33 — Tree guides](./specs/spec-33-tree-guides.md)  
+**Implements:** [Spec 32 (harvested) — Collapse child count](./trace-chart.md#collapsible-nesting), [Spec 33 (harvested) — Tree guides](./trace-chart.md#tree-guides)  
 **Cites:** [ADR 0026](./0026-collapsible-nesting.md) — disclosure gutter; [ADR 0029](./0029-trace-badge-rendering-architecture.md) — `computeBadgeGutterWidth` precedent.
 
 ## Context
@@ -21,8 +21,8 @@ Specs 32 and 33 break both constants:
   layout — see ADR 0029). It is not a constant and cannot be reconstructed by arithmetic on
   `gutter.width`.
 - **Spec 33** makes the depth indent step itself prop-dependent: `showTreeGuides` raises it from 8 to
-  ~14 px. `CARET_INDENT_STEP_PX` becomes an off-by-default baseline constant, not the effective step
-  at draw/pick time.
+  16 px (`TREE_GUIDE_INDENT_STEP_PX`). `CARET_INDENT_STEP_PX` becomes an off-by-default baseline
+  constant, not the effective step at draw/pick time.
 
 With these two changes, the existing subtraction pattern breaks: the renderer and badge layout would
 each independently reconstruct a column width that no longer matches the one used during

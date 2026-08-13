@@ -19,6 +19,7 @@ import type { ResolvedTraceAnnotation } from '../data/annotations';
 import type { TraceDataDiagnostics } from '../data/diagnostics';
 import type { resolveActive } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
+import type { TreeGuideEntry } from '../render/types';
 import type { TraceAnnotationSpec, TraceSpec } from '../trace_api';
 
 /** @internal */
@@ -127,14 +128,18 @@ export interface DisclosureEntry {
 }
 
 /**
- * Memoized post-collapse step (collapseLanes + rollupCriticalIntervals + buildDisclosureMap).
- * @internal
+ * Memoized post-collapse step (collapseLanes + rollupCriticalIntervals + buildDisclosureMap +
+ * buildTreeGuideMap). @internal
  */
 export interface CollapseCache {
   pipelineSpans: NormalizedSpan[];
   collapsed: ReadonlySet<string>;
   criticalIntervals: Array<{ spanId: string; start: number; end: number }>;
+  /** Whether tree guides were computed on this cache entry. Part of the cache validity key. */
+  withTreeGuides: boolean;
   result: NormalizedSpan[];
   rolledUpCriticalIntervals: Array<{ spanId: string; start: number; end: number }>;
   disclosure: Map<number, DisclosureEntry>;
+  /** Empty shared map when `withTreeGuides` is false (no allocation on the prop-off path). */
+  treeGuides: Map<number, TreeGuideEntry>;
 }

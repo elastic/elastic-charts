@@ -2473,3 +2473,56 @@ describe('Trace chart — showDisplayChildCount prop (Spec 32)', () => {
     }).not.toThrow();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Spec 33 — showTreeGuides prop (default off, chronological-mode inert)
+// ---------------------------------------------------------------------------
+
+describe('Trace chart — showTreeGuides prop (Spec 33)', () => {
+  const NESTED_SPANS: TraceDatum[] = [
+    { id: 'root', name: 'HTTP GET /api', traceId: 't1', start: 0, end: 500 },
+    { id: 'db', name: 'DB.query', parentId: 'root', traceId: 't1', start: 100, end: 450 },
+  ];
+
+  beforeEach(() => {
+    setupJestCanvasMock();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('tree guides are off by default', () => {
+    // showTreeGuides not supplied → treated as false → no guide rendering, no crash.
+    expect(() => {
+      const { unmount } = render(
+        <Chart size={[800, 200]}>
+          <Trace id="tg-default" data={NESTED_SPANS} xScaleType="linear" />
+        </Chart>,
+      );
+      jest.runAllTimers();
+      unmount();
+    }).not.toThrow();
+  });
+
+  it('tree guides are inert in chronological mode', () => {
+    // In chronological mode there are no carets or disclosure gutter.
+    // showTreeGuides={true} must be silently inert — no crash, no guide segments drawn.
+    expect(() => {
+      const { unmount } = render(
+        <Chart size={[800, 200]}>
+          <Trace
+            id="tg-chrono"
+            data={NESTED_SPANS}
+            xScaleType="linear"
+            laneOrder="chronological"
+            showTreeGuides={true}
+          />
+        </Chart>,
+      );
+      jest.runAllTimers();
+      unmount();
+    }).not.toThrow();
+  });
+});

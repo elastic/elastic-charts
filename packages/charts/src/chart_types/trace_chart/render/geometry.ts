@@ -14,12 +14,20 @@ import type {
   LaneBadgeLayout,
   TraceGeometry,
   TraceStyle,
+  TreeGuideEntry,
 } from './types';
-import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, gutterPx, LANE_PADDING } from './types';
+import { CARET_GLYPH_PX, CARET_INDENT_STEP_PX, gutterPx, LANE_PADDING, TREE_GUIDE_INDENT_STEP_PX } from './types';
 import type { Size } from '../../../utils/dimensions';
 import { waitingSegments } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
 import type { TraceSelection } from '../trace_api';
+
+// Shared empty maps/arrays used as default parameter values and as the initial return from
+// buildGeometry before badge/annotation/tree-guide passes replace them. Defined before the
+// function so the default-parameter references are within the temporal dead zone on no call path.
+const EMPTY_BADGES_GEO: ReadonlyMap<number, LaneBadgeLayout> = new Map();
+const EMPTY_ANNOTATIONS_GEO: readonly AnnotationLayoutItem[] = [];
+const EMPTY_TREE_GUIDES: ReadonlyMap<number, TreeGuideEntry> = new Map();
 
 /**
  * Pure layout builder for the trace waterfall chart. Partitions the canvas and builds a linear
@@ -76,6 +84,20 @@ export function buildGeometry(
    * See Spec 32 / ADR 0037 D1.
    */
   childCountPx = 0,
+  /**
+   * When `true`, widens `disclosureColumn.indentStepPx` from `CARET_INDENT_STEP_PX` (8 px) to
+   * `TREE_GUIDE_INDENT_STEP_PX` (16 px) so the elbow has a legible straight run. Do **not** infer
+   * this from `treeGuidesByLane.size` — a fully-collapsed root yields an empty map, and inferring
+   * would shrink the gutter on toggle, breaking ADR 0037 D2's no-reflow guarantee.
+   * Inert in chronological mode (passed as `false` by the frame). See Spec 33 / ADR 0037 D2.
+   */
+  showTreeGuides = false,
+  /**
+   * Per-lane guide mask built by `buildTreeGuideMap` (Spec 33 / ADR 0039). Empty shared Map when
+   * `showTreeGuides` is false. Published on `TraceGeometry` so the draw pass can consume it without
+   * re-deriving it on every rAF frame; `buildGeometry` stays pure (no canvas access).
+   */
+  treeGuidesByLane: ReadonlyMap<number, TreeGuideEntry> = EMPTY_TREE_GUIDES,
 ): TraceGeometry {
   // spans is already start-sorted by the pipeline cache (O(N log N) once per data change, not per frame).
   // domain is pre-computed by normalize() and passed in; no per-frame reduce needed.
@@ -87,16 +109,21 @@ export function buildGeometry(
   // still reserved when the trace has parent spans (ADR 0026).
   // Build the disclosure column geometry (ADR 0037 D1). All fields are 0 for flat/chronological
   // traces. countPx comes from the pipeline measurer; buildGeometry stays pure (no canvas access).
+  // Effective indent step: widened when tree guides are on (ADR 0037 D2). Computed once and
+  // published on disclosureColumn so the renderer, pickDisclosure, and gutterPx all share one value
+  // and can never drift (the concrete drift hazard this solves: gutterPx previously hardcoded
+  // CARET_INDENT_STEP_PX, which would draw carets outside the reserved gutter once the step widens).
+  const indentStepPx = showTreeGuides ? TREE_GUIDE_INDENT_STEP_PX : CARET_INDENT_STEP_PX;
   const disclosureColumn: DisclosureColumnGeometry = hasParents
     ? {
         caretPx: CARET_GLYPH_PX,
         countPx: childCountPx,
-        indentStepPx: CARET_INDENT_STEP_PX,
+        indentStepPx,
         maxDepth,
       }
-    : { caretPx: 0, countPx: 0, indentStepPx: CARET_INDENT_STEP_PX, maxDepth: 0 };
+    : { caretPx: 0, countPx: 0, indentStepPx, maxDepth: 0 };
 
-  const effectiveGutterWidth = gutterPx(style, { hasParents, maxDepth, childCountPx });
+  const effectiveGutterWidth = gutterPx(style, { hasParents, maxDepth, childCountPx, indentStepPx });
 
   // In 'time' mode the time bar may render stacked tick-label rows (ADR 0024). Reserve a fixed
   // height for the configured `timeAxisLayerCount` so the plot (and every lane's y-position) never
@@ -195,14 +222,12 @@ export function buildGeometry(
     disclosureByLane,
     disclosureColumn,
     criticalIntervalsByLane,
+    treeGuidesByLane,
     // Populated by the badge-layout pass (layoutBadges) after partitioning; empty here so buildGeometry
     // stays pure (no text measurement). The chart frame replaces this with the measured layout.
-    badgesByLane: EMPTY_BADGES,
+    badgesByLane: EMPTY_BADGES_GEO,
     // Populated by the annotation-layout pass (layoutAnnotations); empty here so buildGeometry stays
     // independent of the separately-memoized annotation resolution (Spec 29).
-    annotationsLayout: EMPTY_ANNOTATIONS,
+    annotationsLayout: EMPTY_ANNOTATIONS_GEO,
   };
 }
-
-const EMPTY_BADGES: ReadonlyMap<number, LaneBadgeLayout> = new Map();
-const EMPTY_ANNOTATIONS: readonly AnnotationLayoutItem[] = [];

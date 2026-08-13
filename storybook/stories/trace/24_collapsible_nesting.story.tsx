@@ -38,6 +38,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   );
   const labelPosition = LABEL_POSITION_OPTIONS[labelKey];
   const showDisplayChildCount = boolean('showDisplayChildCount', false);
+  const showTreeGuides = boolean('showTreeGuides', false);
 
   return (
     <Chart title={title} description={description} size={{ width: '100%', height: 400 }}>
@@ -51,6 +52,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         colorBy={{ otelAttribute: 'service.name' }}
         laneOrder="tree"
         showDisplayChildCount={showDisplayChildCount}
+        showTreeGuides={showTreeGuides}
       />
     </Chart>
   );

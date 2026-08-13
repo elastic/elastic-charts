@@ -10,12 +10,19 @@ import { collapseSetsEqual } from './constants';
 import { getPipeline } from './pipeline';
 import type { TraceCanvasController } from './trace_canvas_controller';
 import type { DisclosureEntry, TraceProps } from './types';
-import { buildDisclosureMap, collapseLanes, collapsibleParentIds, rollupCriticalIntervals } from '../data/collapse';
+import {
+  buildDisclosureMap,
+  buildTreeGuideMap,
+  collapseLanes,
+  collapsibleParentIds,
+  rollupCriticalIntervals,
+} from '../data/collapse';
 import { waitingSegments } from '../data/self_time';
 import type { NormalizedSpan } from '../data/types';
 import { pickDisclosure } from '../render/canvas2d_renderer';
 import { buildViewKey, hasViewKeyChanged } from '../render/interaction';
 import { buildTraceSelectionDetail } from '../render/tooltip';
+import type { TreeGuideEntry } from '../render/types';
 import type { HoverRegion, PickResult } from '../render/types';
 import type { selectionModeFromEvent } from '../selection_helpers';
 import { applySelection, selectionSetEqual } from '../selection_helpers';
@@ -114,10 +121,14 @@ export function setLocalCollapsed(c: TraceCanvasController, next: Set<string>) {
   }
 }
 
+/** Shared empty guide map for the `withTreeGuides=false` fast path (no allocation per frame). */
+const EMPTY_TREE_GUIDES = new Map<number, TreeGuideEntry>();
+
 /**
- * Returns the `collapseLanes` result and the `disclosureByLane` map for the given pipeline spans
- * + collapsed set, reusing the cached output when neither input has changed (by reference).
- * Runs at most once per toggle or pipeline change, never per rAF frame.
+ * Returns the `collapseLanes` result, the `disclosureByLane` map, and (when `withTreeGuides` is
+ * true) the per-lane tree-guide mask for the given pipeline spans + collapsed set, reusing the
+ * cached output when no input has changed (by reference). Runs at most once per toggle or pipeline
+ * change, never per rAF frame.
  * @internal
  */
 export function getCollapseOutput(
@@ -126,21 +137,25 @@ export function getCollapseOutput(
   collapsed: ReadonlySet<string>,
   depthBySpan: ReadonlyMap<NormalizedSpan, number>,
   criticalIntervals: Array<{ spanId: string; start: number; end: number }>,
+  withTreeGuides: boolean,
 ): {
   spans: NormalizedSpan[];
   disclosure: Map<number, DisclosureEntry>;
   rolledUpCriticalIntervals: Array<{ spanId: string; start: number; end: number }>;
+  treeGuides: Map<number, TreeGuideEntry>;
 } {
   if (
     c.collapseCache &&
     c.collapseCache.pipelineSpans === pipelineSpans &&
     c.collapseCache.collapsed === collapsed &&
-    c.collapseCache.criticalIntervals === criticalIntervals
+    c.collapseCache.criticalIntervals === criticalIntervals &&
+    c.collapseCache.withTreeGuides === withTreeGuides
   ) {
     return {
       spans: c.collapseCache.result,
       disclosure: c.collapseCache.disclosure,
       rolledUpCriticalIntervals: c.collapseCache.rolledUpCriticalIntervals,
+      treeGuides: c.collapseCache.treeGuides,
     };
   }
   const result = collapseLanes(pipelineSpans, collapsed);
@@ -152,8 +167,21 @@ export function getCollapseOutput(
   const disclosure = buildDisclosureMap(pipelineSpans, result, collapsed, depthBySpan, parentIds);
   // Roll up critical intervals onto their outermost visible collapsed ancestor (ADR 0015 Decision 4).
   const rolledUpCriticalIntervals = rollupCriticalIntervals(pipelineSpans, collapsed, criticalIntervals);
-  c.collapseCache = { pipelineSpans, collapsed, criticalIntervals, result, rolledUpCriticalIntervals, disclosure };
-  return { spans: result, disclosure, rolledUpCriticalIntervals };
+  // Tree guides: build the guide mask only when the prop is on, sharing a single empty map otherwise
+  // so the prop-off path allocates nothing. The guide map has the same lifecycle as disclosure —
+  // collapse toggles invalidate both — so it lives in the same cache entry (ADR 0037 D1 precedent).
+  const treeGuides = withTreeGuides ? buildTreeGuideMap(pipelineSpans, result, depthBySpan) : EMPTY_TREE_GUIDES;
+  c.collapseCache = {
+    pipelineSpans,
+    collapsed,
+    criticalIntervals,
+    withTreeGuides,
+    result,
+    rolledUpCriticalIntervals,
+    disclosure,
+    treeGuides,
+  };
+  return { spans: result, disclosure, rolledUpCriticalIntervals, treeGuides };
 }
 
 // -------------------------------------------------------------------------

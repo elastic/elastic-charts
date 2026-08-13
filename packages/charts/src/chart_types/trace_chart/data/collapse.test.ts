@@ -6,7 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { buildDisclosureMap, collapseLanes, collapsibleParentIds, rollupCriticalIntervals } from './collapse';
+import {
+  buildDisclosureMap,
+  buildTreeGuideMap,
+  collapseLanes,
+  collapsibleParentIds,
+  rollupCriticalIntervals,
+} from './collapse';
 import { orderLanes } from './order_lanes';
 import type { NormalizedSpan } from './types';
 
@@ -459,5 +465,99 @@ describe('buildDisclosureMap — display-child count', () => {
     // child's direct display children: ca and cb → childCount = 2
     // (child is at lane 1 in the visible list since its parent is lane 0)
     expect(map.get(1)?.childCount).toBe(2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// buildTreeGuideMap (Spec 33 / ADR 0039)
+// ---------------------------------------------------------------------------
+
+describe('buildTreeGuideMap', () => {
+  it('isLastChild true only on the last sibling of each scope', () => {
+    // root → a → a1, a2; root → b
+    // Visible order (DFS): root, a, a1, a2, b
+    const root = span('root', 0, 100);
+    const a = span('a', 5, 90, 'root');
+    const a1 = span('a1', 10, 40, 'a');
+    const a2 = span('a2', 50, 80, 'a');
+    const b = span('b', 91, 99, 'root');
+    const pipelineSpans = [root, a, a1, a2, b];
+    const { lanes, depthBySpan } = orderLanes(pipelineSpans, 'tree');
+    const map = buildTreeGuideMap(pipelineSpans, lanes, depthBySpan);
+
+    // a1 is not last child of a (a2 follows)
+    const a1Entry = map.get(2);
+    expect(a1Entry?.isLastChild).toBe(false);
+    // a2 is last child of a
+    const a2Entry = map.get(3);
+    expect(a2Entry?.isLastChild).toBe(true);
+    // b is last child of root
+    const bEntry = map.get(4);
+    expect(bEntry?.isLastChild).toBe(true);
+    // a is not last child of root (b follows)
+    const aEntry = map.get(1);
+    expect(aEntry?.isLastChild).toBe(false);
+  });
+
+  it('parentLane points at the display parent visible-lane index', () => {
+    const root = span('root', 0, 100);
+    const child = span('child', 10, 90, 'root');
+    const pipelineSpans = [root, child];
+    const { lanes, depthBySpan } = orderLanes(pipelineSpans, 'tree');
+    const map = buildTreeGuideMap(pipelineSpans, lanes, depthBySpan);
+
+    // child is at lane 1; its parentLane must point to root at lane 0.
+    expect(map.get(1)?.parentLane).toBe(0);
+  });
+
+  it('depth-0 lanes have no entry', () => {
+    const root = span('root', 0, 100);
+    const child = span('child', 10, 90, 'root');
+    const pipelineSpans = [root, child];
+    const { lanes, depthBySpan } = orderLanes(pipelineSpans, 'tree');
+    const map = buildTreeGuideMap(pipelineSpans, lanes, depthBySpan);
+
+    // root is at lane 0 with depth 0 — no entry.
+    expect(map.has(0)).toBe(false);
+    // child is at lane 1 with depth 1 — has an entry.
+    expect(map.has(1)).toBe(true);
+  });
+
+  it('collapse-hidden children have no entry', () => {
+    const root = span('root', 0, 100);
+    const child = span('child', 10, 90, 'root');
+    const grandchild = span('gc', 20, 80, 'child');
+    const pipelineSpans = [root, child, grandchild];
+    const { lanes, depthBySpan } = orderLanes(pipelineSpans, 'tree');
+    const collapsed = new Set(['child']);
+    const visible = collapseLanes(lanes, collapsed);
+    const map = buildTreeGuideMap(pipelineSpans, visible, depthBySpan);
+
+    // Only root and child are visible; grandchild is hidden.
+    // root (depth 0) has no entry; child has an entry; grandchild has no entry.
+    expect(map.size).toBe(1);
+    expect(map.has(1)).toBe(true);
+    expect(map.get(1)?.isLastChild).toBe(true);
+  });
+
+  it('forest roots have no entry and second group never references first', () => {
+    // Two independent roots (forest): root1, root2.
+    // root1 → c1; root2 → c2
+    const root1 = span('root1', 0, 50);
+    const c1 = span('c1', 5, 45, 'root1');
+    const root2 = span('root2', 51, 100);
+    const c2 = span('c2', 55, 95, 'root2');
+    const pipelineSpans = [root1, c1, root2, c2];
+    const { lanes, depthBySpan } = orderLanes(pipelineSpans, 'tree');
+    const map = buildTreeGuideMap(pipelineSpans, lanes, depthBySpan);
+
+    // root1 (lane 0) and root2 (lane 2) are depth-0 — no entry.
+    expect(map.has(0)).toBe(false);
+    expect(map.has(2)).toBe(false);
+    // c1 (lane 1) and c2 (lane 3) each have entries.
+    expect(map.has(1)).toBe(true);
+    expect(map.has(3)).toBe(true);
+    // c2's parentLane must reference root2 (lane 2), not root1 (lane 0).
+    expect(map.get(3)?.parentLane).toBe(2);
   });
 });

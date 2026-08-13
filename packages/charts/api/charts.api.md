@@ -4079,6 +4079,7 @@ export interface TraceSpec extends Spec {
     showDisplayChildCount?: boolean;
     showKeyboardFocusBadge?: boolean;
     showTooltipOverEmpty?: boolean;
+    showTreeGuides?: boolean;
     spanDisplay?: 'segments' | 'duration';
     // (undocumented)
     specType: typeof SpecType.Series;
@@ -4117,6 +4118,7 @@ export interface TraceStyle {
     };
     totalLineColor: Color;
     totalLineThickness: number;
+    treeGuideColor: Color;
 }
 
 // @public

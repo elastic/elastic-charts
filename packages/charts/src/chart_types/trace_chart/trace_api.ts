@@ -582,6 +582,20 @@ export interface TraceSpec extends Spec {
    */
   showDisplayChildCount?: boolean;
   /**
+   * When `true`, draws a solid 1 px spine + rounded terminating elbow in the disclosure gutter
+   * connecting each expanded parent to its visible display children (Spec 33 / ADR 0037 D2 /
+   * ADR 0039). The elbow uses a `quadraticCurveTo` corner on the last child (`└`) and a straight
+   * tee on non-last children (`├`). Enabling the prop widens the disclosure gutter by
+   * `maxDepth × 8 px` (once at mount) and shifts the plot origin by the same amount; the gutter
+   * never reflows on collapse toggles (ADR 0037 D2 no-reflow guarantee).
+   *
+   * Inert when `laneOrder === 'chronological'` (no carets are drawn, so no guides either).
+   * See ADR 0026, ADR 0037, ADR 0038.
+   * @defaultValue false
+   * @public
+   */
+  showTreeGuides?: boolean;
+  /**
    * Consumer-supplied critical-path intervals. Each marks an interval-precise portion of a span
    * that lay on the trace's critical path; rendered as a colored line along the bottom edge of the
    * affected lane. An interval may cover only a sub-range of the span's `[start, end]` extent

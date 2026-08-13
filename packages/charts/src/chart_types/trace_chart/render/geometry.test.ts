@@ -17,6 +17,7 @@ import {
   DEFAULT_TRACE_BADGE_STYLE,
   disclosureColumnWidth,
   gutterPx,
+  TREE_GUIDE_INDENT_STEP_PX,
 } from './types';
 import type { NormalizedSpan } from '../data/types';
 
@@ -32,6 +33,7 @@ const style: TraceStyle = {
   gutterLabel: { fontFamily: 'monospace', fontSize: 11, color: '#333' },
   timeBarLabel: { fontFamily: 'monospace', fontSize: 11, color: '#333' },
   gridLineColor: '#eee',
+  treeGuideColor: '#d3dae6',
   focusedLaneBackground: 'rgba(96,146,192,0.15)',
   selectedSegmentStroke: '#f00',
   selectedSegmentStrokeWidth: 2,
@@ -587,5 +589,54 @@ describe('buildGeometry — disclosure column', () => {
     // childCountPx = max(measured) + CHILD_COUNT_INSET_PX).
     expect(typeof CHILD_COUNT_INSET_PX).toBe('number');
     expect(CHILD_COUNT_INSET_PX).toBeGreaterThan(0);
+  });
+
+  // Helper that calls buildGeometry with showTreeGuides and an optional treeGuidesByLane map.
+  function buildWithTreeGuides(
+    showTreeGuides: boolean,
+    treeGuidesByLane = new Map<number, { depth: number; isLastChild: boolean; parentLane: number }>(),
+  ): ReturnType<typeof buildGeometry> {
+    const entry: DisclosureEntry = { state: 'expanded', depth: 0, descendantCount: 1, childCount: 1 };
+    return buildGeometry(
+      nestedSpans,
+      canvasSize,
+      focusDomain,
+      0,
+      style,
+      'linear',
+      nestedDomain,
+      null,
+      [],
+      new Map(),
+      null,
+      new Map([[0, entry]]),
+      /* hasParents */ true,
+      /* maxDepth */ 1,
+      [],
+      /* badgeGutterWidth */ 0,
+      /* badgeRowHeight */ 0,
+      /* spanDisplay */ 'segments',
+      /* childCountPx */ 0,
+      showTreeGuides,
+      treeGuidesByLane,
+    );
+  }
+
+  it('tree guides widen the indent step', () => {
+    const geomOff = buildWithTreeGuides(false);
+    const geomOn = buildWithTreeGuides(true);
+    // With guides on, indentStepPx must be the wider constant.
+    expect(geomOn.disclosureColumn.indentStepPx).toBe(TREE_GUIDE_INDENT_STEP_PX);
+    // Without guides, indentStepPx is the baseline.
+    expect(geomOff.disclosureColumn.indentStepPx).toBe(CARET_INDENT_STEP_PX);
+    // The gutter must be wider by exactly maxDepth * (TREE_GUIDE_INDENT_STEP_PX - CARET_INDENT_STEP_PX).
+    const maxDepth = 1;
+    const delta = maxDepth * (TREE_GUIDE_INDENT_STEP_PX - CARET_INDENT_STEP_PX);
+    expect(geomOn.gutter.width - geomOff.gutter.width).toBe(delta);
+    // ADR 0037 D2 no-reflow guarantee: an empty treeGuidesByLane with the prop on still uses the
+    // widened step (fully-collapsed root has no visible children → empty map).
+    const geomOnCollapsed = buildWithTreeGuides(true, new Map());
+    expect(geomOnCollapsed.disclosureColumn.indentStepPx).toBe(TREE_GUIDE_INDENT_STEP_PX);
+    expect(geomOnCollapsed.gutter.width).toBe(geomOn.gutter.width);
   });
 });

@@ -14,6 +14,7 @@ stable and never reused; the list below is grouped by theme for readability only
 - [0030 — Trace annotations compose as child specs (composition, geometry, layering, and hit testing)](./0030-trace-annotation-composition.md)
 - [0035 — `spanDisplay: 'duration'` is a visual mode; self time stays segment-derived](./0035-span-display-duration-bar-mode.md)
 - [0037 — Disclosure column sub-widths are measured and published, not re-derived](./0037-disclosure-column-measured-widths.md)
+- [0039 — Tree guides draw from a per-lane guide mask](./0039-tree-guides-per-lane-guide-mask.md)
 
 ### Data & normalization
 
@@ -69,9 +70,7 @@ durable [`trace-chart.md`](./trace-chart.md) spec — its behavior sections desc
 feature, and the ADRs above hold the rationale. The former per-spec plans under [`specs/`](./specs/)
 were removed once absorbed.
 
-Active spec plans (next up):
-
-- [Spec 33 — Tree guides (spine + elbow lines in the disclosure gutter)](./specs/spec-33-tree-guides.md)
+Active spec plans (next up): none.
 
 Deferred spec plans (tracked for future work):
 
