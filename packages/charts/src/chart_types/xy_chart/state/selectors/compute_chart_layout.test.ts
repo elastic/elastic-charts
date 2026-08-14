@@ -206,6 +206,38 @@ describe('computeChartLayoutSelector', () => {
     expect(dimensions).toMatchSnapshot();
   });
 
+  test('hidden tick labels neither reserve space nor reduce the tick count', () => {
+    const container = { width: 600, height: 300, top: 0, left: 0 };
+    const computeLayout = (tickLabelVisible: boolean) => {
+      const store = MockStore.default(container);
+      MockStore.addSpecs(
+        [
+          MockGlobalSpec.settingsNoMargins(),
+          MockGlobalSpec.xAxis({
+            id: 'x',
+            position: Position.Bottom,
+            tickFormat: (value: number) => `a-very-long-label-${value}`,
+            style: { tickLabel: { visible: tickLabelVisible } },
+          }),
+          MockSeriesSpec.line({
+            data: Array.from({ length: 101 }, (_, i) => ({ x: i, y: i })),
+            xScaleType: ScaleType.Linear,
+          }),
+        ],
+        store,
+      );
+
+      return computeChartLayoutSelector(store.getState());
+    };
+
+    const withLabels = computeLayout(true);
+    const withoutLabels = computeLayout(false);
+
+    expect(withLabels.ticks.get('x')?.ticks).toHaveLength(3);
+    expect(withoutLabels.ticks.get('x')?.ticks).toHaveLength(11);
+    expect(withoutLabels.ticks.get('x')?.ticks.every(({ layout }) => layout.bboxWidth === 0)).toBe(true);
+  });
+
   test('minExtent enforces a floor on the axis band even when labels measure to zero', () => {
     const container = { width: 200, height: 100, top: 0, left: 0 };
     const store = MockStore.default(container);

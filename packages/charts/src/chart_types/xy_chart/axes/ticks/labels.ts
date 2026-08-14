@@ -58,16 +58,19 @@ const isCompactSingleWord = (value: string): boolean => {
 };
 
 /** @internal */
+export const emptyTickLabelBox = (): TickLabelBox => ({
+  width: 0,
+  height: 0,
+  bboxWidth: 0,
+  bboxHeight: 0,
+  lines: Object.assign([], { meta: { truncated: false } }),
+});
+
+/** @internal */
 export const withoutTickLabel = (tick: AxisTick): AxisTick => ({
   ...tick,
   label: '',
-  layout: {
-    width: 0,
-    height: 0,
-    bboxWidth: 0,
-    bboxHeight: 0,
-    lines: Object.assign([], { meta: { truncated: false } }),
-  },
+  layout: emptyTickLabelBox(),
 });
 
 /**

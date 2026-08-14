@@ -9,6 +9,7 @@
 import type { TickLabelLayout } from './labels';
 import {
   createTickLabelLayout,
+  emptyTickLabelBox,
   MIN_LABEL_GAP,
   resolveTickLabelConstraints,
   shouldAllowWordWrap,
@@ -110,6 +111,7 @@ export function getVisibleTicks(
   labelRotation: number,
   multilayerTimeAxis: boolean = false,
   showGrid = true,
+  labelsHidden = false,
 ): AxisTick[] {
   const isSingleValueScale = scale.domain[0] === scale.domain[1];
   const makeRaster = enableHistogramMode && scale.bandwidth > 0 && !multilayerTimeAxis;
@@ -174,7 +176,7 @@ export function getVisibleTicks(
         );
 
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
-  const bypassOverlapCheck = showOverlappingLabels || multilayerTimeAxis;
+  const bypassOverlapCheck = showOverlappingLabels || multilayerTimeAxis || labelsHidden;
   if (bypassOverlapCheck) return allTicks;
 
   return allTicks
@@ -211,6 +213,7 @@ function getVisibleTickSet(
   labelRotation: number,
   multilayerTimeAxis = false,
   showGrid = true,
+  labelsHidden = false,
 ): AxisTick[] {
   const vertical = isVerticalAxis(axisSpec.position);
   const somehowRotated = (vertical && chartRotation === -90) || (!vertical && chartRotation === 180);
@@ -231,6 +234,7 @@ function getVisibleTickSet(
     labelRotation,
     multilayerTimeAxis,
     showGrid,
+    labelsHidden,
   );
 }
 
@@ -247,6 +251,7 @@ export function computeVisibleTickSets(
   barsPadding?: number,
 ): Projections {
   const panel = getPanelSize(smScales);
+
   return [...joinedAxesData].reduce(
     (acc, [axisId, { axisSpec, axesStyle, isXAxis, labelFormatter: userProvidedLabelFormatter, layout }]) => {
       const { groupId, maximumFractionDigits, timeAxisLayerCount } = axisSpec;
@@ -256,6 +261,7 @@ export function computeVisibleTickSets(
       const maxTickCount = domain?.desiredTickCount ?? 0;
       const isNice = (isXAxis ? scaleConfigs.x.nice : scaleConfigs.y[groupId]?.nice) ?? false;
       const adaptiveTickCount = !isNice && USE_ADAPTIVE_TICK_COUNT;
+      const labelsHidden = !axesStyle.tickLabel.visible && !layout.multilayerTimeAxis;
 
       const getMeasuredTicks: GetMeasuredTicks = (
         scale: ScaleBand | ScaleContinuous,
@@ -316,6 +322,33 @@ export function computeVisibleTickSets(
             })
           : yDomain &&
             new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, maximumFractionDigits });
+
+      // Hidden tick labels take no part in the layout but are needed here for tick and the grid lines.
+      if (labelsHidden) {
+        const scale = getScale(maxTickCount);
+        if (!scale) return acc;
+
+        return acc.set(axisId, {
+          scale,
+          ticks: getVisibleTickSet(
+            scale,
+            emptyTickLabelBox,
+            userProvidedLabelFormatter,
+            { rotation: chartRotation },
+            axisSpec,
+            totalGroupsCount,
+            enableHistogramMode,
+            undefined,
+            0,
+            scale.ticks(),
+            adaptiveTickCount,
+            axesStyle.tickLabel.rotation,
+            layout.multilayerTimeAxis,
+            true,
+            labelsHidden,
+          ),
+        });
+      }
 
       const fillLayer = (maxTickCountForLayer: number) => {
         let fallbackAskedTickCount = 2;
