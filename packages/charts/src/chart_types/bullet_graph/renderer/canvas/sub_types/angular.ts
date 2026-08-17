@@ -36,17 +36,15 @@ export function angularBullet(
   const tickFont = getTickFont(style.fontFamily);
   const { datum, graphArea, scale, ticks, colorBands } = dimensions;
   const { radius } = getAngledChartSizing(graphArea.size, spec.subtype);
-  const [startAngle, endAngle] = scale.range() as [number, number];
+
+  const [start, end] = scale.domain() as GenericDomain;
+
   const center = {
     x: graphArea.center.x,
     y: radius + TARGET_SIZE / 2,
   };
 
   ctx.translate(GRAPH_PADDING.left, GRAPH_PADDING.top);
-
-  const [start, end] = scale.domain() as GenericDomain;
-  // const counterClockwise = true;
-  const counterClockwise = startAngle < endAngle && start > end;
 
   const [min, max] = sortNumbers([start, end]) as ContinuousDomain;
   const filteredTicks =
@@ -82,41 +80,33 @@ export function angularBullet(
   ctx.stroke();
 
   // Bar
-  const confinedValue = clamp(datum.value, min, max);
-  const adjustedZero = clamp(0, min, max);
-  const degStart = confinedValue > 0 ? scale(adjustedZero) : scale(confinedValue);
-  const degEnd = confinedValue > 0 ? scale(confinedValue) : scale(adjustedZero);
+  const value = scale(clamp(datum.value, min, max));
+  const zero = scale(clamp(0, min, max));
+  const counterClockwise = value < zero;
 
   ctx.save();
   ctx.lineCap = 'butt';
 
   if (hasStroke) {
-    const arcDirection = confinedValue > 0 ? 1 : -1;
+    const arcDirection = counterClockwise ? -1 : 1;
     const innerArcOffset = BAR_STROKE_WIDTH / radius;
 
     ctx.beginPath();
     ctx.lineWidth = BAR_SIZE;
     ctx.strokeStyle = backgroundColor;
-    ctx.arc(center.x, center.y, radius, degStart, degEnd, counterClockwise);
+    ctx.arc(center.x, center.y, radius, zero, value, counterClockwise);
     ctx.stroke();
 
     ctx.beginPath();
     ctx.lineWidth = BAR_SIZE - BAR_STROKE_WIDTH * 2;
     ctx.strokeStyle = style.barBackground;
-    ctx.arc(
-      center.x,
-      center.y,
-      radius,
-      degStart - arcDirection * innerArcOffset,
-      degEnd - arcDirection * innerArcOffset,
-      counterClockwise,
-    );
+    ctx.arc(center.x, center.y, radius, zero, value - innerArcOffset * arcDirection, counterClockwise);
     ctx.stroke();
   } else {
     ctx.beginPath();
     ctx.lineWidth = BAR_SIZE;
     ctx.strokeStyle = style.barBackground;
-    ctx.arc(center.x, center.y, radius, degStart, degEnd, counterClockwise);
+    ctx.arc(center.x, center.y, radius, zero, value, counterClockwise);
     ctx.stroke();
   }
 
