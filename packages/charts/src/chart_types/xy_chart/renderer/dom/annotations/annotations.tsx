@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import type { Dispatch } from '@reduxjs/toolkit';
+import { bindActionCreators } from '@reduxjs/toolkit';
 import type { RefObject } from 'react';
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
-import { bindActionCreators } from 'redux';
 
 import { AnnotationTooltip } from './annotation_tooltip';
 import { LineMarker } from './line_marker';
