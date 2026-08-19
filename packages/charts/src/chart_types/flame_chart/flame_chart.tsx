@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import type { Dispatch } from '@reduxjs/toolkit';
+import { bindActionCreators } from '@reduxjs/toolkit';
 import type { CSSProperties, RefObject, WheelEventHandler } from 'react';
 import React, { createRef } from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from '@reduxjs/toolkit';
-import { bindActionCreators } from '@reduxjs/toolkit';
 
 import type { FlameSpec } from './flame_api';
 import type { NavigationStrategy } from './navigation';
