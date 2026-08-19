@@ -7,7 +7,7 @@
  */
 
 // eslint-disable-next-line no-restricted-imports
-import { createSelector } from '@reduxjs/toolkit';
+import { createSelector, lruMemoize } from '@reduxjs/toolkit';
 // eslint-disable-next-line no-restricted-imports
 import type { ICacheObject } from 're-reselect';
 // eslint-disable-next-line no-restricted-imports
@@ -24,6 +24,9 @@ import type { GlobalChartState } from './chart_state';
  */
 const createSelectorWithLRU = ((selectors: any[], combiner: (...args: any[]) => any) =>
   createSelector(selectors, combiner, {
+    // RTK 2 / reselect 5 defaults to `weakMapMemoize` (unbounded, reference-keyed cache).
+    // Explicitly keep the bounded LRU memoizer to preserve the memory constraints described above.
+    memoize: lruMemoize,
     memoizeOptions: {
       maxSize: 2,
     },
