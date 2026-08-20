@@ -90,6 +90,7 @@ export function angularBullet(
   if (hasStroke) {
     const arcDirection = counterClockwise ? -1 : 1;
     const innerArcOffset = BAR_STROKE_WIDTH / radius;
+    const innerValue = clamp(value - innerArcOffset * arcDirection, Math.min(zero, value), Math.max(zero, value));
 
     ctx.beginPath();
     ctx.lineWidth = BAR_SIZE;
@@ -100,7 +101,7 @@ export function angularBullet(
     ctx.beginPath();
     ctx.lineWidth = BAR_SIZE - BAR_STROKE_WIDTH * 2;
     ctx.strokeStyle = style.barBackground;
-    ctx.arc(center.x, center.y, radius, zero, value - innerArcOffset * arcDirection, counterClockwise);
+    ctx.arc(center.x, center.y, radius, zero, innerValue, counterClockwise);
     ctx.stroke();
   } else {
     ctx.beginPath();

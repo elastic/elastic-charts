@@ -70,12 +70,7 @@ export function horizontalBullet(
   const y = verticalAlignment - BAR_SIZE / 2;
 
   ctx.fillStyle = style.barBackground;
-  ctx.fillRect(
-    datum.value > 0 ? x0 : x1,
-    verticalAlignment - BAR_SIZE / 2,
-    confinedValue > 0 ? x1 - x0 : x0 - x1,
-    BAR_SIZE,
-  );
+  ctx.fillRect(x0, verticalAlignment - BAR_SIZE / 2, x1 - x0, BAR_SIZE);
 
   if (hasStroke) {
     const strokedSides = {
