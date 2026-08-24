@@ -90,12 +90,18 @@ export function horizontalBullet(
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
-    ctx.fillRect(
-      scale(datum.target) - TARGET_STROKE_WIDTH / 2,
-      verticalAlignment - TARGET_SIZE / 2,
-      TARGET_STROKE_WIDTH,
-      TARGET_SIZE,
-    );
+    const targetX = scale(datum.target) - TARGET_STROKE_WIDTH / 2;
+    const targetY = verticalAlignment - TARGET_SIZE / 2;
+
+    if (hasStroke) {
+      renderRectStroke(
+        ctx,
+        { x: targetX, y: targetY, width: TARGET_STROKE_WIDTH, height: TARGET_SIZE },
+        { color: colorToRgba(backgroundColor), width: TARGET_STROKE_WIDTH + BAR_STROKE_WIDTH },
+        { top: true, right: true, bottom: true, left: true },
+      );
+    }
+    ctx.fillRect(targetX, targetY, TARGET_STROKE_WIDTH, TARGET_SIZE);
   }
 
   // Zero baseline

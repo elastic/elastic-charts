@@ -119,6 +119,14 @@ export function angularBullet(
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
+    if (hasStroke) {
+      ctx.beginPath();
+      ctx.strokeStyle = backgroundColor;
+      ctx.lineWidth = TARGET_STROKE_WIDTH + BAR_STROKE_WIDTH * 2;
+      drawPolarLine(ctx, scale(datum.target), radius, TARGET_SIZE, center);
+      ctx.stroke();
+    }
+
     ctx.beginPath();
     ctx.strokeStyle = style.barBackground;
     ctx.lineWidth = TARGET_STROKE_WIDTH;

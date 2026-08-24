@@ -98,12 +98,18 @@ export function verticalBullet(
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
-    ctx.fillRect(
-      graphArea.size.width / 2 - TARGET_SIZE / 2,
-      graphPaddedHeight - scale(datum.target) - TARGET_STROKE_WIDTH / 2,
-      TARGET_SIZE,
-      TARGET_STROKE_WIDTH,
-    );
+    const targetX = graphArea.size.width / 2 - TARGET_SIZE / 2;
+    const targetY = graphPaddedHeight - scale(datum.target) - TARGET_STROKE_WIDTH / 2;
+
+    if (hasStroke) {
+      renderRectStroke(
+        ctx,
+        { x: targetX, y: targetY, width: TARGET_SIZE, height: TARGET_STROKE_WIDTH },
+        { color: colorToRgba(backgroundColor), width: TARGET_STROKE_WIDTH + BAR_STROKE_WIDTH },
+        { top: true, right: true, bottom: true, left: true },
+      );
+    }
+    ctx.fillRect(targetX, targetY, TARGET_SIZE, TARGET_STROKE_WIDTH);
   }
 
   // Zero baseline
