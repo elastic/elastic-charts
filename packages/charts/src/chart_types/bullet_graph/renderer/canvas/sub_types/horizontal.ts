@@ -33,7 +33,7 @@ export function horizontalBullet(
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,
-  stroke: { bar: boolean; target: boolean },
+  hasStroke: boolean,
   activeValue?: ActiveValue | null,
 ) {
   const tickFont = getTickFont(style.fontFamily);
@@ -73,7 +73,7 @@ export function horizontalBullet(
   ctx.fillStyle = style.barBackground;
   ctx.fillRect(x0, verticalAlignment - BAR_SIZE / 2, x1 - x0, BAR_SIZE);
 
-  if (stroke.bar && Math.abs(confinedValue - adjustedZero) > 0) {
+  if (hasStroke && Math.abs(confinedValue - adjustedZero) > 0) {
     const strokedSides = {
       top: true,
       bottom: true,
@@ -93,7 +93,7 @@ export function horizontalBullet(
     const targetX = scale(datum.target) - TARGET_STROKE_WIDTH / 2;
     const targetY = verticalAlignment - TARGET_SIZE / 2;
 
-    if (stroke.target) {
+    if (hasStroke) {
       renderRectStroke(
         ctx,
         { x: targetX, y: targetY, width: TARGET_STROKE_WIDTH, height: TARGET_SIZE },

@@ -32,7 +32,7 @@ export function verticalBullet(
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,
-  stroke: { bar: boolean; target: boolean },
+  hasStroke: boolean,
   activeValue?: ActiveValue | null,
 ) {
   const tickFont = getTickFont(style.fontFamily);
@@ -81,7 +81,7 @@ export function verticalBullet(
   ctx.fillStyle = style.barBackground;
   ctx.fillRect(x, y0, BAR_SIZE, y1 - y0);
 
-  if (stroke.bar && Math.abs(confinedValue - adjustedZero) > 0) {
+  if (hasStroke && Math.abs(confinedValue - adjustedZero) > 0) {
     const strokedSides = {
       top: y0 > y1 && !overflows ? true : false,
       right: true,
@@ -101,7 +101,7 @@ export function verticalBullet(
     const targetX = graphArea.size.width / 2 - TARGET_SIZE / 2;
     const targetY = graphPaddedHeight - scale(datum.target) - TARGET_STROKE_WIDTH / 2;
 
-    if (stroke.target) {
+    if (hasStroke) {
       renderRectStroke(
         ctx,
         { x: targetX, y: targetY, width: TARGET_SIZE, height: TARGET_STROKE_WIDTH },

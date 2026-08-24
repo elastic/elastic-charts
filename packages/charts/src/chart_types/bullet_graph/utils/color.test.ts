@@ -6,61 +6,32 @@
  * Side Public License, v 1.
  */
 
-import { scaleLinear } from 'd3-scale';
-
 import type { ColorTick } from './color';
-import { needBorder } from './color';
+import { needsBarBorder } from './color';
 import { Colors } from '../../../common/colors';
-import type { BulletPanelDimensions } from '../selectors/get_panel_dimensions';
 
-/**
- * Identity scale over the `[0, 100]` domain, so band bounds can be expressed in domain values.
- */
-const band = (color: string, start = 0, end = 100): ColorTick => ({
+const band = (color: string): ColorTick => ({
   color,
-  start,
-  end,
-  size: Math.abs(end - start),
+  start: 0,
+  end: 1,
+  size: 1,
 });
 
-const bullet = (value: number, target?: number): BulletPanelDimensions =>
-  ({
-    datum: { value, target },
-    scale: scaleLinear().domain([0, 100]).range([0, 100]),
-  }) as unknown as BulletPanelDimensions;
-
 describe('Bullet color utils', () => {
-  describe('#needBorder', () => {
-    const bar = Colors.Black.keyword;
+  describe('#needsBarBorder', () => {
+    it('should return false when the bar contrasts with every band', () => {
+      const bar = Colors.Black.keyword;
+      const bands = [band('#ddd'), band('#9BBEC8'), band(Colors.White.keyword)];
 
-    it('should not require any border when the bar contrasts with every band', () => {
-      const bands = [band('#DDDDDD', 0, 50), band('#9BBEC8', 50, 80), band(Colors.White.keyword, 80, 100)];
-
-      expect(needBorder(bands, bar, bullet(60, 90))).toEqual({ bar: false, target: false });
+      expect(needsBarBorder(bands, bar)).toBe(false);
     });
 
-    it('should require a bar border when any band fails the bar contrast threshold', () => {
-      const bands = [band('#777777', 0, 50), band('#555555', 50, 100)];
+    it('should return true when any band fails the contrast threshold', () => {
+      const bar = Colors.Black.keyword;
+      // #646464 passes APCA > 20 with black; #555555 does not
+      const bands = [band('#646464'), band('#555555')];
 
-      expect(needBorder(bands, bar, bullet(20)).bar).toBe(true);
-    });
-
-    it('should not require a target border when there is no target', () => {
-      const bands = [band('#555555')];
-
-      expect(needBorder(bands, bar, bullet(20))).toEqual({ bar: true, target: false });
-    });
-
-    it('should require a target border when the target band fails the stricter target threshold', () => {
-      const bands = [band('#777777')];
-
-      expect(needBorder(bands, bar, bullet(20, 90))).toEqual({ bar: false, target: true });
-    });
-
-    it('should require a target border when the target sits over a bar that is already bordered', () => {
-      const bands = [band('#555555', 0, 50), band(Colors.White.keyword, 50, 100)];
-
-      expect(needBorder(bands, bar, bullet(95, 90))).toEqual({ bar: true, target: true });
+      expect(needsBarBorder(bands, bar)).toBe(true);
     });
   });
 });
