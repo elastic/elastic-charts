@@ -13,15 +13,15 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import type { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { highlightedGeoms } from '../../layout/utils/highlighted_geoms';
 
-const getHighlightedLegendItemPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;
+const getHighlightedItemPaths = (state: GlobalChartState) => state.interactions.highlightedPaths;
 
 /** @internal */
 export const legendHoverHighlightNodes = createCustomCachedSelector(
-  [getSettingsSpecSelector, getHighlightedLegendItemPath, partitionMultiGeometries],
-  ({ legendStrategy, flatLegend }, highlightedLegendItemPath, geometries): QuadViewModel[] => {
-    if (highlightedLegendItemPath.length === 0) return [];
+  [getSettingsSpecSelector, getHighlightedItemPaths, partitionMultiGeometries],
+  ({ legendStrategy, flatLegend }, highlightedPaths, geometries): QuadViewModel[] => {
+    if (highlightedPaths.length === 0) return [];
     return geometries.flatMap(({ quadViewModel }) =>
-      highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedLegendItemPath),
+      highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedPaths),
     );
   },
 );

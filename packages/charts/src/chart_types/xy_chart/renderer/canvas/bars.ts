@@ -9,7 +9,7 @@
 import { getPanelClipping } from './panel_clipping';
 import { buildBarStyle } from './styles/bar';
 import { withPanelTransform } from './utils/panel_transform';
-import type { LegendItem } from '../../../../common/legend';
+import type { SeriesKey } from '../../../../common/series_id';
 import { renderRect } from '../../../../renderers/canvas/primitives/rect';
 import type { Rotation } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
@@ -25,7 +25,7 @@ export function renderBars(
   sharedStyle: SharedGeometryStateStyle,
   rotation: Rotation,
   renderingArea: Dimensions,
-  highlightedLegendItem?: LegendItem,
+  highlightedItems?: SeriesKey[],
 ) {
   geoms.forEach(({ panel, value: bars }: PerPanel<BarGeometry[]>) =>
     withPanelTransform(
@@ -37,7 +37,7 @@ export function renderBars(
         bars.forEach((barGeometry) => {
           const { x, y, width, height, color, seriesStyle: style, seriesIdentifier } = barGeometry;
           const rect = { x, y, width, height };
-          const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
+          const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedItems);
           const barStyle = buildBarStyle(
             ctx,
             imgCanvas,

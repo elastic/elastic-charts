@@ -31,7 +31,7 @@ export const getInitialState = (chartId: string, title?: string, description?: s
   chartType: null,
   interactions: {
     pointer: getInitialPointerState(),
-    highlightedLegendPath: [],
+    highlightedPaths: [],
     deselectedDataSeries: [],
     hoveredDOMElement: null,
     drilldown: [],

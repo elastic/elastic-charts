@@ -49,7 +49,7 @@ export function renderXYChartCanvas2d(
           barSeriesStyle,
           background,
         },
-        highlightedLegendItem,
+        highlightedItems,
         annotationDimensions,
         annotationSpecs,
         perPanelAxisGeoms,
@@ -110,16 +110,16 @@ export function renderXYChartCanvas2d(
           ),
 
         // rendering bars
-        () => renderBars(ctx, imgCanvas, geometries.bars, sharedStyle, rotation, renderingArea, highlightedLegendItem),
+        () => renderBars(ctx, imgCanvas, geometries.bars, sharedStyle, rotation, renderingArea, highlightedItems),
 
         // rendering areas
-        () => renderAreas(ctx, imgCanvas, geometries.areas, rotation, renderingArea, highlightedLegendItem),
+        () => renderAreas(ctx, imgCanvas, geometries.areas, rotation, renderingArea, highlightedItems),
 
         // rendering lines
-        () => renderLines(ctx, geometries.lines, rotation, renderingArea, highlightedLegendItem),
+        () => renderLines(ctx, geometries.lines, rotation, renderingArea, highlightedItems),
 
         // rendering bubbles
-        () => renderBubbles(ctx, geometries.bubbles, sharedStyle, rotation, renderingArea, highlightedLegendItem),
+        () => renderBubbles(ctx, geometries.bubbles, sharedStyle, rotation, renderingArea, highlightedItems),
 
         () =>
           geometries.bars.forEach(({ value: bars, panel }) =>

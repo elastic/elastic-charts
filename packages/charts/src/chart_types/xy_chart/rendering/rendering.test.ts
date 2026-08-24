@@ -164,26 +164,22 @@ describe('Rendering utils', () => {
     });
 
     it('should equal highlighted opacity', () => {
-      const highlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, highlightedLegendItem);
+      const highlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, ['somekey']);
       expect(highlightedStyle).toBe(sharedThemeStyle.highlighted);
     });
 
     it('should equal unhighlighted when not highlighted item', () => {
-      const unhighlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, unhighlightedLegendItem);
+      const unhighlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, ['not me']);
       expect(unhighlightedStyle).toBe(sharedThemeStyle.unhighlighted);
     });
 
     it('should equal custom spec highlighted opacity', () => {
-      const customHighlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, highlightedLegendItem);
+      const customHighlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, ['somekey']);
       expect(customHighlightedStyle).toBe(sharedThemeStyle.highlighted);
     });
 
     it('unhighlighted elements remain unchanged with custom opacity', () => {
-      const customUnhighlightedStyle = getGeometryStateStyle(
-        seriesIdentifier,
-        sharedThemeStyle,
-        unhighlightedLegendItem,
-      );
+      const customUnhighlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, ['not me']);
       expect(customUnhighlightedStyle).toBe(sharedThemeStyle.unhighlighted);
     });
   });

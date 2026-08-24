@@ -34,7 +34,7 @@ import { computeChartDimensionsSelector } from '../../state/selectors/compute_ch
 import type { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import { computeChartElementSizesSelector } from '../../state/selectors/compute_chart_element_sizes';
 import { getHeatmapContainerSizeSelector } from '../../state/selectors/get_heatmap_container_size';
-import { getHighlightedLegendBandsSelector } from '../../state/selectors/get_highlighted_legend_bands';
+import { getHighlightedBandsSelector } from '../../state/selectors/get_highlighted_bands';
 import { getPerPanelHeatmapGeometries } from '../../state/selectors/get_per_panel_heatmap_geometries';
 
 /** @internal */
@@ -42,7 +42,7 @@ export interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
-  highlightedLegendBands: Array<GenericDomain>;
+  highlightedBands: Array<GenericDomain>;
   theme: Theme;
   a11ySettings: A11ySettings;
   background: Color;
@@ -156,7 +156,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   geometries: nullShapeViewModel(),
   chartContainerDimensions: { width: 0, height: 0, left: 0, top: 0 },
   theme: LIGHT_THEME,
-  highlightedLegendBands: [],
+  highlightedBands: [],
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   background: Colors.Transparent.keyword,
   elementSizes: {
@@ -177,7 +177,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     initialized: true,
     geometries: getPerPanelHeatmapGeometries(state),
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),
-    highlightedLegendBands: getHighlightedLegendBandsSelector(state),
+    highlightedBands: getHighlightedBandsSelector(state),
     theme: getChartThemeSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
     background: getChartThemeSelector(state).background.color,

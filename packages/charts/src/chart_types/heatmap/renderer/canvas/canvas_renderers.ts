@@ -25,7 +25,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
     theme: { sharedStyle: sharedGeometryStyle, chartPaddings: paddings, chartMargins: margins },
     background,
     elementSizes,
-    highlightedLegendBands,
+    highlightedBands,
     chartContainerDimensions: container,
     chartDimensions: chart,
     debug,
@@ -73,7 +73,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
             ctx.translate(x, y);
             cells.forEach((cell) => {
               if (cell.visible) {
-                const geometryStateStyle = getGeometryStateStyle(cell, sharedGeometryStyle, highlightedLegendBands);
+                const geometryStateStyle = getGeometryStateStyle(cell, sharedGeometryStyle, highlightedBands);
                 const style = getColorBandStyle(cell, geometryStateStyle);
                 renderRect(ctx, cell, style.fill, style.stroke);
               }

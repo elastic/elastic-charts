@@ -12,7 +12,7 @@ import { renderLinePaths } from './primitives/path';
 import { buildLineStyles } from './styles/line';
 import { withPanelTransform } from './utils/panel_transform';
 import type { Radian } from '../../../../common/geometry';
-import type { LegendItem } from '../../../../common/legend';
+import type { SeriesKey } from '../../../../common/series_id';
 import type { Rect } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
 import type { Rotation } from '../../../../utils/common';
@@ -31,7 +31,7 @@ export function renderLines(
   lines: Array<PerPanel<LineGeometry>>,
   rotation: Rotation,
   renderingArea: Dimensions,
-  highlightedLegendItem?: LegendItem,
+  highlightedItems?: SeriesKey[],
 ) {
   withContext(ctx, () => {
     lines
@@ -39,7 +39,7 @@ export function renderLines(
         return {
           panel,
           line: value,
-          highlightState: getGeometryHighlightState(value.seriesIdentifier.key, highlightedLegendItem),
+          highlightState: getGeometryHighlightState(value.seriesIdentifier.key, highlightedItems),
         };
       })
       // sort by dimmed first once are rendered ontop of the non-highlighted ones

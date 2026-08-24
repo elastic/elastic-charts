@@ -7,7 +7,6 @@
  */
 
 import { renderPointGroup } from './points';
-import type { LegendItem } from '../../../../common/legend';
 import type { SeriesKey } from '../../../../common/series_id';
 import { withContext } from '../../../../renderers/canvas';
 import type { Rotation } from '../../../../utils/common';
@@ -23,12 +22,12 @@ export function renderBubbles(
   sharedStyle: SharedGeometryStateStyle,
   rotation: Rotation,
   renderingArea: Dimensions,
-  highlightedLegendItem?: LegendItem,
+  highlightedItems?: SeriesKey[],
 ) {
   withContext(ctx, () => {
     const styles: Record<SeriesKey, GeometryStateStyle> = {};
     const allPoints = bubbles.flatMap(({ value: { seriesIdentifier, points } }) => {
-      styles[seriesIdentifier.key] = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
+      styles[seriesIdentifier.key] = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedItems);
       return points;
     });
 
