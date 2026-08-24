@@ -28,7 +28,7 @@ export function angularBullet(
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,
-  hasStroke: boolean,
+  stroke: { bar: boolean; target: boolean },
   spec: BulletSpec,
   debug: boolean,
   activeValue?: ActiveValue | null,
@@ -87,7 +87,7 @@ export function angularBullet(
   ctx.save();
   ctx.lineCap = 'butt';
 
-  if (hasStroke) {
+  if (stroke.bar) {
     const arcDirection = counterClockwise ? -1 : 1;
     const innerArcOffset = BAR_STROKE_WIDTH / radius;
     const overflows = datum.value > max || datum.value < min;
@@ -119,7 +119,7 @@ export function angularBullet(
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
-    if (hasStroke) {
+    if (stroke.target) {
       ctx.beginPath();
       ctx.strokeStyle = backgroundColor;
       ctx.lineWidth = TARGET_STROKE_WIDTH + BAR_STROKE_WIDTH * 2;

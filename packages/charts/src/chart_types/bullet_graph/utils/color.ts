@@ -19,6 +19,7 @@ import { Colors } from '../../../common/colors';
 import { clamp, isFiniteNumber, isNil, isSorted, isWithinRange, sortNumbers } from '../../../utils/common';
 import type { ContinuousDomain, GenericDomain } from '../../../utils/domain';
 import { Logger } from '../../../utils/logger';
+import type { BulletPanelDimensions } from '../selectors/get_panel_dimensions';
 
 /**
  * @public
@@ -365,11 +366,36 @@ function getColorBands(
 }
 
 /** @internal */
-export function needsBarBorder(bands: ColorTick[], bar: Color): boolean {
-  return bands.some(
-    (band) =>
-      // 20, as per recommendation in https://github.com/Myndex/SAPC-APCA/discussions/117#discussioncomment-9244796 for
-      // semantic non-text elements and considering BAR_SIZE is 12,
-      getContrastRecommendation(band.color, bar, { contrastMode: 'WCAG3', contrastThreshold: 20 }).needsBorder,
+export function needBorder(bands: ColorTick[], bar: Color, bullet: BulletPanelDimensions) {
+  const { datum, scale } = bullet;
+
+  const barBorder = bands.some(
+    // as per https://github.com/Myndex/SAPC-APCA/discussions/117#discussioncomment-9244796 for
+    // semantic non-text elements and considering BAR_SIZE is 12,
+    (band) => getContrastRecommendation(band.color, bar, { contrastMode: 'WCAG3', contrastThreshold: 20 }).needsBorder,
   );
+
+  if (datum.target) {
+    const position = scale(datum.target);
+    const targetBand = bands.find((band) => position >= band.start && position <= band.end);
+    if (targetBand) {
+      const value = scale(datum.value);
+      const zero = scale(0);
+
+      const target = getContrastRecommendation(targetBand.color, bar, {
+        contrastMode: 'WCAG3',
+        // as per https://github.com/Myndex/SAPC-APCA/discussions/117#discussioncomment-9244796 for
+        // semantic non-text elements and considering TARGET_STROKE_WIDTH is 3,
+        contrastThreshold: 45,
+      }).needsBorder;
+
+      const isOverBar = position > zero && position <= value;
+
+      return {
+        bar: barBorder,
+        target: target || (barBorder && isOverBar),
+      };
+    }
+  }
+  return { bar: barBorder, target: false };
 }

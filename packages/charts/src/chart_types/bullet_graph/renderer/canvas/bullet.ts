@@ -34,7 +34,7 @@ import {
   getMaxTargetValueAssent,
   getTextAscentHeight,
 } from '../../theme';
-import { needsBarBorder } from '../../utils/color';
+import { needBorder } from '../../utils/color';
 
 /** @internal */
 export function renderBullet(
@@ -172,14 +172,14 @@ export function renderBullet(
 
           withContext(ctx, (ctx) => {
             ctx.translate(graphArea.origin.x, graphArea.origin.y);
-            const hasStroke = needsBarBorder(bulletGraph.colorBands, style.barBackground);
+            const stroke = needBorder(bulletGraph.colorBands, style.barBackground, bulletGraph);
 
             if (spec.subtype === BulletSubtype.horizontal) {
-              horizontalBullet(ctx, bulletGraph, style, backgroundColor, hasStroke, activeValue);
+              horizontalBullet(ctx, bulletGraph, style, backgroundColor, stroke, activeValue);
             } else if (spec.subtype === BulletSubtype.vertical) {
-              verticalBullet(ctx, bulletGraph, style, backgroundColor, hasStroke, activeValue);
+              verticalBullet(ctx, bulletGraph, style, backgroundColor, stroke, activeValue);
             } else {
-              angularBullet(ctx, bulletGraph, style, backgroundColor, hasStroke, spec, debug, activeValue);
+              angularBullet(ctx, bulletGraph, style, backgroundColor, stroke, spec, debug, activeValue);
             }
           });
 
