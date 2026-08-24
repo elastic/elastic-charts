@@ -90,7 +90,11 @@ export function angularBullet(
   if (hasStroke) {
     const arcDirection = counterClockwise ? -1 : 1;
     const innerArcOffset = BAR_STROKE_WIDTH / radius;
-    const innerValue = clamp(value - innerArcOffset * arcDirection, Math.min(zero, value), Math.max(zero, value));
+    const overflows = datum.value > max || datum.value < min;
+
+    const innerValue = overflows
+      ? value
+      : clamp(value - innerArcOffset * arcDirection, Math.min(zero, value), Math.max(zero, value));
 
     ctx.beginPath();
     ctx.lineWidth = BAR_SIZE;

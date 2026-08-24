@@ -71,9 +71,9 @@ export function verticalBullet(
   ctx.stroke();
 
   // Bar
+  const overflows = datum.value > max || datum.value < min;
   const confinedValue = clamp(datum.value, min, max);
   const adjustedZero = clamp(0, min, max);
-
   const x = graphArea.size.width / 2 - BAR_SIZE / 2;
   const y0 = graphPaddedHeight - scale(adjustedZero);
   const y1 = graphPaddedHeight - scale(confinedValue);
@@ -81,11 +81,11 @@ export function verticalBullet(
   ctx.fillStyle = style.barBackground;
   ctx.fillRect(x, y0, BAR_SIZE, y1 - y0);
 
-  if (hasStroke) {
+  if (hasStroke && Math.abs(confinedValue - adjustedZero) > 0) {
     const strokedSides = {
-      top: y0 > y1 ? true : false,
+      top: y0 > y1 && !overflows ? true : false,
       right: true,
-      bottom: y0 > y1 ? false : true,
+      bottom: y0 < y1 && !overflows ? true : false,
       left: true,
     };
     renderRectStroke(

@@ -63,6 +63,7 @@ export function horizontalBullet(
   ctx.stroke();
 
   // Bar
+  const overflows = datum.value > max || datum.value < min;
   const confinedValue = clamp(datum.value, min, max);
   const adjustedZero = clamp(0, min, max);
   const x0 = scale(adjustedZero);
@@ -72,12 +73,12 @@ export function horizontalBullet(
   ctx.fillStyle = style.barBackground;
   ctx.fillRect(x0, verticalAlignment - BAR_SIZE / 2, x1 - x0, BAR_SIZE);
 
-  if (hasStroke) {
+  if (hasStroke && Math.abs(confinedValue - adjustedZero) > 0) {
     const strokedSides = {
       top: true,
       bottom: true,
-      right: x1 > x0 ? true : false,
-      left: x1 > x0 ? false : true,
+      right: x1 > x0 && !overflows ? true : false,
+      left: x1 < x0 && !overflows ? true : false,
     };
     renderRectStroke(
       ctx,
