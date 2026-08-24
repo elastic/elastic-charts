@@ -27,6 +27,7 @@ import type { A11ySettings } from '../../../../state/selectors/get_accessibility
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getHighlightedPaths } from '../../../../state/selectors/get_highlighted_paths';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Dimensions } from '../../../../utils/dimensions';
@@ -274,7 +275,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     a11ySettings: getA11ySettingsSelector(state),
     debug: settings.debug,
     background: theme.background.color,
-    highlightedPaths: state.interactions.highlightedPaths,
+    highlightedPaths: getHighlightedPaths(state),
     legendStrategy: settings.legendStrategy,
     flatLegend: settings.flatLegend,
     partitionStyle: theme.partition,

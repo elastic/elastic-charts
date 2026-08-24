@@ -9,15 +9,13 @@
 import { computeLegendSelector } from './compute_legend';
 import type { LegendItem } from '../../../../common/legend';
 import type { LegendPath } from '../../../../state/actions/legend';
-import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-
-const getHighlightedPaths = (state: GlobalChartState): LegendPath[] => state.interactions.highlightedPaths;
+import { getHighlightedPaths } from '../../../../state/selectors/get_highlighted_paths';
 
 /** @internal */
 export const getHighlightedItemsSelector = createCustomCachedSelector(
   [getHighlightedPaths, computeLegendSelector],
-  (highlightedPaths, legendItems): LegendItem[] => {
+  (highlightedPaths: LegendPath[], legendItems: LegendItem[]): LegendItem[] => {
     if (highlightedPaths.length === 0) return [];
     const lookup = new Set(highlightedPaths.flatMap((path) => path.map(({ value }) => value)));
     return legendItems.filter(({ seriesIdentifiers }) => seriesIdentifiers.some(({ key }) => lookup.has(key)));

@@ -8,10 +8,8 @@
 
 import { computeLegendSelector } from './compute_legend';
 import type { SeriesKey } from '../../../../common/series_id';
-import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-
-const getHighlightedPaths = (state: GlobalChartState) => state.interactions.highlightedPaths;
+import { getHighlightedPaths } from '../../../../state/selectors/get_highlighted_paths';
 
 /** @internal */
 export const getHighlightedSeriesSelector = createCustomCachedSelector(

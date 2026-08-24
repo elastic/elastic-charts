@@ -7,17 +7,15 @@
  */
 
 import { partitionMultiGeometries } from './geometries';
-import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getHighlightedPaths } from '../../../../state/selectors/get_highlighted_paths';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { highlightedGeoms } from '../../layout/utils/highlighted_geoms';
 
-const getHighlightedItemPaths = (state: GlobalChartState) => state.interactions.highlightedPaths;
-
 /** @internal */
 export const legendHoverHighlightNodes = createCustomCachedSelector(
-  [getSettingsSpecSelector, getHighlightedItemPaths, partitionMultiGeometries],
+  [getSettingsSpecSelector, getHighlightedPaths, partitionMultiGeometries],
   ({ legendStrategy, flatLegend }, highlightedPaths, geometries): QuadViewModel[] => {
     if (highlightedPaths.length === 0) return [];
     return geometries.flatMap(({ quadViewModel }) =>
