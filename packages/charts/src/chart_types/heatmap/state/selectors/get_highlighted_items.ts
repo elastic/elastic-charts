@@ -10,11 +10,11 @@ import { computeLegendSelector } from './compute_legend';
 import type { LegendItem } from '../../../../common/legend';
 import type { LegendPath } from '../../../../state/actions/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getHighlightedPaths } from '../../../../state/selectors/get_highlighted_paths';
+import { getHighlightedLegendPaths } from '../../../../state/selectors/get_highlighted_paths';
 
 /** @internal */
 export const getHighlightedItemsSelector = createCustomCachedSelector(
-  [getHighlightedPaths, computeLegendSelector],
+  [getHighlightedLegendPaths, computeLegendSelector],
   (highlightedPaths: LegendPath[], legendItems: LegendItem[]): LegendItem[] => {
     if (highlightedPaths.length === 0) return [];
     const lookup = new Set(highlightedPaths.flatMap((path) => path.map(({ value }) => value)));

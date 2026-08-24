@@ -367,10 +367,10 @@ export function renderPartitionCanvas2d(
     ctx.strokeStyle = sectorLineStroke;
     ctx.lineWidth = sectorLineWidth;
 
-    // Calculate which quads are highlighted for legend dimming
+    // Calculate which quads are highlighted for dimming
     const highlightedQuadSet = new Set<QuadViewModel>();
     if (highlightedPaths.length > 0) {
-      // Use highlightedGeoms to determine which quads match the legend path
+      // Use highlightedGeoms to determine which quads match the highlighted path
       const highlighted = highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedPaths);
       highlighted.forEach((quad) => highlightedQuadSet.add(quad));
     }

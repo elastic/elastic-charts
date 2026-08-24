@@ -66,7 +66,7 @@ export interface ReactiveChartStateProps {
   rotation: Rotation;
   renderingArea: Dimensions;
   chartTransform: Transform;
-  highlightedItems?: SeriesKey[];
+  highlightedItems: SeriesKey[];
   hoveredAnnotationIds: string[];
   axesSpecs: AxisSpec[];
   perPanelAxisGeoms: Array<PerPanelAxisGeoms>;
@@ -227,6 +227,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     y: 0,
     rotate: 0,
   },
+  highlightedItems: [],
   axesSpecs: [],
   perPanelAxisGeoms: [],
   perPanelGridLines: [],

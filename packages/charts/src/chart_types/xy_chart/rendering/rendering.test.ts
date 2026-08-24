@@ -9,7 +9,6 @@
 import { getBarStyleOverrides } from './bars';
 import { getPointStyleOverrides, getRadiusFn } from './points';
 import { getGeometryStateStyle, isPointOnGeometry, getClippedRanges } from './utils';
-import type { LegendItem } from '../../../common/legend';
 import { MockBarGeometry, MockDataSeries, MockPointGeometry } from '../../../mocks';
 import { MockScale } from '../../../mocks/scale';
 import type { RecursivePartial } from '../../../utils/common';
@@ -124,28 +123,6 @@ describe('Rendering utils', () => {
       seriesKeys: [],
       key: 'somekey',
     };
-    const highlightedLegendItem: LegendItem = {
-      color: '',
-      label: '',
-      depth: 0,
-      seriesIdentifiers: [seriesIdentifier],
-      isSeriesHidden: false,
-      values: [],
-      path: [],
-      keys: [],
-    };
-
-    const unhighlightedLegendItem: LegendItem = {
-      ...highlightedLegendItem,
-      seriesIdentifiers: [
-        {
-          ...seriesIdentifier,
-          key: 'not me',
-        },
-      ],
-      keys: [],
-    };
-
     const sharedThemeStyle: SharedGeometryStateStyle = {
       default: {
         opacity: 1,

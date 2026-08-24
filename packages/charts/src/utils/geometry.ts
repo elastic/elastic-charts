@@ -176,8 +176,8 @@ export function isBarGeometry(ig: IndexedGeometry): ig is BarGeometry {
 export type GeometryHighlightState = 'dimmed' | 'focused' | 'default';
 
 /** @internal */
-export function getGeometryHighlightState(key: SeriesKey, highlightedItems?: SeriesKey[]): GeometryHighlightState {
-  if (!highlightedItems?.length) return 'default';
+export function getGeometryHighlightState(key: SeriesKey, highlightedItems: SeriesKey[] = []): GeometryHighlightState {
+  if (highlightedItems.length === 0) return 'default';
   return highlightedItems.includes(key) ? 'focused' : 'dimmed';
 }
 

@@ -22,7 +22,7 @@ export function renderBubbles(
   sharedStyle: SharedGeometryStateStyle,
   rotation: Rotation,
   renderingArea: Dimensions,
-  highlightedItems?: SeriesKey[],
+  highlightedItems: SeriesKey[] = [],
 ) {
   withContext(ctx, () => {
     const styles: Record<SeriesKey, GeometryStateStyle> = {};

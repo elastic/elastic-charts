@@ -31,7 +31,7 @@ export function renderLines(
   lines: Array<PerPanel<LineGeometry>>,
   rotation: Rotation,
   renderingArea: Dimensions,
-  highlightedItems?: SeriesKey[],
+  highlightedItems: SeriesKey[] = [],
 ) {
   withContext(ctx, () => {
     lines

@@ -25,7 +25,7 @@ export function renderBars(
   sharedStyle: SharedGeometryStateStyle,
   rotation: Rotation,
   renderingArea: Dimensions,
-  highlightedItems?: SeriesKey[],
+  highlightedItems: SeriesKey[] = [],
 ) {
   geoms.forEach(({ panel, value: bars }: PerPanel<BarGeometry[]>) =>
     withPanelTransform(

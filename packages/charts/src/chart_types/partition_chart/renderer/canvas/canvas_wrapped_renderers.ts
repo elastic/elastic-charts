@@ -38,7 +38,7 @@ export function renderWrappedPartitionCanvas2d(
   const height = containerHeight * panelHeight;
   const cornerRatio = 0.2;
 
-  // Calculate which quads are highlighted for legend dimming
+  // Calculate which quads are highlighted for dimming
   const highlightedQuadSet = new Set<QuadViewModel>();
   if (highlightedPaths.length > 0) {
     const highlighted = highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedPaths);

@@ -116,9 +116,9 @@ export function getClippedRanges(
 export function getGeometryStateStyle(
   seriesIdentifier: XYChartSeriesIdentifier,
   sharedGeometryStyle: SharedGeometryStateStyle,
-  highlightedItems?: SeriesKey[],
+  highlightedItems: SeriesKey[] = [],
 ): GeometryStateStyle {
-  if (!highlightedItems?.length) return sharedGeometryStyle.default;
+  if (highlightedItems.length === 0) return sharedGeometryStyle.default;
   const isHighlighted = highlightedItems.includes(seriesIdentifier.key);
   return isHighlighted ? sharedGeometryStyle.highlighted : sharedGeometryStyle.unhighlighted;
 }

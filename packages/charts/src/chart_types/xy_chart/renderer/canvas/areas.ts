@@ -32,7 +32,7 @@ export function renderAreas(
   areas: Array<PerPanel<AreaGeometry>>,
   rotation: Rotation,
   renderingArea: Dimensions,
-  highlightedItems?: SeriesKey[],
+  highlightedItems: SeriesKey[] = [],
 ) {
   const sortedRenderingAreas = areas.reduce<{
     dimmed: { stacked: PerPanel<AreaGeometry>[]; nonStacked: PerPanel<AreaGeometry>[] };

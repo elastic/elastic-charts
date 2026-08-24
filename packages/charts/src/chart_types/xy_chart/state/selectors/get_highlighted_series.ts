@@ -14,15 +14,14 @@ import { getHighlightedPaths } from '../../../../state/selectors/get_highlighted
 /** @internal */
 export const getHighlightedSeriesSelector = createCustomCachedSelector(
   [getHighlightedPaths, computeLegendSelector],
-  (highlightedPaths, legendItems): SeriesKey[] | undefined => {
-    if (highlightedPaths.length > 0) {
-      const lookup = new Set(highlightedPaths.flatMap((path) => path.map(({ value }) => value)));
-      return legendItems
-        .filter(
-          ({ seriesIdentifiers, isSeriesHidden }) =>
-            !isSeriesHidden && seriesIdentifiers.some(({ key }) => lookup.has(key)),
-        )
-        .flatMap(({ seriesIdentifiers }) => seriesIdentifiers.map(({ key }) => key));
-    }
+  (highlightedPaths, legendItems): SeriesKey[] => {
+    if (highlightedPaths.length === 0) return [];
+    const lookup = new Set(highlightedPaths.flatMap((path) => path.map(({ value }) => value)));
+    return legendItems
+      .filter(
+        ({ seriesIdentifiers, isSeriesHidden }) =>
+          !isSeriesHidden && seriesIdentifiers.some(({ key }) => lookup.has(key)),
+      )
+      .flatMap(({ seriesIdentifiers }) => seriesIdentifiers.map(({ key }) => key));
   },
 );
