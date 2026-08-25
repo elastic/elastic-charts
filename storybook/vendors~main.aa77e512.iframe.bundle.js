@@ -123188,7 +123188,7 @@ var useInsertionEffectWithLayoutFallback = useInsertionEffect || react__WEBPACK_
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "../node_modules/react-dom/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/index.js");
 /* harmony import */ var use_memo_one__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! use-memo-one */ "../node_modules/use-memo-one/dist/use-memo-one.esm.js");
 /* harmony import */ var css_box_model__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! css-box-model */ "../node_modules/css-box-model/dist/css-box-model.esm.js");
 /* harmony import */ var memoize_one__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! memoize-one */ "../node_modules/@hello-pangea/dnd/node_modules/memoize-one/dist/memoize-one.esm.js");
@@ -126515,7 +126515,7 @@ var pendingDrop = function pendingDrop(store) {
   };
 };
 var pendingDrop$1 = pendingDrop;
-var composeEnhancers =  false ? undefined : redux__WEBPACK_IMPORTED_MODULE_2__["compose"];
+var composeEnhancers =  false ? undefined : redux__WEBPACK_IMPORTED_MODULE_2__[/* compose */ "c"];
 var createStore = function createStore(_ref49) {
   var dimensionMarshal = _ref49.dimensionMarshal,
     focusMarshal = _ref49.focusMarshal,
@@ -126523,7 +126523,7 @@ var createStore = function createStore(_ref49) {
     getResponders = _ref49.getResponders,
     announce = _ref49.announce,
     autoScroller = _ref49.autoScroller;
-  return Object(redux__WEBPACK_IMPORTED_MODULE_2__["createStore"])(reducer, composeEnhancers(Object(redux__WEBPACK_IMPORTED_MODULE_2__["applyMiddleware"])(style(styleMarshal), dimensionMarshalStopper(dimensionMarshal), lift(dimensionMarshal), drop, dropAnimationFinish, dropAnimationFlushOnScroll, pendingDrop$1, autoScroll(autoScroller), scrollListener$1, focus(focusMarshal), responders(getResponders, announce))));
+  return Object(redux__WEBPACK_IMPORTED_MODULE_2__[/* createStore */ "d"])(reducer, composeEnhancers(Object(redux__WEBPACK_IMPORTED_MODULE_2__[/* applyMiddleware */ "a"])(style(styleMarshal), dimensionMarshalStopper(dimensionMarshal), lift(dimensionMarshal), drop, dropAnimationFinish, dropAnimationFlushOnScroll, pendingDrop$1, autoScroll(autoScroller), scrollListener$1, focus(focusMarshal), responders(getResponders, announce))));
 };
 var clean$1 = function clean$1() {
   return {
@@ -129134,7 +129134,7 @@ function App(props) {
     getStore(lazyStoreRef).dispatch(action);
   }, []);
   var marshalCallbacks = Object(use_memo_one__WEBPACK_IMPORTED_MODULE_4__[/* useMemo */ "b"])(function () {
-    return Object(redux__WEBPACK_IMPORTED_MODULE_2__["bindActionCreators"])({
+    return Object(redux__WEBPACK_IMPORTED_MODULE_2__[/* bindActionCreators */ "b"])({
       publishWhileDragging: publishWhileDragging,
       updateDroppableScroll: updateDroppableScroll,
       updateDroppableIsEnabled: updateDroppableIsEnabled,
@@ -129151,7 +129151,7 @@ function App(props) {
       scrollWindow: scrollWindow,
       scrollDroppable: dimensionMarshal.scrollDroppable,
       getAutoScrollerOptions: getAutoScrollerOptions
-    }, Object(redux__WEBPACK_IMPORTED_MODULE_2__["bindActionCreators"])({
+    }, Object(redux__WEBPACK_IMPORTED_MODULE_2__[/* bindActionCreators */ "b"])({
       move: move
     }, lazyDispatch)));
   }, [dimensionMarshal.scrollDroppable, lazyDispatch, getAutoScrollerOptions]);
@@ -129221,7 +129221,7 @@ function App(props) {
   }, [tryResetStore]);
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(AppContext.Provider, {
     value: appContext
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_redux__WEBPACK_IMPORTED_MODULE_3__["Provider"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_redux__WEBPACK_IMPORTED_MODULE_3__[/* Provider */ "a"], {
     context: StoreContext,
     store: store
   }, props.children));
@@ -129743,7 +129743,7 @@ var makeMapStateToProps$1 = function makeMapStateToProps$1() {
 var mapDispatchToProps$1 = {
   dropAnimationFinished: dropAnimationFinished
 };
-var ConnectedDraggable = Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(makeMapStateToProps$1, mapDispatchToProps$1, null, {
+var ConnectedDraggable = Object(react_redux__WEBPACK_IMPORTED_MODULE_3__[/* connect */ "b"])(makeMapStateToProps$1, mapDispatchToProps$1, null, {
   context: StoreContext,
   areStatePropsEqual: isStrictEqual
 })(Draggable$1);
@@ -130622,7 +130622,7 @@ var makeMapStateToProps = function makeMapStateToProps() {
 var mapDispatchToProps = {
   updateViewportMaxScroll: updateViewportMaxScroll
 };
-var ConnectedDroppable = Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(makeMapStateToProps, mapDispatchToProps, function (stateProps, dispatchProps, ownProps) {
+var ConnectedDroppable = Object(react_redux__WEBPACK_IMPORTED_MODULE_3__[/* connect */ "b"])(makeMapStateToProps, mapDispatchToProps, function (stateProps, dispatchProps, ownProps) {
   return _objectSpread(_objectSpread(_objectSpread({}, attachDefaultPropsToOwnProps(ownProps)), stateProps), dispatchProps);
 }, {
   context: StoreContext,
@@ -130693,6 +130693,1923 @@ function memoizeOne(resultFn, isEqual) {
   return memoized;
 }
 
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-is/cjs/react-is.production.min.js":
+/*!**********************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-is/cjs/react-is.production.min.js ***!
+  \**********************************************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * @license React
+ * react-is.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+var b = Symbol["for"]("react.element"),
+  c = Symbol["for"]("react.portal"),
+  d = Symbol["for"]("react.fragment"),
+  e = Symbol["for"]("react.strict_mode"),
+  f = Symbol["for"]("react.profiler"),
+  g = Symbol["for"]("react.provider"),
+  h = Symbol["for"]("react.context"),
+  k = Symbol["for"]("react.server_context"),
+  l = Symbol["for"]("react.forward_ref"),
+  m = Symbol["for"]("react.suspense"),
+  n = Symbol["for"]("react.suspense_list"),
+  p = Symbol["for"]("react.memo"),
+  q = Symbol["for"]("react.lazy"),
+  t = Symbol["for"]("react.offscreen"),
+  u;
+u = Symbol["for"]("react.module.reference");
+function v(a) {
+  if ("object" === _typeof(a) && null !== a) {
+    var r = a.$$typeof;
+    switch (r) {
+      case b:
+        switch (a = a.type, a) {
+          case d:
+          case f:
+          case e:
+          case m:
+          case n:
+            return a;
+          default:
+            switch (a = a && a.$$typeof, a) {
+              case k:
+              case h:
+              case l:
+              case q:
+              case p:
+              case g:
+                return a;
+              default:
+                return r;
+            }
+        }
+      case c:
+        return r;
+    }
+  }
+}
+exports.ContextConsumer = h;
+exports.ContextProvider = g;
+exports.Element = b;
+exports.ForwardRef = l;
+exports.Fragment = d;
+exports.Lazy = q;
+exports.Memo = p;
+exports.Portal = c;
+exports.Profiler = f;
+exports.StrictMode = e;
+exports.Suspense = m;
+exports.SuspenseList = n;
+exports.isAsyncMode = function () {
+  return !1;
+};
+exports.isConcurrentMode = function () {
+  return !1;
+};
+exports.isContextConsumer = function (a) {
+  return v(a) === h;
+};
+exports.isContextProvider = function (a) {
+  return v(a) === g;
+};
+exports.isElement = function (a) {
+  return "object" === _typeof(a) && null !== a && a.$$typeof === b;
+};
+exports.isForwardRef = function (a) {
+  return v(a) === l;
+};
+exports.isFragment = function (a) {
+  return v(a) === d;
+};
+exports.isLazy = function (a) {
+  return v(a) === q;
+};
+exports.isMemo = function (a) {
+  return v(a) === p;
+};
+exports.isPortal = function (a) {
+  return v(a) === c;
+};
+exports.isProfiler = function (a) {
+  return v(a) === f;
+};
+exports.isStrictMode = function (a) {
+  return v(a) === e;
+};
+exports.isSuspense = function (a) {
+  return v(a) === m;
+};
+exports.isSuspenseList = function (a) {
+  return v(a) === n;
+};
+exports.isValidElementType = function (a) {
+  return "string" === typeof a || "function" === typeof a || a === d || a === f || a === e || a === m || a === n || a === t || "object" === _typeof(a) && null !== a && (a.$$typeof === q || a.$$typeof === p || a.$$typeof === g || a.$$typeof === h || a.$$typeof === l || a.$$typeof === u || void 0 !== a.getModuleId) ? !0 : !1;
+};
+exports.typeOf = v;
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-is/index.js":
+/*!************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-is/index.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/*! exports used: isContextConsumer */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+if (true) {
+  module.exports = __webpack_require__(/*! ./cjs/react-is.production.min.js */ "../node_modules/@hello-pangea/dnd/node_modules/react-is/cjs/react-is.production.min.js");
+} else {}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/Context.js":
+/*!*******************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/Context.js ***!
+  \*******************************************************************************************/
+/*! exports provided: ReactReduxContext, default */
+/*! exports used: ReactReduxContext */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ReactReduxContext; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+var ContextKey = Symbol["for"]("react-redux-context");
+var gT = typeof globalThis !== "undefined" ? globalThis : /* fall back to a per-module scope (pre-8.1 behaviour) if `globalThis` is not available */
+{};
+function getContext() {
+  var _gT$ContextKey;
+  if (!react__WEBPACK_IMPORTED_MODULE_0__["createContext"]) return {};
+  var contextMap = (_gT$ContextKey = gT[ContextKey]) != null ? _gT$ContextKey : gT[ContextKey] = new Map();
+  var realContext = contextMap.get(react__WEBPACK_IMPORTED_MODULE_0__["createContext"]);
+  if (!realContext) {
+    realContext = react__WEBPACK_IMPORTED_MODULE_0__["createContext"](null);
+    if (false) {}
+    contextMap.set(react__WEBPACK_IMPORTED_MODULE_0__["createContext"], realContext);
+  }
+  return realContext;
+}
+var ReactReduxContext = /*#__PURE__*/getContext();
+/* unused harmony default export */ var _unused_webpack_default_export = (ReactReduxContext);
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/Provider.js":
+/*!********************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/Provider.js ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/*! exports used: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Context */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/Context.js");
+/* harmony import */ var _utils_Subscription__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/Subscription */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/Subscription.js");
+/* harmony import */ var _utils_useIsomorphicLayoutEffect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/useIsomorphicLayoutEffect */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/useIsomorphicLayoutEffect.js");
+
+
+
+
+function Provider(_ref) {
+  var store = _ref.store,
+    context = _ref.context,
+    children = _ref.children,
+    serverState = _ref.serverState,
+    _ref$stabilityCheck = _ref.stabilityCheck,
+    stabilityCheck = _ref$stabilityCheck === void 0 ? 'once' : _ref$stabilityCheck,
+    _ref$noopCheck = _ref.noopCheck,
+    noopCheck = _ref$noopCheck === void 0 ? 'once' : _ref$noopCheck;
+  var contextValue = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](function () {
+    var subscription = Object(_utils_Subscription__WEBPACK_IMPORTED_MODULE_2__[/* createSubscription */ "a"])(store);
+    return {
+      store: store,
+      subscription: subscription,
+      getServerState: serverState ? function () {
+        return serverState;
+      } : undefined,
+      stabilityCheck: stabilityCheck,
+      noopCheck: noopCheck
+    };
+  }, [store, serverState, stabilityCheck, noopCheck]);
+  var previousState = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](function () {
+    return store.getState();
+  }, [store]);
+  Object(_utils_useIsomorphicLayoutEffect__WEBPACK_IMPORTED_MODULE_3__[/* useIsomorphicLayoutEffect */ "a"])(function () {
+    var subscription = contextValue.subscription;
+    subscription.onStateChange = subscription.notifyNestedSubs;
+    subscription.trySubscribe();
+    if (previousState !== store.getState()) {
+      subscription.notifyNestedSubs();
+    }
+    return function () {
+      subscription.tryUnsubscribe();
+      subscription.onStateChange = undefined;
+    };
+  }, [contextValue, previousState]);
+  var Context = context || _Context__WEBPACK_IMPORTED_MODULE_1__[/* ReactReduxContext */ "a"]; // @ts-ignore 'AnyAction' is assignable to the constraint of type 'A', but 'A' could be instantiated with a different subtype
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](Context.Provider, {
+    value: contextValue
+  }, children);
+}
+/* harmony default export */ __webpack_exports__["a"] = (Provider);
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/connect.js":
+/*!*******************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/connect.js ***!
+  \*******************************************************************************************/
+/*! exports provided: initializeConnect, default */
+/*! exports used: default, initializeConnect */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return initializeConnect; });
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "../node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var _babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectWithoutPropertiesLoose */ "../node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js");
+/* harmony import */ var hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! hoist-non-react-statics */ "../node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js");
+/* harmony import */ var hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var react_is__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-is */ "../node_modules/@hello-pangea/dnd/node_modules/react-is/index.js");
+/* harmony import */ var react_is__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_is__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _connect_selectorFactory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../connect/selectorFactory */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/selectorFactory.js");
+/* harmony import */ var _connect_mapDispatchToProps__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../connect/mapDispatchToProps */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/mapDispatchToProps.js");
+/* harmony import */ var _connect_mapStateToProps__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../connect/mapStateToProps */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/mapStateToProps.js");
+/* harmony import */ var _connect_mergeProps__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../connect/mergeProps */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/mergeProps.js");
+/* harmony import */ var _utils_Subscription__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/Subscription */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/Subscription.js");
+/* harmony import */ var _utils_useIsomorphicLayoutEffect__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils/useIsomorphicLayoutEffect */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/useIsomorphicLayoutEffect.js");
+/* harmony import */ var _utils_shallowEqual__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../utils/shallowEqual */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/shallowEqual.js");
+/* harmony import */ var _utils_warning__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../utils/warning */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/warning.js");
+/* harmony import */ var _Context__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./Context */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/Context.js");
+/* harmony import */ var _utils_useSyncExternalStore__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../utils/useSyncExternalStore */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/useSyncExternalStore.js");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+
+
+var _excluded = ["reactReduxForwardedRef"];
+
+/* eslint-disable valid-jsdoc, @typescript-eslint/no-unused-vars */
+
+
+
+
+
+
+
+
+
+
+
+
+
+var useSyncExternalStore = _utils_useSyncExternalStore__WEBPACK_IMPORTED_MODULE_14__[/* notInitialized */ "a"];
+var initializeConnect = function initializeConnect(fn) {
+  useSyncExternalStore = fn;
+}; // Define some constant arrays just to avoid re-creating these
+
+var EMPTY_ARRAY = [null, 0];
+var NO_SUBSCRIPTION_ARRAY = [null, null]; // Attempts to stringify whatever not-really-a-component value we were given
+// for logging in an error message
+
+var stringifyComponent = function stringifyComponent(Comp) {
+  try {
+    return JSON.stringify(Comp);
+  } catch (err) {
+    return String(Comp);
+  }
+};
+
+// This is "just" a `useLayoutEffect`, but with two modifications:
+// - we need to fall back to `useEffect` in SSR to avoid annoying warnings
+// - we extract this to a separate function to avoid closing over values
+//   and causing memory leaks
+function useIsomorphicLayoutEffectWithArgs(effectFunc, effectArgs, dependencies) {
+  Object(_utils_useIsomorphicLayoutEffect__WEBPACK_IMPORTED_MODULE_10__[/* useIsomorphicLayoutEffect */ "a"])(function () {
+    return effectFunc.apply(void 0, _toConsumableArray(effectArgs));
+  }, dependencies);
+} // Effect callback, extracted: assign the latest props values to refs for later usage
+
+function captureWrapperProps(lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps,
+// actualChildProps: unknown,
+childPropsFromStoreUpdate, notifyNestedSubs) {
+  // We want to capture the wrapper props and child props we used for later comparisons
+  lastWrapperProps.current = wrapperProps;
+  renderIsScheduled.current = false; // If the render was from a store update, clear out that reference and cascade the subscriber update
+
+  if (childPropsFromStoreUpdate.current) {
+    childPropsFromStoreUpdate.current = null;
+    notifyNestedSubs();
+  }
+} // Effect callback, extracted: subscribe to the Redux store or nearest connected ancestor,
+// check for updates after dispatched actions, and trigger re-renders.
+
+function subscribeUpdates(shouldHandleStateChanges, store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, isMounted, childPropsFromStoreUpdate, notifyNestedSubs,
+// forceComponentUpdateDispatch: React.Dispatch<any>,
+additionalSubscribeListener) {
+  // If we're not subscribed to the store, nothing to do here
+  if (!shouldHandleStateChanges) return function () {}; // Capture values for checking if and when this component unmounts
+
+  var didUnsubscribe = false;
+  var lastThrownError = null; // We'll run this callback every time a store subscription update propagates to this component
+
+  var checkForUpdates = function checkForUpdates() {
+    if (didUnsubscribe || !isMounted.current) {
+      // Don't run stale listeners.
+      // Redux doesn't guarantee unsubscriptions happen until next dispatch.
+      return;
+    } // TODO We're currently calling getState ourselves here, rather than letting `uSES` do it
+
+    var latestStoreState = store.getState();
+    var newChildProps, error;
+    try {
+      // Actually run the selector with the most recent store state and wrapper props
+      // to determine what the child props should be
+      newChildProps = childPropsSelector(latestStoreState, lastWrapperProps.current);
+    } catch (e) {
+      error = e;
+      lastThrownError = e;
+    }
+    if (!error) {
+      lastThrownError = null;
+    } // If the child props haven't changed, nothing to do here - cascade the subscription update
+
+    if (newChildProps === lastChildProps.current) {
+      if (!renderIsScheduled.current) {
+        notifyNestedSubs();
+      }
+    } else {
+      // Save references to the new child props.  Note that we track the "child props from store update"
+      // as a ref instead of a useState/useReducer because we need a way to determine if that value has
+      // been processed.  If this went into useState/useReducer, we couldn't clear out the value without
+      // forcing another re-render, which we don't want.
+      lastChildProps.current = newChildProps;
+      childPropsFromStoreUpdate.current = newChildProps;
+      renderIsScheduled.current = true; // TODO This is hacky and not how `uSES` is meant to be used
+      // Trigger the React `useSyncExternalStore` subscriber
+
+      additionalSubscribeListener();
+    }
+  }; // Actually subscribe to the nearest connected ancestor (or store)
+
+  subscription.onStateChange = checkForUpdates;
+  subscription.trySubscribe(); // Pull data from the store after first render in case the store has
+  // changed since we began.
+
+  checkForUpdates();
+  var unsubscribeWrapper = function unsubscribeWrapper() {
+    didUnsubscribe = true;
+    subscription.tryUnsubscribe();
+    subscription.onStateChange = null;
+    if (lastThrownError) {
+      // It's possible that we caught an error due to a bad mapState function, but the
+      // parent re-rendered without this component and we're about to unmount.
+      // This shouldn't happen as long as we do top-down subscriptions correctly, but
+      // if we ever do those wrong, this throw will surface the error in our tests.
+      // In that case, throw the error from here so it doesn't get lost.
+      throw lastThrownError;
+    }
+  };
+  return unsubscribeWrapper;
+} // Reducer initial state creation for our update reducer
+
+var initStateUpdates = function initStateUpdates() {
+  return EMPTY_ARRAY;
+};
+function strictEqual(a, b) {
+  return a === b;
+}
+/**
+ * Infers the type of props that a connector will inject into a component.
+ */
+
+var hasWarnedAboutDeprecatedPureOption = false;
+/**
+ * Connects a React component to a Redux store.
+ *
+ * - Without arguments, just wraps the component, without changing the behavior / props
+ *
+ * - If 2 params are passed (3rd param, mergeProps, is skipped), default behavior
+ * is to override ownProps (as stated in the docs), so what remains is everything that's
+ * not a state or dispatch prop
+ *
+ * - When 3rd param is passed, we don't know if ownProps propagate and whether they
+ * should be valid component props, because it depends on mergeProps implementation.
+ * As such, it is the user's responsibility to extend ownProps interface from state or
+ * dispatch props or both when applicable
+ *
+ * @param mapStateToProps A function that extracts values from state
+ * @param mapDispatchToProps Setup for dispatching actions
+ * @param mergeProps Optional callback to merge state and dispatch props together
+ * @param options Options for configuring the connection
+ *
+ */
+
+function connect(mapStateToProps, mapDispatchToProps, mergeProps) {
+  var _ref = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {},
+    pure = _ref.pure,
+    _ref$areStatesEqual = _ref.areStatesEqual,
+    areStatesEqual = _ref$areStatesEqual === void 0 ? strictEqual : _ref$areStatesEqual,
+    _ref$areOwnPropsEqual = _ref.areOwnPropsEqual,
+    areOwnPropsEqual = _ref$areOwnPropsEqual === void 0 ? _utils_shallowEqual__WEBPACK_IMPORTED_MODULE_11__[/* default */ "a"] : _ref$areOwnPropsEqual,
+    _ref$areStatePropsEqu = _ref.areStatePropsEqual,
+    areStatePropsEqual = _ref$areStatePropsEqu === void 0 ? _utils_shallowEqual__WEBPACK_IMPORTED_MODULE_11__[/* default */ "a"] : _ref$areStatePropsEqu,
+    _ref$areMergedPropsEq = _ref.areMergedPropsEqual,
+    areMergedPropsEqual = _ref$areMergedPropsEq === void 0 ? _utils_shallowEqual__WEBPACK_IMPORTED_MODULE_11__[/* default */ "a"] : _ref$areMergedPropsEq,
+    _ref$forwardRef = _ref.forwardRef,
+    forwardRef = _ref$forwardRef === void 0 ? false : _ref$forwardRef,
+    _ref$context = _ref.context,
+    context = _ref$context === void 0 ? _Context__WEBPACK_IMPORTED_MODULE_13__[/* ReactReduxContext */ "a"] : _ref$context;
+  if (false) {}
+  var Context = context;
+  var initMapStateToProps = Object(_connect_mapStateToProps__WEBPACK_IMPORTED_MODULE_7__[/* mapStateToPropsFactory */ "a"])(mapStateToProps);
+  var initMapDispatchToProps = Object(_connect_mapDispatchToProps__WEBPACK_IMPORTED_MODULE_6__[/* mapDispatchToPropsFactory */ "a"])(mapDispatchToProps);
+  var initMergeProps = Object(_connect_mergeProps__WEBPACK_IMPORTED_MODULE_8__[/* mergePropsFactory */ "a"])(mergeProps);
+  var shouldHandleStateChanges = Boolean(mapStateToProps);
+  var wrapWithConnect = function wrapWithConnect(WrappedComponent) {
+    if (false) {}
+    var wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+    var displayName = "Connect(".concat(wrappedComponentName, ")");
+    var selectorFactoryOptions = {
+      shouldHandleStateChanges: shouldHandleStateChanges,
+      displayName: displayName,
+      wrappedComponentName: wrappedComponentName,
+      WrappedComponent: WrappedComponent,
+      // @ts-ignore
+      initMapStateToProps: initMapStateToProps,
+      // @ts-ignore
+      initMapDispatchToProps: initMapDispatchToProps,
+      initMergeProps: initMergeProps,
+      areStatesEqual: areStatesEqual,
+      areStatePropsEqual: areStatePropsEqual,
+      areOwnPropsEqual: areOwnPropsEqual,
+      areMergedPropsEqual: areMergedPropsEqual
+    };
+    function ConnectFunction(props) {
+      var _React$useMemo = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](function () {
+          // Distinguish between actual "data" props that were passed to the wrapper component,
+          // and values needed to control behavior (forwarded refs, alternate context instances).
+          // To maintain the wrapperProps object reference, memoize this destructuring.
+          var reactReduxForwardedRef = props.reactReduxForwardedRef,
+            wrapperProps = Object(_babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"])(props, _excluded);
+          return [props.context, reactReduxForwardedRef, wrapperProps];
+        }, [props]),
+        _React$useMemo2 = _slicedToArray(_React$useMemo, 3),
+        propsContext = _React$useMemo2[0],
+        reactReduxForwardedRef = _React$useMemo2[1],
+        wrapperProps = _React$useMemo2[2];
+      var ContextToUse = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](function () {
+        // Users may optionally pass in a custom context instance to use instead of our ReactReduxContext.
+        // Memoize the check that determines which context instance we should use.
+        return propsContext && propsContext.Consumer &&
+        // @ts-ignore
+        Object(react_is__WEBPACK_IMPORTED_MODULE_4__["isContextConsumer"])( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"](propsContext.Consumer, null)) ? propsContext : Context;
+      }, [propsContext, Context]); // Retrieve the store and ancestor subscription via context, if available
+
+      var contextValue = react__WEBPACK_IMPORTED_MODULE_3__["useContext"](ContextToUse); // The store _must_ exist as either a prop or in context.
+      // We'll check to see if it _looks_ like a Redux store first.
+      // This allows us to pass through a `store` prop that is just a plain value.
+
+      var didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch);
+      var didStoreComeFromContext = Boolean(contextValue) && Boolean(contextValue.store);
+      if (false) {} // Based on the previous check, one of these must be true
+
+      var store = didStoreComeFromProps ? props.store : contextValue.store;
+      var getServerState = didStoreComeFromContext ? contextValue.getServerState : store.getState;
+      var childPropsSelector = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](function () {
+        // The child props selector needs the store reference as an input.
+        // Re-create this selector whenever the store changes.
+        return Object(_connect_selectorFactory__WEBPACK_IMPORTED_MODULE_5__[/* default */ "a"])(store.dispatch, selectorFactoryOptions);
+      }, [store]);
+      var _React$useMemo3 = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](function () {
+          if (!shouldHandleStateChanges) return NO_SUBSCRIPTION_ARRAY; // This Subscription's source should match where store came from: props vs. context. A component
+          // connected to the store via props shouldn't use subscription from context, or vice versa.
+
+          var subscription = Object(_utils_Subscription__WEBPACK_IMPORTED_MODULE_9__[/* createSubscription */ "a"])(store, didStoreComeFromProps ? undefined : contextValue.subscription); // `notifyNestedSubs` is duplicated to handle the case where the component is unmounted in
+          // the middle of the notification loop, where `subscription` will then be null. This can
+          // probably be avoided if Subscription's listeners logic is changed to not call listeners
+          // that have been unsubscribed in the  middle of the notification loop.
+
+          var notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription);
+          return [subscription, notifyNestedSubs];
+        }, [store, didStoreComeFromProps, contextValue]),
+        _React$useMemo4 = _slicedToArray(_React$useMemo3, 2),
+        subscription = _React$useMemo4[0],
+        notifyNestedSubs = _React$useMemo4[1]; // Determine what {store, subscription} value should be put into nested context, if necessary,
+      // and memoize that value to avoid unnecessary context updates.
+
+      var overriddenContextValue = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](function () {
+        if (didStoreComeFromProps) {
+          // This component is directly subscribed to a store from props.
+          // We don't want descendants reading from this store - pass down whatever
+          // the existing context value is from the nearest connected ancestor.
+          return contextValue;
+        } // Otherwise, put this component's subscription instance into context, so that
+        // connected descendants won't update until after this component is done
+
+        return Object(_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])({}, contextValue, {
+          subscription: subscription
+        });
+      }, [didStoreComeFromProps, contextValue, subscription]); // Set up refs to coordinate values between the subscription effect and the render logic
+
+      var lastChildProps = react__WEBPACK_IMPORTED_MODULE_3__["useRef"]();
+      var lastWrapperProps = react__WEBPACK_IMPORTED_MODULE_3__["useRef"](wrapperProps);
+      var childPropsFromStoreUpdate = react__WEBPACK_IMPORTED_MODULE_3__["useRef"]();
+      var renderIsScheduled = react__WEBPACK_IMPORTED_MODULE_3__["useRef"](false);
+      var isProcessingDispatch = react__WEBPACK_IMPORTED_MODULE_3__["useRef"](false);
+      var isMounted = react__WEBPACK_IMPORTED_MODULE_3__["useRef"](false);
+      var latestSubscriptionCallbackError = react__WEBPACK_IMPORTED_MODULE_3__["useRef"]();
+      Object(_utils_useIsomorphicLayoutEffect__WEBPACK_IMPORTED_MODULE_10__[/* useIsomorphicLayoutEffect */ "a"])(function () {
+        isMounted.current = true;
+        return function () {
+          isMounted.current = false;
+        };
+      }, []);
+      var actualChildPropsSelector = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](function () {
+        var selector = function selector() {
+          // Tricky logic here:
+          // - This render may have been triggered by a Redux store update that produced new child props
+          // - However, we may have gotten new wrapper props after that
+          // If we have new child props, and the same wrapper props, we know we should use the new child props as-is.
+          // But, if we have new wrapper props, those might change the child props, so we have to recalculate things.
+          // So, we'll use the child props from store update only if the wrapper props are the same as last time.
+          if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) {
+            return childPropsFromStoreUpdate.current;
+          } // TODO We're reading the store directly in render() here. Bad idea?
+          // This will likely cause Bad Things (TM) to happen in Concurrent Mode.
+          // Note that we do this because on renders _not_ caused by store updates, we need the latest store state
+          // to determine what the child props should be.
+
+          return childPropsSelector(store.getState(), wrapperProps);
+        };
+        return selector;
+      }, [store, wrapperProps]); // We need this to execute synchronously every time we re-render. However, React warns
+      // about useLayoutEffect in SSR, so we try to detect environment and fall back to
+      // just useEffect instead to avoid the warning, since neither will run anyway.
+
+      var subscribeForReact = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](function () {
+        var subscribe = function subscribe(reactListener) {
+          if (!subscription) {
+            return function () {};
+          }
+          return subscribeUpdates(shouldHandleStateChanges, store, subscription,
+          // @ts-ignore
+          childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, isMounted, childPropsFromStoreUpdate, notifyNestedSubs, reactListener);
+        };
+        return subscribe;
+      }, [subscription]);
+      useIsomorphicLayoutEffectWithArgs(captureWrapperProps, [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, childPropsFromStoreUpdate, notifyNestedSubs]);
+      var actualChildProps;
+      try {
+        actualChildProps = useSyncExternalStore(
+        // TODO We're passing through a big wrapper that does a bunch of extra side effects besides subscribing
+        subscribeForReact,
+        // TODO This is incredibly hacky. We've already processed the store update and calculated new child props,
+        // TODO and we're just passing that through so it triggers a re-render for us rather than relying on `uSES`.
+        actualChildPropsSelector, getServerState ? function () {
+          return childPropsSelector(getServerState(), wrapperProps);
+        } : actualChildPropsSelector);
+      } catch (err) {
+        if (latestSubscriptionCallbackError.current) {
+          ;
+          err.message += "\nThe error may be correlated with this previous error:\n".concat(latestSubscriptionCallbackError.current.stack, "\n\n");
+        }
+        throw err;
+      }
+      Object(_utils_useIsomorphicLayoutEffect__WEBPACK_IMPORTED_MODULE_10__[/* useIsomorphicLayoutEffect */ "a"])(function () {
+        latestSubscriptionCallbackError.current = undefined;
+        childPropsFromStoreUpdate.current = undefined;
+        lastChildProps.current = actualChildProps;
+      }); // Now that all that's done, we can finally try to actually render the child component.
+      // We memoize the elements for the rendered child component as an optimization.
+
+      var renderedWrappedComponent = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](function () {
+        return /*#__PURE__*/(
+          // @ts-ignore
+          react__WEBPACK_IMPORTED_MODULE_3__["createElement"](WrappedComponent, Object(_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])({}, actualChildProps, {
+            ref: reactReduxForwardedRef
+          }))
+        );
+      }, [reactReduxForwardedRef, WrappedComponent, actualChildProps]); // If React sees the exact same element reference as last time, it bails out of re-rendering
+      // that child, same as if it was wrapped in React.memo() or returned false from shouldComponentUpdate.
+
+      var renderedChild = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](function () {
+        if (shouldHandleStateChanges) {
+          // If this component is subscribed to store updates, we need to pass its own
+          // subscription instance down to our descendants. That means rendering the same
+          // Context instance, and putting a different value into the context.
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"](ContextToUse.Provider, {
+            value: overriddenContextValue
+          }, renderedWrappedComponent);
+        }
+        return renderedWrappedComponent;
+      }, [ContextToUse, renderedWrappedComponent, overriddenContextValue]);
+      return renderedChild;
+    }
+    var _Connect = react__WEBPACK_IMPORTED_MODULE_3__["memo"](ConnectFunction);
+
+    // Add a hacky cast to get the right output type
+    var Connect = _Connect;
+    Connect.WrappedComponent = WrappedComponent;
+    Connect.displayName = ConnectFunction.displayName = displayName;
+    if (forwardRef) {
+      var _forwarded = react__WEBPACK_IMPORTED_MODULE_3__["forwardRef"](function forwardConnectRef(props, ref) {
+        // @ts-ignore
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"](Connect, Object(_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])({}, props, {
+          reactReduxForwardedRef: ref
+        }));
+      });
+      var forwarded = _forwarded;
+      forwarded.displayName = displayName;
+      forwarded.WrappedComponent = WrappedComponent;
+      return hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_2___default()(forwarded, WrappedComponent);
+    }
+    return hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_2___default()(Connect, WrappedComponent);
+  };
+  return wrapWithConnect;
+}
+/* harmony default export */ __webpack_exports__["a"] = (connect);
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/invalidArgFactory.js":
+/*!**************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/invalidArgFactory.js ***!
+  \**************************************************************************************************/
+/*! exports provided: createInvalidArgFactory */
+/*! exports used: createInvalidArgFactory */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createInvalidArgFactory; });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function createInvalidArgFactory(arg, name) {
+  return function (dispatch, options) {
+    throw new Error("Invalid value of type ".concat(_typeof(arg), " for ").concat(name, " argument when connecting component ").concat(options.wrappedComponentName, "."));
+  };
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/mapDispatchToProps.js":
+/*!***************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/mapDispatchToProps.js ***!
+  \***************************************************************************************************/
+/*! exports provided: mapDispatchToPropsFactory */
+/*! exports used: mapDispatchToPropsFactory */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return mapDispatchToPropsFactory; });
+/* harmony import */ var _utils_bindActionCreators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/bindActionCreators */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/bindActionCreators.js");
+/* harmony import */ var _wrapMapToProps__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./wrapMapToProps */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/wrapMapToProps.js");
+/* harmony import */ var _invalidArgFactory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./invalidArgFactory */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/invalidArgFactory.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+
+
+
+function mapDispatchToPropsFactory(mapDispatchToProps) {
+  return mapDispatchToProps && _typeof(mapDispatchToProps) === 'object' ? Object(_wrapMapToProps__WEBPACK_IMPORTED_MODULE_1__[/* wrapMapToPropsConstant */ "a"])(function (dispatch) {
+    return (
+      // @ts-ignore
+      Object(_utils_bindActionCreators__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(mapDispatchToProps, dispatch)
+    );
+  }) : !mapDispatchToProps ? Object(_wrapMapToProps__WEBPACK_IMPORTED_MODULE_1__[/* wrapMapToPropsConstant */ "a"])(function (dispatch) {
+    return {
+      dispatch: dispatch
+    };
+  }) : typeof mapDispatchToProps === 'function' ?
+  // @ts-ignore
+  Object(_wrapMapToProps__WEBPACK_IMPORTED_MODULE_1__[/* wrapMapToPropsFunc */ "b"])(mapDispatchToProps, 'mapDispatchToProps') : Object(_invalidArgFactory__WEBPACK_IMPORTED_MODULE_2__[/* createInvalidArgFactory */ "a"])(mapDispatchToProps, 'mapDispatchToProps');
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/mapStateToProps.js":
+/*!************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/mapStateToProps.js ***!
+  \************************************************************************************************/
+/*! exports provided: mapStateToPropsFactory */
+/*! exports used: mapStateToPropsFactory */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return mapStateToPropsFactory; });
+/* harmony import */ var _wrapMapToProps__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./wrapMapToProps */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/wrapMapToProps.js");
+/* harmony import */ var _invalidArgFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./invalidArgFactory */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/invalidArgFactory.js");
+
+
+function mapStateToPropsFactory(mapStateToProps) {
+  return !mapStateToProps ? Object(_wrapMapToProps__WEBPACK_IMPORTED_MODULE_0__[/* wrapMapToPropsConstant */ "a"])(function () {
+    return {};
+  }) : typeof mapStateToProps === 'function' ?
+  // @ts-ignore
+  Object(_wrapMapToProps__WEBPACK_IMPORTED_MODULE_0__[/* wrapMapToPropsFunc */ "b"])(mapStateToProps, 'mapStateToProps') : Object(_invalidArgFactory__WEBPACK_IMPORTED_MODULE_1__[/* createInvalidArgFactory */ "a"])(mapStateToProps, 'mapStateToProps');
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/mergeProps.js":
+/*!*******************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/mergeProps.js ***!
+  \*******************************************************************************************/
+/*! exports provided: defaultMergeProps, wrapMergePropsFunc, mergePropsFactory */
+/*! exports used: mergePropsFactory */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export defaultMergeProps */
+/* unused harmony export wrapMergePropsFunc */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return mergePropsFactory; });
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "../node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var _utils_verifyPlainObject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/verifyPlainObject */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/verifyPlainObject.js");
+/* harmony import */ var _invalidArgFactory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./invalidArgFactory */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/invalidArgFactory.js");
+
+
+
+function defaultMergeProps(stateProps, dispatchProps, ownProps) {
+  // @ts-ignore
+  return Object(_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])({}, ownProps, stateProps, dispatchProps);
+}
+function wrapMergePropsFunc(mergeProps) {
+  return function initMergePropsProxy(dispatch, _ref) {
+    var displayName = _ref.displayName,
+      areMergedPropsEqual = _ref.areMergedPropsEqual;
+    var hasRunOnce = false;
+    var mergedProps;
+    return function mergePropsProxy(stateProps, dispatchProps, ownProps) {
+      var nextMergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+      if (hasRunOnce) {
+        if (!areMergedPropsEqual(nextMergedProps, mergedProps)) mergedProps = nextMergedProps;
+      } else {
+        hasRunOnce = true;
+        mergedProps = nextMergedProps;
+        if (false) {}
+      }
+      return mergedProps;
+    };
+  };
+}
+function mergePropsFactory(mergeProps) {
+  return !mergeProps ? function () {
+    return defaultMergeProps;
+  } : typeof mergeProps === 'function' ? wrapMergePropsFunc(mergeProps) : Object(_invalidArgFactory__WEBPACK_IMPORTED_MODULE_2__[/* createInvalidArgFactory */ "a"])(mergeProps, 'mergeProps');
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/selectorFactory.js":
+/*!************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/selectorFactory.js ***!
+  \************************************************************************************************/
+/*! exports provided: pureFinalPropsSelectorFactory, default */
+/*! exports used: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export pureFinalPropsSelectorFactory */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return finalPropsSelectorFactory; });
+/* harmony import */ var _babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectWithoutPropertiesLoose */ "../node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js");
+/* harmony import */ var _verifySubselectors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./verifySubselectors */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/verifySubselectors.js");
+
+var _excluded = ["initMapStateToProps", "initMapDispatchToProps", "initMergeProps"];
+
+function pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch, _ref2) {
+  var areStatesEqual = _ref2.areStatesEqual,
+    areOwnPropsEqual = _ref2.areOwnPropsEqual,
+    areStatePropsEqual = _ref2.areStatePropsEqual;
+  var hasRunAtLeastOnce = false;
+  var state;
+  var ownProps;
+  var stateProps;
+  var dispatchProps;
+  var mergedProps;
+  function handleFirstCall(firstState, firstOwnProps) {
+    state = firstState;
+    ownProps = firstOwnProps;
+    stateProps = mapStateToProps(state, ownProps);
+    dispatchProps = mapDispatchToProps(dispatch, ownProps);
+    mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+    hasRunAtLeastOnce = true;
+    return mergedProps;
+  }
+  function handleNewPropsAndNewState() {
+    stateProps = mapStateToProps(state, ownProps);
+    if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch, ownProps);
+    mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+    return mergedProps;
+  }
+  function handleNewProps() {
+    if (mapStateToProps.dependsOnOwnProps) stateProps = mapStateToProps(state, ownProps);
+    if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch, ownProps);
+    mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+    return mergedProps;
+  }
+  function handleNewState() {
+    var nextStateProps = mapStateToProps(state, ownProps);
+    var statePropsChanged = !areStatePropsEqual(nextStateProps, stateProps);
+    stateProps = nextStateProps;
+    if (statePropsChanged) mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+    return mergedProps;
+  }
+  function handleSubsequentCalls(nextState, nextOwnProps) {
+    var propsChanged = !areOwnPropsEqual(nextOwnProps, ownProps);
+    var stateChanged = !areStatesEqual(nextState, state, nextOwnProps, ownProps);
+    state = nextState;
+    ownProps = nextOwnProps;
+    if (propsChanged && stateChanged) return handleNewPropsAndNewState();
+    if (propsChanged) return handleNewProps();
+    if (stateChanged) return handleNewState();
+    return mergedProps;
+  }
+  return function pureFinalPropsSelector(nextState, nextOwnProps) {
+    return hasRunAtLeastOnce ? handleSubsequentCalls(nextState, nextOwnProps) : handleFirstCall(nextState, nextOwnProps);
+  };
+}
+// TODO: Add more comments
+// The selector returned by selectorFactory will memoize its results,
+// allowing connect's shouldComponentUpdate to return false if final
+// props have not changed.
+function finalPropsSelectorFactory(dispatch, _ref) {
+  var initMapStateToProps = _ref.initMapStateToProps,
+    initMapDispatchToProps = _ref.initMapDispatchToProps,
+    initMergeProps = _ref.initMergeProps,
+    options = Object(_babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(_ref, _excluded);
+  var mapStateToProps = initMapStateToProps(dispatch, options);
+  var mapDispatchToProps = initMapDispatchToProps(dispatch, options);
+  var mergeProps = initMergeProps(dispatch, options);
+  if (false) {}
+  return pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch, options);
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/verifySubselectors.js":
+/*!***************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/verifySubselectors.js ***!
+  \***************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export default */
+/* harmony import */ var _utils_warning__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/warning */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/warning.js");
+
+function verify(selector, methodName) {
+  if (!selector) {
+    throw new Error("Unexpected value for ".concat(methodName, " in connect."));
+  } else if (methodName === 'mapStateToProps' || methodName === 'mapDispatchToProps') {
+    if (!Object.prototype.hasOwnProperty.call(selector, 'dependsOnOwnProps')) {
+      Object(_utils_warning__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])("The selector for ".concat(methodName, " of connect did not specify a value for dependsOnOwnProps."));
+    }
+  }
+}
+function verifySubselectors(mapStateToProps, mapDispatchToProps, mergeProps) {
+  verify(mapStateToProps, 'mapStateToProps');
+  verify(mapDispatchToProps, 'mapDispatchToProps');
+  verify(mergeProps, 'mergeProps');
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/wrapMapToProps.js":
+/*!***********************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/connect/wrapMapToProps.js ***!
+  \***********************************************************************************************/
+/*! exports provided: wrapMapToPropsConstant, getDependsOnOwnProps, wrapMapToPropsFunc */
+/*! exports used: wrapMapToPropsConstant, wrapMapToPropsFunc */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return wrapMapToPropsConstant; });
+/* unused harmony export getDependsOnOwnProps */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return wrapMapToPropsFunc; });
+/* harmony import */ var _utils_verifyPlainObject__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/verifyPlainObject */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/verifyPlainObject.js");
+
+function wrapMapToPropsConstant(
+// * Note:
+//  It seems that the dispatch argument
+//  could be a dispatch function in some cases (ex: whenMapDispatchToPropsIsMissing)
+//  and a state object in some others (ex: whenMapStateToPropsIsMissing)
+// eslint-disable-next-line no-unused-vars
+getConstant) {
+  return function initConstantSelector(dispatch) {
+    var constant = getConstant(dispatch);
+    function constantSelector() {
+      return constant;
+    }
+    constantSelector.dependsOnOwnProps = false;
+    return constantSelector;
+  };
+} // dependsOnOwnProps is used by createMapToPropsProxy to determine whether to pass props as args
+// to the mapToProps function being wrapped. It is also used by makePurePropsSelector to determine
+// whether mapToProps needs to be invoked when props have changed.
+//
+// A length of one signals that mapToProps does not depend on props from the parent component.
+// A length of zero is assumed to mean mapToProps is getting args via arguments or ...args and
+// therefore not reporting its length accurately..
+// TODO Can this get pulled out so that we can subscribe directly to the store if we don't need ownProps?
+
+function getDependsOnOwnProps(mapToProps) {
+  return mapToProps.dependsOnOwnProps ? Boolean(mapToProps.dependsOnOwnProps) : mapToProps.length !== 1;
+} // Used by whenMapStateToPropsIsFunction and whenMapDispatchToPropsIsFunction,
+// this function wraps mapToProps in a proxy function which does several things:
+//
+//  * Detects whether the mapToProps function being called depends on props, which
+//    is used by selectorFactory to decide if it should reinvoke on props changes.
+//
+//  * On first call, handles mapToProps if returns another function, and treats that
+//    new function as the true mapToProps for subsequent calls.
+//
+//  * On first call, verifies the first result is a plain object, in order to warn
+//    the developer that their mapToProps function is not returning a valid result.
+//
+
+function wrapMapToPropsFunc(mapToProps, methodName) {
+  return function initProxySelector(dispatch, _ref) {
+    var displayName = _ref.displayName;
+    var proxy = function mapToPropsProxy(stateOrDispatch, ownProps) {
+      return proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch, undefined);
+    }; // allow detectFactoryAndVerify to get ownProps
+
+    proxy.dependsOnOwnProps = true;
+    proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch, ownProps) {
+      proxy.mapToProps = mapToProps;
+      proxy.dependsOnOwnProps = getDependsOnOwnProps(mapToProps);
+      var props = proxy(stateOrDispatch, ownProps);
+      if (typeof props === 'function') {
+        proxy.mapToProps = props;
+        proxy.dependsOnOwnProps = getDependsOnOwnProps(props);
+        props = proxy(stateOrDispatch, ownProps);
+      }
+      if (false) {}
+      return props;
+    };
+    return proxy;
+  };
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/exports.js":
+/*!********************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/exports.js ***!
+  \********************************************************************************/
+/*! exports provided: Provider, ReactReduxContext, connect, useDispatch, createDispatchHook, useSelector, createSelectorHook, useStore, createStoreHook, shallowEqual */
+/*! exports used: Provider, connect */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _components_Provider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Provider */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/Provider.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _components_Provider__WEBPACK_IMPORTED_MODULE_0__["a"]; });
+
+/* harmony import */ var _components_connect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/connect */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/connect.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "b", function() { return _components_connect__WEBPACK_IMPORTED_MODULE_1__["a"]; });
+
+/* harmony import */ var _components_Context__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Context */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/Context.js");
+/* harmony import */ var _hooks_useDispatch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./hooks/useDispatch */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useDispatch.js");
+/* harmony import */ var _hooks_useSelector__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./hooks/useSelector */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useSelector.js");
+/* harmony import */ var _hooks_useStore__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./hooks/useStore */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useStore.js");
+/* harmony import */ var _utils_shallowEqual__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./utils/shallowEqual */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/shallowEqual.js");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./types */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/types.js");
+
+
+
+
+
+
+
+
+
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useDispatch.js":
+/*!******************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useDispatch.js ***!
+  \******************************************************************************************/
+/*! exports provided: createDispatchHook, useDispatch */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export createDispatchHook */
+/* unused harmony export useDispatch */
+/* harmony import */ var _components_Context__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Context */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/Context.js");
+/* harmony import */ var _useStore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useStore */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useStore.js");
+
+
+/**
+ * Hook factory, which creates a `useDispatch` hook bound to a given context.
+ *
+ * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
+ * @returns {Function} A `useDispatch` hook bound to the specified context.
+ */
+
+function createDispatchHook() {
+  var context = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _components_Context__WEBPACK_IMPORTED_MODULE_0__[/* ReactReduxContext */ "a"];
+  var useStore =
+  // @ts-ignore
+  context === _components_Context__WEBPACK_IMPORTED_MODULE_0__[/* ReactReduxContext */ "a"] ? _useStore__WEBPACK_IMPORTED_MODULE_1__[/* useStore */ "b"] : Object(_useStore__WEBPACK_IMPORTED_MODULE_1__[/* createStoreHook */ "a"])(context);
+  return function useDispatch() {
+    var store = useStore(); // @ts-ignore
+
+    return store.dispatch;
+  };
+}
+/**
+ * A hook to access the redux `dispatch` function.
+ *
+ * @returns {any|function} redux store's `dispatch` function
+ *
+ * @example
+ *
+ * import React, { useCallback } from 'react'
+ * import { useDispatch } from 'react-redux'
+ *
+ * export const CounterComponent = ({ value }) => {
+ *   const dispatch = useDispatch()
+ *   const increaseCounter = useCallback(() => dispatch({ type: 'increase-counter' }), [])
+ *   return (
+ *     <div>
+ *       <span>{value}</span>
+ *       <button onClick={increaseCounter}>Increase counter</button>
+ *     </div>
+ *   )
+ * }
+ */
+
+var useDispatch = /*#__PURE__*/createDispatchHook();
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useReduxContext.js":
+/*!**********************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useReduxContext.js ***!
+  \**********************************************************************************************/
+/*! exports provided: createReduxContextHook, useReduxContext */
+/*! exports used: createReduxContextHook, useReduxContext */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createReduxContextHook; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return useReduxContext; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _components_Context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Context */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/Context.js");
+
+
+
+/**
+ * Hook factory, which creates a `useReduxContext` hook bound to a given context. This is a low-level
+ * hook that you should usually not need to call directly.
+ *
+ * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
+ * @returns {Function} A `useReduxContext` hook bound to the specified context.
+ */
+function createReduxContextHook() {
+  var context = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _components_Context__WEBPACK_IMPORTED_MODULE_1__[/* ReactReduxContext */ "a"];
+  return function useReduxContext() {
+    var contextValue = Object(react__WEBPACK_IMPORTED_MODULE_0__["useContext"])(context);
+    if (false) {}
+    return contextValue;
+  };
+}
+/**
+ * A hook to access the value of the `ReactReduxContext`. This is a low-level
+ * hook that you should usually not need to call directly.
+ *
+ * @returns {any} the value of the `ReactReduxContext`
+ *
+ * @example
+ *
+ * import React from 'react'
+ * import { useReduxContext } from 'react-redux'
+ *
+ * export const CounterComponent = () => {
+ *   const { store } = useReduxContext()
+ *   return <div>{store.getState()}</div>
+ * }
+ */
+
+var useReduxContext = /*#__PURE__*/createReduxContextHook();
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useSelector.js":
+/*!******************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useSelector.js ***!
+  \******************************************************************************************/
+/*! exports provided: initializeUseSelector, createSelectorHook, useSelector */
+/*! exports used: initializeUseSelector */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return initializeUseSelector; });
+/* unused harmony export createSelectorHook */
+/* unused harmony export useSelector */
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _useReduxContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useReduxContext */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useReduxContext.js");
+/* harmony import */ var _components_Context__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Context */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/Context.js");
+/* harmony import */ var _utils_useSyncExternalStore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/useSyncExternalStore */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/useSyncExternalStore.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
+
+
+
+var useSyncExternalStoreWithSelector = _utils_useSyncExternalStore__WEBPACK_IMPORTED_MODULE_3__[/* notInitialized */ "a"];
+var initializeUseSelector = function initializeUseSelector(fn) {
+  useSyncExternalStoreWithSelector = fn;
+};
+var refEquality = function refEquality(a, b) {
+  return a === b;
+};
+/**
+ * Hook factory, which creates a `useSelector` hook bound to a given context.
+ *
+ * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
+ * @returns {Function} A `useSelector` hook bound to the specified context.
+ */
+
+function createSelectorHook() {
+  var context = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _components_Context__WEBPACK_IMPORTED_MODULE_2__[/* ReactReduxContext */ "a"];
+  var useReduxContext = context === _components_Context__WEBPACK_IMPORTED_MODULE_2__[/* ReactReduxContext */ "a"] ? _useReduxContext__WEBPACK_IMPORTED_MODULE_1__[/* useReduxContext */ "b"] : Object(_useReduxContext__WEBPACK_IMPORTED_MODULE_1__[/* createReduxContextHook */ "a"])(context);
+  return function useSelector(selector) {
+    var equalityFnOrOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var _ref = typeof equalityFnOrOptions === 'function' ? {
+        equalityFn: equalityFnOrOptions
+      } : equalityFnOrOptions,
+      _ref$equalityFn = _ref.equalityFn,
+      equalityFn = _ref$equalityFn === void 0 ? refEquality : _ref$equalityFn,
+      _ref$stabilityCheck = _ref.stabilityCheck,
+      stabilityCheck = _ref$stabilityCheck === void 0 ? undefined : _ref$stabilityCheck,
+      _ref$noopCheck = _ref.noopCheck,
+      noopCheck = _ref$noopCheck === void 0 ? undefined : _ref$noopCheck;
+    if (false) {}
+    var _useReduxContext = useReduxContext(),
+      store = _useReduxContext.store,
+      subscription = _useReduxContext.subscription,
+      getServerState = _useReduxContext.getServerState,
+      globalStabilityCheck = _useReduxContext.stabilityCheck,
+      globalNoopCheck = _useReduxContext.noopCheck;
+    var firstRun = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])(true);
+    var wrappedSelector = Object(react__WEBPACK_IMPORTED_MODULE_0__["useCallback"])(_defineProperty({}, selector.name, function (state) {
+      var selected = selector(state);
+      if (false) { var _stack, finalNoopCheck, stack, toCompare, finalStabilityCheck; }
+      return selected;
+    })[selector.name], [selector, globalStabilityCheck, stabilityCheck]);
+    var selectedState = useSyncExternalStoreWithSelector(subscription.addNestedSub, store.getState, getServerState || store.getState, wrappedSelector, equalityFn);
+    Object(react__WEBPACK_IMPORTED_MODULE_0__["useDebugValue"])(selectedState);
+    return selectedState;
+  };
+}
+/**
+ * A hook to access the redux store's state. This hook takes a selector function
+ * as an argument. The selector is called with the store state.
+ *
+ * This hook takes an optional equality comparison function as the second parameter
+ * that allows you to customize the way the selected state is compared to determine
+ * whether the component needs to be re-rendered.
+ *
+ * @param {Function} selector the selector function
+ * @param {Function=} equalityFn the function that will be used to determine equality
+ *
+ * @returns {any} the selected state
+ *
+ * @example
+ *
+ * import React from 'react'
+ * import { useSelector } from 'react-redux'
+ *
+ * export const CounterComponent = () => {
+ *   const counter = useSelector(state => state.counter)
+ *   return <div>{counter}</div>
+ * }
+ */
+
+var useSelector = /*#__PURE__*/createSelectorHook();
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useStore.js":
+/*!***************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useStore.js ***!
+  \***************************************************************************************/
+/*! exports provided: createStoreHook, useStore */
+/*! exports used: createStoreHook, useStore */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createStoreHook; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return useStore; });
+/* harmony import */ var _components_Context__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Context */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/Context.js");
+/* harmony import */ var _useReduxContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useReduxContext */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useReduxContext.js");
+
+
+/**
+ * Hook factory, which creates a `useStore` hook bound to a given context.
+ *
+ * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
+ * @returns {Function} A `useStore` hook bound to the specified context.
+ */
+
+function createStoreHook() {
+  var context = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _components_Context__WEBPACK_IMPORTED_MODULE_0__[/* ReactReduxContext */ "a"];
+  var useReduxContext =
+  // @ts-ignore
+  context === _components_Context__WEBPACK_IMPORTED_MODULE_0__[/* ReactReduxContext */ "a"] ? _useReduxContext__WEBPACK_IMPORTED_MODULE_1__[/* useReduxContext */ "b"] :
+  // @ts-ignore
+  Object(_useReduxContext__WEBPACK_IMPORTED_MODULE_1__[/* createReduxContextHook */ "a"])(context);
+  return function useStore() {
+    var _useReduxContext = useReduxContext(),
+      store = _useReduxContext.store; // @ts-ignore
+
+    return store;
+  };
+}
+/**
+ * A hook to access the redux store.
+ *
+ * @returns {any} the redux store
+ *
+ * @example
+ *
+ * import React from 'react'
+ * import { useStore } from 'react-redux'
+ *
+ * export const ExampleComponent = () => {
+ *   const store = useStore()
+ *   return <div>{store.getState()}</div>
+ * }
+ */
+
+var useStore = /*#__PURE__*/createStoreHook();
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/index.js":
+/*!******************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/index.js ***!
+  \******************************************************************************/
+/*! exports provided: batch, Provider, ReactReduxContext, connect, useDispatch, createDispatchHook, useSelector, createSelectorHook, useStore, createStoreHook, shallowEqual */
+/*! exports used: Provider, connect */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! use-sync-external-store/shim */ "../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/shim/index.js");
+/* harmony import */ var use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var use_sync_external_store_shim_with_selector__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! use-sync-external-store/shim/with-selector */ "../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/shim/with-selector.js");
+/* harmony import */ var use_sync_external_store_shim_with_selector__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(use_sync_external_store_shim_with_selector__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _utils_reactBatchedUpdates__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/reactBatchedUpdates */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/reactBatchedUpdates.js");
+/* harmony import */ var _utils_batch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/batch */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/batch.js");
+/* harmony import */ var _hooks_useSelector__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./hooks/useSelector */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/hooks/useSelector.js");
+/* harmony import */ var _components_connect__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/connect */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/components/connect.js");
+/* harmony import */ var _exports__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./exports */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/exports.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _exports__WEBPACK_IMPORTED_MODULE_6__["a"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "b", function() { return _exports__WEBPACK_IMPORTED_MODULE_6__["b"]; });
+
+// The primary entry point assumes we're working with standard ReactDOM/RN, but
+// older versions that do not include `useSyncExternalStore` (React 16.9 - 17.x).
+// Because of that, the useSyncExternalStore compat shim is needed.
+
+
+
+
+
+
+Object(_hooks_useSelector__WEBPACK_IMPORTED_MODULE_4__[/* initializeUseSelector */ "a"])(use_sync_external_store_shim_with_selector__WEBPACK_IMPORTED_MODULE_1__["useSyncExternalStoreWithSelector"]);
+Object(_components_connect__WEBPACK_IMPORTED_MODULE_5__[/* initializeConnect */ "b"])(use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_0__["useSyncExternalStore"]); // Enable batched updates in our subscriptions for use
+// with standard React renderers (ReactDOM, React Native)
+
+Object(_utils_batch__WEBPACK_IMPORTED_MODULE_3__[/* setBatch */ "b"])(_utils_reactBatchedUpdates__WEBPACK_IMPORTED_MODULE_2__[/* unstable_batchedUpdates */ "a"]);
+
+
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/types.js":
+/*!******************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/types.js ***!
+  \******************************************************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/Subscription.js":
+/*!*******************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/Subscription.js ***!
+  \*******************************************************************************************/
+/*! exports provided: createSubscription */
+/*! exports used: createSubscription */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createSubscription; });
+/* harmony import */ var _batch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./batch */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/batch.js");
+ // encapsulates the subscription logic for connecting a component to the redux store, as
+// well as nesting subscriptions of descendant components, so that we can ensure the
+// ancestor components re-render before descendants
+
+function createListenerCollection() {
+  var batch = Object(_batch__WEBPACK_IMPORTED_MODULE_0__[/* getBatch */ "a"])();
+  var first = null;
+  var last = null;
+  return {
+    clear: function clear() {
+      first = null;
+      last = null;
+    },
+    notify: function notify() {
+      batch(function () {
+        var listener = first;
+        while (listener) {
+          listener.callback();
+          listener = listener.next;
+        }
+      });
+    },
+    get: function get() {
+      var listeners = [];
+      var listener = first;
+      while (listener) {
+        listeners.push(listener);
+        listener = listener.next;
+      }
+      return listeners;
+    },
+    subscribe: function subscribe(callback) {
+      var isSubscribed = true;
+      var listener = last = {
+        callback: callback,
+        next: null,
+        prev: last
+      };
+      if (listener.prev) {
+        listener.prev.next = listener;
+      } else {
+        first = listener;
+      }
+      return function unsubscribe() {
+        if (!isSubscribed || first === null) return;
+        isSubscribed = false;
+        if (listener.next) {
+          listener.next.prev = listener.prev;
+        } else {
+          last = listener.prev;
+        }
+        if (listener.prev) {
+          listener.prev.next = listener.next;
+        } else {
+          first = listener.next;
+        }
+      };
+    }
+  };
+}
+var nullListeners = {
+  notify: function notify() {},
+  get: function get() {
+    return [];
+  }
+};
+function createSubscription(store, parentSub) {
+  var unsubscribe;
+  var listeners = nullListeners; // Reasons to keep the subscription active
+
+  var subscriptionsAmount = 0; // Is this specific subscription subscribed (or only nested ones?)
+
+  var selfSubscribed = false;
+  function addNestedSub(listener) {
+    trySubscribe();
+    var cleanupListener = listeners.subscribe(listener); // cleanup nested sub
+
+    var removed = false;
+    return function () {
+      if (!removed) {
+        removed = true;
+        cleanupListener();
+        tryUnsubscribe();
+      }
+    };
+  }
+  function notifyNestedSubs() {
+    listeners.notify();
+  }
+  function handleChangeWrapper() {
+    if (subscription.onStateChange) {
+      subscription.onStateChange();
+    }
+  }
+  function isSubscribed() {
+    return selfSubscribed;
+  }
+  function trySubscribe() {
+    subscriptionsAmount++;
+    if (!unsubscribe) {
+      unsubscribe = parentSub ? parentSub.addNestedSub(handleChangeWrapper) : store.subscribe(handleChangeWrapper);
+      listeners = createListenerCollection();
+    }
+  }
+  function tryUnsubscribe() {
+    subscriptionsAmount--;
+    if (unsubscribe && subscriptionsAmount === 0) {
+      unsubscribe();
+      unsubscribe = undefined;
+      listeners.clear();
+      listeners = nullListeners;
+    }
+  }
+  function trySubscribeSelf() {
+    if (!selfSubscribed) {
+      selfSubscribed = true;
+      trySubscribe();
+    }
+  }
+  function tryUnsubscribeSelf() {
+    if (selfSubscribed) {
+      selfSubscribed = false;
+      tryUnsubscribe();
+    }
+  }
+  var subscription = {
+    addNestedSub: addNestedSub,
+    notifyNestedSubs: notifyNestedSubs,
+    handleChangeWrapper: handleChangeWrapper,
+    isSubscribed: isSubscribed,
+    trySubscribe: trySubscribeSelf,
+    tryUnsubscribe: tryUnsubscribeSelf,
+    getListeners: function getListeners() {
+      return listeners;
+    }
+  };
+  return subscription;
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/batch.js":
+/*!************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/batch.js ***!
+  \************************************************************************************/
+/*! exports provided: setBatch, getBatch */
+/*! exports used: getBatch, setBatch */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return setBatch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getBatch; });
+// Default to a dummy "batch" implementation that just runs the callback
+function defaultNoopBatch(callback) {
+  callback();
+}
+var batch = defaultNoopBatch; // Allow injecting another batching function later
+
+var setBatch = function setBatch(newBatch) {
+  return batch = newBatch;
+}; // Supply a getter just to skip dealing with ESM bindings
+
+var getBatch = function getBatch() {
+  return batch;
+};
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/bindActionCreators.js":
+/*!*************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/bindActionCreators.js ***!
+  \*************************************************************************************************/
+/*! exports provided: default */
+/*! exports used: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return bindActionCreators; });
+function bindActionCreators(actionCreators, dispatch) {
+  var boundActionCreators = {};
+  var _loop = function _loop() {
+    var actionCreator = actionCreators[key];
+    if (typeof actionCreator === 'function') {
+      boundActionCreators[key] = function () {
+        return dispatch(actionCreator.apply(void 0, arguments));
+      };
+    }
+  };
+  for (var key in actionCreators) {
+    _loop();
+  }
+  return boundActionCreators;
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/isPlainObject.js":
+/*!********************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/isPlainObject.js ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/*! exports used: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return isPlainObject; });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+/**
+ * @param {any} obj The object to inspect.
+ * @returns {boolean} True if the argument appears to be a plain object.
+ */
+function isPlainObject(obj) {
+  if (_typeof(obj) !== 'object' || obj === null) return false;
+  var proto = Object.getPrototypeOf(obj);
+  if (proto === null) return true;
+  var baseProto = proto;
+  while (Object.getPrototypeOf(baseProto) !== null) {
+    baseProto = Object.getPrototypeOf(baseProto);
+  }
+  return proto === baseProto;
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/reactBatchedUpdates.js":
+/*!**************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/reactBatchedUpdates.js ***!
+  \**************************************************************************************************/
+/*! exports provided: unstable_batchedUpdates */
+/*! exports used: unstable_batchedUpdates */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react-dom */ "../node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "a", function() { return react_dom__WEBPACK_IMPORTED_MODULE_0__["unstable_batchedUpdates"]; });
+
+
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/shallowEqual.js":
+/*!*******************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/shallowEqual.js ***!
+  \*******************************************************************************************/
+/*! exports provided: default */
+/*! exports used: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return shallowEqual; });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function is(x, y) {
+  if (x === y) {
+    return x !== 0 || y !== 0 || 1 / x === 1 / y;
+  } else {
+    return x !== x && y !== y;
+  }
+}
+function shallowEqual(objA, objB) {
+  if (is(objA, objB)) return true;
+  if (_typeof(objA) !== 'object' || objA === null || _typeof(objB) !== 'object' || objB === null) {
+    return false;
+  }
+  var keysA = Object.keys(objA);
+  var keysB = Object.keys(objB);
+  if (keysA.length !== keysB.length) return false;
+  for (var i = 0; i < keysA.length; i++) {
+    if (!Object.prototype.hasOwnProperty.call(objB, keysA[i]) || !is(objA[keysA[i]], objB[keysA[i]])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/useIsomorphicLayoutEffect.js":
+/*!********************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/useIsomorphicLayoutEffect.js ***!
+  \********************************************************************************************************/
+/*! exports provided: canUseDOM, useIsomorphicLayoutEffect */
+/*! exports used: useIsomorphicLayoutEffect */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export canUseDOM */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return useIsomorphicLayoutEffect; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+ // React currently throws a warning when using useLayoutEffect on the server.
+// To get around it, we can conditionally useEffect on the server (no-op) and
+// useLayoutEffect in the browser. We need useLayoutEffect to ensure the store
+// subscription callback always has the selector from the latest render commit
+// available, otherwise a store update may happen between render and the effect,
+// which may cause missed updates; we also must ensure the store subscription
+// is created synchronously, otherwise a store update may occur before the
+// subscription is created and an inconsistent state may be observed
+// Matches logic in React's `shared/ExecutionEnvironment` file
+
+var canUseDOM = !!(typeof window !== 'undefined' && typeof window.document !== 'undefined' && typeof window.document.createElement !== 'undefined');
+var useIsomorphicLayoutEffect = canUseDOM ? react__WEBPACK_IMPORTED_MODULE_0__["useLayoutEffect"] : react__WEBPACK_IMPORTED_MODULE_0__["useEffect"];
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/useSyncExternalStore.js":
+/*!***************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/useSyncExternalStore.js ***!
+  \***************************************************************************************************/
+/*! exports provided: notInitialized */
+/*! exports used: notInitialized */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return notInitialized; });
+var notInitialized = function notInitialized() {
+  throw new Error('uSES not initialized!');
+};
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/verifyPlainObject.js":
+/*!************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/verifyPlainObject.js ***!
+  \************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export default */
+/* harmony import */ var _isPlainObject__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./isPlainObject */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/isPlainObject.js");
+/* harmony import */ var _warning__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./warning */ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/warning.js");
+
+
+function verifyPlainObject(value, displayName, methodName) {
+  if (!Object(_isPlainObject__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(value)) {
+    Object(_warning__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"])("".concat(methodName, "() in ").concat(displayName, " must return a plain object. Instead received ").concat(value, "."));
+  }
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/warning.js":
+/*!**************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/react-redux/es/utils/warning.js ***!
+  \**************************************************************************************/
+/*! exports provided: default */
+/*! exports used: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return warning; });
+/**
+ * Prints a warning in the console if it exists.
+ *
+ * @param {String} message The warning message.
+ * @returns {void}
+ */
+function warning(message) {
+  /* eslint-disable no-console */
+  if (typeof console !== 'undefined' && typeof console.error === 'function') {
+    console.error(message);
+  }
+  /* eslint-enable no-console */
+
+  try {
+    // This error was thrown as a convenience so that if you enable
+    // "break on all exceptions" in your console,
+    // it would pause the execution at this line.
+    throw new Error(message);
+    /* eslint-disable no-empty */
+  } catch (e) {}
+  /* eslint-enable no-empty */
+}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.production.min.js":
+/*!*********************************************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.production.min.js ***!
+  \*********************************************************************************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * @license React
+ * use-sync-external-store-shim.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+var e = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+function h(a, b) {
+  return a === b && (0 !== a || 1 / a === 1 / b) || a !== a && b !== b;
+}
+var k = "function" === typeof Object.is ? Object.is : h,
+  l = e.useState,
+  m = e.useEffect,
+  n = e.useLayoutEffect,
+  p = e.useDebugValue;
+function q(a, b) {
+  var d = b(),
+    f = l({
+      inst: {
+        value: d,
+        getSnapshot: b
+      }
+    }),
+    c = f[0].inst,
+    g = f[1];
+  n(function () {
+    c.value = d;
+    c.getSnapshot = b;
+    r(c) && g({
+      inst: c
+    });
+  }, [a, d, b]);
+  m(function () {
+    r(c) && g({
+      inst: c
+    });
+    return a(function () {
+      r(c) && g({
+        inst: c
+      });
+    });
+  }, [a]);
+  p(d);
+  return d;
+}
+function r(a) {
+  var b = a.getSnapshot;
+  a = a.value;
+  try {
+    var d = b();
+    return !k(a, d);
+  } catch (f) {
+    return !0;
+  }
+}
+function t(a, b) {
+  return b();
+}
+var u = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? t : q;
+exports.useSyncExternalStore = void 0 !== e.useSyncExternalStore ? e.useSyncExternalStore : u;
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.production.min.js":
+/*!***********************************************************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.production.min.js ***!
+  \***********************************************************************************************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * @license React
+ * use-sync-external-store-shim/with-selector.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+var h = __webpack_require__(/*! react */ "../node_modules/react/index.js"),
+  n = __webpack_require__(/*! use-sync-external-store/shim */ "../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/shim/index.js");
+function p(a, b) {
+  return a === b && (0 !== a || 1 / a === 1 / b) || a !== a && b !== b;
+}
+var q = "function" === typeof Object.is ? Object.is : p,
+  r = n.useSyncExternalStore,
+  t = h.useRef,
+  u = h.useEffect,
+  v = h.useMemo,
+  w = h.useDebugValue;
+exports.useSyncExternalStoreWithSelector = function (a, b, e, l, g) {
+  var c = t(null);
+  if (null === c.current) {
+    var f = {
+      hasValue: !1,
+      value: null
+    };
+    c.current = f;
+  } else f = c.current;
+  c = v(function () {
+    function a(a) {
+      if (!c) {
+        c = !0;
+        d = a;
+        a = l(a);
+        if (void 0 !== g && f.hasValue) {
+          var b = f.value;
+          if (g(b, a)) return k = b;
+        }
+        return k = a;
+      }
+      b = k;
+      if (q(d, a)) return b;
+      var e = l(a);
+      if (void 0 !== g && g(b, e)) return b;
+      d = a;
+      return k = e;
+    }
+    var c = !1,
+      d,
+      k,
+      m = void 0 === e ? null : e;
+    return [function () {
+      return a(b());
+    }, null === m ? void 0 : function () {
+      return a(m());
+    }];
+  }, [b, e, l, g]);
+  var d = r(a, c[0], c[1]);
+  u(function () {
+    f.hasValue = !0;
+    f.value = d;
+  }, [d]);
+  w(d);
+  return d;
+};
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/shim/index.js":
+/*!********************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/shim/index.js ***!
+  \********************************************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+if (true) {
+  module.exports = __webpack_require__(/*! ../cjs/use-sync-external-store-shim.production.min.js */ "../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.production.min.js");
+} else {}
+
+/***/ }),
+
+/***/ "../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/shim/with-selector.js":
+/*!****************************************************************************************************!*\
+  !*** ../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/shim/with-selector.js ***!
+  \****************************************************************************************************/
+/*! no static exports found */
+/*! exports used: useSyncExternalStoreWithSelector */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+if (true) {
+  module.exports = __webpack_require__(/*! ../cjs/use-sync-external-store-shim/with-selector.production.min.js */ "../node_modules/@hello-pangea/dnd/node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.production.min.js");
+} else {}
 
 /***/ }),
 
@@ -130990,28 +132907,33 @@ function visit(tree, test, visitor, reverse) {
 
 /***/ }),
 
-/***/ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js":
-/*!******************************************************************!*\
-  !*** ../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js ***!
-  \******************************************************************/
-/*! exports provided: __DO_NOT_USE__ActionTypes, applyMiddleware, bindActionCreators, combineReducers, compose, createStore, legacy_createStore, EnhancerArray, MiddlewareArray, SHOULD_AUTOBATCH, TaskAbortError, addListener, autoBatchEnhancer, clearAllListeners, configureStore, createAction, createActionCreatorInvariantMiddleware, createAsyncThunk, createDraftSafeSelector, createEntityAdapter, createImmutableStateInvariantMiddleware, createListenerMiddleware, createNextState, createReducer, createSelector, createSerializableStateInvariantMiddleware, createSlice, current, findNonSerializableValue, freeze, getDefaultMiddleware, getType, isAction, isActionCreator, isAllOf, isAnyOf, isAsyncThunkAction, isDraft, isFluxStandardAction, isFulfilled, isImmutableDefault, isPending, isPlain, isPlainObject, isRejected, isRejectedWithValue, miniSerializeError, nanoid, original, prepareAutoBatched, removeListener, unwrapResult */
+/***/ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js":
+/*!*************************************************************************!*\
+  !*** ../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js ***!
+  \*************************************************************************/
+/*! exports provided: __DO_NOT_USE__ActionTypes, applyMiddleware, bindActionCreators, combineReducers, compose, createStore, isAction, isPlainObject, legacy_createStore, ReducerType, SHOULD_AUTOBATCH, TaskAbortError, Tuple, addListener, asyncThunkCreator, autoBatchEnhancer, buildCreateSlice, clearAllListeners, combineSlices, configureStore, createAction, createActionCreatorInvariantMiddleware, createAsyncThunk, createDraftSafeSelector, createDraftSafeSelectorCreator, createDynamicMiddleware, createEntityAdapter, createImmutableStateInvariantMiddleware, createListenerMiddleware, createNextState, createReducer, createSelector, createSelectorCreator, createSerializableStateInvariantMiddleware, createSlice, current, findNonSerializableValue, formatProdErrorMessage, freeze, isActionCreator, isAllOf, isAnyOf, isAsyncThunkAction, isDraft, isFluxStandardAction, isFulfilled, isImmutableDefault, isPending, isPlain, isRejected, isRejectedWithValue, lruMemoize, miniSerializeError, nanoid, original, prepareAutoBatched, removeListener, unwrapResult, weakMapMemoize */
 /*! all exports used */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(process, global) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EnhancerArray", function() { return EnhancerArray; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MiddlewareArray", function() { return MiddlewareArray; });
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ReducerType", function() { return ReducerType; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SHOULD_AUTOBATCH", function() { return SHOULD_AUTOBATCH; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TaskAbortError", function() { return TaskAbortError; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Tuple", function() { return Tuple; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addListener", function() { return addListener; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asyncThunkCreator", function() { return asyncThunkCreator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "autoBatchEnhancer", function() { return autoBatchEnhancer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buildCreateSlice", function() { return buildCreateSlice; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clearAllListeners", function() { return clearAllListeners; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "combineSlices", function() { return combineSlices; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "configureStore", function() { return configureStore; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createAction", function() { return createAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createActionCreatorInvariantMiddleware", function() { return createActionCreatorInvariantMiddleware; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createAsyncThunk", function() { return createAsyncThunk; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createDraftSafeSelector", function() { return createDraftSafeSelector; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createDraftSafeSelectorCreator", function() { return createDraftSafeSelectorCreator; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createDynamicMiddleware", function() { return createDynamicMiddleware; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createEntityAdapter", function() { return createEntityAdapter; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createImmutableStateInvariantMiddleware", function() { return createImmutableStateInvariantMiddleware; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createListenerMiddleware", function() { return createListenerMiddleware; });
@@ -131019,9 +132941,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createSerializableStateInvariantMiddleware", function() { return createSerializableStateInvariantMiddleware; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createSlice", function() { return createSlice; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findNonSerializableValue", function() { return findNonSerializableValue; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDefaultMiddleware", function() { return getDefaultMiddleware; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getType", function() { return getType; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isAction", function() { return isAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatProdErrorMessage", function() { return formatProdErrorMessage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isActionCreator", function() { return isActionCreator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isAllOf", function() { return isAllOf; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isAnyOf", function() { return isAnyOf; });
@@ -131031,7 +132951,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isImmutableDefault", function() { return isImmutableDefault; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPending", function() { return isPending; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPlain", function() { return isPlain; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPlainObject", function() { return isPlainObject; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRejected", function() { return isRejected; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRejectedWithValue", function() { return isRejectedWithValue; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "miniSerializeError", function() { return miniSerializeError; });
@@ -131039,1998 +132958,4281 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "prepareAutoBatched", function() { return prepareAutoBatched; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeListener", function() { return removeListener; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unwrapResult", function() { return unwrapResult; });
-/* harmony import */ var immer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! immer */ "../node_modules/immer/dist/immer.esm.js");
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "__DO_NOT_USE__ActionTypes", function() { return redux__WEBPACK_IMPORTED_MODULE_1__["__DO_NOT_USE__ActionTypes"]; });
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ "../node_modules/@reduxjs/toolkit/node_modules/redux/dist/redux.legacy-esm.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "__DO_NOT_USE__ActionTypes", function() { return redux__WEBPACK_IMPORTED_MODULE_0__["a"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "applyMiddleware", function() { return redux__WEBPACK_IMPORTED_MODULE_1__["applyMiddleware"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "applyMiddleware", function() { return redux__WEBPACK_IMPORTED_MODULE_0__["b"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return redux__WEBPACK_IMPORTED_MODULE_1__["bindActionCreators"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return redux__WEBPACK_IMPORTED_MODULE_0__["c"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return redux__WEBPACK_IMPORTED_MODULE_1__["combineReducers"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return redux__WEBPACK_IMPORTED_MODULE_0__["d"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "compose", function() { return redux__WEBPACK_IMPORTED_MODULE_1__["compose"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "compose", function() { return redux__WEBPACK_IMPORTED_MODULE_0__["e"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return redux__WEBPACK_IMPORTED_MODULE_1__["createStore"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return redux__WEBPACK_IMPORTED_MODULE_0__["f"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "legacy_createStore", function() { return redux__WEBPACK_IMPORTED_MODULE_1__["legacy_createStore"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "isAction", function() { return redux__WEBPACK_IMPORTED_MODULE_0__["g"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createNextState", function() { return immer__WEBPACK_IMPORTED_MODULE_0__["b"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "isPlainObject", function() { return redux__WEBPACK_IMPORTED_MODULE_0__["h"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "current", function() { return immer__WEBPACK_IMPORTED_MODULE_0__["a"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "legacy_createStore", function() { return redux__WEBPACK_IMPORTED_MODULE_0__["i"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "freeze", function() { return immer__WEBPACK_IMPORTED_MODULE_0__["d"]; });
+/* harmony import */ var immer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! immer */ "../node_modules/@reduxjs/toolkit/node_modules/immer/dist/immer.legacy-esm.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "freeze", function() { return immer__WEBPACK_IMPORTED_MODULE_1__["b"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "isDraft", function() { return immer__WEBPACK_IMPORTED_MODULE_0__["e"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "original", function() { return immer__WEBPACK_IMPORTED_MODULE_1__["e"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "original", function() { return immer__WEBPACK_IMPORTED_MODULE_0__["g"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createNextState", function() { return immer__WEBPACK_IMPORTED_MODULE_1__["f"]; });
 
-/* harmony import */ var reselect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! reselect */ "../node_modules/reselect/es/index.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "current", function() { return immer__WEBPACK_IMPORTED_MODULE_1__["a"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "isDraft", function() { return immer__WEBPACK_IMPORTED_MODULE_1__["c"]; });
+
+/* harmony import */ var reselect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! reselect */ "../node_modules/reselect/dist/reselect.legacy-esm.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createSelector", function() { return reselect__WEBPACK_IMPORTED_MODULE_2__["createSelector"]; });
 
-/* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! redux-thunk */ "../node_modules/redux-thunk/es/index.js");
-var __extends = (undefined && undefined.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __generator = (undefined && undefined.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-var __spreadArray = (undefined && undefined.__spreadArray) || function (to, from) {
-    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-    return to;
-};
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "lruMemoize", function() { return reselect__WEBPACK_IMPORTED_MODULE_2__["lruMemoize"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createSelectorCreator", function() { return reselect__WEBPACK_IMPORTED_MODULE_2__["createSelectorCreator"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "weakMapMemoize", function() { return reselect__WEBPACK_IMPORTED_MODULE_2__["weakMapMemoize"]; });
+
+/* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! redux-thunk */ "../node_modules/@reduxjs/toolkit/node_modules/redux-thunk/dist/redux-thunk.legacy-esm.js");
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
 var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = function (obj, key, value) { return key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value: value }) : obj[key] = value; };
-var __spreadValues = function (a, b) {
-    for (var prop in b || (b = {}))
-        if (__hasOwnProp.call(b, prop))
-            __defNormalProp(a, prop, b[prop]);
-    if (__getOwnPropSymbols)
-        for (var _i = 0, _c = __getOwnPropSymbols(b); _i < _c.length; _i++) {
-            var prop = _c[_i];
-            if (__propIsEnum.call(b, prop))
-                __defNormalProp(a, prop, b[prop]);
-        }
-    return a;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
 };
-var __spreadProps = function (a, b) { return __defProps(a, __getOwnPropDescs(b)); };
-var __async = function (__this, __arguments, generator) {
-    return new Promise(function (resolve, reject) {
-        var fulfilled = function (value) {
-            try {
-                step(generator.next(value));
-            }
-            catch (e) {
-                reject(e);
-            }
-        };
-        var rejected = function (value) {
-            try {
-                step(generator.throw(value));
-            }
-            catch (e) {
-                reject(e);
-            }
-        };
-        var step = function (x) { return x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected); };
-        step((generator = generator.apply(__this, __arguments)).next());
-    });
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __objRest = (source, exclude) => {
+  var target = {};
+  for (var prop in source)
+    if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
+      target[prop] = source[prop];
+  if (source != null && __getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(source)) {
+      if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
+        target[prop] = source[prop];
+    }
+  return target;
 };
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+
 // src/index.ts
 
 
 
+// src/immerImports.ts
+
+
+// src/index.ts
+
+
+// src/reselectImports.ts
+
 
 // src/createDraftSafeSelector.ts
-
-
-var createDraftSafeSelector = function () {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    var selector = reselect__WEBPACK_IMPORTED_MODULE_2__["createSelector"].apply(void 0, args);
-    var wrappedSelector = function (value) {
-        var rest = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            rest[_i - 1] = arguments[_i];
-        }
-        return selector.apply(void 0, __spreadArray([Object(immer__WEBPACK_IMPORTED_MODULE_0__[/* isDraft */ "e"])(value) ? Object(immer__WEBPACK_IMPORTED_MODULE_0__[/* current */ "a"])(value) : value], rest));
-    };
+var createDraftSafeSelectorCreator = (...args) => {
+  const createSelector2 = Object(reselect__WEBPACK_IMPORTED_MODULE_2__["createSelectorCreator"])(...args);
+  const createDraftSafeSelector2 = Object.assign((...args2) => {
+    const selector = createSelector2(...args2);
+    const wrappedSelector = (value, ...rest) => selector(Object(immer__WEBPACK_IMPORTED_MODULE_1__[/* isDraft */ "c"])(value) ? Object(immer__WEBPACK_IMPORTED_MODULE_1__[/* current */ "a"])(value) : value, ...rest);
+    Object.assign(wrappedSelector, selector);
     return wrappedSelector;
+  }, {
+    withTypes: () => createDraftSafeSelector2
+  });
+  return createDraftSafeSelector2;
 };
-// src/configureStore.ts
+var createDraftSafeSelector = /* @__PURE__ */ createDraftSafeSelectorCreator(reselect__WEBPACK_IMPORTED_MODULE_2__["weakMapMemoize"]);
+
+// src/reduxImports.ts
+
 
 // src/devtoolsExtension.ts
+var composeWithDevTools = typeof window !== "undefined" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : function() {
+  if (arguments.length === 0) return void 0;
+  if (typeof arguments[0] === "object") return redux__WEBPACK_IMPORTED_MODULE_0__[/* compose */ "e"];
+  return redux__WEBPACK_IMPORTED_MODULE_0__[/* compose */ "e"].apply(null, arguments);
+};
+var devToolsEnhancer = typeof window !== "undefined" && window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__ : function() {
+  return function(noop3) {
+    return noop3;
+  };
+};
 
-var composeWithDevTools = typeof window !== "undefined" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : function () {
-    if (arguments.length === 0)
-        return void 0;
-    if (typeof arguments[0] === "object")
-        return redux__WEBPACK_IMPORTED_MODULE_1__["compose"];
-    return redux__WEBPACK_IMPORTED_MODULE_1__["compose"].apply(null, arguments);
-};
-var devToolsEnhancer = typeof window !== "undefined" && window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__ : function () {
-    return function (noop2) {
-        return noop2;
-    };
-};
-// src/isPlainObject.ts
-function isPlainObject(value) {
-    if (typeof value !== "object" || value === null)
-        return false;
-    var proto = Object.getPrototypeOf(value);
-    if (proto === null)
-        return true;
-    var baseProto = proto;
-    while (Object.getPrototypeOf(baseProto) !== null) {
-        baseProto = Object.getPrototypeOf(baseProto);
-    }
-    return proto === baseProto;
-}
 // src/getDefaultMiddleware.ts
+
 
 // src/tsHelpers.ts
-var hasMatchFunction = function (v) {
-    return v && typeof v.match === "function";
+var hasMatchFunction = (v) => {
+  return v && typeof v.match === "function";
 };
+
 // src/createAction.ts
 function createAction(type, prepareAction) {
-    function actionCreator() {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (prepareAction) {
-            var prepared = prepareAction.apply(void 0, args);
-            if (!prepared) {
-                throw new Error("prepareAction did not return an object");
-            }
-            return __spreadValues(__spreadValues({
-                type: type,
-                payload: prepared.payload
-            }, "meta" in prepared && { meta: prepared.meta }), "error" in prepared && { error: prepared.error });
-        }
-        return { type: type, payload: args[0] };
+  function actionCreator(...args) {
+    if (prepareAction) {
+      let prepared = prepareAction(...args);
+      if (!prepared) {
+        throw new Error( true ? formatProdErrorMessage(0) : undefined);
+      }
+      return __spreadValues(__spreadValues({
+        type,
+        payload: prepared.payload
+      }, "meta" in prepared && {
+        meta: prepared.meta
+      }), "error" in prepared && {
+        error: prepared.error
+      });
     }
-    actionCreator.toString = function () { return "" + type; };
-    actionCreator.type = type;
-    actionCreator.match = function (action) { return action.type === type; };
-    return actionCreator;
-}
-function isAction(action) {
-    return isPlainObject(action) && "type" in action;
+    return {
+      type,
+      payload: args[0]
+    };
+  }
+  actionCreator.toString = () => `${type}`;
+  actionCreator.type = type;
+  actionCreator.match = (action) => Object(redux__WEBPACK_IMPORTED_MODULE_0__[/* isAction */ "g"])(action) && action.type === type;
+  return actionCreator;
 }
 function isActionCreator(action) {
-    return typeof action === "function" && "type" in action && hasMatchFunction(action);
+  return typeof action === "function" && "type" in action && // hasMatchFunction only wants Matchers but I don't see the point in rewriting it
+  hasMatchFunction(action);
 }
 function isFSA(action) {
-    return isAction(action) && typeof action.type === "string" && Object.keys(action).every(isValidKey);
+  return Object(redux__WEBPACK_IMPORTED_MODULE_0__[/* isAction */ "g"])(action) && Object.keys(action).every(isValidKey);
 }
 function isValidKey(key) {
-    return ["type", "payload", "error", "meta"].indexOf(key) > -1;
+  return ["type", "payload", "error", "meta"].indexOf(key) > -1;
 }
-function getType(actionCreator) {
-    return "" + actionCreator;
-}
+
 // src/actionCreatorInvariantMiddleware.ts
 function getMessage(type) {
-    var splitType = type ? ("" + type).split("/") : [];
-    var actionName = splitType[splitType.length - 1] || "actionCreator";
-    return "Detected an action creator with type \"" + (type || "unknown") + "\" being dispatched. \nMake sure you're calling the action creator before dispatching, i.e. `dispatch(" + actionName + "())` instead of `dispatch(" + actionName + ")`. This is necessary even if the action has no payload.";
+  const splitType = type ? `${type}`.split("/") : [];
+  const actionName = splitType[splitType.length - 1] || "actionCreator";
+  return `Detected an action creator with type "${type || "unknown"}" being dispatched.
+Make sure you're calling the action creator before dispatching, i.e. \`dispatch(${actionName}())\` instead of \`dispatch(${actionName})\`. This is necessary even if the action has no payload.`;
 }
-function createActionCreatorInvariantMiddleware(options) {
-    if (options === void 0) { options = {}; }
-    if (true) {
-        return function () { return function (next) { return function (action) { return next(action); }; }; };
+function createActionCreatorInvariantMiddleware(options = {}) {
+  if (true) {
+    return () => (next) => (action) => next(action);
+  }
+  const {
+    isActionCreator: isActionCreator2 = isActionCreator
+  } = options;
+  return () => (next) => (action) => {
+    if (isActionCreator2(action)) {
+      console.warn(getMessage(action.type));
     }
-    var _c = options.isActionCreator, isActionCreator2 = _c === void 0 ? isActionCreator : _c;
-    return function () { return function (next) { return function (action) {
-        if (isActionCreator2(action)) {
-            console.warn(getMessage(action.type));
-        }
-        return next(action);
-    }; }; };
+    return next(action);
+  };
 }
-// src/utils.ts
 
+// src/utils.ts
 function getTimeMeasureUtils(maxDelay, fnName) {
-    var elapsed = 0;
-    return {
-        measureTime: function (fn) {
-            var started = Date.now();
-            try {
-                return fn();
-            }
-            finally {
-                var finished = Date.now();
-                elapsed += finished - started;
-            }
-        },
-        warnIfExceeded: function () {
-            if (elapsed > maxDelay) {
-                console.warn(fnName + " took " + elapsed + "ms, which is more than the warning threshold of " + maxDelay + "ms. \nIf your state or actions are very large, you may want to disable the middleware as it might cause too much of a slowdown in development mode. See https://redux-toolkit.js.org/api/getDefaultMiddleware for instructions.\nIt is disabled in production builds, so you don't need to worry about that.");
-            }
-        }
-    };
+  let elapsed = 0;
+  return {
+    measureTime(fn) {
+      const started = Date.now();
+      try {
+        return fn();
+      } finally {
+        const finished = Date.now();
+        elapsed += finished - started;
+      }
+    },
+    warnIfExceeded() {
+      if (elapsed > maxDelay) {
+        console.warn(`${fnName} took ${elapsed}ms, which is more than the warning threshold of ${maxDelay}ms. 
+If your state or actions are very large, you may want to disable the middleware as it might cause too much of a slowdown in development mode. See https://redux-toolkit.js.org/api/getDefaultMiddleware for instructions.
+It is disabled in production builds, so you don't need to worry about that.`);
+      }
+    }
+  };
 }
-var MiddlewareArray = /** @class */ (function (_super) {
-    __extends(MiddlewareArray, _super);
-    function MiddlewareArray() {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var _this = _super.apply(this, args) || this;
-        Object.setPrototypeOf(_this, MiddlewareArray.prototype);
-        return _this;
+var Tuple = class _Tuple extends Array {
+  constructor(...items) {
+    super(...items);
+    Object.setPrototypeOf(this, _Tuple.prototype);
+  }
+  static get [Symbol.species]() {
+    return _Tuple;
+  }
+  concat(...arr) {
+    return super.concat.apply(this, arr);
+  }
+  prepend(...arr) {
+    if (arr.length === 1 && Array.isArray(arr[0])) {
+      return new _Tuple(...arr[0].concat(this));
     }
-    Object.defineProperty(MiddlewareArray, Symbol.species, {
-        get: function () {
-            return MiddlewareArray;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    MiddlewareArray.prototype.concat = function () {
-        var arr = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            arr[_i] = arguments[_i];
-        }
-        return _super.prototype.concat.apply(this, arr);
-    };
-    MiddlewareArray.prototype.prepend = function () {
-        var arr = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            arr[_i] = arguments[_i];
-        }
-        if (arr.length === 1 && Array.isArray(arr[0])) {
-            return new (MiddlewareArray.bind.apply(MiddlewareArray, __spreadArray([void 0], arr[0].concat(this))))();
-        }
-        return new (MiddlewareArray.bind.apply(MiddlewareArray, __spreadArray([void 0], arr.concat(this))))();
-    };
-    return MiddlewareArray;
-}(Array));
-var EnhancerArray = /** @class */ (function (_super) {
-    __extends(EnhancerArray, _super);
-    function EnhancerArray() {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var _this = _super.apply(this, args) || this;
-        Object.setPrototypeOf(_this, EnhancerArray.prototype);
-        return _this;
-    }
-    Object.defineProperty(EnhancerArray, Symbol.species, {
-        get: function () {
-            return EnhancerArray;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    EnhancerArray.prototype.concat = function () {
-        var arr = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            arr[_i] = arguments[_i];
-        }
-        return _super.prototype.concat.apply(this, arr);
-    };
-    EnhancerArray.prototype.prepend = function () {
-        var arr = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            arr[_i] = arguments[_i];
-        }
-        if (arr.length === 1 && Array.isArray(arr[0])) {
-            return new (EnhancerArray.bind.apply(EnhancerArray, __spreadArray([void 0], arr[0].concat(this))))();
-        }
-        return new (EnhancerArray.bind.apply(EnhancerArray, __spreadArray([void 0], arr.concat(this))))();
-    };
-    return EnhancerArray;
-}(Array));
+    return new _Tuple(...arr.concat(this));
+  }
+};
 function freezeDraftable(val) {
-    return Object(immer__WEBPACK_IMPORTED_MODULE_0__[/* isDraftable */ "f"])(val) ? Object(immer__WEBPACK_IMPORTED_MODULE_0__[/* default */ "b"])(val, function () {
-    }) : val;
+  return Object(immer__WEBPACK_IMPORTED_MODULE_1__[/* isDraftable */ "d"])(val) ? Object(immer__WEBPACK_IMPORTED_MODULE_1__[/* produce */ "f"])(val, () => {
+  }) : val;
 }
+function getOrInsertComputed(map, key, compute) {
+  if (map.has(key)) return map.get(key);
+  return map.set(key, compute(key)).get(key);
+}
+
 // src/immutableStateInvariantMiddleware.ts
-var isProduction = "production" === "production";
-var prefix = "Invariant failed";
-function invariant(condition, message) {
-    if (condition) {
-        return;
-    }
-    if (isProduction) {
-        throw new Error(prefix);
-    }
-    throw new Error(prefix + ": " + (message || ""));
-}
-function stringify(obj, serializer, indent, decycler) {
-    return JSON.stringify(obj, getSerialize(serializer, decycler), indent);
-}
-function getSerialize(serializer, decycler) {
-    var stack = [], keys = [];
-    if (!decycler)
-        decycler = function (_, value) {
-            if (stack[0] === value)
-                return "[Circular ~]";
-            return "[Circular ~." + keys.slice(0, stack.indexOf(value)).join(".") + "]";
-        };
-    return function (key, value) {
-        if (stack.length > 0) {
-            var thisPos = stack.indexOf(this);
-            ~thisPos ? stack.splice(thisPos + 1) : stack.push(this);
-            ~thisPos ? keys.splice(thisPos, Infinity, key) : keys.push(key);
-            if (~stack.indexOf(value))
-                value = decycler.call(this, key, value);
-        }
-        else
-            stack.push(value);
-        return serializer == null ? value : serializer.call(this, key, value);
-    };
-}
 function isImmutableDefault(value) {
-    return typeof value !== "object" || value == null || Object.isFrozen(value);
+  return typeof value !== "object" || value == null || Object.isFrozen(value);
 }
-function trackForMutations(isImmutable, ignorePaths, obj) {
-    var trackedProperties = trackProperties(isImmutable, ignorePaths, obj);
+function trackForMutations(isImmutable, ignoredPaths, obj) {
+  const trackedProperties = trackProperties(isImmutable, ignoredPaths, obj);
+  return {
+    detectMutations() {
+      return detectMutations(isImmutable, ignoredPaths, trackedProperties, obj);
+    }
+  };
+}
+function trackProperties(isImmutable, ignoredPaths = [], obj, path = "", checkedObjects = /* @__PURE__ */ new Set()) {
+  const tracked = {
+    value: obj
+  };
+  if (!isImmutable(obj) && !checkedObjects.has(obj)) {
+    checkedObjects.add(obj);
+    tracked.children = {};
+    const hasIgnoredPaths = ignoredPaths.length > 0;
+    for (const key in obj) {
+      const nestedPath = path ? path + "." + key : key;
+      if (hasIgnoredPaths) {
+        const hasMatches = ignoredPaths.some((ignored) => {
+          if (ignored instanceof RegExp) {
+            return ignored.test(nestedPath);
+          }
+          return nestedPath === ignored;
+        });
+        if (hasMatches) {
+          continue;
+        }
+      }
+      tracked.children[key] = trackProperties(isImmutable, ignoredPaths, obj[key], nestedPath);
+    }
+  }
+  return tracked;
+}
+function detectMutations(isImmutable, ignoredPaths = [], trackedProperty, obj, sameParentRef = false, path = "") {
+  const prevObj = trackedProperty ? trackedProperty.value : void 0;
+  const sameRef = prevObj === obj;
+  if (sameParentRef && !sameRef && !Number.isNaN(obj)) {
     return {
-        detectMutations: function () {
-            return detectMutations(isImmutable, ignorePaths, trackedProperties, obj);
-        }
+      wasMutated: true,
+      path
     };
-}
-function trackProperties(isImmutable, ignorePaths, obj, path, checkedObjects) {
-    if (ignorePaths === void 0) { ignorePaths = []; }
-    if (path === void 0) { path = ""; }
-    if (checkedObjects === void 0) { checkedObjects = new Set(); }
-    var tracked = { value: obj };
-    if (!isImmutable(obj) && !checkedObjects.has(obj)) {
-        checkedObjects.add(obj);
-        tracked.children = {};
-        for (var key in obj) {
-            var childPath = path ? path + "." + key : key;
-            if (ignorePaths.length && ignorePaths.indexOf(childPath) !== -1) {
-                continue;
-            }
-            tracked.children[key] = trackProperties(isImmutable, ignorePaths, obj[key], childPath);
-        }
-    }
-    return tracked;
-}
-function detectMutations(isImmutable, ignoredPaths, trackedProperty, obj, sameParentRef, path) {
-    if (ignoredPaths === void 0) { ignoredPaths = []; }
-    if (sameParentRef === void 0) { sameParentRef = false; }
-    if (path === void 0) { path = ""; }
-    var prevObj = trackedProperty ? trackedProperty.value : void 0;
-    var sameRef = prevObj === obj;
-    if (sameParentRef && !sameRef && !Number.isNaN(obj)) {
-        return { wasMutated: true, path: path };
-    }
-    if (isImmutable(prevObj) || isImmutable(obj)) {
-        return { wasMutated: false };
-    }
-    var keysToDetect = {};
-    for (var key in trackedProperty.children) {
-        keysToDetect[key] = true;
-    }
-    for (var key in obj) {
-        keysToDetect[key] = true;
-    }
-    var hasIgnoredPaths = ignoredPaths.length > 0;
-    var _loop_1 = function (key) {
-        var nestedPath = path ? path + "." + key : key;
-        if (hasIgnoredPaths) {
-            var hasMatches = ignoredPaths.some(function (ignored) {
-                if (ignored instanceof RegExp) {
-                    return ignored.test(nestedPath);
-                }
-                return nestedPath === ignored;
-            });
-            if (hasMatches) {
-                return "continue";
-            }
-        }
-        var result = detectMutations(isImmutable, ignoredPaths, trackedProperty.children[key], obj[key], sameRef, nestedPath);
-        if (result.wasMutated) {
-            return { value: result };
-        }
+  }
+  if (isImmutable(prevObj) || isImmutable(obj)) {
+    return {
+      wasMutated: false
     };
-    for (var key in keysToDetect) {
-        var state_1 = _loop_1(key);
-        if (typeof state_1 === "object")
-            return state_1.value;
+  }
+  const keysToDetect = {};
+  for (let key in trackedProperty.children) {
+    keysToDetect[key] = true;
+  }
+  for (let key in obj) {
+    keysToDetect[key] = true;
+  }
+  const hasIgnoredPaths = ignoredPaths.length > 0;
+  for (let key in keysToDetect) {
+    const nestedPath = path ? path + "." + key : key;
+    if (hasIgnoredPaths) {
+      const hasMatches = ignoredPaths.some((ignored) => {
+        if (ignored instanceof RegExp) {
+          return ignored.test(nestedPath);
+        }
+        return nestedPath === ignored;
+      });
+      if (hasMatches) {
+        continue;
+      }
     }
-    return { wasMutated: false };
-}
-function createImmutableStateInvariantMiddleware(options) {
-    if (options === void 0) { options = {}; }
-    if (true) {
-        return function () { return function (next) { return function (action) { return next(action); }; }; };
+    const result = detectMutations(isImmutable, ignoredPaths, trackedProperty.children[key], obj[key], sameRef, nestedPath);
+    if (result.wasMutated) {
+      return result;
     }
-    var _c = options.isImmutable, isImmutable = _c === void 0 ? isImmutableDefault : _c, ignoredPaths = options.ignoredPaths, _d = options.warnAfter, warnAfter = _d === void 0 ? 32 : _d, ignore = options.ignore;
-    ignoredPaths = ignoredPaths || ignore;
-    var track = trackForMutations.bind(null, isImmutable, ignoredPaths);
-    return function (_c) {
-        var getState = _c.getState;
-        var state = getState();
-        var tracker = track(state);
-        var result;
-        return function (next) { return function (action) {
-            var measureUtils = getTimeMeasureUtils(warnAfter, "ImmutableStateInvariantMiddleware");
-            measureUtils.measureTime(function () {
-                state = getState();
-                result = tracker.detectMutations();
-                tracker = track(state);
-                invariant(!result.wasMutated, "A state mutation was detected between dispatches, in the path '" + (result.path || "") + "'.  This may cause incorrect behavior. (https://redux.js.org/style-guide/style-guide#do-not-mutate-state)");
-            });
-            var dispatchedAction = next(action);
-            measureUtils.measureTime(function () {
-                state = getState();
-                result = tracker.detectMutations();
-                tracker = track(state);
-                result.wasMutated && invariant(!result.wasMutated, "A state mutation was detected inside a dispatch, in the path: " + (result.path || "") + ". Take a look at the reducer(s) handling the action " + stringify(action) + ". (https://redux.js.org/style-guide/style-guide#do-not-mutate-state)");
-            });
-            measureUtils.warnIfExceeded();
-            return dispatchedAction;
-        }; };
-    };
+  }
+  return {
+    wasMutated: false
+  };
 }
+function createImmutableStateInvariantMiddleware(options = {}) {
+  if (true) {
+    return () => (next) => (action) => next(action);
+  } else { var stringify, getSerialize; }
+}
+
 // src/serializableStateInvariantMiddleware.ts
 function isPlain(val) {
-    var type = typeof val;
-    return val == null || type === "string" || type === "boolean" || type === "number" || Array.isArray(val) || isPlainObject(val);
+  const type = typeof val;
+  return val == null || type === "string" || type === "boolean" || type === "number" || Array.isArray(val) || Object(redux__WEBPACK_IMPORTED_MODULE_0__[/* isPlainObject */ "h"])(val);
 }
-function findNonSerializableValue(value, path, isSerializable, getEntries, ignoredPaths, cache) {
-    if (path === void 0) { path = ""; }
-    if (isSerializable === void 0) { isSerializable = isPlain; }
-    if (ignoredPaths === void 0) { ignoredPaths = []; }
-    var foundNestedSerializable;
-    if (!isSerializable(value)) {
-        return {
-            keyPath: path || "<root>",
-            value: value
-        };
-    }
-    if (typeof value !== "object" || value === null) {
-        return false;
-    }
-    if (cache == null ? void 0 : cache.has(value))
-        return false;
-    var entries = getEntries != null ? getEntries(value) : Object.entries(value);
-    var hasIgnoredPaths = ignoredPaths.length > 0;
-    var _loop_2 = function (key, nestedValue) {
-        var nestedPath = path ? path + "." + key : key;
-        if (hasIgnoredPaths) {
-            var hasMatches = ignoredPaths.some(function (ignored) {
-                if (ignored instanceof RegExp) {
-                    return ignored.test(nestedPath);
-                }
-                return nestedPath === ignored;
-            });
-            if (hasMatches) {
-                return "continue";
-            }
-        }
-        if (!isSerializable(nestedValue)) {
-            return { value: {
-                    keyPath: nestedPath,
-                    value: nestedValue
-                } };
-        }
-        if (typeof nestedValue === "object") {
-            foundNestedSerializable = findNonSerializableValue(nestedValue, nestedPath, isSerializable, getEntries, ignoredPaths, cache);
-            if (foundNestedSerializable) {
-                return { value: foundNestedSerializable };
-            }
-        }
+function findNonSerializableValue(value, path = "", isSerializable = isPlain, getEntries, ignoredPaths = [], cache) {
+  let foundNestedSerializable;
+  if (!isSerializable(value)) {
+    return {
+      keyPath: path || "<root>",
+      value
     };
-    for (var _i = 0, entries_1 = entries; _i < entries_1.length; _i++) {
-        var _c = entries_1[_i], key = _c[0], nestedValue = _c[1];
-        var state_2 = _loop_2(key, nestedValue);
-        if (typeof state_2 === "object")
-            return state_2.value;
-    }
-    if (cache && isNestedFrozen(value))
-        cache.add(value);
+  }
+  if (typeof value !== "object" || value === null) {
     return false;
+  }
+  if (cache == null ? void 0 : cache.has(value)) return false;
+  const entries = getEntries != null ? getEntries(value) : Object.entries(value);
+  const hasIgnoredPaths = ignoredPaths.length > 0;
+  for (const [key, nestedValue] of entries) {
+    const nestedPath = path ? path + "." + key : key;
+    if (hasIgnoredPaths) {
+      const hasMatches = ignoredPaths.some((ignored) => {
+        if (ignored instanceof RegExp) {
+          return ignored.test(nestedPath);
+        }
+        return nestedPath === ignored;
+      });
+      if (hasMatches) {
+        continue;
+      }
+    }
+    if (!isSerializable(nestedValue)) {
+      return {
+        keyPath: nestedPath,
+        value: nestedValue
+      };
+    }
+    if (typeof nestedValue === "object") {
+      foundNestedSerializable = findNonSerializableValue(nestedValue, nestedPath, isSerializable, getEntries, ignoredPaths, cache);
+      if (foundNestedSerializable) {
+        return foundNestedSerializable;
+      }
+    }
+  }
+  if (cache && isNestedFrozen(value)) cache.add(value);
+  return false;
 }
 function isNestedFrozen(value) {
-    if (!Object.isFrozen(value))
-        return false;
-    for (var _i = 0, _c = Object.values(value); _i < _c.length; _i++) {
-        var nestedValue = _c[_i];
-        if (typeof nestedValue !== "object" || nestedValue === null)
-            continue;
-        if (!isNestedFrozen(nestedValue))
-            return false;
-    }
-    return true;
+  if (!Object.isFrozen(value)) return false;
+  for (const nestedValue of Object.values(value)) {
+    if (typeof nestedValue !== "object" || nestedValue === null) continue;
+    if (!isNestedFrozen(nestedValue)) return false;
+  }
+  return true;
 }
-function createSerializableStateInvariantMiddleware(options) {
-    if (options === void 0) { options = {}; }
-    if (true) {
-        return function () { return function (next) { return function (action) { return next(action); }; }; };
-    }
-    var _c = options.isSerializable, isSerializable = _c === void 0 ? isPlain : _c, getEntries = options.getEntries, _d = options.ignoredActions, ignoredActions = _d === void 0 ? [] : _d, _e = options.ignoredActionPaths, ignoredActionPaths = _e === void 0 ? ["meta.arg", "meta.baseQueryMeta"] : _e, _f = options.ignoredPaths, ignoredPaths = _f === void 0 ? [] : _f, _g = options.warnAfter, warnAfter = _g === void 0 ? 32 : _g, _h = options.ignoreState, ignoreState = _h === void 0 ? false : _h, _j = options.ignoreActions, ignoreActions = _j === void 0 ? false : _j, _k = options.disableCache, disableCache = _k === void 0 ? false : _k;
-    var cache = !disableCache && WeakSet ? new WeakSet() : void 0;
-    return function (storeAPI) { return function (next) { return function (action) {
-        var result = next(action);
-        var measureUtils = getTimeMeasureUtils(warnAfter, "SerializableStateInvariantMiddleware");
-        if (!ignoreActions && !(ignoredActions.length && ignoredActions.indexOf(action.type) !== -1)) {
-            measureUtils.measureTime(function () {
-                var foundActionNonSerializableValue = findNonSerializableValue(action, "", isSerializable, getEntries, ignoredActionPaths, cache);
-                if (foundActionNonSerializableValue) {
-                    var keyPath = foundActionNonSerializableValue.keyPath, value = foundActionNonSerializableValue.value;
-                    console.error("A non-serializable value was detected in an action, in the path: `" + keyPath + "`. Value:", value, "\nTake a look at the logic that dispatched this action: ", action, "\n(See https://redux.js.org/faq/actions#why-should-type-be-a-string-or-at-least-serializable-why-should-my-action-types-be-constants)", "\n(To allow non-serializable values see: https://redux-toolkit.js.org/usage/usage-guide#working-with-non-serializable-data)");
-                }
-            });
-        }
-        if (!ignoreState) {
-            measureUtils.measureTime(function () {
-                var state = storeAPI.getState();
-                var foundStateNonSerializableValue = findNonSerializableValue(state, "", isSerializable, getEntries, ignoredPaths, cache);
-                if (foundStateNonSerializableValue) {
-                    var keyPath = foundStateNonSerializableValue.keyPath, value = foundStateNonSerializableValue.value;
-                    console.error("A non-serializable value was detected in the state, in the path: `" + keyPath + "`. Value:", value, "\nTake a look at the reducer(s) handling this action type: " + action.type + ".\n(See https://redux.js.org/faq/organizing-state#can-i-put-functions-promises-or-other-non-serializable-items-in-my-store-state)");
-                }
-            });
-            measureUtils.warnIfExceeded();
-        }
-        return result;
-    }; }; };
+function createSerializableStateInvariantMiddleware(options = {}) {
+  if (true) {
+    return () => (next) => (action) => next(action);
+  } else {}
 }
+
 // src/getDefaultMiddleware.ts
 function isBoolean(x) {
-    return typeof x === "boolean";
+  return typeof x === "boolean";
 }
-function curryGetDefaultMiddleware() {
-    return function curriedGetDefaultMiddleware(options) {
-        return getDefaultMiddleware(options);
+var buildGetDefaultMiddleware = () => function getDefaultMiddleware(options) {
+  const {
+    thunk = true,
+    immutableCheck = true,
+    serializableCheck = true,
+    actionCreatorCheck = true
+  } = options != null ? options : {};
+  let middlewareArray = new Tuple();
+  if (thunk) {
+    if (isBoolean(thunk)) {
+      middlewareArray.push(redux_thunk__WEBPACK_IMPORTED_MODULE_3__[/* thunk */ "a"]);
+    } else {
+      middlewareArray.push(Object(redux_thunk__WEBPACK_IMPORTED_MODULE_3__[/* withExtraArgument */ "b"])(thunk.extraArgument));
+    }
+  }
+  if (false) {}
+  return middlewareArray;
+};
+
+// src/autoBatchEnhancer.ts
+var SHOULD_AUTOBATCH = "RTK_autoBatch";
+var prepareAutoBatched = () => (payload) => ({
+  payload,
+  meta: {
+    [SHOULD_AUTOBATCH]: true
+  }
+});
+var createQueueWithTimer = (timeout) => {
+  return (notify) => {
+    setTimeout(notify, timeout);
+  };
+};
+var createRafWithFallbackTimer = (raf, timeout) => {
+  return (notify) => {
+    let called = false;
+    const callback = () => {
+      if (called) return;
+      called = true;
+      cancelAnimationFrame(rafId);
+      clearTimeout(timerId);
+      notify();
     };
-}
-function getDefaultMiddleware(options) {
-    if (options === void 0) { options = {}; }
-    var _c = options.thunk, thunk = _c === void 0 ? true : _c, _d = options.immutableCheck, immutableCheck = _d === void 0 ? true : _d, _e = options.serializableCheck, serializableCheck = _e === void 0 ? true : _e, _f = options.actionCreatorCheck, actionCreatorCheck = _f === void 0 ? true : _f;
-    var middlewareArray = new MiddlewareArray();
-    if (thunk) {
-        if (isBoolean(thunk)) {
-            middlewareArray.push(redux_thunk__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"]);
-        }
-        else {
-            middlewareArray.push(redux_thunk__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"].withExtraArgument(thunk.extraArgument));
-        }
+    const rafId = raf(callback);
+    const timerId = setTimeout(callback, timeout);
+  };
+};
+var autoBatchEnhancer = (options = {
+  type: "raf"
+}) => (next) => (...args) => {
+  const store = next(...args);
+  let notifying = true;
+  let shouldNotifyAtEndOfTick = false;
+  let notificationQueued = false;
+  const listeners = /* @__PURE__ */ new Set();
+  const queueCallback = options.type === "tick" ? queueMicrotask : options.type === "raf" ? (
+    // requestAnimationFrame won't exist in SSR environments. Fall back to a vague approximation just to keep from erroring.
+    typeof window !== "undefined" && window.requestAnimationFrame ? createRafWithFallbackTimer(window.requestAnimationFrame, 100) : createQueueWithTimer(10)
+  ) : options.type === "callback" ? options.queueNotification : createQueueWithTimer(options.timeout);
+  const notifyListeners = () => {
+    notificationQueued = false;
+    if (shouldNotifyAtEndOfTick) {
+      shouldNotifyAtEndOfTick = false;
+      listeners.forEach((l) => l());
     }
-    if (false) { var actionCreatorOptions, serializableOptions, immutableOptions; }
-    return middlewareArray;
-}
+  };
+  return Object.assign({}, store, {
+    // Override the base `store.subscribe` method to keep original listeners
+    // from running if we're delaying notifications
+    subscribe(listener2) {
+      const wrappedListener = () => notifying && listener2();
+      const unsubscribe = store.subscribe(wrappedListener);
+      listeners.add(listener2);
+      return () => {
+        unsubscribe();
+        listeners.delete(listener2);
+      };
+    },
+    // Override the base `store.dispatch` method so that we can check actions
+    // for the `shouldAutoBatch` flag and determine if batching is active
+    dispatch(action) {
+      var _a;
+      try {
+        notifying = !((_a = action == null ? void 0 : action.meta) == null ? void 0 : _a[SHOULD_AUTOBATCH]);
+        shouldNotifyAtEndOfTick = !notifying;
+        if (shouldNotifyAtEndOfTick) {
+          if (!notificationQueued) {
+            notificationQueued = true;
+            queueCallback(notifyListeners);
+          }
+        }
+        return store.dispatch(action);
+      } finally {
+        notifying = true;
+      }
+    }
+  });
+};
+
+// src/getDefaultEnhancers.ts
+var buildGetDefaultEnhancers = (middlewareEnhancer) => function getDefaultEnhancers(options) {
+  const {
+    autoBatch = true
+  } = options != null ? options : {};
+  let enhancerArray = new Tuple(middlewareEnhancer);
+  if (autoBatch) {
+    enhancerArray.push(autoBatchEnhancer(typeof autoBatch === "object" ? autoBatch : void 0));
+  }
+  return enhancerArray;
+};
+
 // src/configureStore.ts
-var IS_PRODUCTION = "production" === "production";
 function configureStore(options) {
-    var curriedGetDefaultMiddleware = curryGetDefaultMiddleware();
-    var _c = options || {}, _d = _c.reducer, reducer = _d === void 0 ? void 0 : _d, _e = _c.middleware, middleware = _e === void 0 ? curriedGetDefaultMiddleware() : _e, _f = _c.devTools, devTools = _f === void 0 ? true : _f, _g = _c.preloadedState, preloadedState = _g === void 0 ? void 0 : _g, _h = _c.enhancers, enhancers = _h === void 0 ? void 0 : _h;
-    var rootReducer;
-    if (typeof reducer === "function") {
-        rootReducer = reducer;
-    }
-    else if (isPlainObject(reducer)) {
-        rootReducer = Object(redux__WEBPACK_IMPORTED_MODULE_1__["combineReducers"])(reducer);
-    }
-    else {
-        throw new Error('"reducer" is a required argument, and must be a function or an object of functions that can be passed to combineReducers');
-    }
-    var finalMiddleware = middleware;
-    if (typeof finalMiddleware === "function") {
-        finalMiddleware = finalMiddleware(curriedGetDefaultMiddleware);
-        if (!IS_PRODUCTION && !Array.isArray(finalMiddleware)) {
-            throw new Error("when using a middleware builder function, an array of middleware must be returned");
-        }
-    }
-    if (!IS_PRODUCTION && finalMiddleware.some(function (item) { return typeof item !== "function"; })) {
-        throw new Error("each middleware provided to configureStore must be a function");
-    }
-    var middlewareEnhancer = redux__WEBPACK_IMPORTED_MODULE_1__["applyMiddleware"].apply(void 0, finalMiddleware);
-    var finalCompose = redux__WEBPACK_IMPORTED_MODULE_1__["compose"];
-    if (devTools) {
-        finalCompose = composeWithDevTools(__spreadValues({
-            trace: !IS_PRODUCTION
-        }, typeof devTools === "object" && devTools));
-    }
-    var defaultEnhancers = new EnhancerArray(middlewareEnhancer);
-    var storeEnhancers = defaultEnhancers;
-    if (Array.isArray(enhancers)) {
-        storeEnhancers = __spreadArray([middlewareEnhancer], enhancers);
-    }
-    else if (typeof enhancers === "function") {
-        storeEnhancers = enhancers(defaultEnhancers);
-    }
-    var composedEnhancer = finalCompose.apply(void 0, storeEnhancers);
-    return Object(redux__WEBPACK_IMPORTED_MODULE_1__["createStore"])(rootReducer, preloadedState, composedEnhancer);
+  const getDefaultMiddleware = buildGetDefaultMiddleware();
+  const {
+    reducer = void 0,
+    middleware,
+    devTools = true,
+    duplicateMiddlewareCheck = true,
+    preloadedState = void 0,
+    enhancers = void 0
+  } = options || {};
+  let rootReducer;
+  if (typeof reducer === "function") {
+    rootReducer = reducer;
+  } else if (Object(redux__WEBPACK_IMPORTED_MODULE_0__[/* isPlainObject */ "h"])(reducer)) {
+    rootReducer = Object(redux__WEBPACK_IMPORTED_MODULE_0__[/* combineReducers */ "d"])(reducer);
+  } else {
+    throw new Error( true ? formatProdErrorMessage(1) : undefined);
+  }
+  if (false) {}
+  let finalMiddleware;
+  if (typeof middleware === "function") {
+    finalMiddleware = middleware(getDefaultMiddleware);
+    if (false) {}
+  } else {
+    finalMiddleware = getDefaultMiddleware();
+  }
+  if (false) {}
+  if (false) {}
+  let finalCompose = redux__WEBPACK_IMPORTED_MODULE_0__[/* compose */ "e"];
+  if (devTools) {
+    finalCompose = composeWithDevTools(__spreadValues({
+      // Enable capture of stack traces for dispatched Redux actions
+      trace: "production" !== "production"
+    }, typeof devTools === "object" && devTools));
+  }
+  const middlewareEnhancer = Object(redux__WEBPACK_IMPORTED_MODULE_0__[/* applyMiddleware */ "b"])(...finalMiddleware);
+  const getDefaultEnhancers = buildGetDefaultEnhancers(middlewareEnhancer);
+  if (false) {}
+  let storeEnhancers = typeof enhancers === "function" ? enhancers(getDefaultEnhancers) : getDefaultEnhancers();
+  if (false) {}
+  if (false) {}
+  if (false) {}
+  const composedEnhancer = finalCompose(...storeEnhancers);
+  return Object(redux__WEBPACK_IMPORTED_MODULE_0__[/* createStore */ "f"])(rootReducer, preloadedState, composedEnhancer);
 }
-// src/createReducer.ts
 
 // src/mapBuilders.ts
 function executeReducerBuilderCallback(builderCallback) {
-    var actionsMap = {};
-    var actionMatchers = [];
-    var defaultCaseReducer;
-    var builder = {
-        addCase: function (typeOrActionCreator, reducer) {
-            if (false) {}
-            var type = typeof typeOrActionCreator === "string" ? typeOrActionCreator : typeOrActionCreator.type;
-            if (!type) {
-                throw new Error("`builder.addCase` cannot be called with an empty action type");
-            }
-            if (type in actionsMap) {
-                throw new Error("`builder.addCase` cannot be called with two reducers for the same action type");
-            }
-            actionsMap[type] = reducer;
-            return builder;
-        },
-        addMatcher: function (matcher, reducer) {
-            if (false) {}
-            actionMatchers.push({ matcher: matcher, reducer: reducer });
-            return builder;
-        },
-        addDefaultCase: function (reducer) {
-            if (false) {}
-            defaultCaseReducer = reducer;
-            return builder;
-        }
-    };
-    builderCallback(builder);
-    return [actionsMap, actionMatchers, defaultCaseReducer];
+  const actionsMap = {};
+  const actionMatchers = [];
+  let defaultCaseReducer;
+  const builder = {
+    addCase(typeOrActionCreator, reducer) {
+      if (false) {}
+      const type = typeof typeOrActionCreator === "string" ? typeOrActionCreator : typeOrActionCreator.type;
+      if (!type) {
+        throw new Error( true ? formatProdErrorMessage(28) : undefined);
+      }
+      if (type in actionsMap) {
+        throw new Error( true ? formatProdErrorMessage(29) : undefined);
+      }
+      actionsMap[type] = reducer;
+      return builder;
+    },
+    addAsyncThunk(asyncThunk, reducers) {
+      if (false) {}
+      if (reducers.pending) actionsMap[asyncThunk.pending.type] = reducers.pending;
+      if (reducers.rejected) actionsMap[asyncThunk.rejected.type] = reducers.rejected;
+      if (reducers.fulfilled) actionsMap[asyncThunk.fulfilled.type] = reducers.fulfilled;
+      if (reducers.settled) actionMatchers.push({
+        matcher: asyncThunk.settled,
+        reducer: reducers.settled
+      });
+      return builder;
+    },
+    addMatcher(matcher, reducer) {
+      if (false) {}
+      actionMatchers.push({
+        matcher,
+        reducer
+      });
+      return builder;
+    },
+    addDefaultCase(reducer) {
+      if (false) {}
+      defaultCaseReducer = reducer;
+      return builder;
+    }
+  };
+  builderCallback(builder);
+  return [actionsMap, actionMatchers, defaultCaseReducer];
 }
+
 // src/createReducer.ts
 function isStateFunction(x) {
-    return typeof x === "function";
+  return typeof x === "function";
 }
-var hasWarnedAboutObjectNotation = false;
-function createReducer(initialState, mapOrBuilderCallback, actionMatchers, defaultCaseReducer) {
-    if (actionMatchers === void 0) { actionMatchers = []; }
-    if (false) {}
-    var _c = typeof mapOrBuilderCallback === "function" ? executeReducerBuilderCallback(mapOrBuilderCallback) : [mapOrBuilderCallback, actionMatchers, defaultCaseReducer], actionsMap = _c[0], finalActionMatchers = _c[1], finalDefaultCaseReducer = _c[2];
-    var getInitialState;
-    if (isStateFunction(initialState)) {
-        getInitialState = function () { return freezeDraftable(initialState()); };
+function createReducer(initialState, mapOrBuilderCallback) {
+  if (false) {}
+  let [actionsMap, finalActionMatchers, finalDefaultCaseReducer] = executeReducerBuilderCallback(mapOrBuilderCallback);
+  let getInitialState;
+  if (isStateFunction(initialState)) {
+    getInitialState = () => freezeDraftable(initialState());
+  } else {
+    const frozenInitialState = freezeDraftable(initialState);
+    getInitialState = () => frozenInitialState;
+  }
+  function reducer(state = getInitialState(), action) {
+    let caseReducers = [actionsMap[action.type], ...finalActionMatchers.filter(({
+      matcher
+    }) => matcher(action)).map(({
+      reducer: reducer2
+    }) => reducer2)];
+    if (caseReducers.filter((cr) => !!cr).length === 0) {
+      caseReducers = [finalDefaultCaseReducer];
     }
-    else {
-        var frozenInitialState_1 = freezeDraftable(initialState);
-        getInitialState = function () { return frozenInitialState_1; };
-    }
-    function reducer(state, action) {
-        if (state === void 0) { state = getInitialState(); }
-        var caseReducers = __spreadArray([
-            actionsMap[action.type]
-        ], finalActionMatchers.filter(function (_c) {
-            var matcher = _c.matcher;
-            return matcher(action);
-        }).map(function (_c) {
-            var reducer2 = _c.reducer;
-            return reducer2;
-        }));
-        if (caseReducers.filter(function (cr) { return !!cr; }).length === 0) {
-            caseReducers = [finalDefaultCaseReducer];
-        }
-        return caseReducers.reduce(function (previousState, caseReducer) {
-            if (caseReducer) {
-                if (Object(immer__WEBPACK_IMPORTED_MODULE_0__[/* isDraft */ "e"])(previousState)) {
-                    var draft = previousState;
-                    var result = caseReducer(draft, action);
-                    if (result === void 0) {
-                        return previousState;
-                    }
-                    return result;
-                }
-                else if (!Object(immer__WEBPACK_IMPORTED_MODULE_0__[/* isDraftable */ "f"])(previousState)) {
-                    var result = caseReducer(previousState, action);
-                    if (result === void 0) {
-                        if (previousState === null) {
-                            return previousState;
-                        }
-                        throw Error("A case reducer on a non-draftable value must not return undefined");
-                    }
-                    return result;
-                }
-                else {
-                    return Object(immer__WEBPACK_IMPORTED_MODULE_0__[/* default */ "b"])(previousState, function (draft) {
-                        return caseReducer(draft, action);
-                    });
-                }
-            }
+    return caseReducers.reduce((previousState, caseReducer) => {
+      if (caseReducer) {
+        if (Object(immer__WEBPACK_IMPORTED_MODULE_1__[/* isDraft */ "c"])(previousState)) {
+          const draft = previousState;
+          const result = caseReducer(draft, action);
+          if (result === void 0) {
             return previousState;
-        }, state);
-    }
-    reducer.getInitialState = getInitialState;
-    return reducer;
-}
-// src/createSlice.ts
-var hasWarnedAboutObjectNotation2 = false;
-function getType2(slice, actionKey) {
-    return slice + "/" + actionKey;
-}
-function createSlice(options) {
-    var name = options.name;
-    if (!name) {
-        throw new Error("`name` is a required option for createSlice");
-    }
-    if (typeof process !== "undefined" && "production" === "development") {
-        if (options.initialState === void 0) {
-            console.error("You must provide an `initialState` value that is not `undefined`. You may have misspelled `initialState`");
-        }
-    }
-    var initialState = typeof options.initialState == "function" ? options.initialState : freezeDraftable(options.initialState);
-    var reducers = options.reducers || {};
-    var reducerNames = Object.keys(reducers);
-    var sliceCaseReducersByName = {};
-    var sliceCaseReducersByType = {};
-    var actionCreators = {};
-    reducerNames.forEach(function (reducerName) {
-        var maybeReducerWithPrepare = reducers[reducerName];
-        var type = getType2(name, reducerName);
-        var caseReducer;
-        var prepareCallback;
-        if ("reducer" in maybeReducerWithPrepare) {
-            caseReducer = maybeReducerWithPrepare.reducer;
-            prepareCallback = maybeReducerWithPrepare.prepare;
-        }
-        else {
-            caseReducer = maybeReducerWithPrepare;
-        }
-        sliceCaseReducersByName[reducerName] = caseReducer;
-        sliceCaseReducersByType[type] = caseReducer;
-        actionCreators[reducerName] = prepareCallback ? createAction(type, prepareCallback) : createAction(type);
-    });
-    function buildReducer() {
-        if (false) {}
-        var _c = typeof options.extraReducers === "function" ? executeReducerBuilderCallback(options.extraReducers) : [options.extraReducers], _d = _c[0], extraReducers = _d === void 0 ? {} : _d, _e = _c[1], actionMatchers = _e === void 0 ? [] : _e, _f = _c[2], defaultCaseReducer = _f === void 0 ? void 0 : _f;
-        var finalCaseReducers = __spreadValues(__spreadValues({}, extraReducers), sliceCaseReducersByType);
-        return createReducer(initialState, function (builder) {
-            for (var key in finalCaseReducers) {
-                builder.addCase(key, finalCaseReducers[key]);
+          }
+          return result;
+        } else if (!Object(immer__WEBPACK_IMPORTED_MODULE_1__[/* isDraftable */ "d"])(previousState)) {
+          const result = caseReducer(previousState, action);
+          if (result === void 0) {
+            if (previousState === null) {
+              return previousState;
             }
-            for (var _i = 0, actionMatchers_1 = actionMatchers; _i < actionMatchers_1.length; _i++) {
-                var m = actionMatchers_1[_i];
-                builder.addMatcher(m.matcher, m.reducer);
-            }
-            if (defaultCaseReducer) {
-                builder.addDefaultCase(defaultCaseReducer);
-            }
-        });
-    }
-    var _reducer;
-    return {
-        name: name,
-        reducer: function (state, action) {
-            if (!_reducer)
-                _reducer = buildReducer();
-            return _reducer(state, action);
-        },
-        actions: actionCreators,
-        caseReducers: sliceCaseReducersByName,
-        getInitialState: function () {
-            if (!_reducer)
-                _reducer = buildReducer();
-            return _reducer.getInitialState();
+            throw Error("A case reducer on a non-draftable value must not return undefined");
+          }
+          return result;
+        } else {
+          return Object(immer__WEBPACK_IMPORTED_MODULE_1__[/* produce */ "f"])(previousState, (draft) => {
+            return caseReducer(draft, action);
+          });
         }
-    };
+      }
+      return previousState;
+    }, state);
+  }
+  reducer.getInitialState = getInitialState;
+  return reducer;
 }
-// src/entities/entity_state.ts
-function getInitialEntityState() {
-    return {
-        ids: [],
-        entities: {}
-    };
-}
-function createInitialStateFactory() {
-    function getInitialState(additionalState) {
-        if (additionalState === void 0) { additionalState = {}; }
-        return Object.assign(getInitialEntityState(), additionalState);
-    }
-    return { getInitialState: getInitialState };
-}
-// src/entities/state_selectors.ts
-function createSelectorsFactory() {
-    function getSelectors(selectState) {
-        var selectIds = function (state) { return state.ids; };
-        var selectEntities = function (state) { return state.entities; };
-        var selectAll = createDraftSafeSelector(selectIds, selectEntities, function (ids, entities) { return ids.map(function (id) { return entities[id]; }); });
-        var selectId = function (_, id) { return id; };
-        var selectById = function (entities, id) { return entities[id]; };
-        var selectTotal = createDraftSafeSelector(selectIds, function (ids) { return ids.length; });
-        if (!selectState) {
-            return {
-                selectIds: selectIds,
-                selectEntities: selectEntities,
-                selectAll: selectAll,
-                selectTotal: selectTotal,
-                selectById: createDraftSafeSelector(selectEntities, selectId, selectById)
-            };
-        }
-        var selectGlobalizedEntities = createDraftSafeSelector(selectState, selectEntities);
-        return {
-            selectIds: createDraftSafeSelector(selectState, selectIds),
-            selectEntities: selectGlobalizedEntities,
-            selectAll: createDraftSafeSelector(selectState, selectAll),
-            selectTotal: createDraftSafeSelector(selectState, selectTotal),
-            selectById: createDraftSafeSelector(selectGlobalizedEntities, selectId, selectById)
-        };
-    }
-    return { getSelectors: getSelectors };
-}
-// src/entities/state_adapter.ts
 
-function createSingleArgumentStateOperator(mutator) {
-    var operator = createStateOperator(function (_, state) { return mutator(state); });
-    return function operation(state) {
-        return operator(state, void 0);
-    };
-}
-function createStateOperator(mutator) {
-    return function operation(state, arg) {
-        function isPayloadActionArgument(arg2) {
-            return isFSA(arg2);
-        }
-        var runMutator = function (draft) {
-            if (isPayloadActionArgument(arg)) {
-                mutator(arg.payload, draft);
-            }
-            else {
-                mutator(arg, draft);
-            }
-        };
-        if (Object(immer__WEBPACK_IMPORTED_MODULE_0__[/* isDraft */ "e"])(state)) {
-            runMutator(state);
-            return state;
-        }
-        else {
-            return Object(immer__WEBPACK_IMPORTED_MODULE_0__[/* default */ "b"])(state, runMutator);
-        }
-    };
-}
-// src/entities/utils.ts
-function selectIdValue(entity, selectId) {
-    var key = selectId(entity);
-    if (false) {}
-    return key;
-}
-function ensureEntitiesArray(entities) {
-    if (!Array.isArray(entities)) {
-        entities = Object.values(entities);
-    }
-    return entities;
-}
-function splitAddedUpdatedEntities(newEntities, selectId, state) {
-    newEntities = ensureEntitiesArray(newEntities);
-    var added = [];
-    var updated = [];
-    for (var _i = 0, newEntities_1 = newEntities; _i < newEntities_1.length; _i++) {
-        var entity = newEntities_1[_i];
-        var id = selectIdValue(entity, selectId);
-        if (id in state.entities) {
-            updated.push({ id: id, changes: entity });
-        }
-        else {
-            added.push(entity);
-        }
-    }
-    return [added, updated];
-}
-// src/entities/unsorted_state_adapter.ts
-function createUnsortedStateAdapter(selectId) {
-    function addOneMutably(entity, state) {
-        var key = selectIdValue(entity, selectId);
-        if (key in state.entities) {
-            return;
-        }
-        state.ids.push(key);
-        state.entities[key] = entity;
-    }
-    function addManyMutably(newEntities, state) {
-        newEntities = ensureEntitiesArray(newEntities);
-        for (var _i = 0, newEntities_2 = newEntities; _i < newEntities_2.length; _i++) {
-            var entity = newEntities_2[_i];
-            addOneMutably(entity, state);
-        }
-    }
-    function setOneMutably(entity, state) {
-        var key = selectIdValue(entity, selectId);
-        if (!(key in state.entities)) {
-            state.ids.push(key);
-        }
-        state.entities[key] = entity;
-    }
-    function setManyMutably(newEntities, state) {
-        newEntities = ensureEntitiesArray(newEntities);
-        for (var _i = 0, newEntities_3 = newEntities; _i < newEntities_3.length; _i++) {
-            var entity = newEntities_3[_i];
-            setOneMutably(entity, state);
-        }
-    }
-    function setAllMutably(newEntities, state) {
-        newEntities = ensureEntitiesArray(newEntities);
-        state.ids = [];
-        state.entities = {};
-        addManyMutably(newEntities, state);
-    }
-    function removeOneMutably(key, state) {
-        return removeManyMutably([key], state);
-    }
-    function removeManyMutably(keys, state) {
-        var didMutate = false;
-        keys.forEach(function (key) {
-            if (key in state.entities) {
-                delete state.entities[key];
-                didMutate = true;
-            }
-        });
-        if (didMutate) {
-            state.ids = state.ids.filter(function (id) { return id in state.entities; });
-        }
-    }
-    function removeAllMutably(state) {
-        Object.assign(state, {
-            ids: [],
-            entities: {}
-        });
-    }
-    function takeNewKey(keys, update, state) {
-        var original2 = state.entities[update.id];
-        var updated = Object.assign({}, original2, update.changes);
-        var newKey = selectIdValue(updated, selectId);
-        var hasNewKey = newKey !== update.id;
-        if (hasNewKey) {
-            keys[update.id] = newKey;
-            delete state.entities[update.id];
-        }
-        state.entities[newKey] = updated;
-        return hasNewKey;
-    }
-    function updateOneMutably(update, state) {
-        return updateManyMutably([update], state);
-    }
-    function updateManyMutably(updates, state) {
-        var newKeys = {};
-        var updatesPerEntity = {};
-        updates.forEach(function (update) {
-            if (update.id in state.entities) {
-                updatesPerEntity[update.id] = {
-                    id: update.id,
-                    changes: __spreadValues(__spreadValues({}, updatesPerEntity[update.id] ? updatesPerEntity[update.id].changes : null), update.changes)
-                };
-            }
-        });
-        updates = Object.values(updatesPerEntity);
-        var didMutateEntities = updates.length > 0;
-        if (didMutateEntities) {
-            var didMutateIds = updates.filter(function (update) { return takeNewKey(newKeys, update, state); }).length > 0;
-            if (didMutateIds) {
-                state.ids = Object.keys(state.entities);
-            }
-        }
-    }
-    function upsertOneMutably(entity, state) {
-        return upsertManyMutably([entity], state);
-    }
-    function upsertManyMutably(newEntities, state) {
-        var _c = splitAddedUpdatedEntities(newEntities, selectId, state), added = _c[0], updated = _c[1];
-        updateManyMutably(updated, state);
-        addManyMutably(added, state);
-    }
-    return {
-        removeAll: createSingleArgumentStateOperator(removeAllMutably),
-        addOne: createStateOperator(addOneMutably),
-        addMany: createStateOperator(addManyMutably),
-        setOne: createStateOperator(setOneMutably),
-        setMany: createStateOperator(setManyMutably),
-        setAll: createStateOperator(setAllMutably),
-        updateOne: createStateOperator(updateOneMutably),
-        updateMany: createStateOperator(updateManyMutably),
-        upsertOne: createStateOperator(upsertOneMutably),
-        upsertMany: createStateOperator(upsertManyMutably),
-        removeOne: createStateOperator(removeOneMutably),
-        removeMany: createStateOperator(removeManyMutably)
-    };
-}
-// src/entities/sorted_state_adapter.ts
-function createSortedStateAdapter(selectId, sort) {
-    var _c = createUnsortedStateAdapter(selectId), removeOne = _c.removeOne, removeMany = _c.removeMany, removeAll = _c.removeAll;
-    function addOneMutably(entity, state) {
-        return addManyMutably([entity], state);
-    }
-    function addManyMutably(newEntities, state) {
-        newEntities = ensureEntitiesArray(newEntities);
-        var models = newEntities.filter(function (model) { return !(selectIdValue(model, selectId) in state.entities); });
-        if (models.length !== 0) {
-            merge(models, state);
-        }
-    }
-    function setOneMutably(entity, state) {
-        return setManyMutably([entity], state);
-    }
-    function setManyMutably(newEntities, state) {
-        newEntities = ensureEntitiesArray(newEntities);
-        if (newEntities.length !== 0) {
-            merge(newEntities, state);
-        }
-    }
-    function setAllMutably(newEntities, state) {
-        newEntities = ensureEntitiesArray(newEntities);
-        state.entities = {};
-        state.ids = [];
-        addManyMutably(newEntities, state);
-    }
-    function updateOneMutably(update, state) {
-        return updateManyMutably([update], state);
-    }
-    function updateManyMutably(updates, state) {
-        var appliedUpdates = false;
-        for (var _i = 0, updates_1 = updates; _i < updates_1.length; _i++) {
-            var update = updates_1[_i];
-            var entity = state.entities[update.id];
-            if (!entity) {
-                continue;
-            }
-            appliedUpdates = true;
-            Object.assign(entity, update.changes);
-            var newId = selectId(entity);
-            if (update.id !== newId) {
-                delete state.entities[update.id];
-                state.entities[newId] = entity;
-            }
-        }
-        if (appliedUpdates) {
-            resortEntities(state);
-        }
-    }
-    function upsertOneMutably(entity, state) {
-        return upsertManyMutably([entity], state);
-    }
-    function upsertManyMutably(newEntities, state) {
-        var _c = splitAddedUpdatedEntities(newEntities, selectId, state), added = _c[0], updated = _c[1];
-        updateManyMutably(updated, state);
-        addManyMutably(added, state);
-    }
-    function areArraysEqual(a, b) {
-        if (a.length !== b.length) {
-            return false;
-        }
-        for (var i = 0; i < a.length && i < b.length; i++) {
-            if (a[i] === b[i]) {
-                continue;
-            }
-            return false;
-        }
-        return true;
-    }
-    function merge(models, state) {
-        models.forEach(function (model) {
-            state.entities[selectId(model)] = model;
-        });
-        resortEntities(state);
-    }
-    function resortEntities(state) {
-        var allEntities = Object.values(state.entities);
-        allEntities.sort(sort);
-        var newSortedIds = allEntities.map(selectId);
-        var ids = state.ids;
-        if (!areArraysEqual(ids, newSortedIds)) {
-            state.ids = newSortedIds;
-        }
-    }
-    return {
-        removeOne: removeOne,
-        removeMany: removeMany,
-        removeAll: removeAll,
-        addOne: createStateOperator(addOneMutably),
-        updateOne: createStateOperator(updateOneMutably),
-        upsertOne: createStateOperator(upsertOneMutably),
-        setOne: createStateOperator(setOneMutably),
-        setMany: createStateOperator(setManyMutably),
-        setAll: createStateOperator(setAllMutably),
-        addMany: createStateOperator(addManyMutably),
-        updateMany: createStateOperator(updateManyMutably),
-        upsertMany: createStateOperator(upsertManyMutably)
-    };
-}
-// src/entities/create_adapter.ts
-function createEntityAdapter(options) {
-    if (options === void 0) { options = {}; }
-    var _c = __spreadValues({
-        sortComparer: false,
-        selectId: function (instance) { return instance.id; }
-    }, options), selectId = _c.selectId, sortComparer = _c.sortComparer;
-    var stateFactory = createInitialStateFactory();
-    var selectorsFactory = createSelectorsFactory();
-    var stateAdapter = sortComparer ? createSortedStateAdapter(selectId, sortComparer) : createUnsortedStateAdapter(selectId);
-    return __spreadValues(__spreadValues(__spreadValues({
-        selectId: selectId,
-        sortComparer: sortComparer
-    }, stateFactory), selectorsFactory), stateAdapter);
-}
-// src/nanoid.ts
-var urlAlphabet = "ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW";
-var nanoid = function (size) {
-    if (size === void 0) { size = 21; }
-    var id = "";
-    var i = size;
-    while (i--) {
-        id += urlAlphabet[Math.random() * 64 | 0];
-    }
-    return id;
-};
-// src/createAsyncThunk.ts
-var commonProperties = [
-    "name",
-    "message",
-    "stack",
-    "code"
-];
-var RejectWithValue = /** @class */ (function () {
-    function RejectWithValue(payload, meta) {
-        this.payload = payload;
-        this.meta = meta;
-    }
-    return RejectWithValue;
-}());
-var FulfillWithMeta = /** @class */ (function () {
-    function FulfillWithMeta(payload, meta) {
-        this.payload = payload;
-        this.meta = meta;
-    }
-    return FulfillWithMeta;
-}());
-var miniSerializeError = function (value) {
-    if (typeof value === "object" && value !== null) {
-        var simpleError = {};
-        for (var _i = 0, commonProperties_1 = commonProperties; _i < commonProperties_1.length; _i++) {
-            var property = commonProperties_1[_i];
-            if (typeof value[property] === "string") {
-                simpleError[property] = value[property];
-            }
-        }
-        return simpleError;
-    }
-    return { message: String(value) };
-};
-var createAsyncThunk = (function () {
-    function createAsyncThunk2(typePrefix, payloadCreator, options) {
-        var fulfilled = createAction(typePrefix + "/fulfilled", function (payload, requestId, arg, meta) { return ({
-            payload: payload,
-            meta: __spreadProps(__spreadValues({}, meta || {}), {
-                arg: arg,
-                requestId: requestId,
-                requestStatus: "fulfilled"
-            })
-        }); });
-        var pending = createAction(typePrefix + "/pending", function (requestId, arg, meta) { return ({
-            payload: void 0,
-            meta: __spreadProps(__spreadValues({}, meta || {}), {
-                arg: arg,
-                requestId: requestId,
-                requestStatus: "pending"
-            })
-        }); });
-        var rejected = createAction(typePrefix + "/rejected", function (error, requestId, arg, payload, meta) { return ({
-            payload: payload,
-            error: (options && options.serializeError || miniSerializeError)(error || "Rejected"),
-            meta: __spreadProps(__spreadValues({}, meta || {}), {
-                arg: arg,
-                requestId: requestId,
-                rejectedWithValue: !!payload,
-                requestStatus: "rejected",
-                aborted: (error == null ? void 0 : error.name) === "AbortError",
-                condition: (error == null ? void 0 : error.name) === "ConditionError"
-            })
-        }); });
-        var displayedWarning = false;
-        var AC = typeof AbortController !== "undefined" ? AbortController : /** @class */ (function () {
-            function class_1() {
-                this.signal = {
-                    aborted: false,
-                    addEventListener: function () {
-                    },
-                    dispatchEvent: function () {
-                        return false;
-                    },
-                    onabort: function () {
-                    },
-                    removeEventListener: function () {
-                    },
-                    reason: void 0,
-                    throwIfAborted: function () {
-                    }
-                };
-            }
-            class_1.prototype.abort = function () {
-                if (false) {}
-            };
-            return class_1;
-        }());
-        function actionCreator(arg) {
-            return function (dispatch, getState, extra) {
-                var requestId = (options == null ? void 0 : options.idGenerator) ? options.idGenerator(arg) : nanoid();
-                var abortController = new AC();
-                var abortReason;
-                var started = false;
-                function abort(reason) {
-                    abortReason = reason;
-                    abortController.abort();
-                }
-                var promise2 = function () {
-                    return __async(this, null, function () {
-                        var _a, _b, finalAction, conditionResult, abortedPromise, err_1, skipDispatch;
-                        return __generator(this, function (_c) {
-                            switch (_c.label) {
-                                case 0:
-                                    _c.trys.push([0, 4, , 5]);
-                                    conditionResult = (_a = options == null ? void 0 : options.condition) == null ? void 0 : _a.call(options, arg, { getState: getState, extra: extra });
-                                    if (!isThenable(conditionResult)) return [3 /*break*/, 2];
-                                    return [4 /*yield*/, conditionResult];
-                                case 1:
-                                    conditionResult = _c.sent();
-                                    _c.label = 2;
-                                case 2:
-                                    if (conditionResult === false || abortController.signal.aborted) {
-                                        throw {
-                                            name: "ConditionError",
-                                            message: "Aborted due to condition callback returning false."
-                                        };
-                                    }
-                                    started = true;
-                                    abortedPromise = new Promise(function (_, reject) { return abortController.signal.addEventListener("abort", function () { return reject({
-                                        name: "AbortError",
-                                        message: abortReason || "Aborted"
-                                    }); }); });
-                                    dispatch(pending(requestId, arg, (_b = options == null ? void 0 : options.getPendingMeta) == null ? void 0 : _b.call(options, { requestId: requestId, arg: arg }, { getState: getState, extra: extra })));
-                                    return [4 /*yield*/, Promise.race([
-                                            abortedPromise,
-                                            Promise.resolve(payloadCreator(arg, {
-                                                dispatch: dispatch,
-                                                getState: getState,
-                                                extra: extra,
-                                                requestId: requestId,
-                                                signal: abortController.signal,
-                                                abort: abort,
-                                                rejectWithValue: function (value, meta) {
-                                                    return new RejectWithValue(value, meta);
-                                                },
-                                                fulfillWithValue: function (value, meta) {
-                                                    return new FulfillWithMeta(value, meta);
-                                                }
-                                            })).then(function (result) {
-                                                if (result instanceof RejectWithValue) {
-                                                    throw result;
-                                                }
-                                                if (result instanceof FulfillWithMeta) {
-                                                    return fulfilled(result.payload, requestId, arg, result.meta);
-                                                }
-                                                return fulfilled(result, requestId, arg);
-                                            })
-                                        ])];
-                                case 3:
-                                    finalAction = _c.sent();
-                                    return [3 /*break*/, 5];
-                                case 4:
-                                    err_1 = _c.sent();
-                                    finalAction = err_1 instanceof RejectWithValue ? rejected(null, requestId, arg, err_1.payload, err_1.meta) : rejected(err_1, requestId, arg);
-                                    return [3 /*break*/, 5];
-                                case 5:
-                                    skipDispatch = options && !options.dispatchConditionRejection && rejected.match(finalAction) && finalAction.meta.condition;
-                                    if (!skipDispatch) {
-                                        dispatch(finalAction);
-                                    }
-                                    return [2 /*return*/, finalAction];
-                            }
-                        });
-                    });
-                }();
-                return Object.assign(promise2, {
-                    abort: abort,
-                    requestId: requestId,
-                    arg: arg,
-                    unwrap: function () {
-                        return promise2.then(unwrapResult);
-                    }
-                });
-            };
-        }
-        return Object.assign(actionCreator, {
-            pending: pending,
-            rejected: rejected,
-            fulfilled: fulfilled,
-            typePrefix: typePrefix
-        });
-    }
-    createAsyncThunk2.withTypes = function () { return createAsyncThunk2; };
-    return createAsyncThunk2;
-})();
-function unwrapResult(action) {
-    if (action.meta && action.meta.rejectedWithValue) {
-        throw action.payload;
-    }
-    if (action.error) {
-        throw action.error;
-    }
-    return action.payload;
-}
-function isThenable(value) {
-    return value !== null && typeof value === "object" && typeof value.then === "function";
-}
 // src/matchers.ts
-var matches = function (matcher, action) {
-    if (hasMatchFunction(matcher)) {
-        return matcher.match(action);
-    }
-    else {
-        return matcher(action);
-    }
+var matches = (matcher, action) => {
+  if (hasMatchFunction(matcher)) {
+    return matcher.match(action);
+  } else {
+    return matcher(action);
+  }
 };
-function isAnyOf() {
-    var matchers = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        matchers[_i] = arguments[_i];
-    }
-    return function (action) {
-        return matchers.some(function (matcher) { return matches(matcher, action); });
-    };
+function isAnyOf(...matchers) {
+  return (action) => {
+    return matchers.some((matcher) => matches(matcher, action));
+  };
 }
-function isAllOf() {
-    var matchers = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        matchers[_i] = arguments[_i];
-    }
-    return function (action) {
-        return matchers.every(function (matcher) { return matches(matcher, action); });
-    };
+function isAllOf(...matchers) {
+  return (action) => {
+    return matchers.every((matcher) => matches(matcher, action));
+  };
 }
 function hasExpectedRequestMetadata(action, validStatus) {
-    if (!action || !action.meta)
-        return false;
-    var hasValidRequestId = typeof action.meta.requestId === "string";
-    var hasValidRequestStatus = validStatus.indexOf(action.meta.requestStatus) > -1;
-    return hasValidRequestId && hasValidRequestStatus;
+  if (!action || !action.meta) return false;
+  const hasValidRequestId = typeof action.meta.requestId === "string";
+  const hasValidRequestStatus = validStatus.indexOf(action.meta.requestStatus) > -1;
+  return hasValidRequestId && hasValidRequestStatus;
 }
 function isAsyncThunkArray(a) {
-    return typeof a[0] === "function" && "pending" in a[0] && "fulfilled" in a[0] && "rejected" in a[0];
+  return typeof a[0] === "function" && "pending" in a[0] && "fulfilled" in a[0] && "rejected" in a[0];
 }
-function isPending() {
-    var asyncThunks = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        asyncThunks[_i] = arguments[_i];
-    }
-    if (asyncThunks.length === 0) {
-        return function (action) { return hasExpectedRequestMetadata(action, ["pending"]); };
-    }
-    if (!isAsyncThunkArray(asyncThunks)) {
-        return isPending()(asyncThunks[0]);
-    }
-    return function (action) {
-        var matchers = asyncThunks.map(function (asyncThunk) { return asyncThunk.pending; });
-        var combinedMatcher = isAnyOf.apply(void 0, matchers);
-        return combinedMatcher(action);
-    };
+function isPending(...asyncThunks) {
+  if (asyncThunks.length === 0) {
+    return (action) => hasExpectedRequestMetadata(action, ["pending"]);
+  }
+  if (!isAsyncThunkArray(asyncThunks)) {
+    return isPending()(asyncThunks[0]);
+  }
+  return isAnyOf(...asyncThunks.map((asyncThunk) => asyncThunk.pending));
 }
-function isRejected() {
-    var asyncThunks = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        asyncThunks[_i] = arguments[_i];
-    }
-    if (asyncThunks.length === 0) {
-        return function (action) { return hasExpectedRequestMetadata(action, ["rejected"]); };
-    }
-    if (!isAsyncThunkArray(asyncThunks)) {
-        return isRejected()(asyncThunks[0]);
-    }
-    return function (action) {
-        var matchers = asyncThunks.map(function (asyncThunk) { return asyncThunk.rejected; });
-        var combinedMatcher = isAnyOf.apply(void 0, matchers);
-        return combinedMatcher(action);
-    };
+function isRejected(...asyncThunks) {
+  if (asyncThunks.length === 0) {
+    return (action) => hasExpectedRequestMetadata(action, ["rejected"]);
+  }
+  if (!isAsyncThunkArray(asyncThunks)) {
+    return isRejected()(asyncThunks[0]);
+  }
+  return isAnyOf(...asyncThunks.map((asyncThunk) => asyncThunk.rejected));
 }
-function isRejectedWithValue() {
-    var asyncThunks = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        asyncThunks[_i] = arguments[_i];
-    }
-    var hasFlag = function (action) {
-        return action && action.meta && action.meta.rejectedWithValue;
-    };
-    if (asyncThunks.length === 0) {
-        return function (action) {
-            var combinedMatcher = isAllOf(isRejected.apply(void 0, asyncThunks), hasFlag);
-            return combinedMatcher(action);
-        };
-    }
-    if (!isAsyncThunkArray(asyncThunks)) {
-        return isRejectedWithValue()(asyncThunks[0]);
-    }
-    return function (action) {
-        var combinedMatcher = isAllOf(isRejected.apply(void 0, asyncThunks), hasFlag);
-        return combinedMatcher(action);
-    };
+function isRejectedWithValue(...asyncThunks) {
+  const hasFlag = (action) => {
+    return action && action.meta && action.meta.rejectedWithValue;
+  };
+  if (asyncThunks.length === 0) {
+    return isAllOf(isRejected(...asyncThunks), hasFlag);
+  }
+  if (!isAsyncThunkArray(asyncThunks)) {
+    return isRejectedWithValue()(asyncThunks[0]);
+  }
+  return isAllOf(isRejected(...asyncThunks), hasFlag);
 }
-function isFulfilled() {
-    var asyncThunks = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        asyncThunks[_i] = arguments[_i];
-    }
-    if (asyncThunks.length === 0) {
-        return function (action) { return hasExpectedRequestMetadata(action, ["fulfilled"]); };
-    }
-    if (!isAsyncThunkArray(asyncThunks)) {
-        return isFulfilled()(asyncThunks[0]);
-    }
-    return function (action) {
-        var matchers = asyncThunks.map(function (asyncThunk) { return asyncThunk.fulfilled; });
-        var combinedMatcher = isAnyOf.apply(void 0, matchers);
-        return combinedMatcher(action);
-    };
+function isFulfilled(...asyncThunks) {
+  if (asyncThunks.length === 0) {
+    return (action) => hasExpectedRequestMetadata(action, ["fulfilled"]);
+  }
+  if (!isAsyncThunkArray(asyncThunks)) {
+    return isFulfilled()(asyncThunks[0]);
+  }
+  return isAnyOf(...asyncThunks.map((asyncThunk) => asyncThunk.fulfilled));
 }
-function isAsyncThunkAction() {
-    var asyncThunks = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        asyncThunks[_i] = arguments[_i];
+function isAsyncThunkAction(...asyncThunks) {
+  if (asyncThunks.length === 0) {
+    return (action) => hasExpectedRequestMetadata(action, ["pending", "fulfilled", "rejected"]);
+  }
+  if (!isAsyncThunkArray(asyncThunks)) {
+    return isAsyncThunkAction()(asyncThunks[0]);
+  }
+  return isAnyOf(...asyncThunks.flatMap((asyncThunk) => [asyncThunk.pending, asyncThunk.rejected, asyncThunk.fulfilled]));
+}
+
+// src/nanoid.ts
+var urlAlphabet = "ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW";
+var nanoid = (size = 21) => {
+  let id = "";
+  let i = size;
+  while (i--) {
+    id += urlAlphabet[Math.random() * 64 | 0];
+  }
+  return id;
+};
+
+// src/createAsyncThunk.ts
+var commonProperties = ["name", "message", "stack", "code"];
+var RejectWithValue = class {
+  constructor(payload, meta) {
+    __publicField(this, "payload", payload);
+    __publicField(this, "meta", meta);
+    /*
+    type-only property to distinguish between RejectWithValue and FulfillWithMeta
+    does not exist at runtime
+    */
+    __publicField(this, "_type");
+  }
+};
+var FulfillWithMeta = class {
+  constructor(payload, meta) {
+    __publicField(this, "payload", payload);
+    __publicField(this, "meta", meta);
+    /*
+    type-only property to distinguish between RejectWithValue and FulfillWithMeta
+    does not exist at runtime
+    */
+    __publicField(this, "_type");
+  }
+};
+var miniSerializeError = (value) => {
+  if (typeof value === "object" && value !== null) {
+    const simpleError = {};
+    for (const property of commonProperties) {
+      if (typeof value[property] === "string") {
+        simpleError[property] = value[property];
+      }
     }
-    if (asyncThunks.length === 0) {
-        return function (action) { return hasExpectedRequestMetadata(action, ["pending", "fulfilled", "rejected"]); };
-    }
-    if (!isAsyncThunkArray(asyncThunks)) {
-        return isAsyncThunkAction()(asyncThunks[0]);
-    }
-    return function (action) {
-        var matchers = [];
-        for (var _i = 0, asyncThunks_1 = asyncThunks; _i < asyncThunks_1.length; _i++) {
-            var asyncThunk = asyncThunks_1[_i];
-            matchers.push(asyncThunk.pending, asyncThunk.rejected, asyncThunk.fulfilled);
+    return simpleError;
+  }
+  return {
+    message: String(value)
+  };
+};
+var externalAbortMessage = "External signal was aborted";
+var createAsyncThunk = /* @__PURE__ */ (() => {
+  function createAsyncThunk2(typePrefix, payloadCreator, options) {
+    const fulfilled = createAction(typePrefix + "/fulfilled", (payload, requestId, arg, meta) => ({
+      payload,
+      meta: __spreadProps(__spreadValues({}, meta || {}), {
+        arg,
+        requestId,
+        requestStatus: "fulfilled"
+      })
+    }));
+    const pending = createAction(typePrefix + "/pending", (requestId, arg, meta) => ({
+      payload: void 0,
+      meta: __spreadProps(__spreadValues({}, meta || {}), {
+        arg,
+        requestId,
+        requestStatus: "pending"
+      })
+    }));
+    const rejected = createAction(typePrefix + "/rejected", (error, requestId, arg, payload, meta) => ({
+      payload,
+      error: (options && options.serializeError || miniSerializeError)(error || "Rejected"),
+      meta: __spreadProps(__spreadValues({}, meta || {}), {
+        arg,
+        requestId,
+        rejectedWithValue: !!payload,
+        requestStatus: "rejected",
+        aborted: (error == null ? void 0 : error.name) === "AbortError",
+        condition: (error == null ? void 0 : error.name) === "ConditionError"
+      })
+    }));
+    function actionCreator(arg, {
+      signal
+    } = {}) {
+      return (dispatch, getState, extra) => {
+        const requestId = (options == null ? void 0 : options.idGenerator) ? options.idGenerator(arg) : nanoid();
+        const abortController = new AbortController();
+        let abortHandler;
+        let abortReason;
+        function abort(reason) {
+          abortReason = reason;
+          abortController.abort();
         }
-        var combinedMatcher = isAnyOf.apply(void 0, matchers);
-        return combinedMatcher(action);
-    };
-}
-// src/listenerMiddleware/utils.ts
-var assertFunction = function (func, expected) {
-    if (typeof func !== "function") {
-        throw new TypeError(expected + " is not a function");
-    }
-};
-var noop = function () {
-};
-var catchRejection = function (promise2, onError) {
-    if (onError === void 0) { onError = noop; }
-    promise2.catch(onError);
-    return promise2;
-};
-var addAbortSignalListener = function (abortSignal, callback) {
-    abortSignal.addEventListener("abort", callback, { once: true });
-    return function () { return abortSignal.removeEventListener("abort", callback); };
-};
-var abortControllerWithReason = function (abortController, reason) {
-    var signal = abortController.signal;
-    if (signal.aborted) {
-        return;
-    }
-    if (!("reason" in signal)) {
-        Object.defineProperty(signal, "reason", {
-            enumerable: true,
-            value: reason,
-            configurable: true,
-            writable: true
+        if (signal) {
+          if (signal.aborted) {
+            abort(externalAbortMessage);
+          } else {
+            signal.addEventListener("abort", () => abort(externalAbortMessage), {
+              once: true
+            });
+          }
+        }
+        const promise = (async function() {
+          var _a, _b;
+          let finalAction;
+          try {
+            let conditionResult = (_a = options == null ? void 0 : options.condition) == null ? void 0 : _a.call(options, arg, {
+              getState,
+              extra
+            });
+            if (isThenable(conditionResult)) {
+              conditionResult = await conditionResult;
+            }
+            if (conditionResult === false || abortController.signal.aborted) {
+              throw {
+                name: "ConditionError",
+                message: "Aborted due to condition callback returning false."
+              };
+            }
+            const abortedPromise = new Promise((_, reject) => {
+              abortHandler = () => {
+                reject({
+                  name: "AbortError",
+                  message: abortReason || "Aborted"
+                });
+              };
+              abortController.signal.addEventListener("abort", abortHandler, {
+                once: true
+              });
+            });
+            dispatch(pending(requestId, arg, (_b = options == null ? void 0 : options.getPendingMeta) == null ? void 0 : _b.call(options, {
+              requestId,
+              arg
+            }, {
+              getState,
+              extra
+            })));
+            finalAction = await Promise.race([abortedPromise, Promise.resolve(payloadCreator(arg, {
+              dispatch,
+              getState,
+              extra,
+              requestId,
+              signal: abortController.signal,
+              abort,
+              rejectWithValue: ((value, meta) => {
+                return new RejectWithValue(value, meta);
+              }),
+              fulfillWithValue: ((value, meta) => {
+                return new FulfillWithMeta(value, meta);
+              })
+            })).then((result) => {
+              if (result instanceof RejectWithValue) {
+                throw result;
+              }
+              if (result instanceof FulfillWithMeta) {
+                return fulfilled(result.payload, requestId, arg, result.meta);
+              }
+              return fulfilled(result, requestId, arg);
+            })]);
+          } catch (err) {
+            finalAction = err instanceof RejectWithValue ? rejected(null, requestId, arg, err.payload, err.meta) : rejected(err, requestId, arg);
+          } finally {
+            if (abortHandler) {
+              abortController.signal.removeEventListener("abort", abortHandler);
+            }
+          }
+          const skipDispatch = options && !options.dispatchConditionRejection && rejected.match(finalAction) && finalAction.meta.condition;
+          if (!skipDispatch) {
+            dispatch(finalAction);
+          }
+          return finalAction;
+        })();
+        return Object.assign(promise, {
+          abort,
+          requestId,
+          arg,
+          unwrap() {
+            return promise.then(unwrapResult);
+          }
         });
+      };
+    }
+    return Object.assign(actionCreator, {
+      pending,
+      rejected,
+      fulfilled,
+      settled: isAnyOf(rejected, fulfilled),
+      typePrefix
+    });
+  }
+  createAsyncThunk2.withTypes = () => createAsyncThunk2;
+  return createAsyncThunk2;
+})();
+function unwrapResult(action) {
+  if (action.meta && action.meta.rejectedWithValue) {
+    throw action.payload;
+  }
+  if (action.error) {
+    throw action.error;
+  }
+  return action.payload;
+}
+function isThenable(value) {
+  return value !== null && typeof value === "object" && typeof value.then === "function";
+}
+
+// src/createSlice.ts
+var asyncThunkSymbol = /* @__PURE__ */ Symbol.for("rtk-slice-createasyncthunk");
+var asyncThunkCreator = {
+  [asyncThunkSymbol]: createAsyncThunk
+};
+var ReducerType = /* @__PURE__ */ ((ReducerType2) => {
+  ReducerType2["reducer"] = "reducer";
+  ReducerType2["reducerWithPrepare"] = "reducerWithPrepare";
+  ReducerType2["asyncThunk"] = "asyncThunk";
+  return ReducerType2;
+})(ReducerType || {});
+function getType(slice, actionKey) {
+  return `${slice}/${actionKey}`;
+}
+function buildCreateSlice({
+  creators
+} = {}) {
+  var _a;
+  const cAT = (_a = creators == null ? void 0 : creators.asyncThunk) == null ? void 0 : _a[asyncThunkSymbol];
+  return function createSlice2(options) {
+    const {
+      name,
+      reducerPath = name
+    } = options;
+    if (!name) {
+      throw new Error( true ? formatProdErrorMessage(11) : undefined);
+    }
+    if (typeof process !== "undefined" && "production" === "development") {
+      if (options.initialState === void 0) {
+        console.error("You must provide an `initialState` value that is not `undefined`. You may have misspelled `initialState`");
+      }
+    }
+    const reducers = (typeof options.reducers === "function" ? options.reducers(buildReducerCreators()) : options.reducers) || {};
+    const reducerNames = Object.keys(reducers);
+    const context = {
+      sliceCaseReducersByName: {},
+      sliceCaseReducersByType: {},
+      actionCreators: {},
+      sliceMatchers: []
+    };
+    const contextMethods = {
+      addCase(typeOrActionCreator, reducer2) {
+        const type = typeof typeOrActionCreator === "string" ? typeOrActionCreator : typeOrActionCreator.type;
+        if (!type) {
+          throw new Error( true ? formatProdErrorMessage(12) : undefined);
+        }
+        if (type in context.sliceCaseReducersByType) {
+          throw new Error( true ? formatProdErrorMessage(13) : undefined);
+        }
+        context.sliceCaseReducersByType[type] = reducer2;
+        return contextMethods;
+      },
+      addMatcher(matcher, reducer2) {
+        context.sliceMatchers.push({
+          matcher,
+          reducer: reducer2
+        });
+        return contextMethods;
+      },
+      exposeAction(name2, actionCreator) {
+        context.actionCreators[name2] = actionCreator;
+        return contextMethods;
+      },
+      exposeCaseReducer(name2, reducer2) {
+        context.sliceCaseReducersByName[name2] = reducer2;
+        return contextMethods;
+      }
+    };
+    reducerNames.forEach((reducerName) => {
+      const reducerDefinition = reducers[reducerName];
+      const reducerDetails = {
+        reducerName,
+        type: getType(name, reducerName),
+        createNotation: typeof options.reducers === "function"
+      };
+      if (isAsyncThunkSliceReducerDefinition(reducerDefinition)) {
+        handleThunkCaseReducerDefinition(reducerDetails, reducerDefinition, contextMethods, cAT);
+      } else {
+        handleNormalReducerDefinition(reducerDetails, reducerDefinition, contextMethods);
+      }
+    });
+    function buildReducer() {
+      if (false) {}
+      const [extraReducers = {}, actionMatchers = [], defaultCaseReducer = void 0] = typeof options.extraReducers === "function" ? executeReducerBuilderCallback(options.extraReducers) : [options.extraReducers];
+      const finalCaseReducers = __spreadValues(__spreadValues({}, extraReducers), context.sliceCaseReducersByType);
+      return createReducer(options.initialState, (builder) => {
+        for (let key in finalCaseReducers) {
+          builder.addCase(key, finalCaseReducers[key]);
+        }
+        for (let sM of context.sliceMatchers) {
+          builder.addMatcher(sM.matcher, sM.reducer);
+        }
+        for (let m of actionMatchers) {
+          builder.addMatcher(m.matcher, m.reducer);
+        }
+        if (defaultCaseReducer) {
+          builder.addDefaultCase(defaultCaseReducer);
+        }
+      });
+    }
+    const selectSelf = (state) => state;
+    const injectedSelectorCache = /* @__PURE__ */ new Map();
+    const injectedStateCache = /* @__PURE__ */ new WeakMap();
+    let _reducer;
+    function reducer(state, action) {
+      if (!_reducer) _reducer = buildReducer();
+      return _reducer(state, action);
+    }
+    function getInitialState() {
+      if (!_reducer) _reducer = buildReducer();
+      return _reducer.getInitialState();
+    }
+    function makeSelectorProps(reducerPath2, injected = false) {
+      function selectSlice(state) {
+        let sliceState = state[reducerPath2];
+        if (typeof sliceState === "undefined") {
+          if (injected) {
+            sliceState = getOrInsertComputed(injectedStateCache, selectSlice, getInitialState);
+          } else if (false) {}
+        }
+        return sliceState;
+      }
+      function getSelectors(selectState = selectSelf) {
+        const selectorCache = getOrInsertComputed(injectedSelectorCache, injected, () => /* @__PURE__ */ new WeakMap());
+        return getOrInsertComputed(selectorCache, selectState, () => {
+          var _a2;
+          const map = {};
+          for (const [name2, selector] of Object.entries((_a2 = options.selectors) != null ? _a2 : {})) {
+            map[name2] = wrapSelector(selector, selectState, () => getOrInsertComputed(injectedStateCache, selectState, getInitialState), injected);
+          }
+          return map;
+        });
+      }
+      return {
+        reducerPath: reducerPath2,
+        getSelectors,
+        get selectors() {
+          return getSelectors(selectSlice);
+        },
+        selectSlice
+      };
+    }
+    const slice = __spreadProps(__spreadValues({
+      name,
+      reducer,
+      actions: context.actionCreators,
+      caseReducers: context.sliceCaseReducersByName,
+      getInitialState
+    }, makeSelectorProps(reducerPath)), {
+      injectInto(injectable, _a2 = {}) {
+        var _b = _a2, {
+          reducerPath: pathOpt
+        } = _b, config = __objRest(_b, [
+          "reducerPath"
+        ]);
+        const newReducerPath = pathOpt != null ? pathOpt : reducerPath;
+        injectable.inject({
+          reducerPath: newReducerPath,
+          reducer
+        }, config);
+        return __spreadValues(__spreadValues({}, slice), makeSelectorProps(newReducerPath, true));
+      }
+    });
+    return slice;
+  };
+}
+function wrapSelector(selector, selectState, getInitialState, injected) {
+  function wrapper(rootState, ...args) {
+    let sliceState = selectState(rootState);
+    if (typeof sliceState === "undefined") {
+      if (injected) {
+        sliceState = getInitialState();
+      } else if (false) {}
+    }
+    return selector(sliceState, ...args);
+  }
+  wrapper.unwrapped = selector;
+  return wrapper;
+}
+var createSlice = /* @__PURE__ */ buildCreateSlice();
+function buildReducerCreators() {
+  function asyncThunk(payloadCreator, config) {
+    return __spreadValues({
+      _reducerDefinitionType: "asyncThunk" /* asyncThunk */,
+      payloadCreator
+    }, config);
+  }
+  asyncThunk.withTypes = () => asyncThunk;
+  return {
+    reducer(caseReducer) {
+      return Object.assign({
+        // hack so the wrapping function has the same name as the original
+        // we need to create a wrapper so the `reducerDefinitionType` is not assigned to the original
+        [caseReducer.name](...args) {
+          return caseReducer(...args);
+        }
+      }[caseReducer.name], {
+        _reducerDefinitionType: "reducer" /* reducer */
+      });
+    },
+    preparedReducer(prepare, reducer) {
+      return {
+        _reducerDefinitionType: "reducerWithPrepare" /* reducerWithPrepare */,
+        prepare,
+        reducer
+      };
+    },
+    asyncThunk
+  };
+}
+function handleNormalReducerDefinition({
+  type,
+  reducerName,
+  createNotation
+}, maybeReducerWithPrepare, context) {
+  let caseReducer;
+  let prepareCallback;
+  if ("reducer" in maybeReducerWithPrepare) {
+    if (createNotation && !isCaseReducerWithPrepareDefinition(maybeReducerWithPrepare)) {
+      throw new Error( true ? formatProdErrorMessage(17) : undefined);
+    }
+    caseReducer = maybeReducerWithPrepare.reducer;
+    prepareCallback = maybeReducerWithPrepare.prepare;
+  } else {
+    caseReducer = maybeReducerWithPrepare;
+  }
+  context.addCase(type, caseReducer).exposeCaseReducer(reducerName, caseReducer).exposeAction(reducerName, prepareCallback ? createAction(type, prepareCallback) : createAction(type));
+}
+function isAsyncThunkSliceReducerDefinition(reducerDefinition) {
+  return reducerDefinition._reducerDefinitionType === "asyncThunk" /* asyncThunk */;
+}
+function isCaseReducerWithPrepareDefinition(reducerDefinition) {
+  return reducerDefinition._reducerDefinitionType === "reducerWithPrepare" /* reducerWithPrepare */;
+}
+function handleThunkCaseReducerDefinition({
+  type,
+  reducerName
+}, reducerDefinition, context, cAT) {
+  if (!cAT) {
+    throw new Error( true ? formatProdErrorMessage(18) : undefined);
+  }
+  const {
+    payloadCreator,
+    fulfilled,
+    pending,
+    rejected,
+    settled,
+    options
+  } = reducerDefinition;
+  const thunk = cAT(type, payloadCreator, options);
+  context.exposeAction(reducerName, thunk);
+  if (fulfilled) {
+    context.addCase(thunk.fulfilled, fulfilled);
+  }
+  if (pending) {
+    context.addCase(thunk.pending, pending);
+  }
+  if (rejected) {
+    context.addCase(thunk.rejected, rejected);
+  }
+  if (settled) {
+    context.addMatcher(thunk.settled, settled);
+  }
+  context.exposeCaseReducer(reducerName, {
+    fulfilled: fulfilled || noop,
+    pending: pending || noop,
+    rejected: rejected || noop,
+    settled: settled || noop
+  });
+}
+function noop() {
+}
+
+// src/entities/entity_state.ts
+function getInitialEntityState() {
+  return {
+    ids: [],
+    entities: {}
+  };
+}
+function createInitialStateFactory(stateAdapter) {
+  function getInitialState(additionalState = {}, entities) {
+    const state = Object.assign(getInitialEntityState(), additionalState);
+    return entities ? stateAdapter.setAll(state, entities) : state;
+  }
+  return {
+    getInitialState
+  };
+}
+
+// src/entities/state_selectors.ts
+function createSelectorsFactory() {
+  function getSelectors(selectState, options = {}) {
+    const {
+      createSelector: createSelector2 = createDraftSafeSelector
+    } = options;
+    const selectIds = (state) => state.ids;
+    const selectEntities = (state) => state.entities;
+    const selectAll = createSelector2(selectIds, selectEntities, (ids, entities) => ids.map((id) => entities[id]));
+    const selectId = (_, id) => id;
+    const selectById = (entities, id) => entities[id];
+    const selectTotal = createSelector2(selectIds, (ids) => ids.length);
+    if (!selectState) {
+      return {
+        selectIds,
+        selectEntities,
+        selectAll,
+        selectTotal,
+        selectById: createSelector2(selectEntities, selectId, selectById)
+      };
+    }
+    const selectGlobalizedEntities = createSelector2(selectState, selectEntities);
+    return {
+      selectIds: createSelector2(selectState, selectIds),
+      selectEntities: selectGlobalizedEntities,
+      selectAll: createSelector2(selectState, selectAll),
+      selectTotal: createSelector2(selectState, selectTotal),
+      selectById: createSelector2(selectGlobalizedEntities, selectId, selectById)
+    };
+  }
+  return {
+    getSelectors
+  };
+}
+
+// src/entities/state_adapter.ts
+var isDraftTyped = immer__WEBPACK_IMPORTED_MODULE_1__[/* isDraft */ "c"];
+function createSingleArgumentStateOperator(mutator) {
+  const operator = createStateOperator((_, state) => mutator(state));
+  return function operation(state) {
+    return operator(state, void 0);
+  };
+}
+function createStateOperator(mutator) {
+  return function operation(state, arg) {
+    function isPayloadActionArgument(arg2) {
+      return isFSA(arg2);
+    }
+    const runMutator = (draft) => {
+      if (isPayloadActionArgument(arg)) {
+        mutator(arg.payload, draft);
+      } else {
+        mutator(arg, draft);
+      }
+    };
+    if (isDraftTyped(state)) {
+      runMutator(state);
+      return state;
+    }
+    return Object(immer__WEBPACK_IMPORTED_MODULE_1__[/* produce */ "f"])(state, runMutator);
+  };
+}
+
+// src/entities/utils.ts
+function selectIdValue(entity, selectId) {
+  const key = selectId(entity);
+  if (false) {}
+  return key;
+}
+function ensureEntitiesArray(entities) {
+  if (!Array.isArray(entities)) {
+    entities = Object.values(entities);
+  }
+  return entities;
+}
+function getCurrent(value) {
+  return Object(immer__WEBPACK_IMPORTED_MODULE_1__[/* isDraft */ "c"])(value) ? Object(immer__WEBPACK_IMPORTED_MODULE_1__[/* current */ "a"])(value) : value;
+}
+function splitAddedUpdatedEntities(newEntities, selectId, state) {
+  newEntities = ensureEntitiesArray(newEntities);
+  const existingIdsArray = getCurrent(state.ids);
+  const existingIds = new Set(existingIdsArray);
+  const added = [];
+  const addedIds = /* @__PURE__ */ new Set([]);
+  const updated = [];
+  for (const entity of newEntities) {
+    const id = selectIdValue(entity, selectId);
+    if (existingIds.has(id) || addedIds.has(id)) {
+      updated.push({
+        id,
+        changes: entity
+      });
+    } else {
+      addedIds.add(id);
+      added.push(entity);
+    }
+  }
+  return [added, updated, existingIdsArray];
+}
+
+// src/entities/unsorted_state_adapter.ts
+function createUnsortedStateAdapter(selectId) {
+  function addOneMutably(entity, state) {
+    const key = selectIdValue(entity, selectId);
+    if (key in state.entities) {
+      return;
+    }
+    state.ids.push(key);
+    state.entities[key] = entity;
+  }
+  function addManyMutably(newEntities, state) {
+    newEntities = ensureEntitiesArray(newEntities);
+    for (const entity of newEntities) {
+      addOneMutably(entity, state);
+    }
+  }
+  function setOneMutably(entity, state) {
+    const key = selectIdValue(entity, selectId);
+    if (!(key in state.entities)) {
+      state.ids.push(key);
     }
     ;
-    abortController.abort(reason);
-};
+    state.entities[key] = entity;
+  }
+  function setManyMutably(newEntities, state) {
+    newEntities = ensureEntitiesArray(newEntities);
+    for (const entity of newEntities) {
+      setOneMutably(entity, state);
+    }
+  }
+  function setAllMutably(newEntities, state) {
+    newEntities = ensureEntitiesArray(newEntities);
+    state.ids = [];
+    state.entities = {};
+    addManyMutably(newEntities, state);
+  }
+  function removeOneMutably(key, state) {
+    return removeManyMutably([key], state);
+  }
+  function removeManyMutably(keys, state) {
+    let didMutate = false;
+    keys.forEach((key) => {
+      if (key in state.entities) {
+        delete state.entities[key];
+        didMutate = true;
+      }
+    });
+    if (didMutate) {
+      state.ids = state.ids.filter((id) => id in state.entities);
+    }
+  }
+  function removeAllMutably(state) {
+    Object.assign(state, {
+      ids: [],
+      entities: {}
+    });
+  }
+  function takeNewKey(keys, update, state) {
+    const original3 = state.entities[update.id];
+    if (original3 === void 0) {
+      return false;
+    }
+    const updated = Object.assign({}, original3, update.changes);
+    const newKey = selectIdValue(updated, selectId);
+    const hasNewKey = newKey !== update.id;
+    if (hasNewKey) {
+      keys[update.id] = newKey;
+      delete state.entities[update.id];
+    }
+    ;
+    state.entities[newKey] = updated;
+    return hasNewKey;
+  }
+  function updateOneMutably(update, state) {
+    return updateManyMutably([update], state);
+  }
+  function updateManyMutably(updates, state) {
+    const newKeys = {};
+    const updatesPerEntity = {};
+    updates.forEach((update) => {
+      var _a;
+      if (update.id in state.entities) {
+        updatesPerEntity[update.id] = {
+          id: update.id,
+          // Spreads ignore falsy values, so this works even if there isn't
+          // an existing update already at this key
+          changes: __spreadValues(__spreadValues({}, (_a = updatesPerEntity[update.id]) == null ? void 0 : _a.changes), update.changes)
+        };
+      }
+    });
+    updates = Object.values(updatesPerEntity);
+    const didMutateEntities = updates.length > 0;
+    if (didMutateEntities) {
+      const didMutateIds = updates.filter((update) => takeNewKey(newKeys, update, state)).length > 0;
+      if (didMutateIds) {
+        state.ids = Object.values(state.entities).map((e) => selectIdValue(e, selectId));
+      }
+    }
+  }
+  function upsertOneMutably(entity, state) {
+    return upsertManyMutably([entity], state);
+  }
+  function upsertManyMutably(newEntities, state) {
+    const [added, updated] = splitAddedUpdatedEntities(newEntities, selectId, state);
+    addManyMutably(added, state);
+    updateManyMutably(updated, state);
+  }
+  return {
+    removeAll: createSingleArgumentStateOperator(removeAllMutably),
+    addOne: createStateOperator(addOneMutably),
+    addMany: createStateOperator(addManyMutably),
+    setOne: createStateOperator(setOneMutably),
+    setMany: createStateOperator(setManyMutably),
+    setAll: createStateOperator(setAllMutably),
+    updateOne: createStateOperator(updateOneMutably),
+    updateMany: createStateOperator(updateManyMutably),
+    upsertOne: createStateOperator(upsertOneMutably),
+    upsertMany: createStateOperator(upsertManyMutably),
+    removeOne: createStateOperator(removeOneMutably),
+    removeMany: createStateOperator(removeManyMutably)
+  };
+}
+
+// src/entities/sorted_state_adapter.ts
+function findInsertIndex(sortedItems, item, comparisonFunction) {
+  let lowIndex = 0;
+  let highIndex = sortedItems.length;
+  while (lowIndex < highIndex) {
+    let middleIndex = lowIndex + highIndex >>> 1;
+    const currentItem = sortedItems[middleIndex];
+    const res = comparisonFunction(item, currentItem);
+    if (res >= 0) {
+      lowIndex = middleIndex + 1;
+    } else {
+      highIndex = middleIndex;
+    }
+  }
+  return lowIndex;
+}
+function insert(sortedItems, item, comparisonFunction) {
+  const insertAtIndex = findInsertIndex(sortedItems, item, comparisonFunction);
+  sortedItems.splice(insertAtIndex, 0, item);
+  return sortedItems;
+}
+function createSortedStateAdapter(selectId, comparer) {
+  const {
+    removeOne,
+    removeMany,
+    removeAll
+  } = createUnsortedStateAdapter(selectId);
+  function addOneMutably(entity, state) {
+    return addManyMutably([entity], state);
+  }
+  function addManyMutably(newEntities, state, existingIds) {
+    newEntities = ensureEntitiesArray(newEntities);
+    const existingKeys = new Set(existingIds != null ? existingIds : getCurrent(state.ids));
+    const addedKeys = /* @__PURE__ */ new Set();
+    const models = newEntities.filter((model) => {
+      const modelId = selectIdValue(model, selectId);
+      const notAdded = !addedKeys.has(modelId);
+      if (notAdded) addedKeys.add(modelId);
+      return !existingKeys.has(modelId) && notAdded;
+    });
+    if (models.length !== 0) {
+      mergeFunction(state, models);
+    }
+  }
+  function setOneMutably(entity, state) {
+    return setManyMutably([entity], state);
+  }
+  function setManyMutably(newEntities, state) {
+    let deduplicatedEntities = {};
+    newEntities = ensureEntitiesArray(newEntities);
+    if (newEntities.length !== 0) {
+      for (const item of newEntities) {
+        const entityId = selectId(item);
+        deduplicatedEntities[entityId] = item;
+        delete state.entities[entityId];
+      }
+      newEntities = ensureEntitiesArray(deduplicatedEntities);
+      mergeFunction(state, newEntities);
+    }
+  }
+  function setAllMutably(newEntities, state) {
+    newEntities = ensureEntitiesArray(newEntities);
+    state.entities = {};
+    state.ids = [];
+    addManyMutably(newEntities, state, []);
+  }
+  function updateOneMutably(update, state) {
+    return updateManyMutably([update], state);
+  }
+  function updateManyMutably(updates, state) {
+    let appliedUpdates = false;
+    let replacedIds = false;
+    for (let update of updates) {
+      const entity = state.entities[update.id];
+      if (!entity) {
+        continue;
+      }
+      appliedUpdates = true;
+      Object.assign(entity, update.changes);
+      const newId = selectId(entity);
+      if (update.id !== newId) {
+        replacedIds = true;
+        delete state.entities[update.id];
+        const oldIndex = state.ids.indexOf(update.id);
+        state.ids[oldIndex] = newId;
+        state.entities[newId] = entity;
+      }
+    }
+    if (appliedUpdates) {
+      mergeFunction(state, [], appliedUpdates, replacedIds);
+    }
+  }
+  function upsertOneMutably(entity, state) {
+    return upsertManyMutably([entity], state);
+  }
+  function upsertManyMutably(newEntities, state) {
+    const [added, updated, existingIdsArray] = splitAddedUpdatedEntities(newEntities, selectId, state);
+    if (added.length) {
+      addManyMutably(added, state, existingIdsArray);
+    }
+    if (updated.length) {
+      updateManyMutably(updated, state);
+    }
+  }
+  function areArraysEqual(a, b) {
+    if (a.length !== b.length) {
+      return false;
+    }
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] === b[i]) {
+        continue;
+      }
+      return false;
+    }
+    return true;
+  }
+  const mergeFunction = (state, addedItems, appliedUpdates, replacedIds) => {
+    const currentEntities = getCurrent(state.entities);
+    const currentIds = getCurrent(state.ids);
+    const stateEntities = state.entities;
+    let ids = currentIds;
+    if (replacedIds) {
+      ids = new Set(currentIds);
+    }
+    let sortedEntities = [];
+    for (const id of ids) {
+      const entity = currentEntities[id];
+      if (entity) {
+        sortedEntities.push(entity);
+      }
+    }
+    const wasPreviouslyEmpty = sortedEntities.length === 0;
+    for (const item of addedItems) {
+      stateEntities[selectId(item)] = item;
+      if (!wasPreviouslyEmpty) {
+        insert(sortedEntities, item, comparer);
+      }
+    }
+    if (wasPreviouslyEmpty) {
+      sortedEntities = addedItems.slice().sort(comparer);
+    } else if (appliedUpdates) {
+      sortedEntities.sort(comparer);
+    }
+    const newSortedIds = sortedEntities.map(selectId);
+    if (!areArraysEqual(currentIds, newSortedIds)) {
+      state.ids = newSortedIds;
+    }
+  };
+  return {
+    removeOne,
+    removeMany,
+    removeAll,
+    addOne: createStateOperator(addOneMutably),
+    updateOne: createStateOperator(updateOneMutably),
+    upsertOne: createStateOperator(upsertOneMutably),
+    setOne: createStateOperator(setOneMutably),
+    setMany: createStateOperator(setManyMutably),
+    setAll: createStateOperator(setAllMutably),
+    addMany: createStateOperator(addManyMutably),
+    updateMany: createStateOperator(updateManyMutably),
+    upsertMany: createStateOperator(upsertManyMutably)
+  };
+}
+
+// src/entities/create_adapter.ts
+function createEntityAdapter(options = {}) {
+  const {
+    selectId,
+    sortComparer
+  } = __spreadValues({
+    sortComparer: false,
+    selectId: (instance) => instance.id
+  }, options);
+  const stateAdapter = sortComparer ? createSortedStateAdapter(selectId, sortComparer) : createUnsortedStateAdapter(selectId);
+  const stateFactory = createInitialStateFactory(stateAdapter);
+  const selectorsFactory = createSelectorsFactory();
+  return __spreadValues(__spreadValues(__spreadValues({
+    selectId,
+    sortComparer
+  }, stateFactory), selectorsFactory), stateAdapter);
+}
+
 // src/listenerMiddleware/exceptions.ts
 var task = "task";
 var listener = "listener";
 var completed = "completed";
 var cancelled = "cancelled";
-var taskCancelled = "task-" + cancelled;
-var taskCompleted = "task-" + completed;
-var listenerCancelled = listener + "-" + cancelled;
-var listenerCompleted = listener + "-" + completed;
-var TaskAbortError = /** @class */ (function () {
-    function TaskAbortError(code) {
-        this.code = code;
-        this.name = "TaskAbortError";
-        this.message = task + " " + cancelled + " (reason: " + code + ")";
-    }
-    return TaskAbortError;
-}());
+var taskCancelled = `task-${cancelled}`;
+var taskCompleted = `task-${completed}`;
+var listenerCancelled = `${listener}-${cancelled}`;
+var listenerCompleted = `${listener}-${completed}`;
+var TaskAbortError = class {
+  constructor(code) {
+    __publicField(this, "code", code);
+    __publicField(this, "name", "TaskAbortError");
+    __publicField(this, "message");
+    this.message = `${task} ${cancelled} (reason: ${code})`;
+  }
+};
+
+// src/listenerMiddleware/utils.ts
+var assertFunction = (func, expected) => {
+  if (typeof func !== "function") {
+    throw new TypeError( true ? formatProdErrorMessage(32) : undefined);
+  }
+};
+var noop2 = () => {
+};
+var catchRejection = (promise, onError = noop2) => {
+  promise.catch(onError);
+  return promise;
+};
+var addAbortSignalListener = (abortSignal, callback) => {
+  abortSignal.addEventListener("abort", callback, {
+    once: true
+  });
+  return () => abortSignal.removeEventListener("abort", callback);
+};
+
 // src/listenerMiddleware/task.ts
-var validateActive = function (signal) {
+var validateActive = (signal) => {
+  if (signal.aborted) {
+    throw new TaskAbortError(signal.reason);
+  }
+};
+function raceWithSignal(signal, promise) {
+  let cleanup = noop2;
+  return new Promise((resolve, reject) => {
+    const notifyRejection = () => reject(new TaskAbortError(signal.reason));
     if (signal.aborted) {
-        throw new TaskAbortError(signal.reason);
+      notifyRejection();
+      return;
     }
-};
-function raceWithSignal(signal, promise2) {
-    var cleanup = noop;
-    return new Promise(function (resolve, reject) {
-        var notifyRejection = function () { return reject(new TaskAbortError(signal.reason)); };
-        if (signal.aborted) {
-            notifyRejection();
-            return;
-        }
-        cleanup = addAbortSignalListener(signal, notifyRejection);
-        promise2.finally(function () { return cleanup(); }).then(resolve, reject);
-    }).finally(function () {
-        cleanup = noop;
-    });
+    cleanup = addAbortSignalListener(signal, notifyRejection);
+    promise.finally(() => cleanup()).then(resolve, reject);
+  }).finally(() => {
+    cleanup = noop2;
+  });
 }
-var runTask = function (task2, cleanUp) { return __async(void 0, null, function () {
-    var value, error_1;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
-            case 0:
-                _c.trys.push([0, 3, 4, 5]);
-                return [4 /*yield*/, Promise.resolve()];
-            case 1:
-                _c.sent();
-                return [4 /*yield*/, task2()];
-            case 2:
-                value = _c.sent();
-                return [2 /*return*/, {
-                        status: "ok",
-                        value: value
-                    }];
-            case 3:
-                error_1 = _c.sent();
-                return [2 /*return*/, {
-                        status: error_1 instanceof TaskAbortError ? "cancelled" : "rejected",
-                        error: error_1
-                    }];
-            case 4:
-                cleanUp == null ? void 0 : cleanUp();
-                return [7 /*endfinally*/];
-            case 5: return [2 /*return*/];
-        }
-    });
-}); };
-var createPause = function (signal) {
-    return function (promise2) {
-        return catchRejection(raceWithSignal(signal, promise2).then(function (output) {
-            validateActive(signal);
-            return output;
-        }));
+var runTask = async (task2, cleanUp) => {
+  try {
+    await Promise.resolve();
+    const value = await task2();
+    return {
+      status: "ok",
+      value
     };
-};
-var createDelay = function (signal) {
-    var pause = createPause(signal);
-    return function (timeoutMs) {
-        return pause(new Promise(function (resolve) { return setTimeout(resolve, timeoutMs); }));
+  } catch (error) {
+    return {
+      status: error instanceof TaskAbortError ? "cancelled" : "rejected",
+      error
     };
+  } finally {
+    cleanUp == null ? void 0 : cleanUp();
+  }
 };
+var createPause = (signal) => {
+  return (promise) => {
+    return catchRejection(raceWithSignal(signal, promise).then((output) => {
+      validateActive(signal);
+      return output;
+    }));
+  };
+};
+var createDelay = (signal) => {
+  const pause = createPause(signal);
+  return (timeoutMs) => {
+    return pause(new Promise((resolve) => setTimeout(resolve, timeoutMs)));
+  };
+};
+
 // src/listenerMiddleware/index.ts
-var assign = Object.assign;
+var {
+  assign
+} = Object;
 var INTERNAL_NIL_TOKEN = {};
 var alm = "listenerMiddleware";
-var createFork = function (parentAbortSignal, parentBlockingPromises) {
-    var linkControllers = function (controller) { return addAbortSignalListener(parentAbortSignal, function () { return abortControllerWithReason(controller, parentAbortSignal.reason); }); };
-    return function (taskExecutor, opts) {
-        assertFunction(taskExecutor, "taskExecutor");
-        var childAbortController = new AbortController();
-        linkControllers(childAbortController);
-        var result = runTask(function () { return __async(void 0, null, function () {
-            var result2;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        validateActive(parentAbortSignal);
-                        validateActive(childAbortController.signal);
-                        return [4 /*yield*/, taskExecutor({
-                                pause: createPause(childAbortController.signal),
-                                delay: createDelay(childAbortController.signal),
-                                signal: childAbortController.signal
-                            })];
-                    case 1:
-                        result2 = _c.sent();
-                        validateActive(childAbortController.signal);
-                        return [2 /*return*/, result2];
-                }
-            });
-        }); }, function () { return abortControllerWithReason(childAbortController, taskCompleted); });
-        if (opts == null ? void 0 : opts.autoJoin) {
-            parentBlockingPromises.push(result);
-        }
-        return {
-            result: createPause(parentAbortSignal)(result),
-            cancel: function () {
-                abortControllerWithReason(childAbortController, taskCancelled);
-            }
-        };
+var createFork = (parentAbortSignal, parentBlockingPromises) => {
+  const linkControllers = (controller) => addAbortSignalListener(parentAbortSignal, () => controller.abort(parentAbortSignal.reason));
+  return (taskExecutor, opts) => {
+    assertFunction(taskExecutor, "taskExecutor");
+    const childAbortController = new AbortController();
+    linkControllers(childAbortController);
+    const result = runTask(async () => {
+      validateActive(parentAbortSignal);
+      validateActive(childAbortController.signal);
+      const result2 = await taskExecutor({
+        pause: createPause(childAbortController.signal),
+        delay: createDelay(childAbortController.signal),
+        signal: childAbortController.signal
+      });
+      validateActive(childAbortController.signal);
+      return result2;
+    }, () => childAbortController.abort(taskCompleted));
+    if (opts == null ? void 0 : opts.autoJoin) {
+      parentBlockingPromises.push(result.catch(noop2));
+    }
+    return {
+      result: createPause(parentAbortSignal)(result),
+      cancel() {
+        childAbortController.abort(taskCancelled);
+      }
     };
+  };
 };
-var createTakePattern = function (startListening, signal) {
-    var take = function (predicate, timeout) { return __async(void 0, null, function () {
-        var unsubscribe, tuplePromise, promises, output;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    validateActive(signal);
-                    unsubscribe = function () {
-                    };
-                    tuplePromise = new Promise(function (resolve, reject) {
-                        var stopListening = startListening({
-                            predicate: predicate,
-                            effect: function (action, listenerApi) {
-                                listenerApi.unsubscribe();
-                                resolve([
-                                    action,
-                                    listenerApi.getState(),
-                                    listenerApi.getOriginalState()
-                                ]);
-                            }
-                        });
-                        unsubscribe = function () {
-                            stopListening();
-                            reject();
-                        };
-                    });
-                    promises = [
-                        tuplePromise
-                    ];
-                    if (timeout != null) {
-                        promises.push(new Promise(function (resolve) { return setTimeout(resolve, timeout, null); }));
-                    }
-                    _c.label = 1;
-                case 1:
-                    _c.trys.push([1, , 3, 4]);
-                    return [4 /*yield*/, raceWithSignal(signal, Promise.race(promises))];
-                case 2:
-                    output = _c.sent();
-                    validateActive(signal);
-                    return [2 /*return*/, output];
-                case 3:
-                    unsubscribe();
-                    return [7 /*endfinally*/];
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    return function (predicate, timeout) { return catchRejection(take(predicate, timeout)); };
-};
-var getListenerEntryPropsFrom = function (options) {
-    var type = options.type, actionCreator = options.actionCreator, matcher = options.matcher, predicate = options.predicate, effect = options.effect;
-    if (type) {
-        predicate = createAction(type).match;
-    }
-    else if (actionCreator) {
-        type = actionCreator.type;
-        predicate = actionCreator.match;
-    }
-    else if (matcher) {
-        predicate = matcher;
-    }
-    else if (predicate) {
-    }
-    else {
-        throw new Error("Creating or removing a listener requires one of the known fields for matching an action");
-    }
-    assertFunction(effect, "options.listener");
-    return { predicate: predicate, type: type, effect: effect };
-};
-var createListenerEntry = function (options) {
-    var _c = getListenerEntryPropsFrom(options), type = _c.type, predicate = _c.predicate, effect = _c.effect;
-    var id = nanoid();
-    var entry = {
-        id: id,
-        effect: effect,
-        type: type,
-        predicate: predicate,
-        pending: new Set(),
-        unsubscribe: function () {
-            throw new Error("Unsubscribe not initialized");
-        }
+var createTakePattern = (startListening, signal) => {
+  const take = async (predicate, timeout) => {
+    validateActive(signal);
+    let unsubscribe = () => {
     };
-    return entry;
-};
-var cancelActiveListeners = function (entry) {
-    entry.pending.forEach(function (controller) {
-        abortControllerWithReason(controller, listenerCancelled);
+    const tuplePromise = new Promise((resolve, reject) => {
+      let stopListening = startListening({
+        predicate,
+        effect: (action, listenerApi) => {
+          listenerApi.unsubscribe();
+          resolve([action, listenerApi.getState(), listenerApi.getOriginalState()]);
+        }
+      });
+      unsubscribe = () => {
+        stopListening();
+        reject();
+      };
     });
-};
-var createClearListenerMiddleware = function (listenerMap) {
-    return function () {
-        listenerMap.forEach(cancelActiveListeners);
-        listenerMap.clear();
-    };
-};
-var safelyNotifyError = function (errorHandler, errorToNotify, errorInfo) {
+    const promises = [tuplePromise];
+    if (timeout != null) {
+      promises.push(new Promise((resolve) => setTimeout(resolve, timeout, null)));
+    }
     try {
-        errorHandler(errorToNotify, errorInfo);
+      const output = await raceWithSignal(signal, Promise.race(promises));
+      validateActive(signal);
+      return output;
+    } finally {
+      unsubscribe();
     }
-    catch (errorHandlerError) {
-        setTimeout(function () {
-            throw errorHandlerError;
-        }, 0);
-    }
+  };
+  return ((predicate, timeout) => catchRejection(take(predicate, timeout)));
 };
-var addListener = createAction(alm + "/add");
-var clearAllListeners = createAction(alm + "/removeAll");
-var removeListener = createAction(alm + "/remove");
-var defaultErrorHandler = function () {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    console.error.apply(console, __spreadArray([alm + "/error"], args));
+var getListenerEntryPropsFrom = (options) => {
+  let {
+    type,
+    actionCreator,
+    matcher,
+    predicate,
+    effect
+  } = options;
+  if (type) {
+    predicate = createAction(type).match;
+  } else if (actionCreator) {
+    type = actionCreator.type;
+    predicate = actionCreator.match;
+  } else if (matcher) {
+    predicate = matcher;
+  } else if (predicate) {
+  } else {
+    throw new Error( true ? formatProdErrorMessage(21) : undefined);
+  }
+  assertFunction(effect, "options.listener");
+  return {
+    predicate,
+    type,
+    effect
+  };
 };
-function createListenerMiddleware(middlewareOptions) {
-    var _this = this;
-    if (middlewareOptions === void 0) { middlewareOptions = {}; }
-    var listenerMap = new Map();
-    var extra = middlewareOptions.extra, _c = middlewareOptions.onError, onError = _c === void 0 ? defaultErrorHandler : _c;
-    assertFunction(onError, "onError");
-    var insertEntry = function (entry) {
-        entry.unsubscribe = function () { return listenerMap.delete(entry.id); };
-        listenerMap.set(entry.id, entry);
-        return function (cancelOptions) {
-            entry.unsubscribe();
-            if (cancelOptions == null ? void 0 : cancelOptions.cancelActive) {
-                cancelActiveListeners(entry);
-            }
-        };
+var createListenerEntry = /* @__PURE__ */ assign((options) => {
+  const {
+    type,
+    predicate,
+    effect
+  } = getListenerEntryPropsFrom(options);
+  const entry = {
+    id: nanoid(),
+    effect,
+    type,
+    predicate,
+    pending: /* @__PURE__ */ new Set(),
+    unsubscribe: () => {
+      throw new Error( true ? formatProdErrorMessage(22) : undefined);
+    }
+  };
+  return entry;
+}, {
+  withTypes: () => createListenerEntry
+});
+var findListenerEntry = (listenerMap, options) => {
+  const {
+    type,
+    effect,
+    predicate
+  } = getListenerEntryPropsFrom(options);
+  return Array.from(listenerMap.values()).find((entry) => {
+    const matchPredicateOrType = typeof type === "string" ? entry.type === type : entry.predicate === predicate;
+    return matchPredicateOrType && entry.effect === effect;
+  });
+};
+var cancelActiveListeners = (entry) => {
+  entry.pending.forEach((controller) => {
+    controller.abort(listenerCancelled);
+  });
+};
+var createClearListenerMiddleware = (listenerMap, executingListeners) => {
+  return () => {
+    for (const listener2 of executingListeners.keys()) {
+      cancelActiveListeners(listener2);
+    }
+    listenerMap.clear();
+  };
+};
+var safelyNotifyError = (errorHandler, errorToNotify, errorInfo) => {
+  try {
+    errorHandler(errorToNotify, errorInfo);
+  } catch (errorHandlerError) {
+    setTimeout(() => {
+      throw errorHandlerError;
+    }, 0);
+  }
+};
+var addListener = /* @__PURE__ */ assign(/* @__PURE__ */ createAction(`${alm}/add`), {
+  withTypes: () => addListener
+});
+var clearAllListeners = /* @__PURE__ */ createAction(`${alm}/removeAll`);
+var removeListener = /* @__PURE__ */ assign(/* @__PURE__ */ createAction(`${alm}/remove`), {
+  withTypes: () => removeListener
+});
+var defaultErrorHandler = (...args) => {
+  console.error(`${alm}/error`, ...args);
+};
+var createListenerMiddleware = (middlewareOptions = {}) => {
+  const listenerMap = /* @__PURE__ */ new Map();
+  const executingListeners = /* @__PURE__ */ new Map();
+  const trackExecutingListener = (entry) => {
+    var _a;
+    const count = (_a = executingListeners.get(entry)) != null ? _a : 0;
+    executingListeners.set(entry, count + 1);
+  };
+  const untrackExecutingListener = (entry) => {
+    var _a;
+    const count = (_a = executingListeners.get(entry)) != null ? _a : 1;
+    if (count === 1) {
+      executingListeners.delete(entry);
+    } else {
+      executingListeners.set(entry, count - 1);
+    }
+  };
+  const {
+    extra,
+    onError = defaultErrorHandler
+  } = middlewareOptions;
+  assertFunction(onError, "onError");
+  const insertEntry = (entry) => {
+    entry.unsubscribe = () => listenerMap.delete(entry.id);
+    listenerMap.set(entry.id, entry);
+    return (cancelOptions) => {
+      entry.unsubscribe();
+      if (cancelOptions == null ? void 0 : cancelOptions.cancelActive) {
+        cancelActiveListeners(entry);
+      }
     };
-    var findListenerEntry = function (comparator) {
-        for (var _i = 0, _c = Array.from(listenerMap.values()); _i < _c.length; _i++) {
-            var entry = _c[_i];
-            if (comparator(entry)) {
-                return entry;
-            }
-        }
-        return void 0;
-    };
-    var startListening = function (options) {
-        var entry = findListenerEntry(function (existingEntry) { return existingEntry.effect === options.effect; });
-        if (!entry) {
-            entry = createListenerEntry(options);
-        }
-        return insertEntry(entry);
-    };
-    var stopListening = function (options) {
-        var _c = getListenerEntryPropsFrom(options), type = _c.type, effect = _c.effect, predicate = _c.predicate;
-        var entry = findListenerEntry(function (entry2) {
-            var matchPredicateOrType = typeof type === "string" ? entry2.type === type : entry2.predicate === predicate;
-            return matchPredicateOrType && entry2.effect === effect;
+  };
+  const startListening = ((options) => {
+    var _a;
+    const entry = (_a = findListenerEntry(listenerMap, options)) != null ? _a : createListenerEntry(options);
+    return insertEntry(entry);
+  });
+  assign(startListening, {
+    withTypes: () => startListening
+  });
+  const stopListening = (options) => {
+    const entry = findListenerEntry(listenerMap, options);
+    if (entry) {
+      entry.unsubscribe();
+      if (options.cancelActive) {
+        cancelActiveListeners(entry);
+      }
+    }
+    return !!entry;
+  };
+  assign(stopListening, {
+    withTypes: () => stopListening
+  });
+  const notifyListener = async (entry, action, api, getOriginalState) => {
+    const internalTaskController = new AbortController();
+    const take = createTakePattern(startListening, internalTaskController.signal);
+    const autoJoinPromises = [];
+    try {
+      entry.pending.add(internalTaskController);
+      trackExecutingListener(entry);
+      await Promise.resolve(entry.effect(
+        action,
+        // Use assign() rather than ... to avoid extra helper functions added to bundle
+        assign({}, api, {
+          getOriginalState,
+          condition: (predicate, timeout) => take(predicate, timeout).then(Boolean),
+          take,
+          delay: createDelay(internalTaskController.signal),
+          pause: createPause(internalTaskController.signal),
+          extra,
+          signal: internalTaskController.signal,
+          fork: createFork(internalTaskController.signal, autoJoinPromises),
+          unsubscribe: entry.unsubscribe,
+          subscribe: () => {
+            listenerMap.set(entry.id, entry);
+          },
+          cancelActiveListeners: () => {
+            entry.pending.forEach((controller, _, set) => {
+              if (controller !== internalTaskController) {
+                controller.abort(listenerCancelled);
+                set.delete(controller);
+              }
+            });
+          },
+          cancel: () => {
+            internalTaskController.abort(listenerCancelled);
+            entry.pending.delete(internalTaskController);
+          },
+          throwIfCancelled: () => {
+            validateActive(internalTaskController.signal);
+          }
+        })
+      ));
+    } catch (listenerError) {
+      if (!(listenerError instanceof TaskAbortError)) {
+        safelyNotifyError(onError, listenerError, {
+          raisedBy: "effect"
         });
-        if (entry) {
-            entry.unsubscribe();
-            if (options.cancelActive) {
-                cancelActiveListeners(entry);
-            }
-        }
-        return !!entry;
+      }
+    } finally {
+      await Promise.all(autoJoinPromises);
+      internalTaskController.abort(listenerCompleted);
+      untrackExecutingListener(entry);
+      entry.pending.delete(internalTaskController);
+    }
+  };
+  const clearListenerMiddleware = createClearListenerMiddleware(listenerMap, executingListeners);
+  const middleware = (api) => (next) => (action) => {
+    if (!Object(redux__WEBPACK_IMPORTED_MODULE_0__[/* isAction */ "g"])(action)) {
+      return next(action);
+    }
+    if (addListener.match(action)) {
+      return startListening(action.payload);
+    }
+    if (clearAllListeners.match(action)) {
+      clearListenerMiddleware();
+      return;
+    }
+    if (removeListener.match(action)) {
+      return stopListening(action.payload);
+    }
+    let originalState = api.getState();
+    const getOriginalState = () => {
+      if (originalState === INTERNAL_NIL_TOKEN) {
+        throw new Error( true ? formatProdErrorMessage(23) : undefined);
+      }
+      return originalState;
     };
-    var notifyListener = function (entry, action, api, getOriginalState) { return __async(_this, null, function () {
-        var internalTaskController, take, autoJoinPromises, listenerError_1;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    internalTaskController = new AbortController();
-                    take = createTakePattern(startListening, internalTaskController.signal);
-                    autoJoinPromises = [];
-                    _c.label = 1;
-                case 1:
-                    _c.trys.push([1, 3, 4, 6]);
-                    entry.pending.add(internalTaskController);
-                    return [4 /*yield*/, Promise.resolve(entry.effect(action, assign({}, api, {
-                            getOriginalState: getOriginalState,
-                            condition: function (predicate, timeout) { return take(predicate, timeout).then(Boolean); },
-                            take: take,
-                            delay: createDelay(internalTaskController.signal),
-                            pause: createPause(internalTaskController.signal),
-                            extra: extra,
-                            signal: internalTaskController.signal,
-                            fork: createFork(internalTaskController.signal, autoJoinPromises),
-                            unsubscribe: entry.unsubscribe,
-                            subscribe: function () {
-                                listenerMap.set(entry.id, entry);
-                            },
-                            cancelActiveListeners: function () {
-                                entry.pending.forEach(function (controller, _, set) {
-                                    if (controller !== internalTaskController) {
-                                        abortControllerWithReason(controller, listenerCancelled);
-                                        set.delete(controller);
-                                    }
-                                });
-                            }
-                        })))];
-                case 2:
-                    _c.sent();
-                    return [3 /*break*/, 6];
-                case 3:
-                    listenerError_1 = _c.sent();
-                    if (!(listenerError_1 instanceof TaskAbortError)) {
-                        safelyNotifyError(onError, listenerError_1, {
-                            raisedBy: "effect"
-                        });
-                    }
-                    return [3 /*break*/, 6];
-                case 4: return [4 /*yield*/, Promise.allSettled(autoJoinPromises)];
-                case 5:
-                    _c.sent();
-                    abortControllerWithReason(internalTaskController, listenerCompleted);
-                    entry.pending.delete(internalTaskController);
-                    return [7 /*endfinally*/];
-                case 6: return [2 /*return*/];
-            }
+    let result;
+    try {
+      result = next(action);
+      if (listenerMap.size > 0) {
+        const currentState = api.getState();
+        const listenerEntries = Array.from(listenerMap.values());
+        for (const entry of listenerEntries) {
+          let runListener = false;
+          try {
+            runListener = entry.predicate(action, currentState, originalState);
+          } catch (predicateError) {
+            runListener = false;
+            safelyNotifyError(onError, predicateError, {
+              raisedBy: "predicate"
+            });
+          }
+          if (!runListener) {
+            continue;
+          }
+          notifyListener(entry, action, api, getOriginalState);
+        }
+      }
+    } finally {
+      originalState = INTERNAL_NIL_TOKEN;
+    }
+    return result;
+  };
+  return {
+    middleware,
+    startListening,
+    stopListening,
+    clearListeners: clearListenerMiddleware
+  };
+};
+
+// src/dynamicMiddleware/index.ts
+var createMiddlewareEntry = (middleware) => ({
+  middleware,
+  applied: /* @__PURE__ */ new Map()
+});
+var matchInstance = (instanceId) => (action) => {
+  var _a;
+  return ((_a = action == null ? void 0 : action.meta) == null ? void 0 : _a.instanceId) === instanceId;
+};
+var createDynamicMiddleware = () => {
+  const instanceId = nanoid();
+  const middlewareMap = /* @__PURE__ */ new Map();
+  const withMiddleware = Object.assign(createAction("dynamicMiddleware/add", (...middlewares) => ({
+    payload: middlewares,
+    meta: {
+      instanceId
+    }
+  })), {
+    withTypes: () => withMiddleware
+  });
+  const addMiddleware = Object.assign(function addMiddleware2(...middlewares) {
+    middlewares.forEach((middleware2) => {
+      getOrInsertComputed(middlewareMap, middleware2, createMiddlewareEntry);
+    });
+  }, {
+    withTypes: () => addMiddleware
+  });
+  const getFinalMiddleware = (api) => {
+    const appliedMiddleware = Array.from(middlewareMap.values()).map((entry) => getOrInsertComputed(entry.applied, api, entry.middleware));
+    return Object(redux__WEBPACK_IMPORTED_MODULE_0__[/* compose */ "e"])(...appliedMiddleware);
+  };
+  const isWithMiddleware = isAllOf(withMiddleware, matchInstance(instanceId));
+  const middleware = (api) => (next) => (action) => {
+    if (isWithMiddleware(action)) {
+      addMiddleware(...action.payload);
+      return api.dispatch;
+    }
+    return getFinalMiddleware(api)(next)(action);
+  };
+  return {
+    middleware,
+    addMiddleware,
+    withMiddleware,
+    instanceId
+  };
+};
+
+// src/combineSlices.ts
+
+var isSliceLike = (maybeSliceLike) => "reducerPath" in maybeSliceLike && typeof maybeSliceLike.reducerPath === "string";
+var getReducers = (slices) => slices.flatMap((sliceOrMap) => isSliceLike(sliceOrMap) ? [[sliceOrMap.reducerPath, sliceOrMap.reducer]] : Object.entries(sliceOrMap));
+var ORIGINAL_STATE = /* @__PURE__ */ Symbol.for("rtk-state-proxy-original");
+var isStateProxy = (value) => !!value && !!value[ORIGINAL_STATE];
+var stateProxyMap = /* @__PURE__ */ new WeakMap();
+var createStateProxy = (state, reducerMap, initialStateCache) => getOrInsertComputed(stateProxyMap, state, () => new Proxy(state, {
+  get: (target, prop, receiver) => {
+    if (prop === ORIGINAL_STATE) return target;
+    const result = Reflect.get(target, prop, receiver);
+    if (typeof result === "undefined") {
+      const cached = initialStateCache[prop];
+      if (typeof cached !== "undefined") return cached;
+      const reducer = reducerMap[prop];
+      if (reducer) {
+        const reducerResult = reducer(void 0, {
+          type: nanoid()
         });
-    }); };
-    var clearListenerMiddleware = createClearListenerMiddleware(listenerMap);
-    var middleware = function (api) { return function (next) { return function (action) {
-        if (!isAction(action)) {
-            return next(action);
+        if (typeof reducerResult === "undefined") {
+          throw new Error( true ? formatProdErrorMessage(24) : undefined);
         }
-        if (addListener.match(action)) {
-            return startListening(action.payload);
-        }
-        if (clearAllListeners.match(action)) {
-            clearListenerMiddleware();
-            return;
-        }
-        if (removeListener.match(action)) {
-            return stopListening(action.payload);
-        }
-        var originalState = api.getState();
-        var getOriginalState = function () {
-            if (originalState === INTERNAL_NIL_TOKEN) {
-                throw new Error(alm + ": getOriginalState can only be called synchronously");
-            }
-            return originalState;
+        initialStateCache[prop] = reducerResult;
+        return reducerResult;
+      }
+    }
+    return result;
+  }
+}));
+var original = (state) => {
+  if (!isStateProxy(state)) {
+    throw new Error( true ? formatProdErrorMessage(25) : undefined);
+  }
+  return state[ORIGINAL_STATE];
+};
+var emptyObject = {};
+var noopReducer = (state = emptyObject) => state;
+function combineSlices(...slices) {
+  const reducerMap = Object.fromEntries(getReducers(slices));
+  const getReducer = () => Object.keys(reducerMap).length ? Object(redux__WEBPACK_IMPORTED_MODULE_0__[/* combineReducers */ "d"])(reducerMap) : noopReducer;
+  let reducer = getReducer();
+  function combinedReducer(state, action) {
+    return reducer(state, action);
+  }
+  combinedReducer.withLazyLoadedSlices = () => combinedReducer;
+  const initialStateCache = {};
+  const inject = (slice, config = {}) => {
+    const {
+      reducerPath,
+      reducer: reducerToInject
+    } = slice;
+    const currentReducer = reducerMap[reducerPath];
+    if (!config.overrideExisting && currentReducer && currentReducer !== reducerToInject) {
+      if (typeof process !== "undefined" && "production" === "development") {
+        console.error(`called \`inject\` to override already-existing reducer ${reducerPath} without specifying \`overrideExisting: true\``);
+      }
+      return combinedReducer;
+    }
+    if (config.overrideExisting && currentReducer !== reducerToInject) {
+      delete initialStateCache[reducerPath];
+    }
+    reducerMap[reducerPath] = reducerToInject;
+    reducer = getReducer();
+    return combinedReducer;
+  };
+  const selector = Object.assign(function makeSelector(selectorFn, selectState) {
+    return function selector2(state, ...args) {
+      return selectorFn(createStateProxy(selectState ? selectState(state, ...args) : state, reducerMap, initialStateCache), ...args);
+    };
+  }, {
+    original
+  });
+  return Object.assign(combinedReducer, {
+    inject,
+    selector
+  });
+}
+
+// src/formatProdErrorMessage.ts
+function formatProdErrorMessage(code) {
+  return `Minified Redux Toolkit error #${code}; visit https://redux-toolkit.js.org/Errors?code=${code} for the full message or use the non-minified dev environment for full errors. `;
+}
+
+//# sourceMappingURL=redux-toolkit.legacy-esm.js.map
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../process/browser.js */ "../node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "../node_modules/@reduxjs/toolkit/node_modules/immer/dist/immer.legacy-esm.js":
+/*!************************************************************************************!*\
+  !*** ../node_modules/@reduxjs/toolkit/node_modules/immer/dist/immer.legacy-esm.js ***!
+  \************************************************************************************/
+/*! exports provided: Immer, applyPatches, castDraft, castImmutable, createDraft, current, enableArrayMethods, enableMapSet, enablePatches, finishDraft, freeze, immerable, isDraft, isDraftable, nothing, original, produce, produceWithPatches, setAutoFreeze, setUseStrictIteration, setUseStrictShallowCopy */
+/*! exports used: current, freeze, isDraft, isDraftable, original, produce */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export Immer */
+/* unused harmony export applyPatches */
+/* unused harmony export castDraft */
+/* unused harmony export castImmutable */
+/* unused harmony export createDraft */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return current; });
+/* unused harmony export enableArrayMethods */
+/* unused harmony export enableMapSet */
+/* unused harmony export enablePatches */
+/* unused harmony export finishDraft */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return freeze; });
+/* unused harmony export immerable */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return isDraft; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return isDraftable; });
+/* unused harmony export nothing */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return original; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return produce; });
+/* unused harmony export produceWithPatches */
+/* unused harmony export setAutoFreeze */
+/* unused harmony export setUseStrictIteration */
+/* unused harmony export setUseStrictShallowCopy */
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+
+// src/utils/env.ts
+var NOTHING = Symbol.for("immer-nothing");
+var DRAFTABLE = Symbol.for("immer-draftable");
+var DRAFT_STATE = Symbol.for("immer-state");
+
+// src/utils/errors.ts
+var errors =  false ? undefined : [];
+function die(error, ...args) {
+  if (false) {}
+  throw new Error(
+    `[Immer] minified error nr: ${error}. Full error at: https://bit.ly/3cXEKWf`
+  );
+}
+
+// src/utils/common.ts
+var O = Object;
+var getPrototypeOf = O.getPrototypeOf;
+var CONSTRUCTOR = "constructor";
+var PROTOTYPE = "prototype";
+var CONFIGURABLE = "configurable";
+var ENUMERABLE = "enumerable";
+var WRITABLE = "writable";
+var VALUE = "value";
+var isDraft = (value) => !!value && !!value[DRAFT_STATE];
+function isDraftable(value) {
+  var _a;
+  if (!value)
+    return false;
+  return isPlainObject(value) || isArray(value) || !!value[DRAFTABLE] || !!((_a = value[CONSTRUCTOR]) == null ? void 0 : _a[DRAFTABLE]) || isMap(value) || isSet(value);
+}
+var objectCtorString = O[PROTOTYPE][CONSTRUCTOR].toString();
+var cachedCtorStrings = /* @__PURE__ */ new WeakMap();
+function isPlainObject(value) {
+  if (!value || !isObjectish(value))
+    return false;
+  const proto = getPrototypeOf(value);
+  if (proto === null || proto === O[PROTOTYPE])
+    return true;
+  const Ctor = O.hasOwnProperty.call(proto, CONSTRUCTOR) && proto[CONSTRUCTOR];
+  if (Ctor === Object)
+    return true;
+  if (!isFunction(Ctor))
+    return false;
+  let ctorString = cachedCtorStrings.get(Ctor);
+  if (ctorString === void 0) {
+    ctorString = Function.toString.call(Ctor);
+    cachedCtorStrings.set(Ctor, ctorString);
+  }
+  return ctorString === objectCtorString;
+}
+function original(value) {
+  if (!isDraft(value))
+    die(15, value);
+  return value[DRAFT_STATE].base_;
+}
+function each(obj, iter, strict = true) {
+  if (getArchtype(obj) === 0 /* Object */) {
+    const keys = strict ? Reflect.ownKeys(obj) : O.keys(obj);
+    keys.forEach((key) => {
+      iter(key, obj[key], obj);
+    });
+  } else {
+    obj.forEach((entry, index) => iter(index, entry, obj));
+  }
+}
+function getArchtype(thing) {
+  const state = thing[DRAFT_STATE];
+  return state ? state.type_ : isArray(thing) ? 1 /* Array */ : isMap(thing) ? 2 /* Map */ : isSet(thing) ? 3 /* Set */ : 0 /* Object */;
+}
+var has = (thing, prop, type = getArchtype(thing)) => type === 2 /* Map */ ? thing.has(prop) : O[PROTOTYPE].hasOwnProperty.call(thing, prop);
+var get = (thing, prop, type = getArchtype(thing)) => (
+  // @ts-ignore
+  type === 2 /* Map */ ? thing.get(prop) : thing[prop]
+);
+var set = (thing, propOrOldValue, value, type = getArchtype(thing)) => {
+  if (type === 2 /* Map */)
+    thing.set(propOrOldValue, value);
+  else if (type === 3 /* Set */) {
+    thing.add(value);
+  } else
+    thing[propOrOldValue] = value;
+};
+function is(x, y) {
+  if (x === y) {
+    return x !== 0 || 1 / x === 1 / y;
+  } else {
+    return x !== x && y !== y;
+  }
+}
+var isArray = Array.isArray;
+var isMap = (target) => target instanceof Map;
+var isSet = (target) => target instanceof Set;
+var isObjectish = (target) => typeof target === "object";
+var isFunction = (target) => typeof target === "function";
+var isBoolean = (target) => typeof target === "boolean";
+function isArrayIndex(value) {
+  const n = +value;
+  return Number.isInteger(n) && String(n) === value;
+}
+var getProxyDraft = (value) => {
+  if (!isObjectish(value))
+    return null;
+  return value == null ? void 0 : value[DRAFT_STATE];
+};
+var latest = (state) => state.copy_ || state.base_;
+var getValue = (value) => {
+  const proxyDraft = getProxyDraft(value);
+  return proxyDraft ? getFinalValue(proxyDraft) : value;
+};
+var getFinalValue = (state) => state.modified_ ? state.copy_ : state.base_;
+function shallowCopy(base, strict) {
+  if (isMap(base)) {
+    return new Map(base);
+  }
+  if (isSet(base)) {
+    return new Set(base);
+  }
+  if (isArray(base))
+    return Array[PROTOTYPE].slice.call(base);
+  const isPlain = isPlainObject(base);
+  if (strict === true || strict === "class_only" && !isPlain) {
+    const descriptors = O.getOwnPropertyDescriptors(base);
+    delete descriptors[DRAFT_STATE];
+    let keys = Reflect.ownKeys(descriptors);
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const desc = descriptors[key];
+      if (desc[WRITABLE] === false) {
+        desc[WRITABLE] = true;
+        desc[CONFIGURABLE] = true;
+      }
+      if (desc.get || desc.set)
+        descriptors[key] = {
+          [CONFIGURABLE]: true,
+          [WRITABLE]: true,
+          // could live with !!desc.set as well here...
+          [ENUMERABLE]: desc[ENUMERABLE],
+          [VALUE]: base[key]
         };
-        var result;
+    }
+    return O.create(getPrototypeOf(base), descriptors);
+  } else {
+    const proto = getPrototypeOf(base);
+    if (proto !== null && isPlain) {
+      return __spreadValues({}, base);
+    }
+    const obj = O.create(proto);
+    return O.assign(obj, base);
+  }
+}
+function freeze(obj, deep = false) {
+  if (isFrozen(obj) || isDraft(obj) || !isDraftable(obj))
+    return obj;
+  if (getArchtype(obj) > 1) {
+    O.defineProperties(obj, {
+      set: dontMutateMethodOverride,
+      add: dontMutateMethodOverride,
+      clear: dontMutateMethodOverride,
+      delete: dontMutateMethodOverride
+    });
+  }
+  O.freeze(obj);
+  if (deep)
+    each(
+      obj,
+      (_key, value) => {
+        freeze(value, true);
+      },
+      false
+    );
+  return obj;
+}
+function dontMutateFrozenCollections() {
+  die(2);
+}
+var dontMutateMethodOverride = {
+  [VALUE]: dontMutateFrozenCollections
+};
+function isFrozen(obj) {
+  if (obj === null || !isObjectish(obj))
+    return true;
+  return O.isFrozen(obj);
+}
+
+// src/utils/plugins.ts
+var PluginMapSet = "MapSet";
+var PluginPatches = "Patches";
+var PluginArrayMethods = "ArrayMethods";
+var plugins = {};
+function getPlugin(pluginKey) {
+  const plugin = plugins[pluginKey];
+  if (!plugin) {
+    die(0, pluginKey);
+  }
+  return plugin;
+}
+var isPluginLoaded = (pluginKey) => !!plugins[pluginKey];
+function loadPlugin(pluginKey, implementation) {
+  if (!plugins[pluginKey])
+    plugins[pluginKey] = implementation;
+}
+
+// src/core/scope.ts
+var currentScope;
+var getCurrentScope = () => currentScope;
+var createScope = (parent_, immer_) => ({
+  drafts_: [],
+  parent_,
+  immer_,
+  // Whenever the modified draft contains a draft from another scope, we
+  // need to prevent auto-freezing so the unowned draft can be finalized.
+  canAutoFreeze_: true,
+  unfinalizedDrafts_: 0,
+  handledSet_: /* @__PURE__ */ new Set(),
+  processedForPatches_: /* @__PURE__ */ new Set(),
+  mapSetPlugin_: isPluginLoaded(PluginMapSet) ? getPlugin(PluginMapSet) : void 0,
+  arrayMethodsPlugin_: isPluginLoaded(PluginArrayMethods) ? getPlugin(PluginArrayMethods) : void 0
+});
+function usePatchesInScope(scope, patchListener) {
+  if (patchListener) {
+    scope.patchPlugin_ = getPlugin(PluginPatches);
+    scope.patches_ = [];
+    scope.inversePatches_ = [];
+    scope.patchListener_ = patchListener;
+  }
+}
+function revokeScope(scope) {
+  leaveScope(scope);
+  scope.drafts_.forEach(revokeDraft);
+  scope.drafts_ = null;
+}
+function leaveScope(scope) {
+  if (scope === currentScope) {
+    currentScope = scope.parent_;
+  }
+}
+var enterScope = (immer2) => currentScope = createScope(currentScope, immer2);
+function revokeDraft(draft) {
+  const state = draft[DRAFT_STATE];
+  if (state.type_ === 0 /* Object */ || state.type_ === 1 /* Array */)
+    state.revoke_();
+  else
+    state.revoked_ = true;
+}
+
+// src/core/finalize.ts
+function processResult(result, scope) {
+  scope.unfinalizedDrafts_ = scope.drafts_.length;
+  const baseDraft = scope.drafts_[0];
+  const isReplaced = result !== void 0 && result !== baseDraft;
+  if (isReplaced) {
+    if (baseDraft[DRAFT_STATE].modified_) {
+      revokeScope(scope);
+      die(4);
+    }
+    if (isDraftable(result)) {
+      result = finalize(scope, result);
+    }
+    const { patchPlugin_ } = scope;
+    if (patchPlugin_) {
+      patchPlugin_.generateReplacementPatches_(
+        baseDraft[DRAFT_STATE].base_,
+        result,
+        scope
+      );
+    }
+  } else {
+    result = finalize(scope, baseDraft);
+  }
+  maybeFreeze(scope, result, true);
+  revokeScope(scope);
+  if (scope.patches_) {
+    scope.patchListener_(scope.patches_, scope.inversePatches_);
+  }
+  return result !== NOTHING ? result : void 0;
+}
+function finalize(rootScope, value) {
+  if (isFrozen(value))
+    return value;
+  const state = value[DRAFT_STATE];
+  if (!state) {
+    const finalValue = handleValue(value, rootScope.handledSet_, rootScope);
+    return finalValue;
+  }
+  if (!isSameScope(state, rootScope)) {
+    return value;
+  }
+  if (!state.modified_) {
+    return state.base_;
+  }
+  if (!state.finalized_) {
+    const { callbacks_ } = state;
+    if (callbacks_) {
+      while (callbacks_.length > 0) {
+        const callback = callbacks_.pop();
+        callback(rootScope);
+      }
+    }
+    generatePatchesAndFinalize(state, rootScope);
+  }
+  return state.copy_;
+}
+function maybeFreeze(scope, value, deep = false) {
+  if (!scope.parent_ && scope.immer_.autoFreeze_ && scope.canAutoFreeze_) {
+    freeze(value, deep);
+  }
+}
+function markStateFinalized(state) {
+  state.finalized_ = true;
+  state.scope_.unfinalizedDrafts_--;
+}
+var isSameScope = (state, rootScope) => state.scope_ === rootScope;
+var EMPTY_LOCATIONS_RESULT = [];
+function updateDraftInParent(parent, draftValue, finalizedValue, originalKey) {
+  var _a;
+  const parentCopy = latest(parent);
+  const parentType = parent.type_;
+  if (originalKey !== void 0) {
+    const currentValue = get(parentCopy, originalKey, parentType);
+    if (currentValue === draftValue) {
+      set(parentCopy, originalKey, finalizedValue, parentType);
+      return;
+    }
+  }
+  if (!parent.draftLocations_) {
+    const draftLocations = parent.draftLocations_ = /* @__PURE__ */ new Map();
+    each(parentCopy, (key, value) => {
+      if (isDraft(value)) {
+        const keys = draftLocations.get(value) || [];
+        keys.push(key);
+        draftLocations.set(value, keys);
+      }
+    });
+  }
+  const locations = (_a = parent.draftLocations_.get(draftValue)) != null ? _a : EMPTY_LOCATIONS_RESULT;
+  for (const location of locations) {
+    set(parentCopy, location, finalizedValue, parentType);
+  }
+}
+function registerChildFinalizationCallback(parent, child, key) {
+  parent.callbacks_.push(function childCleanup(rootScope) {
+    var _a, _b;
+    const state = child;
+    if (!state || !isSameScope(state, rootScope)) {
+      return;
+    }
+    (_a = rootScope.mapSetPlugin_) == null ? void 0 : _a.fixSetContents(state);
+    const finalizedValue = getFinalValue(state);
+    updateDraftInParent(parent, (_b = state.draft_) != null ? _b : state, finalizedValue, key);
+    generatePatchesAndFinalize(state, rootScope);
+  });
+}
+function generatePatchesAndFinalize(state, rootScope) {
+  var _a, _b;
+  const shouldFinalize = state.modified_ && !state.finalized_ && (state.type_ === 3 /* Set */ || state.type_ === 1 /* Array */ && state.allIndicesReassigned_ || ((_b = (_a = state.assigned_) == null ? void 0 : _a.size) != null ? _b : 0) > 0);
+  if (shouldFinalize) {
+    const { patchPlugin_ } = rootScope;
+    if (patchPlugin_) {
+      const basePath = patchPlugin_.getPath(state);
+      if (basePath) {
+        patchPlugin_.generatePatches_(state, basePath, rootScope);
+      }
+    }
+    markStateFinalized(state);
+  }
+}
+function handleCrossReference(target, key, value) {
+  const { scope_ } = target;
+  if (isDraft(value)) {
+    const state = value[DRAFT_STATE];
+    if (isSameScope(state, scope_)) {
+      state.callbacks_.push(function crossReferenceCleanup() {
+        prepareCopy(target);
+        const finalizedValue = getFinalValue(state);
+        updateDraftInParent(target, value, finalizedValue, key);
+      });
+    }
+  } else if (isDraftable(value)) {
+    target.callbacks_.push(function nestedDraftCleanup() {
+      var _a;
+      const targetCopy = latest(target);
+      if (target.type_ === 3 /* Set */) {
+        if (targetCopy.has(value)) {
+          handleValue(value, scope_.handledSet_, scope_);
+        }
+      } else {
+        if (get(targetCopy, key, target.type_) === value) {
+          if (scope_.drafts_.length > 1 && ((_a = target.assigned_.get(key)) != null ? _a : false) === true && target.copy_) {
+            handleValue(
+              get(target.copy_, key, target.type_),
+              scope_.handledSet_,
+              scope_
+            );
+          }
+        }
+      }
+    });
+  }
+}
+function handleValue(target, handledSet, rootScope) {
+  if (!rootScope.immer_.autoFreeze_ && rootScope.unfinalizedDrafts_ < 1) {
+    return target;
+  }
+  if (isDraft(target) || handledSet.has(target) || !isDraftable(target) || isFrozen(target)) {
+    return target;
+  }
+  handledSet.add(target);
+  each(target, (key, value) => {
+    if (isDraft(value)) {
+      const state = value[DRAFT_STATE];
+      if (isSameScope(state, rootScope)) {
+        const updatedValue = getFinalValue(state);
+        set(target, key, updatedValue, target.type_);
+        markStateFinalized(state);
+      }
+    } else if (isDraftable(value)) {
+      handleValue(value, handledSet, rootScope);
+    }
+  });
+  return target;
+}
+
+// src/core/proxy.ts
+function createProxyProxy(base, parent) {
+  const baseIsArray = isArray(base);
+  const state = {
+    type_: baseIsArray ? 1 /* Array */ : 0 /* Object */,
+    // Track which produce call this is associated with.
+    scope_: parent ? parent.scope_ : getCurrentScope(),
+    // True for both shallow and deep changes.
+    modified_: false,
+    // Used during finalization.
+    finalized_: false,
+    // Track which properties have been assigned (true) or deleted (false).
+    // actually instantiated in `prepareCopy()`
+    assigned_: void 0,
+    // The parent draft state.
+    parent_: parent,
+    // The base state.
+    base_: base,
+    // The base proxy.
+    draft_: null,
+    // set below
+    // The base copy with any updated values.
+    copy_: null,
+    // Called by the `produce` function.
+    revoke_: null,
+    isManual_: false,
+    // `callbacks` actually gets assigned in `createProxy`
+    callbacks_: void 0
+  };
+  let target = state;
+  let traps = objectTraps;
+  if (baseIsArray) {
+    target = [state];
+    traps = arrayTraps;
+  }
+  const { revoke, proxy } = Proxy.revocable(target, traps);
+  state.draft_ = proxy;
+  state.revoke_ = revoke;
+  return [proxy, state];
+}
+var objectTraps = {
+  get(state, prop) {
+    if (prop === DRAFT_STATE)
+      return state;
+    let arrayPlugin = state.scope_.arrayMethodsPlugin_;
+    const isArrayWithStringProp = state.type_ === 1 /* Array */ && typeof prop === "string";
+    if (isArrayWithStringProp) {
+      if (arrayPlugin == null ? void 0 : arrayPlugin.isArrayOperationMethod(prop)) {
+        return arrayPlugin.createMethodInterceptor(state, prop);
+      }
+    }
+    const source = latest(state);
+    if (!has(source, prop, state.type_)) {
+      return readPropFromProto(state, source, prop);
+    }
+    const value = source[prop];
+    if (state.finalized_ || !isDraftable(value)) {
+      return value;
+    }
+    if (isArrayWithStringProp && state.operationMethod && (arrayPlugin == null ? void 0 : arrayPlugin.isMutatingArrayMethod(
+      state.operationMethod
+    )) && isArrayIndex(prop)) {
+      return value;
+    }
+    if (value === peek(state.base_, prop) || isRelocatedBaseRef(state, prop, value)) {
+      prepareCopy(state);
+      const childKey = state.type_ === 1 /* Array */ ? +prop : prop;
+      const childDraft = createProxy(state.scope_, value, state, childKey);
+      return state.copy_[childKey] = childDraft;
+    }
+    return value;
+  },
+  has(state, prop) {
+    return prop in latest(state);
+  },
+  ownKeys(state) {
+    return Reflect.ownKeys(latest(state));
+  },
+  set(state, prop, value) {
+    const desc = getDescriptorFromProto(latest(state), prop);
+    if (desc == null ? void 0 : desc.set) {
+      desc.set.call(state.draft_, value);
+      return true;
+    }
+    if (!state.modified_) {
+      const current2 = peek(latest(state), prop);
+      const currentState = current2 == null ? void 0 : current2[DRAFT_STATE];
+      if (currentState && currentState.base_ === value) {
+        state.copy_[prop] = value;
+        state.assigned_.set(prop, false);
+        return true;
+      }
+      if (is(value, current2) && (value !== void 0 || has(state.base_, prop, state.type_)))
+        return true;
+      prepareCopy(state);
+      markChanged(state);
+    }
+    if (state.copy_[prop] === value && // special case: handle new props with value 'undefined'
+    (value !== void 0 || has(state.copy_, prop, state.type_)) || // special case: NaN
+    Number.isNaN(value) && Number.isNaN(state.copy_[prop]))
+      return true;
+    state.copy_[prop] = value;
+    state.assigned_.set(prop, true);
+    handleCrossReference(state, prop, value);
+    return true;
+  },
+  deleteProperty(state, prop) {
+    prepareCopy(state);
+    if (peek(state.base_, prop) !== void 0 || prop in state.base_) {
+      state.assigned_.set(prop, false);
+      markChanged(state);
+    } else {
+      state.assigned_.delete(prop);
+    }
+    if (state.copy_) {
+      delete state.copy_[prop];
+    }
+    return true;
+  },
+  // Note: We never coerce `desc.value` into an Immer draft, because we can't make
+  // the same guarantee in ES5 mode.
+  getOwnPropertyDescriptor(state, prop) {
+    const owner = latest(state);
+    const desc = Reflect.getOwnPropertyDescriptor(owner, prop);
+    if (!desc)
+      return desc;
+    return {
+      [WRITABLE]: true,
+      [CONFIGURABLE]: state.type_ !== 1 /* Array */ || prop !== "length",
+      [ENUMERABLE]: desc[ENUMERABLE],
+      [VALUE]: owner[prop]
+    };
+  },
+  defineProperty() {
+    die(11);
+  },
+  getPrototypeOf(state) {
+    return getPrototypeOf(state.base_);
+  },
+  setPrototypeOf() {
+    die(12);
+  }
+};
+var arrayTraps = {};
+for (let key in objectTraps) {
+  let fn = objectTraps[key];
+  arrayTraps[key] = function() {
+    const args = arguments;
+    args[0] = args[0][0];
+    return fn.apply(this, args);
+  };
+}
+arrayTraps.deleteProperty = function(state, prop) {
+  if (false)
+    {}
+  return arrayTraps.set.call(this, state, prop, void 0);
+};
+arrayTraps.set = function(state, prop, value) {
+  if (false)
+    {}
+  return objectTraps.set.call(this, state[0], prop, value, state[0]);
+};
+function peek(draft, prop) {
+  const state = draft[DRAFT_STATE];
+  const source = state ? latest(state) : draft;
+  return source[prop];
+}
+function isRelocatedBaseRef(state, prop, value) {
+  var _a;
+  if (state.type_ !== 1 /* Array */ || !state.allIndicesReassigned_ || ((_a = state.assigned_) == null ? void 0 : _a.get(prop)) || !isDraftable(value) || value[DRAFT_STATE]) {
+    return false;
+  }
+  return state.baseRefs_.has(value);
+}
+function readPropFromProto(state, source, prop) {
+  var _a;
+  const desc = getDescriptorFromProto(source, prop);
+  return desc ? VALUE in desc ? desc[VALUE] : (
+    // This is a very special case, if the prop is a getter defined by the
+    // prototype, we should invoke it with the draft as context!
+    (_a = desc.get) == null ? void 0 : _a.call(state.draft_)
+  ) : void 0;
+}
+function getDescriptorFromProto(source, prop) {
+  if (!(prop in source))
+    return void 0;
+  let proto = getPrototypeOf(source);
+  while (proto) {
+    const desc = Object.getOwnPropertyDescriptor(proto, prop);
+    if (desc)
+      return desc;
+    proto = getPrototypeOf(proto);
+  }
+  return void 0;
+}
+function markChanged(state) {
+  if (!state.modified_) {
+    state.modified_ = true;
+    if (state.parent_) {
+      markChanged(state.parent_);
+    }
+  }
+}
+function prepareCopy(state) {
+  if (!state.copy_) {
+    state.assigned_ = /* @__PURE__ */ new Map();
+    state.copy_ = shallowCopy(
+      state.base_,
+      state.scope_.immer_.useStrictShallowCopy_
+    );
+  }
+}
+
+// src/core/immerClass.ts
+var Immer2 = class {
+  constructor(config) {
+    this.autoFreeze_ = true;
+    this.useStrictShallowCopy_ = false;
+    this.useStrictIteration_ = false;
+    /**
+     * The `produce` function takes a value and a "recipe function" (whose
+     * return value often depends on the base state). The recipe function is
+     * free to mutate its first argument however it wants. All mutations are
+     * only ever applied to a __copy__ of the base state.
+     *
+     * Pass only a function to create a "curried producer" which relieves you
+     * from passing the recipe function every time.
+     *
+     * Only plain objects and arrays are made mutable. All other objects are
+     * considered uncopyable.
+     *
+     * Note: This function is __bound__ to its `Immer` instance.
+     *
+     * @param {any} base - the initial state
+     * @param {Function} recipe - function that receives a proxy of the base state as first argument and which can be freely modified
+     * @param {Function} patchListener - optional function that will be called with all the patches produced here
+     * @returns {any} a new state, or the initial state if nothing was modified
+     */
+    this.produce = (base, recipe, patchListener) => {
+      if (isFunction(base) && !isFunction(recipe)) {
+        const defaultBase = recipe;
+        recipe = base;
+        const self = this;
+        return function curriedProduce(base2 = defaultBase, ...args) {
+          return self.produce(base2, (draft) => recipe.call(this, draft, ...args));
+        };
+      }
+      if (!isFunction(recipe))
+        die(6);
+      if (patchListener !== void 0 && !isFunction(patchListener))
+        die(7);
+      let result;
+      if (isDraftable(base)) {
+        const scope = enterScope(this);
+        const proxy = createProxy(scope, base, void 0);
+        let hasError = true;
         try {
-            result = next(action);
-            if (listenerMap.size > 0) {
-                var currentState = api.getState();
-                var listenerEntries = Array.from(listenerMap.values());
-                for (var _i = 0, listenerEntries_1 = listenerEntries; _i < listenerEntries_1.length; _i++) {
-                    var entry = listenerEntries_1[_i];
-                    var runListener = false;
-                    try {
-                        runListener = entry.predicate(action, currentState, originalState);
-                    }
-                    catch (predicateError) {
-                        runListener = false;
-                        safelyNotifyError(onError, predicateError, {
-                            raisedBy: "predicate"
-                        });
-                    }
-                    if (!runListener) {
-                        continue;
-                    }
-                    notifyListener(entry, action, api, getOriginalState);
-                }
-            }
+          result = recipe(proxy);
+          hasError = false;
+        } finally {
+          if (hasError)
+            revokeScope(scope);
+          else
+            leaveScope(scope);
         }
-        finally {
-            originalState = INTERNAL_NIL_TOKEN;
+        usePatchesInScope(scope, patchListener);
+        return processResult(result, scope);
+      } else if (!base || !isObjectish(base)) {
+        result = recipe(base);
+        if (result === void 0)
+          result = base;
+        if (result === NOTHING)
+          result = void 0;
+        if (this.autoFreeze_)
+          freeze(result, true);
+        if (patchListener) {
+          const p = [];
+          const ip = [];
+          getPlugin(PluginPatches).generateReplacementPatches_(base, result, {
+            patches_: p,
+            inversePatches_: ip
+          });
+          patchListener(p, ip);
         }
         return result;
-    }; }; };
-    return {
-        middleware: middleware,
-        startListening: startListening,
-        stopListening: stopListening,
-        clearListeners: clearListenerMiddleware
+      } else
+        die(1, base);
     };
-}
-// src/autoBatchEnhancer.ts
-var SHOULD_AUTOBATCH = "RTK_autoBatch";
-var prepareAutoBatched = function () { return function (payload) {
-    var _c;
-    return ({
-        payload: payload,
-        meta: (_c = {}, _c[SHOULD_AUTOBATCH] = true, _c)
+    this.produceWithPatches = (base, recipe) => {
+      if (isFunction(base)) {
+        return (state, ...args) => this.produceWithPatches(state, (draft) => base(draft, ...args));
+      }
+      let patches, inversePatches;
+      const result = this.produce(base, recipe, (p, ip) => {
+        patches = p;
+        inversePatches = ip;
+      });
+      return [result, patches, inversePatches];
+    };
+    if (isBoolean(config == null ? void 0 : config.autoFreeze))
+      this.setAutoFreeze(config.autoFreeze);
+    if (isBoolean(config == null ? void 0 : config.useStrictShallowCopy))
+      this.setUseStrictShallowCopy(config.useStrictShallowCopy);
+    if (isBoolean(config == null ? void 0 : config.useStrictIteration))
+      this.setUseStrictIteration(config.useStrictIteration);
+  }
+  createDraft(base) {
+    if (!isDraftable(base))
+      die(8);
+    if (isDraft(base))
+      base = current(base);
+    const scope = enterScope(this);
+    const proxy = createProxy(scope, base, void 0);
+    proxy[DRAFT_STATE].isManual_ = true;
+    leaveScope(scope);
+    return proxy;
+  }
+  finishDraft(draft, patchListener) {
+    const state = draft && draft[DRAFT_STATE];
+    if (!state || !state.isManual_)
+      die(9);
+    const { scope_: scope } = state;
+    usePatchesInScope(scope, patchListener);
+    return processResult(void 0, scope);
+  }
+  /**
+   * Pass true to automatically freeze all copies created by Immer.
+   *
+   * By default, auto-freezing is enabled.
+   */
+  setAutoFreeze(value) {
+    this.autoFreeze_ = value;
+  }
+  /**
+   * Pass true to enable strict shallow copy.
+   *
+   * By default, immer does not copy the object descriptors such as getter, setter and non-enumrable properties.
+   */
+  setUseStrictShallowCopy(value) {
+    this.useStrictShallowCopy_ = value;
+  }
+  /**
+   * Pass false to use faster iteration that skips non-enumerable properties
+   * but still handles symbols for compatibility.
+   *
+   * By default, strict iteration is enabled (includes all own properties).
+   */
+  setUseStrictIteration(value) {
+    this.useStrictIteration_ = value;
+  }
+  shouldUseStrictIteration() {
+    return this.useStrictIteration_;
+  }
+  applyPatches(base, patches) {
+    let i;
+    for (i = patches.length - 1; i >= 0; i--) {
+      const patch = patches[i];
+      if (patch.path.length === 0 && patch.op === "replace") {
+        base = patch.value;
+        break;
+      }
+    }
+    if (i > -1) {
+      patches = patches.slice(i + 1);
+    }
+    const applyPatchesImpl = getPlugin(PluginPatches).applyPatches_;
+    if (isDraft(base)) {
+      return applyPatchesImpl(base, patches);
+    }
+    return this.produce(
+      base,
+      (draft) => applyPatchesImpl(draft, patches)
+    );
+  }
+};
+function createProxy(rootScope, value, parent, key) {
+  var _a, _b;
+  const [draft, state] = isMap(value) ? getPlugin(PluginMapSet).proxyMap_(value, parent) : isSet(value) ? getPlugin(PluginMapSet).proxySet_(value, parent) : createProxyProxy(value, parent);
+  const scope = (_a = parent == null ? void 0 : parent.scope_) != null ? _a : getCurrentScope();
+  scope.drafts_.push(draft);
+  state.callbacks_ = (_b = parent == null ? void 0 : parent.callbacks_) != null ? _b : [];
+  state.key_ = key;
+  if (parent && key !== void 0) {
+    registerChildFinalizationCallback(parent, state, key);
+  } else {
+    state.callbacks_.push(function rootDraftCleanup(rootScope2) {
+      var _a2;
+      (_a2 = rootScope2.mapSetPlugin_) == null ? void 0 : _a2.fixSetContents(state);
+      const { patchPlugin_ } = rootScope2;
+      if (state.modified_ && patchPlugin_) {
+        patchPlugin_.generatePatches_(state, [], rootScope2);
+      }
     });
-}; };
-var promise;
-var queueMicrotaskShim = typeof queueMicrotask === "function" ? queueMicrotask.bind(typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : globalThis) : function (cb) { return (promise || (promise = Promise.resolve())).then(cb).catch(function (err) { return setTimeout(function () {
-    throw err;
-}, 0); }); };
-var createQueueWithTimer = function (timeout) {
-    return function (notify) {
-        setTimeout(notify, timeout);
-    };
-};
-var rAF = typeof window !== "undefined" && window.requestAnimationFrame ? window.requestAnimationFrame : createQueueWithTimer(10);
-var autoBatchEnhancer = function (options) {
-    if (options === void 0) { options = { type: "raf" }; }
-    return function (next) { return function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var store = next.apply(void 0, args);
-        var notifying = true;
-        var shouldNotifyAtEndOfTick = false;
-        var notificationQueued = false;
-        var listeners = new Set();
-        var queueCallback = options.type === "tick" ? queueMicrotaskShim : options.type === "raf" ? rAF : options.type === "callback" ? options.queueNotification : createQueueWithTimer(options.timeout);
-        var notifyListeners = function () {
-            notificationQueued = false;
-            if (shouldNotifyAtEndOfTick) {
-                shouldNotifyAtEndOfTick = false;
-                listeners.forEach(function (l) { return l(); });
-            }
-        };
-        return Object.assign({}, store, {
-            subscribe: function (listener2) {
-                var wrappedListener = function () { return notifying && listener2(); };
-                var unsubscribe = store.subscribe(wrappedListener);
-                listeners.add(listener2);
-                return function () {
-                    unsubscribe();
-                    listeners.delete(listener2);
-                };
-            },
-            dispatch: function (action) {
-                var _a;
-                try {
-                    notifying = !((_a = action == null ? void 0 : action.meta) == null ? void 0 : _a[SHOULD_AUTOBATCH]);
-                    shouldNotifyAtEndOfTick = !notifying;
-                    if (shouldNotifyAtEndOfTick) {
-                        if (!notificationQueued) {
-                            notificationQueued = true;
-                            queueCallback(notifyListeners);
-                        }
-                    }
-                    return store.dispatch(action);
-                }
-                finally {
-                    notifying = true;
-                }
-            }
-        });
-    }; };
-};
-// src/index.ts
-Object(immer__WEBPACK_IMPORTED_MODULE_0__[/* enableES5 */ "c"])();
+  }
+  return draft;
+}
 
-//# sourceMappingURL=redux-toolkit.esm.js.map
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../process/browser.js */ "../node_modules/process/browser.js"), __webpack_require__(/*! ./../../../webpack/buildin/global.js */ "../node_modules/webpack/buildin/global.js")))
+// src/core/current.ts
+function current(value) {
+  if (!isDraft(value))
+    die(10, value);
+  return currentImpl(value);
+}
+function currentImpl(value) {
+  if (!isDraftable(value) || isFrozen(value))
+    return value;
+  const state = value[DRAFT_STATE];
+  let copy;
+  let strict = true;
+  if (state) {
+    if (!state.modified_)
+      return state.base_;
+    state.finalized_ = true;
+    copy = shallowCopy(value, state.scope_.immer_.useStrictShallowCopy_);
+    strict = state.scope_.immer_.shouldUseStrictIteration();
+  } else {
+    copy = shallowCopy(value, true);
+  }
+  each(
+    copy,
+    (key, childValue) => {
+      set(copy, key, currentImpl(childValue));
+    },
+    strict
+  );
+  if (state) {
+    state.finalized_ = false;
+  }
+  return copy;
+}
+
+// src/plugins/patches.ts
+function enablePatches() {
+  const errorOffset = 16;
+  if (false) {}
+  function getPath(state, path = []) {
+    var _a;
+    if (state.key_ !== void 0) {
+      const parentCopy = (_a = state.parent_.copy_) != null ? _a : state.parent_.base_;
+      const proxyDraft = getProxyDraft(get(parentCopy, state.key_));
+      const valueAtKey = get(parentCopy, state.key_);
+      if (valueAtKey === void 0) {
+        return null;
+      }
+      if (valueAtKey !== state.draft_ && valueAtKey !== state.base_ && valueAtKey !== state.copy_) {
+        return null;
+      }
+      if (proxyDraft != null && proxyDraft.base_ !== state.base_) {
+        return null;
+      }
+      const isSet2 = state.parent_.type_ === 3 /* Set */;
+      let key;
+      if (isSet2) {
+        const setParent = state.parent_;
+        key = Array.from(setParent.drafts_.keys()).indexOf(state.key_);
+      } else {
+        key = state.key_;
+      }
+      if (!(isSet2 && parentCopy.size > key || has(parentCopy, key))) {
+        return null;
+      }
+      path.push(key);
+    }
+    if (state.parent_) {
+      return getPath(state.parent_, path);
+    }
+    path.reverse();
+    try {
+      resolvePath(state.copy_, path);
+    } catch (e) {
+      return null;
+    }
+    return path;
+  }
+  function resolvePath(base, path) {
+    let current2 = base;
+    for (let i = 0; i < path.length - 1; i++) {
+      const key = path[i];
+      current2 = get(current2, key);
+      if (!isObjectish(current2) || current2 === null) {
+        throw new Error(`Cannot resolve path at '${path.join("/")}'`);
+      }
+    }
+    return current2;
+  }
+  const REPLACE = "replace";
+  const ADD = "add";
+  const REMOVE = "remove";
+  function generatePatches_(state, basePath, scope) {
+    if (state.scope_.processedForPatches_.has(state)) {
+      return;
+    }
+    state.scope_.processedForPatches_.add(state);
+    const { patches_, inversePatches_ } = scope;
+    switch (state.type_) {
+      case 0 /* Object */:
+      case 2 /* Map */:
+        return generatePatchesFromAssigned(
+          state,
+          basePath,
+          patches_,
+          inversePatches_
+        );
+      case 1 /* Array */:
+        return generateArrayPatches(
+          state,
+          basePath,
+          patches_,
+          inversePatches_
+        );
+      case 3 /* Set */:
+        return generateSetPatches(
+          state,
+          basePath,
+          patches_,
+          inversePatches_
+        );
+    }
+  }
+  function generateArrayPatches(state, basePath, patches, inversePatches) {
+    let { base_, assigned_ } = state;
+    let copy_ = state.copy_;
+    if (copy_.length < base_.length) {
+      ;
+      [base_, copy_] = [copy_, base_];
+      [patches, inversePatches] = [inversePatches, patches];
+    }
+    const allReassigned = state.allIndicesReassigned_ === true;
+    for (let i = 0; i < base_.length; i++) {
+      const copiedItem = copy_[i];
+      const baseItem = base_[i];
+      const isAssigned = allReassigned || (assigned_ == null ? void 0 : assigned_.get(i.toString()));
+      if (isAssigned && copiedItem !== baseItem) {
+        const childState = copiedItem == null ? void 0 : copiedItem[DRAFT_STATE];
+        if (childState && childState.modified_) {
+          continue;
+        }
+        const path = basePath.concat([i]);
+        patches.push({
+          op: REPLACE,
+          path,
+          // Need to maybe clone it, as it can in fact be the original value
+          // due to the base/copy inversion at the start of this function
+          value: clonePatchValueIfNeeded(copiedItem)
+        });
+        inversePatches.push({
+          op: REPLACE,
+          path,
+          value: clonePatchValueIfNeeded(baseItem)
+        });
+      }
+    }
+    for (let i = base_.length; i < copy_.length; i++) {
+      const path = basePath.concat([i]);
+      patches.push({
+        op: ADD,
+        path,
+        // Need to maybe clone it, as it can in fact be the original value
+        // due to the base/copy inversion at the start of this function
+        value: clonePatchValueIfNeeded(copy_[i])
+      });
+    }
+    for (let i = copy_.length - 1; base_.length <= i; --i) {
+      const path = basePath.concat([i]);
+      inversePatches.push({
+        op: REMOVE,
+        path
+      });
+    }
+  }
+  function generatePatchesFromAssigned(state, basePath, patches, inversePatches) {
+    const { base_, copy_, type_ } = state;
+    each(state.assigned_, (key, assignedValue) => {
+      const origValue = get(base_, key, type_);
+      const value = get(copy_, key, type_);
+      const op = !assignedValue ? REMOVE : has(base_, key) ? REPLACE : ADD;
+      if (origValue === value && op === REPLACE)
+        return;
+      const path = basePath.concat(key);
+      patches.push(
+        op === REMOVE ? { op, path } : { op, path, value: clonePatchValueIfNeeded(value) }
+      );
+      inversePatches.push(
+        op === ADD ? { op: REMOVE, path } : op === REMOVE ? { op: ADD, path, value: clonePatchValueIfNeeded(origValue) } : { op: REPLACE, path, value: clonePatchValueIfNeeded(origValue) }
+      );
+    });
+  }
+  function generateSetPatches(state, basePath, patches, inversePatches) {
+    let { base_, copy_ } = state;
+    let i = 0;
+    base_.forEach((value) => {
+      if (!copy_.has(value)) {
+        const path = basePath.concat([i]);
+        patches.push({
+          op: REMOVE,
+          path,
+          value
+        });
+        inversePatches.unshift({
+          op: ADD,
+          path,
+          value
+        });
+      }
+      i++;
+    });
+    i = 0;
+    copy_.forEach((value) => {
+      if (!base_.has(value)) {
+        const path = basePath.concat([i]);
+        patches.push({
+          op: ADD,
+          path,
+          value
+        });
+        inversePatches.unshift({
+          op: REMOVE,
+          path,
+          value
+        });
+      }
+      i++;
+    });
+  }
+  function generateReplacementPatches_(baseValue, replacement, scope) {
+    const { patches_, inversePatches_ } = scope;
+    patches_.push({
+      op: REPLACE,
+      path: [],
+      value: replacement === NOTHING ? void 0 : replacement
+    });
+    inversePatches_.push({
+      op: REPLACE,
+      path: [],
+      value: baseValue
+    });
+  }
+  function applyPatches_(draft, patches) {
+    patches.forEach((patch) => {
+      const { path, op } = patch;
+      let base = draft;
+      for (let i = 0; i < path.length - 1; i++) {
+        const parentType = getArchtype(base);
+        let p = path[i];
+        if (typeof p !== "string" && typeof p !== "number") {
+          p = "" + p;
+        }
+        if ((parentType === 0 /* Object */ || parentType === 1 /* Array */) && (p === "__proto__" || p === CONSTRUCTOR))
+          die(errorOffset + 3);
+        if (isFunction(base) && p === PROTOTYPE)
+          die(errorOffset + 3);
+        base = get(base, p);
+        if (base === null || !isObjectish(base))
+          die(errorOffset + 2, path.join("/"));
+      }
+      const type = getArchtype(base);
+      const value = deepClonePatchValue(patch.value);
+      const key = path[path.length - 1];
+      switch (op) {
+        case REPLACE:
+          switch (type) {
+            case 2 /* Map */:
+              return base.set(key, value);
+            case 3 /* Set */:
+              die(errorOffset);
+            default:
+              return base[key] = value;
+          }
+        case ADD:
+          switch (type) {
+            case 1 /* Array */:
+              return key === "-" ? base.push(value) : base.splice(key, 0, value);
+            case 2 /* Map */:
+              return base.set(key, value);
+            case 3 /* Set */:
+              return base.add(value);
+            default:
+              return base[key] = value;
+          }
+        case REMOVE:
+          switch (type) {
+            case 1 /* Array */:
+              return base.splice(key, 1);
+            case 2 /* Map */:
+              return base.delete(key);
+            case 3 /* Set */:
+              return base.delete(patch.value);
+            default:
+              return delete base[key];
+          }
+        default:
+          die(errorOffset + 1, op);
+      }
+    });
+    return draft;
+  }
+  function deepClonePatchValue(obj) {
+    if (!isDraftable(obj))
+      return obj;
+    if (isArray(obj))
+      return obj.map(deepClonePatchValue);
+    if (isMap(obj))
+      return new Map(
+        Array.from(obj.entries()).map(([k, v]) => [k, deepClonePatchValue(v)])
+      );
+    if (isSet(obj))
+      return new Set(Array.from(obj).map(deepClonePatchValue));
+    const cloned = Object.create(getPrototypeOf(obj));
+    for (const key in obj)
+      cloned[key] = deepClonePatchValue(obj[key]);
+    if (has(obj, DRAFTABLE))
+      cloned[DRAFTABLE] = obj[DRAFTABLE];
+    return cloned;
+  }
+  function clonePatchValueIfNeeded(obj) {
+    if (isDraft(obj)) {
+      return deepClonePatchValue(obj);
+    } else
+      return obj;
+  }
+  loadPlugin(PluginPatches, {
+    applyPatches_,
+    generatePatches_,
+    generateReplacementPatches_,
+    getPath
+  });
+}
+
+// src/plugins/mapset.ts
+var _globalIterator = globalThis.Iterator;
+var hasIteratorFrom = typeof (_globalIterator == null ? void 0 : _globalIterator.from) === "function";
+function enableMapSet() {
+  class DraftMap extends Map {
+    constructor(target, parent) {
+      super();
+      this[DRAFT_STATE] = {
+        type_: 2 /* Map */,
+        parent_: parent,
+        scope_: parent ? parent.scope_ : getCurrentScope(),
+        modified_: false,
+        finalized_: false,
+        copy_: void 0,
+        assigned_: void 0,
+        base_: target,
+        draft_: this,
+        isManual_: false,
+        revoked_: false,
+        callbacks_: []
+      };
+    }
+    get size() {
+      return latest(this[DRAFT_STATE]).size;
+    }
+    has(key) {
+      return latest(this[DRAFT_STATE]).has(key);
+    }
+    set(key, value) {
+      const state = this[DRAFT_STATE];
+      assertUnrevoked(state);
+      if (!latest(state).has(key) || latest(state).get(key) !== value) {
+        prepareMapCopy(state);
+        markChanged(state);
+        state.assigned_.set(key, true);
+        state.copy_.set(key, value);
+        state.assigned_.set(key, true);
+        handleCrossReference(state, key, value);
+      }
+      return this;
+    }
+    delete(key) {
+      if (!this.has(key)) {
+        return false;
+      }
+      const state = this[DRAFT_STATE];
+      assertUnrevoked(state);
+      prepareMapCopy(state);
+      markChanged(state);
+      if (state.base_.has(key)) {
+        state.assigned_.set(key, false);
+      } else {
+        state.assigned_.delete(key);
+      }
+      state.copy_.delete(key);
+      return true;
+    }
+    clear() {
+      const state = this[DRAFT_STATE];
+      assertUnrevoked(state);
+      if (latest(state).size) {
+        prepareMapCopy(state);
+        markChanged(state);
+        state.assigned_ = /* @__PURE__ */ new Map();
+        each(state.base_, (key) => {
+          state.assigned_.set(key, false);
+        });
+        state.copy_.clear();
+      }
+    }
+    forEach(cb, thisArg) {
+      const state = this[DRAFT_STATE];
+      latest(state).forEach((_value, key, _map) => {
+        cb.call(thisArg, this.get(key), key, this);
+      });
+    }
+    get(key) {
+      const state = this[DRAFT_STATE];
+      assertUnrevoked(state);
+      const value = latest(state).get(key);
+      if (state.finalized_ || !isDraftable(value)) {
+        return value;
+      }
+      if (value !== state.base_.get(key)) {
+        return value;
+      }
+      const draft = createProxy(state.scope_, value, state, key);
+      prepareMapCopy(state);
+      state.copy_.set(key, draft);
+      return draft;
+    }
+    keys() {
+      return latest(this[DRAFT_STATE]).keys();
+    }
+    values() {
+      const iterator = this.keys();
+      return iteratorFrom({
+        next: () => {
+          const r = iterator.next();
+          if (r.done)
+            return r;
+          const value = this.get(r.value);
+          return {
+            done: false,
+            value
+          };
+        }
+      });
+    }
+    entries() {
+      const iterator = this.keys();
+      return iteratorFrom({
+        next: () => {
+          const r = iterator.next();
+          if (r.done)
+            return r;
+          const value = this.get(r.value);
+          return {
+            done: false,
+            value: [r.value, value]
+          };
+        }
+      });
+    }
+    [(DRAFT_STATE, Symbol.iterator)]() {
+      return this.entries();
+    }
+  }
+  function iteratorFrom(iterable) {
+    if (hasIteratorFrom) {
+      return _globalIterator.from(iterable);
+    }
+    const iterator = __spreadProps(__spreadValues({}, iterable), {
+      [Symbol.iterator]: () => iterator
+    });
+    return iterator;
+  }
+  function proxyMap_(target, parent) {
+    const map = new DraftMap(target, parent);
+    return [map, map[DRAFT_STATE]];
+  }
+  function prepareMapCopy(state) {
+    if (!state.copy_) {
+      state.assigned_ = /* @__PURE__ */ new Map();
+      state.copy_ = new Map(state.base_);
+    }
+  }
+  class DraftSet extends Set {
+    constructor(target, parent) {
+      super();
+      this[DRAFT_STATE] = {
+        type_: 3 /* Set */,
+        parent_: parent,
+        scope_: parent ? parent.scope_ : getCurrentScope(),
+        modified_: false,
+        finalized_: false,
+        copy_: void 0,
+        base_: target,
+        draft_: this,
+        drafts_: /* @__PURE__ */ new Map(),
+        revoked_: false,
+        isManual_: false,
+        assigned_: void 0,
+        callbacks_: []
+      };
+    }
+    get size() {
+      return latest(this[DRAFT_STATE]).size;
+    }
+    has(value) {
+      const state = this[DRAFT_STATE];
+      assertUnrevoked(state);
+      if (!state.copy_) {
+        return state.base_.has(value);
+      }
+      if (state.copy_.has(value))
+        return true;
+      if (state.drafts_.has(value) && state.copy_.has(state.drafts_.get(value)))
+        return true;
+      return false;
+    }
+    add(value) {
+      const state = this[DRAFT_STATE];
+      assertUnrevoked(state);
+      if (!this.has(value)) {
+        prepareSetCopy(state);
+        markChanged(state);
+        state.copy_.add(value);
+        handleCrossReference(state, value, value);
+      }
+      return this;
+    }
+    delete(value) {
+      if (!this.has(value)) {
+        return false;
+      }
+      const state = this[DRAFT_STATE];
+      assertUnrevoked(state);
+      prepareSetCopy(state);
+      markChanged(state);
+      return state.copy_.delete(value) || (state.drafts_.has(value) ? state.copy_.delete(state.drafts_.get(value)) : (
+        /* istanbul ignore next */
+        false
+      ));
+    }
+    clear() {
+      const state = this[DRAFT_STATE];
+      assertUnrevoked(state);
+      if (latest(state).size) {
+        prepareSetCopy(state);
+        markChanged(state);
+        state.copy_.clear();
+      }
+    }
+    values() {
+      const state = this[DRAFT_STATE];
+      assertUnrevoked(state);
+      prepareSetCopy(state);
+      return state.copy_.values();
+    }
+    entries() {
+      const state = this[DRAFT_STATE];
+      assertUnrevoked(state);
+      prepareSetCopy(state);
+      return state.copy_.entries();
+    }
+    keys() {
+      return this.values();
+    }
+    [(DRAFT_STATE, Symbol.iterator)]() {
+      return this.values();
+    }
+    forEach(cb, thisArg) {
+      const iterator = this.values();
+      let result = iterator.next();
+      while (!result.done) {
+        cb.call(thisArg, result.value, result.value, this);
+        result = iterator.next();
+      }
+    }
+  }
+  function proxySet_(target, parent) {
+    const set2 = new DraftSet(target, parent);
+    return [set2, set2[DRAFT_STATE]];
+  }
+  function prepareSetCopy(state) {
+    if (!state.copy_) {
+      state.copy_ = /* @__PURE__ */ new Set();
+      state.base_.forEach((value) => {
+        if (isDraftable(value)) {
+          const draft = createProxy(state.scope_, value, state, value);
+          state.drafts_.set(value, draft);
+          state.copy_.add(draft);
+        } else {
+          state.copy_.add(value);
+        }
+      });
+    }
+  }
+  function assertUnrevoked(state) {
+    if (state.revoked_)
+      die(3, JSON.stringify(latest(state)));
+  }
+  function fixSetContents(target) {
+    if (target.type_ === 3 /* Set */ && target.copy_) {
+      const copy = new Set(target.copy_);
+      target.copy_.clear();
+      copy.forEach((value) => {
+        target.copy_.add(getValue(value));
+      });
+    }
+  }
+  loadPlugin(PluginMapSet, { proxyMap_, proxySet_, fixSetContents });
+}
+
+// src/plugins/arrayMethods.ts
+function enableArrayMethods() {
+  const SHIFTING_METHODS = /* @__PURE__ */ new Set(["shift", "unshift"]);
+  const QUEUE_METHODS = /* @__PURE__ */ new Set(["push", "pop"]);
+  const RESULT_RETURNING_METHODS = /* @__PURE__ */ new Set([
+    ...QUEUE_METHODS,
+    ...SHIFTING_METHODS
+  ]);
+  const REORDERING_METHODS = /* @__PURE__ */ new Set(["reverse", "sort"]);
+  const MUTATING_METHODS = /* @__PURE__ */ new Set([
+    ...RESULT_RETURNING_METHODS,
+    ...REORDERING_METHODS,
+    "splice"
+  ]);
+  const FIND_METHODS = /* @__PURE__ */ new Set(["find", "findLast"]);
+  const NON_MUTATING_METHODS = /* @__PURE__ */ new Set([
+    "filter",
+    "slice",
+    "concat",
+    "flat",
+    ...FIND_METHODS,
+    "findIndex",
+    "findLastIndex",
+    "some",
+    "every",
+    "indexOf",
+    "lastIndexOf",
+    "includes",
+    "join",
+    "toString",
+    "toLocaleString"
+  ]);
+  function isMutatingArrayMethod(method) {
+    return MUTATING_METHODS.has(method);
+  }
+  function isNonMutatingArrayMethod(method) {
+    return NON_MUTATING_METHODS.has(method);
+  }
+  function isArrayOperationMethod(method) {
+    return isMutatingArrayMethod(method) || isNonMutatingArrayMethod(method);
+  }
+  function enterOperation(state, method) {
+    state.operationMethod = method;
+  }
+  function exitOperation(state) {
+    state.operationMethod = void 0;
+  }
+  function executeArrayMethod(state, operation, markLength = true) {
+    prepareCopy(state);
+    const result = operation();
+    markArrayChanged(state, markLength);
+    return result;
+  }
+  function markArrayChanged(state, markLength = true) {
+    markChanged(state);
+    if (markLength)
+      state.assigned_.set("length", true);
+  }
+  function markAllIndicesReassigned(state) {
+    state.allIndicesReassigned_ = true;
+    state.baseRefs_ = new Set(state.base_);
+  }
+  function normalizeSliceIndex(index, length) {
+    if (index < 0) {
+      return Math.max(length + index, 0);
+    }
+    return Math.min(index, length);
+  }
+  function handleInsertedValues(state, startIndex, values) {
+    for (let i = 0; i < values.length; i++) {
+      const index = "" + (startIndex + i);
+      state.assigned_.set(index, true);
+      handleCrossReference(state, index, values[i]);
+    }
+  }
+  function handleSimpleOperation(state, method, args) {
+    const isInsert = method === "push" || method === "unshift";
+    if (isInsert ? args.length === 0 : latest(state).length === 0) {
+      return isInsert ? latest(state).length : void 0;
+    }
+    prepareCopy(state);
+    const lengthBefore = state.copy_.length;
+    const result = state.copy_[method](...args);
+    markArrayChanged(state);
+    if (SHIFTING_METHODS.has(method)) {
+      markAllIndicesReassigned(state);
+    }
+    if (method === "push") {
+      handleInsertedValues(state, lengthBefore, args);
+    } else if (method === "unshift") {
+      handleInsertedValues(state, 0, args);
+    }
+    return RESULT_RETURNING_METHODS.has(method) ? result : state.draft_;
+  }
+  function handleReorderingOperation(state, method, args) {
+    if (latest(state).length <= 1)
+      return state.draft_;
+    return executeArrayMethod(
+      state,
+      () => {
+        ;
+        state.copy_[method](...args);
+        markAllIndicesReassigned(state);
+        return state.draft_;
+      },
+      false
+    );
+  }
+  function createMethodInterceptor(state, originalMethod) {
+    return function interceptedMethod(...args) {
+      var _a, _b;
+      const method = originalMethod;
+      enterOperation(state, method);
+      try {
+        if (isMutatingArrayMethod(method)) {
+          if (RESULT_RETURNING_METHODS.has(method)) {
+            return handleSimpleOperation(state, method, args);
+          }
+          if (REORDERING_METHODS.has(method)) {
+            return handleReorderingOperation(state, method, args);
+          }
+          if (method === "splice") {
+            const insertCount = args.length > 2 ? args.length - 2 : 0;
+            if (insertCount === 0) {
+              const length = latest(state).length;
+              if (args.length === 0 || normalizeSliceIndex((_a = args[0]) != null ? _a : 0, length) === length || args.length > 1 && !(args[1] >= 1)) {
+                return [];
+              }
+            }
+            prepareCopy(state);
+            const res = state.copy_.splice(
+              ...args
+            );
+            if (res.length === 0 && insertCount === 0) {
+              return res;
+            }
+            markArrayChanged(state);
+            markAllIndicesReassigned(state);
+            if (insertCount > 0) {
+              const startIndex = normalizeSliceIndex(
+                (_b = args[0]) != null ? _b : 0,
+                state.copy_.length
+              );
+              handleInsertedValues(state, startIndex, args.slice(2));
+            }
+            return res;
+          }
+        } else {
+          return handleNonMutatingOperation(state, method, args);
+        }
+      } finally {
+        exitOperation(state);
+      }
+    };
+  }
+  function handleNonMutatingOperation(state, method, args) {
+    var _a, _b;
+    const source = latest(state);
+    if (method === "filter") {
+      const predicate = args[0];
+      const result = [];
+      for (let i = 0; i < source.length; i++) {
+        if (predicate(source[i], i, source)) {
+          result.push(state.draft_[i]);
+        }
+      }
+      return result;
+    }
+    if (FIND_METHODS.has(method)) {
+      const predicate = args[0];
+      const isForward = method === "find";
+      const step = isForward ? 1 : -1;
+      const start = isForward ? 0 : source.length - 1;
+      for (let i = start; i >= 0 && i < source.length; i += step) {
+        if (predicate(source[i], i, source)) {
+          return state.draft_[i];
+        }
+      }
+      return void 0;
+    }
+    if (method === "slice") {
+      const rawStart = (_a = args[0]) != null ? _a : 0;
+      const rawEnd = (_b = args[1]) != null ? _b : source.length;
+      const start = normalizeSliceIndex(rawStart, source.length);
+      const end = normalizeSliceIndex(rawEnd, source.length);
+      const result = [];
+      for (let i = start; i < end; i++) {
+        result.push(state.draft_[i]);
+      }
+      return result;
+    }
+    return source[method](...args);
+  }
+  loadPlugin(PluginArrayMethods, {
+    createMethodInterceptor,
+    isArrayOperationMethod,
+    isMutatingArrayMethod
+  });
+}
+
+// src/immer.ts
+var immer = new Immer2();
+var produce = immer.produce;
+var produceWithPatches = /* @__PURE__ */ immer.produceWithPatches.bind(immer);
+var setAutoFreeze = /* @__PURE__ */ immer.setAutoFreeze.bind(immer);
+var setUseStrictShallowCopy = /* @__PURE__ */ immer.setUseStrictShallowCopy.bind(immer);
+var setUseStrictIteration = /* @__PURE__ */ immer.setUseStrictIteration.bind(immer);
+var applyPatches = /* @__PURE__ */ immer.applyPatches.bind(immer);
+var createDraft = /* @__PURE__ */ immer.createDraft.bind(immer);
+var finishDraft = /* @__PURE__ */ immer.finishDraft.bind(immer);
+var castDraft = (value) => value;
+var castImmutable = (value) => value;
+
+//# sourceMappingURL=immer.legacy-esm.js.map
+
+/***/ }),
+
+/***/ "../node_modules/@reduxjs/toolkit/node_modules/redux-thunk/dist/redux-thunk.legacy-esm.js":
+/*!************************************************************************************************!*\
+  !*** ../node_modules/@reduxjs/toolkit/node_modules/redux-thunk/dist/redux-thunk.legacy-esm.js ***!
+  \************************************************************************************************/
+/*! exports provided: thunk, withExtraArgument */
+/*! exports used: thunk, withExtraArgument */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return thunk; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return withExtraArgument; });
+// src/index.ts
+function createThunkMiddleware(extraArgument) {
+  const middleware = ({ dispatch, getState }) => (next) => (action) => {
+    if (typeof action === "function") {
+      return action(dispatch, getState, extraArgument);
+    }
+    return next(action);
+  };
+  return middleware;
+}
+var thunk = createThunkMiddleware();
+var withExtraArgument = createThunkMiddleware;
+
+
+
+/***/ }),
+
+/***/ "../node_modules/@reduxjs/toolkit/node_modules/redux/dist/redux.legacy-esm.js":
+/*!************************************************************************************!*\
+  !*** ../node_modules/@reduxjs/toolkit/node_modules/redux/dist/redux.legacy-esm.js ***!
+  \************************************************************************************/
+/*! exports provided: __DO_NOT_USE__ActionTypes, applyMiddleware, bindActionCreators, combineReducers, compose, createStore, isAction, isPlainObject, legacy_createStore */
+/*! exports used: __DO_NOT_USE__ActionTypes, applyMiddleware, bindActionCreators, combineReducers, compose, createStore, isAction, isPlainObject, legacy_createStore */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return actionTypes_default; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return applyMiddleware; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return bindActionCreators; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return combineReducers; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return compose; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return createStore; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return isAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return isPlainObject; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return legacy_createStore; });
+// src/utils/formatProdErrorMessage.ts
+function formatProdErrorMessage(code) {
+  return `Minified Redux error #${code}; visit https://redux.js.org/Errors?code=${code} for the full message or use the non-minified dev environment for full errors. `;
+}
+
+// src/utils/symbol-observable.ts
+var $$observable = /* @__PURE__ */ (() => typeof Symbol === "function" && Symbol.observable || "@@observable")();
+var symbol_observable_default = $$observable;
+
+// src/utils/actionTypes.ts
+var randomString = () => Math.random().toString(36).substring(7).split("").join(".");
+var ActionTypes = {
+  INIT: `@@redux/INIT${/* @__PURE__ */ randomString()}`,
+  REPLACE: `@@redux/REPLACE${/* @__PURE__ */ randomString()}`,
+  PROBE_UNKNOWN_ACTION: () => `@@redux/PROBE_UNKNOWN_ACTION${randomString()}`
+};
+var actionTypes_default = ActionTypes;
+
+// src/utils/isPlainObject.ts
+function isPlainObject(obj) {
+  if (typeof obj !== "object" || obj === null)
+    return false;
+  let proto = obj;
+  while (Object.getPrototypeOf(proto) !== null) {
+    proto = Object.getPrototypeOf(proto);
+  }
+  return Object.getPrototypeOf(obj) === proto || Object.getPrototypeOf(obj) === null;
+}
+
+// src/utils/kindOf.ts
+function miniKindOf(val) {
+  if (val === void 0)
+    return "undefined";
+  if (val === null)
+    return "null";
+  const type = typeof val;
+  switch (type) {
+    case "boolean":
+    case "string":
+    case "number":
+    case "symbol":
+    case "function": {
+      return type;
+    }
+  }
+  if (Array.isArray(val))
+    return "array";
+  if (isDate(val))
+    return "date";
+  if (isError(val))
+    return "error";
+  const constructorName = ctorName(val);
+  switch (constructorName) {
+    case "Symbol":
+    case "Promise":
+    case "WeakMap":
+    case "WeakSet":
+    case "Map":
+    case "Set":
+      return constructorName;
+  }
+  return Object.prototype.toString.call(val).slice(8, -1).toLowerCase().replace(/\s/g, "");
+}
+function ctorName(val) {
+  return typeof val.constructor === "function" ? val.constructor.name : null;
+}
+function isError(val) {
+  return val instanceof Error || typeof val.message === "string" && val.constructor && typeof val.constructor.stackTraceLimit === "number";
+}
+function isDate(val) {
+  if (val instanceof Date)
+    return true;
+  return typeof val.toDateString === "function" && typeof val.getDate === "function" && typeof val.setDate === "function";
+}
+function kindOf(val) {
+  let typeOfVal = typeof val;
+  if (false) {}
+  return typeOfVal;
+}
+
+// src/createStore.ts
+function createStore(reducer, preloadedState, enhancer) {
+  if (typeof reducer !== "function") {
+    throw new Error( true ? formatProdErrorMessage(2) : undefined);
+  }
+  if (typeof preloadedState === "function" && typeof enhancer === "function" || typeof enhancer === "function" && typeof arguments[3] === "function") {
+    throw new Error( true ? formatProdErrorMessage(0) : undefined);
+  }
+  if (typeof preloadedState === "function" && typeof enhancer === "undefined") {
+    enhancer = preloadedState;
+    preloadedState = void 0;
+  }
+  if (typeof enhancer !== "undefined") {
+    if (typeof enhancer !== "function") {
+      throw new Error( true ? formatProdErrorMessage(1) : undefined);
+    }
+    return enhancer(createStore)(reducer, preloadedState);
+  }
+  let currentReducer = reducer;
+  let currentState = preloadedState;
+  let currentListeners = /* @__PURE__ */ new Map();
+  let nextListeners = currentListeners;
+  let listenerIdCounter = 0;
+  let isDispatching = false;
+  function ensureCanMutateNextListeners() {
+    if (nextListeners === currentListeners) {
+      nextListeners = /* @__PURE__ */ new Map();
+      currentListeners.forEach((listener, key) => {
+        nextListeners.set(key, listener);
+      });
+    }
+  }
+  function getState() {
+    if (isDispatching) {
+      throw new Error( true ? formatProdErrorMessage(3) : undefined);
+    }
+    return currentState;
+  }
+  function subscribe(listener) {
+    if (typeof listener !== "function") {
+      throw new Error( true ? formatProdErrorMessage(4) : undefined);
+    }
+    if (isDispatching) {
+      throw new Error( true ? formatProdErrorMessage(5) : undefined);
+    }
+    let isSubscribed = true;
+    ensureCanMutateNextListeners();
+    const listenerId = listenerIdCounter++;
+    nextListeners.set(listenerId, listener);
+    return function unsubscribe() {
+      if (!isSubscribed) {
+        return;
+      }
+      if (isDispatching) {
+        throw new Error( true ? formatProdErrorMessage(6) : undefined);
+      }
+      isSubscribed = false;
+      ensureCanMutateNextListeners();
+      nextListeners.delete(listenerId);
+      currentListeners = null;
+    };
+  }
+  function dispatch(action) {
+    if (!isPlainObject(action)) {
+      throw new Error( true ? formatProdErrorMessage(7) : undefined);
+    }
+    if (typeof action.type === "undefined") {
+      throw new Error( true ? formatProdErrorMessage(8) : undefined);
+    }
+    if (typeof action.type !== "string") {
+      throw new Error( true ? formatProdErrorMessage(17) : undefined);
+    }
+    if (isDispatching) {
+      throw new Error( true ? formatProdErrorMessage(9) : undefined);
+    }
+    try {
+      isDispatching = true;
+      currentState = currentReducer(currentState, action);
+    } finally {
+      isDispatching = false;
+    }
+    const listeners = currentListeners = nextListeners;
+    listeners.forEach((listener) => {
+      listener();
+    });
+    return action;
+  }
+  function replaceReducer(nextReducer) {
+    if (typeof nextReducer !== "function") {
+      throw new Error( true ? formatProdErrorMessage(10) : undefined);
+    }
+    currentReducer = nextReducer;
+    dispatch({
+      type: actionTypes_default.REPLACE
+    });
+  }
+  function observable() {
+    const outerSubscribe = subscribe;
+    return {
+      /**
+       * The minimal observable subscription method.
+       * @param observer Any object that can be used as an observer.
+       * The observer object should have a `next` method.
+       * @returns An object with an `unsubscribe` method that can
+       * be used to unsubscribe the observable from the store, and prevent further
+       * emission of values from the observable.
+       */
+      subscribe(observer) {
+        if (typeof observer !== "object" || observer === null) {
+          throw new Error( true ? formatProdErrorMessage(11) : undefined);
+        }
+        function observeState() {
+          const observerAsObserver = observer;
+          if (observerAsObserver.next) {
+            observerAsObserver.next(getState());
+          }
+        }
+        observeState();
+        const unsubscribe = outerSubscribe(observeState);
+        return {
+          unsubscribe
+        };
+      },
+      [symbol_observable_default]() {
+        return this;
+      }
+    };
+  }
+  dispatch({
+    type: actionTypes_default.INIT
+  });
+  const store = {
+    dispatch,
+    subscribe,
+    getState,
+    replaceReducer,
+    [symbol_observable_default]: observable
+  };
+  return store;
+}
+function legacy_createStore(reducer, preloadedState, enhancer) {
+  return createStore(reducer, preloadedState, enhancer);
+}
+
+// src/utils/warning.ts
+function warning(message) {
+  if (typeof console !== "undefined" && typeof console.error === "function") {
+    console.error(message);
+  }
+  try {
+    throw new Error(message);
+  } catch (e) {
+  }
+}
+
+// src/combineReducers.ts
+function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
+  const reducerKeys = Object.keys(reducers);
+  const argumentName = action && action.type === actionTypes_default.INIT ? "preloadedState argument passed to createStore" : "previous state received by the reducer";
+  if (reducerKeys.length === 0) {
+    return "Store does not have a valid reducer. Make sure the argument passed to combineReducers is an object whose values are reducers.";
+  }
+  if (!isPlainObject(inputState)) {
+    return `The ${argumentName} has unexpected type of "${kindOf(inputState)}". Expected argument to be an object with the following keys: "${reducerKeys.join('", "')}"`;
+  }
+  const unexpectedKeys = Object.keys(inputState).filter((key) => !reducers.hasOwnProperty(key) && !unexpectedKeyCache[key]);
+  unexpectedKeys.forEach((key) => {
+    unexpectedKeyCache[key] = true;
+  });
+  if (action && action.type === actionTypes_default.REPLACE)
+    return;
+  if (unexpectedKeys.length > 0) {
+    return `Unexpected ${unexpectedKeys.length > 1 ? "keys" : "key"} "${unexpectedKeys.join('", "')}" found in ${argumentName}. Expected to find one of the known reducer keys instead: "${reducerKeys.join('", "')}". Unexpected keys will be ignored.`;
+  }
+}
+function assertReducerShape(reducers) {
+  Object.keys(reducers).forEach((key) => {
+    const reducer = reducers[key];
+    const initialState = reducer(void 0, {
+      type: actionTypes_default.INIT
+    });
+    if (typeof initialState === "undefined") {
+      throw new Error( true ? formatProdErrorMessage(12) : undefined);
+    }
+    if (typeof reducer(void 0, {
+      type: actionTypes_default.PROBE_UNKNOWN_ACTION()
+    }) === "undefined") {
+      throw new Error( true ? formatProdErrorMessage(13) : undefined);
+    }
+  });
+}
+function combineReducers(reducers) {
+  const reducerKeys = Object.keys(reducers);
+  const finalReducers = {};
+  for (let i = 0; i < reducerKeys.length; i++) {
+    const key = reducerKeys[i];
+    if (false) {}
+    if (typeof reducers[key] === "function") {
+      finalReducers[key] = reducers[key];
+    }
+  }
+  const finalReducerKeys = Object.keys(finalReducers);
+  let unexpectedKeyCache;
+  if (false) {}
+  let shapeAssertionError;
+  try {
+    assertReducerShape(finalReducers);
+  } catch (e) {
+    shapeAssertionError = e;
+  }
+  return function combination(state = {}, action) {
+    if (shapeAssertionError) {
+      throw shapeAssertionError;
+    }
+    if (false) {}
+    let hasChanged = false;
+    const nextState = {};
+    for (let i = 0; i < finalReducerKeys.length; i++) {
+      const key = finalReducerKeys[i];
+      const reducer = finalReducers[key];
+      const previousStateForKey = state[key];
+      const nextStateForKey = reducer(previousStateForKey, action);
+      if (typeof nextStateForKey === "undefined") {
+        const actionType = action && action.type;
+        throw new Error( true ? formatProdErrorMessage(14) : undefined);
+      }
+      nextState[key] = nextStateForKey;
+      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+    }
+    hasChanged = hasChanged || finalReducerKeys.length !== Object.keys(state).length;
+    return hasChanged ? nextState : state;
+  };
+}
+
+// src/bindActionCreators.ts
+function bindActionCreator(actionCreator, dispatch) {
+  return function(...args) {
+    return dispatch(actionCreator.apply(this, args));
+  };
+}
+function bindActionCreators(actionCreators, dispatch) {
+  if (typeof actionCreators === "function") {
+    return bindActionCreator(actionCreators, dispatch);
+  }
+  if (typeof actionCreators !== "object" || actionCreators === null) {
+    throw new Error( true ? formatProdErrorMessage(16) : undefined);
+  }
+  const boundActionCreators = {};
+  for (const key in actionCreators) {
+    const actionCreator = actionCreators[key];
+    if (typeof actionCreator === "function") {
+      boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
+    }
+  }
+  return boundActionCreators;
+}
+
+// src/compose.ts
+function compose(...funcs) {
+  if (funcs.length === 0) {
+    return (arg) => arg;
+  }
+  if (funcs.length === 1) {
+    return funcs[0];
+  }
+  return funcs.reduce((a, b) => (...args) => a(b(...args)));
+}
+
+// src/applyMiddleware.ts
+function applyMiddleware(...middlewares) {
+  return (createStore2) => (reducer, preloadedState) => {
+    const store = createStore2(reducer, preloadedState);
+    let dispatch = () => {
+      throw new Error( true ? formatProdErrorMessage(15) : undefined);
+    };
+    const middlewareAPI = {
+      getState: store.getState,
+      dispatch: (action, ...args) => dispatch(action, ...args)
+    };
+    const chain = middlewares.map((middleware) => middleware(middlewareAPI));
+    dispatch = compose(...chain)(store.dispatch);
+    return {
+      ...store,
+      dispatch
+    };
+  };
+}
+
+// src/utils/isAction.ts
+function isAction(action) {
+  return isPlainObject(action) && "type" in action && typeof action.type === "string";
+}
+
+//# sourceMappingURL=redux.mjs.map
 
 /***/ }),
 
@@ -191345,42 +195547,6 @@ function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
 }
 
 module.exports = hoistNonReactStatics;
-
-
-/***/ }),
-
-/***/ "../node_modules/immer/dist/immer.esm.js":
-/*!***********************************************!*\
-  !*** ../node_modules/immer/dist/immer.esm.js ***!
-  \***********************************************/
-/*! exports provided: default, Immer, applyPatches, castDraft, castImmutable, createDraft, current, enableAllPlugins, enableES5, enableMapSet, enablePatches, finishDraft, freeze, immerable, isDraft, isDraftable, nothing, original, produce, produceWithPatches, setAutoFreeze, setUseProxies */
-/*! exports used: current, default, enableES5, freeze, isDraft, isDraftable, original */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export Immer */
-/* unused harmony export applyPatches */
-/* unused harmony export castDraft */
-/* unused harmony export castImmutable */
-/* unused harmony export createDraft */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return R; });
-/* unused harmony export enableAllPlugins */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return F; });
-/* unused harmony export enableMapSet */
-/* unused harmony export enablePatches */
-/* unused harmony export finishDraft */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return d; });
-/* unused harmony export immerable */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return r; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return t; });
-/* unused harmony export nothing */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return e; });
-/* unused harmony export produce */
-/* unused harmony export produceWithPatches */
-/* unused harmony export setAutoFreeze */
-/* unused harmony export setUseProxies */
-function n(n){for(var r=arguments.length,t=Array(r>1?r-1:0),e=1;e<r;e++)t[e-1]=arguments[e];if(false){ var i, o; }throw Error("[Immer] minified error nr: "+n+(t.length?" "+t.map((function(n){return"'"+n+"'"})).join(","):"")+". Find the full error at: https://bit.ly/3cXEKWf")}function r(n){return!!n&&!!n[Q]}function t(n){var r;return!!n&&(function(n){if(!n||"object"!=typeof n)return!1;var r=Object.getPrototypeOf(n);if(null===r)return!0;var t=Object.hasOwnProperty.call(r,"constructor")&&r.constructor;return t===Object||"function"==typeof t&&Function.toString.call(t)===Z}(n)||Array.isArray(n)||!!n[L]||!!(null===(r=n.constructor)||void 0===r?void 0:r[L])||s(n)||v(n))}function e(t){return r(t)||n(23,t),t[Q].t}function i(n,r,t){void 0===t&&(t=!1),0===o(n)?(t?Object.keys:nn)(n).forEach((function(e){t&&"symbol"==typeof e||r(e,n[e],n)})):n.forEach((function(t,e){return r(e,t,n)}))}function o(n){var r=n[Q];return r?r.i>3?r.i-4:r.i:Array.isArray(n)?1:s(n)?2:v(n)?3:0}function u(n,r){return 2===o(n)?n.has(r):Object.prototype.hasOwnProperty.call(n,r)}function a(n,r){return 2===o(n)?n.get(r):n[r]}function f(n,r,t){var e=o(n);2===e?n.set(r,t):3===e?n.add(t):n[r]=t}function c(n,r){return n===r?0!==n||1/n==1/r:n!=n&&r!=r}function s(n){return X&&n instanceof Map}function v(n){return q&&n instanceof Set}function p(n){return n.o||n.t}function l(n){if(Array.isArray(n))return Array.prototype.slice.call(n);var r=rn(n);delete r[Q];for(var t=nn(r),e=0;e<t.length;e++){var i=t[e],o=r[i];!1===o.writable&&(o.writable=!0,o.configurable=!0),(o.get||o.set)&&(r[i]={configurable:!0,writable:!0,enumerable:o.enumerable,value:n[i]})}return Object.create(Object.getPrototypeOf(n),r)}function d(n,e){return void 0===e&&(e=!1),y(n)||r(n)||!t(n)||(o(n)>1&&(n.set=n.add=n.clear=n.delete=h),Object.freeze(n),e&&i(n,(function(n,r){return d(r,!0)}),!0)),n}function h(){n(2)}function y(n){return null==n||"object"!=typeof n||Object.isFrozen(n)}function b(r){var t=tn[r];return t||n(18,r),t}function m(n,r){tn[n]||(tn[n]=r)}function _(){return true||false,U}function j(n,r){r&&(b("Patches"),n.u=[],n.s=[],n.v=r)}function g(n){O(n),n.p.forEach(S),n.p=null}function O(n){n===U&&(U=n.l)}function w(n){return U={p:[],l:U,h:n,m:!0,_:0}}function S(n){var r=n[Q];0===r.i||1===r.i?r.j():r.g=!0}function P(r,e){e._=e.p.length;var i=e.p[0],o=void 0!==r&&r!==i;return e.h.O||b("ES5").S(e,r,o),o?(i[Q].P&&(g(e),n(4)),t(r)&&(r=M(e,r),e.l||x(e,r)),e.u&&b("Patches").M(i[Q].t,r,e.u,e.s)):r=M(e,i,[]),g(e),e.u&&e.v(e.u,e.s),r!==H?r:void 0}function M(n,r,t){if(y(r))return r;var e=r[Q];if(!e)return i(r,(function(i,o){return A(n,e,r,i,o,t)}),!0),r;if(e.A!==n)return r;if(!e.P)return x(n,e.t,!0),e.t;if(!e.I){e.I=!0,e.A._--;var o=4===e.i||5===e.i?e.o=l(e.k):e.o,u=o,a=!1;3===e.i&&(u=new Set(o),o.clear(),a=!0),i(u,(function(r,i){return A(n,e,o,r,i,t,a)})),x(n,o,!1),t&&n.u&&b("Patches").N(e,t,n.u,n.s)}return e.o}function A(e,i,o,a,c,s,v){if( false&&false,r(c)){var p=M(e,c,s&&i&&3!==i.i&&!u(i.R,a)?s.concat(a):void 0);if(f(o,a,p),!r(p))return;e.m=!1}else v&&o.add(c);if(t(c)&&!y(c)){if(!e.h.D&&e._<1)return;M(e,c),i&&i.A.l||x(e,c)}}function x(n,r,t){void 0===t&&(t=!1),!n.l&&n.h.D&&n.m&&d(r,t)}function z(n,r){var t=n[Q];return(t?p(t):n)[r]}function I(n,r){if(r in n)for(var t=Object.getPrototypeOf(n);t;){var e=Object.getOwnPropertyDescriptor(t,r);if(e)return e;t=Object.getPrototypeOf(t)}}function k(n){n.P||(n.P=!0,n.l&&k(n.l))}function E(n){n.o||(n.o=l(n.t))}function N(n,r,t){var e=s(r)?b("MapSet").F(r,t):v(r)?b("MapSet").T(r,t):n.O?function(n,r){var t=Array.isArray(n),e={i:t?1:0,A:r?r.A:_(),P:!1,I:!1,R:{},l:r,t:n,k:null,o:null,j:null,C:!1},i=e,o=en;t&&(i=[e],o=on);var u=Proxy.revocable(i,o),a=u.revoke,f=u.proxy;return e.k=f,e.j=a,f}(r,t):b("ES5").J(r,t);return(t?t.A:_()).p.push(e),e}function R(e){return r(e)||n(22,e),function n(r){if(!t(r))return r;var e,u=r[Q],c=o(r);if(u){if(!u.P&&(u.i<4||!b("ES5").K(u)))return u.t;u.I=!0,e=D(r,c),u.I=!1}else e=D(r,c);return i(e,(function(r,t){u&&a(u.t,r)===t||f(e,r,n(t))})),3===c?new Set(e):e}(e)}function D(n,r){switch(r){case 2:return new Map(n);case 3:return Array.from(n)}return l(n)}function F(){function t(n,r){var t=s[n];return t?t.enumerable=r:s[n]=t={configurable:!0,enumerable:r,get:function(){var r=this[Q];return false&&false,en.get(r,n)},set:function(r){var t=this[Q]; false&&false,en.set(t,n,r)}},t}function e(n){for(var r=n.length-1;r>=0;r--){var t=n[r][Q];if(!t.P)switch(t.i){case 5:a(t)&&k(t);break;case 4:o(t)&&k(t)}}}function o(n){for(var r=n.t,t=n.k,e=nn(t),i=e.length-1;i>=0;i--){var o=e[i];if(o!==Q){var a=r[o];if(void 0===a&&!u(r,o))return!0;var f=t[o],s=f&&f[Q];if(s?s.t!==a:!c(f,a))return!0}}var v=!!r[Q];return e.length!==nn(r).length+(v?0:1)}function a(n){var r=n.k;if(r.length!==n.t.length)return!0;var t=Object.getOwnPropertyDescriptor(r,r.length-1);if(t&&!t.get)return!0;for(var e=0;e<r.length;e++)if(!r.hasOwnProperty(e))return!0;return!1}function f(r){r.g&&n(3,JSON.stringify(p(r)))}var s={};m("ES5",{J:function(n,r){var e=Array.isArray(n),i=function(n,r){if(n){for(var e=Array(r.length),i=0;i<r.length;i++)Object.defineProperty(e,""+i,t(i,!0));return e}var o=rn(r);delete o[Q];for(var u=nn(o),a=0;a<u.length;a++){var f=u[a];o[f]=t(f,n||!!o[f].enumerable)}return Object.create(Object.getPrototypeOf(r),o)}(e,n),o={i:e?5:4,A:r?r.A:_(),P:!1,I:!1,R:{},l:r,t:n,k:i,o:null,g:!1,C:!1};return Object.defineProperty(i,Q,{value:o,writable:!0}),i},S:function(n,t,o){o?r(t)&&t[Q].A===n&&e(n.p):(n.u&&function n(r){if(r&&"object"==typeof r){var t=r[Q];if(t){var e=t.t,o=t.k,f=t.R,c=t.i;if(4===c)i(o,(function(r){r!==Q&&(void 0!==e[r]||u(e,r)?f[r]||n(o[r]):(f[r]=!0,k(t)))})),i(e,(function(n){void 0!==o[n]||u(o,n)||(f[n]=!1,k(t))}));else if(5===c){if(a(t)&&(k(t),f.length=!0),o.length<e.length)for(var s=o.length;s<e.length;s++)f[s]=!1;else for(var v=e.length;v<o.length;v++)f[v]=!0;for(var p=Math.min(o.length,e.length),l=0;l<p;l++)o.hasOwnProperty(l)||(f[l]=!0),void 0===f[l]&&n(o[l])}}}}(n.p[0]),e(n.p))},K:function(n){return 4===n.i?o(n):a(n)}})}function T(){function e(n){if(!t(n))return n;if(Array.isArray(n))return n.map(e);if(s(n))return new Map(Array.from(n.entries()).map((function(n){return[n[0],e(n[1])]})));if(v(n))return new Set(Array.from(n).map(e));var r=Object.create(Object.getPrototypeOf(n));for(var i in n)r[i]=e(n[i]);return u(n,L)&&(r[L]=n[L]),r}function f(n){return r(n)?e(n):n}var c="add";m("Patches",{$:function(r,t){return t.forEach((function(t){for(var i=t.path,u=t.op,f=r,s=0;s<i.length-1;s++){var v=o(f),p=i[s];"string"!=typeof p&&"number"!=typeof p&&(p=""+p),0!==v&&1!==v||"__proto__"!==p&&"constructor"!==p||n(24),"function"==typeof f&&"prototype"===p&&n(24),"object"!=typeof(f=a(f,p))&&n(15,i.join("/"))}var l=o(f),d=e(t.value),h=i[i.length-1];switch(u){case"replace":switch(l){case 2:return f.set(h,d);case 3:n(16);default:return f[h]=d}case c:switch(l){case 1:return"-"===h?f.push(d):f.splice(h,0,d);case 2:return f.set(h,d);case 3:return f.add(d);default:return f[h]=d}case"remove":switch(l){case 1:return f.splice(h,1);case 2:return f.delete(h);case 3:return f.delete(t.value);default:return delete f[h]}default:n(17,u)}})),r},N:function(n,r,t,e){switch(n.i){case 0:case 4:case 2:return function(n,r,t,e){var o=n.t,s=n.o;i(n.R,(function(n,i){var v=a(o,n),p=a(s,n),l=i?u(o,n)?"replace":c:"remove";if(v!==p||"replace"!==l){var d=r.concat(n);t.push("remove"===l?{op:l,path:d}:{op:l,path:d,value:p}),e.push(l===c?{op:"remove",path:d}:"remove"===l?{op:c,path:d,value:f(v)}:{op:"replace",path:d,value:f(v)})}}))}(n,r,t,e);case 5:case 1:return function(n,r,t,e){var i=n.t,o=n.R,u=n.o;if(u.length<i.length){var a=[u,i];i=a[0],u=a[1];var s=[e,t];t=s[0],e=s[1]}for(var v=0;v<i.length;v++)if(o[v]&&u[v]!==i[v]){var p=r.concat([v]);t.push({op:"replace",path:p,value:f(u[v])}),e.push({op:"replace",path:p,value:f(i[v])})}for(var l=i.length;l<u.length;l++){var d=r.concat([l]);t.push({op:c,path:d,value:f(u[l])})}i.length<u.length&&e.push({op:"replace",path:r.concat(["length"]),value:i.length})}(n,r,t,e);case 3:return function(n,r,t,e){var i=n.t,o=n.o,u=0;i.forEach((function(n){if(!o.has(n)){var i=r.concat([u]);t.push({op:"remove",path:i,value:n}),e.unshift({op:c,path:i,value:n})}u++})),u=0,o.forEach((function(n){if(!i.has(n)){var o=r.concat([u]);t.push({op:c,path:o,value:n}),e.unshift({op:"remove",path:o,value:n})}u++}))}(n,r,t,e)}},M:function(n,r,t,e){t.push({op:"replace",path:[],value:r===H?void 0:r}),e.push({op:"replace",path:[],value:n})}})}function C(){function r(n,r){function t(){this.constructor=n}a(n,r),n.prototype=(t.prototype=r.prototype,new t)}function e(n){n.o||(n.R=new Map,n.o=new Map(n.t))}function o(n){n.o||(n.o=new Set,n.t.forEach((function(r){if(t(r)){var e=N(n.A.h,r,n);n.p.set(r,e),n.o.add(e)}else n.o.add(r)})))}function u(r){r.g&&n(3,JSON.stringify(p(r)))}var a=function(n,r){return(a=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(n,r){n.__proto__=r}||function(n,r){for(var t in r)r.hasOwnProperty(t)&&(n[t]=r[t])})(n,r)},f=function(){function n(n,r){return this[Q]={i:2,l:r,A:r?r.A:_(),P:!1,I:!1,o:void 0,R:void 0,t:n,k:this,C:!1,g:!1},this}r(n,Map);var o=n.prototype;return Object.defineProperty(o,"size",{get:function(){return p(this[Q]).size}}),o.has=function(n){return p(this[Q]).has(n)},o.set=function(n,r){var t=this[Q];return u(t),p(t).has(n)&&p(t).get(n)===r||(e(t),k(t),t.R.set(n,!0),t.o.set(n,r),t.R.set(n,!0)),this},o.delete=function(n){if(!this.has(n))return!1;var r=this[Q];return u(r),e(r),k(r),r.t.has(n)?r.R.set(n,!1):r.R.delete(n),r.o.delete(n),!0},o.clear=function(){var n=this[Q];u(n),p(n).size&&(e(n),k(n),n.R=new Map,i(n.t,(function(r){n.R.set(r,!1)})),n.o.clear())},o.forEach=function(n,r){var t=this;p(this[Q]).forEach((function(e,i){n.call(r,t.get(i),i,t)}))},o.get=function(n){var r=this[Q];u(r);var i=p(r).get(n);if(r.I||!t(i))return i;if(i!==r.t.get(n))return i;var o=N(r.A.h,i,r);return e(r),r.o.set(n,o),o},o.keys=function(){return p(this[Q]).keys()},o.values=function(){var n,r=this,t=this.keys();return(n={})[V]=function(){return r.values()},n.next=function(){var n=t.next();return n.done?n:{done:!1,value:r.get(n.value)}},n},o.entries=function(){var n,r=this,t=this.keys();return(n={})[V]=function(){return r.entries()},n.next=function(){var n=t.next();if(n.done)return n;var e=r.get(n.value);return{done:!1,value:[n.value,e]}},n},o[V]=function(){return this.entries()},n}(),c=function(){function n(n,r){return this[Q]={i:3,l:r,A:r?r.A:_(),P:!1,I:!1,o:void 0,t:n,k:this,p:new Map,g:!1,C:!1},this}r(n,Set);var t=n.prototype;return Object.defineProperty(t,"size",{get:function(){return p(this[Q]).size}}),t.has=function(n){var r=this[Q];return u(r),r.o?!!r.o.has(n)||!(!r.p.has(n)||!r.o.has(r.p.get(n))):r.t.has(n)},t.add=function(n){var r=this[Q];return u(r),this.has(n)||(o(r),k(r),r.o.add(n)),this},t.delete=function(n){if(!this.has(n))return!1;var r=this[Q];return u(r),o(r),k(r),r.o.delete(n)||!!r.p.has(n)&&r.o.delete(r.p.get(n))},t.clear=function(){var n=this[Q];u(n),p(n).size&&(o(n),k(n),n.o.clear())},t.values=function(){var n=this[Q];return u(n),o(n),n.o.values()},t.entries=function(){var n=this[Q];return u(n),o(n),n.o.entries()},t.keys=function(){return this.values()},t[V]=function(){return this.values()},t.forEach=function(n,r){for(var t=this.values(),e=t.next();!e.done;)n.call(r,e.value,e.value,this),e=t.next()},n}();m("MapSet",{F:function(n,r){return new f(n,r)},T:function(n,r){return new c(n,r)}})}function J(){F(),C(),T()}function K(n){return n}function $(n){return n}var G,U,W="undefined"!=typeof Symbol&&"symbol"==typeof Symbol("x"),X="undefined"!=typeof Map,q="undefined"!=typeof Set,B="undefined"!=typeof Proxy&&void 0!==Proxy.revocable&&"undefined"!=typeof Reflect,H=W?Symbol.for("immer-nothing"):((G={})["immer-nothing"]=!0,G),L=W?Symbol.for("immer-draftable"):"__$immer_draftable",Q=W?Symbol.for("immer-state"):"__$immer_state",V="undefined"!=typeof Symbol&&Symbol.iterator||"@@iterator",Y={0:"Illegal state",1:"Immer drafts cannot have computed properties",2:"This object has been frozen and should not be mutated",3:function(n){return"Cannot use a proxy that has been revoked. Did you pass an object from inside an immer function to an async process? "+n},4:"An immer producer returned a new value *and* modified its draft. Either return a new value *or* modify the draft.",5:"Immer forbids circular references",6:"The first or second argument to `produce` must be a function",7:"The third argument to `produce` must be a function or undefined",8:"First argument to `createDraft` must be a plain object, an array, or an immerable object",9:"First argument to `finishDraft` must be a draft returned by `createDraft`",10:"The given draft is already finalized",11:"Object.defineProperty() cannot be used on an Immer draft",12:"Object.setPrototypeOf() cannot be used on an Immer draft",13:"Immer only supports deleting array indices",14:"Immer only supports setting array indices and the 'length' property",15:function(n){return"Cannot apply patch, path doesn't resolve: "+n},16:'Sets cannot have "replace" patches.',17:function(n){return"Unsupported patch operation: "+n},18:function(n){return"The plugin for '"+n+"' has not been loaded into Immer. To enable the plugin, import and call `enable"+n+"()` when initializing your application."},20:"Cannot use proxies if Proxy, Proxy.revocable or Reflect are not available",21:function(n){return"produce can only be called on things that are draftable: plain objects, arrays, Map, Set or classes that are marked with '[immerable]: true'. Got '"+n+"'"},22:function(n){return"'current' expects a draft, got: "+n},23:function(n){return"'original' expects a draft, got: "+n},24:"Patching reserved attributes like __proto__, prototype and constructor is not allowed"},Z=""+Object.prototype.constructor,nn="undefined"!=typeof Reflect&&Reflect.ownKeys?Reflect.ownKeys:void 0!==Object.getOwnPropertySymbols?function(n){return Object.getOwnPropertyNames(n).concat(Object.getOwnPropertySymbols(n))}:Object.getOwnPropertyNames,rn=Object.getOwnPropertyDescriptors||function(n){var r={};return nn(n).forEach((function(t){r[t]=Object.getOwnPropertyDescriptor(n,t)})),r},tn={},en={get:function(n,r){if(r===Q)return n;var e=p(n);if(!u(e,r))return function(n,r,t){var e,i=I(r,t);return i?"value"in i?i.value:null===(e=i.get)||void 0===e?void 0:e.call(n.k):void 0}(n,e,r);var i=e[r];return n.I||!t(i)?i:i===z(n.t,r)?(E(n),n.o[r]=N(n.A.h,i,n)):i},has:function(n,r){return r in p(n)},ownKeys:function(n){return Reflect.ownKeys(p(n))},set:function(n,r,t){var e=I(p(n),r);if(null==e?void 0:e.set)return e.set.call(n.k,t),!0;if(!n.P){var i=z(p(n),r),o=null==i?void 0:i[Q];if(o&&o.t===t)return n.o[r]=t,n.R[r]=!1,!0;if(c(t,i)&&(void 0!==t||u(n.t,r)))return!0;E(n),k(n)}return n.o[r]===t&&(void 0!==t||r in n.o)||Number.isNaN(t)&&Number.isNaN(n.o[r])||(n.o[r]=t,n.R[r]=!0),!0},deleteProperty:function(n,r){return void 0!==z(n.t,r)||r in n.t?(n.R[r]=!1,E(n),k(n)):delete n.R[r],n.o&&delete n.o[r],!0},getOwnPropertyDescriptor:function(n,r){var t=p(n),e=Reflect.getOwnPropertyDescriptor(t,r);return e?{writable:!0,configurable:1!==n.i||"length"!==r,enumerable:e.enumerable,value:t[r]}:e},defineProperty:function(){n(11)},getPrototypeOf:function(n){return Object.getPrototypeOf(n.t)},setPrototypeOf:function(){n(12)}},on={};i(en,(function(n,r){on[n]=function(){return arguments[0]=arguments[0][0],r.apply(this,arguments)}})),on.deleteProperty=function(r,t){return false&&false,on.set.call(this,r,t,void 0)},on.set=function(r,t,e){return false&&false,en.set.call(this,r[0],t,e,r[0])};var un=function(){function e(r){var e=this;this.O=B,this.D=!0,this.produce=function(r,i,o){if("function"==typeof r&&"function"!=typeof i){var u=i;i=r;var a=e;return function(n){var r=this;void 0===n&&(n=u);for(var t=arguments.length,e=Array(t>1?t-1:0),o=1;o<t;o++)e[o-1]=arguments[o];return a.produce(n,(function(n){var t;return(t=i).call.apply(t,[r,n].concat(e))}))}}var f;if("function"!=typeof i&&n(6),void 0!==o&&"function"!=typeof o&&n(7),t(r)){var c=w(e),s=N(e,r,void 0),v=!0;try{f=i(s),v=!1}finally{v?g(c):O(c)}return"undefined"!=typeof Promise&&f instanceof Promise?f.then((function(n){return j(c,o),P(n,c)}),(function(n){throw g(c),n})):(j(c,o),P(f,c))}if(!r||"object"!=typeof r){if(void 0===(f=i(r))&&(f=r),f===H&&(f=void 0),e.D&&d(f,!0),o){var p=[],l=[];b("Patches").M(r,f,p,l),o(p,l)}return f}n(21,r)},this.produceWithPatches=function(n,r){if("function"==typeof n)return function(r){for(var t=arguments.length,i=Array(t>1?t-1:0),o=1;o<t;o++)i[o-1]=arguments[o];return e.produceWithPatches(r,(function(r){return n.apply(void 0,[r].concat(i))}))};var t,i,o=e.produce(n,r,(function(n,r){t=n,i=r}));return"undefined"!=typeof Promise&&o instanceof Promise?o.then((function(n){return[n,t,i]})):[o,t,i]},"boolean"==typeof(null==r?void 0:r.useProxies)&&this.setUseProxies(r.useProxies),"boolean"==typeof(null==r?void 0:r.autoFreeze)&&this.setAutoFreeze(r.autoFreeze)}var i=e.prototype;return i.createDraft=function(e){t(e)||n(8),r(e)&&(e=R(e));var i=w(this),o=N(this,e,void 0);return o[Q].C=!0,O(i),o},i.finishDraft=function(r,t){var e=r&&r[Q]; false&&(false);var i=e.A;return j(i,t),P(void 0,i)},i.setAutoFreeze=function(n){this.D=n},i.setUseProxies=function(r){r&&!B&&n(20),this.O=r},i.applyPatches=function(n,t){var e;for(e=t.length-1;e>=0;e--){var i=t[e];if(0===i.path.length&&"replace"===i.op){n=i.value;break}}e>-1&&(t=t.slice(e+1));var o=b("Patches").$;return r(n)?o(n,t):this.produce(n,(function(n){return o(n,t)}))},e}(),an=new un,fn=an.produce,cn=an.produceWithPatches.bind(an),sn=an.setAutoFreeze.bind(an),vn=an.setUseProxies.bind(an),pn=an.applyPatches.bind(an),ln=an.createDraft.bind(an),dn=an.finishDraft.bind(an);/* harmony default export */ __webpack_exports__["b"] = (fn);
-//# sourceMappingURL=immer.esm.js.map
 
 
 /***/ }),
@@ -265176,7 +269342,7 @@ var rafSchd = function rafSchd(fn) {
 /***/ (function(module, exports, __webpack_require__) {
 
 (function (global, factory) {
-   true ? factory(exports, __webpack_require__(/*! reselect */ "../node_modules/reselect/es/index.js")) :
+   true ? factory(exports, __webpack_require__(/*! reselect */ "../node_modules/reselect/dist/reselect.legacy-esm.js")) :
   undefined;
 })(this, (function (exports, reselect) { 'use strict';
 
@@ -268535,675 +272701,160 @@ if (true) {
 
 /***/ }),
 
-/***/ "../node_modules/react-redux/es/components/Context.js":
-/*!************************************************************!*\
-  !*** ../node_modules/react-redux/es/components/Context.js ***!
-  \************************************************************/
-/*! exports provided: ReactReduxContext, default */
-/*! exports used: ReactReduxContext */
+/***/ "../node_modules/react-redux/dist/react-redux.legacy-esm.js":
+/*!******************************************************************!*\
+  !*** ../node_modules/react-redux/dist/react-redux.legacy-esm.js ***!
+  \******************************************************************/
+/*! exports provided: Provider, ReactReduxContext, batch, connect, createDispatchHook, createSelectorHook, createStoreHook, shallowEqual, useDispatch, useSelector, useStore */
+/*! all exports used */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ReactReduxContext; });
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Provider", function() { return Provider_default; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ReactReduxContext", function() { return ReactReduxContext; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "batch", function() { return batch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "connect", function() { return connect_default; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createDispatchHook", function() { return createDispatchHook; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createSelectorHook", function() { return createSelectorHook; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createStoreHook", function() { return createStoreHook; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "shallowEqual", function() { return shallowEqual; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "useDispatch", function() { return useDispatch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "useSelector", function() { return useSelector; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "useStore", function() { return useStore; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-
-const ContextKey = Symbol.for(`react-redux-context`);
-const gT = typeof globalThis !== "undefined" ? globalThis :
-/* fall back to a per-module scope (pre-8.1 behaviour) if `globalThis` is not available */
-{};
-
-function getContext() {
-  var _gT$ContextKey;
-
-  if (!react__WEBPACK_IMPORTED_MODULE_0__["createContext"]) return {};
-  const contextMap = (_gT$ContextKey = gT[ContextKey]) != null ? _gT$ContextKey : gT[ContextKey] = new Map();
-  let realContext = contextMap.get(react__WEBPACK_IMPORTED_MODULE_0__["createContext"]);
-
-  if (!realContext) {
-    realContext = react__WEBPACK_IMPORTED_MODULE_0__["createContext"](null);
-
-    if (false) {}
-
-    contextMap.set(react__WEBPACK_IMPORTED_MODULE_0__["createContext"], realContext);
-  }
-
-  return realContext;
-}
-
-const ReactReduxContext = /*#__PURE__*/getContext();
-/* unused harmony default export */ var _unused_webpack_default_export = (ReactReduxContext);
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/components/Provider.js":
-/*!*************************************************************!*\
-  !*** ../node_modules/react-redux/es/components/Provider.js ***!
-  \*************************************************************/
-/*! exports provided: default */
-/*! exports used: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Context */ "../node_modules/react-redux/es/components/Context.js");
-/* harmony import */ var _utils_Subscription__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/Subscription */ "../node_modules/react-redux/es/utils/Subscription.js");
-/* harmony import */ var _utils_useIsomorphicLayoutEffect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/useIsomorphicLayoutEffect */ "../node_modules/react-redux/es/utils/useIsomorphicLayoutEffect.js");
-
-
-
-
-
-function Provider({
-  store,
-  context,
-  children,
-  serverState,
-  stabilityCheck = 'once',
-  noopCheck = 'once'
-}) {
-  const contextValue = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => {
-    const subscription = Object(_utils_Subscription__WEBPACK_IMPORTED_MODULE_2__[/* createSubscription */ "a"])(store);
-    return {
-      store,
-      subscription,
-      getServerState: serverState ? () => serverState : undefined,
-      stabilityCheck,
-      noopCheck
-    };
-  }, [store, serverState, stabilityCheck, noopCheck]);
-  const previousState = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => store.getState(), [store]);
-  Object(_utils_useIsomorphicLayoutEffect__WEBPACK_IMPORTED_MODULE_3__[/* useIsomorphicLayoutEffect */ "a"])(() => {
-    const {
-      subscription
-    } = contextValue;
-    subscription.onStateChange = subscription.notifyNestedSubs;
-    subscription.trySubscribe();
-
-    if (previousState !== store.getState()) {
-      subscription.notifyNestedSubs();
+/* harmony import */ var use_sync_external_store_with_selector_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! use-sync-external-store/with-selector.js */ "../node_modules/use-sync-external-store/with-selector.js");
+/* harmony import */ var use_sync_external_store_with_selector_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(use_sync_external_store_with_selector_js__WEBPACK_IMPORTED_MODULE_1__);
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
     }
-
-    return () => {
-      subscription.tryUnsubscribe();
-      subscription.onStateChange = undefined;
-    };
-  }, [contextValue, previousState]);
-  const Context = context || _Context__WEBPACK_IMPORTED_MODULE_1__[/* ReactReduxContext */ "a"]; // @ts-ignore 'AnyAction' is assignable to the constraint of type 'A', but 'A' could be instantiated with a different subtype
-
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](Context.Provider, {
-    value: contextValue
-  }, children);
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (Provider);
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/components/connect.js":
-/*!************************************************************!*\
-  !*** ../node_modules/react-redux/es/components/connect.js ***!
-  \************************************************************/
-/*! exports provided: initializeConnect, default */
-/*! exports used: default, initializeConnect */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return initializeConnect; });
-/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "../node_modules/@babel/runtime/helpers/esm/extends.js");
-/* harmony import */ var _babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectWithoutPropertiesLoose */ "../node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js");
-/* harmony import */ var hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! hoist-non-react-statics */ "../node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js");
-/* harmony import */ var hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var react_is__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-is */ "../node_modules/react-redux/node_modules/react-is/index.js");
-/* harmony import */ var react_is__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_is__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _connect_selectorFactory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../connect/selectorFactory */ "../node_modules/react-redux/es/connect/selectorFactory.js");
-/* harmony import */ var _connect_mapDispatchToProps__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../connect/mapDispatchToProps */ "../node_modules/react-redux/es/connect/mapDispatchToProps.js");
-/* harmony import */ var _connect_mapStateToProps__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../connect/mapStateToProps */ "../node_modules/react-redux/es/connect/mapStateToProps.js");
-/* harmony import */ var _connect_mergeProps__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../connect/mergeProps */ "../node_modules/react-redux/es/connect/mergeProps.js");
-/* harmony import */ var _utils_Subscription__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/Subscription */ "../node_modules/react-redux/es/utils/Subscription.js");
-/* harmony import */ var _utils_useIsomorphicLayoutEffect__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils/useIsomorphicLayoutEffect */ "../node_modules/react-redux/es/utils/useIsomorphicLayoutEffect.js");
-/* harmony import */ var _utils_shallowEqual__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../utils/shallowEqual */ "../node_modules/react-redux/es/utils/shallowEqual.js");
-/* harmony import */ var _utils_warning__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../utils/warning */ "../node_modules/react-redux/es/utils/warning.js");
-/* harmony import */ var _Context__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./Context */ "../node_modules/react-redux/es/components/Context.js");
-/* harmony import */ var _utils_useSyncExternalStore__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../utils/useSyncExternalStore */ "../node_modules/react-redux/es/utils/useSyncExternalStore.js");
-
-
-const _excluded = ["reactReduxForwardedRef"];
-
-/* eslint-disable valid-jsdoc, @typescript-eslint/no-unused-vars */
-
-
-
-
-
-
-
-
-
-
-
-
-
-let useSyncExternalStore = _utils_useSyncExternalStore__WEBPACK_IMPORTED_MODULE_14__[/* notInitialized */ "a"];
-const initializeConnect = fn => {
-  useSyncExternalStore = fn;
-}; // Define some constant arrays just to avoid re-creating these
-
-const EMPTY_ARRAY = [null, 0];
-const NO_SUBSCRIPTION_ARRAY = [null, null]; // Attempts to stringify whatever not-really-a-component value we were given
-// for logging in an error message
-
-const stringifyComponent = Comp => {
-  try {
-    return JSON.stringify(Comp);
-  } catch (err) {
-    return String(Comp);
-  }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __objRest = (source, exclude) => {
+  var target = {};
+  for (var prop in source)
+    if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
+      target[prop] = source[prop];
+  if (source != null && __getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(source)) {
+      if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
+        target[prop] = source[prop];
+    }
+  return target;
 };
 
-// This is "just" a `useLayoutEffect`, but with two modifications:
-// - we need to fall back to `useEffect` in SSR to avoid annoying warnings
-// - we extract this to a separate function to avoid closing over values
-//   and causing memory leaks
-function useIsomorphicLayoutEffectWithArgs(effectFunc, effectArgs, dependencies) {
-  Object(_utils_useIsomorphicLayoutEffect__WEBPACK_IMPORTED_MODULE_10__[/* useIsomorphicLayoutEffect */ "a"])(() => effectFunc(...effectArgs), dependencies);
-} // Effect callback, extracted: assign the latest props values to refs for later usage
+// src/utils/react.ts
 
 
-function captureWrapperProps(lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, // actualChildProps: unknown,
-childPropsFromStoreUpdate, notifyNestedSubs) {
-  // We want to capture the wrapper props and child props we used for later comparisons
-  lastWrapperProps.current = wrapperProps;
-  renderIsScheduled.current = false; // If the render was from a store update, clear out that reference and cascade the subscriber update
-
-  if (childPropsFromStoreUpdate.current) {
-    childPropsFromStoreUpdate.current = null;
-    notifyNestedSubs();
+// src/utils/react-is.ts
+var IS_REACT_19 = /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__["version"].startsWith("19");
+var REACT_ELEMENT_TYPE = /* @__PURE__ */ Symbol.for(
+  IS_REACT_19 ? "react.transitional.element" : "react.element"
+);
+var REACT_PORTAL_TYPE = /* @__PURE__ */ Symbol.for("react.portal");
+var REACT_FRAGMENT_TYPE = /* @__PURE__ */ Symbol.for("react.fragment");
+var REACT_STRICT_MODE_TYPE = /* @__PURE__ */ Symbol.for("react.strict_mode");
+var REACT_PROFILER_TYPE = /* @__PURE__ */ Symbol.for("react.profiler");
+var REACT_CONSUMER_TYPE = /* @__PURE__ */ Symbol.for("react.consumer");
+var REACT_CONTEXT_TYPE = /* @__PURE__ */ Symbol.for("react.context");
+var REACT_FORWARD_REF_TYPE = /* @__PURE__ */ Symbol.for("react.forward_ref");
+var REACT_SUSPENSE_TYPE = /* @__PURE__ */ Symbol.for("react.suspense");
+var REACT_SUSPENSE_LIST_TYPE = /* @__PURE__ */ Symbol.for(
+  "react.suspense_list"
+);
+var REACT_MEMO_TYPE = /* @__PURE__ */ Symbol.for("react.memo");
+var REACT_LAZY_TYPE = /* @__PURE__ */ Symbol.for("react.lazy");
+var REACT_OFFSCREEN_TYPE = /* @__PURE__ */ Symbol.for("react.offscreen");
+var REACT_CLIENT_REFERENCE = /* @__PURE__ */ Symbol.for(
+  "react.client.reference"
+);
+var ForwardRef = REACT_FORWARD_REF_TYPE;
+var Memo = REACT_MEMO_TYPE;
+function isValidElementType(type) {
+  return typeof type === "string" || typeof type === "function" || type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || type === REACT_OFFSCREEN_TYPE || typeof type === "object" && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_CONSUMER_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_CLIENT_REFERENCE || type.getModuleId !== void 0) ? true : false;
+}
+function typeOf(object) {
+  if (typeof object === "object" && object !== null) {
+    const { $$typeof } = object;
+    switch ($$typeof) {
+      case REACT_ELEMENT_TYPE:
+        switch (object = object.type, object) {
+          case REACT_FRAGMENT_TYPE:
+          case REACT_PROFILER_TYPE:
+          case REACT_STRICT_MODE_TYPE:
+          case REACT_SUSPENSE_TYPE:
+          case REACT_SUSPENSE_LIST_TYPE:
+            return object;
+          default:
+            switch (object = object && object.$$typeof, object) {
+              case REACT_CONTEXT_TYPE:
+              case REACT_FORWARD_REF_TYPE:
+              case REACT_LAZY_TYPE:
+              case REACT_MEMO_TYPE:
+                return object;
+              case REACT_CONSUMER_TYPE:
+                return object;
+              default:
+                return $$typeof;
+            }
+        }
+      case REACT_PORTAL_TYPE:
+        return $$typeof;
+    }
   }
-} // Effect callback, extracted: subscribe to the Redux store or nearest connected ancestor,
-// check for updates after dispatched actions, and trigger re-renders.
+}
+function isContextConsumer(object) {
+  return IS_REACT_19 ? typeOf(object) === REACT_CONSUMER_TYPE : typeOf(object) === REACT_CONTEXT_TYPE;
+}
+function isMemo(object) {
+  return typeOf(object) === REACT_MEMO_TYPE;
+}
 
+// src/utils/warning.ts
+function warning(message) {
+  if (typeof console !== "undefined" && typeof console.error === "function") {
+    console.error(message);
+  }
+  try {
+    throw new Error(message);
+  } catch (e) {
+  }
+}
 
-function subscribeUpdates(shouldHandleStateChanges, store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, isMounted, childPropsFromStoreUpdate, notifyNestedSubs, // forceComponentUpdateDispatch: React.Dispatch<any>,
-additionalSubscribeListener) {
-  // If we're not subscribed to the store, nothing to do here
-  if (!shouldHandleStateChanges) return () => {}; // Capture values for checking if and when this component unmounts
-
-  let didUnsubscribe = false;
-  let lastThrownError = null; // We'll run this callback every time a store subscription update propagates to this component
-
-  const checkForUpdates = () => {
-    if (didUnsubscribe || !isMounted.current) {
-      // Don't run stale listeners.
-      // Redux doesn't guarantee unsubscriptions happen until next dispatch.
-      return;
-    } // TODO We're currently calling getState ourselves here, rather than letting `uSES` do it
-
-
-    const latestStoreState = store.getState();
-    let newChildProps, error;
-
-    try {
-      // Actually run the selector with the most recent store state and wrapper props
-      // to determine what the child props should be
-      newChildProps = childPropsSelector(latestStoreState, lastWrapperProps.current);
-    } catch (e) {
-      error = e;
-      lastThrownError = e;
+// src/connect/verifySubselectors.ts
+function verify(selector, methodName) {
+  if (!selector) {
+    throw new Error(`Unexpected value for ${methodName} in connect.`);
+  } else if (methodName === "mapStateToProps" || methodName === "mapDispatchToProps") {
+    if (!Object.prototype.hasOwnProperty.call(selector, "dependsOnOwnProps")) {
+      warning(
+        `The selector for ${methodName} of connect did not specify a value for dependsOnOwnProps.`
+      );
     }
-
-    if (!error) {
-      lastThrownError = null;
-    } // If the child props haven't changed, nothing to do here - cascade the subscription update
-
-
-    if (newChildProps === lastChildProps.current) {
-      if (!renderIsScheduled.current) {
-        notifyNestedSubs();
-      }
-    } else {
-      // Save references to the new child props.  Note that we track the "child props from store update"
-      // as a ref instead of a useState/useReducer because we need a way to determine if that value has
-      // been processed.  If this went into useState/useReducer, we couldn't clear out the value without
-      // forcing another re-render, which we don't want.
-      lastChildProps.current = newChildProps;
-      childPropsFromStoreUpdate.current = newChildProps;
-      renderIsScheduled.current = true; // TODO This is hacky and not how `uSES` is meant to be used
-      // Trigger the React `useSyncExternalStore` subscriber
-
-      additionalSubscribeListener();
-    }
-  }; // Actually subscribe to the nearest connected ancestor (or store)
-
-
-  subscription.onStateChange = checkForUpdates;
-  subscription.trySubscribe(); // Pull data from the store after first render in case the store has
-  // changed since we began.
-
-  checkForUpdates();
-
-  const unsubscribeWrapper = () => {
-    didUnsubscribe = true;
-    subscription.tryUnsubscribe();
-    subscription.onStateChange = null;
-
-    if (lastThrownError) {
-      // It's possible that we caught an error due to a bad mapState function, but the
-      // parent re-rendered without this component and we're about to unmount.
-      // This shouldn't happen as long as we do top-down subscriptions correctly, but
-      // if we ever do those wrong, this throw will surface the error in our tests.
-      // In that case, throw the error from here so it doesn't get lost.
-      throw lastThrownError;
-    }
-  };
-
-  return unsubscribeWrapper;
-} // Reducer initial state creation for our update reducer
-
-
-const initStateUpdates = () => EMPTY_ARRAY;
-
-function strictEqual(a, b) {
-  return a === b;
+  }
 }
-/**
- * Infers the type of props that a connector will inject into a component.
- */
-
-
-let hasWarnedAboutDeprecatedPureOption = false;
-/**
- * Connects a React component to a Redux store.
- *
- * - Without arguments, just wraps the component, without changing the behavior / props
- *
- * - If 2 params are passed (3rd param, mergeProps, is skipped), default behavior
- * is to override ownProps (as stated in the docs), so what remains is everything that's
- * not a state or dispatch prop
- *
- * - When 3rd param is passed, we don't know if ownProps propagate and whether they
- * should be valid component props, because it depends on mergeProps implementation.
- * As such, it is the user's responsibility to extend ownProps interface from state or
- * dispatch props or both when applicable
- *
- * @param mapStateToProps A function that extracts values from state
- * @param mapDispatchToProps Setup for dispatching actions
- * @param mergeProps Optional callback to merge state and dispatch props together
- * @param options Options for configuring the connection
- *
- */
-
-function connect(mapStateToProps, mapDispatchToProps, mergeProps, {
-  // The `pure` option has been removed, so TS doesn't like us destructuring this to check its existence.
-  // @ts-ignore
-  pure,
-  areStatesEqual = strictEqual,
-  areOwnPropsEqual = _utils_shallowEqual__WEBPACK_IMPORTED_MODULE_11__[/* default */ "a"],
-  areStatePropsEqual = _utils_shallowEqual__WEBPACK_IMPORTED_MODULE_11__[/* default */ "a"],
-  areMergedPropsEqual = _utils_shallowEqual__WEBPACK_IMPORTED_MODULE_11__[/* default */ "a"],
-  // use React's forwardRef to expose a ref of the wrapped component
-  forwardRef = false,
-  // the context consumer to use
-  context = _Context__WEBPACK_IMPORTED_MODULE_13__[/* ReactReduxContext */ "a"]
-} = {}) {
-  if (false) {}
-
-  const Context = context;
-  const initMapStateToProps = Object(_connect_mapStateToProps__WEBPACK_IMPORTED_MODULE_7__[/* mapStateToPropsFactory */ "a"])(mapStateToProps);
-  const initMapDispatchToProps = Object(_connect_mapDispatchToProps__WEBPACK_IMPORTED_MODULE_6__[/* mapDispatchToPropsFactory */ "a"])(mapDispatchToProps);
-  const initMergeProps = Object(_connect_mergeProps__WEBPACK_IMPORTED_MODULE_8__[/* mergePropsFactory */ "a"])(mergeProps);
-  const shouldHandleStateChanges = Boolean(mapStateToProps);
-
-  const wrapWithConnect = WrappedComponent => {
-    if (false) {}
-
-    const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
-    const displayName = `Connect(${wrappedComponentName})`;
-    const selectorFactoryOptions = {
-      shouldHandleStateChanges,
-      displayName,
-      wrappedComponentName,
-      WrappedComponent,
-      // @ts-ignore
-      initMapStateToProps,
-      // @ts-ignore
-      initMapDispatchToProps,
-      initMergeProps,
-      areStatesEqual,
-      areStatePropsEqual,
-      areOwnPropsEqual,
-      areMergedPropsEqual
-    };
-
-    function ConnectFunction(props) {
-      const [propsContext, reactReduxForwardedRef, wrapperProps] = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](() => {
-        // Distinguish between actual "data" props that were passed to the wrapper component,
-        // and values needed to control behavior (forwarded refs, alternate context instances).
-        // To maintain the wrapperProps object reference, memoize this destructuring.
-        const {
-          reactReduxForwardedRef
-        } = props,
-              wrapperProps = Object(_babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"])(props, _excluded);
-
-        return [props.context, reactReduxForwardedRef, wrapperProps];
-      }, [props]);
-      const ContextToUse = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](() => {
-        // Users may optionally pass in a custom context instance to use instead of our ReactReduxContext.
-        // Memoize the check that determines which context instance we should use.
-        return propsContext && propsContext.Consumer && // @ts-ignore
-        Object(react_is__WEBPACK_IMPORTED_MODULE_4__["isContextConsumer"])( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"](propsContext.Consumer, null)) ? propsContext : Context;
-      }, [propsContext, Context]); // Retrieve the store and ancestor subscription via context, if available
-
-      const contextValue = react__WEBPACK_IMPORTED_MODULE_3__["useContext"](ContextToUse); // The store _must_ exist as either a prop or in context.
-      // We'll check to see if it _looks_ like a Redux store first.
-      // This allows us to pass through a `store` prop that is just a plain value.
-
-      const didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch);
-      const didStoreComeFromContext = Boolean(contextValue) && Boolean(contextValue.store);
-
-      if (false) {} // Based on the previous check, one of these must be true
-
-
-      const store = didStoreComeFromProps ? props.store : contextValue.store;
-      const getServerState = didStoreComeFromContext ? contextValue.getServerState : store.getState;
-      const childPropsSelector = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](() => {
-        // The child props selector needs the store reference as an input.
-        // Re-create this selector whenever the store changes.
-        return Object(_connect_selectorFactory__WEBPACK_IMPORTED_MODULE_5__[/* default */ "a"])(store.dispatch, selectorFactoryOptions);
-      }, [store]);
-      const [subscription, notifyNestedSubs] = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](() => {
-        if (!shouldHandleStateChanges) return NO_SUBSCRIPTION_ARRAY; // This Subscription's source should match where store came from: props vs. context. A component
-        // connected to the store via props shouldn't use subscription from context, or vice versa.
-
-        const subscription = Object(_utils_Subscription__WEBPACK_IMPORTED_MODULE_9__[/* createSubscription */ "a"])(store, didStoreComeFromProps ? undefined : contextValue.subscription); // `notifyNestedSubs` is duplicated to handle the case where the component is unmounted in
-        // the middle of the notification loop, where `subscription` will then be null. This can
-        // probably be avoided if Subscription's listeners logic is changed to not call listeners
-        // that have been unsubscribed in the  middle of the notification loop.
-
-        const notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription);
-        return [subscription, notifyNestedSubs];
-      }, [store, didStoreComeFromProps, contextValue]); // Determine what {store, subscription} value should be put into nested context, if necessary,
-      // and memoize that value to avoid unnecessary context updates.
-
-      const overriddenContextValue = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](() => {
-        if (didStoreComeFromProps) {
-          // This component is directly subscribed to a store from props.
-          // We don't want descendants reading from this store - pass down whatever
-          // the existing context value is from the nearest connected ancestor.
-          return contextValue;
-        } // Otherwise, put this component's subscription instance into context, so that
-        // connected descendants won't update until after this component is done
-
-
-        return Object(_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])({}, contextValue, {
-          subscription
-        });
-      }, [didStoreComeFromProps, contextValue, subscription]); // Set up refs to coordinate values between the subscription effect and the render logic
-
-      const lastChildProps = react__WEBPACK_IMPORTED_MODULE_3__["useRef"]();
-      const lastWrapperProps = react__WEBPACK_IMPORTED_MODULE_3__["useRef"](wrapperProps);
-      const childPropsFromStoreUpdate = react__WEBPACK_IMPORTED_MODULE_3__["useRef"]();
-      const renderIsScheduled = react__WEBPACK_IMPORTED_MODULE_3__["useRef"](false);
-      const isProcessingDispatch = react__WEBPACK_IMPORTED_MODULE_3__["useRef"](false);
-      const isMounted = react__WEBPACK_IMPORTED_MODULE_3__["useRef"](false);
-      const latestSubscriptionCallbackError = react__WEBPACK_IMPORTED_MODULE_3__["useRef"]();
-      Object(_utils_useIsomorphicLayoutEffect__WEBPACK_IMPORTED_MODULE_10__[/* useIsomorphicLayoutEffect */ "a"])(() => {
-        isMounted.current = true;
-        return () => {
-          isMounted.current = false;
-        };
-      }, []);
-      const actualChildPropsSelector = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](() => {
-        const selector = () => {
-          // Tricky logic here:
-          // - This render may have been triggered by a Redux store update that produced new child props
-          // - However, we may have gotten new wrapper props after that
-          // If we have new child props, and the same wrapper props, we know we should use the new child props as-is.
-          // But, if we have new wrapper props, those might change the child props, so we have to recalculate things.
-          // So, we'll use the child props from store update only if the wrapper props are the same as last time.
-          if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) {
-            return childPropsFromStoreUpdate.current;
-          } // TODO We're reading the store directly in render() here. Bad idea?
-          // This will likely cause Bad Things (TM) to happen in Concurrent Mode.
-          // Note that we do this because on renders _not_ caused by store updates, we need the latest store state
-          // to determine what the child props should be.
-
-
-          return childPropsSelector(store.getState(), wrapperProps);
-        };
-
-        return selector;
-      }, [store, wrapperProps]); // We need this to execute synchronously every time we re-render. However, React warns
-      // about useLayoutEffect in SSR, so we try to detect environment and fall back to
-      // just useEffect instead to avoid the warning, since neither will run anyway.
-
-      const subscribeForReact = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](() => {
-        const subscribe = reactListener => {
-          if (!subscription) {
-            return () => {};
-          }
-
-          return subscribeUpdates(shouldHandleStateChanges, store, subscription, // @ts-ignore
-          childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, isMounted, childPropsFromStoreUpdate, notifyNestedSubs, reactListener);
-        };
-
-        return subscribe;
-      }, [subscription]);
-      useIsomorphicLayoutEffectWithArgs(captureWrapperProps, [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, childPropsFromStoreUpdate, notifyNestedSubs]);
-      let actualChildProps;
-
-      try {
-        actualChildProps = useSyncExternalStore( // TODO We're passing through a big wrapper that does a bunch of extra side effects besides subscribing
-        subscribeForReact, // TODO This is incredibly hacky. We've already processed the store update and calculated new child props,
-        // TODO and we're just passing that through so it triggers a re-render for us rather than relying on `uSES`.
-        actualChildPropsSelector, getServerState ? () => childPropsSelector(getServerState(), wrapperProps) : actualChildPropsSelector);
-      } catch (err) {
-        if (latestSubscriptionCallbackError.current) {
-          ;
-          err.message += `\nThe error may be correlated with this previous error:\n${latestSubscriptionCallbackError.current.stack}\n\n`;
-        }
-
-        throw err;
-      }
-
-      Object(_utils_useIsomorphicLayoutEffect__WEBPACK_IMPORTED_MODULE_10__[/* useIsomorphicLayoutEffect */ "a"])(() => {
-        latestSubscriptionCallbackError.current = undefined;
-        childPropsFromStoreUpdate.current = undefined;
-        lastChildProps.current = actualChildProps;
-      }); // Now that all that's done, we can finally try to actually render the child component.
-      // We memoize the elements for the rendered child component as an optimization.
-
-      const renderedWrappedComponent = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](() => {
-        return (
-          /*#__PURE__*/
-          // @ts-ignore
-          react__WEBPACK_IMPORTED_MODULE_3__["createElement"](WrappedComponent, Object(_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])({}, actualChildProps, {
-            ref: reactReduxForwardedRef
-          }))
-        );
-      }, [reactReduxForwardedRef, WrappedComponent, actualChildProps]); // If React sees the exact same element reference as last time, it bails out of re-rendering
-      // that child, same as if it was wrapped in React.memo() or returned false from shouldComponentUpdate.
-
-      const renderedChild = react__WEBPACK_IMPORTED_MODULE_3__["useMemo"](() => {
-        if (shouldHandleStateChanges) {
-          // If this component is subscribed to store updates, we need to pass its own
-          // subscription instance down to our descendants. That means rendering the same
-          // Context instance, and putting a different value into the context.
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"](ContextToUse.Provider, {
-            value: overriddenContextValue
-          }, renderedWrappedComponent);
-        }
-
-        return renderedWrappedComponent;
-      }, [ContextToUse, renderedWrappedComponent, overriddenContextValue]);
-      return renderedChild;
-    }
-
-    const _Connect = react__WEBPACK_IMPORTED_MODULE_3__["memo"](ConnectFunction);
-
-    // Add a hacky cast to get the right output type
-    const Connect = _Connect;
-    Connect.WrappedComponent = WrappedComponent;
-    Connect.displayName = ConnectFunction.displayName = displayName;
-
-    if (forwardRef) {
-      const _forwarded = react__WEBPACK_IMPORTED_MODULE_3__["forwardRef"](function forwardConnectRef(props, ref) {
-        // @ts-ignore
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"](Connect, Object(_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])({}, props, {
-          reactReduxForwardedRef: ref
-        }));
-      });
-
-      const forwarded = _forwarded;
-      forwarded.displayName = displayName;
-      forwarded.WrappedComponent = WrappedComponent;
-      return hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_2___default()(forwarded, WrappedComponent);
-    }
-
-    return hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_2___default()(Connect, WrappedComponent);
-  };
-
-  return wrapWithConnect;
+function verifySubselectors(mapStateToProps, mapDispatchToProps, mergeProps) {
+  verify(mapStateToProps, "mapStateToProps");
+  verify(mapDispatchToProps, "mapDispatchToProps");
+  verify(mergeProps, "mergeProps");
 }
 
-/* harmony default export */ __webpack_exports__["a"] = (connect);
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/connect/invalidArgFactory.js":
-/*!*******************************************************************!*\
-  !*** ../node_modules/react-redux/es/connect/invalidArgFactory.js ***!
-  \*******************************************************************/
-/*! exports provided: createInvalidArgFactory */
-/*! exports used: createInvalidArgFactory */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createInvalidArgFactory; });
-function createInvalidArgFactory(arg, name) {
-  return (dispatch, options) => {
-    throw new Error(`Invalid value of type ${typeof arg} for ${name} argument when connecting component ${options.wrappedComponentName}.`);
-  };
-}
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/connect/mapDispatchToProps.js":
-/*!********************************************************************!*\
-  !*** ../node_modules/react-redux/es/connect/mapDispatchToProps.js ***!
-  \********************************************************************/
-/*! exports provided: mapDispatchToPropsFactory */
-/*! exports used: mapDispatchToPropsFactory */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return mapDispatchToPropsFactory; });
-/* harmony import */ var _utils_bindActionCreators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/bindActionCreators */ "../node_modules/react-redux/es/utils/bindActionCreators.js");
-/* harmony import */ var _wrapMapToProps__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./wrapMapToProps */ "../node_modules/react-redux/es/connect/wrapMapToProps.js");
-/* harmony import */ var _invalidArgFactory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./invalidArgFactory */ "../node_modules/react-redux/es/connect/invalidArgFactory.js");
-
-
-
-function mapDispatchToPropsFactory(mapDispatchToProps) {
-  return mapDispatchToProps && typeof mapDispatchToProps === 'object' ? Object(_wrapMapToProps__WEBPACK_IMPORTED_MODULE_1__[/* wrapMapToPropsConstant */ "a"])(dispatch => // @ts-ignore
-  Object(_utils_bindActionCreators__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(mapDispatchToProps, dispatch)) : !mapDispatchToProps ? Object(_wrapMapToProps__WEBPACK_IMPORTED_MODULE_1__[/* wrapMapToPropsConstant */ "a"])(dispatch => ({
-    dispatch
-  })) : typeof mapDispatchToProps === 'function' ? // @ts-ignore
-  Object(_wrapMapToProps__WEBPACK_IMPORTED_MODULE_1__[/* wrapMapToPropsFunc */ "b"])(mapDispatchToProps, 'mapDispatchToProps') : Object(_invalidArgFactory__WEBPACK_IMPORTED_MODULE_2__[/* createInvalidArgFactory */ "a"])(mapDispatchToProps, 'mapDispatchToProps');
-}
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/connect/mapStateToProps.js":
-/*!*****************************************************************!*\
-  !*** ../node_modules/react-redux/es/connect/mapStateToProps.js ***!
-  \*****************************************************************/
-/*! exports provided: mapStateToPropsFactory */
-/*! exports used: mapStateToPropsFactory */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return mapStateToPropsFactory; });
-/* harmony import */ var _wrapMapToProps__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./wrapMapToProps */ "../node_modules/react-redux/es/connect/wrapMapToProps.js");
-/* harmony import */ var _invalidArgFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./invalidArgFactory */ "../node_modules/react-redux/es/connect/invalidArgFactory.js");
-
-
-function mapStateToPropsFactory(mapStateToProps) {
-  return !mapStateToProps ? Object(_wrapMapToProps__WEBPACK_IMPORTED_MODULE_0__[/* wrapMapToPropsConstant */ "a"])(() => ({})) : typeof mapStateToProps === 'function' ? // @ts-ignore
-  Object(_wrapMapToProps__WEBPACK_IMPORTED_MODULE_0__[/* wrapMapToPropsFunc */ "b"])(mapStateToProps, 'mapStateToProps') : Object(_invalidArgFactory__WEBPACK_IMPORTED_MODULE_1__[/* createInvalidArgFactory */ "a"])(mapStateToProps, 'mapStateToProps');
-}
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/connect/mergeProps.js":
-/*!************************************************************!*\
-  !*** ../node_modules/react-redux/es/connect/mergeProps.js ***!
-  \************************************************************/
-/*! exports provided: defaultMergeProps, wrapMergePropsFunc, mergePropsFactory */
-/*! exports used: mergePropsFactory */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export defaultMergeProps */
-/* unused harmony export wrapMergePropsFunc */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return mergePropsFactory; });
-/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "../node_modules/@babel/runtime/helpers/esm/extends.js");
-/* harmony import */ var _utils_verifyPlainObject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/verifyPlainObject */ "../node_modules/react-redux/es/utils/verifyPlainObject.js");
-/* harmony import */ var _invalidArgFactory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./invalidArgFactory */ "../node_modules/react-redux/es/connect/invalidArgFactory.js");
-
-
-
-function defaultMergeProps(stateProps, dispatchProps, ownProps) {
-  // @ts-ignore
-  return Object(_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])({}, ownProps, stateProps, dispatchProps);
-}
-function wrapMergePropsFunc(mergeProps) {
-  return function initMergePropsProxy(dispatch, {
-    displayName,
-    areMergedPropsEqual
-  }) {
-    let hasRunOnce = false;
-    let mergedProps;
-    return function mergePropsProxy(stateProps, dispatchProps, ownProps) {
-      const nextMergedProps = mergeProps(stateProps, dispatchProps, ownProps);
-
-      if (hasRunOnce) {
-        if (!areMergedPropsEqual(nextMergedProps, mergedProps)) mergedProps = nextMergedProps;
-      } else {
-        hasRunOnce = true;
-        mergedProps = nextMergedProps;
-        if (false) {}
-      }
-
-      return mergedProps;
-    };
-  };
-}
-function mergePropsFactory(mergeProps) {
-  return !mergeProps ? () => defaultMergeProps : typeof mergeProps === 'function' ? wrapMergePropsFunc(mergeProps) : Object(_invalidArgFactory__WEBPACK_IMPORTED_MODULE_2__[/* createInvalidArgFactory */ "a"])(mergeProps, 'mergeProps');
-}
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/connect/selectorFactory.js":
-/*!*****************************************************************!*\
-  !*** ../node_modules/react-redux/es/connect/selectorFactory.js ***!
-  \*****************************************************************/
-/*! exports provided: pureFinalPropsSelectorFactory, default */
-/*! exports used: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export pureFinalPropsSelectorFactory */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return finalPropsSelectorFactory; });
-/* harmony import */ var _babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectWithoutPropertiesLoose */ "../node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js");
-/* harmony import */ var _verifySubselectors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./verifySubselectors */ "../node_modules/react-redux/es/connect/verifySubselectors.js");
-
-const _excluded = ["initMapStateToProps", "initMapDispatchToProps", "initMergeProps"];
-
+// src/connect/selectorFactory.ts
 function pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch, {
   areStatesEqual,
   areOwnPropsEqual,
@@ -269215,7 +272866,6 @@ function pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, merg
   let stateProps;
   let dispatchProps;
   let mergedProps;
-
   function handleFirstCall(firstState, firstOwnProps) {
     state = firstState;
     ownProps = firstOwnProps;
@@ -269225,32 +272875,37 @@ function pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, merg
     hasRunAtLeastOnce = true;
     return mergedProps;
   }
-
   function handleNewPropsAndNewState() {
     stateProps = mapStateToProps(state, ownProps);
-    if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch, ownProps);
+    if (mapDispatchToProps.dependsOnOwnProps)
+      dispatchProps = mapDispatchToProps(dispatch, ownProps);
     mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
     return mergedProps;
   }
-
   function handleNewProps() {
-    if (mapStateToProps.dependsOnOwnProps) stateProps = mapStateToProps(state, ownProps);
-    if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch, ownProps);
+    if (mapStateToProps.dependsOnOwnProps)
+      stateProps = mapStateToProps(state, ownProps);
+    if (mapDispatchToProps.dependsOnOwnProps)
+      dispatchProps = mapDispatchToProps(dispatch, ownProps);
     mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
     return mergedProps;
   }
-
   function handleNewState() {
     const nextStateProps = mapStateToProps(state, ownProps);
     const statePropsChanged = !areStatePropsEqual(nextStateProps, stateProps);
     stateProps = nextStateProps;
-    if (statePropsChanged) mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+    if (statePropsChanged)
+      mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
     return mergedProps;
   }
-
   function handleSubsequentCalls(nextState, nextOwnProps) {
     const propsChanged = !areOwnPropsEqual(nextOwnProps, ownProps);
-    const stateChanged = !areStatesEqual(nextState, state, nextOwnProps, ownProps);
+    const stateChanged = !areStatesEqual(
+      nextState,
+      state,
+      nextOwnProps,
+      ownProps
+    );
     state = nextState;
     ownProps = nextOwnProps;
     if (propsChanged && stateChanged) return handleNewPropsAndNewState();
@@ -269258,552 +272913,163 @@ function pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, merg
     if (stateChanged) return handleNewState();
     return mergedProps;
   }
-
   return function pureFinalPropsSelector(nextState, nextOwnProps) {
     return hasRunAtLeastOnce ? handleSubsequentCalls(nextState, nextOwnProps) : handleFirstCall(nextState, nextOwnProps);
   };
 }
-// TODO: Add more comments
-// The selector returned by selectorFactory will memoize its results,
-// allowing connect's shouldComponentUpdate to return false if final
-// props have not changed.
-function finalPropsSelectorFactory(dispatch, _ref) {
-  let {
+function finalPropsSelectorFactory(dispatch, _a) {
+  var _b = _a, {
     initMapStateToProps,
     initMapDispatchToProps,
     initMergeProps
-  } = _ref,
-      options = Object(_babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(_ref, _excluded);
-
+  } = _b, options = __objRest(_b, [
+    "initMapStateToProps",
+    "initMapDispatchToProps",
+    "initMergeProps"
+  ]);
   const mapStateToProps = initMapStateToProps(dispatch, options);
   const mapDispatchToProps = initMapDispatchToProps(dispatch, options);
   const mergeProps = initMergeProps(dispatch, options);
-
   if (false) {}
-
   return pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch, options);
 }
 
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/connect/verifySubselectors.js":
-/*!********************************************************************!*\
-  !*** ../node_modules/react-redux/es/connect/verifySubselectors.js ***!
-  \********************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export default */
-/* harmony import */ var _utils_warning__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/warning */ "../node_modules/react-redux/es/utils/warning.js");
-
-
-function verify(selector, methodName) {
-  if (!selector) {
-    throw new Error(`Unexpected value for ${methodName} in connect.`);
-  } else if (methodName === 'mapStateToProps' || methodName === 'mapDispatchToProps') {
-    if (!Object.prototype.hasOwnProperty.call(selector, 'dependsOnOwnProps')) {
-      Object(_utils_warning__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(`The selector for ${methodName} of connect did not specify a value for dependsOnOwnProps.`);
+// src/utils/bindActionCreators.ts
+function bindActionCreators(actionCreators, dispatch) {
+  const boundActionCreators = {};
+  for (const key in actionCreators) {
+    const actionCreator = actionCreators[key];
+    if (typeof actionCreator === "function") {
+      boundActionCreators[key] = (...args) => dispatch(actionCreator(...args));
     }
+  }
+  return boundActionCreators;
+}
+
+// src/utils/isPlainObject.ts
+function isPlainObject(obj) {
+  if (typeof obj !== "object" || obj === null) return false;
+  const proto = Object.getPrototypeOf(obj);
+  if (proto === null) return true;
+  let baseProto = proto;
+  while (Object.getPrototypeOf(baseProto) !== null) {
+    baseProto = Object.getPrototypeOf(baseProto);
+  }
+  return proto === baseProto;
+}
+
+// src/utils/verifyPlainObject.ts
+function verifyPlainObject(value, displayName, methodName) {
+  if (!isPlainObject(value)) {
+    warning(
+      `${methodName}() in ${displayName} must return a plain object. Instead received ${value}.`
+    );
   }
 }
 
-function verifySubselectors(mapStateToProps, mapDispatchToProps, mergeProps) {
-  verify(mapStateToProps, 'mapStateToProps');
-  verify(mapDispatchToProps, 'mapDispatchToProps');
-  verify(mergeProps, 'mergeProps');
-}
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/connect/wrapMapToProps.js":
-/*!****************************************************************!*\
-  !*** ../node_modules/react-redux/es/connect/wrapMapToProps.js ***!
-  \****************************************************************/
-/*! exports provided: wrapMapToPropsConstant, getDependsOnOwnProps, wrapMapToPropsFunc */
-/*! exports used: wrapMapToPropsConstant, wrapMapToPropsFunc */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return wrapMapToPropsConstant; });
-/* unused harmony export getDependsOnOwnProps */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return wrapMapToPropsFunc; });
-/* harmony import */ var _utils_verifyPlainObject__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/verifyPlainObject */ "../node_modules/react-redux/es/utils/verifyPlainObject.js");
-
-function wrapMapToPropsConstant( // * Note:
-//  It seems that the dispatch argument
-//  could be a dispatch function in some cases (ex: whenMapDispatchToPropsIsMissing)
-//  and a state object in some others (ex: whenMapStateToPropsIsMissing)
-// eslint-disable-next-line no-unused-vars
-getConstant) {
+// src/connect/wrapMapToProps.ts
+function wrapMapToPropsConstant(getConstant) {
   return function initConstantSelector(dispatch) {
     const constant = getConstant(dispatch);
-
     function constantSelector() {
       return constant;
     }
-
     constantSelector.dependsOnOwnProps = false;
     return constantSelector;
   };
-} // dependsOnOwnProps is used by createMapToPropsProxy to determine whether to pass props as args
-// to the mapToProps function being wrapped. It is also used by makePurePropsSelector to determine
-// whether mapToProps needs to be invoked when props have changed.
-//
-// A length of one signals that mapToProps does not depend on props from the parent component.
-// A length of zero is assumed to mean mapToProps is getting args via arguments or ...args and
-// therefore not reporting its length accurately..
-// TODO Can this get pulled out so that we can subscribe directly to the store if we don't need ownProps?
-
+}
 function getDependsOnOwnProps(mapToProps) {
   return mapToProps.dependsOnOwnProps ? Boolean(mapToProps.dependsOnOwnProps) : mapToProps.length !== 1;
-} // Used by whenMapStateToPropsIsFunction and whenMapDispatchToPropsIsFunction,
-// this function wraps mapToProps in a proxy function which does several things:
-//
-//  * Detects whether the mapToProps function being called depends on props, which
-//    is used by selectorFactory to decide if it should reinvoke on props changes.
-//
-//  * On first call, handles mapToProps if returns another function, and treats that
-//    new function as the true mapToProps for subsequent calls.
-//
-//  * On first call, verifies the first result is a plain object, in order to warn
-//    the developer that their mapToProps function is not returning a valid result.
-//
-
+}
 function wrapMapToPropsFunc(mapToProps, methodName) {
-  return function initProxySelector(dispatch, {
-    displayName
-  }) {
+  return function initProxySelector(dispatch, { displayName }) {
     const proxy = function mapToPropsProxy(stateOrDispatch, ownProps) {
-      return proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch, undefined);
-    }; // allow detectFactoryAndVerify to get ownProps
-
-
+      return proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch, void 0);
+    };
     proxy.dependsOnOwnProps = true;
-
     proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch, ownProps) {
       proxy.mapToProps = mapToProps;
       proxy.dependsOnOwnProps = getDependsOnOwnProps(mapToProps);
       let props = proxy(stateOrDispatch, ownProps);
-
-      if (typeof props === 'function') {
+      if (typeof props === "function") {
         proxy.mapToProps = props;
         proxy.dependsOnOwnProps = getDependsOnOwnProps(props);
         props = proxy(stateOrDispatch, ownProps);
       }
-
-      if (false) {}
+      if (false)
+        {}
       return props;
     };
-
     return proxy;
   };
 }
 
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/exports.js":
-/*!*************************************************!*\
-  !*** ../node_modules/react-redux/es/exports.js ***!
-  \*************************************************/
-/*! exports provided: Provider, ReactReduxContext, connect, useDispatch, createDispatchHook, useSelector, createSelectorHook, useStore, createStoreHook, shallowEqual */
-/*! exports used: Provider, ReactReduxContext, connect, createDispatchHook, createSelectorHook, createStoreHook, shallowEqual, useDispatch, useSelector, useStore */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _components_Provider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Provider */ "../node_modules/react-redux/es/components/Provider.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _components_Provider__WEBPACK_IMPORTED_MODULE_0__["a"]; });
-
-/* harmony import */ var _components_connect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/connect */ "../node_modules/react-redux/es/components/connect.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "c", function() { return _components_connect__WEBPACK_IMPORTED_MODULE_1__["a"]; });
-
-/* harmony import */ var _components_Context__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Context */ "../node_modules/react-redux/es/components/Context.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "b", function() { return _components_Context__WEBPACK_IMPORTED_MODULE_2__["a"]; });
-
-/* harmony import */ var _hooks_useDispatch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./hooks/useDispatch */ "../node_modules/react-redux/es/hooks/useDispatch.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "h", function() { return _hooks_useDispatch__WEBPACK_IMPORTED_MODULE_3__["b"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "d", function() { return _hooks_useDispatch__WEBPACK_IMPORTED_MODULE_3__["a"]; });
-
-/* harmony import */ var _hooks_useSelector__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./hooks/useSelector */ "../node_modules/react-redux/es/hooks/useSelector.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "i", function() { return _hooks_useSelector__WEBPACK_IMPORTED_MODULE_4__["c"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "e", function() { return _hooks_useSelector__WEBPACK_IMPORTED_MODULE_4__["a"]; });
-
-/* harmony import */ var _hooks_useStore__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./hooks/useStore */ "../node_modules/react-redux/es/hooks/useStore.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "j", function() { return _hooks_useStore__WEBPACK_IMPORTED_MODULE_5__["b"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "f", function() { return _hooks_useStore__WEBPACK_IMPORTED_MODULE_5__["a"]; });
-
-/* harmony import */ var _utils_shallowEqual__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./utils/shallowEqual */ "../node_modules/react-redux/es/utils/shallowEqual.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "g", function() { return _utils_shallowEqual__WEBPACK_IMPORTED_MODULE_6__["a"]; });
-
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./types */ "../node_modules/react-redux/es/types.js");
-
-
-
-
-
-
-
-
-
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/hooks/useDispatch.js":
-/*!***********************************************************!*\
-  !*** ../node_modules/react-redux/es/hooks/useDispatch.js ***!
-  \***********************************************************/
-/*! exports provided: createDispatchHook, useDispatch */
-/*! exports used: createDispatchHook, useDispatch */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createDispatchHook; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return useDispatch; });
-/* harmony import */ var _components_Context__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Context */ "../node_modules/react-redux/es/components/Context.js");
-/* harmony import */ var _useStore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useStore */ "../node_modules/react-redux/es/hooks/useStore.js");
-
-
-/**
- * Hook factory, which creates a `useDispatch` hook bound to a given context.
- *
- * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
- * @returns {Function} A `useDispatch` hook bound to the specified context.
- */
-
-function createDispatchHook(context = _components_Context__WEBPACK_IMPORTED_MODULE_0__[/* ReactReduxContext */ "a"]) {
-  const useStore = // @ts-ignore
-  context === _components_Context__WEBPACK_IMPORTED_MODULE_0__[/* ReactReduxContext */ "a"] ? _useStore__WEBPACK_IMPORTED_MODULE_1__[/* useStore */ "b"] : Object(_useStore__WEBPACK_IMPORTED_MODULE_1__[/* createStoreHook */ "a"])(context);
-  return function useDispatch() {
-    const store = useStore(); // @ts-ignore
-
-    return store.dispatch;
+// src/connect/invalidArgFactory.ts
+function createInvalidArgFactory(arg, name) {
+  return (dispatch, options) => {
+    throw new Error(
+      `Invalid value of type ${typeof arg} for ${name} argument when connecting component ${options.wrappedComponentName}.`
+    );
   };
 }
-/**
- * A hook to access the redux `dispatch` function.
- *
- * @returns {any|function} redux store's `dispatch` function
- *
- * @example
- *
- * import React, { useCallback } from 'react'
- * import { useDispatch } from 'react-redux'
- *
- * export const CounterComponent = ({ value }) => {
- *   const dispatch = useDispatch()
- *   const increaseCounter = useCallback(() => dispatch({ type: 'increase-counter' }), [])
- *   return (
- *     <div>
- *       <span>{value}</span>
- *       <button onClick={increaseCounter}>Increase counter</button>
- *     </div>
- *   )
- * }
- */
 
-const useDispatch = /*#__PURE__*/createDispatchHook();
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/hooks/useReduxContext.js":
-/*!***************************************************************!*\
-  !*** ../node_modules/react-redux/es/hooks/useReduxContext.js ***!
-  \***************************************************************/
-/*! exports provided: createReduxContextHook, useReduxContext */
-/*! exports used: createReduxContextHook, useReduxContext */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createReduxContextHook; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return useReduxContext; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _components_Context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Context */ "../node_modules/react-redux/es/components/Context.js");
-
-
-
-/**
- * Hook factory, which creates a `useReduxContext` hook bound to a given context. This is a low-level
- * hook that you should usually not need to call directly.
- *
- * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
- * @returns {Function} A `useReduxContext` hook bound to the specified context.
- */
-function createReduxContextHook(context = _components_Context__WEBPACK_IMPORTED_MODULE_1__[/* ReactReduxContext */ "a"]) {
-  return function useReduxContext() {
-    const contextValue = Object(react__WEBPACK_IMPORTED_MODULE_0__["useContext"])(context);
-
-    if (false) {}
-
-    return contextValue;
-  };
+// src/connect/mapDispatchToProps.ts
+function mapDispatchToPropsFactory(mapDispatchToProps) {
+  return mapDispatchToProps && typeof mapDispatchToProps === "object" ? wrapMapToPropsConstant(
+    (dispatch) => (
+      // @ts-ignore
+      bindActionCreators(mapDispatchToProps, dispatch)
+    )
+  ) : !mapDispatchToProps ? wrapMapToPropsConstant((dispatch) => ({
+    dispatch
+  })) : typeof mapDispatchToProps === "function" ? (
+    // @ts-ignore
+    wrapMapToPropsFunc(mapDispatchToProps, "mapDispatchToProps")
+  ) : createInvalidArgFactory(mapDispatchToProps, "mapDispatchToProps");
 }
-/**
- * A hook to access the value of the `ReactReduxContext`. This is a low-level
- * hook that you should usually not need to call directly.
- *
- * @returns {any} the value of the `ReactReduxContext`
- *
- * @example
- *
- * import React from 'react'
- * import { useReduxContext } from 'react-redux'
- *
- * export const CounterComponent = () => {
- *   const { store } = useReduxContext()
- *   return <div>{store.getState()}</div>
- * }
- */
 
-const useReduxContext = /*#__PURE__*/createReduxContextHook();
+// src/connect/mapStateToProps.ts
+function mapStateToPropsFactory(mapStateToProps) {
+  return !mapStateToProps ? wrapMapToPropsConstant(() => ({})) : typeof mapStateToProps === "function" ? (
+    // @ts-ignore
+    wrapMapToPropsFunc(mapStateToProps, "mapStateToProps")
+  ) : createInvalidArgFactory(mapStateToProps, "mapStateToProps");
+}
 
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/hooks/useSelector.js":
-/*!***********************************************************!*\
-  !*** ../node_modules/react-redux/es/hooks/useSelector.js ***!
-  \***********************************************************/
-/*! exports provided: initializeUseSelector, createSelectorHook, useSelector */
-/*! exports used: createSelectorHook, initializeUseSelector, useSelector */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return initializeUseSelector; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createSelectorHook; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return useSelector; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _useReduxContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useReduxContext */ "../node_modules/react-redux/es/hooks/useReduxContext.js");
-/* harmony import */ var _components_Context__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Context */ "../node_modules/react-redux/es/components/Context.js");
-/* harmony import */ var _utils_useSyncExternalStore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/useSyncExternalStore */ "../node_modules/react-redux/es/utils/useSyncExternalStore.js");
-
-
-
-
-let useSyncExternalStoreWithSelector = _utils_useSyncExternalStore__WEBPACK_IMPORTED_MODULE_3__[/* notInitialized */ "a"];
-const initializeUseSelector = fn => {
-  useSyncExternalStoreWithSelector = fn;
-};
-
-const refEquality = (a, b) => a === b;
-/**
- * Hook factory, which creates a `useSelector` hook bound to a given context.
- *
- * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
- * @returns {Function} A `useSelector` hook bound to the specified context.
- */
-
-
-function createSelectorHook(context = _components_Context__WEBPACK_IMPORTED_MODULE_2__[/* ReactReduxContext */ "a"]) {
-  const useReduxContext = context === _components_Context__WEBPACK_IMPORTED_MODULE_2__[/* ReactReduxContext */ "a"] ? _useReduxContext__WEBPACK_IMPORTED_MODULE_1__[/* useReduxContext */ "b"] : Object(_useReduxContext__WEBPACK_IMPORTED_MODULE_1__[/* createReduxContextHook */ "a"])(context);
-  return function useSelector(selector, equalityFnOrOptions = {}) {
-    const {
-      equalityFn = refEquality,
-      stabilityCheck = undefined,
-      noopCheck = undefined
-    } = typeof equalityFnOrOptions === 'function' ? {
-      equalityFn: equalityFnOrOptions
-    } : equalityFnOrOptions;
-
-    if (false) {}
-
-    const {
-      store,
-      subscription,
-      getServerState,
-      stabilityCheck: globalStabilityCheck,
-      noopCheck: globalNoopCheck
-    } = useReduxContext();
-    const firstRun = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])(true);
-    const wrappedSelector = Object(react__WEBPACK_IMPORTED_MODULE_0__["useCallback"])({
-      [selector.name](state) {
-        const selected = selector(state);
-
-        if (false) {}
-
-        return selected;
+// src/connect/mergeProps.ts
+function defaultMergeProps(stateProps, dispatchProps, ownProps) {
+  return __spreadValues(__spreadValues(__spreadValues({}, ownProps), stateProps), dispatchProps);
+}
+function wrapMergePropsFunc(mergeProps) {
+  return function initMergePropsProxy(dispatch, { displayName, areMergedPropsEqual }) {
+    let hasRunOnce = false;
+    let mergedProps;
+    return function mergePropsProxy(stateProps, dispatchProps, ownProps) {
+      const nextMergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+      if (hasRunOnce) {
+        if (!areMergedPropsEqual(nextMergedProps, mergedProps))
+          mergedProps = nextMergedProps;
+      } else {
+        hasRunOnce = true;
+        mergedProps = nextMergedProps;
+        if (false)
+          {}
       }
-
-    }[selector.name], [selector, globalStabilityCheck, stabilityCheck]);
-    const selectedState = useSyncExternalStoreWithSelector(subscription.addNestedSub, store.getState, getServerState || store.getState, wrappedSelector, equalityFn);
-    Object(react__WEBPACK_IMPORTED_MODULE_0__["useDebugValue"])(selectedState);
-    return selectedState;
+      return mergedProps;
+    };
   };
 }
-/**
- * A hook to access the redux store's state. This hook takes a selector function
- * as an argument. The selector is called with the store state.
- *
- * This hook takes an optional equality comparison function as the second parameter
- * that allows you to customize the way the selected state is compared to determine
- * whether the component needs to be re-rendered.
- *
- * @param {Function} selector the selector function
- * @param {Function=} equalityFn the function that will be used to determine equality
- *
- * @returns {any} the selected state
- *
- * @example
- *
- * import React from 'react'
- * import { useSelector } from 'react-redux'
- *
- * export const CounterComponent = () => {
- *   const counter = useSelector(state => state.counter)
- *   return <div>{counter}</div>
- * }
- */
-
-const useSelector = /*#__PURE__*/createSelectorHook();
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/hooks/useStore.js":
-/*!********************************************************!*\
-  !*** ../node_modules/react-redux/es/hooks/useStore.js ***!
-  \********************************************************/
-/*! exports provided: createStoreHook, useStore */
-/*! exports used: createStoreHook, useStore */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createStoreHook; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return useStore; });
-/* harmony import */ var _components_Context__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Context */ "../node_modules/react-redux/es/components/Context.js");
-/* harmony import */ var _useReduxContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useReduxContext */ "../node_modules/react-redux/es/hooks/useReduxContext.js");
-
-
-/**
- * Hook factory, which creates a `useStore` hook bound to a given context.
- *
- * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
- * @returns {Function} A `useStore` hook bound to the specified context.
- */
-
-function createStoreHook(context = _components_Context__WEBPACK_IMPORTED_MODULE_0__[/* ReactReduxContext */ "a"]) {
-  const useReduxContext = // @ts-ignore
-  context === _components_Context__WEBPACK_IMPORTED_MODULE_0__[/* ReactReduxContext */ "a"] ? _useReduxContext__WEBPACK_IMPORTED_MODULE_1__[/* useReduxContext */ "b"] : // @ts-ignore
-  Object(_useReduxContext__WEBPACK_IMPORTED_MODULE_1__[/* createReduxContextHook */ "a"])(context);
-  return function useStore() {
-    const {
-      store
-    } = useReduxContext(); // @ts-ignore
-
-    return store;
-  };
+function mergePropsFactory(mergeProps) {
+  return !mergeProps ? () => defaultMergeProps : typeof mergeProps === "function" ? wrapMergePropsFunc(mergeProps) : createInvalidArgFactory(mergeProps, "mergeProps");
 }
-/**
- * A hook to access the redux store.
- *
- * @returns {any} the redux store
- *
- * @example
- *
- * import React from 'react'
- * import { useStore } from 'react-redux'
- *
- * export const ExampleComponent = () => {
- *   const store = useStore()
- *   return <div>{store.getState()}</div>
- * }
- */
 
-const useStore = /*#__PURE__*/createStoreHook();
+// src/utils/batch.ts
+function defaultNoopBatch(callback) {
+  callback();
+}
 
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/index.js":
-/*!***********************************************!*\
-  !*** ../node_modules/react-redux/es/index.js ***!
-  \***********************************************/
-/*! exports provided: batch, Provider, ReactReduxContext, connect, useDispatch, createDispatchHook, useSelector, createSelectorHook, useStore, createStoreHook, shallowEqual */
-/*! all exports used */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! use-sync-external-store/shim */ "../node_modules/use-sync-external-store/shim/index.js");
-/* harmony import */ var use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var use_sync_external_store_shim_with_selector__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! use-sync-external-store/shim/with-selector */ "../node_modules/use-sync-external-store/shim/with-selector.js");
-/* harmony import */ var use_sync_external_store_shim_with_selector__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(use_sync_external_store_shim_with_selector__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _utils_reactBatchedUpdates__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/reactBatchedUpdates */ "../node_modules/react-redux/es/utils/reactBatchedUpdates.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "batch", function() { return _utils_reactBatchedUpdates__WEBPACK_IMPORTED_MODULE_2__["a"]; });
-
-/* harmony import */ var _utils_batch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/batch */ "../node_modules/react-redux/es/utils/batch.js");
-/* harmony import */ var _hooks_useSelector__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./hooks/useSelector */ "../node_modules/react-redux/es/hooks/useSelector.js");
-/* harmony import */ var _components_connect__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/connect */ "../node_modules/react-redux/es/components/connect.js");
-/* harmony import */ var _exports__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./exports */ "../node_modules/react-redux/es/exports.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Provider", function() { return _exports__WEBPACK_IMPORTED_MODULE_6__["a"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ReactReduxContext", function() { return _exports__WEBPACK_IMPORTED_MODULE_6__["b"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "connect", function() { return _exports__WEBPACK_IMPORTED_MODULE_6__["c"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "useDispatch", function() { return _exports__WEBPACK_IMPORTED_MODULE_6__["h"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createDispatchHook", function() { return _exports__WEBPACK_IMPORTED_MODULE_6__["d"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "useSelector", function() { return _exports__WEBPACK_IMPORTED_MODULE_6__["i"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createSelectorHook", function() { return _exports__WEBPACK_IMPORTED_MODULE_6__["e"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "useStore", function() { return _exports__WEBPACK_IMPORTED_MODULE_6__["j"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createStoreHook", function() { return _exports__WEBPACK_IMPORTED_MODULE_6__["f"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "shallowEqual", function() { return _exports__WEBPACK_IMPORTED_MODULE_6__["g"]; });
-
-// The primary entry point assumes we're working with standard ReactDOM/RN, but
-// older versions that do not include `useSyncExternalStore` (React 16.9 - 17.x).
-// Because of that, the useSyncExternalStore compat shim is needed.
-
-
-
-
-
-
-Object(_hooks_useSelector__WEBPACK_IMPORTED_MODULE_4__[/* initializeUseSelector */ "b"])(use_sync_external_store_shim_with_selector__WEBPACK_IMPORTED_MODULE_1__["useSyncExternalStoreWithSelector"]);
-Object(_components_connect__WEBPACK_IMPORTED_MODULE_5__[/* initializeConnect */ "b"])(use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_0__["useSyncExternalStore"]); // Enable batched updates in our subscriptions for use
-// with standard React renderers (ReactDOM, React Native)
-
-Object(_utils_batch__WEBPACK_IMPORTED_MODULE_3__[/* setBatch */ "b"])(_utils_reactBatchedUpdates__WEBPACK_IMPORTED_MODULE_2__[/* unstable_batchedUpdates */ "a"]);
-
-
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/types.js":
-/*!***********************************************!*\
-  !*** ../node_modules/react-redux/es/types.js ***!
-  \***********************************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/utils/Subscription.js":
-/*!************************************************************!*\
-  !*** ../node_modules/react-redux/es/utils/Subscription.js ***!
-  \************************************************************/
-/*! exports provided: createSubscription */
-/*! exports used: createSubscription */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createSubscription; });
-/* harmony import */ var _batch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./batch */ "../node_modules/react-redux/es/utils/batch.js");
- // encapsulates the subscription logic for connecting a component to the redux store, as
-// well as nesting subscriptions of descendant components, so that we can ensure the
-// ancestor components re-render before descendants
-
+// src/utils/Subscription.ts
 function createListenerCollection() {
-  const batch = Object(_batch__WEBPACK_IMPORTED_MODULE_0__[/* getBatch */ "a"])();
   let first = null;
   let last = null;
   return {
@@ -269811,54 +273077,44 @@ function createListenerCollection() {
       first = null;
       last = null;
     },
-
     notify() {
-      batch(() => {
+      defaultNoopBatch(() => {
         let listener = first;
-
         while (listener) {
           listener.callback();
           listener = listener.next;
         }
       });
     },
-
     get() {
-      let listeners = [];
+      const listeners = [];
       let listener = first;
-
       while (listener) {
         listeners.push(listener);
         listener = listener.next;
       }
-
       return listeners;
     },
-
     subscribe(callback) {
       let isSubscribed = true;
-      let listener = last = {
+      const listener = last = {
         callback,
         next: null,
         prev: last
       };
-
       if (listener.prev) {
         listener.prev.next = listener;
       } else {
         first = listener;
       }
-
       return function unsubscribe() {
         if (!isSubscribed || first === null) return;
         isSubscribed = false;
-
         if (listener.next) {
           listener.next.prev = listener.prev;
         } else {
           last = listener.prev;
         }
-
         if (listener.prev) {
           listener.prev.next = listener.next;
         } else {
@@ -269866,27 +273122,21 @@ function createListenerCollection() {
         }
       };
     }
-
   };
 }
-
-const nullListeners = {
-  notify() {},
-
+var nullListeners = {
+  notify() {
+  },
   get: () => []
 };
 function createSubscription(store, parentSub) {
   let unsubscribe;
-  let listeners = nullListeners; // Reasons to keep the subscription active
-
-  let subscriptionsAmount = 0; // Is this specific subscription subscribed (or only nested ones?)
-
+  let listeners = nullListeners;
+  let subscriptionsAmount = 0;
   let selfSubscribed = false;
-
   function addNestedSub(listener) {
     trySubscribe();
-    const cleanupListener = listeners.subscribe(listener); // cleanup nested sub
-
+    const cleanupListener = listeners.subscribe(listener);
     let removed = false;
     return () => {
       if (!removed) {
@@ -269896,55 +273146,45 @@ function createSubscription(store, parentSub) {
       }
     };
   }
-
   function notifyNestedSubs() {
     listeners.notify();
   }
-
   function handleChangeWrapper() {
     if (subscription.onStateChange) {
       subscription.onStateChange();
     }
   }
-
   function isSubscribed() {
     return selfSubscribed;
   }
-
   function trySubscribe() {
     subscriptionsAmount++;
-
     if (!unsubscribe) {
       unsubscribe = parentSub ? parentSub.addNestedSub(handleChangeWrapper) : store.subscribe(handleChangeWrapper);
       listeners = createListenerCollection();
     }
   }
-
   function tryUnsubscribe() {
     subscriptionsAmount--;
-
     if (unsubscribe && subscriptionsAmount === 0) {
       unsubscribe();
-      unsubscribe = undefined;
+      unsubscribe = void 0;
       listeners.clear();
       listeners = nullListeners;
     }
   }
-
   function trySubscribeSelf() {
     if (!selfSubscribed) {
       selfSubscribed = true;
       trySubscribe();
     }
   }
-
   function tryUnsubscribeSelf() {
     if (selfSubscribed) {
       selfSubscribed = false;
       tryUnsubscribe();
     }
   }
-
   const subscription = {
     addNestedSub,
     notifyNestedSubs,
@@ -269957,114 +273197,15 @@ function createSubscription(store, parentSub) {
   return subscription;
 }
 
-/***/ }),
+// src/utils/useIsomorphicLayoutEffect.ts
+var canUseDOM = () => !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined");
+var isDOM = /* @__PURE__ */ canUseDOM();
+var isRunningInReactNative = () => typeof navigator !== "undefined" && navigator.product === "ReactNative";
+var isReactNative = /* @__PURE__ */ isRunningInReactNative();
+var getUseIsomorphicLayoutEffect = () => isDOM || isReactNative ? react__WEBPACK_IMPORTED_MODULE_0__["useLayoutEffect"] : react__WEBPACK_IMPORTED_MODULE_0__["useEffect"];
+var useIsomorphicLayoutEffect = /* @__PURE__ */ getUseIsomorphicLayoutEffect();
 
-/***/ "../node_modules/react-redux/es/utils/batch.js":
-/*!*****************************************************!*\
-  !*** ../node_modules/react-redux/es/utils/batch.js ***!
-  \*****************************************************/
-/*! exports provided: setBatch, getBatch */
-/*! exports used: getBatch, setBatch */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return setBatch; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getBatch; });
-// Default to a dummy "batch" implementation that just runs the callback
-function defaultNoopBatch(callback) {
-  callback();
-}
-
-let batch = defaultNoopBatch; // Allow injecting another batching function later
-
-const setBatch = newBatch => batch = newBatch; // Supply a getter just to skip dealing with ESM bindings
-
-const getBatch = () => batch;
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/utils/bindActionCreators.js":
-/*!******************************************************************!*\
-  !*** ../node_modules/react-redux/es/utils/bindActionCreators.js ***!
-  \******************************************************************/
-/*! exports provided: default */
-/*! exports used: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return bindActionCreators; });
-function bindActionCreators(actionCreators, dispatch) {
-  const boundActionCreators = {};
-
-  for (const key in actionCreators) {
-    const actionCreator = actionCreators[key];
-
-    if (typeof actionCreator === 'function') {
-      boundActionCreators[key] = (...args) => dispatch(actionCreator(...args));
-    }
-  }
-
-  return boundActionCreators;
-}
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/utils/isPlainObject.js":
-/*!*************************************************************!*\
-  !*** ../node_modules/react-redux/es/utils/isPlainObject.js ***!
-  \*************************************************************/
-/*! exports provided: default */
-/*! exports used: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return isPlainObject; });
-/**
- * @param {any} obj The object to inspect.
- * @returns {boolean} True if the argument appears to be a plain object.
- */
-function isPlainObject(obj) {
-  if (typeof obj !== 'object' || obj === null) return false;
-  let proto = Object.getPrototypeOf(obj);
-  if (proto === null) return true;
-  let baseProto = proto;
-
-  while (Object.getPrototypeOf(baseProto) !== null) {
-    baseProto = Object.getPrototypeOf(baseProto);
-  }
-
-  return proto === baseProto;
-}
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/utils/reactBatchedUpdates.js":
-/*!*******************************************************************!*\
-  !*** ../node_modules/react-redux/es/utils/reactBatchedUpdates.js ***!
-  \*******************************************************************/
-/*! exports provided: unstable_batchedUpdates */
-/*! exports used: unstable_batchedUpdates */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react-dom */ "../node_modules/react-dom/index.js");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "a", function() { return react_dom__WEBPACK_IMPORTED_MODULE_0__["unstable_batchedUpdates"]; });
-
-
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/utils/shallowEqual.js":
-/*!************************************************************!*\
-  !*** ../node_modules/react-redux/es/utils/shallowEqual.js ***!
-  \************************************************************/
-/*! exports provided: default */
-/*! exports used: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return shallowEqual; });
+// src/utils/shallowEqual.ts
 function is(x, y) {
   if (x === y) {
     return x !== 0 || y !== 0 || 1 / x === 1 / y;
@@ -270072,173 +273213,507 @@ function is(x, y) {
     return x !== x && y !== y;
   }
 }
-
 function shallowEqual(objA, objB) {
   if (is(objA, objB)) return true;
-
-  if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+  if (typeof objA !== "object" || objA === null || typeof objB !== "object" || objB === null) {
     return false;
   }
-
   const keysA = Object.keys(objA);
   const keysB = Object.keys(objB);
   if (keysA.length !== keysB.length) return false;
-
   for (let i = 0; i < keysA.length; i++) {
     if (!Object.prototype.hasOwnProperty.call(objB, keysA[i]) || !is(objA[keysA[i]], objB[keysA[i]])) {
       return false;
     }
   }
-
   return true;
 }
 
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/utils/useIsomorphicLayoutEffect.js":
-/*!*************************************************************************!*\
-  !*** ../node_modules/react-redux/es/utils/useIsomorphicLayoutEffect.js ***!
-  \*************************************************************************/
-/*! exports provided: canUseDOM, useIsomorphicLayoutEffect */
-/*! exports used: useIsomorphicLayoutEffect */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export canUseDOM */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return useIsomorphicLayoutEffect; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
- // React currently throws a warning when using useLayoutEffect on the server.
-// To get around it, we can conditionally useEffect on the server (no-op) and
-// useLayoutEffect in the browser. We need useLayoutEffect to ensure the store
-// subscription callback always has the selector from the latest render commit
-// available, otherwise a store update may happen between render and the effect,
-// which may cause missed updates; we also must ensure the store subscription
-// is created synchronously, otherwise a store update may occur before the
-// subscription is created and an inconsistent state may be observed
-// Matches logic in React's `shared/ExecutionEnvironment` file
-
-const canUseDOM = !!(typeof window !== 'undefined' && typeof window.document !== 'undefined' && typeof window.document.createElement !== 'undefined');
-const useIsomorphicLayoutEffect = canUseDOM ? react__WEBPACK_IMPORTED_MODULE_0__["useLayoutEffect"] : react__WEBPACK_IMPORTED_MODULE_0__["useEffect"];
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/utils/useSyncExternalStore.js":
-/*!********************************************************************!*\
-  !*** ../node_modules/react-redux/es/utils/useSyncExternalStore.js ***!
-  \********************************************************************/
-/*! exports provided: notInitialized */
-/*! exports used: notInitialized */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return notInitialized; });
-const notInitialized = () => {
-  throw new Error('uSES not initialized!');
+// src/utils/hoistStatics.ts
+var REACT_STATICS = {
+  childContextTypes: true,
+  contextType: true,
+  contextTypes: true,
+  defaultProps: true,
+  displayName: true,
+  getDefaultProps: true,
+  getDerivedStateFromError: true,
+  getDerivedStateFromProps: true,
+  mixins: true,
+  propTypes: true,
+  type: true
 };
-
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/utils/verifyPlainObject.js":
-/*!*****************************************************************!*\
-  !*** ../node_modules/react-redux/es/utils/verifyPlainObject.js ***!
-  \*****************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export default */
-/* harmony import */ var _isPlainObject__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./isPlainObject */ "../node_modules/react-redux/es/utils/isPlainObject.js");
-/* harmony import */ var _warning__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./warning */ "../node_modules/react-redux/es/utils/warning.js");
-
-
-function verifyPlainObject(value, displayName, methodName) {
-  if (!Object(_isPlainObject__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(value)) {
-    Object(_warning__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"])(`${methodName}() in ${displayName} must return a plain object. Instead received ${value}.`);
+var KNOWN_STATICS = {
+  name: true,
+  length: true,
+  prototype: true,
+  caller: true,
+  callee: true,
+  arguments: true,
+  arity: true
+};
+var FORWARD_REF_STATICS = {
+  $$typeof: true,
+  render: true,
+  defaultProps: true,
+  displayName: true,
+  propTypes: true
+};
+var MEMO_STATICS = {
+  $$typeof: true,
+  compare: true,
+  defaultProps: true,
+  displayName: true,
+  propTypes: true,
+  type: true
+};
+var TYPE_STATICS = {
+  [ForwardRef]: FORWARD_REF_STATICS,
+  [Memo]: MEMO_STATICS
+};
+function getStatics(component) {
+  if (isMemo(component)) {
+    return MEMO_STATICS;
   }
+  return TYPE_STATICS[component["$$typeof"]] || REACT_STATICS;
+}
+var defineProperty = Object.defineProperty;
+var getOwnPropertyNames = Object.getOwnPropertyNames;
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+var getPrototypeOf = Object.getPrototypeOf;
+var objectPrototype = Object.prototype;
+function hoistNonReactStatics(targetComponent, sourceComponent) {
+  if (typeof sourceComponent !== "string") {
+    if (objectPrototype) {
+      const inheritedComponent = getPrototypeOf(sourceComponent);
+      if (inheritedComponent && inheritedComponent !== objectPrototype) {
+        hoistNonReactStatics(targetComponent, inheritedComponent);
+      }
+    }
+    let keys = getOwnPropertyNames(sourceComponent);
+    if (getOwnPropertySymbols) {
+      keys = keys.concat(getOwnPropertySymbols(sourceComponent));
+    }
+    const targetStatics = getStatics(targetComponent);
+    const sourceStatics = getStatics(sourceComponent);
+    for (let i = 0; i < keys.length; ++i) {
+      const key = keys[i];
+      if (!KNOWN_STATICS[key] && !(sourceStatics && sourceStatics[key]) && !(targetStatics && targetStatics[key])) {
+        const descriptor = getOwnPropertyDescriptor(sourceComponent, key);
+        try {
+          defineProperty(targetComponent, key, descriptor);
+        } catch (e) {
+        }
+      }
+    }
+  }
+  return targetComponent;
 }
 
-/***/ }),
-
-/***/ "../node_modules/react-redux/es/utils/warning.js":
-/*!*******************************************************!*\
-  !*** ../node_modules/react-redux/es/utils/warning.js ***!
-  \*******************************************************/
-/*! exports provided: default */
-/*! exports used: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return warning; });
-/**
- * Prints a warning in the console if it exists.
- *
- * @param {String} message The warning message.
- * @returns {void}
- */
-function warning(message) {
-  /* eslint-disable no-console */
-  if (typeof console !== 'undefined' && typeof console.error === 'function') {
-    console.error(message);
+// src/components/Context.ts
+var ContextKey = /* @__PURE__ */ Symbol.for(`react-redux-context`);
+var gT = typeof globalThis !== "undefined" ? globalThis : (
+  /* fall back to a per-module scope (pre-8.1 behaviour) if `globalThis` is not available */
+  {}
+);
+function getContext() {
+  var _a;
+  if (!react__WEBPACK_IMPORTED_MODULE_0__["createContext"]) return {};
+  const contextMap = (_a = gT[ContextKey]) != null ? _a : gT[ContextKey] = /* @__PURE__ */ new Map();
+  let realContext = contextMap.get(react__WEBPACK_IMPORTED_MODULE_0__["createContext"]);
+  if (!realContext) {
+    realContext = react__WEBPACK_IMPORTED_MODULE_0__["createContext"](
+      null
+    );
+    if (false) {}
+    contextMap.set(react__WEBPACK_IMPORTED_MODULE_0__["createContext"], realContext);
   }
-  /* eslint-enable no-console */
+  return realContext;
+}
+var ReactReduxContext = /* @__PURE__ */ getContext();
 
-
+// src/components/connect.tsx
+var NO_SUBSCRIPTION_ARRAY = [null, null];
+var stringifyComponent = (Comp) => {
   try {
-    // This error was thrown as a convenience so that if you enable
-    // "break on all exceptions" in your console,
-    // it would pause the execution at this line.
-    throw new Error(message);
-    /* eslint-disable no-empty */
-  } catch (e) {}
-  /* eslint-enable no-empty */
-
+    return JSON.stringify(Comp);
+  } catch (err) {
+    return String(Comp);
+  }
+};
+function useIsomorphicLayoutEffectWithArgs(effectFunc, effectArgs, dependencies) {
+  useIsomorphicLayoutEffect(() => effectFunc(...effectArgs), dependencies);
 }
+function captureWrapperProps(lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, childPropsFromStoreUpdate, notifyNestedSubs) {
+  lastWrapperProps.current = wrapperProps;
+  renderIsScheduled.current = false;
+  if (childPropsFromStoreUpdate.current) {
+    childPropsFromStoreUpdate.current = null;
+    notifyNestedSubs();
+  }
+}
+function subscribeUpdates(shouldHandleStateChanges, store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, isMounted, childPropsFromStoreUpdate, notifyNestedSubs, additionalSubscribeListener) {
+  if (!shouldHandleStateChanges) return () => {
+  };
+  let didUnsubscribe = false;
+  let lastThrownError = null;
+  const checkForUpdates = () => {
+    if (didUnsubscribe || !isMounted.current) {
+      return;
+    }
+    const latestStoreState = store.getState();
+    let newChildProps, error;
+    try {
+      newChildProps = childPropsSelector(
+        latestStoreState,
+        lastWrapperProps.current
+      );
+    } catch (e) {
+      error = e;
+      lastThrownError = e;
+    }
+    if (!error) {
+      lastThrownError = null;
+    }
+    if (newChildProps === lastChildProps.current) {
+      if (!renderIsScheduled.current) {
+        notifyNestedSubs();
+      }
+    } else {
+      lastChildProps.current = newChildProps;
+      childPropsFromStoreUpdate.current = newChildProps;
+      renderIsScheduled.current = true;
+      additionalSubscribeListener();
+    }
+  };
+  subscription.onStateChange = checkForUpdates;
+  subscription.trySubscribe();
+  checkForUpdates();
+  const unsubscribeWrapper = () => {
+    didUnsubscribe = true;
+    subscription.tryUnsubscribe();
+    subscription.onStateChange = null;
+    if (lastThrownError) {
+      throw lastThrownError;
+    }
+  };
+  return unsubscribeWrapper;
+}
+function strictEqual(a, b) {
+  return a === b;
+}
+var hasWarnedAboutDeprecatedPureOption = false;
+function connect(mapStateToProps, mapDispatchToProps, mergeProps, {
+  // The `pure` option has been removed, so TS doesn't like us destructuring this to check its existence.
+  // @ts-ignore
+  pure,
+  areStatesEqual = strictEqual,
+  areOwnPropsEqual = shallowEqual,
+  areStatePropsEqual = shallowEqual,
+  areMergedPropsEqual = shallowEqual,
+  // use React's forwardRef to expose a ref of the wrapped component
+  forwardRef = false,
+  // the context consumer to use
+  context = ReactReduxContext
+} = {}) {
+  if (false) {}
+  const Context = context;
+  const initMapStateToProps = mapStateToPropsFactory(mapStateToProps);
+  const initMapDispatchToProps = mapDispatchToPropsFactory(mapDispatchToProps);
+  const initMergeProps = mergePropsFactory(mergeProps);
+  const shouldHandleStateChanges = Boolean(mapStateToProps);
+  const wrapWithConnect = (WrappedComponent) => {
+    if (false) {}
+    const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || "Component";
+    const displayName = `Connect(${wrappedComponentName})`;
+    const selectorFactoryOptions = {
+      shouldHandleStateChanges,
+      displayName,
+      wrappedComponentName,
+      WrappedComponent,
+      // @ts-ignore
+      initMapStateToProps,
+      initMapDispatchToProps,
+      initMergeProps,
+      areStatesEqual,
+      areStatePropsEqual,
+      areOwnPropsEqual,
+      areMergedPropsEqual
+    };
+    function ConnectFunction(props) {
+      const [propsContext, reactReduxForwardedRef, wrapperProps] = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => {
+        const _a = props, { reactReduxForwardedRef: reactReduxForwardedRef2 } = _a, wrapperProps2 = __objRest(_a, ["reactReduxForwardedRef"]);
+        return [props.context, reactReduxForwardedRef2, wrapperProps2];
+      }, [props]);
+      const ContextToUse = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => {
+        let ResultContext = Context;
+        if (propsContext == null ? void 0 : propsContext.Consumer) {
+          if (false) {}
+        }
+        return ResultContext;
+      }, [propsContext, Context]);
+      const contextValue = react__WEBPACK_IMPORTED_MODULE_0__["useContext"](ContextToUse);
+      const didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch);
+      const didStoreComeFromContext = Boolean(contextValue) && Boolean(contextValue.store);
+      if (false) {}
+      const store = didStoreComeFromProps ? props.store : contextValue.store;
+      const getServerState = didStoreComeFromContext ? contextValue.getServerState : store.getState;
+      const childPropsSelector = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => {
+        return finalPropsSelectorFactory(store.dispatch, selectorFactoryOptions);
+      }, [store]);
+      const [subscription, notifyNestedSubs] = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => {
+        if (!shouldHandleStateChanges) return NO_SUBSCRIPTION_ARRAY;
+        const subscription2 = createSubscription(
+          store,
+          didStoreComeFromProps ? void 0 : contextValue.subscription
+        );
+        const notifyNestedSubs2 = subscription2.notifyNestedSubs.bind(subscription2);
+        return [subscription2, notifyNestedSubs2];
+      }, [store, didStoreComeFromProps, contextValue]);
+      const overriddenContextValue = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => {
+        if (didStoreComeFromProps) {
+          return contextValue;
+        }
+        return __spreadProps(__spreadValues({}, contextValue), {
+          subscription
+        });
+      }, [didStoreComeFromProps, contextValue, subscription]);
+      const lastChildProps = react__WEBPACK_IMPORTED_MODULE_0__["useRef"](void 0);
+      const lastWrapperProps = react__WEBPACK_IMPORTED_MODULE_0__["useRef"](wrapperProps);
+      const childPropsFromStoreUpdate = react__WEBPACK_IMPORTED_MODULE_0__["useRef"](void 0);
+      const renderIsScheduled = react__WEBPACK_IMPORTED_MODULE_0__["useRef"](false);
+      const isMounted = react__WEBPACK_IMPORTED_MODULE_0__["useRef"](false);
+      const latestSubscriptionCallbackError = react__WEBPACK_IMPORTED_MODULE_0__["useRef"](
+        void 0
+      );
+      useIsomorphicLayoutEffect(() => {
+        isMounted.current = true;
+        return () => {
+          isMounted.current = false;
+        };
+      }, []);
+      const actualChildPropsSelector = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => {
+        const selector = () => {
+          if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) {
+            return childPropsFromStoreUpdate.current;
+          }
+          return childPropsSelector(store.getState(), wrapperProps);
+        };
+        return selector;
+      }, [store, wrapperProps]);
+      const subscribeForReact = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => {
+        const subscribe = (reactListener) => {
+          if (!subscription) {
+            return () => {
+            };
+          }
+          return subscribeUpdates(
+            shouldHandleStateChanges,
+            store,
+            subscription,
+            // @ts-ignore
+            childPropsSelector,
+            lastWrapperProps,
+            lastChildProps,
+            renderIsScheduled,
+            isMounted,
+            childPropsFromStoreUpdate,
+            notifyNestedSubs,
+            reactListener
+          );
+        };
+        return subscribe;
+      }, [subscription]);
+      useIsomorphicLayoutEffectWithArgs(captureWrapperProps, [
+        lastWrapperProps,
+        lastChildProps,
+        renderIsScheduled,
+        wrapperProps,
+        childPropsFromStoreUpdate,
+        notifyNestedSubs
+      ]);
+      let actualChildProps;
+      try {
+        actualChildProps = react__WEBPACK_IMPORTED_MODULE_0__["useSyncExternalStore"](
+          // TODO We're passing through a big wrapper that does a bunch of extra side effects besides subscribing
+          subscribeForReact,
+          // TODO This is incredibly hacky. We've already processed the store update and calculated new child props,
+          // TODO and we're just passing that through so it triggers a re-render for us rather than relying on `uSES`.
+          actualChildPropsSelector,
+          getServerState ? () => childPropsSelector(getServerState(), wrapperProps) : actualChildPropsSelector
+        );
+      } catch (err) {
+        if (latestSubscriptionCallbackError.current) {
+          ;
+          err.message += `
+The error may be correlated with this previous error:
+${latestSubscriptionCallbackError.current.stack}
 
-/***/ }),
+`;
+        }
+        throw err;
+      }
+      useIsomorphicLayoutEffect(() => {
+        latestSubscriptionCallbackError.current = void 0;
+        childPropsFromStoreUpdate.current = void 0;
+        lastChildProps.current = actualChildProps;
+      });
+      const renderedWrappedComponent = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => {
+        return (
+          // @ts-ignore
+          /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__["createElement"](
+            WrappedComponent,
+            __spreadProps(__spreadValues({}, actualChildProps), {
+              ref: reactReduxForwardedRef
+            })
+          )
+        );
+      }, [reactReduxForwardedRef, WrappedComponent, actualChildProps]);
+      const renderedChild = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => {
+        if (shouldHandleStateChanges) {
+          return /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__["createElement"](ContextToUse.Provider, { value: overriddenContextValue }, renderedWrappedComponent);
+        }
+        return renderedWrappedComponent;
+      }, [ContextToUse, renderedWrappedComponent, overriddenContextValue]);
+      return renderedChild;
+    }
+    const _Connect = react__WEBPACK_IMPORTED_MODULE_0__["memo"](ConnectFunction);
+    const Connect = _Connect;
+    Connect.WrappedComponent = WrappedComponent;
+    Connect.displayName = ConnectFunction.displayName = displayName;
+    if (forwardRef) {
+      const _forwarded = react__WEBPACK_IMPORTED_MODULE_0__["forwardRef"](
+        function forwardConnectRef(props, ref) {
+          return /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__["createElement"](Connect, __spreadProps(__spreadValues({}, props), { reactReduxForwardedRef: ref }));
+        }
+      );
+      const forwarded = _forwarded;
+      forwarded.displayName = displayName;
+      forwarded.WrappedComponent = WrappedComponent;
+      return /* @__PURE__ */ hoistNonReactStatics(forwarded, WrappedComponent);
+    }
+    return /* @__PURE__ */ hoistNonReactStatics(Connect, WrappedComponent);
+  };
+  return wrapWithConnect;
+}
+var connect_default = connect;
 
-/***/ "../node_modules/react-redux/node_modules/react-is/cjs/react-is.production.min.js":
-/*!****************************************************************************************!*\
-  !*** ../node_modules/react-redux/node_modules/react-is/cjs/react-is.production.min.js ***!
-  \****************************************************************************************/
-/*! no static exports found */
-/*! all exports used */
-/***/ (function(module, exports, __webpack_require__) {
+// src/components/Provider.tsx
+function Provider(providerProps) {
+  const { children, context, serverState, store } = providerProps;
+  const contextValue = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => {
+    const subscription = createSubscription(store);
+    const baseContextValue = {
+      store,
+      subscription,
+      getServerState: serverState ? () => serverState : void 0
+    };
+    if (true) {
+      return baseContextValue;
+    } else {}
+  }, [store, serverState]);
+  const previousState = react__WEBPACK_IMPORTED_MODULE_0__["useMemo"](() => store.getState(), [store]);
+  useIsomorphicLayoutEffect(() => {
+    const { subscription } = contextValue;
+    subscription.onStateChange = subscription.notifyNestedSubs;
+    subscription.trySubscribe();
+    if (previousState !== store.getState()) {
+      subscription.notifyNestedSubs();
+    }
+    return () => {
+      subscription.tryUnsubscribe();
+      subscription.onStateChange = void 0;
+    };
+  }, [contextValue, previousState]);
+  const Context = context || ReactReduxContext;
+  return /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__["createElement"](Context.Provider, { value: contextValue }, children);
+}
+var Provider_default = Provider;
 
-"use strict";
-/**
- * @license React
- * react-is.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var b=Symbol.for("react.element"),c=Symbol.for("react.portal"),d=Symbol.for("react.fragment"),e=Symbol.for("react.strict_mode"),f=Symbol.for("react.profiler"),g=Symbol.for("react.provider"),h=Symbol.for("react.context"),k=Symbol.for("react.server_context"),l=Symbol.for("react.forward_ref"),m=Symbol.for("react.suspense"),n=Symbol.for("react.suspense_list"),p=Symbol.for("react.memo"),q=Symbol.for("react.lazy"),t=Symbol.for("react.offscreen"),u;u=Symbol.for("react.module.reference");
-function v(a){if("object"===typeof a&&null!==a){var r=a.$$typeof;switch(r){case b:switch(a=a.type,a){case d:case f:case e:case m:case n:return a;default:switch(a=a&&a.$$typeof,a){case k:case h:case l:case q:case p:case g:return a;default:return r}}case c:return r}}}exports.ContextConsumer=h;exports.ContextProvider=g;exports.Element=b;exports.ForwardRef=l;exports.Fragment=d;exports.Lazy=q;exports.Memo=p;exports.Portal=c;exports.Profiler=f;exports.StrictMode=e;exports.Suspense=m;
-exports.SuspenseList=n;exports.isAsyncMode=function(){return!1};exports.isConcurrentMode=function(){return!1};exports.isContextConsumer=function(a){return v(a)===h};exports.isContextProvider=function(a){return v(a)===g};exports.isElement=function(a){return"object"===typeof a&&null!==a&&a.$$typeof===b};exports.isForwardRef=function(a){return v(a)===l};exports.isFragment=function(a){return v(a)===d};exports.isLazy=function(a){return v(a)===q};exports.isMemo=function(a){return v(a)===p};
-exports.isPortal=function(a){return v(a)===c};exports.isProfiler=function(a){return v(a)===f};exports.isStrictMode=function(a){return v(a)===e};exports.isSuspense=function(a){return v(a)===m};exports.isSuspenseList=function(a){return v(a)===n};
-exports.isValidElementType=function(a){return"string"===typeof a||"function"===typeof a||a===d||a===f||a===e||a===m||a===n||a===t||"object"===typeof a&&null!==a&&(a.$$typeof===q||a.$$typeof===p||a.$$typeof===g||a.$$typeof===h||a.$$typeof===l||a.$$typeof===u||void 0!==a.getModuleId)?!0:!1};exports.typeOf=v;
+// src/hooks/useReduxContext.ts
+function createReduxContextHook(context = ReactReduxContext) {
+  return function useReduxContext2() {
+    const contextValue = react__WEBPACK_IMPORTED_MODULE_0__["useContext"](context);
+    if (false) {}
+    return contextValue;
+  };
+}
+var useReduxContext = /* @__PURE__ */ createReduxContextHook();
 
+// src/hooks/useStore.ts
+function createStoreHook(context = ReactReduxContext) {
+  const useReduxContext2 = context === ReactReduxContext ? useReduxContext : (
+    // @ts-ignore
+    createReduxContextHook(context)
+  );
+  const useStore2 = () => {
+    const { store } = useReduxContext2();
+    return store;
+  };
+  Object.assign(useStore2, {
+    withTypes: () => useStore2
+  });
+  return useStore2;
+}
+var useStore = /* @__PURE__ */ createStoreHook();
 
-/***/ }),
+// src/hooks/useDispatch.ts
+function createDispatchHook(context = ReactReduxContext) {
+  const useStore2 = context === ReactReduxContext ? useStore : createStoreHook(context);
+  const useDispatch2 = () => {
+    const store = useStore2();
+    return store.dispatch;
+  };
+  Object.assign(useDispatch2, {
+    withTypes: () => useDispatch2
+  });
+  return useDispatch2;
+}
+var useDispatch = /* @__PURE__ */ createDispatchHook();
 
-/***/ "../node_modules/react-redux/node_modules/react-is/index.js":
-/*!******************************************************************!*\
-  !*** ../node_modules/react-redux/node_modules/react-is/index.js ***!
-  \******************************************************************/
-/*! no static exports found */
-/*! exports used: isContextConsumer */
-/***/ (function(module, exports, __webpack_require__) {
+// src/hooks/useSelector.ts
 
-"use strict";
+var refEquality = (a, b) => a === b;
+function createSelectorHook(context = ReactReduxContext) {
+  const useReduxContext2 = context === ReactReduxContext ? useReduxContext : createReduxContextHook(context);
+  const useSelector2 = (selector, equalityFnOrOptions = {}) => {
+    const { equalityFn = refEquality } = typeof equalityFnOrOptions === "function" ? { equalityFn: equalityFnOrOptions } : equalityFnOrOptions;
+    if (false) {}
+    const reduxContext = useReduxContext2();
+    const { store, subscription, getServerState } = reduxContext;
+    const firstRun = react__WEBPACK_IMPORTED_MODULE_0__["useRef"](true);
+    const wrappedSelector = react__WEBPACK_IMPORTED_MODULE_0__["useCallback"](
+      {
+        [selector.name](state) {
+          const selected = selector(state);
+          if (false) {}
+          return selected;
+        }
+      }[selector.name],
+      [selector]
+    );
+    const selectedState = Object(use_sync_external_store_with_selector_js__WEBPACK_IMPORTED_MODULE_1__["useSyncExternalStoreWithSelector"])(
+      subscription.addNestedSub,
+      store.getState,
+      getServerState || store.getState,
+      wrappedSelector,
+      equalityFn
+    );
+    react__WEBPACK_IMPORTED_MODULE_0__["useDebugValue"](selectedState);
+    return selectedState;
+  };
+  Object.assign(useSelector2, {
+    withTypes: () => useSelector2
+  });
+  return useSelector2;
+}
+var useSelector = /* @__PURE__ */ createSelectorHook();
 
+// src/exports.ts
+var batch = defaultNoopBatch;
 
-if (true) {
-  module.exports = __webpack_require__(/*! ./cjs/react-is.production.min.js */ "../node_modules/react-redux/node_modules/react-is/cjs/react-is.production.min.js");
-} else {}
-
+//# sourceMappingURL=react-redux.legacy-esm.js.map
 
 /***/ }),
 
@@ -273677,67 +277152,22 @@ if (true) {
 
 /***/ }),
 
-/***/ "../node_modules/redux-thunk/es/index.js":
-/*!***********************************************!*\
-  !*** ../node_modules/redux-thunk/es/index.js ***!
-  \***********************************************/
-/*! exports provided: default */
-/*! exports used: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/** A function that accepts a potential "extra argument" value to be injected later,
- * and returns an instance of the thunk middleware that uses that value
- */
-function createThunkMiddleware(extraArgument) {
-  // Standard Redux middleware definition pattern:
-  // See: https://redux.js.org/tutorials/fundamentals/part-4-store#writing-custom-middleware
-  var middleware = function middleware(_ref) {
-    var dispatch = _ref.dispatch,
-        getState = _ref.getState;
-    return function (next) {
-      return function (action) {
-        // The thunk middleware looks for any functions that were passed to `store.dispatch`.
-        // If this "action" is really a function, call it and return the result.
-        if (typeof action === 'function') {
-          // Inject the store's `dispatch` and `getState` methods, as well as any "extra arg"
-          return action(dispatch, getState, extraArgument);
-        } // Otherwise, pass the action down the middleware chain as usual
-
-
-        return next(action);
-      };
-    };
-  };
-
-  return middleware;
-}
-
-var thunk = createThunkMiddleware(); // Attach the factory function so users can create a customized version
-// with whatever "extra arg" they want to inject into their thunks
-
-thunk.withExtraArgument = createThunkMiddleware;
-/* harmony default export */ __webpack_exports__["a"] = (thunk);
-
-/***/ }),
-
 /***/ "../node_modules/redux/es/redux.js":
 /*!*****************************************!*\
   !*** ../node_modules/redux/es/redux.js ***!
   \*****************************************/
 /*! exports provided: __DO_NOT_USE__ActionTypes, applyMiddleware, bindActionCreators, combineReducers, compose, createStore, legacy_createStore */
-/*! all exports used */
+/*! exports used: applyMiddleware, bindActionCreators, compose, createStore */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__DO_NOT_USE__ActionTypes", function() { return ActionTypes; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "applyMiddleware", function() { return applyMiddleware; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return bindActionCreators; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return combineReducers; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compose", function() { return compose; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return createStore; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "legacy_createStore", function() { return legacy_createStore; });
+/* unused harmony export __DO_NOT_USE__ActionTypes */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return applyMiddleware; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return bindActionCreators; });
+/* unused harmony export combineReducers */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return compose; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return createStore; });
+/* unused harmony export legacy_createStore */
 /* harmony import */ var _babel_runtime_helpers_esm_objectSpread2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectSpread2 */ "../node_modules/@babel/runtime/helpers/esm/objectSpread2.js");
 
 
@@ -308055,316 +311485,751 @@ module.exports = function required(port, protocol) {
 
 /***/ }),
 
-/***/ "../node_modules/reselect/es/defaultMemoize.js":
-/*!*****************************************************!*\
-  !*** ../node_modules/reselect/es/defaultMemoize.js ***!
-  \*****************************************************/
-/*! exports provided: defaultEqualityCheck, createCacheKeyComparator, defaultMemoize */
-/*! exports used: defaultEqualityCheck, defaultMemoize */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return defaultEqualityCheck; });
-/* unused harmony export createCacheKeyComparator */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return defaultMemoize; });
-// Cache implementation based on Erik Rasmussen's `lru-memoize`:
-// https://github.com/erikras/lru-memoize
-var NOT_FOUND = 'NOT_FOUND';
-
-function createSingletonCache(equals) {
-  var entry;
-  return {
-    get: function get(key) {
-      if (entry && equals(entry.key, key)) {
-        return entry.value;
-      }
-
-      return NOT_FOUND;
-    },
-    put: function put(key, value) {
-      entry = {
-        key: key,
-        value: value
-      };
-    },
-    getEntries: function getEntries() {
-      return entry ? [entry] : [];
-    },
-    clear: function clear() {
-      entry = undefined;
-    }
-  };
-}
-
-function createLruCache(maxSize, equals) {
-  var entries = [];
-
-  function get(key) {
-    var cacheIndex = entries.findIndex(function (entry) {
-      return equals(key, entry.key);
-    }); // We found a cached entry
-
-    if (cacheIndex > -1) {
-      var entry = entries[cacheIndex]; // Cached entry not at top of cache, move it to the top
-
-      if (cacheIndex > 0) {
-        entries.splice(cacheIndex, 1);
-        entries.unshift(entry);
-      }
-
-      return entry.value;
-    } // No entry found in cache, return sentinel
-
-
-    return NOT_FOUND;
-  }
-
-  function put(key, value) {
-    if (get(key) === NOT_FOUND) {
-      // TODO Is unshift slow?
-      entries.unshift({
-        key: key,
-        value: value
-      });
-
-      if (entries.length > maxSize) {
-        entries.pop();
-      }
-    }
-  }
-
-  function getEntries() {
-    return entries;
-  }
-
-  function clear() {
-    entries = [];
-  }
-
-  return {
-    get: get,
-    put: put,
-    getEntries: getEntries,
-    clear: clear
-  };
-}
-
-var defaultEqualityCheck = function defaultEqualityCheck(a, b) {
-  return a === b;
-};
-function createCacheKeyComparator(equalityCheck) {
-  return function areArgumentsShallowlyEqual(prev, next) {
-    if (prev === null || next === null || prev.length !== next.length) {
-      return false;
-    } // Do this in a for loop (and not a `forEach` or an `every`) so we can determine equality as fast as possible.
-
-
-    var length = prev.length;
-
-    for (var i = 0; i < length; i++) {
-      if (!equalityCheck(prev[i], next[i])) {
-        return false;
-      }
-    }
-
-    return true;
-  };
-}
-// defaultMemoize now supports a configurable cache size with LRU behavior,
-// and optional comparison of the result value with existing values
-function defaultMemoize(func, equalityCheckOrOptions) {
-  var providedOptions = typeof equalityCheckOrOptions === 'object' ? equalityCheckOrOptions : {
-    equalityCheck: equalityCheckOrOptions
-  };
-  var _providedOptions$equa = providedOptions.equalityCheck,
-      equalityCheck = _providedOptions$equa === void 0 ? defaultEqualityCheck : _providedOptions$equa,
-      _providedOptions$maxS = providedOptions.maxSize,
-      maxSize = _providedOptions$maxS === void 0 ? 1 : _providedOptions$maxS,
-      resultEqualityCheck = providedOptions.resultEqualityCheck;
-  var comparator = createCacheKeyComparator(equalityCheck);
-  var cache = maxSize === 1 ? createSingletonCache(comparator) : createLruCache(maxSize, comparator); // we reference arguments instead of spreading them for performance reasons
-
-  function memoized() {
-    var value = cache.get(arguments);
-
-    if (value === NOT_FOUND) {
-      // @ts-ignore
-      value = func.apply(null, arguments);
-
-      if (resultEqualityCheck) {
-        var entries = cache.getEntries();
-        var matchingEntry = entries.find(function (entry) {
-          return resultEqualityCheck(entry.value, value);
-        });
-
-        if (matchingEntry) {
-          value = matchingEntry.value;
-        }
-      }
-
-      cache.put(arguments, value);
-    }
-
-    return value;
-  }
-
-  memoized.clearCache = function () {
-    return cache.clear();
-  };
-
-  return memoized;
-}
-
-/***/ }),
-
-/***/ "../node_modules/reselect/es/index.js":
-/*!********************************************!*\
-  !*** ../node_modules/reselect/es/index.js ***!
-  \********************************************/
-/*! exports provided: defaultMemoize, defaultEqualityCheck, createSelectorCreator, createSelector, createStructuredSelector */
+/***/ "../node_modules/reselect/dist/reselect.legacy-esm.js":
+/*!************************************************************!*\
+  !*** ../node_modules/reselect/dist/reselect.legacy-esm.js ***!
+  \************************************************************/
+/*! exports provided: createSelector, createSelectorCreator, createStructuredSelector, lruMemoize, referenceEqualityCheck, setGlobalDevModeChecks, unstable_autotrackMemoize, weakMapMemoize */
 /*! all exports used */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createSelectorCreator", function() { return createSelectorCreator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createSelector", function() { return createSelector; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createSelectorCreator", function() { return createSelectorCreator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createStructuredSelector", function() { return createStructuredSelector; });
-/* harmony import */ var _defaultMemoize__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./defaultMemoize */ "../node_modules/reselect/es/defaultMemoize.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "defaultMemoize", function() { return _defaultMemoize__WEBPACK_IMPORTED_MODULE_0__["b"]; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lruMemoize", function() { return lruMemoize; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "referenceEqualityCheck", function() { return referenceEqualityCheck; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setGlobalDevModeChecks", function() { return setGlobalDevModeChecks; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unstable_autotrackMemoize", function() { return autotrackMemoize; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "weakMapMemoize", function() { return weakMapMemoize; });
+var __defProp = Object.defineProperty;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "defaultEqualityCheck", function() { return _defaultMemoize__WEBPACK_IMPORTED_MODULE_0__["a"]; });
-
-
-
-
-function getDependencies(funcs) {
-  var dependencies = Array.isArray(funcs[0]) ? funcs[0] : funcs;
-
-  if (!dependencies.every(function (dep) {
-    return typeof dep === 'function';
-  })) {
-    var dependencyTypes = dependencies.map(function (dep) {
-      return typeof dep === 'function' ? "function " + (dep.name || 'unnamed') + "()" : typeof dep;
-    }).join(', ');
-    throw new Error("createSelector expects all input-selectors to be functions, but received the following types: [" + dependencyTypes + "]");
+// src/devModeChecks/identityFunctionCheck.ts
+var runIdentityFunctionCheck = (resultFunc, inputSelectorsResults, outputSelectorResult) => {
+  if (inputSelectorsResults.length === 1 && inputSelectorsResults[0] === outputSelectorResult) {
+    let isInputSameAsOutput = false;
+    try {
+      const emptyObject = {};
+      if (resultFunc(emptyObject) === emptyObject) isInputSameAsOutput = true;
+    } catch (e) {
+    }
+    if (isInputSameAsOutput) {
+      let stack = void 0;
+      try {
+        throw new Error();
+      } catch (e) {
+        ;
+        ({ stack } = e);
+      }
+      console.warn(
+        "The result function returned its own inputs without modification. e.g\n`createSelector([state => state.todos], todos => todos)`\nThis could lead to inefficient memoization and unnecessary re-renders.\nEnsure transformation logic is in the result function, and extraction logic is in the input selectors.",
+        { stack }
+      );
+    }
   }
+};
 
+// src/devModeChecks/inputStabilityCheck.ts
+var runInputStabilityCheck = (inputSelectorResultsObject, options, inputSelectorArgs) => {
+  const { memoize, memoizeOptions } = options;
+  const { inputSelectorResults, inputSelectorResultsCopy } = inputSelectorResultsObject;
+  const createAnEmptyObject = memoize(() => ({}), ...memoizeOptions);
+  const areInputSelectorResultsEqual = createAnEmptyObject.apply(null, inputSelectorResults) === createAnEmptyObject.apply(null, inputSelectorResultsCopy);
+  if (!areInputSelectorResultsEqual) {
+    let stack = void 0;
+    try {
+      throw new Error();
+    } catch (e) {
+      ;
+      ({ stack } = e);
+    }
+    console.warn(
+      "An input selector returned a different result when passed same arguments.\nThis means your output selector will likely run more frequently than intended.\nAvoid returning a new reference inside your input selector, e.g.\n`createSelector([state => state.todos.map(todo => todo.id)], todoIds => todoIds.length)`",
+      {
+        arguments: inputSelectorArgs,
+        firstInputs: inputSelectorResults,
+        secondInputs: inputSelectorResultsCopy,
+        stack
+      }
+    );
+  }
+};
+
+// src/devModeChecks/setGlobalDevModeChecks.ts
+var globalDevModeChecks = {
+  inputStabilityCheck: "once",
+  identityFunctionCheck: "once"
+};
+var setGlobalDevModeChecks = (devModeChecks) => {
+  Object.assign(globalDevModeChecks, devModeChecks);
+};
+
+// src/utils.ts
+var NOT_FOUND = /* @__PURE__ */ Symbol("NOT_FOUND");
+function assertIsFunction(func, errorMessage = `expected a function, instead received ${typeof func}`) {
+  if (typeof func !== "function") {
+    throw new TypeError(errorMessage);
+  }
+}
+function assertIsObject(object, errorMessage = `expected an object, instead received ${typeof object}`) {
+  if (typeof object !== "object") {
+    throw new TypeError(errorMessage);
+  }
+}
+function assertIsArrayOfFunctions(array, errorMessage = `expected all items to be functions, instead received the following types: `) {
+  if (!array.every((item) => typeof item === "function")) {
+    const itemTypes = array.map(
+      (item) => typeof item === "function" ? `function ${item.name || "unnamed"}()` : typeof item
+    ).join(", ");
+    throw new TypeError(`${errorMessage}[${itemTypes}]`);
+  }
+}
+var ensureIsArray = (item) => {
+  return Array.isArray(item) ? item : [item];
+};
+function getDependencies(createSelectorArgs) {
+  const dependencies = Array.isArray(createSelectorArgs[0]) ? createSelectorArgs[0] : createSelectorArgs;
+  assertIsArrayOfFunctions(
+    dependencies,
+    `createSelector expects all input-selectors to be functions, but received the following types: `
+  );
   return dependencies;
 }
-
-function createSelectorCreator(memoize) {
-  for (var _len = arguments.length, memoizeOptionsFromArgs = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    memoizeOptionsFromArgs[_key - 1] = arguments[_key];
+function collectInputSelectorResults(dependencies, inputSelectorArgs) {
+  const inputSelectorResults = [];
+  const { length } = dependencies;
+  for (let i = 0; i < length; i++) {
+    inputSelectorResults.push(dependencies[i].apply(null, inputSelectorArgs));
   }
-
-  var createSelector = function createSelector() {
-    for (var _len2 = arguments.length, funcs = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      funcs[_key2] = arguments[_key2];
-    }
-
-    var _recomputations = 0;
-
-    var _lastResult; // Due to the intricacies of rest params, we can't do an optional arg after `...funcs`.
-    // So, start by declaring the default value here.
-    // (And yes, the words 'memoize' and 'options' appear too many times in this next sequence.)
-
-
-    var directlyPassedOptions = {
-      memoizeOptions: undefined
-    }; // Normally, the result func or "output selector" is the last arg
-
-    var resultFunc = funcs.pop(); // If the result func is actually an _object_, assume it's our options object
-
-    if (typeof resultFunc === 'object') {
-      directlyPassedOptions = resultFunc; // and pop the real result func off
-
-      resultFunc = funcs.pop();
-    }
-
-    if (typeof resultFunc !== 'function') {
-      throw new Error("createSelector expects an output function after the inputs, but received: [" + typeof resultFunc + "]");
-    } // Determine which set of options we're using. Prefer options passed directly,
-    // but fall back to options given to createSelectorCreator.
-
-
-    var _directlyPassedOption = directlyPassedOptions,
-        _directlyPassedOption2 = _directlyPassedOption.memoizeOptions,
-        memoizeOptions = _directlyPassedOption2 === void 0 ? memoizeOptionsFromArgs : _directlyPassedOption2; // Simplifying assumption: it's unlikely that the first options arg of the provided memoizer
-    // is an array. In most libs I've looked at, it's an equality function or options object.
-    // Based on that, if `memoizeOptions` _is_ an array, we assume it's a full
-    // user-provided array of options. Otherwise, it must be just the _first_ arg, and so
-    // we wrap it in an array so we can apply it.
-
-    var finalMemoizeOptions = Array.isArray(memoizeOptions) ? memoizeOptions : [memoizeOptions];
-    var dependencies = getDependencies(funcs);
-    var memoizedResultFunc = memoize.apply(void 0, [function recomputationWrapper() {
-      _recomputations++; // apply arguments instead of spreading for performance.
-
-      return resultFunc.apply(null, arguments);
-    }].concat(finalMemoizeOptions)); // If a selector is called with the exact same arguments we don't need to traverse our dependencies again.
-
-    var selector = memoize(function dependenciesChecker() {
-      var params = [];
-      var length = dependencies.length;
-
-      for (var i = 0; i < length; i++) {
-        // apply arguments instead of spreading and mutate a local list of params for performance.
-        // @ts-ignore
-        params.push(dependencies[i].apply(null, arguments));
-      } // apply arguments instead of spreading for performance.
-
-
-      _lastResult = memoizedResultFunc.apply(null, params);
-      return _lastResult;
-    });
-    Object.assign(selector, {
-      resultFunc: resultFunc,
-      memoizedResultFunc: memoizedResultFunc,
-      dependencies: dependencies,
-      lastResult: function lastResult() {
-        return _lastResult;
-      },
-      recomputations: function recomputations() {
-        return _recomputations;
-      },
-      resetRecomputations: function resetRecomputations() {
-        return _recomputations = 0;
-      }
-    });
-    return selector;
-  }; // @ts-ignore
-
-
-  return createSelector;
+  return inputSelectorResults;
 }
-var createSelector = /* #__PURE__ */createSelectorCreator(_defaultMemoize__WEBPACK_IMPORTED_MODULE_0__[/* defaultMemoize */ "b"]);
-// Manual definition of state and output arguments
-var createStructuredSelector = function createStructuredSelector(selectors, selectorCreator) {
-  if (selectorCreator === void 0) {
-    selectorCreator = createSelector;
-  }
-
-  if (typeof selectors !== 'object') {
-    throw new Error('createStructuredSelector expects first argument to be an object ' + ("where each property is a selector, instead received a " + typeof selectors));
-  }
-
-  var objectKeys = Object.keys(selectors);
-  var resultSelector = selectorCreator( // @ts-ignore
-  objectKeys.map(function (key) {
-    return selectors[key];
-  }), function () {
-    for (var _len3 = arguments.length, values = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-      values[_key3] = arguments[_key3];
+var getDevModeChecksExecutionInfo = (firstRun, devModeChecks) => {
+  const { identityFunctionCheck, inputStabilityCheck } = __spreadValues(__spreadValues({}, globalDevModeChecks), devModeChecks);
+  return {
+    identityFunctionCheck: {
+      shouldRun: identityFunctionCheck === "always" || identityFunctionCheck === "once" && firstRun,
+      run: runIdentityFunctionCheck
+    },
+    inputStabilityCheck: {
+      shouldRun: inputStabilityCheck === "always" || inputStabilityCheck === "once" && firstRun,
+      run: runInputStabilityCheck
     }
-
-    return values.reduce(function (composition, value, index) {
-      composition[objectKeys[index]] = value;
-      return composition;
-    }, {});
-  });
-  return resultSelector;
+  };
 };
+
+// src/autotrackMemoize/autotracking.ts
+var $REVISION = 0;
+var CURRENT_TRACKER = null;
+var Cell = class {
+  constructor(initialValue, isEqual = tripleEq) {
+    __publicField(this, "revision", $REVISION);
+    __publicField(this, "_value");
+    __publicField(this, "_lastValue");
+    __publicField(this, "_isEqual", tripleEq);
+    this._value = this._lastValue = initialValue;
+    this._isEqual = isEqual;
+  }
+  // Whenever a storage value is read, it'll add itself to the current tracker if
+  // one exists, entangling its state with that cache.
+  get value() {
+    CURRENT_TRACKER == null ? void 0 : CURRENT_TRACKER.add(this);
+    return this._value;
+  }
+  // Whenever a storage value is updated, we bump the global revision clock,
+  // assign the revision for this storage to the new value, _and_ we schedule a
+  // rerender. This is important, and it's what makes autotracking  _pull_
+  // based. We don't actively tell the caches which depend on the storage that
+  // anything has happened. Instead, we recompute the caches when needed.
+  set value(newValue) {
+    if (this.value === newValue) return;
+    this._value = newValue;
+    this.revision = ++$REVISION;
+  }
+};
+function tripleEq(a, b) {
+  return a === b;
+}
+var TrackingCache = class {
+  constructor(fn) {
+    __publicField(this, "_cachedValue");
+    __publicField(this, "_cachedRevision", -1);
+    __publicField(this, "_deps", []);
+    __publicField(this, "hits", 0);
+    __publicField(this, "fn");
+    this.fn = fn;
+  }
+  clear() {
+    this._cachedValue = void 0;
+    this._cachedRevision = -1;
+    this._deps = [];
+    this.hits = 0;
+  }
+  get value() {
+    if (this.revision > this._cachedRevision) {
+      const { fn } = this;
+      const currentTracker = /* @__PURE__ */ new Set();
+      const prevTracker = CURRENT_TRACKER;
+      CURRENT_TRACKER = currentTracker;
+      this._cachedValue = fn();
+      CURRENT_TRACKER = prevTracker;
+      this.hits++;
+      this._deps = Array.from(currentTracker);
+      this._cachedRevision = this.revision;
+    }
+    CURRENT_TRACKER == null ? void 0 : CURRENT_TRACKER.add(this);
+    return this._cachedValue;
+  }
+  get revision() {
+    return Math.max(...this._deps.map((d) => d.revision), 0);
+  }
+};
+function getValue(cell) {
+  if (!(cell instanceof Cell)) {
+    console.warn("Not a valid cell! ", cell);
+  }
+  return cell.value;
+}
+function setValue(storage, value) {
+  if (!(storage instanceof Cell)) {
+    throw new TypeError(
+      "setValue must be passed a tracked store created with `createStorage`."
+    );
+  }
+  storage.value = storage._lastValue = value;
+}
+function createCell(initialValue, isEqual = tripleEq) {
+  return new Cell(initialValue, isEqual);
+}
+function createCache(fn) {
+  assertIsFunction(
+    fn,
+    "the first parameter to `createCache` must be a function"
+  );
+  return new TrackingCache(fn);
+}
+
+// src/autotrackMemoize/tracking.ts
+var neverEq = (a, b) => false;
+function createTag() {
+  return createCell(null, neverEq);
+}
+function dirtyTag(tag, value) {
+  setValue(tag, value);
+}
+var consumeCollection = (node) => {
+  let tag = node.collectionTag;
+  if (tag === null) {
+    tag = node.collectionTag = createTag();
+  }
+  getValue(tag);
+};
+var dirtyCollection = (node) => {
+  const tag = node.collectionTag;
+  if (tag !== null) {
+    dirtyTag(tag, null);
+  }
+};
+
+// src/autotrackMemoize/proxy.ts
+var nextId = 0;
+var proto = /* @__PURE__ */ Object.getPrototypeOf({});
+var ObjectTreeNode = class {
+  constructor(value) {
+    this.value = value;
+    __publicField(this, "proxy", new Proxy(this, objectProxyHandler));
+    __publicField(this, "tag", createTag());
+    __publicField(this, "tags", {});
+    __publicField(this, "children", {});
+    __publicField(this, "collectionTag", null);
+    __publicField(this, "id", nextId++);
+    this.value = value;
+    this.tag.value = value;
+  }
+};
+var objectProxyHandler = {
+  get(node, key) {
+    function calculateResult() {
+      const { value } = node;
+      const childValue = Reflect.get(value, key);
+      if (typeof key === "symbol") {
+        return childValue;
+      }
+      if (key in proto) {
+        return childValue;
+      }
+      if (typeof childValue === "object" && childValue !== null) {
+        let childNode = node.children[key];
+        if (childNode === void 0) {
+          childNode = node.children[key] = createNode(childValue);
+        }
+        if (childNode.tag) {
+          getValue(childNode.tag);
+        }
+        return childNode.proxy;
+      } else {
+        let tag = node.tags[key];
+        if (tag === void 0) {
+          tag = node.tags[key] = createTag();
+          tag.value = childValue;
+        }
+        getValue(tag);
+        return childValue;
+      }
+    }
+    const res = calculateResult();
+    return res;
+  },
+  ownKeys(node) {
+    consumeCollection(node);
+    return Reflect.ownKeys(node.value);
+  },
+  getOwnPropertyDescriptor(node, prop) {
+    return Reflect.getOwnPropertyDescriptor(node.value, prop);
+  },
+  has(node, prop) {
+    return Reflect.has(node.value, prop);
+  }
+};
+var ArrayTreeNode = class {
+  constructor(value) {
+    this.value = value;
+    __publicField(this, "proxy", new Proxy([this], arrayProxyHandler));
+    __publicField(this, "tag", createTag());
+    __publicField(this, "tags", {});
+    __publicField(this, "children", {});
+    __publicField(this, "collectionTag", null);
+    __publicField(this, "id", nextId++);
+    this.value = value;
+    this.tag.value = value;
+  }
+};
+var arrayProxyHandler = {
+  get([node], key) {
+    if (key === "length") {
+      consumeCollection(node);
+    }
+    return objectProxyHandler.get(node, key);
+  },
+  ownKeys([node]) {
+    return objectProxyHandler.ownKeys(node);
+  },
+  getOwnPropertyDescriptor([node], prop) {
+    return objectProxyHandler.getOwnPropertyDescriptor(node, prop);
+  },
+  has([node], prop) {
+    return objectProxyHandler.has(node, prop);
+  }
+};
+function createNode(value) {
+  if (Array.isArray(value)) {
+    return new ArrayTreeNode(value);
+  }
+  return new ObjectTreeNode(value);
+}
+function updateNode(node, newValue) {
+  const { value, tags, children } = node;
+  node.value = newValue;
+  if (Array.isArray(value) && Array.isArray(newValue) && value.length !== newValue.length) {
+    dirtyCollection(node);
+  } else {
+    if (value !== newValue) {
+      let oldKeysSize = 0;
+      let newKeysSize = 0;
+      let anyKeysAdded = false;
+      for (const _key in value) {
+        oldKeysSize++;
+      }
+      for (const key in newValue) {
+        newKeysSize++;
+        if (!(key in value)) {
+          anyKeysAdded = true;
+          break;
+        }
+      }
+      const isDifferent = anyKeysAdded || oldKeysSize !== newKeysSize;
+      if (isDifferent) {
+        dirtyCollection(node);
+      }
+    }
+  }
+  for (const key in tags) {
+    const childValue = value[key];
+    const newChildValue = newValue[key];
+    if (childValue !== newChildValue) {
+      dirtyCollection(node);
+      dirtyTag(tags[key], newChildValue);
+    }
+    if (typeof newChildValue === "object" && newChildValue !== null) {
+      delete tags[key];
+    }
+  }
+  for (const key in children) {
+    const childNode = children[key];
+    const newChildValue = newValue[key];
+    const childValue = childNode.value;
+    if (childValue === newChildValue) {
+      continue;
+    } else if (typeof newChildValue === "object" && newChildValue !== null) {
+      updateNode(childNode, newChildValue);
+    } else {
+      deleteNode(childNode);
+      delete children[key];
+    }
+  }
+}
+function deleteNode(node) {
+  if (node.tag) {
+    dirtyTag(node.tag, null);
+  }
+  dirtyCollection(node);
+  for (const key in node.tags) {
+    dirtyTag(node.tags[key], null);
+  }
+  for (const key in node.children) {
+    deleteNode(node.children[key]);
+  }
+}
+
+// src/lruMemoize.ts
+function createSingletonCache(equals) {
+  let entry;
+  return {
+    get(key) {
+      if (entry && equals(entry.key, key)) {
+        return entry.value;
+      }
+      return NOT_FOUND;
+    },
+    put(key, value) {
+      entry = { key, value };
+    },
+    getEntries() {
+      return entry ? [entry] : [];
+    },
+    clear() {
+      entry = void 0;
+    }
+  };
+}
+function createLruCache(maxSize, equals) {
+  let entries = [];
+  function get(key) {
+    const cacheIndex = entries.findIndex((entry) => equals(key, entry.key));
+    if (cacheIndex > -1) {
+      const entry = entries[cacheIndex];
+      if (cacheIndex > 0) {
+        entries.splice(cacheIndex, 1);
+        entries.unshift(entry);
+      }
+      return entry.value;
+    }
+    return NOT_FOUND;
+  }
+  function put(key, value) {
+    if (get(key) === NOT_FOUND) {
+      entries.unshift({ key, value });
+      if (entries.length > maxSize) {
+        entries.pop();
+      }
+    }
+  }
+  function getEntries() {
+    return entries;
+  }
+  function clear() {
+    entries = [];
+  }
+  return { get, put, getEntries, clear };
+}
+var referenceEqualityCheck = (a, b) => a === b;
+function createCacheKeyComparator(equalityCheck) {
+  return function areArgumentsShallowlyEqual(prev, next) {
+    if (prev === null || next === null || prev.length !== next.length) {
+      return false;
+    }
+    const { length } = prev;
+    for (let i = 0; i < length; i++) {
+      if (!equalityCheck(prev[i], next[i])) {
+        return false;
+      }
+    }
+    return true;
+  };
+}
+function lruMemoize(func, equalityCheckOrOptions) {
+  const providedOptions = typeof equalityCheckOrOptions === "object" ? equalityCheckOrOptions : { equalityCheck: equalityCheckOrOptions };
+  const {
+    equalityCheck = referenceEqualityCheck,
+    maxSize = 1,
+    resultEqualityCheck
+  } = providedOptions;
+  const comparator = createCacheKeyComparator(equalityCheck);
+  let resultsCount = 0;
+  const cache = maxSize <= 1 ? createSingletonCache(comparator) : createLruCache(maxSize, comparator);
+  function memoized() {
+    let value = cache.get(arguments);
+    if (value === NOT_FOUND) {
+      value = func.apply(null, arguments);
+      resultsCount++;
+      if (resultEqualityCheck) {
+        const entries = cache.getEntries();
+        const matchingEntry = entries.find(
+          (entry) => resultEqualityCheck(entry.value, value)
+        );
+        if (matchingEntry) {
+          value = matchingEntry.value;
+          resultsCount !== 0 && resultsCount--;
+        }
+      }
+      cache.put(arguments, value);
+    }
+    return value;
+  }
+  memoized.clearCache = () => {
+    cache.clear();
+    memoized.resetResultsCount();
+  };
+  memoized.resultsCount = () => resultsCount;
+  memoized.resetResultsCount = () => {
+    resultsCount = 0;
+  };
+  return memoized;
+}
+
+// src/autotrackMemoize/autotrackMemoize.ts
+function autotrackMemoize(func) {
+  const node = createNode(
+    []
+  );
+  let lastArgs = null;
+  const shallowEqual = createCacheKeyComparator(referenceEqualityCheck);
+  const cache = createCache(() => {
+    const res = func.apply(null, node.proxy);
+    return res;
+  });
+  function memoized() {
+    if (!shallowEqual(lastArgs, arguments)) {
+      updateNode(node, arguments);
+      lastArgs = arguments;
+    }
+    return cache.value;
+  }
+  memoized.clearCache = () => {
+    return cache.clear();
+  };
+  return memoized;
+}
+
+// src/weakMapMemoize.ts
+var StrongRef = class {
+  constructor(value) {
+    this.value = value;
+  }
+  deref() {
+    return this.value;
+  }
+};
+var getWeakRef = () => typeof WeakRef === "undefined" ? StrongRef : WeakRef;
+var Ref = /* @__PURE__ */ getWeakRef();
+var UNTERMINATED = 0;
+var TERMINATED = 1;
+function createCacheNode() {
+  return {
+    s: UNTERMINATED,
+    v: void 0,
+    o: null,
+    p: null
+  };
+}
+function maybeDeref(r) {
+  if (r instanceof Ref) {
+    return r.deref();
+  }
+  return r;
+}
+function weakMapMemoize(func, options = {}) {
+  let fnNode = createCacheNode();
+  const { resultEqualityCheck } = options;
+  let lastResult;
+  let resultsCount = 0;
+  function memoized() {
+    let cacheNode = fnNode;
+    const { length } = arguments;
+    for (let i = 0, l = length; i < l; i++) {
+      const arg = arguments[i];
+      if (typeof arg === "function" || typeof arg === "object" && arg !== null) {
+        let objectCache = cacheNode.o;
+        if (objectCache === null) {
+          cacheNode.o = objectCache = /* @__PURE__ */ new WeakMap();
+        }
+        const objectNode = objectCache.get(arg);
+        if (objectNode === void 0) {
+          cacheNode = createCacheNode();
+          objectCache.set(arg, cacheNode);
+        } else {
+          cacheNode = objectNode;
+        }
+      } else {
+        let primitiveCache = cacheNode.p;
+        if (primitiveCache === null) {
+          cacheNode.p = primitiveCache = /* @__PURE__ */ new Map();
+        }
+        const primitiveNode = primitiveCache.get(arg);
+        if (primitiveNode === void 0) {
+          cacheNode = createCacheNode();
+          primitiveCache.set(arg, cacheNode);
+        } else {
+          cacheNode = primitiveNode;
+        }
+      }
+    }
+    const terminatedNode = cacheNode;
+    let result;
+    if (cacheNode.s === TERMINATED) {
+      result = cacheNode.v;
+    } else {
+      result = func.apply(null, arguments);
+      resultsCount++;
+      if (resultEqualityCheck) {
+        const lastResultValue = maybeDeref(lastResult);
+        if (lastResultValue != null && resultEqualityCheck(lastResultValue, result)) {
+          result = lastResultValue;
+          resultsCount !== 0 && resultsCount--;
+        }
+        const needsWeakRef = typeof result === "object" && result !== null || typeof result === "function";
+        lastResult = needsWeakRef ? /* @__PURE__ */ new Ref(result) : result;
+      }
+    }
+    terminatedNode.s = TERMINATED;
+    terminatedNode.v = result;
+    return result;
+  }
+  memoized.clearCache = () => {
+    fnNode = createCacheNode();
+    memoized.resetResultsCount();
+  };
+  memoized.resultsCount = () => resultsCount;
+  memoized.resetResultsCount = () => {
+    resultsCount = 0;
+  };
+  return memoized;
+}
+
+// src/createSelectorCreator.ts
+function createSelectorCreator(memoizeOrOptions, ...memoizeOptionsFromArgs) {
+  const createSelectorCreatorOptions = typeof memoizeOrOptions === "function" ? {
+    memoize: memoizeOrOptions,
+    memoizeOptions: memoizeOptionsFromArgs
+  } : memoizeOrOptions;
+  const createSelector2 = (...createSelectorArgs) => {
+    let recomputations = 0;
+    let dependencyRecomputations = 0;
+    let lastResult;
+    let directlyPassedOptions = {};
+    let resultFunc = createSelectorArgs.pop();
+    if (typeof resultFunc === "object") {
+      directlyPassedOptions = resultFunc;
+      resultFunc = createSelectorArgs.pop();
+    }
+    assertIsFunction(
+      resultFunc,
+      `createSelector expects an output function after the inputs, but received: [${typeof resultFunc}]`
+    );
+    const combinedOptions = __spreadValues(__spreadValues({}, createSelectorCreatorOptions), directlyPassedOptions);
+    const {
+      memoize,
+      memoizeOptions = [],
+      argsMemoize = weakMapMemoize,
+      argsMemoizeOptions = []
+    } = combinedOptions;
+    const finalMemoizeOptions = ensureIsArray(memoizeOptions);
+    const finalArgsMemoizeOptions = ensureIsArray(argsMemoizeOptions);
+    const dependencies = getDependencies(createSelectorArgs);
+    const memoizedResultFunc = memoize(function recomputationWrapper() {
+      recomputations++;
+      return resultFunc.apply(
+        null,
+        arguments
+      );
+    }, ...finalMemoizeOptions);
+    let firstRun = true;
+    const selector = argsMemoize(function dependenciesChecker() {
+      dependencyRecomputations++;
+      const inputSelectorResults = collectInputSelectorResults(
+        dependencies,
+        arguments
+      );
+      lastResult = memoizedResultFunc.apply(null, inputSelectorResults);
+      if (false) {}
+      return lastResult;
+    }, ...finalArgsMemoizeOptions);
+    return Object.assign(selector, {
+      resultFunc,
+      memoizedResultFunc,
+      dependencies,
+      dependencyRecomputations: () => dependencyRecomputations,
+      resetDependencyRecomputations: () => {
+        dependencyRecomputations = 0;
+      },
+      lastResult: () => lastResult,
+      recomputations: () => recomputations,
+      resetRecomputations: () => {
+        recomputations = 0;
+      },
+      memoize,
+      argsMemoize
+    });
+  };
+  Object.assign(createSelector2, {
+    withTypes: () => createSelector2
+  });
+  return createSelector2;
+}
+var createSelector = /* @__PURE__ */ createSelectorCreator(weakMapMemoize);
+
+// src/createStructuredSelector.ts
+var createStructuredSelector = /* @__PURE__ */ Object.assign(
+  (inputSelectorsObject, selectorCreator = createSelector) => {
+    assertIsObject(
+      inputSelectorsObject,
+      `createStructuredSelector expects first argument to be an object where each property is a selector, instead received a ${typeof inputSelectorsObject}`
+    );
+    const inputSelectorKeys = Object.keys(inputSelectorsObject);
+    const dependencies = inputSelectorKeys.map(
+      (key) => inputSelectorsObject[key]
+    );
+    const structuredSelector = selectorCreator(
+      dependencies,
+      (...inputSelectorResults) => {
+        return inputSelectorResults.reduce((composition, value, index) => {
+          composition[inputSelectorKeys[index]] = value;
+          return composition;
+        }, {});
+      }
+    );
+    return structuredSelector;
+  },
+  { withTypes: () => createStructuredSelector }
+);
+
+//# sourceMappingURL=reselect.legacy-esm.js.map
 
 /***/ }),
 
@@ -324118,10 +327983,10 @@ function __classPrivateFieldSet(receiver, state, value, kind, f) {
 
 /***/ }),
 
-/***/ "../node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.production.min.js":
-/*!**************************************************************************************************!*\
-  !*** ../node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.production.min.js ***!
-  \**************************************************************************************************/
+/***/ "../node_modules/use-sync-external-store/cjs/use-sync-external-store-with-selector.production.js":
+/*!*******************************************************************************************************!*\
+  !*** ../node_modules/use-sync-external-store/cjs/use-sync-external-store-with-selector.production.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /*! all exports used */
 /***/ (function(module, exports, __webpack_require__) {
@@ -324129,66 +327994,96 @@ function __classPrivateFieldSet(receiver, state, value, kind, f) {
 "use strict";
 /**
  * @license React
- * use-sync-external-store-shim.production.min.js
+ * use-sync-external-store-with-selector.production.js
  *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var e=__webpack_require__(/*! react */ "../node_modules/react/index.js");function h(a,b){return a===b&&(0!==a||1/a===1/b)||a!==a&&b!==b}var k="function"===typeof Object.is?Object.is:h,l=e.useState,m=e.useEffect,n=e.useLayoutEffect,p=e.useDebugValue;function q(a,b){var d=b(),f=l({inst:{value:d,getSnapshot:b}}),c=f[0].inst,g=f[1];n(function(){c.value=d;c.getSnapshot=b;r(c)&&g({inst:c})},[a,d,b]);m(function(){r(c)&&g({inst:c});return a(function(){r(c)&&g({inst:c})})},[a]);p(d);return d}
-function r(a){var b=a.getSnapshot;a=a.value;try{var d=b();return!k(a,d)}catch(f){return!0}}function t(a,b){return b()}var u="undefined"===typeof window||"undefined"===typeof window.document||"undefined"===typeof window.document.createElement?t:q;exports.useSyncExternalStore=void 0!==e.useSyncExternalStore?e.useSyncExternalStore:u;
-
-
-/***/ }),
-
-/***/ "../node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.production.min.js":
-/*!****************************************************************************************************************!*\
-  !*** ../node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.production.min.js ***!
-  \****************************************************************************************************************/
-/*! no static exports found */
-/*! all exports used */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * @license React
- * use-sync-external-store-shim/with-selector.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-var h=__webpack_require__(/*! react */ "../node_modules/react/index.js"),n=__webpack_require__(/*! use-sync-external-store/shim */ "../node_modules/use-sync-external-store/shim/index.js");function p(a,b){return a===b&&(0!==a||1/a===1/b)||a!==a&&b!==b}var q="function"===typeof Object.is?Object.is:p,r=n.useSyncExternalStore,t=h.useRef,u=h.useEffect,v=h.useMemo,w=h.useDebugValue;
-exports.useSyncExternalStoreWithSelector=function(a,b,e,l,g){var c=t(null);if(null===c.current){var f={hasValue:!1,value:null};c.current=f}else f=c.current;c=v(function(){function a(a){if(!c){c=!0;d=a;a=l(a);if(void 0!==g&&f.hasValue){var b=f.value;if(g(b,a))return k=b}return k=a}b=k;if(q(d,a))return b;var e=l(a);if(void 0!==g&&g(b,e))return b;d=a;return k=e}var c=!1,d,k,m=void 0===e?null:e;return[function(){return a(b())},null===m?void 0:function(){return a(m())}]},[b,e,l,g]);var d=r(a,c[0],c[1]);
-u(function(){f.hasValue=!0;f.value=d},[d]);w(d);return d};
+
+
+var React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+function is(x, y) {
+  return (x === y && (0 !== x || 1 / x === 1 / y)) || (x !== x && y !== y);
+}
+var objectIs = "function" === typeof Object.is ? Object.is : is,
+  useSyncExternalStore = React.useSyncExternalStore,
+  useRef = React.useRef,
+  useEffect = React.useEffect,
+  useMemo = React.useMemo,
+  useDebugValue = React.useDebugValue;
+exports.useSyncExternalStoreWithSelector = function (
+  subscribe,
+  getSnapshot,
+  getServerSnapshot,
+  selector,
+  isEqual
+) {
+  var instRef = useRef(null);
+  if (null === instRef.current) {
+    var inst = { hasValue: !1, value: null };
+    instRef.current = inst;
+  } else inst = instRef.current;
+  instRef = useMemo(
+    function () {
+      function memoizedSelector(nextSnapshot) {
+        if (!hasMemo) {
+          hasMemo = !0;
+          memoizedSnapshot = nextSnapshot;
+          nextSnapshot = selector(nextSnapshot);
+          if (void 0 !== isEqual && inst.hasValue) {
+            var currentSelection = inst.value;
+            if (isEqual(currentSelection, nextSnapshot))
+              return (memoizedSelection = currentSelection);
+          }
+          return (memoizedSelection = nextSnapshot);
+        }
+        currentSelection = memoizedSelection;
+        if (objectIs(memoizedSnapshot, nextSnapshot)) return currentSelection;
+        var nextSelection = selector(nextSnapshot);
+        if (void 0 !== isEqual && isEqual(currentSelection, nextSelection))
+          return (memoizedSnapshot = nextSnapshot), currentSelection;
+        memoizedSnapshot = nextSnapshot;
+        return (memoizedSelection = nextSelection);
+      }
+      var hasMemo = !1,
+        memoizedSnapshot,
+        memoizedSelection,
+        maybeGetServerSnapshot =
+          void 0 === getServerSnapshot ? null : getServerSnapshot;
+      return [
+        function () {
+          return memoizedSelector(getSnapshot());
+        },
+        null === maybeGetServerSnapshot
+          ? void 0
+          : function () {
+              return memoizedSelector(maybeGetServerSnapshot());
+            }
+      ];
+    },
+    [getSnapshot, getServerSnapshot, selector, isEqual]
+  );
+  var value = useSyncExternalStore(subscribe, instRef[0], instRef[1]);
+  useEffect(
+    function () {
+      inst.hasValue = !0;
+      inst.value = value;
+    },
+    [value]
+  );
+  useDebugValue(value);
+  return value;
+};
 
 
 /***/ }),
 
-/***/ "../node_modules/use-sync-external-store/shim/index.js":
-/*!*************************************************************!*\
-  !*** ../node_modules/use-sync-external-store/shim/index.js ***!
-  \*************************************************************/
-/*! no static exports found */
-/*! all exports used */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-if (true) {
-  module.exports = __webpack_require__(/*! ../cjs/use-sync-external-store-shim.production.min.js */ "../node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.production.min.js");
-} else {}
-
-
-/***/ }),
-
-/***/ "../node_modules/use-sync-external-store/shim/with-selector.js":
-/*!*********************************************************************!*\
-  !*** ../node_modules/use-sync-external-store/shim/with-selector.js ***!
-  \*********************************************************************/
+/***/ "../node_modules/use-sync-external-store/with-selector.js":
+/*!****************************************************************!*\
+  !*** ../node_modules/use-sync-external-store/with-selector.js ***!
+  \****************************************************************/
 /*! no static exports found */
 /*! exports used: useSyncExternalStoreWithSelector */
 /***/ (function(module, exports, __webpack_require__) {
@@ -324197,7 +328092,7 @@ if (true) {
 
 
 if (true) {
-  module.exports = __webpack_require__(/*! ../cjs/use-sync-external-store-shim/with-selector.production.min.js */ "../node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.production.min.js");
+  module.exports = __webpack_require__(/*! ./cjs/use-sync-external-store-with-selector.production.js */ "../node_modules/use-sync-external-store/cjs/use-sync-external-store-with-selector.production.js");
 } else {}
 
 
@@ -329256,4 +333151,4 @@ function length(d) {
 /***/ })
 
 }]);
-//# sourceMappingURL=vendors~main.1b5870f7.iframe.bundle.js.map
+//# sourceMappingURL=vendors~main.aa77e512.iframe.bundle.js.map

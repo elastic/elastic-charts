@@ -5010,11 +5010,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BulletRenderer = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var bullet_1 = __webpack_require__(/*! ./bullet */ "../packages/charts/src/chart_types/bullet_graph/renderer/canvas/bullet.ts");
 
@@ -5247,7 +5247,7 @@ var Component = /*#__PURE__*/function (_react_1$default$Comp) {
 Component.displayName = 'Bullet';
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onChartRendered: chart_1.onChartRendered
   }, dispatch);
 };
@@ -8439,11 +8439,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FlameWithTooltip = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var navigation_1 = __webpack_require__(/*! ./navigation */ "../packages/charts/src/chart_types/flame_chart/navigation.ts");
 
@@ -9989,7 +9989,7 @@ var mapStateToProps = function mapStateToProps(state) {
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onChartRendered: chart_1.onChartRendered
   }, dispatch);
 };
@@ -12617,11 +12617,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Goal = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var canvas_renderers_1 = __webpack_require__(/*! ./canvas_renderers */ "../packages/charts/src/chart_types/goal_chart/renderer/canvas/canvas_renderers.ts");
 
@@ -12780,7 +12780,7 @@ var Component = /*#__PURE__*/function (_react_1$default$Comp) {
 Component.displayName = 'Goal';
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onChartRendered: chart_1.onChartRendered
   }, dispatch);
 };
@@ -14998,11 +14998,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Heatmap = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var canvas_renderers_1 = __webpack_require__(/*! ./canvas_renderers */ "../packages/charts/src/chart_types/heatmap/renderer/canvas/canvas_renderers.ts");
 
@@ -15141,7 +15141,7 @@ var Component = /*#__PURE__*/function (_react_1$default$Comp) {
 Component.displayName = 'Heatmap';
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onChartRendered: chart_1.onChartRendered
   }, dispatch);
 };
@@ -15501,7 +15501,7 @@ exports.CursorBand = void 0;
 
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var specs_1 = __webpack_require__(/*! ../../../../specs */ "../packages/charts/src/specs/index.ts");
 
@@ -15774,7 +15774,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.HighlighterFromBrush = void 0;
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var highlighter_1 = __webpack_require__(/*! ./highlighter */ "../packages/charts/src/chart_types/heatmap/renderer/dom/highlighter.tsx");
 
@@ -19370,17 +19370,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Metric = void 0;
-/* eslint-disable-next-line eslint-comments/disable-enable-pair */
 
-/* eslint-disable react/no-array-index-key */
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 
 var classnames_1 = __importDefault(__webpack_require__(/*! classnames */ "../node_modules/classnames/index.js"));
 
 var react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var metric_1 = __webpack_require__(/*! ./metric */ "../packages/charts/src/chart_types/metric/renderer/dom/metric.tsx");
 
@@ -19578,7 +19575,7 @@ function Component(_ref) {
 Component.displayName = 'Metric';
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onChartRendered: chart_1.onChartRendered
   }, dispatch);
 };
@@ -26999,11 +26996,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Partition = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var canvas_linear_renderers_1 = __webpack_require__(/*! ./canvas_linear_renderers */ "../packages/charts/src/chart_types/partition_chart/renderer/canvas/canvas_linear_renderers.ts");
 
@@ -27204,7 +27201,7 @@ var PartitionComponent = /*#__PURE__*/function (_react_1$default$Comp) {
 PartitionComponent.displayName = 'Partition';
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onChartRendered: chart_1.onChartRendered
   }, dispatch);
 };
@@ -27684,7 +27681,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.HighlighterFromHover = void 0;
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var highlighter_1 = __webpack_require__(/*! ./highlighter */ "../packages/charts/src/chart_types/partition_chart/renderer/dom/highlighter.tsx");
 
@@ -27890,7 +27887,7 @@ exports.ScreenReaderPartitionTable = void 0;
 
 var react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var get_accessibility_config_1 = __webpack_require__(/*! ../../../../state/selectors/get_accessibility_config */ "../packages/charts/src/state/selectors/get_accessibility_config.ts");
 
@@ -32374,11 +32371,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.chartRenderer = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var timeslip_render_1 = __webpack_require__(/*! ./timeslip/timeslip_render */ "../packages/charts/src/chart_types/timeslip/timeslip/timeslip_render.ts");
 
@@ -32543,7 +32540,7 @@ var mapStateToProps = function mapStateToProps(state) {
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onChartRendered: chart_1.onChartRendered
   }, dispatch);
 };
@@ -33169,13 +33166,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Wordcloud = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var d3_cloud_1 = __importDefault(__webpack_require__(/*! d3-cloud */ "../node_modules/d3-cloud/index.js"));
 
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var accessibility_1 = __webpack_require__(/*! ../../../../components/accessibility */ "../packages/charts/src/components/accessibility/index.ts");
 
@@ -33416,7 +33413,7 @@ var Component = /*#__PURE__*/function (_react_1$default$Comp) {
 Component.displayName = 'Wordcloud';
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onChartRendered: chart_1.onChartRendered
   }, dispatch);
 };
@@ -42192,11 +42189,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.XYChart = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var renderers_1 = __webpack_require__(/*! ./renderers */ "../packages/charts/src/chart_types/xy_chart/renderer/canvas/renderers.ts");
 
@@ -42370,7 +42367,7 @@ var XYChartComponent = /*#__PURE__*/function (_react_1$default$Comp) {
 XYChartComponent.displayName = 'XYChart';
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onChartRendered: chart_1.onChartRendered
   }, dispatch);
 };
@@ -42829,11 +42826,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Annotations = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var annotation_tooltip_1 = __webpack_require__(/*! ./annotation_tooltip */ "../packages/charts/src/chart_types/xy_chart/renderer/dom/annotations/annotation_tooltip.tsx");
 
@@ -42953,7 +42950,7 @@ var AnnotationsComponent = function AnnotationsComponent(_ref2) {
 AnnotationsComponent.displayName = 'Annotations';
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onPointerMove: mouse_1.onPointerMove,
     onDOMElementLeave: dom_element_1.onDOMElementLeave,
     onDOMElementEnter: dom_element_1.onDOMElementEnter,
@@ -43534,7 +43531,7 @@ exports.CursorBand = void 0;
 
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var specs_1 = __webpack_require__(/*! ../../../../specs */ "../packages/charts/src/specs/index.ts");
 
@@ -43731,7 +43728,7 @@ exports.CursorCrossLine = void 0;
 
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var specs_1 = __webpack_require__(/*! ../../../../specs */ "../packages/charts/src/specs/index.ts");
 
@@ -43910,7 +43907,7 @@ exports.CursorLine = void 0;
 
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var specs_1 = __webpack_require__(/*! ../../../../specs */ "../packages/charts/src/specs/index.ts");
 
@@ -44149,7 +44146,7 @@ exports.Highlighter = void 0;
 
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var color_library_wrappers_1 = __webpack_require__(/*! ../../../../common/color_library_wrappers */ "../packages/charts/src/common/color_library_wrappers.ts");
 
@@ -61023,7 +61020,7 @@ exports.ScreenReaderSummary = exports.mapStateToProps = void 0;
 
 var react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var screen_reader_description_1 = __webpack_require__(/*! ./screen_reader_description */ "../packages/charts/src/components/accessibility/screen_reader_description.tsx");
 
@@ -61139,7 +61136,7 @@ exports.BrushTool = void 0;
 
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var common_1 = __webpack_require__(/*! ../../chart_types/xy_chart/state/utils/common */ "../packages/charts/src/chart_types/xy_chart/state/utils/common.ts");
 
@@ -61514,7 +61511,7 @@ var classnames_1 = __importDefault(__webpack_require__(/*! classnames */ "../nod
 
 var react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var uuid_1 = __webpack_require__(/*! uuid */ "../node_modules/uuid/index.js");
 
@@ -61832,7 +61829,7 @@ exports.ChartBackground = exports.ChartBackgroundComponent = void 0;
 
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var colors_1 = __webpack_require__(/*! ../common/colors */ "../packages/charts/src/common/colors.tsx");
 
@@ -61979,11 +61976,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ChartContainer = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var no_results_1 = __webpack_require__(/*! ./no_results */ "../packages/charts/src/components/no_results.tsx");
 
@@ -62265,7 +62262,7 @@ ChartContainerComponent.displayName = 'ChartContainer';
 ChartContainerComponent.watchedKeys = ['Escape'];
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onPointerMove: mouse_1.onPointerMove,
     onMouseUp: mouse_1.onMouseUp,
     onMouseDown: mouse_1.onMouseDown,
@@ -62402,11 +62399,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ChartResizer = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var chart_settings_1 = __webpack_require__(/*! ../state/actions/chart_settings */ "../packages/charts/src/state/actions/chart_settings.ts");
 
@@ -62482,7 +62479,7 @@ var Resizer = /*#__PURE__*/function (_react_1$default$Comp) {
 }(react_1["default"].Component);
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     updateParentDimensions: chart_settings_1.updateParentDimensions
   }, dispatch);
 };
@@ -62583,7 +62580,7 @@ exports.ChartStatus = void 0;
 
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var create_selector_1 = __webpack_require__(/*! ../state/create_selector */ "../packages/charts/src/state/create_selector.ts");
 
@@ -63690,7 +63687,7 @@ exports.CustomLegend = void 0;
 
 var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var get_pointer_value_1 = __webpack_require__(/*! ../../state/selectors/get_pointer_value */ "../packages/charts/src/state/selectors/get_pointer_value.ts");
 
@@ -64044,13 +64041,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Legend = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var classnames_1 = __importDefault(__webpack_require__(/*! classnames */ "../node_modules/classnames/index.js"));
 
 var react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var custom_legend_1 = __webpack_require__(/*! ./custom_legend */ "../packages/charts/src/components/legend/custom_legend.tsx");
 
@@ -64255,7 +64252,7 @@ function LegendComponent(props) {
 }
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onToggleDeselectSeriesAction: legend_2.onToggleDeselectSeriesAction,
     onItemOutAction: legend_2.onLegendItemOutAction,
     onItemOverAction: legend_2.onLegendItemOverAction,
@@ -69632,11 +69629,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BasicTooltip = exports.Tooltip = exports.TooltipComponent = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var components_1 = __webpack_require__(/*! ./components */ "../packages/charts/src/components/tooltip/components/index.ts");
 
@@ -69938,7 +69935,7 @@ var HIDDEN_TOOLTIP_PROPS = {
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     onPointerMove: mouse_1.onPointerMove,
     toggleSelectedTooltipItem: tooltip_1.toggleSelectedTooltipItem,
     setSelectedTooltipItems: tooltip_1.setSelectedTooltipItems,
@@ -78377,11 +78374,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SpecsParser = void 0;
 
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
+
 var react_1 = __webpack_require__(/*! react */ "../node_modules/react/index.js");
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
-
-var redux_1 = __webpack_require__(/*! redux */ "../node_modules/redux/es/redux.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var specs_1 = __webpack_require__(/*! ../state/actions/specs */ "../packages/charts/src/state/actions/specs.ts");
 
@@ -78401,7 +78398,7 @@ var SpecsParserComponent = function SpecsParserComponent(props) {
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, redux_1.bindActionCreators)({
+  return (0, toolkit_1.bindActionCreators)({
     specParsed: specs_1.specParsed,
     specUnmounted: specs_1.specUnmounted
   }, dispatch);
@@ -78548,7 +78545,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.onChartRendered = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 /** @internal */
 
 
@@ -78581,7 +78578,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.updateChartTitles = exports.updateParentDimensions = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 /** @internal */
 
 
@@ -78617,7 +78614,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.setPersistedColor = exports.setTemporaryColor = exports.clearTemporaryColors = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 /** @internal */
 
 
@@ -78658,7 +78655,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.onDOMElementClick = exports.onDOMElementEnter = exports.onDOMElementLeave = exports.DOMElementType = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 /** @internal */
 
 
@@ -78702,7 +78699,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.onExternalPointerEvent = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 /** @internal */
 
 
@@ -78735,7 +78732,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.onKeyPress = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 /**
  * Action called on `keyup` event
  * @internal
@@ -78771,7 +78768,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.onToggleDeselectSeriesAction = exports.onLegendItemOutAction = exports.onLegendItemOverAction = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 /** @internal */
 
 
@@ -78820,7 +78817,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.onPointerMove = exports.onMouseUp = exports.onMouseDown = exports.onMouseRightClick = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 /**
  * Action called on mouse button down event
  * @param position the x and y position (native event offsetX, offsetY)
@@ -78882,7 +78879,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.specUnmounted = exports.specParsed = exports.removeSpec = exports.upsertSpec = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 /** @internal */
 
 
@@ -78924,7 +78921,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.setSelectedTooltipItems = exports.toggleSelectedTooltipItem = exports.pinTooltip = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 /** @internal */
 
 
@@ -78973,7 +78970,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.onComputedZIndex = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 /** @internal */
 
 
@@ -79202,7 +79199,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.createChartStore = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js");
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 
 var chart_1 = __webpack_require__(/*! ./actions/chart */ "../packages/charts/src/state/actions/chart.ts");
 
@@ -79497,9 +79494,9 @@ var __importDefault = this && this.__importDefault || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createCustomCachedSelector = exports.globalSelectorCache = void 0; // eslint-disable-next-line no-restricted-imports
+exports.createCustomCachedSelector = exports.globalSelectorCache = void 0;
 
-var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.esm.js"); // eslint-disable-next-line no-restricted-imports
+var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js"); // eslint-disable-next-line no-restricted-imports
 
 
 var re_reselect_1 = __importDefault(__webpack_require__(/*! re-reselect */ "../node_modules/re-reselect/dist/index.js"));
@@ -79514,6 +79511,9 @@ var re_reselect_1 = __importDefault(__webpack_require__(/*! re-reselect */ "../n
 
 var createSelectorWithLRU = function createSelectorWithLRU(selectors, combiner) {
   return (0, toolkit_1.createSelector)(selectors, combiner, {
+    // RTK 2 / reselect 5 defaults to `weakMapMemoize` (unbounded, reference-keyed cache).
+    // Explicitly keep the bounded LRU memoizer to preserve the memory constraints described above.
+    memoize: toolkit_1.lruMemoize,
     memoizeOptions: {
       maxSize: 2
     }
@@ -82822,7 +82822,7 @@ exports.useSpecFactory = useSpecFactory;
 
 var react_1 = __webpack_require__(/*! react */ "../node_modules/react/index.js");
 
-var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/es/index.js");
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var specs_1 = __webpack_require__(/*! ./actions/specs */ "../packages/charts/src/state/actions/specs.ts");
 
@@ -180160,4 +180160,4 @@ module.exports = __webpack_require__(/*! /app/storybook/generated-stories-entry.
 /***/ })
 
 },[[0,"runtime~main","vendors~main"]]]);
-//# sourceMappingURL=main.a59a9f03.iframe.bundle.js.map
+//# sourceMappingURL=main.c976dcd5.iframe.bundle.js.map
