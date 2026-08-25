@@ -141,14 +141,14 @@ export const handleLegendActions = (builder: ActionReducerMapBuilder<ChartSliceS
     if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
     const state = globalState.interactions;
 
-    state.highlightedLegendPaths = [];
+    state.highlightedLegendPath = null;
   });
 
   builder.addCase(onLegendItemOverAction, (globalState, action) => {
     if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
     const state = globalState.interactions;
 
-    state.highlightedLegendPaths = [action.payload];
+    state.highlightedLegendPath = action.payload;
   });
 
   builder.addCase(onToggleDeselectSeriesAction, (globalState, action) => {

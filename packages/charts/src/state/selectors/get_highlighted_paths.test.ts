@@ -28,15 +28,15 @@ const pathB: LegendPath = [{ index: 0, value: 'b' }];
 
 describe('resolveHighlightedPaths', () => {
   it('returns empty when nothing is hovered or selected', () => {
-    expect(resolveHighlightedPaths([], [])).toEqual([]);
+    expect(resolveHighlightedPaths([], null)).toEqual([]);
   });
 
   it('uses selected tooltip item paths', () => {
-    expect(resolveHighlightedPaths([tooltipItem('a', pathA), tooltipItem('b', pathB)], [])).toEqual([pathA, pathB]);
+    expect(resolveHighlightedPaths([tooltipItem('a', pathA), tooltipItem('b', pathB)], null)).toEqual([pathA, pathB]);
   });
 
   it('prefers legend hover over tooltip selection', () => {
-    expect(resolveHighlightedPaths([tooltipItem('b', pathB)], [pathA])).toEqual([pathA]);
+    expect(resolveHighlightedPaths([tooltipItem('b', pathB)], pathA)).toEqual([pathA]);
   });
 
   it('preserves hierarchical partition paths', () => {
@@ -45,6 +45,6 @@ describe('resolveHighlightedPaths', () => {
       { index: 0, value: 'asia' },
       { index: 0, value: 'china' },
     ];
-    expect(resolveHighlightedPaths([tooltipItem('china', chinaMachineryPath)], [])).toEqual([chinaMachineryPath]);
+    expect(resolveHighlightedPaths([tooltipItem('china', chinaMachineryPath)], null)).toEqual([chinaMachineryPath]);
   });
 });

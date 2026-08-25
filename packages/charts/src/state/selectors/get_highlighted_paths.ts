@@ -13,23 +13,23 @@ import type { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */
-export const getHighlightedLegendPaths = (state: GlobalChartState): LegendPath[] =>
-  state.interactions.highlightedLegendPaths;
+export const getHighlightedLegendPath = (state: GlobalChartState): LegendPath | null =>
+  state.interactions.highlightedLegendPath;
 
 /** @internal */
 export function resolveHighlightedPaths(
   selectedTooltipItems: TooltipValue[],
-  legendHoverPaths: LegendPath[],
+  legendHoverPath: LegendPath | null,
 ): LegendPath[] {
-  if (legendHoverPaths.length > 0) {
-    return legendHoverPaths;
+  if (legendHoverPath) {
+    return [legendHoverPath];
   }
   return selectedTooltipItems.flatMap(({ path }) => (path && path.length > 0 ? [path] : []));
 }
 
 /** @internal */
 export const getHighlightedPaths = createCustomCachedSelector(
-  [getTooltipSelectedItems, getHighlightedLegendPaths],
-  (selectedTooltipItems: TooltipValue[], legendHoverPaths: LegendPath[]) =>
-    resolveHighlightedPaths(selectedTooltipItems, legendHoverPaths),
+  [getTooltipSelectedItems, getHighlightedLegendPath],
+  (selectedTooltipItems: TooltipValue[], legendHoverPath) =>
+    resolveHighlightedPaths(selectedTooltipItems, legendHoverPath),
 );

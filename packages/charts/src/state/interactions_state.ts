@@ -22,7 +22,7 @@ export interface TooltipInteractionState {
 /** @internal */
 export interface InteractionsState {
   pointer: PointerStates;
-  highlightedLegendPaths: LegendPath[];
+  highlightedLegendPath: LegendPath | null;
   deselectedDataSeries: SeriesIdentifier[];
   hoveredDOMElement: DOMElement | null;
   drilldown: CategoryKey[];
