@@ -4722,6 +4722,8 @@ var debug_1 = __webpack_require__(/*! ../../../../renderers/canvas/utils/debug *
 var spec_1 = __webpack_require__(/*! ../../spec */ "../packages/charts/src/chart_types/bullet_graph/spec.ts");
 
 var theme_1 = __webpack_require__(/*! ../../theme */ "../packages/charts/src/chart_types/bullet_graph/theme.ts");
+
+var color_1 = __webpack_require__(/*! ../../utils/color */ "../packages/charts/src/chart_types/bullet_graph/utils/color.ts");
 /** @internal */
 
 
@@ -4835,13 +4837,14 @@ function renderBullet(ctx, dpr, props) {
 
           (0, canvas_1.withContext)(ctx, function (ctx) {
             ctx.translate(graphArea.origin.x, graphArea.origin.y);
+            var hasStroke = (0, color_1.needsBarBorder)(bulletGraph.colorBands, style.barBackground);
 
             if (spec.subtype === spec_1.BulletSubtype.horizontal) {
-              (0, sub_types_1.horizontalBullet)(ctx, bulletGraph, style, backgroundColor, activeValue);
+              (0, sub_types_1.horizontalBullet)(ctx, bulletGraph, style, backgroundColor, hasStroke, activeValue);
             } else if (spec.subtype === spec_1.BulletSubtype.vertical) {
-              (0, sub_types_1.verticalBullet)(ctx, bulletGraph, style, backgroundColor, activeValue);
+              (0, sub_types_1.verticalBullet)(ctx, bulletGraph, style, backgroundColor, hasStroke, activeValue);
             } else {
-              (0, sub_types_1.angularBullet)(ctx, bulletGraph, style, backgroundColor, spec, debug, activeValue);
+              (0, sub_types_1.angularBullet)(ctx, bulletGraph, style, backgroundColor, hasStroke, spec, debug, activeValue);
             }
           });
 
@@ -4889,7 +4892,7 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-propert
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TICK_LABEL_PADDING = exports.ANGULAR_TICK_INTERVAL = exports.TICK_INTERVAL = exports.HOVER_SLOP = exports.MAX_TICK_COUNT = exports.MIN_TICK_COUNT = exports.TICK_WIDTH = exports.BAR_SIZE = exports.BULLET_SIZE = exports.TARGET_STROKE_WIDTH = exports.TARGET_SIZE = void 0;
+exports.TICK_LABEL_PADDING = exports.ANGULAR_TICK_INTERVAL = exports.TICK_INTERVAL = exports.HOVER_SLOP = exports.MAX_TICK_COUNT = exports.MIN_TICK_COUNT = exports.TICK_WIDTH = exports.BAR_SIZE = exports.BAR_STROKE_WIDTH = exports.BULLET_SIZE = exports.TARGET_STROKE_WIDTH = exports.TARGET_SIZE = void 0;
 /** @internal */
 
 exports.TARGET_SIZE = 40;
@@ -4899,6 +4902,9 @@ exports.TARGET_STROKE_WIDTH = 3;
 /** @internal */
 
 exports.BULLET_SIZE = 32;
+/** @internal */
+
+exports.BAR_STROKE_WIDTH = 1;
 /** @internal */
 
 exports.BAR_SIZE = 12;
@@ -4947,62 +4953,50 @@ exports.TICK_LABEL_PADDING = 3;
  * Side Public License, v 1.
  */
 
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.create.js */ "../node_modules/core-js/modules/es.object.create.js");
 
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
-
-function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
-
-function _createSuper(t) { var r = _isNativeReflectConstruct(); return function () { var e, o = _getPrototypeOf(t); if (r) { var s = _getPrototypeOf(this).constructor; e = Reflect.construct(o, arguments, s); } else e = o.apply(this, arguments); return _possibleConstructorReturn(this, e); }; }
-
-function _possibleConstructorReturn(t, e) { if (e && ("object" == typeof e || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.get-own-property-descriptor.js */ "../node_modules/core-js/modules/es.object.get-own-property-descriptor.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-property.js */ "../node_modules/core-js/modules/es.object.define-property.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.object.to-string.js */ "../node_modules/core-js/modules/es.object.to-string.js");
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.regexp.to-string.js */ "../node_modules/core-js/modules/es.regexp.to-string.js");
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.date.to-string.js */ "../node_modules/core-js/modules/es.date.to-string.js");
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.object.set-prototype-of.js */ "../node_modules/core-js/modules/es.object.set-prototype-of.js");
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.function.bind.js */ "../node_modules/core-js/modules/es.function.bind.js");
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.object.get-prototype-of.js */ "../node_modules/core-js/modules/es.object.get-prototype-of.js");
+  __setModuleDefault(result, mod);
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.reflect.construct.js */ "../node_modules/core-js/modules/es.reflect.construct.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.object.create.js */ "../node_modules/core-js/modules/es.object.create.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.to-primitive.js */ "../node_modules/core-js/modules/es.symbol.to-primitive.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.date.to-primitive.js */ "../node_modules/core-js/modules/es.date.to-primitive.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.js */ "../node_modules/core-js/modules/es.symbol.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.description.js */ "../node_modules/core-js/modules/es.symbol.description.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.number.constructor.js */ "../node_modules/core-js/modules/es.number.constructor.js");
-
-var __importDefault = this && this.__importDefault || function (mod) {
-  return mod && mod.__esModule ? mod : {
-    "default": mod
-  };
+  return result;
 };
 
 Object.defineProperty(exports, "__esModule", {
@@ -5012,19 +5006,15 @@ exports.BulletRenderer = void 0;
 
 var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 
-var react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
+var react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 
 var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
 
 var bullet_1 = __webpack_require__(/*! ./bullet */ "../packages/charts/src/chart_types/bullet_graph/renderer/canvas/bullet.ts");
 
-var color_library_wrappers_1 = __webpack_require__(/*! ../../../../common/color_library_wrappers */ "../packages/charts/src/common/color_library_wrappers.ts");
-
-var colors_1 = __webpack_require__(/*! ../../../../common/colors */ "../packages/charts/src/common/colors.tsx");
+var metric_grid_1 = __webpack_require__(/*! ./metric_grid */ "../packages/charts/src/chart_types/bullet_graph/renderer/canvas/metric_grid.tsx");
 
 var accessibility_1 = __webpack_require__(/*! ../../../../components/accessibility */ "../packages/charts/src/components/accessibility/index.ts");
-
-var aligned_grid_1 = __webpack_require__(/*! ../../../../components/grid/aligned_grid */ "../packages/charts/src/components/grid/aligned_grid.tsx");
 
 var specs_1 = __webpack_require__(/*! ../../../../specs */ "../packages/charts/src/specs/index.ts");
 
@@ -5040,15 +5030,7 @@ var get_resolved_background_color_1 = __webpack_require__(/*! ../../../../state/
 
 var get_settings_spec_1 = __webpack_require__(/*! ../../../../state/selectors/get_settings_spec */ "../packages/charts/src/state/selectors/get_settings_spec.ts");
 
-var common_1 = __webpack_require__(/*! ../../../../utils/common */ "../packages/charts/src/utils/common.tsx");
-
-var fast_deep_equal_1 = __webpack_require__(/*! ../../../../utils/fast_deep_equal */ "../packages/charts/src/utils/fast_deep_equal.ts");
-
 var light_theme_1 = __webpack_require__(/*! ../../../../utils/themes/light_theme */ "../packages/charts/src/utils/themes/light_theme.ts");
-
-var metric_1 = __webpack_require__(/*! ../../../metric/renderer/dom/metric */ "../packages/charts/src/chart_types/metric/renderer/dom/metric.tsx");
-
-var text_measurements_1 = __webpack_require__(/*! ../../../metric/renderer/dom/text_measurements */ "../packages/charts/src/chart_types/metric/renderer/dom/text_measurements.tsx");
 
 var get_active_values_1 = __webpack_require__(/*! ../../selectors/get_active_values */ "../packages/charts/src/chart_types/bullet_graph/selectors/get_active_values.ts");
 
@@ -5060,189 +5042,82 @@ var get_panel_dimensions_1 = __webpack_require__(/*! ../../selectors/get_panel_d
 
 var has_chart_titles_1 = __webpack_require__(/*! ../../selectors/has_chart_titles */ "../packages/charts/src/chart_types/bullet_graph/selectors/has_chart_titles.ts");
 
-var spec_1 = __webpack_require__(/*! ../../spec */ "../packages/charts/src/chart_types/bullet_graph/spec.ts");
+var Component = function Component(props) {
+  var _window = window,
+      devicePixelRatio = _window.devicePixelRatio;
+  var initialized = props.initialized,
+      debug = props.debug,
+      size = props.size,
+      forwardStageRef = props.forwardStageRef,
+      a11y = props.a11y,
+      dimensions = props.dimensions,
+      activeValues = props.activeValues,
+      spec = props.spec,
+      style = props.style,
+      backgroundColor = props.backgroundColor,
+      locale = props.locale,
+      metricStyle = props.metricStyle,
+      chartId = props.chartId,
+      hasTitles = props.hasTitles,
+      dispatchOnChartRendered = props.onChartRendered;
+  (0, react_1.useLayoutEffect)(function () {
+    var _forwardStageRef$curr;
 
-var Component = /*#__PURE__*/function (_react_1$default$Comp) {
-  _inherits(Component, _react_1$default$Comp);
+    var ctx = (_forwardStageRef$curr = forwardStageRef.current) === null || _forwardStageRef$curr === void 0 ? void 0 : _forwardStageRef$curr.getContext('2d');
 
-  var _super = _createSuper(Component);
+    if (!initialized || !ctx) {
+      return;
+    }
 
-  function Component(props) {
-    var _this;
+    (0, bullet_1.renderBullet)(ctx, devicePixelRatio, {
+      debug: debug,
+      spec: spec,
+      a11y: a11y,
+      dimensions: dimensions,
+      activeValues: activeValues,
+      style: style,
+      backgroundColor: backgroundColor
+    });
+    dispatchOnChartRendered();
+  }, [initialized, devicePixelRatio, forwardStageRef, debug, spec, a11y, dimensions, activeValues, style, backgroundColor, dispatchOnChartRendered]);
 
-    _classCallCheck(this, Component);
-
-    _this = _super.call(this, props);
-    _this.ctx = void 0;
-    _this.devicePixelRatio = void 0;
-    _this.ctx = null;
-    _this.devicePixelRatio = window.devicePixelRatio;
-    return _this;
+  if (!initialized || size.width === 0 || size.height === 0 || !spec) {
+    return null;
   }
 
-  _createClass(Component, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.tryCanvasContext();
-
-      if (this.props.initialized) {
-        this.drawCanvas();
-        this.props.onChartRendered();
-      }
+  return react_1["default"].createElement("figure", {
+    "aria-labelledby": a11y.labelId,
+    "aria-describedby": a11y.descriptionId,
+    style: {
+      width: '100%',
+      height: '100%'
     }
-  }, {
-    key: "shouldComponentUpdate",
-    value: function shouldComponentUpdate(nextProps) {
-      return !(0, fast_deep_equal_1.deepEqual)(this.props, nextProps);
+  }, react_1["default"].createElement("canvas", {
+    ref: forwardStageRef,
+    className: "echCanvasRenderer",
+    width: size.width * devicePixelRatio,
+    height: size.height * devicePixelRatio,
+    style: size,
+    // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+    role: "presentation"
+  }, react_1["default"].createElement(accessibility_1.ScreenReaderSummary, null)), dimensions.shouldRenderMetric && react_1["default"].createElement("div", {
+    className: "echBulletAsMetric",
+    style: {
+      width: '100%',
+      height: '100%'
     }
-  }, {
-    key: "componentDidUpdate",
-    value: function componentDidUpdate() {
-      if (!this.ctx) {
-        this.tryCanvasContext();
-      }
-
-      if (this.props.initialized) {
-        this.drawCanvas();
-        this.props.onChartRendered();
-      }
-    }
-  }, {
-    key: "tryCanvasContext",
-    value: function tryCanvasContext() {
-      var canvas = this.props.forwardStageRef.current;
-      this.ctx = canvas && canvas.getContext('2d');
-    }
-  }, {
-    key: "drawCanvas",
-    value: function drawCanvas() {
-      if (this.ctx) {
-        (0, bullet_1.renderBullet)(this.ctx, this.devicePixelRatio, this.props);
-      }
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      /* eslint-disable prettier/prettier */
-      // TODO - Prettier is going crazy on this line, need to investigate
-      var _this$props = this.props,
-          initialized = _this$props.initialized,
-          size = _this$props.size,
-          forwardStageRef = _this$props.forwardStageRef,
-          a11y = _this$props.a11y,
-          dimensions = _this$props.dimensions,
-          spec = _this$props.spec,
-          style = _this$props.style,
-          backgroundColor = _this$props.backgroundColor,
-          locale = _this$props.locale,
-          metricStyle = _this$props.metricStyle;
-      /* eslint-enable prettier/prettier */
-
-      var contrastOptions = {
-        lightColor: (0, color_library_wrappers_1.colorToRgba)(metricStyle.textLightColor),
-        darkColor: (0, color_library_wrappers_1.colorToRgba)(metricStyle.textDarkColor)
-      };
-
-      if (!initialized || size.width === 0 || size.height === 0 || !spec) {
-        return null;
-      }
-
-      var valueLabels = (0, spec_1.mergeValueLabels)(spec.valueLabels);
-      return react_1["default"].createElement("figure", {
-        "aria-labelledby": a11y.labelId,
-        "aria-describedby": a11y.descriptionId,
-        style: {
-          width: '100%',
-          height: '100%'
-        }
-      }, react_1["default"].createElement("canvas", {
-        ref: forwardStageRef,
-        className: "echCanvasRenderer",
-        width: size.width * this.devicePixelRatio,
-        height: size.height * this.devicePixelRatio,
-        style: size,
-        // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-        role: "presentation"
-      }, react_1["default"].createElement(accessibility_1.ScreenReaderSummary, null)), dimensions.shouldRenderMetric && react_1["default"].createElement("div", {
-        className: "echBulletAsMetric",
-        style: {
-          width: '100%',
-          height: '100%'
-        }
-      }, react_1["default"].createElement(aligned_grid_1.AlignedGrid, {
-        data: spec.data,
-        contentComponent: function contentComponent(_ref) {
-          var _this2$props$dimensio, _this2$props$dimensio2, _this2$props$dimensio3;
-
-          var datum = _ref.datum,
-              stats = _ref.stats;
-          var colorScale = (_this2$props$dimensio = (_this2$props$dimensio2 = _this2.props.dimensions.rows[stats.rowIndex]) === null || _this2$props$dimensio2 === void 0 ? void 0 : (_this2$props$dimensio3 = _this2$props$dimensio2[stats.columnIndex]) === null || _this2$props$dimensio3 === void 0 ? void 0 : _this2$props$dimensio3.colorScale) !== null && _this2$props$dimensio !== void 0 ? _this2$props$dimensio : function () {
-            return {
-              hex: function hex() {
-                return _this2.props.style.fallbackBandColor;
-              }
-            };
-          }; // should never happen
-
-          var bulletDatum = {
-            value: datum.value,
-            target: datum.target,
-            valueFormatter: datum.valueFormatter,
-            targetFormatter: datum.targetFormatter,
-            color: style.barBackground,
-            progressBarDirection: spec.subtype === spec_1.BulletSubtype.vertical ? 'vertical' : 'horizontal',
-            title: datum.title,
-            subtitle: datum.subtitle,
-            domain: datum.domain,
-            niceDomain: datum.niceDomain,
-            valueLabels: valueLabels,
-            extra: datum.target ? {
-              value: datum.target.toString(),
-              label: valueLabels.target + ":"
-            } : undefined
-          };
-          var bulletToMetricStyle = (0, common_1.mergePartial)(metricStyle, {
-            fontFamily: style.fontFamily,
-            barBackground: colorScale(datum.value).hex(),
-            emptyBackground: colors_1.Colors.Transparent.keyword,
-            border: 'gray',
-            minHeight: 0,
-            textLightColor: 'white',
-            textDarkColor: 'black',
-            nonFiniteText: 'N/A',
-            valueFontSize: 'default'
-          });
-          var panel = {
-            width: size.width / stats.columns,
-            height: size.height / stats.rows
-          };
-          var textDimensions = (0, text_measurements_1.getMetricTextPartDimensions)(bulletDatum, panel, bulletToMetricStyle, locale);
-          var fittedValueFontSize = (0, text_measurements_1.getFitValueFontSize)(textDimensions.heightBasedSizes.valueFontSize, panel.width - textDimensions.progressBarWidth, textDimensions.visibility.availableHeightWithoutValue, textDimensions.textParts, bulletToMetricStyle.minValueFontSize, false, false, textDimensions.metricSpacing.panelPadding, bulletToMetricStyle.fontFamily);
-          var sizes = (0, text_measurements_1.getSnappedFontSizes)(fittedValueFontSize, panel.height, bulletToMetricStyle);
-          textDimensions.heightBasedSizes.valueFontSize = sizes.valueFontSize;
-          textDimensions.heightBasedSizes.valuePartFontSize = sizes.valuePartFontSize;
-          return react_1["default"].createElement(metric_1.Metric, {
-            chartId: _this2.props.chartId + "-" + stats.rowIndex + "-" + stats.columnIndex,
-            datum: bulletDatum,
-            hasTitles: _this2.props.hasTitles,
-            totalRows: stats.rows,
-            totalColumns: stats.columns,
-            columnIndex: stats.columnIndex,
-            rowIndex: stats.rowIndex,
-            style: bulletToMetricStyle,
-            backgroundColor: backgroundColor,
-            contrastOptions: contrastOptions,
-            textDimensions: textDimensions
-          });
-        }
-      }), ");"));
-    }
-  }]);
-
-  return Component;
-}(react_1["default"].Component);
+  }, react_1["default"].createElement(metric_grid_1.BulletMetricGrid, {
+    dimensions: dimensions,
+    style: style,
+    spec: spec,
+    metricStyle: metricStyle,
+    size: size,
+    locale: locale,
+    chartId: chartId,
+    hasTitles: hasTitles,
+    backgroundColor: backgroundColor
+  })));
+};
 
 Component.displayName = 'Bullet';
 
@@ -5285,14 +5160,14 @@ var mapStateToProps = function mapStateToProps(state) {
     return DEFAULT_PROPS;
   }
 
-  var _ref2 = (0, get_chart_theme_1.getChartThemeSelector)(state),
-      style = _ref2.bulletGraph,
-      metricStyle = _ref2.metric;
+  var _ref = (0, get_chart_theme_1.getChartThemeSelector)(state),
+      style = _ref.bulletGraph,
+      metricStyle = _ref.metric;
 
-  var _ref3 = (0, get_settings_spec_1.getSettingsSpecSelector)(state),
-      debug = _ref3.debug,
-      onElementOver = _ref3.onElementOver,
-      locale = _ref3.locale;
+  var _ref2 = (0, get_settings_spec_1.getSettingsSpecSelector)(state),
+      debug = _ref2.debug,
+      onElementOver = _ref2.onElementOver,
+      locale = _ref2.locale;
 
   return {
     initialized: true,
@@ -5316,6 +5191,230 @@ var mapStateToProps = function mapStateToProps(state) {
 
 
 exports.BulletRenderer = (0, react_redux_1.connect)(mapStateToProps, mapDispatchToProps)(Component);
+
+/***/ }),
+
+/***/ "../packages/charts/src/chart_types/bullet_graph/renderer/canvas/metric_grid.tsx":
+/*!***************************************************************************************!*\
+  !*** ../packages/charts/src/chart_types/bullet_graph/renderer/canvas/metric_grid.tsx ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.create.js */ "../node_modules/core-js/modules/es.object.create.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.get-own-property-descriptor.js */ "../node_modules/core-js/modules/es.object.get-own-property-descriptor.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-property.js */ "../node_modules/core-js/modules/es.object.define-property.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.to-string.js */ "../node_modules/core-js/modules/es.object.to-string.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.regexp.to-string.js */ "../node_modules/core-js/modules/es.regexp.to-string.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.date.to-string.js */ "../node_modules/core-js/modules/es.date.to-string.js");
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BulletMetricGrid = void 0;
+
+var react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
+
+var color_library_wrappers_1 = __webpack_require__(/*! ../../../../common/color_library_wrappers */ "../packages/charts/src/common/color_library_wrappers.ts");
+
+var colors_1 = __webpack_require__(/*! ../../../../common/colors */ "../packages/charts/src/common/colors.tsx");
+
+var aligned_grid_1 = __webpack_require__(/*! ../../../../components/grid/aligned_grid */ "../packages/charts/src/components/grid/aligned_grid.tsx");
+
+var common_1 = __webpack_require__(/*! ../../../../utils/common */ "../packages/charts/src/utils/common.tsx");
+
+var metric_1 = __webpack_require__(/*! ../../../metric/renderer/dom/metric */ "../packages/charts/src/chart_types/metric/renderer/dom/metric.tsx");
+
+var text_measurements_1 = __webpack_require__(/*! ../../../metric/renderer/dom/text_measurements */ "../packages/charts/src/chart_types/metric/renderer/dom/text_measurements.tsx");
+
+var spec_1 = __webpack_require__(/*! ../../spec */ "../packages/charts/src/chart_types/bullet_graph/spec.ts");
+
+var BulletMetric = function BulletMetric(_ref) {
+  var datum = _ref.datum,
+      stats = _ref.stats,
+      dimensions = _ref.dimensions,
+      style = _ref.style,
+      spec = _ref.spec,
+      metricStyle = _ref.metricStyle,
+      size = _ref.size,
+      locale = _ref.locale,
+      chartId = _ref.chartId,
+      hasTitles = _ref.hasTitles,
+      backgroundColor = _ref.backgroundColor,
+      contrastOptions = _ref.contrastOptions;
+  var width = size.width / stats.columns;
+  var height = size.height / stats.rows;
+  var bulletDatum = (0, react_1.useMemo)(function () {
+    var valueLabels = (0, spec_1.mergeValueLabels)(spec.valueLabels);
+    return {
+      value: datum.value,
+      target: datum.target,
+      valueFormatter: datum.valueFormatter,
+      targetFormatter: datum.targetFormatter,
+      color: style.barBackground,
+      progressBarDirection: spec.subtype === spec_1.BulletSubtype.vertical ? 'vertical' : 'horizontal',
+      title: datum.title,
+      subtitle: datum.subtitle,
+      domain: datum.domain,
+      niceDomain: datum.niceDomain,
+      valueLabels: valueLabels,
+      extra: datum.target ? {
+        value: datum.target.toString(),
+        label: valueLabels.target + ":"
+      } : undefined
+    };
+  }, [datum, style.barBackground, spec.subtype, spec.valueLabels]);
+  var colorScale = (0, react_1.useMemo)(function () {
+    var _dimensions$rows$stat, _dimensions$rows$stat2, _dimensions$rows$stat3;
+
+    return (_dimensions$rows$stat = (_dimensions$rows$stat2 = dimensions.rows[stats.rowIndex]) === null || _dimensions$rows$stat2 === void 0 ? void 0 : (_dimensions$rows$stat3 = _dimensions$rows$stat2[stats.columnIndex]) === null || _dimensions$rows$stat3 === void 0 ? void 0 : _dimensions$rows$stat3.colorScale) !== null && _dimensions$rows$stat !== void 0 ? _dimensions$rows$stat : function () {
+      return {
+        hex: function hex() {
+          return style.fallbackBandColor;
+        }
+      };
+    };
+  }, // should never happen
+  [dimensions.rows, stats.rowIndex, stats.columnIndex, style.fallbackBandColor]);
+  var bulletToMetricStyle = (0, react_1.useMemo)(function () {
+    return (0, common_1.mergePartial)(metricStyle, {
+      fontFamily: style.fontFamily,
+      barBackground: colorScale(datum.value).hex(),
+      emptyBackground: colors_1.Colors.Transparent.keyword,
+      border: 'gray',
+      minHeight: 0,
+      textLightColor: 'white',
+      textDarkColor: 'black',
+      nonFiniteText: 'N/A',
+      valueFontSize: 'default'
+    });
+  }, [metricStyle, style.fontFamily, colorScale, datum.value]);
+  var textDimensions = (0, react_1.useMemo)(function () {
+    var dimensionsForText = (0, text_measurements_1.getMetricTextPartDimensions)(bulletDatum, {
+      width: width,
+      height: height
+    }, bulletToMetricStyle, locale);
+    var fittedValueFontSize = (0, text_measurements_1.getFitValueFontSize)(dimensionsForText.heightBasedSizes.valueFontSize, width - dimensionsForText.progressBarWidth, dimensionsForText.visibility.availableHeightWithoutValue, dimensionsForText.textParts, bulletToMetricStyle.minValueFontSize, false, false, dimensionsForText.metricSpacing.panelPadding, bulletToMetricStyle.fontFamily);
+    var sizes = (0, text_measurements_1.getSnappedFontSizes)(fittedValueFontSize, height, bulletToMetricStyle);
+    dimensionsForText.heightBasedSizes.valueFontSize = sizes.valueFontSize;
+    dimensionsForText.heightBasedSizes.valuePartFontSize = sizes.valuePartFontSize;
+    return dimensionsForText;
+  }, [bulletDatum, bulletToMetricStyle, locale, width, height]);
+  return react_1["default"].createElement(metric_1.Metric, {
+    chartId: chartId + "-" + stats.rowIndex + "-" + stats.columnIndex,
+    datum: bulletDatum,
+    hasTitles: hasTitles,
+    totalRows: stats.rows,
+    totalColumns: stats.columns,
+    columnIndex: stats.columnIndex,
+    rowIndex: stats.rowIndex,
+    style: bulletToMetricStyle,
+    backgroundColor: backgroundColor,
+    contrastOptions: contrastOptions,
+    textDimensions: textDimensions
+  });
+};
+/** @internal */
+
+
+exports.BulletMetricGrid = react_1["default"].memo(function (_ref2) {
+  var dimensions = _ref2.dimensions,
+      style = _ref2.style,
+      spec = _ref2.spec,
+      metricStyle = _ref2.metricStyle,
+      size = _ref2.size,
+      locale = _ref2.locale,
+      chartId = _ref2.chartId,
+      hasTitles = _ref2.hasTitles,
+      backgroundColor = _ref2.backgroundColor;
+  var contrastOptions = (0, react_1.useMemo)(function () {
+    return {
+      lightColor: (0, color_library_wrappers_1.colorToRgba)(metricStyle.textLightColor),
+      darkColor: (0, color_library_wrappers_1.colorToRgba)(metricStyle.textDarkColor)
+    };
+  }, [metricStyle.textLightColor, metricStyle.textDarkColor]);
+
+  var renderMetricContent = function renderMetricContent(_ref3) {
+    var datum = _ref3.datum,
+        stats = _ref3.stats;
+    return react_1["default"].createElement(BulletMetric, {
+      datum: datum,
+      stats: stats,
+      dimensions: dimensions,
+      style: style,
+      spec: spec,
+      metricStyle: metricStyle,
+      size: size,
+      locale: locale,
+      chartId: chartId,
+      hasTitles: hasTitles,
+      backgroundColor: backgroundColor,
+      contrastOptions: contrastOptions
+    });
+  };
+
+  return react_1["default"].createElement(aligned_grid_1.AlignedGrid, {
+    data: spec.data,
+    contentComponent: renderMetricContent
+  });
+});
+exports.BulletMetricGrid.displayName = 'BulletMetricGrid';
 
 /***/ }),
 
@@ -5408,7 +5507,7 @@ var constants_1 = __webpack_require__(/*! ../constants */ "../packages/charts/sr
 /** @internal */
 
 
-function angularBullet(ctx, dimensions, style, backgroundColor, spec, debug, activeValue) {
+function angularBullet(ctx, dimensions, style, backgroundColor, hasStroke, spec, debug, activeValue) {
   var tickFont = (0, theme_1.getTickFont)(style.fontFamily);
   var datum = dimensions.datum,
       graphArea = dimensions.graphArea,
@@ -5419,24 +5518,16 @@ function angularBullet(ctx, dimensions, style, backgroundColor, spec, debug, act
   var _ref = (0, angular_1.getAngledChartSizing)(graphArea.size, spec.subtype),
       radius = _ref.radius;
 
-  var _scale$range = scale.range(),
-      _scale$range2 = _slicedToArray(_scale$range, 2),
-      startAngle = _scale$range2[0],
-      endAngle = _scale$range2[1];
+  var _scale$domain = scale.domain(),
+      _scale$domain2 = _slicedToArray(_scale$domain, 2),
+      start = _scale$domain2[0],
+      end = _scale$domain2[1];
 
   var center = {
     x: graphArea.center.x,
     y: radius + constants_1.TARGET_SIZE / 2
   };
   ctx.translate(theme_1.GRAPH_PADDING.left, theme_1.GRAPH_PADDING.top);
-
-  var _scale$domain = scale.domain(),
-      _scale$domain2 = _slicedToArray(_scale$domain, 2),
-      start = _scale$domain2[0],
-      end = _scale$domain2[1]; // const counterClockwise = true;
-
-
-  var counterClockwise = startAngle < endAngle && start > end;
 
   var _ref2 = (0, common_1.sortNumbers)([start, end]),
       _ref3 = _slicedToArray(_ref2, 2),
@@ -5471,15 +5562,46 @@ function angularBullet(ctx, dimensions, style, backgroundColor, spec, debug, act
   });
   ctx.stroke(); // Bar
 
-  var confinedValue = (0, common_1.clamp)(datum.value, min, max);
-  var adjustedZero = (0, common_1.clamp)(0, min, max);
-  ctx.beginPath();
-  ctx.lineWidth = constants_1.BAR_SIZE;
-  ctx.strokeStyle = style.barBackground;
-  ctx.arc(center.x, center.y, radius, confinedValue > 0 ? scale(adjustedZero) : scale(confinedValue), confinedValue > 0 ? scale(confinedValue) : scale(adjustedZero), counterClockwise);
-  ctx.stroke(); // Target
+  var value = scale((0, common_1.clamp)(datum.value, min, max));
+  var zero = scale((0, common_1.clamp)(0, min, max));
+  var counterClockwise = value < zero;
+  ctx.save();
+  ctx.lineCap = 'butt';
+
+  if (hasStroke) {
+    var arcDirection = counterClockwise ? -1 : 1;
+    var innerArcOffset = constants_1.BAR_STROKE_WIDTH / radius;
+    var overflows = datum.value > max || datum.value < min;
+    var innerValue = overflows ? value : (0, common_1.clamp)(value - innerArcOffset * arcDirection, Math.min(zero, value), Math.max(zero, value));
+    ctx.beginPath();
+    ctx.lineWidth = constants_1.BAR_SIZE;
+    ctx.strokeStyle = backgroundColor;
+    ctx.arc(center.x, center.y, radius, zero, value, counterClockwise);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.lineWidth = constants_1.BAR_SIZE - constants_1.BAR_STROKE_WIDTH * 2;
+    ctx.strokeStyle = style.barBackground;
+    ctx.arc(center.x, center.y, radius, zero, innerValue, counterClockwise);
+    ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.lineWidth = constants_1.BAR_SIZE;
+    ctx.strokeStyle = style.barBackground;
+    ctx.arc(center.x, center.y, radius, zero, value, counterClockwise);
+    ctx.stroke();
+  }
+
+  ctx.restore(); // Target
 
   if ((0, common_1.isFiniteNumber)(datum.target) && datum.target <= max && datum.target >= min) {
+    if (hasStroke) {
+      ctx.beginPath();
+      ctx.strokeStyle = backgroundColor;
+      ctx.lineWidth = constants_1.TARGET_STROKE_WIDTH + constants_1.BAR_STROKE_WIDTH * 2;
+      (0, lines_1.drawPolarLine)(ctx, scale(datum.target), radius, constants_1.TARGET_SIZE, center);
+      ctx.stroke();
+    }
+
     ctx.beginPath();
     ctx.strokeStyle = style.barBackground;
     ctx.lineWidth = constants_1.TARGET_STROKE_WIDTH;
@@ -5513,9 +5635,9 @@ function angularBullet(ctx, dimensions, style, backgroundColor, spec, debug, act
   }).forEach(function (tick) {
     ctx.textAlign = 'center';
     var textPadding = style.angularTickLabelPadding + maxTickWidth / 2;
-    var start = scale(tick.value);
-    var y1 = Math.sin(start) * (radius - constants_1.BULLET_SIZE / 2 - textPadding);
-    var x1 = Math.cos(start) * (radius - constants_1.BULLET_SIZE / 2 - textPadding);
+    var tickAngle = scale(tick.value);
+    var y1 = Math.sin(tickAngle) * (radius - constants_1.BULLET_SIZE / 2 - textPadding);
+    var x1 = Math.cos(tickAngle) * (radius - constants_1.BULLET_SIZE / 2 - textPadding);
     ctx.fillText(tick.formattedValue, center.x + x1, center.y + y1);
   });
 
@@ -5601,7 +5723,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.horizontalBullet = horizontalBullet;
 
+var color_library_wrappers_1 = __webpack_require__(/*! ../../../../../common/color_library_wrappers */ "../packages/charts/src/common/color_library_wrappers.ts");
+
 var text_utils_1 = __webpack_require__(/*! ../../../../../common/text_utils */ "../packages/charts/src/common/text_utils.ts");
+
+var rect_1 = __webpack_require__(/*! ../../../../../renderers/canvas/primitives/rect */ "../packages/charts/src/renderers/canvas/primitives/rect.ts");
 
 var canvas_text_bbox_calculator_1 = __webpack_require__(/*! ../../../../../utils/bbox/canvas_text_bbox_calculator */ "../packages/charts/src/utils/bbox/canvas_text_bbox_calculator.ts");
 
@@ -5613,7 +5739,7 @@ var constants_1 = __webpack_require__(/*! ../constants */ "../packages/charts/sr
 /** @internal */
 
 
-function horizontalBullet(ctx, dimensions, style, backgroundColor, activeValue) {
+function horizontalBullet(ctx, dimensions, style, backgroundColor, hasStroke, activeValue) {
   var tickFont = (0, theme_1.getTickFont)(style.fontFamily);
   ctx.translate(theme_1.GRAPH_PADDING.left, 0);
   var datum = dimensions.datum,
@@ -5649,13 +5775,56 @@ function horizontalBullet(ctx, dimensions, style, backgroundColor, activeValue) 
   });
   ctx.stroke(); // Bar
 
+  var overflows = datum.value > max || datum.value < min;
   var confinedValue = (0, common_1.clamp)(datum.value, min, max);
   var adjustedZero = (0, common_1.clamp)(0, min, max);
+  var x0 = scale(adjustedZero);
+  var x1 = scale(confinedValue);
+  var y = verticalAlignment - constants_1.BAR_SIZE / 2;
   ctx.fillStyle = style.barBackground;
-  ctx.fillRect(datum.value > 0 ? scale(adjustedZero) : scale(confinedValue), verticalAlignment - constants_1.BAR_SIZE / 2, confinedValue > 0 ? scale(confinedValue) - scale(adjustedZero) : scale(adjustedZero) - scale(confinedValue), constants_1.BAR_SIZE); // Target
+  ctx.fillRect(x0, verticalAlignment - constants_1.BAR_SIZE / 2, x1 - x0, constants_1.BAR_SIZE);
+
+  if (hasStroke && Math.abs(confinedValue - adjustedZero) > 0) {
+    var strokedSides = {
+      top: true,
+      bottom: true,
+      right: x1 > x0 && !overflows ? true : false,
+      left: x1 < x0 && !overflows ? true : false
+    };
+    (0, rect_1.renderRectStroke)(ctx, {
+      x: x0,
+      y: y,
+      width: x1 - x0,
+      height: constants_1.BAR_SIZE
+    }, {
+      color: (0, color_library_wrappers_1.colorToRgba)(backgroundColor),
+      width: constants_1.BAR_STROKE_WIDTH
+    }, strokedSides);
+  } // Target
+
 
   if ((0, common_1.isFiniteNumber)(datum.target) && datum.target <= max && datum.target >= min) {
-    ctx.fillRect(scale(datum.target) - constants_1.TARGET_STROKE_WIDTH / 2, verticalAlignment - constants_1.TARGET_SIZE / 2, constants_1.TARGET_STROKE_WIDTH, constants_1.TARGET_SIZE);
+    var targetX = scale(datum.target) - constants_1.TARGET_STROKE_WIDTH / 2;
+    var targetY = verticalAlignment - constants_1.TARGET_SIZE / 2;
+
+    if (hasStroke) {
+      (0, rect_1.renderRectStroke)(ctx, {
+        x: targetX,
+        y: targetY,
+        width: constants_1.TARGET_STROKE_WIDTH,
+        height: constants_1.TARGET_SIZE
+      }, {
+        color: (0, color_library_wrappers_1.colorToRgba)(backgroundColor),
+        width: constants_1.TARGET_STROKE_WIDTH + constants_1.BAR_STROKE_WIDTH
+      }, {
+        top: true,
+        right: true,
+        bottom: true,
+        left: true
+      });
+    }
+
+    ctx.fillRect(targetX, targetY, constants_1.TARGET_STROKE_WIDTH, constants_1.TARGET_SIZE);
   } // Zero baseline
 
 
@@ -5795,6 +5964,8 @@ __webpack_require__(/*! ../node_modules/core-js/modules/web.dom-collections.for-
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.array.reverse.js */ "../node_modules/core-js/modules/es.array.reverse.js");
 
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.slice.js */ "../node_modules/core-js/modules/es.array.slice.js");
+
 __webpack_require__(/*! ../node_modules/core-js/modules/es.array.filter.js */ "../node_modules/core-js/modules/es.array.filter.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.array.is-array.js */ "../node_modules/core-js/modules/es.array.is-array.js");
@@ -5813,8 +5984,6 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.array.iterator.js */ 
 
 __webpack_require__(/*! ../node_modules/core-js/modules/web.dom-collections.iterator.js */ "../node_modules/core-js/modules/web.dom-collections.iterator.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.slice.js */ "../node_modules/core-js/modules/es.array.slice.js");
-
 __webpack_require__(/*! ../node_modules/core-js/modules/es.function.name.js */ "../node_modules/core-js/modules/es.function.name.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.array.from.js */ "../node_modules/core-js/modules/es.array.from.js");
@@ -5824,7 +5993,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.verticalBullet = verticalBullet;
 
+var color_library_wrappers_1 = __webpack_require__(/*! ../../../../../common/color_library_wrappers */ "../packages/charts/src/common/color_library_wrappers.ts");
+
 var text_utils_1 = __webpack_require__(/*! ../../../../../common/text_utils */ "../packages/charts/src/common/text_utils.ts");
+
+var rect_1 = __webpack_require__(/*! ../../../../../renderers/canvas/primitives/rect */ "../packages/charts/src/renderers/canvas/primitives/rect.ts");
 
 var common_1 = __webpack_require__(/*! ../../../../../utils/common */ "../packages/charts/src/utils/common.tsx");
 
@@ -5834,7 +6007,7 @@ var constants_1 = __webpack_require__(/*! ../constants */ "../packages/charts/sr
 /** @internal */
 
 
-function verticalBullet(ctx, dimensions, style, backgroundColor, activeValue) {
+function verticalBullet(ctx, dimensions, style, backgroundColor, hasStroke, activeValue) {
   var tickFont = (0, theme_1.getTickFont)(style.fontFamily);
   ctx.translate(0, theme_1.GRAPH_PADDING.top);
   var datum = dimensions.datum,
@@ -5855,7 +6028,7 @@ function verticalBullet(ctx, dimensions, style, backgroundColor, activeValue) {
 
   var graphPaddedHeight = graphArea.size.height - theme_1.GRAPH_PADDING.bottom - theme_1.GRAPH_PADDING.top; // color bands
 
-  colorBands.reverse().forEach(function (band) {
+  colorBands.slice().reverse().forEach(function (band) {
     ctx.fillStyle = band.color;
     ctx.fillRect(graphArea.size.width / 2 - constants_1.BULLET_SIZE / 2, graphPaddedHeight - band.start - band.size, constants_1.BULLET_SIZE, band.size);
   }); // Ticks
@@ -5871,13 +6044,56 @@ function verticalBullet(ctx, dimensions, style, backgroundColor, activeValue) {
   });
   ctx.stroke(); // Bar
 
+  var overflows = datum.value > max || datum.value < min;
   var confinedValue = (0, common_1.clamp)(datum.value, min, max);
   var adjustedZero = (0, common_1.clamp)(0, min, max);
+  var x = graphArea.size.width / 2 - constants_1.BAR_SIZE / 2;
+  var y0 = graphPaddedHeight - scale(adjustedZero);
+  var y1 = graphPaddedHeight - scale(confinedValue);
   ctx.fillStyle = style.barBackground;
-  ctx.fillRect(graphArea.size.width / 2 - constants_1.BAR_SIZE / 2, confinedValue > 0 ? graphPaddedHeight - scale(confinedValue) : graphPaddedHeight - scale(adjustedZero), constants_1.BAR_SIZE, confinedValue > 0 ? scale(confinedValue) - scale(adjustedZero) : scale(adjustedZero) - scale(confinedValue)); // Target
+  ctx.fillRect(x, y0, constants_1.BAR_SIZE, y1 - y0);
+
+  if (hasStroke && Math.abs(confinedValue - adjustedZero) > 0) {
+    var strokedSides = {
+      top: y0 > y1 && !overflows ? true : false,
+      right: true,
+      bottom: y0 < y1 && !overflows ? true : false,
+      left: true
+    };
+    (0, rect_1.renderRectStroke)(ctx, {
+      x: x,
+      y: y0,
+      width: constants_1.BAR_SIZE,
+      height: y1 - y0
+    }, {
+      color: (0, color_library_wrappers_1.colorToRgba)(backgroundColor),
+      width: constants_1.BAR_STROKE_WIDTH
+    }, strokedSides);
+  } // Target
+
 
   if ((0, common_1.isFiniteNumber)(datum.target) && datum.target <= max && datum.target >= min) {
-    ctx.fillRect(graphArea.size.width / 2 - constants_1.TARGET_SIZE / 2, graphPaddedHeight - scale(datum.target) - constants_1.TARGET_STROKE_WIDTH / 2, constants_1.TARGET_SIZE, constants_1.TARGET_STROKE_WIDTH);
+    var targetX = graphArea.size.width / 2 - constants_1.TARGET_SIZE / 2;
+    var targetY = graphPaddedHeight - scale(datum.target) - constants_1.TARGET_STROKE_WIDTH / 2;
+
+    if (hasStroke) {
+      (0, rect_1.renderRectStroke)(ctx, {
+        x: targetX,
+        y: targetY,
+        width: constants_1.TARGET_SIZE,
+        height: constants_1.TARGET_STROKE_WIDTH
+      }, {
+        color: (0, color_library_wrappers_1.colorToRgba)(backgroundColor),
+        width: constants_1.TARGET_STROKE_WIDTH + constants_1.BAR_STROKE_WIDTH
+      }, {
+        top: true,
+        right: true,
+        bottom: true,
+        left: true
+      });
+    }
+
+    ctx.fillRect(targetX, targetY, constants_1.TARGET_SIZE, constants_1.TARGET_STROKE_WIDTH);
   } // Zero baseline
 
 
@@ -7546,6 +7762,8 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.array.from.js */ "../
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.string.iterator.js */ "../node_modules/core-js/modules/es.string.iterator.js");
 
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.some.js */ "../node_modules/core-js/modules/es.array.some.js");
+
 __webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.js */ "../node_modules/core-js/modules/es.symbol.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.description.js */ "../node_modules/core-js/modules/es.symbol.description.js");
@@ -7572,6 +7790,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ColorBandValueType = void 0;
 exports.getColorScale = getColorScale;
 exports.getColorScaleWithBands = getColorScaleWithBands;
+exports.needsBarBorder = needsBarBorder;
 
 var chroma_js_1 = __importDefault(__webpack_require__(/*! chroma-js */ "../node_modules/chroma-js/chroma.js"));
 
@@ -7914,6 +8133,20 @@ function getColorBands(scale, colorScale, ticks, baseDomain, _ref11) {
   }
 
   return scaledColorBands;
+}
+/** @internal */
+
+
+function needsBarBorder(bands, bar) {
+  return bands.some(function (band) {
+    return (// 20, as per recommendation in https://github.com/Myndex/SAPC-APCA/discussions/117#discussioncomment-9244796 for
+      // semantic non-text elements and considering BAR_SIZE is 12,
+      (0, color_calcs_1.getContrastRecommendation)(band.color, bar, {
+        contrastMode: 'WCAG3',
+        contrastThreshold: 20
+      }).needsBorder
+    );
+  });
 }
 
 /***/ }),
@@ -99151,6 +99384,7 @@ exports.storybookParameters = {
   theme: {
     "default": 'light',
     clearable: false,
+    ignoreQueryParams: false,
     selector: 'html',
     themes: [{
       id: 'light',
@@ -121284,7 +121518,7 @@ exports.Example = void 0;
 // @ts-nocheck
 // @ts-ignore
 
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport {\n  euiPaletteColorBlind,\n  euiPaletteComplementary,\n  euiPaletteCool,\n  euiPaletteForDarkBackground,\n  euiPaletteForLightBackground,\n  euiPaletteForStatus,\n  euiPaletteForTemperature,\n  euiPaletteGray,\n  euiPaletteRed,\n  euiPaletteGreen,\n  euiPaletteWarm,\n} from '@elastic/eui';\nimport { number, boolean, object, color } from '@storybook/addon-knobs';\nimport numeral from 'numeral';\nimport React, { useCallback } from 'react';\n\nimport type { BulletColorConfig, ColorBandSimpleConfig, ColorBandComplexConfig } from '@elastic/charts';\nimport { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme, useThemeId } from '../../use_base_theme';\nimport { customKnobs } from '../utils/knobs';\nimport { getKnobFromEnum } from '../utils/knobs/utils';\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const isDarkTheme = useThemeId().includes('dark');\n  const getPalettes = useCallback(\n    (steps: number) => [\n      ['#164863', '#427D9D', '#9BBEC8', '#DDF2FD'],\n      ['#F1EAFF', '#E5D4FF', '#DCBFFF', '#D0A2F7'],\n      ['#0802A3', '#FF4B91', '#FF7676', '#FFCD4B'],\n      euiPaletteColorBlind(),\n      isDarkTheme ? euiPaletteForDarkBackground() : euiPaletteForLightBackground(),\n      euiPaletteForTemperature(steps),\n      euiPaletteForStatus(steps),\n      euiPaletteComplementary(steps),\n      euiPaletteRed(steps),\n      euiPaletteGreen(steps),\n      euiPaletteCool(steps),\n      euiPaletteWarm(steps),\n      euiPaletteGray(steps),\n    ],\n    [isDarkTheme],\n  );\n\n  // Colors\n  const colorOptionIndex = getKnobFromEnum(\n    'color config',\n    {\n      '1 Single Color': 1,\n      '2 Array of Colors via palettes': 2,\n      '3 Array with options': 3,\n      '4 Fully custom bands': 4,\n    },\n    1,\n    { group: 'Color Bands' },\n  );\n  const colorBands1 = color('Config 1 - Color', 'RGBA(70, 130, 96, 1)', 'Color Bands');\n  const colorBands2 = getKnobFromEnum(\n    'Config 2 - Palette',\n    {\n      Navy: 0,\n      Pink: 1,\n      Mixed: 2,\n      'eui Palette color blind': 3,\n      'eui Palette For Temperature': 4,\n      'eui Palette For Status': 5,\n      'eui Palette Complementary': 6,\n      'eui Palette Negative': 7,\n      'eui Palette Positive': 8,\n      'eui Palette Cool': 9,\n      'eui Palette Warm': 10,\n      'eui Palette Gray': 11,\n    },\n    0,\n    { group: 'Color Bands' },\n  );\n  const colorBands2Steps = number('Config 2 - Steps', 5, { min: 1, max: 10, range: true, step: 1 }, 'Color Bands');\n  const colorBands2Reverse = boolean('Config 2 - Reverse', false, 'Color Bands');\n\n  const colorBands3 = object<ColorBandSimpleConfig>(\n    'Config 3 - json',\n    {\n      steps: 5,\n      colors: ['pink', 'yellow', 'blue'],\n    },\n    'Color Bands',\n  );\n  const colorBands4 = object<ColorBandComplexConfig>(\n    'Config 4 - json',\n    [\n      { color: 'red', gte: 0, lt: 20 },\n      { color: 'green', gte: 20, lte: 40 },\n      {\n        color: 'blue',\n        gt: 40,\n        lte: {\n          type: 'percentage',\n          value: 100,\n        },\n      },\n    ],\n    'Color Bands',\n  );\n  const palette = getPalettes(colorBands2Steps)[colorBands2];\n  const colorOptions = [, [colorBands1], colorBands2Reverse ? palette.reverse() : palette, colorBands3, colorBands4];\n\n  // Domain\n  const start = number('start', 0, { range: true, min: -200, max: 200 }, 'Domain');\n  const end = number('end', 100, { range: true, min: -200, max: 200 }, 'Domain');\n  const value = number('value', 56, { range: true, min: -200, max: 200 }, 'Domain');\n  const target = number('target', 75, { range: true, min: -200, max: 200 }, 'Domain');\n\n  // Ticks\n  const niceDomain = boolean('niceDomain', false, 'Ticks');\n  const tickStrategy = customKnobs.multiSelect(\n    'tick strategy',\n    {\n      Auto: 'auto',\n      TickCount: 'count',\n      TickPlacements: 'placements',\n    },\n    'auto',\n    'select',\n    'Ticks',\n  );\n  const ticks = number('ticks(approx. count)', 5, { min: 0, step: 1 }, 'Ticks');\n  const tickPlacements = customKnobs.numbersArray(\n    'ticks(placements)',\n    [-200, -100, 0, 5, 10, 15, 20, 25, 50, 100, 200],\n    undefined,\n    'Ticks',\n  );\n\n  // Other\n  const debug = boolean('debug', false);\n  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.horizontal);\n\n  const formatter = (d: number) => numeral(d).format('0.[0]');\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings debug={debug} baseTheme={useBaseTheme()} />\n      <Bullet\n        id=\"bullet\"\n        subtype={subtype}\n        colorBands={colorOptions[colorOptionIndex] as BulletColorConfig}\n        data={[\n          [\n            {\n              target,\n              value,\n              title: 'The Title',\n              subtitle: 'The Subtitle',\n              domain: [start, end],\n              niceDomain,\n              ticks:\n                tickStrategy[0] === 'count'\n                  ? ticks\n                  : tickStrategy[0] === 'placements'\n                    ? () => tickPlacements\n                    : undefined,\n              valueFormatter: formatter,\n              tickFormatter: formatter,\n            },\n          ],\n        ]}\n      />\n    </Chart>\n  );\n};\n\nExample.parameters = {\n  resize: {\n    width: 500,\n    height: 500,\n    boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',\n    borderRadius: '6px',\n  },\n};\n"; // @ts-ignore
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport {\n  euiPaletteColorBlind,\n  euiPaletteComplementary,\n  euiPaletteCool,\n  euiPaletteForDarkBackground,\n  euiPaletteForLightBackground,\n  euiPaletteForStatus,\n  euiPaletteForTemperature,\n  euiPaletteGray,\n  euiPaletteRed,\n  euiPaletteGreen,\n  euiPaletteWarm,\n} from '@elastic/eui';\nimport { number, boolean, object, color } from '@storybook/addon-knobs';\nimport numeral from 'numeral';\nimport React, { useCallback } from 'react';\n\nimport type { BulletColorConfig, ColorBandSimpleConfig, ColorBandComplexConfig } from '@elastic/charts';\nimport { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme, useThemeId } from '../../use_base_theme';\nimport { customKnobs } from '../utils/knobs';\nimport { getKnobFromEnum } from '../utils/knobs/utils';\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const baseTheme = useBaseTheme();\n  const themeId = useThemeId();\n  const isDarkTheme = themeId.includes('dark');\n  const getPalettes = useCallback(\n    (steps: number) => [\n      ['#164863', '#427D9D', '#9BBEC8', '#DDF2FD'],\n      ['#F1EAFF', '#E5D4FF', '#DCBFFF', '#D0A2F7'],\n      ['#0802A3', '#FF4B91', '#FF7676', '#FFCD4B'],\n      euiPaletteColorBlind(),\n      isDarkTheme ? euiPaletteForDarkBackground() : euiPaletteForLightBackground(),\n      euiPaletteForTemperature(steps),\n      euiPaletteForStatus(steps),\n      euiPaletteComplementary(steps),\n      euiPaletteRed(steps),\n      euiPaletteGreen(steps),\n      euiPaletteCool(steps),\n      euiPaletteWarm(steps),\n      euiPaletteGray(steps),\n      ['#202020', '#404040', '#606060', '#808080'],\n    ],\n    [isDarkTheme],\n  );\n\n  // Colors\n  const colorOptionIndex = getKnobFromEnum(\n    'color config',\n    {\n      '1 Single Color': 1,\n      '2 Array of Colors via palettes': 2,\n      '3 Array with options': 3,\n      '4 Fully custom bands': 4,\n    },\n    1,\n    { group: 'Color Bands' },\n  );\n  const colorBands1 = color('Config 1 - Color', 'RGBA(70, 130, 96, 1)', 'Color Bands');\n  const colorBands2 = getKnobFromEnum(\n    'Config 2 - Palette',\n    {\n      Navy: 0,\n      Pink: 1,\n      Mixed: 2,\n      'eui Palette color blind': 3,\n      'eui Palette For Background': 4,\n      'eui Palette For Temperature': 5,\n      'eui Palette For Status': 6,\n      'eui Palette Complementary': 7,\n      'eui Palette Negative': 8,\n      'eui Palette Positive': 9,\n      'eui Palette Cool': 10,\n      'eui Palette Warm': 11,\n      'eui Palette Gray': 12,\n      'Dark Gray': 13,\n    },\n    0,\n    { group: 'Color Bands' },\n  );\n  const colorBands2Steps = number('Config 2 - Steps', 5, { min: 1, max: 10, range: true, step: 1 }, 'Color Bands');\n  const colorBands2Reverse = boolean('Config 2 - Reverse', false, 'Color Bands');\n\n  const colorBands3 = object<ColorBandSimpleConfig>(\n    'Config 3 - json',\n    {\n      steps: 5,\n      colors: ['pink', 'yellow', 'blue'],\n    },\n    'Color Bands',\n  );\n  const colorBands4 = object<ColorBandComplexConfig>(\n    'Config 4 - json',\n    [\n      { color: 'red', gte: 0, lt: 20 },\n      { color: 'green', gte: 20, lte: 40 },\n      {\n        color: 'blue',\n        gt: 40,\n        lte: {\n          type: 'percentage',\n          value: 100,\n        },\n      },\n    ],\n    'Color Bands',\n  );\n  const palette = getPalettes(colorBands2Steps)[colorBands2];\n  const colorOptions = [, [colorBands1], colorBands2Reverse ? palette.reverse() : palette, colorBands3, colorBands4];\n\n  // Domain\n  const start = number('start', 0, { range: true, min: -200, max: 200 }, 'Domain');\n  const end = number('end', 100, { range: true, min: -200, max: 200 }, 'Domain');\n  const value = number('value', 56, { range: true, min: -200, max: 200 }, 'Domain');\n  const target = number('target', 75, { range: true, min: -200, max: 200 }, 'Domain');\n\n  // Ticks\n  const niceDomain = boolean('niceDomain', false, 'Ticks');\n  const tickStrategy = customKnobs.multiSelect(\n    'tick strategy',\n    {\n      Auto: 'auto',\n      TickCount: 'count',\n      TickPlacements: 'placements',\n    },\n    'auto',\n    'select',\n    'Ticks',\n  );\n  const ticks = number('ticks(approx. count)', 5, { min: 0, step: 1 }, 'Ticks');\n  const tickPlacements = customKnobs.numbersArray(\n    'ticks(placements)',\n    [-200, -100, 0, 5, 10, 15, 20, 25, 50, 100, 200],\n    undefined,\n    'Ticks',\n  );\n\n  // Other\n  const debug = boolean('debug', false);\n  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.horizontal);\n\n  const formatter = (d: number) => numeral(d).format('0.[0]');\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings debug={debug} baseTheme={baseTheme} />\n      <Bullet\n        id=\"bullet\"\n        subtype={subtype}\n        colorBands={colorOptions[colorOptionIndex] as BulletColorConfig}\n        data={[\n          [\n            {\n              target,\n              value,\n              title: 'The Title',\n              subtitle: 'The Subtitle',\n              domain: [start, end],\n              niceDomain,\n              ticks:\n                tickStrategy[0] === 'count'\n                  ? ticks\n                  : tickStrategy[0] === 'placements'\n                    ? () => tickPlacements\n                    : undefined,\n              valueFormatter: formatter,\n              tickFormatter: formatter,\n            },\n          ],\n        ]}\n      />\n    </Chart>\n  );\n};\n\nExample.parameters = {\n  resize: {\n    width: 500,\n    height: 500,\n    boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',\n    borderRadius: '6px',\n  },\n};\n"; // @ts-ignore
 
 var __LOCATIONS_MAP__ = {
   "Example": {
@@ -121294,7 +121528,7 @@ var __LOCATIONS_MAP__ = {
     },
     "endLoc": {
       "col": 1,
-      "line": 180
+      "line": 185
     },
     "startBody": {
       "col": 36,
@@ -121302,7 +121536,7 @@ var __LOCATIONS_MAP__ = {
     },
     "endBody": {
       "col": 1,
-      "line": 180
+      "line": 185
     }
   }
 };
@@ -121333,9 +121567,11 @@ var utils_1 = __webpack_require__(/*! ../utils/knobs/utils */ "./stories/utils/k
 var Example = function Example(_, _ref) {
   var title = _ref.title,
       description = _ref.description;
-  var isDarkTheme = (0, use_base_theme_1.useThemeId)().includes('dark');
+  var baseTheme = (0, use_base_theme_1.useBaseTheme)();
+  var themeId = (0, use_base_theme_1.useThemeId)();
+  var isDarkTheme = themeId.includes('dark');
   var getPalettes = (0, react_1.useCallback)(function (steps) {
-    return [['#164863', '#427D9D', '#9BBEC8', '#DDF2FD'], ['#F1EAFF', '#E5D4FF', '#DCBFFF', '#D0A2F7'], ['#0802A3', '#FF4B91', '#FF7676', '#FFCD4B'], (0, eui_1.euiPaletteColorBlind)(), isDarkTheme ? (0, eui_1.euiPaletteForDarkBackground)() : (0, eui_1.euiPaletteForLightBackground)(), (0, eui_1.euiPaletteForTemperature)(steps), (0, eui_1.euiPaletteForStatus)(steps), (0, eui_1.euiPaletteComplementary)(steps), (0, eui_1.euiPaletteRed)(steps), (0, eui_1.euiPaletteGreen)(steps), (0, eui_1.euiPaletteCool)(steps), (0, eui_1.euiPaletteWarm)(steps), (0, eui_1.euiPaletteGray)(steps)];
+    return [['#164863', '#427D9D', '#9BBEC8', '#DDF2FD'], ['#F1EAFF', '#E5D4FF', '#DCBFFF', '#D0A2F7'], ['#0802A3', '#FF4B91', '#FF7676', '#FFCD4B'], (0, eui_1.euiPaletteColorBlind)(), isDarkTheme ? (0, eui_1.euiPaletteForDarkBackground)() : (0, eui_1.euiPaletteForLightBackground)(), (0, eui_1.euiPaletteForTemperature)(steps), (0, eui_1.euiPaletteForStatus)(steps), (0, eui_1.euiPaletteComplementary)(steps), (0, eui_1.euiPaletteRed)(steps), (0, eui_1.euiPaletteGreen)(steps), (0, eui_1.euiPaletteCool)(steps), (0, eui_1.euiPaletteWarm)(steps), (0, eui_1.euiPaletteGray)(steps), ['#202020', '#404040', '#606060', '#808080']];
   }, [isDarkTheme]); // Colors
 
   var colorOptionIndex = (0, utils_1.getKnobFromEnum)('color config', {
@@ -121352,14 +121588,16 @@ var Example = function Example(_, _ref) {
     Pink: 1,
     Mixed: 2,
     'eui Palette color blind': 3,
-    'eui Palette For Temperature': 4,
-    'eui Palette For Status': 5,
-    'eui Palette Complementary': 6,
-    'eui Palette Negative': 7,
-    'eui Palette Positive': 8,
-    'eui Palette Cool': 9,
-    'eui Palette Warm': 10,
-    'eui Palette Gray': 11
+    'eui Palette For Background': 4,
+    'eui Palette For Temperature': 5,
+    'eui Palette For Status': 6,
+    'eui Palette Complementary': 7,
+    'eui Palette Negative': 8,
+    'eui Palette Positive': 9,
+    'eui Palette Cool': 10,
+    'eui Palette Warm': 11,
+    'eui Palette Gray': 12,
+    'Dark Gray': 13
   }, 0, {
     group: 'Color Bands'
   });
@@ -121438,7 +121676,7 @@ var Example = function Example(_, _ref) {
     description: description
   }, react_1["default"].createElement(charts_1.Settings, {
     debug: debug,
-    baseTheme: (0, use_base_theme_1.useBaseTheme)()
+    baseTheme: baseTheme
   }), react_1["default"].createElement(charts_1.Bullet, {
     id: "bullet",
     subtype: subtype,
@@ -121470,7 +121708,7 @@ exports.Example.parameters = {
 };
 exports.Example.parameters = Object.assign({
   storySource: {
-    source: "(_, { title, description }) => {\n  const isDarkTheme = useThemeId().includes('dark');\n  const getPalettes = useCallback(\n    (steps: number) => [\n      ['#164863', '#427D9D', '#9BBEC8', '#DDF2FD'],\n      ['#F1EAFF', '#E5D4FF', '#DCBFFF', '#D0A2F7'],\n      ['#0802A3', '#FF4B91', '#FF7676', '#FFCD4B'],\n      euiPaletteColorBlind(),\n      isDarkTheme ? euiPaletteForDarkBackground() : euiPaletteForLightBackground(),\n      euiPaletteForTemperature(steps),\n      euiPaletteForStatus(steps),\n      euiPaletteComplementary(steps),\n      euiPaletteRed(steps),\n      euiPaletteGreen(steps),\n      euiPaletteCool(steps),\n      euiPaletteWarm(steps),\n      euiPaletteGray(steps),\n    ],\n    [isDarkTheme],\n  );\n\n  // Colors\n  const colorOptionIndex = getKnobFromEnum(\n    'color config',\n    {\n      '1 Single Color': 1,\n      '2 Array of Colors via palettes': 2,\n      '3 Array with options': 3,\n      '4 Fully custom bands': 4,\n    },\n    1,\n    { group: 'Color Bands' },\n  );\n  const colorBands1 = color('Config 1 - Color', 'RGBA(70, 130, 96, 1)', 'Color Bands');\n  const colorBands2 = getKnobFromEnum(\n    'Config 2 - Palette',\n    {\n      Navy: 0,\n      Pink: 1,\n      Mixed: 2,\n      'eui Palette color blind': 3,\n      'eui Palette For Temperature': 4,\n      'eui Palette For Status': 5,\n      'eui Palette Complementary': 6,\n      'eui Palette Negative': 7,\n      'eui Palette Positive': 8,\n      'eui Palette Cool': 9,\n      'eui Palette Warm': 10,\n      'eui Palette Gray': 11,\n    },\n    0,\n    { group: 'Color Bands' },\n  );\n  const colorBands2Steps = number('Config 2 - Steps', 5, { min: 1, max: 10, range: true, step: 1 }, 'Color Bands');\n  const colorBands2Reverse = boolean('Config 2 - Reverse', false, 'Color Bands');\n\n  const colorBands3 = object<ColorBandSimpleConfig>(\n    'Config 3 - json',\n    {\n      steps: 5,\n      colors: ['pink', 'yellow', 'blue'],\n    },\n    'Color Bands',\n  );\n  const colorBands4 = object<ColorBandComplexConfig>(\n    'Config 4 - json',\n    [\n      { color: 'red', gte: 0, lt: 20 },\n      { color: 'green', gte: 20, lte: 40 },\n      {\n        color: 'blue',\n        gt: 40,\n        lte: {\n          type: 'percentage',\n          value: 100,\n        },\n      },\n    ],\n    'Color Bands',\n  );\n  const palette = getPalettes(colorBands2Steps)[colorBands2];\n  const colorOptions = [, [colorBands1], colorBands2Reverse ? palette.reverse() : palette, colorBands3, colorBands4];\n\n  // Domain\n  const start = number('start', 0, { range: true, min: -200, max: 200 }, 'Domain');\n  const end = number('end', 100, { range: true, min: -200, max: 200 }, 'Domain');\n  const value = number('value', 56, { range: true, min: -200, max: 200 }, 'Domain');\n  const target = number('target', 75, { range: true, min: -200, max: 200 }, 'Domain');\n\n  // Ticks\n  const niceDomain = boolean('niceDomain', false, 'Ticks');\n  const tickStrategy = customKnobs.multiSelect(\n    'tick strategy',\n    {\n      Auto: 'auto',\n      TickCount: 'count',\n      TickPlacements: 'placements',\n    },\n    'auto',\n    'select',\n    'Ticks',\n  );\n  const ticks = number('ticks(approx. count)', 5, { min: 0, step: 1 }, 'Ticks');\n  const tickPlacements = customKnobs.numbersArray(\n    'ticks(placements)',\n    [-200, -100, 0, 5, 10, 15, 20, 25, 50, 100, 200],\n    undefined,\n    'Ticks',\n  );\n\n  // Other\n  const debug = boolean('debug', false);\n  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.horizontal);\n\n  const formatter = (d: number) => numeral(d).format('0.[0]');\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings debug={debug} baseTheme={useBaseTheme()} />\n      <Bullet\n        id=\"bullet\"\n        subtype={subtype}\n        colorBands={colorOptions[colorOptionIndex] as BulletColorConfig}\n        data={[\n          [\n            {\n              target,\n              value,\n              title: 'The Title',\n              subtitle: 'The Subtitle',\n              domain: [start, end],\n              niceDomain,\n              ticks:\n                tickStrategy[0] === 'count'\n                  ? ticks\n                  : tickStrategy[0] === 'placements'\n                    ? () => tickPlacements\n                    : undefined,\n              valueFormatter: formatter,\n              tickFormatter: formatter,\n            },\n          ],\n        ]}\n      />\n    </Chart>\n  );\n}"
+    source: "(_, { title, description }) => {\n  const baseTheme = useBaseTheme();\n  const themeId = useThemeId();\n  const isDarkTheme = themeId.includes('dark');\n  const getPalettes = useCallback(\n    (steps: number) => [\n      ['#164863', '#427D9D', '#9BBEC8', '#DDF2FD'],\n      ['#F1EAFF', '#E5D4FF', '#DCBFFF', '#D0A2F7'],\n      ['#0802A3', '#FF4B91', '#FF7676', '#FFCD4B'],\n      euiPaletteColorBlind(),\n      isDarkTheme ? euiPaletteForDarkBackground() : euiPaletteForLightBackground(),\n      euiPaletteForTemperature(steps),\n      euiPaletteForStatus(steps),\n      euiPaletteComplementary(steps),\n      euiPaletteRed(steps),\n      euiPaletteGreen(steps),\n      euiPaletteCool(steps),\n      euiPaletteWarm(steps),\n      euiPaletteGray(steps),\n      ['#202020', '#404040', '#606060', '#808080'],\n    ],\n    [isDarkTheme],\n  );\n\n  // Colors\n  const colorOptionIndex = getKnobFromEnum(\n    'color config',\n    {\n      '1 Single Color': 1,\n      '2 Array of Colors via palettes': 2,\n      '3 Array with options': 3,\n      '4 Fully custom bands': 4,\n    },\n    1,\n    { group: 'Color Bands' },\n  );\n  const colorBands1 = color('Config 1 - Color', 'RGBA(70, 130, 96, 1)', 'Color Bands');\n  const colorBands2 = getKnobFromEnum(\n    'Config 2 - Palette',\n    {\n      Navy: 0,\n      Pink: 1,\n      Mixed: 2,\n      'eui Palette color blind': 3,\n      'eui Palette For Background': 4,\n      'eui Palette For Temperature': 5,\n      'eui Palette For Status': 6,\n      'eui Palette Complementary': 7,\n      'eui Palette Negative': 8,\n      'eui Palette Positive': 9,\n      'eui Palette Cool': 10,\n      'eui Palette Warm': 11,\n      'eui Palette Gray': 12,\n      'Dark Gray': 13,\n    },\n    0,\n    { group: 'Color Bands' },\n  );\n  const colorBands2Steps = number('Config 2 - Steps', 5, { min: 1, max: 10, range: true, step: 1 }, 'Color Bands');\n  const colorBands2Reverse = boolean('Config 2 - Reverse', false, 'Color Bands');\n\n  const colorBands3 = object<ColorBandSimpleConfig>(\n    'Config 3 - json',\n    {\n      steps: 5,\n      colors: ['pink', 'yellow', 'blue'],\n    },\n    'Color Bands',\n  );\n  const colorBands4 = object<ColorBandComplexConfig>(\n    'Config 4 - json',\n    [\n      { color: 'red', gte: 0, lt: 20 },\n      { color: 'green', gte: 20, lte: 40 },\n      {\n        color: 'blue',\n        gt: 40,\n        lte: {\n          type: 'percentage',\n          value: 100,\n        },\n      },\n    ],\n    'Color Bands',\n  );\n  const palette = getPalettes(colorBands2Steps)[colorBands2];\n  const colorOptions = [, [colorBands1], colorBands2Reverse ? palette.reverse() : palette, colorBands3, colorBands4];\n\n  // Domain\n  const start = number('start', 0, { range: true, min: -200, max: 200 }, 'Domain');\n  const end = number('end', 100, { range: true, min: -200, max: 200 }, 'Domain');\n  const value = number('value', 56, { range: true, min: -200, max: 200 }, 'Domain');\n  const target = number('target', 75, { range: true, min: -200, max: 200 }, 'Domain');\n\n  // Ticks\n  const niceDomain = boolean('niceDomain', false, 'Ticks');\n  const tickStrategy = customKnobs.multiSelect(\n    'tick strategy',\n    {\n      Auto: 'auto',\n      TickCount: 'count',\n      TickPlacements: 'placements',\n    },\n    'auto',\n    'select',\n    'Ticks',\n  );\n  const ticks = number('ticks(approx. count)', 5, { min: 0, step: 1 }, 'Ticks');\n  const tickPlacements = customKnobs.numbersArray(\n    'ticks(placements)',\n    [-200, -100, 0, 5, 10, 15, 20, 25, 50, 100, 200],\n    undefined,\n    'Ticks',\n  );\n\n  // Other\n  const debug = boolean('debug', false);\n  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.horizontal);\n\n  const formatter = (d: number) => numeral(d).format('0.[0]');\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings debug={debug} baseTheme={baseTheme} />\n      <Bullet\n        id=\"bullet\"\n        subtype={subtype}\n        colorBands={colorOptions[colorOptionIndex] as BulletColorConfig}\n        data={[\n          [\n            {\n              target,\n              value,\n              title: 'The Title',\n              subtitle: 'The Subtitle',\n              domain: [start, end],\n              niceDomain,\n              ticks:\n                tickStrategy[0] === 'count'\n                  ? ticks\n                  : tickStrategy[0] === 'placements'\n                    ? () => tickPlacements\n                    : undefined,\n              valueFormatter: formatter,\n              tickFormatter: formatter,\n            },\n          ],\n        ]}\n      />\n    </Chart>\n  );\n}"
   }
 }, exports.Example.parameters);
 
@@ -180160,4 +180398,4 @@ module.exports = __webpack_require__(/*! /app/storybook/generated-stories-entry.
 /***/ })
 
 },[[0,"runtime~main","vendors~main"]]]);
-//# sourceMappingURL=main.c976dcd5.iframe.bundle.js.map
+//# sourceMappingURL=main.8eb2c75f.iframe.bundle.js.map
