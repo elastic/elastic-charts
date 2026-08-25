@@ -6,7 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { bkEnv, compress, exec, getOrCreateDeploymentUrl, startGroup, yarnInstall } from '../../utils';
+import {
+  bkEnv,
+  buildDocsSite,
+  buildTypeDocs,
+  compress,
+  docsOutDir,
+  getOrCreateDeploymentUrl,
+  startGroup,
+  yarnInstall,
+} from '../../utils';
 import { createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
 
 void (async () => {
@@ -23,38 +32,14 @@ void (async () => {
 
   startGroup('Building docs - firebase');
   const firebaseChannelUrl = await getOrCreateDeploymentUrl();
-  await exec('yarn typedoc');
-  await exec('yarn build', {
-    cwd: 'docs',
-    env: {
-      DOCUSAURUS_URL: firebaseChannelUrl,
-      NODE_ENV: bkEnv.isMainBranch ? 'production' : 'development',
-      NODE_OPTIONS: '--openssl-legacy-provider',
-    },
+  buildTypeDocs();
+  buildDocsSite({
+    docsUrl: firebaseChannelUrl,
+    nodeEnv: bkEnv.isMainBranch ? 'production' : 'development',
   });
-
-  const outDir = `docs/build`;
 
   await compress({
-    src: outDir,
+    src: docsOutDir,
     dest: '.buildkite/artifacts/docs/firebase.gz',
   });
-
-  if (bkEnv.isMainBranch) {
-    startGroup('Building docs - github pages');
-    await exec('yarn build', {
-      cwd: 'docs',
-      env: {
-        DOCUSAURUS_URL: 'https://elastic.github.io',
-        DOCUSAURUS_BASE_URL: '/elastic-charts',
-        NODE_ENV: 'production',
-        NODE_OPTIONS: '--openssl-legacy-provider',
-      },
-    });
-
-    await compress({
-      src: outDir,
-      dest: '.buildkite/artifacts/docs/github.gz',
-    });
-  }
 })();
