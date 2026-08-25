@@ -6,9 +6,7 @@
  * Side Public License, v 1.
  */
 
-// eslint-disable-next-line no-restricted-imports
 import { createSelector, lruMemoize } from '@reduxjs/toolkit';
-// eslint-disable-next-line no-restricted-imports
 import type { ICacheObject } from 're-reselect';
 // eslint-disable-next-line no-restricted-imports
 import createCachedSelector from 're-reselect';
