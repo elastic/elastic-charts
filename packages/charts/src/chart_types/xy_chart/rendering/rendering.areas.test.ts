@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { Store } from 'redux';
+import type { Store } from '@reduxjs/toolkit';
 
 import { computeAreaBoundingBox, type YDefinedFn } from './utils';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';

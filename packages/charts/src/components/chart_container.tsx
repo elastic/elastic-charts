@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import type { Dispatch } from '@reduxjs/toolkit';
+import { bindActionCreators } from '@reduxjs/toolkit';
 import type { CSSProperties } from 'react';
 import React from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
-import { bindActionCreators } from 'redux';
 
 import { NoResults } from './no_results';
 import { ChartType } from '../chart_types';

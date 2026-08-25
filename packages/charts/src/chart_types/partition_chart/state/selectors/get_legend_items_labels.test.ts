@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { Store } from 'redux';
+import type { Store } from '@reduxjs/toolkit';
 
 import { getLegendItemsLabels } from './get_legend_items_labels';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
