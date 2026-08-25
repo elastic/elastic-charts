@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import type { Dispatch } from '@reduxjs/toolkit';
+import { bindActionCreators } from '@reduxjs/toolkit';
 import type { RefObject } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
-import { bindActionCreators } from 'redux';
 
 import type { AnimationState } from './animations/animation';
 import { renderXYChartCanvas2d } from './renderers';

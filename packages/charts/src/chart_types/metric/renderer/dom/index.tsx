@@ -9,11 +9,11 @@
 /* eslint-disable-next-line eslint-comments/disable-enable-pair */
 /* eslint-disable react/no-array-index-key */
 
+import type { Dispatch } from '@reduxjs/toolkit';
+import { bindActionCreators } from '@reduxjs/toolkit';
 import classNames from 'classnames';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
-import { bindActionCreators } from 'redux';
 
 import { Metric as MetricComponent } from './metric';
 import type { TextContrastOptions } from './metric';
