@@ -13,7 +13,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getHighlightedLegendPaths } from '../../../../state/selectors/get_highlighted_paths';
 
 /** @internal */
-export const getHighlightedItemsSelector = createCustomCachedSelector(
+export const getHighlightedLegendItemsSelector = createCustomCachedSelector(
   [getHighlightedLegendPaths, computeLegendSelector],
   (highlightedPaths: LegendPath[], legendItems: LegendItem[]): LegendItem[] => {
     if (highlightedPaths.length === 0) return [];

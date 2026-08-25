@@ -7,13 +7,13 @@
  */
 
 import { getColorScale } from './get_color_scale';
-import { getHighlightedItemsSelector } from './get_highlighted_items';
+import { getHighlightedLegendItemsSelector } from './get_highlighted_legend_items';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import type { GenericDomain } from '../../../../utils/domain';
 
 /** @internal */
-export const getHighlightedBandsSelector = createCustomCachedSelector(
-  [getHighlightedItemsSelector, getColorScale],
+export const getHighlightedLegendBandsSelector = createCustomCachedSelector(
+  [getHighlightedLegendItemsSelector, getColorScale],
   (highlightedItems, { bands }): Array<GenericDomain> => {
     if (highlightedItems.length === 0) return [];
     const labels = new Set(
