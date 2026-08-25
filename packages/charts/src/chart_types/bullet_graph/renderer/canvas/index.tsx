@@ -31,6 +31,7 @@ import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
+import { subscribeToDPRChange } from '../../../../utils/dpr_observer';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import type { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
@@ -86,12 +87,12 @@ type Props = DispatchProps & StateProps & OwnProps;
 class Component extends React.Component<Props> {
   static displayName = 'Bullet';
   private ctx: CanvasRenderingContext2D | null;
-  private readonly devicePixelRatio: number;
+  private devicePixelRatio = window.devicePixelRatio;
+  private unsubscribeDPR: (() => void) | null = null;
 
   constructor(props: Readonly<Props>) {
     super(props);
     this.ctx = null;
-    this.devicePixelRatio = window.devicePixelRatio;
   }
 
   componentDidMount() {
@@ -100,6 +101,14 @@ class Component extends React.Component<Props> {
       this.drawCanvas();
       this.props.onChartRendered();
     }
+    this.unsubscribeDPR = subscribeToDPRChange(() => {
+      this.devicePixelRatio = window.devicePixelRatio;
+      this.forceUpdate();
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeDPR?.();
   }
 
   shouldComponentUpdate(nextProps: Props) {

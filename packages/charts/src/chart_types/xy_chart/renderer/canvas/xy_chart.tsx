@@ -31,6 +31,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Rotation } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
+import { subscribeToDPRChange } from '../../../../utils/dpr_observer';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import type { AnnotationId, AxisId } from '../../../../utils/ids';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
@@ -94,14 +95,12 @@ class XYChartComponent extends React.Component<XYChartProps> {
 
   private ctx: CanvasRenderingContext2D | null;
   private animationState: AnimationState;
-
-  // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
-  private readonly devicePixelRatio: number; // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
+  private devicePixelRatio = window.devicePixelRatio;
+  private unsubscribeDPR: (() => void) | null = null;
 
   constructor(props: Readonly<XYChartProps>) {
     super(props);
     this.ctx = null;
-    this.devicePixelRatio = window.devicePixelRatio;
     this.animationState = { rafId: NaN, pool: new Map() };
   }
 
@@ -115,6 +114,10 @@ class XYChartComponent extends React.Component<XYChartProps> {
       this.drawCanvas();
       this.props.onChartRendered();
     }
+    this.unsubscribeDPR = subscribeToDPRChange(() => {
+      this.devicePixelRatio = window.devicePixelRatio;
+      this.forceUpdate();
+    });
   }
 
   shouldComponentUpdate(nextProps: ReactiveChartStateProps) {
@@ -134,6 +137,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
   componentWillUnmount() {
     window.cancelAnimationFrame(this.animationState.rafId);
     this.animationState.pool.clear();
+    this.unsubscribeDPR?.();
   }
 
   private drawCanvas() {

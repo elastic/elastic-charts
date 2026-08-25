@@ -24,6 +24,7 @@ import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../stat
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import type { Dimensions } from '../../../../utils/dimensions';
+import { subscribeToDPRChange } from '../../../../utils/dpr_observer';
 import { GoalSemanticDescription } from '../../components/goal_semantic_description';
 import type { BandViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { nullShapeViewModel } from '../../layout/types/viewmodel_types';
@@ -60,14 +61,12 @@ class Component extends React.Component<Props> {
 
   // firstRender = true; // this'll be useful for stable resizing of treemaps
   private ctx: CanvasRenderingContext2D | null;
-
-  // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
-  private readonly devicePixelRatio: number; // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
+  private devicePixelRatio = window.devicePixelRatio;
+  private unsubscribeDPR: (() => void) | null = null;
 
   constructor(props: Readonly<Props>) {
     super(props);
     this.ctx = null;
-    this.devicePixelRatio = window.devicePixelRatio;
   }
 
   componentDidMount() {
@@ -80,6 +79,14 @@ class Component extends React.Component<Props> {
       this.drawCanvas();
       this.props.onChartRendered();
     }
+    this.unsubscribeDPR = subscribeToDPRChange(() => {
+      this.devicePixelRatio = window.devicePixelRatio;
+      this.forceUpdate();
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeDPR?.();
   }
 
   componentDidUpdate() {
