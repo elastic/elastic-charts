@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
+import type { Dispatch } from '@reduxjs/toolkit';
+import { bindActionCreators } from '@reduxjs/toolkit';
 import React from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
-import { bindActionCreators } from 'redux';
 
 import { updateDevicePixelRatio } from '../state/actions/chart_settings';
 
@@ -25,6 +25,8 @@ class DPRObserver extends React.Component<Props> {
   }
 
   #setupListener() {
+    if (typeof window.matchMedia !== 'function') return;
+
     window
       .matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
       .addEventListener('change', this.#onDPRChange, { once: true });
