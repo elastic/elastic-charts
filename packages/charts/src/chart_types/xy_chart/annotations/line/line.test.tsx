@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import type { Store } from '@reduxjs/toolkit';
 import React from 'react';
-import type { Store } from 'redux';
 
 import type { AnnotationLineProps } from './types';
 import { MockAnnotationLineProps } from '../../../../mocks/annotations/annotations';

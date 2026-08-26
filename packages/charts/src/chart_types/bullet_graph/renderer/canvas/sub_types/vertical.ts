@@ -6,15 +6,25 @@
  * Side Public License, v 1.
  */
 
+import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import type { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
+import { renderRectStroke } from '../../../../../renderers/canvas/primitives/rect';
 import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
 import type { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
 import type { ActiveValue } from '../../../selectors/get_active_values';
 import type { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import type { BulletStyle } from '../../../theme';
 import { GRAPH_PADDING, TICK_FONT_SIZE, getTickFont } from '../../../theme';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH, TICK_LABEL_PADDING } from '../constants';
+import {
+  TARGET_SIZE,
+  BULLET_SIZE,
+  TICK_WIDTH,
+  BAR_SIZE,
+  TARGET_STROKE_WIDTH,
+  TICK_LABEL_PADDING,
+  BAR_STROKE_WIDTH,
+} from '../constants';
 
 /** @internal */
 export function verticalBullet(
@@ -22,6 +32,7 @@ export function verticalBullet(
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,
+  hasStroke: boolean,
   activeValue?: ActiveValue | null,
 ) {
   const tickFont = getTickFont(style.fontFamily);
@@ -33,15 +44,18 @@ export function verticalBullet(
   const graphPaddedHeight = graphArea.size.height - GRAPH_PADDING.bottom - GRAPH_PADDING.top;
 
   // color bands
-  colorBands.reverse().forEach((band) => {
-    ctx.fillStyle = band.color;
-    ctx.fillRect(
-      graphArea.size.width / 2 - BULLET_SIZE / 2,
-      graphPaddedHeight - band.start - band.size,
-      BULLET_SIZE,
-      band.size,
-    );
-  });
+  colorBands
+    .slice()
+    .reverse()
+    .forEach((band) => {
+      ctx.fillStyle = band.color;
+      ctx.fillRect(
+        graphArea.size.width / 2 - BULLET_SIZE / 2,
+        graphPaddedHeight - band.start - band.size,
+        BULLET_SIZE,
+        band.size,
+      );
+    });
 
   // Ticks
   ctx.beginPath();
@@ -57,24 +71,45 @@ export function verticalBullet(
   ctx.stroke();
 
   // Bar
+  const overflows = datum.value > max || datum.value < min;
   const confinedValue = clamp(datum.value, min, max);
   const adjustedZero = clamp(0, min, max);
+  const x = graphArea.size.width / 2 - BAR_SIZE / 2;
+  const y0 = graphPaddedHeight - scale(adjustedZero);
+  const y1 = graphPaddedHeight - scale(confinedValue);
+
   ctx.fillStyle = style.barBackground;
-  ctx.fillRect(
-    graphArea.size.width / 2 - BAR_SIZE / 2,
-    confinedValue > 0 ? graphPaddedHeight - scale(confinedValue) : graphPaddedHeight - scale(adjustedZero),
-    BAR_SIZE,
-    confinedValue > 0 ? scale(confinedValue) - scale(adjustedZero) : scale(adjustedZero) - scale(confinedValue),
-  );
+  ctx.fillRect(x, y0, BAR_SIZE, y1 - y0);
+
+  if (hasStroke && Math.abs(confinedValue - adjustedZero) > 0) {
+    const strokedSides = {
+      top: y0 > y1 && !overflows ? true : false,
+      right: true,
+      bottom: y0 < y1 && !overflows ? true : false,
+      left: true,
+    };
+    renderRectStroke(
+      ctx,
+      { x, y: y0, width: BAR_SIZE, height: y1 - y0 },
+      { color: colorToRgba(backgroundColor), width: BAR_STROKE_WIDTH },
+      strokedSides,
+    );
+  }
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
-    ctx.fillRect(
-      graphArea.size.width / 2 - TARGET_SIZE / 2,
-      graphPaddedHeight - scale(datum.target) - TARGET_STROKE_WIDTH / 2,
-      TARGET_SIZE,
-      TARGET_STROKE_WIDTH,
-    );
+    const targetX = graphArea.size.width / 2 - TARGET_SIZE / 2;
+    const targetY = graphPaddedHeight - scale(datum.target) - TARGET_STROKE_WIDTH / 2;
+
+    if (hasStroke) {
+      renderRectStroke(
+        ctx,
+        { x: targetX, y: targetY, width: TARGET_SIZE, height: TARGET_STROKE_WIDTH },
+        { color: colorToRgba(backgroundColor), width: TARGET_STROKE_WIDTH + BAR_STROKE_WIDTH },
+        { top: true, right: true, bottom: true, left: true },
+      );
+    }
+    ctx.fillRect(targetX, targetY, TARGET_SIZE, TARGET_STROKE_WIDTH);
   }
 
   // Zero baseline

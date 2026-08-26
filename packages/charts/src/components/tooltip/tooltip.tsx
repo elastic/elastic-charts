@@ -7,11 +7,11 @@
  */
 
 import type { Placement as PopperPlacement } from '@popperjs/core';
+import type { Dispatch } from '@reduxjs/toolkit';
+import { bindActionCreators } from '@reduxjs/toolkit';
 import type { RefObject } from 'react';
 import React, { useEffect, useMemo, memo, useState } from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
-import { bindActionCreators } from 'redux';
 
 import {
   computeTableMaxHeight,

@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import type { Unsubscribe, Store } from '@reduxjs/toolkit';
 import classNames from 'classnames';
 import type { CSSProperties, ReactNode } from 'react';
 import React, { createRef } from 'react';
 import { Provider } from 'react-redux';
-import type { Unsubscribe, Store } from 'redux';
 import type { OptionalKeys } from 'utility-types';
 import { v4 as uuidv4 } from 'uuid';
 
