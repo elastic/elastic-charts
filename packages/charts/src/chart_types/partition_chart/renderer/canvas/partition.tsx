@@ -27,10 +27,10 @@ import type { A11ySettings } from '../../../../state/selectors/get_accessibility
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_device_pixel_ratio';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Dimensions } from '../../../../utils/dimensions';
-import { subscribeToDPRChange } from '../../../../utils/dpr_observer';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { PartitionStyle } from '../../../../utils/themes/partition';
 import { MODEL_KEY } from '../../layout/config';
@@ -66,6 +66,7 @@ interface ReactiveChartStateProps {
   legendStrategy: SettingsSpec['legendStrategy'];
   flatLegend: SettingsSpec['flatLegend'];
   partitionStyle: PartitionStyle;
+  devicePixelRatio: number;
 }
 
 interface ReactiveChartDispatchProps {
@@ -87,8 +88,6 @@ class PartitionComponent extends React.Component<PartitionProps> {
   // firstRender = true; // this will be useful for stable resizing of treemaps
   private ctx: CanvasRenderingContext2D | null;
   private animationState: AnimationState;
-  private devicePixelRatio = window.devicePixelRatio;
-  private unsubscribeDPR: (() => void) | null = null;
 
   constructor(props: Readonly<PartitionProps>) {
     super(props);
@@ -106,14 +105,6 @@ class PartitionComponent extends React.Component<PartitionProps> {
       this.drawCanvas();
       this.props.onChartRendered();
     }
-    this.unsubscribeDPR = subscribeToDPRChange(() => {
-      this.devicePixelRatio = window.devicePixelRatio;
-      this.forceUpdate();
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeDPR?.();
   }
 
   componentDidUpdate() {
@@ -170,8 +161,8 @@ class PartitionComponent extends React.Component<PartitionProps> {
           dir={isRTL ? 'rtl' : 'ltr'}
           ref={forwardStageRef}
           className="echCanvasRenderer"
-          width={width * this.devicePixelRatio}
-          height={height * this.devicePixelRatio}
+          width={width * this.props.devicePixelRatio}
+          height={height * this.props.devicePixelRatio}
           onMouseMove={this.handleMouseMove.bind(this)}
           style={{
             width,
@@ -190,7 +181,8 @@ class PartitionComponent extends React.Component<PartitionProps> {
 
   private drawCanvas() {
     if (this.ctx) {
-      const { ctx, devicePixelRatio, props } = this;
+      const { ctx, props } = this;
+      const { devicePixelRatio } = props;
       clearCanvas(ctx, props.background);
       props.multiGeometries.forEach((geometries, geometryIndex) => {
         const focus = props.geometriesFoci[geometryIndex];
@@ -261,6 +253,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   legendStrategy: undefined,
   flatLegend: undefined,
   partitionStyle: LIGHT_THEME.partition,
+  devicePixelRatio: 1,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -285,6 +278,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     legendStrategy: settings.legendStrategy,
     flatLegend: settings.flatLegend,
     partitionStyle: theme.partition,
+    devicePixelRatio: getDevicePixelRatioSelector(state),
   };
 };
 

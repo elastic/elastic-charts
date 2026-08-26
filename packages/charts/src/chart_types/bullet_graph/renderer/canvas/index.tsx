@@ -26,12 +26,12 @@ import type { GlobalChartState } from '../../../../state/chart_state';
 import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_device_pixel_ratio';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/get_resolved_background_color';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
-import { subscribeToDPRChange } from '../../../../utils/dpr_observer';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import type { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
@@ -72,6 +72,7 @@ interface StateProps {
   colorBands: BulletColorConfig;
   metricStyle: MetricStyle;
   onElementOver?: ElementOverListener;
+  devicePixelRatio: number;
 }
 
 interface DispatchProps {
@@ -87,8 +88,6 @@ type Props = DispatchProps & StateProps & OwnProps;
 class Component extends React.Component<Props> {
   static displayName = 'Bullet';
   private ctx: CanvasRenderingContext2D | null;
-  private devicePixelRatio = window.devicePixelRatio;
-  private unsubscribeDPR: (() => void) | null = null;
 
   constructor(props: Readonly<Props>) {
     super(props);
@@ -101,14 +100,6 @@ class Component extends React.Component<Props> {
       this.drawCanvas();
       this.props.onChartRendered();
     }
-    this.unsubscribeDPR = subscribeToDPRChange(() => {
-      this.devicePixelRatio = window.devicePixelRatio;
-      this.forceUpdate();
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeDPR?.();
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -132,7 +123,7 @@ class Component extends React.Component<Props> {
 
   private drawCanvas() {
     if (this.ctx) {
-      renderBullet(this.ctx, this.devicePixelRatio, this.props);
+      renderBullet(this.ctx, this.props.devicePixelRatio, this.props);
     }
   }
 
@@ -172,8 +163,8 @@ class Component extends React.Component<Props> {
         <canvas
           ref={forwardStageRef}
           className="echCanvasRenderer"
-          width={size.width * this.devicePixelRatio}
-          height={size.height * this.devicePixelRatio}
+          width={size.width * this.props.devicePixelRatio}
+          height={size.height * this.props.devicePixelRatio}
           style={size}
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
@@ -294,6 +285,7 @@ const DEFAULT_PROPS: StateProps = {
   backgroundColor: LIGHT_THEME.background.color,
   locale: settingsBuildProps.defaults.locale,
   colorBands: LIGHT_THEME.bulletGraph.colorBands,
+  devicePixelRatio: 1,
 };
 
 const mapStateToProps = (state: GlobalChartState): StateProps => {
@@ -320,6 +312,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     colorBands: style.colorBands,
     onElementOver,
     metricStyle,
+    devicePixelRatio: getDevicePixelRatioSelector(state),
   };
 };
 

@@ -22,9 +22,9 @@ import type { GlobalChartState } from '../../../../state/chart_state';
 import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_device_pixel_ratio';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import type { Dimensions } from '../../../../utils/dimensions';
-import { subscribeToDPRChange } from '../../../../utils/dpr_observer';
 import { GoalSemanticDescription } from '../../components/goal_semantic_description';
 import type { BandViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { nullShapeViewModel } from '../../layout/types/viewmodel_types';
@@ -44,6 +44,7 @@ interface ReactiveChartStateProps {
   firstValue: number;
   captureBoundingBox: Rectangle;
   background: Color;
+  devicePixelRatio: number;
 }
 
 interface ReactiveChartDispatchProps {
@@ -61,8 +62,6 @@ class Component extends React.Component<Props> {
 
   // firstRender = true; // this'll be useful for stable resizing of treemaps
   private ctx: CanvasRenderingContext2D | null;
-  private devicePixelRatio = window.devicePixelRatio;
-  private unsubscribeDPR: (() => void) | null = null;
 
   constructor(props: Readonly<Props>) {
     super(props);
@@ -79,14 +78,6 @@ class Component extends React.Component<Props> {
       this.drawCanvas();
       this.props.onChartRendered();
     }
-    this.unsubscribeDPR = subscribeToDPRChange(() => {
-      this.devicePixelRatio = window.devicePixelRatio;
-      this.forceUpdate();
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeDPR?.();
   }
 
   componentDidUpdate() {
@@ -137,8 +128,8 @@ class Component extends React.Component<Props> {
         <canvas
           ref={forwardStageRef}
           className="echCanvasRenderer"
-          width={width * this.devicePixelRatio}
-          height={height * this.devicePixelRatio}
+          width={width * this.props.devicePixelRatio}
+          height={height * this.props.devicePixelRatio}
           onMouseMove={this.handleMouseMove.bind(this)}
           style={{
             width,
@@ -160,7 +151,7 @@ class Component extends React.Component<Props> {
 
   private drawCanvas() {
     if (this.ctx) {
-      renderCanvas2d(this.ctx, this.devicePixelRatio, this.props.geoms, this.props.background);
+      renderCanvas2d(this.ctx, this.props.devicePixelRatio, this.props.geoms, this.props.background);
     }
   }
 }
@@ -188,6 +179,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   firstValue: 0,
   captureBoundingBox: initialBoundingBox(),
   background: Colors.Transparent.keyword,
+  devicePixelRatio: 1,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -204,6 +196,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geoms: getPrimitiveGeoms(state),
     captureBoundingBox: getCaptureBoundingBox(state),
     background: getChartThemeSelector(state).background.color,
+    devicePixelRatio: getDevicePixelRatioSelector(state),
   };
 };
 

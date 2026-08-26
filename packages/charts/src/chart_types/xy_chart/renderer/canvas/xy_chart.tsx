@@ -27,11 +27,11 @@ import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../stat
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_device_pixel_ratio';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Rotation } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
-import { subscribeToDPRChange } from '../../../../utils/dpr_observer';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import type { AnnotationId, AxisId } from '../../../../utils/ids';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
@@ -78,6 +78,7 @@ export interface ReactiveChartStateProps {
   panelGeoms: PanelGeoms;
   a11ySettings: A11ySettings;
   locale: string;
+  devicePixelRatio: number;
 }
 
 interface ReactiveChartDispatchProps {
@@ -95,8 +96,6 @@ class XYChartComponent extends React.Component<XYChartProps> {
 
   private ctx: CanvasRenderingContext2D | null;
   private animationState: AnimationState;
-  private devicePixelRatio = window.devicePixelRatio;
-  private unsubscribeDPR: (() => void) | null = null;
 
   constructor(props: Readonly<XYChartProps>) {
     super(props);
@@ -114,10 +113,6 @@ class XYChartComponent extends React.Component<XYChartProps> {
       this.drawCanvas();
       this.props.onChartRendered();
     }
-    this.unsubscribeDPR = subscribeToDPRChange(() => {
-      this.devicePixelRatio = window.devicePixelRatio;
-      this.forceUpdate();
-    });
   }
 
   shouldComponentUpdate(nextProps: ReactiveChartStateProps) {
@@ -137,12 +132,11 @@ class XYChartComponent extends React.Component<XYChartProps> {
   componentWillUnmount() {
     window.cancelAnimationFrame(this.animationState.rafId);
     this.animationState.pool.clear();
-    this.unsubscribeDPR?.();
   }
 
   private drawCanvas() {
     if (this.ctx) {
-      renderXYChartCanvas2d(this.ctx, this.devicePixelRatio, this.props, this.animationState);
+      renderXYChartCanvas2d(this.ctx, this.props.devicePixelRatio, this.props, this.animationState);
     }
   }
 
@@ -175,8 +169,8 @@ class XYChartComponent extends React.Component<XYChartProps> {
             dir={isRTL ? 'rtl' : 'ltr'}
             ref={forwardCanvasRef}
             className="echCanvasRenderer"
-            width={width * this.devicePixelRatio}
-            height={height * this.devicePixelRatio}
+            width={width * this.props.devicePixelRatio}
+            height={height * this.props.devicePixelRatio}
             style={{
               width,
               height,
@@ -241,6 +235,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   panelGeoms: [],
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   locale: settingsBuildProps.defaults.locale,
+  devicePixelRatio: 1,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -275,6 +270,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
     a11ySettings: getA11ySettingsSelector(state),
+    devicePixelRatio: getDevicePixelRatioSelector(state),
   };
 };
 
