@@ -1,3 +1,21 @@
+# [73.0.0](https://github.com/elastic/elastic-charts/compare/v72.0.1...v73.0.0) (2026-08-31)
+
+
+### Bug Fixes
+
+* **bullet:** add adaptive bar stroke when color band contrast is low ([#2870](https://github.com/elastic/elastic-charts/issues/2870)) ([dababad](https://github.com/elastic/elastic-charts/commit/dababad8807361cf46cf1b2226db9f764700f32f))
+* **deps:** update dependency @playwright/test to ^1.62.0 ([#2869](https://github.com/elastic/elastic-charts/issues/2869)) ([1c33926](https://github.com/elastic/elastic-charts/commit/1c33926290d7224cf5fe189cd60f6f48d3ce6b79))
+
+
+### Features
+
+* **deps:** drop React 16/17 peer support ([#2878](https://github.com/elastic/elastic-charts/issues/2878)) ([2992c12](https://github.com/elastic/elastic-charts/commit/2992c122ec301891778b7477d8bd54976009c8de)), closes [#2872](https://github.com/elastic/elastic-charts/issues/2872)
+
+
+### BREAKING CHANGES
+
+* **deps:** React `^16.12` and `^17.0` are no longer supported as peer dependencies. `react` and `react-dom` peer ranges are now `^18.0`, required by react-redux v9 (which relies on React 18's native `useSyncExternalStore`).
+
 ## [72.0.1](https://github.com/elastic/elastic-charts/compare/v72.0.0...v72.0.1) (2026-07-31)
 
 
