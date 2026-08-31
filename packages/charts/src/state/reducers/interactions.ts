@@ -207,10 +207,16 @@ export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSlice
       const getSelectedValues = () => {
         const values = getInternalTooltipInfoSelector(globalState)?.values ?? [];
         if (globalState.chartType === ChartType.Heatmap) return values.slice(0, 1); // just use the x value
-        return values.filter((v) =>
+        return values.filter((v) => {
+          if (!v.isVisible) {
+            return false;
+          }
           // TODO find a better way to distinguish these two
-          globalState.chartType === ChartType.XYAxis ? v.isHighlighted : !v.displayOnly,
-        );
+          if (globalState.chartType === ChartType.XYAxis) {
+            return v.isHighlighted;
+          }
+          return !v.displayOnly;
+        });
       };
       const selected =
         // don't pre-populate selection when values are not actionable
