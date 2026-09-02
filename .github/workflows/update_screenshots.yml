@@ -1,3 +1,10 @@
+# Approvers comment "buildkite update screenshots" or "buildkite update vrt"
+# to request a screenshot-update build. Unless the pull request has a Trusted
+# author (opener is an elastic org member), the comment must name the commit
+# (>=7 hex chars) immediately after the phrase. That commit must be the PR head,
+# and that head must already have been in place before the comment. No
+# pull-request code runs here (REST API only).
+# See .github/docs/adr/0001-screenshot-update-pin-except-trusted-author.md
 name: Trigger Buildkite update screenshots build
 
 on:
@@ -11,6 +18,7 @@ permissions:
 
 jobs:
   check-and-trigger:
+    # Job-level `if` cannot read script constants; keep these phrases identical to approvalPhrases.
     if: |
       github.event.issue.pull_request &&
       (
@@ -19,97 +27,231 @@ jobs:
       )
     runs-on: ubuntu-latest
     steps:
-      - name: Check elastic org membership
-        id: check-elastic-member
+      - name: Resolve and validate Approved commit
+        id: approved-commit
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ADMIN_TOKEN_GH }}
           script: |
             const org = 'elastic';
-            const username = '${{ github.event.comment.user.login }}';
+            const approvalPhrases = ['buildkite update screenshots', 'buildkite update vrt'];
+            const namedShaPattern = new RegExp(
+              `(?:${approvalPhrases.map((phrase) => phrase.replace(/ /g, '\\s+')).join('|')})\\s+([0-9a-fA-F]{7,40})`,
+              'i',
+            );
 
+            const refusePin = (message) => {
+              core.setOutput('pin_refused', 'true');
+              core.setFailed(message);
+            };
+
+            const isOrgMember = async (username) => {
+              try {
+                await github.request('GET /orgs/{org}/members/{username}', {
+                  org,
+                  username,
+                  headers: { Accept: 'application/vnd.github.v3+json' }
+                });
+                return true;
+              } catch (err) {
+                if (err.status === 404) return false;
+                throw err;
+              }
+            };
+
+            // Latest PushEvent whose result was this SHA as the PR branch head
+            // (not a push of the same commit on another branch). GraphQL is only
+            // used when this listing is empty or errors — not when events exist
+            // but none match, or when a match has an unparsable created_at.
+            const latestTimeShaBecamePrBranchHead = async (headOwner, headRepo, prRef, headSha) => {
+              try {
+                const events = await github.paginate(github.rest.activity.listRepoEvents, {
+                  owner: headOwner,
+                  repo: headRepo,
+                  per_page: 100,
+                });
+                if (events.length === 0) {
+                  return { eventsAvailable: false, becameHeadAt: null };
+                }
+                const headShaLower = headSha.toLowerCase();
+                let becameHeadAt = null;
+                let latestMs = Number.NEGATIVE_INFINITY;
+                let sawUnparsableMatch = false;
+                for (const event of events) {
+                  if (
+                    event.type !== 'PushEvent' ||
+                    event.payload?.ref !== prRef ||
+                    event.payload?.head?.toLowerCase() !== headShaLower
+                  ) {
+                    continue;
+                  }
+                  const atMs = Date.parse(event.created_at);
+                  if (Number.isNaN(atMs)) {
+                    sawUnparsableMatch = true;
+                    continue;
+                  }
+                  if (atMs < latestMs) continue;
+                  latestMs = atMs;
+                  becameHeadAt = event.created_at;
+                }
+                if (sawUnparsableMatch) {
+                  return { eventsAvailable: true, becameHeadAt: null };
+                }
+                return { eventsAvailable: true, becameHeadAt };
+              } catch (err) {
+                core.warning(`Failed to list repo events for ${headOwner}/${headRepo}: ${err}`);
+                return { eventsAvailable: false, becameHeadAt: null };
+              }
+            };
+
+            const commenter = context.payload.comment.user.login;
+            let isApprover = false;
             try {
-              await github.request('GET /orgs/{org}/members/{username}', {
-                org,
-                username,
-                headers: { Accept: 'application/vnd.github.v3+json' }
-              });
-              core.setOutput('is_member', 'true');
-              core.info(`${username} is a member of ${org}`);
+              isApprover = await isOrgMember(commenter);
             } catch (err) {
-              if (err.status === 404) {
-                core.setOutput('is_member', 'false');
-                core.info(`${username} is NOT a member of ${org}`);
-              } else {
-                core.setFailed(`Failed to check membership: ${err}`);
+              core.setFailed(`Failed to check membership for @${commenter}: ${err}`);
+              return;
+            }
+            core.setOutput('is_approver', String(isApprover));
+            if (!isApprover) {
+              core.setFailed(`User ${commenter} is not a member of elastic organization`);
+              return;
+            }
+
+            const commentBody = context.payload.comment.body;
+            const shaMatch = commentBody.match(namedShaPattern);
+            const requestedSha = shaMatch ? shaMatch[1].toLowerCase() : '';
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            const headSha = pr.head.sha;
+            const opener = pr.user?.login;
+            const headRepoFullName = pr.head.repo?.full_name;
+            const prRef = pr.head.ref ? `refs/heads/${pr.head.ref}` : '';
+
+            if (!headSha || !opener) {
+              core.setFailed('Failed to resolve pull request head or opener.');
+              return;
+            }
+
+            let trustedAuthor = false;
+            try {
+              trustedAuthor = await isOrgMember(opener);
+            } catch (err) {
+              core.setFailed(`Failed to check membership for PR opener @${opener}: ${err}`);
+              return;
+            }
+
+            if (!requestedSha) {
+              if (!trustedAuthor) {
+                refusePin(
+                  `Comment must be ${approvalPhrases.map((phrase) => `'${phrase} <sha>'`).join(' or ')} with a commit hash of at least 7 hex characters.`,
+                );
+                return;
+              }
+            } else {
+              const commentCreatedAtMs = Date.parse(context.payload.comment.created_at);
+              if (Number.isNaN(commentCreatedAtMs)) {
+                refusePin('Comment timestamp is missing.');
+                return;
+              }
+
+              if (!headSha.toLowerCase().startsWith(requestedSha)) {
+                refusePin(
+                  `Requested commit ${requestedSha} does not match the current PR head ${headSha}.`,
+                );
+                return;
+              }
+
+              if (!headRepoFullName || !prRef) {
+                refusePin(
+                  `Pull request head repository or branch is missing; cannot verify when ${headSha} became the PR head.`,
+                );
+                return;
+              }
+
+              const [headOwner, headRepo] = headRepoFullName.split('/');
+              const headTiming = await latestTimeShaBecamePrBranchHead(
+                headOwner,
+                headRepo,
+                prRef,
+                headSha,
+              );
+              const prBranchHeadPushAt = headTiming.eventsAvailable ? headTiming.becameHeadAt : null;
+              let commitPushedDate = null;
+              if (!headTiming.eventsAvailable) {
+                try {
+                  const result = await github.graphql(
+                    `query ($owner: String!, $repo: String!, $oid: GitObjectID!) {
+                      repository(owner: $owner, name: $repo) {
+                        object(oid: $oid) {
+                          ... on Commit { pushedDate }
+                        }
+                      }
+                    }`,
+                    { owner: headOwner, repo: headRepo, oid: headSha },
+                  );
+                  commitPushedDate = result.repository?.object?.pushedDate ?? null;
+                } catch (err) {
+                  core.warning(`Failed to read commit pushedDate for ${headSha}: ${err}`);
+                }
+              }
+              const headPresentAt = prBranchHeadPushAt ?? commitPushedDate;
+              const headPresentAtMs = Date.parse(headPresentAt);
+              if (Number.isNaN(headPresentAtMs)) {
+                refusePin(
+                  `Could not prove ${headSha} was already the head of ${prRef} before the comment. Please re-comment once the push is visible on the pull request.`,
+                );
+                return;
+              }
+              if (headPresentAtMs > commentCreatedAtMs) {
+                refusePin(
+                  `Commit ${headSha} became the PR head at ${headPresentAt}, which is later than the comment (${context.payload.comment.created_at}).`,
+                );
+                return;
               }
             }
 
+            core.setOutput('commit_sha', headSha);
+            core.setOutput('branch', pr.head.ref);
+            core.setOutput('prefixed_branch', pr.head.label);
+            core.setOutput('base_branch', pr.base.ref);
+            core.setOutput('can_modify', String(pr.maintainer_can_modify));
+            core.setOutput('pr_repo', pr.head.repo?.git_url ?? '');
+            core.info(
+              `PR #${context.issue.number}: ${headSha} on ${pr.head.label} (trusted_author=${trustedAuthor}, named_sha=${requestedSha || 'none'})`,
+            );
+
       - name: Add 😕 reaction to comment
-        if: steps.check-elastic-member.outputs.is_member == 'false'
+        if: always() && (steps.approved-commit.outputs.is_approver == 'false' || steps.approved-commit.outputs.pin_refused == 'true')
         uses: peter-evans/create-or-update-comment@v5
         with:
           comment-id: ${{ github.event.comment.id }}
           reactions: 'confused'
 
-      - name: Fail if not Elastic org member
-        if: steps.check-elastic-member.outputs.is_member == 'false'
-        run: |
-          echo "User ${{ github.event.comment.user.login }} is not a member of elastic organization"
-          echo "Aborting Buildkite trigger"
-
-      - name: Add 👍 reaction to comment
-        if: steps.check-elastic-member.outputs.is_member == 'true'
-        uses: peter-evans/create-or-update-comment@v5
-        with:
-          comment-id: ${{ github.event.comment.id }}
-          reactions: '+1'
-
-      - name: Fetch PR head commit and branch
-        id: get-pr-info
-        if: steps.check-elastic-member.outputs.is_member == 'true'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.ADMIN_TOKEN_GH }}
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const prNumber = ${{ github.event.issue.number }};
-
-            try {
-              const { data: pr } = await github.rest.pulls.get({
-                owner,
-                repo,
-                pull_number: prNumber
-              });
-
-              core.setOutput('commit_sha', pr.head.sha);
-              core.setOutput('branch', pr.head.ref);
-              core.setOutput('prefixed_branch', pr.head.label);
-              core.setOutput('base_branch', pr.base.ref);
-              core.setOutput('can_modify', pr.maintainer_can_modify);
-              core.setOutput('pr_repo', pr.head.repo?.git_url);
-              core.info(`PR #${prNumber}: ${pr.head.sha} on branch ${pr.head.ref}`);
-            } catch (error) {
-              core.setFailed(`Failed to fetch PR info: ${error.message}`);
-            }
-
       - name: Trigger Buildkite pipeline
-        if: steps.check-elastic-member.outputs.is_member == 'true'
+        id: trigger-buildkite
+        if: steps.approved-commit.outcome == 'success'
         env:
           BUILDKITE_API_TOKEN: ${{ secrets.BUILDKITE_API_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
           TRIGGERED_BY: ${{ github.event.comment.user.login }}
-          COMMIT_SHA: ${{ steps.get-pr-info.outputs.commit_sha }}
-          BRANCH: ${{ steps.get-pr-info.outputs.branch }}
-          BASE_BRANCH: ${{ steps.get-pr-info.outputs.base_branch }}
-          PREFIXED_BRANCH: ${{ steps.get-pr-info.outputs.prefixed_branch }}
-          PR_REPO: ${{ steps.get-pr-info.outputs.pr_repo }}
-          CAN_MODIFY: ${{ steps.get-pr-info.outputs.can_modify }}
+          COMMIT_SHA: ${{ steps.approved-commit.outputs.commit_sha }}
+          BRANCH: ${{ steps.approved-commit.outputs.branch }}
+          BASE_BRANCH: ${{ steps.approved-commit.outputs.base_branch }}
+          PREFIXED_BRANCH: ${{ steps.approved-commit.outputs.prefixed_branch }}
+          PR_REPO: ${{ steps.approved-commit.outputs.pr_repo }}
+          CAN_MODIFY: ${{ steps.approved-commit.outputs.can_modify }}
         run: |
-          curl -s -X POST "https://api.buildkite.com/v2/organizations/elastic/pipelines/elastic-charts-build/builds" \
+          response="$RUNNER_TEMP/buildkite-build.json"
+          curl -fsS -X POST "https://api.buildkite.com/v2/organizations/elastic/pipelines/elastic-charts-build/builds" \
             -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
             -H "Content-Type: application/json" \
+            -o "$response" \
             -d '{
               "message": "Updating screenshots - triggered by @'"${TRIGGERED_BY}"'",
               "commit": "'"$COMMIT_SHA"'",
@@ -131,4 +273,12 @@ jobs:
                 "triggered_via": "github-comment",
                 "triggered_by": "'"$TRIGGERED_BY"'"
               }
-            }' | jq .
+            }'
+          jq . "$response" || cat "$response"
+
+      - name: Add 👍 reaction to comment
+        if: steps.trigger-buildkite.outcome == 'success'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          reactions: '+1'
