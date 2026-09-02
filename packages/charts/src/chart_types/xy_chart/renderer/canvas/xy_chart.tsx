@@ -136,7 +136,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
 
   private drawCanvas() {
     if (this.ctx) {
-      renderXYChartCanvas2d(this.ctx, this.props.devicePixelRatio, this.props, this.animationState);
+      renderXYChartCanvas2d(this.ctx, this.props, this.animationState);
     }
   }
 
