@@ -32,7 +32,9 @@ import { customKnobs } from '../utils/knobs';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const isDarkTheme = useThemeId().includes('dark');
+  const baseTheme = useBaseTheme();
+  const themeId = useThemeId();
+  const isDarkTheme = themeId.includes('dark');
   const getPalettes = useCallback(
     (steps: number) => [
       ['#164863', '#427D9D', '#9BBEC8', '#DDF2FD'],
@@ -48,6 +50,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       euiPaletteCool(steps),
       euiPaletteWarm(steps),
       euiPaletteGray(steps),
+      ['#202020', '#404040', '#606060', '#808080'],
     ],
     [isDarkTheme],
   );
@@ -72,14 +75,16 @@ export const Example: ChartsStory = (_, { title, description }) => {
       Pink: 1,
       Mixed: 2,
       'eui Palette color blind': 3,
-      'eui Palette For Temperature': 4,
-      'eui Palette For Status': 5,
-      'eui Palette Complementary': 6,
-      'eui Palette Negative': 7,
-      'eui Palette Positive': 8,
-      'eui Palette Cool': 9,
-      'eui Palette Warm': 10,
-      'eui Palette Gray': 11,
+      'eui Palette For Background': 4,
+      'eui Palette For Temperature': 5,
+      'eui Palette For Status': 6,
+      'eui Palette Complementary': 7,
+      'eui Palette Negative': 8,
+      'eui Palette Positive': 9,
+      'eui Palette Cool': 10,
+      'eui Palette Warm': 11,
+      'eui Palette Gray': 12,
+      'Dark Gray': 13,
     },
     0,
     { group: 'Color Bands' },
@@ -149,7 +154,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings debug={debug} baseTheme={useBaseTheme()} />
+      <Settings debug={debug} baseTheme={baseTheme} />
       <Bullet
         id="bullet"
         subtype={subtype}

@@ -6,8 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import type { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
+import { renderRectStroke } from '../../../../../renderers/canvas/primitives/rect';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
 import type { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
@@ -15,7 +17,15 @@ import type { ActiveValue } from '../../../selectors/get_active_values';
 import type { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import type { BulletStyle } from '../../../theme';
 import { GRAPH_PADDING, TICK_FONT_SIZE, getTickFont } from '../../../theme';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH, TICK_LABEL_PADDING } from '../constants';
+import {
+  TARGET_SIZE,
+  BULLET_SIZE,
+  TICK_WIDTH,
+  BAR_SIZE,
+  TARGET_STROKE_WIDTH,
+  TICK_LABEL_PADDING,
+  BAR_STROKE_WIDTH,
+} from '../constants';
 
 /** @internal */
 export function horizontalBullet(
@@ -23,6 +33,7 @@ export function horizontalBullet(
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,
+  hasStroke: boolean,
   activeValue?: ActiveValue | null,
 ) {
   const tickFont = getTickFont(style.fontFamily);
@@ -52,24 +63,45 @@ export function horizontalBullet(
   ctx.stroke();
 
   // Bar
+  const overflows = datum.value > max || datum.value < min;
   const confinedValue = clamp(datum.value, min, max);
   const adjustedZero = clamp(0, min, max);
+  const x0 = scale(adjustedZero);
+  const x1 = scale(confinedValue);
+  const y = verticalAlignment - BAR_SIZE / 2;
+
   ctx.fillStyle = style.barBackground;
-  ctx.fillRect(
-    datum.value > 0 ? scale(adjustedZero) : scale(confinedValue),
-    verticalAlignment - BAR_SIZE / 2,
-    confinedValue > 0 ? scale(confinedValue) - scale(adjustedZero) : scale(adjustedZero) - scale(confinedValue),
-    BAR_SIZE,
-  );
+  ctx.fillRect(x0, verticalAlignment - BAR_SIZE / 2, x1 - x0, BAR_SIZE);
+
+  if (hasStroke && Math.abs(confinedValue - adjustedZero) > 0) {
+    const strokedSides = {
+      top: true,
+      bottom: true,
+      right: x1 > x0 && !overflows ? true : false,
+      left: x1 < x0 && !overflows ? true : false,
+    };
+    renderRectStroke(
+      ctx,
+      { x: x0, y, width: x1 - x0, height: BAR_SIZE },
+      { color: colorToRgba(backgroundColor), width: BAR_STROKE_WIDTH },
+      strokedSides,
+    );
+  }
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
-    ctx.fillRect(
-      scale(datum.target) - TARGET_STROKE_WIDTH / 2,
-      verticalAlignment - TARGET_SIZE / 2,
-      TARGET_STROKE_WIDTH,
-      TARGET_SIZE,
-    );
+    const targetX = scale(datum.target) - TARGET_STROKE_WIDTH / 2;
+    const targetY = verticalAlignment - TARGET_SIZE / 2;
+
+    if (hasStroke) {
+      renderRectStroke(
+        ctx,
+        { x: targetX, y: targetY, width: TARGET_STROKE_WIDTH, height: TARGET_SIZE },
+        { color: colorToRgba(backgroundColor), width: TARGET_STROKE_WIDTH + BAR_STROKE_WIDTH },
+        { top: true, right: true, bottom: true, left: true },
+      );
+    }
+    ctx.fillRect(targetX, targetY, TARGET_STROKE_WIDTH, TARGET_SIZE);
   }
 
   // Zero baseline

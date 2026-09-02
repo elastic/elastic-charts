@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { Store } from 'redux';
+import type { Store } from '@reduxjs/toolkit';
 
 import { createOnBrushEndCaller } from './on_brush_end_caller';
 import { createOnElementClickCaller } from './on_element_click_caller';

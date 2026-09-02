@@ -16,6 +16,9 @@ export const TARGET_STROKE_WIDTH = 3;
 export const BULLET_SIZE = 32;
 
 /** @internal */
+export const BAR_STROKE_WIDTH = 1;
+
+/** @internal */
 export const BAR_SIZE = 12;
 
 /** @internal */

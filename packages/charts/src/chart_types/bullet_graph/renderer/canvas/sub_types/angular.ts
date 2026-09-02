@@ -20,7 +20,7 @@ import { BulletSubtype } from '../../../spec';
 import type { BulletStyle } from '../../../theme';
 import { GRAPH_PADDING, TICK_FONT_SIZE, getTickFont } from '../../../theme';
 import { getAngledChartSizing } from '../../../utils/angular';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, BAR_STROKE_WIDTH, TARGET_STROKE_WIDTH } from '../constants';
 
 /** @internal */
 export function angularBullet(
@@ -28,6 +28,7 @@ export function angularBullet(
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,
+  hasStroke: boolean,
   spec: BulletSpec,
   debug: boolean,
   activeValue?: ActiveValue | null,
@@ -35,7 +36,9 @@ export function angularBullet(
   const tickFont = getTickFont(style.fontFamily);
   const { datum, graphArea, scale, ticks, colorBands } = dimensions;
   const { radius } = getAngledChartSizing(graphArea.size, spec.subtype);
-  const [startAngle, endAngle] = scale.range() as [number, number];
+
+  const [start, end] = scale.domain() as GenericDomain;
+
   const center = {
     x: graphArea.center.x,
     y: radius + TARGET_SIZE / 2,
@@ -43,9 +46,6 @@ export function angularBullet(
 
   ctx.translate(GRAPH_PADDING.left, GRAPH_PADDING.top);
 
-  const [start, end] = scale.domain() as GenericDomain;
-  // const counterClockwise = true;
-  const counterClockwise = startAngle < endAngle && start > end;
   const [min, max] = sortNumbers([start, end]) as ContinuousDomain;
   const filteredTicks =
     spec.subtype !== BulletSubtype.circle
@@ -80,23 +80,53 @@ export function angularBullet(
   ctx.stroke();
 
   // Bar
-  const confinedValue = clamp(datum.value, min, max);
-  const adjustedZero = clamp(0, min, max);
-  ctx.beginPath();
-  ctx.lineWidth = BAR_SIZE;
-  ctx.strokeStyle = style.barBackground;
-  ctx.arc(
-    center.x,
-    center.y,
-    radius,
-    confinedValue > 0 ? scale(adjustedZero) : scale(confinedValue),
-    confinedValue > 0 ? scale(confinedValue) : scale(adjustedZero),
-    counterClockwise,
-  );
-  ctx.stroke();
+  const value = scale(clamp(datum.value, min, max));
+  const zero = scale(clamp(0, min, max));
+  const counterClockwise = value < zero;
+
+  ctx.save();
+  ctx.lineCap = 'butt';
+
+  if (hasStroke) {
+    const arcDirection = counterClockwise ? -1 : 1;
+    const innerArcOffset = BAR_STROKE_WIDTH / radius;
+    const overflows = datum.value > max || datum.value < min;
+
+    const innerValue = overflows
+      ? value
+      : clamp(value - innerArcOffset * arcDirection, Math.min(zero, value), Math.max(zero, value));
+
+    ctx.beginPath();
+    ctx.lineWidth = BAR_SIZE;
+    ctx.strokeStyle = backgroundColor;
+    ctx.arc(center.x, center.y, radius, zero, value, counterClockwise);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.lineWidth = BAR_SIZE - BAR_STROKE_WIDTH * 2;
+    ctx.strokeStyle = style.barBackground;
+    ctx.arc(center.x, center.y, radius, zero, innerValue, counterClockwise);
+    ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.lineWidth = BAR_SIZE;
+    ctx.strokeStyle = style.barBackground;
+    ctx.arc(center.x, center.y, radius, zero, value, counterClockwise);
+    ctx.stroke();
+  }
+
+  ctx.restore();
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
+    if (hasStroke) {
+      ctx.beginPath();
+      ctx.strokeStyle = backgroundColor;
+      ctx.lineWidth = TARGET_STROKE_WIDTH + BAR_STROKE_WIDTH * 2;
+      drawPolarLine(ctx, scale(datum.target), radius, TARGET_SIZE, center);
+      ctx.stroke();
+    }
+
     ctx.beginPath();
     ctx.strokeStyle = style.barBackground;
     ctx.lineWidth = TARGET_STROKE_WIDTH;
@@ -133,9 +163,9 @@ export function angularBullet(
     .forEach((tick) => {
       ctx.textAlign = 'center';
       const textPadding = style.angularTickLabelPadding + maxTickWidth / 2;
-      const start = scale(tick.value);
-      const y1 = Math.sin(start) * (radius - BULLET_SIZE / 2 - textPadding);
-      const x1 = Math.cos(start) * (radius - BULLET_SIZE / 2 - textPadding);
+      const tickAngle = scale(tick.value);
+      const y1 = Math.sin(tickAngle) * (radius - BULLET_SIZE / 2 - textPadding);
+      const x1 = Math.cos(tickAngle) * (radius - BULLET_SIZE / 2 - textPadding);
 
       ctx.fillText(tick.formattedValue, center.x + x1, center.y + y1);
     });

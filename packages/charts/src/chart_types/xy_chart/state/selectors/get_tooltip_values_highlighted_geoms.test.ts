@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { Store } from 'redux';
+import type { Store } from '@reduxjs/toolkit';
 
 import { getHighlightedTooltipTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
