@@ -1,3 +1,10 @@
+## [73.0.1](https://github.com/elastic/elastic-charts/compare/v73.0.0...v73.0.1) (2026-09-02)
+
+
+### Bug Fixes
+
+* **canvas:** chart reacts to `devicePixelRatio` change ([#2877](https://github.com/elastic/elastic-charts/issues/2877)) ([70fc873](https://github.com/elastic/elastic-charts/commit/70fc87305d5bea9b71e2df47015d657f26168a05))
+
 # [73.0.0](https://github.com/elastic/elastic-charts/compare/v72.0.1...v73.0.0) (2026-08-31)
 
 
