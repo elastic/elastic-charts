@@ -6,44 +6,31 @@
  * Side Public License, v 1.
  */
 
-import type { Dispatch } from '@reduxjs/toolkit';
-import { bindActionCreators } from '@reduxjs/toolkit';
-import React from 'react';
-import { connect } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { updateDevicePixelRatio } from '../state/actions/chart_settings';
 
-interface DispatchProps {
-  updateDevicePixelRatio: typeof updateDevicePixelRatio;
-}
+/** @internal */
+export function ChartDPRObserver() {
+  const dispatch = useDispatch();
 
-type Props = DispatchProps;
-
-class DPRObserver extends React.Component<Props> {
-  componentDidMount() {
-    this.#setupListener();
-  }
-
-  #setupListener() {
+  useEffect(() => {
     if (typeof window.matchMedia !== 'function') return;
 
-    window
-      .matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
-      .addEventListener('change', this.#onDPRChange, { once: true });
-  }
+    const setupListener = () => {
+      window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).addEventListener(
+        'change',
+        () => {
+          dispatch(updateDevicePixelRatio(window.devicePixelRatio));
+          setupListener();
+        },
+        { once: true },
+      );
+    };
 
-  #onDPRChange = () => {
-    this.props.updateDevicePixelRatio(window.devicePixelRatio);
-    this.#setupListener();
-  };
+    setupListener();
+  }, [dispatch]);
 
-  render() {
-    return null;
-  }
+  return null;
 }
-
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
-  bindActionCreators({ updateDevicePixelRatio }, dispatch);
-
-/** @internal */
-export const ChartDPRObserver = connect(null, mapDispatchToProps)(DPRObserver);
