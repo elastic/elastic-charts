@@ -5024,6 +5024,8 @@ var get_accessibility_config_1 = __webpack_require__(/*! ../../../../state/selec
 
 var get_chart_theme_1 = __webpack_require__(/*! ../../../../state/selectors/get_chart_theme */ "../packages/charts/src/state/selectors/get_chart_theme.ts");
 
+var get_device_pixel_ratio_1 = __webpack_require__(/*! ../../../../state/selectors/get_device_pixel_ratio */ "../packages/charts/src/state/selectors/get_device_pixel_ratio.ts");
+
 var get_internal_is_intialized_1 = __webpack_require__(/*! ../../../../state/selectors/get_internal_is_intialized */ "../packages/charts/src/state/selectors/get_internal_is_intialized.ts");
 
 var get_resolved_background_color_1 = __webpack_require__(/*! ../../../../state/selectors/get_resolved_background_color */ "../packages/charts/src/state/selectors/get_resolved_background_color.ts");
@@ -5043,8 +5045,6 @@ var get_panel_dimensions_1 = __webpack_require__(/*! ../../selectors/get_panel_d
 var has_chart_titles_1 = __webpack_require__(/*! ../../selectors/has_chart_titles */ "../packages/charts/src/chart_types/bullet_graph/selectors/has_chart_titles.ts");
 
 var Component = function Component(props) {
-  var _window = window,
-      devicePixelRatio = _window.devicePixelRatio;
   var initialized = props.initialized,
       debug = props.debug,
       size = props.size,
@@ -5059,7 +5059,8 @@ var Component = function Component(props) {
       metricStyle = props.metricStyle,
       chartId = props.chartId,
       hasTitles = props.hasTitles,
-      dispatchOnChartRendered = props.onChartRendered;
+      dispatchOnChartRendered = props.onChartRendered,
+      devicePixelRatio = props.devicePixelRatio;
   (0, react_1.useLayoutEffect)(function () {
     var _forwardStageRef$curr;
 
@@ -5152,7 +5153,8 @@ var DEFAULT_PROPS = {
   metricStyle: light_theme_1.LIGHT_THEME.metric,
   backgroundColor: light_theme_1.LIGHT_THEME.background.color,
   locale: specs_1.settingsBuildProps.defaults.locale,
-  colorBands: light_theme_1.LIGHT_THEME.bulletGraph.colorBands
+  colorBands: light_theme_1.LIGHT_THEME.bulletGraph.colorBands,
+  devicePixelRatio: 1
 };
 
 var mapStateToProps = function mapStateToProps(state) {
@@ -5184,7 +5186,8 @@ var mapStateToProps = function mapStateToProps(state) {
     backgroundColor: (0, get_resolved_background_color_1.getResolvedBackgroundColorSelector)(state),
     colorBands: style.colorBands,
     onElementOver: onElementOver,
-    metricStyle: metricStyle
+    metricStyle: metricStyle,
+    devicePixelRatio: (0, get_device_pixel_ratio_1.getDevicePixelRatioSelector)(state)
   };
 };
 /** @internal */
@@ -12868,6 +12871,8 @@ var get_accessibility_config_1 = __webpack_require__(/*! ../../../../state/selec
 
 var get_chart_theme_1 = __webpack_require__(/*! ../../../../state/selectors/get_chart_theme */ "../packages/charts/src/state/selectors/get_chart_theme.ts");
 
+var get_device_pixel_ratio_1 = __webpack_require__(/*! ../../../../state/selectors/get_device_pixel_ratio */ "../packages/charts/src/state/selectors/get_device_pixel_ratio.ts");
+
 var get_internal_is_intialized_1 = __webpack_require__(/*! ../../../../state/selectors/get_internal_is_intialized */ "../packages/charts/src/state/selectors/get_internal_is_intialized.ts");
 
 var goal_semantic_description_1 = __webpack_require__(/*! ../../components/goal_semantic_description */ "../packages/charts/src/chart_types/goal_chart/components/goal_semantic_description.tsx");
@@ -12888,8 +12893,6 @@ var Component = /*#__PURE__*/function (_react_1$default$Comp) {
   var _super = _createSuper(Component);
 
   // firstRender = true; // this'll be useful for stable resizing of treemaps
-  // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
-  // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
   function Component(props) {
     var _this;
 
@@ -12897,9 +12900,7 @@ var Component = /*#__PURE__*/function (_react_1$default$Comp) {
 
     _this = _super.call(this, props);
     _this.ctx = void 0;
-    _this.devicePixelRatio = void 0;
     _this.ctx = null;
-    _this.devicePixelRatio = window.devicePixelRatio;
     return _this;
   }
 
@@ -12978,8 +12979,8 @@ var Component = /*#__PURE__*/function (_react_1$default$Comp) {
       }, react_1["default"].createElement("canvas", {
         ref: forwardStageRef,
         className: "echCanvasRenderer",
-        width: width * this.devicePixelRatio,
-        height: height * this.devicePixelRatio,
+        width: width * this.props.devicePixelRatio,
+        height: height * this.props.devicePixelRatio,
         onMouseMove: this.handleMouseMove.bind(this),
         style: {
           width: width,
@@ -13002,7 +13003,7 @@ var Component = /*#__PURE__*/function (_react_1$default$Comp) {
     key: "drawCanvas",
     value: function drawCanvas() {
       if (this.ctx) {
-        (0, canvas_renderers_1.renderCanvas2d)(this.ctx, this.devicePixelRatio, this.props.geoms, this.props.background);
+        (0, canvas_renderers_1.renderCanvas2d)(this.ctx, this.props.devicePixelRatio, this.props.geoms, this.props.background);
       }
     }
   }]);
@@ -13032,7 +13033,8 @@ var DEFAULT_PROPS = {
   bandLabels: [],
   firstValue: 0,
   captureBoundingBox: (0, geoms_1.initialBoundingBox)(),
-  background: colors_1.Colors.Transparent.keyword
+  background: colors_1.Colors.Transparent.keyword,
+  devicePixelRatio: 1
 };
 
 var mapStateToProps = function mapStateToProps(state) {
@@ -13049,7 +13051,8 @@ var mapStateToProps = function mapStateToProps(state) {
     firstValue: (0, get_goal_chart_data_1.getFirstTickValueSelector)(state),
     geoms: (0, geometries_1.getPrimitiveGeoms)(state),
     captureBoundingBox: (0, picked_shapes_1.getCaptureBoundingBox)(state),
-    background: (0, get_chart_theme_1.getChartThemeSelector)(state).background.color
+    background: (0, get_chart_theme_1.getChartThemeSelector)(state).background.color,
+    devicePixelRatio: (0, get_device_pixel_ratio_1.getDevicePixelRatioSelector)(state)
   };
 };
 /** @internal */
@@ -15249,6 +15252,8 @@ var get_accessibility_config_1 = __webpack_require__(/*! ../../../../state/selec
 
 var get_chart_theme_1 = __webpack_require__(/*! ../../../../state/selectors/get_chart_theme */ "../packages/charts/src/state/selectors/get_chart_theme.ts");
 
+var get_device_pixel_ratio_1 = __webpack_require__(/*! ../../../../state/selectors/get_device_pixel_ratio */ "../packages/charts/src/state/selectors/get_device_pixel_ratio.ts");
+
 var get_internal_is_intialized_1 = __webpack_require__(/*! ../../../../state/selectors/get_internal_is_intialized */ "../packages/charts/src/state/selectors/get_internal_is_intialized.ts");
 
 var get_settings_spec_1 = __webpack_require__(/*! ../../../../state/selectors/get_settings_spec */ "../packages/charts/src/state/selectors/get_settings_spec.ts");
@@ -15275,8 +15280,6 @@ var Component = /*#__PURE__*/function (_react_1$default$Comp) {
   var _super = _createSuper(Component);
 
   // firstRender = true; // this will be useful for stable resizing of treemaps
-  // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
-  // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
   function Component(props) {
     var _this;
 
@@ -15284,9 +15287,7 @@ var Component = /*#__PURE__*/function (_react_1$default$Comp) {
 
     _this = _super.call(this, props);
     _this.ctx = void 0;
-    _this.devicePixelRatio = void 0;
     _this.ctx = null;
-    _this.devicePixelRatio = window.devicePixelRatio;
     return _this;
   }
 
@@ -15331,7 +15332,7 @@ var Component = /*#__PURE__*/function (_react_1$default$Comp) {
     key: "drawCanvas",
     value: function drawCanvas() {
       if (this.ctx) {
-        (0, canvas_renderers_1.renderHeatmapCanvas2d)(this.ctx, this.devicePixelRatio, this.props);
+        (0, canvas_renderers_1.renderHeatmapCanvas2d)(this.ctx, this.props.devicePixelRatio, this.props);
       }
     } // eslint-disable-next-line @typescript-eslint/member-ordering
 
@@ -15356,8 +15357,8 @@ var Component = /*#__PURE__*/function (_react_1$default$Comp) {
       }, react_1["default"].createElement("canvas", {
         ref: forwardStageRef,
         className: "echCanvasRenderer",
-        width: width * this.devicePixelRatio,
-        height: height * this.devicePixelRatio,
+        width: width * this.props.devicePixelRatio,
+        height: height * this.props.devicePixelRatio,
         style: {
           width: width,
           height: height
@@ -15414,7 +15415,8 @@ var DEFAULT_PROPS = {
     left: 0,
     width: 0,
     height: 0
-  }
+  },
+  devicePixelRatio: 1
 };
 
 var mapStateToProps = function mapStateToProps(state) {
@@ -15432,7 +15434,8 @@ var mapStateToProps = function mapStateToProps(state) {
     background: (0, get_chart_theme_1.getChartThemeSelector)(state).background.color,
     elementSizes: (0, compute_chart_element_sizes_1.computeChartElementSizesSelector)(state),
     debug: (0, get_settings_spec_1.getSettingsSpecSelector)(state).debug,
-    chartDimensions: (0, compute_chart_dimensions_1.computeChartDimensionsSelector)(state).chartDimensions
+    chartDimensions: (0, compute_chart_dimensions_1.computeChartDimensionsSelector)(state).chartDimensions,
+    devicePixelRatio: (0, get_device_pixel_ratio_1.getDevicePixelRatioSelector)(state)
   };
 };
 /** @internal */
@@ -27255,6 +27258,8 @@ var get_chart_container_dimensions_1 = __webpack_require__(/*! ../../../../state
 
 var get_chart_theme_1 = __webpack_require__(/*! ../../../../state/selectors/get_chart_theme */ "../packages/charts/src/state/selectors/get_chart_theme.ts");
 
+var get_device_pixel_ratio_1 = __webpack_require__(/*! ../../../../state/selectors/get_device_pixel_ratio */ "../packages/charts/src/state/selectors/get_device_pixel_ratio.ts");
+
 var get_internal_is_intialized_1 = __webpack_require__(/*! ../../../../state/selectors/get_internal_is_intialized */ "../packages/charts/src/state/selectors/get_internal_is_intialized.ts");
 
 var get_settings_spec_1 = __webpack_require__(/*! ../../../../state/selectors/get_settings_spec */ "../packages/charts/src/state/selectors/get_settings_spec.ts");
@@ -27279,8 +27284,6 @@ var PartitionComponent = /*#__PURE__*/function (_react_1$default$Comp) {
   var _super = _createSuper(PartitionComponent);
 
   // firstRender = true; // this will be useful for stable resizing of treemaps
-  // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
-  // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
   function PartitionComponent(props) {
     var _this;
 
@@ -27289,9 +27292,7 @@ var PartitionComponent = /*#__PURE__*/function (_react_1$default$Comp) {
     _this = _super.call(this, props);
     _this.ctx = void 0;
     _this.animationState = void 0;
-    _this.devicePixelRatio = void 0;
     _this.ctx = null;
-    _this.devicePixelRatio = window.devicePixelRatio;
     _this.animationState = {
       rafId: NaN
     };
@@ -27385,8 +27386,8 @@ var PartitionComponent = /*#__PURE__*/function (_react_1$default$Comp) {
         dir: isRTL ? 'rtl' : 'ltr',
         ref: forwardStageRef,
         className: "echCanvasRenderer",
-        width: width * this.devicePixelRatio,
-        height: height * this.devicePixelRatio,
+        width: width * this.props.devicePixelRatio,
+        height: height * this.props.devicePixelRatio,
         onMouseMove: this.handleMouseMove.bind(this),
         style: {
           width: width,
@@ -27403,8 +27404,8 @@ var PartitionComponent = /*#__PURE__*/function (_react_1$default$Comp) {
 
       if (this.ctx) {
         var ctx = this.ctx,
-            devicePixelRatio = this.devicePixelRatio,
             props = this.props;
+        var devicePixelRatio = props.devicePixelRatio;
         (0, canvas_1.clearCanvas)(ctx, props.background);
         props.multiGeometries.forEach(function (geometries, geometryIndex) {
           var focus = props.geometriesFoci[geometryIndex];
@@ -27457,7 +27458,8 @@ var DEFAULT_PROPS = {
   highlightedLegendPath: [],
   legendStrategy: undefined,
   flatLegend: undefined,
-  partitionStyle: light_theme_1.LIGHT_THEME.partition
+  partitionStyle: light_theme_1.LIGHT_THEME.partition,
+  devicePixelRatio: 1
 };
 
 var mapStateToProps = function mapStateToProps(state) {
@@ -27483,7 +27485,8 @@ var mapStateToProps = function mapStateToProps(state) {
     highlightedLegendPath: state.interactions.highlightedLegendPath,
     legendStrategy: settings.legendStrategy,
     flatLegend: settings.flatLegend,
-    partitionStyle: theme.partition
+    partitionStyle: theme.partition,
+    devicePixelRatio: (0, get_device_pixel_ratio_1.getDevicePixelRatioSelector)(state)
   };
 };
 /** @internal */
@@ -41528,12 +41531,12 @@ var debug_1 = __webpack_require__(/*! ../../../../renderers/canvas/utils/debug *
 /** @internal */
 
 
-function renderXYChartCanvas2d(ctx, dpr, props, animationState) {
+function renderXYChartCanvas2d(ctx, props, animationState) {
   function render(aCtx) {
     var imgCanvas = document.createElement('canvas');
     (0, canvas_1.withContext)(ctx, function () {
       // let's set the devicePixelRatio once and for all; then we'll never worry about it again
-      ctx.scale(dpr, dpr);
+      ctx.scale(props.devicePixelRatio, props.devicePixelRatio);
       var renderingArea = props.renderingArea,
           chartTransform = props.chartTransform,
           rotation = props.rotation,
@@ -42448,6 +42451,8 @@ var get_chart_rotation_1 = __webpack_require__(/*! ../../../../state/selectors/g
 
 var get_chart_theme_1 = __webpack_require__(/*! ../../../../state/selectors/get_chart_theme */ "../packages/charts/src/state/selectors/get_chart_theme.ts");
 
+var get_device_pixel_ratio_1 = __webpack_require__(/*! ../../../../state/selectors/get_device_pixel_ratio */ "../packages/charts/src/state/selectors/get_device_pixel_ratio.ts");
+
 var get_internal_is_intialized_1 = __webpack_require__(/*! ../../../../state/selectors/get_internal_is_intialized */ "../packages/charts/src/state/selectors/get_internal_is_intialized.ts");
 
 var get_settings_spec_1 = __webpack_require__(/*! ../../../../state/selectors/get_settings_spec */ "../packages/charts/src/state/selectors/get_settings_spec.ts");
@@ -42485,8 +42490,6 @@ var XYChartComponent = /*#__PURE__*/function (_react_1$default$Comp) {
 
   var _super = _createSuper(XYChartComponent);
 
-  // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
-  // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
   function XYChartComponent(props) {
     var _this;
 
@@ -42495,9 +42498,7 @@ var XYChartComponent = /*#__PURE__*/function (_react_1$default$Comp) {
     _this = _super.call(this, props);
     _this.ctx = void 0;
     _this.animationState = void 0;
-    _this.devicePixelRatio = void 0;
     _this.ctx = null;
-    _this.devicePixelRatio = window.devicePixelRatio;
     _this.animationState = {
       rafId: NaN,
       pool: new Map()
@@ -42546,7 +42547,7 @@ var XYChartComponent = /*#__PURE__*/function (_react_1$default$Comp) {
     key: "drawCanvas",
     value: function drawCanvas() {
       if (this.ctx) {
-        (0, renderers_1.renderXYChartCanvas2d)(this.ctx, this.devicePixelRatio, this.props, this.animationState);
+        (0, renderers_1.renderXYChartCanvas2d)(this.ctx, this.props, this.animationState);
       }
     }
   }, {
@@ -42582,8 +42583,8 @@ var XYChartComponent = /*#__PURE__*/function (_react_1$default$Comp) {
         dir: isRTL ? 'rtl' : 'ltr',
         ref: forwardCanvasRef,
         className: "echCanvasRenderer",
-        width: width * this.devicePixelRatio,
-        height: height * this.devicePixelRatio,
+        width: width * this.props.devicePixelRatio,
+        height: height * this.props.devicePixelRatio,
         style: {
           width: width,
           height: height
@@ -42645,7 +42646,8 @@ var DEFAULT_PROPS = {
   annotationSpecs: [],
   panelGeoms: [],
   a11ySettings: get_accessibility_config_1.DEFAULT_A11Y_SETTINGS,
-  locale: specs_1.settingsBuildProps.defaults.locale
+  locale: specs_1.settingsBuildProps.defaults.locale,
+  devicePixelRatio: 1
 };
 
 var mapStateToProps = function mapStateToProps(state) {
@@ -42684,7 +42686,8 @@ var mapStateToProps = function mapStateToProps(state) {
     annotationDimensions: (0, compute_annotations_1.computeAnnotationDimensionsSelector)(state),
     annotationSpecs: (0, get_specs_1.getAnnotationSpecsSelector)(state),
     panelGeoms: (0, compute_panels_1.computePanelsSelectors)(state),
-    a11ySettings: (0, get_accessibility_config_1.getA11ySettingsSelector)(state)
+    a11ySettings: (0, get_accessibility_config_1.getA11ySettingsSelector)(state),
+    devicePixelRatio: (0, get_device_pixel_ratio_1.getDevicePixelRatioSelector)(state)
   };
 };
 /** @internal */
@@ -61752,6 +61755,8 @@ var chart_background_1 = __webpack_require__(/*! ./chart_background */ "../packa
 
 var chart_container_1 = __webpack_require__(/*! ./chart_container */ "../packages/charts/src/components/chart_container.tsx");
 
+var chart_dpr_observer_1 = __webpack_require__(/*! ./chart_dpr_observer */ "../packages/charts/src/components/chart_dpr_observer.tsx");
+
 var chart_resizer_1 = __webpack_require__(/*! ./chart_resizer */ "../packages/charts/src/components/chart_resizer.tsx");
 
 var chart_status_1 = __webpack_require__(/*! ./chart_status */ "../packages/charts/src/components/chart_status.tsx");
@@ -61941,7 +61946,7 @@ var Chart = /*#__PURE__*/function (_react_1$default$Comp) {
         paddingRight: this.state.paddingRight
       }), react_1["default"].createElement("div", {
         className: chartContentClassNames
-      }, react_1["default"].createElement(chart_background_1.ChartBackground, null), react_1["default"].createElement(chart_status_1.ChartStatus, null), react_1["default"].createElement(chart_resizer_1.ChartResizer, null), react_1["default"].createElement(legend_1.Legend, null), react_1["default"].createElement(specs_parser_1.SpecsParser, null, this.props.children), react_1["default"].createElement("div", {
+      }, react_1["default"].createElement(chart_background_1.ChartBackground, null), react_1["default"].createElement(chart_status_1.ChartStatus, null), react_1["default"].createElement(chart_resizer_1.ChartResizer, null), react_1["default"].createElement(chart_dpr_observer_1.ChartDPRObserver, null), react_1["default"].createElement(legend_1.Legend, null), react_1["default"].createElement(specs_parser_1.SpecsParser, null, this.props.children), react_1["default"].createElement("div", {
         className: "echContainer",
         ref: this.chartContainerRef
       }, react_1["default"].createElement(chart_container_1.ChartContainer, {
@@ -62550,6 +62555,60 @@ var mapStateToProps = function mapStateToProps(state) {
 
 
 exports.ChartContainer = (0, react_redux_1.connect)(mapStateToProps, mapDispatchToProps)(ChartContainerComponent);
+
+/***/ }),
+
+/***/ "../packages/charts/src/components/chart_dpr_observer.tsx":
+/*!****************************************************************!*\
+  !*** ../packages/charts/src/components/chart_dpr_observer.tsx ***!
+  \****************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-property.js */ "../node_modules/core-js/modules/es.object.define-property.js");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ChartDPRObserver = ChartDPRObserver;
+
+var react_1 = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+
+var react_redux_1 = __webpack_require__(/*! react-redux */ "../node_modules/react-redux/dist/react-redux.legacy-esm.js");
+
+var chart_settings_1 = __webpack_require__(/*! ../state/actions/chart_settings */ "../packages/charts/src/state/actions/chart_settings.ts");
+/** @internal */
+
+
+function ChartDPRObserver() {
+  var dispatch = (0, react_redux_1.useDispatch)();
+  (0, react_1.useEffect)(function () {
+    if (typeof window.matchMedia !== 'function') return;
+
+    var setupListener = function setupListener() {
+      window.matchMedia("(resolution: " + window.devicePixelRatio + "dppx)").addEventListener('change', function () {
+        dispatch((0, chart_settings_1.updateDevicePixelRatio)(window.devicePixelRatio));
+        setupListener();
+      }, {
+        once: true
+      });
+    };
+
+    setupListener();
+  }, [dispatch]);
+  return null;
+}
 
 /***/ }),
 
@@ -78809,7 +78868,7 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-propert
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateChartTitles = exports.updateParentDimensions = void 0;
+exports.updateDevicePixelRatio = exports.updateChartTitles = exports.updateParentDimensions = void 0;
 
 var toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.legacy-esm.js");
 /** @internal */
@@ -78819,6 +78878,9 @@ exports.updateParentDimensions = (0, toolkit_1.createAction)('UPDATE_PARENT_DIME
 /** @internal */
 
 exports.updateChartTitles = (0, toolkit_1.createAction)('UPDATE_CHART_TITLES');
+/** @internal */
+
+exports.updateDevicePixelRatio = (0, toolkit_1.createAction)('UPDATE_DEVICE_PIXEL_RATIO');
 
 /***/ }),
 
@@ -79482,6 +79544,8 @@ var handleChartSettingsActions = function handleChartSettingsActions(builder) {
   }).addCase(chart_settings_1.updateChartTitles, function (state, action) {
     state.title = action.payload.title;
     state.description = action.payload.description;
+  }).addCase(chart_settings_1.updateDevicePixelRatio, function (state, action) {
+    state.devicePixelRatio = action.payload;
   });
 };
 
@@ -79935,7 +79999,8 @@ var getInitialState = function getInitialState(chartId, title, description) {
       width: 0,
       left: 0,
       top: 0
-    }
+    },
+    devicePixelRatio: window.devicePixelRatio
   };
 };
 
@@ -80916,6 +80981,40 @@ var getDeselectedSeriesSelector = function getDeselectedSeriesSelector(state) {
 };
 
 exports.getDeselectedSeriesSelector = getDeselectedSeriesSelector;
+
+/***/ }),
+
+/***/ "../packages/charts/src/state/selectors/get_device_pixel_ratio.ts":
+/*!************************************************************************!*\
+  !*** ../packages/charts/src/state/selectors/get_device_pixel_ratio.ts ***!
+  \************************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-property.js */ "../node_modules/core-js/modules/es.object.define-property.js");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getDevicePixelRatioSelector = void 0;
+/** @internal */
+
+var getDevicePixelRatioSelector = function getDevicePixelRatioSelector(state) {
+  return state.devicePixelRatio;
+};
+
+exports.getDevicePixelRatioSelector = getDevicePixelRatioSelector;
 
 /***/ }),
 
@@ -180398,4 +180497,4 @@ module.exports = __webpack_require__(/*! /app/storybook/generated-stories-entry.
 /***/ })
 
 },[[0,"runtime~main","vendors~main"]]]);
-//# sourceMappingURL=main.8eb2c75f.iframe.bundle.js.map
+//# sourceMappingURL=main.c8619214.iframe.bundle.js.map
