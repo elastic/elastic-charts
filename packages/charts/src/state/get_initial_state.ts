@@ -47,4 +47,5 @@ export const getInitialState = (chartId: string, title?: string, description?: s
     left: 0,
     top: 0,
   },
+  devicePixelRatio: window.devicePixelRatio,
 });
