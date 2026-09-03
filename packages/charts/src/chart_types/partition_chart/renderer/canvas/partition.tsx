@@ -28,6 +28,7 @@ import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../stat
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_device_pixel_ratio';
+import { getHighlightedPaths } from '../../../../state/selectors/get_highlighted_paths';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Dimensions } from '../../../../utils/dimensions';
@@ -62,7 +63,7 @@ interface ReactiveChartStateProps {
   a11ySettings: A11ySettings;
   debug: SettingsSpec['debug'];
   background: Color;
-  highlightedLegendPath: LegendPath;
+  highlightedPaths: LegendPath[];
   legendStrategy: SettingsSpec['legendStrategy'];
   flatLegend: SettingsSpec['flatLegend'];
   partitionStyle: PartitionStyle;
@@ -194,7 +195,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
             devicePixelRatio,
             geometries,
             focus,
-            props.highlightedLegendPath,
+            props.highlightedPaths,
             props.legendStrategy,
             props.flatLegend,
             props.partitionStyle,
@@ -205,7 +206,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
             ctx,
             devicePixelRatio,
             geometries,
-            props.highlightedLegendPath,
+            props.highlightedPaths,
             props.legendStrategy,
             props.flatLegend,
             props.partitionStyle,
@@ -215,7 +216,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
             ctx,
             devicePixelRatio,
             geometries,
-            props.highlightedLegendPath,
+            props.highlightedPaths,
             props.legendStrategy,
             props.flatLegend,
             props.partitionStyle,
@@ -249,7 +250,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   debug: false,
   background: Colors.Transparent.keyword,
-  highlightedLegendPath: [],
+  highlightedPaths: [],
   legendStrategy: undefined,
   flatLegend: undefined,
   partitionStyle: LIGHT_THEME.partition,
@@ -274,7 +275,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     a11ySettings: getA11ySettingsSelector(state),
     debug: settings.debug,
     background: theme.background.color,
-    highlightedLegendPath: state.interactions.highlightedLegendPath,
+    highlightedPaths: getHighlightedPaths(state),
     legendStrategy: settings.legendStrategy,
     flatLegend: settings.flatLegend,
     partitionStyle: theme.partition,

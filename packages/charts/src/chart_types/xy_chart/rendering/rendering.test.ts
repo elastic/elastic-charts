@@ -9,7 +9,6 @@
 import { getBarStyleOverrides } from './bars';
 import { getPointStyleOverrides, getRadiusFn } from './points';
 import { getGeometryStateStyle, isPointOnGeometry, getClippedRanges } from './utils';
-import type { LegendItem } from '../../../common/legend';
 import { MockBarGeometry, MockDataSeries, MockPointGeometry } from '../../../mocks';
 import { MockScale } from '../../../mocks/scale';
 import type { RecursivePartial } from '../../../utils/common';
@@ -124,28 +123,6 @@ describe('Rendering utils', () => {
       seriesKeys: [],
       key: 'somekey',
     };
-    const highlightedLegendItem: LegendItem = {
-      color: '',
-      label: '',
-      depth: 0,
-      seriesIdentifiers: [seriesIdentifier],
-      isSeriesHidden: false,
-      values: [],
-      path: [],
-      keys: [],
-    };
-
-    const unhighlightedLegendItem: LegendItem = {
-      ...highlightedLegendItem,
-      seriesIdentifiers: [
-        {
-          ...seriesIdentifier,
-          key: 'not me',
-        },
-      ],
-      keys: [],
-    };
-
     const sharedThemeStyle: SharedGeometryStateStyle = {
       default: {
         opacity: 1,
@@ -164,26 +141,22 @@ describe('Rendering utils', () => {
     });
 
     it('should equal highlighted opacity', () => {
-      const highlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, highlightedLegendItem);
+      const highlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, ['somekey']);
       expect(highlightedStyle).toBe(sharedThemeStyle.highlighted);
     });
 
     it('should equal unhighlighted when not highlighted item', () => {
-      const unhighlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, unhighlightedLegendItem);
+      const unhighlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, ['not me']);
       expect(unhighlightedStyle).toBe(sharedThemeStyle.unhighlighted);
     });
 
     it('should equal custom spec highlighted opacity', () => {
-      const customHighlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, highlightedLegendItem);
+      const customHighlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, ['somekey']);
       expect(customHighlightedStyle).toBe(sharedThemeStyle.highlighted);
     });
 
     it('unhighlighted elements remain unchanged with custom opacity', () => {
-      const customUnhighlightedStyle = getGeometryStateStyle(
-        seriesIdentifier,
-        sharedThemeStyle,
-        unhighlightedLegendItem,
-      );
+      const customUnhighlightedStyle = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, ['not me']);
       expect(customUnhighlightedStyle).toBe(sharedThemeStyle.unhighlighted);
     });
   });

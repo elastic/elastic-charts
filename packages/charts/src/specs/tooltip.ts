@@ -19,6 +19,7 @@ import type { Color } from '../common/colors';
 import type { SeriesIdentifier } from '../common/series_id';
 import type { TooltipPortalSettings } from '../components/portal';
 import type { CustomTooltip } from '../components/tooltip';
+import type { LegendPath } from '../state/actions/legend';
 import type { SFProps } from '../state/spec_factory';
 import { buildSFProps, useSpecFactory } from '../state/spec_factory';
 import type { PointerValue } from '../state/types';
@@ -60,6 +61,11 @@ export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIden
    * The identifier of the related series
    */
   seriesIdentifier: SI;
+  /**
+   * Hierarchical path for this tooltip value, used to disambiguate partition nodes that share a label.
+   * @internal
+   */
+  path?: LegendPath;
   /**
    * The datum associated with the current tooltip value
    * Maybe not available

@@ -76,6 +76,7 @@ export function formatTooltipValue(
     isHighlighted,
     isVisible,
     datum,
+    path: [{ index: 0, value: seriesIdentifier.key }],
   };
 }
 
