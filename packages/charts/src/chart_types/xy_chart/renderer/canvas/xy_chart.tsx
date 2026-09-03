@@ -27,6 +27,7 @@ import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../stat
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_device_pixel_ratio';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Rotation } from '../../../../utils/common';
@@ -77,6 +78,7 @@ export interface ReactiveChartStateProps {
   panelGeoms: PanelGeoms;
   a11ySettings: A11ySettings;
   locale: string;
+  devicePixelRatio: number;
 }
 
 interface ReactiveChartDispatchProps {
@@ -95,13 +97,9 @@ class XYChartComponent extends React.Component<XYChartProps> {
   private ctx: CanvasRenderingContext2D | null;
   private animationState: AnimationState;
 
-  // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
-  private readonly devicePixelRatio: number; // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
-
   constructor(props: Readonly<XYChartProps>) {
     super(props);
     this.ctx = null;
-    this.devicePixelRatio = window.devicePixelRatio;
     this.animationState = { rafId: NaN, pool: new Map() };
   }
 
@@ -138,7 +136,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
 
   private drawCanvas() {
     if (this.ctx) {
-      renderXYChartCanvas2d(this.ctx, this.devicePixelRatio, this.props, this.animationState);
+      renderXYChartCanvas2d(this.ctx, this.props, this.animationState);
     }
   }
 
@@ -171,8 +169,8 @@ class XYChartComponent extends React.Component<XYChartProps> {
             dir={isRTL ? 'rtl' : 'ltr'}
             ref={forwardCanvasRef}
             className="echCanvasRenderer"
-            width={width * this.devicePixelRatio}
-            height={height * this.devicePixelRatio}
+            width={width * this.props.devicePixelRatio}
+            height={height * this.props.devicePixelRatio}
             style={{
               width,
               height,
@@ -238,6 +236,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   panelGeoms: [],
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   locale: settingsBuildProps.defaults.locale,
+  devicePixelRatio: 1,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -272,6 +271,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
     a11ySettings: getA11ySettingsSelector(state),
+    devicePixelRatio: getDevicePixelRatioSelector(state),
   };
 };
 

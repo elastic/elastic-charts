@@ -21,6 +21,7 @@ import type { GlobalChartState } from '../../../../state/chart_state';
 import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_device_pixel_ratio';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Dimensions } from '../../../../utils/dimensions';
@@ -49,6 +50,7 @@ export interface ReactiveChartStateProps {
   elementSizes: ChartElementSizes;
   debug: boolean;
   chartDimensions: Dimensions;
+  devicePixelRatio: number;
 }
 
 interface ReactiveChartDispatchProps {
@@ -66,13 +68,9 @@ class Component extends React.Component<Props> {
   // firstRender = true; // this will be useful for stable resizing of treemaps
   private ctx: CanvasRenderingContext2D | null;
 
-  // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
-  private readonly devicePixelRatio: number; // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
-
   constructor(props: Readonly<Props>) {
     super(props);
     this.ctx = null;
-    this.devicePixelRatio = window.devicePixelRatio;
   }
 
   componentDidMount() {
@@ -108,7 +106,7 @@ class Component extends React.Component<Props> {
 
   private drawCanvas() {
     if (this.ctx) {
-      renderHeatmapCanvas2d(this.ctx, this.devicePixelRatio, this.props);
+      renderHeatmapCanvas2d(this.ctx, this.props.devicePixelRatio, this.props);
     }
   }
 
@@ -128,8 +126,8 @@ class Component extends React.Component<Props> {
         <canvas
           ref={forwardStageRef}
           className="echCanvasRenderer"
-          width={width * this.devicePixelRatio}
-          height={height * this.devicePixelRatio}
+          width={width * this.props.devicePixelRatio}
+          height={height * this.props.devicePixelRatio}
           style={{
             width,
             height,
@@ -167,6 +165,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   },
   debug: false,
   chartDimensions: { top: 0, left: 0, width: 0, height: 0 },
+  devicePixelRatio: 1,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -184,6 +183,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     elementSizes: computeChartElementSizesSelector(state),
     debug: getSettingsSpecSelector(state).debug,
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
+    devicePixelRatio: getDevicePixelRatioSelector(state),
   };
 };
 

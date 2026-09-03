@@ -20,3 +20,6 @@ export const updateParentDimensions = createAction<Dimensions>('UPDATE_PARENT_DI
 
 /** @internal */
 export const updateChartTitles = createAction<UpdateChartTitles>('UPDATE_CHART_TITLES');
+
+/** @internal */
+export const updateDevicePixelRatio = createAction<number>('UPDATE_DEVICE_PIXEL_RATIO');
