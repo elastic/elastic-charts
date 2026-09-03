@@ -12,4 +12,6 @@ void (async () => {
   await yarnInstall();
 
   await exec('yarn api:check');
+  await exec('yarn generate:trace-api-story');
+  await exec('git diff --exit-code storybook/stories/trace/01_intro.story.tsx');
 })();

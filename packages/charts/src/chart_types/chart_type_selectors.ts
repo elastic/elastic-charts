@@ -14,6 +14,7 @@ import { chartSelectorsFactory as heatmapSelectorsFactory } from './heatmap/stat
 import { chartSelectorsFactory as metricSelectorsFactory } from './metric/state/chart_selectors';
 import { chartSelectorsFactory as partitionSelectorsFactory } from './partition_chart/state/chart_selectors';
 import { chartSelectorsFactory as timeslipSelectorsFactory } from './timeslip/chart_selectors';
+import { chartSelectorsFactory as traceSelectorsFactory } from './trace_chart/chart_selectors';
 import { chartSelectorsFactory as wordcloudSelectorsFactory } from './wordcloud/state/chart_selectors';
 import { chartSelectorsFactory as xyAxisChartSelectorsFactory } from './xy_chart/state/chart_selectors';
 import type { ChartSelectors } from '../state/chart_selectors';
@@ -29,5 +30,6 @@ export const chartTypeSelectors: Record<ChartType, () => ChartSelectors | null> 
   [ChartType.Wordcloud]: wordcloudSelectorsFactory,
   [ChartType.Metric]: metricSelectorsFactory,
   [ChartType.Bullet]: bulletSelectorsFactory,
+  [ChartType.Trace]: traceSelectorsFactory,
   [ChartType.Global]: () => null,
 }; // with no default, TS signals if a new chart type isn't added here too

@@ -18,6 +18,7 @@ import { BOREALIS_COLORS_PALETTE } from './borealis_colors';
 import type { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
 import { LIGHT_THEME_BULLET_STYLE } from '../../chart_types/bullet_graph/theme';
+import { DEFAULT_TRACE_LAYOUT } from '../../chart_types/trace_chart/render/types';
 import { Colors } from '../../common/colors';
 import { TAU } from '../../common/constants';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
@@ -478,6 +479,18 @@ export const LIGHT_THEME: Theme = {
     maxWidth: 500,
     maxTableHeight: 120,
     defaultDotColor: Colors.Black.keyword,
+  },
+  trace: {
+    ...DEFAULT_TRACE_LAYOUT,
+    totalLineColor: LIGHT_BORDER_COLORS.borderBaseSubdued,
+    activeSegmentColor: LIGHT_BACKGROUND_COLORS.backgroundFilledPrimary,
+    gutterLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: LIGHT_TEXT_COLORS.textSubdued },
+    timeBarLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: LIGHT_TEXT_COLORS.textSubdued },
+    gridLineColor: LIGHT_BORDER_COLORS.borderBaseSubdued,
+    treeGuideColor: LIGHT_BORDER_COLORS.borderBasePlain,
+    focusedLaneBackground: LIGHT_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
+    selectedSegmentStroke: LIGHT_BACKGROUND_COLORS.backgroundFilledAccent,
+    criticalPathColor: '#C61E25',
   },
   // TODO map colors to base color mappings
   flamegraph: {

@@ -52,3 +52,59 @@
 - [ ] The proper documentation and/or storybook story has been added or updated
 - [ ] The code has been checked for cross-browser compatibility (Chrome, Firefox, Safari, Edge)
 - [ ] Visual changes have been tested with `light` and `dark` themes
+
+### Knowledge-harvest gate (trace-viz features only)
+
+<!-- Complete this section when merging a trace-viz feature and deleting its implementation plan.
+     Each item ensures durable knowledge is preserved before the ephemeral spec is discarded. -->
+
+- [ ] Edge cases moved to anchored acceptance criteria in `docs/adr/trace-viz/trace-chart.md` (`## Behavior & acceptance`).
+- [ ] Non-obvious mechanism/trade-off rationale promoted to ADRs (linked under `## Decisions` in the behavioral spec).
+- [ ] Scope rationale captured in `## Non-goals` of the behavioral spec, each entry with its one-line reason.
+- [ ] Pure implementation rationale left as code comments at the source (not in any doc).
+- [ ] Implementation plan deleted.
+
+<details>
+<summary>Agent prompt — update the behavioral spec</summary>
+
+Copy the block below into your Claude Code session. Fill in the `[…]` placeholder with the name/path of the implementation spec (or paste its contents) before sending.
+
+```
+Update docs/adr/trace-viz/trace-chart.md to fold in the durable behavioral knowledge
+from the feature just shipped.
+
+Feature / spec being harvested: […]
+
+Apply the four-way routing rule to every piece of knowledge in the implementation plan:
+
+  1. Public API change (new or changed exported type, prop, or function)
+     → add or update the relevant row in ## Public API.
+
+  2. Behavioral edge case, gesture/modifier-key table, or ## Edge cases table
+     → add as an anchored acceptance criterion in ## Behavior & acceptance.
+        Each bullet must end with a proof anchor:
+          {story:exportName}             — export { … as exportName } in trace.stories.tsx
+          {test:path/to/file.test.ts#"substring"}  — file exists and contains that string
+
+  3. Non-obvious mechanism or trade-off rationale not already in an ADR
+     → propose a new ADR under docs/adr/trace-viz/ and link it under ## Decisions.
+
+  4. Scope boundary or explicit non-goal
+     → add to ## Non-goals with a one-line reason (the "why", not just the "what").
+
+  5. Pure implementation mechanics (file layout, internal steps, line numbers)
+     → discard — this lives in git history, not in docs.
+
+Hard rules — the edit must not introduce any of these (they cause drift):
+  ✗  File paths ending in .ts or .tsx (e.g. normalize.ts, data/colors.ts)
+  ✗  Line-number references (L59, file.ts:30, currently ~L137)
+  ✗  Internal (non-exported) function names (dropNonFinite, resolveActive, parseSimple, …)
+  ✓  Exported/public names are allowed: TraceDatum, TraceSpec, colorBy, laneOrder, fromOtlp, …
+
+After editing, verify manually:
+  • Every {story:X} export name exists in storybook/stories/trace/trace.stories.tsx
+  • Every {test:P#"S"} file exists and contains the quoted substring
+  • Every relative markdown link (./NNNN-*.md) resolves to a real file
+```
+
+</details>

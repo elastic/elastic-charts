@@ -14,6 +14,7 @@ import { chartRenderer as heatmapRenderer } from './heatmap/state/chart_renderer
 import { chartRenderer as metricRenderer } from './metric/state/chart_renderer';
 import { chartRenderer as partitionRenderer } from './partition_chart/renderer/dom/layered_partition_chart';
 import { chartRenderer as timeslipRenderer } from './timeslip/timeslip_chart';
+import { chartRenderer as traceRenderer } from './trace_chart/trace_chart';
 import { chartRenderer as wordcloudRenderer } from './wordcloud/state/chart_renderer';
 import { chartRenderer as xyAxisChartRenderer } from './xy_chart/state/chart_renderer';
 import type { ChartRenderer } from '../state/internal_chart_renderer';
@@ -29,5 +30,6 @@ export const chartTypeRenderer: Record<ChartType, () => ChartRenderer | null> = 
   [ChartType.Wordcloud]: () => wordcloudRenderer,
   [ChartType.Metric]: () => metricRenderer,
   [ChartType.Bullet]: () => bulletRenderer,
+  [ChartType.Trace]: () => traceRenderer,
   [ChartType.Global]: () => null,
 }; // with no default, TS signals if a new chart type isn't added here too

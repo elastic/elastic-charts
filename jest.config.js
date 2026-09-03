@@ -8,7 +8,7 @@
 
 module.exports = {
   testMatch: ['**/?(*.)+(test).[jt]s?(x)'],
-  roots: ['<rootDir>/packages/charts/src'],
+  roots: ['<rootDir>/packages/charts/src', '<rootDir>/scripts'],
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: [
