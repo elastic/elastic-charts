@@ -78,6 +78,11 @@ module.exports = {
     }),
     new webpack.EnvironmentPlugin({ RNG_SEED: null, VRT: 'false' }),
   ],
+  devServer: {
+    static: {
+      directory: path.resolve(__dirname, '../public'),
+    },
+  },
   resolve: {
     alias: {
       '@elastic/charts$': path.resolve(__dirname, '../packages/charts/src'),
