@@ -1,9 +1,10 @@
 # Approvers comment "buildkite update screenshots" or "buildkite update vrt"
 # to request a screenshot-update build. Unless the pull request has a Trusted
 # author (opener is an elastic org member), the comment must name the commit
-# (>=7 hex chars) immediately after the phrase. That commit must be the PR head,
-# and that head must already have been in place before the comment. No
-# pull-request code runs here (REST API only).
+# immediately after the phrase: a SHA (>=7 hex chars), a GitHub commit URL,
+# or a markdown link to /commit/ or /commits/ that SHA. That commit must be
+# the PR head, and that head must already have been in place before the
+# comment. No pull-request code runs here (REST API only).
 # See .github/docs/adr/0001-screenshot-update-pin-except-trusted-author.md
 name: Trigger Buildkite update screenshots build
 
@@ -35,10 +36,27 @@ jobs:
           script: |
             const org = 'elastic';
             const approvalPhrases = ['buildkite update screenshots', 'buildkite update vrt'];
-            const namedShaPattern = new RegExp(
-              `(?:${approvalPhrases.map((phrase) => phrase.replace(/ /g, '\\s+')).join('|')})\\s+([0-9a-fA-F]{7,40})`,
+            const phrasePattern = new RegExp(
+              `(?:${approvalPhrases.map((phrase) => phrase.replace(/ /g, '\\s+')).join('|')})\\s+`,
               'i',
             );
+            const shaFromText = (text) => {
+              const fromPath = text.match(/\/commits?\/([0-9a-f]{7,40})/i);
+              if (fromPath) return fromPath[1].toLowerCase();
+              const bare = text.trim().match(/^[0-9a-f]{7,40}$/i);
+              return bare ? bare[0].toLowerCase() : '';
+            };
+            const extractRequestedSha = (commentBody) => {
+              const phraseMatch = commentBody.match(phrasePattern);
+              if (!phraseMatch) return '';
+              const rest = commentBody.slice(phraseMatch.index + phraseMatch[0].length);
+              const md = rest.match(/^\[([^\]]*)\]\(([^)\s]+)\)/);
+              if (md) return shaFromText(md[2]) || shaFromText(md[1]);
+              const commitUrl = rest.match(/^(?:https?:\/\/)?(?:www\.)?github\.com\/\S+/i);
+              if (commitUrl) return shaFromText(commitUrl[0]);
+              const bare = rest.match(/^([0-9a-f]{7,40})\b/i);
+              return bare ? bare[1].toLowerCase() : '';
+            };
 
             // Marks a refused pin so the 😕 step can run (setFailed alone does not set this).
             const refusePin = (message) => {
@@ -112,8 +130,7 @@ jobs:
             }
 
             const commentBody = context.payload.comment.body;
-            const shaMatch = commentBody.match(namedShaPattern);
-            const requestedSha = shaMatch ? shaMatch[1].toLowerCase() : '';
+            const requestedSha = extractRequestedSha(commentBody);
 
             const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
@@ -144,7 +161,7 @@ jobs:
             if (!requestedSha) {
               if (!trustedAuthor) {
                 refusePin(
-                  `Comment must be ${approvalPhrases.map((phrase) => `'${phrase} <sha>'`).join(' or ')} with a commit hash of at least 7 hex characters.`,
+                  `Comment must be ${approvalPhrases.map((phrase) => `'${phrase} <sha>'`).join(' or ')} with a commit hash of at least 7 hex characters, a GitHub commit URL, or a markdown commit link.`,
                 );
                 return;
               }
