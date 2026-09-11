@@ -40,11 +40,13 @@ jobs:
               'i',
             );
 
+            // Marks a refused pin so the 😕 step can run (setFailed alone does not set this).
             const refusePin = (message) => {
               core.setOutput('pin_refused', 'true');
               core.setFailed(message);
             };
 
+            // 404 means "not a member" (or membership is private to this token).
             const isOrgMember = async (username) => {
               try {
                 await github.request('GET /orgs/{org}/members/{username}', {
@@ -59,51 +61,42 @@ jobs:
               }
             };
 
-            // Latest PushEvent whose result was this SHA as the PR branch head
-            // (not a push of the same commit on another branch). GraphQL is only
-            // used when this listing is empty or errors — not when events exist
-            // but none match, or when a match has an unparsable created_at.
+            // Server time this SHA last became this branch's head (push / force-push / branch creation).
+            // Query the head repo (the fork, for external PRs) and this ref only.
             const latestTimeShaBecamePrBranchHead = async (headOwner, headRepo, prRef, headSha) => {
               try {
-                const events = await github.paginate(github.rest.activity.listRepoEvents, {
+                const activities = await github.paginate('GET /repos/{owner}/{repo}/activity', {
                   owner: headOwner,
                   repo: headRepo,
+                  ref: prRef,
                   per_page: 100,
                 });
-                if (events.length === 0) {
-                  return { eventsAvailable: false, becameHeadAt: null };
-                }
                 const headShaLower = headSha.toLowerCase();
+                const headActivityTypes = new Set(['push', 'force_push', 'branch_creation']);
                 let becameHeadAt = null;
                 let latestMs = Number.NEGATIVE_INFINITY;
-                let sawUnparsableMatch = false;
-                for (const event of events) {
+                for (const activity of activities) {
                   if (
-                    event.type !== 'PushEvent' ||
-                    event.payload?.ref !== prRef ||
-                    event.payload?.head?.toLowerCase() !== headShaLower
+                    !headActivityTypes.has(activity.activity_type) ||
+                    activity.after?.toLowerCase() !== headShaLower
                   ) {
                     continue;
                   }
-                  const atMs = Date.parse(event.created_at);
-                  if (Number.isNaN(atMs)) {
-                    sawUnparsableMatch = true;
-                    continue;
-                  }
-                  if (atMs < latestMs) continue;
+                  const atMs = Date.parse(activity.timestamp);
+                  if (Number.isNaN(atMs) || atMs < latestMs) continue;
                   latestMs = atMs;
-                  becameHeadAt = event.created_at;
+                  becameHeadAt = activity.timestamp;
                 }
-                if (sawUnparsableMatch) {
-                  return { eventsAvailable: true, becameHeadAt: null };
-                }
-                return { eventsAvailable: true, becameHeadAt };
+                return becameHeadAt;
               } catch (err) {
-                core.warning(`Failed to list repo events for ${headOwner}/${headRepo}: ${err}`);
-                return { eventsAvailable: false, becameHeadAt: null };
+                core.warning(
+                  `Failed to list repository activity for ${headOwner}/${headRepo} ${prRef}: ${err}`,
+                );
+                return null;
               }
             };
 
+            // Commenter must be an Approver (elastic org member).
             const commenter = context.payload.comment.user.login;
             let isApprover = false;
             try {
@@ -146,6 +139,8 @@ jobs:
               return;
             }
 
+            // No SHA: Trusted authors may omit it. Named SHA: must be current head
+            // and already the head when the comment was written.
             if (!requestedSha) {
               if (!trustedAuthor) {
                 refusePin(
@@ -175,32 +170,12 @@ jobs:
               }
 
               const [headOwner, headRepo] = headRepoFullName.split('/');
-              const headTiming = await latestTimeShaBecamePrBranchHead(
+              const headPresentAt = await latestTimeShaBecamePrBranchHead(
                 headOwner,
                 headRepo,
                 prRef,
                 headSha,
               );
-              const prBranchHeadPushAt = headTiming.eventsAvailable ? headTiming.becameHeadAt : null;
-              let commitPushedDate = null;
-              if (!headTiming.eventsAvailable) {
-                try {
-                  const result = await github.graphql(
-                    `query ($owner: String!, $repo: String!, $oid: GitObjectID!) {
-                      repository(owner: $owner, name: $repo) {
-                        object(oid: $oid) {
-                          ... on Commit { pushedDate }
-                        }
-                      }
-                    }`,
-                    { owner: headOwner, repo: headRepo, oid: headSha },
-                  );
-                  commitPushedDate = result.repository?.object?.pushedDate ?? null;
-                } catch (err) {
-                  core.warning(`Failed to read commit pushedDate for ${headSha}: ${err}`);
-                }
-              }
-              const headPresentAt = prBranchHeadPushAt ?? commitPushedDate;
               const headPresentAtMs = Date.parse(headPresentAt);
               if (Number.isNaN(headPresentAtMs)) {
                 refusePin(
