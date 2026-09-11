@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { LegendItem } from '../../../common/legend';
+import type { SeriesKey } from '../../../common/series_id';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isLogarithmicScale } from '../../../scales/types';
 import type { BasicSeriesSpec, MarkBuffer } from '../../../specs';
@@ -116,13 +116,11 @@ export function getClippedRanges(
 export function getGeometryStateStyle(
   seriesIdentifier: XYChartSeriesIdentifier,
   sharedGeometryStyle: SharedGeometryStateStyle,
-  highlightedLegendItem?: LegendItem,
+  highlightedItems: SeriesKey[] = [],
 ): GeometryStateStyle {
-  if (highlightedLegendItem) {
-    const isHighlighted = highlightedLegendItem.seriesIdentifiers.some((si) => si.key === seriesIdentifier.key);
-    return isHighlighted ? sharedGeometryStyle.highlighted : sharedGeometryStyle.unhighlighted;
-  }
-  return sharedGeometryStyle.default;
+  if (highlightedItems.length === 0) return sharedGeometryStyle.default;
+  const isHighlighted = highlightedItems.includes(seriesIdentifier.key);
+  return isHighlighted ? sharedGeometryStyle.highlighted : sharedGeometryStyle.unhighlighted;
 }
 
 /** @internal */

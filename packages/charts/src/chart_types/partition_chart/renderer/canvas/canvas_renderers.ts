@@ -318,7 +318,7 @@ export function renderPartitionCanvas2d(
     panel,
     chartDimensions,
   }: ShapeViewModel,
-  highlightedLegendPath: LegendPath,
+  highlightedPaths: LegendPath[],
   legendStrategy: LegendStrategy | undefined,
   flatLegend: boolean | undefined,
   partitionStyle: PartitionStyle,
@@ -367,11 +367,11 @@ export function renderPartitionCanvas2d(
     ctx.strokeStyle = sectorLineStroke;
     ctx.lineWidth = sectorLineWidth;
 
-    // Calculate which quads are highlighted for legend dimming
+    // Calculate which quads are highlighted for dimming
     const highlightedQuadSet = new Set<QuadViewModel>();
-    if (highlightedLegendPath.length > 0) {
-      // Use highlightedGeoms to determine which quads match the legend path
-      const highlighted = highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedLegendPath);
+    if (highlightedPaths.length > 0) {
+      // Use highlightedGeoms to determine which quads match the highlighted path
+      const highlighted = highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedPaths);
       highlighted.forEach((quad) => highlightedQuadSet.add(quad));
     }
 

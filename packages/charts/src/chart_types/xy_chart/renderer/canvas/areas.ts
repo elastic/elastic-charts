@@ -12,7 +12,7 @@ import { renderLinePaths, renderAreaPath } from './primitives/path';
 import { buildAreaStyles } from './styles/area';
 import { buildLineStyles } from './styles/line';
 import { withPanelTransform } from './utils/panel_transform';
-import type { LegendItem } from '../../../../common/legend';
+import type { SeriesKey } from '../../../../common/series_id';
 import type { Rect } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
 import type { Rotation } from '../../../../utils/common';
@@ -32,7 +32,7 @@ export function renderAreas(
   areas: Array<PerPanel<AreaGeometry>>,
   rotation: Rotation,
   renderingArea: Dimensions,
-  highlightedLegendItem?: LegendItem,
+  highlightedItems: SeriesKey[] = [],
 ) {
   const sortedRenderingAreas = areas.reduce<{
     dimmed: { stacked: PerPanel<AreaGeometry>[]; nonStacked: PerPanel<AreaGeometry>[] };
@@ -40,7 +40,7 @@ export function renderAreas(
     default: { stacked: PerPanel<AreaGeometry>[]; nonStacked: PerPanel<AreaGeometry>[] };
   }>(
     (acc, area) => {
-      const highlightState = getGeometryHighlightState(area.value.seriesIdentifier.key, highlightedLegendItem);
+      const highlightState = getGeometryHighlightState(area.value.seriesIdentifier.key, highlightedItems);
       acc[highlightState][area.value.isStacked ? 'stacked' : 'nonStacked'][area.value.isStacked ? 'unshift' : 'push'](
         area,
       );

@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import type { AnimationState } from './animations/animation';
 import { renderXYChartCanvas2d } from './renderers';
 import { hasMostlyRTL } from './utils/has_mostly_rtl';
-import type { LegendItem } from '../../../../common/legend';
+import type { SeriesKey } from '../../../../common/series_id';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -67,7 +67,7 @@ export interface ReactiveChartStateProps {
   rotation: Rotation;
   renderingArea: Dimensions;
   chartTransform: Transform;
-  highlightedLegendItem?: LegendItem;
+  highlightedItems: SeriesKey[];
   hoveredAnnotationIds: string[];
   axesSpecs: AxisSpec[];
   perPanelAxisGeoms: Array<PerPanelAxisGeoms>;
@@ -225,6 +225,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     y: 0,
     rotate: 0,
   },
+  highlightedItems: [],
   axesSpecs: [],
   perPanelAxisGeoms: [],
   perPanelGridLines: [],
@@ -257,7 +258,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geometriesIndex,
     theme: getChartThemeSelector(state),
     chartContainerDimensions: getChartContainerDimensionsSelector(state),
-    highlightedLegendItem: getHighlightedSeriesSelector(state),
+    highlightedItems: getHighlightedSeriesSelector(state),
     hoveredAnnotationIds: getHighlightedAnnotationIdsSelector(state),
     rotation: getChartRotationSelector(state),
     renderingArea: computeChartLayoutSelector(state).dimensions.chartDimensions,

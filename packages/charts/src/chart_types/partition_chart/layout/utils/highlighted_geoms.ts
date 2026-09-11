@@ -92,7 +92,9 @@ export function highlightedGeoms(
   legendStrategy: LegendStrategy | undefined,
   flatLegend: boolean | undefined,
   quadViewModel: QuadViewModel[],
-  highlightedLegendItemPath: LegendPath,
+  highlightedPaths: LegendPath[],
 ) {
-  return quadViewModel.filter(legendStrategies[legendStrategy ?? defaultStrategy](highlightedLegendItemPath));
+  if (highlightedPaths.length === 0) return [];
+  const predicate = legendStrategies[legendStrategy ?? defaultStrategy];
+  return quadViewModel.filter((quad) => highlightedPaths.some((legendPath) => predicate(legendPath)(quad)));
 }

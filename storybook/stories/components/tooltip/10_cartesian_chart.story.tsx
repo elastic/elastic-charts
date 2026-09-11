@@ -61,6 +61,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   return (
     <Chart title={title} description={description}>
       <Settings
+        showLegend
         baseTheme={useBaseTheme()}
         theme={{
           axes: { tickLine: { visible: true } },
