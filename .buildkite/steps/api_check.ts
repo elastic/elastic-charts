@@ -15,7 +15,7 @@ export const apiCheckStep = createStep<CustomCommandStep>((ctx) => {
     label: ':api-extractor: API',
     key: 'api',
     skip: isSkippable(ctx),
-    commands: ['npx ts-node .buildkite/scripts/steps/api_check.ts'],
+    commands: ['npx tsx .buildkite/scripts/steps/api_check.ts'],
     env: {
       ECH_CHECK_ID: 'api',
     },

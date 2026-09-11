@@ -15,7 +15,7 @@ export const jestStep = createStep<CustomCommandStep>((ctx) => {
     label: ':jest: Jest',
     key: 'jest',
     skip: isSkippable(ctx),
-    commands: ['npx ts-node .buildkite/scripts/steps/jest.ts'],
+    commands: ['npx tsx .buildkite/scripts/steps/jest.ts'],
     env: {
       ECH_CHECK_ID: 'jest',
     },

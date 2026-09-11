@@ -10,7 +10,7 @@
     "start": "npx http-server ./server --port 9002",
     "test:playwright": "./scripts/test.sh",
     "test:playwright:a11y": "./scripts/test.sh --a11y",
-    "merge:reports": "ts-node --transpile-only ./merge_html_reports.ts",
+    "merge:reports": "tsx ./merge_html_reports.ts",
     "playwright": "playwright"
   },
   "dependencies": {
@@ -19,7 +19,7 @@
     "change-case": "^4.1.2",
     "expect-playwright": "^0.8.0",
     "slugify": "^1.6.5",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.5.3"
+    "tsx": "^4.20.0",
+    "typescript": "^7.0.2"
   }
 }
