@@ -10,7 +10,7 @@ import type { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 import { onChartRendered } from './actions/chart';
-import { updateParentDimensions, updateChartTitles } from './actions/chart_settings';
+import { updateParentDimensions, updateChartTitles, updateDevicePixelRatio } from './actions/chart_settings';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from './actions/colors';
 import { onExternalPointerEvent } from './actions/events';
 import { upsertSpec, removeSpec, specParsed, specUnmounted } from './actions/specs';
@@ -58,6 +58,9 @@ const handleChartSettingsActions = (builder: ActionReducerMapBuilder<ChartSliceS
     .addCase(updateChartTitles, (state, action) => {
       state.title = action.payload.title;
       state.description = action.payload.description;
+    })
+    .addCase(updateDevicePixelRatio, (state, action) => {
+      state.devicePixelRatio = action.payload;
     });
 };
 

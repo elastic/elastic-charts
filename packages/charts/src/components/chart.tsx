@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { ChartBackground } from './chart_background';
 import { ChartContainer } from './chart_container';
+import { ChartDPRObserver } from './chart_dpr_observer';
 import { ChartResizer } from './chart_resizer';
 import { ChartStatus } from './chart_status';
 import { Legend } from './legend/legend';
@@ -192,6 +193,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
             <ChartBackground />
             <ChartStatus />
             <ChartResizer />
+            <ChartDPRObserver />
             <Legend />
             <SpecsParser>{this.props.children}</SpecsParser>
             <div className="echContainer" ref={this.chartContainerRef}>

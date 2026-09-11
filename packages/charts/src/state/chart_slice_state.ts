@@ -65,6 +65,10 @@ export interface ChartSliceState {
    */
   parentDimensions: Dimensions;
   /**
+   * the current device pixel ratio, updated when the browser zoom level changes
+   */
+  devicePixelRatio: number;
+  /**
    * the state of the interactions
    */
   interactions: InteractionsState;

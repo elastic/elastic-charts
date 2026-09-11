@@ -25,7 +25,6 @@ import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
 /** @internal */
 export function renderXYChartCanvas2d(
   ctx: CanvasRenderingContext2D,
-  dpr: number,
   props: ReactiveChartStateProps,
   animationState: AnimationState,
 ) {
@@ -34,7 +33,7 @@ export function renderXYChartCanvas2d(
 
     withContext(ctx, () => {
       // let's set the devicePixelRatio once and for all; then we'll never worry about it again
-      ctx.scale(dpr, dpr);
+      ctx.scale(props.devicePixelRatio, props.devicePixelRatio);
       const {
         renderingArea,
         chartTransform,

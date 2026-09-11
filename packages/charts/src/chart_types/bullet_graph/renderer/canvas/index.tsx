@@ -23,6 +23,7 @@ import type { GlobalChartState } from '../../../../state/chart_state';
 import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_device_pixel_ratio';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/get_resolved_background_color';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
@@ -58,6 +59,7 @@ interface StateProps {
   colorBands: BulletColorConfig;
   metricStyle: MetricStyle;
   onElementOver?: ElementOverListener;
+  devicePixelRatio: number;
 }
 
 interface DispatchProps {
@@ -71,8 +73,6 @@ interface OwnProps {
 type Props = DispatchProps & StateProps & OwnProps;
 
 const Component = (props: Props) => {
-  const { devicePixelRatio } = window;
-
   const {
     initialized,
     debug,
@@ -89,6 +89,7 @@ const Component = (props: Props) => {
     chartId,
     hasTitles,
     onChartRendered: dispatchOnChartRendered,
+    devicePixelRatio,
   } = props;
 
   useLayoutEffect(() => {
@@ -195,6 +196,7 @@ const DEFAULT_PROPS: StateProps = {
   backgroundColor: LIGHT_THEME.background.color,
   locale: settingsBuildProps.defaults.locale,
   colorBands: LIGHT_THEME.bulletGraph.colorBands,
+  devicePixelRatio: 1,
 };
 
 const mapStateToProps = (state: GlobalChartState): StateProps => {
@@ -221,6 +223,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     colorBands: style.colorBands,
     onElementOver,
     metricStyle,
+    devicePixelRatio: getDevicePixelRatioSelector(state),
   };
 };
 
