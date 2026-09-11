@@ -41,7 +41,7 @@ export const playwrightA11yStep = createStep<CustomGroupStep>(() => {
         depends_on: ['build_e2e'],
         plugins: [Plugins.docker.playwright()],
         artifact_paths: ['.buildkite/artifacts/a11y_reports/*', 'e2e/reports/a11y-json/*'],
-        commands: ['npx ts-node .buildkite/scripts/steps/playwright_a11y.ts'],
+        commands: ['npx tsx .buildkite/scripts/steps/playwright_a11y.ts'],
       },
       {
         ...commandStepDefaults,
@@ -50,7 +50,7 @@ export const playwrightA11yStep = createStep<CustomGroupStep>(() => {
         skip,
         allow_dependency_failure: true,
         depends_on: [{ step: parallelKey, allow_failure: true }],
-        commands: ['npx ts-node .buildkite/scripts/steps/e2e_reports.ts'],
+        commands: ['npx tsx .buildkite/scripts/steps/e2e_reports.ts'],
         env: {
           ECH_CHECK_ID: 'playwright_a11y',
         },
