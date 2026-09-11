@@ -17832,15 +17832,13 @@ var compute_legend_1 = __webpack_require__(/*! ./compute_legend */ "../packages/
 
 var create_selector_1 = __webpack_require__(/*! ../../../../state/create_selector */ "../packages/charts/src/state/create_selector.ts");
 
-var getHighlightedLegendPath = function getHighlightedLegendPath(state) {
-  return state.interactions.highlightedLegendPath;
-};
+var get_highlighted_paths_1 = __webpack_require__(/*! ../../../../state/selectors/get_highlighted_paths */ "../packages/charts/src/state/selectors/get_highlighted_paths.ts");
 /** @internal */
 
 
-exports.getHighlightedLegendItemSelector = (0, create_selector_1.createCustomCachedSelector)([getHighlightedLegendPath, compute_legend_1.computeLegendSelector], function (highlightedLegendPaths, legendItems) {
-  if (highlightedLegendPaths.length > 0) {
-    var lookup = new Set(highlightedLegendPaths.map(function (_ref) {
+exports.getHighlightedLegendItemSelector = (0, create_selector_1.createCustomCachedSelector)([get_highlighted_paths_1.getHighlightedLegendPath, compute_legend_1.computeLegendSelector], function (highlightedLegendPath, legendItems) {
+  if (highlightedLegendPath && highlightedLegendPath.length > 0) {
+    var lookup = new Set(highlightedLegendPath.map(function (_ref) {
       var value = _ref.value;
       return value;
     }));
@@ -23883,6 +23881,8 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.object.freeze.js */ "
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.array.filter.js */ "../node_modules/core-js/modules/es.array.filter.js");
 
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.some.js */ "../node_modules/core-js/modules/es.array.some.js");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -24003,8 +24003,14 @@ exports.LegendStrategy = Object.freeze({
 var defaultStrategy = exports.LegendStrategy.Path;
 /** @internal */
 
-function highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedLegendItemPath) {
-  return quadViewModel.filter(legendStrategies[legendStrategy !== null && legendStrategy !== void 0 ? legendStrategy : defaultStrategy](highlightedLegendItemPath));
+function highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedPaths) {
+  if (highlightedPaths.length === 0) return [];
+  var predicate = legendStrategies[legendStrategy !== null && legendStrategy !== void 0 ? legendStrategy : defaultStrategy];
+  return quadViewModel.filter(function (quad) {
+    return highlightedPaths.some(function (legendPath) {
+      return predicate(legendPath)(quad);
+    });
+  });
 }
 
 /***/ }),
@@ -25736,6 +25742,7 @@ function getTooltipValueFromNode(node, labelFormatters, valueFormatter, percentF
       specId: id,
       key: (_model$dataName = model === null || model === void 0 ? void 0 : model.dataName) !== null && _model$dataName !== void 0 ? _model$dataName : ''
     },
+    path: path,
     value: node[group_by_rollup_1.AGGREGATE_KEY],
     formattedValue: valueFormatter(value) + "\xA0(" + percentFormatter((0, config_1.percentValueGetter)(node)) + ")",
     valueAccessor: node[group_by_rollup_1.DEPTH_KEY]
@@ -26449,7 +26456,7 @@ var easeInOut = function easeInOut(alpha) {
 var MAX_PADDING_RATIO = 0.25;
 /** @internal */
 
-function renderLinearPartitionCanvas2d(ctx, dpr, _ref, _ref2, highlightedLegendPath, legendStrategy, flatLegend, partitionStyle, animationState) {
+function renderLinearPartitionCanvas2d(ctx, dpr, _ref, _ref2, highlightedPaths, legendStrategy, flatLegend, partitionStyle, animationState) {
   var padding = _ref.style.sectorLineWidth,
       quadViewModel = _ref.quadViewModel,
       diskCenter = _ref.diskCenter,
@@ -26467,8 +26474,8 @@ function renderLinearPartitionCanvas2d(ctx, dpr, _ref, _ref2, highlightedLegendP
   // Calculate which quads are highlighted for legend dimming
   var highlightedQuadSet = new Set();
 
-  if (highlightedLegendPath.length > 0) {
-    var highlighted = (0, highlighted_geoms_1.highlightedGeoms)(legendStrategy, flatLegend, quadViewModel, highlightedLegendPath);
+  if (highlightedPaths.length > 0) {
+    var highlighted = (0, highlighted_geoms_1.highlightedGeoms)(legendStrategy, flatLegend, quadViewModel, highlightedPaths);
     highlighted.forEach(function (quad) {
       return highlightedQuadSet.add(quad);
     });
@@ -26929,7 +26936,7 @@ var midlineOffset = 0.35; // 0.35 is a [common constant](http://tavmjong.free.fr
 
 /** @internal */
 
-function renderPartitionCanvas2d(ctx, dpr, _ref9, highlightedLegendPath, legendStrategy, flatLegend, partitionStyle) {
+function renderPartitionCanvas2d(ctx, dpr, _ref9, highlightedPaths, legendStrategy, flatLegend, partitionStyle) {
   var layout = _ref9.layout,
       width = _ref9.width,
       height = _ref9.height,
@@ -26971,13 +26978,13 @@ function renderPartitionCanvas2d(ctx, dpr, _ref9, highlightedLegendPath, legendS
     ctx.scale(1, -1);
     ctx.lineJoin = 'round';
     ctx.strokeStyle = sectorLineStroke;
-    ctx.lineWidth = sectorLineWidth; // Calculate which quads are highlighted for legend dimming
+    ctx.lineWidth = sectorLineWidth; // Calculate which quads are highlighted for dimming
 
     var highlightedQuadSet = new Set();
 
-    if (highlightedLegendPath.length > 0) {
-      // Use highlightedGeoms to determine which quads match the legend path
-      var highlighted = (0, highlighted_geoms_1.highlightedGeoms)(legendStrategy, flatLegend, quadViewModel, highlightedLegendPath);
+    if (highlightedPaths.length > 0) {
+      // Use highlightedGeoms to determine which quads match the highlighted path
+      var highlighted = (0, highlighted_geoms_1.highlightedGeoms)(legendStrategy, flatLegend, quadViewModel, highlightedPaths);
       highlighted.forEach(function (quad) {
         return highlightedQuadSet.add(quad);
       });
@@ -27057,7 +27064,7 @@ var highlighted_geoms_1 = __webpack_require__(/*! ../../layout/utils/highlighted
 var MAX_PADDING_RATIO = 0.25;
 /** @internal */
 
-function renderWrappedPartitionCanvas2d(ctx, dpr, _ref, highlightedLegendPath, legendStrategy, flatLegend, partitionStyle) {
+function renderWrappedPartitionCanvas2d(ctx, dpr, _ref, highlightedPaths, legendStrategy, flatLegend, partitionStyle) {
   var padding = _ref.style.sectorLineWidth,
       quadViewModel = _ref.quadViewModel,
       diskCenter = _ref.diskCenter,
@@ -27068,12 +27075,12 @@ function renderWrappedPartitionCanvas2d(ctx, dpr, _ref, highlightedLegendPath, l
       containerHeight = _ref$chartDimensions.height;
   var width = containerWidth * panelWidth;
   var height = containerHeight * panelHeight;
-  var cornerRatio = 0.2; // Calculate which quads are highlighted for legend dimming
+  var cornerRatio = 0.2; // Calculate which quads are highlighted for dimming
 
   var highlightedQuadSet = new Set();
 
-  if (highlightedLegendPath.length > 0) {
-    var highlighted = (0, highlighted_geoms_1.highlightedGeoms)(legendStrategy, flatLegend, quadViewModel, highlightedLegendPath);
+  if (highlightedPaths.length > 0) {
+    var highlighted = (0, highlighted_geoms_1.highlightedGeoms)(legendStrategy, flatLegend, quadViewModel, highlightedPaths);
     highlighted.forEach(function (quad) {
       return highlightedQuadSet.add(quad);
     });
@@ -27260,6 +27267,8 @@ var get_chart_theme_1 = __webpack_require__(/*! ../../../../state/selectors/get_
 
 var get_device_pixel_ratio_1 = __webpack_require__(/*! ../../../../state/selectors/get_device_pixel_ratio */ "../packages/charts/src/state/selectors/get_device_pixel_ratio.ts");
 
+var get_highlighted_paths_1 = __webpack_require__(/*! ../../../../state/selectors/get_highlighted_paths */ "../packages/charts/src/state/selectors/get_highlighted_paths.ts");
+
 var get_internal_is_intialized_1 = __webpack_require__(/*! ../../../../state/selectors/get_internal_is_intialized */ "../packages/charts/src/state/selectors/get_internal_is_intialized.ts");
 
 var get_settings_spec_1 = __webpack_require__(/*! ../../../../state/selectors/get_settings_spec */ "../packages/charts/src/state/selectors/get_settings_spec.ts");
@@ -27412,11 +27421,11 @@ var PartitionComponent = /*#__PURE__*/function (_react_1$default$Comp) {
           if (!focus) return;
 
           if ((0, viewmodel_1.isSimpleLinear)(geometries.layout, geometries.style.fillLabel, geometries.layers)) {
-            (0, canvas_linear_renderers_1.renderLinearPartitionCanvas2d)(ctx, devicePixelRatio, geometries, focus, props.highlightedLegendPath, props.legendStrategy, props.flatLegend, props.partitionStyle, _this2.animationState);
+            (0, canvas_linear_renderers_1.renderLinearPartitionCanvas2d)(ctx, devicePixelRatio, geometries, focus, props.highlightedPaths, props.legendStrategy, props.flatLegend, props.partitionStyle, _this2.animationState);
           } else if ((0, viewmodel_1.isWaffle)(geometries.layout)) {
-            (0, canvas_wrapped_renderers_1.renderWrappedPartitionCanvas2d)(ctx, devicePixelRatio, geometries, props.highlightedLegendPath, props.legendStrategy, props.flatLegend, props.partitionStyle);
+            (0, canvas_wrapped_renderers_1.renderWrappedPartitionCanvas2d)(ctx, devicePixelRatio, geometries, props.highlightedPaths, props.legendStrategy, props.flatLegend, props.partitionStyle);
           } else {
-            (0, canvas_renderers_1.renderPartitionCanvas2d)(ctx, devicePixelRatio, geometries, props.highlightedLegendPath, props.legendStrategy, props.flatLegend, props.partitionStyle);
+            (0, canvas_renderers_1.renderPartitionCanvas2d)(ctx, devicePixelRatio, geometries, props.highlightedPaths, props.legendStrategy, props.flatLegend, props.partitionStyle);
           }
         });
       }
@@ -27455,7 +27464,7 @@ var DEFAULT_PROPS = {
   a11ySettings: get_accessibility_config_1.DEFAULT_A11Y_SETTINGS,
   debug: false,
   background: colors_1.Colors.Transparent.keyword,
-  highlightedLegendPath: [],
+  highlightedPaths: [],
   legendStrategy: undefined,
   flatLegend: undefined,
   partitionStyle: light_theme_1.LIGHT_THEME.partition,
@@ -27482,7 +27491,7 @@ var mapStateToProps = function mapStateToProps(state) {
     a11ySettings: (0, get_accessibility_config_1.getA11ySettingsSelector)(state),
     debug: settings.debug,
     background: theme.background.color,
-    highlightedLegendPath: state.interactions.highlightedLegendPath,
+    highlightedPaths: (0, get_highlighted_paths_1.getHighlightedPaths)(state),
     legendStrategy: settings.legendStrategy,
     flatLegend: settings.flatLegend,
     partitionStyle: theme.partition,
@@ -40007,9 +40016,10 @@ var geometry_1 = __webpack_require__(/*! ../../../../utils/geometry */ "../packa
 /** @internal */
 
 
-function renderAreas(ctx, imgCanvas, areas, rotation, renderingArea, highlightedLegendItem) {
+function renderAreas(ctx, imgCanvas, areas, rotation, renderingArea) {
+  var highlightedItems = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : [];
   var sortedRenderingAreas = areas.reduce(function (acc, area) {
-    var highlightState = (0, geometry_1.getGeometryHighlightState)(area.value.seriesIdentifier.key, highlightedLegendItem);
+    var highlightState = (0, geometry_1.getGeometryHighlightState)(area.value.seriesIdentifier.key, highlightedItems);
     acc[highlightState][area.value.isStacked ? 'stacked' : 'nonStacked'][area.value.isStacked ? 'unshift' : 'push'](area);
     return acc;
   }, {
@@ -40507,7 +40517,8 @@ var utils_1 = __webpack_require__(/*! ../../rendering/utils */ "../packages/char
 /** @internal */
 
 
-function renderBars(ctx, imgCanvas, geoms, sharedStyle, rotation, renderingArea, highlightedLegendItem) {
+function renderBars(ctx, imgCanvas, geoms, sharedStyle, rotation, renderingArea) {
+  var highlightedItems = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : [];
   geoms.forEach(function (_ref) {
     var panel = _ref.panel,
         bars = _ref.value;
@@ -40526,7 +40537,7 @@ function renderBars(ctx, imgCanvas, geoms, sharedStyle, rotation, renderingArea,
           width: width,
           height: height
         };
-        var geometryStateStyle = (0, utils_1.getGeometryStateStyle)(seriesIdentifier, sharedStyle, highlightedLegendItem);
+        var geometryStateStyle = (0, utils_1.getGeometryStateStyle)(seriesIdentifier, sharedStyle, highlightedItems);
         var barStyle = (0, bar_1.buildBarStyle)(ctx, imgCanvas, color, style.rect, style.rectBorder, geometryStateStyle, sharedStyle, rect);
         (0, rect_1.renderRect)(ctx, rect, barStyle.fill, barStyle.stroke);
       });
@@ -40576,7 +40587,8 @@ var utils_1 = __webpack_require__(/*! ../../rendering/utils */ "../packages/char
 /** @internal */
 
 
-function renderBubbles(ctx, bubbles, sharedStyle, rotation, renderingArea, highlightedLegendItem) {
+function renderBubbles(ctx, bubbles, sharedStyle, rotation, renderingArea) {
+  var highlightedItems = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : [];
   (0, canvas_1.withContext)(ctx, function () {
     var _allPoints$;
 
@@ -40585,7 +40597,7 @@ function renderBubbles(ctx, bubbles, sharedStyle, rotation, renderingArea, highl
       var _ref$value = _ref.value,
           seriesIdentifier = _ref$value.seriesIdentifier,
           points = _ref$value.points;
-      styles[seriesIdentifier.key] = (0, utils_1.getGeometryStateStyle)(seriesIdentifier, sharedStyle, highlightedLegendItem);
+      styles[seriesIdentifier.key] = (0, utils_1.getGeometryStateStyle)(seriesIdentifier, sharedStyle, highlightedItems);
       return points;
     });
     var shouldClip = ((_allPoints$ = allPoints[0]) === null || _allPoints$ === void 0 ? void 0 : _allPoints$.value.mark) !== null; // TODO: add padding over clipping
@@ -40709,7 +40721,8 @@ var geometry_1 = __webpack_require__(/*! ../../../../utils/geometry */ "../packa
 /** @internal */
 
 
-function renderLines(ctx, lines, rotation, renderingArea, highlightedLegendItem) {
+function renderLines(ctx, lines, rotation, renderingArea) {
+  var highlightedItems = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : [];
   (0, canvas_1.withContext)(ctx, function () {
     lines.map(function (_ref) {
       var panel = _ref.panel,
@@ -40717,7 +40730,7 @@ function renderLines(ctx, lines, rotation, renderingArea, highlightedLegendItem)
       return {
         panel: panel,
         line: value,
-        highlightState: (0, geometry_1.getGeometryHighlightState)(value.seriesIdentifier.key, highlightedLegendItem)
+        highlightState: (0, geometry_1.getGeometryHighlightState)(value.seriesIdentifier.key, highlightedItems)
       };
     }) // sort by dimmed first once are rendered ontop of the non-highlighted ones
     .sort(function (a, b) {
@@ -41549,7 +41562,7 @@ function renderXYChartCanvas2d(ctx, props, animationState) {
           rectAnnotationStyle = _props$theme.rectAnnotation,
           barSeriesStyle = _props$theme.barSeriesStyle,
           background = _props$theme.background,
-          highlightedLegendItem = props.highlightedLegendItem,
+          highlightedItems = props.highlightedItems,
           annotationDimensions = props.annotationDimensions,
           annotationSpecs = props.annotationSpecs,
           perPanelAxisGeoms = props.perPanelAxisGeoms,
@@ -41591,16 +41604,16 @@ function renderXYChartCanvas2d(ctx, props, animationState) {
         return (0, annotations_1.renderAnnotations)(ctx, aCtx, annotationDimensions, annotationSpecs, rotation, renderingArea, sharedStyle, hoveredAnnotationIds, lineAnnotationStyle, rectAnnotationStyle, true);
       }, // rendering bars
       function () {
-        return (0, bars_1.renderBars)(ctx, imgCanvas, geometries.bars, sharedStyle, rotation, renderingArea, highlightedLegendItem);
+        return (0, bars_1.renderBars)(ctx, imgCanvas, geometries.bars, sharedStyle, rotation, renderingArea, highlightedItems);
       }, // rendering areas
       function () {
-        return (0, areas_1.renderAreas)(ctx, imgCanvas, geometries.areas, rotation, renderingArea, highlightedLegendItem);
+        return (0, areas_1.renderAreas)(ctx, imgCanvas, geometries.areas, rotation, renderingArea, highlightedItems);
       }, // rendering lines
       function () {
-        return (0, lines_1.renderLines)(ctx, geometries.lines, rotation, renderingArea, highlightedLegendItem);
+        return (0, lines_1.renderLines)(ctx, geometries.lines, rotation, renderingArea, highlightedItems);
       }, // rendering bubbles
       function () {
-        return (0, bubbles_1.renderBubbles)(ctx, geometries.bubbles, sharedStyle, rotation, renderingArea, highlightedLegendItem);
+        return (0, bubbles_1.renderBubbles)(ctx, geometries.bubbles, sharedStyle, rotation, renderingArea, highlightedItems);
       }, function () {
         return geometries.bars.forEach(function (_ref) {
           var bars = _ref.value,
@@ -42637,6 +42650,7 @@ var DEFAULT_PROPS = {
     y: 0,
     rotate: 0
   },
+  highlightedItems: [],
   axesSpecs: [],
   perPanelAxisGeoms: [],
   perPanelGridLines: [],
@@ -42674,7 +42688,7 @@ var mapStateToProps = function mapStateToProps(state) {
     geometriesIndex: geometriesIndex,
     theme: (0, get_chart_theme_1.getChartThemeSelector)(state),
     chartContainerDimensions: (0, get_chart_container_dimensions_1.getChartContainerDimensionsSelector)(state),
-    highlightedLegendItem: (0, get_highlighted_series_1.getHighlightedSeriesSelector)(state),
+    highlightedItems: (0, get_highlighted_series_1.getHighlightedSeriesSelector)(state),
     hoveredAnnotationIds: (0, get_highlighted_annotation_ids_selector_1.getHighlightedAnnotationIdsSelector)(state),
     rotation: (0, get_chart_rotation_1.getChartRotationSelector)(state),
     renderingArea: (0, compute_chart_layout_1.computeChartLayoutSelector)(state).dimensions.chartDimensions,
@@ -45652,7 +45666,9 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.array.for-each.js */ 
 
 __webpack_require__(/*! ../node_modules/core-js/modules/web.dom-collections.for-each.js */ "../node_modules/core-js/modules/web.dom-collections.for-each.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.some.js */ "../node_modules/core-js/modules/es.array.some.js");
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.includes.js */ "../node_modules/core-js/modules/es.array.includes.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.string.includes.js */ "../node_modules/core-js/modules/es.string.includes.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.math.sign.js */ "../node_modules/core-js/modules/es.math.sign.js");
 
@@ -45798,15 +45814,11 @@ function getClippedRanges(dataset, xScale, xScaleOffset) {
 /** @internal */
 
 
-function getGeometryStateStyle(seriesIdentifier, sharedGeometryStyle, highlightedLegendItem) {
-  if (highlightedLegendItem) {
-    var isHighlighted = highlightedLegendItem.seriesIdentifiers.some(function (si) {
-      return si.key === seriesIdentifier.key;
-    });
-    return isHighlighted ? sharedGeometryStyle.highlighted : sharedGeometryStyle.unhighlighted;
-  }
-
-  return sharedGeometryStyle["default"];
+function getGeometryStateStyle(seriesIdentifier, sharedGeometryStyle) {
+  var highlightedItems = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  if (highlightedItems.length === 0) return sharedGeometryStyle["default"];
+  var isHighlighted = highlightedItems.includes(seriesIdentifier.key);
+  return isHighlighted ? sharedGeometryStyle.highlighted : sharedGeometryStyle.unhighlighted;
 }
 /** @internal */
 
@@ -49592,9 +49604,13 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.array.iterator.js */ 
 
 __webpack_require__(/*! ../node_modules/core-js/modules/web.dom-collections.iterator.js */ "../node_modules/core-js/modules/web.dom-collections.iterator.js");
 
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.flat-map.js */ "../node_modules/core-js/modules/es.array.flat-map.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.unscopables.flat-map.js */ "../node_modules/core-js/modules/es.array.unscopables.flat-map.js");
+
 __webpack_require__(/*! ../node_modules/core-js/modules/es.array.map.js */ "../node_modules/core-js/modules/es.array.map.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.find.js */ "../node_modules/core-js/modules/es.array.find.js");
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.filter.js */ "../node_modules/core-js/modules/es.array.filter.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.array.some.js */ "../node_modules/core-js/modules/es.array.some.js");
 
@@ -49607,27 +49623,32 @@ var compute_legend_1 = __webpack_require__(/*! ./compute_legend */ "../packages/
 
 var create_selector_1 = __webpack_require__(/*! ../../../../state/create_selector */ "../packages/charts/src/state/create_selector.ts");
 
-var getHighlightedLegendPath = function getHighlightedLegendPath(state) {
-  return state.interactions.highlightedLegendPath;
-};
+var get_highlighted_paths_1 = __webpack_require__(/*! ../../../../state/selectors/get_highlighted_paths */ "../packages/charts/src/state/selectors/get_highlighted_paths.ts");
 /** @internal */
 
 
-exports.getHighlightedSeriesSelector = (0, create_selector_1.createCustomCachedSelector)([getHighlightedLegendPath, compute_legend_1.computeLegendSelector], function (highlightedLegendPaths, legendItems) {
-  if (highlightedLegendPaths.length > 0) {
-    var lookup = new Set(highlightedLegendPaths.map(function (_ref) {
+exports.getHighlightedSeriesSelector = (0, create_selector_1.createCustomCachedSelector)([get_highlighted_paths_1.getHighlightedPaths, compute_legend_1.computeLegendSelector], function (highlightedPaths, legendItems) {
+  if (highlightedPaths.length === 0) return [];
+  var lookup = new Set(highlightedPaths.flatMap(function (path) {
+    return path.map(function (_ref) {
       var value = _ref.value;
       return value;
-    }));
-    return legendItems.find(function (_ref2) {
-      var seriesIdentifiers = _ref2.seriesIdentifiers,
-          isSeriesHidden = _ref2.isSeriesHidden;
-      return !isSeriesHidden && seriesIdentifiers.some(function (_ref3) {
-        var key = _ref3.key;
-        return lookup.has(key);
-      });
     });
-  }
+  }));
+  return legendItems.filter(function (_ref2) {
+    var seriesIdentifiers = _ref2.seriesIdentifiers,
+        isSeriesHidden = _ref2.isSeriesHidden;
+    return !isSeriesHidden && seriesIdentifiers.some(function (_ref3) {
+      var key = _ref3.key;
+      return lookup.has(key);
+    });
+  }).flatMap(function (_ref4) {
+    var seriesIdentifiers = _ref4.seriesIdentifiers;
+    return seriesIdentifiers.map(function (_ref5) {
+      var key = _ref5.key;
+      return key;
+    });
+  });
 });
 
 /***/ }),
@@ -53094,7 +53115,11 @@ function formatTooltipValue(_ref2, spec, isHighlighted, hasSingleSeries, isBande
     color: color,
     isHighlighted: isHighlighted,
     isVisible: isVisible,
-    datum: datum
+    datum: datum,
+    path: [{
+      index: 0,
+      value: seriesIdentifier.key
+    }]
   });
 }
 /** @internal */
@@ -79984,7 +80009,7 @@ var getInitialState = function getInitialState(chartId, title, description) {
     chartType: null,
     interactions: {
       pointer: (0, get_initial_pointer_state_1.getInitialPointerState)(),
-      highlightedLegendPath: [],
+      highlightedLegendPath: null,
       deselectedDataSeries: [],
       hoveredDOMElement: null,
       drilldown: [],
@@ -80191,7 +80216,7 @@ var handleLegendActions = function handleLegendActions(builder) {
   builder.addCase(legend_1.onLegendItemOutAction, function (globalState) {
     if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized) return;
     var state = globalState.interactions;
-    state.highlightedLegendPath = [];
+    state.highlightedLegendPath = null;
   });
   builder.addCase(legend_1.onLegendItemOverAction, function (globalState, action) {
     if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized) return;
@@ -80256,9 +80281,16 @@ var handleTooltipActions = function handleTooltipActions(builder) {
       if (globalState.chartType === chart_types_1.ChartType.Heatmap) return values.slice(0, 1); // just use the x value
 
       return values.filter(function (v) {
-        return (// TODO find a better way to distinguish these two
-          globalState.chartType === chart_types_1.ChartType.XYAxis ? v.isHighlighted : !v.displayOnly
-        );
+        if (!v.isVisible) {
+          return false;
+        } // TODO find a better way to distinguish these two
+
+
+        if (globalState.chartType === chart_types_1.ChartType.XYAxis) {
+          return v.isHighlighted;
+        }
+
+        return !v.displayOnly;
       });
     };
 
@@ -81015,6 +81047,68 @@ var getDevicePixelRatioSelector = function getDevicePixelRatioSelector(state) {
 };
 
 exports.getDevicePixelRatioSelector = getDevicePixelRatioSelector;
+
+/***/ }),
+
+/***/ "../packages/charts/src/state/selectors/get_highlighted_paths.ts":
+/*!***********************************************************************!*\
+  !*** ../packages/charts/src/state/selectors/get_highlighted_paths.ts ***!
+  \***********************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-property.js */ "../node_modules/core-js/modules/es.object.define-property.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.flat-map.js */ "../node_modules/core-js/modules/es.array.flat-map.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.unscopables.flat-map.js */ "../node_modules/core-js/modules/es.array.unscopables.flat-map.js");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getHighlightedPaths = exports.getHighlightedLegendPath = void 0;
+exports.resolveHighlightedPaths = resolveHighlightedPaths;
+
+var get_tooltip_selected_items_1 = __webpack_require__(/*! ./get_tooltip_selected_items */ "../packages/charts/src/state/selectors/get_tooltip_selected_items.ts");
+
+var create_selector_1 = __webpack_require__(/*! ../create_selector */ "../packages/charts/src/state/create_selector.ts");
+/** @internal */
+
+
+var getHighlightedLegendPath = function getHighlightedLegendPath(state) {
+  return state.interactions.highlightedLegendPath;
+};
+
+exports.getHighlightedLegendPath = getHighlightedLegendPath;
+/** @internal */
+
+function resolveHighlightedPaths(selectedTooltipItems, legendHoverPath) {
+  if (legendHoverPath) {
+    return [legendHoverPath];
+  }
+
+  return selectedTooltipItems.flatMap(function (_ref) {
+    var path = _ref.path;
+    return path && path.length > 0 ? [path] : [];
+  });
+}
+/** @internal */
+
+
+exports.getHighlightedPaths = (0, create_selector_1.createCustomCachedSelector)([get_tooltip_selected_items_1.getTooltipSelectedItems, exports.getHighlightedLegendPath], function (selectedTooltipItems, legendHoverPath) {
+  return resolveHighlightedPaths(selectedTooltipItems, legendHoverPath);
+});
 
 /***/ }),
 
@@ -94349,7 +94443,9 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-propert
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.object.freeze.js */ "../node_modules/core-js/modules/es.object.freeze.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.some.js */ "../node_modules/core-js/modules/es.array.some.js");
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.includes.js */ "../node_modules/core-js/modules/es.array.includes.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.string.includes.js */ "../node_modules/core-js/modules/es.string.includes.js");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -94382,10 +94478,10 @@ function isBarGeometry(ig) {
 /** @internal */
 
 
-function getGeometryHighlightState(key, highlightedLegendItem) {
-  return !highlightedLegendItem ? 'default' : highlightedLegendItem.seriesIdentifiers.some(function (si) {
-    return si.key === key;
-  }) ? 'focused' : 'dimmed';
+function getGeometryHighlightState(key) {
+  var highlightedItems = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  if (highlightedItems.length === 0) return 'default';
+  return highlightedItems.includes(key) ? 'focused' : 'dimmed';
 }
 /** @internal */
 
@@ -123738,7 +123834,7 @@ exports.Example = void 0;
 // @ts-nocheck
 // @ts-ignore
 
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport { action } from '@storybook/addon-actions';\nimport { select, boolean, number } from '@storybook/addon-knobs';\nimport React from 'react';\n\nimport type { TooltipAction } from '@elastic/charts';\nimport { Axis, Chart, HistogramBarSeries, LineSeries, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';\n\nimport { DATA_SERIES } from './data/series';\nimport type { ChartsStory } from '../../../types';\nimport { useBaseTheme } from '../../../use_base_theme';\nimport { customKnobs } from '../../utils/knobs';\nimport { SB_SOURCE_PANEL } from '../../utils/storybook';\nimport { wait } from '../../utils/utils';\n\nconst formatter = new Intl.DateTimeFormat('en-US', {\n  year: 'numeric',\n  month: 'numeric',\n  day: 'numeric',\n  hour: 'numeric',\n  minute: 'numeric',\n});\nconst tooltipDateFormatter = (d: number) => formatter.format(d);\nconst stringPluralize = (d: unknown[]) => (d.length > 1 ? 's' : '');\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const chartType = select('chart type', { bar: 'bar', line: 'line' }, 'line');\n  const reduceData = boolean('reduce data', false);\n  const asyncDelay = number('async actions delay', 0, { step: 100, min: 0 });\n  const disableActions = boolean('disable actions', false);\n\n  const actions: TooltipAction[] = [\n    {\n      disabled: (d) => d.length !== 1,\n      label: (d) => (d.length !== 1 ? 'Select to drilldown' : `Drilldown to ${d[0].label}`),\n      onSelect: (s) => action('drilldown to')(s[0].label),\n    },\n    {\n      label: () => `Filter this 30s time bucket`,\n      onSelect: (s) => action('filter time bucket')(s[0].datum.timestamp),\n    },\n    {\n      disabled: (d) => d.length < 1,\n      label: (d) => (d.length < 1 ? 'Select to filter host IDs' : `Filter by ${d.length} host ID${stringPluralize(d)}`),\n      onSelect: (s) => action('filter')(s.map((d) => d.label)),\n    },\n    {\n      disabled: (d) => d.length < 1,\n      label: (d) => (d.length < 1 ? 'Select to copy host IDs' : `Copy ${d.length} host ID${stringPluralize(d)}`),\n      onSelect: (s) => action('copy')(s.map((d) => d.label)),\n    },\n  ];\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        baseTheme={useBaseTheme()}\n        theme={{\n          axes: { tickLine: { visible: true } },\n          barSeriesStyle: {\n            rect: {\n              opacity: 0.9,\n            },\n          },\n          lineSeriesStyle: {\n            point: { visible: 'never' },\n          },\n        }}\n      />\n      <Tooltip\n        type={customKnobs.enum.tooltipType()}\n        maxVisibleTooltipItems={4}\n        maxTooltipItems={4}\n        actions={disableActions ? [] : asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions}\n      />\n      <Axis\n        id=\"x\"\n        position={Position.Bottom}\n        gridLine={{\n          visible: true,\n        }}\n        tickFormat={tooltipDateFormatter}\n      />\n      <Axis\n        id=\"left\"\n        position={Position.Right}\n        gridLine={{\n          visible: true,\n        }}\n        ticks={4}\n        tickFormat={(d) => `${Number(d * 100).toFixed(0)}`}\n      />\n      {DATA_SERIES.map((d) => {\n        const data = d.timeseries.rows.slice(0, reduceData ? 20 : undefined);\n        return chartType === 'bar' ? (\n          <HistogramBarSeries\n            key={d.name}\n            id={d.name}\n            xScaleType={ScaleType.Time}\n            yScaleType={ScaleType.Linear}\n            xAccessor=\"timestamp\"\n            yAccessors={['metric_0']}\n            stackAccessors={['yes']}\n            yNice\n            data={data}\n          />\n        ) : (\n          <LineSeries\n            key={d.name}\n            id={d.name}\n            xScaleType={ScaleType.Time}\n            yScaleType={ScaleType.Linear}\n            xAccessor=\"timestamp\"\n            yAccessors={['metric_0']}\n            yNice\n            data={data}\n          />\n        );\n      })}\n    </Chart>\n  );\n};\n\n// storybook configuration\nExample.parameters = {\n  options: { selectedPanel: SB_SOURCE_PANEL },\n};\n"; // @ts-ignore
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport { action } from '@storybook/addon-actions';\nimport { select, boolean, number } from '@storybook/addon-knobs';\nimport React from 'react';\n\nimport type { TooltipAction } from '@elastic/charts';\nimport { Axis, Chart, HistogramBarSeries, LineSeries, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';\n\nimport { DATA_SERIES } from './data/series';\nimport type { ChartsStory } from '../../../types';\nimport { useBaseTheme } from '../../../use_base_theme';\nimport { customKnobs } from '../../utils/knobs';\nimport { SB_SOURCE_PANEL } from '../../utils/storybook';\nimport { wait } from '../../utils/utils';\n\nconst formatter = new Intl.DateTimeFormat('en-US', {\n  year: 'numeric',\n  month: 'numeric',\n  day: 'numeric',\n  hour: 'numeric',\n  minute: 'numeric',\n});\nconst tooltipDateFormatter = (d: number) => formatter.format(d);\nconst stringPluralize = (d: unknown[]) => (d.length > 1 ? 's' : '');\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const chartType = select('chart type', { bar: 'bar', line: 'line' }, 'line');\n  const reduceData = boolean('reduce data', false);\n  const asyncDelay = number('async actions delay', 0, { step: 100, min: 0 });\n  const disableActions = boolean('disable actions', false);\n\n  const actions: TooltipAction[] = [\n    {\n      disabled: (d) => d.length !== 1,\n      label: (d) => (d.length !== 1 ? 'Select to drilldown' : `Drilldown to ${d[0].label}`),\n      onSelect: (s) => action('drilldown to')(s[0].label),\n    },\n    {\n      label: () => `Filter this 30s time bucket`,\n      onSelect: (s) => action('filter time bucket')(s[0].datum.timestamp),\n    },\n    {\n      disabled: (d) => d.length < 1,\n      label: (d) => (d.length < 1 ? 'Select to filter host IDs' : `Filter by ${d.length} host ID${stringPluralize(d)}`),\n      onSelect: (s) => action('filter')(s.map((d) => d.label)),\n    },\n    {\n      disabled: (d) => d.length < 1,\n      label: (d) => (d.length < 1 ? 'Select to copy host IDs' : `Copy ${d.length} host ID${stringPluralize(d)}`),\n      onSelect: (s) => action('copy')(s.map((d) => d.label)),\n    },\n  ];\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        baseTheme={useBaseTheme()}\n        theme={{\n          axes: { tickLine: { visible: true } },\n          barSeriesStyle: {\n            rect: {\n              opacity: 0.9,\n            },\n          },\n          lineSeriesStyle: {\n            point: { visible: 'never' },\n          },\n        }}\n      />\n      <Tooltip\n        type={customKnobs.enum.tooltipType()}\n        maxVisibleTooltipItems={4}\n        maxTooltipItems={4}\n        actions={disableActions ? [] : asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions}\n      />\n      <Axis\n        id=\"x\"\n        position={Position.Bottom}\n        gridLine={{\n          visible: true,\n        }}\n        tickFormat={tooltipDateFormatter}\n      />\n      <Axis\n        id=\"left\"\n        position={Position.Right}\n        gridLine={{\n          visible: true,\n        }}\n        ticks={4}\n        tickFormat={(d) => `${Number(d * 100).toFixed(0)}`}\n      />\n      {DATA_SERIES.map((d) => {\n        const data = d.timeseries.rows.slice(0, reduceData ? 20 : undefined);\n        return chartType === 'bar' ? (\n          <HistogramBarSeries\n            key={d.name}\n            id={d.name}\n            xScaleType={ScaleType.Time}\n            yScaleType={ScaleType.Linear}\n            xAccessor=\"timestamp\"\n            yAccessors={['metric_0']}\n            stackAccessors={['yes']}\n            yNice\n            data={data}\n          />\n        ) : (\n          <LineSeries\n            key={d.name}\n            id={d.name}\n            xScaleType={ScaleType.Time}\n            yScaleType={ScaleType.Linear}\n            xAccessor=\"timestamp\"\n            yAccessors={['metric_0']}\n            yNice\n            data={data}\n          />\n        );\n      })}\n    </Chart>\n  );\n};\n\n// storybook configuration\nExample.parameters = {\n  options: { selectedPanel: SB_SOURCE_PANEL },\n};\n"; // @ts-ignore
 
 var __LOCATIONS_MAP__ = {
   "Example": {
@@ -123748,7 +123844,7 @@ var __LOCATIONS_MAP__ = {
     },
     "endLoc": {
       "col": 1,
-      "line": 129
+      "line": 130
     },
     "startBody": {
       "col": 36,
@@ -123756,7 +123852,7 @@ var __LOCATIONS_MAP__ = {
     },
     "endBody": {
       "col": 1,
-      "line": 129
+      "line": 130
     }
   }
 };
@@ -123861,6 +123957,7 @@ var Example = function Example(_, _ref) {
     title: title,
     description: description
   }, react_1["default"].createElement(charts_1.Settings, {
+    showLegend: true,
     baseTheme: (0, use_base_theme_1.useBaseTheme)(),
     theme: {
       axes: {
@@ -123939,7 +124036,7 @@ exports.Example.parameters = {
 };
 exports.Example.parameters = Object.assign({
   storySource: {
-    source: "(_, { title, description }) => {\n  const chartType = select('chart type', { bar: 'bar', line: 'line' }, 'line');\n  const reduceData = boolean('reduce data', false);\n  const asyncDelay = number('async actions delay', 0, { step: 100, min: 0 });\n  const disableActions = boolean('disable actions', false);\n\n  const actions: TooltipAction[] = [\n    {\n      disabled: (d) => d.length !== 1,\n      label: (d) => (d.length !== 1 ? 'Select to drilldown' : `Drilldown to ${d[0].label}`),\n      onSelect: (s) => action('drilldown to')(s[0].label),\n    },\n    {\n      label: () => `Filter this 30s time bucket`,\n      onSelect: (s) => action('filter time bucket')(s[0].datum.timestamp),\n    },\n    {\n      disabled: (d) => d.length < 1,\n      label: (d) => (d.length < 1 ? 'Select to filter host IDs' : `Filter by ${d.length} host ID${stringPluralize(d)}`),\n      onSelect: (s) => action('filter')(s.map((d) => d.label)),\n    },\n    {\n      disabled: (d) => d.length < 1,\n      label: (d) => (d.length < 1 ? 'Select to copy host IDs' : `Copy ${d.length} host ID${stringPluralize(d)}`),\n      onSelect: (s) => action('copy')(s.map((d) => d.label)),\n    },\n  ];\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        baseTheme={useBaseTheme()}\n        theme={{\n          axes: { tickLine: { visible: true } },\n          barSeriesStyle: {\n            rect: {\n              opacity: 0.9,\n            },\n          },\n          lineSeriesStyle: {\n            point: { visible: 'never' },\n          },\n        }}\n      />\n      <Tooltip\n        type={customKnobs.enum.tooltipType()}\n        maxVisibleTooltipItems={4}\n        maxTooltipItems={4}\n        actions={disableActions ? [] : asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions}\n      />\n      <Axis\n        id=\"x\"\n        position={Position.Bottom}\n        gridLine={{\n          visible: true,\n        }}\n        tickFormat={tooltipDateFormatter}\n      />\n      <Axis\n        id=\"left\"\n        position={Position.Right}\n        gridLine={{\n          visible: true,\n        }}\n        ticks={4}\n        tickFormat={(d) => `${Number(d * 100).toFixed(0)}`}\n      />\n      {DATA_SERIES.map((d) => {\n        const data = d.timeseries.rows.slice(0, reduceData ? 20 : undefined);\n        return chartType === 'bar' ? (\n          <HistogramBarSeries\n            key={d.name}\n            id={d.name}\n            xScaleType={ScaleType.Time}\n            yScaleType={ScaleType.Linear}\n            xAccessor=\"timestamp\"\n            yAccessors={['metric_0']}\n            stackAccessors={['yes']}\n            yNice\n            data={data}\n          />\n        ) : (\n          <LineSeries\n            key={d.name}\n            id={d.name}\n            xScaleType={ScaleType.Time}\n            yScaleType={ScaleType.Linear}\n            xAccessor=\"timestamp\"\n            yAccessors={['metric_0']}\n            yNice\n            data={data}\n          />\n        );\n      })}\n    </Chart>\n  );\n}"
+    source: "(_, { title, description }) => {\n  const chartType = select('chart type', { bar: 'bar', line: 'line' }, 'line');\n  const reduceData = boolean('reduce data', false);\n  const asyncDelay = number('async actions delay', 0, { step: 100, min: 0 });\n  const disableActions = boolean('disable actions', false);\n\n  const actions: TooltipAction[] = [\n    {\n      disabled: (d) => d.length !== 1,\n      label: (d) => (d.length !== 1 ? 'Select to drilldown' : `Drilldown to ${d[0].label}`),\n      onSelect: (s) => action('drilldown to')(s[0].label),\n    },\n    {\n      label: () => `Filter this 30s time bucket`,\n      onSelect: (s) => action('filter time bucket')(s[0].datum.timestamp),\n    },\n    {\n      disabled: (d) => d.length < 1,\n      label: (d) => (d.length < 1 ? 'Select to filter host IDs' : `Filter by ${d.length} host ID${stringPluralize(d)}`),\n      onSelect: (s) => action('filter')(s.map((d) => d.label)),\n    },\n    {\n      disabled: (d) => d.length < 1,\n      label: (d) => (d.length < 1 ? 'Select to copy host IDs' : `Copy ${d.length} host ID${stringPluralize(d)}`),\n      onSelect: (s) => action('copy')(s.map((d) => d.label)),\n    },\n  ];\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        baseTheme={useBaseTheme()}\n        theme={{\n          axes: { tickLine: { visible: true } },\n          barSeriesStyle: {\n            rect: {\n              opacity: 0.9,\n            },\n          },\n          lineSeriesStyle: {\n            point: { visible: 'never' },\n          },\n        }}\n      />\n      <Tooltip\n        type={customKnobs.enum.tooltipType()}\n        maxVisibleTooltipItems={4}\n        maxTooltipItems={4}\n        actions={disableActions ? [] : asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions}\n      />\n      <Axis\n        id=\"x\"\n        position={Position.Bottom}\n        gridLine={{\n          visible: true,\n        }}\n        tickFormat={tooltipDateFormatter}\n      />\n      <Axis\n        id=\"left\"\n        position={Position.Right}\n        gridLine={{\n          visible: true,\n        }}\n        ticks={4}\n        tickFormat={(d) => `${Number(d * 100).toFixed(0)}`}\n      />\n      {DATA_SERIES.map((d) => {\n        const data = d.timeseries.rows.slice(0, reduceData ? 20 : undefined);\n        return chartType === 'bar' ? (\n          <HistogramBarSeries\n            key={d.name}\n            id={d.name}\n            xScaleType={ScaleType.Time}\n            yScaleType={ScaleType.Linear}\n            xAccessor=\"timestamp\"\n            yAccessors={['metric_0']}\n            stackAccessors={['yes']}\n            yNice\n            data={data}\n          />\n        ) : (\n          <LineSeries\n            key={d.name}\n            id={d.name}\n            xScaleType={ScaleType.Time}\n            yScaleType={ScaleType.Linear}\n            xAccessor=\"timestamp\"\n            yAccessors={['metric_0']}\n            yNice\n            data={data}\n          />\n        );\n      })}\n    </Chart>\n  );\n}"
   }
 }, exports.Example.parameters);
 
@@ -180497,4 +180594,4 @@ module.exports = __webpack_require__(/*! /app/storybook/generated-stories-entry.
 /***/ })
 
 },[[0,"runtime~main","vendors~main"]]]);
-//# sourceMappingURL=main.c8619214.iframe.bundle.js.map
+//# sourceMappingURL=main.2f0cbc1b.iframe.bundle.js.map
