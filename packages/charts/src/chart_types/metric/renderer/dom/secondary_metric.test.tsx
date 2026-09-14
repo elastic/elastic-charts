@@ -12,6 +12,7 @@ import { Provider } from 'react-redux';
 
 import { SecondaryMetric } from './secondary_metric';
 import { createChartStore } from '../../../../state/chart_state';
+import type { SecondaryMetricLabelTooltipProps } from '../../specs';
 
 const label = 'Last week';
 const value = '87.20';
@@ -54,5 +55,49 @@ describe('SecondaryMetric', () => {
 
     fireEvent.pointerLeave(metric);
     expect(screen.queryByTestId('echTooltipHeader')).not.toBeInTheDocument();
+  });
+
+  describe('custom labelTooltip', () => {
+    const CustomLabelTooltip = ({ children, label, value, placement }: SecondaryMetricLabelTooltipProps) => (
+      <div data-testid="custom-tooltip" data-label={label} data-value={value} data-placement={placement}>
+        {children}
+      </div>
+    );
+
+    it('wraps the secondary metric and replaces the default tooltip', () => {
+      const { container } = renderSecondaryMetric(
+        <SecondaryMetric
+          value={value}
+          label={label}
+          labelPosition="tooltip"
+          labelTooltip={CustomLabelTooltip}
+          badgeBorderColor={undefined}
+        />,
+      );
+      const metric = getSecondaryMetric(container);
+
+      const wrapper = screen.getByTestId('custom-tooltip');
+      expect(wrapper).toHaveAttribute('data-label', label);
+      expect(wrapper).toHaveAttribute('data-value', value);
+
+      // still focusable for keyboard-triggered tooltips and screen reader label preserved
+      expect(metric).toHaveAttribute('tabindex', '0');
+      expect(container.querySelector('.echScreenReaderOnly')).toHaveTextContent(label);
+    });
+
+    it('is ignored when labelPosition is not tooltip', () => {
+      const { container } = renderSecondaryMetric(
+        <SecondaryMetric
+          value={value}
+          label={label}
+          labelPosition="before"
+          labelTooltip={CustomLabelTooltip}
+          badgeBorderColor={undefined}
+        />,
+      );
+
+      expect(screen.queryByTestId('custom-tooltip')).not.toBeInTheDocument();
+      expect(container.querySelector('.echSecondaryMetric__label')).toHaveTextContent(label);
+    });
   });
 });

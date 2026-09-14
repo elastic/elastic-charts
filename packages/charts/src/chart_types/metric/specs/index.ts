@@ -25,6 +25,7 @@ import type { BulletValueLabels } from '../../bullet_graph/spec';
  * @alpha
  */
 export interface SecondaryMetricLabelTooltipProps {
+  /** The secondary metric element. Render it as the tooltip's trigger. */
   children: ReactElement;
   /** The label to display in the tooltip */
   label: string;
