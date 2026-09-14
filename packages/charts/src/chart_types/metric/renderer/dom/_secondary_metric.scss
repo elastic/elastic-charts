@@ -29,4 +29,9 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  &__tooltip {
+    max-width: 256px;
+    overflow-wrap: break-word;
+  }
 }

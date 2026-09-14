@@ -197,7 +197,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   const secondaryMetricLabelPosition = select(
     'Secondary metric label position',
-    { before: 'before', after: 'after' },
+    { before: 'before', after: 'after', tooltip: 'tooltip' },
     'before',
     secondaryMetricGroup,
   );
