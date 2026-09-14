@@ -20,6 +20,21 @@ import type { GenericDomain } from '../../../utils/domain';
 import type { BulletValueLabels } from '../../bullet_graph/spec';
 
 /**
+ * Props passed to a custom `labelTooltip` component, see {@link SecondaryMetricProps}.
+ *
+ * @alpha
+ */
+export interface SecondaryMetricLabelTooltipProps {
+  children: ReactElement;
+  /** The label to display in the tooltip */
+  label: string;
+  /** The secondary metric value */
+  value: string;
+  /** Suggested tooltip placement, derived from the `extraTextAlign` property of the secondary metric */
+  placement: 'top' | 'left' | 'right';
+}
+
+/**
  * Props for displaying a secondary metric value with optional label and badge styling.
  *
  * @alpha
@@ -35,6 +50,10 @@ export interface SecondaryMetricProps {
   badgeTextColor?: Color;
   /** Determines whether the label appears before or after the value or is displayed in a tooltip */
   labelPosition?: 'before' | 'after' | 'tooltip';
+  /**
+   * Custom component used to render the label tooltip when `labelPosition` is `'tooltip'`, ignored when `labelPosition` is `'before'` or `'after'`.
+   */
+  labelTooltip?: ComponentType<SecondaryMetricLabelTooltipProps>;
   /**  Optional CSS properties to apply to the container element */
   style?: CSSProperties;
   /** Optional aria description */

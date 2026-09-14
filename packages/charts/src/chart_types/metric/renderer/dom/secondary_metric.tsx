@@ -16,7 +16,7 @@ import { Placement, TooltipPortal } from '../../../../components/portal';
 import { TooltipContainer, TooltipHeader } from '../../../../components/tooltip';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import type { MetricStyle } from '../../../../utils/themes/theme';
-import type { SecondaryMetricProps } from '../../specs';
+import type { SecondaryMetricLabelTooltipProps, SecondaryMetricProps } from '../../specs';
 
 type SecondaryMetricInternalProps = Omit<SecondaryMetricProps, 'badgeBorderColor'> & {
   badgeBorderColor: Color | undefined;
@@ -24,7 +24,9 @@ type SecondaryMetricInternalProps = Omit<SecondaryMetricProps, 'badgeBorderColor
 };
 
 /** @internal */
-export const getTooltipPlacement = (textAlign: MetricStyle['extraTextAlign'] = 'center'): Placement => {
+export const getTooltipPlacement = (
+  textAlign: MetricStyle['extraTextAlign'] = 'center',
+): SecondaryMetricLabelTooltipProps['placement'] => {
   if (textAlign === 'left') return Placement.Right;
   if (textAlign === 'right') return Placement.Left;
   return Placement.Top;
@@ -80,6 +82,7 @@ export const SecondaryMetric: React.FC<SecondaryMetricInternalProps> = ({
   icon,
   iconPosition,
   textAlign,
+  labelTooltip: LabelTooltipComponent,
 }) => {
   const anchorRef = useRef<HTMLSpanElement>(null);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -87,20 +90,26 @@ export const SecondaryMetric: React.FC<SecondaryMetricInternalProps> = ({
   const handleTooltipEnter = useCallback(() => setShowTooltip(true), []);
   const handleTooltipLeave = useCallback(() => setShowTooltip(false), []);
 
-  const hasVisibleLabel = Boolean(label) && labelPosition !== 'tooltip';
+  const hasInlineLabel = Boolean(label) && labelPosition !== 'tooltip';
+  const hasTooltipLabel = Boolean(label) && labelPosition === 'tooltip';
+  const useDefaultTooltip = hasTooltipLabel && !LabelTooltipComponent;
 
-  const labelNode = hasVisibleLabel ? (
+  const labelNode = hasInlineLabel ? (
     <span className="echSecondaryMetric__label echSecondaryMetric__truncate">{label}</span>
   ) : undefined;
 
-  return (
+  const metricElement = (
     <span
       ref={anchorRef}
       className="echSecondaryMetric"
-      {...(label && labelPosition === 'tooltip'
+      {...(hasTooltipLabel
         ? {
             role: 'button',
             tabIndex: 0,
+          }
+        : {})}
+      {...(useDefaultTooltip
+        ? {
             onPointerEnter: handleTooltipEnter,
             onPointerLeave: handleTooltipLeave,
             onFocus: handleTooltipEnter,
@@ -111,11 +120,11 @@ export const SecondaryMetric: React.FC<SecondaryMetricInternalProps> = ({
       {...(ariaDescription ? { 'aria-describedby': ariaDescription } : {})}
     >
       {labelPosition === 'before' && labelNode}
-      {label && labelPosition === 'tooltip' && <span className="echScreenReaderOnly">{label}</span>}
+      {hasTooltipLabel && <span className="echScreenReaderOnly">{label}</span>}
       {badgeColor ? (
         <Badge
           className={classNames('echSecondaryMetric__value', {
-            'echSecondaryMetric__value--full': !hasVisibleLabel,
+            'echSecondaryMetric__value--full': !hasInlineLabel,
           })}
           value={value}
           backgroundColor={badgeColor}
@@ -127,14 +136,14 @@ export const SecondaryMetric: React.FC<SecondaryMetricInternalProps> = ({
       ) : (
         <span
           className={classNames('echSecondaryMetric__value', 'echSecondaryMetric__truncate', {
-            'echSecondaryMetric__value--full': !hasVisibleLabel,
+            'echSecondaryMetric__value--full': !hasInlineLabel,
           })}
         >
           {value}
         </span>
       )}
       {labelPosition === 'after' && labelNode}
-      {label && labelPosition === 'tooltip' && (
+      {useDefaultTooltip && label && (
         <LabelTooltip
           label={label}
           anchorRef={anchorRef}
@@ -144,4 +153,14 @@ export const SecondaryMetric: React.FC<SecondaryMetricInternalProps> = ({
       )}
     </span>
   );
+
+  if (hasTooltipLabel && LabelTooltipComponent && label) {
+    return (
+      <LabelTooltipComponent label={label} value={value} placement={getTooltipPlacement(textAlign)}>
+        {metricElement}
+      </LabelTooltipComponent>
+    );
+  }
+
+  return metricElement;
 };

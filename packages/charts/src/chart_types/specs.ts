@@ -50,6 +50,7 @@ export {
   MetricTrendShape,
   MetricDatum,
   SecondaryMetricProps,
+  SecondaryMetricLabelTooltipProps,
 } from './metric/specs';
 
 export { Bullet, BulletProps, BulletSpec, BulletDatum, BulletSubtype, BulletValueLabels } from './bullet_graph/spec';
