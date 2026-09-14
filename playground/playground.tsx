@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Example } from '../storybook/stories/icicle/04_cpu_profile_gl_flame.story';
+import { Example } from '../storybook/stories/test_cases/35_many_series_kibana.story';
 
 export function Playground() {
   return <Example />;
