@@ -1,0 +1,901 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+import type { BadgeImageCrossOrigin } from './badge_images';
+import { drawTimeBar } from './time_bar';
+import type {
+  AnnotationLayoutItem,
+  BadgeLayoutItem,
+  HoverRegion,
+  PickResult,
+  TraceBadgeColorStyle,
+  TraceGeometry,
+  TraceRenderer,
+  TraceStyle,
+} from './types';
+import { disclosureColumnWidth, LANE_PADDING } from './types';
+import { colorToRgba, RGBATupleToString } from '../../../common/color_library_wrappers';
+import type { RgbaTuple } from '../../../common/color_library_wrappers';
+import { Colors } from '../../../common/colors';
+import type { Fill, Stroke } from '../../../geoms/types';
+import { withContext } from '../../../renderers/canvas';
+import { renderMultiLine } from '../../../renderers/canvas/primitives/line';
+import { renderRect } from '../../../renderers/canvas/primitives/rect';
+import { renderText, wrapLines } from '../../../renderers/canvas/primitives/text';
+import type { TextFont } from '../../../renderers/canvas/primitives/text';
+import { waitingSegments } from '../data/self_time';
+import type { TraceSpanBadgeColor } from '../trace_api';
+
+/** Zero-width stroke used for active-segment rects (filled only, no visible border). */
+const NO_STROKE: Stroke = { color: Colors.Transparent.rgba, width: 0 };
+
+// --- Tree-guide draw pass constants (Spec 33 / ADR 0039) ---
+/** Gap (px) between the elbow terminus and the child's caret glyph ink. */
+const TREE_GUIDE_ELBOW_GAP_PX = 7;
+/** Quadratic-curve radius (px) on the terminating elbow (`└`). */
+const TREE_GUIDE_CORNER_PX = 3;
+/** Clearance (px) below the parent caret's glyph ink where the first child's spine starts. */
+const TREE_GUIDE_CARET_CLEARANCE_PX = 6;
+/** Stroke width (px) for tree guide lines. */
+const TREE_GUIDE_THICKNESS_PX = 1;
+
+/**
+ * Draws the tree-guide spine + elbow lines in the disclosure gutter (Spec 33 / ADR 0039). Called
+ * after the focused-lane background highlight and before the per-lane loop, so guides are visible
+ * on the focused lane but never overdraw span bars. The existing lane-area `ctx.clip()` trims
+ * guides at `plot.top`, so a parent scrolled above the viewport only shows the stub below.
+ *
+ * Builds a single `Path2D`-equivalent (`beginPath` → series of `moveTo`/`lineTo`/`quadraticCurveTo`)
+ * and strokes once — never per-lane. There is no arc primitive in `renderers/canvas`, so rounded
+ * elbows use `quadraticCurveTo` directly (ADR 0039).
+ */
+function drawTreeGuides(
+  ctx: CanvasRenderingContext2D,
+  geom: TraceGeometry,
+  style: TraceStyle,
+  firstLane: number,
+  lastLane: number,
+): void {
+  const { treeGuidesByLane, gutter, plot, laneHeight, scrollOffset, disclosureColumn } = geom;
+  if (treeGuidesByLane.size === 0) return;
+
+  const { indentStepPx, caretPx } = disclosureColumn;
+  const r = TREE_GUIDE_CORNER_PX;
+
+  // spineX: the caret-centre x for a given depth level. "Spine from its caret" per Spec 33.
+  const spineX = (level: number) => gutter.left + level * indentStepPx + caretPx / 2;
+  // anchorX: where the elbow terminates, stopping short of the child's caret ink.
+  const anchorX = (depth: number) => spineX(depth) - TREE_GUIDE_ELBOW_GAP_PX;
+
+  const laneTopY = (i: number) => plot.top + i * laneHeight - scrollOffset;
+  const barMidY = (i: number) => laneTopY(i) + laneHeight / 2;
+
+  withContext(ctx, () => {
+    ctx.beginPath();
+    ctx.lineWidth = TREE_GUIDE_THICKNESS_PX;
+    ctx.strokeStyle = style.treeGuideColor;
+
+    for (let i = firstLane; i <= lastLane; i++) {
+      const entry = treeGuidesByLane.get(i);
+      if (!entry) continue;
+
+      const top = laneTopY(i);
+      const bottom = top + laneHeight;
+      const mid = barMidY(i);
+
+      // Ancestor passthroughs: walk the parentLane chain upward. For each ancestor that is not the
+      // last child of its own parent (isLastChild=false), the spine at that ancestor's level
+      // continues through this lane as a full-height vertical. Stops when we reach a root (no entry).
+      let current = entry;
+      for (;;) {
+        const ancestor = treeGuidesByLane.get(current.parentLane);
+        if (!ancestor) break;
+        if (!ancestor.isLastChild) {
+          const px = spineX(ancestor.depth - 1);
+          ctx.moveTo(px, top);
+          ctx.lineTo(px, bottom);
+        }
+        current = ancestor;
+      }
+
+      // Parent-spine segment. The spine starts just below the parent's caret ink on the first child
+      // of a parent (DFS: first child is always parentLane + 1), and at laneTop on later siblings,
+      // where the spine is continuous from the passthrough drawn for this lane in the prior iteration.
+      const px = spineX(entry.depth - 1);
+      const startY =
+        i === entry.parentLane + 1
+          ? barMidY(entry.parentLane) + TREE_GUIDE_CARET_CLEARANCE_PX // below the ▼ ink
+          : top; // continuous from the sibling above
+
+      if (entry.isLastChild) {
+        // Terminating elbow (`└`): vertical down to just above mid, rounded curve, horizontal to anchorX.
+        ctx.moveTo(px, startY);
+        ctx.lineTo(px, mid - r);
+        ctx.quadraticCurveTo(px, mid, px + r, mid);
+        ctx.lineTo(anchorX(entry.depth), mid);
+      } else {
+        // Tee (`├`): full-height vertical from startY plus a straight horizontal stub at mid.
+        ctx.moveTo(px, startY);
+        ctx.lineTo(px, bottom);
+        ctx.moveTo(px, mid);
+        ctx.lineTo(anchorX(entry.depth), mid);
+      }
+    }
+
+    ctx.stroke();
+  });
+}
+
+/**
+ * Clamps a mark's `[rawStartX, rawEndX]` to the plot and floors its width to `minW` so a very short
+ * span never collapses to a sub-pixel sliver (ADR 0036 / B1). Left-anchored at the true start; when the
+ * floored mark would spill past the right edge it is nudged left to sit flush inside the plot. Returns
+ * `null` when the mark is entirely outside `[plotLeft, plotRight]`. Purely visual — picking and timing
+ * read the unfloored scale, so a floored mark can be wider than its hit area (accepted, ADR 0036).
+ * @internal
+ */
+function flooredMarkX(
+  rawStartX: number,
+  rawEndX: number,
+  plotLeft: number,
+  plotRight: number,
+  minW: number,
+): { x: number; width: number } | null {
+  if (rawEndX < plotLeft || rawStartX > plotRight) return null;
+  const x = Math.max(plotLeft, rawStartX);
+  const naturalW = Math.min(plotRight, rawEndX) - x;
+  if (naturalW >= minW) return { x, width: naturalW };
+  // Floor the width, keeping the true start where possible but never spilling past the right edge.
+  return { x: Math.max(plotLeft, Math.min(rawStartX, plotRight - minW)), width: minW };
+}
+
+/** The element type of `TraceGeometry.spans` (a prepared, immutable `NormalizedSpan`). */
+type TraceGeometrySpan = TraceGeometry['spans'][number];
+
+/**
+ * Cross-frame memo for gutter-label wrapping. Keyed on the span object, which is stable for the
+ * lifetime of a pipeline cache entry and GC-eligible once a new `normalize` run replaces it (same
+ * lifecycle as `waitingSegmentsCache`). The `sig` captures the width/font/laneHeight the lines were
+ * wrapped for, so a changed gutter width (e.g. badge layout) or theme font recomputes. Avoids
+ * re-running `wrapLines` (a `measureText` loop) for every visible lane on every frame during
+ * zoom/pan/scroll, when the label geometry is unchanged. A span's `name` is immutable, so it does
+ * not need to be part of the signature.
+ */
+const labelWrapCache = new WeakMap<TraceGeometrySpan, { sig: string; lines: string[] }>();
+
+function wrapGutterLabel(
+  ctx: CanvasRenderingContext2D,
+  span: TraceGeometrySpan,
+  font: TextFont,
+  labelWidth: number,
+  laneHeight: number,
+): string[] {
+  const sig = `${font.fontFamily}|${font.fontSize}|${laneHeight}|${labelWidth}`;
+  const cached = labelWrapCache.get(span);
+  if (cached !== undefined && cached.sig === sig) return cached.lines;
+  const { lines } = wrapLines(ctx, span.name, font, font.fontSize, labelWidth, laneHeight, {
+    wrapAtWord: false,
+    shouldAddEllipsis: true,
+  });
+  labelWrapCache.set(span, { sig, lines });
+  return lines;
+}
+
+/**
+ * Draw the full trace waterfall onto `ctx`. **DPR-agnostic**: the caller must call
+ * `ctx.scale(dpr, dpr)` once before invoking this. The frozen `(ctx, geom, style)` contract is
+ * intentional — replacing the Canvas2D backend with WebGL (ADR 0001) requires only a new
+ * `TraceRenderer` object, not a signature change.
+ * @internal
+ */
+export function draw(ctx: CanvasRenderingContext2D, geom: TraceGeometry, style: TraceStyle): void {
+  const {
+    gutter,
+    plot,
+    spans,
+    laneHeight,
+    scrollOffset,
+    scale,
+    focusedLaneIndex,
+    disclosureByLane,
+    disclosureColumn,
+    spanDisplay,
+  } = geom;
+
+  withContext(ctx, () => {
+    // Transparent clear of the full canvas area. Background ownership belongs to the Spec 6
+    // wrapping component; the renderer only paints its own marks. Use `plot.left + plot.width`
+    // (the true canvas width) rather than `gutter.width + plot.width`: in 'none' mode the badge
+    // gutter shifts `plot.left` past `gutter.width`, so the latter would leave the rightmost
+    // `badgeGutterWidth` strip uncleared and time-bar gridlines would accumulate there (Spec 27).
+    ctx.clearRect(0, 0, plot.left + plot.width, gutter.height);
+
+    // Delegate time bar (raster tick engine + vertical gridlines) — Spec 4 module.
+    drawTimeBar(ctx, geom, style);
+
+    if (spans.length === 0) {
+      if (geom.emptyMessage) {
+        const emptyFont: TextFont = {
+          fontStyle: 'normal',
+          fontVariant: 'normal',
+          fontWeight: 'normal',
+          fontFamily: style.timeBarLabel.fontFamily,
+          textColor: style.timeBarLabel.color,
+          fontSize: style.timeBarLabel.fontSize,
+          align: 'center',
+          baseline: 'middle',
+        };
+        renderText(ctx, { x: plot.left + plot.width / 2, y: plot.top + plot.height / 2 }, geom.emptyMessage, emptyFont);
+      }
+      return;
+    }
+
+    // --- Viewport culling ---
+    // Only iterate lane indices whose top edge falls within the visible plot rect.
+    const firstLane = Math.max(0, Math.floor(scrollOffset / laneHeight));
+    const lastLane = Math.min(spans.length - 1, Math.floor((scrollOffset + plot.height) / laneHeight));
+
+    // Clip the lane area so that a fractional scrollOffset cannot let lane content
+    // (total-line, active segments, labels, focus highlight, selection outlines)
+    // overpaint the time bar above plot.top. The clip rect covers the full canvas
+    // width (`plot.left + plot.width`) so the focused-lane background highlight still paints into
+    // the gutter column and bars are not truncated by the 'none'-mode badge gutter (Spec 27).
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, plot.top, plot.left + plot.width, plot.height);
+    ctx.clip();
+
+    // --- Focused-lane background highlight (keyboard nav) ---
+    // Drawn before span content so total-line and active-segments render on top.
+    if (focusedLaneIndex !== null && focusedLaneIndex >= firstLane && focusedLaneIndex <= lastLane) {
+      const focusTop = plot.top + focusedLaneIndex * laneHeight - scrollOffset;
+      renderRect(
+        ctx,
+        { x: 0, y: focusTop, width: plot.left + plot.width, height: laneHeight },
+        { color: colorToRgba(style.focusedLaneBackground) },
+        NO_STROKE,
+        true,
+      );
+    }
+
+    // Tree-guide pass: spine + elbow lines in the disclosure gutter (Spec 33 / ADR 0039).
+    // After the focused-lane highlight so guides remain visible on the focused lane, and before
+    // span bars so bars are never obscured by a guide in the gutter column.
+    drawTreeGuides(ctx, geom, style, firstLane, lastLane);
+
+    // Hoist shared immutable style objects outside the per-lane loop to avoid per-frame allocations.
+    const totalLineStroke: Stroke = {
+      color: colorToRgba(style.totalLineColor),
+      width: style.totalLineThickness,
+    };
+    const defaultActiveFill: Fill = {
+      color: colorToRgba(style.activeSegmentColor),
+    };
+    const gutterFont: TextFont = {
+      fontStyle: 'normal',
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      fontFamily: style.gutterLabel.fontFamily,
+      textColor: style.gutterLabel.color,
+      fontSize: style.gutterLabel.fontSize,
+      align: 'left',
+      baseline: 'middle',
+    };
+
+    const plotRight = plot.left + plot.width;
+    // Minimum rendered span-mark width (ADR 0036 / B1): floors a very short span so it stays visible.
+    const minSpanWidthPx = style.minSpanWidthPx;
+
+    // In inline mode each lane is split vertically: a bar band at the top and a label band beneath.
+    // For gutter/none the label band is zero-height and all geometry reduces to today's behaviour.
+    // Sourced from geometry so the band grows to fit Span badges (Spec 27) and both passes agree.
+    const { labelBandPx } = geom;
+
+    // Width of the disclosure column within the gutter (ADR 0037 D1). Published on TraceGeometry
+    // so the label pass, badge layout, and pick all share one source of truth.
+    const caretColumnWidth = disclosureColumnWidth(disclosureColumn);
+
+    // Caret font: reuses the gutter label settings with center-align for the glyph.
+    const caretFont: TextFont = {
+      fontStyle: 'normal',
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      fontFamily: style.gutterLabel.fontFamily,
+      textColor: style.gutterLabel.color,
+      fontSize: style.gutterLabel.fontSize,
+      align: 'center',
+      baseline: 'middle',
+    };
+    // Count font: same theme as the caret but left-aligned so the digit anchors at the count zone left edge.
+    const countFont: TextFont = { ...caretFont, align: 'left' };
+
+    // Lazily-built fill cache: at most one colorToRgba call per distinct segment color per
+    // draw() call. Segments per lane are few, so a plain Map is sufficient.
+    const segFillCache = new Map<string, Fill>();
+
+    for (let i = firstLane; i <= lastLane; i++) {
+      const span = spans[i];
+      if (!span) continue;
+
+      const laneTop = plot.top + i * laneHeight - scrollOffset;
+
+      // Bar band: occupies the top portion of the lane (full lane when labelBandPx = 0). Clamp so a
+      // tall inline label/badge row on a short lane cannot invert the band (badge Spec 27 sizing).
+      const barTop = laneTop + LANE_PADDING;
+      const barBottom = Math.max(barTop, laneTop + laneHeight - LANE_PADDING - labelBandPx);
+      const barMidY = (barTop + barBottom) / 2;
+
+      // Span-level color (Spec 9 colorBy or explicit TraceDatum.color) is the lane-wide fallback.
+      // Per-segment colors (label-palette or explicit segment.color, both resolved in the pipeline)
+      // override the fallback for individual segments. Span colors share `segFillCache` (keyed by
+      // color string) so a repeated span/segment color is only `colorToRgba`'d once per draw().
+      let activeFill: Fill;
+      // eslint-disable-next-line eqeqeq
+      if (span.color != null) {
+        let cached = segFillCache.get(span.color);
+        if (cached === undefined) {
+          cached = { color: colorToRgba(span.color) };
+          segFillCache.set(span.color, cached);
+        }
+        activeFill = cached;
+      } else {
+        activeFill = defaultActiveFill;
+      }
+
+      const rawX1 = scale(span.start);
+      const rawX2 = scale(span.end);
+
+      if (spanDisplay === 'duration') {
+        // --- Duration bar (ADR 0035): one filled rect spanning the full [start, end] extent ---
+        // The "Kibana APM waterfall" look. `activeSegments` are intentionally NOT drawn here (they
+        // still drive selfTime/tooltip/events/SR); the bar uses the span-level color-group fill.
+        // The bar width is floored to minSpanWidthPx so a sub-pixel span stays visible (ADR 0036 / B1).
+        const mark = flooredMarkX(rawX1, rawX2, plot.left, plotRight, minSpanWidthPx);
+        if (mark) {
+          renderRect(
+            ctx,
+            { x: mark.x, y: barTop, width: mark.width, height: barBottom - barTop },
+            activeFill,
+            NO_STROKE,
+            true,
+          );
+        }
+      } else {
+        // --- Total-duration line (thin horizontal rule for the full span extent) ---
+        // Cull entirely-out-of-range spans, then clamp to plot bounds so the line never paints
+        // leftward into the gutter over the span-name labels. Floored to minSpanWidthPx so a
+        // sub-pixel span still reads as a locatable mark (ADR 0036 / B1).
+        const mark = flooredMarkX(rawX1, rawX2, plot.left, plotRight, minSpanWidthPx);
+        if (mark) {
+          renderMultiLine(ctx, [{ x1: mark.x, y1: barMidY, x2: mark.x + mark.width, y2: barMidY }], totalLineStroke);
+
+          // Natural (unfloored) clamped extent decides whether this is a sub-floor span.
+          const naturalW = Math.min(plotRight, rawX2) - Math.max(plot.left, rawX1);
+          if (naturalW < minSpanWidthPx) {
+            // Sub-floor span: its active segments would be sub-pixel, so collapse them into one
+            // floored active mark — an active leaf then reads as active, not idle (ADR 0036 / B1).
+            // A span with no active execution keeps only the muted total line above (stays honest).
+            if (span.activeSegments.length > 0) {
+              renderRect(
+                ctx,
+                { x: mark.x, y: barTop, width: mark.width, height: barBottom - barTop },
+                activeFill,
+                NO_STROKE,
+                true,
+              );
+            }
+          } else {
+            // --- Active segments (solid rects showing self-time) ---
+            // Wide-enough span: draw segments at their true proportions. B1 floors short spans, not
+            // short segments inside an already-visible span (flooring those would overclaim activity).
+            for (const seg of span.activeSegments) {
+              const segX1 = scale(seg.start);
+              const segX2 = scale(seg.end);
+              // Skip segments entirely outside the visible plot x-range.
+              if (segX2 < plot.left || segX1 > plotRight) continue;
+              // Clamp to plot bounds so a partially-visible mark does not paint into the gutter.
+              const clampedX = Math.max(plot.left, segX1);
+              const clampedW = Math.min(plotRight, segX2) - clampedX;
+              if (clampedW <= 0) continue;
+              // Resolve per-segment fill: explicit/label-derived color wins over span-level fallback.
+              let segFill: Fill;
+              // eslint-disable-next-line eqeqeq
+              if (seg.color != null) {
+                let cached = segFillCache.get(seg.color);
+                if (cached === undefined) {
+                  cached = { color: colorToRgba(seg.color) };
+                  segFillCache.set(seg.color, cached);
+                }
+                segFill = cached;
+              } else {
+                segFill = activeFill;
+              }
+              renderRect(
+                ctx,
+                { x: clampedX, y: barTop, width: clampedW, height: barBottom - barTop },
+                segFill,
+                NO_STROKE,
+                true, // disableBorderOffset — no stroke, so inset is irrelevant; explicit for clarity
+              );
+            }
+          }
+        }
+      }
+
+      // --- Label pass ---
+      if (style.labelPosition === 'gutter') {
+        // Gutter label: offset right of the disclosure column so label and caret don't overlap.
+        const labelX = gutter.left + caretColumnWidth + 4;
+        let labelWidth = gutter.width - caretColumnWidth - 8;
+        // When this lane hosts badges beside the label (Spec 27), stop the label before the first
+        // badge so text and badges never overlap; the badge-layout pass right-aligns the cluster.
+        const laneBadges = geom.badgesByLane.get(i);
+        if (laneBadges && laneBadges.items.length > 0) {
+          labelWidth = Math.max(0, laneBadges.items[0]!.x - labelX - style.badge.labelGap);
+        }
+        const lines = wrapGutterLabel(ctx, span, gutterFont, labelWidth, laneHeight);
+        if (lines[0]) {
+          renderText(ctx, { x: labelX, y: barMidY }, lines[0], gutterFont);
+        }
+      } else if (
+        style.labelPosition === 'inline' &&
+        span.name && // Inline label: drawn on a row below the bar, starting at the bar's start x (sticky-left).
+        // Cull when the bar is entirely outside the visible x-range (no bar to anchor to).
+        // Right-edge clipping is handled by the outer lane-area ctx.clip() above.
+        rawX2 >= plot.left &&
+        rawX1 <= plotRight
+      ) {
+        // When this lane's badges forced a left shift (Spec 27), the label follows them via `labelX`
+        // so the "label + badges" group stays together; otherwise it anchors at the bar start.
+        const labelX = geom.badgesByLane.get(i)?.labelX ?? Math.max(plot.left, rawX1);
+        const labelMidY = laneTop + laneHeight - LANE_PADDING - labelBandPx / 2;
+        renderText(ctx, { x: labelX, y: labelMidY }, span.name, gutterFont);
+      }
+      // labelPosition === 'none': no label drawn.
+
+      // --- Disclosure caret (▶/▼) and optional child-count ---
+      // Drawn inside the disclosure column at depth-indented x. Omitted when not a parent lane.
+      const disclosure = disclosureByLane.get(i);
+      if (disclosure) {
+        const { indentStepPx, caretPx, countPx } = disclosureColumn;
+        const caretX = gutter.left + disclosure.depth * indentStepPx + caretPx / 2;
+        renderText(ctx, { x: caretX, y: barMidY }, disclosure.state === 'collapsed' ? '▶' : '▼', caretFont);
+        if (countPx > 0) {
+          const countX = gutter.left + disclosure.depth * indentStepPx + caretPx;
+          renderText(ctx, { x: countX, y: barMidY }, String(disclosure.childCount), countFont);
+        }
+      }
+    }
+
+    // --- Critical-path pass (after lane content, before selection outlines) ---
+    // Renders a colored line along the bottom edge of the *bar band* at y = barBottom.
+    // In gutter/none mode labelBandPx = 0 so this equals laneTop + laneHeight - LANE_PADDING.
+    // In inline mode the label band sits below the bar; subtracting labelBandPx keeps the line
+    // at the bar's bottom edge rather than inside the label text row.
+    const { criticalIntervalsByLane } = geom;
+    if (criticalIntervalsByLane.size > 0) {
+      const criticalStroke: Stroke = {
+        color: colorToRgba(style.criticalPathColor),
+        width: style.criticalPathThickness,
+      };
+      for (const [laneIndex, intervals] of criticalIntervalsByLane) {
+        if (laneIndex < firstLane || laneIndex > lastLane) continue;
+        const cpLaneTop = plot.top + laneIndex * laneHeight - scrollOffset;
+        const y = cpLaneTop + laneHeight - LANE_PADDING - labelBandPx;
+        for (const { start, end } of intervals) {
+          const x1 = Math.max(plot.left, scale(start));
+          const x2 = Math.min(plotRight, scale(end));
+          if (x2 <= x1) continue;
+          renderMultiLine(ctx, [{ x1, y1: y, x2, y2: y }], criticalStroke);
+        }
+      }
+    }
+
+    // --- Selection-highlight pass (after all lane content) ---
+    // Stroke-only outline per resolved selection entry; no fill so ADR 0006 colorBy fills are not distorted.
+    const { resolvedSelection } = geom;
+    if (resolvedSelection.length > 0) {
+      const NO_FILL: Fill = { color: Colors.Transparent.rgba };
+      const selectionStroke: Stroke = {
+        color: colorToRgba(style.selectedSegmentStroke),
+        width: style.selectedSegmentStrokeWidth,
+      };
+      for (const entry of resolvedSelection) {
+        const { laneIndex, region, segmentIndex } = entry;
+        if (laneIndex < firstLane || laneIndex > lastLane) continue;
+        const hlSpan = spans[laneIndex];
+        if (!hlSpan) continue;
+        const entryLaneTop = plot.top + laneIndex * laneHeight - scrollOffset;
+
+        let hlX1: number;
+        let hlX2: number;
+        if (region === 'active') {
+          const seg = segmentIndex === undefined ? undefined : hlSpan.activeSegments[segmentIndex];
+          if (!seg) continue;
+          hlX1 = scale(seg.start);
+          hlX2 = scale(seg.end);
+        } else if (region === 'waiting') {
+          const gaps = waitingSegments(hlSpan);
+          const gap = segmentIndex === undefined ? undefined : gaps[segmentIndex];
+          if (!gap) continue;
+          hlX1 = scale(gap.start);
+          hlX2 = scale(gap.end);
+        } else {
+          // region === 'span'
+          hlX1 = scale(hlSpan.start);
+          hlX2 = scale(hlSpan.end);
+        }
+
+        // Cull entirely off-screen, then clamp to plot bounds.
+        if (hlX2 < plot.left || hlX1 > plotRight) continue;
+        const hlClampedX = Math.max(plot.left, hlX1);
+        const hlClampedW = Math.min(plotRight, hlX2) - hlClampedX;
+        if (hlClampedW <= 0) continue;
+
+        // Selection outline must frame the bar band (same vertical extent as the active-segment rects).
+        const hlBarTop = entryLaneTop + LANE_PADDING;
+        const hlBarBottom = entryLaneTop + laneHeight - LANE_PADDING - labelBandPx;
+        renderRect(
+          ctx,
+          { x: hlClampedX, y: hlBarTop, width: hlClampedW, height: hlBarBottom - hlBarTop },
+          NO_FILL,
+          selectionStroke,
+          false,
+        );
+      }
+    }
+    ctx.restore(); // end of lane-area clip (paired with ctx.save() before the focused-lane pass)
+  });
+}
+
+/**
+ * Returns the 0-based span-array index under `(_x, y)`, or -1 if outside all lanes.
+ * Hit-testing is **y-only** (spec-literal); for x-axis / segment refinement use `pickRegion`.
+ * @internal
+ */
+export function pickLane(_x: number, y: number, geom: TraceGeometry): number {
+  const { plot, laneHeight, scrollOffset, spans } = geom;
+  if (y < plot.top || y > plot.top + plot.height) return -1;
+  const lane = Math.floor((y - plot.top + scrollOffset) / laneHeight);
+  if (lane < 0 || lane >= spans.length) return -1;
+  return lane;
+}
+
+/**
+ * Caret-zone hit test for the disclosure gutter column (Spec 21 / ADR 0026). Returns the 0-based
+ * lane index when `(x, y)` falls within the clickable caret area of a parent lane, or `-1`
+ * otherwise. Callers should check this before the regular `pickRegion` path; a caret hit is
+ * consumed and must not propagate to the selection / `onElementClick` flow.
+ * @internal
+ */
+export function pickDisclosure(x: number, y: number, geom: TraceGeometry): number {
+  const { disclosureByLane, gutter, plot, laneHeight, scrollOffset, spans } = geom;
+  if (disclosureByLane.size === 0) return -1;
+  if (x < gutter.left || x >= plot.left) return -1; // must be in the gutter zone
+  if (y < plot.top || y >= plot.top + plot.height) return -1;
+  const lane = Math.floor((y - plot.top + scrollOffset) / laneHeight);
+  if (lane < 0 || lane >= spans.length) return -1;
+  const entry = disclosureByLane.get(lane);
+  if (!entry) return -1;
+  const { indentStepPx, caretPx, countPx } = geom.disclosureColumn;
+  const caretLeft = gutter.left + entry.depth * indentStepPx;
+  const caretRight = caretLeft + caretPx + countPx;
+  return x >= caretLeft && x < caretRight ? lane : -1;
+}
+
+/**
+ * Returns the lane index and x-axis region (`active` | `waiting` | `empty` | `span`) under
+ * `(x, y)`, or `null` when the pointer is outside all lanes (above/below the plot area).
+ * Supersedes `pickLane` for hover/tooltip use: the `region` drives the State row in the default
+ * tooltip and the cursor.
+ *
+ * Region semantics (per ADR 0003 / Spec 21):
+ * - `active`  — `t` falls inside a span's active segment (self-time by default)
+ * - `waiting` — `t` is inside `[start, end]` but not an active segment (in children, by default)
+ * - `empty`   — `t` is outside `[start, end]`; no span activity at this x in this lane
+ * - `span`    — `t` is inside the extent of a **collapsed** parent; whole-span picking (ADR 0026)
+ * @internal
+ */
+export function pickRegion(x: number, y: number, geom: TraceGeometry): PickResult | null {
+  const { plot, laneHeight, scrollOffset, spans, focusDomain, scale, minSpanWidthPx } = geom;
+  if (y < plot.top || y > plot.top + plot.height) return null;
+  const lane = Math.floor((y - plot.top + scrollOffset) / laneHeight);
+  if (lane < 0 || lane >= spans.length) return null;
+  const span = spans[lane];
+  if (!span) return null;
+
+  // Invert the linear scale: map x-pixel → time value. Guard degenerate zero-width domain/plot.
+  const extent = focusDomain.max - focusDomain.min;
+  let t = plot.width > 0 && extent > 0 ? focusDomain.min + ((x - plot.left) / plot.width) * extent : focusDomain.min;
+
+  // Mirror the min-span-width floor (ADR 0036 / B1): a span drawn as a >= minSpanWidthPx mark must be
+  // hoverable across that whole mark, otherwise the tooltip feels broken over a clearly visible bar.
+  // When the pointer is within the floored pixel mark, snap the inverted time into `[start, end]` so
+  // the region resolves to a real span region instead of 'empty'. Wide spans are unaffected: their
+  // floored mark equals their natural extent, so `t` is already inside the span there.
+  const plotRight = plot.left + plot.width;
+  const mark = flooredMarkX(scale(span.start), scale(span.end), plot.left, plotRight, minSpanWidthPx);
+  if (mark && x >= mark.x && x <= mark.x + mark.width) {
+    t = Math.min(Math.max(t, span.start), span.end);
+  }
+
+  let region: HoverRegion;
+  let segmentIndex = -1;
+  if (t < span.start || t > span.end) {
+    region = 'empty';
+  } else if (geom.disclosureByLane.get(lane)?.state === 'collapsed') {
+    // Collapsed parent: sub-segment indices are ambiguous for rolled-up bars (ADR 0026).
+    // Return whole-span picking so a click creates a 'span' selection ref, not 'active'/'waiting'.
+    region = 'span';
+  } else {
+    segmentIndex = span.activeSegments.findIndex((seg) => t >= seg.start && t <= seg.end);
+    if (segmentIndex >= 0) {
+      region = 'active';
+    } else {
+      region = 'waiting';
+      // Set segmentIndex to the 0-based index into waitingSegments(span) that contains t.
+      // -1 when no waiting segment contains t (degenerate data). Backward-compatible: the
+      // field was already -1 for non-active hits before this extension (ADR 0011 Consequence).
+      segmentIndex = waitingSegments(span).findIndex((gap) => t >= gap.start && t <= gap.end);
+    }
+  }
+
+  return { index: lane, region, segmentIndex };
+}
+
+/** Neutral fill for the placeholder box drawn while a badge image is loading or has failed. */
+const BADGE_IMAGE_PLACEHOLDER: Fill = { color: colorToRgba('#d3dae6') };
+
+/**
+ * Resolves a badge's `color` (Spec 27) to concrete fill/text/border values. Named tokens map to
+ * `style.trace.badge.palette`; a custom `Color` becomes the background with an auto-contrasting text
+ * color (dark or light by relative luminance) and no border. `undefined` uses the `default` token.
+ * @internal
+ */
+export function resolveBadgeColors(
+  color: TraceSpanBadgeColor | undefined,
+  palette: TraceStyle['badge']['palette'],
+): TraceBadgeColorStyle {
+  if (color === undefined) return palette.default;
+  if (color in palette) return palette[color as keyof typeof palette];
+  // Custom Color (`Color` is a plain string, so no `as string` narrowing is needed): derive readable
+  // text from luminance (ITU-R BT.601 weights).
+  const [r, g, b] = colorToRgba(color);
+  const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+  return { background: color, text: luminance > 140 ? '#1a1c21' : '#ffffff' };
+}
+
+/** Traces a rounded-rectangle path (radius clamped to half the smaller side). Uses `arcTo` for corners. */
+function roundRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  const radius = Math.max(0, Math.min(r, w / 2, h / 2));
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + w, y, x + w, y + h, radius);
+  ctx.arcTo(x + w, y + h, x, y + h, radius);
+  ctx.arcTo(x, y + h, x, y, radius);
+  ctx.arcTo(x, y, x + w, y, radius);
+  ctx.closePath();
+}
+
+/** Draws one laid-out badge: pill fill + optional border, then image (or placeholder) and text. */
+function drawOneBadge(
+  ctx: CanvasRenderingContext2D,
+  item: BadgeLayoutItem,
+  style: TraceStyle,
+  badgeFont: TextFont,
+  resolveImage: (src: string, crossOrigin: BadgeImageCrossOrigin) => CanvasImageSource | undefined,
+): void {
+  const colors = resolveBadgeColors(item.badge.color, style.badge.palette);
+  const radius = style.badge.borderRadius;
+
+  // Pill background (skip a fully transparent treatment, e.g. `hollow`).
+  if (colors.background !== 'transparent' && colors.background !== Colors.Transparent.keyword) {
+    roundRectPath(ctx, item.x, item.y, item.width, item.height, radius);
+    ctx.fillStyle = typeof colors.background === 'string' ? colors.background : String(colors.background);
+    ctx.fill();
+  }
+  // Optional border.
+  if (colors.border) {
+    roundRectPath(ctx, item.x, item.y, item.width, item.height, radius);
+    ctx.strokeStyle = colors.border;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Image (or a neutral placeholder box while loading / on failure).
+  if (item.image) {
+    const { src, crossOrigin, x, y, size } = item.image;
+    const decoded = resolveImage(src, crossOrigin);
+    if (decoded) {
+      ctx.drawImage(decoded, x, y, size, size);
+    } else {
+      renderRect(ctx, { x, y, width: size, height: size }, BADGE_IMAGE_PLACEHOLDER, NO_STROKE, true);
+    }
+  }
+
+  // Text (already truncated by layout).
+  if (item.text) {
+    renderText(ctx, { x: item.textX, y: item.y + item.height / 2 }, item.text, {
+      ...badgeFont,
+      fontSize: item.fontSize,
+      textColor: colors.text,
+    });
+  }
+}
+
+/**
+ * Draws the laid-out Span badges (Spec 27) onto `ctx`, on top of the waterfall. Kept separate from
+ * `draw()` so the frozen `TraceRenderer` seam (ADR 0001) is unchanged and so the chart can supply the
+ * per-frame image resolver (`BadgeImageCache.get`) without threading it through the pure geometry.
+ * Clipped to the lane area so badges never paint over the time bar. No-op when no badges are laid out.
+ * @internal
+ */
+export function drawBadges(
+  ctx: CanvasRenderingContext2D,
+  geom: TraceGeometry,
+  style: TraceStyle,
+  resolveImage: (src: string, crossOrigin: BadgeImageCrossOrigin) => CanvasImageSource | undefined,
+): void {
+  const { badgesByLane, plot } = geom;
+  if (badgesByLane.size === 0) return;
+
+  withContext(ctx, () => {
+    ctx.save();
+    ctx.beginPath();
+    // Full canvas width (`plot.left + plot.width`); `gutter.width + plot.width` would omit the
+    // 'none'-mode badge gutter's rightmost strip (Spec 27).
+    ctx.rect(0, plot.top, plot.left + plot.width, plot.height);
+    ctx.clip();
+
+    const badgeFont: TextFont = {
+      fontStyle: 'normal',
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      fontFamily: style.badge.fontFamily,
+      textColor: style.badge.palette.default.text,
+      // Per-badge size overrides this in drawOneBadge; the base value is just a sensible default.
+      fontSize: style.badge.m.fontSize,
+      align: 'left',
+      baseline: 'middle',
+    };
+
+    for (const lane of badgesByLane.values()) {
+      for (const item of lane.items) {
+        drawOneBadge(ctx, item, style, badgeFont, resolveImage);
+      }
+    }
+    ctx.restore();
+  });
+}
+
+/**
+ * Draws the laid-out Trace annotations (Spec 29) onto `ctx`, on top of the waterfall and badges. Kept
+ * separate from `draw()` so the frozen `TraceRenderer` seam (ADR 0001) is unchanged. Clipped to the
+ * time bar + plot (full canvas width so a boundary rail at `plot.left` is not clipped at its center);
+ * 'plot'-placement time marks/bands paint over the plot, 'timebar'-placement marks/bands paint in the
+ * lower half of the time bar, and lane/hierarchy rails paint at the gutter↔plot boundary. The hovered
+ * annotation (by id) gets the intensified range-band fill. No-op when nothing is laid out.
+ * @internal
+ */
+export function drawAnnotations(
+  ctx: CanvasRenderingContext2D,
+  geom: TraceGeometry,
+  style: TraceStyle,
+  hoveredId?: string,
+): void {
+  const { annotationsLayout, plot, timeBar } = geom;
+  if (annotationsLayout.length === 0) return;
+
+  withContext(ctx, () => {
+    ctx.save();
+    ctx.beginPath();
+    // Clip to the time bar + plot (full canvas width so a boundary rail at plot.left is not clipped at
+    // its center). Time-bar markers/bands paint over the axis region, so the clip starts at timeBar.top.
+    ctx.rect(0, timeBar.top, plot.left + plot.width, plot.top + plot.height - timeBar.top);
+    ctx.clip();
+
+    for (const item of annotationsLayout) {
+      const [r, g, b, a] = colorToRgba(item.colors.fill);
+      const fillOpacity =
+        (item.id === hoveredId ? style.annotation.hoverFillOpacity : style.annotation.fillOpacity) * a;
+      // Time-bar range band (tinted, in the axis region).
+      if (item.timeBarBand) {
+        const fillColor: RgbaTuple = [r, g, b, fillOpacity];
+        renderRect(ctx, item.timeBarBand, { color: fillColor }, NO_STROKE, true);
+      }
+      // Plot range band ('plot' placement only), tinted by the idle/hover fill opacity.
+      if (item.band) {
+        const fillColor: RgbaTuple = [r, g, b, fillOpacity];
+        renderRect(ctx, item.band, { color: fillColor }, NO_STROKE, true);
+      }
+      // Rail/marker/edge lines.
+      if (item.lines.length > 0) {
+        const stroke: Stroke = { color: colorToRgba(item.colors.stroke), width: style.annotation.railThickness };
+        renderMultiLine(ctx, item.lines, stroke);
+      }
+      // Time-bar triangular marker heads at the gutter/plot boundary.
+      if (item.markers && item.markers.length > 0) {
+        for (const marker of item.markers) {
+          drawTriangleMarker(ctx, marker.x, marker.y, style.annotation.markerSize, item.colors.stroke);
+        }
+      }
+    }
+    ctx.restore();
+  });
+}
+
+/**
+ * Draws a downward-pointing filled triangle whose apex sits at `(x, y)` (the gutter/plot boundary),
+ * with its base of width `size` resting `size` px above in the time bar — the time-bar annotation
+ * marker head (Spec 29).
+ * @internal
+ */
+function drawTriangleMarker(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, color: string): void {
+  const half = size / 2;
+  withContext(ctx, () => {
+    ctx.fillStyle = RGBATupleToString(colorToRgba(color));
+    ctx.beginPath();
+    ctx.moveTo(x - half, y - size);
+    ctx.lineTo(x + half, y - size);
+    ctx.lineTo(x, y);
+    ctx.closePath();
+    ctx.fill();
+  });
+}
+
+/**
+ * Returns the Trace annotation under `(x, y)` using the uniform thin-band hit model (Spec 29), or
+ * `null` when the pointer is over no annotation. Iterated in resolved order; callers must run this
+ * **before** `pickBadge`/`pickDisclosure`/`pickRegion` so an annotation owns the pointer and never
+ * double-dispatches the underlying span/badge for the same transition (ADR 0030).
+ * @internal
+ */
+export function pickAnnotation(x: number, y: number, geom: TraceGeometry): AnnotationLayoutItem | null {
+  const { annotationsLayout } = geom;
+  if (annotationsLayout.length === 0) return null;
+  for (const item of annotationsLayout) {
+    for (const rect of item.hitRects) {
+      if (x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height) {
+        return item;
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Hit-test result for a Span badge (Spec 27): the owning lane index and the laid-out badge item.
+ * @internal
+ */
+export interface BadgePickResult {
+  laneIndex: number;
+  item: BadgeLayoutItem;
+}
+
+/**
+ * Returns the Span badge under `(x, y)`, or `null` when the pointer is over no badge (Spec 27).
+ * Iterated in lane/accessor order so a duplicate-id badge deterministically resolves to the first
+ * visual match. Callers must check this **before** `pickDisclosure`/`pickRegion` so a badge owns the
+ * pointer (no double-dispatch of the underlying span's hover/click for the same transition).
+ * @internal
+ */
+export function pickBadge(x: number, y: number, geom: TraceGeometry): BadgePickResult | null {
+  const { badgesByLane } = geom;
+  if (badgesByLane.size === 0) return null;
+  for (const [laneIndex, lane] of badgesByLane) {
+    for (const item of lane.items) {
+      if (x >= item.x && x <= item.x + item.width && y >= item.y && y <= item.y + item.height) {
+        return { laneIndex, item };
+      }
+    }
+  }
+  return null;
+}
+
+/** @internal */
+export const canvas2dRenderer: TraceRenderer = { draw, pickLane, pickRegion };

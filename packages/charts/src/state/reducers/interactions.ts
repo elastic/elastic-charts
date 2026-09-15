@@ -22,6 +22,7 @@ import type { ToggleDeselectSeriesAction } from '../actions/legend';
 import { onLegendItemOutAction, onLegendItemOverAction, onToggleDeselectSeriesAction } from '../actions/legend';
 import { onMouseDown, onMouseUp, onPointerMove } from '../actions/mouse';
 import { toggleSelectedTooltipItem, pinTooltip, setSelectedTooltipItems } from '../actions/tooltip';
+import { setTraceUncontrolledCollapsed } from '../actions/trace';
 import type { ChartSliceState } from '../chart_slice_state';
 import type { GlobalChartState } from '../chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../selectors/get_internal_is_intialized';
@@ -178,6 +179,14 @@ export const handleDOMElementActions = (builder: ActionReducerMapBuilder<ChartSl
 
       state.hoveredDOMElement = null;
     });
+};
+
+/** @internal */
+export const handleTraceActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
+  builder.addCase(setTraceUncontrolledCollapsed, (globalState, action) => {
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    globalState.interactions.traceCollapsedSpanIds = action.payload;
+  });
 };
 
 /** @internal */
