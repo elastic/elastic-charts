@@ -1,3 +1,15 @@
+# [73.1.0](https://github.com/elastic/elastic-charts/compare/v73.0.1...v73.1.0) (2026-09-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @playwright/test to ^1.62.1 ([#2873](https://github.com/elastic/elastic-charts/issues/2873)) ([022f9ce](https://github.com/elastic/elastic-charts/commit/022f9ce6fcab3055071cfe12b9d0fd6ed4e60769))
+
+
+### Features
+
+* **tooltip:** highlight selected tooltip items ([#2874](https://github.com/elastic/elastic-charts/issues/2874)) ([a3e9aa9](https://github.com/elastic/elastic-charts/commit/a3e9aa9af581442a0c40c811841f7297423511ed))
+
 ## [73.0.1](https://github.com/elastic/elastic-charts/compare/v73.0.0...v73.0.1) (2026-09-02)
 
 
