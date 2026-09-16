@@ -15,7 +15,7 @@ export const prettierStep = createStep<CustomCommandStep>(() => {
     label: ':prettier: Prettier',
     key: 'prettier',
     skip: false, // TODO: add skippable logic - hard to tell what exactly would cause this and task is lightweight
-    commands: ['npx ts-node .buildkite/scripts/steps/prettier.ts'],
+    commands: ['npx tsx .buildkite/scripts/steps/prettier.ts'],
     env: {
       ECH_CHECK_ID: 'prettier',
     },

@@ -15,7 +15,7 @@ export const typeCheckStep = createStep<CustomCommandStep>((ctx) => {
     label: ':typescript: Types',
     key: 'types',
     skip: isSkippable(ctx),
-    commands: ['npx ts-node .buildkite/scripts/steps/type_check.ts'],
+    commands: ['npx tsx .buildkite/scripts/steps/type_check.ts'],
     env: {
       ECH_CHECK_ID: 'types',
     },
