@@ -143,6 +143,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
         style={{ ...extraStyle, fontSize: sizes.extraFontSize, color: colors.extra }}
         {...restSecondaryMetricProps}
         badgeBorderColor={resolvedBadgeBorderColor}
+        textAlign={style.extraTextAlign}
       />
     );
   } else if (React.isValidElement(extra) || typeof extra === 'function') {

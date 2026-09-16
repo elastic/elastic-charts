@@ -2893,6 +2893,14 @@ export const ScaleType: Readonly<{
 export type ScaleType = $Values<typeof ScaleType>;
 
 // @alpha
+export interface SecondaryMetricLabelTooltipProps {
+    children: ReactElement;
+    label: string;
+    placement: 'top' | 'left' | 'right';
+    value: string;
+}
+
+// @alpha
 export interface SecondaryMetricProps {
     ariaDescription?: string;
     badgeBorderColor?: {
@@ -2908,7 +2916,8 @@ export interface SecondaryMetricProps {
     icon?: string;
     iconPosition?: 'before' | 'after';
     label?: string;
-    labelPosition?: 'before' | 'after';
+    labelPosition?: 'before' | 'after' | 'tooltip';
+    labelTooltip?: ComponentType<SecondaryMetricLabelTooltipProps>;
     style?: CSSProperties;
     value: string;
 }
