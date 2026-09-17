@@ -11,6 +11,7 @@ import type { $Values } from 'utility-types';
 
 import type { PartitionStyle } from './partition';
 import type { BulletStyle } from '../../chart_types/bullet_graph/theme';
+import type { TraceStyle } from '../../chart_types/trace_chart/render/types';
 import type { Color } from '../../common/colors';
 import type { Pixels, Radian, Ratio } from '../../common/geometry';
 import type { Font, FontStyle, FontWeight, TextAlign } from '../../common/text_utils';
@@ -558,6 +559,15 @@ export interface Theme {
 
   /** @alpha */
   flamegraph: FlamegraphStyle;
+
+  /**
+   * Theme styles for the trace waterfall chart.
+   *
+   * Migration note: like every other chart-type block on `Theme`, this field is required. Consumers
+   * that extend a built-in base theme (`LIGHT_THEME`/`DARK_THEME`) via `PartialTheme` are unaffected;
+   * only code that hand-rolls a complete `Theme` object from scratch must add a `trace` block.
+   */
+  trace: TraceStyle;
 
   highlighter: HighlighterStyle;
 
