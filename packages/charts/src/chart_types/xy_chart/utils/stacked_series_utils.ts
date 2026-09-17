@@ -53,14 +53,16 @@ export function formatStackedDataSeriesValues(
     xMap.set(xValue, new Map<SeriesKey, DataSeriesDatum & { isFiltered: boolean }>());
   });
   dataSeries.forEach(({ key, data, isFiltered }) => {
+    const y0Key = `${key}-y0`;
     data.forEach((datum) => {
       const seriesMap = xMap.get(datum.x);
       if (!seriesMap || seriesMap.has(key)) return;
       const y1 = datum.y1 ?? 0;
       if (y1 > 0) hasPositive = true;
       if (y1 < 0) hasNegative = true;
-      const newDatum = Object.assign(datum, { isFiltered });
-      seriesMap.set(`${key}-y0`, newDatum);
+      const newDatum = datum as DataSeriesDatum & { isFiltered: boolean };
+      newDatum.isFiltered = isFiltered;
+      seriesMap.set(y0Key, newDatum);
       seriesMap.set(key, newDatum);
     });
   });
