@@ -49,19 +49,20 @@ export function formatStackedDataSeriesValues(
 
   // group data series by x values
   const xMap: XValueMap = new Map();
-  [...xValues].forEach((xValue) => {
-    const seriesMap = new Map<SeriesKey, DataSeriesDatum & { isFiltered: boolean }>();
-    dataSeries.forEach(({ key, data, isFiltered }) => {
-      const datum = data.find(({ x }) => x === xValue);
-      if (!datum) return;
+  xValues.forEach((xValue) => {
+    xMap.set(xValue, new Map<SeriesKey, DataSeriesDatum & { isFiltered: boolean }>());
+  });
+  dataSeries.forEach(({ key, data, isFiltered }) => {
+    data.forEach((datum) => {
+      const seriesMap = xMap.get(datum.x);
+      if (!seriesMap || seriesMap.has(key)) return;
       const y1 = datum.y1 ?? 0;
-      if (hasPositive || y1 > 0) hasPositive = true;
-      if (hasNegative || y1 < 0) hasNegative = true;
+      if (y1 > 0) hasPositive = true;
+      if (y1 < 0) hasNegative = true;
       const newDatum = Object.assign(datum, { isFiltered });
       seriesMap.set(`${key}-y0`, newDatum);
       seriesMap.set(key, newDatum);
     });
-    xMap.set(xValue, seriesMap);
   });
 
   if (hasNegative && hasPositive && seriesType === SeriesType.Area) {
