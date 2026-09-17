@@ -26,9 +26,12 @@ export interface StackedValues {
 
 /** @internal */
 export const datumXSortPredicate = (xScaleType: ScaleType, sortedXValues?: (string | number)[]) => {
-  const xValueIndices = sortedXValues && new Map(sortedXValues.map((xValue, index) => [xValue, index]));
+  let xValueIndices: Map<string | number, number> | undefined;
   return (a: { x: number | string }, b: { x: number | string }) => {
     if (xScaleType === ScaleType.Ordinal || typeof a.x === 'string' || typeof b.x === 'string') {
+      if (!xValueIndices && sortedXValues) {
+        xValueIndices = new Map(sortedXValues.map((xValue, index): [string | number, number] => [xValue, index]));
+      }
       return xValueIndices ? (xValueIndices.get(a.x) ?? -1) - (xValueIndices.get(b.x) ?? -1) : 0;
     }
     return a.x - b.x;
