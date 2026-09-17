@@ -25,14 +25,15 @@ export interface StackedValues {
 }
 
 /** @internal */
-export const datumXSortPredicate =
-  (xScaleType: ScaleType, sortedXValues?: (string | number)[]) =>
-  (a: { x: number | string }, b: { x: number | string }) => {
+export const datumXSortPredicate = (xScaleType: ScaleType, sortedXValues?: (string | number)[]) => {
+  const xValueIndices = sortedXValues && new Map(sortedXValues.map((xValue, index) => [xValue, index]));
+  return (a: { x: number | string }, b: { x: number | string }) => {
     if (xScaleType === ScaleType.Ordinal || typeof a.x === 'string' || typeof b.x === 'string') {
-      return sortedXValues ? sortedXValues.indexOf(a.x) - sortedXValues.indexOf(b.x) : 0;
+      return xValueIndices ? (xValueIndices.get(a.x) ?? -1) - (xValueIndices.get(b.x) ?? -1) : 0;
     }
     return a.x - b.x;
   };
+};
 
 /** @internal */
 export function formatStackedDataSeriesValues(
