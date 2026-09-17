@@ -320,7 +320,7 @@ const getSortedDataSeries = (
   xValues: Set<string | number>,
   xScaleType: ScaleType,
 ): DataSeries[] => {
-  const xSortPredicate = datumXSortPredicate(xScaleType, [...xValues.values()]);
+  const xSortPredicate = datumXSortPredicate(xScaleType, xValues);
   return dataSeries.map(({ data, ...rest }) => ({
     ...rest,
     data: data.slice().sort(xSortPredicate),
