@@ -71,7 +71,7 @@ export function formatStackedDataSeriesValues(
     );
   }
 
-  const keys = [...dataSeriesMap.keys()].reduce<string[]>((acc, key) => [...acc, `${key}-y0`, key], []);
+  const keys = [...dataSeriesMap.keys()].flatMap((key) => [`${key}-y0`, key]);
   const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
   const stack = D3Stack<XValueSeriesDatum>()
     .keys(keys)
