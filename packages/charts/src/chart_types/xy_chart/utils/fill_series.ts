@@ -41,8 +41,8 @@ export function fillSeries(
         x: missingValue,
         y1: null,
         y0: null,
-        initialY1: null,
         initialY0: null,
+        initialY1: null,
         mark: null,
         datum: undefined,
         filled: {
