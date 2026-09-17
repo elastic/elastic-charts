@@ -37,6 +37,7 @@ type EcommerceRow = {
 const Y_ACCESSORS = ['total_quantity', 'overallAvgQnt', 'avgQnt'] as const;
 const LAYER_ID = '0b226fa9-39b4-44e7-82ae-97fbacfe964f';
 const X_DOMAIN = { min: 1785322858728, max: 1786799230394 };
+const PROFILE_LABEL = 'Perf:DataToRender';
 
 // EUI colorblind categorical palette used by Kibana's default Lens palette.
 const PALETTE = [
@@ -107,8 +108,9 @@ export const Example: ChartsStory = (_, context) => {
         }}
         onRenderChange={(isRendered) => {
           if (isRendered) {
-            console.log('chart rendered');
             window.performance.mark('Perf:Ended');
+            const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');
+            console.log(`chart rendered in ${(duration / 1000).toFixed(1)}s`);
           }
         }}
       />
