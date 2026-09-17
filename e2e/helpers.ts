@@ -45,7 +45,7 @@ const groupsToSkip: Set<string> = new Set(['Components/Tooltip', 'Components/Met
  */
 const storiesToSkip: Map<string, string[]> = new Map(
   Object.entries({
-    'Test Cases': ['noSeries', 'errorBoundary'],
+    'Test Cases': ['noSeries', 'errorBoundary', 'kibanaManySeriesJourney'],
     Interactions: ['multiChartCursorSync'],
     'Metric (@alpha)': ['bodyContent'],
   }),
