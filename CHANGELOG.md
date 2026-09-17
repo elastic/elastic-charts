@@ -1,3 +1,15 @@
+# [73.2.0](https://github.com/elastic/elastic-charts/compare/v73.1.0...v73.2.0) (2026-09-17)
+
+
+### Features
+
+* **metric:** add tooltip label position for secondary metrics ([#2886](https://github.com/elastic/elastic-charts/issues/2886)) ([3960f5d](https://github.com/elastic/elastic-charts/commit/3960f5ddcd0e1703d5ce6260d6ca9119ea5f949b))
+
+
+### Performance Improvements
+
+* Add performance playground ([#2887](https://github.com/elastic/elastic-charts/issues/2887)) ([2792d23](https://github.com/elastic/elastic-charts/commit/2792d232e74c4fde62fea88ed1b564d34d6e7c99))
+
 # [73.1.0](https://github.com/elastic/elastic-charts/compare/v73.0.1...v73.1.0) (2026-09-15)
 
 
