@@ -100477,6 +100477,7 @@ var map = {
 	"./test_cases/2_chrome_path_bug_fix.story.tsx": "./stories/test_cases/2_chrome_path_bug_fix.story.tsx",
 	"./test_cases/33_lens_stress.story.tsx": "./stories/test_cases/33_lens_stress.story.tsx",
 	"./test_cases/34_font_measurement.story.tsx": "./stories/test_cases/34_font_measurement.story.tsx",
+	"./test_cases/35_many_series_kibana.story.tsx": "./stories/test_cases/35_many_series_kibana.story.tsx",
 	"./test_cases/3_no_axes_annotation.story.tsx": "./stories/test_cases/3_no_axes_annotation.story.tsx",
 	"./test_cases/4_filter_zero_values_log.story.tsx": "./stories/test_cases/4_filter_zero_values_log.story.tsx",
 	"./test_cases/5_legend_scroll_bar_sizing.story.tsx": "./stories/test_cases/5_legend_scroll_bar_sizing.story.tsx",
@@ -173726,6 +173727,365 @@ exports.Example.parameters = Object.assign({
 
 /***/ }),
 
+/***/ "./stories/test_cases/35_many_series_kibana.story.tsx":
+/*!************************************************************!*\
+  !*** ./stories/test_cases/35_many_series_kibana.story.tsx ***!
+  \************************************************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0) { ; } } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) { n[e] = r[e]; } return n; }
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.create.js */ "../node_modules/core-js/modules/es.object.create.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.get-own-property-descriptor.js */ "../node_modules/core-js/modules/es.object.get-own-property-descriptor.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-property.js */ "../node_modules/core-js/modules/es.object.define-property.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.map.js */ "../node_modules/core-js/modules/es.map.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.to-string.js */ "../node_modules/core-js/modules/es.object.to-string.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.string.iterator.js */ "../node_modules/core-js/modules/es.string.iterator.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.iterator.js */ "../node_modules/core-js/modules/es.array.iterator.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/web.dom-collections.iterator.js */ "../node_modules/core-js/modules/web.dom-collections.iterator.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.js */ "../node_modules/core-js/modules/es.symbol.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.description.js */ "../node_modules/core-js/modules/es.symbol.description.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.promise.js */ "../node_modules/core-js/modules/es.promise.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.number.to-fixed.js */ "../node_modules/core-js/modules/es.number.to-fixed.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.map.js */ "../node_modules/core-js/modules/es.array.map.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.assign.js */ "../node_modules/core-js/modules/es.object.assign.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.slice.js */ "../node_modules/core-js/modules/es.array.slice.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.function.name.js */ "../node_modules/core-js/modules/es.function.name.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.from.js */ "../node_modules/core-js/modules/es.array.from.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.iterator.js */ "../node_modules/core-js/modules/es.symbol.iterator.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.is-array.js */ "../node_modules/core-js/modules/es.array.is-array.js");
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Example = void 0;
+/* eslint-disable */
+// @ts-nocheck
+// @ts-ignore
+
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useEffect, useState } from 'react';\n\nimport type { SeriesColorAccessor, SeriesNameFn } from '@elastic/charts';\nimport { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip, TooltipType } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\n\n/**\n * Recreates the Kibana many-series performance journey chart\n * (`x-pack/performance/journeys_e2e/many_series_chart_dashboard.ts`).\n *\n * Lens emits 3 stacked `BarSeries` specs (one per y accessor), each split by\n * `order_id` (~649 values) so Elastic Charts materializes ~1947 series.\n * Histogram mode is on because Lens treats ES|QL date columns as interval\n * buckets even though this query has no `BUCKET()`.\n *\n * Dataset lives in `public/many_series_ecommerce.json` so Storybook and the\n * playground can both fetch it as static JSON.\n */\ntype EcommerceRow = {\n  order_date: number;\n  order_id: string;\n  total_quantity: number;\n  overallAvgQnt: number;\n  avgQnt: number;\n};\n\nconst Y_ACCESSORS = ['total_quantity', 'overallAvgQnt', 'avgQnt'] as const;\nconst LAYER_ID = '0b226fa9-39b4-44e7-82ae-97fbacfe964f';\nconst X_DOMAIN = { min: 1785322858728, max: 1786799230394 };\nconst PROFILE_LABEL = 'Perf:DataToRender';\n\n// EUI colorblind categorical palette used by Kibana's default Lens palette.\nconst PALETTE = [\n  '#54B399',\n  '#6092C0',\n  '#D36086',\n  '#9170B8',\n  '#CA8EAE',\n  '#D6BF57',\n  '#B9A888',\n  '#DA8B45',\n  '#AA6556',\n  '#E7664C',\n];\n\nfunction buildColorAccessor(rows: EcommerceRow[]): SeriesColorAccessor {\n  const colorByOrderId = new Map<string, string>();\n  for (const row of rows) {\n    if (!colorByOrderId.has(row.order_id)) {\n      colorByOrderId.set(row.order_id, PALETTE[colorByOrderId.size % PALETTE.length]);\n    }\n  }\n  return ({ splitAccessors }) => {\n    const orderId = String(splitAccessors.get('order_id') ?? '');\n    return colorByOrderId.get(orderId) ?? PALETTE[0];\n  };\n}\n\nexport const Example: ChartsStory = (_, context) => {\n  const title = context?.title;\n  const description = context?.description;\n  const [data, setData] = useState<EcommerceRow[]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    if (runId === 0) return;\n    async function fetchData() {\n      \n      console.log('requesting data');\n      const response = await fetch('many_series_ecommerce.json');\n      const d: EcommerceRow[] = await response.json();\n      \n      console.log('data arrived');\n\n      window.performance.mark('Perf:Started');\n      setData(d);\n    }\n    fetchData().catch(() => {});\n  }, [runId]);\n\n  const theme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <>\n        {renderButton}\n        {runId > 0 && <div style={{ marginTop: 4 }}>Rendering...</div>}\n      </>\n    );\n  }\n\n  const color = buildColorAccessor(data);\n\n  return (\n    <>\n      {renderButton}\n      <Chart title={title} description={description}>\n        <Tooltip type={TooltipType.VerticalCursor} />\n        <Settings\n          showLegend\n          legendPosition={Position.Right}\n          legendSize={50}\n          legendValues={[]}\n          rotation={0}\n          xDomain={X_DOMAIN}\n          allowBrushingLastHistogramBin\n          baseTheme={theme}\n          theme={{\n            legend: { labelOptions: { maxLines: 1 } },\n            chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },\n          }}\n          onRenderChange={(isRendered) => {\n            if (isRendered) {\n              window.performance.mark('Perf:Ended');\n              const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n              \n              console.log(`chart rendered in ${(duration / 1000).toFixed(1)}s`);\n            }\n          }}\n        />\n        <Axis id=\"x\" position={Position.Bottom} title=\"order_date\" gridLine={{ visible: true }} />\n        <Axis id=\"left\" groupId=\"left\" position={Position.Left} title=\"total_quantity\" gridLine={{ visible: true }} />\n        {Y_ACCESSORS.map((yAccessor) => {\n          const name: SeriesNameFn = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;\n          return (\n            <BarSeries\n              key={yAccessor}\n              id={`${LAYER_ID}:order_date:${yAccessor}:order_id`}\n              name={name}\n              xAccessor=\"order_date\"\n              yAccessors={[yAccessor]}\n              splitSeriesAccessors={['order_id']}\n              stackAccessors={['order_date']}\n              data={data}\n              xScaleType={ScaleType.Time}\n              yScaleType={ScaleType.Linear}\n              groupId=\"left\"\n              enableHistogramMode\n              minBarHeight={1}\n              timeZone=\"UTC\"\n              color={color}\n              displayValueSettings={{ showValueLabel: false }}\n            />\n          );\n        })}\n      </Chart>\n    </>\n  );\n};\n"; // @ts-ignore
+
+var __LOCATIONS_MAP__ = {
+  "Example": {
+    "startLoc": {
+      "col": 36,
+      "line": 69
+    },
+    "endLoc": {
+      "col": 1,
+      "line": 169
+    },
+    "startBody": {
+      "col": 36,
+      "line": 69
+    },
+    "endBody": {
+      "col": 1,
+      "line": 169
+    }
+  }
+};
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+var react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
+
+var charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
+
+var use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
+
+var Y_ACCESSORS = ['total_quantity', 'overallAvgQnt', 'avgQnt'];
+var LAYER_ID = '0b226fa9-39b4-44e7-82ae-97fbacfe964f';
+var X_DOMAIN = {
+  min: 1785322858728,
+  max: 1786799230394
+};
+var PROFILE_LABEL = 'Perf:DataToRender'; // EUI colorblind categorical palette used by Kibana's default Lens palette.
+
+var PALETTE = ['#54B399', '#6092C0', '#D36086', '#9170B8', '#CA8EAE', '#D6BF57', '#B9A888', '#DA8B45', '#AA6556', '#E7664C'];
+
+function buildColorAccessor(rows) {
+  var colorByOrderId = new Map();
+
+  var _iterator = _createForOfIteratorHelper(rows),
+      _step;
+
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var row = _step.value;
+
+      if (!colorByOrderId.has(row.order_id)) {
+        colorByOrderId.set(row.order_id, PALETTE[colorByOrderId.size % PALETTE.length]);
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+
+  return function (_ref) {
+    var _splitAccessors$get, _colorByOrderId$get;
+
+    var splitAccessors = _ref.splitAccessors;
+    var orderId = String((_splitAccessors$get = splitAccessors.get('order_id')) !== null && _splitAccessors$get !== void 0 ? _splitAccessors$get : '');
+    return (_colorByOrderId$get = colorByOrderId.get(orderId)) !== null && _colorByOrderId$get !== void 0 ? _colorByOrderId$get : PALETTE[0];
+  };
+}
+
+var Example = function Example(_, context) {
+  var title = context === null || context === void 0 ? void 0 : context.title;
+  var description = context === null || context === void 0 ? void 0 : context.description;
+
+  var _ref2 = (0, react_1.useState)([]),
+      _ref3 = _slicedToArray(_ref2, 2),
+      data = _ref3[0],
+      setData = _ref3[1];
+
+  var _ref4 = (0, react_1.useState)(0),
+      _ref5 = _slicedToArray(_ref4, 2),
+      runId = _ref5[0],
+      setRunId = _ref5[1];
+
+  (0, react_1.useEffect)(function () {
+    if (runId === 0) return;
+
+    function fetchData() {
+      return _fetchData.apply(this, arguments);
+    }
+
+    function _fetchData() {
+      _fetchData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var response, d;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                // eslint-disable-next-line no-console
+                console.log('requesting data');
+                _context.next = 3;
+                return fetch('many_series_ecommerce.json');
+
+              case 3:
+                response = _context.sent;
+                _context.next = 6;
+                return response.json();
+
+              case 6:
+                d = _context.sent;
+                // eslint-disable-next-line no-console
+                console.log('data arrived');
+                window.performance.mark('Perf:Started');
+                setData(d);
+
+              case 10:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }));
+      return _fetchData.apply(this, arguments);
+    }
+
+    fetchData()["catch"](function () {});
+  }, [runId]);
+  var theme = (0, use_base_theme_1.useBaseTheme)();
+  var renderButton = react_1["default"].createElement("button", {
+    type: "button",
+    style: {
+      all: 'revert'
+    },
+    onClick: function onClick() {
+      setData([]);
+      setRunId(runId + 1);
+    }
+  }, "Render");
+
+  if (data.length === 0) {
+    return react_1["default"].createElement(react_1["default"].Fragment, null, renderButton, runId > 0 && react_1["default"].createElement("div", {
+      style: {
+        marginTop: 4
+      }
+    }, "Rendering..."));
+  }
+
+  var color = buildColorAccessor(data);
+  return react_1["default"].createElement(react_1["default"].Fragment, null, renderButton, react_1["default"].createElement(charts_1.Chart, {
+    title: title,
+    description: description
+  }, react_1["default"].createElement(charts_1.Tooltip, {
+    type: charts_1.TooltipType.VerticalCursor
+  }), react_1["default"].createElement(charts_1.Settings, {
+    showLegend: true,
+    legendPosition: charts_1.Position.Right,
+    legendSize: 50,
+    legendValues: [],
+    rotation: 0,
+    xDomain: X_DOMAIN,
+    allowBrushingLastHistogramBin: true,
+    baseTheme: theme,
+    theme: {
+      legend: {
+        labelOptions: {
+          maxLines: 1
+        }
+      },
+      chartMargins: {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0
+      }
+    },
+    onRenderChange: function onRenderChange(isRendered) {
+      if (isRendered) {
+        window.performance.mark('Perf:Ended');
+
+        var _window$performance$m = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended'),
+            duration = _window$performance$m.duration; // eslint-disable-next-line no-console
+
+
+        console.log("chart rendered in " + (duration / 1000).toFixed(1) + "s");
+      }
+    }
+  }), react_1["default"].createElement(charts_1.Axis, {
+    id: "x",
+    position: charts_1.Position.Bottom,
+    title: "order_date",
+    gridLine: {
+      visible: true
+    }
+  }), react_1["default"].createElement(charts_1.Axis, {
+    id: "left",
+    groupId: "left",
+    position: charts_1.Position.Left,
+    title: "total_quantity",
+    gridLine: {
+      visible: true
+    }
+  }), Y_ACCESSORS.map(function (yAccessor) {
+    var name = function name(_ref6) {
+      var splitAccessors = _ref6.splitAccessors;
+      return splitAccessors.get('order_id') + " - " + yAccessor;
+    };
+
+    return react_1["default"].createElement(charts_1.BarSeries, {
+      key: yAccessor,
+      id: LAYER_ID + ":order_date:" + yAccessor + ":order_id",
+      name: name,
+      xAccessor: "order_date",
+      yAccessors: [yAccessor],
+      splitSeriesAccessors: ['order_id'],
+      stackAccessors: ['order_date'],
+      data: data,
+      xScaleType: charts_1.ScaleType.Time,
+      yScaleType: charts_1.ScaleType.Linear,
+      groupId: "left",
+      enableHistogramMode: true,
+      minBarHeight: 1,
+      timeZone: "UTC",
+      color: color,
+      displayValueSettings: {
+        showValueLabel: false
+      }
+    });
+  })));
+};
+
+exports.Example = Example;
+exports.Example.parameters = Object.assign({
+  storySource: {
+    source: "(_, context) => {\n  const title = context?.title;\n  const description = context?.description;\n  const [data, setData] = useState<EcommerceRow[]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    if (runId === 0) return;\n    async function fetchData() {\n      \n      console.log('requesting data');\n      const response = await fetch('many_series_ecommerce.json');\n      const d: EcommerceRow[] = await response.json();\n      \n      console.log('data arrived');\n\n      window.performance.mark('Perf:Started');\n      setData(d);\n    }\n    fetchData().catch(() => {});\n  }, [runId]);\n\n  const theme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <>\n        {renderButton}\n        {runId > 0 && <div style={{ marginTop: 4 }}>Rendering...</div>}\n      </>\n    );\n  }\n\n  const color = buildColorAccessor(data);\n\n  return (\n    <>\n      {renderButton}\n      <Chart title={title} description={description}>\n        <Tooltip type={TooltipType.VerticalCursor} />\n        <Settings\n          showLegend\n          legendPosition={Position.Right}\n          legendSize={50}\n          legendValues={[]}\n          rotation={0}\n          xDomain={X_DOMAIN}\n          allowBrushingLastHistogramBin\n          baseTheme={theme}\n          theme={{\n            legend: { labelOptions: { maxLines: 1 } },\n            chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },\n          }}\n          onRenderChange={(isRendered) => {\n            if (isRendered) {\n              window.performance.mark('Perf:Ended');\n              const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n              \n              console.log(`chart rendered in ${(duration / 1000).toFixed(1)}s`);\n            }\n          }}\n        />\n        <Axis id=\"x\" position={Position.Bottom} title=\"order_date\" gridLine={{ visible: true }} />\n        <Axis id=\"left\" groupId=\"left\" position={Position.Left} title=\"total_quantity\" gridLine={{ visible: true }} />\n        {Y_ACCESSORS.map((yAccessor) => {\n          const name: SeriesNameFn = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;\n          return (\n            <BarSeries\n              key={yAccessor}\n              id={`${LAYER_ID}:order_date:${yAccessor}:order_id`}\n              name={name}\n              xAccessor=\"order_date\"\n              yAccessors={[yAccessor]}\n              splitSeriesAccessors={['order_id']}\n              stackAccessors={['order_date']}\n              data={data}\n              xScaleType={ScaleType.Time}\n              yScaleType={ScaleType.Linear}\n              groupId=\"left\"\n              enableHistogramMode\n              minBarHeight={1}\n              timeZone=\"UTC\"\n              color={color}\n              displayValueSettings={{ showValueLabel: false }}\n            />\n          );\n        })}\n      </Chart>\n    </>\n  );\n}"
+  }
+}, exports.Example.parameters);
+
+/***/ }),
+
 /***/ "./stories/test_cases/3_no_axes_annotation.story.tsx":
 /*!***********************************************************!*\
   !*** ./stories/test_cases/3_no_axes_annotation.story.tsx ***!
@@ -174957,7 +175317,7 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-propert
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fontMeasurementTest = exports.lensStressTest = exports.linearNicing = exports.errorBoundary = exports.pointStyleOverrides = exports.logWithNegativeValues = exports.startDayOfWeek = exports.metricTrendLength = exports.domainEdges = exports.highlighterZIndex = exports.duplicateLabelsInPartitionLegend = exports.testPointsOutsideOfDomain = exports.rtlText = exports.accessibilityCustomizations = exports.legendScrollBarSizing = exports.filterZerosInLogFitDomain = exports.noAxesAnnotationBugFix = exports.chromePathBugFix = exports.noSeries = void 0;
+exports.kibanaManySeriesJourney = exports.fontMeasurementTest = exports.lensStressTest = exports.linearNicing = exports.errorBoundary = exports.pointStyleOverrides = exports.logWithNegativeValues = exports.startDayOfWeek = exports.metricTrendLength = exports.domainEdges = exports.highlighterZIndex = exports.duplicateLabelsInPartitionLegend = exports.testPointsOutsideOfDomain = exports.rtlText = exports.accessibilityCustomizations = exports.legendScrollBarSizing = exports.filterZerosInLogFitDomain = exports.noAxesAnnotationBugFix = exports.chromePathBugFix = exports.noSeries = void 0;
 exports["default"] = {
   title: 'Test Cases'
 };
@@ -175130,6 +175490,15 @@ Object.defineProperty(exports, "fontMeasurementTest", {
   enumerable: true,
   get: function get() {
     return _34_font_measurement_story_1.Example;
+  }
+});
+
+var _35_many_series_kibana_story_1 = __webpack_require__(/*! ./35_many_series_kibana.story */ "./stories/test_cases/35_many_series_kibana.story.tsx");
+
+Object.defineProperty(exports, "kibanaManySeriesJourney", {
+  enumerable: true,
+  get: function get() {
+    return _35_many_series_kibana_story_1.Example;
   }
 });
 
@@ -181066,4 +181435,4 @@ module.exports = __webpack_require__(/*! /app/storybook/generated-stories-entry.
 /***/ })
 
 },[[0,"runtime~main","vendors~main"]]]);
-//# sourceMappingURL=main.3bf0e33e.iframe.bundle.js.map
+//# sourceMappingURL=main.603d00c8.iframe.bundle.js.map
