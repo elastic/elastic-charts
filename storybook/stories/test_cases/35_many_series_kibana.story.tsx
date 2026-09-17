@@ -74,9 +74,11 @@ export const Example: ChartsStory = (_, context) => {
   useEffect(() => {
     if (runId === 0) return;
     async function fetchData() {
+      // eslint-disable-next-line no-console
       console.log('requesting data');
       const response = await fetch('many_series_ecommerce.json');
       const d: EcommerceRow[] = await response.json();
+      // eslint-disable-next-line no-console
       console.log('data arrived');
 
       window.performance.mark('Perf:Started');
@@ -131,6 +133,7 @@ export const Example: ChartsStory = (_, context) => {
             if (isRendered) {
               window.performance.mark('Perf:Ended');
               const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');
+              // eslint-disable-next-line no-console
               console.log(`chart rendered in ${(duration / 1000).toFixed(1)}s`);
             }
           }}
