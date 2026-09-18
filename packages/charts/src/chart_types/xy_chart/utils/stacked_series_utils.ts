@@ -52,21 +52,27 @@ export function formatStackedDataSeriesValues(
   let hasNegative = false;
   let hasPositive = false;
 
+  // `fillSeries` pads every stacked series to one datum per x value and `getSortedDataSeries` puts
+  // them in `xValues` order, so `data[j]` is normally the datum at the jth x: index instead of look up
+  const seriesList = [...dataSeriesMap.values()];
+  const isDense = seriesList.every(({ data }) => data.length === xValues.size);
+
   // group data series by x values
   const xMap: XValueMap = new Map();
   for (const xValue of xValues) {
-    xMap.set(xValue, new Map<SeriesKey, DataSeriesDatum & { isFiltered: boolean }>());
+    xMap.set(xValue, new Map<SeriesKey, DataSeriesDatum>());
   }
+  const filteredKeys = new Set<SeriesKey>();
   for (const { key, data, isFiltered } of dataSeries) {
+    if (isFiltered) filteredKeys.add(key);
     for (const datum of data) {
-      const seriesMap = xMap.get(datum.x);
-      if (!seriesMap || seriesMap.has(key)) continue;
       const y1 = datum.y1 ?? 0;
       if (y1 > 0) hasPositive = true;
       if (y1 < 0) hasNegative = true;
-      const newDatum = datum as DataSeriesDatum & { isFiltered: boolean };
-      newDatum.isFiltered = isFiltered;
-      seriesMap.set(key, newDatum);
+      if (isDense) continue;
+      const seriesMap = xMap.get(datum.x);
+      if (!seriesMap || seriesMap.has(key)) continue;
+      seriesMap.set(key, datum);
     }
   }
 
@@ -77,12 +83,13 @@ export function formatStackedDataSeriesValues(
   }
 
   const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
-  const stack = D3Stack<XValueSeriesDatum>()
-    .keys(dataSeriesMap.keys())
-    .value(([, indexMap], key) => {
-      const datum = indexMap.get(key);
-      if (!datum || datum.isFiltered) return 0; // hides filtered series while maintaining their existence
-      return datum.y1 ?? 0;
+  const stack = D3Stack<XValueSeriesDatum, number>()
+    .keys(seriesList.map((_, index) => index))
+    .value(([, indexMap], seriesIndex, xIndex) => {
+      const series = seriesList[seriesIndex];
+      if (!series || filteredKeys.has(series.key)) return 0; // hides filtered series while maintaining their existence
+      const datum = isDense ? series.data[xIndex] : indexMap.get(series.key);
+      return datum ? datum.y1 ?? 0 : 0;
     })
     .order(stackOrderNone)
     .offset(stackOffset)(xMap);
@@ -98,12 +105,13 @@ export function formatStackedDataSeriesValues(
 
   const formattedDataSeries: DataSeries[] = [];
   for (const stackedSeries of stack) {
-    const { key } = stackedSeries;
-    const dataSeriesProps = dataSeriesMap.get(key);
+    const dataSeriesProps = seriesList[stackedSeries.key];
     if (!dataSeriesProps) continue;
+    const { key, data: seriesData } = dataSeriesProps;
     const data: DataSeriesDatum[] = [];
+    let xIndex = 0;
     for (const row of stackedSeries) {
-      const d = row.data[1].get(key);
+      const d = isDense ? seriesData[xIndex++] : row.data[1].get(key);
       if (!d || d.x === undefined || d.x === null) continue;
       const { initialY0, initialY1, mark, datum, filled, x } = d;
       const [y0, y1] = row;
