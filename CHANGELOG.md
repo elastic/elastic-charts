@@ -1,3 +1,10 @@
+## [73.2.1](https://github.com/elastic/elastic-charts/compare/v73.2.0...v73.2.1) (2026-09-18)
+
+
+### Performance Improvements
+
+* **chart:** speed up charts by lowering the algorithmic complexity ([#2892](https://github.com/elastic/elastic-charts/issues/2892)) ([626d028](https://github.com/elastic/elastic-charts/commit/626d02895338641595c35af245450bd5378c9e0b))
+
 # [73.2.0](https://github.com/elastic/elastic-charts/compare/v73.1.0...v73.2.0) (2026-09-17)
 
 
