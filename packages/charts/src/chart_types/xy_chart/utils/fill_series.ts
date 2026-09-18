@@ -19,7 +19,6 @@ export function fillSeries(
   xValues: Set<string | number>,
   groupScaleType: ScaleType,
 ): DataSeries[] {
-  const sortedXValues = [...xValues.values()];
   return dataSeries.map((series) => {
     const { spec, data, isStacked } = series;
 
@@ -38,14 +37,12 @@ export function fillSeries(
     const missingValuesArray = [...missingValues.values()];
 
     missingValuesArray.forEach((missingValue) => {
-      const index = sortedXValues.indexOf(missingValue);
-
-      filledData.splice(index, 0, {
+      filledData.push({
         x: missingValue,
         y1: null,
         y0: null,
-        initialY1: null,
         initialY0: null,
+        initialY1: null,
         mark: null,
         datum: undefined,
         filled: {

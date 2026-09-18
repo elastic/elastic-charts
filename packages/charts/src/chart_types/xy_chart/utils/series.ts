@@ -319,11 +319,13 @@ const getSortedDataSeries = (
   dataSeries: DataSeries[],
   xValues: Set<string | number>,
   xScaleType: ScaleType,
-): DataSeries[] =>
-  dataSeries.map(({ data, ...rest }) => ({
+): DataSeries[] => {
+  const xSortPredicate = datumXSortPredicate(xScaleType, xValues);
+  return dataSeries.map(({ data, ...rest }) => ({
     ...rest,
-    data: data.slice().sort(datumXSortPredicate(xScaleType, [...xValues.values()])),
+    data: data.slice().sort(xSortPredicate),
   }));
+};
 
 /** @internal */
 export function getFormattedDataSeries(

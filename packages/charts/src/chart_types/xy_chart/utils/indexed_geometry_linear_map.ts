@@ -22,7 +22,7 @@ export class IndexedGeometryLinearMap {
     if (existing === undefined) {
       this.map.set(x, [geometry]);
     } else {
-      this.map.set(x, [geometry, ...existing]);
+      existing.push(geometry);
     }
   }
 

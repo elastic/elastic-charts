@@ -25,14 +25,19 @@ export interface StackedValues {
 }
 
 /** @internal */
-export const datumXSortPredicate =
-  (xScaleType: ScaleType, sortedXValues?: (string | number)[]) =>
-  (a: { x: number | string }, b: { x: number | string }) => {
+export const datumXSortPredicate = (xScaleType: ScaleType, sortedXValues?: Set<string | number>) => {
+  let xValueIndices: Map<string | number, number> | undefined;
+  return (a: { x: number | string }, b: { x: number | string }) => {
     if (xScaleType === ScaleType.Ordinal || typeof a.x === 'string' || typeof b.x === 'string') {
-      return sortedXValues ? sortedXValues.indexOf(a.x) - sortedXValues.indexOf(b.x) : 0;
+      if (!xValueIndices && sortedXValues) {
+        xValueIndices = new Map();
+        for (const xValue of sortedXValues) xValueIndices.set(xValue, xValueIndices.size);
+      }
+      return xValueIndices ? (xValueIndices.get(a.x) ?? -1) - (xValueIndices.get(b.x) ?? -1) : 0;
     }
     return a.x - b.x;
   };
+};
 
 /** @internal */
 export function formatStackedDataSeriesValues(
@@ -49,20 +54,23 @@ export function formatStackedDataSeriesValues(
 
   // group data series by x values
   const xMap: XValueMap = new Map();
-  [...xValues].forEach((xValue) => {
-    const seriesMap = new Map<SeriesKey, DataSeriesDatum & { isFiltered: boolean }>();
-    dataSeries.forEach(({ key, data, isFiltered }) => {
-      const datum = data.find(({ x }) => x === xValue);
-      if (!datum) return;
+  for (const xValue of xValues) {
+    xMap.set(xValue, new Map<SeriesKey, DataSeriesDatum & { isFiltered: boolean }>());
+  }
+  for (const { key, data, isFiltered } of dataSeries) {
+    const y0Key = `${key}-y0`;
+    for (const datum of data) {
+      const seriesMap = xMap.get(datum.x);
+      if (!seriesMap || seriesMap.has(key)) continue;
       const y1 = datum.y1 ?? 0;
-      if (hasPositive || y1 > 0) hasPositive = true;
-      if (hasNegative || y1 < 0) hasNegative = true;
-      const newDatum = Object.assign(datum, { isFiltered });
-      seriesMap.set(`${key}-y0`, newDatum);
+      if (y1 > 0) hasPositive = true;
+      if (y1 < 0) hasNegative = true;
+      const newDatum = datum as DataSeriesDatum & { isFiltered: boolean };
+      newDatum.isFiltered = isFiltered;
+      seriesMap.set(y0Key, newDatum);
       seriesMap.set(key, newDatum);
-    });
-    xMap.set(xValue, seriesMap);
-  });
+    }
+  }
 
   if (hasNegative && hasPositive && seriesType === SeriesType.Area) {
     Logger.warn(
@@ -70,7 +78,7 @@ export function formatStackedDataSeriesValues(
     );
   }
 
-  const keys = [...dataSeriesMap.keys()].reduce<string[]>((acc, key) => [...acc, `${key}-y0`, key], []);
+  const keys = [...dataSeriesMap.keys()].flatMap((key) => [`${key}-y0`, key]);
   const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
   const stack = D3Stack<XValueSeriesDatum>()
     .keys(keys)
