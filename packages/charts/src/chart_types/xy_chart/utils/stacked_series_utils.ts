@@ -58,7 +58,6 @@ export function formatStackedDataSeriesValues(
     xMap.set(xValue, new Map<SeriesKey, DataSeriesDatum & { isFiltered: boolean }>());
   }
   for (const { key, data, isFiltered } of dataSeries) {
-    const y0Key = `${key}-y0`;
     for (const datum of data) {
       const seriesMap = xMap.get(datum.x);
       if (!seriesMap || seriesMap.has(key)) continue;
@@ -67,7 +66,6 @@ export function formatStackedDataSeriesValues(
       if (y1 < 0) hasNegative = true;
       const newDatum = datum as DataSeriesDatum & { isFiltered: boolean };
       newDatum.isFiltered = isFiltered;
-      seriesMap.set(y0Key, newDatum);
       seriesMap.set(key, newDatum);
     }
   }
@@ -78,18 +76,16 @@ export function formatStackedDataSeriesValues(
     );
   }
 
-  const keys = [...dataSeriesMap.keys()].flatMap((key) => [`${key}-y0`, key]);
   const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
   const stack = D3Stack<XValueSeriesDatum>()
-    .keys(keys)
+    .keys(dataSeriesMap.keys())
     .value(([, indexMap], key) => {
       const datum = indexMap.get(key);
       if (!datum || datum.isFiltered) return 0; // hides filtered series while maintaining their existence
-      return key.endsWith('-y0') ? datum.y0 ?? 0 : datum.y1 ?? 0;
+      return datum.y1 ?? 0;
     })
     .order(stackOrderNone)
-    .offset(stackOffset)(xMap)
-    .filter(({ key }) => !key.endsWith('-y0'));
+    .offset(stackOffset)(xMap);
 
   /**
    * Due to floating point errors, values computed on a stack
