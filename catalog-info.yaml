@@ -9,7 +9,7 @@ metadata:
       url: https://buildkite.com/elastic/elastic-charts-build
 spec:
   type: buildkite-pipeline
-  owner: group:kibana-visualizations
+  owner: group:kibana-dashboards
   system: buildkite
   implementation:
     apiVersion: buildkite.elastic.dev/v1
@@ -31,7 +31,7 @@ spec:
         publish_commit_status: true
       pipeline_file: ".buildkite/pipelines/pull_request/pipeline.sh"
       teams:
-        kibana-visualizations:
+        kibana-dashboards:
           access_level: MANAGE_BUILD_AND_READ
         kibana-operations:
           access_level: MANAGE_BUILD_AND_READ
@@ -49,7 +49,7 @@ metadata:
       url: https://buildkite.com/elastic/elastic-charts-main
 spec:
   type: buildkite-pipeline
-  owner: group:kibana-visualizations
+  owner: group:kibana-dashboards
   system: buildkite
   implementation:
     apiVersion: buildkite.elastic.dev/v1
@@ -72,7 +72,7 @@ spec:
       branch_configuration: "main"
       pipeline_file: ".buildkite/pipelines/pull_request/pipeline.sh"
       teams:
-        kibana-visualizations:
+        kibana-dashboards:
           access_level: MANAGE_BUILD_AND_READ
         kibana-operations:
           access_level: MANAGE_BUILD_AND_READ
