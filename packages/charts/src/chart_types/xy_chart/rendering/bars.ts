@@ -56,6 +56,7 @@ export function renderBars(
   const y1Fn = getY1ScaledValueFn(yScale);
   const y0Fn = getY0ScaledValueFn(yScale);
   const seriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
+  const sharedWidth = clampedBarWidth(sharedSeriesStyle, xScale.bandwidth);
   return dataSeries.data.reduce((barTuple: BarTuple, datum) => {
     const xScaled = xScale.scale(datum.x);
 
@@ -84,10 +85,7 @@ export function renderBars(
 
     const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
 
-    const maxPixelWidth = clamp(seriesStyle.rect.widthRatio ?? 1, 0, 1) * xScale.bandwidth;
-    const minPixelWidth = clamp(seriesStyle.rect.widthPixel ?? 0, 0, maxPixelWidth);
-
-    const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
+    const width = seriesStyle === sharedSeriesStyle ? sharedWidth : clampedBarWidth(seriesStyle, xScale.bandwidth);
     const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
 
     const y1Value = getDatumYValue(datum, false, isBandedSpec, stackMode);
@@ -134,6 +132,12 @@ export function renderBars(
 
     return barTuple;
   }, initialBarTuple);
+}
+
+function clampedBarWidth({ rect }: BarSeriesStyle, bandwidth: number): number {
+  const maxPixelWidth = clamp(rect.widthRatio ?? 1, 0, 1) * bandwidth;
+  const minPixelWidth = clamp(rect.widthPixel ?? 0, 0, maxPixelWidth);
+  return clamp(rect.widthPixel ?? bandwidth, minPixelWidth, maxPixelWidth);
 }
 
 function computeDisplayValue(
