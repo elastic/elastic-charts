@@ -53848,25 +53848,21 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-property.js */ "../node_modules/core-js/modules/es.object.define-property.js");
 
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.map.js */ "../node_modules/core-js/modules/es.array.map.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.set.js */ "../node_modules/core-js/modules/es.set.js");
+
 __webpack_require__(/*! ../node_modules/core-js/modules/es.object.to-string.js */ "../node_modules/core-js/modules/es.object.to-string.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.string.iterator.js */ "../node_modules/core-js/modules/es.string.iterator.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.array.iterator.js */ "../node_modules/core-js/modules/es.array.iterator.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/web.dom-collections.iterator.js */ "../node_modules/core-js/modules/web.dom-collections.iterator.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.map.js */ "../node_modules/core-js/modules/es.array.map.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.set.js */ "../node_modules/core-js/modules/es.set.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.string.iterator.js */ "../node_modules/core-js/modules/es.string.iterator.js");
-
 __webpack_require__(/*! ../node_modules/core-js/modules/es.array.for-each.js */ "../node_modules/core-js/modules/es.array.for-each.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/web.dom-collections.for-each.js */ "../node_modules/core-js/modules/web.dom-collections.for-each.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.index-of.js */ "../node_modules/core-js/modules/es.array.index-of.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.splice.js */ "../node_modules/core-js/modules/es.array.splice.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.object.assign.js */ "../node_modules/core-js/modules/es.object.assign.js");
 
@@ -53898,8 +53894,6 @@ var constants_1 = __webpack_require__(/*! ../../../scales/constants */ "../packa
 
 
 function fillSeries(dataSeries, xValues, groupScaleType) {
-  var sortedXValues = _toConsumableArray(xValues.values());
-
   return dataSeries.map(function (series) {
     var spec = series.spec,
         data = series.data,
@@ -53920,13 +53914,12 @@ function fillSeries(dataSeries, xValues, groupScaleType) {
     var missingValuesArray = _toConsumableArray(missingValues.values());
 
     missingValuesArray.forEach(function (missingValue) {
-      var index = sortedXValues.indexOf(missingValue);
-      filledData.splice(index, 0, {
+      filledData.push({
         x: missingValue,
         y1: null,
         y0: null,
-        initialY1: null,
         initialY0: null,
+        initialY1: null,
         mark: null,
         datum: undefined,
         filled: {
@@ -54812,8 +54805,6 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.array.iterator.js */ 
 
 __webpack_require__(/*! ../node_modules/core-js/modules/web.dom-collections.iterator.js */ "../node_modules/core-js/modules/web.dom-collections.iterator.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.concat.js */ "../node_modules/core-js/modules/es.array.concat.js");
-
 __webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.to-primitive.js */ "../node_modules/core-js/modules/es.symbol.to-primitive.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.date.to-primitive.js */ "../node_modules/core-js/modules/es.date.to-primitive.js");
@@ -54861,7 +54852,7 @@ var IndexedGeometryLinearMap = /*#__PURE__*/function () {
       if (existing === undefined) {
         this.map.set(x, [geometry]);
       } else {
-        this.map.set(x, [geometry].concat(_toConsumableArray(existing)));
+        existing.push(geometry);
       }
     }
   }, {
@@ -56025,12 +56016,13 @@ function finiteOrNull(value, nonNumericValues) {
 
 
 var getSortedDataSeries = function getSortedDataSeries(dataSeries, xValues, xScaleType) {
+  var xSortPredicate = (0, stacked_series_utils_1.datumXSortPredicate)(xScaleType, xValues);
   return dataSeries.map(function (_ref14) {
     var data = _ref14.data,
         rest = _objectWithoutProperties(_ref14, _excluded);
 
     return Object.assign({}, rest, {
-      data: data.slice().sort((0, stacked_series_utils_1.datumXSortPredicate)(xScaleType, _toConsumableArray(xValues.values())))
+      data: data.slice().sort(xSortPredicate)
     });
   });
 };
@@ -56642,19 +56634,17 @@ function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArra
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) { n[e] = r[e]; } return n; }
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.object.define-property.js */ "../node_modules/core-js/modules/es.object.define-property.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.index-of.js */ "../node_modules/core-js/modules/es.array.index-of.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.reduce.js */ "../node_modules/core-js/modules/es.array.reduce.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.map.js */ "../node_modules/core-js/modules/es.map.js");
 
@@ -56666,15 +56656,11 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.array.iterator.js */ 
 
 __webpack_require__(/*! ../node_modules/core-js/modules/web.dom-collections.iterator.js */ "../node_modules/core-js/modules/web.dom-collections.iterator.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.for-each.js */ "../node_modules/core-js/modules/es.array.for-each.js");
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.reduce.js */ "../node_modules/core-js/modules/es.array.reduce.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/web.dom-collections.for-each.js */ "../node_modules/core-js/modules/web.dom-collections.for-each.js");
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.flat-map.js */ "../node_modules/core-js/modules/es.array.flat-map.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.find.js */ "../node_modules/core-js/modules/es.array.find.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.object.assign.js */ "../node_modules/core-js/modules/es.object.assign.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.concat.js */ "../node_modules/core-js/modules/es.array.concat.js");
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.unscopables.flat-map.js */ "../node_modules/core-js/modules/es.array.unscopables.flat-map.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.array.filter.js */ "../node_modules/core-js/modules/es.array.filter.js");
 
@@ -56682,7 +56668,13 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.string.ends-with.js *
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.array.map.js */ "../node_modules/core-js/modules/es.array.map.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.is-array.js */ "../node_modules/core-js/modules/es.array.is-array.js");
+__webpack_require__(/*! ../node_modules/core-js/modules/es.object.assign.js */ "../node_modules/core-js/modules/es.object.assign.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.slice.js */ "../node_modules/core-js/modules/es.array.slice.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.function.name.js */ "../node_modules/core-js/modules/es.function.name.js");
+
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.from.js */ "../node_modules/core-js/modules/es.array.from.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.js */ "../node_modules/core-js/modules/es.symbol.js");
 
@@ -56690,11 +56682,7 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.description.js
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.symbol.iterator.js */ "../node_modules/core-js/modules/es.symbol.iterator.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.from.js */ "../node_modules/core-js/modules/es.array.from.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.slice.js */ "../node_modules/core-js/modules/es.array.slice.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.function.name.js */ "../node_modules/core-js/modules/es.function.name.js");
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.is-array.js */ "../node_modules/core-js/modules/es.array.is-array.js");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -56717,9 +56705,30 @@ var logger_1 = __webpack_require__(/*! ../../../utils/logger */ "../packages/cha
 
 
 var datumXSortPredicate = function datumXSortPredicate(xScaleType, sortedXValues) {
+  var xValueIndices;
   return function (a, b) {
     if (xScaleType === constants_1.ScaleType.Ordinal || typeof a.x === 'string' || typeof b.x === 'string') {
-      return sortedXValues ? sortedXValues.indexOf(a.x) - sortedXValues.indexOf(b.x) : 0;
+      var _xValueIndices$get, _xValueIndices$get2;
+
+      if (!xValueIndices && sortedXValues) {
+        xValueIndices = new Map();
+
+        var _iterator = _createForOfIteratorHelper(sortedXValues),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var xValue = _step.value;
+            xValueIndices.set(xValue, xValueIndices.size);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      }
+
+      return xValueIndices ? ((_xValueIndices$get = xValueIndices.get(a.x)) !== null && _xValueIndices$get !== void 0 ? _xValueIndices$get : -1) - ((_xValueIndices$get2 = xValueIndices.get(b.x)) !== null && _xValueIndices$get2 !== void 0 ? _xValueIndices$get2 : -1) : 0;
     }
 
     return a.x - b.x;
@@ -56738,52 +56747,82 @@ function formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMod
 
   var xMap = new Map();
 
-  _toConsumableArray(xValues).forEach(function (xValue) {
-    var seriesMap = new Map();
-    dataSeries.forEach(function (_ref) {
-      var _datum$y;
+  var _iterator2 = _createForOfIteratorHelper(xValues),
+      _step2;
 
-      var key = _ref.key,
-          data = _ref.data,
-          isFiltered = _ref.isFiltered;
-      var datum = data.find(function (_ref2) {
-        var x = _ref2.x;
-        return x === xValue;
-      });
-      if (!datum) return;
-      var y1 = (_datum$y = datum.y1) !== null && _datum$y !== void 0 ? _datum$y : 0;
-      if (hasPositive || y1 > 0) hasPositive = true;
-      if (hasNegative || y1 < 0) hasNegative = true;
-      var newDatum = Object.assign(datum, {
-        isFiltered: isFiltered
-      });
-      seriesMap.set(key + "-y0", newDatum);
-      seriesMap.set(key, newDatum);
-    });
-    xMap.set(xValue, seriesMap);
-  });
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var xValue = _step2.value;
+      xMap.set(xValue, new Map());
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
+  }
+
+  var _iterator3 = _createForOfIteratorHelper(dataSeries),
+      _step3;
+
+  try {
+    for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+      var _ref = _step3.value;
+      var key = _ref.key;
+      var data = _ref.data;
+      var isFiltered = _ref.isFiltered;
+      var y0Key = key + "-y0";
+
+      var _iterator4 = _createForOfIteratorHelper(data),
+          _step4;
+
+      try {
+        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+          var _datum$y3;
+
+          var datum = _step4.value;
+          var seriesMap = xMap.get(datum.x);
+          if (!seriesMap || seriesMap.has(key)) continue;
+          var y1 = (_datum$y3 = datum.y1) !== null && _datum$y3 !== void 0 ? _datum$y3 : 0;
+          if (y1 > 0) hasPositive = true;
+          if (y1 < 0) hasNegative = true;
+          var newDatum = datum;
+          newDatum.isFiltered = isFiltered;
+          seriesMap.set(y0Key, newDatum);
+          seriesMap.set(key, newDatum);
+        }
+      } catch (err) {
+        _iterator4.e(err);
+      } finally {
+        _iterator4.f();
+      }
+    }
+  } catch (err) {
+    _iterator3.e(err);
+  } finally {
+    _iterator3.f();
+  }
 
   if (hasNegative && hasPositive && seriesType === specs_1.SeriesType.Area) {
     logger_1.Logger.warn("Area series should be avoided with dataset containing positive and negative values. Use a bar series instead.");
   }
 
-  var keys = _toConsumableArray(dataSeriesMap.keys()).reduce(function (acc, key) {
-    return [].concat(_toConsumableArray(acc), [key + "-y0", key]);
-  }, []);
+  var keys = _toConsumableArray(dataSeriesMap.keys()).flatMap(function (key) {
+    return [key + "-y0", key];
+  });
 
   var stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
-  var stack = (0, d3_shape_1.stack)().keys(keys).value(function (_ref3, key) {
-    var _datum$y2, _datum$y3;
+  var stack = (0, d3_shape_1.stack)().keys(keys).value(function (_ref2, key) {
+    var _datum$y, _datum$y2;
 
-    var _ref4 = _slicedToArray(_ref3, 2),
-        indexMap = _ref4[1];
+    var _ref3 = _slicedToArray(_ref2, 2),
+        indexMap = _ref3[1];
 
     var datum = indexMap.get(key);
     if (!datum || datum.isFiltered) return 0; // hides filtered series while maintaining their existence
 
-    return key.endsWith('-y0') ? (_datum$y2 = datum.y0) !== null && _datum$y2 !== void 0 ? _datum$y2 : 0 : (_datum$y3 = datum.y1) !== null && _datum$y3 !== void 0 ? _datum$y3 : 0;
-  }).order(d3_shape_1.stackOrderNone).offset(stackOffset)(xMap).filter(function (_ref5) {
-    var key = _ref5.key;
+    return key.endsWith('-y0') ? (_datum$y = datum.y0) !== null && _datum$y !== void 0 ? _datum$y : 0 : (_datum$y2 = datum.y1) !== null && _datum$y2 !== void 0 ? _datum$y2 : 0;
+  }).order(d3_shape_1.stackOrderNone).offset(stackOffset)(xMap).filter(function (_ref4) {
+    var key = _ref4.key;
     return !key.endsWith('-y0');
   });
   return stack.map(function (stackedSeries) {
@@ -181435,4 +181474,4 @@ module.exports = __webpack_require__(/*! /app/storybook/generated-stories-entry.
 /***/ })
 
 },[[0,"runtime~main","vendors~main"]]]);
-//# sourceMappingURL=main.603d00c8.iframe.bundle.js.map
+//# sourceMappingURL=main.abf9fe07.iframe.bundle.js.map
