@@ -14,7 +14,7 @@ import type { DataSeries, DataSeriesDatum } from './series';
 import { SeriesType, StackMode } from './specs';
 import type { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { clamp, isDefined } from '../../../utils/common';
+import { clamp } from '../../../utils/common';
 import { Logger } from '../../../utils/logger';
 
 /** @internal */
@@ -91,45 +91,44 @@ export function formatStackedDataSeriesValues(
     .offset(stackOffset)(xMap)
     .filter(({ key }) => !key.endsWith('-y0'));
 
-  return stack
-    .map<DataSeries | null>((stackedSeries) => {
-      const dataSeriesProps = dataSeriesMap.get(stackedSeries.key);
-      if (!dataSeriesProps) return null;
-      const data = stackedSeries
-        .map<DataSeriesDatum | null>((row) => {
-          const d = row.data[1].get(stackedSeries.key);
-          if (!d || d.x === undefined || d.x === null) return null;
-          const { initialY0, initialY1, mark, datum, filled, x } = d;
-          const [y0, y1] = row;
+  /**
+   * Due to floating point errors, values computed on a stack
+   * could falls out of the current defined domain boundaries.
+   * This in particular cause issues with percent stack, where the domain
+   * is hardcoded to [0,1] and some value can fall outside that domain.
+   */
+  const clampStackedValue =
+    stackMode === StackMode.Percentage ? (value: number) => clamp(value, 0, 1) : (value: number) => value;
 
-          return {
-            x,
-            /**
-             * Due to floating point errors, values computed on a stack
-             * could falls out of the current defined domain boundaries.
-             * This in particular cause issues with percent stack, where the domain
-             * is hardcoded to [0,1] and some value can fall outside that domain.
-             */
-            y1: clampIfStackedAsPercentage(y1, stackMode),
-            y0: clampIfStackedAsPercentage(y0, stackMode),
-            initialY0,
-            initialY1,
-            mark,
-            datum,
-            filled,
-          };
-        })
-        .filter(isDefined);
-      return {
-        ...dataSeriesProps,
-        data,
-      };
-    })
-    .filter(isDefined);
-}
+  const formattedDataSeries: DataSeries[] = [];
+  for (const stackedSeries of stack) {
+    const { key } = stackedSeries;
+    const dataSeriesProps = dataSeriesMap.get(key);
+    if (!dataSeriesProps) continue;
+    const data: DataSeriesDatum[] = [];
+    for (const row of stackedSeries) {
+      const d = row.data[1].get(key);
+      if (!d || d.x === undefined || d.x === null) continue;
+      const { initialY0, initialY1, mark, datum, filled, x } = d;
+      const [y0, y1] = row;
 
-function clampIfStackedAsPercentage(value: number, stackMode?: StackMode) {
-  return stackMode === StackMode.Percentage ? clamp(value, 0, 1) : value;
+      data.push({
+        x,
+        y1: clampStackedValue(y1),
+        y0: clampStackedValue(y0),
+        initialY0,
+        initialY1,
+        mark,
+        datum,
+        filled,
+      });
+    }
+    formattedDataSeries.push({
+      ...dataSeriesProps,
+      data,
+    });
+  }
+  return formattedDataSeries;
 }
 
 function getOffsetBasedOnStackMode(stackMode?: StackMode, onlyNegative = false) {
