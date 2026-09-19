@@ -309,6 +309,7 @@ function renderGeometries(
     bubblePoints: 0,
   };
   const barsPadding = enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding;
+  const xScales = new Map<number, ScaleBand | ScaleContinuous>();
   // This var remains Infinity if we don't have points, or we just have a single point per series.
   // In this case the point should be visible if the visibility style is set to `auto`
   let globalMinPointsDistance = Infinity;
@@ -326,13 +327,18 @@ function renderGeometries(
     const barPanelKey = [ds.smVerticalAccessorValue, ds.smHorizontalAccessorValue].join('|');
     const barIndexOrder = barIndexOrderPerPanel[barPanelKey] ?? [];
     // compute x scale
-    const xScale = computeXScale({
-      xDomain,
-      totalBarsInCluster: barIndexOrder?.length ?? 0,
-      range: [0, isHorizontalRotation(chartRotation) ? smHScale.bandwidth : smVScale.bandwidth],
-      barsPadding,
-      enableHistogramMode,
-    });
+    const totalBarsInCluster = barIndexOrder.length;
+    let xScale = xScales.get(totalBarsInCluster);
+    if (!xScale) {
+      xScale = computeXScale({
+        xDomain,
+        totalBarsInCluster,
+        range: [0, isHorizontalRotation(chartRotation) ? smHScale.bandwidth : smVScale.bandwidth],
+        barsPadding,
+        enableHistogramMode,
+      });
+      xScales.set(totalBarsInCluster, xScale);
+    }
 
     const { stackMode } = ds;
 
