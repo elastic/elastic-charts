@@ -16,7 +16,7 @@ import type { Dimensions } from '../../../utils/dimensions';
 import type { BarGeometry } from '../../../utils/geometry';
 import { BandedAccessorType } from '../../../utils/geometry';
 import type { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
-import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
+import type { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import type { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
 import { getSeriesIdentifierFromDataSeries } from '../utils/series';
 import type { BarStyleAccessor, DisplayValueSpec, StackMode, TickFormatter } from '../utils/specs';
@@ -24,11 +24,6 @@ import { LabelOverflowConstraint } from '../utils/specs';
 
 const PADDING = 1; // default padding for now
 const FONT_SIZE_FACTOR = 0.7; // Take 70% of space for the label text
-
-type BarTuple = {
-  barGeometries: BarGeometry[];
-  indexedGeometryMap: IndexedGeometryMap;
-};
 
 /** @internal */
 type DisplayValueSpecWithValueFormatter = Omit<DisplayValueSpec, 'valueFormatter'> & {
@@ -48,22 +43,21 @@ export function renderBars(
   color: Color,
   isBandedSpec: boolean,
   sharedSeriesStyle: BarSeriesStyle,
+  targetGeometryIndex: Pick<IndexedGeometryMap, 'set'>,
   displayValueSettings?: DisplayValueSpecWithValueFormatter,
   styleAccessor?: BarStyleAccessor,
   stackMode?: StackMode,
-): BarTuple {
-  const initialBarTuple: BarTuple = { barGeometries: [], indexedGeometryMap: new IndexedGeometryMap() } as BarTuple;
+): BarGeometry[] {
   const y1Fn = getY1ScaledValueFn(yScale);
   const y0Fn = getY0ScaledValueFn(yScale);
   const seriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
   const sharedWidth = clampedBarWidth(sharedSeriesStyle, xScale.bandwidth);
-  return dataSeries.data.reduce((barTuple: BarTuple, datum) => {
+  return dataSeries.data.reduce((barGeometries: BarGeometry[], datum) => {
     const xScaled = xScale.scale(datum.x);
 
     if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
-      return barTuple; // don't create a bar if not within the xScale domain
+      return barGeometries; // don't create a bar if not within the xScale domain
     }
-    const { barGeometries, indexedGeometryMap } = barTuple;
     const { y1, initialY1, filled } = datum;
 
     const y1Scaled = y1Fn(datum);
@@ -112,7 +106,7 @@ export function renderBars(
 
     if (isBandedSpec) {
       // index also the Y0 value with the same geometry
-      indexedGeometryMap.set({
+      targetGeometryIndex.set({
         ...barGeometry,
         value: {
           x: datum.x,
@@ -124,14 +118,14 @@ export function renderBars(
       });
     }
 
-    indexedGeometryMap.set(barGeometry);
+    targetGeometryIndex.set(barGeometry);
 
     if (y1 !== null && initialY1 !== null && filled?.y1 === undefined) {
       barGeometries.push(barGeometry);
     }
 
-    return barTuple;
-  }, initialBarTuple);
+    return barGeometries;
+  }, []);
 }
 
 function clampedBarWidth({ rect }: BarSeriesStyle, bandwidth: number): number {

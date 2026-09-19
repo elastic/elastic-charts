@@ -380,13 +380,13 @@ function renderGeometries(
         color,
         isBandedSpec(spec),
         barSeriesStyle,
+        geometriesIndex,
         displayValueSettings,
         spec.styleAccessor,
         stackMode,
       );
-      geometriesIndex.merge(renderedBars.indexedGeometryMap);
-      bars.push({ panel, value: renderedBars.barGeometries });
-      geometriesCounts.bars += renderedBars.barGeometries.length;
+      bars.push({ panel, value: renderedBars });
+      geometriesCounts.bars += renderedBars.length;
     } else if (isBubbleSeriesSpec(spec)) {
       const bubbleShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
       const bubbleSeriesStyle = spec.bubbleSeriesStyle
