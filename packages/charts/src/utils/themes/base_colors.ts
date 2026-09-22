@@ -152,7 +152,7 @@ export const LIGHT_TEXT_COLORS = {
  * @internal
  */
 export const DARK_BACKGROUND_COLORS = {
-  backgroundBasePlain: SEMANTIC_COLORS.shade145,
+  backgroundBasePlain: SEMANTIC_COLORS.shade140,
   backgroundBaseDisabled: SEMANTIC_COLORS.shade130,
   backgroundBaseInteractiveHover: SEMANTIC_ALPHA_COLORS.plainLightAlpha8,
   backgroundFilledPrimary: SEMANTIC_COLORS.primary60,
