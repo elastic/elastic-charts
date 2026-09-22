@@ -44,7 +44,7 @@ fi
 # Run e2e playwright tests inside container
 docker run \
   --ipc host `# recommended by playwright, see https://playwright.dev/docs/docker#end-to-end-tests` \
-  --platform linux/arm64 `# explicitly set platform` \
+  --platform linux/amd64 `# explicitly set platform` \
   --rm `# removes named container on every run` \
   --init `# handles terminating signals like SIGTERM` \
   --name ${CONTAINER_NAME} `# reusable name of container` \
