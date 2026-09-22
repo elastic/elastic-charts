@@ -162,7 +162,7 @@ export function renderBullet(
 
           const { graphArea } = bulletGraph;
 
-          if (spec.subtype !== BulletSubtype.horizontal) {
+          if (bulletGraph.subtype !== BulletSubtype.horizontal) {
             ctx.strokeStyle = style.border;
             ctx.beginPath();
             ctx.moveTo(HEADER_PADDING.left, graphArea.origin.y);
@@ -174,12 +174,12 @@ export function renderBullet(
             ctx.translate(graphArea.origin.x, graphArea.origin.y);
             const hasStroke = needsBarBorder(bulletGraph.colorBands, style.barBackground);
 
-            if (spec.subtype === BulletSubtype.horizontal) {
+            if (bulletGraph.subtype === BulletSubtype.horizontal) {
               horizontalBullet(ctx, bulletGraph, style, backgroundColor, hasStroke, activeValue);
-            } else if (spec.subtype === BulletSubtype.vertical) {
+            } else if (bulletGraph.subtype === BulletSubtype.vertical) {
               verticalBullet(ctx, bulletGraph, style, backgroundColor, hasStroke, activeValue);
             } else {
-              angularBullet(ctx, bulletGraph, style, backgroundColor, hasStroke, spec, debug, activeValue);
+              angularBullet(ctx, bulletGraph, style, backgroundColor, hasStroke, debug, activeValue);
             }
           });
 

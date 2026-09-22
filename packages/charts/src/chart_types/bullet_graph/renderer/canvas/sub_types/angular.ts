@@ -15,7 +15,6 @@ import type { ContinuousDomain, GenericDomain } from '../../../../../utils/domai
 import { drawPolarLine } from '../../../../xy_chart/renderer/canvas/lines';
 import type { ActiveValue } from '../../../selectors/get_active_values';
 import type { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
-import type { BulletSpec } from '../../../spec';
 import { BulletSubtype } from '../../../spec';
 import type { BulletStyle } from '../../../theme';
 import { GRAPH_PADDING, TICK_FONT_SIZE, getTickFont } from '../../../theme';
@@ -29,13 +28,12 @@ export function angularBullet(
   style: BulletStyle,
   backgroundColor: Color,
   hasStroke: boolean,
-  spec: BulletSpec,
   debug: boolean,
   activeValue?: ActiveValue | null,
 ) {
   const tickFont = getTickFont(style.fontFamily);
-  const { datum, graphArea, scale, ticks, colorBands } = dimensions;
-  const { radius } = getAngledChartSizing(graphArea.size, spec.subtype);
+  const { datum, graphArea, scale, ticks, colorBands, subtype } = dimensions;
+  const { radius } = getAngledChartSizing(graphArea.size, subtype);
 
   const [start, end] = scale.domain() as GenericDomain;
 
@@ -48,7 +46,7 @@ export function angularBullet(
 
   const [min, max] = sortNumbers([start, end]) as ContinuousDomain;
   const filteredTicks =
-    spec.subtype !== BulletSubtype.circle
+    subtype !== BulletSubtype.circle
       ? ticks
       : min === ticks.at(0) && max === ticks.at(-1)
         ? ticks.slice(0, -1)

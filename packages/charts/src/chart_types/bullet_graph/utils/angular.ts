@@ -79,3 +79,21 @@ export function getMinAngularChartSize(subtype: AngularBulletSubtypes): Size {
     height: extent * heightModifiers[subtype] + GRAPH_PADDING.top + GRAPH_PADDING.bottom,
   };
 }
+
+/**
+ * Linear subtype to degrade to when the graph area is too far from the arc's natural aspect ratio,
+ * or `null` while the arc has enough space.
+ * @internal
+ */
+export function getAngularAspectFallback(
+  graphSize: Size,
+  subtype: AngularBulletSubtypes,
+): Extract<BulletSubtype, 'horizontal' | 'vertical'> | null {
+  const { maxWidth, maxHeight } = getAngledChartSizing(graphSize, subtype);
+  const aspect = maxWidth / maxHeight;
+
+  if (aspect > 5) return BulletSubtype.horizontal;
+  if (aspect < 1 / 3) return BulletSubtype.vertical;
+
+  return null;
+}
