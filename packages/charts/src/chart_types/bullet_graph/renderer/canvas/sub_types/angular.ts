@@ -155,20 +155,24 @@ export function angularBullet(
   }, 0);
 
   // Tick labels
-  ctx.fillStyle = style.textColor;
-  ctx.textBaseline = 'middle';
-  ctx.font = cssFontShorthand(tickFont, TICK_FONT_SIZE);
-  formatterColorTicks
-    .filter((tick) => tick.value >= min && tick.value <= max)
-    .forEach((tick) => {
-      ctx.textAlign = 'center';
-      const textPadding = style.angularTickLabelPadding + maxTickWidth / 2;
-      const tickAngle = scale(tick.value);
-      const y1 = Math.sin(tickAngle) * (radius - BULLET_SIZE / 2 - textPadding);
-      const x1 = Math.cos(tickAngle) * (radius - BULLET_SIZE / 2 - textPadding);
+  const labelRadius = radius - BULLET_SIZE / 2 - style.angularTickLabelPadding - maxTickWidth / 2;
 
-      ctx.fillText(tick.formattedValue, center.x + x1, center.y + y1);
-    });
+  // Only render labels if there's enough space to fit them inside the arc's inner radius
+  if (labelRadius >= maxTickWidth / 2) {
+    ctx.fillStyle = style.textColor;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.font = cssFontShorthand(tickFont, TICK_FONT_SIZE);
+    formatterColorTicks
+      .filter((tick) => tick.value >= min && tick.value <= max)
+      .forEach((tick) => {
+        const tickAngle = scale(tick.value);
+        const y1 = Math.sin(tickAngle) * labelRadius;
+        const x1 = Math.cos(tickAngle) * labelRadius;
+
+        ctx.fillText(tick.formattedValue, center.x + x1, center.y + y1);
+      });
+  }
 
   if (activeValue) {
     ctx.beginPath();
