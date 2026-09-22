@@ -51,6 +51,7 @@ docker run \
   -e PORT=${PORT} `# port of local web server ` \
   -e ENV_URL=${ENV_URL} `# url of web server, overrides hostname and PORT ` \
   -e PLAYWRIGHT_HTML_REPORT=${PLAYWRIGHT_HTML_REPORT} `# where to save the playwright html report ` \
+  -e VRT_FAST=${VRT_FAST} `# trades diagnostics for speed on local runs ` \
   -w /app/e2e `# working directory` \
   -v $(pwd)/:/app/e2e `# mount local e2e/ directory in app/e2e directory in container` \
   -v $(pwd)/../e2e_server/tmp/:/app/e2e_server/tmp `# mount required example.json file in container` \

@@ -19,6 +19,8 @@ const isCI = process.env.CI === 'true';
 // viewable `html` report.
 const useBlobReport = process.env.PLAYWRIGHT_BLOB_REPORT === 'true';
 
+const fastMode = process.env.VRT_FAST === 'true';
+
 const config: PlaywrightTestConfig = {
   use: {
     headless: true,
@@ -26,7 +28,7 @@ const config: PlaywrightTestConfig = {
     viewport: { width: 785, height: 1000 },
     trace: 'retain-on-failure',
     screenshot: 'off', // already testing screenshots
-    video: 'retain-on-failure',
+    video: fastMode ? 'off' : 'retain-on-failure',
     launchOptions: {
       ignoreDefaultArgs: ['--hide-scrollbars'],
       args: ['--use-gl=egl'],
