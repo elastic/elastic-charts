@@ -125,7 +125,7 @@ test.describe('Bullet stories', () => {
   pwEach.describe([
     { subtype: 'vertical', width: '140px' },
     { subtype: 'horizontal', height: '85px' },
-    { subtype: 'two-thirds-circle', height: '195px' },
+    { subtype: 'two-thirds-circle', width: '200px', height: '140px' },
   ])(
     ({ subtype }) => `Bullet as Metric - ${subtype}`,
     ({ subtype, height, width }) => {
@@ -139,6 +139,23 @@ test.describe('Bullet stories', () => {
                 action: async () => await common.setResizeDimensions(page)({ height, width }),
               },
             );
+          },
+        );
+      });
+    },
+  );
+
+  pwEach.describe([
+    { name: 'horizontal', subtype: 'two-thirds-circle', height: '115px' },
+    { name: 'vertical', subtype: 'two-thirds-circle', width: '150px' },
+  ])(
+    ({ name }) => `Angular degraded to linear - ${name}`,
+    ({ subtype, height, width }) => {
+      test('should render linear bullet', async ({ page }) => {
+        await common.expectChartAtUrlToMatchScreenshot(page)(
+          `http://localhost:9001/?path=/story/bullet-graph--single&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-debug=&knob-title_General=Error rate&knob-subtitle_General=&knob-value_General=50&knob-target_General=100&knob-start_General=4&knob-end_General=167&knob-format (numeraljs)_General=0.[0]&knob-subtype_General=${subtype}&knob-niceDomain_Ticks=false&knob-tick strategy_Ticks=auto&knob-ticks(approx. count)_Ticks=10`,
+          {
+            action: async () => await common.setResizeDimensions(page)({ height, width }),
           },
         );
       });
