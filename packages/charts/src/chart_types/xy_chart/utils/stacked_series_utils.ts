@@ -46,16 +46,12 @@ export function formatStackedDataSeriesValues(
   seriesType: SeriesType,
   stackMode?: StackMode,
 ): DataSeries[] {
-  const dataSeriesMap = dataSeries.reduce<Map<SeriesKey, DataSeries>>((acc, curr) => {
-    return acc.set(curr.key, curr);
-  }, new Map());
   let hasNegative = false;
   let hasPositive = false;
 
   // `fillSeries` pads every stacked series to one datum per x value and `getSortedDataSeries` puts
   // them in `xValues` order, so `data[j]` is normally the datum at the jth x: index instead of look up
-  const seriesList = [...dataSeriesMap.values()];
-  const isDense = seriesList.every(({ data }) => data.length === xValues.size);
+  const isDense = dataSeries.every(({ data }) => data.length === xValues.size);
 
   // group data series by x values
   const xMap: XValueMap = new Map();
@@ -84,9 +80,9 @@ export function formatStackedDataSeriesValues(
 
   const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
   const stack = D3Stack<XValueSeriesDatum, number>()
-    .keys(seriesList.map((_, index) => index))
+    .keys(dataSeries.map((_, index) => index))
     .value(([, indexMap], seriesIndex, xIndex) => {
-      const series = seriesList[seriesIndex];
+      const series = dataSeries[seriesIndex];
       if (!series || filteredKeys.has(series.key)) return 0; // hides filtered series while maintaining their existence
       const datum = isDense ? series.data[xIndex] : indexMap.get(series.key);
       return datum ? datum.y1 ?? 0 : 0;
@@ -105,7 +101,7 @@ export function formatStackedDataSeriesValues(
 
   const formattedDataSeries: DataSeries[] = [];
   for (const stackedSeries of stack) {
-    const dataSeriesProps = seriesList[stackedSeries.key];
+    const dataSeriesProps = dataSeries[stackedSeries.key];
     if (!dataSeriesProps) continue;
     const { key, data: seriesData } = dataSeriesProps;
     const data: DataSeriesDatum[] = [];
