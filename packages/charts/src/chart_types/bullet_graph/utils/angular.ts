@@ -68,7 +68,7 @@ export function getAngledChartSizing(
 }
 
 /**
- * Smallest graph area where the inner arc is at least `MIN_ANGULAR_RADIUS`
+ * Smallest graph size that satisfies the inner arc radius be at least `MIN_ANGULAR_RADIUS`
  * @internal
  */
 export function getMinAngularChartSize(subtype: AngularBulletSubtypes): Size {
@@ -81,8 +81,8 @@ export function getMinAngularChartSize(subtype: AngularBulletSubtypes): Size {
 }
 
 /**
- * Linear subtype to degrade to when the graph area is too far from the arc's natural aspect ratio,
- * or `null` while the arc has enough space.
+ * Linear subtype to degrade to when the graph aspect ratio tall/wide to fit the angular aspect ratio.
+ * Returns 'null' when there's no need to degrade.
  * @internal
  */
 export function getAngularAspectFallback(
@@ -92,6 +92,8 @@ export function getAngularAspectFallback(
   const { maxWidth, maxHeight } = getAngledChartSizing(graphSize, subtype);
   const aspect = maxWidth / maxHeight;
 
+  // these were empirically chosen. horizontal threshold is higher as labels run along the bullet
+  // while vertical take up horizontal space.
   if (aspect > 4.5) return BulletSubtype.horizontal;
   if (aspect < 1 / 3.5) return BulletSubtype.vertical;
 

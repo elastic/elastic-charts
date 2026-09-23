@@ -37,8 +37,9 @@ const getEffectiveSubtype = (subtype: BulletSubtype, graphSize: Size): BulletSub
     : getAngularAspectFallback(graphSize, subtype) ?? subtype;
 
 /**
- * Resolves how the chart is rendered. Degrades an angular subtype to a linear one when the
- * panel is too tall/wide, and then to a metric when that no longer works.
+ * Resolves how the chart is rendered. If too small to render the chart, renders a metric instead.
+ * In the angular subtype cases, if the graph aspect ratio tall/wide to fit the angular aspect ratio, degrades to a
+ * linear subtype.
  * @internal
  */
 export const getRenderMode = createCustomCachedSelector(

@@ -28,7 +28,8 @@ import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, BAR_STROKE_WIDTH, TARGE
 function getTickLabelBox(angle: Radian, radius: number, width: number) {
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
-  // Alignment works by shifting the label's edge by a fraction of its width (0 left, 1 right, 0.5 center)
+  // offsets from the arc center
+  // Shifted by (1+cos)/2 and (1+sin)/2 from the original tick position on the circle so text grows inward.
   const x0 = Math.round(cos * radius - (width * (1 + cos)) / 2);
   const y0 = Math.round(sin * radius - (TICK_FONT_SIZE * (1 + sin)) / 2);
 
