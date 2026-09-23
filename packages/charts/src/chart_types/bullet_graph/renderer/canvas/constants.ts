@@ -9,7 +9,7 @@
 /** @internal */
 export const TARGET_SIZE = 40;
 
-const MIN_INNER_RADIUS = 12;
+const MIN_INNER_RADIUS = 16;
 
 /** @internal */
 export const MIN_ANGULAR_RADIUS = TARGET_SIZE / 2 + MIN_INNER_RADIUS;

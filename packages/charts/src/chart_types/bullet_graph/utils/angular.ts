@@ -92,8 +92,8 @@ export function getAngularAspectFallback(
   const { maxWidth, maxHeight } = getAngledChartSizing(graphSize, subtype);
   const aspect = maxWidth / maxHeight;
 
-  if (aspect > 5) return BulletSubtype.horizontal;
-  if (aspect < 1 / 3) return BulletSubtype.vertical;
+  if (aspect > 4.5) return BulletSubtype.horizontal;
+  if (aspect < 1 / 3.5) return BulletSubtype.vertical;
 
   return null;
 }
