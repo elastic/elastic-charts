@@ -113,18 +113,16 @@ export function formatStackedDataSeriesValues(
     for (const row of stackedSeries) {
       const d = isDense ? seriesData[xIndex++] : row.data[1].get(key);
       if (!d || d.x === undefined || d.x === null) continue;
-      const { initialY0, initialY1, mark, datum, filled, x } = d;
-      const [y0, y1] = row;
 
       data.push({
-        x,
-        y1: clampStackedValue(y1),
-        y0: clampStackedValue(y0),
-        initialY0,
-        initialY1,
-        mark,
-        datum,
-        filled,
+        x: d.x,
+        y1: clampStackedValue(row[1]),
+        y0: clampStackedValue(row[0]),
+        initialY0: d.initialY0,
+        initialY1: d.initialY1,
+        mark: d.mark,
+        datum: d.datum,
+        filled: d.filled,
       });
     }
     formattedDataSeries.push({
