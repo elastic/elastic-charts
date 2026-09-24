@@ -9,11 +9,12 @@
 import { TAU } from '../../../common/constants';
 import { clamp } from '../../../utils/common';
 import type { Size } from '../../../utils/dimensions';
-import { TARGET_SIZE } from '../renderer/canvas/constants';
+import { MIN_ANGULAR_RADIUS, TARGET_SIZE } from '../renderer/canvas/constants';
 import { BulletSubtype } from '../spec';
 import { GRAPH_PADDING } from '../theme';
 
-type AngularBulletSubtypes = Extract<BulletSubtype, 'circle' | 'half-circle' | 'two-thirds-circle'>;
+/** @internal */
+export type AngularBulletSubtypes = Extract<BulletSubtype, 'circle' | 'half-circle' | 'two-thirds-circle'>;
 
 const sizeAngles: Record<AngularBulletSubtypes, { startAngle: number; endAngle: number }> = {
   [BulletSubtype.halfCircle]: {
@@ -64,4 +65,37 @@ export function getAngledChartSizing(
   const radius = Math.min(maxWidth, modifiedHeight) / 2 - TARGET_SIZE / 2;
 
   return { maxWidth, maxHeight: modifiedHeight, radius };
+}
+
+/**
+ * Smallest graph size that satisfies the inner arc radius be at least `MIN_ANGULAR_RADIUS`
+ * @internal
+ */
+export function getMinAngularChartSize(subtype: AngularBulletSubtypes): Size {
+  const extent = MIN_ANGULAR_RADIUS * 2 + TARGET_SIZE;
+
+  return {
+    width: extent + GRAPH_PADDING.left + GRAPH_PADDING.right,
+    height: extent * heightModifiers[subtype] + GRAPH_PADDING.top + GRAPH_PADDING.bottom,
+  };
+}
+
+/**
+ * Linear subtype to degrade to when the graph aspect ratio tall/wide to fit the angular aspect ratio.
+ * Returns 'null' when there's no need to degrade.
+ * @internal
+ */
+export function getAngularAspectFallback(
+  graphSize: Size,
+  subtype: AngularBulletSubtypes,
+): Extract<BulletSubtype, 'horizontal' | 'vertical'> | null {
+  const { maxWidth, maxHeight } = getAngledChartSizing(graphSize, subtype);
+  const aspect = maxWidth / maxHeight;
+
+  // these were empirically chosen. horizontal threshold is higher as labels run along the bullet
+  // while vertical take up horizontal space.
+  if (aspect > 4.5) return BulletSubtype.horizontal;
+  if (aspect < 1 / 3.5) return BulletSubtype.vertical;
+
+  return null;
 }

@@ -7,6 +7,7 @@
  */
 
 import type { Color } from '../../../../../common/colors';
+import type { Radian } from '../../../../../common/geometry';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { renderDebugPoint } from '../../../../../renderers/canvas/utils/debug';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -15,12 +16,25 @@ import type { ContinuousDomain, GenericDomain } from '../../../../../utils/domai
 import { drawPolarLine } from '../../../../xy_chart/renderer/canvas/lines';
 import type { ActiveValue } from '../../../selectors/get_active_values';
 import type { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
-import type { BulletSpec } from '../../../spec';
 import { BulletSubtype } from '../../../spec';
 import type { BulletStyle } from '../../../theme';
 import { GRAPH_PADDING, TICK_FONT_SIZE, getTickFont } from '../../../theme';
 import { getAngledChartSizing } from '../../../utils/angular';
 import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, BAR_STROKE_WIDTH, TARGET_STROKE_WIDTH } from '../constants';
+
+/**
+ * Box a tick label occupies relative to the arc center, the label grows inwards.
+ */
+function getTickLabelBox(angle: Radian, radius: number, width: number) {
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  // offsets from the arc center
+  // Shifted by (1+cos)/2 and (1+sin)/2 from the original tick position on the circle so text grows inward.
+  const x0 = Math.round(cos * radius - (width * (1 + cos)) / 2);
+  const y0 = Math.round(sin * radius - (TICK_FONT_SIZE * (1 + sin)) / 2);
+
+  return { x0, y0, x1: x0 + width, y1: y0 + TICK_FONT_SIZE };
+}
 
 /** @internal */
 export function angularBullet(
@@ -29,13 +43,12 @@ export function angularBullet(
   style: BulletStyle,
   backgroundColor: Color,
   hasStroke: boolean,
-  spec: BulletSpec,
   debug: boolean,
   activeValue?: ActiveValue | null,
 ) {
   const tickFont = getTickFont(style.fontFamily);
-  const { datum, graphArea, scale, ticks, colorBands } = dimensions;
-  const { radius } = getAngledChartSizing(graphArea.size, spec.subtype);
+  const { datum, graphArea, scale, ticks, colorBands, subtype } = dimensions;
+  const { radius } = getAngledChartSizing(graphArea.size, subtype);
 
   const [start, end] = scale.domain() as GenericDomain;
 
@@ -48,7 +61,7 @@ export function angularBullet(
 
   const [min, max] = sortNumbers([start, end]) as ContinuousDomain;
   const filteredTicks =
-    spec.subtype !== BulletSubtype.circle
+    subtype !== BulletSubtype.circle
       ? ticks
       : min === ticks.at(0) && max === ticks.at(-1)
         ? ticks.slice(0, -1)
@@ -148,27 +161,38 @@ export function angularBullet(
   }
 
   const measure = measureText(ctx);
-  // Assumes mostly homogenous formatting
-  const maxTickWidth = formatterColorTicks.reduce((acc, t) => {
-    const { width } = measure(t.formattedValue, tickFont, TICK_FONT_SIZE);
-    return Math.max(acc, width);
-  }, 0);
+  const innerRadius = radius - BULLET_SIZE / 2 - style.angularTickLabelPadding;
 
-  // Tick labels
-  ctx.fillStyle = style.textColor;
-  ctx.textBaseline = 'middle';
-  ctx.font = cssFontShorthand(tickFont, TICK_FONT_SIZE);
-  formatterColorTicks
+  const tickLabels = formatterColorTicks
     .filter((tick) => tick.value >= min && tick.value <= max)
-    .forEach((tick) => {
-      ctx.textAlign = 'center';
-      const textPadding = style.angularTickLabelPadding + maxTickWidth / 2;
-      const tickAngle = scale(tick.value);
-      const y1 = Math.sin(tickAngle) * (radius - BULLET_SIZE / 2 - textPadding);
-      const x1 = Math.cos(tickAngle) * (radius - BULLET_SIZE / 2 - textPadding);
+    .map((tick) => {
+      const { width } = measure(tick.formattedValue, tickFont, TICK_FONT_SIZE);
 
-      ctx.fillText(tick.formattedValue, center.x + x1, center.y + y1);
+      return {
+        formattedValue: tick.formattedValue,
+        ...getTickLabelBox(scale(tick.value), innerRadius, width),
+      };
     });
+
+  // are any labels overlapping the bullet
+  const touchesBand = tickLabels.some(({ x0, y0, x1, y1 }) =>
+    [Math.hypot(x0, y0), Math.hypot(x0, y1), Math.hypot(x1, y0), Math.hypot(x1, y1)].some(
+      (cornerRadius) => cornerRadius > radius - BULLET_SIZE / 2,
+    ),
+  );
+
+  // it's quadratic but there are only a few labels so should be fine.
+  const hasCollision = tickLabels.some((a, i) =>
+    tickLabels.some((b, j) => j > i && a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1),
+  );
+
+  if (!touchesBand && !hasCollision) {
+    ctx.fillStyle = style.textColor;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.font = cssFontShorthand(tickFont, TICK_FONT_SIZE);
+    tickLabels.forEach(({ formattedValue, x0, y0 }) => ctx.fillText(formattedValue, center.x + x0, center.y + y0));
+  }
 
   if (activeValue) {
     ctx.beginPath();
