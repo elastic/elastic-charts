@@ -1,7 +1,6 @@
 {
   "extends": "../tsconfig",
   "compilerOptions": {
-    "target": "es2019",
     "resolveJsonModule": true
   },
   "include": ["../packages/charts/src/**/*", "./**/*", "../scripts/custom_matchers.mock.ts"],

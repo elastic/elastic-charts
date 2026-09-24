@@ -1,8 +1,6 @@
 {
   "extends": "../../tsconfig",
   "compilerOptions": {
-    "downlevelIteration": true,
-    "target": "ES2019",
     "module": "es2015",
     "lib": ["ESNext", "dom"]
   },
