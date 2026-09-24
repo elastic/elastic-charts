@@ -1,8 +1,7 @@
 {
   "extends": "../../tsconfig",
   "compilerOptions": {
-    "module": "es2015",
-    "lib": ["ESNext", "dom"]
+    "module": "ES2022"
   },
   "include": ["../../packages/charts/src/**/*", "./**/*"],
   "exclude": ["../../**/*.test.*"]
