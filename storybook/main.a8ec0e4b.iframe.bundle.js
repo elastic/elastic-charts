@@ -96653,7 +96653,7 @@ exports.LIGHT_TEXT_COLORS = {
  */
 
 exports.DARK_BACKGROUND_COLORS = {
-  backgroundBasePlain: exports.SEMANTIC_COLORS.shade145,
+  backgroundBasePlain: exports.SEMANTIC_COLORS.shade140,
   backgroundBaseDisabled: exports.SEMANTIC_COLORS.shade130,
   backgroundBaseInteractiveHover: exports.SEMANTIC_ALPHA_COLORS.plainLightAlpha8,
   backgroundFilledPrimary: exports.SEMANTIC_COLORS.primary60,
@@ -181474,4 +181474,4 @@ module.exports = __webpack_require__(/*! /app/storybook/generated-stories-entry.
 /***/ })
 
 },[[0,"runtime~main","vendors~main"]]]);
-//# sourceMappingURL=main.abf9fe07.iframe.bundle.js.map
+//# sourceMappingURL=main.a8ec0e4b.iframe.bundle.js.map
