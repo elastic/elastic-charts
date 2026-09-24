@@ -44,13 +44,14 @@ fi
 # Run e2e playwright tests inside container
 docker run \
   --ipc host `# recommended by playwright, see https://playwright.dev/docs/docker#end-to-end-tests` \
-  --platform linux/arm64 `# explicitly set platform` \
+  --platform linux/amd64 `# explicitly set platform` \
   --rm `# removes named container on every run` \
   --init `# handles terminating signals like SIGTERM` \
   --name ${CONTAINER_NAME} `# reusable name of container` \
   -e PORT=${PORT} `# port of local web server ` \
   -e ENV_URL=${ENV_URL} `# url of web server, overrides hostname and PORT ` \
   -e PLAYWRIGHT_HTML_REPORT=${PLAYWRIGHT_HTML_REPORT} `# where to save the playwright html report ` \
+  -e VRT_FAST=${VRT_FAST} `# trades diagnostics for speed on local runs ` \
   -w /app/e2e `# working directory` \
   -v $(pwd)/:/app/e2e `# mount local e2e/ directory in app/e2e directory in container` \
   -v $(pwd)/../e2e_server/tmp/:/app/e2e_server/tmp `# mount required example.json file in container` \

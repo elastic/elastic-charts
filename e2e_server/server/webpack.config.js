@@ -42,7 +42,7 @@ module.exports = {
     },
     static: {
       directory: path.resolve(__dirname, '../../public'),
-      publicPath: '/public',
+      publicPath: '/',
     },
   },
   module: {
