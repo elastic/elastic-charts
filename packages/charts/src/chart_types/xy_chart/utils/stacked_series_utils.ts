@@ -14,7 +14,7 @@ import type { DataSeries, DataSeriesDatum } from './series';
 import { SeriesType, StackMode } from './specs';
 import type { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { clamp, isDefined } from '../../../utils/common';
+import { clamp } from '../../../utils/common';
 import { Logger } from '../../../utils/logger';
 
 /** @internal */
@@ -46,29 +46,29 @@ export function formatStackedDataSeriesValues(
   seriesType: SeriesType,
   stackMode?: StackMode,
 ): DataSeries[] {
-  const dataSeriesMap = dataSeries.reduce<Map<SeriesKey, DataSeries>>((acc, curr) => {
-    return acc.set(curr.key, curr);
-  }, new Map());
   let hasNegative = false;
   let hasPositive = false;
+
+  // `fillSeries` pads every stacked series to one datum per x value and `getSortedDataSeries` puts
+  // them in `xValues` order, so `data[j]` is normally the datum at the jth x: index instead of look up
+  const isDense = dataSeries.every(({ data }) => data.length === xValues.size);
 
   // group data series by x values
   const xMap: XValueMap = new Map();
   for (const xValue of xValues) {
-    xMap.set(xValue, new Map<SeriesKey, DataSeriesDatum & { isFiltered: boolean }>());
+    xMap.set(xValue, new Map<SeriesKey, DataSeriesDatum>());
   }
+  const filteredKeys = new Set<SeriesKey>();
   for (const { key, data, isFiltered } of dataSeries) {
-    const y0Key = `${key}-y0`;
+    if (isFiltered) filteredKeys.add(key);
     for (const datum of data) {
-      const seriesMap = xMap.get(datum.x);
-      if (!seriesMap || seriesMap.has(key)) continue;
       const y1 = datum.y1 ?? 0;
       if (y1 > 0) hasPositive = true;
       if (y1 < 0) hasNegative = true;
-      const newDatum = datum as DataSeriesDatum & { isFiltered: boolean };
-      newDatum.isFiltered = isFiltered;
-      seriesMap.set(y0Key, newDatum);
-      seriesMap.set(key, newDatum);
+      if (isDense) continue;
+      const seriesMap = xMap.get(datum.x);
+      if (!seriesMap || seriesMap.has(key)) continue;
+      seriesMap.set(key, datum);
     }
   }
 
@@ -78,58 +78,55 @@ export function formatStackedDataSeriesValues(
     );
   }
 
-  const keys = [...dataSeriesMap.keys()].flatMap((key) => [`${key}-y0`, key]);
   const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
-  const stack = D3Stack<XValueSeriesDatum>()
-    .keys(keys)
-    .value(([, indexMap], key) => {
-      const datum = indexMap.get(key);
-      if (!datum || datum.isFiltered) return 0; // hides filtered series while maintaining their existence
-      return key.endsWith('-y0') ? datum.y0 ?? 0 : datum.y1 ?? 0;
+  const stack = D3Stack<XValueSeriesDatum, number>()
+    .keys(dataSeries.map((_, index) => index))
+    .value(([, indexMap], seriesIndex, xIndex) => {
+      const series = dataSeries[seriesIndex];
+      if (!series || filteredKeys.has(series.key)) return 0; // hides filtered series while maintaining their existence
+      const datum = isDense ? series.data[xIndex] : indexMap.get(series.key);
+      return datum ? datum.y1 ?? 0 : 0;
     })
     .order(stackOrderNone)
-    .offset(stackOffset)(xMap)
-    .filter(({ key }) => !key.endsWith('-y0'));
+    .offset(stackOffset)(xMap);
 
-  return stack
-    .map<DataSeries | null>((stackedSeries) => {
-      const dataSeriesProps = dataSeriesMap.get(stackedSeries.key);
-      if (!dataSeriesProps) return null;
-      const data = stackedSeries
-        .map<DataSeriesDatum | null>((row) => {
-          const d = row.data[1].get(stackedSeries.key);
-          if (!d || d.x === undefined || d.x === null) return null;
-          const { initialY0, initialY1, mark, datum, filled, x } = d;
-          const [y0, y1] = row;
+  /**
+   * Due to floating point errors, values computed on a stack
+   * could falls out of the current defined domain boundaries.
+   * This in particular cause issues with percent stack, where the domain
+   * is hardcoded to [0,1] and some value can fall outside that domain.
+   */
+  const clampStackedValue =
+    stackMode === StackMode.Percentage ? (value: number) => clamp(value, 0, 1) : (value: number) => value;
 
-          return {
-            x,
-            /**
-             * Due to floating point errors, values computed on a stack
-             * could falls out of the current defined domain boundaries.
-             * This in particular cause issues with percent stack, where the domain
-             * is hardcoded to [0,1] and some value can fall outside that domain.
-             */
-            y1: clampIfStackedAsPercentage(y1, stackMode),
-            y0: clampIfStackedAsPercentage(y0, stackMode),
-            initialY0,
-            initialY1,
-            mark,
-            datum,
-            filled,
-          };
-        })
-        .filter(isDefined);
-      return {
-        ...dataSeriesProps,
-        data,
-      };
-    })
-    .filter(isDefined);
-}
+  const formattedDataSeries: DataSeries[] = [];
+  for (const stackedSeries of stack) {
+    const dataSeriesProps = dataSeries[stackedSeries.key];
+    if (!dataSeriesProps) continue;
+    const { key, data: seriesData } = dataSeriesProps;
+    const data: DataSeriesDatum[] = [];
+    let xIndex = 0;
+    for (const row of stackedSeries) {
+      const d = isDense ? seriesData[xIndex++] : row.data[1].get(key);
+      if (!d || d.x === undefined || d.x === null) continue;
 
-function clampIfStackedAsPercentage(value: number, stackMode?: StackMode) {
-  return stackMode === StackMode.Percentage ? clamp(value, 0, 1) : value;
+      data.push({
+        x: d.x,
+        y1: clampStackedValue(row[1]),
+        y0: clampStackedValue(row[0]),
+        initialY0: d.initialY0,
+        initialY1: d.initialY1,
+        mark: d.mark,
+        datum: d.datum,
+        filled: d.filled,
+      });
+    }
+    formattedDataSeries.push({
+      ...dataSeriesProps,
+      data,
+    });
+  }
+  return formattedDataSeries;
 }
 
 function getOffsetBasedOnStackMode(stackMode?: StackMode, onlyNegative = false) {
