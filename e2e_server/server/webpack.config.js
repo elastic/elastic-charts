@@ -113,8 +113,9 @@ module.exports = {
     },
     extensions: ['.tsx', '.ts', '.js'],
     fallback: {
-      // webpack 5 no longer polyfills node core modules; EUI's markdown deps (vfile, replace-ext) need `path`
-      path: require.resolve('path-browserify'),
+      // webpack 5 no longer polyfills node core modules; EUI's markdown deps (vfile, replace-ext) import `path`
+      // but it's never called, as no story renders EUI markdown
+      path: false,
     },
   },
   optimization:

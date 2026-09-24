@@ -67,6 +67,14 @@ module.exports = ({ config }) => {
     );
   }
 
+  // Storybook's default babel config has no preset-env targets (i.e. ES5), so keep it off TS sources:
+  // ts-loader alone compiles them to the tsconfig ES2022 target, as in the charts package build
+  config.module.rules
+    .filter((r) => r?.use?.some?.((u) => /babel-loader/.test(u?.loader)) && r.test?.test?.('.tsx'))
+    .forEach((r) => {
+      r.test = /\.(mjs|jsx?)$/;
+    });
+
   config.module.rules.push({
     test: /\.tsx?$/,
     loader: 'ts-loader',
