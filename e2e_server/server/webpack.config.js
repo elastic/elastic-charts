@@ -133,6 +133,7 @@ module.exports = {
       favicon: '../../public/favicon.ico',
     }),
     new webpack.EnvironmentPlugin({ RNG_SEED: null, VRT: 'true' }),
+    new webpack.ProvidePlugin({ process: 'process/browser.js' }),
     new MiniCssExtractPlugin(),
     new SpeedMeasurePlugin(),
   ],
