@@ -51,7 +51,10 @@ export function formatStackedDataSeriesValues(
 
   // `fillSeries` pads every stacked series to one datum per x value and `getSortedDataSeries` puts
   // them in `xValues` order, so `data[j]` is normally the datum at the jth x: index instead of look up
-  const isDense = dataSeries.every(({ data }) => data.length === xValues.size);
+  const xArray = [...xValues];
+  const isDense = dataSeries.every(
+    ({ data }) => data.length === xArray.length && data.every((d, j) => d.x === xArray[j]),
+  );
 
   // group data series by x values
   const xMap: XValueMap = new Map();
