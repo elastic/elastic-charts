@@ -133,7 +133,7 @@ export const Example: ChartsStory = (_, context) => {
               window.performance.mark('Perf:Ended');
               const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');
               // eslint-disable-next-line no-console
-              console.log(`chart rendered in ${(duration / 1000).toFixed(1)}s`);
+              console.log(`chart rendered in ${duration.toFixed(0)} ms`);
             }
           }}
         />
