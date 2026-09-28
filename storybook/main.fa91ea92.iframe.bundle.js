@@ -45030,8 +45030,6 @@ var common_1 = __webpack_require__(/*! ../../../utils/common */ "../packages/cha
 
 var geometry_1 = __webpack_require__(/*! ../../../utils/geometry */ "../packages/charts/src/utils/geometry.ts");
 
-var indexed_geometry_map_1 = __webpack_require__(/*! ../utils/indexed_geometry_map */ "../packages/charts/src/chart_types/xy_chart/utils/indexed_geometry_map.ts");
-
 var series_1 = __webpack_require__(/*! ../utils/series */ "../packages/charts/src/chart_types/xy_chart/utils/series.ts");
 
 var specs_1 = __webpack_require__(/*! ../utils/specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
@@ -45042,25 +45040,18 @@ var FONT_SIZE_FACTOR = 0.7; // Take 70% of space for the label text
 
 /** @internal */
 
-function renderBars(measureText, orderIndex, dataSeries, xScale, yScale, panel, chartRotation, minBarHeight, color, isBandedSpec, sharedSeriesStyle, displayValueSettings, styleAccessor, stackMode) {
-  var initialBarTuple = {
-    barGeometries: [],
-    indexedGeometryMap: new indexed_geometry_map_1.IndexedGeometryMap()
-  };
+function renderBars(measureText, orderIndex, dataSeries, xScale, yScale, panel, chartRotation, minBarHeight, color, isBandedSpec, sharedSeriesStyle, targetGeometryIndex, displayValueSettings, styleAccessor, stackMode) {
   var y1Fn = (0, utils_1.getY1ScaledValueFn)(yScale);
   var y0Fn = (0, utils_1.getY0ScaledValueFn)(yScale);
   var seriesIdentifier = (0, series_1.getSeriesIdentifierFromDataSeries)(dataSeries);
-  return dataSeries.data.reduce(function (barTuple, datum) {
-    var _seriesStyle$rect$wid, _seriesStyle$rect$wid2, _seriesStyle$rect$wid3;
-
+  var sharedWidth = clampedBarWidth(sharedSeriesStyle, xScale.bandwidth);
+  return dataSeries.data.reduce(function (barGeometries, datum) {
     var xScaled = xScale.scale(datum.x);
 
     if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
-      return barTuple; // don't create a bar if not within the xScale domain
+      return barGeometries; // don't create a bar if not within the xScale domain
     }
 
-    var barGeometries = barTuple.barGeometries,
-        indexedGeometryMap = barTuple.indexedGeometryMap;
     var y1 = datum.y1,
         initialY1 = datum.initialY1,
         filled = datum.filled;
@@ -45075,9 +45066,7 @@ function renderBars(measureText, orderIndex, dataSeries, xScale, yScale, panel, 
 
     var height = yDiff + addedMinBarHeight;
     var seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
-    var maxPixelWidth = (0, common_1.clamp)((_seriesStyle$rect$wid = seriesStyle.rect.widthRatio) !== null && _seriesStyle$rect$wid !== void 0 ? _seriesStyle$rect$wid : 1, 0, 1) * xScale.bandwidth;
-    var minPixelWidth = (0, common_1.clamp)((_seriesStyle$rect$wid2 = seriesStyle.rect.widthPixel) !== null && _seriesStyle$rect$wid2 !== void 0 ? _seriesStyle$rect$wid2 : 0, 0, maxPixelWidth);
-    var width = (0, common_1.clamp)((_seriesStyle$rect$wid3 = seriesStyle.rect.widthPixel) !== null && _seriesStyle$rect$wid3 !== void 0 ? _seriesStyle$rect$wid3 : xScale.bandwidth, minPixelWidth, maxPixelWidth);
+    var width = seriesStyle === sharedSeriesStyle ? sharedWidth : clampedBarWidth(seriesStyle, xScale.bandwidth);
     var x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
     var y1Value = (0, points_1.getDatumYValue)(datum, false, isBandedSpec, stackMode);
     var shouldDisplayValue = (displayValueSettings === null || displayValueSettings === void 0 ? void 0 : displayValueSettings.showValueLabel) && // only show displayValue for even bars if isAlternatingValueLabel
@@ -45107,7 +45096,7 @@ function renderBars(measureText, orderIndex, dataSeries, xScale, yScale, panel, 
 
     if (isBandedSpec) {
       // index also the Y0 value with the same geometry
-      indexedGeometryMap.set(Object.assign({}, barGeometry, {
+      targetGeometryIndex.set(Object.assign({}, barGeometry, {
         value: {
           x: datum.x,
           y: (0, points_1.getDatumYValue)(datum, true, isBandedSpec, stackMode),
@@ -45118,14 +45107,23 @@ function renderBars(measureText, orderIndex, dataSeries, xScale, yScale, panel, 
       }));
     }
 
-    indexedGeometryMap.set(barGeometry);
+    targetGeometryIndex.set(barGeometry);
 
     if (y1 !== null && initialY1 !== null && (filled === null || filled === void 0 ? void 0 : filled.y1) === undefined) {
       barGeometries.push(barGeometry);
     }
 
-    return barTuple;
-  }, initialBarTuple);
+    return barGeometries;
+  }, []);
+}
+
+function clampedBarWidth(_ref, bandwidth) {
+  var _rect$widthRatio, _rect$widthPixel, _rect$widthPixel2;
+
+  var rect = _ref.rect;
+  var maxPixelWidth = (0, common_1.clamp)((_rect$widthRatio = rect.widthRatio) !== null && _rect$widthRatio !== void 0 ? _rect$widthRatio : 1, 0, 1) * bandwidth;
+  var minPixelWidth = (0, common_1.clamp)((_rect$widthPixel = rect.widthPixel) !== null && _rect$widthPixel !== void 0 ? _rect$widthPixel : 0, 0, maxPixelWidth);
+  return (0, common_1.clamp)((_rect$widthPixel2 = rect.widthPixel) !== null && _rect$widthPixel2 !== void 0 ? _rect$widthPixel2 : bandwidth, minPixelWidth, maxPixelWidth);
 }
 
 function computeDisplayValue(y1Value, sharedSeriesStyle, measureText, chartRotation, width, displayValueSettings) {
@@ -45171,11 +45169,11 @@ function computeDisplayValue(y1Value, sharedSeriesStyle, measureText, chartRotat
  */
 
 
-function computeBoxWidth(text, _ref) {
-  var padding = _ref.padding,
-      fontSize = _ref.fontSize,
-      fontFamily = _ref.fontFamily,
-      measureText = _ref.measureText;
+function computeBoxWidth(text, _ref2) {
+  var padding = _ref2.padding,
+      fontSize = _ref2.fontSize,
+      fontFamily = _ref2.fontFamily,
+      measureText = _ref2.measureText;
   var fixedFontScale = Math.max(typeof fontSize === 'number' ? fontSize : fontSize.min, 1);
 
   if (text.length === 0) {
@@ -52981,12 +52979,13 @@ function renderGeometries(dataSeries, xDomain, yScales, smVScale, smHScale, barI
     bubbles: 0,
     bubblePoints: 0
   };
-  var barsPadding = enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding; // This var remains Infinity if we don't have points, or we just have a single point per series.
+  var barsPadding = enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding;
+  var xScales = new Map(); // This var remains Infinity if we don't have points, or we just have a single point per series.
   // In this case the point should be visible if the visibility style is set to `auto`
 
   var globalMinPointsDistance = Infinity;
   dataSeries.forEach(function (ds) {
-    var _barIndexOrderPerPane, _barIndexOrder$length;
+    var _barIndexOrderPerPane;
 
     var spec = (0, spec_1.getSpecsById)(seriesSpecs, ds.specId);
 
@@ -53005,13 +53004,20 @@ function renderGeometries(dataSeries, xDomain, yScales, smVScale, smHScale, barI
     var barPanelKey = [ds.smVerticalAccessorValue, ds.smHorizontalAccessorValue].join('|');
     var barIndexOrder = (_barIndexOrderPerPane = barIndexOrderPerPanel[barPanelKey]) !== null && _barIndexOrderPerPane !== void 0 ? _barIndexOrderPerPane : []; // compute x scale
 
-    var xScale = (0, scales_1.computeXScale)({
-      xDomain: xDomain,
-      totalBarsInCluster: (_barIndexOrder$length = barIndexOrder === null || barIndexOrder === void 0 ? void 0 : barIndexOrder.length) !== null && _barIndexOrder$length !== void 0 ? _barIndexOrder$length : 0,
-      range: [0, (0, common_1.isHorizontalRotation)(chartRotation) ? smHScale.bandwidth : smVScale.bandwidth],
-      barsPadding: barsPadding,
-      enableHistogramMode: enableHistogramMode
-    });
+    var totalBarsInCluster = barIndexOrder.length;
+    var xScale = xScales.get(totalBarsInCluster);
+
+    if (!xScale) {
+      xScale = (0, scales_1.computeXScale)({
+        xDomain: xDomain,
+        totalBarsInCluster: totalBarsInCluster,
+        range: [0, (0, common_1.isHorizontalRotation)(chartRotation) ? smHScale.bandwidth : smVScale.bandwidth],
+        barsPadding: barsPadding,
+        enableHistogramMode: enableHistogramMode
+      });
+      xScales.set(totalBarsInCluster, xScale);
+    }
+
     var stackMode = ds.stackMode;
     var leftPos = !(0, common_2.isNil)(ds.smHorizontalAccessorValue) && smHScale.scale(ds.smHorizontalAccessorValue) || 0;
     var topPos = !(0, common_2.isNil)(ds.smVerticalAccessorValue) && smVScale.scale(ds.smVerticalAccessorValue) || 0;
@@ -53043,13 +53049,12 @@ function renderGeometries(dataSeries, xDomain, yScales, smVScale, smHScale, barI
       var displayValueSettings = spec.displayValueSettings ? Object.assign({
         valueFormatter: valueFormatter
       }, spec.displayValueSettings) : undefined;
-      var renderedBars = (0, bars_1.renderBars)(measureText, shift, ds, xScale, yScale, panel, chartRotation, (_spec$minBarHeight = spec.minBarHeight) !== null && _spec$minBarHeight !== void 0 ? _spec$minBarHeight : 0, color, (0, series_1.isBandedSpec)(spec), barSeriesStyle, displayValueSettings, spec.styleAccessor, stackMode);
-      geometriesIndex.merge(renderedBars.indexedGeometryMap);
+      var renderedBars = (0, bars_1.renderBars)(measureText, shift, ds, xScale, yScale, panel, chartRotation, (_spec$minBarHeight = spec.minBarHeight) !== null && _spec$minBarHeight !== void 0 ? _spec$minBarHeight : 0, color, (0, series_1.isBandedSpec)(spec), barSeriesStyle, geometriesIndex, displayValueSettings, spec.styleAccessor, stackMode);
       bars.push({
         panel: panel,
-        value: renderedBars.barGeometries
+        value: renderedBars
       });
-      geometriesCounts.bars += renderedBars.barGeometries.length;
+      geometriesCounts.bars += renderedBars.length;
     } else if ((0, specs_1.isBubbleSeriesSpec)(spec)) {
       var bubbleShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
       var bubbleSeriesStyle = spec.bubbleSeriesStyle ? (0, common_2.mergePartial)(chartTheme.bubbleSeriesStyle, spec.bubbleSeriesStyle) : chartTheme.bubbleSeriesStyle;
@@ -56656,15 +56661,9 @@ __webpack_require__(/*! ../node_modules/core-js/modules/es.array.iterator.js */ 
 
 __webpack_require__(/*! ../node_modules/core-js/modules/web.dom-collections.iterator.js */ "../node_modules/core-js/modules/web.dom-collections.iterator.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.reduce.js */ "../node_modules/core-js/modules/es.array.reduce.js");
+__webpack_require__(/*! ../node_modules/core-js/modules/es.array.every.js */ "../node_modules/core-js/modules/es.array.every.js");
 
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.flat-map.js */ "../node_modules/core-js/modules/es.array.flat-map.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.unscopables.flat-map.js */ "../node_modules/core-js/modules/es.array.unscopables.flat-map.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.array.filter.js */ "../node_modules/core-js/modules/es.array.filter.js");
-
-__webpack_require__(/*! ../node_modules/core-js/modules/es.string.ends-with.js */ "../node_modules/core-js/modules/es.string.ends-with.js");
+__webpack_require__(/*! ../node_modules/core-js/modules/es.set.js */ "../node_modules/core-js/modules/es.set.js");
 
 __webpack_require__(/*! ../node_modules/core-js/modules/es.array.map.js */ "../node_modules/core-js/modules/es.array.map.js");
 
@@ -56739,11 +56738,18 @@ exports.datumXSortPredicate = datumXSortPredicate;
 /** @internal */
 
 function formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMode) {
-  var dataSeriesMap = dataSeries.reduce(function (acc, curr) {
-    return acc.set(curr.key, curr);
-  }, new Map());
   var hasNegative = false;
-  var hasPositive = false; // group data series by x values
+  var hasPositive = false; // `fillSeries` pads every stacked series to one datum per x value and `getSortedDataSeries` puts
+  // them in `xValues` order, so `data[j]` is normally the datum at the jth x: index instead of look up
+
+  var xArray = _toConsumableArray(xValues);
+
+  var isDense = dataSeries.every(function (_ref) {
+    var data = _ref.data;
+    return data.length === xArray.length && data.every(function (d, j) {
+      return d.x === xArray[j];
+    });
+  }); // group data series by x values
 
   var xMap = new Map();
 
@@ -56761,39 +56767,39 @@ function formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMod
     _iterator2.f();
   }
 
+  var filteredKeys = new Set();
+
   var _iterator3 = _createForOfIteratorHelper(dataSeries),
       _step3;
 
   try {
     for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-      var _ref = _step3.value;
-      var key = _ref.key;
-      var data = _ref.data;
-      var isFiltered = _ref.isFiltered;
-      var y0Key = key + "-y0";
+      var _ref2 = _step3.value;
+      var key = _ref2.key;
+      var data = _ref2.data;
+      var isFiltered = _ref2.isFiltered;
+      if (isFiltered) filteredKeys.add(key);
 
-      var _iterator4 = _createForOfIteratorHelper(data),
-          _step4;
+      var _iterator5 = _createForOfIteratorHelper(data),
+          _step5;
 
       try {
-        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-          var _datum$y3;
+        for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+          var _datum$y2;
 
-          var datum = _step4.value;
-          var seriesMap = xMap.get(datum.x);
-          if (!seriesMap || seriesMap.has(key)) continue;
-          var y1 = (_datum$y3 = datum.y1) !== null && _datum$y3 !== void 0 ? _datum$y3 : 0;
+          var datum = _step5.value;
+          var y1 = (_datum$y2 = datum.y1) !== null && _datum$y2 !== void 0 ? _datum$y2 : 0;
           if (y1 > 0) hasPositive = true;
           if (y1 < 0) hasNegative = true;
-          var newDatum = datum;
-          newDatum.isFiltered = isFiltered;
-          seriesMap.set(y0Key, newDatum);
-          seriesMap.set(key, newDatum);
+          if (isDense) continue;
+          var seriesMap = xMap.get(datum.x);
+          if (!seriesMap || seriesMap.has(key)) continue;
+          seriesMap.set(key, datum);
         }
       } catch (err) {
-        _iterator4.e(err);
+        _iterator5.e(err);
       } finally {
-        _iterator4.f();
+        _iterator5.f();
       }
     }
   } catch (err) {
@@ -56806,68 +56812,86 @@ function formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMod
     logger_1.Logger.warn("Area series should be avoided with dataset containing positive and negative values. Use a bar series instead.");
   }
 
-  var keys = _toConsumableArray(dataSeriesMap.keys()).flatMap(function (key) {
-    return [key + "-y0", key];
-  });
-
   var stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
-  var stack = (0, d3_shape_1.stack)().keys(keys).value(function (_ref2, key) {
-    var _datum$y, _datum$y2;
+  var stack = (0, d3_shape_1.stack)().keys(dataSeries.map(function (_, index) {
+    return index;
+  })).value(function (_ref3, seriesIndex, xIndex) {
+    var _datum$y;
 
-    var _ref3 = _slicedToArray(_ref2, 2),
-        indexMap = _ref3[1];
+    var _ref4 = _slicedToArray(_ref3, 2),
+        indexMap = _ref4[1];
 
-    var datum = indexMap.get(key);
-    if (!datum || datum.isFiltered) return 0; // hides filtered series while maintaining their existence
+    var series = dataSeries[seriesIndex];
+    if (!series || filteredKeys.has(series.key)) return 0; // hides filtered series while maintaining their existence
 
-    return key.endsWith('-y0') ? (_datum$y = datum.y0) !== null && _datum$y !== void 0 ? _datum$y : 0 : (_datum$y2 = datum.y1) !== null && _datum$y2 !== void 0 ? _datum$y2 : 0;
-  }).order(d3_shape_1.stackOrderNone).offset(stackOffset)(xMap).filter(function (_ref4) {
-    var key = _ref4.key;
-    return !key.endsWith('-y0');
-  });
-  return stack.map(function (stackedSeries) {
-    var dataSeriesProps = dataSeriesMap.get(stackedSeries.key);
-    if (!dataSeriesProps) return null;
-    var data = stackedSeries.map(function (row) {
-      var d = row.data[1].get(stackedSeries.key);
-      if (!d || d.x === undefined || d.x === null) return null;
-      var initialY0 = d.initialY0,
-          initialY1 = d.initialY1,
-          mark = d.mark,
-          datum = d.datum,
-          filled = d.filled,
-          x = d.x;
+    var datum = isDense ? series.data[xIndex] : indexMap.get(series.key);
+    return datum ? (_datum$y = datum.y1) !== null && _datum$y !== void 0 ? _datum$y : 0 : 0;
+  }).order(d3_shape_1.stackOrderNone).offset(stackOffset)(xMap);
+  /**
+   * Due to floating point errors, values computed on a stack
+   * could falls out of the current defined domain boundaries.
+   * This in particular cause issues with percent stack, where the domain
+   * is hardcoded to [0,1] and some value can fall outside that domain.
+   */
 
-      var _row = _slicedToArray(row, 2),
-          y0 = _row[0],
-          y1 = _row[1];
+  var clampStackedValue = stackMode === specs_1.StackMode.Percentage ? function (value) {
+    return (0, common_1.clamp)(value, 0, 1);
+  } : function (value) {
+    return value;
+  };
+  var formattedDataSeries = [];
 
-      return {
-        x: x,
+  var _iterator4 = _createForOfIteratorHelper(stack),
+      _step4;
 
-        /**
-         * Due to floating point errors, values computed on a stack
-         * could falls out of the current defined domain boundaries.
-         * This in particular cause issues with percent stack, where the domain
-         * is hardcoded to [0,1] and some value can fall outside that domain.
-         */
-        y1: clampIfStackedAsPercentage(y1, stackMode),
-        y0: clampIfStackedAsPercentage(y0, stackMode),
-        initialY0: initialY0,
-        initialY1: initialY1,
-        mark: mark,
-        datum: datum,
-        filled: filled
-      };
-    }).filter(common_1.isDefined);
-    return Object.assign({}, dataSeriesProps, {
-      data: data
-    });
-  }).filter(common_1.isDefined);
-}
+  try {
+    for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+      var stackedSeries = _step4.value;
+      var dataSeriesProps = dataSeries[stackedSeries.key];
+      if (!dataSeriesProps) continue;
+      var _dataSeriesProps = dataSeriesProps,
+          _key = _dataSeriesProps.key,
+          seriesData = _dataSeriesProps.data;
+      var _data = [];
+      var xIndex = 0;
 
-function clampIfStackedAsPercentage(value, stackMode) {
-  return stackMode === specs_1.StackMode.Percentage ? (0, common_1.clamp)(value, 0, 1) : value;
+      var _iterator6 = _createForOfIteratorHelper(stackedSeries),
+          _step6;
+
+      try {
+        for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+          var row = _step6.value;
+          var d = isDense ? seriesData[xIndex++] : row.data[1].get(_key);
+          if (!d || d.x === undefined || d.x === null) continue;
+
+          _data.push({
+            x: d.x,
+            y1: clampStackedValue(row[1]),
+            y0: clampStackedValue(row[0]),
+            initialY0: d.initialY0,
+            initialY1: d.initialY1,
+            mark: d.mark,
+            datum: d.datum,
+            filled: d.filled
+          });
+        }
+      } catch (err) {
+        _iterator6.e(err);
+      } finally {
+        _iterator6.f();
+      }
+
+      formattedDataSeries.push(Object.assign({}, dataSeriesProps, {
+        data: _data
+      }));
+    }
+  } catch (err) {
+    _iterator4.e(err);
+  } finally {
+    _iterator4.f();
+  }
+
+  return formattedDataSeries;
 }
 
 function getOffsetBasedOnStackMode(stackMode) {
@@ -173881,7 +173905,7 @@ exports.Example = void 0;
 // @ts-nocheck
 // @ts-ignore
 
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useEffect, useState } from 'react';\n\nimport type { SeriesColorAccessor, SeriesNameFn } from '@elastic/charts';\nimport { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip, TooltipType } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\n\n/**\n * Recreates the Kibana many-series performance journey chart\n * (`x-pack/performance/journeys_e2e/many_series_chart_dashboard.ts`).\n *\n * Lens emits 3 stacked `BarSeries` specs (one per y accessor), each split by\n * `order_id` (~649 values) so Elastic Charts materializes ~1947 series.\n * Histogram mode is on because Lens treats ES|QL date columns as interval\n * buckets even though this query has no `BUCKET()`.\n *\n * Dataset lives in `public/many_series_ecommerce.json` so Storybook and the\n * playground can both fetch it as static JSON.\n */\ntype EcommerceRow = {\n  order_date: number;\n  order_id: string;\n  total_quantity: number;\n  overallAvgQnt: number;\n  avgQnt: number;\n};\n\nconst Y_ACCESSORS = ['total_quantity', 'overallAvgQnt', 'avgQnt'] as const;\nconst LAYER_ID = '0b226fa9-39b4-44e7-82ae-97fbacfe964f';\nconst X_DOMAIN = { min: 1785322858728, max: 1786799230394 };\nconst PROFILE_LABEL = 'Perf:DataToRender';\n\n// EUI colorblind categorical palette used by Kibana's default Lens palette.\nconst PALETTE = [\n  '#54B399',\n  '#6092C0',\n  '#D36086',\n  '#9170B8',\n  '#CA8EAE',\n  '#D6BF57',\n  '#B9A888',\n  '#DA8B45',\n  '#AA6556',\n  '#E7664C',\n];\n\nfunction buildColorAccessor(rows: EcommerceRow[]): SeriesColorAccessor {\n  const colorByOrderId = new Map<string, string>();\n  for (const row of rows) {\n    if (!colorByOrderId.has(row.order_id)) {\n      colorByOrderId.set(row.order_id, PALETTE[colorByOrderId.size % PALETTE.length]);\n    }\n  }\n  return ({ splitAccessors }) => {\n    const orderId = String(splitAccessors.get('order_id') ?? '');\n    return colorByOrderId.get(orderId) ?? PALETTE[0];\n  };\n}\n\nexport const Example: ChartsStory = (_, context) => {\n  const title = context?.title;\n  const description = context?.description;\n  const [data, setData] = useState<EcommerceRow[]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    async function fetchData() {\n      \n      console.log('requesting data');\n      const response = await fetch('many_series_ecommerce.json');\n      const d: EcommerceRow[] = await response.json();\n      \n      console.log('data arrived');\n\n      window.performance.mark('Perf:Started');\n      setData(d);\n    }\n    fetchData().catch(() => {});\n  }, [runId]);\n\n  const theme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </>\n    );\n  }\n\n  const color = buildColorAccessor(data);\n\n  return (\n    <>\n      {renderButton}\n      <Chart title={title} description={description}>\n        <Tooltip type={TooltipType.VerticalCursor} />\n        <Settings\n          showLegend\n          legendPosition={Position.Right}\n          legendSize={50}\n          legendValues={[]}\n          rotation={0}\n          xDomain={X_DOMAIN}\n          allowBrushingLastHistogramBin\n          baseTheme={theme}\n          theme={{\n            legend: { labelOptions: { maxLines: 1 } },\n            chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },\n          }}\n          onRenderChange={(isRendered) => {\n            if (isRendered) {\n              window.performance.mark('Perf:Ended');\n              const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n              \n              console.log(`chart rendered in ${(duration / 1000).toFixed(1)}s`);\n            }\n          }}\n        />\n        <Axis id=\"x\" position={Position.Bottom} title=\"order_date\" gridLine={{ visible: true }} />\n        <Axis id=\"left\" groupId=\"left\" position={Position.Left} title=\"total_quantity\" gridLine={{ visible: true }} />\n        {Y_ACCESSORS.map((yAccessor) => {\n          const name: SeriesNameFn = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;\n          return (\n            <BarSeries\n              key={yAccessor}\n              id={`${LAYER_ID}:order_date:${yAccessor}:order_id`}\n              name={name}\n              xAccessor=\"order_date\"\n              yAccessors={[yAccessor]}\n              splitSeriesAccessors={['order_id']}\n              stackAccessors={['order_date']}\n              data={data}\n              xScaleType={ScaleType.Time}\n              yScaleType={ScaleType.Linear}\n              groupId=\"left\"\n              enableHistogramMode\n              minBarHeight={1}\n              timeZone=\"UTC\"\n              color={color}\n              displayValueSettings={{ showValueLabel: false }}\n            />\n          );\n        })}\n      </Chart>\n    </>\n  );\n};\n"; // @ts-ignore
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useEffect, useState } from 'react';\n\nimport type { SeriesColorAccessor, SeriesNameFn } from '@elastic/charts';\nimport { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip, TooltipType } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\n\n/**\n * Recreates the Kibana many-series performance journey chart\n * (`x-pack/performance/journeys_e2e/many_series_chart_dashboard.ts`).\n *\n * Lens emits 3 stacked `BarSeries` specs (one per y accessor), each split by\n * `order_id` (~649 values) so Elastic Charts materializes ~1947 series.\n * Histogram mode is on because Lens treats ES|QL date columns as interval\n * buckets even though this query has no `BUCKET()`.\n *\n * Dataset lives in `public/many_series_ecommerce.json` so Storybook and the\n * playground can both fetch it as static JSON.\n */\ntype EcommerceRow = {\n  order_date: number;\n  order_id: string;\n  total_quantity: number;\n  overallAvgQnt: number;\n  avgQnt: number;\n};\n\nconst Y_ACCESSORS = ['total_quantity', 'overallAvgQnt', 'avgQnt'] as const;\nconst LAYER_ID = '0b226fa9-39b4-44e7-82ae-97fbacfe964f';\nconst X_DOMAIN = { min: 1785322858728, max: 1786799230394 };\nconst PROFILE_LABEL = 'Perf:DataToRender';\n\n// EUI colorblind categorical palette used by Kibana's default Lens palette.\nconst PALETTE = [\n  '#54B399',\n  '#6092C0',\n  '#D36086',\n  '#9170B8',\n  '#CA8EAE',\n  '#D6BF57',\n  '#B9A888',\n  '#DA8B45',\n  '#AA6556',\n  '#E7664C',\n];\n\nfunction buildColorAccessor(rows: EcommerceRow[]): SeriesColorAccessor {\n  const colorByOrderId = new Map<string, string>();\n  for (const row of rows) {\n    if (!colorByOrderId.has(row.order_id)) {\n      colorByOrderId.set(row.order_id, PALETTE[colorByOrderId.size % PALETTE.length]);\n    }\n  }\n  return ({ splitAccessors }) => {\n    const orderId = String(splitAccessors.get('order_id') ?? '');\n    return colorByOrderId.get(orderId) ?? PALETTE[0];\n  };\n}\n\nexport const Example: ChartsStory = (_, context) => {\n  const title = context?.title;\n  const description = context?.description;\n  const [data, setData] = useState<EcommerceRow[]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    async function fetchData() {\n      \n      console.log('requesting data');\n      const response = await fetch('many_series_ecommerce.json');\n      const d: EcommerceRow[] = await response.json();\n      \n      console.log('data arrived');\n\n      window.performance.mark('Perf:Started');\n      setData(d);\n    }\n    fetchData().catch(() => {});\n  }, [runId]);\n\n  const theme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </>\n    );\n  }\n\n  const color = buildColorAccessor(data);\n\n  return (\n    <>\n      {renderButton}\n      <Chart title={title} description={description}>\n        <Tooltip type={TooltipType.VerticalCursor} />\n        <Settings\n          showLegend\n          legendPosition={Position.Right}\n          legendSize={50}\n          legendValues={[]}\n          rotation={0}\n          xDomain={X_DOMAIN}\n          allowBrushingLastHistogramBin\n          baseTheme={theme}\n          theme={{\n            legend: { labelOptions: { maxLines: 1 } },\n            chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },\n          }}\n          onRenderChange={(isRendered) => {\n            if (isRendered) {\n              window.performance.mark('Perf:Ended');\n              const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n              \n              console.log(`chart rendered in ${duration.toFixed(0)} ms`);\n            }\n          }}\n        />\n        <Axis id=\"x\" position={Position.Bottom} title=\"order_date\" gridLine={{ visible: true }} />\n        <Axis id=\"left\" groupId=\"left\" position={Position.Left} title=\"total_quantity\" gridLine={{ visible: true }} />\n        {Y_ACCESSORS.map((yAccessor) => {\n          const name: SeriesNameFn = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;\n          return (\n            <BarSeries\n              key={yAccessor}\n              id={`${LAYER_ID}:order_date:${yAccessor}:order_id`}\n              name={name}\n              xAccessor=\"order_date\"\n              yAccessors={[yAccessor]}\n              splitSeriesAccessors={['order_id']}\n              stackAccessors={['order_date']}\n              data={data}\n              xScaleType={ScaleType.Time}\n              yScaleType={ScaleType.Linear}\n              groupId=\"left\"\n              enableHistogramMode\n              minBarHeight={1}\n              timeZone=\"UTC\"\n              color={color}\n              displayValueSettings={{ showValueLabel: false }}\n            />\n          );\n        })}\n      </Chart>\n    </>\n  );\n};\n"; // @ts-ignore
 
 var __LOCATIONS_MAP__ = {
   "Example": {
@@ -174067,7 +174091,7 @@ var Example = function Example(_, context) {
             duration = _window$performance$m.duration; // eslint-disable-next-line no-console
 
 
-        console.log("chart rendered in " + (duration / 1000).toFixed(1) + "s");
+        console.log("chart rendered in " + duration.toFixed(0) + " ms");
       }
     }
   }), react_1["default"].createElement(charts_1.Axis, {
@@ -174117,7 +174141,7 @@ var Example = function Example(_, context) {
 exports.Example = Example;
 exports.Example.parameters = Object.assign({
   storySource: {
-    source: "(_, context) => {\n  const title = context?.title;\n  const description = context?.description;\n  const [data, setData] = useState<EcommerceRow[]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    async function fetchData() {\n      \n      console.log('requesting data');\n      const response = await fetch('many_series_ecommerce.json');\n      const d: EcommerceRow[] = await response.json();\n      \n      console.log('data arrived');\n\n      window.performance.mark('Perf:Started');\n      setData(d);\n    }\n    fetchData().catch(() => {});\n  }, [runId]);\n\n  const theme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </>\n    );\n  }\n\n  const color = buildColorAccessor(data);\n\n  return (\n    <>\n      {renderButton}\n      <Chart title={title} description={description}>\n        <Tooltip type={TooltipType.VerticalCursor} />\n        <Settings\n          showLegend\n          legendPosition={Position.Right}\n          legendSize={50}\n          legendValues={[]}\n          rotation={0}\n          xDomain={X_DOMAIN}\n          allowBrushingLastHistogramBin\n          baseTheme={theme}\n          theme={{\n            legend: { labelOptions: { maxLines: 1 } },\n            chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },\n          }}\n          onRenderChange={(isRendered) => {\n            if (isRendered) {\n              window.performance.mark('Perf:Ended');\n              const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n              \n              console.log(`chart rendered in ${(duration / 1000).toFixed(1)}s`);\n            }\n          }}\n        />\n        <Axis id=\"x\" position={Position.Bottom} title=\"order_date\" gridLine={{ visible: true }} />\n        <Axis id=\"left\" groupId=\"left\" position={Position.Left} title=\"total_quantity\" gridLine={{ visible: true }} />\n        {Y_ACCESSORS.map((yAccessor) => {\n          const name: SeriesNameFn = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;\n          return (\n            <BarSeries\n              key={yAccessor}\n              id={`${LAYER_ID}:order_date:${yAccessor}:order_id`}\n              name={name}\n              xAccessor=\"order_date\"\n              yAccessors={[yAccessor]}\n              splitSeriesAccessors={['order_id']}\n              stackAccessors={['order_date']}\n              data={data}\n              xScaleType={ScaleType.Time}\n              yScaleType={ScaleType.Linear}\n              groupId=\"left\"\n              enableHistogramMode\n              minBarHeight={1}\n              timeZone=\"UTC\"\n              color={color}\n              displayValueSettings={{ showValueLabel: false }}\n            />\n          );\n        })}\n      </Chart>\n    </>\n  );\n}"
+    source: "(_, context) => {\n  const title = context?.title;\n  const description = context?.description;\n  const [data, setData] = useState<EcommerceRow[]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    async function fetchData() {\n      \n      console.log('requesting data');\n      const response = await fetch('many_series_ecommerce.json');\n      const d: EcommerceRow[] = await response.json();\n      \n      console.log('data arrived');\n\n      window.performance.mark('Perf:Started');\n      setData(d);\n    }\n    fetchData().catch(() => {});\n  }, [runId]);\n\n  const theme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </>\n    );\n  }\n\n  const color = buildColorAccessor(data);\n\n  return (\n    <>\n      {renderButton}\n      <Chart title={title} description={description}>\n        <Tooltip type={TooltipType.VerticalCursor} />\n        <Settings\n          showLegend\n          legendPosition={Position.Right}\n          legendSize={50}\n          legendValues={[]}\n          rotation={0}\n          xDomain={X_DOMAIN}\n          allowBrushingLastHistogramBin\n          baseTheme={theme}\n          theme={{\n            legend: { labelOptions: { maxLines: 1 } },\n            chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },\n          }}\n          onRenderChange={(isRendered) => {\n            if (isRendered) {\n              window.performance.mark('Perf:Ended');\n              const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n              \n              console.log(`chart rendered in ${duration.toFixed(0)} ms`);\n            }\n          }}\n        />\n        <Axis id=\"x\" position={Position.Bottom} title=\"order_date\" gridLine={{ visible: true }} />\n        <Axis id=\"left\" groupId=\"left\" position={Position.Left} title=\"total_quantity\" gridLine={{ visible: true }} />\n        {Y_ACCESSORS.map((yAccessor) => {\n          const name: SeriesNameFn = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;\n          return (\n            <BarSeries\n              key={yAccessor}\n              id={`${LAYER_ID}:order_date:${yAccessor}:order_id`}\n              name={name}\n              xAccessor=\"order_date\"\n              yAccessors={[yAccessor]}\n              splitSeriesAccessors={['order_id']}\n              stackAccessors={['order_date']}\n              data={data}\n              xScaleType={ScaleType.Time}\n              yScaleType={ScaleType.Linear}\n              groupId=\"left\"\n              enableHistogramMode\n              minBarHeight={1}\n              timeZone=\"UTC\"\n              color={color}\n              displayValueSettings={{ showValueLabel: false }}\n            />\n          );\n        })}\n      </Chart>\n    </>\n  );\n}"
   }
 }, exports.Example.parameters);
 
@@ -181472,4 +181496,4 @@ module.exports = __webpack_require__(/*! /app/storybook/generated-stories-entry.
 /***/ })
 
 },[[0,"runtime~main","vendors~main"]]]);
-//# sourceMappingURL=main.3c240802.iframe.bundle.js.map
+//# sourceMappingURL=main.fa91ea92.iframe.bundle.js.map
