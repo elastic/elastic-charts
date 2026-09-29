@@ -1,3 +1,15 @@
+## [73.2.2](https://github.com/elastic/elastic-charts/compare/v73.2.1...v73.2.2) (2026-09-29)
+
+
+### Bug Fixes
+
+* **theme:** align dark background color to Kibana dark mode ([#2895](https://github.com/elastic/elastic-charts/issues/2895)) ([bbe41a2](https://github.com/elastic/elastic-charts/commit/bbe41a2aebfbe6f0630bcb4e8f5242025a209bb9))
+
+
+### Performance Improvements
+
+* **chart:** extract scale calculation for multi-series and other improvements ([#2901](https://github.com/elastic/elastic-charts/issues/2901)) ([e4edb26](https://github.com/elastic/elastic-charts/commit/e4edb26a490880afc1fcca9f58109c8b399334cc))
+
 ## [73.2.1](https://github.com/elastic/elastic-charts/compare/v73.2.0...v73.2.1) (2026-09-18)
 
 
