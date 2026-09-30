@@ -12,6 +12,8 @@ import { scaleLinear } from 'd3-scale';
 import { getBulletSpec } from './get_bullet_spec';
 import type { BulletLayout, BulletHeaderLayout } from './get_layout';
 import { getLayout } from './get_layout';
+import type { BulletRenderMode } from './get_render_mode';
+import { getRenderMode } from './get_render_mode';
 import type { ChromaColorScale, Color } from '../../../common/colors';
 import type { Rect } from '../../../geoms/types';
 import { createCustomCachedSelector } from '../../../state/create_selector';
@@ -39,6 +41,8 @@ export type BulletPanelDimensions = {
     origin: Point;
     center: Point;
   };
+  /** Resolved by `getRenderMode`, so not necessarily `BulletSpec.subtype` */
+  subtype: BulletSubtype;
   scale: ScaleLinear<number, number>;
   ticks: number[];
   domain: GenericDomain;
@@ -51,13 +55,15 @@ export type BulletPanelDimensions = {
 export type BulletDimensions = {
   rows: (BulletPanelDimensions | null)[][];
   panel: Size;
-} & Pick<BulletLayout, 'layoutAlignment' | 'shouldRenderMetric'>;
+} & Pick<BulletLayout, 'layoutAlignment'> &
+  Pick<BulletRenderMode, 'shouldRenderMetric'>;
 
 /** @internal */
 export const getPanelDimensions = createCustomCachedSelector(
-  [getLayout, getBulletSpec, getChartThemeSelector, getResolvedBackgroundColorSelector],
+  [getLayout, getRenderMode, getBulletSpec, getChartThemeSelector, getResolvedBackgroundColorSelector],
   (
-    { shouldRenderMetric, headerLayout, layoutAlignment, panel: panelSize },
+    { headerLayout, layoutAlignment, panel: panelSize },
+    { subtype, shouldRenderMetric },
     spec,
     { bulletGraph: bulletGraphStyles },
     backgroundColor,
@@ -78,7 +84,8 @@ export const getPanelDimensions = createCustomCachedSelector(
 
         return {
           ...rest,
-          ...getSubtypeDimensions(spec, graphSize, datum, bulletGraphStyles, backgroundColor),
+          ...getSubtypeDimensions(subtype, spec.colorBands, graphSize, datum, bulletGraphStyles, backgroundColor),
+          subtype,
           datum,
           multiline,
           graphArea: {
@@ -111,7 +118,8 @@ export const getPanelDimensions = createCustomCachedSelector(
 );
 
 function getSubtypeDimensions(
-  { subtype, colorBands: colorBandsConfig }: BulletSpec,
+  subtype: BulletSubtype,
+  colorBandsConfig: BulletSpec['colorBands'],
   graphSize: Size,
   { ticks: desiredTicks, domain, niceDomain }: BulletDatum,
   { colorBands: defaultColorBandsConfig, fallbackBandColor }: BulletStyle,
