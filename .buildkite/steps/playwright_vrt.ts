@@ -25,6 +25,7 @@ export const playwrightVrtStep = createStep<CustomGroupStep>(() => {
           image: 'family/elastic-charts-ubuntu-2404-aarch64',
           imageProject: 'elastic-images-qa',
           machineType: 't2a-standard-2',
+          zones: 'us-central1-a,us-central1-b,us-central1-f',
         },
         skip,
         parallelism: 5,
