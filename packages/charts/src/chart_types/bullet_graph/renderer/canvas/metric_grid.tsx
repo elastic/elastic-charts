@@ -57,7 +57,6 @@ const BulletMetric = ({
 }: BulletMetricProps) => {
   const width = size.width / stats.columns;
   const height = size.height / stats.rows;
-  const panel = dimensions.rows[stats.rowIndex]?.[stats.columnIndex];
 
   const bulletDatum: BulletMetricWProgress = useMemo(() => {
     const valueLabels = mergeValueLabels(spec.valueLabels);
@@ -68,7 +67,7 @@ const BulletMetric = ({
       valueFormatter: datum.valueFormatter,
       targetFormatter: datum.targetFormatter,
       color: style.barBackground,
-      progressBarDirection: panel?.subtype === BulletSubtype.vertical ? 'vertical' : 'horizontal',
+      progressBarDirection: spec.subtype === BulletSubtype.vertical ? 'vertical' : 'horizontal',
       title: datum.title,
       subtitle: datum.subtitle,
       domain: datum.domain,
@@ -81,11 +80,13 @@ const BulletMetric = ({
           }
         : undefined,
     };
-  }, [datum, style.barBackground, panel?.subtype, spec.valueLabels]);
+  }, [datum, style.barBackground, spec.subtype, spec.valueLabels]);
 
   const colorScale = useMemo(
-    () => panel?.colorScale ?? (() => ({ hex: () => style.fallbackBandColor })), // should never happen
-    [panel?.colorScale, style.fallbackBandColor],
+    () =>
+      dimensions.rows[stats.rowIndex]?.[stats.columnIndex]?.colorScale ??
+      (() => ({ hex: () => style.fallbackBandColor })), // should never happen
+    [dimensions.rows, stats.rowIndex, stats.columnIndex, style.fallbackBandColor],
   );
 
   const bulletToMetricStyle = useMemo(

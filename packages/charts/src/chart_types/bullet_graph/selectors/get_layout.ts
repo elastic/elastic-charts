@@ -14,6 +14,7 @@ import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_s
 import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Size } from '../../../utils/dimensions';
 import { wrapText } from '../../../utils/text/wrap';
+import { BulletSubtype } from '../spec';
 import type { BulletDatum } from '../spec';
 import {
   FONT_PADDING,
@@ -30,6 +31,7 @@ import {
   getMaxTargetValueAssent,
   getTextAscentHeight,
 } from '../theme';
+import { getMinAngularChartSize } from '../utils/angular';
 
 /** @internal */
 export interface BulletHeaderLayout {
@@ -52,6 +54,8 @@ export interface BulletLayoutAlignment {
   maxSubtitleRows: number;
   multiline: boolean;
   headerHeight: number;
+  minHeight: number;
+  minWidth: number;
 }
 
 /** @internal */
@@ -60,7 +64,19 @@ export interface BulletLayout {
   panel: Size;
   headerLayout: (BulletHeaderLayout | null)[][];
   layoutAlignment: BulletLayoutAlignment[];
+  shouldRenderMetric: boolean;
 }
+
+const minLinearChartSizes: Record<Extract<BulletSubtype, 'horizontal' | 'vertical'>, Size> = {
+  [BulletSubtype.horizontal]: { width: 140, height: 50 },
+  [BulletSubtype.vertical]: { width: 140, height: 100 },
+};
+
+/** Smallest graph area, header excluded, that the subtype can be rendered in */
+const getMinChartSize = (subtype: BulletSubtype): Size =>
+  subtype === BulletSubtype.horizontal || subtype === BulletSubtype.vertical
+    ? minLinearChartSizes[subtype]
+    : getMinAngularChartSize(subtype);
 
 /** @internal */
 export const getLayout = createCustomCachedSelector(
@@ -78,6 +94,7 @@ export const getLayout = createCustomCachedSelector(
       height: panel.height - HEADER_PADDING.top - HEADER_PADDING.bottom,
     };
 
+    const minChartSize = getMinChartSize(spec.subtype);
     const titleFont = getTitleFont(bulletGraph.fontFamily);
     const subtitleFont = getSubtitleFont(bulletGraph.fontFamily);
     const valueFont = getValueFont(bulletGraph.fontFamily);
@@ -220,16 +237,33 @@ export const getLayout = createCustomCachedSelector(
             const headerHeight =
               Math.max(leftHeaderHeight, rightHeaderHeight) + HEADER_PADDING.top + HEADER_PADDING.bottom;
 
-            return { multiline, maxTitleRows, maxSubtitleRows, headerHeight };
+            return {
+              multiline,
+              maxTitleRows,
+              maxSubtitleRows,
+              headerHeight,
+              minHeight: headerHeight + minChartSize.height,
+              minWidth: minChartSize.width,
+            };
           },
-          { maxTitleRows: 0, maxSubtitleRows: 0, multiline: false, headerHeight: 0 },
+          { maxTitleRows: 0, maxSubtitleRows: 0, multiline: false, headerHeight: 0, minHeight: 0, minWidth: 0 },
         );
       });
+
+      const totalHeight = layoutAlignment.reduce((acc, curr) => {
+        return acc + curr.minHeight;
+      }, 0);
+
+      const totalWidth = layoutAlignment.reduce((acc, curr) => {
+        return Math.max(acc, curr.minWidth);
+      }, 0);
+      const shouldRenderMetric = chartSize.height <= totalHeight || chartSize.width <= totalWidth * columns;
 
       return {
         panel,
         headerLayout,
         layoutAlignment,
+        shouldRenderMetric,
       };
     });
   },
