@@ -1,0 +1,117 @@
+"use strict";
+(self["webpackChunkcharts_storybook"] = self["webpackChunkcharts_storybook"] || []).push([["icon.logo_google_g"],{
+
+/***/ "../node_modules/@elastic/eui/es/components/icon/assets/logo_google_g.js"
+/*!*******************************************************************************!*\
+  !*** ../node_modules/@elastic/eui/es/components/icon/assets/logo_google_g.js ***!
+  \*******************************************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   icon: () => (/* binding */ icon)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+/* harmony import */ var _services__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services */ "../node_modules/@elastic/eui/es/services/accessibility/html_id_generator.js");
+/* harmony import */ var _emotion_react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @emotion/react */ "../node_modules/@emotion/react/dist/emotion-react.browser.esm.js");
+var _excluded = ["title", "titleId"];
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+function _objectWithoutProperties(e, t) { if (null == e) return {}; var o, r, i = _objectWithoutPropertiesLoose(e, t); if (Object.getOwnPropertySymbols) { var n = Object.getOwnPropertySymbols(e); for (r = 0; r < n.length; r++) o = n[r], t.indexOf(o) >= 0 || {}.propertyIsEnumerable.call(e, o) && (i[o] = e[o]); } return i; }
+function _objectWithoutPropertiesLoose(r, e) { if (null == r) return {}; var t = {}; for (var n in r) if ({}.hasOwnProperty.call(r, n)) { if (e.indexOf(n) >= 0) continue; t[n] = r[n]; } return t; }
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+// THIS IS A GENERATED FILE. DO NOT MODIFY MANUALLY. @see scripts/compile-icons.js
+
+;
+
+
+var EuiIconLogoGoogleG = function EuiIconLogoGoogleG(_ref) {
+  var title = _ref.title,
+    titleId = _ref.titleId,
+    props = _objectWithoutProperties(_ref, _excluded);
+  var generateId = (0,_services__WEBPACK_IMPORTED_MODULE_1__.htmlIdGenerator)('logo_google_g');
+  return (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", _extends({
+    xmlns: "http://www.w3.org/2000/svg",
+    xmlnsXlink: "http://www.w3.org/1999/xlink",
+    width: 32,
+    height: 32,
+    viewBox: "0 0 32 32",
+    "aria-labelledby": titleId
+  }, props), title ? (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("title", {
+    id: titleId
+  }, title) : null, (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("defs", null, (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+    id: generateId('a'),
+    d: "M15.319 3.278c0-1.131-.102-2.22-.29-3.264H0v6.172h8.587c-.37 1.995-1.494 3.685-3.184 4.816v4.004h5.157c3.017-2.778 4.758-6.869 4.758-11.728z"
+  }), (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+    id: generateId('c'),
+    d: "M14.343 12.956c4.308 0 7.92-1.43 10.56-3.866l-5.157-4.004c-1.429.958-3.256 1.523-5.403 1.523-4.156 0-7.674-2.806-8.928-6.578H.084v4.134c2.625 5.215 8.021 8.79 14.259 8.79z"
+  }), (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+    id: generateId('e'),
+    d: "M7.028 10.25a9.59 9.59 0 0 1-.5-3.032 9.59 9.59 0 0 1 .5-3.032V.052h-5.33A15.95 15.95 0 0 0 0 7.218c0 2.575.617 5.012 1.697 7.166l5.331-4.134z"
+  }), (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+    id: generateId('g'),
+    d: "M14.343 6.392c2.342 0 4.446.805 6.1 2.386l4.576-4.576C22.256 1.627 18.644.046 14.343.046 8.105.046 2.709 3.622.083 8.836l5.332 4.134c1.254-3.77 4.772-6.578 8.928-6.578z"
+  })), (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("g", {
+    fill: "none",
+    fillRule: "evenodd"
+  }, (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("g", {
+    transform: "translate(15.955 13.087)"
+  }, (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("mask", {
+    id: generateId('b'),
+    fill: "#fff"
+  }, (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("use", {
+    xlinkHref: "#".concat(generateId('a'))
+  })), (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+    fill: "#4285F4",
+    fillRule: "nonzero",
+    d: "M.001 15.006h15.318V.014H.001z",
+    mask: "url(#".concat(generateId('b'), ")")
+  })), (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("g", {
+    transform: "translate(1.613 19.003)"
+  }, (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("mask", {
+    id: generateId('d'),
+    fill: "#fff"
+  }, (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("use", {
+    xlinkHref: "#".concat(generateId('c'))
+  })), (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+    fill: "#34A853",
+    fillRule: "nonzero",
+    d: "M.084 12.956h24.819V.031H.084z",
+    mask: "url(#".concat(generateId('d'), ")")
+  })), (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("g", {
+    transform: "translate(0 8.784)"
+  }, (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("mask", {
+    id: generateId('f'),
+    fill: "#fff"
+  }, (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("use", {
+    xlinkHref: "#".concat(generateId('e'))
+  })), (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+    fill: "#FBBC04",
+    fillRule: "nonzero",
+    d: "M0 14.384h7.028V.052H0z",
+    mask: "url(#".concat(generateId('f'), ")")
+  })), (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("g", {
+    transform: "translate(1.613)"
+  }, (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("mask", {
+    id: generateId('h'),
+    fill: "#fff"
+  }, (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("use", {
+    xlinkHref: "#".concat(generateId('g'))
+  })), (0,_emotion_react__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+    fill: "#EA4335",
+    fillRule: "nonzero",
+    d: "M.084 12.97h24.935V.046H.084z",
+    mask: "url(#".concat(generateId('h'), ")")
+  }))));
+};
+var icon = EuiIconLogoGoogleG;
+
+/***/ }
+
+}]);
+//# sourceMappingURL=icon.logo_google_g.343d7603.iframe.bundle.js.map
