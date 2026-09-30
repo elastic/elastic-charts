@@ -49,22 +49,9 @@ module.exports = {
     rules: [
       {
         test: /\.(ttf|eot|woff|woff2|svg)$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-            outputPath: 'fonts/',
-          },
-        },
-      },
-      {
-        test: /\.js$/,
-        include: [path.resolve(__dirname, '../../node_modules/@hello-pangea')],
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env'],
-          },
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext]',
         },
       },
       {
@@ -125,6 +112,11 @@ module.exports = {
       '@elastic/charts/': path.resolve(__dirname, '../../packages/charts/'),
     },
     extensions: ['.tsx', '.ts', '.js'],
+    fallback: {
+      // webpack 5 no longer polyfills node core modules; EUI's markdown deps (vfile, replace-ext) import `path`
+      // but it's never called, as no story renders EUI markdown
+      path: false,
+    },
   },
   optimization:
     process.env.NODE_ENV === 'production'
@@ -141,6 +133,7 @@ module.exports = {
       favicon: '../../public/favicon.ico',
     }),
     new webpack.EnvironmentPlugin({ RNG_SEED: null, VRT: 'true' }),
+    new webpack.ProvidePlugin({ process: 'process/browser.js' }),
     new MiniCssExtractPlugin(),
     new SpeedMeasurePlugin(),
   ],
