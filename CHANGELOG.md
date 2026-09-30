@@ -1,3 +1,10 @@
+## [73.2.3](https://github.com/elastic/elastic-charts/compare/v73.2.2...v73.2.3) (2026-09-30)
+
+
+### Bug Fixes
+
+* **build:** remove duplicate hashes from yarn.lock ([#2907](https://github.com/elastic/elastic-charts/issues/2907)) ([e796c9e](https://github.com/elastic/elastic-charts/commit/e796c9e6e67438ffa978b1a1eee1adc017d4ac83))
+
 ## [73.2.2](https://github.com/elastic/elastic-charts/compare/v73.2.1...v73.2.2) (2026-09-29)
 
 
