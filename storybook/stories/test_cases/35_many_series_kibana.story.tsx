@@ -72,7 +72,6 @@ export const Example: ChartsStory = (_, context) => {
   const [data, setData] = useState<EcommerceRow[]>([]);
   const [runId, setRunId] = useState(0);
   useEffect(() => {
-    if (runId === 0) return;
     async function fetchData() {
       // eslint-disable-next-line no-console
       console.log('requesting data');
@@ -104,7 +103,7 @@ export const Example: ChartsStory = (_, context) => {
     return (
       <>
         {renderButton}
-        {runId > 0 && <div style={{ marginTop: 4 }}>Rendering...</div>}
+        <div style={{ marginTop: 4 }}>Rendering...</div>
       </>
     );
   }
@@ -134,7 +133,7 @@ export const Example: ChartsStory = (_, context) => {
               window.performance.mark('Perf:Ended');
               const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');
               // eslint-disable-next-line no-console
-              console.log(`chart rendered in ${(duration / 1000).toFixed(1)}s`);
+              console.log(`chart rendered in ${duration.toFixed(0)} ms`);
             }
           }}
         />
