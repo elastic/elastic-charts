@@ -20,6 +20,12 @@ export const playwrightVrtStep = createStep<CustomGroupStep>(() => {
       {
         ...commandStepDefaults,
         label: ':playwright: Playwright e2e VRT',
+        agents: {
+          ...commandStepDefaults.agents,
+          image: 'family/elastic-charts-ubuntu-2404-aarch64',
+          machineType: 't2a-standard-2',
+          zones: 'us-central1-a,us-central1-b,us-central1-f',
+        },
         skip,
         parallelism: 5,
         retry: {
