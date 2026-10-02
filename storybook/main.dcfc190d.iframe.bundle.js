@@ -38910,9 +38910,12 @@ var __webpack_unused_export__;
  * Side Public License, v 1.
  */
 __webpack_unused_export__ = ({ value: true });
-exports.TICK_LABEL_PADDING = exports.ANGULAR_TICK_INTERVAL = exports.TICK_INTERVAL = exports.HOVER_SLOP = exports.MAX_TICK_COUNT = exports.MIN_TICK_COUNT = exports.TICK_WIDTH = exports.BAR_SIZE = exports.BAR_STROKE_WIDTH = exports.BULLET_SIZE = exports.TARGET_STROKE_WIDTH = exports.TARGET_SIZE = void 0;
+exports.TICK_LABEL_PADDING = exports.ANGULAR_TICK_INTERVAL = exports.TICK_INTERVAL = exports.HOVER_SLOP = exports.MAX_TICK_COUNT = exports.MIN_TICK_COUNT = exports.TICK_WIDTH = exports.BAR_SIZE = exports.BAR_STROKE_WIDTH = exports.BULLET_SIZE = exports.TARGET_STROKE_WIDTH = exports.MIN_ANGULAR_RADIUS = exports.TARGET_SIZE = void 0;
 /** @internal */
 exports.TARGET_SIZE = 40;
+const MIN_INNER_RADIUS = 16;
+/** @internal */
+exports.MIN_ANGULAR_RADIUS = exports.TARGET_SIZE / 2 + MIN_INNER_RADIUS;
 /** @internal */
 exports.TARGET_STROKE_WIDTH = 3;
 /** @internal */
@@ -39240,6 +39243,18 @@ const spec_1 = __webpack_require__(/*! ../../../spec */ "../packages/charts/src/
 const theme_1 = __webpack_require__(/*! ../../../theme */ "../packages/charts/src/chart_types/bullet_graph/theme.ts");
 const angular_1 = __webpack_require__(/*! ../../../utils/angular */ "../packages/charts/src/chart_types/bullet_graph/utils/angular.ts");
 const constants_1 = __webpack_require__(/*! ../constants */ "../packages/charts/src/chart_types/bullet_graph/renderer/canvas/constants.ts");
+/**
+ * Box a tick label occupies relative to the arc center, the label grows inwards.
+ */
+function getTickLabelBox(angle, radius, width) {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    // offsets from the arc center
+    // Shifted by (1+cos)/2 and (1+sin)/2 from the original tick position on the circle so text grows inward.
+    const x0 = Math.round(cos * radius - (width * (1 + cos)) / 2);
+    const y0 = Math.round(sin * radius - (theme_1.TICK_FONT_SIZE * (1 + sin)) / 2);
+    return { x0, y0, x1: x0 + width, y1: y0 + theme_1.TICK_FONT_SIZE };
+}
 /** @internal */
 function angularBullet(ctx, dimensions, style, backgroundColor, hasStroke, spec, debug, activeValue) {
     const tickFont = (0, theme_1.getTickFont)(style.fontFamily);
@@ -39335,25 +39350,27 @@ function angularBullet(ctx, dimensions, style, backgroundColor, hasStroke, spec,
         ctx.stroke();
     }
     const measure = (0, canvas_text_bbox_calculator_1.measureText)(ctx);
-    // Assumes mostly homogenous formatting
-    const maxTickWidth = formatterColorTicks.reduce((acc, t) => {
-        const { width } = measure(t.formattedValue, tickFont, theme_1.TICK_FONT_SIZE);
-        return Math.max(acc, width);
-    }, 0);
-    // Tick labels
-    ctx.fillStyle = style.textColor;
-    ctx.textBaseline = 'middle';
-    ctx.font = (0, text_utils_1.cssFontShorthand)(tickFont, theme_1.TICK_FONT_SIZE);
-    formatterColorTicks
+    const innerRadius = radius - constants_1.BULLET_SIZE / 2 - style.angularTickLabelPadding;
+    const tickLabels = formatterColorTicks
         .filter((tick) => tick.value >= min && tick.value <= max)
-        .forEach((tick) => {
-        ctx.textAlign = 'center';
-        const textPadding = style.angularTickLabelPadding + maxTickWidth / 2;
-        const tickAngle = scale(tick.value);
-        const y1 = Math.sin(tickAngle) * (radius - constants_1.BULLET_SIZE / 2 - textPadding);
-        const x1 = Math.cos(tickAngle) * (radius - constants_1.BULLET_SIZE / 2 - textPadding);
-        ctx.fillText(tick.formattedValue, center.x + x1, center.y + y1);
+        .map((tick) => {
+        const { width } = measure(tick.formattedValue, tickFont, theme_1.TICK_FONT_SIZE);
+        return {
+            formattedValue: tick.formattedValue,
+            ...getTickLabelBox(scale(tick.value), innerRadius, width),
+        };
     });
+    // are any labels overlapping the bullet
+    const touchesBand = tickLabels.some(({ x0, y0, x1, y1 }) => [Math.hypot(x0, y0), Math.hypot(x0, y1), Math.hypot(x1, y0), Math.hypot(x1, y1)].some((cornerRadius) => cornerRadius > radius - constants_1.BULLET_SIZE / 2));
+    // it's quadratic but there are only a few labels so should be fine.
+    const hasCollision = tickLabels.some((a, i) => tickLabels.some((b, j) => j > i && a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1));
+    if (!touchesBand && !hasCollision) {
+        ctx.fillStyle = style.textColor;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.font = (0, text_utils_1.cssFontShorthand)(tickFont, theme_1.TICK_FONT_SIZE);
+        tickLabels.forEach(({ formattedValue, x0, y0 }) => ctx.fillText(formattedValue, center.x + x0, center.y + y0));
+    }
     if (activeValue) {
         ctx.beginPath();
         ctx.strokeStyle = style.barBackground;
@@ -39971,20 +39988,15 @@ const canvas_text_bbox_calculator_1 = __webpack_require__(/*! ../../../utils/bbo
 const wrap_1 = __webpack_require__(/*! ../../../utils/text/wrap */ "../packages/charts/src/utils/text/wrap.ts");
 const spec_1 = __webpack_require__(/*! ../spec */ "../packages/charts/src/chart_types/bullet_graph/spec.ts");
 const theme_1 = __webpack_require__(/*! ../theme */ "../packages/charts/src/chart_types/bullet_graph/theme.ts");
-const minChartHeights = {
-    [spec_1.BulletSubtype.horizontal]: 50,
-    [spec_1.BulletSubtype.vertical]: 100,
-    [spec_1.BulletSubtype.circle]: 160,
-    [spec_1.BulletSubtype.halfCircle]: 160,
-    [spec_1.BulletSubtype.twoThirdsCircle]: 160,
+const angular_1 = __webpack_require__(/*! ../utils/angular */ "../packages/charts/src/chart_types/bullet_graph/utils/angular.ts");
+const minLinearChartSizes = {
+    [spec_1.BulletSubtype.horizontal]: { width: 140, height: 50 },
+    [spec_1.BulletSubtype.vertical]: { width: 140, height: 100 },
 };
-const minChartWidths = {
-    [spec_1.BulletSubtype.horizontal]: 140,
-    [spec_1.BulletSubtype.vertical]: 140,
-    [spec_1.BulletSubtype.circle]: 160,
-    [spec_1.BulletSubtype.halfCircle]: 160,
-    [spec_1.BulletSubtype.twoThirdsCircle]: 160,
-};
+/** Smallest graph area, header excluded, that the subtype can be rendered in */
+const getMinChartSize = (subtype) => subtype === spec_1.BulletSubtype.horizontal || subtype === spec_1.BulletSubtype.vertical
+    ? minLinearChartSizes[subtype]
+    : (0, angular_1.getMinAngularChartSize)(subtype);
 /** @internal */
 exports.getLayout = (0, create_selector_1.createCustomCachedSelector)([get_bullet_spec_1.getBulletSpec, get_chart_size_1.getChartSize, get_settings_spec_1.getSettingsSpecSelector, get_chart_theme_1.getChartThemeSelector], (spec, chartSize, { locale }, { bulletGraph }) => {
     const { data } = spec;
@@ -39997,6 +40009,7 @@ exports.getLayout = (0, create_selector_1.createCustomCachedSelector)([get_bulle
         width: panel.width - theme_1.HEADER_PADDING.left - theme_1.HEADER_PADDING.right,
         height: panel.height - theme_1.HEADER_PADDING.top - theme_1.HEADER_PADDING.bottom,
     };
+    const minChartSize = getMinChartSize(spec.subtype);
     const titleFont = (0, theme_1.getTitleFont)(bulletGraph.fontFamily);
     const subtitleFont = (0, theme_1.getSubtitleFont)(bulletGraph.fontFamily);
     const valueFont = (0, theme_1.getValueFont)(bulletGraph.fontFamily);
@@ -40097,8 +40110,8 @@ exports.getLayout = (0, create_selector_1.createCustomCachedSelector)([get_bulle
                     maxTitleRows,
                     maxSubtitleRows,
                     headerHeight,
-                    minHeight: headerHeight + minChartHeights[spec.subtype],
-                    minWidth: minChartWidths[spec.subtype],
+                    minHeight: headerHeight + minChartSize.height,
+                    minWidth: minChartSize.width,
                 };
             }, { maxTitleRows: 0, maxSubtitleRows: 0, multiline: false, headerHeight: 0, minHeight: 0, minWidth: 0 });
         });
@@ -40670,6 +40683,7 @@ var __webpack_unused_export__;
 __webpack_unused_export__ = ({ value: true });
 exports.getAnglesBySize = getAnglesBySize;
 exports.getAngledChartSizing = getAngledChartSizing;
+exports.getMinAngularChartSize = getMinAngularChartSize;
 const constants_1 = __webpack_require__(/*! ../../../common/constants */ "../packages/charts/src/common/constants.ts");
 const common_1 = __webpack_require__(/*! ../../../utils/common */ "../packages/charts/src/utils/common.tsx");
 const constants_2 = __webpack_require__(/*! ../renderer/canvas/constants */ "../packages/charts/src/chart_types/bullet_graph/renderer/canvas/constants.ts");
@@ -40717,6 +40731,17 @@ function getAngledChartSizing(graphSize, subtype) {
     const modifiedHeight = maxHeight / heightModifier;
     const radius = Math.min(maxWidth, modifiedHeight) / 2 - constants_2.TARGET_SIZE / 2;
     return { maxWidth, maxHeight: modifiedHeight, radius };
+}
+/**
+ * Smallest graph size that satisfies the inner arc radius be at least `MIN_ANGULAR_RADIUS`
+ * @internal
+ */
+function getMinAngularChartSize(subtype) {
+    const extent = constants_2.MIN_ANGULAR_RADIUS * 2 + constants_2.TARGET_SIZE;
+    return {
+        width: extent + theme_1.GRAPH_PADDING.left + theme_1.GRAPH_PADDING.right,
+        height: extent * heightModifiers[subtype] + theme_1.GRAPH_PADDING.top + theme_1.GRAPH_PADDING.bottom,
+    };
 }
 
 
@@ -108328,4 +108353,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.3e422d09.iframe.bundle.js.map
+//# sourceMappingURL=main.dcfc190d.iframe.bundle.js.map
