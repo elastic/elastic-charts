@@ -1,3 +1,10 @@
+## [73.2.5](https://github.com/elastic/elastic-charts/compare/v73.2.4...v73.2.5) (2026-10-02)
+
+
+### Bug Fixes
+
+* **bullet:** improve angular responsiveness ([#2896](https://github.com/elastic/elastic-charts/issues/2896)) ([07eca7b](https://github.com/elastic/elastic-charts/commit/07eca7b5ee796533e0f15b1c15eb1d907cf1a1f5)), closes [elastic/kibana#280034](https://github.com/elastic/kibana/issues/280034)
+
 ## [73.2.4](https://github.com/elastic/elastic-charts/compare/v73.2.3...v73.2.4) (2026-09-30)
 
 ## [73.2.3](https://github.com/elastic/elastic-charts/compare/v73.2.2...v73.2.3) (2026-09-30)
