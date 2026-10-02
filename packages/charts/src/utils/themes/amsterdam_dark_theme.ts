@@ -9,6 +9,7 @@
 import { palettes } from './legacy_colors';
 import type { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
+import { DEFAULT_TRACE_LAYOUT } from '../../chart_types/trace_chart/render/types';
 import { Colors } from '../../common/colors';
 import { TAU } from '../../common/constants';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
@@ -509,5 +510,17 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     opacity: 0.6,
     stroke: Colors.Transparent.keyword,
     strokeWidth: 0,
+  },
+  trace: {
+    ...DEFAULT_TRACE_LAYOUT,
+    totalLineColor: '#343741',
+    activeSegmentColor: '#6092C0',
+    gutterLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: '#81858f' },
+    timeBarLabel: { fontFamily: DEFAULT_FONT_FAMILY, fontSize: 10, color: '#81858f' },
+    gridLineColor: '#343741',
+    treeGuideColor: '#535966',
+    focusedLaneBackground: 'rgba(96,146,192,0.15)',
+    selectedSegmentStroke: '#BC1E70',
+    criticalPathColor: '#EE4C48',
   },
 };

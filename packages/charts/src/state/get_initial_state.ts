@@ -37,6 +37,7 @@ export const getInitialState = (chartId: string, title?: string, description?: s
     drilldown: [],
     prevDrilldown: [],
     tooltip: getInitialTooltipState(),
+    traceCollapsedSpanIds: [],
   },
   externalEvents: {
     pointer: null,
