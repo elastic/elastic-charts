@@ -6,8 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { getRectangleRowGeometry } from './fill_text_layout';
+import { fillTextLayout, getRectangleRowGeometry, getSectorRowGeometry } from './fill_text_layout';
 import { fillTextColor } from '../../../../common/fill_text_color';
+import type { RingSectorConstruction } from '../../../../common/geometry';
+import { VerticalAlignments } from '../../../../common/text_utils';
+import type { Datum } from '../../../../utils/common';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import type { Layer } from '../../specs';
+import type { QuadViewModel } from '../types/viewmodel_types';
 
 describe('Test that getRectangleRowGeometry works with:', () => {
   const container = { x0: 0, y0: 0, x1: 200, y1: 100 };
@@ -269,5 +275,130 @@ describe('Test fillTextColor function', () => {
     const containerBackgroundColor = 'white';
     const expectedAdjustedTextColor = 'rgba(0, 0, 0, 1)'; // with  WCAG 2 is black
     expect(fillTextColor(fillColor, containerBackgroundColor).color.keyword).toEqual(expectedAdjustedTextColor);
+  });
+});
+
+const node = {
+  dataName: 'aaaa bbbbbbbbbbbbbbbb ccccccccccccccccccccccc dddddddddddddddddd',
+  depth: 1,
+  value: 1,
+  x0: 0,
+  x1: 120,
+  y0: 0,
+  y1: 200,
+  y0px: 0,
+  y1px: 200,
+  yMidPx: 100,
+  textColor: 'black',
+} as unknown as QuadViewModel;
+
+// roughly 0.5em per character, so that long labels wrap over several rows
+const measure = (text: string, _font: unknown, fontSize: number) => ({
+  width: text.length * fontSize * 0.5,
+  height: fontSize,
+});
+
+const VERTICAL_ALIGNMENTS = ['top', 'middle', 'bottom'] as const;
+const FILL_LABEL_SCOPES = ['theme', 'layer'] as const;
+
+type FillLabelScope = (typeof FILL_LABEL_SCOPES)[number];
+
+type RowSetsArgs = {
+  fillLabel?: Partial<(typeof LIGHT_THEME)['partition']['fillLabel']>;
+  layerFillLabel?: Layer['fillLabel'];
+  leftAlign?: boolean;
+  middleAlign?: boolean;
+  label?: string;
+  sectorLayout?: boolean;
+};
+
+/** the ring of a sunburst root node, from which the sector row anchors and lengths are derived */
+const ringSector: RingSectorConstruction = [{ x: 0, y: 0, r: 40, inside: false }];
+const ringSectorOrigin: [number, number] = [-30, 0];
+
+function rowSets({
+  fillLabel,
+  layerFillLabel,
+  leftAlign = true,
+  middleAlign = false,
+  label = node.dataName,
+  sectorLayout = false,
+}: RowSetsArgs = {}) {
+  const layout = sectorLayout
+    ? fillTextLayout(
+        () => ringSector,
+        getSectorRowGeometry,
+        () => 0,
+        true,
+      )
+    : fillTextLayout(
+        (n) => ({ x0: n.x0, x1: n.x1, y0: n.y0px, y1: n.y1px }),
+        getRectangleRowGeometry,
+        () => 0,
+      );
+  return layout(
+    measure,
+    () => `${label}`,
+    () => 1,
+    () => '', // no value label, keeping the tests focused on the row anchors
+    [node],
+    {
+      ...LIGHT_THEME.partition,
+      ...(fillLabel ? { fillLabel: { ...LIGHT_THEME.partition.fillLabel, ...fillLabel } } : {}),
+    },
+    [{ groupByRollup: (d: Datum) => d, ...(layerFillLabel ? { fillLabel: layerFillLabel } : {}) }],
+    [sectorLayout ? ringSectorOrigin : [(node.x0 + node.x1) / 2, (node.y0px + node.y1px) / 2]],
+    4,
+    leftAlign,
+    middleAlign,
+  );
+}
+
+/** the theme fill label config, or the equivalent layer fill label config */
+function fillLabelConfig(scope: FillLabelScope, config: Layer['fillLabel']): RowSetsArgs {
+  return scope === 'theme' ? { fillLabel: config } : { layerFillLabel: config };
+}
+
+/** one case per scope and alignment pair, to check that both config scopes are honoured */
+function fillLabelCases<A extends string>(alignments: readonly A[]): [FillLabelScope, A][] {
+  return FILL_LABEL_SCOPES.flatMap((scope) => alignments.map((alignment) => [scope, alignment] as [FillLabelScope, A]));
+}
+
+describe('Test that fillTextLayout resolves the fill label vertical alignment', () => {
+  it('defaults to top alignment for treemap-like layouts', () => {
+    const [rowSet] = rowSets();
+    expect(rowSet?.verticalAlignment).toEqual(VerticalAlignments.top);
+    expect(rowSet?.rows[0]?.rowAnchorY).toBeLessThan(0);
+  });
+
+  it('defaults to middle alignment for icicle-like layouts', () => {
+    const [rowSet] = rowSets({ middleAlign: true });
+    expect(rowSet?.verticalAlignment).toEqual(VerticalAlignments.middle);
+  });
+
+  it.each(fillLabelCases(VERTICAL_ALIGNMENTS))('honours the %s alignment %s', (scope, alignment) => {
+    const [rowSet] = rowSets(fillLabelConfig(scope, { verticalAlignment: alignment }));
+    expect(rowSet?.verticalAlignment).toEqual(alignment);
+  });
+
+  it('prefers the layer fill label over the theme fill label', () => {
+    const [rowSet] = rowSets({
+      fillLabel: { verticalAlignment: 'middle' },
+      layerFillLabel: { verticalAlignment: 'bottom' },
+    });
+    expect(rowSet?.verticalAlignment).toEqual(VerticalAlignments.bottom);
+  });
+
+  it('ignores the configured alignment for sunburst and pie layouts', () => {
+    // sunburst and pie labels are always centered, so a configured alignment must not displace them
+    const [rowSet] = rowSets({
+      sectorLayout: true,
+      leftAlign: false,
+      middleAlign: true,
+      label: 'aa bb cc dd', // a short label, which fits within the sector
+      fillLabel: { verticalAlignment: 'bottom' },
+    });
+    expect(rowSet?.rows.length).toBeGreaterThan(0); // the label must actually fit for this to be meaningful
+    expect(rowSet?.verticalAlignment).toEqual(VerticalAlignments.middle);
   });
 });

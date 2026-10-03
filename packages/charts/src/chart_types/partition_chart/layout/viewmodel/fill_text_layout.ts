@@ -77,6 +77,11 @@ export const getSectorRowGeometry: GetShapeRowGeometry<RingSectorConstruction> =
   return { rowAnchorX, rowAnchorY, maximumRowLength };
 };
 
+function getDefaultVerticalAlignment(middleAlign: boolean, depth: number, layerCount: number) {
+  if (middleAlign) return VerticalAlignments.middle;
+  return depth < layerCount ? VerticalAlignments.bottom : VerticalAlignments.top;
+}
+
 function getVerticalAlignment(
   container: RectangleConstruction,
   verticalAlignment: VerticalAlignments,
@@ -215,6 +220,7 @@ function fill<C>(
   shapeConstructor: ShapeConstructor<C>,
   getShapeRowGeometry: GetShapeRowGeometry<C>,
   getRotation: GetRotation,
+  isSectorLayout: boolean,
 ) {
   return function fillClosure(
     fillLabel: FillLabelConfig,
@@ -238,18 +244,27 @@ function fill<C>(
         throw new Error(`Failed to find layer at ${node.depth - 1}`);
       }
 
-      const verticalAlignment = middleAlign
-        ? VerticalAlignments.middle
-        : node.depth < layers.length
-          ? VerticalAlignments.bottom
-          : VerticalAlignments.top;
       const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1] ?? [];
-      const { fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding, clipText } = {
+      const {
+        fontStyle,
+        fontVariant,
+        fontFamily,
+        fontWeight,
+        valueFormatter,
+        padding,
+        clipText,
+        verticalAlignment: specifiedVerticalAlignment,
+      } = {
         ...fillLabel,
         valueFormatter: formatter,
         ...layer.fillLabel,
         ...layer.shape,
       };
+
+      const defaultVerticalAlignment = getDefaultVerticalAlignment(middleAlign, node.depth, layers.length);
+      const verticalAlignment = isSectorLayout
+        ? defaultVerticalAlignment // sector rows are placed by the ring geometry, not by the label alignment
+        : specifiedVerticalAlignment ?? defaultVerticalAlignment;
 
       const valueFont = {
         ...fillLabel,
@@ -482,8 +497,9 @@ export function fillTextLayout<C>(
   shapeConstructor: ShapeConstructor<C>,
   getShapeRowGeometry: GetShapeRowGeometry<C>,
   getRotation: GetRotation,
+  isSectorLayout = false,
 ) {
-  const specificFiller = fill(shapeConstructor, getShapeRowGeometry, getRotation);
+  const specificFiller = fill(shapeConstructor, getShapeRowGeometry, getRotation, isSectorLayout);
   return function fillTextLayoutClosure(
     measure: TextMeasure,
     rawTextGetter: RawTextGetter,

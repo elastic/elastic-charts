@@ -2482,7 +2482,11 @@ export type PartitionElementEvent = [layers: Array<LayerValue>, seriesIdentifier
 export interface PartitionFillLabel extends LabelConfig {
     // (undocumented)
     clipText: boolean;
+    verticalAlignment?: PartitionFillLabelVerticalAlignment;
 }
+
+// @public
+export type PartitionFillLabelVerticalAlignment = Exclude<VerticalAlignment, 'far' | 'near'>;
 
 // @public
 export interface PartitionLayer<D extends BaseDatum = Datum> {
