@@ -9,7 +9,7 @@
 import type { Color } from '../../common/colors';
 import type { Pixels, Distance, Radian, SizeRatio, Ratio } from '../../common/geometry';
 import type { Font, PartialFont, FontFamily } from '../../common/text_utils';
-import type { ColorVariant, StrokeStyle } from '../common';
+import type { ColorVariant, HorizontalAlignment, StrokeStyle, VerticalAlignment } from '../common';
 import type { PerSideDistance } from '../dimensions';
 
 /** @public */
@@ -29,9 +29,46 @@ interface LabelConfig extends Font {
 /** @public */
 export type Padding = Pixels | Partial<PerSideDistance>;
 
+/**
+ * Vertical placement of a fill label within its container.
+ * `top` aligns the label block to the top of the available area, `bottom` to the bottom,
+ * and `middle` centers the label block on the midpoint of the area, ignoring the label padding.
+ * Only applies to the rectangular layouts (treemap, mosaic, flame, and icicle); sunburst and pie
+ * labels are always centered within their sector.
+ * @public
+ */
+export type FillLabelVerticalAlignment = Exclude<VerticalAlignment, 'far' | 'near'>;
+
+/**
+ * Horizontal placement of a fill label within its container.
+ * Each row of a wrapped label is placed independently, so `center` centers every
+ * row and `left` and `right` align every row to the same edge.
+ * Only applies to the rectangular layouts (treemap, mosaic, flame, and icicle); sunburst
+ * and pie labels are always centered within their sector.
+ * @public
+ */
+export type FillLabelHorizontalAlignment = Exclude<HorizontalAlignment, 'far' | 'near'>;
+
 /** @public */
 export interface FillLabelConfig extends LabelConfig {
   clipText: boolean;
+  /**
+   * Overrides the layout dependent default vertical alignment of the fill label.
+   * Only applies to the rectangular layouts (treemap, mosaic, flame, and icicle); sunburst and pie
+   * labels are always centered within their sector.
+   * When left undefined, labels are vertically centered for flame and icicle layouts,
+   * top aligned for treemap and mosaic layouts with a single layer, and bottom aligned for
+   * the outer layers of nested treemap and mosaic layouts, leaving room for the parent labels.
+   */
+  verticalAlignment?: FillLabelVerticalAlignment;
+  /**
+   * Overrides the layout dependent default horizontal alignment of the fill label.
+   * Only applies to the rectangular layouts (treemap, mosaic, flame, and icicle); sunburst and pie
+   * labels are always centered within their sector.
+   * When left undefined, labels are left aligned for all layouts but sunburst,
+   * whose labels are centered to avoid overlapping their sectors.
+   */
+  horizontalAlignment?: FillLabelHorizontalAlignment;
 }
 
 /** @public */
