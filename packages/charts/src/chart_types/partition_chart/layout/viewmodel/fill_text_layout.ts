@@ -99,7 +99,8 @@ function getVerticalAlignment(
     case VerticalAlignments.bottom:
       return -(container.y1 - linePitch * (totalRowCount - 1 - rowIndex) - paddingBottom - fontSize * overhang);
     default:
-      return -((container.y0 + container.y1) / 2 + (linePitch * (rowIndex + 1 - totalRowCount)) / 2);
+      // center the whole row block on the container midpoint
+      return -((container.y0 + container.y1) / 2 + linePitch * (rowIndex - (totalRowCount - 1) / 2));
   }
 }
 

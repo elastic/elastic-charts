@@ -270,6 +270,35 @@ describe('Test that getRectangleRowGeometry works with:', () => {
       ),
     });
   });
+
+  describe('middle alignment centers the label block in the container', () => {
+    test('single row sits on the container midpoint, ignoring padding', () => {
+      const singleRowResult = getRectangleRowGeometry(container, cx, cy, 1, 50, 0, 50, rotation, 'middle', 0);
+      expect(singleRowResult.rowAnchorY).toEqual(-50); // -((y0 + y1) / 2)
+
+      const paddedResult = getRectangleRowGeometry(container, cx, cy, 1, 50, 0, 50, rotation, 'middle', {
+        top: 0,
+        right: 0,
+        bottom: 20,
+        left: 0,
+      });
+      expect(paddedResult.rowAnchorY).toEqual(-50);
+    });
+
+    test('multiple rows are spread symmetrically around the container midpoint', () => {
+      const pitch = 25;
+      const rowAnchorYs = [0, 1, 2].map(
+        (row) => getRectangleRowGeometry(container, cx, cy, 3, pitch, row, pitch, rotation, 'middle', 0).rowAnchorY,
+      );
+      // centered on the container midpoint, with the rows one line pitch apart
+      expect(rowAnchorYs).toEqual([-25, -50, -75]);
+    });
+
+    test('multiple rows do not fit when the container is too short', () => {
+      const result = getRectangleRowGeometry(container, cx, cy, 3, 50, 0, 50, rotation, 'middle', 0);
+      expect(result).toEqual({ maximumRowLength: 0, rowAnchorX: NaN, rowAnchorY: NaN });
+    });
+  });
 });
 describe('Test fillTextColor function', () => {
   test('get the right maximized contrast color', () => {
@@ -389,6 +418,26 @@ describe('Test that fillTextLayout resolves the fill label vertical alignment', 
       layerFillLabel: { verticalAlignment: 'bottom' },
     });
     expect(rowSet?.verticalAlignment).toEqual(VerticalAlignments.bottom);
+  });
+
+  it('centers a wrapped label block on the container midpoint', () => {
+    const [rowSet] = rowSets({ fillLabel: { verticalAlignment: 'middle' } });
+    const rows = rowSet?.rows ?? [];
+    expect(rows.length).toBeGreaterThan(1); // the label must actually wrap for this to be meaningful
+    const anchors = rows.map(({ rowAnchorY }) => -rowAnchorY);
+    const [first, last] = [anchors[0] as number, anchors.at(-1) as number];
+    expect((first + last) / 2).toEqual((node.y0px + node.y1px) / 2);
+    // rows are evenly spaced by one line pitch
+    anchors.slice(1).forEach((anchor, i) => expect(anchor - (anchors[i] as number)).toEqual(rowSet?.fontSize));
+  });
+
+  it('puts a single row label on the container midpoint with middle alignment', () => {
+    const [rowSet] = rowSets({
+      fillLabel: { verticalAlignment: 'middle' },
+      label: 'short label',
+    });
+    expect(rowSet?.rows).toHaveLength(1);
+    expect(-(rowSet?.rows[0]?.rowAnchorY as number)).toBeCloseTo((node.y0px + node.y1px) / 2);
   });
 
   it('ignores the configured alignment for sunburst and pie layouts', () => {
