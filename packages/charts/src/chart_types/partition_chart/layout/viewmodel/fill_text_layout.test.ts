@@ -9,11 +9,13 @@
 import { fillTextLayout, getRectangleRowGeometry, getSectorRowGeometry } from './fill_text_layout';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import type { RingSectorConstruction } from '../../../../common/geometry';
-import { VerticalAlignments } from '../../../../common/text_utils';
+import { HorizontalAlignment, VerticalAlignments } from '../../../../common/text_utils';
 import type { Datum } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import type { FillLabelHorizontalAlignment } from '../../../../utils/themes/partition';
+import { getCurrentRowX } from '../../renderer/canvas/canvas_renderers';
 import type { Layer } from '../../specs';
-import type { QuadViewModel } from '../types/viewmodel_types';
+import type { QuadViewModel, TextRow } from '../types/viewmodel_types';
 
 describe('Test that getRectangleRowGeometry works with:', () => {
   const container = { x0: 0, y0: 0, x1: 200, y1: 100 };
@@ -400,5 +402,100 @@ describe('Test that fillTextLayout resolves the fill label vertical alignment', 
     });
     expect(rowSet?.rows.length).toBeGreaterThan(0); // the label must actually fit for this to be meaningful
     expect(rowSet?.verticalAlignment).toEqual(VerticalAlignments.middle);
+  });
+});
+
+const HORIZONTAL_ALIGNMENTS = ['left', 'center', 'right'] as const;
+
+describe('Test that fillTextLayout resolves the fill label horizontal alignment', () => {
+  it('defaults to left alignment for treemap-like layouts', () => {
+    const [rowSet] = rowSets();
+    expect(rowSet?.horizontalAlignment).toEqual(HorizontalAlignment.left);
+  });
+
+  it('defaults to center alignment for sunburst-like layouts', () => {
+    const [rowSet] = rowSets({ leftAlign: false });
+    expect(rowSet?.horizontalAlignment).toEqual(HorizontalAlignment.center);
+  });
+
+  it.each(fillLabelCases(HORIZONTAL_ALIGNMENTS))('honours the %s alignment %s', (scope, alignment) => {
+    const [rowSet] = rowSets(fillLabelConfig(scope, { horizontalAlignment: alignment }));
+    expect(rowSet?.horizontalAlignment).toEqual(alignment);
+  });
+
+  it('prefers the layer fill label over the theme fill label', () => {
+    const [rowSet] = rowSets({
+      fillLabel: { horizontalAlignment: 'left' },
+      layerFillLabel: { horizontalAlignment: 'center' },
+    });
+    expect(rowSet?.horizontalAlignment).toEqual(HorizontalAlignment.center);
+  });
+
+  it('mirrors the alignment for right-to-left labels', () => {
+    const [rowSet] = rowSets({
+      fillLabel: { horizontalAlignment: 'left' },
+      label: 'مرحبا',
+    });
+    expect(rowSet?.horizontalAlignment).toEqual(HorizontalAlignment.right);
+  });
+
+  it('ignores the configured alignment for sunburst and pie layouts', () => {
+    const [rowSet] = rowSets({
+      sectorLayout: true,
+      leftAlign: false,
+      middleAlign: true,
+      label: 'aa bb cc dd', // a short label, which fits within the sector
+      fillLabel: { horizontalAlignment: 'left' },
+    });
+    expect(rowSet?.rows.length).toBeGreaterThan(0); // the label must actually fit for this to be meaningful
+    expect(rowSet?.horizontalAlignment).toEqual(HorizontalAlignment.center);
+    // the label starts where it would if it were centered on its anchor, i.e. it is not displaced off canvas
+    const [row] = rowSet?.rows ?? [];
+    expect(getCurrentRowX(row as TextRow, HorizontalAlignment.center, 0) + (row?.length ?? 0) / 2).toEqual(
+      row?.rowAnchorX,
+    );
+  });
+
+  it('centers every wrapped row of a multi-row label individually', () => {
+    const [rowSet] = rowSets({ fillLabel: { horizontalAlignment: 'center' } });
+    const rows = rowSet?.rows ?? [];
+    expect(rows.length).toBeGreaterThan(1); // the label must actually wrap for this to be meaningful
+    expect(new Set(rows.map((row) => row.length)).size).toBeGreaterThan(1); // rows of differing widths, i.e. not all full width
+    rows.forEach((row) => {
+      expect(getCurrentRowX(row, HorizontalAlignment.center, 0) + row.length / 2).toEqual(row.rowAnchorX);
+      expect(row.rowAnchorX).toEqual((node.x0 + node.x1) / 2);
+    });
+  });
+
+  it('left aligns every wrapped row of a multi-row label on the same edge', () => {
+    const [rowSet] = rowSets();
+    const rows = rowSet?.rows ?? [];
+    expect(rows.length).toBeGreaterThan(1);
+    expect(new Set(rows.map((row) => getCurrentRowX(row, HorizontalAlignment.left, 0))).size).toEqual(1);
+  });
+
+  describe('row positions respect the horizontal padding', () => {
+    const padding = { top: 0, right: 30, bottom: 0, left: 10 };
+    const paddedAreaMidX = (node.x0 + padding.left + node.x1 - padding.right) / 2;
+    // a short label, so that the words fit within the narrower padded area
+    const paddedRow = (horizontalAlignment: FillLabelHorizontalAlignment) =>
+      rowSets({ fillLabel: { horizontalAlignment, padding }, label: 'aa bb cc dd' })[0]?.rows[0] as TextRow;
+
+    it.each(HORIZONTAL_ALIGNMENTS)('anchors %s aligned rows on the padding edge', (alignment) => {
+      const row = paddedRow(alignment);
+      // the text start, text center and text end of the row, all as placed by the renderer
+      const placed = {
+        left: getCurrentRowX(row, HorizontalAlignment.left, 0),
+        center: getCurrentRowX(row, HorizontalAlignment.center, 0) + row.length / 2,
+        right: getCurrentRowX(row, HorizontalAlignment.right, 0) + row.length,
+      };
+      const expected = {
+        left: node.x0 + padding.left,
+        center: paddedAreaMidX,
+        right: node.x1 - padding.right,
+      };
+      expect(placed[alignment]).toEqual(expected[alignment]);
+      expect(row.rowAnchorX).toEqual(paddedAreaMidX);
+    });
   });
 });

@@ -2482,8 +2482,12 @@ export type PartitionElementEvent = [layers: Array<LayerValue>, seriesIdentifier
 export interface PartitionFillLabel extends LabelConfig {
     // (undocumented)
     clipText: boolean;
+    horizontalAlignment?: PartitionFillLabelHorizontalAlignment;
     verticalAlignment?: PartitionFillLabelVerticalAlignment;
 }
+
+// @public
+export type PartitionFillLabelHorizontalAlignment = Exclude<HorizontalAlignment, 'far' | 'near'>;
 
 // @public
 export type PartitionFillLabelVerticalAlignment = Exclude<VerticalAlignment, 'far' | 'near'>;

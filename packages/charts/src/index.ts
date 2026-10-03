@@ -52,6 +52,7 @@ export { CategoryKey, CategoryLabel } from './common/category';
 export { Layer as PartitionLayer, PartitionProps } from './chart_types/partition_chart/specs';
 export {
   FillLabelConfig as PartitionFillLabel,
+  FillLabelHorizontalAlignment as PartitionFillLabelHorizontalAlignment,
   FillLabelVerticalAlignment as PartitionFillLabelVerticalAlignment,
   PartitionDimmedStyle,
   PartitionStyle,

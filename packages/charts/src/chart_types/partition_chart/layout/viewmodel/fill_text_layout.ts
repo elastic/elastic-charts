@@ -233,7 +233,7 @@ function fill<C>(
     leftAlign: boolean,
     middleAlign: boolean,
   ) {
-    const horizontalAlignment = leftAlign ? HorizontalAlignment.left : HorizontalAlignment.center;
+    const defaultHorizontalAlignment = leftAlign ? HorizontalAlignment.left : HorizontalAlignment.center;
     return (allFontSizes: Pixels[][], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
       const container = shapeConstructor(node);
       const rotation = getRotation(node);
@@ -254,6 +254,7 @@ function fill<C>(
         padding,
         clipText,
         verticalAlignment: specifiedVerticalAlignment,
+        horizontalAlignment: specifiedHorizontalAlignment,
       } = {
         ...fillLabel,
         valueFormatter: formatter,
@@ -265,6 +266,9 @@ function fill<C>(
       const verticalAlignment = isSectorLayout
         ? defaultVerticalAlignment // sector rows are placed by the ring geometry, not by the label alignment
         : specifiedVerticalAlignment ?? defaultVerticalAlignment;
+      const horizontalAlignment = isSectorLayout
+        ? defaultHorizontalAlignment // the sector row length is a sentinel, so left or right alignment would displace the label
+        : specifiedHorizontalAlignment ?? defaultHorizontalAlignment;
 
       const valueFont = {
         ...fillLabel,
