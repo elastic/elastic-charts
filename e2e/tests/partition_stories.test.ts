@@ -113,6 +113,12 @@ test.describe('Axis stories', () => {
     },
   );
 
+  test('should align nested treemap fill labels middle center in dark theme', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      `http://localhost:9001/?path=/story/treemap--label-alignment&globals=theme:dark&knob-fillLabel.verticalAlignment_Partition=middle&knob-fillLabel.horizontalAlignment_Partition=center`,
+    );
+  });
+
   eachTheme.test(
     async ({ page, urlParam }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
