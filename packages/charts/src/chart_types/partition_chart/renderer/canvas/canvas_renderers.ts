@@ -35,7 +35,8 @@ import { isSunburst } from '../../layout/viewmodel/viewmodel';
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
 const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to avoid burnout in the middle of the pie when there are hundreds of pies
 
-const getCurrentRowX = (row: TextRow, horizontalAlignment: HorizontalAlignment, rotation: number) => {
+/** @internal */
+export const getCurrentRowX = (row: TextRow, horizontalAlignment: HorizontalAlignment, rotation: number) => {
   // TODO account for text rotation if needed
   const rowLength = Math.cos(rotation) * row.length;
   const offset =

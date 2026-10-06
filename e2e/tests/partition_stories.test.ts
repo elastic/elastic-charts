@@ -91,6 +91,34 @@ test.describe('Axis stories', () => {
     },
   );
 
+  pwEach.test([
+    ['middle', 'center'],
+    ['bottom', 'right'],
+  ])(
+    ([verticalAlignment, horizontalAlignment]) =>
+      `should align treemap fill labels ${verticalAlignment} ${horizontalAlignment}`,
+    async (page, [verticalAlignment, horizontalAlignment]) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/treemap--label-alignment&globals=theme:light&knob-fillLabel.verticalAlignment_Partition=${verticalAlignment}&knob-fillLabel.horizontalAlignment_Partition=${horizontalAlignment}`,
+      );
+    },
+  );
+
+  pwEach.test([PartitionLayout.mosaic, PartitionLayout.flame])(
+    (layout) => `should align ${layout} fill labels middle center`,
+    async (page, layout) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/treemap--label-alignment&globals=theme:light&knob-partitionLayout_Partition=${layout}&knob-fillLabel.verticalAlignment_Partition=middle&knob-fillLabel.horizontalAlignment_Partition=center`,
+      );
+    },
+  );
+
+  test('should align nested treemap fill labels middle center in dark theme', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      `http://localhost:9001/?path=/story/treemap--label-alignment&globals=theme:dark&knob-fillLabel.verticalAlignment_Partition=middle&knob-fillLabel.horizontalAlignment_Partition=center`,
+    );
+  });
+
   eachTheme.test(
     async ({ page, urlParam }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
