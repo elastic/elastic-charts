@@ -23,10 +23,14 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
-import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
+import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   // the alignment options apply to the rectangular layouts only
+  const layout = customKnobs.fromEnum('partitionLayout', PartitionLayout, PartitionLayout.treemap, {
+    include: ['treemap', 'mosaic', 'flame'],
+    group: 'Partition',
+  });
   const verticalAlignment = customKnobs.fromEnum('fillLabel.verticalAlignment', VerticalAlignment, undefined, {
     include: ['Top', 'Middle', 'Bottom'],
     allowUndefined: true,
@@ -50,14 +54,22 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Settings theme={theme} baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"
-        data={mocks.pie}
-        layout={PartitionLayout.treemap}
+        data={mocks.sunburst}
+        layout={layout}
         valueAccessor={(d: Datum) => d.exportVal as number}
         valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         layers={[
           {
-            groupByRollup: (d: Datum) => d.sitc1,
-            nodeLabel: (d: Datum) => productLookup[d].name,
+            groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
+            nodeLabel: (d: Datum) => regionLookup[d].regionName,
+            shape: {
+              fillColor: (key, sortIndex, node, tree) =>
+                indexInterpolatedFillColor(interpolatorCET2s())(null, sortIndex, tree),
+            },
+          },
+          {
+            groupByRollup: (d: Datum) => d.dest,
+            nodeLabel: (d: Datum) => countryLookup[d].name,
             shape: {
               fillColor: (key, sortIndex, node, tree) =>
                 indexInterpolatedFillColor(interpolatorCET2s())(null, sortIndex, tree),

@@ -104,6 +104,15 @@ test.describe('Axis stories', () => {
     },
   );
 
+  pwEach.test([PartitionLayout.mosaic, PartitionLayout.flame])(
+    (layout) => `should align ${layout} fill labels middle center`,
+    async (page, layout) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/treemap--label-alignment&globals=theme:light&knob-partitionLayout_Partition=${layout}&knob-fillLabel.verticalAlignment_Partition=middle&knob-fillLabel.horizontalAlignment_Partition=center`,
+      );
+    },
+  );
+
   eachTheme.test(
     async ({ page, urlParam }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
