@@ -56,9 +56,10 @@ export interface FillLabelConfig extends LabelConfig {
    * Overrides the layout dependent default vertical alignment of the fill label.
    * Only applies to the rectangular layouts (treemap, mosaic, flame, and icicle); sunburst and pie
    * labels are always centered within their sector.
-   * When left undefined, labels are vertically centered for flame and icicle layouts,
-   * top aligned for treemap and mosaic layouts with a single layer, and bottom aligned for
-   * the outer layers of nested treemap and mosaic layouts, leaving room for the parent labels.
+   * When left undefined, labels are vertically centered for flame and icicle layouts.
+   * In treemap and mosaic layouts, labels of the innermost layer are top aligned, and labels of
+   * the outer layers are bottom aligned within the parent label groove at the top of their cell.
+   * When set on the theme, it applies to every layer, including the parent labels in the groove.
    */
   verticalAlignment?: FillLabelVerticalAlignment;
   /**
