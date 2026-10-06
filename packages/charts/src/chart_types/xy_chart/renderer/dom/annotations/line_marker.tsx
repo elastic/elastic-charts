@@ -17,7 +17,6 @@ import type { AnnotationClickListener } from '../../../../../specs/settings';
 import type {
   onDOMElementEnter as onDOMElementEnterAction,
   onDOMElementLeave as onDOMElementLeaveAction,
-  onDOMElementClick as onDOMElementClickAction,
 } from '../../../../../state/actions/dom_element';
 import { DOMElementType } from '../../../../../state/actions/dom_element';
 import { Position, renderWithProps } from '../../../../../utils/common';
@@ -33,7 +32,6 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'pa
   chartDimensions: Dimensions;
   onDOMElementEnter: typeof onDOMElementEnterAction;
   onDOMElementLeave: typeof onDOMElementLeaveAction;
-  onDOMElementClick: typeof onDOMElementClickAction;
   onAnnotationClick?: AnnotationClickListener;
   clickable: boolean;
   getHoverParams: GetAnnotationParamsFn;
@@ -65,7 +63,6 @@ export function LineMarker({
   chartDimensions,
   onDOMElementEnter,
   onDOMElementLeave,
-  onDOMElementClick,
   onAnnotationClick,
   clickable,
   getHoverParams,
@@ -178,10 +175,8 @@ export function LineMarker({
   return clickable ? (
     <button
       {...elementProps}
-      onClick={() => {
-        onDOMElementClick();
-        onAnnotationClick?.({ rects: [], lines: [{ id, datum }] });
-      }}
+      onMouseDown={(e) => e.stopPropagation()}
+      onClick={() => onAnnotationClick?.({ rects: [], lines: [{ id, datum }] })}
       type="button"
     >
       <div ref={iconRef} className="echAnnotation__icon">

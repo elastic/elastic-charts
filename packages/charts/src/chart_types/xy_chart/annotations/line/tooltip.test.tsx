@@ -28,7 +28,7 @@ import type { AnnotationDimensions } from '../types';
 
 describe('Annotation tooltips', () => {
   describe('Line annotation tooltips', () => {
-    test('should invoke onAnnotationClick when the line annotation marker is clicked', () => {
+    test.each(['click', 'pointer'])('should invoke onAnnotationClick once for a marker %s', (activation) => {
       const onAnnotationClick = jest.fn();
 
       render(
@@ -60,7 +60,15 @@ describe('Annotation tooltips', () => {
         </Chart>,
       );
 
-      fireEvent.click(screen.getByTestId('echAnnotationMarker'));
+      const marker = screen.getByTestId('echAnnotationMarker');
+      if (activation === 'pointer') {
+        fireEvent.mouseEnter(marker);
+        fireEvent.mouseDown(marker);
+        fireEvent.mouseUp(marker);
+      }
+      fireEvent.click(marker);
+
+      expect(onAnnotationClick).toHaveBeenCalledTimes(1);
 
       expect(onAnnotationClick).toHaveBeenCalledWith({
         rects: [],

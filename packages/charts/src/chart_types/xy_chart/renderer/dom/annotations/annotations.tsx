@@ -18,8 +18,6 @@ import type { AnnotationClickListener } from '../../../../../specs/settings';
 import {
   onDOMElementEnter as onDOMElementEnterAction,
   onDOMElementLeave as onDOMElementLeaveAction,
-  onDOMElementClick as onDOMElementClickAction,
-  onDOMElementClick,
 } from '../../../../../state/actions/dom_element';
 import { onPointerMove as onPointerMoveAction } from '../../../../../state/actions/mouse';
 import type { GlobalChartState } from '../../../../../state/chart_state';
@@ -101,7 +99,6 @@ function renderAnnotationLineMarkers(
         chartDimensions={chartDimensions}
         onDOMElementEnter={onDOMElementEnter}
         onDOMElementLeave={onDOMElementLeave}
-        onDOMElementClick={onDOMElementClick}
         onAnnotationClick={onAnnotationClick}
         clickable={clickable}
         getHoverParams={getHoverParams}
@@ -201,7 +198,6 @@ const mapDispatchToProps = (dispatch: Dispatch): AnnotationsDispatchProps =>
       onPointerMove: onPointerMoveAction,
       onDOMElementLeave: onDOMElementLeaveAction,
       onDOMElementEnter: onDOMElementEnterAction,
-      onDOMElementClick: onDOMElementClickAction,
     },
     dispatch,
   );
