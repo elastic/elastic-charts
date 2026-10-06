@@ -337,7 +337,6 @@ type FillLabelScope = (typeof FILL_LABEL_SCOPES)[number];
 type RowSetsArgs = {
   fillLabel?: Partial<(typeof LIGHT_THEME)['partition']['fillLabel']>;
   layerFillLabel?: Layer['fillLabel'];
-  leftAlign?: boolean;
   middleAlign?: boolean;
   label?: string;
   sectorLayout?: boolean;
@@ -350,7 +349,6 @@ const ringSectorOrigin: [number, number] = [-30, 0];
 function rowSets({
   fillLabel,
   layerFillLabel,
-  leftAlign = true,
   middleAlign = false,
   label = node.dataName,
   sectorLayout = false,
@@ -360,7 +358,6 @@ function rowSets({
         () => ringSector,
         getSectorRowGeometry,
         () => 0,
-        true,
       )
     : fillTextLayout(
         (n) => ({ x0: n.x0, x1: n.x1, y0: n.y0px, y1: n.y1px }),
@@ -380,7 +377,7 @@ function rowSets({
     [{ groupByRollup: (d: Datum) => d, ...(layerFillLabel ? { fillLabel: layerFillLabel } : {}) }],
     [sectorLayout ? ringSectorOrigin : [(node.x0 + node.x1) / 2, (node.y0px + node.y1px) / 2]],
     4,
-    leftAlign,
+    sectorLayout,
     middleAlign,
   );
 }
@@ -444,7 +441,6 @@ describe('Test that fillTextLayout resolves the fill label vertical alignment', 
     // sunburst and pie labels are always centered, so a configured alignment must not displace them
     const [rowSet] = rowSets({
       sectorLayout: true,
-      leftAlign: false,
       middleAlign: true,
       label: 'aa bb cc dd', // a short label, which fits within the sector
       fillLabel: { verticalAlignment: 'bottom' },
@@ -463,7 +459,7 @@ describe('Test that fillTextLayout resolves the fill label horizontal alignment'
   });
 
   it('defaults to center alignment for sunburst-like layouts', () => {
-    const [rowSet] = rowSets({ leftAlign: false });
+    const [rowSet] = rowSets({ sectorLayout: true, middleAlign: true, label: 'aa bb cc dd' });
     expect(rowSet?.horizontalAlignment).toEqual(HorizontalAlignment.center);
   });
 
@@ -491,7 +487,6 @@ describe('Test that fillTextLayout resolves the fill label horizontal alignment'
   it('ignores the configured alignment for sunburst and pie layouts', () => {
     const [rowSet] = rowSets({
       sectorLayout: true,
-      leftAlign: false,
       middleAlign: true,
       label: 'aa bb cc dd', // a short label, which fits within the sector
       fillLabel: { horizontalAlignment: 'left' },

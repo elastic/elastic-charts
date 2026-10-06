@@ -410,7 +410,6 @@ export function shapeViewModel(
         ringSectorConstruction(spec, style, innerRadius, ringThickness),
         getSectorRowGeometry,
         inSectorRotation(style.horizontalTextEnforcer, style.horizontalTextAngleThreshold),
-        true,
       )
     : simpleLinear || waffleLayout
       ? () => [] // no multirow layout needed for simpleLinear partitions; no text at all for waffles
@@ -430,7 +429,7 @@ export function shapeViewModel(
     layers,
     textFillOrigins,
     maxRowCount,
-    !sunburstLayout,
+    sunburstLayout,
     !(treemapLayout || mosaicLayout),
   );
 

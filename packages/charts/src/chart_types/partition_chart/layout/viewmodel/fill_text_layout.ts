@@ -221,7 +221,6 @@ function fill<C>(
   shapeConstructor: ShapeConstructor<C>,
   getShapeRowGeometry: GetShapeRowGeometry<C>,
   getRotation: GetRotation,
-  isSectorLayout: boolean,
 ) {
   return function fillClosure(
     fillLabel: FillLabelConfig,
@@ -231,10 +230,10 @@ function fill<C>(
     valueGetter: ValueGetterFunction,
     formatter: ValueFormatter,
     maxRowCount: number,
-    leftAlign: boolean,
+    isSectorLayout: boolean,
     middleAlign: boolean,
   ) {
-    const defaultHorizontalAlignment = leftAlign ? HorizontalAlignment.left : HorizontalAlignment.center;
+    const defaultHorizontalAlignment = isSectorLayout ? HorizontalAlignment.center : HorizontalAlignment.left;
     return (allFontSizes: Pixels[][], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
       const container = shapeConstructor(node);
       const rotation = getRotation(node);
@@ -502,9 +501,8 @@ export function fillTextLayout<C>(
   shapeConstructor: ShapeConstructor<C>,
   getShapeRowGeometry: GetShapeRowGeometry<C>,
   getRotation: GetRotation,
-  isSectorLayout = false,
 ) {
-  const specificFiller = fill(shapeConstructor, getShapeRowGeometry, getRotation, isSectorLayout);
+  const specificFiller = fill(shapeConstructor, getShapeRowGeometry, getRotation);
   return function fillTextLayoutClosure(
     measure: TextMeasure,
     rawTextGetter: RawTextGetter,
@@ -515,7 +513,7 @@ export function fillTextLayout<C>(
     layers: Layer[],
     textFillOrigins: PointTuple[],
     maxRowCount: number,
-    leftAlign: boolean,
+    isSectorLayout: boolean,
     middleAlign: boolean,
   ): RowSet[] {
     const allFontSizes: Pixels[][] = [];
@@ -546,7 +544,7 @@ export function fillTextLayout<C>(
       valueGetter,
       valueFormatter,
       maxRowCount,
-      leftAlign,
+      isSectorLayout,
       middleAlign,
     );
 
