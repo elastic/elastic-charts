@@ -46,6 +46,10 @@ declare global {
        */
       DEBUG: string;
       /**
+       * Flag used to trade diagnostics for speed on local visual regression runs.
+       */
+      VRT_FAST: string;
+      /**
        * String used for seeding a random number generator used in storybook and test files
        *
        * When seeded all rng use a deterministic random set of numbers.

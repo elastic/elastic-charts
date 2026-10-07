@@ -184,7 +184,7 @@ describe('Series', () => {
       MockDataSeries.default({
         specId: 'spec1',
         yAccessor: 'y1',
-        splitAccessors: new Map(),
+        splitAccessors: new Map([['g', 'a']]),
         seriesKeys: ['a'],
         key: 'a',
         data: [
@@ -197,7 +197,7 @@ describe('Series', () => {
       MockDataSeries.default({
         specId: 'spec1',
         yAccessor: 'y1',
-        splitAccessors: new Map(),
+        splitAccessors: new Map([['g', 'b']]),
         seriesKeys: ['b'],
         key: 'b',
         data: [
@@ -208,11 +208,11 @@ describe('Series', () => {
         ],
       }),
       MockDataSeries.default({
-        specId: 'spec1',
+        specId: 'spec2',
         yAccessor: 'y1',
-        splitAccessors: new Map(),
-        seriesKeys: ['b'],
-        key: 'b',
+        splitAccessors: new Map([['g', 'c']]),
+        seriesKeys: ['c'],
+        key: 'c',
         data: [
           { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
           { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
@@ -221,11 +221,11 @@ describe('Series', () => {
         ],
       }),
       MockDataSeries.default({
-        specId: 'spec1',
+        specId: 'spec2',
         yAccessor: 'y1',
-        splitAccessors: new Map(),
-        seriesKeys: ['b'],
-        key: 'b',
+        splitAccessors: new Map([['g', 'd']]),
+        seriesKeys: ['d'],
+        key: 'd',
         data: [
           { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
           { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },

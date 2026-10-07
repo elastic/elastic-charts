@@ -19,6 +19,9 @@ module.exports = {
     'storybook-addon-theme-toggle',
     'storybook-addon-toggles',
   ],
+  core: {
+    builder: 'webpack5',
+  },
   typescript: {
     reactDocgen: false,
   },
