@@ -8,7 +8,7 @@
 
 import type { DataSeries } from './series';
 import type { BasicSeriesSpec } from './specs';
-import { isLineSeriesSpec, isAreaSeriesSpec } from './specs';
+import { isLineSeriesSpec, isAreaSeriesSpec, isBarSeriesSpec } from './specs';
 import { ScaleType } from '../../../scales/constants';
 
 /**
@@ -64,5 +64,5 @@ function isXFillNotRequired(spec: BasicSeriesSpec, groupScaleType: ScaleType, is
     groupScaleType === ScaleType.Linear ||
     groupScaleType === ScaleType.LinearBinary ||
     groupScaleType === ScaleType.Time;
-  return onlyNoFitAreaLine && onlyContinuous && !isStacked;
+  return isBarSeriesSpec(spec) || (onlyNoFitAreaLine && onlyContinuous && !isStacked);
 }
