@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { DataSeries } from './series';
+import type { DataSeries, DataSeriesDatum } from './series';
 import { isLineSeriesSpec, isAreaSeriesSpec } from './specs';
 import { ScaleType } from '../../../scales/constants';
 
@@ -31,13 +31,13 @@ export function markGaps(
     const gapEndsOnly = !spec.fit;
     const positions = data.map(({ x }) => xIndex.get(x)!).sort((a, b) => a - b);
     positions.push(xIndex.size);
-    const filledData = data.slice();
+    let filledData: DataSeriesDatum[] | undefined;
     let gapStart = 0;
     for (const position of positions) {
       for (let missing = gapStart; missing < position; missing++) {
         if (gapEndsOnly && missing > gapStart) missing = position - 1;
         const missingValue = xValuesByPosition[missing]!;
-        filledData.push({
+        (filledData ??= data.slice()).push({
           x: missingValue,
           y1: null,
           y0: null,
@@ -53,9 +53,6 @@ export function markGaps(
       gapStart = position + 1;
     }
 
-    return {
-      ...series,
-      data: filledData,
-    };
+    return filledData ? { ...series, data: filledData } : series;
   });
 }
