@@ -111,20 +111,6 @@ const divergingOffset =
   };
 
 /**
- * Stacked offset function with diverging polarity offset
- */
-const diverging = divergingOffset('zero');
-/**
- * Stacked Silhouette offset function with diverging polarity offset
- */
-const divergingSilhouette = divergingOffset('silhouette');
-
-/**
- * Stacked Wiggle offset function to account for diverging offset
- */
-const divergingWiggle = divergingOffset('wiggle');
-
-/**
  * Stacked Percentage offset function with diverging polarity offset
  * Treats percentage as participation for mixed polarity data
  */
@@ -182,11 +168,11 @@ function stackOffset(stackMode: StackMode | undefined, onlyNegative: boolean): S
     case StackMode.Percentage:
       return divergingPercentage;
     case StackMode.Silhouette:
-      return divergingSilhouette;
+      return divergingOffset('silhouette');
     case StackMode.Wiggle:
-      return divergingWiggle;
+      return divergingOffset('wiggle');
     default:
-      return diverging;
+      return divergingOffset('zero');
   }
 }
 
