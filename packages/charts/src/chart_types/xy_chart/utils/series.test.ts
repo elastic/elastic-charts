@@ -261,6 +261,33 @@ describe('Series', () => {
 
     expect(formattedDataSeries.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });
+  test('Pads a gap even when duplicate x values make the series as long as the x domain', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(
+      MockSeriesSpec.line({
+        splitSeriesAccessors: ['g'],
+        xScaleType: ScaleType.Ordinal,
+        data: [
+          { x: 'a', y: 1, g: 'complete' },
+          { x: 'b', y: 1, g: 'complete' },
+          { x: 'c', y: 1, g: 'complete' },
+          { x: 'a', y: 1, g: 'duplicates' },
+          { x: 'a', y: 2, g: 'duplicates' },
+          { x: 'c', y: 3, g: 'duplicates' },
+        ],
+      }),
+      store,
+    );
+    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+    const { data } = formattedDataSeries.find(({ seriesKeys }) => seriesKeys[0] === 'duplicates')!;
+
+    expect(data.map(({ x, filled }) => [x, filled?.x])).toEqual([
+      ['a', undefined],
+      ['a', undefined],
+      ['b', 'b'],
+      ['c', undefined],
+    ]);
+  });
   test('Can stack high volume of dataseries', () => {
     const maxArrayItems = 1000;
     const dataSeries: DataSeries[] = [
