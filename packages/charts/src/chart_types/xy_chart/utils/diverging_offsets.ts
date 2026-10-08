@@ -174,7 +174,7 @@ const stackOffsetWiggle: StackOffset = (stack) => {
   }
 };
 
-function stackOffset(stackMode?: StackMode, onlyNegative = false): StackOffset {
+function stackOffset(stackMode: StackMode | undefined, onlyNegative: boolean): StackOffset {
   // TODO: fix diverging wiggle offset for negative polarity data (from https://github.com/elastic/elastic-charts/pull/1502)
   if (onlyNegative && stackMode === StackMode.Wiggle) return stackOffsetWiggle;
 
