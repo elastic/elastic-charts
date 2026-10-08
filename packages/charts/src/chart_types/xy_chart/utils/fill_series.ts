@@ -29,6 +29,7 @@ export function markGaps(
     if (!isAreaSeriesSpec(spec) && !isLineSeriesSpec(spec)) return series;
     if (!spec.fit && isContinuous && !isStacked) return series;
     const gapEndsOnly = !spec.fit;
+    // xIndex holds every x of every series
     const positions = data.map(({ x }) => xIndex.get(x)!).sort((a, b) => a - b);
     positions.push(xIndex.size);
     let filledData: DataSeriesDatum[] | undefined;
@@ -36,6 +37,7 @@ export function markGaps(
     for (const position of positions) {
       for (let missing = gapStart; missing < position; missing++) {
         if (gapEndsOnly && missing > gapStart) missing = position - 1;
+        // missing < xIndex.size
         const missingValue = xValuesByPosition[missing]!;
         (filledData ??= data.slice()).push({
           x: missingValue,

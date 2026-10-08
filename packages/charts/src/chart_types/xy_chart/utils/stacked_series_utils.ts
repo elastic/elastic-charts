@@ -41,6 +41,7 @@ export function formatStackedDataSeriesValues(
     const { data, isFiltered } = dataSeries[seriesIndex]!;
     let previousPosition = -1;
     for (const datum of data) {
+      // xIndex holds every x of every series, so xPosition and columns[xPosition] are defined
       const xPosition = xIndex.get(datum.x)!;
       if (xPosition === previousPosition) continue;
       previousPosition = xPosition;
@@ -68,6 +69,7 @@ export function formatStackedDataSeriesValues(
   for (let seriesIndex = 0; seriesIndex < dataSeries.length; seriesIndex++) {
     const data: DataSeriesDatum[] = [];
     for (const seriesEnd = seriesEnds[seriesIndex]!; cell < seriesEnd; cell++) {
+      // cell < seriesEnd <= datums.length, the length of y0 and y1 too
       const d = datums[cell]!;
       data.push({
         x: d.x,
