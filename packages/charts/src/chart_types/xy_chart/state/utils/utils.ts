@@ -130,7 +130,7 @@ export function computeSeriesDomains(
   // fill series with missing x values
   const filledDataSeries = fillSeries(dataSeries, xIndex, xDomain.type);
 
-  const formattedDataSeries = getFormattedDataSeries(filledDataSeries, xValues, xDomain.type);
+  const formattedDataSeries = getFormattedDataSeries(filledDataSeries, xIndex, xDomain.type);
   const annotationYValueMap = getAnnotationYValueMap(annotations, scaleConfigs.y);
   // let's compute the yDomains after computing all stacked values
   const yDomains = mergeYDomain(scaleConfigs.y, formattedDataSeries, annotationYValueMap);

@@ -317,10 +317,10 @@ function finiteOrNull(value: unknown, nonNumericValues: Map<unknown, number>): n
 /** Sorts data based on order of xValues */
 const getSortedDataSeries = (
   dataSeries: DataSeries[],
-  xValues: Set<string | number>,
+  xIndex: Map<string | number, number>,
   xScaleType: ScaleType,
 ): DataSeries[] => {
-  const xSortPredicate = datumXSortPredicate(xScaleType, xValues);
+  const xSortPredicate = datumXSortPredicate(xScaleType, xIndex);
   return dataSeries.map(({ data, ...rest }) => ({
     ...rest,
     data: data.slice().sort(xSortPredicate),
@@ -330,12 +330,12 @@ const getSortedDataSeries = (
 /** @internal */
 export function getFormattedDataSeries(
   availableDataSeries: DataSeries[],
-  xValues: Set<string | number>,
+  xIndex: Map<string | number, number>,
   xScaleType: ScaleType,
 ): DataSeries[] {
   // apply fit function to every data series
   const fittedDataSeries = applyFitFunctionToDataSeries(
-    getSortedDataSeries(availableDataSeries, xValues, xScaleType),
+    getSortedDataSeries(availableDataSeries, xIndex, xScaleType),
     xScaleType,
   );
 
@@ -350,7 +350,7 @@ export function getFormattedDataSeries(
   const fittedAndStackedDataSeries = stackedGroups.flatMap((dataSeries) => {
     if (!dataSeries[0]) return [];
     const [{ stackMode, seriesType }] = dataSeries;
-    return formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMode);
+    return formatStackedDataSeriesValues(dataSeries, xIndex, seriesType, stackMode);
   });
   // get already fitted non stacked dataSeries
   const nonStackedDataSeries = fittedDataSeries.filter(({ isStacked }) => !isStacked);

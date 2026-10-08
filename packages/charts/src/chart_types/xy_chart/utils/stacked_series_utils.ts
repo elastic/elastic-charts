@@ -14,33 +14,23 @@ import { ScaleType } from '../../../scales/constants';
 import { Logger } from '../../../utils/logger';
 
 /** @internal */
-export const datumXSortPredicate = (xScaleType: ScaleType, sortedXValues?: Set<string | number>) => {
-  let xValueIndices: Map<string | number, number> | undefined;
-  return (a: { x: number | string }, b: { x: number | string }) => {
+export const datumXSortPredicate =
+  (xScaleType: ScaleType, xIndex?: Map<string | number, number>) =>
+  (a: { x: number | string }, b: { x: number | string }) => {
     if (xScaleType === ScaleType.Ordinal || typeof a.x === 'string' || typeof b.x === 'string') {
-      if (!xValueIndices && sortedXValues) {
-        xValueIndices = new Map();
-        for (const xValue of sortedXValues) xValueIndices.set(xValue, xValueIndices.size);
-      }
-      return xValueIndices ? (xValueIndices.get(a.x) ?? -1) - (xValueIndices.get(b.x) ?? -1) : 0;
+      return xIndex ? (xIndex.get(a.x) ?? -1) - (xIndex.get(b.x) ?? -1) : 0;
     }
     return a.x - b.x;
   };
-};
 
 /** @internal */
 export function formatStackedDataSeriesValues(
   dataSeries: DataSeries[],
-  xValues: Set<string | number>,
+  xIndex: Map<string | number, number>,
   seriesType: SeriesType,
   stackMode?: StackMode,
 ): DataSeries[] {
-  const xIndex = new Map<string | number, number>();
-  for (const xValue of xValues) {
-    xIndex.set(xValue, xIndex.size);
-  }
-
-  const columns: number[][] = Array.from({ length: xValues.size }, () => []);
+  const columns: number[][] = Array.from({ length: xIndex.size }, () => []);
   const series: number[] = [];
   const values: number[] = [];
   const datums: DataSeriesDatum[] = [];
