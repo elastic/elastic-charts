@@ -13,7 +13,7 @@ import { ScaleType } from '../../../scales/constants';
 /**
  * @internal
  */
-export function fillSeries(
+export function markGaps(
   dataSeries: DataSeries[],
   xIndex: Map<string | number, number>,
   groupScaleType: ScaleType,
