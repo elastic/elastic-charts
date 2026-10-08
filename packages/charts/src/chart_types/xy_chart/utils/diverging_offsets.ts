@@ -25,6 +25,7 @@ import { StackMode } from './specs';
 import { clamp } from '../../../utils/common';
 
 interface StackColumns {
+  // cell indices, each < series.length === y0.length === y1.length
   columns: readonly (readonly number[])[];
   series: readonly number[];
   y0: Float64Array;
