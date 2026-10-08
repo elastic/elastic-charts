@@ -7,7 +7,6 @@
  */
 
 import type { DataSeries } from './series';
-import type { BasicSeriesSpec } from './specs';
 import { isLineSeriesSpec, isAreaSeriesSpec } from './specs';
 import { ScaleType } from '../../../scales/constants';
 
@@ -19,15 +18,18 @@ export function fillSeries(
   xValues: Set<string | number>,
   groupScaleType: ScaleType,
 ): DataSeries[] {
+  const isContinuous =
+    groupScaleType === ScaleType.Linear ||
+    groupScaleType === ScaleType.LinearBinary ||
+    groupScaleType === ScaleType.Time;
   const xValuesByPosition = [...xValues];
   const xIndex = new Map(xValuesByPosition.map((x, position) => [x, position]));
   return dataSeries.map((series) => {
     const { spec, data, isStacked } = series;
 
-    if (!isXFillRequired(spec, groupScaleType, isStacked)) {
-      return series;
-    }
-    const gapEndsOnly = (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && !spec.fit;
+    if (!isAreaSeriesSpec(spec) && !isLineSeriesSpec(spec)) return series;
+    if (!spec.fit && isContinuous && !isStacked) return series;
+    const gapEndsOnly = !spec.fit;
     const positions = data.map(({ x }) => xIndex.get(x)!).sort((a, b) => a - b);
     positions.push(xValues.size);
     const filledData = data.slice();
@@ -57,13 +59,4 @@ export function fillSeries(
       data: filledData,
     };
   });
-}
-
-function isXFillRequired(spec: BasicSeriesSpec, groupScaleType: ScaleType, isStacked: boolean) {
-  const isAreaOrLine = isAreaSeriesSpec(spec) || isLineSeriesSpec(spec);
-  const onlyContinuous =
-    groupScaleType === ScaleType.Linear ||
-    groupScaleType === ScaleType.LinearBinary ||
-    groupScaleType === ScaleType.Time;
-  return isAreaOrLine && (Boolean(spec.fit) || !onlyContinuous || isStacked);
 }
