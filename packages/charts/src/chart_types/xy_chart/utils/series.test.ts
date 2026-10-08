@@ -288,6 +288,27 @@ describe('Series', () => {
       ['c', undefined],
     ]);
   });
+  test('Does not pad bubble series', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(
+      MockSeriesSpec.bubble({
+        splitSeriesAccessors: ['g'],
+        xScaleType: ScaleType.Ordinal,
+        data: [
+          { x: 'a', y: 1, g: 'complete' },
+          { x: 'b', y: 1, g: 'complete' },
+          { x: 'c', y: 1, g: 'complete' },
+          { x: 'a', y: 1, g: 'sparse' },
+          { x: 'c', y: 3, g: 'sparse' },
+        ],
+      }),
+      store,
+    );
+    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+    const { data } = formattedDataSeries.find(({ seriesKeys }) => seriesKeys[0] === 'sparse')!;
+
+    expect(data.map(({ x }) => x)).toEqual(['a', 'c']);
+  });
   test('Can stack high volume of dataseries', () => {
     const maxArrayItems = 1000;
     const dataSeries: DataSeries[] = [
