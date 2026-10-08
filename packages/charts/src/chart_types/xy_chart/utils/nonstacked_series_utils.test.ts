@@ -10,7 +10,7 @@ import * as fitFunctionModule from './fit_function';
 import * as testModule from './fit_function_utils';
 import { Fit } from './specs';
 import { MockDataSeries } from '../../../mocks';
-import { MockSeriesSpecs, MockSeriesSpec } from '../../../mocks/specs';
+import { MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
@@ -243,18 +243,17 @@ describe('Non-Stacked Series Utils', () => {
 
   describe('Using fit functions', () => {
     describe.each(['area', 'line'])('Spec type - %s', (specType) => {
-      const dataSeries = [MockDataSeries.fitFunction({ shuffle: false })];
       const dataSeriesData = MockDataSeries.fitFunction({ shuffle: false }).data;
       const spec =
         specType === 'area' ? MockSeriesSpec.area({ fit: Fit.Linear }) : MockSeriesSpec.line({ fit: Fit.Linear });
-      const seriesSpecs = MockSeriesSpecs.fromSpecs([spec]);
+      const dataSeries = [{ ...MockDataSeries.fitFunction({ shuffle: false }), spec }];
 
       beforeAll(() => {
         jest.spyOn(fitFunctionModule, 'fitFunction').mockReturnValue(dataSeriesData);
       });
 
       it('return call fitFunction with args', () => {
-        testModule.applyFitFunctionToDataSeries(dataSeries, seriesSpecs, ScaleType.Linear);
+        testModule.applyFitFunctionToDataSeries(dataSeries, ScaleType.Linear);
 
         expect(fitFunctionModule.fitFunction).toHaveBeenCalledWith(dataSeriesData, Fit.Linear, ScaleType.Linear, true);
       });
@@ -262,37 +261,34 @@ describe('Non-Stacked Series Utils', () => {
       it('return not call fitFunction if no fit specified', () => {
         const currentSpec =
           specType === 'area' ? MockSeriesSpec.area({ fit: undefined }) : MockSeriesSpec.line({ fit: undefined });
-        const noFitSpec = MockSeriesSpecs.fromSpecs([currentSpec]);
-        testModule.applyFitFunctionToDataSeries(dataSeries, noFitSpec, ScaleType.Linear);
+        testModule.applyFitFunctionToDataSeries([{ ...dataSeries[0]!, spec: currentSpec }], ScaleType.Linear);
 
         expect(fitFunctionModule.fitFunction).not.toHaveBeenCalled();
       });
 
       it('return fitted dataSeries', () => {
-        const actual = testModule.applyFitFunctionToDataSeries(dataSeries, seriesSpecs, ScaleType.Linear);
+        const actual = testModule.applyFitFunctionToDataSeries(dataSeries, ScaleType.Linear);
 
         expect(actual[0]?.data).toBe(dataSeriesData);
       });
     });
 
     describe('Non area and line specs', () => {
-      const dataSeries = [MockDataSeries.fitFunction({ shuffle: false })];
       const dataSeriesData = MockDataSeries.fitFunction({ shuffle: false }).data;
-      const spec = MockSeriesSpec.bar();
-      const seriesSpecs = MockSeriesSpecs.fromSpecs([spec]);
+      const dataSeries = [{ ...MockDataSeries.fitFunction({ shuffle: false }), spec: MockSeriesSpec.bar() }];
 
       beforeAll(() => {
         jest.spyOn(fitFunctionModule, 'fitFunction').mockReturnValue(dataSeriesData);
       });
 
       it('return call fitFunction with args', () => {
-        testModule.applyFitFunctionToDataSeries(dataSeries, seriesSpecs, ScaleType.Linear);
+        testModule.applyFitFunctionToDataSeries(dataSeries, ScaleType.Linear);
 
         expect(fitFunctionModule.fitFunction).not.toHaveBeenCalled();
       });
 
       it('return fitted dataSeries', () => {
-        const actual = testModule.applyFitFunctionToDataSeries(dataSeries, seriesSpecs, ScaleType.Linear);
+        const actual = testModule.applyFitFunctionToDataSeries(dataSeries, ScaleType.Linear);
 
         expect(actual[0]?.data).toBe(dataSeriesData);
       });

@@ -8,7 +8,7 @@
 
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
-import type { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesType, StackMode } from './specs';
+import type { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesType, StackMode } from './specs';
 import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
 import type { Color } from '../../../common/colors';
 import { Colors } from '../../../common/colors';
@@ -329,7 +329,6 @@ const getSortedDataSeries = (
 
 /** @internal */
 export function getFormattedDataSeries(
-  seriesSpecs: SeriesSpecs,
   availableDataSeries: DataSeries[],
   xValues: Set<string | number>,
   xScaleType: ScaleType,
@@ -337,7 +336,6 @@ export function getFormattedDataSeries(
   // apply fit function to every data series
   const fittedDataSeries = applyFitFunctionToDataSeries(
     getSortedDataSeries(availableDataSeries, xValues, xScaleType),
-    seriesSpecs,
     xScaleType,
   );
 

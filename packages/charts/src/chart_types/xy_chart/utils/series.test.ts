@@ -535,7 +535,7 @@ describe('Series', () => {
     const xValues = new Set([0, 1, 2, 3]);
 
     const { dataSeries } = getDataSeriesFromSpecs([spec1, spec2]);
-    const stackedDataSeries = getFormattedDataSeries([spec1, spec2], dataSeries, xValues, ScaleType.Linear);
+    const stackedDataSeries = getFormattedDataSeries(dataSeries, xValues, ScaleType.Linear);
 
     expect(stackedDataSeries.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });
