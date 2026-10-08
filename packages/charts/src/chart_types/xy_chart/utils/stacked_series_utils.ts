@@ -14,13 +14,6 @@ import { ScaleType } from '../../../scales/constants';
 import { Logger } from '../../../utils/logger';
 
 /** @internal */
-export interface StackedValues {
-  values: number[];
-  percent: Array<number>;
-  total: number;
-}
-
-/** @internal */
 export const datumXSortPredicate = (xScaleType: ScaleType, sortedXValues?: Set<string | number>) => {
   let xValueIndices: Map<string | number, number> | undefined;
   return (a: { x: number | string }, b: { x: number | string }) => {
