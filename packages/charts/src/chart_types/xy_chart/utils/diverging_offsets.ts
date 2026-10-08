@@ -162,9 +162,7 @@ const divergingPercentage: StackOffset = ({ columns, y0, y1 }) => {
 };
 
 const stackOffsetWiggle: StackOffset = (stack) => {
-  const { columns, series, y0, y1 } = stack;
-  if (!(series.length > 0)) return;
-
+  const { columns, y0, y1 } = stack;
   const offsets = wiggleOffsets(stack);
 
   for (let j = 0; j < columns.length; ++j) {
