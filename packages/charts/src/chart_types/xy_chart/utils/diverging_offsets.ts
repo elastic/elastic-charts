@@ -21,34 +21,17 @@
  * THIS SOFTWARE.
  */
 
-/** @internal */
-export interface StackCells {
-  columns: readonly (readonly number[])[];
-  series: Int32Array;
-  values: Float64Array;
-}
+import { StackMode } from './specs';
+import { clamp } from '../../../utils/common';
 
-/** @internal */
-export interface StackColumns {
+interface StackColumns {
   columns: readonly (readonly number[])[];
-  series: Int32Array;
+  series: ArrayLike<number>;
   y0: Float64Array;
   y1: Float64Array;
 }
 
-/** @internal */
-export type StackOffset = (stack: StackColumns) => void;
-
-/** @internal */
-export function stackCells(
-  { columns, series, values }: StackCells,
-  offset: StackOffset,
-): Pick<StackColumns, 'y0' | 'y1'> {
-  const y0 = new Float64Array(values.length);
-  const y1 = Float64Array.from(values);
-  offset({ columns, series, y0, y1 });
-  return { y0, y1 };
-}
+type StackOffset = (stack: StackColumns) => void;
 
 /**
  * Computes required wiggle offset for each x value __WITHOUT__ mutations
@@ -95,7 +78,6 @@ function wiggleOffsets({ columns, series, y1 }: StackColumns): number[] {
   return offsets;
 }
 
-/** @internal */
 const divergingOffset =
   (isSilhouette = false): StackOffset =>
   ({ columns, y0, y1 }) => {
@@ -135,20 +117,17 @@ const divergingOffset =
 
 /**
  * Stacked offset function with diverging polarity offset
- * @internal
  */
-export const diverging = divergingOffset();
+const diverging = divergingOffset();
 /**
  * Stacked Silhouette offset function with diverging polarity offset
- * @internal
  */
-export const divergingSilhouette = divergingOffset(true);
+const divergingSilhouette = divergingOffset(true);
 
 /**
  * Stacked Wiggle offset function to account for diverging offset
- * @internal
  */
-export const divergingWiggle: StackOffset = (stack) => {
+const divergingWiggle: StackOffset = (stack) => {
   const { columns, series, y0, y1 } = stack;
   if (!(series.length > 0)) return;
 
@@ -183,9 +162,8 @@ export const divergingWiggle: StackOffset = (stack) => {
 /**
  * Stacked Percentage offset function with diverging polarity offset
  * Treats percentage as participation for mixed polarity data
- * @internal
  */
-export const divergingPercentage: StackOffset = ({ columns, y0, y1 }) => {
+const divergingPercentage: StackOffset = ({ columns, y0, y1 }) => {
   for (const column of columns) {
     let sumYn = 0;
     let sumYp = 0;
@@ -218,8 +196,7 @@ export const divergingPercentage: StackOffset = ({ columns, y0, y1 }) => {
   }
 };
 
-/** @internal */
-export const stackOffsetWiggle: StackOffset = (stack) => {
+const stackOffsetWiggle: StackOffset = (stack) => {
   const { columns, series, y0, y1 } = stack;
   if (!(series.length > 0)) return;
 
@@ -233,5 +210,48 @@ export const stackOffsetWiggle: StackOffset = (stack) => {
     }
   }
 };
+
+function stackOffset(stackMode?: StackMode, onlyNegative = false): StackOffset {
+  // TODO: fix diverging wiggle offset for negative polarity data (from https://github.com/elastic/elastic-charts/pull/1502)
+  if (onlyNegative && stackMode === StackMode.Wiggle) return stackOffsetWiggle;
+
+  switch (stackMode) {
+    case StackMode.Percentage:
+      return divergingPercentage;
+    case StackMode.Silhouette:
+      return divergingSilhouette;
+    case StackMode.Wiggle:
+      return divergingWiggle;
+    default:
+      return diverging;
+  }
+}
+
+/** @internal */
+export function stackCells(
+  columns: readonly (readonly number[])[],
+  series: ArrayLike<number>,
+  values: ArrayLike<number>,
+  stackMode: StackMode | undefined,
+  onlyNegative: boolean,
+): { y0: Float64Array; y1: Float64Array } {
+  const y0 = new Float64Array(values.length);
+  const y1 = Float64Array.from(values);
+  stackOffset(stackMode, onlyNegative)({ columns, series, y0, y1 });
+
+  if (stackMode === StackMode.Percentage) {
+    /**
+     * Due to floating point errors, values computed on a stack
+     * could fall out of the current defined domain boundaries.
+     * This can particularly happen with percent stacks, where the domain
+     * is hardcoded to [0,1] and some values can fall outside that domain.
+     */
+    for (let c = 0; c < values.length; ++c) {
+      y0[c] = clamp(y0[c]!, 0, 1);
+      y1[c] = clamp(y1[c]!, 0, 1);
+    }
+  }
+  return { y0, y1 };
+}
 
 /* eslint-enable header/header, no-param-reassign */

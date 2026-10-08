@@ -6,39 +6,26 @@
  * Side Public License, v 1.
  */
 
-import type { StackOffset } from './diverging_offsets';
-import {
-  diverging,
-  divergingPercentage,
-  divergingSilhouette,
-  divergingWiggle,
-  stackCells,
-  stackOffsetWiggle,
-} from './diverging_offsets';
+import { SeriesType, StackMode } from './specs';
+import { formatStackedDataSeriesValues } from './stacked_series_utils';
+import { MockDataSeries } from '../../../mocks/series';
 
 type Matrix = Array<Array<number | null>>;
 
-/** Stacks one row per series, one column per x value, the same way `formatStackedDataSeriesValues` does; `null` is an absent cell */
-const stackMatrix = (matrix: Matrix, offset: StackOffset): Array<Array<[number, number] | null>> => {
-  const columns: number[][] = Array.from({ length: matrix[0]?.length ?? 0 }, () => []);
-  const series: number[] = [];
-  const values: number[] = [];
-  matrix.forEach((row, seriesIndex) =>
-    row.forEach((value, xPosition) => {
-      if (value === null) return;
-      columns[xPosition]!.push(values.length);
-      series.push(seriesIndex);
-      values.push(value);
-    }),
+/** Stacks one series per row and one x value per column; `null` is a missing data point */
+const stackMatrix = (matrix: Matrix, stackMode?: StackMode): Array<Array<[number, number] | null>> => {
+  const xIndex = new Map((matrix[0] ?? []).map((_, x) => [x, x]));
+  const dataSeries = matrix.map((row) =>
+    MockDataSeries.fromData(
+      row.flatMap((y1, x) =>
+        y1 === null ? [] : [{ x, y1, y0: null, initialY1: y1, initialY0: null, mark: null, datum: undefined }],
+      ),
+    ),
   );
-  const { y0, y1 } = stackCells(
-    { columns, series: Int32Array.from(series), values: Float64Array.from(values) },
-    offset,
-  );
-  let cell = 0;
-  return matrix.map((row) =>
-    row.map((value): [number, number] | null => (value === null ? null : [y0[cell]!, y1[cell++]!])),
-  );
+  return formatStackedDataSeriesValues(dataSeries, xIndex, SeriesType.Bar, stackMode).map(({ data }, s) => {
+    const stacked = new Map(data.map(({ x, y0, y1 }) => [x, [y0, y1] as [number, number]]));
+    return matrix[s]!.map((_, x) => stacked.get(x) ?? null);
+  });
 };
 
 const MIXED = [
@@ -54,8 +41,8 @@ const NEGATIVE = [
 ];
 
 describe('Stacking offsets', () => {
-  it('diverging stacks positive values upward and negative values downward', () => {
-    expect(stackMatrix(MIXED, diverging)).toEqual([
+  it('default stacking stacks positive values upward and negative values downward', () => {
+    expect(stackMatrix(MIXED)).toEqual([
       [
         [0, 1],
         [0, 2],
@@ -77,8 +64,8 @@ describe('Stacking offsets', () => {
     ]);
   });
 
-  it('divergingSilhouette centers the stack around zero', () => {
-    expect(stackMatrix(MIXED, divergingSilhouette)).toEqual([
+  it('silhouette centers the stack around zero', () => {
+    expect(stackMatrix(MIXED, StackMode.Silhouette)).toEqual([
       [
         [-1.5, -0.5],
         [-0.5, 1.5],
@@ -100,8 +87,8 @@ describe('Stacking offsets', () => {
     ]);
   });
 
-  it('divergingPercentage normalizes each x to its participation and skips all-zero x values', () => {
-    expect(stackMatrix(MIXED, divergingPercentage)).toEqual([
+  it('percentage normalizes each x to its participation and skips all-zero x values', () => {
+    expect(stackMatrix(MIXED, StackMode.Percentage)).toEqual([
       [
         [0.2, 0.4],
         [0.4, 0.8],
@@ -123,8 +110,8 @@ describe('Stacking offsets', () => {
     ]);
   });
 
-  it('divergingWiggle shifts each x by the wiggle-minimizing baseline', () => {
-    expect(stackMatrix(MIXED, divergingWiggle)).toEqual([
+  it('wiggle with mixed polarity shifts each x by the wiggle-minimizing baseline', () => {
+    expect(stackMatrix(MIXED, StackMode.Wiggle)).toEqual([
       [
         [1, 2],
         [1, 3],
@@ -146,16 +133,16 @@ describe('Stacking offsets', () => {
     ]);
   });
 
-  it('divergingWiggle with a single x value has no baseline shift', () => {
-    expect(stackMatrix([[2], [-3], [5]], divergingWiggle)).toEqual([[[3, 5]], [[3, 0]], [[5, 10]]]);
+  it('wiggle with a single x value has no baseline shift', () => {
+    expect(stackMatrix([[2], [-3], [5]], StackMode.Wiggle)).toEqual([[[3, 5]], [[3, 0]], [[5, 10]]]);
   });
 
-  it('divergingWiggle with no series returns an empty stack', () => {
-    expect(stackMatrix([], divergingWiggle)).toEqual([]);
+  it('wiggle with no series returns an empty stack', () => {
+    expect(stackMatrix([], StackMode.Wiggle)).toEqual([]);
   });
 
-  it('stackOffsetWiggle, used for all-negative wiggle stacks, shifts each x by the wiggle-minimizing baseline', () => {
-    expect(stackMatrix(NEGATIVE, stackOffsetWiggle)).toEqual([
+  it('wiggle with only negative values uses the non-diverging wiggle offset', () => {
+    expect(stackMatrix(NEGATIVE, StackMode.Wiggle)).toEqual([
       [
         [0, -1],
         [0.25, -1.75],
@@ -177,10 +164,6 @@ describe('Stacking offsets', () => {
     ]);
   });
 
-  it('stackOffsetWiggle with no series returns an empty stack', () => {
-    expect(stackMatrix([], stackOffsetWiggle)).toEqual([]);
-  });
-
   describe('absent cells', () => {
     const SPARSE: Matrix = [
       [1, null, -1, 2, null],
@@ -200,20 +183,20 @@ describe('Stacking offsets', () => {
         ),
       );
 
-    it.each<[string, StackOffset, Matrix]>([
-      ['diverging', diverging, SPARSE],
-      ['divergingSilhouette', divergingSilhouette, SPARSE],
-      ['divergingPercentage', divergingPercentage, SPARSE],
-      ['divergingWiggle', divergingWiggle, SPARSE],
-      ['stackOffsetWiggle', stackOffsetWiggle, SPARSE_NEGATIVE],
-    ])('%s stacks absent cells like zero values, up to the sign of zero', (_, offset, matrix) => {
-      expect(signlessZeros(stackMatrix(matrix, offset), matrix)).toEqual(
-        signlessZeros(stackMatrix(zeroFilled(matrix), offset), matrix),
+    it.each<[string, StackMode | undefined, Matrix]>([
+      ['default', undefined, SPARSE],
+      ['silhouette', StackMode.Silhouette, SPARSE],
+      ['percentage', StackMode.Percentage, SPARSE],
+      ['wiggle', StackMode.Wiggle, SPARSE],
+      ['negative-only wiggle', StackMode.Wiggle, SPARSE_NEGATIVE],
+    ])('%s stacks absent cells like zero values, up to the sign of zero', (_, stackMode, matrix) => {
+      expect(signlessZeros(stackMatrix(matrix, stackMode), matrix)).toEqual(
+        signlessZeros(stackMatrix(zeroFilled(matrix), stackMode), matrix),
       );
     });
 
     it('visits only the cells that exist, so an x position without cells is left empty', () => {
-      expect(stackMatrix([[2, null, 3]], diverging)).toEqual([[[0, 2], null, [0, 3]]]);
+      expect(stackMatrix([[2, null, 3]])).toEqual([[[0, 2], null, [0, 3]]]);
     });
   });
 });
