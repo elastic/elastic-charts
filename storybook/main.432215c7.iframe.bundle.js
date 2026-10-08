@@ -8353,7 +8353,7 @@ Object.defineProperty(exports, "timeslipPrototype", ({ enumerable: true, get: fu
  * Side Public License, v 1.
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.threeLayer = exports.zeroValues = exports.grooveText = exports.percentage = exports.customStyle = exports.multiColor = exports.twoLayersStressTest = exports.midTwoLayers = exports.oneLayer2 = exports.oneLayer = void 0;
+exports.labelAlignment = exports.threeLayer = exports.zeroValues = exports.grooveText = exports.percentage = exports.customStyle = exports.multiColor = exports.twoLayersStressTest = exports.midTwoLayers = exports.oneLayer2 = exports.oneLayer = void 0;
 exports["default"] = {
     title: 'Treemap',
 };
@@ -8377,6 +8377,8 @@ var _9_zero_values_story_1 = __webpack_require__(/*! ./9_zero_values.story */ ".
 Object.defineProperty(exports, "zeroValues", ({ enumerable: true, get: function () { return _9_zero_values_story_1.Example; } }));
 var _10_three_layers_story_1 = __webpack_require__(/*! ./10_three_layers.story */ "./stories/treemap/10_three_layers.story.tsx");
 Object.defineProperty(exports, "threeLayer", ({ enumerable: true, get: function () { return _10_three_layers_story_1.Example; } }));
+var _11_label_alignment_story_1 = __webpack_require__(/*! ./11_label_alignment.story */ "./stories/treemap/11_label_alignment.story.tsx");
+Object.defineProperty(exports, "labelAlignment", ({ enumerable: true, get: function () { return _11_label_alignment_story_1.Example; } }));
 
 
 /***/ },
@@ -37487,6 +37489,75 @@ exports.Example.parameters = { storySource: { source: "(_, { title, description 
 
 /***/ },
 
+/***/ "./stories/treemap/11_label_alignment.story.tsx"
+/*!******************************************************!*\
+  !*** ./stories/treemap/11_label_alignment.story.tsx ***!
+  \******************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Example = void 0;
+/* eslint-disable */
+// @ts-nocheck
+// @ts-ignore
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React from 'react';\n\nimport type { Datum, PartialTheme } from '@elastic/charts';\nimport {\n  Chart,\n  defaultPartitionValueFormatter,\n  HorizontalAlignment,\n  Partition,\n  PartitionLayout,\n  Settings,\n  VerticalAlignment,\n} from '@elastic/charts';\nimport { mocks } from '@elastic/charts/src/mocks/hierarchical';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { customKnobs } from '../utils/knobs';\nimport { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  // the alignment options apply to the rectangular layouts only\n  const verticalAlignment = customKnobs.fromEnum('fillLabel.verticalAlignment', VerticalAlignment, undefined, {\n    include: ['Top', 'Middle', 'Bottom'],\n    allowUndefined: true,\n    undefinedLabel: 'default',\n    group: 'Partition',\n  });\n  const horizontalAlignment = customKnobs.fromEnum('fillLabel.horizontalAlignment', HorizontalAlignment, undefined, {\n    include: ['Left', 'Center', 'Right'],\n    allowUndefined: true,\n    undefinedLabel: 'default',\n    group: 'Partition',\n  });\n  const theme: PartialTheme = {\n    partition: {\n      fillLabel: { verticalAlignment, horizontalAlignment },\n    },\n  };\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings theme={theme} baseTheme={useBaseTheme()} />\n      <Partition\n        id=\"spec_1\"\n        data={mocks.pie}\n        layout={PartitionLayout.treemap}\n        valueAccessor={(d: Datum) => d.exportVal as number}\n        valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\\u00A0Bn`}\n        layers={[\n          {\n            groupByRollup: (d: Datum) => d.sitc1,\n            nodeLabel: (d: Datum) => productLookup[d].name,\n            shape: {\n              fillColor: (key, sortIndex, node, tree) =>\n                indexInterpolatedFillColor(interpolatorCET2s())(null, sortIndex, tree),\n            },\n          },\n        ]}\n      />\n    </Chart>\n  );\n};\n";
+// @ts-ignore
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 28 }, "endLoc": { "col": 1, "line": 70 }, "startBody": { "col": 36, "line": 28 }, "endBody": { "col": 1, "line": 70 } } };
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+const react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
+const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
+const hierarchical_1 = __webpack_require__(/*! @elastic/charts/src/mocks/hierarchical */ "../packages/charts/src/mocks/hierarchical/index.ts");
+const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
+const knobs_1 = __webpack_require__(/*! ../utils/knobs */ "./stories/utils/knobs/index.ts");
+const utils_1 = __webpack_require__(/*! ../utils/utils */ "./stories/utils/utils.ts");
+const Example = (_, { title, description }) => {
+    // the alignment options apply to the rectangular layouts only
+    const verticalAlignment = knobs_1.customKnobs.fromEnum('fillLabel.verticalAlignment', charts_1.VerticalAlignment, undefined, {
+        include: ['Top', 'Middle', 'Bottom'],
+        allowUndefined: true,
+        undefinedLabel: 'default',
+        group: 'Partition',
+    });
+    const horizontalAlignment = knobs_1.customKnobs.fromEnum('fillLabel.horizontalAlignment', charts_1.HorizontalAlignment, undefined, {
+        include: ['Left', 'Center', 'Right'],
+        allowUndefined: true,
+        undefinedLabel: 'default',
+        group: 'Partition',
+    });
+    const theme = {
+        partition: {
+            fillLabel: { verticalAlignment, horizontalAlignment },
+        },
+    };
+    return (react_1.default.createElement(charts_1.Chart, { title: title, description: description },
+        react_1.default.createElement(charts_1.Settings, { theme: theme, baseTheme: (0, use_base_theme_1.useBaseTheme)() }),
+        react_1.default.createElement(charts_1.Partition, { id: "spec_1", data: hierarchical_1.mocks.pie, layout: charts_1.PartitionLayout.treemap, valueAccessor: (d) => d.exportVal, valueFormatter: (d) => `$${(0, charts_1.defaultPartitionValueFormatter)(Math.round(d / 1000000000))}\u00A0Bn`, layers: [
+                {
+                    groupByRollup: (d) => d.sitc1,
+                    nodeLabel: (d) => utils_1.productLookup[d].name,
+                    shape: {
+                        fillColor: (key, sortIndex, node, tree) => (0, utils_1.indexInterpolatedFillColor)((0, utils_1.interpolatorCET2s)())(null, sortIndex, tree),
+                    },
+                },
+            ] })));
+};
+exports.Example = Example;
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  // the alignment options apply to the rectangular layouts only\n  const verticalAlignment = customKnobs.fromEnum('fillLabel.verticalAlignment', VerticalAlignment, undefined, {\n    include: ['Top', 'Middle', 'Bottom'],\n    allowUndefined: true,\n    undefinedLabel: 'default',\n    group: 'Partition',\n  });\n  const horizontalAlignment = customKnobs.fromEnum('fillLabel.horizontalAlignment', HorizontalAlignment, undefined, {\n    include: ['Left', 'Center', 'Right'],\n    allowUndefined: true,\n    undefinedLabel: 'default',\n    group: 'Partition',\n  });\n  const theme: PartialTheme = {\n    partition: {\n      fillLabel: { verticalAlignment, horizontalAlignment },\n    },\n  };\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings theme={theme} baseTheme={useBaseTheme()} />\n      <Partition\n        id=\"spec_1\"\n        data={mocks.pie}\n        layout={PartitionLayout.treemap}\n        valueAccessor={(d: Datum) => d.exportVal as number}\n        valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\\u00A0Bn`}\n        layers={[\n          {\n            groupByRollup: (d: Datum) => d.sitc1,\n            nodeLabel: (d: Datum) => productLookup[d].name,\n            shape: {\n              fillColor: (key, sortIndex, node, tree) =>\n                indexInterpolatedFillColor(interpolatorCET2s())(null, sortIndex, tree),\n            },\n          },\n        ]}\n      />\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
+
+
+/***/ },
+
 /***/ "./stories/treemap/1_one_layer.story.tsx"
 /*!***********************************************!*\
   !*** ./stories/treemap/1_one_layer.story.tsx ***!
@@ -51333,6 +51404,11 @@ const getSectorRowGeometry = (ringSector, cx, cy, totalRowCount, linePitch, rowI
     return { rowAnchorX, rowAnchorY, maximumRowLength };
 };
 exports.getSectorRowGeometry = getSectorRowGeometry;
+function getDefaultVerticalAlignment(middleAlign, depth, layerCount) {
+    if (middleAlign)
+        return text_utils_1.VerticalAlignments.middle;
+    return depth < layerCount ? text_utils_1.VerticalAlignments.bottom : text_utils_1.VerticalAlignments.top;
+}
 function getVerticalAlignment(container, verticalAlignment, linePitch, totalRowCount, rowIndex, paddingTop, paddingBottom, fontSize, overhang) {
     switch (verticalAlignment) {
         case text_utils_1.VerticalAlignments.top:
@@ -51340,7 +51416,8 @@ function getVerticalAlignment(container, verticalAlignment, linePitch, totalRowC
         case text_utils_1.VerticalAlignments.bottom:
             return -(container.y1 - linePitch * (totalRowCount - 1 - rowIndex) - paddingBottom - fontSize * overhang);
         default:
-            return -((container.y0 + container.y1) / 2 + (linePitch * (rowIndex + 1 - totalRowCount)) / 2);
+            // center the whole row block on the container midpoint
+            return -((container.y0 + container.y1) / 2 + linePitch * (rowIndex - (totalRowCount - 1) / 2));
     }
 }
 /** @internal */
@@ -51402,8 +51479,8 @@ function getWordSpacing(fontSize) {
     return fontSize / 4;
 }
 function fill(shapeConstructor, getShapeRowGeometry, getRotation) {
-    return function fillClosure(fillLabel, layers, measure, rawTextGetter, valueGetter, formatter, maxRowCount, leftAlign, middleAlign) {
-        const horizontalAlignment = leftAlign ? text_utils_1.HorizontalAlignment.left : text_utils_1.HorizontalAlignment.center;
+    return function fillClosure(fillLabel, layers, measure, rawTextGetter, valueGetter, formatter, maxRowCount, isSectorLayout, middleAlign) {
+        const defaultHorizontalAlignment = isSectorLayout ? text_utils_1.HorizontalAlignment.center : text_utils_1.HorizontalAlignment.left;
         return (allFontSizes, textFillOrigin, node) => {
             const container = shapeConstructor(node);
             const rotation = getRotation(node);
@@ -51411,18 +51488,20 @@ function fill(shapeConstructor, getShapeRowGeometry, getRotation) {
             if (!layer) {
                 throw new Error(`Failed to find layer at ${node.depth - 1}`);
             }
-            const verticalAlignment = middleAlign
-                ? text_utils_1.VerticalAlignments.middle
-                : node.depth < layers.length
-                    ? text_utils_1.VerticalAlignments.bottom
-                    : text_utils_1.VerticalAlignments.top;
             const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1] ?? [];
-            const { fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding, clipText } = {
+            const { fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding, clipText, verticalAlignment: specifiedVerticalAlignment, horizontalAlignment: specifiedHorizontalAlignment, } = {
                 ...fillLabel,
                 valueFormatter: formatter,
                 ...layer.fillLabel,
                 ...layer.shape,
             };
+            const defaultVerticalAlignment = getDefaultVerticalAlignment(middleAlign, node.depth, layers.length);
+            const verticalAlignment = isSectorLayout
+                ? defaultVerticalAlignment // sector rows are placed by the ring geometry, not by the label alignment
+                : specifiedVerticalAlignment ?? defaultVerticalAlignment;
+            const horizontalAlignment = isSectorLayout
+                ? defaultHorizontalAlignment // the sector row length is a sentinel, so left or right alignment would displace the label
+                : specifiedHorizontalAlignment ?? defaultHorizontalAlignment;
             const valueFont = {
                 ...fillLabel,
                 ...fillLabel.valueFont,
@@ -51555,7 +51634,7 @@ function inSectorRotation(horizontalTextEnforcer, horizontalTextAngleThreshold) 
 /** @internal */
 function fillTextLayout(shapeConstructor, getShapeRowGeometry, getRotation) {
     const specificFiller = fill(shapeConstructor, getShapeRowGeometry, getRotation);
-    return function fillTextLayoutClosure(measure, rawTextGetter, valueGetter, valueFormatter, childNodes, style, layers, textFillOrigins, maxRowCount, leftAlign, middleAlign) {
+    return function fillTextLayoutClosure(measure, rawTextGetter, valueGetter, valueFormatter, childNodes, style, layers, textFillOrigins, maxRowCount, isSectorLayout, middleAlign) {
         const allFontSizes = [];
         for (let l = 0; l <= layers.length; l++) {
             // get font size spec from config, which layer.fillLabel properties can override
@@ -51575,7 +51654,7 @@ function fillTextLayout(shapeConstructor, getShapeRowGeometry, getRotation) {
             }
             allFontSizes.push(fontSizes);
         }
-        const filler = specificFiller(style.fillLabel, layers, measure, rawTextGetter, valueGetter, valueFormatter, maxRowCount, leftAlign, middleAlign);
+        const filler = specificFiller(style.fillLabel, layers, measure, rawTextGetter, valueGetter, valueFormatter, maxRowCount, isSectorLayout, middleAlign);
         return childNodes
             .map((node, i) => ({ node, origin: textFillOrigins[i] }))
             .sort((a, b) => b.node.value - a.node.value)
@@ -52261,7 +52340,7 @@ function shapeViewModel(textMeasure, spec, style, chartDimensions, rawTextGetter
         : simpleLinear || waffleLayout
             ? () => [] // no multirow layout needed for simpleLinear partitions; no text at all for waffles
             : (0, fill_text_layout_1.fillTextLayout)(rectangleConstruction(treeHeight, treemapLayout || mosaicLayout ? topGroove : null), fill_text_layout_1.getRectangleRowGeometry, () => 0);
-    const rowSets = getRowSets(textMeasure, rawTextGetter, valueGetter, valueFormatter, nodesWithRoom, style, layers, textFillOrigins, maxRowCount, !sunburstLayout, !(treemapLayout || mosaicLayout));
+    const rowSets = getRowSets(textMeasure, rawTextGetter, valueGetter, valueFormatter, nodesWithRoom, style, layers, textFillOrigins, maxRowCount, sunburstLayout, !(treemapLayout || mosaicLayout));
     // whiskers (ie. just lines, no text) for fill text outside the outer radius
     const outsideLinksViewModel = makeOutsideLinksViewModel(outsideFillNodes, rowSets, linkLabel.radiusPadding);
     // linked text
@@ -52472,6 +52551,7 @@ var __webpack_unused_export__;
  * Side Public License, v 1.
  */
 __webpack_unused_export__ = ({ value: true });
+exports.getCurrentRowX = void 0;
 exports.renderPartitionCanvas2d = renderPartitionCanvas2d;
 const color_library_wrappers_1 = __webpack_require__(/*! ../../../../common/color_library_wrappers */ "../packages/charts/src/common/color_library_wrappers.ts");
 const constants_1 = __webpack_require__(/*! ../../../../common/constants */ "../packages/charts/src/common/constants.ts");
@@ -52485,6 +52565,7 @@ const viewmodel_1 = __webpack_require__(/*! ../../layout/viewmodel/viewmodel */ 
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
 const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to avoid burnout in the middle of the pie when there are hundreds of pies
+/** @internal */
 const getCurrentRowX = (row, horizontalAlignment, rotation) => {
     // TODO account for text rotation if needed
     const rowLength = Math.cos(rotation) * row.length;
@@ -52495,13 +52576,14 @@ const getCurrentRowX = (row, horizontalAlignment, rotation) => {
             : -rowLength / 2;
     return row.rowAnchorX + offset;
 };
+exports.getCurrentRowX = getCurrentRowX;
 const getFillTextXOffset = (box, rowLength, isRTL) => {
     // TODO account for text rotation if needed
     return isRTL ? rowLength - box.width / 2 - box.wordBeginning : box.width / 2 + box.wordBeginning;
 };
 function renderTextRow(ctx, { fontSize, fillTextColor, rotation, verticalAlignment, horizontalAlignment, container, clipText, isRTL }, linkLabelTextColor) {
     return (currentRow) => {
-        const crx = getCurrentRowX(currentRow, horizontalAlignment, rotation);
+        const crx = (0, exports.getCurrentRowX)(currentRow, horizontalAlignment, rotation);
         const cry = -currentRow.rowAnchorY + (Math.sin(rotation) * currentRow.length) / 2;
         if (!Number.isFinite(crx) || !Number.isFinite(cry)) {
             return;
@@ -78892,8 +78974,8 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LegendPathElement = exports.LegendPath = exports.BandedAccessorType = exports.GeometryValue = exports.ComponentWithAnnotationDatum = exports.CustomAnnotationTooltip = exports.AnnotationTooltipFormatter = exports.FilledValues = exports.DataSeriesDatum = exports.XYChartSeriesIdentifier = exports.SeriesKey = exports.SeriesIdentifier = exports.SeriesCompareFn = exports.niceTimeFormatByDay = exports.niceTimeFormatter = exports.timeFormatter = exports.Margins = exports.PerSideDistance = exports.Padding = exports.SimplePadding = exports.Dimensions = exports.Range = exports.GenericDomain = exports.OrdinalDomain = exports.ContinuousDomain = exports.CurveType = exports.toEntries = exports.PointerValue = exports.BulletDebugStateRow = exports.BulletDebugState = exports.DebugStateLegendItem = exports.DebugStateBase = exports.DebugStateAxis = exports.DebugStateLineConfig = exports.DebugStateLegend = exports.DebugStateBar = exports.DebugStateAxes = exports.DebugStateArea = exports.DebugStateAnnotations = exports.DebugStateValue = exports.DebugStateLine = exports.DebugState = exports.AnnotationId = exports.AxisId = exports.GroupId = exports.SpecId = exports.ChartSizeObject = exports.ChartSizeArray = exports.ChartSize = exports.ChartType = void 0;
-exports.ColorVariant = exports.IsUnknown = exports.IsAny = exports.NonAny = exports.RecursivePartial = exports.HorizontalAlignment = exports.VerticalAlignment = exports.Rotation = exports.Rendering = exports.Position = exports.Datum = exports.HeatmapHighlightedData = exports.HeatmapProps = exports.HeatmapBandsColorScale = exports.ColorBand = exports.HeatmapCellDatum = exports.Cell = exports.AnimKeyframe = exports.WordcloudViewModel = exports.AMSTERDAM_DARK_THEME = exports.AMSTERDAM_LIGHT_THEME = exports.LEGACY_DARK_THEME = exports.LEGACY_LIGHT_THEME = exports.DARK_THEME = exports.LIGHT_THEME = exports.getChartsTheme = exports.AnimationSpeed = exports.AnimatedValue = exports.AnimationOptions = exports.LogScaleOptions = exports.ScaleBandType = exports.ScaleOrdinalType = exports.ScaleContinuousType = exports.ScaleType = exports.AccessorArrayIndex = exports.AccessorObjectKey = exports.UnaryAccessorFn = exports.IndexedAccessorFn = exports.AccessorFn = exports.Accessor = exports.PartitionLayout = exports.PartitionStyle = exports.PartitionDimmedStyle = exports.PartitionFillLabel = exports.PartitionProps = exports.PartitionLayer = exports.CategoryLabel = exports.CategoryKey = exports.LegendValue = exports.LegendItemValue = void 0;
-exports.BulletColorConfig = exports.ColorBandComplexConfig = exports.ColorBandSimpleConfig = exports.ColorBandConfig = exports.ColorBandValue = exports.LegacyAnimationConfig = exports.TimeFunction = exports.computeRatioByGroups = exports.GroupByKeyFn = exports.GroupKeysOrKeyFn = exports.roundDateToESInterval = exports.SmallMultiplesDatum = exports.Predicate = exports.RgbaTuple = exports.A = exports.RGB = exports.Color = exports.FONT_STYLES = exports.FontStyle = exports.AdditiveNumber = exports.TimeMs = exports.Ratio = exports.Pixels = exports.LegendStrategy = exports.defaultPartitionValueFormatter = exports.MODEL_KEY = exports.DataGenerator = exports.LayoutDirection = exports.LegendLayout = exports.ValueFormatter = exports.ValueAccessor = exports.ShowAccessor = exports.LabelAccessor = void 0;
+exports.IsAny = exports.NonAny = exports.RecursivePartial = exports.HorizontalAlignment = exports.VerticalAlignment = exports.Rotation = exports.Rendering = exports.Position = exports.Datum = exports.HeatmapHighlightedData = exports.HeatmapProps = exports.HeatmapBandsColorScale = exports.ColorBand = exports.HeatmapCellDatum = exports.Cell = exports.AnimKeyframe = exports.WordcloudViewModel = exports.AMSTERDAM_DARK_THEME = exports.AMSTERDAM_LIGHT_THEME = exports.LEGACY_DARK_THEME = exports.LEGACY_LIGHT_THEME = exports.DARK_THEME = exports.LIGHT_THEME = exports.getChartsTheme = exports.AnimationSpeed = exports.AnimatedValue = exports.AnimationOptions = exports.LogScaleOptions = exports.ScaleBandType = exports.ScaleOrdinalType = exports.ScaleContinuousType = exports.ScaleType = exports.AccessorArrayIndex = exports.AccessorObjectKey = exports.UnaryAccessorFn = exports.IndexedAccessorFn = exports.AccessorFn = exports.Accessor = exports.PartitionLayout = exports.PartitionStyle = exports.PartitionDimmedStyle = exports.PartitionFillLabelVerticalAlignment = exports.PartitionFillLabelHorizontalAlignment = exports.PartitionFillLabel = exports.PartitionProps = exports.PartitionLayer = exports.CategoryLabel = exports.CategoryKey = exports.LegendValue = exports.LegendItemValue = void 0;
+exports.BulletColorConfig = exports.ColorBandComplexConfig = exports.ColorBandSimpleConfig = exports.ColorBandConfig = exports.ColorBandValue = exports.LegacyAnimationConfig = exports.TimeFunction = exports.computeRatioByGroups = exports.GroupByKeyFn = exports.GroupKeysOrKeyFn = exports.roundDateToESInterval = exports.SmallMultiplesDatum = exports.Predicate = exports.RgbaTuple = exports.A = exports.RGB = exports.Color = exports.FONT_STYLES = exports.FontStyle = exports.AdditiveNumber = exports.TimeMs = exports.Ratio = exports.Pixels = exports.LegendStrategy = exports.defaultPartitionValueFormatter = exports.MODEL_KEY = exports.DataGenerator = exports.LayoutDirection = exports.LegendLayout = exports.ValueFormatter = exports.ValueAccessor = exports.ShowAccessor = exports.LabelAccessor = exports.ColorVariant = exports.IsUnknown = void 0;
 __exportStar(__webpack_require__(/*! ./components */ "../packages/charts/src/components/index.ts"), exports);
 var chart_types_1 = __webpack_require__(/*! ./chart_types */ "../packages/charts/src/chart_types/index.ts");
 Object.defineProperty(exports, "ChartType", ({ enumerable: true, get: function () { return chart_types_1.ChartType; } }));
@@ -78974,6 +79056,8 @@ Object.defineProperty(exports, "PartitionLayer", ({ enumerable: true, get: funct
 Object.defineProperty(exports, "PartitionProps", ({ enumerable: true, get: function () { return specs_1.PartitionProps; } }));
 var partition_1 = __webpack_require__(/*! ./utils/themes/partition */ "../packages/charts/src/utils/themes/partition.ts");
 Object.defineProperty(exports, "PartitionFillLabel", ({ enumerable: true, get: function () { return partition_1.FillLabelConfig; } }));
+Object.defineProperty(exports, "PartitionFillLabelHorizontalAlignment", ({ enumerable: true, get: function () { return partition_1.FillLabelHorizontalAlignment; } }));
+Object.defineProperty(exports, "PartitionFillLabelVerticalAlignment", ({ enumerable: true, get: function () { return partition_1.FillLabelVerticalAlignment; } }));
 Object.defineProperty(exports, "PartitionDimmedStyle", ({ enumerable: true, get: function () { return partition_1.PartitionDimmedStyle; } }));
 Object.defineProperty(exports, "PartitionStyle", ({ enumerable: true, get: function () { return partition_1.PartitionStyle; } }));
 var config_types_1 = __webpack_require__(/*! ./chart_types/partition_chart/layout/types/config_types */ "../packages/charts/src/chart_types/partition_chart/layout/types/config_types.ts");
@@ -108110,6 +108194,7 @@ const map = {
 	"./timeslip/01_timeslip.story.tsx": "./stories/timeslip/01_timeslip.story.tsx",
 	"./timeslip/timeslip.stories.tsx": "./stories/timeslip/timeslip.stories.tsx",
 	"./treemap/10_three_layers.story.tsx": "./stories/treemap/10_three_layers.story.tsx",
+	"./treemap/11_label_alignment.story.tsx": "./stories/treemap/11_label_alignment.story.tsx",
 	"./treemap/1_one_layer.story.tsx": "./stories/treemap/1_one_layer.story.tsx",
 	"./treemap/2_one_layer_2.story.tsx": "./stories/treemap/2_one_layer_2.story.tsx",
 	"./treemap/3_mid_two.story.tsx": "./stories/treemap/3_mid_two.story.tsx",
@@ -108353,4 +108438,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.dcfc190d.iframe.bundle.js.map
+//# sourceMappingURL=main.432215c7.iframe.bundle.js.map

@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.10.0">
 <title data-rh="true">PartitionFillLabel | Elastic Charts</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://elastic.github.io/elastic-charts/all-types/interfaces/PartitionFillLabel"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="PartitionFillLabel | Elastic Charts"><meta data-rh="true" name="description" content="@elastic/charts • Exports"><meta data-rh="true" property="og:description" content="@elastic/charts • Exports"><link data-rh="true" rel="icon" href="/elastic-charts/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://elastic.github.io/elastic-charts/all-types/interfaces/PartitionFillLabel"><link data-rh="true" rel="alternate" href="https://elastic.github.io/elastic-charts/all-types/interfaces/PartitionFillLabel" hreflang="en"><link data-rh="true" rel="alternate" href="https://elastic.github.io/elastic-charts/all-types/interfaces/PartitionFillLabel" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"PartitionFillLabel","item":"https://elastic.github.io/elastic-charts/all-types/interfaces/PartitionFillLabel"}]}</script><link rel="stylesheet" href="/elastic-charts/assets/css/styles.9ca08030.css">
-<script src="/elastic-charts/assets/js/runtime~main.9ee42169.js" defer="defer"></script>
-<script src="/elastic-charts/assets/js/main.2a059e9b.js" defer="defer"></script>
+<script src="/elastic-charts/assets/js/runtime~main.01bcc5f0.js" defer="defer"></script>
+<script src="/elastic-charts/assets/js/main.09e6546f.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -25,9 +25,11 @@
 <li class=""><a class="" href="/elastic-charts/all-types/interfaces/PartitionFillLabel#fontstyle">fontStyle</a></li>
 <li class=""><a class="" href="/elastic-charts/all-types/interfaces/PartitionFillLabel#fontvariant">fontVariant</a></li>
 <li class=""><a class="" href="/elastic-charts/all-types/interfaces/PartitionFillLabel#fontweight">fontWeight</a></li>
+<li class=""><a class="" href="/elastic-charts/all-types/interfaces/PartitionFillLabel#horizontalalignment">horizontalAlignment?</a></li>
 <li class=""><a class="" href="/elastic-charts/all-types/interfaces/PartitionFillLabel#padding">padding</a></li>
 <li class=""><a class="" href="/elastic-charts/all-types/interfaces/PartitionFillLabel#textcolor">textColor</a></li>
 <li class=""><a class="" href="/elastic-charts/all-types/interfaces/PartitionFillLabel#valuefont">valueFont</a></li>
+<li class=""><a class="" href="/elastic-charts/all-types/interfaces/PartitionFillLabel#verticalalignment">verticalAlignment?</a></li>
 </ul>
 </li>
 </ul>
@@ -41,7 +43,7 @@
 <p><strong>clipText</strong>: <code>boolean</code></p>
 </blockquote>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source">Source<a href="#source" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
-<p>packages/charts/src/utils/themes/partition.ts:34</p>
+<p>packages/charts/src/utils/themes/partition.ts:54</p>
 <hr>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="fontfamily">fontFamily<a href="#fontfamily" class="hash-link" aria-label="Direct link to fontFamily" title="Direct link to fontFamily" translate="no">​</a></h3>
 <blockquote>
@@ -79,13 +81,25 @@
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-4">Source<a href="#source-4" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
 <p>packages/charts/src/common/text_utils.ts:61</p>
 <hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="horizontalalignment">horizontalAlignment?<a href="#horizontalalignment" class="hash-link" aria-label="Direct link to horizontalAlignment?" title="Direct link to horizontalAlignment?" translate="no">​</a></h3>
+<blockquote>
+<p><strong>horizontalAlignment</strong>?: <a class="" href="/elastic-charts/all-types/type-aliases/PartitionFillLabelHorizontalAlignment"><code>PartitionFillLabelHorizontalAlignment</code></a></p>
+</blockquote>
+<p>Overrides the layout dependent default horizontal alignment of the fill label.
+Only applies to the rectangular layouts (treemap, mosaic, flame, and icicle); sunburst and pie
+labels are always centered within their sector.
+When left undefined, labels are left aligned for all layouts but sunburst,
+whose labels are centered to avoid overlapping their sectors.</p>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-5">Source<a href="#source-5" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
+<p>packages/charts/src/utils/themes/partition.ts:72</p>
+<hr>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="padding">padding<a href="#padding" class="hash-link" aria-label="Direct link to padding" title="Direct link to padding" translate="no">​</a></h3>
 <blockquote>
 <p><strong>padding</strong>: <code>Partial</code>&lt;<code>Padding</code>&gt;</p>
 </blockquote>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="inherited-from-4">Inherited from<a href="#inherited-from-4" class="hash-link" aria-label="Direct link to Inherited from" title="Direct link to Inherited from" translate="no">​</a></h4>
 <p><code>LabelConfig.padding</code></p>
-<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-5">Source<a href="#source-5" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-6">Source<a href="#source-6" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
 <p>packages/charts/src/utils/themes/partition.ts:26</p>
 <hr>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="textcolor">textColor<a href="#textcolor" class="hash-link" aria-label="Direct link to textColor" title="Direct link to textColor" translate="no">​</a></h3>
@@ -94,7 +108,7 @@
 </blockquote>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="inherited-from-5">Inherited from<a href="#inherited-from-5" class="hash-link" aria-label="Direct link to Inherited from" title="Direct link to Inherited from" translate="no">​</a></h4>
 <p><code>LabelConfig.textColor</code></p>
-<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-6">Source<a href="#source-6" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-7">Source<a href="#source-7" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
 <p>packages/charts/src/utils/themes/partition.ts:24</p>
 <hr>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="valuefont">valueFont<a href="#valuefont" class="hash-link" aria-label="Direct link to valueFont" title="Direct link to valueFont" translate="no">​</a></h3>
@@ -103,9 +117,23 @@
 </blockquote>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="inherited-from-6">Inherited from<a href="#inherited-from-6" class="hash-link" aria-label="Direct link to Inherited from" title="Direct link to Inherited from" translate="no">​</a></h4>
 <p><code>LabelConfig.valueFont</code></p>
-<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-7">Source<a href="#source-7" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-8">Source<a href="#source-8" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
 <p>packages/charts/src/utils/themes/partition.ts:25</p>
 <hr>
-<p>Generated using <a href="https://www.npmjs.com/package/typedoc-plugin-markdown" target="_blank" rel="noopener noreferrer" class="">typedoc-plugin-markdown</a> and <a href="https://typedoc.org/" target="_blank" rel="noopener noreferrer" class="">TypeDoc</a></p></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/elastic-charts/all-types/interfaces/OrdinalScale"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">OrdinalScale</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/elastic-charts/all-types/interfaces/PartitionLayer"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">PartitionLayer</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#contents" class="table-of-contents__link toc-highlight">Contents</a></li><li><a href="#extends" class="table-of-contents__link toc-highlight">Extends</a></li><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a><ul><li><a href="#cliptext" class="table-of-contents__link toc-highlight">clipText</a></li><li><a href="#fontfamily" class="table-of-contents__link toc-highlight">fontFamily</a></li><li><a href="#fontstyle" class="table-of-contents__link toc-highlight">fontStyle</a></li><li><a href="#fontvariant" class="table-of-contents__link toc-highlight">fontVariant</a></li><li><a href="#fontweight" class="table-of-contents__link toc-highlight">fontWeight</a></li><li><a href="#padding" class="table-of-contents__link toc-highlight">padding</a></li><li><a href="#textcolor" class="table-of-contents__link toc-highlight">textColor</a></li><li><a href="#valuefont" class="table-of-contents__link toc-highlight">valueFont</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Elasticsearch B.V.</div></div></div></footer></div>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="verticalalignment">verticalAlignment?<a href="#verticalalignment" class="hash-link" aria-label="Direct link to verticalAlignment?" title="Direct link to verticalAlignment?" translate="no">​</a></h3>
+<blockquote>
+<p><strong>verticalAlignment</strong>?: <a class="" href="/elastic-charts/all-types/type-aliases/PartitionFillLabelVerticalAlignment"><code>PartitionFillLabelVerticalAlignment</code></a></p>
+</blockquote>
+<p>Overrides the layout dependent default vertical alignment of the fill label.
+Only applies to the rectangular layouts (treemap, mosaic, flame, and icicle); sunburst and pie
+labels are always centered within their sector.
+When left undefined, labels are vertically centered for flame and icicle layouts.
+In treemap and mosaic layouts, labels of the innermost layer are top aligned, and labels of
+the outer layers are bottom aligned within the parent label groove at the top of their cell.
+When set on the theme, it applies to every layer, including the parent labels in the groove.</p>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="source-9">Source<a href="#source-9" class="hash-link" aria-label="Direct link to Source" title="Direct link to Source" translate="no">​</a></h4>
+<p>packages/charts/src/utils/themes/partition.ts:64</p>
+<hr>
+<p>Generated using <a href="https://www.npmjs.com/package/typedoc-plugin-markdown" target="_blank" rel="noopener noreferrer" class="">typedoc-plugin-markdown</a> and <a href="https://typedoc.org/" target="_blank" rel="noopener noreferrer" class="">TypeDoc</a></p></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/elastic-charts/all-types/interfaces/OrdinalScale"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">OrdinalScale</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/elastic-charts/all-types/interfaces/PartitionLayer"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">PartitionLayer</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#contents" class="table-of-contents__link toc-highlight">Contents</a></li><li><a href="#extends" class="table-of-contents__link toc-highlight">Extends</a></li><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a><ul><li><a href="#cliptext" class="table-of-contents__link toc-highlight">clipText</a></li><li><a href="#fontfamily" class="table-of-contents__link toc-highlight">fontFamily</a></li><li><a href="#fontstyle" class="table-of-contents__link toc-highlight">fontStyle</a></li><li><a href="#fontvariant" class="table-of-contents__link toc-highlight">fontVariant</a></li><li><a href="#fontweight" class="table-of-contents__link toc-highlight">fontWeight</a></li><li><a href="#horizontalalignment" class="table-of-contents__link toc-highlight">horizontalAlignment?</a></li><li><a href="#padding" class="table-of-contents__link toc-highlight">padding</a></li><li><a href="#textcolor" class="table-of-contents__link toc-highlight">textColor</a></li><li><a href="#valuefont" class="table-of-contents__link toc-highlight">valueFont</a></li><li><a href="#verticalalignment" class="table-of-contents__link toc-highlight">verticalAlignment?</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Elasticsearch B.V.</div></div></div></footer></div>
 </body>
 </html>
