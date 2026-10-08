@@ -28,7 +28,7 @@ export const applyFitFunctionToDataSeries = (
       (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) &&
       spec.fit !== undefined
     ) {
-      const fittedData = fitFunction(data, spec.fit, xScaleType);
+      const fittedData = fitFunction(data, spec.fit, xScaleType, true);
 
       return {
         specId,
