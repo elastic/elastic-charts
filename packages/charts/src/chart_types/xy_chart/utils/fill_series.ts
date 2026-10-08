@@ -24,7 +24,7 @@ export function fillSeries(
   return dataSeries.map((series) => {
     const { spec, data, isStacked } = series;
 
-    if (isXFillNotRequired(spec, groupScaleType, isStacked)) {
+    if (!isXFillRequired(spec, groupScaleType, isStacked)) {
       return series;
     }
     const gapEndsOnly = (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && !spec.fit;
@@ -59,11 +59,11 @@ export function fillSeries(
   });
 }
 
-function isXFillNotRequired(spec: BasicSeriesSpec, groupScaleType: ScaleType, isStacked: boolean) {
-  const onlyNoFitAreaLine = (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && !spec.fit;
+function isXFillRequired(spec: BasicSeriesSpec, groupScaleType: ScaleType, isStacked: boolean) {
+  const isAreaOrLine = isAreaSeriesSpec(spec) || isLineSeriesSpec(spec);
   const onlyContinuous =
     groupScaleType === ScaleType.Linear ||
     groupScaleType === ScaleType.LinearBinary ||
     groupScaleType === ScaleType.Time;
-  return isBarSeriesSpec(spec) || (onlyNoFitAreaLine && onlyContinuous && !isStacked);
+  return !isBarSeriesSpec(spec) && (!isAreaOrLine || Boolean(spec.fit) || !onlyContinuous || isStacked);
 }
