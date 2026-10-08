@@ -256,7 +256,7 @@ describe('Non-Stacked Series Utils', () => {
       it('return call fitFunction with args', () => {
         testModule.applyFitFunctionToDataSeries(dataSeries, seriesSpecs, ScaleType.Linear);
 
-        expect(fitFunctionModule.fitFunction).toHaveBeenCalledWith(dataSeriesData, Fit.Linear, ScaleType.Linear);
+        expect(fitFunctionModule.fitFunction).toHaveBeenCalledWith(dataSeriesData, Fit.Linear, ScaleType.Linear, true);
       });
 
       it('return not call fitFunction if no fit specified', () => {
