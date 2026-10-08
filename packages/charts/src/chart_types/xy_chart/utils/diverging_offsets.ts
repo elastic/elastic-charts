@@ -21,53 +21,67 @@
  * THIS SOFTWARE.
  */
 
-import type { DataSeriesDatum } from './series';
-import type { SeriesKey } from '../../../common/series_id';
-
-type XValue = string | number;
-type SeriesValueMap = Map<SeriesKey, DataSeriesDatum>;
-
 /** @internal */
-export type XValueMap = Map<XValue, SeriesValueMap>;
-/** @internal */
-export type StackPoint = [y0: number, y1: number];
-/** @internal */
-export type StackLayer = StackPoint[];
-/** @internal */
-export type StackOffset = (series: StackLayer[]) => void;
+export interface StackCells {
+  columns: readonly (readonly number[])[];
+  series: Int32Array;
+  values: Float64Array;
+}
 
 /** @internal */
-export function stackLayers(values: ReadonlyArray<ArrayLike<number>>, offset: StackOffset): StackLayer[] {
-  const layers: StackLayer[] = [];
-  for (const row of values) {
-    const layer: StackLayer = [];
-    for (let j = 0; j < row.length; ++j) {
-      layer.push([0, row[j]!]);
-    }
-    layers.push(layer);
-  }
-  offset(layers);
-  return layers;
+export interface StackColumns {
+  columns: readonly (readonly number[])[];
+  series: Int32Array;
+  y0: Float64Array;
+  y1: Float64Array;
+}
+
+/** @internal */
+export type StackOffset = (stack: StackColumns) => void;
+
+/** @internal */
+export function stackCells(
+  { columns, series, values }: StackCells,
+  offset: StackOffset,
+): Pick<StackColumns, 'y0' | 'y1'> {
+  const y0 = new Float64Array(values.length);
+  const y1 = Float64Array.from(values);
+  offset({ columns, series, y0, y1 });
+  return { y0, y1 };
 }
 
 /**
  * Computes required wiggle offset for each x value __WITHOUT__ mutations
  */
-function wiggleOffsets(series: StackLayer[]): number[] {
+function wiggleOffsets({ columns, series, y1 }: StackColumns): number[] {
   const offsets = [];
-  let y, j;
-  for (y = 0, j = 1; j < (series[0]?.length ?? 0); ++j) {
-    let i, s1, s2;
-    for (i = 0, s1 = 0, s2 = 0; i < series.length; ++i) {
-      const si = series[i]!;
-      const sij0 = si[j]?.[1] || 0;
-      const sij1 = si[j - 1]?.[1] || 0;
+  const previousValues = new Float64Array(series.length);
+  const currentValues = new Float64Array(series.length);
+  let y = 0;
+  for (let j = 1; j < columns.length; ++j) {
+    const previous = columns[j - 1]!;
+    const current = columns[j]!;
+    let p = 0;
+    let q = 0;
+    let u = 0;
+    while (p < previous.length || q < current.length) {
+      const previousSeries = p < previous.length ? series[previous[p]!]! : Infinity;
+      const currentSeries = q < current.length ? series[current[q]!]! : Infinity;
+      previousValues[u] = previousSeries <= currentSeries ? y1[previous[p++]!]! : 0;
+      currentValues[u] = currentSeries <= previousSeries ? y1[current[q++]!]! : 0;
+      u++;
+    }
+
+    let s1 = 0;
+    let s2 = 0;
+    for (let i = 0; i < u; ++i) {
+      const sij0 = currentValues[i]! || 0;
+      const sij1 = previousValues[i]! || 0;
       let s3 = (sij0 - sij1) / 2;
 
       for (let k = 0; k < i; ++k) {
-        const sk = series[k]!;
-        const skj0 = sk[j]?.[1] || 0;
-        const skj1 = sk[j - 1]?.[1] || 0;
+        const skj0 = currentValues[k]! || 0;
+        const skj1 = previousValues[k]! || 0;
         s3 += skj0 - skj1;
       }
       s1 += sij0;
@@ -82,20 +96,22 @@ function wiggleOffsets(series: StackLayer[]): number[] {
 }
 
 /** @internal */
-const divergingOffset = (isSilhouette = false) => {
-  return function (series: StackLayer[]): void {
-    const n = series.length;
-    if (!(n > 0)) return;
-    for (let i, j = 0, sumYn, sumYp, yp, yn = 0, s0 = series[0], m = s0?.length ?? 0; j < m; ++j) {
+const divergingOffset =
+  (isSilhouette = false): StackOffset =>
+  ({ columns, y0, y1 }) => {
+    for (let j = 0; j < columns.length; ++j) {
+      const column = columns[j]!;
       // sum negative values per x before to maintain original sort for negative values
-      for (yn = 0, sumYn = 0, sumYp = 0, i = 0; i < n; ++i) {
-        const d = series[i]![j]!;
-        const dy = d[1] - d[0];
+      let yn = 0;
+      let sumYn = 0;
+      let sumYp = 0;
+      for (const c of column) {
+        const dy = y1[c]! - y0[c]!;
         if (dy < 0) {
-          sumYn += Math.abs(d[1]) || 0;
+          sumYn += Math.abs(y1[c]!) || 0;
           yn += dy;
         } else {
-          sumYp += d[1] || 0;
+          sumYp += y1[c]! || 0;
         }
       }
 
@@ -103,20 +119,19 @@ const divergingOffset = (isSilhouette = false) => {
       const offset = isSilhouette ? -silhouetteOffset : 0;
       yn += offset;
 
-      for (yp = offset, i = 0; i < n; ++i) {
-        const d = series[i]![j]!;
-        const dy = d[1] - d[0];
+      let yp = offset;
+      for (const c of column) {
+        const dy = y1[c]! - y0[c]!;
         if (dy >= 0) {
-          d[0] = yp;
-          d[1] = yp += dy;
+          y0[c] = yp;
+          y1[c] = yp += dy;
         } else {
-          d[1] = yn;
-          d[0] = yn -= dy;
+          y1[c] = yn;
+          y0[c] = yn -= dy;
         }
       }
     }
   };
-};
 
 /**
  * Stacked offset function with diverging polarity offset
@@ -133,55 +148,52 @@ export const divergingSilhouette = divergingOffset(true);
  * Stacked Wiggle offset function to account for diverging offset
  * @internal
  */
-export function divergingWiggle(series: StackLayer[]): void {
-  const n = series.length;
-  const s0 = series[0];
-  const m = s0?.length ?? 0;
-  if (!(n > 0) || !(m > 0)) return diverging(series);
+export const divergingWiggle: StackOffset = (stack) => {
+  const { columns, series, y0, y1 } = stack;
+  if (!(series.length > 0)) return;
 
-  const offsets = wiggleOffsets(series);
+  const offsets = wiggleOffsets(stack);
 
-  for (let i, j = 0, sumYn, yp, yn = 0; j < m; ++j) {
+  for (let j = 0; j < columns.length; ++j) {
+    const column = columns[j]!;
     // sum negative values per x before to maintain original sort for negative values
-    for (i = 0, yn = 0, sumYn = 0; i < n; ++i) {
-      const d = series[i]![j]!;
-      if (d[1] - d[0] < 0) {
-        sumYn += Math.abs(d[1]) || 0;
+    let sumYn = 0;
+    for (const c of column) {
+      if (y1[c]! - y0[c]! < 0) {
+        sumYn += Math.abs(y1[c]!) || 0;
       }
     }
 
     const offset = offsets[j] ?? 0;
-    yn += offset;
-
-    for (yp = offset + sumYn, yn = offset, i = 0; i < n; ++i) {
-      const d = series[i]![j]!;
-      const dy = d[1] - d[0];
+    let yp = offset + sumYn;
+    let yn = offset;
+    for (const c of column) {
+      const dy = y1[c]! - y0[c]!;
       if (dy >= 0) {
-        d[0] = yp;
-        d[1] = yp += dy;
+        y0[c] = yp;
+        y1[c] = yp += dy;
       } else {
-        d[1] = yn;
-        d[0] = yn -= dy;
+        y1[c] = yn;
+        y0[c] = yn -= dy;
       }
     }
   }
-}
+};
 
 /**
  * Stacked Percentage offset function with diverging polarity offset
  * Treats percentage as participation for mixed polarity data
  * @internal
  */
-export function divergingPercentage(series: StackLayer[]): void {
-  const n = series.length;
-  if (!(n > 0)) return;
-  for (let i, j = 0, sumYn, sumYp; j < (series[0]?.length ?? 0); ++j) {
-    for (sumYn = sumYp = i = 0; i < n; ++i) {
-      const d = series[i]![j]!;
-      if (d[1] - d[0] < 0) {
-        sumYn += Math.abs(d[1]) || 0;
+export const divergingPercentage: StackOffset = ({ columns, y0, y1 }) => {
+  for (const column of columns) {
+    let sumYn = 0;
+    let sumYp = 0;
+    for (const c of column) {
+      if (y1[c]! - y0[c]! < 0) {
+        sumYn += Math.abs(y1[c]!) || 0;
       } else {
-        sumYp += d[1] || 0;
+        sumYp += y1[c]! || 0;
       }
     }
 
@@ -191,71 +203,35 @@ export function divergingPercentage(series: StackLayer[]): void {
     let yp = sumYn / sumY;
     let yn = 0;
 
-    for (i = 0; i < n; ++i) {
-      const d = series[i]![j]!;
-      const dy = d[1] - d[0];
+    for (const c of column) {
+      const dy = y1[c]! - y0[c]!;
       const participation = Math.abs(dy / sumY);
 
       if (dy >= 0) {
-        d[0] = yp;
-        d[1] = yp += participation;
+        y0[c] = yp;
+        y1[c] = yp += participation;
       } else {
-        d[0] = yn;
-        d[1] = yn += participation;
+        y0[c] = yn;
+        y1[c] = yn += participation;
       }
     }
   }
-}
-
-function stackOffsetNone(series: StackLayer[]): void {
-  const n = series.length;
-  if (!(n > 1)) return;
-  let s1 = series[0]!;
-  const m = s1.length;
-  for (let i = 1; i < n; ++i) {
-    const s0 = s1;
-    s1 = series[i]!;
-    for (let j = 0; j < m; ++j) {
-      const d0 = s0[j]!;
-      const d1 = s1[j]!;
-      d1[1] += d1[0] = isNaN(d0[1]) ? d0[0] : d0[1];
-    }
-  }
-}
+};
 
 /** @internal */
-export function stackOffsetWiggle(series: StackLayer[]): void {
-  const n = series.length;
-  if (!(n > 0)) return;
-  const s0 = series[0]!;
-  const m = s0.length;
-  if (!(m > 0)) return;
-  let y = 0;
-  let j = 1;
-  for (; j < m; ++j) {
-    let s1 = 0;
-    let s2 = 0;
-    for (let i = 0; i < n; ++i) {
-      const si = series[i]!;
-      const sij0 = si[j]![1] || 0;
-      const sij1 = si[j - 1]![1] || 0;
-      let s3 = (sij0 - sij1) / 2;
-      for (let k = 0; k < i; ++k) {
-        const sk = series[k]!;
-        const skj0 = sk[j]![1] || 0;
-        const skj1 = sk[j - 1]![1] || 0;
-        s3 += skj0 - skj1;
-      }
-      s1 += sij0;
-      s2 += s3 * sij0;
+export const stackOffsetWiggle: StackOffset = (stack) => {
+  const { columns, series, y0, y1 } = stack;
+  if (!(series.length > 0)) return;
+
+  const offsets = wiggleOffsets(stack);
+
+  for (let j = 0; j < columns.length; ++j) {
+    let base = offsets[j] ?? 0;
+    for (const c of columns[j]!) {
+      y1[c] = y1[c]! + (y0[c] = base);
+      base = isNaN(y1[c]) ? y0[c] : y1[c];
     }
-    const previous = s0[j - 1]!;
-    previous[1] += previous[0] = y;
-    if (s1) y -= s2 / s1;
   }
-  const last = s0[j - 1]!;
-  last[1] += last[0] = y;
-  stackOffsetNone(series);
-}
+};
 
 /* eslint-enable header/header, no-param-reassign */
