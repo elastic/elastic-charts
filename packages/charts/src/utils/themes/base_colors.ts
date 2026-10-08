@@ -204,12 +204,12 @@ export const SEVERITY_COLORS = {
 /** @internal */
 export const LIGHT_DIMMED_COLORS = {
   lineStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
-  linePointStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
+  linePointStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
   linePointFill: SEMANTIC_COLORS.plainLight,
 
   areaFill: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
   areaStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha50,
-  areaPointStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
+  areaPointStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha50,
   areaPointFill: SEMANTIC_COLORS.plainLight,
 
   barFill: SEMANTIC_COLORS.shade15,
@@ -219,12 +219,12 @@ export const LIGHT_DIMMED_COLORS = {
 /** @internal */
 export const DARK_DIMMED_COLORS = {
   lineStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
-  linePointStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
+  linePointStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
   linePointFill: SEMANTIC_COLORS.shade145,
 
   areaFill: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
   areaStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
-  areaPointStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
+  areaPointStroke: SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
   areaPointFill: SEMANTIC_COLORS.shade145,
 
   barFill: SEMANTIC_COLORS.shade110,
