@@ -488,4 +488,39 @@ describe('Stacked Series Utils', () => {
       ]);
     });
   });
+
+  test('stacks only the first of duplicate x values in a series, whatever the input order', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(
+      MockSeriesSpec.bar({
+        xScaleType: ScaleType.Linear,
+        yAccessors: ['y1'],
+        splitSeriesAccessors: ['g'],
+        stackAccessors: ['x'],
+        data: [
+          { x: 2, y1: 3, g: 'a' },
+          { x: 0, y1: 1, g: 'a' },
+          { x: 2, y1: 30, g: 'a' },
+          { x: 1, y1: 2, g: 'a' },
+          { x: 0, y1: 4, g: 'b' },
+          { x: 1, y1: 5, g: 'b' },
+          { x: 2, y1: 6, g: 'b' },
+        ],
+      }),
+      store,
+    );
+    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+    expect(formattedDataSeries.map(({ data }) => data.map(({ x, y0, y1 }) => [x, y0, y1]))).toEqual([
+      [
+        [0, 0, 1],
+        [1, 0, 2],
+        [2, 0, 3],
+      ],
+      [
+        [0, 1, 5],
+        [1, 2, 7],
+        [2, 3, 9],
+      ],
+    ]);
+  });
 });
