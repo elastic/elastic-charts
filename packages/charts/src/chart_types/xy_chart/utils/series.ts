@@ -340,7 +340,7 @@ export function getFormattedDataSeries(
   );
 
   // apply fitting for stacked DataSeries by YGroup, Panel
-  const stackedDataSeries = fittedDataSeries.filter(({ spec }) => isStackedSpec(spec));
+  const stackedDataSeries = fittedDataSeries.filter(({ isStacked }) => isStacked);
   const stackedGroups = groupBy<DataSeries>(
     stackedDataSeries,
     ['smHorizontalAccessorValue', 'smVerticalAccessorValue', 'groupId'],
@@ -354,7 +354,7 @@ export function getFormattedDataSeries(
     return [...acc, ...formatted];
   }, []);
   // get already fitted non stacked dataSeries
-  const nonStackedDataSeries = fittedDataSeries.filter(({ spec }) => !isStackedSpec(spec));
+  const nonStackedDataSeries = fittedDataSeries.filter(({ isStacked }) => !isStacked);
 
   return [...fittedAndStackedDataSeries, ...nonStackedDataSeries].sort((a, b) => a.sortOrder - b.sortOrder);
 }
