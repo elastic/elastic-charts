@@ -347,12 +347,11 @@ export function getFormattedDataSeries(
     true,
   );
 
-  const fittedAndStackedDataSeries = stackedGroups.reduce<DataSeries[]>((acc, dataSeries) => {
-    if (!dataSeries[0]) return acc;
+  const fittedAndStackedDataSeries = stackedGroups.flatMap((dataSeries) => {
+    if (!dataSeries[0]) return [];
     const [{ stackMode, seriesType }] = dataSeries;
-    const formatted = formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMode);
-    return [...acc, ...formatted];
-  }, []);
+    return formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMode);
+  });
   // get already fitted non stacked dataSeries
   const nonStackedDataSeries = fittedDataSeries.filter(({ isStacked }) => !isStacked);
 
