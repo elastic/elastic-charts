@@ -45,15 +45,15 @@ export function formatStackedDataSeriesValues(
   const values: number[] = [];
   const datums: DataSeriesDatum[] = [];
   const seriesEnds: number[] = [];
-  const lastSeriesAtX = new Int32Array(xValues.size).fill(-1);
   let hasNegative = false;
   let hasPositive = false;
   for (let seriesIndex = 0; seriesIndex < dataSeries.length; seriesIndex++) {
     const { data, isFiltered } = dataSeries[seriesIndex]!;
+    let previousPosition = -1;
     for (const datum of data) {
       const xPosition = xIndex.get(datum.x)!;
-      if (lastSeriesAtX[xPosition] === seriesIndex) continue;
-      lastSeriesAtX[xPosition] = seriesIndex;
+      if (xPosition === previousPosition) continue;
+      previousPosition = xPosition;
       const y1 = datum.y1 ?? 0;
       if (y1 > 0) hasPositive = true;
       if (y1 < 0) hasNegative = true;
