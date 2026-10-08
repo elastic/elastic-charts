@@ -38,35 +38,23 @@ type StackOffset = (stack: StackColumns) => void;
  */
 function wiggleOffsets({ columns, series, y1 }: StackColumns): number[] {
   const offsets = [];
-  const previousValues = new Float64Array(series.length);
-  const currentValues = new Float64Array(series.length);
   let y = 0;
   for (let j = 1; j < columns.length; ++j) {
     const previous = columns[j - 1]!;
     const current = columns[j]!;
     let p = 0;
     let q = 0;
-    let u = 0;
+    let s1 = 0;
+    let s2 = 0;
+    let prefix = 0;
+    // sorted-list merge join with a running prefix sum, now O(N)
     while (p < previous.length || q < current.length) {
       const previousSeries = p < previous.length ? series[previous[p]!]! : Infinity;
       const currentSeries = q < current.length ? series[current[q]!]! : Infinity;
-      previousValues[u] = previousSeries <= currentSeries ? y1[previous[p++]!]! : 0;
-      currentValues[u] = currentSeries <= previousSeries ? y1[current[q++]!]! : 0;
-      u++;
-    }
-
-    let s1 = 0;
-    let s2 = 0;
-    for (let i = 0; i < u; ++i) {
-      const sij0 = currentValues[i]! || 0;
-      const sij1 = previousValues[i]! || 0;
-      let s3 = (sij0 - sij1) / 2;
-
-      for (let k = 0; k < i; ++k) {
-        const skj0 = currentValues[k]! || 0;
-        const skj1 = previousValues[k]! || 0;
-        s3 += skj0 - skj1;
-      }
+      const sij1 = previousSeries <= currentSeries ? y1[previous[p++]!]! || 0 : 0;
+      const sij0 = currentSeries <= previousSeries ? y1[current[q++]!]! || 0 : 0;
+      const s3 = (sij0 - sij1) / 2 + prefix;
+      prefix += sij0 - sij1;
       s1 += sij0;
       s2 += s3 * sij0;
     }
