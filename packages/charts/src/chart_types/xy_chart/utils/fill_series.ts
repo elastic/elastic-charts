@@ -19,6 +19,8 @@ export function fillSeries(
   xValues: Set<string | number>,
   groupScaleType: ScaleType,
 ): DataSeries[] {
+  const xValuesByPosition = [...xValues];
+  const xIndex = new Map(xValuesByPosition.map((x, position) => [x, position]));
   return dataSeries.map((series) => {
     const { spec, data, isStacked } = series;
 
@@ -26,30 +28,30 @@ export function fillSeries(
     if (data.length === xValues.size || noFillRequired) {
       return series;
     }
-    const filledData: typeof data = [];
-    const missingValues = new Set(xValues);
-
-    data.forEach((datum) => {
-      filledData.push(datum);
-      missingValues.delete(datum.x);
-    });
-
-    const missingValuesArray = [...missingValues.values()];
-
-    missingValuesArray.forEach((missingValue) => {
-      filledData.push({
-        x: missingValue,
-        y1: null,
-        y0: null,
-        initialY0: null,
-        initialY1: null,
-        mark: null,
-        datum: undefined,
-        filled: {
+    const gapEndsOnly = (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && !spec.fit;
+    const positions = data.map(({ x }) => xIndex.get(x)!).sort((a, b) => a - b);
+    positions.push(xValues.size);
+    const filledData = data.slice();
+    let gapStart = 0;
+    for (const position of positions) {
+      for (let missing = gapStart; missing < position; missing++) {
+        if (gapEndsOnly && missing > gapStart) missing = position - 1;
+        const missingValue = xValuesByPosition[missing]!;
+        filledData.push({
           x: missingValue,
-        },
-      });
-    });
+          y1: null,
+          y0: null,
+          initialY0: null,
+          initialY1: null,
+          mark: null,
+          datum: undefined,
+          filled: {
+            x: missingValue,
+          },
+        });
+      }
+      gapStart = position + 1;
+    }
 
     return {
       ...series,
