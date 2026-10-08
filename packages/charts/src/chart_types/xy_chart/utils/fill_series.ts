@@ -15,15 +15,14 @@ import { ScaleType } from '../../../scales/constants';
  */
 export function fillSeries(
   dataSeries: DataSeries[],
-  xValues: Set<string | number>,
+  xIndex: Map<string | number, number>,
   groupScaleType: ScaleType,
 ): DataSeries[] {
   const isContinuous =
     groupScaleType === ScaleType.Linear ||
     groupScaleType === ScaleType.LinearBinary ||
     groupScaleType === ScaleType.Time;
-  const xValuesByPosition = [...xValues];
-  const xIndex = new Map(xValuesByPosition.map((x, position) => [x, position]));
+  const xValuesByPosition = [...xIndex.keys()];
   return dataSeries.map((series) => {
     const { spec, data, isStacked } = series;
 
@@ -31,7 +30,7 @@ export function fillSeries(
     if (!spec.fit && isContinuous && !isStacked) return series;
     const gapEndsOnly = !spec.fit;
     const positions = data.map(({ x }) => xIndex.get(x)!).sort((a, b) => a - b);
-    positions.push(xValues.size);
+    positions.push(xIndex.size);
     const filledData = data.slice();
     let gapStart = 0;
     for (const position of positions) {

@@ -125,8 +125,10 @@ export function computeSeriesDomains(
   // compute the x domain merging any custom domain
   const xDomain = mergeXDomain(scaleConfigs.x, xValues, locale, fallbackScale);
 
+  const xIndex = new Map([...xValues].map((x, position) => [x, position]));
+
   // fill series with missing x values
-  const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.type);
+  const filledDataSeries = fillSeries(dataSeries, xIndex, xDomain.type);
 
   const formattedDataSeries = getFormattedDataSeries(filledDataSeries, xValues, xDomain.type);
   const annotationYValueMap = getAnnotationYValueMap(annotations, scaleConfigs.y);
