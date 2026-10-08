@@ -9,14 +9,10 @@
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
-import type { PointerPosition } from './get_projected_pointer_position';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
-import { getSeriesColorsSelector } from './get_series_color_map';
 import { getSiDataSeriesMapSelector } from './get_si_dataseries_map';
 import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
 import { hasSingleSeriesSelector } from './has_single_series';
-import type { Color } from '../../../../common/colors';
-import type { SeriesKey } from '../../../../common/series_id';
 import type { TooltipInfo } from '../../../../components/tooltip/types';
 import type { PointerEvent, TooltipValue, SettingsSpec, TooltipSpec } from '../../../../specs';
 import { isPointerOutEvent, isFollowTooltipType, getTooltipType } from '../../../../specs';
@@ -24,7 +20,6 @@ import { TooltipType } from '../../../../specs/constants';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
-import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
@@ -32,22 +27,15 @@ import type { PointerValue } from '../../../../state/types';
 import type { Rotation } from '../../../../utils/common';
 import { isNil } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
-import {
-  BandedAccessorType,
-  isPointGeometry,
-  type IndexedGeometry,
-  type PointGeometry,
-} from '../../../../utils/geometry';
+import { isPointGeometry, type IndexedGeometry, type PointGeometry } from '../../../../utils/geometry';
 import type { Point } from '../../../../utils/point';
 import type { SeriesCompareFn } from '../../../../utils/series_sort';
-import type { Theme } from '../../../../utils/themes/theme';
 import { isLineAreaPointWithinPanel, isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltipHeader, formatTooltipValue } from '../../tooltip/tooltip';
 import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
 import type { DataSeries } from '../../utils/series';
-import { getSeriesIdentifierFromDataSeries, getSeriesKey, isBandedSpec } from '../../utils/series';
+import { isBandedSpec } from '../../utils/series';
 import type { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
-import { isBarSeriesSpec, SeriesType } from '../../utils/specs';
 import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from '../utils/spec';
 import type { ComputedScales } from '../utils/types';
 
@@ -84,8 +72,6 @@ export const getTooltipInfoAndGeomsSelector = createCustomCachedSelector(
     getSiDataSeriesMapSelector,
     getExternalPointerEventStateSelector,
     getTooltipSpecSelector,
-    getSeriesColorsSelector,
-    getChartThemeSelector,
   ],
   getTooltipAndHighlightFromValue,
 );
@@ -95,7 +81,7 @@ function getTooltipAndHighlightFromValue(
   axesSpecs: AxisSpec[],
   settings: SettingsSpec,
   projectedPointerPosition: Point,
-  orientedProjectedPointerPosition: PointerPosition,
+  orientedProjectedPointerPosition: Point,
   chartRotation: Rotation,
   hasSingleSeries: boolean,
   scales: ComputedScales,
@@ -103,8 +89,6 @@ function getTooltipAndHighlightFromValue(
   seriesIdentifierDataSeriesMap: Record<string, DataSeries>,
   externalPointerEvent: PointerEvent | null,
   tooltip: TooltipSpec,
-  seriesColors: Map<SeriesKey, Color>,
-  chartTheme: Theme,
 ): TooltipAndHighlightedGeoms {
   if (!scales.xScale || !scales.yScales) {
     return EMPTY_VALUES;
@@ -112,8 +96,7 @@ function getTooltipAndHighlightFromValue(
 
   let { x, y } = orientedProjectedPointerPosition;
   let tooltipType = getTooltipType(tooltip, settings);
-  const isExternalPointerOver = isValidPointerOverEvent(scales.xScale, externalPointerEvent);
-  if (isExternalPointerOver) {
+  if (isValidPointerOverEvent(scales.xScale, externalPointerEvent)) {
     tooltipType = getTooltipType(tooltip, settings, true);
     if (isNil(externalPointerEvent.x)) {
       return EMPTY_VALUES;
@@ -244,44 +227,6 @@ function getTooltipAndHighlightFromValue(
 
       return [...acc, formattedTooltip];
     }, []);
-
-  const hoveredGeometry = matchingGeoms.find(
-    ({ seriesIdentifier }) => seriesIdentifierDataSeriesMap[seriesIdentifier.key]?.seriesType !== SeriesType.Bubble,
-  );
-  if (!hideNullValues && hoveredGeometry) {
-    const hoveredX = hoveredGeometry.value.x;
-    const hoveredSeriesKeys = new Set(matchingGeoms.map(({ seriesIdentifier }) => seriesIdentifier.key));
-    const { horizontalPanelValue, verticalPanelValue } = isExternalPointerOver
-      ? { horizontalPanelValue: undefined, verticalPanelValue: undefined }
-      : orientedProjectedPointerPosition;
-    for (const dataSeries of Object.values(seriesIdentifierDataSeriesMap)) {
-      if (
-        dataSeries.isFiltered ||
-        !isBarSeriesSpec(dataSeries.spec) ||
-        hoveredSeriesKeys.has(dataSeries.key) ||
-        (!isNil(verticalPanelValue) && dataSeries.smVerticalAccessorValue !== verticalPanelValue) ||
-        (!isNil(horizontalPanelValue) && dataSeries.smHorizontalAccessorValue !== horizontalPanelValue)
-      ) {
-        continue;
-      }
-      const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, dataSeries.specId);
-      if (!spec || !scales.yScales.get(getSpecDomainGroupId(spec))) continue;
-      const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
-      const { specId, yAccessor, splitAccessors, groupId } = dataSeries;
-      const color =
-        seriesColors.get(getSeriesKey({ specId, yAccessor, splitAccessors }, groupId)) ||
-        chartTheme.colors.defaultVizColor;
-      const seriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
-      const banded = isBandedSpec(spec);
-      for (const accessor of banded ? [BandedAccessorType.Y0, BandedAccessorType.Y1] : [BandedAccessorType.Y1]) {
-        const value = { x: hoveredX, y: null, mark: null, accessor, datum: undefined };
-        values.push(
-          formatTooltipValue({ color, value, seriesIdentifier }, spec, false, hasSingleSeries, banded, yAxis),
-        );
-      }
-      xValues.add(hoveredX);
-    }
-  }
 
   if (values.length > 1 && xValues.size === values.length) {
     // TODO: remove after tooltip redesign

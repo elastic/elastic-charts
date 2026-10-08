@@ -41,11 +41,7 @@ export function getLegendItemExtraValues(tooltipValues: TooltipValue[]): Map<Ser
 
 /** @internal */
 export function formatTooltipValue(
-  {
-    color,
-    value: { y, mark, accessor, datum },
-    seriesIdentifier,
-  }: Pick<IndexedGeometry, 'color' | 'value' | 'seriesIdentifier'>,
+  { color, value: { y, mark, accessor, datum }, seriesIdentifier }: IndexedGeometry,
   spec: BasicSeriesSpec,
   isHighlighted: boolean,
   hasSingleSeries: boolean,

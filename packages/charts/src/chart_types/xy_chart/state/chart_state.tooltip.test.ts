@@ -120,13 +120,12 @@ describe('XYChart - State tooltips', () => {
       expect(hoveredRows(stacked, false)).toEqual({ header: 1, rows: [['value', 5]] });
     });
 
-    it.each([false, true])('shows a gap like an explicit null with showNullValues (stacked: %s)', (stacked) => {
+    it.each([false, true])('shows an explicit null but not a gap with showNullValues (stacked: %s)', (stacked) => {
       expect(hoveredRows(stacked, true)).toEqual({
         header: 1,
         rows: [
           ['value', 5],
           ['explicitNull', null],
-          ['gap', null],
         ],
       });
     });
