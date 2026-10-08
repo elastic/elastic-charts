@@ -51,8 +51,8 @@ export function formatStackedDataSeriesValues(
   for (let seriesIndex = 0; seriesIndex < dataSeries.length; seriesIndex++) {
     const { data, isFiltered } = dataSeries[seriesIndex]!;
     for (const datum of data) {
-      const xPosition = xIndex.get(datum.x);
-      if (xPosition === undefined || lastSeriesAtX[xPosition] === seriesIndex) continue;
+      const xPosition = xIndex.get(datum.x)!;
+      if (lastSeriesAtX[xPosition] === seriesIndex) continue;
       lastSeriesAtX[xPosition] = seriesIndex;
       const y1 = datum.y1 ?? 0;
       if (y1 > 0) hasPositive = true;
