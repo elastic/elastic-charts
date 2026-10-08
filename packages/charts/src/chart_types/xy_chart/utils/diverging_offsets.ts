@@ -26,7 +26,7 @@ import { clamp } from '../../../utils/common';
 
 interface StackColumns {
   columns: readonly (readonly number[])[];
-  series: ArrayLike<number>;
+  series: readonly number[];
   y0: Float64Array;
   y1: Float64Array;
 }
@@ -179,7 +179,7 @@ function stackOffset(stackMode: StackMode | undefined, onlyNegative: boolean): S
 /** @internal */
 export function stackCells(
   columns: readonly (readonly number[])[],
-  series: ArrayLike<number>,
+  series: readonly number[],
   values: ArrayLike<number>,
   stackMode: StackMode | undefined,
   onlyNegative: boolean,
