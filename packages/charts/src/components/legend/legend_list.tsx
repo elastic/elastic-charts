@@ -22,7 +22,7 @@ import { LayoutDirection, isDefined } from '../../utils/common';
 
 interface Props extends LegendItemProps {
   isListLayout?: boolean;
-  maxFormattedValueWidth?: number;
+  maxFormattedValue?: string;
 }
 
 /** @internal */
@@ -44,7 +44,7 @@ export const LegendList: React.FC<Props> = (props) => {
     onLegendItemMouseOver,
     onLegendItemMouseOut,
     isListLayout,
-    maxFormattedValueWidth,
+    maxFormattedValue,
   } = props;
   const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, depth, path, isToggleable } = item;
   const { isActive, actionRef, handlePointerDown, handleKeyDown } = useActionFocusManagement();
@@ -117,19 +117,16 @@ export const LegendList: React.FC<Props> = (props) => {
           className="echLegendItem__legendValue"
           style={{
             textAlign: isListLayout ? 'left' : undefined,
-            minWidth:
-              isListLayout && maxFormattedValueWidth && isCurrentAndLastValue
-                ? `${maxFormattedValueWidth}px`
-                : undefined,
           }}
         >
-          {showTitle ? (
+          {showTitle && (
             <>
-              <strong>{title.toUpperCase()}:</strong> {displayedLabel}
+              <strong>{title.toUpperCase()}:</strong>{' '}
             </>
-          ) : (
-            displayedLabel
           )}
+          <span data-reserved-value={isListLayout && isCurrentAndLastValue ? maxFormattedValue : undefined}>
+            <span>{displayedLabel}</span>
+          </span>
         </div>,
       );
     }
