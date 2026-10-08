@@ -125,7 +125,8 @@ export function computeSeriesDomains(
   // compute the x domain merging any custom domain
   const xDomain = mergeXDomain(scaleConfigs.x, xValues, locale, fallbackScale);
 
-  const xIndex = new Map([...xValues].map((x, position) => [x, position]));
+  const xIndex = new Map<string | number, number>();
+  for (const x of xValues) xIndex.set(x, xIndex.size);
   const gapMarkedDataSeries = markGaps(dataSeries, xIndex, xDomain.type);
 
   const formattedDataSeries = getFormattedDataSeries(gapMarkedDataSeries, xIndex, xDomain.type);
