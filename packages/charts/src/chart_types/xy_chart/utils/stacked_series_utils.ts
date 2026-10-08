@@ -6,10 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { stack as D3Stack, stackOffsetWiggle, stackOrderNone } from 'd3-shape';
-
-import type { XValueMap, XValueSeriesDatum } from './diverging_offsets';
-import { diverging, divergingPercentage, divergingSilhouette, divergingWiggle } from './diverging_offsets';
+import type { StackOffset, XValueMap } from './diverging_offsets';
+import {
+  diverging,
+  divergingPercentage,
+  divergingSilhouette,
+  divergingWiggle,
+  stackLayers,
+  stackOffsetWiggle,
+} from './diverging_offsets';
 import type { DataSeries, DataSeriesDatum } from './series';
 import { SeriesType, StackMode } from './specs';
 import type { SeriesKey } from '../../../common/series_id';
@@ -61,17 +66,32 @@ export function formatStackedDataSeriesValues(
   for (const xValue of xValues) {
     xMap.set(xValue, new Map<SeriesKey, DataSeriesDatum>());
   }
-  const filteredKeys = new Set<SeriesKey>();
-  for (const { key, data, isFiltered } of dataSeries) {
-    if (isFiltered) filteredKeys.add(key);
-    for (const datum of data) {
+  const values = dataSeries.map(() => new Float64Array(xArray.length));
+  for (let seriesIndex = 0; seriesIndex < dataSeries.length; seriesIndex++) {
+    const { key, data, isFiltered } = dataSeries[seriesIndex]!;
+    const seriesValues = values[seriesIndex]!;
+    for (let xIndex = 0; xIndex < data.length; xIndex++) {
+      const datum = data[xIndex]!;
       const y1 = datum.y1 ?? 0;
       if (y1 > 0) hasPositive = true;
       if (y1 < 0) hasNegative = true;
-      if (isDense) continue;
+      if (isDense) {
+        if (!isFiltered) seriesValues[xIndex] = y1;
+        continue;
+      }
       const seriesMap = xMap.get(datum.x);
       if (!seriesMap || seriesMap.has(key)) continue;
       seriesMap.set(key, datum);
+    }
+  }
+  if (!isDense) {
+    for (let seriesIndex = 0; seriesIndex < dataSeries.length; seriesIndex++) {
+      const { key, isFiltered } = dataSeries[seriesIndex]!;
+      if (isFiltered) continue;
+      const seriesValues = values[seriesIndex]!;
+      for (let xIndex = 0; xIndex < xArray.length; xIndex++) {
+        seriesValues[xIndex] = xMap.get(xArray[xIndex]!)?.get(key)?.y1 ?? 0;
+      }
     }
   }
 
@@ -82,16 +102,7 @@ export function formatStackedDataSeriesValues(
   }
 
   const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
-  const stack = D3Stack<XValueSeriesDatum, number>()
-    .keys(dataSeries.map((_, index) => index))
-    .value(([, indexMap], seriesIndex, xIndex) => {
-      const series = dataSeries[seriesIndex];
-      if (!series || filteredKeys.has(series.key)) return 0; // hides filtered series while maintaining their existence
-      const datum = isDense ? series.data[xIndex] : indexMap.get(series.key);
-      return datum ? datum.y1 ?? 0 : 0;
-    })
-    .order(stackOrderNone)
-    .offset(stackOffset)(xMap);
+  const layers = stackLayers(values, stackOffset);
 
   /**
    * Due to floating point errors, values computed on a stack
@@ -103,20 +114,20 @@ export function formatStackedDataSeriesValues(
     stackMode === StackMode.Percentage ? (value: number) => clamp(value, 0, 1) : (value: number) => value;
 
   const formattedDataSeries: DataSeries[] = [];
-  for (const stackedSeries of stack) {
-    const dataSeriesProps = dataSeries[stackedSeries.key];
-    if (!dataSeriesProps) continue;
+  for (let seriesIndex = 0; seriesIndex < layers.length; seriesIndex++) {
+    const layer = layers[seriesIndex]!;
+    const dataSeriesProps = dataSeries[seriesIndex]!;
     const { key, data: seriesData } = dataSeriesProps;
     const data: DataSeriesDatum[] = [];
-    let xIndex = 0;
-    for (const row of stackedSeries) {
-      const d = isDense ? seriesData[xIndex++] : row.data[1].get(key);
+    for (let xIndex = 0; xIndex < layer.length; xIndex++) {
+      const point = layer[xIndex]!;
+      const d = isDense ? seriesData[xIndex] : xMap.get(xArray[xIndex]!)?.get(key);
       if (!d || d.x === undefined || d.x === null) continue;
 
       data.push({
         x: d.x,
-        y1: clampStackedValue(row[1]),
-        y0: clampStackedValue(row[0]),
+        y1: clampStackedValue(point[1]),
+        y0: clampStackedValue(point[0]),
         initialY0: d.initialY0,
         initialY1: d.initialY1,
         mark: d.mark,
@@ -132,7 +143,7 @@ export function formatStackedDataSeriesValues(
   return formattedDataSeries;
 }
 
-function getOffsetBasedOnStackMode(stackMode?: StackMode, onlyNegative = false) {
+function getOffsetBasedOnStackMode(stackMode?: StackMode, onlyNegative = false): StackOffset {
   // TODO: fix diverging wiggle offset for negative polarity data
   if (onlyNegative && stackMode === StackMode.Wiggle) return stackOffsetWiggle;
 

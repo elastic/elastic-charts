@@ -6,23 +6,19 @@
  * Side Public License, v 1.
  */
 
-import { stack, stackOffsetWiggle, stackOrderNone } from 'd3-shape';
-
-import type { XValueMap, XValueSeriesDatum } from './diverging_offsets';
-import { diverging, divergingPercentage, divergingSilhouette, divergingWiggle } from './diverging_offsets';
-
-type Offset = Parameters<ReturnType<typeof stack<XValueSeriesDatum, number>>['offset']>[0];
+import type { StackOffset } from './diverging_offsets';
+import {
+  diverging,
+  divergingPercentage,
+  divergingSilhouette,
+  divergingWiggle,
+  stackLayers,
+  stackOffsetWiggle,
+} from './diverging_offsets';
 
 /** Stacks one row per series, one column per x value, the same way `formatStackedDataSeriesValues` does */
-const stackMatrix = (matrix: number[][], offset: Offset): Array<Array<[number, number]>> => {
-  const xMap: XValueMap = new Map((matrix[0] ?? []).map((_, xIndex) => [xIndex, new Map()]));
-  return stack<XValueSeriesDatum, number>()
-    .keys(matrix.map((_, seriesIndex) => seriesIndex))
-    .value((_, seriesIndex, xIndex) => matrix[seriesIndex]?.[xIndex] ?? 0)
-    .order(stackOrderNone)
-    .offset(offset)(xMap)
-    .map((layer) => layer.map(([y0, y1]): [number, number] => [y0, y1]));
-};
+const stackMatrix = (matrix: number[][], offset: StackOffset): Array<Array<[number, number]>> =>
+  stackLayers(matrix, offset).map((layer) => layer.map(([y0, y1]): [number, number] => [y0, y1]));
 
 const MIXED = [
   [1, 2, -1, 0],

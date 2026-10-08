@@ -448,7 +448,7 @@ describe('Stacked Series Utils', () => {
       ]);
     });
 
-    test('wiggle with only negative values uses the d3 wiggle offset', () => {
+    test('wiggle with only negative values uses the non-diverging wiggle offset', () => {
       expect(stackedXY0Y1(NEGATIVE_DATA, StackMode.Wiggle)).toEqual([
         [
           [0, 0, -2],
