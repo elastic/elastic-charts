@@ -20,6 +20,12 @@ import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import type { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
 import type { LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
+import type {
+  TraceAnnotationDatum,
+  TraceAnnotationType,
+  TraceSpanBadge,
+  TraceSpanInfo,
+} from '../chart_types/trace_chart/trace_api';
 import type { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import type { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import type { CategoryLabel } from '../common/category';
@@ -167,6 +173,103 @@ export function isMetricElementEvent(e: Parameters<ElementClickListener>[0][0]):
 }
 
 /**
+ * Represents a pointer/keyboard interaction with a span in a trace waterfall chart. Dispatched
+ * through the shared `Settings.onElementClick`/`onElementOver`/`onElementOut` channel — the same
+ * channel used by every other chart type — and discriminated by `type`. The span's identity, timing,
+ * and provenance are carried on {@link TraceSpanInfo} via `span`.
+ *
+ * Note: `settings.tsx` importing trace types follows the same pattern as `Cell` (heatmap) and
+ * `WordModel` (wordcloud) already present in this file.
+ * @public
+ */
+export interface TraceElementEvent {
+  type: 'traceElementEvent';
+  /** The span's identity, timing, and provenance. */
+  span: TraceSpanInfo;
+}
+
+/**
+ * Represents a pointer/keyboard interaction with a Span badge (Spec 27). Dispatched through the
+ * shared `Settings` element-event channel and discriminated by `type`. `chartX`/`chartY` are
+ * chart-relative pixel coordinates present for pointer-origin events and absent for keyboard
+ * activation (which arrives via `onElementClick` with `options.keyPressed`).
+ * @public
+ */
+export interface TraceBadgeElementEvent {
+  type: 'traceBadgeEvent';
+  /** The resolved badge, including its `meta`, returned by reference. */
+  badge: TraceSpanBadge;
+  /** The owning span's identity, timing, and provenance. */
+  span: TraceSpanInfo;
+  /** Chart-relative x coordinate in px (pointer source only). */
+  chartX?: number;
+  /** Chart-relative y coordinate in px (pointer source only). */
+  chartY?: number;
+}
+
+/**
+ * Fields shared by every {@link TraceAnnotationElementEvent} variant, regardless of `annotationType`.
+ * @public
+ */
+export interface TraceAnnotationElementEventBase {
+  type: 'traceAnnotationEvent';
+  /** The resolved annotation, including its `meta`, returned by reference. */
+  annotation: TraceAnnotationDatum;
+  /** Chart-relative x coordinate in px (pointer source only). */
+  chartX?: number;
+  /** Chart-relative y coordinate in px (pointer source only). */
+  chartY?: number;
+}
+
+/**
+ * Represents a pointer/keyboard interaction with a Trace annotation (Spec 29). Dispatched through the
+ * shared `Settings` element-event channel and discriminated by `type`. Modelled as a discriminated
+ * union on `annotationType` so the relationship between the kind and `span` is enforced at compile
+ * time: `'time'` annotations never carry a `span`, while `'lane'`/`'hierarchy'` annotations always do.
+ * `chartX`/`chartY` are present for pointer-origin events only.
+ * @public
+ */
+export type TraceAnnotationElementEvent =
+  | (TraceAnnotationElementEventBase & {
+      /** The annotation kind. */
+      annotationType: 'time';
+      /** Time annotations are not anchored to a span. */
+      span?: never;
+    })
+  | (TraceAnnotationElementEventBase & {
+      /** The annotation kind. */
+      annotationType: Exclude<TraceAnnotationType, 'time'>;
+      /** Related span metadata for `'lane'`/`'hierarchy'` annotations. */
+      span: TraceSpanInfo;
+    });
+
+/**
+ * A type-guard for {@link TraceElementEvent}.
+ * @public
+ */
+export function isTraceElementEvent(e: Parameters<ElementClickListener>[0][0]): e is TraceElementEvent {
+  return 'type' in e && (e as { type?: string }).type === 'traceElementEvent';
+}
+
+/**
+ * A type-guard for {@link TraceBadgeElementEvent}.
+ * @public
+ */
+export function isTraceBadgeElementEvent(e: Parameters<ElementClickListener>[0][0]): e is TraceBadgeElementEvent {
+  return 'type' in e && (e as { type?: string }).type === 'traceBadgeEvent';
+}
+
+/**
+ * A type-guard for {@link TraceAnnotationElementEvent}.
+ * @public
+ */
+export function isTraceAnnotationElementEvent(
+  e: Parameters<ElementClickListener>[0][0],
+): e is TraceAnnotationElementEvent {
+  return 'type' in e && (e as { type?: string }).type === 'traceAnnotationEvent';
+}
+
+/**
  * @public
  * The listener type for click on the projection area.
  */
@@ -191,6 +294,9 @@ export type ElementClickListener = (
     | HeatmapElementEvent
     | WordCloudElementEvent
     | MetricElementEvent
+    | TraceElementEvent
+    | TraceBadgeElementEvent
+    | TraceAnnotationElementEvent
   >,
   options?: { keyPressed: KeyPressed },
 ) => void;
@@ -204,6 +310,9 @@ export type ElementOverListener = (
     | HeatmapElementEvent
     | WordCloudElementEvent
     | MetricElementEvent
+    | TraceElementEvent
+    | TraceBadgeElementEvent
+    | TraceAnnotationElementEvent
   >,
 ) => void;
 
