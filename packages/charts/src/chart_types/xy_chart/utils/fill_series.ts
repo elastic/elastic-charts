@@ -24,8 +24,7 @@ export function fillSeries(
   return dataSeries.map((series) => {
     const { spec, data, isStacked } = series;
 
-    const noFillRequired = isXFillNotRequired(spec, groupScaleType, isStacked);
-    if (data.length === xValues.size || noFillRequired) {
+    if (isXFillNotRequired(spec, groupScaleType, isStacked)) {
       return series;
     }
     const gapEndsOnly = (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && !spec.fit;
