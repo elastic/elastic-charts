@@ -79,8 +79,10 @@ function wiggleOffsets({ columns, series, y1 }: StackColumns): number[] {
 }
 
 const divergingOffset =
-  (isSilhouette = false): StackOffset =>
-  ({ columns, y0, y1 }) => {
+  (baseline: 'zero' | 'silhouette' | 'wiggle'): StackOffset =>
+  (stack) => {
+    const { columns, y0, y1 } = stack;
+    const offsets = baseline === 'wiggle' ? wiggleOffsets(stack) : [];
     for (let j = 0; j < columns.length; ++j) {
       const column = columns[j]!;
       // sum negative values per x before to maintain original sort for negative values
@@ -97,11 +99,16 @@ const divergingOffset =
         }
       }
 
-      const silhouetteOffset = sumYp / 2 - sumYn / 2;
-      const offset = isSilhouette ? -silhouetteOffset : 0;
-      yn += offset;
+      let yp: number;
+      if (baseline === 'wiggle') {
+        const offset = offsets[j] ?? 0;
+        yp = offset + sumYn;
+        yn = offset;
+      } else {
+        yp = baseline === 'silhouette' ? -(sumYp / 2 - sumYn / 2) : 0;
+        yn += yp;
+      }
 
-      let yp = offset;
       for (const c of column) {
         const dy = y1[c]! - y0[c]!;
         if (dy >= 0) {
@@ -118,46 +125,16 @@ const divergingOffset =
 /**
  * Stacked offset function with diverging polarity offset
  */
-const diverging = divergingOffset();
+const diverging = divergingOffset('zero');
 /**
  * Stacked Silhouette offset function with diverging polarity offset
  */
-const divergingSilhouette = divergingOffset(true);
+const divergingSilhouette = divergingOffset('silhouette');
 
 /**
  * Stacked Wiggle offset function to account for diverging offset
  */
-const divergingWiggle: StackOffset = (stack) => {
-  const { columns, series, y0, y1 } = stack;
-  if (!(series.length > 0)) return;
-
-  const offsets = wiggleOffsets(stack);
-
-  for (let j = 0; j < columns.length; ++j) {
-    const column = columns[j]!;
-    // sum negative values per x before to maintain original sort for negative values
-    let sumYn = 0;
-    for (const c of column) {
-      if (y1[c]! - y0[c]! < 0) {
-        sumYn += Math.abs(y1[c]!) || 0;
-      }
-    }
-
-    const offset = offsets[j] ?? 0;
-    let yp = offset + sumYn;
-    let yn = offset;
-    for (const c of column) {
-      const dy = y1[c]! - y0[c]!;
-      if (dy >= 0) {
-        y0[c] = yp;
-        y1[c] = yp += dy;
-      } else {
-        y1[c] = yn;
-        y0[c] = yn -= dy;
-      }
-    }
-  }
-};
+const divergingWiggle = divergingOffset('wiggle');
 
 /**
  * Stacked Percentage offset function with diverging polarity offset
