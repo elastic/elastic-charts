@@ -375,7 +375,7 @@ export function getDataSeriesFromSpecs(
   smHValues: Set<string | number>;
   fallbackScale?: XScaleType;
 } {
-  const globalDataSeries: DataSeries[] = [];
+  let globalDataSeries: DataSeries[] = [];
   const mutatedXValueSums = new Map<string | number, number>();
 
   // the unique set of values along the x axis
@@ -442,6 +442,8 @@ export function getDataSeriesFromSpecs(
     d.sortOrder = i;
     return d;
   });
+  // testing libra review
+  globalDataSeries = [];
 
   const smallMultipleUniqueValues = globalDataSeries.reduce<{
     smVValues: Set<string | number>;
