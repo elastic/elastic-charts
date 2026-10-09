@@ -7865,7 +7865,7 @@ Object.defineProperty(exports, "secondaryMetricLabelTooltip", ({ enumerable: tru
  * Side Public License, v 1.
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PolarizedStacked = exports.markSizeAccessor = exports.fittingFunctionsStackedSeries = exports.fittingFunctionsNonStackedSeries = exports.testBarLinesTime = exports.testBarLinesLinear = exports.areasAndBars = exports.linesAndAreas = exports.barsAndLines = void 0;
+exports.fittingFunctionsSparseSeries = exports.PolarizedStacked = exports.markSizeAccessor = exports.fittingFunctionsStackedSeries = exports.fittingFunctionsNonStackedSeries = exports.testBarLinesTime = exports.testBarLinesLinear = exports.areasAndBars = exports.linesAndAreas = exports.barsAndLines = void 0;
 exports["default"] = {
     title: 'Mixed Charts',
 };
@@ -7887,6 +7887,8 @@ var _7_marks_story_1 = __webpack_require__(/*! ./7_marks.story */ "./stories/mix
 Object.defineProperty(exports, "markSizeAccessor", ({ enumerable: true, get: function () { return _7_marks_story_1.Example; } }));
 var _8_polarized_stacked_story_1 = __webpack_require__(/*! ./8_polarized_stacked.story */ "./stories/mixed/8_polarized_stacked.story.tsx");
 Object.defineProperty(exports, "PolarizedStacked", ({ enumerable: true, get: function () { return _8_polarized_stacked_story_1.Example; } }));
+var _9_fitting_sparse_story_1 = __webpack_require__(/*! ./9_fitting_sparse.story */ "./stories/mixed/9_fitting_sparse.story.tsx");
+Object.defineProperty(exports, "fittingFunctionsSparseSeries", ({ enumerable: true, get: function () { return _9_fitting_sparse_story_1.Example; } }));
 
 
 /***/ },
@@ -8015,7 +8017,7 @@ Object.defineProperty(exports, "linearBinary", ({ enumerable: true, get: functio
  * Side Public License, v 1.
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sorting = exports.heatmap = exports.sunbursts = exports.heterogeneous = exports.histogramBars = exports.gridLines = exports.horizontalBars = exports.verticalBars = exports.verticalAreas = void 0;
+exports.sorting = exports.heatmap = exports.sunbursts = exports.sparseStacked = exports.heterogeneous = exports.histogramBars = exports.gridLines = exports.horizontalBars = exports.verticalBars = exports.verticalAreas = void 0;
 exports["default"] = {
     title: 'Small Multiples (@alpha)',
 };
@@ -8031,6 +8033,8 @@ var _5_histogram_bars_story_1 = __webpack_require__(/*! ./5_histogram_bars.story
 Object.defineProperty(exports, "histogramBars", ({ enumerable: true, get: function () { return _5_histogram_bars_story_1.Example; } }));
 var _6_heterogeneous_cartesians_story_1 = __webpack_require__(/*! ./6_heterogeneous_cartesians.story */ "./stories/small_multiples/6_heterogeneous_cartesians.story.tsx");
 Object.defineProperty(exports, "heterogeneous", ({ enumerable: true, get: function () { return _6_heterogeneous_cartesians_story_1.Example; } }));
+var _10_sparse_stacked_story_1 = __webpack_require__(/*! ./10_sparse_stacked.story */ "./stories/small_multiples/10_sparse_stacked.story.tsx");
+Object.defineProperty(exports, "sparseStacked", ({ enumerable: true, get: function () { return _10_sparse_stacked_story_1.Example; } }));
 var _7_sunbursts_story_1 = __webpack_require__(/*! ./7_sunbursts.story */ "./stories/small_multiples/7_sunbursts.story.tsx");
 Object.defineProperty(exports, "sunbursts", ({ enumerable: true, get: function () { return _7_sunbursts_story_1.Example; } }));
 var _9_heatmap_story_1 = __webpack_require__(/*! ./9_heatmap.story */ "./stories/small_multiples/9_heatmap.story.tsx");
@@ -28239,6 +28243,82 @@ exports.Example.parameters = { storySource: { source: "(_, { title, description 
 
 /***/ },
 
+/***/ "./stories/mixed/9_fitting_sparse.story.tsx"
+/*!**************************************************!*\
+  !*** ./stories/mixed/9_fitting_sparse.story.tsx ***!
+  \**************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Example = void 0;
+/* eslint-disable */
+// @ts-nocheck
+// @ts-ignore
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport { boolean } from '@storybook/addon-knobs';\nimport React from 'react';\n\nimport { AreaSeries, Axis, Chart, CurveType, Fit, Position, ScaleType, Settings } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { customKnobs } from '../utils/knobs';\n\nconst series = [\n  {\n    id: 'complete',\n    data: [3, 5, 4, 7, 6, 8, 5, 9, 6, 7, 4, 6, 5, 8, 6].map((y, x) => ({ x, y })),\n  },\n  {\n    id: 'interior gap',\n    data: [\n      { x: 0, y: 2 },\n      { x: 1, y: 3 },\n      { x: 2, y: 4 },\n      { x: 9, y: 8 },\n      { x: 10, y: 7 },\n      { x: 11, y: 9 },\n      { x: 12, y: 8 },\n      { x: 13, y: 7 },\n      { x: 14, y: 8 },\n    ],\n  },\n  {\n    id: 'leading and trailing gaps',\n    data: [\n      { x: 5, y: 3 },\n      { x: 6, y: 5 },\n      { x: 7, y: 4 },\n      { x: 8, y: 6 },\n    ],\n  },\n];\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const stacked = boolean('stacked', true);\n  const fit = customKnobs.enum.fit(undefined, Fit.Nearest);\n  const curve = customKnobs.enum.curve(undefined, CurveType.LINEAR);\n  return (\n    <Chart title={title} description={description}>\n      <Settings showLegend baseTheme={useBaseTheme()} />\n      <Axis id=\"bottom\" position={Position.Bottom} />\n      <Axis id=\"left\" position={Position.Left} />\n      {series.map(({ id, data }) => (\n        <AreaSeries\n          key={id}\n          id={id}\n          xScaleType={ScaleType.Linear}\n          yScaleType={ScaleType.Linear}\n          xAccessor=\"x\"\n          yAccessors={['y']}\n          stackAccessors={stacked ? ['x'] : undefined}\n          curve={curve}\n          fit={{ type: fit, endValue: 'nearest' }}\n          data={data}\n        />\n      ))}\n    </Chart>\n  );\n};\n";
+// @ts-ignore
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 48 }, "endLoc": { "col": 1, "line": 73 }, "startBody": { "col": 36, "line": 48 }, "endBody": { "col": 1, "line": 73 } } };
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+const addon_knobs_1 = __webpack_require__(/*! @storybook/addon-knobs */ "../node_modules/@storybook/addon-knobs/dist/index.js");
+const react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
+const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
+const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
+const knobs_1 = __webpack_require__(/*! ../utils/knobs */ "./stories/utils/knobs/index.ts");
+const series = [
+    {
+        id: 'complete',
+        data: [3, 5, 4, 7, 6, 8, 5, 9, 6, 7, 4, 6, 5, 8, 6].map((y, x) => ({ x, y })),
+    },
+    {
+        id: 'interior gap',
+        data: [
+            { x: 0, y: 2 },
+            { x: 1, y: 3 },
+            { x: 2, y: 4 },
+            { x: 9, y: 8 },
+            { x: 10, y: 7 },
+            { x: 11, y: 9 },
+            { x: 12, y: 8 },
+            { x: 13, y: 7 },
+            { x: 14, y: 8 },
+        ],
+    },
+    {
+        id: 'leading and trailing gaps',
+        data: [
+            { x: 5, y: 3 },
+            { x: 6, y: 5 },
+            { x: 7, y: 4 },
+            { x: 8, y: 6 },
+        ],
+    },
+];
+const Example = (_, { title, description }) => {
+    const stacked = (0, addon_knobs_1.boolean)('stacked', true);
+    const fit = knobs_1.customKnobs.enum.fit(undefined, charts_1.Fit.Nearest);
+    const curve = knobs_1.customKnobs.enum.curve(undefined, charts_1.CurveType.LINEAR);
+    return (react_1.default.createElement(charts_1.Chart, { title: title, description: description },
+        react_1.default.createElement(charts_1.Settings, { showLegend: true, baseTheme: (0, use_base_theme_1.useBaseTheme)() }),
+        react_1.default.createElement(charts_1.Axis, { id: "bottom", position: charts_1.Position.Bottom }),
+        react_1.default.createElement(charts_1.Axis, { id: "left", position: charts_1.Position.Left }),
+        series.map(({ id, data }) => (react_1.default.createElement(charts_1.AreaSeries, { key: id, id: id, xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: "x", yAccessors: ['y'], stackAccessors: stacked ? ['x'] : undefined, curve: curve, fit: { type: fit, endValue: 'nearest' }, data: data })))));
+};
+exports.Example = Example;
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const stacked = boolean('stacked', true);\n  const fit = customKnobs.enum.fit(undefined, Fit.Nearest);\n  const curve = customKnobs.enum.curve(undefined, CurveType.LINEAR);\n  return (\n    <Chart title={title} description={description}>\n      <Settings showLegend baseTheme={useBaseTheme()} />\n      <Axis id=\"bottom\" position={Position.Bottom} />\n      <Axis id=\"left\" position={Position.Left} />\n      {series.map(({ id, data }) => (\n        <AreaSeries\n          key={id}\n          id={id}\n          xScaleType={ScaleType.Linear}\n          yScaleType={ScaleType.Linear}\n          xAccessor=\"x\"\n          yAccessors={['y']}\n          stackAccessors={stacked ? ['x'] : undefined}\n          curve={curve}\n          fit={{ type: fit, endValue: 'nearest' }}\n          data={data}\n        />\n      ))}\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
+
+
+/***/ },
+
 /***/ "./stories/mosaic/10_mosaic_simple.story.tsx"
 /*!***************************************************!*\
   !*** ./stories/mosaic/10_mosaic_simple.story.tsx ***!
@@ -29353,6 +29433,71 @@ exports.Example.parameters = {
   This base is also applied to tick nicing.`,
 };
 exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const yAccessor = select('Data type', ['Base 10', 'Base 2'], 'Base 2');\n  const yScaleType = select(\n    'yScaleType',\n    {\n      Linear: ScaleType.Linear,\n      'Linear Binary': ScaleType.LinearBinary,\n    },\n    ScaleType.LinearBinary,\n  );\n  const yNice = boolean('Nice y ticks', false);\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings baseTheme={useBaseTheme()} />\n      <Axis id=\"bottom\" title=\"\" position={Position.Bottom} showOverlappingTicks />\n      <Axis id=\"binary\" title={yAccessor} position={Position.Left} />\n      <LineSeries\n        id=\"lines\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={yScaleType}\n        data={data}\n        yNice={yNice}\n        xAccessor=\"x\"\n        yAccessors={[yAccessor]}\n      />\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
+
+
+/***/ },
+
+/***/ "./stories/small_multiples/10_sparse_stacked.story.tsx"
+/*!*************************************************************!*\
+  !*** ./stories/small_multiples/10_sparse_stacked.story.tsx ***!
+  \*************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Example = void 0;
+/* eslint-disable */
+// @ts-nocheck
+// @ts-ignore
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport { select } from '@storybook/addon-knobs';\nimport React from 'react';\n\nimport {\n  AreaSeries,\n  Axis,\n  BarSeries,\n  Chart,\n  GroupBy,\n  LineSeries,\n  Position,\n  ScaleType,\n  Settings,\n  SmallMultiples,\n} from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\n\nconst xRange = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i);\n\nconst presence: Record<string, Record<string, number[]>> = {\n  'panel A': { g1: xRange(0, 10), g2: xRange(0, 10), g3: xRange(0, 10) },\n  'panel B': { g1: xRange(0, 9), g2: [...xRange(0, 2), ...xRange(7, 9)], g3: xRange(5, 9) },\n  'panel C': { g1: xRange(3, 7), g2: [0, 4, 9], g3: xRange(0, 9) },\n};\n\nconst data = Object.entries(presence).flatMap(([panel, series], p) =>\n  Object.entries(series).flatMap(([g, xs], s) =>\n    xs.map((x) => ({ panel, g, x, y: 1 + ((x * 7 + s * 3 + p * 5) % 9) })),\n  ),\n);\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const seriesType = select('series type', { bar: 'bar', area: 'area', line: 'line' }, 'bar');\n  const seriesProps = {\n    id: 'sparse',\n    xScaleType: ScaleType.Linear,\n    yScaleType: ScaleType.Linear,\n    xAccessor: 'x',\n    yAccessors: ['y'],\n    splitSeriesAccessors: ['g'],\n    stackAccessors: ['x'],\n    data,\n  };\n  return (\n    <Chart title={title} description={description}>\n      <Settings showLegend baseTheme={useBaseTheme()} />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} />\n      <GroupBy id=\"panels\" by={(_spec, datum) => datum.panel} sort=\"alphaAsc\" />\n      <SmallMultiples splitVertically=\"panels\" />\n      {seriesType === 'bar' && <BarSeries {...seriesProps} />}\n      {seriesType === 'area' && <AreaSeries {...seriesProps} />}\n      {seriesType === 'line' && <LineSeries {...seriesProps} />}\n    </Chart>\n  );\n};\n";
+// @ts-ignore
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 42 }, "endLoc": { "col": 1, "line": 66 }, "startBody": { "col": 36, "line": 42 }, "endBody": { "col": 1, "line": 66 } } };
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+const addon_knobs_1 = __webpack_require__(/*! @storybook/addon-knobs */ "../node_modules/@storybook/addon-knobs/dist/index.js");
+const react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
+const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
+const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
+const xRange = (from, to) => Array.from({ length: to - from + 1 }, (_, i) => from + i);
+const presence = {
+    'panel A': { g1: xRange(0, 10), g2: xRange(0, 10), g3: xRange(0, 10) },
+    'panel B': { g1: xRange(0, 9), g2: [...xRange(0, 2), ...xRange(7, 9)], g3: xRange(5, 9) },
+    'panel C': { g1: xRange(3, 7), g2: [0, 4, 9], g3: xRange(0, 9) },
+};
+const data = Object.entries(presence).flatMap(([panel, series], p) => Object.entries(series).flatMap(([g, xs], s) => xs.map((x) => ({ panel, g, x, y: 1 + ((x * 7 + s * 3 + p * 5) % 9) }))));
+const Example = (_, { title, description }) => {
+    const seriesType = (0, addon_knobs_1.select)('series type', { bar: 'bar', area: 'area', line: 'line' }, 'bar');
+    const seriesProps = {
+        id: 'sparse',
+        xScaleType: charts_1.ScaleType.Linear,
+        yScaleType: charts_1.ScaleType.Linear,
+        xAccessor: 'x',
+        yAccessors: ['y'],
+        splitSeriesAccessors: ['g'],
+        stackAccessors: ['x'],
+        data,
+    };
+    return (react_1.default.createElement(charts_1.Chart, { title: title, description: description },
+        react_1.default.createElement(charts_1.Settings, { showLegend: true, baseTheme: (0, use_base_theme_1.useBaseTheme)() }),
+        react_1.default.createElement(charts_1.Axis, { id: "x", position: charts_1.Position.Bottom }),
+        react_1.default.createElement(charts_1.Axis, { id: "y", position: charts_1.Position.Left }),
+        react_1.default.createElement(charts_1.GroupBy, { id: "panels", by: (_spec, datum) => datum.panel, sort: "alphaAsc" }),
+        react_1.default.createElement(charts_1.SmallMultiples, { splitVertically: "panels" }),
+        seriesType === 'bar' && react_1.default.createElement(charts_1.BarSeries, { ...seriesProps }),
+        seriesType === 'area' && react_1.default.createElement(charts_1.AreaSeries, { ...seriesProps }),
+        seriesType === 'line' && react_1.default.createElement(charts_1.LineSeries, { ...seriesProps })));
+};
+exports.Example = Example;
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const seriesType = select('series type', { bar: 'bar', area: 'area', line: 'line' }, 'bar');\n  const seriesProps = {\n    id: 'sparse',\n    xScaleType: ScaleType.Linear,\n    yScaleType: ScaleType.Linear,\n    xAccessor: 'x',\n    yAccessors: ['y'],\n    splitSeriesAccessors: ['g'],\n    stackAccessors: ['x'],\n    data,\n  };\n  return (\n    <Chart title={title} description={description}>\n      <Settings showLegend baseTheme={useBaseTheme()} />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} />\n      <GroupBy id=\"panels\" by={(_spec, datum) => datum.panel} sort=\"alphaAsc\" />\n      <SmallMultiples splitVertically=\"panels\" />\n      {seriesType === 'bar' && <BarSeries {...seriesProps} />}\n      {seriesType === 'area' && <AreaSeries {...seriesProps} />}\n      {seriesType === 'line' && <LineSeries {...seriesProps} />}\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -68483,9 +68628,11 @@ function computeSeriesDomains(seriesSpecs, scaleConfigs, annotations, settingsSp
     const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = (0, series_1.getDataSeriesFromSpecs)(seriesSpecs, deselectedDataSeries, orderOrdinalBinsBy, renderingSortFn, smallMultiples);
     // compute the x domain merging any custom domain
     const xDomain = (0, x_domain_1.mergeXDomain)(scaleConfigs.x, xValues, locale, fallbackScale);
-    // fill series with missing x values
-    const filledDataSeries = (0, fill_series_1.fillSeries)(dataSeries, xValues, xDomain.type);
-    const formattedDataSeries = (0, series_1.getFormattedDataSeries)(seriesSpecs, filledDataSeries, xValues, xDomain.type);
+    const xIndex = new Map();
+    for (const x of xValues)
+        xIndex.set(x, xIndex.size);
+    const gapMarkedDataSeries = (0, fill_series_1.markGaps)(dataSeries, xIndex, xDomain.type);
+    const formattedDataSeries = (0, series_1.getFormattedDataSeries)(gapMarkedDataSeries, xIndex, xDomain.type);
     const annotationYValueMap = getAnnotationYValueMap(annotations, scaleConfigs.y);
     // let's compute the yDomains after computing all stacked values
     const yDomains = (0, y_domain_1.mergeYDomain)(scaleConfigs.y, formattedDataSeries, annotationYValueMap);
@@ -69043,37 +69190,58 @@ function computeChartArea(container, axes, theme) {
 /*!******************************************************************************!*\
   !*** ../packages/charts/src/chart_types/xy_chart/utils/diverging_offsets.ts ***!
   \******************************************************************************/
-(__unused_webpack_module, exports) {
+(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 var __webpack_unused_export__;
 
 /* eslint-disable header/header, no-param-reassign */
 __webpack_unused_export__ = ({ value: true });
-exports.divergingSilhouette = exports.diverging = void 0;
-exports.divergingWiggle = divergingWiggle;
-exports.divergingPercentage = divergingPercentage;
+exports.stackCells = stackCells;
+/**
+ * @notice
+ * This product includes code that is adapted from d3-shape@3.0.1,
+ * which is available under a "ISC" license.
+ *
+ * ISC License
+ *
+ * Copyright 2010-2021 Mike Bostock
+ * Permission to use, copy, modify, and/or distribute this software for any purpose
+ * with or without fee is hereby granted, provided that the above copyright notice
+ * and this permission notice appear in all copies.
+
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+ * REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+ * INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+ * OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+ * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
+ * THIS SOFTWARE.
+ */
+const specs_1 = __webpack_require__(/*! ./specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
+const common_1 = __webpack_require__(/*! ../../../utils/common */ "../packages/charts/src/utils/common.tsx");
 /**
  * Computes required wiggle offset for each x value __WITHOUT__ mutations
  */
-function getWiggleOffsets(series, order) {
+function wiggleOffsets({ columns, series, y1 }) {
     const offsets = [];
-    let y, j;
-    for (y = 0, j = 1; j < (series[order[0] ?? 0]?.length ?? 0); ++j) {
-        let i, s1, s2;
-        for (i = 0, s1 = 0, s2 = 0; i < series.length; ++i) {
-            // @ts-ignore - d3-shape type here is inaccurate
-            const si = series[order[i]];
-            const sij0 = si[j]?.[1] || 0;
-            const sij1 = si[j - 1]?.[1] || 0;
-            let s3 = (sij0 - sij1) / 2;
-            for (let k = 0; k < i; ++k) {
-                // @ts-ignore - d3-shape type here is inaccurate
-                const sk = series[order[k]];
-                const skj0 = sk[j]?.[1] || 0;
-                const skj1 = sk[j - 1]?.[1] || 0;
-                s3 += skj0 - skj1;
-            }
+    let y = 0;
+    for (let j = 1; j < columns.length; ++j) {
+        const previous = columns[j - 1];
+        const current = columns[j];
+        let p = 0;
+        let q = 0;
+        let s1 = 0;
+        let s2 = 0;
+        let prefix = 0;
+        // sorted-list merge join with a running prefix sum, now O(N)
+        while (p < previous.length || q < current.length) {
+            const previousSeries = p < previous.length ? series[previous[p]] : Infinity;
+            const currentSeries = q < current.length ? series[current[q]] : Infinity;
+            const sij1 = previousSeries <= currentSeries ? y1[previous[p++]] || 0 : 0;
+            const sij0 = currentSeries <= previousSeries ? y1[current[q++]] || 0 : 0;
+            const s3 = (sij0 - sij1) / 2 + prefix;
+            prefix += sij0 - sij1;
             s1 += sij0;
             s2 += s3 * sij0;
         }
@@ -69084,110 +69252,62 @@ function getWiggleOffsets(series, order) {
     offsets.push(y);
     return offsets;
 }
-/** @internal */
-const divergingOffset = (isSilhouette = false) => {
-    return function (series, order) {
-        const n = series.length;
-        if (!(n > 0))
-            return;
-        for (let i, j = 0, sumYn, sumYp, yp, yn = 0, s0 = series[order[0] ?? 0], m = s0?.length ?? 0; j < m; ++j) {
-            // sum negative values per x before to maintain original sort for negative values
-            for (yn = 0, sumYn = 0, sumYp = 0, i = 0; i < n; ++i) {
-                // @ts-ignore - d3-shape type here is inaccurate
-                const d = series[order[i]][j];
-                const dy = d[1] - d[0];
-                if (dy < 0) {
-                    sumYn += Math.abs(d[1]) || 0;
-                    yn += dy;
-                }
-                else {
-                    sumYp += d[1] || 0;
-                }
-            }
-            const silhouetteOffset = sumYp / 2 - sumYn / 2;
-            const offset = isSilhouette ? -silhouetteOffset : 0;
-            yn += offset;
-            for (yp = offset, i = 0; i < n; ++i) {
-                // @ts-ignore - d3-shape type here is inaccurate
-                const d = series[order[i]][j];
-                const dy = d[1] - d[0];
-                if (dy >= 0) {
-                    d[0] = yp;
-                    d[1] = yp += dy;
-                }
-                else {
-                    d[1] = yn;
-                    d[0] = yn -= dy;
-                }
-            }
-        }
-    };
-};
-/**
- * Stacked offset function with diverging polarity offset
- * @internal
- */
-exports.diverging = divergingOffset();
-/**
- * Stacked Silhouette offset function with diverging polarity offset
- * @internal
- */
-exports.divergingSilhouette = divergingOffset(true);
-/**
- * Stacked Wiggle offset function to account for diverging offset
- * @internal
- */
-function divergingWiggle(series, order) {
-    const n = series.length;
-    const s0 = series[order[0] ?? 0];
-    const m = s0?.length ?? 0;
-    if (!(n > 0) || !(m > 0))
-        return (0, exports.diverging)(series, order);
-    const offsets = getWiggleOffsets(series, order);
-    for (let i, j = 0, sumYn, yp, yn = 0; j < m; ++j) {
+const divergingOffset = (baseline) => (stack) => {
+    const { columns, y0, y1 } = stack;
+    const offsets = baseline === 'wiggle' ? wiggleOffsets(stack) : [];
+    for (let j = 0; j < columns.length; ++j) {
+        const column = columns[j];
         // sum negative values per x before to maintain original sort for negative values
-        for (i = 0, yn = 0, sumYn = 0; i < n; ++i) {
-            // @ts-ignore - d3-shape type here is inaccurate
-            const d = series[order[i]][j];
-            if (d[1] - d[0] < 0) {
-                sumYn += Math.abs(d[1]) || 0;
-            }
-        }
-        const offset = offsets[j] ?? 0;
-        yn += offset;
-        for (yp = offset + sumYn, yn = offset, i = 0; i < n; ++i) {
-            // @ts-ignore - d3-shape type here is inaccurate
-            const d = series[order[i]][j];
-            const dy = d[1] - d[0];
-            if (dy >= 0) {
-                d[0] = yp;
-                d[1] = yp += dy;
+        let yn = 0;
+        let sumYn = 0;
+        let sumYp = 0;
+        for (const c of column) {
+            const dy = y1[c] - y0[c];
+            if (dy < 0) {
+                sumYn += Math.abs(y1[c]) || 0;
+                yn += dy;
             }
             else {
-                d[1] = yn;
-                d[0] = yn -= dy;
+                sumYp += y1[c] || 0;
+            }
+        }
+        let yp;
+        if (baseline === 'wiggle') {
+            const offset = offsets[j] ?? 0;
+            yp = offset + sumYn;
+            yn = offset;
+        }
+        else {
+            yp = baseline === 'silhouette' ? -(sumYp / 2 - sumYn / 2) : 0;
+            yn += yp;
+        }
+        for (const c of column) {
+            const dy = y1[c] - y0[c];
+            if (dy >= 0) {
+                y0[c] = yp;
+                y1[c] = yp += dy;
+            }
+            else {
+                y1[c] = yn;
+                y0[c] = yn -= dy;
             }
         }
     }
-}
+};
 /**
  * Stacked Percentage offset function with diverging polarity offset
  * Treats percentage as participation for mixed polarity data
- * @internal
  */
-function divergingPercentage(series, order) {
-    const n = series.length;
-    if (!(n > 0))
-        return;
-    for (let i, j = 0, sumYn, sumYp; j < (series[0]?.length ?? 0); ++j) {
-        for (sumYn = sumYp = i = 0; i < n; ++i) {
-            // @ts-ignore - d3-shape type here is inaccurate
-            const d = series[order[i]][j];
-            if (d[1] - d[0] < 0) {
-                sumYn += Math.abs(d[1]) || 0;
+const divergingPercentage = ({ columns, y0, y1 }) => {
+    for (const column of columns) {
+        let sumYn = 0;
+        let sumYp = 0;
+        for (const c of column) {
+            if (y1[c] - y0[c] < 0) {
+                sumYn += Math.abs(y1[c]) || 0;
             }
             else {
-                sumYp += d[1] || 0;
+                sumYp += y1[c] || 0;
             }
         }
         const sumY = sumYn + sumYp;
@@ -69195,21 +69315,64 @@ function divergingPercentage(series, order) {
             continue; // must not return, else loop will stop
         let yp = sumYn / sumY;
         let yn = 0;
-        for (i = 0; i < n; ++i) {
-            // @ts-ignore - d3-shape type here is inaccurate
-            const d = series[order[i]][j];
-            const dy = d[1] - d[0];
+        for (const c of column) {
+            const dy = y1[c] - y0[c];
             const participation = Math.abs(dy / sumY);
             if (dy >= 0) {
-                d[0] = yp;
-                d[1] = yp += participation;
+                y0[c] = yp;
+                y1[c] = yp += participation;
             }
             else {
-                d[0] = yn;
-                d[1] = yn += participation;
+                y0[c] = yn;
+                y1[c] = yn += participation;
             }
         }
     }
+};
+const stackOffsetWiggle = (stack) => {
+    const { columns, y0, y1 } = stack;
+    const offsets = wiggleOffsets(stack);
+    for (let j = 0; j < columns.length; ++j) {
+        let base = offsets[j] ?? 0;
+        for (const c of columns[j]) {
+            y1[c] = y1[c] + (y0[c] = base);
+            base = isNaN(y1[c]) ? y0[c] : y1[c];
+        }
+    }
+};
+function stackOffset(stackMode, onlyNegative) {
+    // TODO: fix diverging wiggle offset for negative polarity data (from https://github.com/elastic/elastic-charts/pull/1502)
+    if (onlyNegative && stackMode === specs_1.StackMode.Wiggle)
+        return stackOffsetWiggle;
+    switch (stackMode) {
+        case specs_1.StackMode.Percentage:
+            return divergingPercentage;
+        case specs_1.StackMode.Silhouette:
+            return divergingOffset('silhouette');
+        case specs_1.StackMode.Wiggle:
+            return divergingOffset('wiggle');
+        default:
+            return divergingOffset('zero');
+    }
+}
+/** @internal */
+function stackCells(columns, series, values, stackMode, onlyNegative) {
+    const y0 = new Float64Array(values.length);
+    const y1 = Float64Array.from(values);
+    stackOffset(stackMode, onlyNegative)({ columns, series, y0, y1 });
+    if (stackMode === specs_1.StackMode.Percentage) {
+        /**
+         * Due to floating point errors, values computed on a stack
+         * could fall out of the current defined domain boundaries.
+         * This can particularly happen with percent stacks, where the domain
+         * is hardcoded to [0,1] and some values can fall outside that domain.
+         */
+        for (let c = 0; c < values.length; ++c) {
+            y0[c] = (0, common_1.clamp)(y0[c], 0, 1);
+            y1[c] = (0, common_1.clamp)(y1[c], 0, 1);
+        }
+    }
+    return { y0, y1 };
 }
 /* eslint-enable header/header, no-param-reassign */
 
@@ -69233,52 +69396,52 @@ var __webpack_unused_export__;
  * Side Public License, v 1.
  */
 __webpack_unused_export__ = ({ value: true });
-exports.fillSeries = fillSeries;
+exports.markGaps = markGaps;
 const specs_1 = __webpack_require__(/*! ./specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
 const constants_1 = __webpack_require__(/*! ../../../scales/constants */ "../packages/charts/src/scales/constants.ts");
 /**
  * @internal
  */
-function fillSeries(dataSeries, xValues, groupScaleType) {
-    return dataSeries.map((series) => {
-        const { spec, data, isStacked } = series;
-        const noFillRequired = isXFillNotRequired(spec, groupScaleType, isStacked);
-        if (data.length === xValues.size || noFillRequired) {
-            return series;
-        }
-        const filledData = [];
-        const missingValues = new Set(xValues);
-        data.forEach((datum) => {
-            filledData.push(datum);
-            missingValues.delete(datum.x);
-        });
-        const missingValuesArray = [...missingValues.values()];
-        missingValuesArray.forEach((missingValue) => {
-            filledData.push({
-                x: missingValue,
-                y1: null,
-                y0: null,
-                initialY0: null,
-                initialY1: null,
-                mark: null,
-                datum: undefined,
-                filled: {
-                    x: missingValue,
-                },
-            });
-        });
-        return {
-            ...series,
-            data: filledData,
-        };
-    });
-}
-function isXFillNotRequired(spec, groupScaleType, isStacked) {
-    const onlyNoFitAreaLine = ((0, specs_1.isAreaSeriesSpec)(spec) || (0, specs_1.isLineSeriesSpec)(spec)) && !spec.fit;
-    const onlyContinuous = groupScaleType === constants_1.ScaleType.Linear ||
+function markGaps(dataSeries, xIndex, groupScaleType) {
+    const isContinuous = groupScaleType === constants_1.ScaleType.Linear ||
         groupScaleType === constants_1.ScaleType.LinearBinary ||
         groupScaleType === constants_1.ScaleType.Time;
-    return onlyNoFitAreaLine && onlyContinuous && !isStacked;
+    const xValuesByPosition = [...xIndex.keys()];
+    return dataSeries.map((series) => {
+        const { spec, data, isStacked } = series;
+        if (!(0, specs_1.isAreaSeriesSpec)(spec) && !(0, specs_1.isLineSeriesSpec)(spec))
+            return series;
+        if (!spec.fit && isContinuous && !isStacked)
+            return series;
+        const gapEndsOnly = !spec.fit;
+        // xIndex holds every x of every series
+        const positions = data.map(({ x }) => xIndex.get(x)).sort((a, b) => a - b);
+        positions.push(xIndex.size);
+        let filledData;
+        let gapStart = 0;
+        for (const position of positions) {
+            for (let missing = gapStart; missing < position; missing++) {
+                if (gapEndsOnly && missing > gapStart)
+                    missing = position - 1;
+                // missing < xIndex.size
+                const missingValue = xValuesByPosition[missing];
+                (filledData ??= data.slice()).push({
+                    x: missingValue,
+                    y1: null,
+                    y0: null,
+                    initialY0: null,
+                    initialY1: null,
+                    mark: null,
+                    datum: undefined,
+                    filled: {
+                        x: missingValue,
+                    },
+                });
+            }
+            gapStart = position + 1;
+        }
+        return filledData ? { ...series, data: filledData } : series;
+    });
 }
 
 
@@ -69528,25 +69691,13 @@ __webpack_unused_export__ = ({ value: true });
 exports.applyFitFunctionToDataSeries = void 0;
 const fit_function_1 = __webpack_require__(/*! ./fit_function */ "../packages/charts/src/chart_types/xy_chart/utils/fit_function.ts");
 const specs_1 = __webpack_require__(/*! ./specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
-const spec_1 = __webpack_require__(/*! ../state/utils/spec */ "../packages/charts/src/chart_types/xy_chart/state/utils/spec.ts");
 /** @internal */
-const applyFitFunctionToDataSeries = (dataSeries, seriesSpecs, xScaleType) => {
-    return dataSeries.map(({ specId, data, ...rest }) => {
-        const spec = (0, spec_1.getSpecsById)(seriesSpecs, specId);
-        if (spec !== null &&
-            spec !== undefined &&
-            ((0, specs_1.isAreaSeriesSpec)(spec) || (0, specs_1.isLineSeriesSpec)(spec)) &&
-            spec.fit !== undefined) {
-            const fittedData = (0, fit_function_1.fitFunction)(data, spec.fit, xScaleType);
-            return {
-                specId,
-                ...rest,
-                data: fittedData,
-            };
-        }
-        return { specId, data, ...rest };
-    });
-};
+const applyFitFunctionToDataSeries = (dataSeries, xScaleType) => dataSeries.map((series) => {
+    const { spec, data } = series;
+    if ((!(0, specs_1.isAreaSeriesSpec)(spec) && !(0, specs_1.isLineSeriesSpec)(spec)) || spec.fit === undefined)
+        return series;
+    return { ...series, data: (0, fit_function_1.fitFunction)(data, spec.fit, xScaleType, true) };
+});
 exports.applyFitFunctionToDataSeries = applyFitFunctionToDataSeries;
 
 
@@ -70436,29 +70587,28 @@ function finiteOrNull(value, nonNumericValues) {
     return finite ? candidateNumber : null;
 }
 /** Sorts data based on order of xValues */
-const getSortedDataSeries = (dataSeries, xValues, xScaleType) => {
-    const xSortPredicate = (0, stacked_series_utils_1.datumXSortPredicate)(xScaleType, xValues);
+const getSortedDataSeries = (dataSeries, xIndex, xScaleType) => {
+    const xSortPredicate = (0, stacked_series_utils_1.datumXSortPredicate)(xScaleType, xIndex);
     return dataSeries.map(({ data, ...rest }) => ({
         ...rest,
         data: data.slice().sort(xSortPredicate),
     }));
 };
 /** @internal */
-function getFormattedDataSeries(seriesSpecs, availableDataSeries, xValues, xScaleType) {
+function getFormattedDataSeries(availableDataSeries, xIndex, xScaleType) {
     // apply fit function to every data series
-    const fittedDataSeries = (0, fit_function_utils_1.applyFitFunctionToDataSeries)(getSortedDataSeries(availableDataSeries, xValues, xScaleType), seriesSpecs, xScaleType);
+    const fittedDataSeries = (0, fit_function_utils_1.applyFitFunctionToDataSeries)(getSortedDataSeries(availableDataSeries, xIndex, xScaleType), xScaleType);
     // apply fitting for stacked DataSeries by YGroup, Panel
-    const stackedDataSeries = fittedDataSeries.filter(({ spec }) => (0, y_domain_1.isStackedSpec)(spec));
+    const stackedDataSeries = fittedDataSeries.filter(({ isStacked }) => isStacked);
     const stackedGroups = (0, group_data_series_1.groupBy)(stackedDataSeries, ['smHorizontalAccessorValue', 'smVerticalAccessorValue', 'groupId'], true);
-    const fittedAndStackedDataSeries = stackedGroups.reduce((acc, dataSeries) => {
+    const fittedAndStackedDataSeries = stackedGroups.flatMap((dataSeries) => {
         if (!dataSeries[0])
-            return acc;
+            return [];
         const [{ stackMode, seriesType }] = dataSeries;
-        const formatted = (0, stacked_series_utils_1.formatStackedDataSeriesValues)(dataSeries, xValues, seriesType, stackMode);
-        return [...acc, ...formatted];
-    }, []);
+        return (0, stacked_series_utils_1.formatStackedDataSeriesValues)(dataSeries, xIndex, seriesType, stackMode);
+    });
     // get already fitted non stacked dataSeries
-    const nonStackedDataSeries = fittedDataSeries.filter(({ spec }) => !(0, y_domain_1.isStackedSpec)(spec));
+    const nonStackedDataSeries = fittedDataSeries.filter(({ isStacked }) => !isStacked);
     return [...fittedAndStackedDataSeries, ...nonStackedDataSeries].sort((a, b) => a.sortOrder - b.sortOrder);
 }
 /** @internal */
@@ -70885,97 +71035,63 @@ var __webpack_unused_export__;
 __webpack_unused_export__ = ({ value: true });
 exports.datumXSortPredicate = void 0;
 exports.formatStackedDataSeriesValues = formatStackedDataSeriesValues;
-const d3_shape_1 = __webpack_require__(/*! d3-shape */ "../node_modules/d3-shape/src/index.js");
 const diverging_offsets_1 = __webpack_require__(/*! ./diverging_offsets */ "../packages/charts/src/chart_types/xy_chart/utils/diverging_offsets.ts");
 const specs_1 = __webpack_require__(/*! ./specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
 const constants_1 = __webpack_require__(/*! ../../../scales/constants */ "../packages/charts/src/scales/constants.ts");
-const common_1 = __webpack_require__(/*! ../../../utils/common */ "../packages/charts/src/utils/common.tsx");
 const logger_1 = __webpack_require__(/*! ../../../utils/logger */ "../packages/charts/src/utils/logger.ts");
 /** @internal */
-const datumXSortPredicate = (xScaleType, sortedXValues) => {
-    let xValueIndices;
-    return (a, b) => {
-        if (xScaleType === constants_1.ScaleType.Ordinal || typeof a.x === 'string' || typeof b.x === 'string') {
-            if (!xValueIndices && sortedXValues) {
-                xValueIndices = new Map();
-                for (const xValue of sortedXValues)
-                    xValueIndices.set(xValue, xValueIndices.size);
-            }
-            return xValueIndices ? (xValueIndices.get(a.x) ?? -1) - (xValueIndices.get(b.x) ?? -1) : 0;
-        }
-        return a.x - b.x;
-    };
+const datumXSortPredicate = (xScaleType, xIndex) => (a, b) => {
+    if (xScaleType === constants_1.ScaleType.Ordinal || typeof a.x === 'string' || typeof b.x === 'string') {
+        return xIndex ? (xIndex.get(a.x) ?? -1) - (xIndex.get(b.x) ?? -1) : 0;
+    }
+    return a.x - b.x;
 };
 exports.datumXSortPredicate = datumXSortPredicate;
 /** @internal */
-function formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMode) {
+function formatStackedDataSeriesValues(dataSeries, xIndex, seriesType, stackMode) {
+    const columns = Array.from({ length: xIndex.size }, () => []);
+    const series = [];
+    const values = [];
+    const datums = [];
+    const seriesEnds = [];
     let hasNegative = false;
     let hasPositive = false;
-    // `fillSeries` pads every stacked series to one datum per x value and `getSortedDataSeries` puts
-    // them in `xValues` order, so `data[j]` is normally the datum at the jth x: index instead of look up
-    const xArray = [...xValues];
-    const isDense = dataSeries.every(({ data }) => data.length === xArray.length && data.every((d, j) => d.x === xArray[j]));
-    // group data series by x values
-    const xMap = new Map();
-    for (const xValue of xValues) {
-        xMap.set(xValue, new Map());
-    }
-    const filteredKeys = new Set();
-    for (const { key, data, isFiltered } of dataSeries) {
-        if (isFiltered)
-            filteredKeys.add(key);
+    for (let seriesIndex = 0; seriesIndex < dataSeries.length; seriesIndex++) {
+        const { data, isFiltered } = dataSeries[seriesIndex];
+        let previousPosition = -1;
         for (const datum of data) {
+            // xIndex holds every x of every series, so xPosition and columns[xPosition] are defined
+            const xPosition = xIndex.get(datum.x);
+            if (xPosition === previousPosition)
+                continue;
+            previousPosition = xPosition;
             const y1 = datum.y1 ?? 0;
             if (y1 > 0)
                 hasPositive = true;
             if (y1 < 0)
                 hasNegative = true;
-            if (isDense)
-                continue;
-            const seriesMap = xMap.get(datum.x);
-            if (!seriesMap || seriesMap.has(key))
-                continue;
-            seriesMap.set(key, datum);
+            columns[xPosition].push(datums.length);
+            series.push(seriesIndex);
+            values.push(isFiltered ? 0 : y1);
+            datums.push(datum);
         }
+        seriesEnds.push(datums.length);
     }
     if (hasNegative && hasPositive && seriesType === specs_1.SeriesType.Area) {
         logger_1.Logger.warn(`Area series should be avoided with dataset containing positive and negative values. Use a bar series instead.`);
     }
-    const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
-    const stack = (0, d3_shape_1.stack)()
-        .keys(dataSeries.map((_, index) => index))
-        .value(([, indexMap], seriesIndex, xIndex) => {
-        const series = dataSeries[seriesIndex];
-        if (!series || filteredKeys.has(series.key))
-            return 0; // hides filtered series while maintaining their existence
-        const datum = isDense ? series.data[xIndex] : indexMap.get(series.key);
-        return datum ? datum.y1 ?? 0 : 0;
-    })
-        .order(d3_shape_1.stackOrderNone)
-        .offset(stackOffset)(xMap);
-    /**
-     * Due to floating point errors, values computed on a stack
-     * could falls out of the current defined domain boundaries.
-     * This in particular cause issues with percent stack, where the domain
-     * is hardcoded to [0,1] and some value can fall outside that domain.
-     */
-    const clampStackedValue = stackMode === specs_1.StackMode.Percentage ? (value) => (0, common_1.clamp)(value, 0, 1) : (value) => value;
+    const { y0, y1 } = (0, diverging_offsets_1.stackCells)(columns, series, values, stackMode, hasNegative && !hasPositive);
     const formattedDataSeries = [];
-    for (const stackedSeries of stack) {
-        const dataSeriesProps = dataSeries[stackedSeries.key];
-        if (!dataSeriesProps)
-            continue;
-        const { key, data: seriesData } = dataSeriesProps;
+    let cell = 0;
+    for (let seriesIndex = 0; seriesIndex < dataSeries.length; seriesIndex++) {
         const data = [];
-        let xIndex = 0;
-        for (const row of stackedSeries) {
-            const d = isDense ? seriesData[xIndex++] : row.data[1].get(key);
-            if (!d || d.x === undefined || d.x === null)
-                continue;
+        for (const seriesEnd = seriesEnds[seriesIndex]; cell < seriesEnd; cell++) {
+            // cell < seriesEnd <= datums.length, the length of y0 and y1 too
+            const d = datums[cell];
             data.push({
                 x: d.x,
-                y1: clampStackedValue(row[1]),
-                y0: clampStackedValue(row[0]),
+                y1: y1[cell],
+                y0: y0[cell],
                 initialY0: d.initialY0,
                 initialY1: d.initialY1,
                 mark: d.mark,
@@ -70984,26 +71100,11 @@ function formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMod
             });
         }
         formattedDataSeries.push({
-            ...dataSeriesProps,
+            ...dataSeries[seriesIndex],
             data,
         });
     }
     return formattedDataSeries;
-}
-function getOffsetBasedOnStackMode(stackMode, onlyNegative = false) {
-    // TODO: fix diverging wiggle offset for negative polarity data
-    if (onlyNegative && stackMode === specs_1.StackMode.Wiggle)
-        return d3_shape_1.stackOffsetWiggle;
-    switch (stackMode) {
-        case specs_1.StackMode.Percentage:
-            return diverging_offsets_1.divergingPercentage;
-        case specs_1.StackMode.Silhouette:
-            return diverging_offsets_1.divergingSilhouette;
-        case specs_1.StackMode.Wiggle:
-            return diverging_offsets_1.divergingWiggle;
-        default:
-            return diverging_offsets_1.diverging;
-    }
 }
 
 
@@ -108068,6 +108169,7 @@ const map = {
 	"./mixed/6_fitting_stacked.story.tsx": "./stories/mixed/6_fitting_stacked.story.tsx",
 	"./mixed/7_marks.story.tsx": "./stories/mixed/7_marks.story.tsx",
 	"./mixed/8_polarized_stacked.story.tsx": "./stories/mixed/8_polarized_stacked.story.tsx",
+	"./mixed/9_fitting_sparse.story.tsx": "./stories/mixed/9_fitting_sparse.story.tsx",
 	"./mixed/mixed.stories.tsx": "./stories/mixed/mixed.stories.tsx",
 	"./mosaic/10_mosaic_simple.story.tsx": "./stories/mosaic/10_mosaic_simple.story.tsx",
 	"./mosaic/20_mosaic_with_other.story.tsx": "./stories/mosaic/20_mosaic_with_other.story.tsx",
@@ -108090,6 +108192,7 @@ const map = {
 	"./scales/7_log_scale_options.story.tsx": "./stories/scales/7_log_scale_options.story.tsx",
 	"./scales/8_linear_binary.story.tsx": "./stories/scales/8_linear_binary.story.tsx",
 	"./scales/scales.stories.tsx": "./stories/scales/scales.stories.tsx",
+	"./small_multiples/10_sparse_stacked.story.tsx": "./stories/small_multiples/10_sparse_stacked.story.tsx",
 	"./small_multiples/2_vertical_areas.story.tsx": "./stories/small_multiples/2_vertical_areas.story.tsx",
 	"./small_multiples/3_grid_lines.story.tsx": "./stories/small_multiples/3_grid_lines.story.tsx",
 	"./small_multiples/4_horizontal_bars.story.tsx": "./stories/small_multiples/4_horizontal_bars.story.tsx",
@@ -108438,4 +108541,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.432215c7.iframe.bundle.js.map
+//# sourceMappingURL=main.c3bf9b26.iframe.bundle.js.map
