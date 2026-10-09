@@ -22594,18 +22594,6 @@ exports[`Series Can stack simple dataseries with scale to extent 1`] = `
         "y1": 2,
       },
       {
-        "datum": undefined,
-        "filled": {
-          "x": 3,
-        },
-        "initialY0": null,
-        "initialY1": null,
-        "mark": null,
-        "x": 3,
-        "y0": 0,
-        "y1": 0,
-      },
-      {
         "datum": {
           "g": "a",
           "x": 4,
@@ -22650,18 +22638,6 @@ exports[`Series Can stack simple dataseries with scale to extent 1`] = `
         "y1": 22,
       },
       {
-        "datum": undefined,
-        "filled": {
-          "x": 2,
-        },
-        "initialY0": null,
-        "initialY1": null,
-        "mark": null,
-        "x": 2,
-        "y0": 2,
-        "y1": 2,
-      },
-      {
         "datum": {
           "g": "b",
           "x": 3,
@@ -22674,18 +22650,6 @@ exports[`Series Can stack simple dataseries with scale to extent 1`] = `
         "x": 3,
         "y0": 0,
         "y1": 23,
-      },
-      {
-        "datum": undefined,
-        "filled": {
-          "x": 4,
-        },
-        "initialY0": null,
-        "initialY1": null,
-        "mark": null,
-        "x": 4,
-        "y0": 4,
-        "y1": 4,
       },
     ],
     "insertOrder": 1,
@@ -22737,18 +22701,6 @@ exports[`Series Can stack simple dataseries with scale to extent with y0 1`] = `
         "x": 2,
         "y0": 0,
         "y1": 3,
-      },
-      {
-        "datum": undefined,
-        "filled": {
-          "x": 3,
-        },
-        "initialY0": null,
-        "initialY1": null,
-        "mark": null,
-        "x": 3,
-        "y0": 0,
-        "y1": 0,
       },
       {
         "datum": {
@@ -22891,18 +22843,6 @@ exports[`Series Can stack simple dataseries with y0 1`] = `
         "x": 2,
         "y0": 0,
         "y1": 3,
-      },
-      {
-        "datum": undefined,
-        "filled": {
-          "x": 3,
-        },
-        "initialY0": null,
-        "initialY1": null,
-        "mark": null,
-        "x": 3,
-        "y0": 0,
-        "y1": 0,
       },
       {
         "datum": {

@@ -101,6 +101,12 @@ test.describe('Area series stories', () => {
     );
   });
 
+  test('small multiples with sparse stacked areas', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/small-multiples-alpha--sparse-stacked&knob-series type=area',
+    );
+  });
+
   test('always render isolated points on stacked areas', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/line-chart--isolated-data-points&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-enable fit function=&knob-series type=area&knob-stack areas=true&knob-max data points=28&knob-default point radius=3&knob-point visibility=never&knob-point visibility min distance=40&knob-visible series[0]=A&knob-visible series[1]=B&knob-point shape=circle',

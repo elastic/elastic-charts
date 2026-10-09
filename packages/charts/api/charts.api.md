@@ -248,7 +248,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "integersOnly" | "gridLine" | "tickFormat" | "labelFormat" | "ticks" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "groupId" | "position" | "hide" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "tickFormat" | "style" | "title" | "maximumFractionDigits" | "domain" | "integersOnly" | "gridLine" | "labelFormat" | "ticks" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -2780,7 +2780,7 @@ export type Ratio = number;
 export type RawTextGetter = (node: ShapeTreeNode) => string;
 
 // @public (undocumented)
-export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "zIndex" | "groupId" | "annotationType" | "outside", "style" | "offset" | "customTooltip" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
+export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "groupId" | "zIndex" | "annotationType" | "outside", "style" | "offset" | "customTooltip" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
 
 // @public
 export interface RectAnnotationDatum {
@@ -3769,7 +3769,7 @@ export type WeightFn = $Values<typeof WeightFn>;
 export type WillRenderListener = () => void;
 
 // @alpha
-export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontStyle" | "fontWeight" | "fontFamily" | "padding" | "minFontSize" | "maxFontSize" | "exponent" | "startAngle" | "endAngle" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
+export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontFamily" | "fontStyle" | "fontWeight" | "padding" | "minFontSize" | "maxFontSize" | "exponent" | "startAngle" | "endAngle" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
 
 // @public
 export type WordCloudElementEvent = [model: WordModel, seriesIdentifier: SeriesIdentifier];

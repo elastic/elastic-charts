@@ -6,63 +6,55 @@
  * Side Public License, v 1.
  */
 
-import type { DataSeries } from './series';
-import type { BasicSeriesSpec } from './specs';
+import type { DataSeries, DataSeriesDatum } from './series';
 import { isLineSeriesSpec, isAreaSeriesSpec } from './specs';
 import { ScaleType } from '../../../scales/constants';
 
 /**
  * @internal
  */
-export function fillSeries(
+export function markGaps(
   dataSeries: DataSeries[],
-  xValues: Set<string | number>,
+  xIndex: Map<string | number, number>,
   groupScaleType: ScaleType,
 ): DataSeries[] {
-  return dataSeries.map((series) => {
-    const { spec, data, isStacked } = series;
-
-    const noFillRequired = isXFillNotRequired(spec, groupScaleType, isStacked);
-    if (data.length === xValues.size || noFillRequired) {
-      return series;
-    }
-    const filledData: typeof data = [];
-    const missingValues = new Set(xValues);
-
-    data.forEach((datum) => {
-      filledData.push(datum);
-      missingValues.delete(datum.x);
-    });
-
-    const missingValuesArray = [...missingValues.values()];
-
-    missingValuesArray.forEach((missingValue) => {
-      filledData.push({
-        x: missingValue,
-        y1: null,
-        y0: null,
-        initialY0: null,
-        initialY1: null,
-        mark: null,
-        datum: undefined,
-        filled: {
-          x: missingValue,
-        },
-      });
-    });
-
-    return {
-      ...series,
-      data: filledData,
-    };
-  });
-}
-
-function isXFillNotRequired(spec: BasicSeriesSpec, groupScaleType: ScaleType, isStacked: boolean) {
-  const onlyNoFitAreaLine = (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && !spec.fit;
-  const onlyContinuous =
+  const isContinuous =
     groupScaleType === ScaleType.Linear ||
     groupScaleType === ScaleType.LinearBinary ||
     groupScaleType === ScaleType.Time;
-  return onlyNoFitAreaLine && onlyContinuous && !isStacked;
+  const xValuesByPosition = [...xIndex.keys()];
+  return dataSeries.map((series) => {
+    const { spec, data, isStacked } = series;
+
+    if (!isAreaSeriesSpec(spec) && !isLineSeriesSpec(spec)) return series;
+    if (!spec.fit && isContinuous && !isStacked) return series;
+    const gapEndsOnly = !spec.fit;
+    // xIndex holds every x of every series
+    const positions = data.map(({ x }) => xIndex.get(x)!).sort((a, b) => a - b);
+    positions.push(xIndex.size);
+    let filledData: DataSeriesDatum[] | undefined;
+    let gapStart = 0;
+    for (const position of positions) {
+      for (let missing = gapStart; missing < position; missing++) {
+        if (gapEndsOnly && missing > gapStart) missing = position - 1;
+        // missing < xIndex.size
+        const missingValue = xValuesByPosition[missing]!;
+        (filledData ??= data.slice()).push({
+          x: missingValue,
+          y1: null,
+          y0: null,
+          initialY0: null,
+          initialY1: null,
+          mark: null,
+          datum: undefined,
+          filled: {
+            x: missingValue,
+          },
+        });
+      }
+      gapStart = position + 1;
+    }
+
+    return filledData ? { ...series, data: filledData } : series;
+  });
 }

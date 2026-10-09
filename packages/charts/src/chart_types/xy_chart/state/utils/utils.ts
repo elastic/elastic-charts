@@ -33,7 +33,7 @@ import { renderBubble } from '../../rendering/bubble';
 import { renderLine } from '../../rendering/line';
 import { getAreaSeriesStyles, getLineSeriesStyles } from '../../rendering/line_area_style';
 import { defaultXYSeriesSort } from '../../utils/default_series_sort_fn';
-import { fillSeries } from '../../utils/fill_series';
+import { markGaps } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../../utils/scales';
@@ -125,10 +125,11 @@ export function computeSeriesDomains(
   // compute the x domain merging any custom domain
   const xDomain = mergeXDomain(scaleConfigs.x, xValues, locale, fallbackScale);
 
-  // fill series with missing x values
-  const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.type);
+  const xIndex = new Map<string | number, number>();
+  for (const x of xValues) xIndex.set(x, xIndex.size);
+  const gapMarkedDataSeries = markGaps(dataSeries, xIndex, xDomain.type);
 
-  const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.type);
+  const formattedDataSeries = getFormattedDataSeries(gapMarkedDataSeries, xIndex, xDomain.type);
   const annotationYValueMap = getAnnotationYValueMap(annotations, scaleConfigs.y);
   // let's compute the yDomains after computing all stacked values
   const yDomains = mergeYDomain(scaleConfigs.y, formattedDataSeries, annotationYValueMap);

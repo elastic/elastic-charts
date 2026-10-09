@@ -8,7 +8,7 @@
 
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
-import type { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesType, StackMode } from './specs';
+import type { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesType, StackMode } from './specs';
 import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
 import type { Color } from '../../../common/colors';
 import { Colors } from '../../../common/colors';
@@ -317,10 +317,10 @@ function finiteOrNull(value: unknown, nonNumericValues: Map<unknown, number>): n
 /** Sorts data based on order of xValues */
 const getSortedDataSeries = (
   dataSeries: DataSeries[],
-  xValues: Set<string | number>,
+  xIndex: Map<string | number, number>,
   xScaleType: ScaleType,
 ): DataSeries[] => {
-  const xSortPredicate = datumXSortPredicate(xScaleType, xValues);
+  const xSortPredicate = datumXSortPredicate(xScaleType, xIndex);
   return dataSeries.map(({ data, ...rest }) => ({
     ...rest,
     data: data.slice().sort(xSortPredicate),
@@ -329,34 +329,31 @@ const getSortedDataSeries = (
 
 /** @internal */
 export function getFormattedDataSeries(
-  seriesSpecs: SeriesSpecs,
   availableDataSeries: DataSeries[],
-  xValues: Set<string | number>,
+  xIndex: Map<string | number, number>,
   xScaleType: ScaleType,
 ): DataSeries[] {
   // apply fit function to every data series
   const fittedDataSeries = applyFitFunctionToDataSeries(
-    getSortedDataSeries(availableDataSeries, xValues, xScaleType),
-    seriesSpecs,
+    getSortedDataSeries(availableDataSeries, xIndex, xScaleType),
     xScaleType,
   );
 
   // apply fitting for stacked DataSeries by YGroup, Panel
-  const stackedDataSeries = fittedDataSeries.filter(({ spec }) => isStackedSpec(spec));
+  const stackedDataSeries = fittedDataSeries.filter(({ isStacked }) => isStacked);
   const stackedGroups = groupBy<DataSeries>(
     stackedDataSeries,
     ['smHorizontalAccessorValue', 'smVerticalAccessorValue', 'groupId'],
     true,
   );
 
-  const fittedAndStackedDataSeries = stackedGroups.reduce<DataSeries[]>((acc, dataSeries) => {
-    if (!dataSeries[0]) return acc;
+  const fittedAndStackedDataSeries = stackedGroups.flatMap((dataSeries) => {
+    if (!dataSeries[0]) return [];
     const [{ stackMode, seriesType }] = dataSeries;
-    const formatted = formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMode);
-    return [...acc, ...formatted];
-  }, []);
+    return formatStackedDataSeriesValues(dataSeries, xIndex, seriesType, stackMode);
+  });
   // get already fitted non stacked dataSeries
-  const nonStackedDataSeries = fittedDataSeries.filter(({ spec }) => !isStackedSpec(spec));
+  const nonStackedDataSeries = fittedDataSeries.filter(({ isStacked }) => !isStacked);
 
   return [...fittedAndStackedDataSeries, ...nonStackedDataSeries].sort((a, b) => a.sortOrder - b.sortOrder);
 }
