@@ -7,22 +7,16 @@
  */
 
 import type { CustomCommandStep } from '../utils';
-import { createStep, commandStepDefaults, bkEnv } from '../utils';
+import { createStep, commandStepDefaults } from '../utils';
 
 export const ghpDeployStep = createStep<CustomCommandStep>(() => {
-  const isMainBranch = bkEnv.isMainBranch;
-
   return {
     ...commandStepDefaults,
     label: ':github: Deploy - GitHub Pages',
     key: 'deploy_ghp',
     ignoreForced: true,
-    skip: isMainBranch ? false : 'Not target branch',
+    skip: 'Public GitHub Pages publishing is handled by the release workflow',
     depends_on: ['build_docs', 'build_storybook'],
     commands: ['npx ts-node .buildkite/scripts/steps/ghp_deploy.ts'],
-    env: {
-      // ignore check run reporting when not main
-      ECH_CHECK_ID: isMainBranch ? 'deploy_ghp' : undefined,
-    },
   };
 });
