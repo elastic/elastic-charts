@@ -1,3 +1,20 @@
+# [73.3.0](https://github.com/elastic/elastic-charts/compare/v73.2.5...v73.3.0) (2026-10-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @playwright/test to ^1.63.0 ([#2894](https://github.com/elastic/elastic-charts/issues/2894)) ([c0e93f2](https://github.com/elastic/elastic-charts/commit/c0e93f24091cccd21249895ac864f5998382a402))
+
+
+### Features
+
+* **partition:** add fill label alignment options for treemap and mosaic ([#2912](https://github.com/elastic/elastic-charts/issues/2912)) ([996182f](https://github.com/elastic/elastic-charts/commit/996182f9f9469f576b07326e3c490d0e5187a084))
+
+
+### Performance Improvements
+
+* **xy:** stack sparse series without densifying them ([#2916](https://github.com/elastic/elastic-charts/issues/2916)) ([cadaafb](https://github.com/elastic/elastic-charts/commit/cadaafb8efae9944670226b1e6f5fe634fddd759))
+
 ## [73.2.5](https://github.com/elastic/elastic-charts/compare/v73.2.4...v73.2.5) (2026-10-02)
 
 
