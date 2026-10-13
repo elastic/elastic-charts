@@ -69,6 +69,31 @@ describe('Series', () => {
 
     expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });
+  test('Can split tuple dataset with numeric accessors into 1 series', () => {
+    const splitSeries = splitSeriesDataByAccessors(
+      MockSeriesSpec.line({
+        id: 'spec1',
+        data: [
+          [0, 1],
+          [1, 2],
+          [2, 3],
+        ],
+        xAccessor: 0,
+        yAccessors: [1],
+      }),
+      new Map(),
+    );
+    const [series] = [...splitSeries.dataSeries.values()];
+    expect(splitSeries.dataSeries.size).toBe(1);
+    expect(splitSeries.xValues).toEqual([0, 1, 2]);
+    expect(series?.data).toHaveLength(3);
+    expect(series?.key).toBe('groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}');
+    expect(series?.data.map(({ x, y1 }) => [x, y1])).toEqual([
+      [0, 1],
+      [1, 2],
+      [2, 3],
+    ]);
+  });
   test('Can split dataset into 1Y1G series', () => {
     const splitSeries = splitSeriesDataByAccessors(
       MockSeriesSpec.bar({
