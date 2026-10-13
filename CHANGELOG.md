@@ -1,3 +1,48 @@
+# [73.3.0](https://github.com/elastic/elastic-charts/compare/v73.2.5...v73.3.0) (2026-10-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @playwright/test to ^1.63.0 ([#2894](https://github.com/elastic/elastic-charts/issues/2894)) ([c0e93f2](https://github.com/elastic/elastic-charts/commit/c0e93f24091cccd21249895ac864f5998382a402))
+
+
+### Features
+
+* **partition:** add fill label alignment options for treemap and mosaic ([#2912](https://github.com/elastic/elastic-charts/issues/2912)) ([996182f](https://github.com/elastic/elastic-charts/commit/996182f9f9469f576b07326e3c490d0e5187a084))
+
+
+### Performance Improvements
+
+* **xy:** stack sparse series without densifying them ([#2916](https://github.com/elastic/elastic-charts/issues/2916)) ([cadaafb](https://github.com/elastic/elastic-charts/commit/cadaafb8efae9944670226b1e6f5fe634fddd759))
+
+## [73.2.5](https://github.com/elastic/elastic-charts/compare/v73.2.4...v73.2.5) (2026-10-02)
+
+
+### Bug Fixes
+
+* **bullet:** improve angular responsiveness ([#2896](https://github.com/elastic/elastic-charts/issues/2896)) ([07eca7b](https://github.com/elastic/elastic-charts/commit/07eca7b5ee796533e0f15b1c15eb1d907cf1a1f5)), closes [elastic/kibana#280034](https://github.com/elastic/kibana/issues/280034)
+
+## [73.2.4](https://github.com/elastic/elastic-charts/compare/v73.2.3...v73.2.4) (2026-09-30)
+
+## [73.2.3](https://github.com/elastic/elastic-charts/compare/v73.2.2...v73.2.3) (2026-09-30)
+
+
+### Bug Fixes
+
+* **build:** remove duplicate hashes from yarn.lock ([#2907](https://github.com/elastic/elastic-charts/issues/2907)) ([e796c9e](https://github.com/elastic/elastic-charts/commit/e796c9e6e67438ffa978b1a1eee1adc017d4ac83))
+
+## [73.2.2](https://github.com/elastic/elastic-charts/compare/v73.2.1...v73.2.2) (2026-09-29)
+
+
+### Bug Fixes
+
+* **theme:** align dark background color to Kibana dark mode ([#2895](https://github.com/elastic/elastic-charts/issues/2895)) ([bbe41a2](https://github.com/elastic/elastic-charts/commit/bbe41a2aebfbe6f0630bcb4e8f5242025a209bb9))
+
+
+### Performance Improvements
+
+* **chart:** extract scale calculation for multi-series and other improvements ([#2901](https://github.com/elastic/elastic-charts/issues/2901)) ([e4edb26](https://github.com/elastic/elastic-charts/commit/e4edb26a490880afc1fcca9f58109c8b399334cc))
+
 ## [73.2.1](https://github.com/elastic/elastic-charts/compare/v73.2.0...v73.2.1) (2026-09-18)
 
 

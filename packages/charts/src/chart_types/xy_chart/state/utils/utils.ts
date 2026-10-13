@@ -33,7 +33,7 @@ import { renderBubble } from '../../rendering/bubble';
 import { renderLine } from '../../rendering/line';
 import { getAreaSeriesStyles, getLineSeriesStyles } from '../../rendering/line_area_style';
 import { defaultXYSeriesSort } from '../../utils/default_series_sort_fn';
-import { fillSeries } from '../../utils/fill_series';
+import { markGaps } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../../utils/scales';
@@ -125,10 +125,11 @@ export function computeSeriesDomains(
   // compute the x domain merging any custom domain
   const xDomain = mergeXDomain(scaleConfigs.x, xValues, locale, fallbackScale);
 
-  // fill series with missing x values
-  const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.type);
+  const xIndex = new Map<string | number, number>();
+  for (const x of xValues) xIndex.set(x, xIndex.size);
+  const gapMarkedDataSeries = markGaps(dataSeries, xIndex, xDomain.type);
 
-  const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.type);
+  const formattedDataSeries = getFormattedDataSeries(gapMarkedDataSeries, xIndex, xDomain.type);
   const annotationYValueMap = getAnnotationYValueMap(annotations, scaleConfigs.y);
   // let's compute the yDomains after computing all stacked values
   const yDomains = mergeYDomain(scaleConfigs.y, formattedDataSeries, annotationYValueMap);
@@ -309,6 +310,7 @@ function renderGeometries(
     bubblePoints: 0,
   };
   const barsPadding = enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding;
+  const xScales = new Map<number, ScaleBand | ScaleContinuous>();
   // This var remains Infinity if we don't have points, or we just have a single point per series.
   // In this case the point should be visible if the visibility style is set to `auto`
   let globalMinPointsDistance = Infinity;
@@ -326,13 +328,18 @@ function renderGeometries(
     const barPanelKey = [ds.smVerticalAccessorValue, ds.smHorizontalAccessorValue].join('|');
     const barIndexOrder = barIndexOrderPerPanel[barPanelKey] ?? [];
     // compute x scale
-    const xScale = computeXScale({
-      xDomain,
-      totalBarsInCluster: barIndexOrder?.length ?? 0,
-      range: [0, isHorizontalRotation(chartRotation) ? smHScale.bandwidth : smVScale.bandwidth],
-      barsPadding,
-      enableHistogramMode,
-    });
+    const totalBarsInCluster = barIndexOrder.length;
+    let xScale = xScales.get(totalBarsInCluster);
+    if (!xScale) {
+      xScale = computeXScale({
+        xDomain,
+        totalBarsInCluster,
+        range: [0, isHorizontalRotation(chartRotation) ? smHScale.bandwidth : smVScale.bandwidth],
+        barsPadding,
+        enableHistogramMode,
+      });
+      xScales.set(totalBarsInCluster, xScale);
+    }
 
     const { stackMode } = ds;
 
@@ -380,13 +387,13 @@ function renderGeometries(
         color,
         isBandedSpec(spec),
         barSeriesStyle,
+        geometriesIndex,
         displayValueSettings,
         spec.styleAccessor,
         stackMode,
       );
-      geometriesIndex.merge(renderedBars.indexedGeometryMap);
-      bars.push({ panel, value: renderedBars.barGeometries });
-      geometriesCounts.bars += renderedBars.barGeometries.length;
+      bars.push({ panel, value: renderedBars });
+      geometriesCounts.bars += renderedBars.length;
     } else if (isBubbleSeriesSpec(spec)) {
       const bubbleShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
       const bubbleSeriesStyle = spec.bubbleSeriesStyle

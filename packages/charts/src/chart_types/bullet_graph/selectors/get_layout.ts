@@ -31,6 +31,7 @@ import {
   getMaxTargetValueAssent,
   getTextAscentHeight,
 } from '../theme';
+import { getMinAngularChartSize } from '../utils/angular';
 
 /** @internal */
 export interface BulletHeaderLayout {
@@ -66,21 +67,16 @@ export interface BulletLayout {
   shouldRenderMetric: boolean;
 }
 
-const minChartHeights: Record<BulletSubtype, number> = {
-  [BulletSubtype.horizontal]: 50,
-  [BulletSubtype.vertical]: 100,
-  [BulletSubtype.circle]: 160,
-  [BulletSubtype.halfCircle]: 160,
-  [BulletSubtype.twoThirdsCircle]: 160,
+const minLinearChartSizes: Record<Extract<BulletSubtype, 'horizontal' | 'vertical'>, Size> = {
+  [BulletSubtype.horizontal]: { width: 140, height: 50 },
+  [BulletSubtype.vertical]: { width: 140, height: 100 },
 };
 
-const minChartWidths: Record<BulletSubtype, number> = {
-  [BulletSubtype.horizontal]: 140,
-  [BulletSubtype.vertical]: 140,
-  [BulletSubtype.circle]: 160,
-  [BulletSubtype.halfCircle]: 160,
-  [BulletSubtype.twoThirdsCircle]: 160,
-};
+/** Smallest graph area, header excluded, that the subtype can be rendered in */
+const getMinChartSize = (subtype: BulletSubtype): Size =>
+  subtype === BulletSubtype.horizontal || subtype === BulletSubtype.vertical
+    ? minLinearChartSizes[subtype]
+    : getMinAngularChartSize(subtype);
 
 /** @internal */
 export const getLayout = createCustomCachedSelector(
@@ -98,6 +94,7 @@ export const getLayout = createCustomCachedSelector(
       height: panel.height - HEADER_PADDING.top - HEADER_PADDING.bottom,
     };
 
+    const minChartSize = getMinChartSize(spec.subtype);
     const titleFont = getTitleFont(bulletGraph.fontFamily);
     const subtitleFont = getSubtitleFont(bulletGraph.fontFamily);
     const valueFont = getValueFont(bulletGraph.fontFamily);
@@ -245,8 +242,8 @@ export const getLayout = createCustomCachedSelector(
               maxTitleRows,
               maxSubtitleRows,
               headerHeight,
-              minHeight: headerHeight + minChartHeights[spec.subtype],
-              minWidth: minChartWidths[spec.subtype],
+              minHeight: headerHeight + minChartSize.height,
+              minWidth: minChartSize.width,
             };
           },
           { maxTitleRows: 0, maxSubtitleRows: 0, multiline: false, headerHeight: 0, minHeight: 0, minWidth: 0 },

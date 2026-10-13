@@ -125,7 +125,7 @@ test.describe('Bullet stories', () => {
   pwEach.describe([
     { subtype: 'vertical', width: '140px' },
     { subtype: 'horizontal', height: '85px' },
-    { subtype: 'two-thirds-circle', height: '195px' },
+    { subtype: 'two-thirds-circle', width: '200px', height: '140px' },
   ])(
     ({ subtype }) => `Bullet as Metric - ${subtype}`,
     ({ subtype, height, width }) => {

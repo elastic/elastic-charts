@@ -58,6 +58,11 @@ test.describe('Line series stories', () => {
       );
     });
   });
+  test('small multiples with sparse stacked lines', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/small-multiples-alpha--sparse-stacked&knob-series type=line',
+    );
+  });
   test.describe('Points auto visibility', () => {
     test('show points when space between point is enough', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
