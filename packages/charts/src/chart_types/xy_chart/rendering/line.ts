@@ -64,6 +64,7 @@ export function renderLine(
     hasY0Accessors,
     markSizeOptions,
     false,
+    style.pointVisibilityMinDistance,
     pointStyleAccessor,
   );
 

@@ -356,9 +356,9 @@ describe('Rendering points - line', () => {
       const {
         value: { points },
       } = lines[0]!;
-      // all the points minus the undefined ones on a log scale
-      expect(points.length).toBe(7);
-      // all the points including null geometries
+      // auto + dense: hidden points are not materialized; none of these are isolated
+      expect(points.length).toBe(0);
+      // tooltip index still covers every in-domain x, including null/zero
       expect(geometriesIndex.size).toEqual(9);
       const nullIndexdGeometry = geometriesIndex.find(2, 10);
       expect(nullIndexdGeometry).toHaveLength(1);

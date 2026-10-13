@@ -321,7 +321,7 @@ describe('Chart State utils', () => {
 
       expect(geometries.geometriesCounts.bars).toBe(8);
       expect(geometries.geometriesCounts.linePoints).toBe(8);
-      expect(geometries.geometriesCounts.areasPoints).toBe(8);
+      expect(geometries.geometriesCounts.areasPoints).toBe(0);
       expect(geometries.geometriesCounts.lines).toBe(2);
       expect(geometries.geometriesCounts.areas).toBe(2);
     });
@@ -433,7 +433,7 @@ describe('Chart State utils', () => {
 
       expect(geometries.geometriesCounts.bars).toBe(8);
       expect(geometries.geometriesCounts.linePoints).toBe(8);
-      expect(geometries.geometriesCounts.areasPoints).toBe(8);
+      expect(geometries.geometriesCounts.areasPoints).toBe(0);
       expect(geometries.geometriesCounts.lines).toBe(2);
       expect(geometries.geometriesCounts.areas).toBe(2);
     });
@@ -513,7 +513,7 @@ describe('Chart State utils', () => {
 
       expect(geometries.geometriesCounts.bars).toBe(0);
       expect(geometries.geometriesCounts.linePoints).toBe(0);
-      expect(geometries.geometriesCounts.areasPoints).toBe(24);
+      expect(geometries.geometriesCounts.areasPoints).toBe(0);
       expect(geometries.geometriesCounts.lines).toBe(0);
       expect(geometries.geometriesCounts.areas).toBe(6);
     });

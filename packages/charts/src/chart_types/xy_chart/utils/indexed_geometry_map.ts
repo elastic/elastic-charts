@@ -26,11 +26,17 @@ export const GeometryType = Object.freeze({
 /** @internal */
 export type GeometryType = $Values<typeof GeometryType>;
 
+type LazyLinearFinder = (x: number | string) => IndexedGeometry[];
+
 /** @internal */
 export class IndexedGeometryMap {
   private linearMap = new IndexedGeometryLinearMap();
 
   private spatialMap = new IndexedGeometrySpatialMap();
+
+  private lazyLinearFinders: LazyLinearFinder[] = [];
+
+  private lazyLinearKeys = new Set<number | string>();
 
   /**
    * Returns triangulation instance to render spatial grid
@@ -41,12 +47,30 @@ export class IndexedGeometryMap {
     return this.spatialMap.triangulation(bounds);
   }
 
+  /**
+   * Register x values whose point geometries are built only when find() runs.
+   * Used when line/area points are not painted (visible never, or auto + dense).
+   */
+  addLazyLinearSource(keys: Iterable<number | string>, find: LazyLinearFinder) {
+    Array.from(keys, (key) => this.lazyLinearKeys.add(key));
+    this.lazyLinearFinders.push(find);
+  }
+
   keys(): Array<number | string> {
-    return [...this.linearMap.keys(), ...this.spatialMap.keys()];
+    if (this.lazyLinearKeys.size === 0) {
+      return [...this.linearMap.keys(), ...this.spatialMap.keys()];
+    }
+    const keys = new Set<number | string>(this.linearMap.keys());
+    this.lazyLinearKeys.forEach((key) => keys.add(key));
+    this.spatialMap.keys().forEach((key) => keys.add(key));
+    return [...keys];
   }
 
   get size(): number {
-    return this.linearMap.size + this.spatialMap.size;
+    if (this.lazyLinearKeys.size === 0) {
+      return this.linearMap.size + this.spatialMap.size;
+    }
+    return this.keys().length;
   }
 
   set(geometry: IndexedGeometry, type: GeometryType = GeometryType.linear) {
@@ -70,7 +94,9 @@ export class IndexedGeometryMap {
     }
 
     const spatialValues = point === undefined ? [] : this.spatialMap.find(point, pointBuffer);
-    return [...this.linearMap.find(x), ...spatialValues].filter(
+    const lazyValues =
+      x === null || this.lazyLinearFinders.length === 0 ? [] : this.lazyLinearFinders.flatMap((findFn) => findFn(x));
+    return [...this.linearMap.find(x), ...lazyValues, ...spatialValues].filter(
       ({ seriesIdentifier: { smHorizontalAccessorValue, smVerticalAccessorValue } }) =>
         (isNil(smVerticalValue) || smVerticalAccessorValue === smVerticalValue) &&
         (isNil(smHorizontalValue) || smHorizontalAccessorValue === smHorizontalValue),
@@ -100,6 +126,8 @@ export class IndexedGeometryMap {
           this.linearMap.set(geometry);
         }
       });
+      this.lazyLinearFinders.push(...indexedMap.lazyLinearFinders);
+      indexedMap.lazyLinearKeys.forEach((key) => this.lazyLinearKeys.add(key));
     }
   }
 }

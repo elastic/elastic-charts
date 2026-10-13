@@ -97,6 +97,7 @@ export function renderArea(
     isBandedSpec,
     markSizeOptions,
     false,
+    style.pointVisibilityMinDistance,
     pointStyleAccessor,
   );
 

@@ -41,6 +41,7 @@ export function renderPoints(
   isBandedSpec: boolean,
   markSizeOptions: MarkSizeOptions,
   useSpatialIndex: boolean,
+  pointVisibilityMinDistance: number,
   styleAccessor?: PointStyleAccessor,
 ): {
   pointGeometries: PointGeometry[];
@@ -56,87 +57,172 @@ export function renderPoints(
   const y1Fn = getY1ScaledValueFn(yScale);
   const y0Fn = getY0ScaledValueFn(yScale);
   const yDefined = isYValueDefinedFn(yScale, xScale);
+  const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
 
-  let style = buildPointGeometryStyles(color, pointStyle);
+  const style = buildPointGeometryStyles(color, pointStyle);
   const seriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
-  const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
-    pointGeometries: PointGeometry[];
-    minDistanceBetweenPoints: number;
-    prevX: number | undefined;
-  }>(
-    (acc, datum, dataIndex) => {
-      const { x: xValue, mark } = datum;
-      // don't create the point if not within the xScale domain
-      if (!xScale.isValueInDomain(xValue)) return acc;
-      // don't create the point if it that point was filled
-      const x = xScale.scale(xValue);
-      if (!isFiniteNumber(x)) return acc;
 
-      const prev = dataSeries.data[dataIndex - 1];
-      const next = dataSeries.data[dataIndex + 1];
+  const isPaintable = (datum: DataSeriesDatum, yDatumKeyName: keyof Omit<FilledValues, 'x'>, y: number | null) => {
+    const valueAccessor = getYDatumValueFn(yDatumKeyName);
+    return (
+      isFiniteNumber(y) &&
+      yDefined(datum, valueAccessor) &&
+      yScale.isValueInDomain(valueAccessor(datum)) &&
+      !isDatumFilled(datum)
+    );
+  };
 
-      if (isFiniteNumber(acc.prevX) && !isDatumFilled(datum)) {
-        acc.minDistanceBetweenPoints = Math.min(acc.minDistanceBetweenPoints, Math.abs(x - acc.prevX));
-      }
-      acc.prevX = x;
+  const buildPointGeometries = (datum: DataSeriesDatum, isPointIsolated: boolean): PointGeometry[] => {
+    const { x: xValue, mark } = datum;
+    const x = xScale.scale(xValue);
+    let styleOverrides: RecursivePartial<PointStyle> | undefined;
+    let pointStyleForDatum = style;
+    if (styleAccessor) {
+      styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
+      pointStyleForDatum = buildPointGeometryStyles(color, pointStyle, styleOverrides);
+    }
+    return yDatumKeyNames.map((yDatumKeyName, keyIndex) => {
+      const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
+      const originalY = getDatumYValue(datum, keyIndex === 0, isBandedSpec, dataSeries.stackMode);
+      const radius = markSizeOptions.enabled
+        ? Math.max(getRadius(mark), pointStyle.radius)
+        : styleOverrides?.radius ?? pointStyle.radius;
+      return {
+        x,
+        y: y === null ? NaN : y,
+        radius,
+        color,
+        style: pointStyleForDatum,
+        value: {
+          x: xValue,
+          y: originalY,
+          mark,
+          accessor: isBandedSpec && keyIndex === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
+          datum: datum.datum,
+        },
+        transform: {
+          x: shift,
+          y: 0,
+        },
+        seriesIdentifier,
+        panel,
+        isolated: isPointIsolated,
+        seriesType: dataSeries.seriesType,
+      };
+    });
+  };
 
-      const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
+  const isolatedForDatum = (datum: DataSeriesDatum, dataIndex: number) =>
+    considerIsolatedPoints
+      ? isIsolatedPoint(
+          dataIndex,
+          dataSeries.data.length,
+          datum,
+          isBandedSpec,
+          y1Fn,
+          y0Fn,
+          dataSeries.data[dataIndex - 1],
+          dataSeries.data[dataIndex + 1],
+        )
+      : false;
 
-      const isPointIsolated = considerIsolatedPoints
-        ? isIsolatedPoint(dataIndex, dataSeries.data.length, datum, isBandedSpec, y1Fn, y0Fn, prev, next)
-        : false;
-      let styleOverrides: RecursivePartial<PointStyle> | undefined = undefined;
-      if (styleAccessor) {
-        styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
-        style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
-      }
-      yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
-        const valueAccessor = getYDatumValueFn(yDatumKeyName);
-        const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
-        const originalY = getDatumYValue(datum, keyIndex === 0, isBandedSpec, dataSeries.stackMode);
+  const materializeEveryDatum = () =>
+    dataSeries.data.reduce<{
+      pointGeometries: PointGeometry[];
+      minDistanceBetweenPoints: number;
+      prevX: number | undefined;
+    }>(
+      (acc, datum, dataIndex) => {
+        const { x: xValue } = datum;
+        // don't create the point if not within the xScale domain
+        if (!xScale.isValueInDomain(xValue)) return acc;
+        const x = xScale.scale(xValue);
+        if (!isFiniteNumber(x)) return acc;
 
-        // if radius is defined with the mark, limit the minimum radius to the theme radius value
-        const radius = markSizeOptions.enabled
-          ? Math.max(getRadius(mark), pointStyle.radius)
-          : styleOverrides?.radius ?? pointStyle.radius;
-
-        const pointGeometry: PointGeometry = {
-          x,
-          y: y === null ? NaN : y,
-          radius,
-          color,
-          style,
-          value: {
-            x: xValue,
-            y: originalY,
-            mark,
-            accessor: isBandedSpec && keyIndex === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
-            datum: datum.datum,
-          },
-          transform: {
-            x: shift,
-            y: 0,
-          },
-          seriesIdentifier,
-          panel,
-          isolated: isPointIsolated,
-          seriesType: dataSeries.seriesType,
-        };
-        indexedGeometryMap.set(pointGeometry, geometryType);
-        // use the geometry only if the yDatum in contained in the current yScale domain
-        if (
-          isFiniteNumber(y) &&
-          yDefined(datum, valueAccessor) &&
-          yScale.isValueInDomain(valueAccessor(datum)) &&
-          !isDatumFilled(datum)
-        ) {
-          acc.pointGeometries.push(pointGeometry);
+        if (isFiniteNumber(acc.prevX) && !isDatumFilled(datum)) {
+          acc.minDistanceBetweenPoints = Math.min(acc.minDistanceBetweenPoints, Math.abs(x - acc.prevX));
         }
+        acc.prevX = x;
+
+        const isPointIsolated = isolatedForDatum(datum, dataIndex);
+        const pointGeometriesForDatum = buildPointGeometries(datum, isPointIsolated);
+        pointGeometriesForDatum.forEach((pointGeometry, keyIndex) => {
+          indexedGeometryMap.set(pointGeometry, geometryType);
+          const yDatumKeyName = yDatumKeyNames[keyIndex]!;
+          const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
+          if (isPaintable(datum, yDatumKeyName, y)) {
+            acc.pointGeometries.push(pointGeometry);
+          }
+        });
+        return acc;
+      },
+      { pointGeometries: [], minDistanceBetweenPoints: Infinity, prevX: undefined },
+    );
+
+  const mustMaterializeAll =
+    useSpatialIndex || pointStyle.visible === 'always' || markSizeOptions.enabled || Boolean(styleAccessor);
+
+  let pointGeometries: PointGeometry[];
+  let minDistanceBetweenPoints: number;
+
+  if (mustMaterializeAll) {
+    ({ pointGeometries, minDistanceBetweenPoints } = materializeEveryDatum());
+  } else {
+    const datumIndexesByX = new Map<number | string, number[]>();
+    const isolatedIndexes: number[] = [];
+    minDistanceBetweenPoints = Infinity;
+    let prevX: number | undefined;
+    dataSeries.data.forEach((datum, dataIndex) => {
+      const { x: xValue } = datum;
+      if (!xScale.isValueInDomain(xValue)) return;
+      const x = xScale.scale(xValue);
+      if (!isFiniteNumber(x)) return;
+
+      const existing = datumIndexesByX.get(xValue);
+      if (existing === undefined) {
+        datumIndexesByX.set(xValue, [dataIndex]);
+      } else {
+        existing.push(dataIndex);
+      }
+
+      if (isFiniteNumber(prevX) && !isDatumFilled(datum)) {
+        minDistanceBetweenPoints = Math.min(minDistanceBetweenPoints, Math.abs(x - prevX));
+      }
+      prevX = x;
+
+      if (isolatedForDatum(datum, dataIndex)) {
+        isolatedIndexes.push(dataIndex);
+      }
+    });
+
+    // Canvas would skip these points anyway (never, or auto below the min-distance).
+    // Don't allocate PointGeometry up front; isolated markers still paint, and the
+    // tooltip index is filled in lazily on find().
+    const hideUnisolatedPoints =
+      pointStyle.visible === 'never' ||
+      (pointStyle.visible === 'auto' && minDistanceBetweenPoints < pointVisibilityMinDistance);
+
+    if (!hideUnisolatedPoints) {
+      ({ pointGeometries, minDistanceBetweenPoints } = materializeEveryDatum());
+    } else {
+      indexedGeometryMap.addLazyLinearSource(datumIndexesByX.keys(), (xValue) => {
+        const indexes = datumIndexesByX.get(xValue);
+        if (!indexes) return [];
+        return indexes.flatMap((dataIndex) => {
+          const datum = dataSeries.data[dataIndex]!;
+          return buildPointGeometries(datum, isolatedForDatum(datum, dataIndex));
+        });
       });
-      return acc;
-    },
-    { pointGeometries: [], minDistanceBetweenPoints: Infinity, prevX: undefined },
-  );
+      pointGeometries = isolatedIndexes.flatMap((dataIndex) => {
+        const datum = dataSeries.data[dataIndex]!;
+        return buildPointGeometries(datum, true).filter((pointGeometry, keyIndex) => {
+          const yDatumKeyName = yDatumKeyNames[keyIndex]!;
+          const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
+          return isPaintable(datum, yDatumKeyName, y);
+        });
+      });
+    }
+  }
 
   // Paint small-to-large only when a style accessor can vary radius.
   // The common equal-radius path used to splice-insert each point (O(n²)).
