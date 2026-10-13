@@ -9,6 +9,7 @@
 import { line } from 'd3-shape';
 
 import { renderPoints } from './points';
+import { generateShapePath } from './shape_path';
 import type { MarkSizeOptions } from './utils';
 import { getClippedRanges, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn } from './utils';
 import type { Color } from '../../../common/colors';
@@ -71,7 +72,7 @@ export function renderLine(
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
   const lineGeometry: LineGeometry = {
-    line: pathGenerator(dataSeries.data) || '',
+    line: generateShapePath(pathGenerator, dataSeries.data),
     points: pointGeometries,
     color,
     transform: {

@@ -346,7 +346,7 @@ describe('Rendering points - line', () => {
 
     test('should render a split line', () => {
       const { value: renderedLine } = lines[0]!;
-      expect(renderedLine.line.split('M').length - 1).toBe(3);
+      expect(String(renderedLine.line).split('M').length - 1).toBe(3);
       expect(renderedLine.color).toBe('red');
       expect(renderedLine.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(renderedLine.seriesIdentifier.specId).toEqual(SPEC_ID);

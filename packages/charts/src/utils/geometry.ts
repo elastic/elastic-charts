@@ -108,9 +108,20 @@ export interface BarGeometry {
   panel: Dimensions;
 }
 
+/**
+ * SVG path string (jsdom / debug) or a native Path2D (browser canvas).
+ * @internal
+ */
+export type ShapePath = string | Path2D;
+
+/** @internal */
+export function shapePathToString(path: ShapePath): string {
+  return typeof path === 'string' ? path : '';
+}
+
 /** @internal */
 export interface LineGeometry {
-  line: string;
+  line: ShapePath;
   points: PointGeometry[];
   color: Color;
   transform: {
@@ -130,8 +141,8 @@ export interface LineGeometry {
 
 /** @internal */
 export interface AreaGeometry {
-  area: string;
-  lines: string[];
+  area: ShapePath;
+  lines: ShapePath[];
   points: PointGeometry[];
   color: Color;
   transform: {

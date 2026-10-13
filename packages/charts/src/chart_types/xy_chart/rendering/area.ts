@@ -9,6 +9,7 @@
 import { area } from 'd3-shape';
 
 import { renderPoints } from './points';
+import { generateShapePath } from './shape_path';
 import type { MarkSizeOptions } from './utils';
 import {
   createAreaBoundingBoxTraverser,
@@ -79,9 +80,9 @@ export function renderArea(
   const bbox = bboxAccumulator.result();
   const clippedRanges = clippedRangesAccumulator.result();
 
-  const lines: string[] = [];
-  const y0Line = isBandedSpec && pathGenerator.lineY0()(dataSeries.data);
-  const y1Line = pathGenerator.lineY1()(dataSeries.data);
+  const lines: AreaGeometry['lines'] = [];
+  const y0Line = isBandedSpec && generateShapePath(pathGenerator.lineY0(), dataSeries.data);
+  const y1Line = generateShapePath(pathGenerator.lineY1(), dataSeries.data);
   if (y1Line) lines.push(y1Line);
   if (y0Line) lines.push(y0Line);
 
@@ -102,7 +103,7 @@ export function renderArea(
   );
 
   const areaGeometry: AreaGeometry = {
-    area: pathGenerator(dataSeries.data) || '',
+    area: generateShapePath(pathGenerator, dataSeries.data),
     lines,
     points: pointGeometries,
     color,

@@ -395,8 +395,8 @@ describe('Rendering points - areas', () => {
       const { areas } = geometries.geometries;
 
       const { value: firstArea } = areas[0]!;
-      expect(firstArea.lines[0]!.split('M').length - 1).toBe(3);
-      expect(firstArea.area.split('M').length - 1).toBe(3);
+      expect(String(firstArea.lines[0]).split('M').length - 1).toBe(3);
+      expect(String(firstArea.area).split('M').length - 1).toBe(3);
       expect(firstArea.color).toBe('red');
       expect(firstArea.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(firstArea.seriesIdentifier.specId).toEqual(SPEC_ID);

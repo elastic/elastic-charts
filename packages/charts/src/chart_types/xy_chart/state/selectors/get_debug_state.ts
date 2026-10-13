@@ -30,7 +30,7 @@ import type {
 } from '../../../../state/types';
 import type { Rotation } from '../../../../utils/common';
 import type { AreaGeometry, BarGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
-import { BandedAccessorType } from '../../../../utils/geometry';
+import { BandedAccessorType, shapePathToString } from '../../../../utils/geometry';
 import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from '../../../../utils/themes/merge_utils';
 import type { FillStyle, Opacity, StrokeStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import type { AxisGeometry } from '../../axes/geometry';
@@ -173,7 +173,7 @@ function getLineState(seriesNameMap: Map<string, string>) {
     const name = seriesNameMap.get(key) ?? '';
 
     return {
-      path,
+      path: shapePathToString(path),
       color,
       key,
       name,
@@ -195,7 +195,7 @@ function getAreaState(seriesNameMap: Map<string, string>) {
       style,
     },
   }: PerPanel<AreaGeometry>): DebugStateArea => {
-    const [y1Path = '', y0Path] = lines;
+    const [y1Path = '', y0Path] = lines.map(shapePathToString);
     const linePoints = points.reduce<{
       y0: DebugStateValue[];
       y1: DebugStateValue[];
@@ -219,7 +219,7 @@ function getAreaState(seriesNameMap: Map<string, string>) {
     const name = seriesNameMap.get(key) ?? '';
 
     return {
-      path,
+      path: shapePathToString(path),
       color,
       key,
       name,
