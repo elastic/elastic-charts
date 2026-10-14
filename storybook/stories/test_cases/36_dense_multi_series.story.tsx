@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
@@ -38,46 +38,60 @@ function generateData(seriesPoints: number, numSeries = 1): SeriesDatum[][] {
   });
 }
 
-const RENDER_LABEL = 'chart-render';
+const PROFILE_LABEL = 'Perf:DataToRender';
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const seriesData = useMemo(() => generateData(POINTS_PER_SERIES, SERIES_COUNT), []);
-  const [runId, setRunId] = useState(() => {
-    window.performance.mark(`${RENDER_LABEL}:start`);
-    return 0;
-  });
-  const pendingTimer = useRef(true);
-  const baseTheme = useBaseTheme();
+  const [data, setData] = useState<SeriesDatum[][]>([]);
+  const [runId, setRunId] = useState(0);
+  useEffect(() => {
+    const generatedData = generateData(POINTS_PER_SERIES, SERIES_COUNT);
+    window.performance.mark('Perf:Started');
+    setData(generatedData);
+  }, [runId]);
 
-  const startRender = () => {
-    window.performance.mark(`${RENDER_LABEL}:start`);
-    pendingTimer.current = true;
-    setRunId((id) => id + 1);
-  };
+  const baseTheme = useBaseTheme();
+  const renderButton = (
+    <button
+      type="button"
+      style={{ all: 'revert', alignSelf: 'flex-start' }} // it should look like a button, not just text
+      onClick={() => {
+        setData([]);
+        setRunId(runId + 1);
+      }}
+    >
+      Render
+    </button>
+  );
+  if (data.length === 0) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        {renderButton}
+        <div style={{ marginTop: 4 }}>Rendering...</div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <button type="button" style={{ all: 'revert', alignSelf: 'flex-start' }} onClick={startRender}>
-        Render
-      </button>
+      {renderButton}
       <div style={{ flex: 1, minHeight: 0 }}>
-        <Chart key={runId} title={title} description={description}>
+        <Chart title={title} description={description}>
           <Settings
             showLegend
             legendPosition={Position.Right}
             baseTheme={baseTheme}
             onRenderChange={(isRendered) => {
-              if (isRendered && pendingTimer.current) {
-                pendingTimer.current = false;
-                const { duration } = window.performance.measure(RENDER_LABEL, `${RENDER_LABEL}:start`);
+              if (isRendered) {
+                window.performance.mark('Perf:Ended');
+                const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');
                 // eslint-disable-next-line no-console
-                console.log(`${RENDER_LABEL}: ${duration.toFixed(0)} ms`);
+                console.log(`chart rendered in ${duration.toFixed(0)} ms`);
               }
             }}
           />
           <Axis id="bottom" position={Position.Bottom} />
           <Axis id="left" position={Position.Left} />
-          {seriesData.map((data, index) => (
+          {data.map((seriesData, index) => (
             <LineSeries
               key={index}
               id={`series-${index + 1}`}
@@ -85,7 +99,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
               yScaleType={ScaleType.Linear}
               xAccessor={0}
               yAccessors={[1]}
-              data={data}
+              data={seriesData}
               curve={CurveType.LINEAR}
             />
           ))}
