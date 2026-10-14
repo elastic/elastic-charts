@@ -53,8 +53,11 @@ const RENDER_LABEL = 'chart-render';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const seriesData = useMemo(() => generateData(POINTS_PER_SERIES, SERIES_COUNT), []);
-  const [runId, setRunId] = useState(0);
-  const pendingTimer = useRef(false);
+  const [runId, setRunId] = useState(() => {
+    window.performance.mark(`${RENDER_LABEL}:start`);
+    return 0;
+  });
+  const pendingTimer = useRef(true);
   const baseTheme = useBaseTheme();
 
   const startRender = () => {
@@ -69,37 +72,35 @@ export const Example: ChartsStory = (_, { title, description }) => {
         Render
       </button>
       <div style={{ flex: 1, minHeight: 0 }}>
-        {runId > 0 && (
-          <Chart key={runId} title={title} description={description}>
-            <Settings
-              showLegend
-              legendPosition={Position.Right}
-              baseTheme={baseTheme}
-              onRenderChange={(isRendered) => {
-                if (isRendered && pendingTimer.current) {
-                  pendingTimer.current = false;
-                  const { duration } = window.performance.measure(RENDER_LABEL, `${RENDER_LABEL}:start`);
-                  // eslint-disable-next-line no-console
-                  console.log(`${RENDER_LABEL}: ${duration.toFixed(0)} ms`);
-                }
-              }}
+        <Chart key={runId} title={title} description={description}>
+          <Settings
+            showLegend
+            legendPosition={Position.Right}
+            baseTheme={baseTheme}
+            onRenderChange={(isRendered) => {
+              if (isRendered && pendingTimer.current) {
+                pendingTimer.current = false;
+                const { duration } = window.performance.measure(RENDER_LABEL, `${RENDER_LABEL}:start`);
+                // eslint-disable-next-line no-console
+                console.log(`${RENDER_LABEL}: ${duration.toFixed(0)} ms`);
+              }
+            }}
+          />
+          <Axis id="bottom" position={Position.Bottom} />
+          <Axis id="left" position={Position.Left} />
+          {seriesData.map((data, index) => (
+            <LineSeries
+              key={index}
+              id={`series-${index + 1}`}
+              xScaleType={ScaleType.Linear}
+              yScaleType={ScaleType.Linear}
+              xAccessor={0}
+              yAccessors={[1]}
+              data={data}
+              curve={CurveType.LINEAR}
             />
-            <Axis id="bottom" position={Position.Bottom} />
-            <Axis id="left" position={Position.Left} />
-            {seriesData.map((data, index) => (
-              <LineSeries
-                key={index}
-                id={`series-${index + 1}`}
-                xScaleType={ScaleType.Linear}
-                yScaleType={ScaleType.Linear}
-                xAccessor={0}
-                yAccessors={[1]}
-                data={data}
-                curve={CurveType.LINEAR}
-              />
-            ))}
-          </Chart>
-        )}
+          ))}
+        </Chart>
       </div>
     </div>
   );
