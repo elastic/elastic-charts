@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { sortedByPosition } from '../../../mocks/geometries';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import type { ScaleContinuousType } from '../../../scales';
@@ -53,7 +54,7 @@ describe('Rendering points - line', () => {
         value: { points },
       } = lines[0]!;
 
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -112,14 +113,14 @@ describe('Rendering points - line', () => {
       const {
         value: { points },
       } = lines[0]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
       const {
         value: { points },
       } = lines[1]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -157,7 +158,7 @@ describe('Rendering points - line', () => {
       const {
         value: { points },
       } = lines[0]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -215,14 +216,14 @@ describe('Rendering points - line', () => {
       const {
         value: { points },
       } = lines[0]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
       const {
         value: { points },
       } = lines[1]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -260,7 +261,7 @@ describe('Rendering points - line', () => {
       const {
         value: { points },
       } = lines[0]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -305,14 +306,14 @@ describe('Rendering points - line', () => {
       const {
         value: { points },
       } = firstLine!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
       const {
         value: { points },
       } = secondLine!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -406,7 +407,7 @@ describe('Rendering points - line', () => {
       expect(points.length).toBe(2);
       // will keep the 3rd point as an indexedGeometry
       expect(geometriesIndex.size).toEqual(3);
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
     });
   });
 
