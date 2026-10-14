@@ -9,13 +9,16 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable jest/no-conditional-expect */
 
+import { isVerticalRotation } from './common';
 import {
   computeSeriesDomains,
   computeXScaleOffset,
   isHistogramModeEnabled,
   setBarSeriesAccessors,
   getCustomSeriesColors,
+  computeChartTransform,
 } from './utils';
+import { LegendValue } from '../../../../common/legend';
 import { MockDataSeries } from '../../../../mocks/series/series';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
@@ -24,6 +27,7 @@ import { MockXDomain, MockYDomain } from '../../../../mocks/xy/domains';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import type { Spec } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import { getInternalMainProjectionAreaSelector } from '../../../../state/selectors/get_internal_main_projection_area';
 import { ColorVariant } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
@@ -32,8 +36,9 @@ import type { SpecId } from '../../../../utils/ids';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { XYChartSeriesIdentifier } from '../../utils/series';
 import { getSeriesIndex } from '../../utils/series';
-import type { BasicSeriesSpec, SeriesColorAccessorFn } from '../../utils/specs';
+import type { BasicSeriesSpec, LineSeriesSpec, SeriesColorAccessorFn } from '../../utils/specs';
 import { HistogramModeAlignments } from '../../utils/specs';
+import { computeLegendSelector } from '../selectors/compute_legend';
 import { computeSeriesDomainsSelector } from '../selectors/compute_series_domains';
 import { computeSeriesGeometriesSelector } from '../selectors/compute_series_geometries';
 import { getScaleConfigsFromSpecs } from '../selectors/get_api_scale_configs';
@@ -873,5 +878,130 @@ describe('Curves', () => {
       }),
     ]);
     expect(geometries.lines[0]!.value.line).toContain('C');
+  });
+});
+
+describe('Downsampling dense line series', () => {
+  const rows = 1000;
+  // null runs at both ends, which the summary leaves out, and a null in the middle
+  const denseData = Array.from({ length: rows }, (_, x) => ({
+    x,
+    y:
+      x < 3 || x === 500 || x >= rows - 3
+        ? null
+        : 10 + 5 * Math.sin(x / 7) + (x === 123 ? 40 : 0) - (x === 777 ? 30 : 0),
+  }));
+  const ys = denseData.flatMap(({ y }) => (y === null ? [] : [y]));
+  const denseLine = (props: Partial<LineSeriesSpec> = {}) =>
+    MockSeriesSpec.line({
+      id: 'dense',
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      xScaleType: ScaleType.Linear,
+      yScaleType: ScaleType.Linear,
+      data: denseData,
+      ...props,
+    });
+  const domainsOf = (specs: BasicSeriesSpec[]) =>
+    computeSeriesDomains(specs, getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings()), [], {
+      locale: 'en-US',
+    });
+
+  it('summarizes the series for layout without changing its domains', () => {
+    const downsampled = domainsOf([denseLine()]);
+    const full = domainsOf([denseLine({ pointStyleAccessor: () => null })]);
+    expect(downsampled.formattedDataSeries[0]?.isDownsampled).toBe(true);
+    expect(downsampled.formattedDataSeries[0]?.data.length).toBeLessThanOrEqual(4);
+    expect(full.formattedDataSeries[0]?.data).toHaveLength(rows);
+    expect(downsampled.xDomain).toEqual(full.xDomain);
+    expect(downsampled.yDomains).toEqual(full.yDomains);
+  });
+
+  it('computes the legend values the summary lacks from every row', () => {
+    const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    MockStore.addSpecs([denseLine(), MockGlobalSpec.settings({ legendValues: [LegendValue.Average] })], store);
+    expect(computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]?.isDownsampled).toBe(true);
+    expect(computeLegendSelector(store.getState())[0]?.values[0]?.value).toBe(
+      ys.reduce((sum, y) => sum + y) / ys.length,
+    );
+  });
+
+  it('keeps every row of a series whose curve can overshoot its points', () => {
+    const { formattedDataSeries } = domainsOf([denseLine({ curve: CurveType.CURVE_NATURAL })]);
+    expect(formattedDataSeries[0]?.isDownsampled).toBeUndefined();
+    expect(formattedDataSeries[0]?.data).toHaveLength(rows);
+  });
+
+  it('checks the y scale of the domain group the series is drawn on', () => {
+    const logLine = denseLine({ id: 'log', groupId: 'log', yScaleType: ScaleType.Log, data: [{ x: 0, y: 1 }] });
+    const linearLine = denseLine({ id: 'linear', groupId: 'shared', data: [{ x: 0, y: 1 }] });
+    const borrowingLine = denseLine({
+      id: 'borrowing',
+      groupId: 'shared',
+      useDefaultGroupDomain: 'log',
+      yScaleType: ScaleType.Log,
+    });
+    const { formattedDataSeries } = domainsOf([logLine, linearLine, borrowingLine]);
+    const borrowing = formattedDataSeries.find(({ specId }) => specId === 'borrowing');
+    expect(borrowing?.isDownsampled).toBeUndefined();
+    expect(borrowing?.data).toHaveLength(rows);
+  });
+
+  it('draws at most four points per pixel bin, keeping the extremes', () => {
+    const { geometries } = getGeometriesFromSpecs([denseLine()]);
+    const pointYs = geometries.lines[0]!.value.points.map(({ value }) => value.y);
+    expect(pointYs.length).toBeLessThanOrEqual(4 * 100);
+    expect(Math.min(...pointYs)).toBe(Math.min(...ys));
+    expect(Math.max(...pointYs)).toBe(Math.max(...ys));
+  });
+
+  it.each([0, 90, -90, 180] as const)('keeps the M4 rows of each canvas pixel along the x axis at %i°', (rotation) => {
+    const data = denseData.filter(({ y }) => y !== null);
+    const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    const chartMargins = { left: 3.3, top: 7.6, right: 0, bottom: 0 };
+    MockStore.addSpecs(
+      [denseLine({ data }), MockGlobalSpec.settingsNoMargins({ rotation, theme: { chartMargins } })],
+      store,
+    );
+    const { geometries, scales } = computeSeriesGeometriesSelector(store.getState());
+    const { panel, value } = geometries.lines[0]!;
+    // where the renderer puts each row along the x axis: the panel transform, then the rotation
+    const plotArea = getInternalMainProjectionAreaSelector(store.getState());
+    const transform = computeChartTransform(panel, rotation);
+    const radians = (rotation * Math.PI) / 180;
+    const canvasPixel = (x: number) => {
+      const gx = scales.xScale.scale(x) + value.points[0]!.transform.x;
+      return Math.floor(
+        isVerticalRotation(rotation)
+          ? plotArea.top + panel.top + transform.y + Math.round(Math.sin(radians)) * gx
+          : plotArea.left + panel.left + transform.x + Math.round(Math.cos(radians)) * gx,
+      );
+    };
+    // the first, lowest, highest and last row of each run of rows in the same canvas pixel
+    const expected = new Set<number>();
+    for (let start = 0, end = 0; start < data.length; start = end) {
+      while (end < data.length && canvasPixel(data[end]!.x) === canvasPixel(data[start]!.x)) end++;
+      const run = data.slice(start, end);
+      const ys = run.map(({ y }) => y!);
+      [run[0]!, run[ys.indexOf(Math.min(...ys))]!, run[ys.indexOf(Math.max(...ys))]!, run.at(-1)!].forEach(({ x }) =>
+        expected.add(x),
+      );
+    }
+    expect(value.points.map(({ value: { x } }) => x)).toEqual([...expected].sort((a, b) => a - b));
+  });
+
+  it('breaks the drawn line at the same gaps as without downsampling', () => {
+    // the first and last point of each subpath of the drawn line
+    const subpathEnds = (spec: LineSeriesSpec) =>
+      getGeometriesFromSpecs([spec])
+        .geometries.lines[0]!.value.line.split('M')
+        .slice(1)
+        .map((subpath) => {
+          const points = subpath.split('L');
+          return [points[0], points.at(-1)];
+        });
+    const downsampled = subpathEnds(denseLine());
+    expect(downsampled).toHaveLength(2);
+    expect(downsampled).toEqual(subpathEnds(denseLine({ pointStyleAccessor: () => null })));
   });
 });
