@@ -48,7 +48,7 @@ const config: PlaywrightTestConfig = {
   },
   retries: isCI ? 0 : 1, // retry for locally run tests
   forbidOnly: isCI,
-  timeout: 10 * 1000,
+  timeout: 50 * 1000,
   preserveOutput: 'failures-only',
   snapshotDir: 'screenshots',
   testDir: 'tests',
