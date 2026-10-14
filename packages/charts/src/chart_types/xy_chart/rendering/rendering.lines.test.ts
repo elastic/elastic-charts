@@ -454,4 +454,27 @@ describe('Rendering points - line', () => {
       });
     });
   });
+
+  test('paints points with a style accessor in ascending radius order', () => {
+    const pointSeriesSpec = MockSeriesSpec.line({
+      id: SPEC_ID,
+      data: [
+        [0, 3],
+        [1, 1],
+        [2, 4],
+        [3, 2],
+      ],
+      xAccessor: 0,
+      yAccessors: [1],
+      xScaleType: ScaleType.Linear,
+      yScaleType: ScaleType.Linear,
+      pointStyleAccessor: ({ y1 }) => ({ radius: y1 ?? 0 }),
+    });
+    const store = MockStore.default();
+    MockStore.addSpecs([pointSeriesSpec, MockGlobalSpec.settingsNoMargins()], store);
+    const {
+      geometries: { lines },
+    } = computeSeriesGeometriesSelector(store.getState());
+    expect(lines[0]!.value.points.map(({ radius }) => radius)).toEqual([1, 2, 3, 4]);
+  });
 });
