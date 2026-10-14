@@ -130,7 +130,7 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
   /**
    * timeout for waiting on element to appear in DOM
    *
-   * @defaultValue 50000
+   * @defaultValue 10000
    */
   timeout?: number;
   /**
@@ -581,7 +581,7 @@ export class CommonPage {
    */
   waitForElement =
     (page: Page) =>
-    async (waitSelector: string, timeout = 50 * 1000) => {
+    async (waitSelector: string, timeout = 10 * 1000) => {
       await page.waitForSelector(waitSelector, {
         state: 'attached',
         timeout,
