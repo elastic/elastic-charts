@@ -10,14 +10,14 @@ import type { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { withClipRanges } from '../../../../../renderers/canvas';
 import { applyCanvasFill, type FillBoundingBox } from '../../../../../renderers/canvas/primitives/fill';
 import { renderMultiLine } from '../../../../../renderers/canvas/primitives/line';
-import type { ClippedRanges } from '../../../../../utils/geometry';
+import type { ClippedRanges, ShapePath } from '../../../../../utils/geometry';
 import type { Point } from '../../../../../utils/point';
 
 /** @internal */
 export function renderLinePaths(
   ctx: CanvasRenderingContext2D,
   transform: Point,
-  linePaths: Array<string>,
+  linePaths: ShapePath[],
   stroke: Stroke,
   fitStroke: Stroke,
   clippedRanges: ClippedRanges,
@@ -40,7 +40,7 @@ export function renderLinePaths(
 export function renderAreaPath(
   ctx: CanvasRenderingContext2D,
   transform: Point,
-  area: string,
+  area: ShapePath,
   fill: Fill,
   fitFill: Fill,
   clippedRanges: ClippedRanges,
@@ -56,12 +56,12 @@ export function renderAreaPath(
 
 function renderPathFill(
   ctx: CanvasRenderingContext2D,
-  path: string,
+  path: ShapePath,
   fill: Fill,
   { x, y }: Point,
   bbox: FillBoundingBox,
 ) {
   ctx.translate(x, y);
-  const path2d = new Path2D(path);
+  const path2d = typeof path === 'string' ? new Path2D(path) : path;
   applyCanvasFill(ctx, fill, bbox, () => ctx.fill(path2d));
 }

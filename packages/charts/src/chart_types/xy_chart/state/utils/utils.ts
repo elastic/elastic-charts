@@ -108,6 +108,7 @@ export function computeSeriesDomains(
   settingsSpec: Pick<SettingsSpec, 'orderOrdinalBinsBy' | 'locale' | 'renderingSort'>,
   deselectedDataSeries: SeriesIdentifier[] = [],
   smallMultiples?: SmallMultiplesGroupBy,
+  pixelWidth = 0,
 ): SeriesDomainsAndData {
   const { orderOrdinalBinsBy, locale, renderingSort } = settingsSpec;
   const renderingSortFn: SeriesCompareFn =
@@ -121,6 +122,7 @@ export function computeSeriesDomains(
     orderOrdinalBinsBy,
     renderingSortFn,
     smallMultiples,
+    pixelWidth,
   );
   // compute the x domain merging any custom domain
   const xDomain = mergeXDomain(scaleConfigs.x, xValues, locale, fallbackScale);

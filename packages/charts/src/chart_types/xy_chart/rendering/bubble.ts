@@ -48,6 +48,7 @@ export function renderBubble(
     hasY0Accessors,
     markSizeOptions,
     !isMixedChart,
+    0,
     pointStyleAccessor,
   );
 

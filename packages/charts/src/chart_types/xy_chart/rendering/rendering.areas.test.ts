@@ -109,8 +109,9 @@ describe('Rendering points - areas', () => {
 
     test('Can render two points', () => {
       const { points } = areaGeometry;
+      // area points default to visible: never, so they are omitted from the paint list
       expect(points).toMatchSnapshot();
-      expect(geometriesIndex.size).toEqual(points.length);
+      expect(geometriesIndex.size).toBe(2);
     });
   });
   describe('Multi series area chart - ordinal', () => {
@@ -169,19 +170,17 @@ describe('Rendering points - areas', () => {
     test('can render first spec points', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
-      expect(firstArea.points.length).toEqual(2);
+      expect(firstArea.points.length).toEqual(0);
       expect(firstArea.points).toMatchSnapshot();
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
       const { value: secondArea } = areas[1]!;
-      expect(secondArea.points.length).toEqual(2);
+      expect(secondArea.points.length).toEqual(0);
       expect(secondArea.points).toMatchSnapshot();
     });
     test('has the right number of geometry in the indexes', () => {
-      const { areas } = geometries.geometries;
-      const { value: firstArea } = areas[0]!;
-      expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
+      expect(geometries.geometriesIndex.size).toBe(2);
     });
   });
 
@@ -218,7 +217,7 @@ describe('Rendering points - areas', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
       expect(firstArea.points).toMatchSnapshot();
-      expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
+      expect(geometries.geometriesIndex.size).toBe(2);
     });
   });
 
@@ -273,16 +272,16 @@ describe('Rendering points - areas', () => {
     test('can render first spec points', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
-      expect(firstArea.points.length).toEqual(2);
+      expect(firstArea.points.length).toEqual(0);
       expect(firstArea.points).toMatchSnapshot();
-      expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
+      expect(geometries.geometriesIndex.size).toBe(2);
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
       const { value: secondArea } = areas[1]!;
-      expect(secondArea.points.length).toEqual(2);
+      expect(secondArea.points.length).toEqual(0);
       expect(secondArea.points).toMatchSnapshot();
-      expect(geometries.geometriesIndex.size).toEqual(secondArea.points.length);
+      expect(geometries.geometriesIndex.size).toBe(2);
     });
   });
   describe('Single series area chart - time', () => {
@@ -318,7 +317,7 @@ describe('Rendering points - areas', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
       expect(firstArea.points).toMatchSnapshot();
-      expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
+      expect(geometries.geometriesIndex.size).toBe(2);
     });
   });
   describe('Multi series area chart - time', () => {
@@ -356,14 +355,14 @@ describe('Rendering points - areas', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
       expect(firstArea.points).toMatchSnapshot();
-      expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
+      expect(geometries.geometriesIndex.size).toBe(2);
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
       const { value: secondArea } = areas[1]!;
 
       expect(secondArea.points).toMatchSnapshot();
-      expect(geometries.geometriesIndex.size).toEqual(secondArea.points.length);
+      expect(geometries.geometriesIndex.size).toBe(2);
     });
   });
   describe('Single series area chart - y log', () => {
@@ -396,8 +395,8 @@ describe('Rendering points - areas', () => {
       const { areas } = geometries.geometries;
 
       const { value: firstArea } = areas[0]!;
-      expect(firstArea.lines[0]!.split('M').length - 1).toBe(3);
-      expect(firstArea.area.split('M').length - 1).toBe(3);
+      expect(String(firstArea.lines[0]).split('M').length - 1).toBe(3);
+      expect(String(firstArea.area).split('M').length - 1).toBe(3);
       expect(firstArea.color).toBe('red');
       expect(firstArea.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(firstArea.seriesIdentifier.specId).toEqual(SPEC_ID);
@@ -411,9 +410,9 @@ describe('Rendering points - areas', () => {
       const {
         value: { points },
       } = areas[0]!;
-      // all the points minus the undefined ones on a log scale
-      expect(points.length).toBe(7);
-      // all the points expect null geometries
+      // never-visible area points are omitted from the paint list
+      expect(points.length).toBe(0);
+      // tooltip index still covers every in-domain x, including null/zero
       expect(geometriesIndex.size).toEqual(9);
       const nullIndexdGeometry = geometriesIndex.find(2, 10);
       expect(nullIndexdGeometry).toHaveLength(1);

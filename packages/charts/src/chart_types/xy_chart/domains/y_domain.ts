@@ -121,19 +121,35 @@ function computeYDomain(
   scaleType: ScaleType,
   customDomain: YDomainRange,
 ) {
-  const yValues = new Set<any>();
+  // extent() ignores null/NaN but keeps 0 and Infinity. Log+fit also drops 0.
+  const skipZero = Boolean(customDomain.fit && scaleType === ScaleType.Log);
+  let min = Infinity;
+  let max = -Infinity;
+  let sawDatum = false;
+
+  const include = (value: number | null) => {
+    if (value === null || value !== value || (skipZero && value === 0)) return;
+    if (value < min) min = value;
+    if (value > max) max = value;
+  };
+
   dataSeries.forEach(({ data }) => {
     for (const datum of data) {
-      yValues.add(datum.y1);
-      if (hasZeroBaselineSpecs && datum.y0 !== null) yValues.add(datum.y0);
+      sawDatum = true;
+      include(datum.y1);
+      if (hasZeroBaselineSpecs && datum.y0 !== null) include(datum.y0);
     }
   });
-  if (yValues.size === 0) {
+  if (!sawDatum) {
     return [];
   }
+
+  annotationYValues.forEach(include);
   // padding already applied, set to 0 here to avoid duplicating
   const domainOptions = { ...customDomain, padding: 0 };
-  return computeContinuousDataDomain([...yValues, ...annotationYValues], scaleType, domainOptions);
+  return Number.isFinite(min)
+    ? computeContinuousDataDomain([min, max], scaleType, domainOptions)
+    : computeContinuousDataDomain(annotationYValues, scaleType, domainOptions);
 }
 
 /** @internal */

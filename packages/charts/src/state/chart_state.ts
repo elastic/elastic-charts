@@ -29,11 +29,28 @@ import { getInitialPointerState } from './utils/get_initial_pointer_state';
 import { getInitialTooltipState } from './utils/get_initial_tooltip_state';
 import type { Color } from '../common/colors';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/default_settings_spec';
+import type { Spec } from '../specs/spec_type';
 import { deepEqual } from '../utils/fast_deep_equal';
 
 export type { InteractionsState, TooltipInteractionState } from './interactions_state';
 export type { BackwardRef } from './internal_chart_renderer';
 export type { TooltipVisibility } from './tooltip_visibility';
+
+/**
+ * Immer auto-freezes produced state, including every row in `spec.data`.
+ * A frozen array short-circuits that walk so upserting large series stays O(1)
+ * in the freezer, not O(rows). In-place mutation of `data` already cannot
+ * update the chart (React only sees a new array reference).
+ */
+function skipImmerWalkOfSpecData(spec: Spec) {
+  if (!('data' in spec)) {
+    return;
+  }
+  const { data } = spec as Spec & { data: unknown };
+  if (Array.isArray(data) && !Object.isFrozen(data)) {
+    Object.freeze(data);
+  }
+}
 
 const handleChartActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder.addCase(onChartRendered, (state) => {
@@ -93,6 +110,7 @@ const handleColorsActions = (builder: ActionReducerMapBuilder<ChartSliceState>) 
 const handleSpecsActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder
     .addCase(upsertSpec, (state, action) => {
+      skipImmerWalkOfSpecData(action.payload);
       if (state.specParsing) {
         state.specs[action.payload.id] = action.payload;
       } else {
@@ -178,6 +196,8 @@ export const createChartStore = (chartId: string, title?: string, description?: 
       getDefaultMiddleware({
         // TODO https://github.com/elastic/elastic-charts/issues/2078
         serializableCheck: false,
+        // Specs hold raw series arrays; walking them after every dispatch dominates large-chart updates.
+        immutableCheck: false,
       }),
     devTools:
       typeof process === 'object' && process !== null && process.env && process.env.ELASTIC_CHARTS_DEV_MODE

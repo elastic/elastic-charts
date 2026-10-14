@@ -284,6 +284,8 @@ exports[`Rendering bars Multi series bar chart - ordinal can render second spec 
 
 exports[`Rendering bars Negative, minBarHeight, flipped and banded datasets should render bars with alternating value labels 1`] = `
 IndexedGeometryMap {
+  "lazyLinearFinders": [],
+  "lazyLinearKeys": Set {},
   "linearMap": IndexedGeometryLinearMap {
     "map": Map {
       1 => [

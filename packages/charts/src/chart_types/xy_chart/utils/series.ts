@@ -8,7 +8,9 @@
 
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
+import { minMaxDownsample, pixelBucketCount } from './minmax_downsample';
 import type { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesType, StackMode } from './specs';
+import { isAreaSeriesSpec, isLineSeriesSpec } from './specs';
 import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
 import type { Color } from '../../../common/colors';
 import { Colors } from '../../../common/colors';
@@ -123,6 +125,7 @@ export function splitSeriesDataByAccessors(
   stackMode?: StackMode,
   groupBySpec?: SmallMultiplesGroupBy,
   deselectedDataSeries: SeriesIdentifier[] = [],
+  pixelWidth = 0,
 ): {
   dataSeries: Map<SeriesKey, DataSeries>;
   xValues: Array<string | number>;
@@ -131,13 +134,15 @@ export function splitSeriesDataByAccessors(
     seriesType,
     id: specId,
     groupId,
-    data,
     xAccessor,
     yAccessors,
     y0Accessors,
     markSizeAccessor,
     splitSeriesAccessors = [],
   } = spec;
+  let { data } = spec;
+  let downsampledMinInterval = Infinity;
+  let downsampledXMin = NaN;
   const dataSeries = new Map<SeriesKey, DataSeries>();
   const xValues: Array<string | number> = [];
   const nonNumericValues: Map<unknown, number> = new Map();
@@ -148,79 +153,177 @@ export function splitSeriesDataByAccessors(
     );
   }
 
-  for (let i = 0; i < data.length; i++) {
-    const datum = data[i];
-    const splitAccessors = getSplitAccessors(datum, splitSeriesAccessors);
-    // if splitSeriesAccessors are defined we should have at least one split value to include datum
-    if (splitSeriesAccessors.length > 0 && splitAccessors.size < 1) {
-      continue;
-    }
+  const emptySplitAccessors = new Map<string | number, string | number>();
+  const xAccessorStr = getAccessorFieldName(xAccessor, 0);
+  const hasSplitAccessors = splitSeriesAccessors.length > 0;
 
-    // skip if the datum is not an object or null
-    if (typeof datum !== 'object' || datum === null) {
-      continue;
-    }
-    const x = getAccessorValue(datum, xAccessor);
-    // skip if the x value is not a string or a number
-    if (typeof x !== 'string' && typeof x !== 'number') {
-      continue;
-    }
-
-    xValues.push(x);
-    let sum = xValueSums.get(x) ?? 0;
-
-    // extract small multiples aggregation values
-    const smH = groupBySpec?.horizontal?.by?.(spec, datum);
-    const smV = groupBySpec?.vertical?.by?.(spec, datum);
-
-    const xAccessorStr = getAccessorFieldName(xAccessor, 0);
-    yAccessors.forEach((accessor, index) => {
-      const cleanedDatum = extractYAndMarkFromDatum(
-        datum,
-        accessor,
-        nonNumericValues,
-        isBanded,
-        y0Accessors && y0Accessors[index],
-        markSizeAccessor,
+  if (shouldMinMaxDownsample(spec, isStacked, isBanded, groupBySpec, hasSplitAccessors, pixelWidth)) {
+    const yAccessor = yAccessors[0];
+    if (yAccessor !== undefined) {
+      const sampled = minMaxDownsample(
+        data,
+        (datum) => getAccessorValue(datum, xAccessor),
+        (datum) => getAccessorValue(datum, yAccessor),
+        pixelBucketCount(pixelWidth),
       );
+      data = sampled.data;
+      downsampledMinInterval = sampled.minInterval;
+      downsampledXMin = sampled.xMin;
+    }
+  }
 
+  const createSeries = (
+    seriesKey: SeriesKey,
+    seriesIdentifier: Omit<XYChartSeriesIdentifier, 'key'>,
+    seriesKeys: (string | number)[],
+    newDatum: DataSeriesDatum,
+    isFiltered: boolean,
+  ) => {
+    dataSeries.set(seriesKey, {
+      ...seriesIdentifier,
+      groupId,
+      seriesType,
+      stackMode,
+      isStacked,
+      seriesKeys,
+      key: seriesKey,
+      data: [newDatum],
+      spec,
+      insertOrder: insertOrder + dataSeries.size,
+      sortOrder: 0,
+      isFiltered,
+    });
+  };
+
+  // Series identity is constant per y accessor when there is no split or small-multiples grouping.
+  if (!hasSplitAccessors && !groupBySpec) {
+    const yChannels = yAccessors.map((accessor, index) => {
       const yAccessorStr = getAccessorFieldName(accessor, index);
-      const splitAccessorStrs = [...splitAccessors.values()].map((a, si) => getAccessorFieldName(a, si));
-      const seriesKeys = [...splitAccessorStrs, yAccessorStr];
-      const seriesIdentifier: Omit<XYChartSeriesIdentifier, 'key'> = stripUndefined({
+      const seriesKeys = [yAccessorStr];
+      const seriesIdentifier: Omit<XYChartSeriesIdentifier, 'key'> = {
         specId,
         seriesKeys,
         xAccessor: xAccessorStr,
         yAccessor: yAccessorStr,
-        splitAccessors,
-        smVerticalAccessorValue: smV,
-        smHorizontalAccessorValue: smH,
-      });
+        splitAccessors: emptySplitAccessors,
+      };
       const seriesKey = getSeriesKey(seriesIdentifier, groupId);
-      sum += cleanedDatum.y1 ?? 0;
-      const newDatum = { x, ...cleanedDatum, smH, smV };
-      const series = dataSeries.get(seriesKey);
-      if (series) {
-        series.data.push(newDatum);
-      } else {
-        dataSeries.set(seriesKey, {
-          ...seriesIdentifier,
-          groupId,
-          seriesType,
-          stackMode,
-          isStacked,
-          seriesKeys,
-          key: seriesKey,
-          data: [newDatum],
-          spec,
-          insertOrder: insertOrder + dataSeries.size,
-          sortOrder: 0,
-          isFiltered: deselectedDataSeries.some(({ key: deselectedKey }) => seriesKey === deselectedKey),
-        });
+      return {
+        accessor,
+        y0Accessor: y0Accessors?.[index],
+        seriesKeys,
+        seriesIdentifier,
+        seriesKey,
+        isFiltered: deselectedDataSeries.some(({ key }) => key === seriesKey),
+      };
+    });
+
+    for (let i = 0; i < data.length; i++) {
+      const datum = data[i];
+      if (typeof datum !== 'object' || datum === null) {
+        continue;
+      }
+      const x = getAccessorValue(datum, xAccessor);
+      if (typeof x !== 'string' && typeof x !== 'number') {
+        continue;
       }
 
+      xValues.push(x);
+      let sum = xValueSums.get(x) ?? 0;
+
+      for (let yi = 0; yi < yChannels.length; yi++) {
+        const channel = yChannels[yi];
+        if (!channel) {
+          continue;
+        }
+        const cleanedDatum = extractYAndMarkFromDatum(
+          datum,
+          channel.accessor,
+          nonNumericValues,
+          isBanded,
+          channel.y0Accessor,
+          markSizeAccessor,
+        );
+        sum += cleanedDatum.y1 ?? 0;
+        const newDatum = { x, ...cleanedDatum, smH: undefined, smV: undefined };
+        const series = dataSeries.get(channel.seriesKey);
+        if (series) {
+          series.data.push(newDatum);
+        } else {
+          createSeries(channel.seriesKey, channel.seriesIdentifier, channel.seriesKeys, newDatum, channel.isFiltered);
+        }
+      }
       xValueSums.set(x, sum);
-    });
+    }
+  } else {
+    for (let i = 0; i < data.length; i++) {
+      const datum = data[i];
+      if (typeof datum !== 'object' || datum === null) {
+        continue;
+      }
+
+      const splitAccessors = hasSplitAccessors ? getSplitAccessors(datum, splitSeriesAccessors) : emptySplitAccessors;
+      if (hasSplitAccessors && splitAccessors.size < 1) {
+        continue;
+      }
+
+      const x = getAccessorValue(datum, xAccessor);
+      if (typeof x !== 'string' && typeof x !== 'number') {
+        continue;
+      }
+
+      xValues.push(x);
+      let sum = xValueSums.get(x) ?? 0;
+      const smH = groupBySpec?.horizontal?.by?.(spec, datum);
+      const smV = groupBySpec?.vertical?.by?.(spec, datum);
+
+      for (let yi = 0; yi < yAccessors.length; yi++) {
+        const accessor = yAccessors[yi];
+        if (accessor === undefined) {
+          continue;
+        }
+        const yAccessorStr = getAccessorFieldName(accessor, yi);
+        const cleanedDatum = extractYAndMarkFromDatum(
+          datum,
+          accessor,
+          nonNumericValues,
+          isBanded,
+          y0Accessors?.[yi],
+          markSizeAccessor,
+        );
+        sum += cleanedDatum.y1 ?? 0;
+        const newDatum = { x, ...cleanedDatum, smH, smV };
+        const splitAccessorStrs = [...splitAccessors.values()].map((a, si) => getAccessorFieldName(a, si));
+        const seriesKeys = [...splitAccessorStrs, yAccessorStr];
+        const seriesIdentifier: Omit<XYChartSeriesIdentifier, 'key'> = {
+          specId,
+          seriesKeys,
+          xAccessor: xAccessorStr,
+          yAccessor: yAccessorStr,
+          splitAccessors,
+        };
+        if (smV !== undefined) {
+          seriesIdentifier.smVerticalAccessorValue = smV;
+        }
+        if (smH !== undefined) {
+          seriesIdentifier.smHorizontalAccessorValue = smH;
+        }
+        const seriesKey = getSeriesKey(seriesIdentifier, groupId);
+        const series = dataSeries.get(seriesKey);
+        if (series) {
+          series.data.push(newDatum);
+        } else {
+          createSeries(
+            seriesKey,
+            seriesIdentifier,
+            seriesKeys,
+            newDatum,
+            deselectedDataSeries.some(({ key }) => key === seriesKey),
+          );
+        }
+      }
+      xValueSums.set(x, sum);
+    }
   }
 
   if (nonNumericValues.size > 0) {
@@ -231,10 +334,34 @@ export function splitSeriesDataByAccessors(
       `(${values.map(([k, v]) => `${v}: ${JSON.stringify(k)}`).join(', ')})`,
     );
   }
+
+  // Downsampled x is a subset; keep the true min adjacent interval so linear
+  // scales do not treat pixel-bucket gaps as the data interval.
+  if (Number.isFinite(downsampledMinInterval) && Number.isFinite(downsampledXMin)) {
+    xValues.push(downsampledXMin, downsampledXMin + downsampledMinInterval);
+  }
+
   return {
     dataSeries,
     xValues,
   };
+}
+
+function shouldMinMaxDownsample(
+  spec: BasicSeriesSpec,
+  isStacked: boolean,
+  isBanded: boolean,
+  groupBySpec: SmallMultiplesGroupBy | undefined,
+  hasSplitAccessors: boolean,
+  pixelWidth: number,
+): boolean {
+  if (pixelWidth <= 0 || isStacked || isBanded || hasSplitAccessors) return false;
+  if (groupBySpec?.horizontal || groupBySpec?.vertical) return false;
+  if (spec.xScaleType === ScaleType.Ordinal) return false;
+  if (spec.yAccessors.length !== 1 || spec.markSizeAccessor !== undefined) return false;
+  if (!isLineSeriesSpec(spec) && !isAreaSeriesSpec(spec)) return false;
+  if (spec.fit !== undefined) return false;
+  return spec.data.length > pixelBucketCount(pixelWidth) * 2;
 }
 
 /**
@@ -365,6 +492,7 @@ export function getDataSeriesFromSpecs(
   orderOrdinalBinsBy?: OrderBy,
   seriesSort?: SeriesCompareFn,
   groupBySpec?: SmallMultiplesGroupBy,
+  pixelWidth = 0,
 ): {
   dataSeries: DataSeries[];
   xValues: Set<string | number>;
@@ -404,6 +532,7 @@ export function getDataSeriesFromSpecs(
       specGroup?.stackMode,
       groupBySpec,
       deselectedDataSeries,
+      pixelWidth,
     );
 
     insertOrder += dataSeries.size;

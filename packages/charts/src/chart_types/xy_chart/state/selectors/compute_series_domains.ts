@@ -15,6 +15,14 @@ import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors
 import { computeSeriesDomains } from '../utils/utils';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
+const getParentDimensions = (state: GlobalChartState) => state.parentDimensions;
+
+/** Plot-pixel budget: parent size, conservative on rotation (max side). */
+function plotPixelWidth(parent: { width: number; height: number }): number {
+  // Width is 0 before the first layout; still downsample dense series so spec
+  // parse does not copy every row. Real size replaces this on resize.
+  return Math.max(parent.width, parent.height) || 1024;
+}
 
 /** @internal */
 export const computeSeriesDomainsSelector = createCustomCachedSelector(
@@ -25,8 +33,18 @@ export const computeSeriesDomainsSelector = createCustomCachedSelector(
     getSettingsSpecSelector,
     getDeselectedSeriesSelector,
     getSmallMultiplesIndexOrderSelector,
+    getParentDimensions,
   ],
-  computeSeriesDomains,
+  (seriesSpecs, scaleConfigs, annotations, settings, deselected, smallMultiples, parentDimensions) =>
+    computeSeriesDomains(
+      seriesSpecs,
+      scaleConfigs,
+      annotations,
+      settings,
+      deselected,
+      smallMultiples,
+      plotPixelWidth(parentDimensions),
+    ),
 );
 
 /**
@@ -45,9 +63,18 @@ export const computeFullSeriesDomainsSelector = createCustomCachedSelector(
     getAnnotationSpecsSelector,
     getSettingsSpecSelector,
     getSmallMultiplesIndexOrderSelector,
+    getParentDimensions,
   ],
-  (domains, deselectedSeries, seriesSpecs, scaleConfigs, annotations, settings, smallMultiples) => {
+  (domains, deselectedSeries, seriesSpecs, scaleConfigs, annotations, settings, smallMultiples, parentDimensions) => {
     if (deselectedSeries.length === 0) return domains;
-    return computeSeriesDomains(seriesSpecs, scaleConfigs, annotations, settings, [], smallMultiples);
+    return computeSeriesDomains(
+      seriesSpecs,
+      scaleConfigs,
+      annotations,
+      settings,
+      [],
+      smallMultiples,
+      plotPixelWidth(parentDimensions),
+    );
   },
 );

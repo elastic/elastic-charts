@@ -6,54 +6,95 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import React, { useRef, useState } from 'react';
 
-import {
-  Axis,
-  Chart,
-  CurveType,
-  LegendValue,
-  LineSeries,
-  niceTimeFormatByDay,
-  Position,
-  ScaleType,
-  Settings,
-  timeFormatter,
-} from '@elastic/charts';
-import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
-import { TSVB_DATASET } from '@elastic/charts/src/utils/data_samples/test_dataset_tsvb';
+import { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
+const SERIES_COUNT = 50;
+const POINTS_PER_SERIES = 40_000;
 
-export const Example: ChartsStory = (_, { title, description }) => (
-  <Chart title={title} description={description}>
-    <Settings
-      showLegend
-      legendValues={[LegendValue.CurrentAndLastValue]}
-      legendPosition={Position.Right}
-      baseTheme={useBaseTheme()}
-    />
-    <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
-    <Axis
-      id="left"
-      title={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.title}
-      position={Position.Left}
-      tickFormat={(d) => `${Number(d).toFixed(0)}%`}
-    />
-    {TSVB_DATASET.series.map((series) => (
-      <LineSeries
-        key={series.id}
-        id={series.label}
-        xScaleType={ScaleType.Time}
-        yScaleType={ScaleType.Log}
-        xAccessor={0}
-        yAccessors={[1]}
-        data={series.data}
-        curve={CurveType.CURVE_MONOTONE_X}
-      />
-    ))}
-  </Chart>
-);
+type SeriesDatum = [x: number, y: number];
+
+function prepData(seriesPoints: number, numSeries = 1, seriesShift = 0): SeriesDatum[][] {
+  console.time('prep');
+
+  const series: SeriesDatum[][] = [];
+  let a = 0;
+  let b = 0;
+  let c = 0;
+
+  for (let j = 0; j < numSeries; j++) {
+    const data = new Array<SeriesDatum>(seriesPoints);
+    const shift = j * seriesShift;
+
+    for (let i = 0; i < seriesPoints; i++) {
+      if (i % 100 === 0) a = 2 * Math.random();
+      if (i % 1000 === 0) b = 2 * Math.random();
+      if (i % 10000 === 0) c = 2 * Math.random();
+      const spike = i % 50000 === 0 ? 10 : 0;
+
+      data[i] = [i, shift + 2 * Math.sin(i / 100) + a + b + c + spike + Math.random()];
+    }
+
+    series.push(data);
+  }
+
+  console.timeEnd('prep');
+
+  return series;
+}
+
+const seriesData = prepData(POINTS_PER_SERIES, SERIES_COUNT, 2);
+const RENDER_LABEL = 'chart-render';
+
+export const Example: ChartsStory = (_, { title, description }) => {
+  const [runId, setRunId] = useState(0);
+  const pendingTimer = useRef(false);
+  const baseTheme = useBaseTheme();
+
+  const startRender = () => {
+    console.time(RENDER_LABEL);
+    pendingTimer.current = true;
+    setRunId((id) => id + 1);
+  };
+
+  return (
+    <>
+      <button type="button" style={{ all: 'revert' }} onClick={startRender}>
+        Render
+      </button>
+      {runId > 0 && (
+        <Chart key={runId} title={title} description={description}>
+          <Settings
+            showLegend
+            legendPosition={Position.Right}
+            baseTheme={baseTheme}
+            onRenderChange={(isRendered) => {
+              if (isRendered && pendingTimer.current) {
+                pendingTimer.current = false;
+                console.timeEnd(RENDER_LABEL);
+              }
+            }}
+          />
+          <Axis id="bottom" position={Position.Bottom} />
+          <Axis id="left" position={Position.Left} />
+          {seriesData.map((data, index) => (
+            <LineSeries
+              key={index}
+              id={`series-${index + 1}`}
+              xScaleType={ScaleType.Linear}
+              yScaleType={ScaleType.Linear}
+              xAccessor={0}
+              yAccessors={[1]}
+              data={data}
+              curve={CurveType.LINEAR}
+            />
+          ))}
+        </Chart>
+      )}
+    </>
+  );
+};
