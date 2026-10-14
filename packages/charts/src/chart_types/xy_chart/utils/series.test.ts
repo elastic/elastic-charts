@@ -94,6 +94,93 @@ describe('Series', () => {
       [2, 3],
     ]);
   });
+  test('pixel min-max downsample keeps extrema and first/last for dense lines', () => {
+    const data = Array.from({ length: 200 }, (_, i) => [i, i === 80 ? 500 : i === 150 ? -20 : 1] as [number, number]);
+    const splitSeries = splitSeriesDataByAccessors(
+      MockSeriesSpec.line({
+        id: 'spec1',
+        data,
+        xAccessor: 0,
+        yAccessors: [1],
+        xScaleType: ScaleType.Linear,
+      }),
+      new Map(),
+      0,
+      false,
+      false,
+      undefined,
+      undefined,
+      [],
+      20,
+    );
+    const [series] = [...splitSeries.dataSeries.values()];
+    expect(series?.data.length).toBeLessThan(200);
+    expect(series?.data[0]?.x).toBe(0);
+    expect(series?.data.at(-1)?.x).toBe(199);
+    expect(series?.data.some(({ y1 }) => y1 === 500)).toBe(true);
+    expect(series?.data.some(({ y1 }) => y1 === -20)).toBe(true);
+  });
+  test('does not downsample bars, stacked, or ordinal series', () => {
+    const data = Array.from({ length: 200 }, (_, i) => [i, i] as [number, number]);
+    const bar = splitSeriesDataByAccessors(
+      MockSeriesSpec.bar({
+        id: 'bar',
+        data,
+        xAccessor: 0,
+        yAccessors: [1],
+        xScaleType: ScaleType.Linear,
+      }),
+      new Map(),
+      0,
+      false,
+      false,
+      undefined,
+      undefined,
+      [],
+      20,
+    );
+    const ordinal = splitSeriesDataByAccessors(
+      MockSeriesSpec.line({
+        id: 'ordinal',
+        data,
+        xAccessor: 0,
+        yAccessors: [1],
+        xScaleType: ScaleType.Ordinal,
+      }),
+      new Map(),
+      0,
+      false,
+      false,
+      undefined,
+      undefined,
+      [],
+      20,
+    );
+    expect([...bar.dataSeries.values()][0]?.data).toHaveLength(200);
+    expect([...ordinal.dataSeries.values()][0]?.data).toHaveLength(200);
+  });
+  test('downsampled line keeps the original y-domain extrema', () => {
+    const data = Array.from({ length: 400 }, (_, i) => [i, i === 200 ? 999 : 1] as [number, number]);
+    const store = MockStore.default({ width: 50, height: 50, top: 0, left: 0 });
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.line({
+          id: 's',
+          data,
+          xAccessor: 0,
+          yAccessors: [1],
+          xScaleType: ScaleType.Linear,
+        }),
+        MockGlobalSpec.settingsNoMargins(),
+      ],
+      store,
+    );
+    const domains = computeSeriesDomainsSelector(store.getState());
+    expect(domains.formattedDataSeries[0]?.data.length).toBeLessThan(400);
+    expect(domains.yDomains[0]?.domain[1]).toBe(999);
+    expect(domains.xDomain.domain).toEqual([0, 399]);
+    expect(domains.xDomain.minInterval).toBe(1);
+  });
   test('Can split dataset into 1Y1G series', () => {
     const splitSeries = splitSeriesDataByAccessors(
       MockSeriesSpec.bar({

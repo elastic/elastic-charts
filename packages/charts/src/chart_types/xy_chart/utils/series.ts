@@ -8,7 +8,9 @@
 
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
+import { minMaxDownsample, pixelBucketCount } from './minmax_downsample';
 import type { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesType, StackMode } from './specs';
+import { isAreaSeriesSpec, isLineSeriesSpec } from './specs';
 import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
 import type { Color } from '../../../common/colors';
 import { Colors } from '../../../common/colors';
@@ -123,6 +125,7 @@ export function splitSeriesDataByAccessors(
   stackMode?: StackMode,
   groupBySpec?: SmallMultiplesGroupBy,
   deselectedDataSeries: SeriesIdentifier[] = [],
+  pixelWidth = 0,
 ): {
   dataSeries: Map<SeriesKey, DataSeries>;
   xValues: Array<string | number>;
@@ -131,13 +134,15 @@ export function splitSeriesDataByAccessors(
     seriesType,
     id: specId,
     groupId,
-    data,
     xAccessor,
     yAccessors,
     y0Accessors,
     markSizeAccessor,
     splitSeriesAccessors = [],
   } = spec;
+  let { data } = spec;
+  let downsampledMinInterval = Infinity;
+  let downsampledXMin = NaN;
   const dataSeries = new Map<SeriesKey, DataSeries>();
   const xValues: Array<string | number> = [];
   const nonNumericValues: Map<unknown, number> = new Map();
@@ -151,6 +156,21 @@ export function splitSeriesDataByAccessors(
   const emptySplitAccessors = new Map<string | number, string | number>();
   const xAccessorStr = getAccessorFieldName(xAccessor, 0);
   const hasSplitAccessors = splitSeriesAccessors.length > 0;
+
+  if (shouldMinMaxDownsample(spec, isStacked, isBanded, groupBySpec, hasSplitAccessors, pixelWidth)) {
+    const yAccessor = yAccessors[0];
+    if (yAccessor !== undefined) {
+      const sampled = minMaxDownsample(
+        data,
+        (datum) => getAccessorValue(datum, xAccessor),
+        (datum) => getAccessorValue(datum, yAccessor),
+        pixelBucketCount(pixelWidth),
+      );
+      data = sampled.data;
+      downsampledMinInterval = sampled.minInterval;
+      downsampledXMin = sampled.xMin;
+    }
+  }
 
   const createSeries = (
     seriesKey: SeriesKey,
@@ -314,10 +334,34 @@ export function splitSeriesDataByAccessors(
       `(${values.map(([k, v]) => `${v}: ${JSON.stringify(k)}`).join(', ')})`,
     );
   }
+
+  // Downsampled x is a subset; keep the true min adjacent interval so linear
+  // scales do not treat pixel-bucket gaps as the data interval.
+  if (Number.isFinite(downsampledMinInterval) && Number.isFinite(downsampledXMin)) {
+    xValues.push(downsampledXMin, downsampledXMin + downsampledMinInterval);
+  }
+
   return {
     dataSeries,
     xValues,
   };
+}
+
+function shouldMinMaxDownsample(
+  spec: BasicSeriesSpec,
+  isStacked: boolean,
+  isBanded: boolean,
+  groupBySpec: SmallMultiplesGroupBy | undefined,
+  hasSplitAccessors: boolean,
+  pixelWidth: number,
+): boolean {
+  if (pixelWidth <= 0 || isStacked || isBanded || hasSplitAccessors) return false;
+  if (groupBySpec?.horizontal || groupBySpec?.vertical) return false;
+  if (spec.xScaleType === ScaleType.Ordinal) return false;
+  if (spec.yAccessors.length !== 1 || spec.markSizeAccessor !== undefined) return false;
+  if (!isLineSeriesSpec(spec) && !isAreaSeriesSpec(spec)) return false;
+  if (spec.fit !== undefined) return false;
+  return spec.data.length > pixelBucketCount(pixelWidth) * 2;
 }
 
 /**
@@ -448,6 +492,7 @@ export function getDataSeriesFromSpecs(
   orderOrdinalBinsBy?: OrderBy,
   seriesSort?: SeriesCompareFn,
   groupBySpec?: SmallMultiplesGroupBy,
+  pixelWidth = 0,
 ): {
   dataSeries: DataSeries[];
   xValues: Set<string | number>;
@@ -487,6 +532,7 @@ export function getDataSeriesFromSpecs(
       specGroup?.stackMode,
       groupBySpec,
       deselectedDataSeries,
+      pixelWidth,
     );
 
     insertOrder += dataSeries.size;
