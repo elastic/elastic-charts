@@ -13,10 +13,10 @@ import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 
 import { getAnnotationTooltipDomId } from './annotation_tooltip';
 import { DEFAULT_CSS_CURSOR } from '../../../../../common/constants';
+import type { AnnotationClickListener } from '../../../../../specs/settings';
 import type {
   onDOMElementEnter as onDOMElementEnterAction,
   onDOMElementLeave as onDOMElementLeaveAction,
-  onDOMElementClick as onDOMElementClickAction,
 } from '../../../../../state/actions/dom_element';
 import { DOMElementType } from '../../../../../state/actions/dom_element';
 import { Position, renderWithProps } from '../../../../../utils/common';
@@ -32,7 +32,7 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'pa
   chartDimensions: Dimensions;
   onDOMElementEnter: typeof onDOMElementEnterAction;
   onDOMElementLeave: typeof onDOMElementLeaveAction;
-  onDOMElementClick: typeof onDOMElementClickAction;
+  onAnnotationClick?: AnnotationClickListener;
   clickable: boolean;
   getHoverParams: GetAnnotationParamsFn;
 };
@@ -63,7 +63,7 @@ export function LineMarker({
   chartDimensions,
   onDOMElementEnter,
   onDOMElementLeave,
-  onDOMElementClick,
+  onAnnotationClick,
   clickable,
   getHoverParams,
 }: LineMarkerProps) {
@@ -173,7 +173,12 @@ export function LineMarker({
   ]);
 
   return clickable ? (
-    <button {...elementProps} onClick={() => onDOMElementClick()} type="button">
+    <button
+      {...elementProps}
+      onMouseDown={(e) => e.stopPropagation()}
+      onClick={() => onAnnotationClick?.({ rects: [], lines: [{ id, datum }] })}
+      type="button"
+    >
       <div ref={iconRef} className="echAnnotation__icon">
         {renderWithProps(icon, datum)}
       </div>

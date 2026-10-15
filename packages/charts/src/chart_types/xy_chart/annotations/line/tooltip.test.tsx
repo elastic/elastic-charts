@@ -28,6 +28,59 @@ import type { AnnotationDimensions } from '../types';
 
 describe('Annotation tooltips', () => {
   describe('Line annotation tooltips', () => {
+    test.each(['click', 'pointer'])('should invoke onAnnotationClick once for a marker %s', (activation) => {
+      const onAnnotationClick = jest.fn();
+
+      render(
+        <Chart size={[100, 100]}>
+          <Settings
+            onAnnotationClick={onAnnotationClick}
+            theme={{
+              chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },
+              chartPaddings: { left: 0, right: 0, top: 0, bottom: 0 },
+            }}
+          />
+          <LineSeries
+            id="line"
+            data={[
+              { x: 0, y: 1 },
+              { x: 2, y: 3 },
+              { x: 4, y: 5 },
+            ]}
+            xAccessor="x"
+            yAccessors={['y']}
+            xScaleType={ScaleType.Linear}
+          />
+          <LineAnnotation
+            id="foo"
+            domainType={AnnotationDomainType.YDomain}
+            dataValues={[{ dataValue: 2, details: 'foo' }]}
+            marker={<div style={{ width: '10px', height: '10px' }} />}
+          />
+        </Chart>,
+      );
+
+      const marker = screen.getByTestId('echAnnotationMarker');
+      if (activation === 'pointer') {
+        fireEvent.mouseEnter(marker);
+        fireEvent.mouseDown(marker);
+        fireEvent.mouseUp(marker);
+      }
+      fireEvent.click(marker);
+
+      expect(onAnnotationClick).toHaveBeenCalledTimes(1);
+
+      expect(onAnnotationClick).toHaveBeenCalledWith({
+        rects: [],
+        lines: [
+          {
+            id: expect.stringContaining('foo'),
+            datum: { dataValue: 2, details: 'foo' },
+          },
+        ],
+      });
+    });
+
     test('should show tooltip on mouseenter', () => {
       render(
         <Chart size={[100, 100]}>
