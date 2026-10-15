@@ -62783,16 +62783,16 @@ const is_chart_empty_1 = __webpack_require__(/*! ../../../state/selectors/is_cha
 const spec_1 = __webpack_require__(/*! ../../../state/utils/spec */ "../packages/charts/src/chart_types/xy_chart/state/utils/spec.ts");
 const specs_1 = __webpack_require__(/*! ../../../utils/specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
 const utils_1 = __webpack_require__(/*! ../../common/utils */ "../packages/charts/src/chart_types/xy_chart/renderer/common/utils.ts");
-function renderAnnotationLineMarkers(chartAreaRef, chartDimensions, chartId, annotationLines, onDOMElementEnter, onDOMElementLeave, hoveredIds, sharedStyle, clickable, animations) {
+function renderAnnotationLineMarkers(chartAreaRef, chartDimensions, chartId, annotationLines, onDOMElementEnter, onDOMElementLeave, hoveredIds, sharedStyle, clickable, onAnnotationClick, animations) {
     const getHoverParams = (0, utils_1.getAnnotationHoverParamsFn)(hoveredIds, sharedStyle, animations);
     return annotationLines.reduce((acc, { markers, ...props }) => {
         if (!markers[0])
             return acc;
-        acc.push(react_1.default.createElement(line_marker_1.LineMarker, { ...props, marker: markers[0], key: `annotation-${props.id}`, chartId: chartId, chartAreaRef: chartAreaRef, chartDimensions: chartDimensions, onDOMElementEnter: onDOMElementEnter, onDOMElementLeave: onDOMElementLeave, onDOMElementClick: dom_element_1.onDOMElementClick, clickable: clickable, getHoverParams: getHoverParams }));
+        acc.push(react_1.default.createElement(line_marker_1.LineMarker, { ...props, marker: markers[0], key: `annotation-${props.id}`, chartId: chartId, chartAreaRef: chartAreaRef, chartDimensions: chartDimensions, onDOMElementEnter: onDOMElementEnter, onDOMElementLeave: onDOMElementLeave, onAnnotationClick: onAnnotationClick, clickable: clickable, getHoverParams: getHoverParams }));
         return acc;
     }, []);
 }
-const AnnotationsComponent = ({ tooltipState, isChartEmpty, chartDimensions, annotationSpecs, annotationDimensions, getChartContainerRef, chartAreaRef, chartId, zIndex, onPointerMove, onDOMElementEnter, onDOMElementLeave, clickable, hoveredAnnotationIds, sharedStyle, }) => {
+const AnnotationsComponent = ({ tooltipState, isChartEmpty, chartDimensions, annotationSpecs, annotationDimensions, getChartContainerRef, chartAreaRef, chartId, zIndex, onPointerMove, onDOMElementEnter, onDOMElementLeave, clickable, hoveredAnnotationIds, sharedStyle, onAnnotationClick, }) => {
     const renderAnnotationMarkers = (0, react_1.useCallback)(() => {
         const markers = [];
         annotationDimensions.forEach((dimensions, id) => {
@@ -62802,7 +62802,7 @@ const AnnotationsComponent = ({ tooltipState, isChartEmpty, chartDimensions, ann
             }
             if ((0, specs_1.isLineAnnotation)(annotationSpec)) {
                 const annotationLines = dimensions;
-                const lineMarkers = renderAnnotationLineMarkers(chartAreaRef, chartDimensions, chartId, annotationLines, onDOMElementEnter, onDOMElementLeave, hoveredAnnotationIds, sharedStyle, clickable, annotationSpec.animations);
+                const lineMarkers = renderAnnotationLineMarkers(chartAreaRef, chartDimensions, chartId, annotationLines, onDOMElementEnter, onDOMElementLeave, hoveredAnnotationIds, sharedStyle, clickable, onAnnotationClick, annotationSpec.animations);
                 lineMarkers.forEach((m) => markers.push(m));
             }
         });
@@ -62818,6 +62818,7 @@ const AnnotationsComponent = ({ tooltipState, isChartEmpty, chartDimensions, ann
         hoveredAnnotationIds,
         sharedStyle,
         clickable,
+        onAnnotationClick,
     ]);
     const onScroll = (0, react_1.useCallback)(() => {
         onPointerMove({ position: { x: -1, y: -1 }, time: Date.now() });
@@ -62834,7 +62835,6 @@ const mapDispatchToProps = (dispatch) => (0, toolkit_1.bindActionCreators)({
     onPointerMove: mouse_1.onPointerMove,
     onDOMElementLeave: dom_element_1.onDOMElementLeave,
     onDOMElementEnter: dom_element_1.onDOMElementEnter,
-    onDOMElementClick: dom_element_1.onDOMElementClick,
 }, dispatch);
 const mapStateToProps = (state) => {
     const { zIndex, chartId } = state;
@@ -62850,6 +62850,7 @@ const mapStateToProps = (state) => {
             zIndex,
             hoveredAnnotationIds: [],
             clickable: false,
+            onAnnotationClick: undefined,
         };
     }
     return {
@@ -62863,6 +62864,7 @@ const mapStateToProps = (state) => {
         zIndex,
         hoveredAnnotationIds: (0, get_highlighted_annotation_ids_selector_1.getHighlightedAnnotationIdsSelector)(state),
         clickable: Boolean((0, get_settings_spec_1.getSettingsSpecSelector)(state).onAnnotationClick),
+        onAnnotationClick: (0, get_settings_spec_1.getSettingsSpecSelector)(state).onAnnotationClick,
     };
 };
 /** @internal */
@@ -62955,7 +62957,7 @@ function getMarkerCentredTransform(alignment, hasMarkerDimensions) {
  * LineMarker component used to display line annotation markers
  * @internal
  */
-function LineMarker({ id, chartId, specId, datum, panel, marker: { icon, body, color, position, alignment, dimension }, chartAreaRef, chartDimensions, onDOMElementEnter, onDOMElementLeave, onDOMElementClick, clickable, getHoverParams, }) {
+function LineMarker({ id, chartId, specId, datum, panel, marker: { icon, body, color, position, alignment, dimension }, chartAreaRef, chartDimensions, onDOMElementEnter, onDOMElementLeave, onAnnotationClick, clickable, getHoverParams, }) {
     const { style, options } = getHoverParams(id);
     const iconRef = (0, react_1.useRef)(null);
     const testRef = (0, react_1.useRef)(null);
@@ -63051,7 +63053,7 @@ function LineMarker({ id, chartId, specId, datum, panel, marker: { icon, body, c
         chartId,
         datum,
     ]);
-    return clickable ? (react_1.default.createElement("button", { ...elementProps, onClick: () => onDOMElementClick(), type: "button" },
+    return clickable ? (react_1.default.createElement("button", { ...elementProps, onMouseDown: (e) => e.stopPropagation(), onClick: () => onAnnotationClick?.({ rects: [], lines: [{ id, datum }] }), type: "button" },
         react_1.default.createElement("div", { ref: iconRef, className: "echAnnotation__icon" }, (0, common_1.renderWithProps)(icon, datum)),
         body && (react_1.default.createElement("div", { ref: testRef, className: "echAnnotation__body" }, (0, common_1.renderWithProps)(body, datum))))) : (
     // Non-clickable markers use a div (not a button) so they are not exposed as controls,
@@ -82825,7 +82827,7 @@ var __webpack_unused_export__;
  * Side Public License, v 1.
  */
 __webpack_unused_export__ = ({ value: true });
-exports.onDOMElementClick = exports.onDOMElementEnter = exports.onDOMElementLeave = exports.DOMElementType = void 0;
+exports.onDOMElementEnter = exports.onDOMElementLeave = exports.DOMElementType = void 0;
 const toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs");
 /** @internal */
 exports.DOMElementType = Object.freeze({
@@ -82835,8 +82837,6 @@ exports.DOMElementType = Object.freeze({
 exports.onDOMElementLeave = (0, toolkit_1.createAction)('ON_DOM_ELEMENT_LEAVE');
 /** @internal */
 exports.onDOMElementEnter = (0, toolkit_1.createAction)('ON_DOM_ELEMENT_ENTER');
-/** @internal */
-exports.onDOMElementClick = (0, toolkit_1.createAction)('ON_DOM_ELEMENT_CLICK');
 
 
 /***/ },
@@ -108649,4 +108649,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.612e8f1c.iframe.bundle.js.map
+//# sourceMappingURL=main.31e73dd7.iframe.bundle.js.map
