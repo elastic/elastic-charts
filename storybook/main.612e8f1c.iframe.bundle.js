@@ -8267,7 +8267,7 @@ Object.defineProperty(exports, "withThreeLayersAndSameNestedLayers", ({ enumerab
  * Side Public License, v 1.
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.kibanaManySeriesJourney = exports.fontMeasurementTest = exports.lensStressTest = exports.linearNicing = exports.errorBoundary = exports.pointStyleOverrides = exports.logWithNegativeValues = exports.startDayOfWeek = exports.metricTrendLength = exports.domainEdges = exports.highlighterZIndex = exports.duplicateLabelsInPartitionLegend = exports.testPointsOutsideOfDomain = exports.rtlText = exports.accessibilityCustomizations = exports.legendScrollBarSizing = exports.filterZerosInLogFitDomain = exports.noAxesAnnotationBugFix = exports.chromePathBugFix = exports.noSeries = void 0;
+exports.denseMultiSeries = exports.kibanaManySeriesJourney = exports.fontMeasurementTest = exports.lensStressTest = exports.linearNicing = exports.errorBoundary = exports.pointStyleOverrides = exports.logWithNegativeValues = exports.startDayOfWeek = exports.metricTrendLength = exports.domainEdges = exports.highlighterZIndex = exports.duplicateLabelsInPartitionLegend = exports.testPointsOutsideOfDomain = exports.rtlText = exports.accessibilityCustomizations = exports.legendScrollBarSizing = exports.filterZerosInLogFitDomain = exports.noAxesAnnotationBugFix = exports.chromePathBugFix = exports.noSeries = void 0;
 exports["default"] = {
     title: 'Test Cases',
 };
@@ -8311,6 +8311,8 @@ var _34_font_measurement_story_1 = __webpack_require__(/*! ./34_font_measurement
 Object.defineProperty(exports, "fontMeasurementTest", ({ enumerable: true, get: function () { return _34_font_measurement_story_1.Example; } }));
 var _35_many_series_kibana_story_1 = __webpack_require__(/*! ./35_many_series_kibana.story */ "./stories/test_cases/35_many_series_kibana.story.tsx");
 Object.defineProperty(exports, "kibanaManySeriesJourney", ({ enumerable: true, get: function () { return _35_many_series_kibana_story_1.Example; } }));
+var _36_dense_multi_series_story_1 = __webpack_require__(/*! ./36_dense_multi_series.story */ "./stories/test_cases/36_dense_multi_series.story.tsx");
+Object.defineProperty(exports, "denseMultiSeries", ({ enumerable: true, get: function () { return _36_dense_multi_series_story_1.Example; } }));
 
 
 /***/ },
@@ -36915,9 +36917,9 @@ exports.Example = void 0;
 /* eslint-disable */
 // @ts-nocheck
 // @ts-ignore
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useEffect, useState } from 'react';\n\nimport type { SeriesColorAccessor, SeriesNameFn } from '@elastic/charts';\nimport { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip, TooltipType } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\n\n/**\n * Recreates the Kibana many-series performance journey chart\n * (`x-pack/performance/journeys_e2e/many_series_chart_dashboard.ts`).\n *\n * Lens emits 3 stacked `BarSeries` specs (one per y accessor), each split by\n * `order_id` (~649 values) so Elastic Charts materializes ~1947 series.\n * Histogram mode is on because Lens treats ES|QL date columns as interval\n * buckets even though this query has no `BUCKET()`.\n *\n * Dataset lives in `public/many_series_ecommerce.json` so Storybook and the\n * playground can both fetch it as static JSON.\n */\ntype EcommerceRow = {\n  order_date: number;\n  order_id: string;\n  total_quantity: number;\n  overallAvgQnt: number;\n  avgQnt: number;\n};\n\nconst Y_ACCESSORS = ['total_quantity', 'overallAvgQnt', 'avgQnt'] as const;\nconst LAYER_ID = '0b226fa9-39b4-44e7-82ae-97fbacfe964f';\nconst X_DOMAIN = { min: 1785322858728, max: 1786799230394 };\nconst PROFILE_LABEL = 'Perf:DataToRender';\n\n// EUI colorblind categorical palette used by Kibana's default Lens palette.\nconst PALETTE = [\n  '#54B399',\n  '#6092C0',\n  '#D36086',\n  '#9170B8',\n  '#CA8EAE',\n  '#D6BF57',\n  '#B9A888',\n  '#DA8B45',\n  '#AA6556',\n  '#E7664C',\n];\n\nfunction buildColorAccessor(rows: EcommerceRow[]): SeriesColorAccessor {\n  const colorByOrderId = new Map<string, string>();\n  for (const row of rows) {\n    if (!colorByOrderId.has(row.order_id)) {\n      colorByOrderId.set(row.order_id, PALETTE[colorByOrderId.size % PALETTE.length]);\n    }\n  }\n  return ({ splitAccessors }) => {\n    const orderId = String(splitAccessors.get('order_id') ?? '');\n    return colorByOrderId.get(orderId) ?? PALETTE[0];\n  };\n}\n\nexport const Example: ChartsStory = (_, context) => {\n  const title = context?.title;\n  const description = context?.description;\n  const [data, setData] = useState<EcommerceRow[]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    async function fetchData() {\n      \n      console.log('requesting data');\n      const response = await fetch('many_series_ecommerce.json');\n      const d: EcommerceRow[] = await response.json();\n      \n      console.log('data arrived');\n\n      window.performance.mark('Perf:Started');\n      setData(d);\n    }\n    fetchData().catch(() => {});\n  }, [runId]);\n\n  const theme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </>\n    );\n  }\n\n  const color = buildColorAccessor(data);\n\n  return (\n    <>\n      {renderButton}\n      <Chart title={title} description={description}>\n        <Tooltip type={TooltipType.VerticalCursor} />\n        <Settings\n          showLegend\n          legendPosition={Position.Right}\n          legendSize={50}\n          legendValues={[]}\n          rotation={0}\n          xDomain={X_DOMAIN}\n          allowBrushingLastHistogramBin\n          baseTheme={theme}\n          theme={{\n            legend: { labelOptions: { maxLines: 1 } },\n            chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },\n          }}\n          onRenderChange={(isRendered) => {\n            if (isRendered) {\n              window.performance.mark('Perf:Ended');\n              const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n              \n              console.log(`chart rendered in ${duration.toFixed(0)} ms`);\n            }\n          }}\n        />\n        <Axis id=\"x\" position={Position.Bottom} title=\"order_date\" gridLine={{ visible: true }} />\n        <Axis id=\"left\" groupId=\"left\" position={Position.Left} title=\"total_quantity\" gridLine={{ visible: true }} />\n        {Y_ACCESSORS.map((yAccessor) => {\n          const name: SeriesNameFn = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;\n          return (\n            <BarSeries\n              key={yAccessor}\n              id={`${LAYER_ID}:order_date:${yAccessor}:order_id`}\n              name={name}\n              xAccessor=\"order_date\"\n              yAccessors={[yAccessor]}\n              splitSeriesAccessors={['order_id']}\n              stackAccessors={['order_date']}\n              data={data}\n              xScaleType={ScaleType.Time}\n              yScaleType={ScaleType.Linear}\n              groupId=\"left\"\n              enableHistogramMode\n              minBarHeight={1}\n              timeZone=\"UTC\"\n              color={color}\n              displayValueSettings={{ showValueLabel: false }}\n            />\n          );\n        })}\n      </Chart>\n    </>\n  );\n};\n";
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useEffect, useState } from 'react';\n\nimport type { SeriesColorAccessor, SeriesNameFn } from '@elastic/charts';\nimport { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip, TooltipType } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\n\n/**\n * Recreates the Kibana many-series performance journey chart\n * (`x-pack/performance/journeys_e2e/many_series_chart_dashboard.ts`).\n *\n * Lens emits 3 stacked `BarSeries` specs (one per y accessor), each split by\n * `order_id` (~649 values) so Elastic Charts materializes ~1947 series.\n * Histogram mode is on because Lens treats ES|QL date columns as interval\n * buckets even though this query has no `BUCKET()`.\n *\n * Dataset lives in `public/many_series_ecommerce.json` so Storybook and the\n * playground can both fetch it as static JSON.\n */\ntype EcommerceRow = {\n  order_date: number;\n  order_id: string;\n  total_quantity: number;\n  overallAvgQnt: number;\n  avgQnt: number;\n};\n\nconst Y_ACCESSORS = ['total_quantity', 'overallAvgQnt', 'avgQnt'] as const;\nconst LAYER_ID = '0b226fa9-39b4-44e7-82ae-97fbacfe964f';\nconst X_DOMAIN = { min: 1785322858728, max: 1786799230394 };\nconst PROFILE_LABEL = 'Perf:DataToRender';\n\n// EUI colorblind categorical palette used by Kibana's default Lens palette.\nconst PALETTE = [\n  '#54B399',\n  '#6092C0',\n  '#D36086',\n  '#9170B8',\n  '#CA8EAE',\n  '#D6BF57',\n  '#B9A888',\n  '#DA8B45',\n  '#AA6556',\n  '#E7664C',\n];\n\nfunction buildColorAccessor(rows: EcommerceRow[]): SeriesColorAccessor {\n  const colorByOrderId = new Map<string, string>();\n  for (const row of rows) {\n    if (!colorByOrderId.has(row.order_id)) {\n      colorByOrderId.set(row.order_id, PALETTE[colorByOrderId.size % PALETTE.length]);\n    }\n  }\n  return ({ splitAccessors }) => {\n    const orderId = String(splitAccessors.get('order_id') ?? '');\n    return colorByOrderId.get(orderId) ?? PALETTE[0];\n  };\n}\n\nexport const Example: ChartsStory = (_, context) => {\n  const title = context?.title;\n  const description = context?.description;\n  const [data, setData] = useState<EcommerceRow[]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    async function fetchData() {\n      \n      console.log('requesting data');\n      const response = await fetch('many_series_ecommerce.json');\n      const d: EcommerceRow[] = await response.json();\n      \n      console.log('data arrived');\n\n      window.performance.mark('Perf:Started');\n      setData(d);\n    }\n    fetchData().catch(() => {});\n  }, [runId]);\n\n  const theme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert', alignSelf: 'flex-start' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </div>\n    );\n  }\n\n  const color = buildColorAccessor(data);\n\n  return (\n    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n      {renderButton}\n      <div style={{ flex: 1, minHeight: 0 }}>\n        <Chart title={title} description={description}>\n          <Tooltip type={TooltipType.VerticalCursor} />\n          <Settings\n            showLegend\n            legendPosition={Position.Right}\n            legendSize={50}\n            legendValues={[]}\n            rotation={0}\n            xDomain={X_DOMAIN}\n            allowBrushingLastHistogramBin\n            baseTheme={theme}\n            theme={{\n              legend: { labelOptions: { maxLines: 1 } },\n              chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },\n            }}\n            onRenderChange={(isRendered) => {\n              if (isRendered) {\n                window.performance.mark('Perf:Ended');\n                const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n                \n                console.log(`chart rendered in ${duration.toFixed(0)} ms`);\n              }\n            }}\n          />\n          <Axis id=\"x\" position={Position.Bottom} title=\"order_date\" gridLine={{ visible: true }} />\n          <Axis id=\"left\" groupId=\"left\" position={Position.Left} title=\"total_quantity\" gridLine={{ visible: true }} />\n          {Y_ACCESSORS.map((yAccessor) => {\n            const name: SeriesNameFn = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;\n            return (\n              <BarSeries\n                key={yAccessor}\n                id={`${LAYER_ID}:order_date:${yAccessor}:order_id`}\n                name={name}\n                xAccessor=\"order_date\"\n                yAccessors={[yAccessor]}\n                splitSeriesAccessors={['order_id']}\n                stackAccessors={['order_date']}\n                data={data}\n                xScaleType={ScaleType.Time}\n                yScaleType={ScaleType.Linear}\n                groupId=\"left\"\n                enableHistogramMode\n                minBarHeight={1}\n                timeZone=\"UTC\"\n                color={color}\n                displayValueSettings={{ showValueLabel: false }}\n              />\n            );\n          })}\n        </Chart>\n      </div>\n    </div>\n  );\n};\n";
 // @ts-ignore
-var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 69 }, "endLoc": { "col": 1, "line": 168 }, "startBody": { "col": 36, "line": 69 }, "endBody": { "col": 1, "line": 168 } } };
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 69 }, "endLoc": { "col": 1, "line": 170 }, "startBody": { "col": 36, "line": 69 }, "endBody": { "col": 1, "line": 170 } } };
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -36976,40 +36978,149 @@ const Example = (_, context) => {
         fetchData().catch(() => { });
     }, [runId]);
     const theme = (0, use_base_theme_1.useBaseTheme)();
-    const renderButton = (react_1.default.createElement("button", { type: "button", style: { all: 'revert' }, onClick: () => {
+    const renderButton = (react_1.default.createElement("button", { type: "button", style: { all: 'revert', alignSelf: 'flex-start' }, onClick: () => {
             setData([]);
             setRunId(runId + 1);
         } }, "Render"));
     if (data.length === 0) {
-        return (react_1.default.createElement(react_1.default.Fragment, null,
+        return (react_1.default.createElement("div", { style: { display: 'flex', flexDirection: 'column', height: '100%' } },
             renderButton,
             react_1.default.createElement("div", { style: { marginTop: 4 } }, "Rendering...")));
     }
     const color = buildColorAccessor(data);
-    return (react_1.default.createElement(react_1.default.Fragment, null,
+    return (react_1.default.createElement("div", { style: { display: 'flex', flexDirection: 'column', height: '100%' } },
         renderButton,
-        react_1.default.createElement(charts_1.Chart, { title: title, description: description },
-            react_1.default.createElement(charts_1.Tooltip, { type: charts_1.TooltipType.VerticalCursor }),
-            react_1.default.createElement(charts_1.Settings, { showLegend: true, legendPosition: charts_1.Position.Right, legendSize: 50, legendValues: [], rotation: 0, xDomain: X_DOMAIN, allowBrushingLastHistogramBin: true, baseTheme: theme, theme: {
-                    legend: { labelOptions: { maxLines: 1 } },
-                    chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },
-                }, onRenderChange: (isRendered) => {
-                    if (isRendered) {
-                        window.performance.mark('Perf:Ended');
-                        const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');
-                        // eslint-disable-next-line no-console
-                        console.log(`chart rendered in ${duration.toFixed(0)} ms`);
-                    }
-                } }),
-            react_1.default.createElement(charts_1.Axis, { id: "x", position: charts_1.Position.Bottom, title: "order_date", gridLine: { visible: true } }),
-            react_1.default.createElement(charts_1.Axis, { id: "left", groupId: "left", position: charts_1.Position.Left, title: "total_quantity", gridLine: { visible: true } }),
-            Y_ACCESSORS.map((yAccessor) => {
-                const name = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;
-                return (react_1.default.createElement(charts_1.BarSeries, { key: yAccessor, id: `${LAYER_ID}:order_date:${yAccessor}:order_id`, name: name, xAccessor: "order_date", yAccessors: [yAccessor], splitSeriesAccessors: ['order_id'], stackAccessors: ['order_date'], data: data, xScaleType: charts_1.ScaleType.Time, yScaleType: charts_1.ScaleType.Linear, groupId: "left", enableHistogramMode: true, minBarHeight: 1, timeZone: "UTC", color: color, displayValueSettings: { showValueLabel: false } }));
-            }))));
+        react_1.default.createElement("div", { style: { flex: 1, minHeight: 0 } },
+            react_1.default.createElement(charts_1.Chart, { title: title, description: description },
+                react_1.default.createElement(charts_1.Tooltip, { type: charts_1.TooltipType.VerticalCursor }),
+                react_1.default.createElement(charts_1.Settings, { showLegend: true, legendPosition: charts_1.Position.Right, legendSize: 50, legendValues: [], rotation: 0, xDomain: X_DOMAIN, allowBrushingLastHistogramBin: true, baseTheme: theme, theme: {
+                        legend: { labelOptions: { maxLines: 1 } },
+                        chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },
+                    }, onRenderChange: (isRendered) => {
+                        if (isRendered) {
+                            window.performance.mark('Perf:Ended');
+                            const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');
+                            // eslint-disable-next-line no-console
+                            console.log(`chart rendered in ${duration.toFixed(0)} ms`);
+                        }
+                    } }),
+                react_1.default.createElement(charts_1.Axis, { id: "x", position: charts_1.Position.Bottom, title: "order_date", gridLine: { visible: true } }),
+                react_1.default.createElement(charts_1.Axis, { id: "left", groupId: "left", position: charts_1.Position.Left, title: "total_quantity", gridLine: { visible: true } }),
+                Y_ACCESSORS.map((yAccessor) => {
+                    const name = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;
+                    return (react_1.default.createElement(charts_1.BarSeries, { key: yAccessor, id: `${LAYER_ID}:order_date:${yAccessor}:order_id`, name: name, xAccessor: "order_date", yAccessors: [yAccessor], splitSeriesAccessors: ['order_id'], stackAccessors: ['order_date'], data: data, xScaleType: charts_1.ScaleType.Time, yScaleType: charts_1.ScaleType.Linear, groupId: "left", enableHistogramMode: true, minBarHeight: 1, timeZone: "UTC", color: color, displayValueSettings: { showValueLabel: false } }));
+                })))));
 };
 exports.Example = Example;
-exports.Example.parameters = { storySource: { source: "(_, context) => {\n  const title = context?.title;\n  const description = context?.description;\n  const [data, setData] = useState<EcommerceRow[]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    async function fetchData() {\n      \n      console.log('requesting data');\n      const response = await fetch('many_series_ecommerce.json');\n      const d: EcommerceRow[] = await response.json();\n      \n      console.log('data arrived');\n\n      window.performance.mark('Perf:Started');\n      setData(d);\n    }\n    fetchData().catch(() => {});\n  }, [runId]);\n\n  const theme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </>\n    );\n  }\n\n  const color = buildColorAccessor(data);\n\n  return (\n    <>\n      {renderButton}\n      <Chart title={title} description={description}>\n        <Tooltip type={TooltipType.VerticalCursor} />\n        <Settings\n          showLegend\n          legendPosition={Position.Right}\n          legendSize={50}\n          legendValues={[]}\n          rotation={0}\n          xDomain={X_DOMAIN}\n          allowBrushingLastHistogramBin\n          baseTheme={theme}\n          theme={{\n            legend: { labelOptions: { maxLines: 1 } },\n            chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },\n          }}\n          onRenderChange={(isRendered) => {\n            if (isRendered) {\n              window.performance.mark('Perf:Ended');\n              const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n              \n              console.log(`chart rendered in ${duration.toFixed(0)} ms`);\n            }\n          }}\n        />\n        <Axis id=\"x\" position={Position.Bottom} title=\"order_date\" gridLine={{ visible: true }} />\n        <Axis id=\"left\" groupId=\"left\" position={Position.Left} title=\"total_quantity\" gridLine={{ visible: true }} />\n        {Y_ACCESSORS.map((yAccessor) => {\n          const name: SeriesNameFn = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;\n          return (\n            <BarSeries\n              key={yAccessor}\n              id={`${LAYER_ID}:order_date:${yAccessor}:order_id`}\n              name={name}\n              xAccessor=\"order_date\"\n              yAccessors={[yAccessor]}\n              splitSeriesAccessors={['order_id']}\n              stackAccessors={['order_date']}\n              data={data}\n              xScaleType={ScaleType.Time}\n              yScaleType={ScaleType.Linear}\n              groupId=\"left\"\n              enableHistogramMode\n              minBarHeight={1}\n              timeZone=\"UTC\"\n              color={color}\n              displayValueSettings={{ showValueLabel: false }}\n            />\n          );\n        })}\n      </Chart>\n    </>\n  );\n}" }, ...exports.Example.parameters };
+exports.Example.parameters = { storySource: { source: "(_, context) => {\n  const title = context?.title;\n  const description = context?.description;\n  const [data, setData] = useState<EcommerceRow[]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    async function fetchData() {\n      \n      console.log('requesting data');\n      const response = await fetch('many_series_ecommerce.json');\n      const d: EcommerceRow[] = await response.json();\n      \n      console.log('data arrived');\n\n      window.performance.mark('Perf:Started');\n      setData(d);\n    }\n    fetchData().catch(() => {});\n  }, [runId]);\n\n  const theme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert', alignSelf: 'flex-start' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </div>\n    );\n  }\n\n  const color = buildColorAccessor(data);\n\n  return (\n    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n      {renderButton}\n      <div style={{ flex: 1, minHeight: 0 }}>\n        <Chart title={title} description={description}>\n          <Tooltip type={TooltipType.VerticalCursor} />\n          <Settings\n            showLegend\n            legendPosition={Position.Right}\n            legendSize={50}\n            legendValues={[]}\n            rotation={0}\n            xDomain={X_DOMAIN}\n            allowBrushingLastHistogramBin\n            baseTheme={theme}\n            theme={{\n              legend: { labelOptions: { maxLines: 1 } },\n              chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },\n            }}\n            onRenderChange={(isRendered) => {\n              if (isRendered) {\n                window.performance.mark('Perf:Ended');\n                const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n                \n                console.log(`chart rendered in ${duration.toFixed(0)} ms`);\n              }\n            }}\n          />\n          <Axis id=\"x\" position={Position.Bottom} title=\"order_date\" gridLine={{ visible: true }} />\n          <Axis id=\"left\" groupId=\"left\" position={Position.Left} title=\"total_quantity\" gridLine={{ visible: true }} />\n          {Y_ACCESSORS.map((yAccessor) => {\n            const name: SeriesNameFn = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;\n            return (\n              <BarSeries\n                key={yAccessor}\n                id={`${LAYER_ID}:order_date:${yAccessor}:order_id`}\n                name={name}\n                xAccessor=\"order_date\"\n                yAccessors={[yAccessor]}\n                splitSeriesAccessors={['order_id']}\n                stackAccessors={['order_date']}\n                data={data}\n                xScaleType={ScaleType.Time}\n                yScaleType={ScaleType.Linear}\n                groupId=\"left\"\n                enableHistogramMode\n                minBarHeight={1}\n                timeZone=\"UTC\"\n                color={color}\n                displayValueSettings={{ showValueLabel: false }}\n              />\n            );\n          })}\n        </Chart>\n      </div>\n    </div>\n  );\n}" }, ...exports.Example.parameters };
+
+
+/***/ },
+
+/***/ "./stories/test_cases/36_dense_multi_series.story.tsx"
+/*!************************************************************!*\
+  !*** ./stories/test_cases/36_dense_multi_series.story.tsx ***!
+  \************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Example = void 0;
+/* eslint-disable */
+// @ts-nocheck
+// @ts-ignore
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo, useRef, useState } from 'react';\n\nimport { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\n\nconst SERIES_COUNT = 50;\nconst POINTS_PER_SERIES = 40_000;\n\nconst rng = getRandomNumberGenerator('line-multi-series');\n\ntype SeriesDatum = [x: number, y: number];\n\nfunction noiseTable(size: number) {\n  return Array.from({ length: size }, () => rng(0, 1, 4));\n}\n\nfunction sample(table: number[], x: number) {\n  const i = Math.floor(x);\n  const t = x - i;\n  const s = t * t * (3 - 2 * t);\n  const n = table.length;\n  return table[i % n]! + (table[(i + 1) % n]! - table[i % n]!) * s;\n}\n\nfunction generateData(seriesPoints: number, numSeries = 1): SeriesDatum[][] {\n  return Array.from({ length: numSeries }, (_, seriesIndex) => {\n    const trend = noiseTable(24);\n    const swell = noiseTable(48);\n    const ripple = noiseTable(96);\n    const data = new Array<SeriesDatum>(seriesPoints);\n\n    for (let i = 0; i < seriesPoints; i++) {\n      const noise = sample(trend, i / 500) * 10 + sample(swell, i / 90) * 4 + sample(ripple, i / 18) * 1.2;\n      data[i] = [i, seriesIndex * 3 + 4 * Math.sin((Math.PI * i) / (seriesPoints - 1)) ** 2 * noise];\n    }\n\n    return data;\n  });\n}\n\nconst RENDER_LABEL = 'chart-render';\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const seriesData = useMemo(() => generateData(POINTS_PER_SERIES, SERIES_COUNT), []);\n  const [runId, setRunId] = useState(0);\n  const pendingTimer = useRef(false);\n  const baseTheme = useBaseTheme();\n\n  const startRender = () => {\n    window.performance.mark(`${RENDER_LABEL}:start`);\n    pendingTimer.current = true;\n    setRunId((id) => id + 1);\n  };\n\n  return (\n    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n      <button type=\"button\" style={{ all: 'revert', alignSelf: 'flex-start' }} onClick={startRender}>\n        Render\n      </button>\n      <div style={{ flex: 1, minHeight: 0 }}>\n        {runId > 0 && (\n          <Chart key={runId} title={title} description={description}>\n            <Settings\n              showLegend\n              legendPosition={Position.Right}\n              baseTheme={baseTheme}\n              onRenderChange={(isRendered) => {\n                if (isRendered && pendingTimer.current) {\n                  pendingTimer.current = false;\n                  const { duration } = window.performance.measure(RENDER_LABEL, `${RENDER_LABEL}:start`);\n                  \n                  console.log(`${RENDER_LABEL}: ${duration.toFixed(0)} ms`);\n                }\n              }}\n            />\n            <Axis id=\"bottom\" position={Position.Bottom} />\n            <Axis id=\"left\" position={Position.Left} />\n            {seriesData.map((data, index) => (\n              <LineSeries\n                key={index}\n                id={`series-${index + 1}`}\n                xScaleType={ScaleType.Linear}\n                yScaleType={ScaleType.Linear}\n                xAccessor={0}\n                yAccessors={[1]}\n                data={data}\n                curve={CurveType.LINEAR}\n              />\n            ))}\n          </Chart>\n        )}\n      </div>\n    </div>\n  );\n};\n";
+// @ts-ignore
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 54 }, "endLoc": { "col": 1, "line": 106 }, "startBody": { "col": 36, "line": 54 }, "endBody": { "col": 1, "line": 106 } } };
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+const react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
+const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
+const utils_1 = __webpack_require__(/*! @elastic/charts/src/mocks/utils */ "../packages/charts/src/mocks/utils.ts");
+const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
+const SERIES_COUNT = 50;
+const POINTS_PER_SERIES = 40_000;
+const rng = (0, utils_1.getRandomNumberGenerator)('line-multi-series');
+function noiseTable(size) {
+    return Array.from({ length: size }, () => rng(0, 1, 4));
+}
+function sample(table, x) {
+    const i = Math.floor(x);
+    const t = x - i;
+    const s = t * t * (3 - 2 * t);
+    const n = table.length;
+    return table[i % n] + (table[(i + 1) % n] - table[i % n]) * s;
+}
+function generateData(seriesPoints, numSeries = 1) {
+    return Array.from({ length: numSeries }, (_, seriesIndex) => {
+        const trend = noiseTable(24);
+        const swell = noiseTable(48);
+        const ripple = noiseTable(96);
+        const data = new Array(seriesPoints);
+        for (let i = 0; i < seriesPoints; i++) {
+            const noise = sample(trend, i / 500) * 10 + sample(swell, i / 90) * 4 + sample(ripple, i / 18) * 1.2;
+            data[i] = [i, seriesIndex * 3 + 4 * Math.sin((Math.PI * i) / (seriesPoints - 1)) ** 2 * noise];
+        }
+        return data;
+    });
+}
+const RENDER_LABEL = 'chart-render';
+const Example = (_, { title, description }) => {
+    const seriesData = (0, react_1.useMemo)(() => generateData(POINTS_PER_SERIES, SERIES_COUNT), []);
+    const [runId, setRunId] = (0, react_1.useState)(0);
+    const pendingTimer = (0, react_1.useRef)(false);
+    const baseTheme = (0, use_base_theme_1.useBaseTheme)();
+    const startRender = () => {
+        window.performance.mark(`${RENDER_LABEL}:start`);
+        pendingTimer.current = true;
+        setRunId((id) => id + 1);
+    };
+    return (react_1.default.createElement("div", { style: { display: 'flex', flexDirection: 'column', height: '100%' } },
+        react_1.default.createElement("button", { type: "button", style: { all: 'revert', alignSelf: 'flex-start' }, onClick: startRender }, "Render"),
+        react_1.default.createElement("div", { style: { flex: 1, minHeight: 0 } }, runId > 0 && (react_1.default.createElement(charts_1.Chart, { key: runId, title: title, description: description },
+            react_1.default.createElement(charts_1.Settings, { showLegend: true, legendPosition: charts_1.Position.Right, baseTheme: baseTheme, onRenderChange: (isRendered) => {
+                    if (isRendered && pendingTimer.current) {
+                        pendingTimer.current = false;
+                        const { duration } = window.performance.measure(RENDER_LABEL, `${RENDER_LABEL}:start`);
+                        // eslint-disable-next-line no-console
+                        console.log(`${RENDER_LABEL}: ${duration.toFixed(0)} ms`);
+                    }
+                } }),
+            react_1.default.createElement(charts_1.Axis, { id: "bottom", position: charts_1.Position.Bottom }),
+            react_1.default.createElement(charts_1.Axis, { id: "left", position: charts_1.Position.Left }),
+            seriesData.map((data, index) => (react_1.default.createElement(charts_1.LineSeries, { key: index, id: `series-${index + 1}`, xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: data, curve: charts_1.CurveType.LINEAR }))))))));
+};
+exports.Example = Example;
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const seriesData = useMemo(() => generateData(POINTS_PER_SERIES, SERIES_COUNT), []);\n  const [runId, setRunId] = useState(0);\n  const pendingTimer = useRef(false);\n  const baseTheme = useBaseTheme();\n\n  const startRender = () => {\n    window.performance.mark(`${RENDER_LABEL}:start`);\n    pendingTimer.current = true;\n    setRunId((id) => id + 1);\n  };\n\n  return (\n    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n      <button type=\"button\" style={{ all: 'revert', alignSelf: 'flex-start' }} onClick={startRender}>\n        Render\n      </button>\n      <div style={{ flex: 1, minHeight: 0 }}>\n        {runId > 0 && (\n          <Chart key={runId} title={title} description={description}>\n            <Settings\n              showLegend\n              legendPosition={Position.Right}\n              baseTheme={baseTheme}\n              onRenderChange={(isRendered) => {\n                if (isRendered && pendingTimer.current) {\n                  pendingTimer.current = false;\n                  const { duration } = window.performance.measure(RENDER_LABEL, `${RENDER_LABEL}:start`);\n                  \n                  console.log(`${RENDER_LABEL}: ${duration.toFixed(0)} ms`);\n                }\n              }}\n            />\n            <Axis id=\"bottom\" position={Position.Bottom} />\n            <Axis id=\"left\" position={Position.Left} />\n            {seriesData.map((data, index) => (\n              <LineSeries\n                key={index}\n                id={`series-${index + 1}`}\n                xScaleType={ScaleType.Linear}\n                yScaleType={ScaleType.Linear}\n                xAccessor={0}\n                yAccessors={[1]}\n                data={data}\n                curve={CurveType.LINEAR}\n              />\n            ))}\n          </Chart>\n        )}\n      </div>\n    </div>\n  );\n}" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -63979,7 +64090,6 @@ __webpack_unused_export__ = getRadiusFn;
 const point_style_1 = __webpack_require__(/*! ./point_style */ "../packages/charts/src/chart_types/xy_chart/rendering/point_style.ts");
 const utils_1 = __webpack_require__(/*! ./utils */ "../packages/charts/src/chart_types/xy_chart/rendering/utils.ts");
 const common_1 = __webpack_require__(/*! ../../../utils/common */ "../packages/charts/src/utils/common.tsx");
-const data_processing_1 = __webpack_require__(/*! ../../../utils/data/data_processing */ "../packages/charts/src/utils/data/data_processing.ts");
 const geometry_1 = __webpack_require__(/*! ../../../utils/geometry */ "../packages/charts/src/utils/geometry.ts");
 const indexed_geometry_map_1 = __webpack_require__(/*! ../utils/indexed_geometry_map */ "../packages/charts/src/chart_types/xy_chart/utils/indexed_geometry_map.ts");
 const series_1 = __webpack_require__(/*! ../utils/series */ "../packages/charts/src/chart_types/xy_chart/utils/series.ts");
@@ -63998,7 +64108,6 @@ function renderPoints(shift, dataSeries, xScale, yScale, panel, color, pointStyl
     const y1Fn = (0, utils_1.getY1ScaledValueFn)(yScale);
     const y0Fn = (0, utils_1.getY0ScaledValueFn)(yScale);
     const yDefined = (0, utils_1.isYValueDefinedFn)(yScale, xScale);
-    const needSorting = !markSizeOptions.enabled;
     let style = (0, point_style_1.buildPointGeometryStyles)(color, pointStyle);
     const seriesIdentifier = (0, series_1.getSeriesIdentifierFromDataSeries)(dataSeries);
     const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce((acc, datum, dataIndex) => {
@@ -64061,16 +64170,16 @@ function renderPoints(shift, dataSeries, xScale, yScale, panel, color, pointStyl
                 yDefined(datum, valueAccessor) &&
                 yScale.isValueInDomain(valueAccessor(datum)) &&
                 !(0, utils_1.isDatumFilled)(datum)) {
-                if (needSorting) {
-                    (0, data_processing_1.inplaceInsertInSortedArray)(acc.pointGeometries, pointGeometry, (p) => p?.radius ?? NaN);
-                }
-                else {
-                    acc.pointGeometries.push(pointGeometry);
-                }
+                acc.pointGeometries.push(pointGeometry);
             }
         });
         return acc;
     }, { pointGeometries: [], minDistanceBetweenPoints: Infinity, prevX: undefined });
+    // Paint small-to-large only when a style accessor can vary radius.
+    // The common equal-radius path used to splice-insert each point (O(n²)).
+    if (!markSizeOptions.enabled && styleAccessor) {
+        pointGeometries.sort((a, b) => a.radius - b.radius);
+    }
     return {
         pointGeometries,
         minDistanceBetweenPoints,
@@ -83066,6 +83175,21 @@ const get_initial_pointer_state_1 = __webpack_require__(/*! ./utils/get_initial_
 const get_initial_tooltip_state_1 = __webpack_require__(/*! ./utils/get_initial_tooltip_state */ "../packages/charts/src/state/utils/get_initial_tooltip_state.ts");
 const default_settings_spec_1 = __webpack_require__(/*! ../specs/default_settings_spec */ "../packages/charts/src/specs/default_settings_spec.ts");
 const fast_deep_equal_1 = __webpack_require__(/*! ../utils/fast_deep_equal */ "../packages/charts/src/utils/fast_deep_equal.ts");
+/**
+ * Immer auto-freezes produced state, including every row in `spec.data`.
+ * A frozen array short-circuits that walk so upserting large series stays O(1)
+ * in the freezer, not O(rows). In-place mutation of `data` already cannot
+ * update the chart (React only sees a new array reference).
+ */
+function skipImmerWalkOfSpecData(spec) {
+    if (!('data' in spec)) {
+        return;
+    }
+    const { data } = spec;
+    if (Array.isArray(data) && !Object.isFrozen(data)) {
+        Object.freeze(data);
+    }
+}
 const handleChartActions = (builder) => {
     builder.addCase(chart_1.onChartRendered, (state) => {
         const chartRenderedCount = state.chartRendered ? state.chartRenderedCount : state.chartRenderedCount + 1;
@@ -83122,6 +83246,7 @@ const handleColorsActions = (builder) => {
 const handleSpecsActions = (builder) => {
     builder
         .addCase(specs_1.upsertSpec, (state, action) => {
+        skipImmerWalkOfSpecData(action.payload);
         if (state.specParsing) {
             state.specs[action.payload.id] = action.payload;
         }
@@ -83198,6 +83323,8 @@ const createChartStore = (chartId, title, description) => {
         middleware: (getDefaultMiddleware) => getDefaultMiddleware({
             // TODO https://github.com/elastic/elastic-charts/issues/2078
             serializableCheck: false,
+            // Specs hold raw series arrays; walking them after every dispatch dominates large-chart updates.
+            immutableCheck: false,
         }),
         devTools: typeof process === 'object' && process !== null && process.env && process.env.ELASTIC_CHARTS_DEV_MODE
             ? {
@@ -88380,7 +88507,6 @@ function* flatIterable(points, fx, fy, that) {
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.computeRatioByGroups = computeRatioByGroups;
-exports.inplaceInsertInSortedArray = inplaceInsertInSortedArray;
 const group_data_series_1 = __webpack_require__(/*! ../../chart_types/xy_chart/utils/group_data_series */ "../packages/charts/src/chart_types/xy_chart/utils/group_data_series.ts");
 const common_1 = __webpack_require__(/*! ../common */ "../packages/charts/src/utils/common.tsx");
 /**
@@ -88418,25 +88544,6 @@ function computeRatioByGroups(data, groupAccessors, valueGetterSetters) {
             }, datum);
         });
     });
-}
-/** @internal */
-function inplaceInsertInSortedArray(arr, obj, accessor) {
-    let left = 0;
-    let right = arr.length - 1;
-    const value = accessor(obj);
-    // Perform a binary search to find the correct insertion index
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-        if (accessor(arr[mid]) < value) {
-            left = mid + 1;
-        }
-        else {
-            right = mid - 1;
-        }
-    }
-    // Insert the object at the found index
-    arr.splice(left, 0, obj);
-    return arr;
 }
 
 
@@ -108286,6 +108393,7 @@ const map = {
 	"./test_cases/33_lens_stress.story.tsx": "./stories/test_cases/33_lens_stress.story.tsx",
 	"./test_cases/34_font_measurement.story.tsx": "./stories/test_cases/34_font_measurement.story.tsx",
 	"./test_cases/35_many_series_kibana.story.tsx": "./stories/test_cases/35_many_series_kibana.story.tsx",
+	"./test_cases/36_dense_multi_series.story.tsx": "./stories/test_cases/36_dense_multi_series.story.tsx",
 	"./test_cases/3_no_axes_annotation.story.tsx": "./stories/test_cases/3_no_axes_annotation.story.tsx",
 	"./test_cases/4_filter_zero_values_log.story.tsx": "./stories/test_cases/4_filter_zero_values_log.story.tsx",
 	"./test_cases/5_legend_scroll_bar_sizing.story.tsx": "./stories/test_cases/5_legend_scroll_bar_sizing.story.tsx",
@@ -108541,4 +108649,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.c3bf9b26.iframe.bundle.js.map
+//# sourceMappingURL=main.612e8f1c.iframe.bundle.js.map
