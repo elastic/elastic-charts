@@ -43,7 +43,7 @@ const fontArgs: [Font, number, number] = [
     textColor: 'black',
   },
   12,
-  1.34,
+  1.5,
 ];
 
 const headerFontArgs: [Font, number, number] = [
