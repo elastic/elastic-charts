@@ -1427,8 +1427,6 @@ export interface GoalSpec extends Spec {
     labelMinor: string | GoalLabelAccessor;
     // (undocumented)
     specType: typeof SpecType.Series;
-    // Warning: (ae-forgotten-export) The symbol "GoalSubtype" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     subtype: GoalSubtype;
     // (undocumented)
@@ -1477,6 +1475,16 @@ export interface GoalStyles {
     // (undocumented)
     tickLine: Pick<StrokeStyle, 'stroke'>;
 }
+
+// @public (undocumented)
+export const GoalSubtype: Readonly<{
+    Goal: "goal";
+    HorizontalBullet: "horizontalBullet";
+    VerticalBullet: "verticalBullet";
+}>;
+
+// @public (undocumented)
+export type GoalSubtype = $Values<typeof GoalSubtype>;
 
 // @public
 export interface GradientStop {
