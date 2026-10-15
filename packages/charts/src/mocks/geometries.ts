@@ -122,3 +122,7 @@ export class MockBubbleGeometry {
     return mergePartial<BubbleGeometry>(MockBubbleGeometry.base, partial);
   }
 }
+
+/** @internal */
+export const sortedByPosition = <P extends { x: number; y: number }>(points: readonly P[]): P[] =>
+  [...points].sort((a, b) => a.x - b.x || a.y - b.y);

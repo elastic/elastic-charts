@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { sortedByPosition } from '../../../mocks/geometries';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
@@ -47,7 +48,7 @@ describe('Rendering points - bubble', () => {
         value: { points },
       } = bubbles[0]!;
 
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -104,13 +105,13 @@ describe('Rendering points - bubble', () => {
       const {
         value: { points },
       } = bubbles[0]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
     });
     test('can render second spec points', () => {
       const {
         value: { points },
       } = bubbles[1]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
     });
   });
   describe('Single series bubble chart - linear', () => {
@@ -145,7 +146,7 @@ describe('Rendering points - bubble', () => {
       const {
         value: { points },
       } = bubbles[0]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -203,13 +204,13 @@ describe('Rendering points - bubble', () => {
       const {
         value: { points },
       } = bubbles[0]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
     });
     test('can render second spec points', () => {
       const {
         value: { points },
       } = bubbles[1]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
     });
   });
   describe('Single series bubble chart - time', () => {
@@ -244,7 +245,7 @@ describe('Rendering points - bubble', () => {
       const {
         value: { points },
       } = bubbles[0]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -286,14 +287,14 @@ describe('Rendering points - bubble', () => {
       const {
         value: { points },
       } = bubbles[0]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(4);
     });
     test('can render second spec points', () => {
       const {
         value: { points },
       } = bubbles[1]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
     });
   });
   describe('Single series bubble chart - y log', () => {
@@ -374,7 +375,7 @@ describe('Rendering points - bubble', () => {
       expect(points).toHaveLength(2);
       // will keep the 3rd point as an indexedGeometry
       expect(geometriesIndex.size).toEqual(3);
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
     });
   });
 });
