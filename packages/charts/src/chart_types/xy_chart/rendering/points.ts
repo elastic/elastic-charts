@@ -13,8 +13,6 @@ import type { Color } from '../../../common/colors';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import type { RecursivePartial } from '../../../utils/common';
 import { isFiniteNumber, isNil } from '../../../utils/common';
-import type { SortedArray } from '../../../utils/data/data_processing';
-import { inplaceInsertInSortedArray } from '../../../utils/data/data_processing';
 import type { Dimensions } from '../../../utils/dimensions';
 import type { PointGeometry } from '../../../utils/geometry';
 import { BandedAccessorType } from '../../../utils/geometry';
@@ -59,12 +57,10 @@ export function renderPoints(
   const y0Fn = getY0ScaledValueFn(yScale);
   const yDefined = isYValueDefinedFn(yScale, xScale);
 
-  const needSorting = !markSizeOptions.enabled;
-
   let style = buildPointGeometryStyles(color, pointStyle);
   const seriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
   const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
-    pointGeometries: SortedArray<PointGeometry>;
+    pointGeometries: PointGeometry[];
     minDistanceBetweenPoints: number;
     prevX: number | undefined;
   }>(
@@ -134,17 +130,20 @@ export function renderPoints(
           yScale.isValueInDomain(valueAccessor(datum)) &&
           !isDatumFilled(datum)
         ) {
-          if (needSorting) {
-            inplaceInsertInSortedArray(acc.pointGeometries, pointGeometry, (p) => p?.radius ?? NaN);
-          } else {
-            acc.pointGeometries.push(pointGeometry);
-          }
+          acc.pointGeometries.push(pointGeometry);
         }
       });
       return acc;
     },
     { pointGeometries: [], minDistanceBetweenPoints: Infinity, prevX: undefined },
   );
+
+  // Paint small-to-large only when a style accessor can vary radius.
+  // The common equal-radius path used to splice-insert each point (O(n²)).
+  if (!markSizeOptions.enabled && styleAccessor) {
+    pointGeometries.sort((a, b) => a.radius - b.radius);
+  }
+
   return {
     pointGeometries,
     minDistanceBetweenPoints,

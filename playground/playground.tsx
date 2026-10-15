@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Example } from '../storybook/stories/test_cases/35_many_series_kibana.story';
+import { Example } from '../storybook/stories/test_cases/36_dense_multi_series.story';
 
 export function Playground() {
   return <Example />;

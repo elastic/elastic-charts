@@ -13,7 +13,10 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: './index.tsx',
-  mode: 'development',
+  mode: 'production',
+  devtool: 'source-map',
+  optimization: { minimize: false },
+  performance: { hints: false },
   output: {
     filename: 'bundle.js',
   },
