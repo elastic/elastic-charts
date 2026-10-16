@@ -1,3 +1,15 @@
+## [73.3.1](https://github.com/elastic/elastic-charts/compare/v73.3.0...v73.3.1) (2026-10-15)
+
+
+### Bug Fixes
+
+* **annotations:** handle line marker clicks ([#2903](https://github.com/elastic/elastic-charts/issues/2903)) ([cd4316c](https://github.com/elastic/elastic-charts/commit/cd4316cc6810c7d663fe68edf15d6557af59dce7)), closes [#2893](https://github.com/elastic/elastic-charts/issues/2893)
+
+
+### Performance Improvements
+
+* **xy:** skip quadratic point insertion ([#2921](https://github.com/elastic/elastic-charts/issues/2921)) ([ab7b3ab](https://github.com/elastic/elastic-charts/commit/ab7b3ab926e241043204c27034e5761763247069))
+
 # [73.3.0](https://github.com/elastic/elastic-charts/compare/v73.2.5...v73.3.0) (2026-10-09)
 
 
