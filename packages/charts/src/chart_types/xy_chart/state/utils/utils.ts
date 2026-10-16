@@ -18,7 +18,6 @@ import type { SettingsSpec, TickFormatter } from '../../../../specs';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Rotation } from '../../../../utils/common';
 import { isFiniteNumber, isNil, isUniqueArray, mergePartial } from '../../../../utils/common';
-import { CurveType } from '../../../../utils/curves';
 import type { Dimensions, Size } from '../../../../utils/dimensions';
 import type { AreaGeometry, BarGeometry, BubbleGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
 import type { GroupId, SpecId } from '../../../../utils/ids';
@@ -437,7 +436,7 @@ function renderGeometries(
         yScale,
         panel,
         color,
-        spec.curve ?? CurveType.LINEAR,
+        spec.curve,
         isBandedSpec(spec),
         xScaleOffset,
         lineSeriesStyle,
@@ -469,7 +468,7 @@ function renderGeometries(
         yScale,
         panel,
         color,
-        spec.curve ?? CurveType.LINEAR,
+        spec.curve,
         isBandedSpec(spec),
         xScaleOffset,
         areaSeriesStyle,
