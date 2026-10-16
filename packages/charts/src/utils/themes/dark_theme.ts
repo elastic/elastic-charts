@@ -335,7 +335,7 @@ export const DARK_THEME: Theme = {
     emptySizeRatio: 0,
     fontFamily: DEFAULT_FONT_FAMILY,
     minFontSize: 8,
-    maxFontSize: 64,
+    maxFontSize: 16,
     idealFontSizeJump: 1.05,
     maximizeFontSize: false,
     circlePadding: 4,
