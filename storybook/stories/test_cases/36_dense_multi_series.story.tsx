@@ -13,6 +13,7 @@ import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { noiseTable, sample } from '../utils/datasets/smooth_noise';
 
 const SERIES_COUNT = 50;
 const POINTS_PER_SERIES = 40_000;
@@ -21,23 +22,11 @@ const rng = getRandomNumberGenerator('line-multi-series');
 
 type SeriesDatum = [x: number, y: number];
 
-function noiseTable(size: number) {
-  return Array.from({ length: size }, () => rng(0, 1, 4));
-}
-
-function sample(table: number[], x: number) {
-  const i = Math.floor(x);
-  const t = x - i;
-  const s = t * t * (3 - 2 * t);
-  const n = table.length;
-  return table[i % n]! + (table[(i + 1) % n]! - table[i % n]!) * s;
-}
-
 function generateData(seriesPoints: number, numSeries = 1): SeriesDatum[][] {
   return Array.from({ length: numSeries }, (_, seriesIndex) => {
-    const trend = noiseTable(24);
-    const swell = noiseTable(48);
-    const ripple = noiseTable(96);
+    const trend = noiseTable(rng, 24);
+    const swell = noiseTable(rng, 48);
+    const ripple = noiseTable(rng, 96);
     const data = new Array<SeriesDatum>(seriesPoints);
 
     for (let i = 0; i < seriesPoints; i++) {
