@@ -63640,7 +63640,8 @@ const utils_1 = __webpack_require__(/*! ./utils */ "../packages/charts/src/chart
 const curves_1 = __webpack_require__(/*! ../../../utils/curves */ "../packages/charts/src/utils/curves.ts");
 const series_1 = __webpack_require__(/*! ../utils/series */ "../packages/charts/src/chart_types/xy_chart/utils/series.ts");
 /** @internal */
-function renderArea(shift, dataSeries, xScale, yScale, panel, color, curve, isBandedSpec, xScaleOffset, style, markSizeOptions, isStacked, hasFit, pointStyleAccessor) {
+function renderArea(shift, dataSeries, xScale, yScale, panel, color, curve, // getCurveFactory defaults it to linear
+isBandedSpec, xScaleOffset, style, markSizeOptions, isStacked, hasFit, pointStyleAccessor) {
     const xFn = (0, utils_1.getXScaledValueFn)(xScale, xScaleOffset);
     const y1Fn = (0, utils_1.getY1ScaledValueFn)(yScale);
     const y0Fn = (0, utils_1.getY0ScaledValueFn)(yScale);
@@ -63949,7 +63950,8 @@ const utils_1 = __webpack_require__(/*! ./utils */ "../packages/charts/src/chart
 const curves_1 = __webpack_require__(/*! ../../../utils/curves */ "../packages/charts/src/utils/curves.ts");
 const series_1 = __webpack_require__(/*! ../utils/series */ "../packages/charts/src/chart_types/xy_chart/utils/series.ts");
 /** @internal */
-function renderLine(shift, dataSeries, xScale, yScale, panel, color, curve, hasY0Accessors, xScaleOffset, style, markSizeOptions, hasFit, pointStyleAccessor) {
+function renderLine(shift, dataSeries, xScale, yScale, panel, color, curve, // getCurveFactory defaults it to linear
+hasY0Accessors, xScaleOffset, style, markSizeOptions, hasFit, pointStyleAccessor) {
     const y1Fn = (0, utils_1.getY1ScaledValueFn)(yScale);
     const definedFn = (0, utils_1.isYValueDefinedFn)(yScale, xScale);
     const y1Accessor = (0, utils_1.getYDatumValueFn)();
@@ -68671,7 +68673,6 @@ const common_1 = __webpack_require__(/*! ./common */ "../packages/charts/src/cha
 const spec_1 = __webpack_require__(/*! ./spec */ "../packages/charts/src/chart_types/xy_chart/state/utils/spec.ts");
 const predicate_1 = __webpack_require__(/*! ../../../../common/predicate */ "../packages/charts/src/common/predicate.ts");
 const common_2 = __webpack_require__(/*! ../../../../utils/common */ "../packages/charts/src/utils/common.tsx");
-const curves_1 = __webpack_require__(/*! ../../../../utils/curves */ "../packages/charts/src/utils/curves.ts");
 const x_domain_1 = __webpack_require__(/*! ../../domains/x_domain */ "../packages/charts/src/chart_types/xy_chart/domains/x_domain.ts");
 const y_domain_1 = __webpack_require__(/*! ../../domains/y_domain */ "../packages/charts/src/chart_types/xy_chart/domains/y_domain.ts");
 const area_1 = __webpack_require__(/*! ../../rendering/area */ "../packages/charts/src/chart_types/xy_chart/rendering/area.ts");
@@ -68935,7 +68936,7 @@ function renderGeometries(dataSeries, xDomain, yScales, smVScale, smHScale, barI
             const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
             const renderedLines = (0, line_1.renderLine)(
             // move the point on half of the bandwidth if we have mixed bars/lines
-            (xScale.bandwidth * lineShift) / 2, ds, xScale, yScale, panel, color, spec.curve || curves_1.CurveType.LINEAR, (0, series_1.isBandedSpec)(spec), xScaleOffset, lineSeriesStyle, {
+            (xScale.bandwidth * lineShift) / 2, ds, xScale, yScale, panel, color, spec.curve, (0, series_1.isBandedSpec)(spec), xScaleOffset, lineSeriesStyle, {
                 enabled: spec.markSizeAccessor !== undefined && lineSeriesStyle.point.visible !== 'never',
                 ratio: chartTheme.markSizeRatio,
             }, hasFitFnConfigured(spec.fit), spec.pointStyleAccessor);
@@ -68954,7 +68955,7 @@ function renderGeometries(dataSeries, xDomain, yScales, smVScale, smHScale, barI
             const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
             const renderedArea = (0, area_1.renderArea)(
             // move the point on half of the bandwidth if we have mixed bars/lines
-            (xScale.bandwidth * areaShift) / 2, ds, xScale, yScale, panel, color, spec.curve || curves_1.CurveType.LINEAR, (0, series_1.isBandedSpec)(spec), xScaleOffset, areaSeriesStyle, {
+            (xScale.bandwidth * areaShift) / 2, ds, xScale, yScale, panel, color, spec.curve, (0, series_1.isBandedSpec)(spec), xScaleOffset, areaSeriesStyle, {
                 enabled: spec.markSizeAccessor !== undefined && areaSeriesStyle.point.visible !== 'never',
                 ratio: chartTheme.markSizeRatio,
             }, spec.stackAccessors ? spec.stackAccessors.length > 0 : false, hasFitFnConfigured(spec.fit), spec.pointStyleAccessor);
@@ -108649,4 +108650,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.31e73dd7.iframe.bundle.js.map
+//# sourceMappingURL=main.749b0a3f.iframe.bundle.js.map
