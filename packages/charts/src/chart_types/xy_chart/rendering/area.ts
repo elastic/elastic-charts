@@ -39,7 +39,7 @@ export function renderArea(
   yScale: ScaleContinuous,
   panel: Dimensions,
   color: Color,
-  curve: CurveType,
+  curve: CurveType | undefined, // getCurveFactory defaults it to linear
   isBandedSpec: boolean,
   xScaleOffset: number,
   style: AreaSeriesStyle,

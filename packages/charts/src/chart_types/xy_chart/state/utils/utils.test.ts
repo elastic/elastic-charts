@@ -25,6 +25,7 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import type { Spec } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { ColorVariant } from '../../../../utils/common';
+import { CurveType } from '../../../../utils/curves';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
 import type { ContinuousDomain, Range } from '../../../../utils/domain';
 import type { SpecId } from '../../../../utils/ids';
@@ -853,5 +854,24 @@ describe('Chart State utils', () => {
     seriesMap.set(bar2.id, bar2);
     setBarSeriesAccessors(isHistogramEnabled, seriesMap);
     expect(bar2.stackAccessors).toEqual(['y', 'bar']);
+  });
+});
+
+describe('Curves', () => {
+  it('draws a cardinal line with curve segments', () => {
+    const { geometries } = getGeometriesFromSpecs([
+      MockSeriesSpec.line({
+        curve: CurveType.CURVE_CARDINAL,
+        xAccessor: 'x',
+        yAccessors: ['y'],
+        data: [
+          { x: 0, y: 1 },
+          { x: 1, y: 3 },
+          { x: 2, y: 0 },
+          { x: 3, y: 2 },
+        ],
+      }),
+    ]);
+    expect(geometries.lines[0]!.value.line).toContain('C');
   });
 });
