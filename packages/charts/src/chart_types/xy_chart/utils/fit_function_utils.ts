@@ -8,34 +8,13 @@
 
 import { fitFunction } from './fit_function';
 import type { DataSeries } from './series';
-import type { SeriesSpecs, BasicSeriesSpec } from './specs';
 import { isAreaSeriesSpec, isLineSeriesSpec } from './specs';
 import type { ScaleType } from '../../../scales/constants';
-import { getSpecsById } from '../state/utils/spec';
 
 /** @internal */
-export const applyFitFunctionToDataSeries = (
-  dataSeries: DataSeries[],
-  seriesSpecs: SeriesSpecs,
-  xScaleType: ScaleType,
-): DataSeries[] => {
-  return dataSeries.map(({ specId, data, ...rest }) => {
-    const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, specId);
-
-    if (
-      spec !== null &&
-      spec !== undefined &&
-      (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) &&
-      spec.fit !== undefined
-    ) {
-      const fittedData = fitFunction(data, spec.fit, xScaleType);
-
-      return {
-        specId,
-        ...rest,
-        data: fittedData,
-      };
-    }
-    return { specId, data, ...rest };
+export const applyFitFunctionToDataSeries = (dataSeries: DataSeries[], xScaleType: ScaleType): DataSeries[] =>
+  dataSeries.map((series) => {
+    const { spec, data } = series;
+    if ((!isAreaSeriesSpec(spec) && !isLineSeriesSpec(spec)) || spec.fit === undefined) return series;
+    return { ...series, data: fitFunction(data, spec.fit, xScaleType, true) };
   });
-};

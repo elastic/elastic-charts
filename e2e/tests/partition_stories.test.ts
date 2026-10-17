@@ -91,6 +91,19 @@ test.describe('Axis stories', () => {
     },
   );
 
+  pwEach.test([
+    ['middle', 'center'],
+    ['bottom', 'right'],
+  ])(
+    ([verticalAlignment, horizontalAlignment]) =>
+      `should align treemap fill labels ${verticalAlignment} ${horizontalAlignment}`,
+    async (page, [verticalAlignment, horizontalAlignment]) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/treemap--label-alignment&globals=theme:light&knob-fillLabel.verticalAlignment_Partition=${verticalAlignment}&knob-fillLabel.horizontalAlignment_Partition=${horizontalAlignment}`,
+      );
+    },
+  );
+
   eachTheme.test(
     async ({ page, urlParam }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
