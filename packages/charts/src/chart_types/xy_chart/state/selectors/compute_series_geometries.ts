@@ -14,6 +14,7 @@ import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getInternalMainProjectionAreaSelector } from '../../../../state/selectors/get_internal_main_projection_area';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { computeSeriesGeometries } from '../utils/utils';
@@ -30,8 +31,9 @@ export const computeSeriesGeometriesSelector = createCustomCachedSelector(
     computeSmallMultipleScalesSelector,
     isHistogramModeEnabledSelector,
     getFallBackTickFormatter,
+    getInternalMainProjectionAreaSelector,
   ],
-  (specs, domain, colors, theme, settings, axis, smScales, isHistogram, fallbackFormatter) => {
+  (specs, domain, colors, theme, settings, axis, smScales, isHistogram, fallbackFormatter, plotArea) => {
     return withTextMeasure((measureText) =>
       computeSeriesGeometries(
         specs,
@@ -44,6 +46,7 @@ export const computeSeriesGeometriesSelector = createCustomCachedSelector(
         isHistogram,
         fallbackFormatter,
         measureText,
+        plotArea,
       ),
     );
   },

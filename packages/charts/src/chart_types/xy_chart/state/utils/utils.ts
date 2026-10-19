@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { isHorizontalRotation } from './common';
+import { isHorizontalRotation, isVerticalRotation } from './common';
 import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from './spec';
 import type { ComputedGeometries, GeometriesCounts, SeriesDomainsAndData, Transform } from './types';
 import type { Color } from '../../../../common/colors';
@@ -14,6 +14,7 @@ import type { SmallMultipleScales, SmallMultiplesGroupBy } from '../../../../com
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import type { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
 import type { ScaleBand, ScaleContinuous } from '../../../../scales';
+import { isContinuousScale } from '../../../../scales/types';
 import type { SettingsSpec, TickFormatter } from '../../../../specs';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Rotation } from '../../../../utils/common';
@@ -22,7 +23,7 @@ import type { Dimensions, Size } from '../../../../utils/dimensions';
 import type { AreaGeometry, BarGeometry, BubbleGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
 import type { GroupId, SpecId } from '../../../../utils/ids';
 import type { SeriesCompareFn } from '../../../../utils/series_sort';
-import type { ColorConfig, Theme } from '../../../../utils/themes/theme';
+import type { AreaSeriesStyle, ColorConfig, LineSeriesStyle, Theme } from '../../../../utils/themes/theme';
 import type { XDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
 import { isStackedSpec, mergeYDomain } from '../../domains/y_domain';
@@ -37,7 +38,14 @@ import { groupBy } from '../../utils/group_data_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../../utils/scales';
 import type { DataSeries } from '../../utils/series';
-import { getDataSeriesFromSpecs, getFormattedDataSeries, getSeriesKey, isBandedSpec } from '../../utils/series';
+import {
+  getDataSeriesFromSpecs,
+  getFormattedDataSeries,
+  getSeriesKey,
+  isBandedSpec,
+  m4SeriesData,
+  toSeriesData,
+} from '../../utils/series';
 import type { AnnotationSpec, AxisSpec, BasicSeriesSpec, FitConfig, HistogramModeAlignment } from '../../utils/specs';
 import {
   AnnotationDomainType,
@@ -120,6 +128,7 @@ export function computeSeriesDomains(
     orderOrdinalBinsBy,
     renderingSortFn,
     smallMultiples,
+    scaleConfigs,
   );
   // compute the x domain merging any custom domain
   const xDomain = mergeXDomain(scaleConfigs.x, xValues, locale, fallbackScale);
@@ -178,6 +187,7 @@ export function computeSeriesGeometries(
   enableHistogramMode: boolean,
   fallbackTickFormatter: TickFormatter,
   measureText: TextMeasure,
+  plotArea: Pick<Dimensions, 'left' | 'top'>,
 ): ComputedGeometries {
   const chartColors: ColorConfig = chartTheme.colors;
   const formattedDataSeries = nonFilteredDataSeries.filter(({ isFiltered }) => !isFiltered);
@@ -219,6 +229,7 @@ export function computeSeriesGeometries(
     chartRotation,
     fallbackTickFormatter,
     measureText,
+    plotArea,
   );
 
   const totalBarsInCluster = Object.values(barIndexByPanel).reduce((acc, curr) => Math.max(acc, curr.length), 0);
@@ -275,6 +286,41 @@ export function computeXScaleOffset(
   }
 }
 
+function renderedDataSeries(
+  ds: DataSeries,
+  style: LineSeriesStyle | AreaSeriesStyle,
+  xScale: ScaleBand | ScaleContinuous,
+  xAxis: { start: number; direction: number },
+  xShift: number,
+): DataSeries {
+  if (!ds.isDownsampled) return ds;
+  const isM4 = isContinuousScale(xScale) && !style.line.dash?.length && style.point.visible !== 'always';
+  return {
+    ...ds,
+    data: isM4 ? m4SeriesData(ds.spec, pixelBins(xScale, xAxis, xShift)) : toSeriesData(ds.spec, ds.spec.data),
+  };
+}
+
+// the one-pixel bins along the x axis, as `m4` computes them: floor(offset + scale * (x - origin))
+function pixelBins(
+  xScale: ScaleContinuous,
+  { start, direction }: { start: number; direction: number },
+  xShift: number,
+) {
+  const [origin, end] = xScale.domain;
+  const offset = start + direction * (xShift + xScale.scale(origin));
+  const scale = end === origin ? 0 : (direction * (xScale.scale(end) - xScale.scale(origin))) / (end - origin);
+  return { origin, offset, scale };
+}
+
+// where the panel's x axis starts on the canvas, and which way it runs; it runs vertically in rotated charts
+function xAxisOnCanvas(plotArea: Pick<Dimensions, 'left' | 'top'>, panel: Dimensions, rotation: Rotation) {
+  const vertical = isVerticalRotation(rotation);
+  const start = vertical ? plotArea.top + panel.top : plotArea.left + panel.left;
+  if (rotation === 0 || rotation === 90) return { start, direction: 1 };
+  return { start: start + (vertical ? panel.height : panel.width), direction: -1 };
+}
+
 function renderGeometries(
   dataSeries: DataSeries[],
   xDomain: XDomain,
@@ -291,6 +337,7 @@ function renderGeometries(
   chartRotation: Rotation,
   fallBackTickFormatter: TickFormatter,
   measureText: TextMeasure,
+  plotArea: Pick<Dimensions, 'left' | 'top'>,
 ): Omit<ComputedGeometries, 'scales'> {
   const bars: Array<PerPanel<BarGeometry[]>> = [];
   const areas: Array<PerPanel<AreaGeometry>> = [];
@@ -427,11 +474,18 @@ function renderGeometries(
       const lineShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
       const lineSeriesStyle = getLineSeriesStyles(chartTheme.lineSeriesStyle, spec.lineSeriesStyle);
       const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
+      // move the point on half of the bandwidth if we have mixed bars/lines
+      const shift = (xScale.bandwidth * lineShift) / 2;
 
       const renderedLines = renderLine(
-        // move the point on half of the bandwidth if we have mixed bars/lines
-        (xScale.bandwidth * lineShift) / 2,
-        ds,
+        shift,
+        renderedDataSeries(
+          ds,
+          lineSeriesStyle,
+          xScale,
+          xAxisOnCanvas(plotArea, panel, chartRotation),
+          shift - xScaleOffset,
+        ),
         xScale,
         yScale,
         panel,
@@ -460,10 +514,17 @@ function renderGeometries(
       const areaShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
       const areaSeriesStyle = getAreaSeriesStyles(chartTheme.areaSeriesStyle, spec.areaSeriesStyle);
       const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
+      // move the point on half of the bandwidth if we have mixed bars/lines
+      const shift = (xScale.bandwidth * areaShift) / 2;
       const renderedArea = renderArea(
-        // move the point on half of the bandwidth if we have mixed bars/lines
-        (xScale.bandwidth * areaShift) / 2,
-        ds,
+        shift,
+        renderedDataSeries(
+          ds,
+          areaSeriesStyle,
+          xScale,
+          xAxisOnCanvas(plotArea, panel, chartRotation),
+          shift - xScaleOffset,
+        ),
         xScale,
         yScale,
         panel,
