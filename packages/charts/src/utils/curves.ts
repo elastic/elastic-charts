@@ -18,6 +18,7 @@ import {
   curveStepAfter,
   curveStepBefore,
 } from 'd3-shape';
+import type { CurveFactory } from 'd3-shape';
 import type { $Values } from 'utility-types';
 
 /** @public */
@@ -44,8 +45,10 @@ export type CurveType = $Values<typeof CurveType>;
 export const DEFAULT_CURVE: CurveType = CurveType.LINEAR;
 
 /** @internal */
-export function getCurveFactory(curveType: CurveType = DEFAULT_CURVE) {
+export function getCurveFactory(curveType: CurveType = DEFAULT_CURVE): CurveFactory {
   switch (curveType) {
+    case CurveType.LINEAR:
+      return curveLinear;
     case CurveType.CURVE_CARDINAL:
       return curveCardinal;
     case CurveType.CURVE_NATURAL:
@@ -64,8 +67,5 @@ export function getCurveFactory(curveType: CurveType = DEFAULT_CURVE) {
       return curveStepAfter;
     case CurveType.CURVE_STEP_BEFORE:
       return curveStepBefore;
-    case CurveType.LINEAR:
-    default:
-      return curveLinear;
   }
 }
