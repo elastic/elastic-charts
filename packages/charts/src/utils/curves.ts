@@ -37,8 +37,14 @@ export const CurveType = Object.freeze({
 /** @public */
 export type CurveType = $Values<typeof CurveType>;
 
+/**
+ * The curve of a series that doesn't set one
+ * @internal
+ */
+export const DEFAULT_CURVE: CurveType = CurveType.LINEAR;
+
 /** @internal */
-export function getCurveFactory(curveType: CurveType = CurveType.LINEAR) {
+export function getCurveFactory(curveType: CurveType = DEFAULT_CURVE) {
   switch (curveType) {
     case CurveType.CURVE_CARDINAL:
       return curveCardinal;
