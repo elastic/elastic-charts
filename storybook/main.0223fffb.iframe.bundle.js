@@ -7449,6 +7449,36 @@ Object.defineProperty(exports, "debugState", ({ enumerable: true, get: function 
 
 /***/ },
 
+/***/ "./stories/downsampling/downsampling.stories.tsx"
+/*!*******************************************************!*\
+  !*** ./stories/downsampling/downsampling.stories.tsx ***!
+  \*******************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.denseSparseAndGaps = exports.denseOscillation = exports.denseRotatedLines = void 0;
+exports["default"] = {
+    title: 'Downsampling',
+};
+var _1_dense_rotated_lines_story_1 = __webpack_require__(/*! ./1_dense_rotated_lines.story */ "./stories/downsampling/1_dense_rotated_lines.story.tsx");
+Object.defineProperty(exports, "denseRotatedLines", ({ enumerable: true, get: function () { return _1_dense_rotated_lines_story_1.Example; } }));
+var _2_dense_oscillation_story_1 = __webpack_require__(/*! ./2_dense_oscillation.story */ "./stories/downsampling/2_dense_oscillation.story.tsx");
+Object.defineProperty(exports, "denseOscillation", ({ enumerable: true, get: function () { return _2_dense_oscillation_story_1.Example; } }));
+var _3_dense_sparse_and_gaps_story_1 = __webpack_require__(/*! ./3_dense_sparse_and_gaps.story */ "./stories/downsampling/3_dense_sparse_and_gaps.story.tsx");
+Object.defineProperty(exports, "denseSparseAndGaps", ({ enumerable: true, get: function () { return _3_dense_sparse_and_gaps_story_1.Example; } }));
+
+
+/***/ },
+
 /***/ "./stories/goal/goal.stories.tsx"
 /*!***************************************!*\
   !*** ./stories/goal/goal.stories.tsx ***!
@@ -19457,6 +19487,299 @@ const Example = (_, { title, description }) => {
 };
 exports.Example = Example;
 exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const debug = boolean('debug', false);\n  const debugState = boolean('debugState', true);\n  const line = boolean('show line', true);\n  const area = boolean('show area', true);\n  const bar = boolean('show bar', true);\n  const groupCount = number('number of groups', 1, { min: 1 });\n  const splitSeriesAccessors = groupCount > 1 ? ['g'] : undefined;\n  const naming: SeriesNameFn | undefined =\n    groupCount === 1 ? undefined : ({ specId, seriesKeys }) => `${specId} | ${seriesKeys[0]}`;\n\n  const dg = new SeededDataGenerator();\n  const lineData = dg.generateGroupedSeries(40, groupCount);\n  const areaData = dg.generateGroupedSeries(40, groupCount);\n  const barData = dg.generateGroupedSeries(40, groupCount);\n\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        onRenderChange={getDebugStateLogger(debugState)}\n        debug={debug}\n        debugState={debugState}\n        showLegend\n        legendValues={[LegendValue.CurrentAndLastValue]}\n        baseTheme={useBaseTheme()}\n      />\n      <Axis id=\"bottom\" position={Position.Bottom} title=\"Bottom axis\" showOverlappingTicks />\n      <Axis id=\"left\" title=\"Left axis\" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />\n\n      {line && (\n        <LineSeries\n          id=\"lines\"\n          name={naming}\n          xAccessor=\"x\"\n          yAccessors={['y']}\n          xScaleType={ScaleType.Linear}\n          yScaleType={ScaleType.Linear}\n          splitSeriesAccessors={splitSeriesAccessors}\n          data={lineData}\n        />\n      )}\n      {area && (\n        <AreaSeries\n          id=\"areas\"\n          name={naming}\n          xAccessor=\"x\"\n          yAccessors={['y']}\n          xScaleType={ScaleType.Linear}\n          yScaleType={ScaleType.Linear}\n          data={areaData}\n          splitSeriesAccessors={splitSeriesAccessors}\n          curve={CurveType.CURVE_MONOTONE_X}\n        />\n      )}\n\n      {bar && (\n        <BarSeries\n          id=\"bars\"\n          name={naming}\n          xAccessor=\"x\"\n          yAccessors={['y']}\n          xScaleType={ScaleType.Linear}\n          yScaleType={ScaleType.Linear}\n          splitSeriesAccessors={splitSeriesAccessors}\n          data={barData}\n        />\n      )}\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
+
+
+/***/ },
+
+/***/ "./stories/downsampling/1_dense_rotated_lines.story.tsx"
+/*!**************************************************************!*\
+  !*** ./stories/downsampling/1_dense_rotated_lines.story.tsx ***!
+  \**************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Example = void 0;
+/* eslint-disable */
+// @ts-nocheck
+// @ts-ignore
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo } from 'react';\n\nimport { Axis, Chart, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\nimport { upToTwoDecimals } from '../utils/formatters';\n\nconst SERIES_COUNT = 5;\nconst POINTS_PER_SERIES = 50_000;\n\ntype SeriesDatum = [x: number, y: number];\n\nfunction generateData(): SeriesDatum[][] {\n  const rng = getRandomNumberGenerator('dense-rotated-lines');\n  return Array.from({ length: SERIES_COUNT }, (_, seriesIndex) => {\n    const trend = noiseTable(rng, 24);\n    const ripple = noiseTable(rng, 96);\n    return Array.from({ length: POINTS_PER_SERIES }, (__, i): SeriesDatum => {\n      const noise = sample(trend, i / 2000) * 8 + sample(ripple, i / 40) * 3 + rng(0, 2, 3);\n      return [i, seriesIndex * 10 + noise];\n    });\n  });\n}\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const baseTheme = useBaseTheme();\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // all exact from the summary of a downsampled series\n        legendValues={[\n          LegendValue.FirstValue,\n          LegendValue.LastValue,\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Range,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        rotation={90}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Left} />\n      <Axis id=\"y\" position={Position.Bottom} tickFormat={upToTwoDecimals} />\n      {data.map((seriesData, index) => (\n        <LineSeries\n          key={index}\n          id={`series-${index + 1}`}\n          xScaleType={ScaleType.Linear}\n          yScaleType={ScaleType.Linear}\n          xAccessor={0}\n          yAccessors={[1]}\n          data={seriesData}\n        />\n      ))}\n    </Chart>\n  );\n};\n";
+// @ts-ignore
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 36 }, "endLoc": { "col": 1, "line": 71 }, "startBody": { "col": 36, "line": 36 }, "endBody": { "col": 1, "line": 71 } } };
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+const react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
+const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
+const utils_1 = __webpack_require__(/*! @elastic/charts/src/mocks/utils */ "../packages/charts/src/mocks/utils.ts");
+const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
+const smooth_noise_1 = __webpack_require__(/*! ../utils/datasets/smooth_noise */ "./stories/utils/datasets/smooth_noise.ts");
+const formatters_1 = __webpack_require__(/*! ../utils/formatters */ "./stories/utils/formatters.ts");
+const SERIES_COUNT = 5;
+const POINTS_PER_SERIES = 50_000;
+function generateData() {
+    const rng = (0, utils_1.getRandomNumberGenerator)('dense-rotated-lines');
+    return Array.from({ length: SERIES_COUNT }, (_, seriesIndex) => {
+        const trend = (0, smooth_noise_1.noiseTable)(rng, 24);
+        const ripple = (0, smooth_noise_1.noiseTable)(rng, 96);
+        return Array.from({ length: POINTS_PER_SERIES }, (__, i) => {
+            const noise = (0, smooth_noise_1.sample)(trend, i / 2000) * 8 + (0, smooth_noise_1.sample)(ripple, i / 40) * 3 + rng(0, 2, 3);
+            return [i, seriesIndex * 10 + noise];
+        });
+    });
+}
+const Example = (_, { title, description }) => {
+    const data = (0, react_1.useMemo)(generateData, []);
+    const baseTheme = (0, use_base_theme_1.useBaseTheme)();
+    return (react_1.default.createElement(charts_1.Chart, { title: title, description: description },
+        react_1.default.createElement(charts_1.Settings, { showLegend: true, legendPosition: charts_1.Position.Right, 
+            // all exact from the summary of a downsampled series
+            legendValues: [
+                charts_1.LegendValue.FirstValue,
+                charts_1.LegendValue.LastValue,
+                charts_1.LegendValue.Min,
+                charts_1.LegendValue.Max,
+                charts_1.LegendValue.Range,
+                charts_1.LegendValue.CurrentAndLastValue,
+            ], rotation: 90, baseTheme: baseTheme }),
+        react_1.default.createElement(charts_1.Axis, { id: "x", position: charts_1.Position.Left }),
+        react_1.default.createElement(charts_1.Axis, { id: "y", position: charts_1.Position.Bottom, tickFormat: formatters_1.upToTwoDecimals }),
+        data.map((seriesData, index) => (react_1.default.createElement(charts_1.LineSeries, { key: index, id: `series-${index + 1}`, xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: seriesData })))));
+};
+exports.Example = Example;
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const baseTheme = useBaseTheme();\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // all exact from the summary of a downsampled series\n        legendValues={[\n          LegendValue.FirstValue,\n          LegendValue.LastValue,\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Range,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        rotation={90}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Left} />\n      <Axis id=\"y\" position={Position.Bottom} tickFormat={upToTwoDecimals} />\n      {data.map((seriesData, index) => (\n        <LineSeries\n          key={index}\n          id={`series-${index + 1}`}\n          xScaleType={ScaleType.Linear}\n          yScaleType={ScaleType.Linear}\n          xAccessor={0}\n          yAccessors={[1]}\n          data={seriesData}\n        />\n      ))}\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
+
+
+/***/ },
+
+/***/ "./stories/downsampling/2_dense_oscillation.story.tsx"
+/*!************************************************************!*\
+  !*** ./stories/downsampling/2_dense_oscillation.story.tsx ***!
+  \************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Example = void 0;
+/* eslint-disable */
+// @ts-nocheck
+// @ts-ignore
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo } from 'react';\n\nimport { Axis, Chart, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\nimport { upToTwoDecimals } from '../utils/formatters';\n\nconst POINTS = 200_000;\nconst SPIKE_EVERY = 9973; // odd, so the spikes alternate between up and down\n\ntype SeriesDatum = [x: number, y: number];\n\nfunction generateData(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('dense-oscillation');\n  const trend = noiseTable(rng, 16);\n  let level = 0; // the y the line holds until the next jump\n  let nextJump = 0; // the row of the next jump to a random level\n  return Array.from({ length: POINTS }, (_, i): SeriesDatum => {\n    if (i === nextJump) {\n      level = rng(-40, 40, 2);\n      nextJump += rng(100, 2000); // at ~170 rows per pixel on a 1200 px plot: part of a pixel to a dozen pixels\n    }\n    // the sign flips on every row: a narrow band around the level, with rare single-row spikes\n    const swing = (i % 2 === 0 ? 1 : -1) * rng(0, 3, 2) * (i % SPIKE_EVERY === 0 ? 10 : 1);\n    return [i, sample(trend, i / 25_000) * 30 + level + swing];\n  });\n}\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const baseTheme = useBaseTheme();\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // average, median and count aren't in the summary, so the legend rebuilds every row\n        legendValues={[\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Average,\n          LegendValue.Median,\n          LegendValue.Count,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} tickFormat={upToTwoDecimals} />\n      <LineSeries\n        id=\"oscillation\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={data}\n        color=\"black\"\n        lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n      />\n    </Chart>\n  );\n};\n";
+// @ts-ignore
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 40 }, "endLoc": { "col": 1, "line": 73 }, "startBody": { "col": 36, "line": 40 }, "endBody": { "col": 1, "line": 73 } } };
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+const react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
+const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
+const utils_1 = __webpack_require__(/*! @elastic/charts/src/mocks/utils */ "../packages/charts/src/mocks/utils.ts");
+const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
+const smooth_noise_1 = __webpack_require__(/*! ../utils/datasets/smooth_noise */ "./stories/utils/datasets/smooth_noise.ts");
+const formatters_1 = __webpack_require__(/*! ../utils/formatters */ "./stories/utils/formatters.ts");
+const POINTS = 200_000;
+const SPIKE_EVERY = 9973; // odd, so the spikes alternate between up and down
+function generateData() {
+    const rng = (0, utils_1.getRandomNumberGenerator)('dense-oscillation');
+    const trend = (0, smooth_noise_1.noiseTable)(rng, 16);
+    let level = 0; // the y the line holds until the next jump
+    let nextJump = 0; // the row of the next jump to a random level
+    return Array.from({ length: POINTS }, (_, i) => {
+        if (i === nextJump) {
+            level = rng(-40, 40, 2);
+            nextJump += rng(100, 2000); // at ~170 rows per pixel on a 1200 px plot: part of a pixel to a dozen pixels
+        }
+        // the sign flips on every row: a narrow band around the level, with rare single-row spikes
+        const swing = (i % 2 === 0 ? 1 : -1) * rng(0, 3, 2) * (i % SPIKE_EVERY === 0 ? 10 : 1);
+        return [i, (0, smooth_noise_1.sample)(trend, i / 25_000) * 30 + level + swing];
+    });
+}
+const Example = (_, { title, description }) => {
+    const data = (0, react_1.useMemo)(generateData, []);
+    const baseTheme = (0, use_base_theme_1.useBaseTheme)();
+    return (react_1.default.createElement(charts_1.Chart, { title: title, description: description },
+        react_1.default.createElement(charts_1.Settings, { showLegend: true, legendPosition: charts_1.Position.Right, 
+            // average, median and count aren't in the summary, so the legend rebuilds every row
+            legendValues: [
+                charts_1.LegendValue.Min,
+                charts_1.LegendValue.Max,
+                charts_1.LegendValue.Average,
+                charts_1.LegendValue.Median,
+                charts_1.LegendValue.Count,
+                charts_1.LegendValue.CurrentAndLastValue,
+            ], baseTheme: baseTheme }),
+        react_1.default.createElement(charts_1.Axis, { id: "x", position: charts_1.Position.Bottom }),
+        react_1.default.createElement(charts_1.Axis, { id: "y", position: charts_1.Position.Left, tickFormat: formatters_1.upToTwoDecimals }),
+        react_1.default.createElement(charts_1.LineSeries, { id: "oscillation", xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: data, color: "black", lineSeriesStyle: { line: { strokeWidth: 0.25 } } })));
+};
+exports.Example = Example;
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const baseTheme = useBaseTheme();\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // average, median and count aren't in the summary, so the legend rebuilds every row\n        legendValues={[\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Average,\n          LegendValue.Median,\n          LegendValue.Count,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} tickFormat={upToTwoDecimals} />\n      <LineSeries\n        id=\"oscillation\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={data}\n        color=\"black\"\n        lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n      />\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
+
+
+/***/ },
+
+/***/ "./stories/downsampling/3_dense_sparse_and_gaps.story.tsx"
+/*!****************************************************************!*\
+  !*** ./stories/downsampling/3_dense_sparse_and_gaps.story.tsx ***!
+  \****************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Example = void 0;
+/* eslint-disable */
+// @ts-nocheck
+// @ts-ignore
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo } from 'react';\n\nimport { Axis, Chart, CurveType, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\nimport { upToTwoDecimals } from '../utils/formatters';\n\ntype SeriesDatum = [x: number, y: number | null];\n\nfunction generateData(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('dense-sparse-and-gaps');\n  const trend = noiseTable(rng, 32);\n  let level = 0; // the y the line holds until the next jump\n  let nextJump = 0; // the x of the next jump to a random level\n  // called in x order; the sign flips on every row, so dense stretches draw a narrow band around the level\n  const value = (x: number, k: number) => {\n    if (x >= nextJump) {\n      level = rng(-8, 8, 2);\n      nextJump = x + rng(0.2, 4, 2); // at about a pixel per x unit: part of a pixel to a few pixels\n    }\n    return 10 + sample(trend, x / 40) * 10 + level + (k % 2 === 0 ? 1 : -1) * rng(0, 1.5, 2);\n  };\n  const data: SeriesDatum[] = [];\n  // appends `count` rows from x `from`, `step` apart\n  const append = (from: number, count: number, step: number, y: (x: number, k: number) => number | null) => {\n    for (let k = 0; k < count; k++) data.push([from + k * step, y(from + k * step, k)]);\n  };\n  append(0, 80_000, 0.0025, value); // super dense: hundreds of rows per pixel\n  append(200, 8, 25, value); // super sparse: tens of pixels apart\n  append(400, 5000, 0.01, () => null); // a long gap\n  append(450, 20, 5, (x, k) => (k % 2 === 0 ? value(x, k) : null)); // isolated points between missing ys\n  // dense, with gaps of 5, 15, 25 and 35 x units ending at x 650, 750, 850 and 950, and a single missing y\n  const isGap = (k: number) => k % 20_000 >= 20_000 - 1000 * (1 + 2 * Math.floor(k / 20_000)) || k === 33_333;\n  append(550, 90_000, 0.005, (x, k) => (isGap(k) ? null : value(x, k)));\n  return data;\n}\n\n// a sparse, continuous series of independent values, whose overshooting curve and dash M4 can't reduce\nfunction generateCurveData(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('dense-sparse-and-gaps-curve');\n  return Array.from({ length: 21 }, (_, k): SeriesDatum => [k * 50, rng(5, 20, 2)]);\n}\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const curveData = useMemo(generateCurveData, []);\n  const baseTheme = useBaseTheme();\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // exact from the summary of the downsampled black series; the magenta one isn't downsampled\n        legendValues={[\n          LegendValue.FirstNonNullValue,\n          LegendValue.LastNonNullValue,\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Difference,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} tickFormat={upToTwoDecimals} />\n      <LineSeries\n        id=\"dense, sparse and gaps\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={data}\n        color=\"black\"\n        curve={CurveType.CURVE_MONOTONE_X}\n        lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n      />\n      <LineSeries\n        id=\"sparse curve\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={curveData}\n        color=\"magenta\"\n        curve={CurveType.CURVE_NATURAL}\n        lineSeriesStyle={{ line: { dash: [4, 4] }, point: { visible: 'always' } }}\n      />\n    </Chart>\n  );\n};\n";
+// @ts-ignore
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 55 }, "endLoc": { "col": 1, "line": 101 }, "startBody": { "col": 36, "line": 55 }, "endBody": { "col": 1, "line": 101 } } };
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+const react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
+const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
+const utils_1 = __webpack_require__(/*! @elastic/charts/src/mocks/utils */ "../packages/charts/src/mocks/utils.ts");
+const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
+const smooth_noise_1 = __webpack_require__(/*! ../utils/datasets/smooth_noise */ "./stories/utils/datasets/smooth_noise.ts");
+const formatters_1 = __webpack_require__(/*! ../utils/formatters */ "./stories/utils/formatters.ts");
+function generateData() {
+    const rng = (0, utils_1.getRandomNumberGenerator)('dense-sparse-and-gaps');
+    const trend = (0, smooth_noise_1.noiseTable)(rng, 32);
+    let level = 0; // the y the line holds until the next jump
+    let nextJump = 0; // the x of the next jump to a random level
+    // called in x order; the sign flips on every row, so dense stretches draw a narrow band around the level
+    const value = (x, k) => {
+        if (x >= nextJump) {
+            level = rng(-8, 8, 2);
+            nextJump = x + rng(0.2, 4, 2); // at about a pixel per x unit: part of a pixel to a few pixels
+        }
+        return 10 + (0, smooth_noise_1.sample)(trend, x / 40) * 10 + level + (k % 2 === 0 ? 1 : -1) * rng(0, 1.5, 2);
+    };
+    const data = [];
+    // appends `count` rows from x `from`, `step` apart
+    const append = (from, count, step, y) => {
+        for (let k = 0; k < count; k++)
+            data.push([from + k * step, y(from + k * step, k)]);
+    };
+    append(0, 80_000, 0.0025, value); // super dense: hundreds of rows per pixel
+    append(200, 8, 25, value); // super sparse: tens of pixels apart
+    append(400, 5000, 0.01, () => null); // a long gap
+    append(450, 20, 5, (x, k) => (k % 2 === 0 ? value(x, k) : null)); // isolated points between missing ys
+    // dense, with gaps of 5, 15, 25 and 35 x units ending at x 650, 750, 850 and 950, and a single missing y
+    const isGap = (k) => k % 20_000 >= 20_000 - 1000 * (1 + 2 * Math.floor(k / 20_000)) || k === 33_333;
+    append(550, 90_000, 0.005, (x, k) => (isGap(k) ? null : value(x, k)));
+    return data;
+}
+// a sparse, continuous series of independent values, whose overshooting curve and dash M4 can't reduce
+function generateCurveData() {
+    const rng = (0, utils_1.getRandomNumberGenerator)('dense-sparse-and-gaps-curve');
+    return Array.from({ length: 21 }, (_, k) => [k * 50, rng(5, 20, 2)]);
+}
+const Example = (_, { title, description }) => {
+    const data = (0, react_1.useMemo)(generateData, []);
+    const curveData = (0, react_1.useMemo)(generateCurveData, []);
+    const baseTheme = (0, use_base_theme_1.useBaseTheme)();
+    return (react_1.default.createElement(charts_1.Chart, { title: title, description: description },
+        react_1.default.createElement(charts_1.Settings, { showLegend: true, legendPosition: charts_1.Position.Right, 
+            // exact from the summary of the downsampled black series; the magenta one isn't downsampled
+            legendValues: [
+                charts_1.LegendValue.FirstNonNullValue,
+                charts_1.LegendValue.LastNonNullValue,
+                charts_1.LegendValue.Min,
+                charts_1.LegendValue.Max,
+                charts_1.LegendValue.Difference,
+                charts_1.LegendValue.CurrentAndLastValue,
+            ], baseTheme: baseTheme }),
+        react_1.default.createElement(charts_1.Axis, { id: "x", position: charts_1.Position.Bottom }),
+        react_1.default.createElement(charts_1.Axis, { id: "y", position: charts_1.Position.Left, tickFormat: formatters_1.upToTwoDecimals }),
+        react_1.default.createElement(charts_1.LineSeries, { id: "dense, sparse and gaps", xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: data, color: "black", curve: charts_1.CurveType.CURVE_MONOTONE_X, lineSeriesStyle: { line: { strokeWidth: 0.25 } } }),
+        react_1.default.createElement(charts_1.LineSeries, { id: "sparse curve", xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: curveData, color: "magenta", curve: charts_1.CurveType.CURVE_NATURAL, lineSeriesStyle: { line: { dash: [4, 4] }, point: { visible: 'always' } } })));
+};
+exports.Example = Example;
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const curveData = useMemo(generateCurveData, []);\n  const baseTheme = useBaseTheme();\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // exact from the summary of the downsampled black series; the magenta one isn't downsampled\n        legendValues={[\n          LegendValue.FirstNonNullValue,\n          LegendValue.LastNonNullValue,\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Difference,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} tickFormat={upToTwoDecimals} />\n      <LineSeries\n        id=\"dense, sparse and gaps\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={data}\n        color=\"black\"\n        curve={CurveType.CURVE_MONOTONE_X}\n        lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n      />\n      <LineSeries\n        id=\"sparse curve\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={curveData}\n        color=\"magenta\"\n        curve={CurveType.CURVE_NATURAL}\n        lineSeriesStyle={{ line: { dash: [4, 4] }, point: { visible: 'always' } }}\n      />\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -37053,9 +37376,9 @@ exports.Example = void 0;
 /* eslint-disable */
 // @ts-nocheck
 // @ts-ignore
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo, useRef, useState } from 'react';\n\nimport { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\n\nconst SERIES_COUNT = 50;\nconst POINTS_PER_SERIES = 40_000;\n\nconst rng = getRandomNumberGenerator('line-multi-series');\n\ntype SeriesDatum = [x: number, y: number];\n\nfunction noiseTable(size: number) {\n  return Array.from({ length: size }, () => rng(0, 1, 4));\n}\n\nfunction sample(table: number[], x: number) {\n  const i = Math.floor(x);\n  const t = x - i;\n  const s = t * t * (3 - 2 * t);\n  const n = table.length;\n  return table[i % n]! + (table[(i + 1) % n]! - table[i % n]!) * s;\n}\n\nfunction generateData(seriesPoints: number, numSeries = 1): SeriesDatum[][] {\n  return Array.from({ length: numSeries }, (_, seriesIndex) => {\n    const trend = noiseTable(24);\n    const swell = noiseTable(48);\n    const ripple = noiseTable(96);\n    const data = new Array<SeriesDatum>(seriesPoints);\n\n    for (let i = 0; i < seriesPoints; i++) {\n      const noise = sample(trend, i / 500) * 10 + sample(swell, i / 90) * 4 + sample(ripple, i / 18) * 1.2;\n      data[i] = [i, seriesIndex * 3 + 4 * Math.sin((Math.PI * i) / (seriesPoints - 1)) ** 2 * noise];\n    }\n\n    return data;\n  });\n}\n\nconst RENDER_LABEL = 'chart-render';\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const seriesData = useMemo(() => generateData(POINTS_PER_SERIES, SERIES_COUNT), []);\n  const [runId, setRunId] = useState(0);\n  const pendingTimer = useRef(false);\n  const baseTheme = useBaseTheme();\n\n  const startRender = () => {\n    window.performance.mark(`${RENDER_LABEL}:start`);\n    pendingTimer.current = true;\n    setRunId((id) => id + 1);\n  };\n\n  return (\n    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n      <button type=\"button\" style={{ all: 'revert', alignSelf: 'flex-start' }} onClick={startRender}>\n        Render\n      </button>\n      <div style={{ flex: 1, minHeight: 0 }}>\n        {runId > 0 && (\n          <Chart key={runId} title={title} description={description}>\n            <Settings\n              showLegend\n              legendPosition={Position.Right}\n              baseTheme={baseTheme}\n              onRenderChange={(isRendered) => {\n                if (isRendered && pendingTimer.current) {\n                  pendingTimer.current = false;\n                  const { duration } = window.performance.measure(RENDER_LABEL, `${RENDER_LABEL}:start`);\n                  \n                  console.log(`${RENDER_LABEL}: ${duration.toFixed(0)} ms`);\n                }\n              }}\n            />\n            <Axis id=\"bottom\" position={Position.Bottom} />\n            <Axis id=\"left\" position={Position.Left} />\n            {seriesData.map((data, index) => (\n              <LineSeries\n                key={index}\n                id={`series-${index + 1}`}\n                xScaleType={ScaleType.Linear}\n                yScaleType={ScaleType.Linear}\n                xAccessor={0}\n                yAccessors={[1]}\n                data={data}\n                curve={CurveType.LINEAR}\n              />\n            ))}\n          </Chart>\n        )}\n      </div>\n    </div>\n  );\n};\n";
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useEffect, useState } from 'react';\n\nimport { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\n\nconst SERIES_COUNT = 50;\nconst POINTS_PER_SERIES = 40_000;\n\nconst rng = getRandomNumberGenerator('line-multi-series');\n\ntype SeriesDatum = [x: number, y: number];\n\nfunction generateData(seriesPoints: number, numSeries = 1): SeriesDatum[][] {\n  return Array.from({ length: numSeries }, (_, seriesIndex) => {\n    const trend = noiseTable(rng, 24);\n    const swell = noiseTable(rng, 48);\n    const ripple = noiseTable(rng, 96);\n    const data = new Array<SeriesDatum>(seriesPoints);\n\n    for (let i = 0; i < seriesPoints; i++) {\n      const noise = sample(trend, i / 500) * 10 + sample(swell, i / 90) * 4 + sample(ripple, i / 18) * 1.2;\n      data[i] = [i, seriesIndex * 3 + 4 * Math.sin((Math.PI * i) / (seriesPoints - 1)) ** 2 * noise];\n    }\n\n    return data;\n  });\n}\n\nconst PROFILE_LABEL = 'Perf:DataToRender';\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const [data, setData] = useState<SeriesDatum[][]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    const generatedData = generateData(POINTS_PER_SERIES, SERIES_COUNT);\n    window.performance.mark('Perf:Started');\n    setData(generatedData);\n  }, [runId]);\n\n  const baseTheme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert', alignSelf: 'flex-start' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </div>\n    );\n  }\n\n  return (\n    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n      {renderButton}\n      <div style={{ flex: 1, minHeight: 0 }}>\n        <Chart title={title} description={description}>\n          <Settings\n            showLegend\n            legendPosition={Position.Right}\n            baseTheme={baseTheme}\n            onRenderChange={(isRendered) => {\n              if (isRendered) {\n                window.performance.mark('Perf:Ended');\n                const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n                \n                console.log(`chart rendered in ${duration.toFixed(0)} ms`);\n              }\n            }}\n          />\n          <Axis id=\"bottom\" position={Position.Bottom} />\n          <Axis id=\"left\" position={Position.Left} />\n          {data.map((seriesData, index) => (\n            <LineSeries\n              key={index}\n              id={`series-${index + 1}`}\n              xScaleType={ScaleType.Linear}\n              yScaleType={ScaleType.Linear}\n              xAccessor={0}\n              yAccessors={[1]}\n              data={seriesData}\n              curve={CurveType.LINEAR}\n            />\n          ))}\n        </Chart>\n      </div>\n    </div>\n  );\n};\n";
 // @ts-ignore
-var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 54 }, "endLoc": { "col": 1, "line": 106 }, "startBody": { "col": 36, "line": 54 }, "endBody": { "col": 1, "line": 106 } } };
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 43 }, "endLoc": { "col": 1, "line": 110 }, "startBody": { "col": 36, "line": 43 }, "endBody": { "col": 1, "line": 110 } } };
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -37067,60 +37390,60 @@ const react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/r
 const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
 const utils_1 = __webpack_require__(/*! @elastic/charts/src/mocks/utils */ "../packages/charts/src/mocks/utils.ts");
 const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
+const smooth_noise_1 = __webpack_require__(/*! ../utils/datasets/smooth_noise */ "./stories/utils/datasets/smooth_noise.ts");
 const SERIES_COUNT = 50;
 const POINTS_PER_SERIES = 40_000;
 const rng = (0, utils_1.getRandomNumberGenerator)('line-multi-series');
-function noiseTable(size) {
-    return Array.from({ length: size }, () => rng(0, 1, 4));
-}
-function sample(table, x) {
-    const i = Math.floor(x);
-    const t = x - i;
-    const s = t * t * (3 - 2 * t);
-    const n = table.length;
-    return table[i % n] + (table[(i + 1) % n] - table[i % n]) * s;
-}
 function generateData(seriesPoints, numSeries = 1) {
     return Array.from({ length: numSeries }, (_, seriesIndex) => {
-        const trend = noiseTable(24);
-        const swell = noiseTable(48);
-        const ripple = noiseTable(96);
+        const trend = (0, smooth_noise_1.noiseTable)(rng, 24);
+        const swell = (0, smooth_noise_1.noiseTable)(rng, 48);
+        const ripple = (0, smooth_noise_1.noiseTable)(rng, 96);
         const data = new Array(seriesPoints);
         for (let i = 0; i < seriesPoints; i++) {
-            const noise = sample(trend, i / 500) * 10 + sample(swell, i / 90) * 4 + sample(ripple, i / 18) * 1.2;
+            const noise = (0, smooth_noise_1.sample)(trend, i / 500) * 10 + (0, smooth_noise_1.sample)(swell, i / 90) * 4 + (0, smooth_noise_1.sample)(ripple, i / 18) * 1.2;
             data[i] = [i, seriesIndex * 3 + 4 * Math.sin((Math.PI * i) / (seriesPoints - 1)) ** 2 * noise];
         }
         return data;
     });
 }
-const RENDER_LABEL = 'chart-render';
+const PROFILE_LABEL = 'Perf:DataToRender';
 const Example = (_, { title, description }) => {
-    const seriesData = (0, react_1.useMemo)(() => generateData(POINTS_PER_SERIES, SERIES_COUNT), []);
+    const [data, setData] = (0, react_1.useState)([]);
     const [runId, setRunId] = (0, react_1.useState)(0);
-    const pendingTimer = (0, react_1.useRef)(false);
+    (0, react_1.useEffect)(() => {
+        const generatedData = generateData(POINTS_PER_SERIES, SERIES_COUNT);
+        window.performance.mark('Perf:Started');
+        setData(generatedData);
+    }, [runId]);
     const baseTheme = (0, use_base_theme_1.useBaseTheme)();
-    const startRender = () => {
-        window.performance.mark(`${RENDER_LABEL}:start`);
-        pendingTimer.current = true;
-        setRunId((id) => id + 1);
-    };
+    const renderButton = (react_1.default.createElement("button", { type: "button", style: { all: 'revert', alignSelf: 'flex-start' }, onClick: () => {
+            setData([]);
+            setRunId(runId + 1);
+        } }, "Render"));
+    if (data.length === 0) {
+        return (react_1.default.createElement("div", { style: { display: 'flex', flexDirection: 'column', height: '100%' } },
+            renderButton,
+            react_1.default.createElement("div", { style: { marginTop: 4 } }, "Rendering...")));
+    }
     return (react_1.default.createElement("div", { style: { display: 'flex', flexDirection: 'column', height: '100%' } },
-        react_1.default.createElement("button", { type: "button", style: { all: 'revert', alignSelf: 'flex-start' }, onClick: startRender }, "Render"),
-        react_1.default.createElement("div", { style: { flex: 1, minHeight: 0 } }, runId > 0 && (react_1.default.createElement(charts_1.Chart, { key: runId, title: title, description: description },
-            react_1.default.createElement(charts_1.Settings, { showLegend: true, legendPosition: charts_1.Position.Right, baseTheme: baseTheme, onRenderChange: (isRendered) => {
-                    if (isRendered && pendingTimer.current) {
-                        pendingTimer.current = false;
-                        const { duration } = window.performance.measure(RENDER_LABEL, `${RENDER_LABEL}:start`);
-                        // eslint-disable-next-line no-console
-                        console.log(`${RENDER_LABEL}: ${duration.toFixed(0)} ms`);
-                    }
-                } }),
-            react_1.default.createElement(charts_1.Axis, { id: "bottom", position: charts_1.Position.Bottom }),
-            react_1.default.createElement(charts_1.Axis, { id: "left", position: charts_1.Position.Left }),
-            seriesData.map((data, index) => (react_1.default.createElement(charts_1.LineSeries, { key: index, id: `series-${index + 1}`, xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: data, curve: charts_1.CurveType.LINEAR }))))))));
+        renderButton,
+        react_1.default.createElement("div", { style: { flex: 1, minHeight: 0 } },
+            react_1.default.createElement(charts_1.Chart, { title: title, description: description },
+                react_1.default.createElement(charts_1.Settings, { showLegend: true, legendPosition: charts_1.Position.Right, baseTheme: baseTheme, onRenderChange: (isRendered) => {
+                        if (isRendered) {
+                            window.performance.mark('Perf:Ended');
+                            const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');
+                            // eslint-disable-next-line no-console
+                            console.log(`chart rendered in ${duration.toFixed(0)} ms`);
+                        }
+                    } }),
+                react_1.default.createElement(charts_1.Axis, { id: "bottom", position: charts_1.Position.Bottom }),
+                react_1.default.createElement(charts_1.Axis, { id: "left", position: charts_1.Position.Left }),
+                data.map((seriesData, index) => (react_1.default.createElement(charts_1.LineSeries, { key: index, id: `series-${index + 1}`, xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: seriesData, curve: charts_1.CurveType.LINEAR })))))));
 };
 exports.Example = Example;
-exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const seriesData = useMemo(() => generateData(POINTS_PER_SERIES, SERIES_COUNT), []);\n  const [runId, setRunId] = useState(0);\n  const pendingTimer = useRef(false);\n  const baseTheme = useBaseTheme();\n\n  const startRender = () => {\n    window.performance.mark(`${RENDER_LABEL}:start`);\n    pendingTimer.current = true;\n    setRunId((id) => id + 1);\n  };\n\n  return (\n    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n      <button type=\"button\" style={{ all: 'revert', alignSelf: 'flex-start' }} onClick={startRender}>\n        Render\n      </button>\n      <div style={{ flex: 1, minHeight: 0 }}>\n        {runId > 0 && (\n          <Chart key={runId} title={title} description={description}>\n            <Settings\n              showLegend\n              legendPosition={Position.Right}\n              baseTheme={baseTheme}\n              onRenderChange={(isRendered) => {\n                if (isRendered && pendingTimer.current) {\n                  pendingTimer.current = false;\n                  const { duration } = window.performance.measure(RENDER_LABEL, `${RENDER_LABEL}:start`);\n                  \n                  console.log(`${RENDER_LABEL}: ${duration.toFixed(0)} ms`);\n                }\n              }}\n            />\n            <Axis id=\"bottom\" position={Position.Bottom} />\n            <Axis id=\"left\" position={Position.Left} />\n            {seriesData.map((data, index) => (\n              <LineSeries\n                key={index}\n                id={`series-${index + 1}`}\n                xScaleType={ScaleType.Linear}\n                yScaleType={ScaleType.Linear}\n                xAccessor={0}\n                yAccessors={[1]}\n                data={data}\n                curve={CurveType.LINEAR}\n              />\n            ))}\n          </Chart>\n        )}\n      </div>\n    </div>\n  );\n}" }, ...exports.Example.parameters };
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const [data, setData] = useState<SeriesDatum[][]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    const generatedData = generateData(POINTS_PER_SERIES, SERIES_COUNT);\n    window.performance.mark('Perf:Started');\n    setData(generatedData);\n  }, [runId]);\n\n  const baseTheme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert', alignSelf: 'flex-start' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </div>\n    );\n  }\n\n  return (\n    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n      {renderButton}\n      <div style={{ flex: 1, minHeight: 0 }}>\n        <Chart title={title} description={description}>\n          <Settings\n            showLegend\n            legendPosition={Position.Right}\n            baseTheme={baseTheme}\n            onRenderChange={(isRendered) => {\n              if (isRendered) {\n                window.performance.mark('Perf:Ended');\n                const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n                \n                console.log(`chart rendered in ${duration.toFixed(0)} ms`);\n              }\n            }}\n          />\n          <Axis id=\"bottom\" position={Position.Bottom} />\n          <Axis id=\"left\" position={Position.Left} />\n          {data.map((seriesData, index) => (\n            <LineSeries\n              key={index}\n              id={`series-${index + 1}`}\n              xScaleType={ScaleType.Linear}\n              yScaleType={ScaleType.Linear}\n              xAccessor={0}\n              yAccessors={[1]}\n              data={seriesData}\n              curve={CurveType.LINEAR}\n            />\n          ))}\n        </Chart>\n      </div>\n    </div>\n  );\n}" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -60431,6 +60754,7 @@ var __webpack_unused_export__;
  */
 __webpack_unused_export__ = ({ value: true });
 exports.computeLegend = computeLegend;
+const legend_1 = __webpack_require__(/*! ../../../common/legend */ "../packages/charts/src/common/legend.ts");
 const common_1 = __webpack_require__(/*! ../../../utils/common */ "../packages/charts/src/utils/common.tsx");
 const geometry_1 = __webpack_require__(/*! ../../../utils/geometry */ "../packages/charts/src/utils/geometry.ts");
 const utils_1 = __webpack_require__(/*! ../rendering/utils */ "../packages/charts/src/chart_types/xy_chart/rendering/utils.ts");
@@ -60441,6 +60765,7 @@ const axis_utils_1 = __webpack_require__(/*! ../utils/axis_utils */ "../packages
 const default_series_sort_fn_1 = __webpack_require__(/*! ../utils/default_series_sort_fn */ "../packages/charts/src/chart_types/xy_chart/utils/default_series_sort_fn.ts");
 const group_data_series_1 = __webpack_require__(/*! ../utils/group_data_series */ "../packages/charts/src/chart_types/xy_chart/utils/group_data_series.ts");
 const series_1 = __webpack_require__(/*! ../utils/series */ "../packages/charts/src/chart_types/xy_chart/utils/series.ts");
+const series_2 = __webpack_require__(/*! ../utils/series */ "../packages/charts/src/chart_types/xy_chart/utils/series.ts");
 const specs_1 = __webpack_require__(/*! ../utils/specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
 function getPostfix(spec) {
     if ((0, specs_1.isAreaSeriesSpec)(spec) || (0, specs_1.isBarSeriesSpec)(spec)) {
@@ -60466,6 +60791,20 @@ function getPointStyle(spec, theme) {
         return (0, common_1.mergePartial)(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point);
     }
 }
+// values that are extracted from a downsampled series' summary (first, lowest, highest, last rows)
+// other values need every row
+const SUMMARY_LEGEND_VALUES = new Set([
+    legend_1.LegendValue.CurrentAndLastValue,
+    legend_1.LegendValue.LastValue,
+    legend_1.LegendValue.LastNonNullValue,
+    legend_1.LegendValue.FirstValue,
+    legend_1.LegendValue.FirstNonNullValue,
+    legend_1.LegendValue.Min,
+    legend_1.LegendValue.Max,
+    legend_1.LegendValue.Range,
+    legend_1.LegendValue.Difference,
+    legend_1.LegendValue.DifferencePercent,
+]);
 const y1Accessor = (stackMode) => (d) => {
     // don't consider filled in data in the calculations
     if ((0, utils_1.isDatumFilled)(d)) {
@@ -60485,19 +60824,20 @@ function computeLegend(xDomain, dataSeries, seriesColors, specs, axesSpecs, sett
     const legendItems = [];
     const defaultColor = theme.colors.defaultVizColor;
     const legendValues = settingsSpec.legendValues ?? [];
+    const summaryHasAllLegendValues = legendValues.every((value) => SUMMARY_LEGEND_VALUES.has(value));
     dataSeries.forEach((series) => {
         const { specId, yAccessor } = series;
-        const banded = (0, series_1.isBandedSpec)(series.spec);
+        const banded = (0, series_2.isBandedSpec)(series.spec);
         const spec = (0, spec_1.getSpecsById)(specs, specId);
-        const dataSeriesKey = (0, series_1.getSeriesKey)({
+        const dataSeriesKey = (0, series_2.getSeriesKey)({
             specId: series.specId,
             yAccessor: series.yAccessor,
             splitAccessors: series.splitAccessors,
         }, series.groupId);
         const color = seriesColors.get(dataSeriesKey) || defaultColor;
         const hasSingleSeries = dataSeries.length === 1;
-        const name = (0, series_1.getSeriesName)(series, hasSingleSeries, false, spec);
-        const isSeriesHidden = deselectedDataSeries && (0, series_1.getSeriesIndex)(deselectedDataSeries, series) >= 0;
+        const name = (0, series_2.getSeriesName)(series, hasSingleSeries, false, spec);
+        const isSeriesHidden = deselectedDataSeries && (0, series_2.getSeriesIndex)(deselectedDataSeries, series) >= 0;
         if (name === '' || !spec)
             return;
         const postFixes = getPostfix(spec);
@@ -60505,9 +60845,11 @@ function computeLegend(xDomain, dataSeries, seriesColors, specs, axesSpecs, sett
         const { yAxis } = (0, spec_1.getAxesSpecForSpecId)(axesSpecs, spec.groupId, settingsSpec.rotation);
         const formatter = spec.tickFormat ?? yAxis?.tickFormat ?? axis_utils_1.defaultTickFormatter;
         const { hideInLegend } = spec;
-        const seriesIdentifier = (0, series_1.getSeriesIdentifierFromDataSeries)(series);
+        const seriesIdentifier = (0, series_2.getSeriesIdentifierFromDataSeries)(series);
         const pointStyle = getPointStyle(spec, theme);
-        const legendValuesItems = (0, get_legend_values_1.getLegendValues)(series, xDomain, legendValues, y1Accessor(series.stackMode), formatter);
+        const dataLacksLegendRows = series.isDownsampled && !summaryHasAllLegendValues;
+        const source = dataLacksLegendRows ? { ...series, data: (0, series_1.toSeriesData)(series.spec, series.spec.data) } : series;
+        const legendValuesItems = (0, get_legend_values_1.getLegendValues)(source, xDomain, legendValues, y1Accessor(series.stackMode), formatter);
         legendItems.push({
             depth: 0,
             color,
@@ -65721,6 +66063,7 @@ const is_histogram_mode_enabled_1 = __webpack_require__(/*! ./is_histogram_mode_
 const create_selector_1 = __webpack_require__(/*! ../../../../state/create_selector */ "../packages/charts/src/state/create_selector.ts");
 const compute_small_multiple_scales_1 = __webpack_require__(/*! ../../../../state/selectors/compute_small_multiple_scales */ "../packages/charts/src/state/selectors/compute_small_multiple_scales.ts");
 const get_chart_theme_1 = __webpack_require__(/*! ../../../../state/selectors/get_chart_theme */ "../packages/charts/src/state/selectors/get_chart_theme.ts");
+const get_internal_main_projection_area_1 = __webpack_require__(/*! ../../../../state/selectors/get_internal_main_projection_area */ "../packages/charts/src/state/selectors/get_internal_main_projection_area.ts");
 const get_settings_spec_1 = __webpack_require__(/*! ../../../../state/selectors/get_settings_spec */ "../packages/charts/src/state/selectors/get_settings_spec.ts");
 const canvas_text_bbox_calculator_1 = __webpack_require__(/*! ../../../../utils/bbox/canvas_text_bbox_calculator */ "../packages/charts/src/utils/bbox/canvas_text_bbox_calculator.ts");
 const utils_1 = __webpack_require__(/*! ../utils/utils */ "../packages/charts/src/chart_types/xy_chart/state/utils/utils.ts");
@@ -65735,8 +66078,9 @@ exports.computeSeriesGeometriesSelector = (0, create_selector_1.createCustomCach
     compute_small_multiple_scales_1.computeSmallMultipleScalesSelector,
     is_histogram_mode_enabled_1.isHistogramModeEnabledSelector,
     compute_baseline_axes_1.getFallBackTickFormatter,
-], (specs, domain, colors, theme, settings, axis, smScales, isHistogram, fallbackFormatter) => {
-    return (0, canvas_text_bbox_calculator_1.withTextMeasure)((measureText) => (0, utils_1.computeSeriesGeometries)(specs, domain, colors, theme, settings, axis, smScales, isHistogram, fallbackFormatter, measureText));
+    get_internal_main_projection_area_1.getInternalMainProjectionAreaSelector,
+], (specs, domain, colors, theme, settings, axis, smScales, isHistogram, fallbackFormatter, plotArea) => {
+    return (0, canvas_text_bbox_calculator_1.withTextMeasure)((measureText) => (0, utils_1.computeSeriesGeometries)(specs, domain, colors, theme, settings, axis, smScales, isHistogram, fallbackFormatter, measureText, plotArea));
 });
 
 
@@ -68672,6 +69016,7 @@ exports.getBarIndexKey = getBarIndexKey;
 const common_1 = __webpack_require__(/*! ./common */ "../packages/charts/src/chart_types/xy_chart/state/utils/common.ts");
 const spec_1 = __webpack_require__(/*! ./spec */ "../packages/charts/src/chart_types/xy_chart/state/utils/spec.ts");
 const predicate_1 = __webpack_require__(/*! ../../../../common/predicate */ "../packages/charts/src/common/predicate.ts");
+const types_1 = __webpack_require__(/*! ../../../../scales/types */ "../packages/charts/src/scales/types.ts");
 const common_2 = __webpack_require__(/*! ../../../../utils/common */ "../packages/charts/src/utils/common.tsx");
 const x_domain_1 = __webpack_require__(/*! ../../domains/x_domain */ "../packages/charts/src/chart_types/xy_chart/domains/x_domain.ts");
 const y_domain_1 = __webpack_require__(/*! ../../domains/y_domain */ "../packages/charts/src/chart_types/xy_chart/domains/y_domain.ts");
@@ -68737,7 +69082,7 @@ function computeSeriesDomains(seriesSpecs, scaleConfigs, annotations, settingsSp
         ((a, b) => {
             return (0, default_series_sort_fn_1.defaultXYSeriesSort)(a, b);
         });
-    const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = (0, series_1.getDataSeriesFromSpecs)(seriesSpecs, deselectedDataSeries, orderOrdinalBinsBy, renderingSortFn, smallMultiples);
+    const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = (0, series_1.getDataSeriesFromSpecs)(seriesSpecs, deselectedDataSeries, orderOrdinalBinsBy, renderingSortFn, smallMultiples, scaleConfigs);
     // compute the x domain merging any custom domain
     const xDomain = (0, x_domain_1.mergeXDomain)(scaleConfigs.x, xValues, locale, fallbackScale);
     const xIndex = new Map();
@@ -68776,7 +69121,7 @@ function getAnnotationYValueMap(annotations, yScaleConfig) {
     }, new Map());
 }
 /** @internal */
-function computeSeriesGeometries(seriesSpecs, { xDomain, yDomains, formattedDataSeries: nonFilteredDataSeries }, seriesColorMap, chartTheme, { rotation: chartRotation }, axesSpecs, smallMultiplesScales, enableHistogramMode, fallbackTickFormatter, measureText) {
+function computeSeriesGeometries(seriesSpecs, { xDomain, yDomains, formattedDataSeries: nonFilteredDataSeries }, seriesColorMap, chartTheme, { rotation: chartRotation }, axesSpecs, smallMultiplesScales, enableHistogramMode, fallbackTickFormatter, measureText, plotArea) {
     const chartColors = chartTheme.colors;
     const formattedDataSeries = nonFilteredDataSeries.filter(({ isFiltered }) => !isFiltered);
     const barDataSeries = formattedDataSeries.filter(({ spec }) => (0, specs_1.isBarSeriesSpec)(spec));
@@ -68793,7 +69138,7 @@ function computeSeriesGeometries(seriesSpecs, { xDomain, yDomains, formattedData
         yDomains,
         range: [(0, common_1.isHorizontalRotation)(chartRotation) ? vertical.bandwidth : horizontal.bandwidth, 0],
     });
-    const computedGeoms = renderGeometries(formattedDataSeries, xDomain, yScales, vertical, horizontal, barIndexByPanel, seriesSpecs, seriesColorMap, chartColors.defaultVizColor, axesSpecs, chartTheme, enableHistogramMode, chartRotation, fallbackTickFormatter, measureText);
+    const computedGeoms = renderGeometries(formattedDataSeries, xDomain, yScales, vertical, horizontal, barIndexByPanel, seriesSpecs, seriesColorMap, chartColors.defaultVizColor, axesSpecs, chartTheme, enableHistogramMode, chartRotation, fallbackTickFormatter, measureText, plotArea);
     const totalBarsInCluster = Object.values(barIndexByPanel).reduce((acc, curr) => Math.max(acc, curr.length), 0);
     const xScale = (0, scales_1.computeXScale)({
         xDomain,
@@ -68835,7 +69180,31 @@ function computeXScaleOffset(xScale, enableHistogramMode, histogramModeAlignment
             return startAlignmentOffset;
     }
 }
-function renderGeometries(dataSeries, xDomain, yScales, smVScale, smHScale, barIndexOrderPerPanel, seriesSpecs, seriesColorsMap, defaultColor, axesSpecs, chartTheme, enableHistogramMode, chartRotation, fallBackTickFormatter, measureText) {
+function renderedDataSeries(ds, style, xScale, xAxis, xShift) {
+    if (!ds.isDownsampled)
+        return ds;
+    const isM4 = (0, types_1.isContinuousScale)(xScale) && !style.line.dash?.length && style.point.visible !== 'always';
+    return {
+        ...ds,
+        data: isM4 ? (0, series_1.m4SeriesData)(ds.spec, pixelBins(xScale, xAxis, xShift)) : (0, series_1.toSeriesData)(ds.spec, ds.spec.data),
+    };
+}
+// the one-pixel bins along the x axis, as `m4` computes them: floor(offset + scale * (x - origin))
+function pixelBins(xScale, { start, direction }, xShift) {
+    const [origin, end] = xScale.domain;
+    const offset = start + direction * (xShift + xScale.scale(origin));
+    const scale = end === origin ? 0 : (direction * (xScale.scale(end) - xScale.scale(origin))) / (end - origin);
+    return { origin, offset, scale };
+}
+// where the panel's x axis starts on the canvas, and which way it runs; it runs vertically in rotated charts
+function xAxisOnCanvas(plotArea, panel, rotation) {
+    const vertical = (0, common_1.isVerticalRotation)(rotation);
+    const start = vertical ? plotArea.top + panel.top : plotArea.left + panel.left;
+    if (rotation === 0 || rotation === 90)
+        return { start, direction: 1 };
+    return { start: start + (vertical ? panel.height : panel.width), direction: -1 };
+}
+function renderGeometries(dataSeries, xDomain, yScales, smVScale, smHScale, barIndexOrderPerPanel, seriesSpecs, seriesColorsMap, defaultColor, axesSpecs, chartTheme, enableHistogramMode, chartRotation, fallBackTickFormatter, measureText, plotArea) {
     const bars = [];
     const areas = [];
     const lines = [];
@@ -68934,9 +69303,9 @@ function renderGeometries(dataSeries, xDomain, yScales, smVScale, smHScale, barI
             const lineShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
             const lineSeriesStyle = (0, line_area_style_1.getLineSeriesStyles)(chartTheme.lineSeriesStyle, spec.lineSeriesStyle);
             const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
-            const renderedLines = (0, line_1.renderLine)(
             // move the point on half of the bandwidth if we have mixed bars/lines
-            (xScale.bandwidth * lineShift) / 2, ds, xScale, yScale, panel, color, spec.curve, (0, series_1.isBandedSpec)(spec), xScaleOffset, lineSeriesStyle, {
+            const shift = (xScale.bandwidth * lineShift) / 2;
+            const renderedLines = (0, line_1.renderLine)(shift, renderedDataSeries(ds, lineSeriesStyle, xScale, xAxisOnCanvas(plotArea, panel, chartRotation), shift - xScaleOffset), xScale, yScale, panel, color, spec.curve, (0, series_1.isBandedSpec)(spec), xScaleOffset, lineSeriesStyle, {
                 enabled: spec.markSizeAccessor !== undefined && lineSeriesStyle.point.visible !== 'never',
                 ratio: chartTheme.markSizeRatio,
             }, hasFitFnConfigured(spec.fit), spec.pointStyleAccessor);
@@ -68953,9 +69322,9 @@ function renderGeometries(dataSeries, xDomain, yScales, smVScale, smHScale, barI
             const areaShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
             const areaSeriesStyle = (0, line_area_style_1.getAreaSeriesStyles)(chartTheme.areaSeriesStyle, spec.areaSeriesStyle);
             const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
-            const renderedArea = (0, area_1.renderArea)(
             // move the point on half of the bandwidth if we have mixed bars/lines
-            (xScale.bandwidth * areaShift) / 2, ds, xScale, yScale, panel, color, spec.curve, (0, series_1.isBandedSpec)(spec), xScaleOffset, areaSeriesStyle, {
+            const shift = (xScale.bandwidth * areaShift) / 2;
+            const renderedArea = (0, area_1.renderArea)(shift, renderedDataSeries(ds, areaSeriesStyle, xScale, xAxisOnCanvas(plotArea, panel, chartRotation), shift - xScaleOffset), xScale, yScale, panel, color, spec.curve, (0, series_1.isBandedSpec)(spec), xScaleOffset, areaSeriesStyle, {
                 enabled: spec.markSizeAccessor !== undefined && areaSeriesStyle.point.visible !== 'never',
                 ratio: chartTheme.markSizeRatio,
             }, spec.stackAccessors ? spec.stackAccessors.length > 0 : false, hasFitFnConfigured(spec.fit), spec.pointStyleAccessor);
@@ -70405,6 +70774,107 @@ function getOrientedYPosition(xPos, yPos, chartRotation, chartDimension) {
 
 /***/ },
 
+/***/ "../packages/charts/src/chart_types/xy_chart/utils/m4.ts"
+/*!***************************************************************!*\
+  !*** ../packages/charts/src/chart_types/xy_chart/utils/m4.ts ***!
+  \***************************************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+var __webpack_unused_export__;
+
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+__webpack_unused_export__ = ({ value: true });
+exports.m4 = m4;
+/**
+ * M4 reduction of rows sorted by x: returns the indices of the first, lowest, highest and last row of every run of
+ * consecutive rows in the same pixel bin `floor(offset + scale * (x - origin))`, so a line through the kept rows
+ * paints the same pixel bins as a line through all rows. A NaN y ends the run; of each run of NaN rows,
+ * only the first and last are kept. Without `keepGaps`, a NaN y is skipped instead, so with a `scale` of 0 the
+ * result summarizes the whole series in at most four rows.
+ * @internal
+ */
+function m4(xs, ys, scale, origin, offset, keepGaps = true) {
+    const kept = []; // indices of the kept rows, in row order
+    // row indices of the open run, consecutive rows with a y in one pixel bin; there is no open run while first < 0
+    let first = -1; // its first row
+    let lo = -1; // its lowest row, the first one on ties
+    let hi = -1; // its highest row, the first one on ties
+    let last = -1; // its last row so far
+    let loY = 0; // the y of its lowest row
+    let hiY = 0; // the y of its highest row
+    let runBin = NaN; // its pixel bin; NaN matches no bin, so the next row with a y opens a run
+    let lastNull = -1; // the latest row of a run of missing ys after the run's first row, -1 if there is none
+    // keeps the open run's rows and closes the run
+    const endRun = () => {
+        if (first < 0)
+            return;
+        // append 1 to 4 indices to `kept`; preserves X order
+        kept.push(first);
+        if (first !== last) {
+            const a = Math.min(lo, hi); // the earlier index of the two extreme values
+            const b = Math.max(lo, hi); // the later index of the two extreme values
+            if (a !== first)
+                kept.push(a);
+            if (b !== a && b !== last)
+                kept.push(b);
+            kept.push(last);
+        }
+        first = -1;
+        runBin = NaN;
+    };
+    for (let i = 0; i < ys.length; i++) {
+        const y = ys[i];
+        if (Number.isNaN(y)) {
+            if (!keepGaps)
+                continue;
+            // the first missing y of a run closes the open run and is kept; the later ones wait in lastNull
+            if (i > 0 && Number.isNaN(ys[i - 1])) {
+                lastNull = i;
+            }
+            else {
+                endRun();
+                kept.push(i);
+            }
+            continue;
+        }
+        // a y after a run of missing ys keeps the run's last row
+        if (lastNull >= 0) {
+            kept.push(lastNull);
+            lastNull = -1;
+        }
+        const bin = Math.floor(offset + scale * (xs[i] - origin)); // this row's pixel bin
+        if (bin !== runBin) {
+            endRun();
+            runBin = bin;
+            first = lo = hi = i;
+            loY = hiY = y;
+        }
+        else if (y < loY) {
+            lo = i;
+            loY = y;
+        }
+        else if (y > hiY) {
+            hi = i;
+            hiY = y;
+        }
+        last = i;
+    }
+    endRun();
+    if (lastNull >= 0)
+        kept.push(lastNull);
+    return kept;
+}
+
+
+/***/ },
+
 /***/ "../packages/charts/src/chart_types/xy_chart/utils/scales.ts"
 /*!*******************************************************************!*\
   !*** ../packages/charts/src/chart_types/xy_chart/utils/scales.ts ***!
@@ -70528,6 +70998,8 @@ exports.getAccessorFieldName = getAccessorFieldName;
 exports.splitSeriesDataByAccessors = splitSeriesDataByAccessors;
 exports.getSeriesKey = getSeriesKey;
 exports.extractYAndMarkFromDatum = extractYAndMarkFromDatum;
+exports.toSeriesData = toSeriesData;
+exports.m4SeriesData = m4SeriesData;
 exports.getFormattedDataSeries = getFormattedDataSeries;
 exports.getDataSeriesFromSpecs = getDataSeriesFromSpecs;
 exports.isBandedSpec = isBandedSpec;
@@ -70536,15 +71008,19 @@ exports.getSeriesColors = getSeriesColors;
 exports.getSeriesIdentifierFromDataSeries = getSeriesIdentifierFromDataSeries;
 const fit_function_utils_1 = __webpack_require__(/*! ./fit_function_utils */ "../packages/charts/src/chart_types/xy_chart/utils/fit_function_utils.ts");
 const group_data_series_1 = __webpack_require__(/*! ./group_data_series */ "../packages/charts/src/chart_types/xy_chart/utils/group_data_series.ts");
+const m4_1 = __webpack_require__(/*! ./m4 */ "../packages/charts/src/chart_types/xy_chart/utils/m4.ts");
+const specs_1 = __webpack_require__(/*! ./specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
 const stacked_series_utils_1 = __webpack_require__(/*! ./stacked_series_utils */ "../packages/charts/src/chart_types/xy_chart/utils/stacked_series_utils.ts");
 const colors_1 = __webpack_require__(/*! ../../../common/colors */ "../packages/charts/src/common/colors.tsx");
 const constants_1 = __webpack_require__(/*! ../../../scales/constants */ "../packages/charts/src/scales/constants.ts");
-const specs_1 = __webpack_require__(/*! ../../../specs */ "../packages/charts/src/specs/index.ts");
+const specs_2 = __webpack_require__(/*! ../../../specs */ "../packages/charts/src/specs/index.ts");
 const accessor_1 = __webpack_require__(/*! ../../../utils/accessor */ "../packages/charts/src/utils/accessor.ts");
 const common_1 = __webpack_require__(/*! ../../../utils/common */ "../packages/charts/src/utils/common.tsx");
+const curves_1 = __webpack_require__(/*! ../../../utils/curves */ "../packages/charts/src/utils/curves.ts");
 const logger_1 = __webpack_require__(/*! ../../../utils/logger */ "../packages/charts/src/utils/logger.ts");
 const y_domain_1 = __webpack_require__(/*! ../domains/y_domain */ "../packages/charts/src/chart_types/xy_chart/domains/y_domain.ts");
 const scale_defaults_1 = __webpack_require__(/*! ../scales/scale_defaults */ "../packages/charts/src/chart_types/xy_chart/scales/scale_defaults.ts");
+const spec_1 = __webpack_require__(/*! ../state/utils/spec */ "../packages/charts/src/chart_types/xy_chart/state/utils/spec.ts");
 /** @internal */
 exports.SERIES_DELIMITER = ' - ';
 /** @internal */
@@ -70566,10 +71042,11 @@ function getAccessorFieldName(accessor, index) {
  * Each series is then associated with a key that belongs to its configuration.
  * This method removes every data with an invalid x: a string or number value is required
  * `y` values and `mark` values are casted to number or null.
+ * `data` defaults to the spec's data; a downsampled spec passes the rows of its summary.
  * @internal
  */
-function splitSeriesDataByAccessors(spec, xValueSums, insertOrder = 0, isStacked = false, isBanded = false, stackMode, groupBySpec, deselectedDataSeries = []) {
-    const { seriesType, id: specId, groupId, data, xAccessor, yAccessors, y0Accessors, markSizeAccessor, splitSeriesAccessors = [], } = spec;
+function splitSeriesDataByAccessors(spec, xValueSums, insertOrder = 0, isStacked = false, isBanded = false, stackMode, groupBySpec, deselectedDataSeries = [], data = spec.data) {
+    const { seriesType, id: specId, groupId, xAccessor, yAccessors, y0Accessors, markSizeAccessor, splitSeriesAccessors = [], } = spec;
     const dataSeries = new Map();
     const xValues = [];
     const nonNumericValues = new Map();
@@ -70638,11 +71115,7 @@ function splitSeriesDataByAccessors(spec, xValueSums, insertOrder = 0, isStacked
             xValueSums.set(x, sum);
         });
     }
-    if (nonNumericValues.size > 0) {
-        const values = [...nonNumericValues.entries()];
-        const total = values.reduce((sum, [, v]) => sum + v, 0);
-        logger_1.Logger.warn(`Found ${total} non-numeric y value${total > 1 ? 's' : ''} in dataset for spec "${specId}"`, `(${values.map(([k, v]) => `${v}: ${JSON.stringify(k)}`).join(', ')})`);
-    }
+    warnNonNumericValues(specId, nonNumericValues);
     return {
         dataSeries,
         xValues,
@@ -70689,6 +71162,57 @@ function extractYAndMarkFromDatum(datum, yAccessor, nonNumericValues, bandedSpec
     const y0 = y0Accessor ? finiteOrNull((0, accessor_1.getAccessorValue)(datum, y0Accessor), nonNumericValues) : null;
     return { y1, datum, y0: bandedSpec ? y0 : null, mark, initialY0: y0, initialY1: y1 };
 }
+function warnNonNumericValues(specId, nonNumericValues) {
+    if (nonNumericValues.size > 0) {
+        const values = [...nonNumericValues.entries()];
+        const total = values.reduce((sum, [, v]) => sum + v, 0);
+        logger_1.Logger.warn(`Found ${total} non-numeric y value${total > 1 ? 's' : ''} in dataset for spec "${specId}"`, `(${values.map(([k, v]) => `${v}: ${JSON.stringify(k)}`).join(', ')})`);
+    }
+}
+/**
+ * The x and y values of the first y accessor, y being NaN where missing, unless an x is not finite or not sorted.
+ */
+function numericValues({ data, xAccessor, yAccessors }) {
+    const yAccessor = yAccessors[0];
+    const xs = new Float64Array(data.length); // the x of each row
+    const ys = new Float64Array(data.length); // the y of each row, NaN where missing or not numeric
+    const nonNumericValues = new Map(); // how often each non-numeric y occurs, for the warning
+    let previousX = -Infinity; // the x of the previous row, to check that x is sorted
+    for (let i = 0; i < data.length; i++) {
+        const datum = data[i];
+        const x = typeof datum === 'object' && datum !== null ? (0, accessor_1.getAccessorValue)(datum, xAccessor) : undefined;
+        if (typeof x !== 'number' || !Number.isFinite(x) || x < previousX)
+            return;
+        xs[i] = previousX = x;
+        const y = (0, accessor_1.getAccessorValue)(datum, yAccessor);
+        ys[i] = typeof y === 'number' && Number.isFinite(y) ? y : finiteOrNull(y, nonNumericValues) ?? NaN;
+    }
+    return { xs, ys, nonNumericValues };
+}
+/**
+ * Converts rows of a spec to series data, reading only the x and first y accessors: callers pass the specs of
+ * series flagged `isDownsampled`, which have no y0, mark size or split accessors and no small multiples.
+ * @internal
+ */
+function toSeriesData(spec, rows) {
+    const yAccessor = spec.yAccessors[0];
+    // getDataSeriesFromSpecs already reported the non-numeric values of these specs
+    const nonNumericValues = new Map();
+    return rows.map((datum) => ({
+        x: (0, accessor_1.getAccessorValue)(datum, spec.xAccessor),
+        ...extractYAndMarkFromDatum(datum, yAccessor, nonNumericValues, false),
+    }));
+}
+/**
+ * The rows of a spec that M4 keeps in the given pixel bins, as series data, for the spec of a series flagged
+ * `isDownsampled`.
+ * @internal
+ */
+function m4SeriesData(spec, { scale, origin, offset }) {
+    // the spec passed numericValues when getDataSeriesFromSpecs flagged its series `isDownsampled`
+    const { xs, ys } = numericValues(spec);
+    return toSeriesData(spec, (0, m4_1.m4)(xs, ys, scale, origin, offset).map((i) => spec.data[i]));
+}
 function finiteOrNull(value, nonNumericValues) {
     const candidateNumber = Number(value ?? undefined);
     const finite = Number.isFinite(candidateNumber);
@@ -70723,14 +71247,40 @@ function getFormattedDataSeries(availableDataSeries, xIndex, xScaleType) {
     const nonStackedDataSeries = fittedDataSeries.filter(({ isStacked }) => !isStacked);
     return [...fittedAndStackedDataSeries, ...nonStackedDataSeries].sort((a, b) => a.sortOrder - b.sortOrder);
 }
+// curves that stay within the y range of each pair of consecutive points, so M4 keeps the painted pixels
+const MONOTONIC_CURVES = new Set([
+    curves_1.CurveType.LINEAR,
+    curves_1.CurveType.CURVE_MONOTONE_X,
+    curves_1.CurveType.CURVE_STEP,
+    curves_1.CurveType.CURVE_STEP_AFTER,
+    curves_1.CurveType.CURVE_STEP_BEFORE,
+]);
+// nothing is downsampled without the scale configs; some of these restrictions could be lifted in the future
+function canDownsample(spec, isStacked, scaleConfigs, smallMultiples) {
+    return (scaleConfigs !== undefined &&
+        ((0, specs_1.isLineSeriesSpec)(spec) || (0, specs_1.isAreaSeriesSpec)(spec)) &&
+        MONOTONIC_CURVES.has(spec.curve ?? curves_1.DEFAULT_CURVE) &&
+        !isStacked &&
+        spec.fit === undefined &&
+        spec.yAccessors.length === 1 &&
+        !spec.y0Accessors?.length &&
+        !spec.splitSeriesAccessors?.length &&
+        spec.markSizeAccessor === undefined &&
+        spec.pointStyleAccessor === undefined &&
+        (scaleConfigs.x.type === constants_1.ScaleType.Linear || scaleConfigs.x.type === constants_1.ScaleType.Time) &&
+        scaleConfigs.y[(0, spec_1.getSpecDomainGroupId)(spec)]?.type === constants_1.ScaleType.Linear &&
+        !smallMultiples?.horizontal &&
+        !smallMultiples?.vertical);
+}
 /** @internal */
-function getDataSeriesFromSpecs(seriesSpecs, deselectedDataSeries = [], orderOrdinalBinsBy, seriesSort, groupBySpec) {
+function getDataSeriesFromSpecs(seriesSpecs, deselectedDataSeries = [], orderOrdinalBinsBy, seriesSort, groupBySpec, scaleConfigs) {
     const globalDataSeries = [];
     const mutatedXValueSums = new Map();
     // the unique set of values along the x axis
     const globalXValues = new Set();
     let isNumberArray = true;
     let isOrdinalScale = false;
+    let hasDownsampled = false;
     const specsByYGroup = (0, y_domain_1.groupSeriesByYGroup)(seriesSpecs);
     let insertOrder = 0;
     // eslint-disable-next-line no-restricted-syntax
@@ -70743,20 +71293,33 @@ function getDataSeriesFromSpecs(seriesSpecs, deselectedDataSeries = [], orderOrd
         const specGroup = specsByYGroup.get(spec.groupId);
         const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
         const isBanded = isBandedSpec(spec);
-        const { dataSeries, xValues } = splitSeriesDataByAccessors(spec, mutatedXValueSums, insertOrder, isStacked, isBanded, specGroup?.stackMode, groupBySpec, deselectedDataSeries);
+        const values = canDownsample(spec, isStacked, scaleConfigs, groupBySpec) ? numericValues(spec) : undefined;
+        // the summary: the first and last rows with a y, and the lowest and highest, as M4 keeps them for a single bin
+        const kept = values ? (0, m4_1.m4)(values.xs, values.ys, 0, 0, 0, false) : [];
+        const downsampled = kept.length > 0 && kept.length < spec.data.length ? values : undefined;
+        const data = downsampled ? kept.map((i) => spec.data[i]) : spec.data;
+        hasDownsampled ||= downsampled !== undefined;
+        if (downsampled)
+            warnNonNumericValues(spec.id, downsampled.nonNumericValues);
+        const { dataSeries, xValues } = splitSeriesDataByAccessors(spec, mutatedXValueSums, insertOrder, isStacked, isBanded, specGroup?.stackMode, groupBySpec, deselectedDataSeries, data);
         insertOrder += dataSeries.size;
         for (const [, ds] of dataSeries) {
+            if (downsampled)
+                ds.isDownsampled = true;
             globalDataSeries.push(ds);
         }
         // check the nature of the x values. If all of them are numbers
         // we can use a continuous scale, if not we should use an ordinal scale.
         // The xValue is already casted to be a valid number or a string
-        for (const xValue of xValues) {
+        for (const xValue of downsampled?.xs ?? xValues) {
             if (isNumberArray && typeof xValue !== 'number') {
                 isNumberArray = false;
             }
             globalXValues.add(xValue);
         }
+    }
+    if (hasDownsampled && !isNumberArray) {
+        return getDataSeriesFromSpecs(seriesSpecs, deselectedDataSeries, orderOrdinalBinsBy, seriesSort, groupBySpec);
     }
     const xValues = isOrdinalScale || !isNumberArray
         ? getSortedOrdinalXValues(globalXValues, mutatedXValueSums, orderOrdinalBinsBy)
@@ -70802,11 +71365,11 @@ function getSortedOrdinalXValues(xValues, xValueSums, orderOrdinalBinsBy) {
         return xValues; // keep the user order for ordinal scales
     }
     switch (orderOrdinalBinsBy?.binAgg) {
-        case specs_1.BinAgg.None:
+        case specs_2.BinAgg.None:
             return xValues; // keep the user order for ordinal scales
-        case specs_1.BinAgg.Sum:
+        case specs_2.BinAgg.Sum:
         default:
-            return new Set([...xValues].sort((v1, v2) => (orderOrdinalBinsBy.direction === specs_1.Direction.Ascending ? 1 : -1) *
+            return new Set([...xValues].sort((v1, v2) => (orderOrdinalBinsBy.direction === specs_2.Direction.Ascending ? 1 : -1) *
                 ((xValueSums.get(v1) ?? 0) - (xValueSums.get(v2) ?? 0))));
     }
 }
@@ -87213,7 +87776,7 @@ exports.clampAll = clampAll;
  * Side Public License, v 1.
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CurveType = void 0;
+exports.DEFAULT_CURVE = exports.CurveType = void 0;
 exports.getCurveFactory = getCurveFactory;
 const d3_shape_1 = __webpack_require__(/*! d3-shape */ "../node_modules/d3-shape/src/index.js");
 /** @public */
@@ -87229,9 +87792,16 @@ exports.CurveType = Object.freeze({
     CURVE_STEP_BEFORE: 8,
     LINEAR: 9,
 });
+/**
+ * The curve of a series that doesn't set one
+ * @internal
+ */
+exports.DEFAULT_CURVE = exports.CurveType.LINEAR;
 /** @internal */
-function getCurveFactory(curveType = exports.CurveType.LINEAR) {
+function getCurveFactory(curveType = exports.DEFAULT_CURVE) {
     switch (curveType) {
+        case exports.CurveType.LINEAR:
+            return d3_shape_1.curveLinear;
         case exports.CurveType.CURVE_CARDINAL:
             return d3_shape_1.curveCardinal;
         case exports.CurveType.CURVE_NATURAL:
@@ -87250,9 +87820,6 @@ function getCurveFactory(curveType = exports.CurveType.LINEAR) {
             return d3_shape_1.curveStepAfter;
         case exports.CurveType.CURVE_STEP_BEFORE:
             return d3_shape_1.curveStepBefore;
-        case exports.CurveType.LINEAR:
-        default:
-            return d3_shape_1.curveLinear;
     }
 }
 
@@ -106524,6 +107091,41 @@ exports.data = [
 
 /***/ },
 
+/***/ "./stories/utils/datasets/smooth_noise.ts"
+/*!************************************************!*\
+  !*** ./stories/utils/datasets/smooth_noise.ts ***!
+  \************************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+var __webpack_unused_export__;
+
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+__webpack_unused_export__ = ({ value: true });
+exports.noiseTable = noiseTable;
+exports.sample = sample;
+/** Random values in [0, 1] that `sample` interpolates between */
+function noiseTable(rng, size) {
+    return Array.from({ length: size }, () => rng(0, 1, 4));
+}
+/** Smooth noise at `x`, interpolating the table entries around it and repeating every `table.length` */
+function sample(table, x) {
+    const i = Math.floor(x);
+    const t = x - i;
+    const s = t * t * (3 - 2 * t);
+    const n = table.length;
+    return table[i % n] + (table[(i + 1) % n] - table[i % n]) * s;
+}
+
+
+/***/ },
+
 /***/ "./stories/utils/datasets/test_log_data.ts"
 /*!*************************************************!*\
   !*** ./stories/utils/datasets/test_log_data.ts ***!
@@ -106691,7 +107293,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.logFormatter = exports.getSuperScriptNumber = void 0;
+exports.upToTwoDecimals = exports.logFormatter = exports.getSuperScriptNumber = void 0;
 const numeral_1 = __importDefault(__webpack_require__(/*! numeral */ "../node_modules/numeral/numeral.js"));
 const superStringMap = {
     0: '⁰',
@@ -106724,6 +107326,9 @@ const logFormatter = (base = 10) => (n) => {
     return `${sign}${constant} x ${baseLabel}${expString}`;
 };
 exports.logFormatter = logFormatter;
+/** whole numbers as they are, others with two decimals */
+const upToTwoDecimals = (d) => (Number.isInteger(d) ? `${d}` : d.toFixed(2));
+exports.upToTwoDecimals = upToTwoDecimals;
 
 
 /***/ },
@@ -108156,6 +108761,10 @@ const map = {
 	"./debug/1_basic.story.tsx": "./stories/debug/1_basic.story.tsx",
 	"./debug/2_debug_state.story.tsx": "./stories/debug/2_debug_state.story.tsx",
 	"./debug/debug.stories.tsx": "./stories/debug/debug.stories.tsx",
+	"./downsampling/1_dense_rotated_lines.story.tsx": "./stories/downsampling/1_dense_rotated_lines.story.tsx",
+	"./downsampling/2_dense_oscillation.story.tsx": "./stories/downsampling/2_dense_oscillation.story.tsx",
+	"./downsampling/3_dense_sparse_and_gaps.story.tsx": "./stories/downsampling/3_dense_sparse_and_gaps.story.tsx",
+	"./downsampling/downsampling.stories.tsx": "./stories/downsampling/downsampling.stories.tsx",
 	"./goal/10_band_in_band.story.tsx": "./stories/goal/10_band_in_band.story.tsx",
 	"./goal/11_gaps.story.tsx": "./stories/goal/11_gaps.story.tsx",
 	"./goal/12_range.story.tsx": "./stories/goal/12_range.story.tsx",
@@ -108650,4 +109259,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.749b0a3f.iframe.bundle.js.map
+//# sourceMappingURL=main.0223fffb.iframe.bundle.js.map
