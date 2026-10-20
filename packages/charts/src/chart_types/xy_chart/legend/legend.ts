@@ -8,7 +8,6 @@
 
 import type { Color } from '../../../common/colors';
 import type { LegendItem } from '../../../common/legend';
-import { LegendValue } from '../../../common/legend';
 import type { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import type { SettingsSpec } from '../../../specs';
 import { isDefined, mergePartial } from '../../../utils/common';
@@ -24,7 +23,6 @@ import { defaultTickFormatter } from '../utils/axis_utils';
 import { defaultXYLegendSeriesSort } from '../utils/default_series_sort_fn';
 import { groupBy } from '../utils/group_data_series';
 import type { DataSeries, DataSeriesDatum } from '../utils/series';
-import { toSeriesData } from '../utils/series';
 import {
   getSeriesIndex,
   getSeriesName,
@@ -67,21 +65,6 @@ function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefi
   }
 }
 
-// values that are extracted from a downsampled series' summary (first, lowest, highest, last rows)
-// other values need every row
-const SUMMARY_LEGEND_VALUES: ReadonlySet<LegendValue> = new Set([
-  LegendValue.CurrentAndLastValue,
-  LegendValue.LastValue,
-  LegendValue.LastNonNullValue,
-  LegendValue.FirstValue,
-  LegendValue.FirstNonNullValue,
-  LegendValue.Min,
-  LegendValue.Max,
-  LegendValue.Range,
-  LegendValue.Difference,
-  LegendValue.DifferencePercent,
-]);
-
 const y1Accessor =
   (stackMode?: StackMode) =>
   (d: DataSeriesDatum): number | null => {
@@ -118,7 +101,6 @@ export function computeLegend(
   const defaultColor = theme.colors.defaultVizColor;
 
   const legendValues = settingsSpec.legendValues ?? [];
-  const summaryHasAllLegendValues = legendValues.every((value) => SUMMARY_LEGEND_VALUES.has(value));
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
@@ -149,9 +131,7 @@ export function computeLegend(
 
     const pointStyle = getPointStyle(spec, theme);
 
-    const dataLacksLegendRows = series.isDownsampled && !summaryHasAllLegendValues;
-    const source = dataLacksLegendRows ? { ...series, data: toSeriesData(series.spec, series.spec.data) } : series;
-    const legendValuesItems = getLegendValues(source, xDomain, legendValues, y1Accessor(series.stackMode), formatter);
+    const legendValuesItems = getLegendValues(series, xDomain, legendValues, y1Accessor(series.stackMode), formatter);
 
     legendItems.push({
       depth: 0,
