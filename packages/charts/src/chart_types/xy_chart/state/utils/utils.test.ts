@@ -36,7 +36,7 @@ import type { SpecId } from '../../../../utils/ids';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { XYChartSeriesIdentifier } from '../../utils/series';
 import { getSeriesIndex } from '../../utils/series';
-import type { BasicSeriesSpec, LineSeriesSpec, SeriesColorAccessorFn } from '../../utils/specs';
+import type { AreaSeriesSpec, BasicSeriesSpec, LineSeriesSpec, SeriesColorAccessorFn } from '../../utils/specs';
 import { HistogramModeAlignments } from '../../utils/specs';
 import { computeLegendSelector } from '../selectors/compute_legend';
 import { computeSeriesDomainsSelector } from '../selectors/compute_series_domains';
@@ -990,18 +990,42 @@ describe('Downsampling dense line series', () => {
     expect(value.points.map(({ value: { x } }) => x)).toEqual([...expected].sort((a, b) => a - b));
   });
 
+  // the first and last point of each subpath of a drawn path
+  const subpathEnds = (path: string) =>
+    path
+      .split('M')
+      .slice(1)
+      .map((subpath) => {
+        const points = subpath.replace('Z', '').split('L');
+        return [points[0], points.at(-1)];
+      });
+
   it('breaks the drawn line at the same gaps as without downsampling', () => {
-    // the first and last point of each subpath of the drawn line
-    const subpathEnds = (spec: LineSeriesSpec) =>
-      getGeometriesFromSpecs([spec])
-        .geometries.lines[0]!.value.line.split('M')
-        .slice(1)
-        .map((subpath) => {
-          const points = subpath.split('L');
-          return [points[0], points.at(-1)];
-        });
-    const downsampled = subpathEnds(denseLine());
+    const lineOf = (spec: LineSeriesSpec) => getGeometriesFromSpecs([spec]).geometries.lines[0]!.value.line;
+    const downsampled = subpathEnds(lineOf(denseLine()));
     expect(downsampled).toHaveLength(2);
-    expect(downsampled).toEqual(subpathEnds(denseLine({ pointStyleAccessor: () => null })));
+    expect(downsampled).toEqual(subpathEnds(lineOf(denseLine({ pointStyleAccessor: () => null }))));
+  });
+
+  it('reduces a dense area, keeping its gaps and its zero baseline', () => {
+    const denseArea = (props: Partial<AreaSeriesSpec> = {}) =>
+      MockSeriesSpec.area({
+        id: 'dense',
+        xAccessor: 'x',
+        yAccessors: ['y'],
+        xScaleType: ScaleType.Linear,
+        yScaleType: ScaleType.Linear,
+        data: denseData,
+        ...props,
+      });
+    const areaOf = (spec: AreaSeriesSpec) => getGeometriesFromSpecs([spec]).geometries.areas[0]!.value;
+    const downsampled = areaOf(denseArea());
+    const full = areaOf(denseArea({ pointStyleAccessor: () => null }));
+    expect(downsampled.points.length).toBeLessThanOrEqual(4 * 100);
+    expect(downsampled.points.length).toBeLessThan(full.points.length);
+    // each subpath of the fill runs along the values and back along the zero baseline
+    expect(subpathEnds(downsampled.area)).toHaveLength(2);
+    expect(subpathEnds(downsampled.area)).toEqual(subpathEnds(full.area));
+    expect(downsampled.lines.map(subpathEnds)).toEqual(full.lines.map(subpathEnds));
   });
 });
