@@ -12,7 +12,7 @@ import { Axis, Chart, LegendValue, LineSeries, Position, ScaleType, Settings } f
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import type { ChartsStory } from '../../types';
-import { useBaseTheme } from '../../use_base_theme';
+import { useBaseTheme, useThemeId } from '../../use_base_theme';
 import { noiseTable, sample } from '../utils/datasets/smooth_noise';
 import { upToTwoDecimals } from '../utils/formatters';
 
@@ -40,6 +40,7 @@ function generateData(): SeriesDatum[] {
 export const Example: ChartsStory = (_, { title, description }) => {
   const data = useMemo(generateData, []);
   const baseTheme = useBaseTheme();
+  const isDarkTheme = useThemeId().includes('dark');
   return (
     <Chart title={title} description={description}>
       <Settings
@@ -65,7 +66,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         xAccessor={0}
         yAccessors={[1]}
         data={data}
-        color="black"
+        color={isDarkTheme ? 'white' : 'black'}
         lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}
       />
     </Chart>
