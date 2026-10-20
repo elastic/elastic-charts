@@ -6,11 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { bisector } from 'd3-array';
+
 import { buildPointGeometryStyles } from './point_style';
 import type { MarkSizeOptions } from './utils';
 import { getY0ScaledValueFn, getY1ScaledValueFn, getYDatumValueFn, isDatumFilled, isYValueDefinedFn } from './utils';
 import type { Color } from '../../../common/colors';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
+import { getAccessorValue } from '../../../utils/accessor';
 import type { RecursivePartial } from '../../../utils/common';
 import { isFiniteNumber, isNil } from '../../../utils/common';
 import type { Dimensions } from '../../../utils/dimensions';
@@ -19,7 +22,7 @@ import { BandedAccessorType } from '../../../utils/geometry';
 import type { PointStyle } from '../../../utils/themes/theme';
 import { GeometryType, IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import type { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
-import { getSeriesIdentifierFromDataSeries } from '../utils/series';
+import { getSeriesIdentifierFromDataSeries, toSeriesData } from '../utils/series';
 import type { PointStyleAccessor } from '../utils/specs';
 import { StackMode } from '../utils/specs';
 
@@ -154,6 +157,21 @@ export function renderPoints(
   // The common equal-radius path used to splice-insert each point (O(n²)).
   if (!markSizeOptions.enabled && styleAccessor) {
     pointGeometries.sort((a, b) => a.radius - b.radius);
+  }
+
+  if (dataSeries.isDownsampled) {
+    // the pointer snaps to the drawn rows, which are some of the spec's rows, but finds all the spec's rows at an x,
+    // so every series shows at an x that M4 drops from some
+    const { spec } = dataSeries;
+    // the rows of a downsampled series are sorted by x, so binary searches find those at an x
+    const { left, right } = bisector((datum) => getAccessorValue(datum, spec.xAccessor));
+    const lookupMap = new IndexedGeometryMap();
+    lookupMap.setLookup(indexedGeometryMap.keys(), (x) => {
+      // the rows at x, with a neighboring row on either side, which tells whether a row's point is isolated
+      const rows = toSeriesData(spec, spec.data.slice(Math.max(0, left(spec.data, x) - 1), right(spec.data, x) + 1));
+      return rows.flatMap((datum, i) => (datum.x === x ? rowPoints(datum, i, rows).map(([point]) => point) : []));
+    });
+    return { pointGeometries, minDistanceBetweenPoints, indexedGeometryMap: lookupMap };
   }
 
   return {
