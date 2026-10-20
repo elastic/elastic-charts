@@ -883,7 +883,7 @@ describe('Curves', () => {
 
 describe('Downsampling dense line series', () => {
   const rows = 1000;
-  // null runs at both ends, which the summary leaves out, and a null in the middle
+  // null runs at both ends, which the summary keeps only the outermost rows of, and a null in the middle
   const denseData = Array.from({ length: rows }, (_, x) => ({
     x,
     y:
@@ -911,10 +911,21 @@ describe('Downsampling dense line series', () => {
     const downsampled = domainsOf([denseLine()]);
     const full = domainsOf([denseLine({ pointStyleAccessor: () => null })]);
     expect(downsampled.formattedDataSeries[0]?.isDownsampled).toBe(true);
-    expect(downsampled.formattedDataSeries[0]?.data.length).toBeLessThanOrEqual(4);
+    // the first and last rows with a y, the lowest and highest, and the rows at either end
+    expect(downsampled.formattedDataSeries[0]?.data.length).toBeLessThanOrEqual(6);
     expect(full.formattedDataSeries[0]?.data).toHaveLength(rows);
     expect(downsampled.xDomain).toEqual(full.xDomain);
     expect(downsampled.yDomains).toEqual(full.yDomains);
+  });
+
+  it('takes the first and last values from the rows at the ends of the x domain, even with a missing y', () => {
+    // the first x starts with a missing y, and the last x ends with one
+    const data = [{ x: 3, y: null }, ...denseData.slice(3, rows - 3), { x: rows - 4, y: null }];
+    const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    const settings = MockGlobalSpec.settings({ legendValues: [LegendValue.FirstValue, LegendValue.LastValue] });
+    MockStore.addSpecs([denseLine({ data }), settings], store);
+    expect(computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]?.isDownsampled).toBe(true);
+    expect(computeLegendSelector(store.getState())[0]?.values.map(({ value }) => value)).toEqual([null, null]);
   });
 
   it('computes the legend values the summary lacks from every row', () => {

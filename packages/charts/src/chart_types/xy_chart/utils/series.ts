@@ -495,8 +495,10 @@ export function getDataSeriesFromSpecs(
     const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
     const isBanded = isBandedSpec(spec);
     const values = canDownsample(spec, isStacked, scaleConfigs, groupBySpec) ? numericValues(spec) : undefined;
-    // the summary: the first and last rows with a y, and the lowest and highest, as M4 keeps them for a single bin
-    const kept = values ? m4(values.xs, values.ys, 0, 0, 0, false) : [];
+    // the summary: the first and last rows with a y, and the lowest and highest, as M4 keeps them for a single bin,
+    // plus the first and last rows, whose missing y the first and last legend values report
+    const extremes = values ? m4(values.xs, values.ys, 0, 0, 0, false) : [];
+    const kept = extremes.length > 0 ? [...new Set([0, ...extremes, spec.data.length - 1])] : [];
     const downsampled = kept.length > 0 && kept.length < spec.data.length ? values : undefined;
     const data = downsampled ? kept.map((i) => spec.data[i]) : spec.data;
     hasDownsampled ||= downsampled !== undefined;

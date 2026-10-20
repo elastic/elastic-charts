@@ -67,7 +67,8 @@ function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefi
   }
 }
 
-// values that are extracted from a downsampled series' summary (first, lowest, highest, last rows)
+// values that are extracted from a downsampled series' summary (first, lowest, highest, last rows, and the rows at
+// either end even without a y)
 // other values need every row
 const SUMMARY_LEGEND_VALUES: ReadonlySet<LegendValue> = new Set([
   LegendValue.CurrentAndLastValue,
