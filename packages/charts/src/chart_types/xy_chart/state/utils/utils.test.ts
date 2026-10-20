@@ -26,7 +26,10 @@ import { SeededDataGenerator } from '../../../../mocks/utils';
 import { MockXDomain, MockYDomain } from '../../../../mocks/xy/domains';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
+import { TooltipType } from '../../../../specs/constants';
 import type { Spec } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import { onExternalPointerEvent } from '../../../../state/actions/events';
+import { onPointerMove } from '../../../../state/actions/mouse';
 import { getInternalMainProjectionAreaSelector } from '../../../../state/selectors/get_internal_main_projection_area';
 import { ColorVariant } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
@@ -42,6 +45,8 @@ import { computeLegendSelector } from '../selectors/compute_legend';
 import { computeSeriesDomainsSelector } from '../selectors/compute_series_domains';
 import { computeSeriesGeometriesSelector } from '../selectors/compute_series_geometries';
 import { getScaleConfigsFromSpecs } from '../selectors/get_api_scale_configs';
+import { getElementAtCursorPositionSelector } from '../selectors/get_elements_at_cursor_pos';
+import { getHighlightedTooltipTooltipValuesSelector } from '../selectors/get_tooltip_values_highlighted_geoms';
 
 function getGeometriesFromSpecs(specs: Spec[]) {
   const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
@@ -1016,6 +1021,51 @@ describe('Downsampling dense line series', () => {
     const downsampled = subpathEnds(lineOf(denseLine()));
     expect(downsampled).toHaveLength(2);
     expect(downsampled).toEqual(subpathEnds(lineOf(denseLine({ pointStyleAccessor: () => null }))));
+  });
+
+  // two series over the same x values, whose different noise makes M4 keep different rows of each
+  const alignedLines = () => {
+    const data = denseData.filter(({ y }) => y !== null);
+    return [
+      denseLine({ id: 'a', data }),
+      denseLine({ id: 'b', data: data.map(({ x }) => ({ x, y: Math.sin(x * 1.7) })) }),
+    ];
+  };
+
+  it('lists every aligned series at the hovered x in the tooltip, though M4 keeps different rows of each', () => {
+    const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    const tooltip = MockGlobalSpec.tooltip({ type: TooltipType.VerticalCursor });
+    MockStore.addSpecs([...alignedLines(), MockGlobalSpec.settingsNoMargins(), tooltip], store);
+    // whole pixels, as pointer events report them
+    for (let x = 0; x < 100; x++) {
+      store.dispatch(onPointerMove({ position: { x, y: 50 }, time: x }));
+      const { values } = getHighlightedTooltipTooltipValuesSelector(store.getState()).tooltip;
+      expect(values.map(({ seriesIdentifier: { specId } }) => specId).sort()).toEqual(['a', 'b']);
+      expect(new Set(values.map(({ datum }) => datum.x)).size).toBe(1);
+    }
+  });
+
+  it('finds the rows of every series at the x of a synced cursor, though M4 drops that x from some', () => {
+    const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    const lines = alignedLines();
+    MockStore.addSpecs([...lines, MockGlobalSpec.settingsNoMargins()], store);
+    for (const { x } of lines[0]!.data) {
+      store.dispatch(
+        onExternalPointerEvent({
+          chartId: 'another chart',
+          type: 'Over',
+          scale: ScaleType.Linear,
+          unit: undefined,
+          x,
+          y: [],
+          smVerticalValue: null,
+          smHorizontalValue: null,
+        }),
+      );
+      const found = getElementAtCursorPositionSelector(store.getState());
+      expect(found.map(({ seriesIdentifier: { specId } }) => specId).sort()).toEqual(['a', 'b']);
+      expect(found.every(({ value }) => value.x === x)).toBe(true);
+    }
   });
 
   it('reduces a dense area, keeping its gaps and its zero baseline', () => {
