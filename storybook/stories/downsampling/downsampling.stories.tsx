@@ -13,3 +13,4 @@ export default {
 export { Example as denseRotatedLines } from './1_dense_rotated_lines.story';
 export { Example as denseOscillation } from './2_dense_oscillation.story';
 export { Example as denseSparseAndGaps } from './3_dense_sparse_and_gaps.story';
+export { Example as denseSparseGrid } from './4_dense_sparse_grid.story';
