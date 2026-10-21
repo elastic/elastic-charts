@@ -47,7 +47,7 @@ const storiesToSkip: Map<string, string[]> = new Map(
   Object.entries({
     'Test Cases': ['noSeries', 'errorBoundary'],
     Interactions: ['multiChartCursorSync'],
-    Downsampling: ['denseSparseGrid'],
+    Downsampling: ['denseSparseGrid', 'syncedCpuAndMemory'],
     'Metric (@alpha)': ['bodyContent'],
   }),
 );

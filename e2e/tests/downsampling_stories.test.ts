@@ -26,4 +26,22 @@ test.describe('Downsampling stories', () => {
       },
     );
   });
+
+  test('should show the tooltips of both synced charts when hovering the cpu chart', async ({ page }) => {
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/downsampling--synced-cpu-and-memory',
+      // in the continuous first third, where the memory chart draws only some of its rows, so its tooltip needs the
+      // hovered second found among all of them
+      { left: 200, top: 150 },
+      {
+        screenshotSelector: '#story-root',
+        action: async () => {
+          await page.waitForFunction(() => {
+            return document.querySelectorAll('.echChartStatus[data-ech-render-complete="true"]').length >= 2;
+          });
+        },
+        delay: 1000,
+      },
+    );
+  });
 });
