@@ -456,6 +456,28 @@ function canDownsample(
   );
 }
 
+/**
+ * The rows the data series of a spec start with, for the domains and the legend: the summary of a series that is
+ * downsampled, with the numeric values of all its rows in `downsampled`, otherwise all the rows of the spec.
+ */
+function layoutRows(
+  spec: BasicSeriesSpec,
+  isStacked: boolean,
+  scaleConfigs?: ScaleConfigs,
+  smallMultiples?: SmallMultiplesGroupBy,
+): { data: Datum[]; downsampled?: NonNullable<ReturnType<typeof numericValues>> } {
+  const values = canDownsample(spec, isStacked, scaleConfigs, smallMultiples) ? numericValues(spec) : undefined;
+  if (!values) return { data: spec.data };
+  // the summary: the first and last rows with a y, and the lowest and highest, as M4 keeps them for a single bin,
+  // plus the first and last rows, whose missing y the first and last legend values report
+  const extremes = m4(values.xs, values.ys, 0, 0, 0, false);
+  if (extremes.length === 0) return { data: spec.data };
+  const kept = [...new Set([0, ...extremes, spec.data.length - 1])];
+  if (kept.length >= spec.data.length) return { data: spec.data };
+  warnNonNumericValues(spec.id, values.nonNumericValues);
+  return { data: kept.map((i) => spec.data[i]), downsampled: values };
+}
+
 /** @internal */
 export function getDataSeriesFromSpecs(
   seriesSpecs: BasicSeriesSpec[],
@@ -494,15 +516,8 @@ export function getDataSeriesFromSpecs(
     const specGroup = specsByYGroup.get(spec.groupId);
     const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
     const isBanded = isBandedSpec(spec);
-    const values = canDownsample(spec, isStacked, scaleConfigs, groupBySpec) ? numericValues(spec) : undefined;
-    // the summary: the first and last rows with a y, and the lowest and highest, as M4 keeps them for a single bin,
-    // plus the first and last rows, whose missing y the first and last legend values report
-    const extremes = values ? m4(values.xs, values.ys, 0, 0, 0, false) : [];
-    const kept = extremes.length > 0 ? [...new Set([0, ...extremes, spec.data.length - 1])] : [];
-    const downsampled = kept.length > 0 && kept.length < spec.data.length ? values : undefined;
-    const data = downsampled ? kept.map((i) => spec.data[i]) : spec.data;
+    const { data, downsampled } = layoutRows(spec, isStacked, scaleConfigs, groupBySpec);
     hasDownsampled ||= downsampled !== undefined;
-    if (downsampled) warnNonNumericValues(spec.id, downsampled.nonNumericValues);
 
     const { dataSeries, xValues } = splitSeriesDataByAccessors(
       spec,
