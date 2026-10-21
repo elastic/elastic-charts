@@ -10,8 +10,9 @@
  * M4 reduction of rows sorted by x: returns the indices of the first, lowest, highest and last row of every run of
  * consecutive rows in the same pixel bin `floor(offset + scale * (x - origin))`, so a line through the kept rows
  * paints the same pixel bins as a line through all rows. A NaN y ends the run; of each run of NaN rows,
- * only the first and last are kept. Without `keepGaps`, a NaN y is skipped instead, so with a `scale` of 0 the
- * result summarizes the whole series in at most four rows.
+ * only the first and last in each pixel bin are kept, so a pointer snapping to the nearest kept row at a pixel bin
+ * boundary finds the row it would find among all rows. Without `keepGaps`, a NaN y is skipped instead, so with a
+ * `scale` of 0 the result summarizes the whole series in at most four rows.
  * @internal
  */
 export function m4(
@@ -31,7 +32,8 @@ export function m4(
   let loY = 0; // the y of its lowest row
   let hiY = 0; // the y of its highest row
   let runBin = NaN; // its pixel bin; NaN matches no bin, so the next row with a y opens a run
-  let lastNull = -1; // the latest row of a run of missing ys after the run's first row, -1 if there is none
+  let nullBin = NaN; // the pixel bin of the latest row with a missing y
+  let lastNull = -1; // the latest row with a missing y after the first one in its run and pixel bin, -1 if there is none
 
   // keeps the open run's rows and closes the run
   const endRun = () => {
@@ -53,14 +55,19 @@ export function m4(
 
   for (let i = 0; i < ys.length; i++) {
     const y = ys[i]!;
+    const bin = Math.floor(offset + scale * (xs[i]! - origin)); // this row's pixel bin
     if (Number.isNaN(y)) {
       if (!keepGaps) continue;
-      // the first missing y of a run closes the open run and is kept; the later ones wait in lastNull
-      if (i > 0 && Number.isNaN(ys[i - 1]!)) {
+      // the first missing y of a run in each pixel bin closes the open run and is kept, after the previous bin's last
+      // missing y; the later ones wait in lastNull
+      if (i > 0 && Number.isNaN(ys[i - 1]!) && bin === nullBin) {
         lastNull = i;
       } else {
         endRun();
+        if (lastNull >= 0) kept.push(lastNull);
+        lastNull = -1;
         kept.push(i);
+        nullBin = bin;
       }
       continue;
     }
@@ -69,7 +76,6 @@ export function m4(
       kept.push(lastNull);
       lastNull = -1;
     }
-    const bin = Math.floor(offset + scale * (xs[i]! - origin)); // this row's pixel bin
     if (bin !== runBin) {
       endRun();
       runBin = bin;

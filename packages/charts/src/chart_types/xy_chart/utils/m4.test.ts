@@ -37,6 +37,11 @@ describe('m4', () => {
     expect(binsOf([N, N, N, 5, N, 4, 6, 2, 7, 9, N, N], 0)).toEqual([0, 2, 3, 4, 5, 7, 9, 10, 11]);
   });
 
+  it('keeps the first and last missing y of a run in each pixel bin', () => {
+    // x 0-3 in bin 0, x 4-7 in bin 1, x 8-9 in bin 2; the missing ys run from x 1 to x 8
+    expect(binsOf([1, N, N, N, N, N, N, N, N, 2], 0.25)).toEqual([0, 1, 3, 4, 7, 8, 9]);
+  });
+
   it('places bins at floor(offset + scale * (x - origin))', () => {
     // x 0-1 fall in bin 0, x 2-5 in bin 1, x 6 in bin 2
     expect(binsOf([1, 2, 6, 5, 4, 3, 7], 0.25, 2, 1)).toEqual([0, 1, 2, 5, 6]);
