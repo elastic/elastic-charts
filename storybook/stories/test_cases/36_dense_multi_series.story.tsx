@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
@@ -49,6 +49,21 @@ export const Example: ChartsStory = (_, { title, description }) => {
     setData(generatedData);
   }, [runId]);
 
+  // a resize starts a new measurement, as the chart lays out and renders again
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    let { width, height } = container.getBoundingClientRect();
+    const observer = new ResizeObserver(([entry]) => {
+      if (!entry || (entry.contentRect.width === width && entry.contentRect.height === height)) return;
+      ({ width, height } = entry.contentRect);
+      window.performance.mark('Perf:Started');
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
   const baseTheme = useBaseTheme();
   const renderButton = (
     <button
@@ -64,7 +79,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   );
   if (data.length === 0) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {renderButton}
         <div style={{ marginTop: 4 }}>Rendering...</div>
       </div>
@@ -72,7 +87,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {renderButton}
       <div style={{ flex: 1, minHeight: 0 }}>
         <Chart title={title} description={description}>
