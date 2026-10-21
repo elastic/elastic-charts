@@ -129,6 +129,8 @@ export function renderPoints(
     });
   };
 
+  // a downsampled series indexes only the x values of its drawn rows, which the pointer snaps to
+  const drawnXs: Array<number | string> = [];
   const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
     pointGeometries: PointGeometry[];
     minDistanceBetweenPoints: number;
@@ -144,8 +146,9 @@ export function renderPoints(
       }
       acc.prevX = x;
 
+      if (dataSeries.isDownsampled) drawnXs.push(datum.x);
       points.forEach(([pointGeometry, isDrawn]) => {
-        indexedGeometryMap.set(pointGeometry, geometryType);
+        if (!dataSeries.isDownsampled) indexedGeometryMap.set(pointGeometry, geometryType);
         if (isDrawn) acc.pointGeometries.push(pointGeometry);
       });
       return acc;
@@ -165,13 +168,11 @@ export function renderPoints(
     const { spec } = dataSeries;
     // the rows of a downsampled series are sorted by x, so binary searches find those at an x
     const { left, right } = bisector((datum) => getAccessorValue(datum, spec.xAccessor));
-    const lookupMap = new IndexedGeometryMap();
-    lookupMap.setLookup(indexedGeometryMap.keys(), (x) => {
+    indexedGeometryMap.setLookup(drawnXs, (x) => {
       // the rows at x, with a neighboring row on either side, which tells whether a row's point is isolated
       const rows = toSeriesData(spec, spec.data.slice(Math.max(0, left(spec.data, x) - 1), right(spec.data, x) + 1));
       return rows.flatMap((datum, i) => (datum.x === x ? rowPoints(datum, i, rows).map(([point]) => point) : []));
     });
-    return { pointGeometries, minDistanceBetweenPoints, indexedGeometryMap: lookupMap };
   }
 
   return {
