@@ -1068,6 +1068,83 @@ describe('Downsampling dense line series', () => {
     }
   });
 
+  describe('series whose x values only partly coincide, with gaps, nulls, isolated points and repeated x values', () => {
+    const xs = Array.from({ length: rows }, (_, x) => x);
+    // a lacks the first x of the pixel bins from 400 to 600, has two rows at each x from 850 to 870, its nulls run
+    // across the bin boundary at 510, and its row at 700 is isolated
+    const a = xs
+      .filter((x) => !(x >= 400 && x < 600 && x % 10 === 0))
+      .flatMap((x) => {
+        const isNull = (x >= 200 && x <= 260) || (x >= 503 && x <= 517) || x % 97 === 0 || (x > 690 && x < 710);
+        const y = isNull && x !== 700 ? null : Math.sin(x * 1.3);
+        return x >= 850 && x < 870
+          ? [
+              { x, y },
+              { x, y: y === null ? null : y + 1 },
+            ]
+          : [{ x, y }];
+      });
+    // b has only every other x from 600 to 800, shares a's nulls from 503 to 517, overlaps its nulls from 200 to 260,
+    // and its row at 704, in the pixel bin of a's row at 700, is isolated
+    const b = xs
+      .filter((x) => !(x >= 600 && x < 800 && x % 2 === 1))
+      .map((x) => {
+        const isNull = (x >= 250 && x <= 330) || (x >= 503 && x <= 517) || x % 89 === 0 || (x > 694 && x < 714);
+        return { x, y: isNull && x !== 704 ? null : Math.cos(x * 1.7) };
+      });
+    type Store = ReturnType<typeof MockStore.default>;
+    // the same chart, downsampled and not: a point style accessor turns downsampling off
+    const charts = () =>
+      [{}, { pointStyleAccessor: () => null }].map((props) => {
+        const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+        const tooltip = MockGlobalSpec.tooltip({ type: TooltipType.VerticalCursor, showNullValues: true });
+        const lines = [denseLine({ id: 'a', data: a, ...props }), denseLine({ id: 'b', data: b, ...props })];
+        MockStore.addSpecs([...lines, MockGlobalSpec.settingsNoMargins(), tooltip], store);
+        return store;
+      }) as [Store, Store];
+
+    it('downsamples both series', () => {
+      const [downsampled] = charts();
+      const { formattedDataSeries } = computeSeriesDomainsSelector(downsampled.getState());
+      expect(formattedDataSeries.map(({ isDownsampled }) => isDownsampled)).toEqual([true, true]);
+    });
+
+    it('lists the same rows in the tooltip at every whole pixel as without downsampling', () => {
+      const [downsampled, full] = charts();
+      const tooltipAt = (store: Store, x: number) => {
+        store.dispatch(onPointerMove({ position: { x, y: 50 }, time: x }));
+        return getHighlightedTooltipTooltipValuesSelector(store.getState()).tooltip.values;
+      };
+      for (let x = 0; x < 100; x++) {
+        const values = tooltipAt(downsampled, x);
+        expect(values.length).toBeGreaterThan(0);
+        expect(values).toEqual(tooltipAt(full, x));
+      }
+    });
+
+    it('finds the same rows at every x of a synced cursor as without downsampling', () => {
+      const [downsampled, full] = charts();
+      const foundAt = (store: Store, x: number) => {
+        store.dispatch(
+          onExternalPointerEvent({
+            chartId: 'another chart',
+            type: 'Over',
+            scale: ScaleType.Linear,
+            unit: undefined,
+            x,
+            y: [],
+            smVerticalValue: null,
+            smHorizontalValue: null,
+          }),
+        );
+        return getElementAtCursorPositionSelector(store.getState());
+      };
+      for (const x of new Set([...a, ...b].map((row) => row.x))) {
+        expect(foundAt(downsampled, x)).toEqual(foundAt(full, x));
+      }
+    });
+  });
+
   it('reduces a dense area, keeping its gaps and its zero baseline', () => {
     const denseArea = (props: Partial<AreaSeriesSpec> = {}) =>
       MockSeriesSpec.area({
