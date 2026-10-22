@@ -923,6 +923,47 @@ describe('Downsampling dense line series', () => {
     expect(downsampled.yDomains).toEqual(full.yDomains);
   });
 
+  it('keeps the min interval of all the x values, though they interleave across series', () => {
+    // a has the even x values and b the odd ones, so they are 1 apart together but 2 apart in either; c is never
+    // downsampled, and its x values are half way between theirs
+    const specs = (props: Partial<LineSeriesSpec> = {}) => [
+      denseLine({ id: 'a', data: denseData.filter(({ x }) => x % 2 === 0), ...props }),
+      denseLine({ id: 'b', data: denseData.filter(({ x }) => x % 2 === 1), ...props }),
+      denseLine({ id: 'c', data: [0.5, 300.5, 600.5].map((x) => ({ x, y: 1 })), pointStyleAccessor: () => null }),
+    ];
+    const downsampled = domainsOf(specs());
+    const full = domainsOf(specs({ pointStyleAccessor: () => null }));
+    expect(downsampled.formattedDataSeries.map(({ rawValues }) => rawValues !== undefined)).toEqual([
+      true,
+      true,
+      false,
+    ]);
+    expect(downsampled.xDomain).toEqual(full.xDomain);
+    expect(downsampled.xDomain.minInterval).toBe(0.5);
+  });
+
+  it('keeps the gaps that stacked series get at the x values of a downsampled series', () => {
+    // the stacked areas have every tenth x value, the dense line all of them
+    const areas = [1, 2].map((k) =>
+      MockSeriesSpec.area({
+        id: `stacked ${k}`,
+        xAccessor: 'x',
+        yAccessors: ['y'],
+        xScaleType: ScaleType.Linear,
+        yScaleType: ScaleType.Linear,
+        stackAccessors: ['x'],
+        data: Array.from({ length: rows / 10 }, (_, i) => ({ x: i * 10, y: k })),
+      }),
+    );
+    const downsampled = domainsOf([...areas, denseLine()]);
+    const full = domainsOf([...areas, denseLine({ pointStyleAccessor: () => null })]);
+    const stacked = ({ formattedDataSeries }: ReturnType<typeof domainsOf>) =>
+      formattedDataSeries.filter(({ isStacked }) => isStacked);
+    expect(downsampled.formattedDataSeries.find(({ specId }) => specId === 'dense')?.rawValues).toBeDefined();
+    expect(stacked(downsampled)).toEqual(stacked(full));
+    expect(downsampled.xDomain).toEqual(full.xDomain);
+  });
+
   it('takes the first and last values from the rows at the ends of the x domain, even with a missing y', () => {
     // the first x starts with a missing y, and the last x ends with one
     const data = [{ x: 3, y: null }, ...denseData.slice(3, rows - 3), { x: rows - 4, y: null }];
