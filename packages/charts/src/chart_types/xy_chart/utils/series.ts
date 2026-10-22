@@ -240,7 +240,8 @@ export function splitSeriesDataByAccessors(
     });
   }
 
-  warnNonNumericValues(specId, nonNumericValues);
+  // the summary rows of a downsampled spec are some of its rows, whose non-numeric values layoutRows reported
+  if (data === spec.data) warnNonNumericValues(specId, nonNumericValues);
   return {
     dataSeries,
     xValues,

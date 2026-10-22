@@ -36,6 +36,7 @@ import { CurveType } from '../../../../utils/curves';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
 import type { ContinuousDomain, Range } from '../../../../utils/domain';
 import type { SpecId } from '../../../../utils/ids';
+import { Logger } from '../../../../utils/logger';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { XYChartSeriesIdentifier } from '../../utils/series';
 import { getSeriesIndex } from '../../utils/series';
@@ -911,6 +912,15 @@ describe('Downsampling dense line series', () => {
     computeSeriesDomains(specs, getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings()), [], {
       locale: 'en-US',
     });
+
+  it('warns once about the missing ys of all the rows, though the summary keeps some', () => {
+    const warn = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    domainsOf([denseLine()]);
+    const calls = [...warn.mock.calls];
+    warn.mockRestore();
+    // the 3 nulls at either end and the one in the middle; the summary keeps the outermost null at either end
+    expect(calls).toEqual([['Found 7 non-numeric y values in dataset for spec "dense"', '(7: null)']]);
+  });
 
   it('summarizes the series for layout without changing its domains', () => {
     const downsampled = domainsOf([denseLine()]);
