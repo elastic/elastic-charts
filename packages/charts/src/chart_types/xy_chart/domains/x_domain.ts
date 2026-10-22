@@ -20,14 +20,35 @@ import { SeriesType } from '../utils/specs';
 
 /**
  * Merge X domain value between a set of chart specification.
+ *
+ * The x values of a downsampled series arrive in one of two ways:
+ * - no series of the chart is stacked or has a fit: `xValues` holds those of its summary rows, which include its
+ *   first and last, and `rawXValues` has a list of all of them
+ * - some series is stacked or has a fit: those series get gaps at every x value of the chart, so `xValues` holds all
+ *   of them, and `rawXValues` has no list for it
+ *
+ * @param xScaleConfig the x scale configuration of the specs and settings
+ * @param xValues the distinct x values of the data rows of every series:
+ * - non-downsampled series: all its x values
+ * - downsampled series: those of its summary rows, or all its x values, as above
+ * @param locale unused: ordinal x values keep the order of `xValues`
+ * @param fallbackScale default ordinal scale for when the x values of a continuous scale aren't all numbers
+ * @param rawXValues the x values of all the rows of a series, sorted, one list per series:
+ * - non-downsampled series: not represented, as `xValues` holds all its x values
+ * - downsampled series: represented, unless `xValues` holds all its x values, as above
+ * @param rawXValuesHoldAll whether `rawXValues` hold every x value of `xValues`, which then only adds those of the
+ * summary rows of downsampled series
  * @internal
  */
 export function mergeXDomain(
-  { type, nice, isBandScale, timeZone, desiredTickCount, customDomain }: ScaleConfigs['x'],
+  xScaleConfig: ScaleConfigs['x'],
   xValues: Set<string | number>,
   locale: string,
   fallbackScale?: XScaleType,
+  rawXValues: Float64Array[] = [],
+  rawXValuesHoldAll = false,
 ): XDomain {
+  const { type, nice, isBandScale, timeZone, desiredTickCount, customDomain } = xScaleConfig;
   let domain;
   let dataDomain;
   let minInterval = 0;
@@ -92,7 +113,9 @@ export function mergeXDomain(
         }
       }
     }
-    const computedMinInterval = findMinInterval([Float64Array.from(xValues as Set<number>).sort()]);
+    const computedMinInterval = findMinInterval(
+      rawXValuesHoldAll ? rawXValues : [Float64Array.from(xValues as Set<number>).sort(), ...rawXValues],
+    );
     minInterval = getMinInterval(computedMinInterval, xValues.size, customMinInterval);
   }
 

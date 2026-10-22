@@ -122,16 +122,17 @@ export function computeSeriesDomains(
     ((a, b) => {
       return defaultXYSeriesSort(a as DataSeries, b as DataSeries);
     });
-  const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
-    seriesSpecs,
-    deselectedDataSeries,
-    orderOrdinalBinsBy,
-    renderingSortFn,
-    smallMultiples,
-    scaleConfigs,
-  );
+  const { dataSeries, xValues, rawXValues, rawXValuesHoldAll, fallbackScale, smHValues, smVValues } =
+    getDataSeriesFromSpecs(
+      seriesSpecs,
+      deselectedDataSeries,
+      orderOrdinalBinsBy,
+      renderingSortFn,
+      smallMultiples,
+      scaleConfigs,
+    );
   // compute the x domain merging any custom domain
-  const xDomain = mergeXDomain(scaleConfigs.x, xValues, locale, fallbackScale);
+  const xDomain = mergeXDomain(scaleConfigs.x, xValues, locale, fallbackScale, rawXValues, rawXValuesHoldAll);
 
   const xIndex = new Map<string | number, number>();
   for (const x of xValues) xIndex.set(x, xIndex.size);
