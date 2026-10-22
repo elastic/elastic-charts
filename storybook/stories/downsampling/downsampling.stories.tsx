@@ -15,3 +15,5 @@ export { Example as denseOscillation } from './2_dense_oscillation.story';
 export { Example as denseSparseAndGaps } from './3_dense_sparse_and_gaps.story';
 export { Example as denseSparseGrid } from './4_dense_sparse_grid.story';
 export { Example as syncedCpuAndMemory } from './5_synced_cpu_memory.story';
+export { Example as denseMultiSeries } from './6_dense_multi_series.story';
+export { Example as denseSingleSeries } from './7_dense_single_series.story';
