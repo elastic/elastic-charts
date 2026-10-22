@@ -19,7 +19,7 @@ const rng = getRandomNumberGenerator('line-multi-series');
 
 type SeriesDatum = [x: number, y: number];
 
-function generateData(seriesCount: number, pointsPerSeries: number): SeriesDatum[][] {
+function generateData(seriesCount: number, pointsPerSeries: number, missingPointPerSeries: boolean): SeriesDatum[][] {
   return Array.from({ length: seriesCount }, (_, seriesIndex) => {
     const trend = noiseTable(rng, 24);
     const swell = noiseTable(rng, 48);
@@ -30,6 +30,8 @@ function generateData(seriesCount: number, pointsPerSeries: number): SeriesDatum
       const noise = sample(trend, i / 500) * 10 + sample(swell, i / 90) * 4 + sample(ripple, i / 18) * 1.2;
       data[i] = [i, seriesIndex * 3 + 4 * Math.sin((Math.PI * i) / (pointsPerSeries - 1)) ** 2 * noise];
     }
+    // series n lacks point n, so no two series have the same x values
+    if (missingPointPerSeries) data.splice(seriesIndex, 1);
 
     return data;
   });
@@ -37,25 +39,30 @@ function generateData(seriesCount: number, pointsPerSeries: number): SeriesDatum
 
 const PROFILE_LABEL = 'Perf:DataToRender';
 
-/** A chart of `seriesCount` dense line series of `pointsPerSeries` points each, logging how long it takes to render */
+/**
+ * A chart of `seriesCount` dense line series of `pointsPerSeries` points each, or one less with `missingPointPerSeries`,
+ * logging how long it takes to render
+ */
 export function DenseLines({
   seriesCount,
   pointsPerSeries,
+  missingPointPerSeries = false,
   title,
   description,
 }: {
   seriesCount: number;
   pointsPerSeries: number;
+  missingPointPerSeries?: boolean;
   title?: string;
   description?: string;
 }) {
   const [data, setData] = useState<SeriesDatum[][]>([]);
   const [runId, setRunId] = useState(0);
   useEffect(() => {
-    const generatedData = generateData(seriesCount, pointsPerSeries);
+    const generatedData = generateData(seriesCount, pointsPerSeries, missingPointPerSeries);
     window.performance.mark('Perf:Started');
     setData(generatedData);
-  }, [runId, pointsPerSeries, seriesCount]);
+  }, [runId, pointsPerSeries, seriesCount, missingPointPerSeries]);
 
   // a resize starts a new measurement, as the chart lays out and renders again
   const containerRef = useRef<HTMLDivElement>(null);

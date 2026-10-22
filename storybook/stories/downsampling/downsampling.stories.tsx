@@ -17,3 +17,4 @@ export { Example as denseSparseGrid } from './4_dense_sparse_grid.story';
 export { Example as syncedCpuAndMemory } from './5_synced_cpu_memory.story';
 export { Example as denseMultiSeries } from './6_dense_multi_series.story';
 export { Example as denseSingleSeries } from './7_dense_single_series.story';
+export { Example as denseMultiSeriesMissingPoints } from './8_dense_multi_series_missing_points.story';
