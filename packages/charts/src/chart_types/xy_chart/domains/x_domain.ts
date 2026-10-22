@@ -10,7 +10,6 @@ import type { Optional } from 'utility-types';
 
 import type { XDomain } from './types';
 import { ScaleType } from '../../../scales/constants';
-import { compareByValueAsc } from '../../../utils/common';
 import { computeContinuousDataDomain, computeOrdinalDataDomain } from '../../../utils/domain';
 import { Logger } from '../../../utils/logger';
 import { getZoneFromSpecs, getValidatedTimeZone } from '../../../utils/time_zone';
@@ -93,7 +92,7 @@ export function mergeXDomain(
         }
       }
     }
-    const computedMinInterval = findMinInterval([...xValues.values()] as number[]);
+    const computedMinInterval = findMinInterval([Float64Array.from(xValues as Set<number>).sort()]);
     minInterval = getMinInterval(computedMinInterval, xValues.size, customMinInterval);
   }
 
@@ -130,21 +129,52 @@ function getMinInterval(computedMinInterval: number, size: number, customMinInte
 }
 
 /**
- * Find the minimum interval between xValues.
- * Default to 0 if an empty array, 1 if one item array
+ * The smallest gap between the distinct values of sorted arrays, as if merged into one, or 1 with fewer than two
+ * distinct values. An array equal to an earlier one, like the x values of aligned series, adds nothing.
  * @internal
  */
-export function findMinInterval(xValues: number[]): number {
-  return xValues.length < 2
-    ? xValues.length
-    : xValues
-        .slice()
-        .sort(compareByValueAsc)
-        .reduce((minInterval, current, i, sortedValues) => {
-          return i < xValues.length - 1
-            ? Math.min(minInterval, Math.abs((sortedValues[i + 1] ?? 0) - current))
-            : minInterval;
-        }, Infinity);
+export function findMinInterval(sortedArrays: Float64Array[]): number {
+  // dedupe: eliminate arrays that have the same content as a previous array
+  const arrays = sortedArrays.filter(
+    (array, i) => sortedArrays.findIndex((other) => haveSameValues(other, array)) === i,
+  );
+
+  // a single array needs no merge: the smallest step between its consecutive distinct values
+  if (arrays.length === 1) {
+    const [array] = arrays as [Float64Array];
+    let minInterval = Infinity;
+    for (let i = 1; i < array.length; i++) {
+      const step = array[i]! - array[i - 1]!;
+      if (step > 0 && step < minInterval) minInterval = step;
+    }
+    return Number.isFinite(minInterval) ? minInterval : 1;
+  }
+
+  // multi-array merge-reduce to find the minimum interval across the sorted arrays
+  const heads = arrays.map(() => 0); // the index of the next value of each array
+  let previous = NaN; // the latest value taken
+  let minInterval = Infinity;
+  while (true) {
+    // the array whose next value is the smallest
+    let next = -1;
+    for (let a = 0; a < arrays.length; a++) {
+      const candidate = arrays[a]![heads[a]!]; // undefined once the array is used up
+      if (candidate !== undefined && (next < 0 || candidate < arrays[next]![heads[next]!]!)) next = a;
+    }
+    if (next < 0) break;
+    const value = arrays[next]![heads[next]!]!;
+    heads[next] = heads[next]! + 1;
+    if (value > previous) minInterval = Math.min(minInterval, value - previous);
+    previous = value;
+  }
+  return Number.isFinite(minInterval) ? minInterval : 1;
+}
+
+function haveSameValues(a: Float64Array, b: Float64Array) {
+  if (a === b) return true;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
 }
 
 /**
