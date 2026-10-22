@@ -665,6 +665,13 @@ describe('X Domain', () => {
     // a repeated value is no gap, and an equal list adds nothing
     expect(findMinInterval([Float64Array.of(0, 0, 3, 9), Float64Array.of(0, 0, 3, 9)])).toBe(3);
   });
+  test('should compute minInterval of sorted lists that each lack a different value', () => {
+    // like series that each miss a different sample: no two lists are equal, yet they share most of their values
+    const lists = [0, 1, 2, 3, 4].map((missing) => Float64Array.from([0, 3, 6, 9, 12].filter((_, i) => i !== missing)));
+    expect(findMinInterval(lists)).toBe(3);
+    // the last of an odd number of lists holds the only close values
+    expect(findMinInterval([...lists.slice(0, 2), Float64Array.of(7, 8)])).toBe(1);
+  });
   test('should account for custom domain when merging a linear domain: complete bounded domain', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
     const xDomain = { min: 0, max: 3 };
