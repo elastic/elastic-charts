@@ -169,7 +169,7 @@ export function findMinInterval(sortedArrays: Float64Array[]): number {
 
 /**
  * The distinct, sorted values of one or more sorted arrays. Hierarchical aggregation helps with cases where each series
- * covers part of the full domain, but their union covers the entire domain. as each pairwise union uses shorter arrays.
+ * covers part of the full domain, but their union covers the entire domain, as each pairwise union uses shorter arrays.
  */
 function sortedUnionOf(arrays: Float64Array[]): Float64Array {
   if (arrays.length === 1) return arrays[0]!;

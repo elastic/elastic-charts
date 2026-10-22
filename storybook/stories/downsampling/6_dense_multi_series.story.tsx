@@ -40,8 +40,8 @@ function generateData(seriesCount: number, pointsPerSeries: number, missingPoint
 const PROFILE_LABEL = 'Perf:DataToRender';
 
 /**
- * A chart of `seriesCount` dense line series of `pointsPerSeries` points each, or one less with `missingPointPerSeries`,
- * logging how long it takes to render
+ * A chart of `seriesCount` dense line series of `pointsPerSeries` points each, or one less with
+ * `missingPointPerSeries`, logging how long it takes to render
  */
 export function DenseLines({
   seriesCount,

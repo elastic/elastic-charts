@@ -669,7 +669,7 @@ describe('X Domain', () => {
     // like series that each miss a different sample: no two lists are equal, yet they share most of their values
     const lists = [0, 1, 2, 3, 4].map((missing) => Float64Array.from([0, 3, 6, 9, 12].filter((_, i) => i !== missing)));
     expect(findMinInterval(lists)).toBe(3);
-    // the last of an odd number of lists holds the only close values
+    // an odd number of lists splits into unequal halves; only the last list has close values
     expect(findMinInterval([...lists.slice(0, 2), Float64Array.of(7, 8)])).toBe(1);
   });
   test('should account for custom domain when merging a linear domain: complete bounded domain', () => {
