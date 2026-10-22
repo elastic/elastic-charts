@@ -76,6 +76,12 @@ export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends Se
   seriesKeys: (string | number)[];
 }
 
+/**
+ * The x and y values of all the rows of a spec, y being NaN where missing
+ * @internal
+ */
+export type RawValues = { xs: Float64Array; ys: Float64Array };
+
 /** @internal */
 export type DataSeries<D extends BaseDatum = Datum> = XYChartSeriesIdentifier<D> & {
   groupId: GroupId;
@@ -87,8 +93,11 @@ export type DataSeries<D extends BaseDatum = Datum> = XYChartSeriesIdentifier<D>
   insertOrder: number;
   sortOrder: number;
   isFiltered: boolean;
-  /** `data` only summarizes the series for layout; the geometries and some legend values are built from `spec.data` */
-  isDownsampled?: boolean;
+  /**
+   * The x and y values of all the rows of `spec.data`, for a series whose `data` only summarizes it for layout: the
+   * geometries are built from these, and some legend values from `spec.data`
+   */
+  rawValues?: RawValues;
 };
 
 /** @internal */
@@ -338,7 +347,7 @@ function numericValues({ data, xAccessor, yAccessors }: BasicSeriesSpec) {
 
 /**
  * Converts rows of a spec to series data, reading only the x and first y accessors: callers pass the specs of
- * series flagged `isDownsampled`, which have no y0, mark size or split accessors and no small multiples.
+ * series with `rawValues`, which have no y0, mark size or split accessors and no small multiples.
  * @internal
  */
 export function toSeriesData(spec: BasicSeriesSpec, rows: Datum[]): DataSeriesDatum[] {
@@ -352,16 +361,15 @@ export function toSeriesData(spec: BasicSeriesSpec, rows: Datum[]): DataSeriesDa
 }
 
 /**
- * The rows of a spec that M4 keeps in the given pixel bins, as series data, for the spec of a series flagged
- * `isDownsampled`.
+ * The rows of a spec that M4 keeps in the given pixel bins, as series data, for the spec of a series with `rawValues`
+ * and those values.
  * @internal
  */
 export function m4SeriesData(
   spec: BasicSeriesSpec,
+  { xs, ys }: RawValues,
   { scale, origin, offset }: { scale: number; origin: number; offset: number },
 ): DataSeriesDatum[] {
-  // the spec passed numericValues when getDataSeriesFromSpecs flagged its series `isDownsampled`
-  const { xs, ys } = numericValues(spec)!;
   return toSeriesData(
     spec,
     m4(xs, ys, scale, origin, offset).map((i) => spec.data[i]),
@@ -458,24 +466,25 @@ function canDownsample(
 
 /**
  * The rows the data series of a spec start with, for the domains and the legend: the summary of a series that is
- * downsampled, with the numeric values of all its rows in `downsampled`, otherwise all the rows of the spec.
+ * downsampled, with the numeric values of all its rows in `rawValues`, otherwise all the rows of the spec.
  */
 function layoutRows(
   spec: BasicSeriesSpec,
   isStacked: boolean,
   scaleConfigs?: ScaleConfigs,
   smallMultiples?: SmallMultiplesGroupBy,
-): { data: Datum[]; downsampled?: NonNullable<ReturnType<typeof numericValues>> } {
+): { data: Datum[]; rawValues?: RawValues } {
   const values = canDownsample(spec, isStacked, scaleConfigs, smallMultiples) ? numericValues(spec) : undefined;
   if (!values) return { data: spec.data };
+  const { xs, ys, nonNumericValues } = values;
   // the summary: the first and last rows with a y, and the lowest and highest, as M4 keeps them for a single bin,
   // plus the first and last rows, whose missing y the first and last legend values report
-  const extremes = m4(values.xs, values.ys, 0, 0, 0, false);
+  const extremes = m4(xs, ys, 0, 0, 0, false);
   if (extremes.length === 0) return { data: spec.data };
   const kept = [...new Set([0, ...extremes, spec.data.length - 1])];
   if (kept.length >= spec.data.length) return { data: spec.data };
-  warnNonNumericValues(spec.id, values.nonNumericValues);
-  return { data: kept.map((i) => spec.data[i]), downsampled: values };
+  warnNonNumericValues(spec.id, nonNumericValues);
+  return { data: kept.map((i) => spec.data[i]), rawValues: { xs, ys } };
 }
 
 /** @internal */
@@ -516,8 +525,8 @@ export function getDataSeriesFromSpecs(
     const specGroup = specsByYGroup.get(spec.groupId);
     const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
     const isBanded = isBandedSpec(spec);
-    const { data, downsampled } = layoutRows(spec, isStacked, scaleConfigs, groupBySpec);
-    hasDownsampled ||= downsampled !== undefined;
+    const { data, rawValues } = layoutRows(spec, isStacked, scaleConfigs, groupBySpec);
+    hasDownsampled ||= rawValues !== undefined;
 
     const { dataSeries, xValues } = splitSeriesDataByAccessors(
       spec,
@@ -534,14 +543,14 @@ export function getDataSeriesFromSpecs(
     insertOrder += dataSeries.size;
 
     for (const [, ds] of dataSeries) {
-      if (downsampled) ds.isDownsampled = true;
+      if (rawValues) ds.rawValues = rawValues;
       globalDataSeries.push(ds);
     }
 
     // check the nature of the x values. If all of them are numbers
     // we can use a continuous scale, if not we should use an ordinal scale.
     // The xValue is already casted to be a valid number or a string
-    for (const xValue of downsampled?.xs ?? xValues) {
+    for (const xValue of rawValues?.xs ?? xValues) {
       if (isNumberArray && typeof xValue !== 'number') {
         isNumberArray = false;
       }

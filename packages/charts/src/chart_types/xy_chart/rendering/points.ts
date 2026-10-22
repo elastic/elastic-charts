@@ -146,9 +146,9 @@ export function renderPoints(
       }
       acc.prevX = x;
 
-      if (dataSeries.isDownsampled) drawnXs.push(datum.x);
+      if (dataSeries.rawValues) drawnXs.push(datum.x);
       points.forEach(([pointGeometry, isDrawn]) => {
-        if (!dataSeries.isDownsampled) indexedGeometryMap.set(pointGeometry, geometryType);
+        if (!dataSeries.rawValues) indexedGeometryMap.set(pointGeometry, geometryType);
         if (isDrawn) acc.pointGeometries.push(pointGeometry);
       });
       return acc;
@@ -162,7 +162,7 @@ export function renderPoints(
     pointGeometries.sort((a, b) => a.radius - b.radius);
   }
 
-  if (dataSeries.isDownsampled) {
+  if (dataSeries.rawValues) {
     // the pointer snaps to the drawn rows, which are some of the spec's rows, but finds all the spec's rows at an x,
     // so every series shows at an x that M4 drops from some
     const { spec } = dataSeries;
