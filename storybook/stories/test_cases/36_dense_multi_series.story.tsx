@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { noiseTable, sample } from '../utils/datasets/smooth_noise';
 
 const SERIES_COUNT = 50;
 const POINTS_PER_SERIES = 40_000;
@@ -21,23 +22,11 @@ const rng = getRandomNumberGenerator('line-multi-series');
 
 type SeriesDatum = [x: number, y: number];
 
-function noiseTable(size: number) {
-  return Array.from({ length: size }, () => rng(0, 1, 4));
-}
-
-function sample(table: number[], x: number) {
-  const i = Math.floor(x);
-  const t = x - i;
-  const s = t * t * (3 - 2 * t);
-  const n = table.length;
-  return table[i % n]! + (table[(i + 1) % n]! - table[i % n]!) * s;
-}
-
 function generateData(seriesPoints: number, numSeries = 1): SeriesDatum[][] {
   return Array.from({ length: numSeries }, (_, seriesIndex) => {
-    const trend = noiseTable(24);
-    const swell = noiseTable(48);
-    const ripple = noiseTable(96);
+    const trend = noiseTable(rng, 24);
+    const swell = noiseTable(rng, 48);
+    const ripple = noiseTable(rng, 96);
     const data = new Array<SeriesDatum>(seriesPoints);
 
     for (let i = 0; i < seriesPoints; i++) {
@@ -49,57 +38,87 @@ function generateData(seriesPoints: number, numSeries = 1): SeriesDatum[][] {
   });
 }
 
-const RENDER_LABEL = 'chart-render';
+const PROFILE_LABEL = 'Perf:DataToRender';
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const seriesData = useMemo(() => generateData(POINTS_PER_SERIES, SERIES_COUNT), []);
+  const [data, setData] = useState<SeriesDatum[][]>([]);
   const [runId, setRunId] = useState(0);
-  const pendingTimer = useRef(false);
-  const baseTheme = useBaseTheme();
+  useEffect(() => {
+    const generatedData = generateData(POINTS_PER_SERIES, SERIES_COUNT);
+    window.performance.mark('Perf:Started');
+    setData(generatedData);
+  }, [runId]);
 
-  const startRender = () => {
-    window.performance.mark(`${RENDER_LABEL}:start`);
-    pendingTimer.current = true;
-    setRunId((id) => id + 1);
-  };
+  // a resize starts a new measurement, as the chart lays out and renders again
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    let { width, height } = container.getBoundingClientRect();
+    const observer = new ResizeObserver(([entry]) => {
+      if (!entry || (entry.contentRect.width === width && entry.contentRect.height === height)) return;
+      ({ width, height } = entry.contentRect);
+      window.performance.mark('Perf:Started');
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  const baseTheme = useBaseTheme();
+  const renderButton = (
+    <button
+      type="button"
+      style={{ all: 'revert', alignSelf: 'flex-start' }} // it should look like a button, not just text
+      onClick={() => {
+        setData([]);
+        setRunId(runId + 1);
+      }}
+    >
+      Render
+    </button>
+  );
+  if (data.length === 0) {
+    return (
+      <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        {renderButton}
+        <div style={{ marginTop: 4 }}>Rendering...</div>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <button type="button" style={{ all: 'revert', alignSelf: 'flex-start' }} onClick={startRender}>
-        Render
-      </button>
+    <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {renderButton}
       <div style={{ flex: 1, minHeight: 0 }}>
-        {runId > 0 && (
-          <Chart key={runId} title={title} description={description}>
-            <Settings
-              showLegend
-              legendPosition={Position.Right}
-              baseTheme={baseTheme}
-              onRenderChange={(isRendered) => {
-                if (isRendered && pendingTimer.current) {
-                  pendingTimer.current = false;
-                  const { duration } = window.performance.measure(RENDER_LABEL, `${RENDER_LABEL}:start`);
-                  // eslint-disable-next-line no-console
-                  console.log(`${RENDER_LABEL}: ${duration.toFixed(0)} ms`);
-                }
-              }}
+        <Chart title={title} description={description}>
+          <Settings
+            showLegend
+            legendPosition={Position.Right}
+            baseTheme={baseTheme}
+            onRenderChange={(isRendered) => {
+              if (isRendered) {
+                window.performance.mark('Perf:Ended');
+                const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');
+                // eslint-disable-next-line no-console
+                console.log(`chart rendered in ${duration.toFixed(0)} ms`);
+              }
+            }}
+          />
+          <Axis id="bottom" position={Position.Bottom} />
+          <Axis id="left" position={Position.Left} />
+          {data.map((seriesData, index) => (
+            <LineSeries
+              key={index}
+              id={`series-${index + 1}`}
+              xScaleType={ScaleType.Linear}
+              yScaleType={ScaleType.Linear}
+              xAccessor={0}
+              yAccessors={[1]}
+              data={seriesData}
+              curve={CurveType.LINEAR}
             />
-            <Axis id="bottom" position={Position.Bottom} />
-            <Axis id="left" position={Position.Left} />
-            {seriesData.map((data, index) => (
-              <LineSeries
-                key={index}
-                id={`series-${index + 1}`}
-                xScaleType={ScaleType.Linear}
-                yScaleType={ScaleType.Linear}
-                xAccessor={0}
-                yAccessors={[1]}
-                data={data}
-                curve={CurveType.LINEAR}
-              />
-            ))}
-          </Chart>
-        )}
+          ))}
+        </Chart>
       </div>
     </div>
   );

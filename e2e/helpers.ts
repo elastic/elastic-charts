@@ -45,8 +45,9 @@ const groupsToSkip: Set<string> = new Set(['Components/Tooltip', 'Components/Met
  */
 const storiesToSkip: Map<string, string[]> = new Map(
   Object.entries({
-    'Test Cases': ['noSeries', 'errorBoundary', 'denseMultiSeries'],
+    'Test Cases': ['noSeries', 'errorBoundary'],
     Interactions: ['multiChartCursorSync'],
+    Downsampling: ['denseSparseGrid', 'syncedCpuAndMemory'],
     'Metric (@alpha)': ['bodyContent'],
   }),
 );
