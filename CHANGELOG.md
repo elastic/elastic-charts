@@ -1,3 +1,24 @@
+## [73.3.2](https://github.com/elastic/elastic-charts/compare/v73.3.1...v73.3.2) (2026-10-23)
+
+
+### Bug Fixes
+
+* **style:** minor defects and alignments in the style and APIs ([#2923](https://github.com/elastic/elastic-charts/issues/2923)) ([51740cc](https://github.com/elastic/elastic-charts/commit/51740cc238e5433f2e00ba605a9421c42cc9c440))
+* **xy:** cardinal interpolation not to render as linear interpolation ([#2926](https://github.com/elastic/elastic-charts/issues/2926)) ([c69df2e](https://github.com/elastic/elastic-charts/commit/c69df2ef66946156a956c07eb46f48a6630537d8))
+
+
+### Performance Improvements
+
+* **xy:** add the M4 reduction ([873e6c8](https://github.com/elastic/elastic-charts/commit/873e6c808a04b39d4e175fc4d2aa65470ec1a861))
+* **xy:** downsample dense line and area series with M4 ([4fdb1e7](https://github.com/elastic/elastic-charts/commit/4fdb1e7abfcfd532eea67df19006572aa244913f))
+* **xy:** faster rendering of dense series with millions of distinct x values ([#2929](https://github.com/elastic/elastic-charts/issues/2929)) ([df838fd](https://github.com/elastic/elastic-charts/commit/df838fd51aa560821692ac915c645aa02b62c01d))
+* **xy:** M4 downsampling of dense line and area series ([#2928](https://github.com/elastic/elastic-charts/issues/2928)) ([5a3a844](https://github.com/elastic/elastic-charts/commit/5a3a844de1f4c5111640bcd28a8beadf0857e196))
+
+
+### Reverts
+
+* **xy:** M4 downsampling of dense line and area series ([#2927](https://github.com/elastic/elastic-charts/issues/2927)) ([f3e36a4](https://github.com/elastic/elastic-charts/commit/f3e36a492de4c746d43cda09dead924ff7d3cf4f))
+
 ## [73.3.1](https://github.com/elastic/elastic-charts/compare/v73.3.0...v73.3.1) (2026-10-15)
 
 
