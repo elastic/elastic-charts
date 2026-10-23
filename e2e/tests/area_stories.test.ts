@@ -140,4 +140,14 @@ test.describe('Area series stories', () => {
       'http://localhost:9001/?path=/story/line-chart--isolated-data-points&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-enable fit function=true&knob-series type=line&knob-stack areas=&knob-max data points=28&knob-default point radius=3&knob-point visibility=never&knob-point visibility min distance=40&knob-visible series[0]=A&knob-visible series[1]=B&knob-point shape=circle',
     );
   });
+
+  test('does not extend a stacked series with trailing missing x values on legend highlight', async ({ page }) => {
+    const action = async () => {
+      await page.locator('[data-ech-series-name="Ends 5 x values early"]').hover();
+    };
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/area-chart--test-stacked-trailing-nulls',
+      { action },
+    );
+  });
 });
