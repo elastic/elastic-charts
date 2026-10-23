@@ -41,3 +41,6 @@ export const logFormatter =
     const expString = getSuperScriptNumber(roundedExp);
     return `${sign}${constant} x ${baseLabel}${expString}`;
   };
+
+/** whole numbers as they are, others with two decimals */
+export const upToTwoDecimals = (d: number) => (Number.isInteger(d) ? `${d}` : d.toFixed(2));

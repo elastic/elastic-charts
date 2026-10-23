@@ -2808,6 +2808,8 @@ IndexedGeometryMap {
       ],
     },
   },
+  "lookupKeys": Set {},
+  "lookups": [],
   "spatialMap": IndexedGeometrySpatialMap {
     "map": null,
     "maxRadius": -Infinity,

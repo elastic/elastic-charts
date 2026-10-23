@@ -8,7 +8,9 @@
 
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
+import { m4 } from './m4';
 import type { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesType, StackMode } from './specs';
+import { isAreaSeriesSpec, isLineSeriesSpec } from './specs';
 import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
 import type { Color } from '../../../common/colors';
 import { Colors } from '../../../common/colors';
@@ -23,12 +25,15 @@ import type { Accessor, AccessorFn } from '../../../utils/accessor';
 import { getAccessorValue } from '../../../utils/accessor';
 import type { Datum } from '../../../utils/common';
 import { isNil, stripUndefined } from '../../../utils/common';
+import { CurveType, DEFAULT_CURVE } from '../../../utils/curves';
 import type { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import type { SeriesCompareFn } from '../../../utils/series_sort';
 import type { ColorConfig } from '../../../utils/themes/theme';
 import { groupSeriesByYGroup, isStackedSpec } from '../domains/y_domain';
 import { X_SCALE_DEFAULT } from '../scales/scale_defaults';
+import type { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
+import { getSpecDomainGroupId } from '../state/utils/spec';
 
 /** @internal */
 export const SERIES_DELIMITER = ' - ';
@@ -71,6 +76,12 @@ export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends Se
   seriesKeys: (string | number)[];
 }
 
+/**
+ * The x and y values of all the rows of a spec, y being NaN where missing
+ * @internal
+ */
+export type RawValues = { xs: Float64Array; ys: Float64Array };
+
 /** @internal */
 export type DataSeries<D extends BaseDatum = Datum> = XYChartSeriesIdentifier<D> & {
   groupId: GroupId;
@@ -82,6 +93,11 @@ export type DataSeries<D extends BaseDatum = Datum> = XYChartSeriesIdentifier<D>
   insertOrder: number;
   sortOrder: number;
   isFiltered: boolean;
+  /**
+   * The x and y values of all the rows of `spec.data`, for a series whose `data` only summarizes it for layout: the
+   * geometries are built from these, and some legend values from `spec.data`
+   */
+  rawValues?: RawValues;
 };
 
 /** @internal */
@@ -112,6 +128,7 @@ export function getAccessorFieldName<D extends BaseDatum>(
  * Each series is then associated with a key that belongs to its configuration.
  * This method removes every data with an invalid x: a string or number value is required
  * `y` values and `mark` values are casted to number or null.
+ * `data` defaults to the spec's data; a downsampled spec passes the rows of its summary.
  * @internal
  */
 export function splitSeriesDataByAccessors(
@@ -123,6 +140,7 @@ export function splitSeriesDataByAccessors(
   stackMode?: StackMode,
   groupBySpec?: SmallMultiplesGroupBy,
   deselectedDataSeries: SeriesIdentifier[] = [],
+  data = spec.data,
 ): {
   dataSeries: Map<SeriesKey, DataSeries>;
   xValues: Array<string | number>;
@@ -131,7 +149,6 @@ export function splitSeriesDataByAccessors(
     seriesType,
     id: specId,
     groupId,
-    data,
     xAccessor,
     yAccessors,
     y0Accessors,
@@ -223,14 +240,8 @@ export function splitSeriesDataByAccessors(
     });
   }
 
-  if (nonNumericValues.size > 0) {
-    const values = [...nonNumericValues.entries()];
-    const total = values.reduce((sum, [, v]) => sum + v, 0);
-    Logger.warn(
-      `Found ${total} non-numeric y value${total > 1 ? 's' : ''} in dataset for spec "${specId}"`,
-      `(${values.map(([k, v]) => `${v}: ${JSON.stringify(k)}`).join(', ')})`,
-    );
-  }
+  // the summary rows of a downsampled spec are some of its rows, whose non-numeric values layoutRows reported
+  if (data === spec.data) warnNonNumericValues(specId, nonNumericValues);
   return {
     dataSeries,
     xValues,
@@ -304,6 +315,68 @@ export function extractYAndMarkFromDatum<D extends BaseDatum>(
   return { y1, datum, y0: bandedSpec ? y0 : null, mark, initialY0: y0, initialY1: y1 };
 }
 
+function warnNonNumericValues(specId: string, nonNumericValues: Map<unknown, number>) {
+  if (nonNumericValues.size > 0) {
+    const values = [...nonNumericValues.entries()];
+    const total = values.reduce((sum, [, v]) => sum + v, 0);
+    Logger.warn(
+      `Found ${total} non-numeric y value${total > 1 ? 's' : ''} in dataset for spec "${specId}"`,
+      `(${values.map(([k, v]) => `${v}: ${JSON.stringify(k)}`).join(', ')})`,
+    );
+  }
+}
+
+/**
+ * The x and y values of the first y accessor, y being NaN where missing, unless an x is not finite or not sorted.
+ */
+function numericValues({ data, xAccessor, yAccessors }: BasicSeriesSpec) {
+  const yAccessor = yAccessors[0]!;
+  const xs = new Float64Array(data.length); // the x of each row
+  const ys = new Float64Array(data.length); // the y of each row, NaN where missing or not numeric
+  const nonNumericValues = new Map<unknown, number>(); // how often each non-numeric y occurs, for the warning
+  let previousX = -Infinity; // the x of the previous row, to check that x is sorted
+  for (let i = 0; i < data.length; i++) {
+    const datum = data[i];
+    const x = typeof datum === 'object' && datum !== null ? getAccessorValue(datum, xAccessor) : undefined;
+    if (typeof x !== 'number' || !Number.isFinite(x) || x < previousX) return;
+    xs[i] = previousX = x;
+    const y = getAccessorValue(datum, yAccessor);
+    ys[i] = typeof y === 'number' && Number.isFinite(y) ? y : finiteOrNull(y, nonNumericValues) ?? NaN;
+  }
+  return { xs, ys, nonNumericValues };
+}
+
+/**
+ * Converts rows of a spec to series data, reading only the x and first y accessors: callers pass the specs of
+ * series with `rawValues`, which have no y0, mark size or split accessors and no small multiples.
+ * @internal
+ */
+export function toSeriesData(spec: BasicSeriesSpec, rows: Datum[]): DataSeriesDatum[] {
+  const yAccessor = spec.yAccessors[0]!;
+  // getDataSeriesFromSpecs already reported the non-numeric values of these specs
+  const nonNumericValues = new Map<unknown, number>();
+  return rows.map((datum) => ({
+    x: getAccessorValue(datum, spec.xAccessor),
+    ...extractYAndMarkFromDatum(datum, yAccessor, nonNumericValues, false),
+  }));
+}
+
+/**
+ * The rows of a spec that M4 keeps in the given pixel bins, as series data, for the spec of a series with `rawValues`
+ * and those values.
+ * @internal
+ */
+export function m4SeriesData(
+  spec: BasicSeriesSpec,
+  { xs, ys }: RawValues,
+  { scale, origin, offset }: { scale: number; origin: number; offset: number },
+): DataSeriesDatum[] {
+  return toSeriesData(
+    spec,
+    m4(xs, ys, scale, origin, offset).map((i) => spec.data[i]),
+  );
+}
+
 function finiteOrNull(value: unknown, nonNumericValues: Map<unknown, number>): number | null {
   const candidateNumber = Number(value ?? undefined);
   const finite = Number.isFinite(candidateNumber);
@@ -358,6 +431,63 @@ export function getFormattedDataSeries(
   return [...fittedAndStackedDataSeries, ...nonStackedDataSeries].sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
+// curves that stay within the y range of each pair of consecutive points, so M4 keeps the painted pixels
+const MONOTONIC_CURVES: ReadonlySet<CurveType> = new Set([
+  CurveType.LINEAR,
+  CurveType.CURVE_MONOTONE_X,
+  CurveType.CURVE_STEP,
+  CurveType.CURVE_STEP_AFTER,
+  CurveType.CURVE_STEP_BEFORE,
+]);
+
+// nothing is downsampled without the scale configs; some of these restrictions could be lifted in the future
+function canDownsample(
+  spec: BasicSeriesSpec,
+  isStacked: boolean,
+  scaleConfigs?: ScaleConfigs,
+  smallMultiples?: SmallMultiplesGroupBy,
+) {
+  return (
+    scaleConfigs !== undefined &&
+    (isLineSeriesSpec(spec) || isAreaSeriesSpec(spec)) &&
+    MONOTONIC_CURVES.has(spec.curve ?? DEFAULT_CURVE) &&
+    !isStacked &&
+    spec.fit === undefined &&
+    spec.yAccessors.length === 1 &&
+    !spec.y0Accessors?.length &&
+    !spec.splitSeriesAccessors?.length &&
+    spec.markSizeAccessor === undefined &&
+    spec.pointStyleAccessor === undefined &&
+    (scaleConfigs.x.type === ScaleType.Linear || scaleConfigs.x.type === ScaleType.Time) &&
+    scaleConfigs.y[getSpecDomainGroupId(spec)]?.type === ScaleType.Linear &&
+    !smallMultiples?.horizontal &&
+    !smallMultiples?.vertical
+  );
+}
+
+/**
+ * The rows the data series of a spec start with, for the domains and the legend: the summary of a series that is
+ * downsampled, with the numeric values of all its rows in `rawValues`, otherwise all the rows of the spec.
+ */
+function layoutRows(
+  spec: BasicSeriesSpec,
+  isStacked: boolean,
+  scaleConfigs?: ScaleConfigs,
+  smallMultiples?: SmallMultiplesGroupBy,
+): { data: Datum[]; rawValues?: RawValues } {
+  const values = canDownsample(spec, isStacked, scaleConfigs, smallMultiples) ? numericValues(spec) : undefined;
+  if (!values) return { data: spec.data };
+  const { xs, ys, nonNumericValues } = values;
+  // the summary: the first and last rows with a y, and the lowest and highest, as M4 keeps them for a single bin,
+  // plus the first and last rows, whose missing y the first and last legend values report
+  const extremes = m4(xs, ys, 0, 0, 0, false);
+  if (extremes.length === 0) return { data: spec.data };
+  const kept = [...new Set([0, ...extremes, spec.data.length - 1])];
+  if (kept.length >= spec.data.length) return { data: spec.data };
+  warnNonNumericValues(spec.id, nonNumericValues);
+  return { data: kept.map((i) => spec.data[i]), rawValues: { xs, ys } };
+}
+
 /** @internal */
 export function getDataSeriesFromSpecs(
   seriesSpecs: BasicSeriesSpec[],
@@ -365,9 +495,15 @@ export function getDataSeriesFromSpecs(
   orderOrdinalBinsBy?: OrderBy,
   seriesSort?: SeriesCompareFn,
   groupBySpec?: SmallMultiplesGroupBy,
+  scaleConfigs?: ScaleConfigs,
 ): {
   dataSeries: DataSeries[];
+  /** the x values of the data rows of every series; a downsampled series may contribute only its summary rows */
   xValues: Set<string | number>;
+  /** the x values of all the rows of such downsampled series, one sorted list per series */
+  rawXValues: Float64Array[];
+  /** whether `rawXValues` hold every x value of `xValues`, as every series that adds x values is downsampled */
+  rawXValuesHoldAll: boolean;
   smVValues: Set<string | number>;
   smHValues: Set<string | number>;
   fallbackScale?: XScaleType;
@@ -375,11 +511,16 @@ export function getDataSeriesFromSpecs(
   const globalDataSeries: DataSeries[] = [];
   const mutatedXValueSums = new Map<string | number, number>();
 
-  // the unique set of values along the x axis
+  // the x values of the data rows of every series; a downsampled series may contribute only its summary rows
   const globalXValues: Set<string | number> = new Set();
+  const rawXValues: Float64Array[] = [];
 
   let isNumberArray = true;
   let isOrdinalScale = false;
+  // stacked and fitted series get gaps at the x values of every other series, so they need them all
+  let needsEveryXValue = false;
+  // whether a series that isn't downsampled adds x values, which only `xValues` holds
+  let hasNonDownsampledXValues = false;
 
   const specsByYGroup = groupSeriesByYGroup(seriesSpecs);
   let insertOrder = 0;
@@ -394,6 +535,9 @@ export function getDataSeriesFromSpecs(
     const specGroup = specsByYGroup.get(spec.groupId);
     const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
     const isBanded = isBandedSpec(spec);
+    const { data, rawValues } = layoutRows(spec, isStacked, scaleConfigs, groupBySpec);
+    if (rawValues) rawXValues.push(rawValues.xs);
+    needsEveryXValue ||= isStacked || ((isLineSeriesSpec(spec) || isAreaSeriesSpec(spec)) && spec.fit !== undefined);
 
     const { dataSeries, xValues } = splitSeriesDataByAccessors(
       spec,
@@ -404,13 +548,17 @@ export function getDataSeriesFromSpecs(
       specGroup?.stackMode,
       groupBySpec,
       deselectedDataSeries,
+      data,
     );
 
     insertOrder += dataSeries.size;
 
     for (const [, ds] of dataSeries) {
+      if (rawValues) ds.rawValues = rawValues;
       globalDataSeries.push(ds);
     }
+
+    hasNonDownsampledXValues ||= !rawValues && xValues.length > 0;
 
     // check the nature of the x values. If all of them are numbers
     // we can use a continuous scale, if not we should use an ordinal scale.
@@ -419,8 +567,16 @@ export function getDataSeriesFromSpecs(
       if (isNumberArray && typeof xValue !== 'number') {
         isNumberArray = false;
       }
+      // a downsampled series adds the x values of its summary rows, which include its first and last
       globalXValues.add(xValue);
     }
+  }
+
+  if (rawXValues.length > 0 && !isNumberArray) {
+    return getDataSeriesFromSpecs(seriesSpecs, deselectedDataSeries, orderOrdinalBinsBy, seriesSort, groupBySpec);
+  }
+  if (needsEveryXValue) {
+    for (const xs of rawXValues) for (const x of xs) globalXValues.add(x);
   }
 
   const xValues =
@@ -463,6 +619,8 @@ export function getDataSeriesFromSpecs(
     dataSeries: globalDataSeries,
     // keep the user order for ordinal scales
     xValues,
+    rawXValues: needsEveryXValue ? [] : rawXValues,
+    rawXValuesHoldAll: rawXValues.length > 0 && !needsEveryXValue && !hasNonDownsampledXValues,
     ...smallMultipleUniqueValues,
     fallbackScale: !isOrdinalScale && !isNumberArray ? X_SCALE_DEFAULT.type : undefined,
   };

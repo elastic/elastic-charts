@@ -26,7 +26,7 @@ export function AlignedGrid<D>({ data, contentComponent: ContentComponent }: Ali
   }, 0);
 
   const gridStyle: CSSProperties = {
-    gridTemplateColumns: `repeat(${columns}, 1fr`,
+    gridTemplateColumns: `repeat(${columns}, 1fr)`,
     gridTemplateRows: `repeat(${rows}, max-content 1fr)`,
   };
 

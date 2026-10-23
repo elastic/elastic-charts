@@ -6,11 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { bisector } from 'd3-array';
+
 import { buildPointGeometryStyles } from './point_style';
 import type { MarkSizeOptions } from './utils';
 import { getY0ScaledValueFn, getY1ScaledValueFn, getYDatumValueFn, isDatumFilled, isYValueDefinedFn } from './utils';
 import type { Color } from '../../../common/colors';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
+import { getAccessorValue } from '../../../utils/accessor';
 import type { RecursivePartial } from '../../../utils/common';
 import { isFiniteNumber, isNil } from '../../../utils/common';
 import type { Dimensions } from '../../../utils/dimensions';
@@ -19,7 +22,7 @@ import { BandedAccessorType } from '../../../utils/geometry';
 import type { PointStyle } from '../../../utils/themes/theme';
 import { GeometryType, IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import type { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
-import { getSeriesIdentifierFromDataSeries } from '../utils/series';
+import { getSeriesIdentifierFromDataSeries, toSeriesData } from '../utils/series';
 import type { PointStyleAccessor } from '../utils/specs';
 import { StackMode } from '../utils/specs';
 
@@ -57,81 +60,96 @@ export function renderPoints(
   const y0Fn = getY0ScaledValueFn(yScale);
   const yDefined = isYValueDefinedFn(yScale, xScale);
 
-  let style = buildPointGeometryStyles(color, pointStyle);
+  const seriesStyle = buildPointGeometryStyles(color, pointStyle);
   const seriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
+  const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
+
+  // the points of the row at `dataIndex` of `data`, one per y value, each with whether it's drawn
+  const rowPoints = (
+    datum: DataSeriesDatum,
+    dataIndex: number,
+    data: DataSeriesDatum[],
+  ): Array<[point: PointGeometry, isDrawn: boolean]> => {
+    const { x: xValue, mark } = datum;
+    // don't create the point if not within the xScale domain
+    if (!xScale.isValueInDomain(xValue)) return [];
+    // don't create the point if it that point was filled
+    const x = xScale.scale(xValue);
+    if (!isFiniteNumber(x)) return [];
+
+    const prev = data[dataIndex - 1];
+    const next = data[dataIndex + 1];
+
+    const isPointIsolated = considerIsolatedPoints
+      ? isIsolatedPoint(dataIndex, data.length, datum, isBandedSpec, y1Fn, y0Fn, prev, next)
+      : false;
+    const styleOverrides = styleAccessor
+      ? getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor)
+      : undefined;
+    const style = styleAccessor ? buildPointGeometryStyles(color, pointStyle, styleOverrides) : seriesStyle;
+    return yDatumKeyNames.map((yDatumKeyName, keyIndex) => {
+      const valueAccessor = getYDatumValueFn(yDatumKeyName);
+      const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
+      const originalY = getDatumYValue(datum, keyIndex === 0, isBandedSpec, dataSeries.stackMode);
+
+      // if radius is defined with the mark, limit the minimum radius to the theme radius value
+      const radius = markSizeOptions.enabled
+        ? Math.max(getRadius(mark), pointStyle.radius)
+        : styleOverrides?.radius ?? pointStyle.radius;
+
+      const pointGeometry: PointGeometry = {
+        x,
+        y: y === null ? NaN : y,
+        radius,
+        color,
+        style,
+        value: {
+          x: xValue,
+          y: originalY,
+          mark,
+          accessor: isBandedSpec && keyIndex === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
+          datum: datum.datum,
+        },
+        transform: {
+          x: shift,
+          y: 0,
+        },
+        seriesIdentifier,
+        panel,
+        isolated: isPointIsolated,
+        seriesType: dataSeries.seriesType,
+      };
+      // draw the point only if the yDatum in contained in the current yScale domain
+      const isDrawn =
+        isFiniteNumber(y) &&
+        yDefined(datum, valueAccessor) &&
+        yScale.isValueInDomain(valueAccessor(datum)) &&
+        !isDatumFilled(datum);
+      return [pointGeometry, isDrawn];
+    });
+  };
+
+  // a downsampled series indexes only the x values of its drawn rows, which the pointer snaps to
+  const drawnXs: Array<number | string> = [];
   const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
     pointGeometries: PointGeometry[];
     minDistanceBetweenPoints: number;
     prevX: number | undefined;
   }>(
     (acc, datum, dataIndex) => {
-      const { x: xValue, mark } = datum;
-      // don't create the point if not within the xScale domain
-      if (!xScale.isValueInDomain(xValue)) return acc;
-      // don't create the point if it that point was filled
-      const x = xScale.scale(xValue);
-      if (!isFiniteNumber(x)) return acc;
-
-      const prev = dataSeries.data[dataIndex - 1];
-      const next = dataSeries.data[dataIndex + 1];
+      const points = rowPoints(datum, dataIndex, dataSeries.data);
+      const x = points[0]?.[0].x;
+      if (x === undefined) return acc;
 
       if (isFiniteNumber(acc.prevX) && !isDatumFilled(datum)) {
         acc.minDistanceBetweenPoints = Math.min(acc.minDistanceBetweenPoints, Math.abs(x - acc.prevX));
       }
       acc.prevX = x;
 
-      const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
-
-      const isPointIsolated = considerIsolatedPoints
-        ? isIsolatedPoint(dataIndex, dataSeries.data.length, datum, isBandedSpec, y1Fn, y0Fn, prev, next)
-        : false;
-      let styleOverrides: RecursivePartial<PointStyle> | undefined = undefined;
-      if (styleAccessor) {
-        styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
-        style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
-      }
-      yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
-        const valueAccessor = getYDatumValueFn(yDatumKeyName);
-        const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
-        const originalY = getDatumYValue(datum, keyIndex === 0, isBandedSpec, dataSeries.stackMode);
-
-        // if radius is defined with the mark, limit the minimum radius to the theme radius value
-        const radius = markSizeOptions.enabled
-          ? Math.max(getRadius(mark), pointStyle.radius)
-          : styleOverrides?.radius ?? pointStyle.radius;
-
-        const pointGeometry: PointGeometry = {
-          x,
-          y: y === null ? NaN : y,
-          radius,
-          color,
-          style,
-          value: {
-            x: xValue,
-            y: originalY,
-            mark,
-            accessor: isBandedSpec && keyIndex === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
-            datum: datum.datum,
-          },
-          transform: {
-            x: shift,
-            y: 0,
-          },
-          seriesIdentifier,
-          panel,
-          isolated: isPointIsolated,
-          seriesType: dataSeries.seriesType,
-        };
-        indexedGeometryMap.set(pointGeometry, geometryType);
-        // use the geometry only if the yDatum in contained in the current yScale domain
-        if (
-          isFiniteNumber(y) &&
-          yDefined(datum, valueAccessor) &&
-          yScale.isValueInDomain(valueAccessor(datum)) &&
-          !isDatumFilled(datum)
-        ) {
-          acc.pointGeometries.push(pointGeometry);
-        }
+      if (dataSeries.rawValues) drawnXs.push(datum.x);
+      points.forEach(([pointGeometry, isDrawn]) => {
+        if (!dataSeries.rawValues) indexedGeometryMap.set(pointGeometry, geometryType);
+        if (isDrawn) acc.pointGeometries.push(pointGeometry);
       });
       return acc;
     },
@@ -142,6 +160,19 @@ export function renderPoints(
   // The common equal-radius path used to splice-insert each point (O(n²)).
   if (!markSizeOptions.enabled && styleAccessor) {
     pointGeometries.sort((a, b) => a.radius - b.radius);
+  }
+
+  if (dataSeries.rawValues) {
+    // the pointer snaps to the drawn rows, which are some of the spec's rows, but finds all the spec's rows at an x,
+    // so every series shows at an x that M4 drops from some
+    const { spec } = dataSeries;
+    // the rows of a downsampled series are sorted by x, so binary searches find those at an x
+    const { left, right } = bisector((datum) => getAccessorValue(datum, spec.xAccessor));
+    indexedGeometryMap.setLookup(drawnXs, (x) => {
+      // the rows at x, with a neighboring row on either side, which tells whether a row's point is isolated
+      const rows = toSeriesData(spec, spec.data.slice(Math.max(0, left(spec.data, x) - 1), right(spec.data, x) + 1));
+      return rows.flatMap((datum, i) => (datum.x === x ? rowPoints(datum, i, rows).map(([point]) => point) : []));
+    });
   }
 
   return {
