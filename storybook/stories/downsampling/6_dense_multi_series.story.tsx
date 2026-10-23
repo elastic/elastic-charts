@@ -15,24 +15,23 @@ import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { noiseTable, sample } from '../utils/datasets/smooth_noise';
 
-const SERIES_COUNT = 50;
-const POINTS_PER_SERIES = 40_000;
-
 const rng = getRandomNumberGenerator('line-multi-series');
 
 type SeriesDatum = [x: number, y: number];
 
-function generateData(seriesPoints: number, numSeries = 1): SeriesDatum[][] {
-  return Array.from({ length: numSeries }, (_, seriesIndex) => {
+function generateData(seriesCount: number, pointsPerSeries: number, missingPointPerSeries: boolean): SeriesDatum[][] {
+  return Array.from({ length: seriesCount }, (_, seriesIndex) => {
     const trend = noiseTable(rng, 24);
     const swell = noiseTable(rng, 48);
     const ripple = noiseTable(rng, 96);
-    const data = new Array<SeriesDatum>(seriesPoints);
+    const data = new Array<SeriesDatum>(pointsPerSeries);
 
-    for (let i = 0; i < seriesPoints; i++) {
+    for (let i = 0; i < pointsPerSeries; i++) {
       const noise = sample(trend, i / 500) * 10 + sample(swell, i / 90) * 4 + sample(ripple, i / 18) * 1.2;
-      data[i] = [i, seriesIndex * 3 + 4 * Math.sin((Math.PI * i) / (seriesPoints - 1)) ** 2 * noise];
+      data[i] = [i, seriesIndex * 3 + 4 * Math.sin((Math.PI * i) / (pointsPerSeries - 1)) ** 2 * noise];
     }
+    // series n lacks point n, so no two series have the same x values
+    if (missingPointPerSeries) data.splice(seriesIndex, 1);
 
     return data;
   });
@@ -40,14 +39,30 @@ function generateData(seriesPoints: number, numSeries = 1): SeriesDatum[][] {
 
 const PROFILE_LABEL = 'Perf:DataToRender';
 
-export const Example: ChartsStory = (_, { title, description }) => {
+/**
+ * A chart of `seriesCount` dense line series of `pointsPerSeries` points each, or one less with
+ * `missingPointPerSeries`, logging how long it takes to render
+ */
+export function DenseLines({
+  seriesCount,
+  pointsPerSeries,
+  missingPointPerSeries = false,
+  title,
+  description,
+}: {
+  seriesCount: number;
+  pointsPerSeries: number;
+  missingPointPerSeries?: boolean;
+  title?: string;
+  description?: string;
+}) {
   const [data, setData] = useState<SeriesDatum[][]>([]);
   const [runId, setRunId] = useState(0);
   useEffect(() => {
-    const generatedData = generateData(POINTS_PER_SERIES, SERIES_COUNT);
+    const generatedData = generateData(seriesCount, pointsPerSeries, missingPointPerSeries);
     window.performance.mark('Perf:Started');
     setData(generatedData);
-  }, [runId]);
+  }, [runId, pointsPerSeries, seriesCount, missingPointPerSeries]);
 
   // a resize starts a new measurement, as the chart lays out and renders again
   const containerRef = useRef<HTMLDivElement>(null);
@@ -122,4 +137,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
       </div>
     </div>
   );
-};
+}
+
+export const Example: ChartsStory = (_, { title, description }) => (
+  <DenseLines seriesCount={50} pointsPerSeries={40_000} title={title} description={description} />
+);

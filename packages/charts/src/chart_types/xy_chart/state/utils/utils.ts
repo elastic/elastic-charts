@@ -122,16 +122,17 @@ export function computeSeriesDomains(
     ((a, b) => {
       return defaultXYSeriesSort(a as DataSeries, b as DataSeries);
     });
-  const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
-    seriesSpecs,
-    deselectedDataSeries,
-    orderOrdinalBinsBy,
-    renderingSortFn,
-    smallMultiples,
-    scaleConfigs,
-  );
+  const { dataSeries, xValues, rawXValues, rawXValuesHoldAll, fallbackScale, smHValues, smVValues } =
+    getDataSeriesFromSpecs(
+      seriesSpecs,
+      deselectedDataSeries,
+      orderOrdinalBinsBy,
+      renderingSortFn,
+      smallMultiples,
+      scaleConfigs,
+    );
   // compute the x domain merging any custom domain
-  const xDomain = mergeXDomain(scaleConfigs.x, xValues, locale, fallbackScale);
+  const xDomain = mergeXDomain(scaleConfigs.x, xValues, locale, fallbackScale, rawXValues, rawXValuesHoldAll);
 
   const xIndex = new Map<string | number, number>();
   for (const x of xValues) xIndex.set(x, xIndex.size);
@@ -293,11 +294,13 @@ function renderedDataSeries(
   xAxis: { start: number; direction: number },
   xShift: number,
 ): DataSeries {
-  if (!ds.isDownsampled) return ds;
+  if (!ds.rawValues) return ds;
   const isM4 = isContinuousScale(xScale) && !style.line.dash?.length && style.point.visible !== 'always';
   return {
     ...ds,
-    data: isM4 ? m4SeriesData(ds.spec, pixelBins(xScale, xAxis, xShift)) : toSeriesData(ds.spec, ds.spec.data),
+    data: isM4
+      ? m4SeriesData(ds.spec, ds.rawValues, pixelBins(xScale, xAxis, xShift))
+      : toSeriesData(ds.spec, ds.spec.data),
   };
 }
 

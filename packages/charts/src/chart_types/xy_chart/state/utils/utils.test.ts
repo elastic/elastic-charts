@@ -36,6 +36,7 @@ import { CurveType } from '../../../../utils/curves';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
 import type { ContinuousDomain, Range } from '../../../../utils/domain';
 import type { SpecId } from '../../../../utils/ids';
+import { Logger } from '../../../../utils/logger';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { XYChartSeriesIdentifier } from '../../utils/series';
 import { getSeriesIndex } from '../../utils/series';
@@ -912,15 +913,65 @@ describe('Downsampling dense line series', () => {
       locale: 'en-US',
     });
 
+  it('warns once about the missing ys of all the rows, though the summary keeps some', () => {
+    const warn = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    domainsOf([denseLine()]);
+    const calls = [...warn.mock.calls];
+    warn.mockRestore();
+    // the 3 nulls at either end and the one in the middle; the summary keeps the outermost null at either end
+    expect(calls).toEqual([['Found 7 non-numeric y values in dataset for spec "dense"', '(7: null)']]);
+  });
+
   it('summarizes the series for layout without changing its domains', () => {
     const downsampled = domainsOf([denseLine()]);
     const full = domainsOf([denseLine({ pointStyleAccessor: () => null })]);
-    expect(downsampled.formattedDataSeries[0]?.isDownsampled).toBe(true);
+    expect(downsampled.formattedDataSeries[0]?.rawValues).toBeDefined();
     // the first and last rows with a y, the lowest and highest, and the rows at either end
     expect(downsampled.formattedDataSeries[0]?.data.length).toBeLessThanOrEqual(6);
     expect(full.formattedDataSeries[0]?.data).toHaveLength(rows);
     expect(downsampled.xDomain).toEqual(full.xDomain);
     expect(downsampled.yDomains).toEqual(full.yDomains);
+  });
+
+  it('keeps the min interval of all the x values, though they interleave across series', () => {
+    // a has the even x values and b the odd ones, so they are 1 apart together but 2 apart in either; c is never
+    // downsampled, and its x values are half way between theirs
+    const specs = (props: Partial<LineSeriesSpec> = {}) => [
+      denseLine({ id: 'a', data: denseData.filter(({ x }) => x % 2 === 0), ...props }),
+      denseLine({ id: 'b', data: denseData.filter(({ x }) => x % 2 === 1), ...props }),
+      denseLine({ id: 'c', data: [0.5, 300.5, 600.5].map((x) => ({ x, y: 1 })), pointStyleAccessor: () => null }),
+    ];
+    const downsampled = domainsOf(specs());
+    const full = domainsOf(specs({ pointStyleAccessor: () => null }));
+    expect(downsampled.formattedDataSeries.map(({ rawValues }) => rawValues !== undefined)).toEqual([
+      true,
+      true,
+      false,
+    ]);
+    expect(downsampled.xDomain).toEqual(full.xDomain);
+    expect(downsampled.xDomain.minInterval).toBe(0.5);
+  });
+
+  it('keeps the gaps that stacked series get at the x values of a downsampled series', () => {
+    // the stacked areas have every tenth x value, the dense line all of them
+    const areas = [1, 2].map((k) =>
+      MockSeriesSpec.area({
+        id: `stacked ${k}`,
+        xAccessor: 'x',
+        yAccessors: ['y'],
+        xScaleType: ScaleType.Linear,
+        yScaleType: ScaleType.Linear,
+        stackAccessors: ['x'],
+        data: Array.from({ length: rows / 10 }, (_, i) => ({ x: i * 10, y: k })),
+      }),
+    );
+    const downsampled = domainsOf([...areas, denseLine()]);
+    const full = domainsOf([...areas, denseLine({ pointStyleAccessor: () => null })]);
+    const stacked = ({ formattedDataSeries }: ReturnType<typeof domainsOf>) =>
+      formattedDataSeries.filter(({ isStacked }) => isStacked);
+    expect(downsampled.formattedDataSeries.find(({ specId }) => specId === 'dense')?.rawValues).toBeDefined();
+    expect(stacked(downsampled)).toEqual(stacked(full));
+    expect(downsampled.xDomain).toEqual(full.xDomain);
   });
 
   it('takes the first and last values from the rows at the ends of the x domain, even with a missing y', () => {
@@ -929,14 +980,14 @@ describe('Downsampling dense line series', () => {
     const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
     const settings = MockGlobalSpec.settings({ legendValues: [LegendValue.FirstValue, LegendValue.LastValue] });
     MockStore.addSpecs([denseLine({ data }), settings], store);
-    expect(computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]?.isDownsampled).toBe(true);
+    expect(computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]?.rawValues).toBeDefined();
     expect(computeLegendSelector(store.getState())[0]?.values.map(({ value }) => value)).toEqual([null, null]);
   });
 
   it('computes the legend values the summary lacks from every row', () => {
     const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
     MockStore.addSpecs([denseLine(), MockGlobalSpec.settings({ legendValues: [LegendValue.Average] })], store);
-    expect(computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]?.isDownsampled).toBe(true);
+    expect(computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]?.rawValues).toBeDefined();
     expect(computeLegendSelector(store.getState())[0]?.values[0]?.value).toBe(
       ys.reduce((sum, y) => sum + y) / ys.length,
     );
@@ -944,7 +995,7 @@ describe('Downsampling dense line series', () => {
 
   it('keeps every row of a series whose curve can overshoot its points', () => {
     const { formattedDataSeries } = domainsOf([denseLine({ curve: CurveType.CURVE_NATURAL })]);
-    expect(formattedDataSeries[0]?.isDownsampled).toBeUndefined();
+    expect(formattedDataSeries[0]?.rawValues).toBeUndefined();
     expect(formattedDataSeries[0]?.data).toHaveLength(rows);
   });
 
@@ -959,7 +1010,7 @@ describe('Downsampling dense line series', () => {
     });
     const { formattedDataSeries } = domainsOf([logLine, linearLine, borrowingLine]);
     const borrowing = formattedDataSeries.find(({ specId }) => specId === 'borrowing');
-    expect(borrowing?.isDownsampled).toBeUndefined();
+    expect(borrowing?.rawValues).toBeUndefined();
     expect(borrowing?.data).toHaveLength(rows);
   });
 
@@ -1106,7 +1157,7 @@ describe('Downsampling dense line series', () => {
     it('downsamples both series', () => {
       const [downsampled] = charts();
       const { formattedDataSeries } = computeSeriesDomainsSelector(downsampled.getState());
-      expect(formattedDataSeries.map(({ isDownsampled }) => isDownsampled)).toEqual([true, true]);
+      expect(formattedDataSeries.map(({ rawValues }) => rawValues !== undefined)).toEqual([true, true]);
     });
 
     it('lists the same rows in the tooltip at every whole pixel as without downsampling', () => {

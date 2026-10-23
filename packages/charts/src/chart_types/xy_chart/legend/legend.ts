@@ -150,7 +150,7 @@ export function computeLegend(
 
     const pointStyle = getPointStyle(spec, theme);
 
-    const dataLacksLegendRows = series.isDownsampled && !summaryHasAllLegendValues;
+    const dataLacksLegendRows = series.rawValues !== undefined && !summaryHasAllLegendValues;
     const source = dataLacksLegendRows ? { ...series, data: toSeriesData(series.spec, series.spec.data) } : series;
     const legendValuesItems = getLegendValues(source, xDomain, legendValues, y1Accessor(series.stackMode), formatter);
 
