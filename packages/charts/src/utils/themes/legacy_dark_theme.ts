@@ -313,7 +313,7 @@ export const LEGACY_DARK_THEME: Theme = {
     emptySizeRatio: 0,
     fontFamily: 'Sans-Serif',
     minFontSize: 8,
-    maxFontSize: 64,
+    maxFontSize: 16,
     idealFontSizeJump: 1.05,
     maximizeFontSize: false,
     circlePadding: 2,

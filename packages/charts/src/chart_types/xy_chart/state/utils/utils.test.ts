@@ -9,13 +9,16 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable jest/no-conditional-expect */
 
+import { isVerticalRotation } from './common';
 import {
   computeSeriesDomains,
   computeXScaleOffset,
   isHistogramModeEnabled,
   setBarSeriesAccessors,
   getCustomSeriesColors,
+  computeChartTransform,
 } from './utils';
+import { LegendValue } from '../../../../common/legend';
 import { MockDataSeries } from '../../../../mocks/series/series';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
@@ -23,19 +26,28 @@ import { SeededDataGenerator } from '../../../../mocks/utils';
 import { MockXDomain, MockYDomain } from '../../../../mocks/xy/domains';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
+import { TooltipType } from '../../../../specs/constants';
 import type { Spec } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import { onExternalPointerEvent } from '../../../../state/actions/events';
+import { onPointerMove } from '../../../../state/actions/mouse';
+import { getInternalMainProjectionAreaSelector } from '../../../../state/selectors/get_internal_main_projection_area';
 import { ColorVariant } from '../../../../utils/common';
+import { CurveType } from '../../../../utils/curves';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
 import type { ContinuousDomain, Range } from '../../../../utils/domain';
 import type { SpecId } from '../../../../utils/ids';
+import { Logger } from '../../../../utils/logger';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { XYChartSeriesIdentifier } from '../../utils/series';
 import { getSeriesIndex } from '../../utils/series';
-import type { BasicSeriesSpec, SeriesColorAccessorFn } from '../../utils/specs';
+import type { AreaSeriesSpec, BasicSeriesSpec, LineSeriesSpec, SeriesColorAccessorFn } from '../../utils/specs';
 import { HistogramModeAlignments } from '../../utils/specs';
+import { computeLegendSelector } from '../selectors/compute_legend';
 import { computeSeriesDomainsSelector } from '../selectors/compute_series_domains';
 import { computeSeriesGeometriesSelector } from '../selectors/compute_series_geometries';
 import { getScaleConfigsFromSpecs } from '../selectors/get_api_scale_configs';
+import { getElementAtCursorPositionSelector } from '../selectors/get_elements_at_cursor_pos';
+import { getHighlightedTooltipTooltipValuesSelector } from '../selectors/get_tooltip_values_highlighted_geoms';
 
 function getGeometriesFromSpecs(specs: Spec[]) {
   const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
@@ -853,5 +865,356 @@ describe('Chart State utils', () => {
     seriesMap.set(bar2.id, bar2);
     setBarSeriesAccessors(isHistogramEnabled, seriesMap);
     expect(bar2.stackAccessors).toEqual(['y', 'bar']);
+  });
+});
+
+describe('Curves', () => {
+  it('draws a cardinal line with curve segments', () => {
+    const { geometries } = getGeometriesFromSpecs([
+      MockSeriesSpec.line({
+        curve: CurveType.CURVE_CARDINAL,
+        xAccessor: 'x',
+        yAccessors: ['y'],
+        data: [
+          { x: 0, y: 1 },
+          { x: 1, y: 3 },
+          { x: 2, y: 0 },
+          { x: 3, y: 2 },
+        ],
+      }),
+    ]);
+    expect(geometries.lines[0]!.value.line).toContain('C');
+  });
+});
+
+describe('Downsampling dense line series', () => {
+  const rows = 1000;
+  // null runs at both ends, which the summary keeps only the outermost rows of, and a null in the middle
+  const denseData = Array.from({ length: rows }, (_, x) => ({
+    x,
+    y:
+      x < 3 || x === 500 || x >= rows - 3
+        ? null
+        : 10 + 5 * Math.sin(x / 7) + (x === 123 ? 40 : 0) - (x === 777 ? 30 : 0),
+  }));
+  const ys = denseData.flatMap(({ y }) => (y === null ? [] : [y]));
+  const denseLine = (props: Partial<LineSeriesSpec> = {}) =>
+    MockSeriesSpec.line({
+      id: 'dense',
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      xScaleType: ScaleType.Linear,
+      yScaleType: ScaleType.Linear,
+      data: denseData,
+      ...props,
+    });
+  const domainsOf = (specs: BasicSeriesSpec[]) =>
+    computeSeriesDomains(specs, getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings()), [], {
+      locale: 'en-US',
+    });
+
+  it('warns once about the missing ys of all the rows, though the summary keeps some', () => {
+    const warn = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+    domainsOf([denseLine()]);
+    const calls = [...warn.mock.calls];
+    warn.mockRestore();
+    // the 3 nulls at either end and the one in the middle; the summary keeps the outermost null at either end
+    expect(calls).toEqual([['Found 7 non-numeric y values in dataset for spec "dense"', '(7: null)']]);
+  });
+
+  it('summarizes the series for layout without changing its domains', () => {
+    const downsampled = domainsOf([denseLine()]);
+    const full = domainsOf([denseLine({ pointStyleAccessor: () => null })]);
+    expect(downsampled.formattedDataSeries[0]?.rawValues).toBeDefined();
+    // the first and last rows with a y, the lowest and highest, and the rows at either end
+    expect(downsampled.formattedDataSeries[0]?.data.length).toBeLessThanOrEqual(6);
+    expect(full.formattedDataSeries[0]?.data).toHaveLength(rows);
+    expect(downsampled.xDomain).toEqual(full.xDomain);
+    expect(downsampled.yDomains).toEqual(full.yDomains);
+  });
+
+  it('keeps the min interval of all the x values, though they interleave across series', () => {
+    // a has the even x values and b the odd ones, so they are 1 apart together but 2 apart in either; c is never
+    // downsampled, and its x values are half way between theirs
+    const specs = (props: Partial<LineSeriesSpec> = {}) => [
+      denseLine({ id: 'a', data: denseData.filter(({ x }) => x % 2 === 0), ...props }),
+      denseLine({ id: 'b', data: denseData.filter(({ x }) => x % 2 === 1), ...props }),
+      denseLine({ id: 'c', data: [0.5, 300.5, 600.5].map((x) => ({ x, y: 1 })), pointStyleAccessor: () => null }),
+    ];
+    const downsampled = domainsOf(specs());
+    const full = domainsOf(specs({ pointStyleAccessor: () => null }));
+    expect(downsampled.formattedDataSeries.map(({ rawValues }) => rawValues !== undefined)).toEqual([
+      true,
+      true,
+      false,
+    ]);
+    expect(downsampled.xDomain).toEqual(full.xDomain);
+    expect(downsampled.xDomain.minInterval).toBe(0.5);
+  });
+
+  it('keeps the gaps that stacked series get at the x values of a downsampled series', () => {
+    // the stacked areas have every tenth x value, the dense line all of them
+    const areas = [1, 2].map((k) =>
+      MockSeriesSpec.area({
+        id: `stacked ${k}`,
+        xAccessor: 'x',
+        yAccessors: ['y'],
+        xScaleType: ScaleType.Linear,
+        yScaleType: ScaleType.Linear,
+        stackAccessors: ['x'],
+        data: Array.from({ length: rows / 10 }, (_, i) => ({ x: i * 10, y: k })),
+      }),
+    );
+    const downsampled = domainsOf([...areas, denseLine()]);
+    const full = domainsOf([...areas, denseLine({ pointStyleAccessor: () => null })]);
+    const stacked = ({ formattedDataSeries }: ReturnType<typeof domainsOf>) =>
+      formattedDataSeries.filter(({ isStacked }) => isStacked);
+    expect(downsampled.formattedDataSeries.find(({ specId }) => specId === 'dense')?.rawValues).toBeDefined();
+    expect(stacked(downsampled)).toEqual(stacked(full));
+    expect(downsampled.xDomain).toEqual(full.xDomain);
+  });
+
+  it('takes the first and last values from the rows at the ends of the x domain, even with a missing y', () => {
+    // the first x starts with a missing y, and the last x ends with one
+    const data = [{ x: 3, y: null }, ...denseData.slice(3, rows - 3), { x: rows - 4, y: null }];
+    const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    const settings = MockGlobalSpec.settings({ legendValues: [LegendValue.FirstValue, LegendValue.LastValue] });
+    MockStore.addSpecs([denseLine({ data }), settings], store);
+    expect(computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]?.rawValues).toBeDefined();
+    expect(computeLegendSelector(store.getState())[0]?.values.map(({ value }) => value)).toEqual([null, null]);
+  });
+
+  it('computes the legend values the summary lacks from every row', () => {
+    const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    MockStore.addSpecs([denseLine(), MockGlobalSpec.settings({ legendValues: [LegendValue.Average] })], store);
+    expect(computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]?.rawValues).toBeDefined();
+    expect(computeLegendSelector(store.getState())[0]?.values[0]?.value).toBe(
+      ys.reduce((sum, y) => sum + y) / ys.length,
+    );
+  });
+
+  it('keeps every row of a series whose curve can overshoot its points', () => {
+    const { formattedDataSeries } = domainsOf([denseLine({ curve: CurveType.CURVE_NATURAL })]);
+    expect(formattedDataSeries[0]?.rawValues).toBeUndefined();
+    expect(formattedDataSeries[0]?.data).toHaveLength(rows);
+  });
+
+  it('checks the y scale of the domain group the series is drawn on', () => {
+    const logLine = denseLine({ id: 'log', groupId: 'log', yScaleType: ScaleType.Log, data: [{ x: 0, y: 1 }] });
+    const linearLine = denseLine({ id: 'linear', groupId: 'shared', data: [{ x: 0, y: 1 }] });
+    const borrowingLine = denseLine({
+      id: 'borrowing',
+      groupId: 'shared',
+      useDefaultGroupDomain: 'log',
+      yScaleType: ScaleType.Log,
+    });
+    const { formattedDataSeries } = domainsOf([logLine, linearLine, borrowingLine]);
+    const borrowing = formattedDataSeries.find(({ specId }) => specId === 'borrowing');
+    expect(borrowing?.rawValues).toBeUndefined();
+    expect(borrowing?.data).toHaveLength(rows);
+  });
+
+  it('draws at most four points per pixel bin, keeping the extremes', () => {
+    const { geometries } = getGeometriesFromSpecs([denseLine()]);
+    const pointYs = geometries.lines[0]!.value.points.map(({ value }) => value.y);
+    expect(pointYs.length).toBeLessThanOrEqual(4 * 100);
+    expect(Math.min(...pointYs)).toBe(Math.min(...ys));
+    expect(Math.max(...pointYs)).toBe(Math.max(...ys));
+  });
+
+  it.each([0, 90, -90, 180] as const)('keeps the M4 rows of each canvas pixel along the x axis at %i°', (rotation) => {
+    const data = denseData.filter(({ y }) => y !== null);
+    const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    const chartMargins = { left: 3.3, top: 7.6, right: 0, bottom: 0 };
+    MockStore.addSpecs(
+      [denseLine({ data }), MockGlobalSpec.settingsNoMargins({ rotation, theme: { chartMargins } })],
+      store,
+    );
+    const { geometries, scales } = computeSeriesGeometriesSelector(store.getState());
+    const { panel, value } = geometries.lines[0]!;
+    // where the renderer puts each row along the x axis: the panel transform, then the rotation
+    const plotArea = getInternalMainProjectionAreaSelector(store.getState());
+    const transform = computeChartTransform(panel, rotation);
+    const radians = (rotation * Math.PI) / 180;
+    const canvasPixel = (x: number) => {
+      const gx = scales.xScale.scale(x) + value.points[0]!.transform.x;
+      return Math.floor(
+        isVerticalRotation(rotation)
+          ? plotArea.top + panel.top + transform.y + Math.round(Math.sin(radians)) * gx
+          : plotArea.left + panel.left + transform.x + Math.round(Math.cos(radians)) * gx,
+      );
+    };
+    // the first, lowest, highest and last row of each run of rows in the same canvas pixel
+    const expected = new Set<number>();
+    for (let start = 0, end = 0; start < data.length; start = end) {
+      while (end < data.length && canvasPixel(data[end]!.x) === canvasPixel(data[start]!.x)) end++;
+      const run = data.slice(start, end);
+      const ys = run.map(({ y }) => y!);
+      [run[0]!, run[ys.indexOf(Math.min(...ys))]!, run[ys.indexOf(Math.max(...ys))]!, run.at(-1)!].forEach(({ x }) =>
+        expected.add(x),
+      );
+    }
+    expect(value.points.map(({ value: { x } }) => x)).toEqual([...expected].sort((a, b) => a - b));
+  });
+
+  // the first and last point of each subpath of a drawn path
+  const subpathEnds = (path: string) =>
+    path
+      .split('M')
+      .slice(1)
+      .map((subpath) => {
+        const points = subpath.replace('Z', '').split('L');
+        return [points[0], points.at(-1)];
+      });
+
+  it('breaks the drawn line at the same gaps as without downsampling', () => {
+    const lineOf = (spec: LineSeriesSpec) => getGeometriesFromSpecs([spec]).geometries.lines[0]!.value.line;
+    const downsampled = subpathEnds(lineOf(denseLine()));
+    expect(downsampled).toHaveLength(2);
+    expect(downsampled).toEqual(subpathEnds(lineOf(denseLine({ pointStyleAccessor: () => null }))));
+  });
+
+  // two series over the same x values, whose different noise makes M4 keep different rows of each
+  const alignedLines = () => {
+    const data = denseData.filter(({ y }) => y !== null);
+    return [
+      denseLine({ id: 'a', data }),
+      denseLine({ id: 'b', data: data.map(({ x }) => ({ x, y: Math.sin(x * 1.7) })) }),
+    ];
+  };
+
+  it('lists every aligned series at the hovered x in the tooltip, though M4 keeps different rows of each', () => {
+    const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    const tooltip = MockGlobalSpec.tooltip({ type: TooltipType.VerticalCursor });
+    MockStore.addSpecs([...alignedLines(), MockGlobalSpec.settingsNoMargins(), tooltip], store);
+    // whole pixels, as pointer events report them
+    for (let x = 0; x < 100; x++) {
+      store.dispatch(onPointerMove({ position: { x, y: 50 }, time: x }));
+      const { values } = getHighlightedTooltipTooltipValuesSelector(store.getState()).tooltip;
+      expect(values.map(({ seriesIdentifier: { specId } }) => specId).sort()).toEqual(['a', 'b']);
+      expect(new Set(values.map(({ datum }) => datum.x)).size).toBe(1);
+    }
+  });
+
+  it('finds the rows of every series at the x of a synced cursor, though M4 drops that x from some', () => {
+    const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    const lines = alignedLines();
+    MockStore.addSpecs([...lines, MockGlobalSpec.settingsNoMargins()], store);
+    for (const { x } of lines[0]!.data) {
+      store.dispatch(
+        onExternalPointerEvent({
+          chartId: 'another chart',
+          type: 'Over',
+          scale: ScaleType.Linear,
+          unit: undefined,
+          x,
+          y: [],
+          smVerticalValue: null,
+          smHorizontalValue: null,
+        }),
+      );
+      const found = getElementAtCursorPositionSelector(store.getState());
+      expect(found.map(({ seriesIdentifier: { specId } }) => specId).sort()).toEqual(['a', 'b']);
+      expect(found.every(({ value }) => value.x === x)).toBe(true);
+    }
+  });
+
+  describe('series whose x values only partly coincide, with gaps, nulls, isolated points and repeated x values', () => {
+    const xs = Array.from({ length: rows }, (_, x) => x);
+    // a lacks the first x of the pixel bins from 400 to 600, has two rows at each x from 850 to 870, its nulls run
+    // across the bin boundary at 510, and its row at 700 is isolated
+    const a = xs
+      .filter((x) => !(x >= 400 && x < 600 && x % 10 === 0))
+      .flatMap((x) => {
+        const isNull = (x >= 200 && x <= 260) || (x >= 503 && x <= 517) || x % 97 === 0 || (x > 690 && x < 710);
+        const y = isNull && x !== 700 ? null : Math.sin(x * 1.3);
+        return x >= 850 && x < 870
+          ? [
+              { x, y },
+              { x, y: y === null ? null : y + 1 },
+            ]
+          : [{ x, y }];
+      });
+    // b has only every other x from 600 to 800, shares a's nulls from 503 to 517, overlaps its nulls from 200 to 260,
+    // and its row at 704, in the pixel bin of a's row at 700, is isolated
+    const b = xs
+      .filter((x) => !(x >= 600 && x < 800 && x % 2 === 1))
+      .map((x) => {
+        const isNull = (x >= 250 && x <= 330) || (x >= 503 && x <= 517) || x % 89 === 0 || (x > 694 && x < 714);
+        return { x, y: isNull && x !== 704 ? null : Math.cos(x * 1.7) };
+      });
+    type Store = ReturnType<typeof MockStore.default>;
+    // the same chart, downsampled and not: a point style accessor turns downsampling off
+    const charts = () =>
+      [{}, { pointStyleAccessor: () => null }].map((props) => {
+        const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+        const tooltip = MockGlobalSpec.tooltip({ type: TooltipType.VerticalCursor, showNullValues: true });
+        const lines = [denseLine({ id: 'a', data: a, ...props }), denseLine({ id: 'b', data: b, ...props })];
+        MockStore.addSpecs([...lines, MockGlobalSpec.settingsNoMargins(), tooltip], store);
+        return store;
+      }) as [Store, Store];
+
+    it('downsamples both series', () => {
+      const [downsampled] = charts();
+      const { formattedDataSeries } = computeSeriesDomainsSelector(downsampled.getState());
+      expect(formattedDataSeries.map(({ rawValues }) => rawValues !== undefined)).toEqual([true, true]);
+    });
+
+    it('lists the same rows in the tooltip at every whole pixel as without downsampling', () => {
+      const [downsampled, full] = charts();
+      const tooltipAt = (store: Store, x: number) => {
+        store.dispatch(onPointerMove({ position: { x, y: 50 }, time: x }));
+        return getHighlightedTooltipTooltipValuesSelector(store.getState()).tooltip.values;
+      };
+      for (let x = 0; x < 100; x++) {
+        const values = tooltipAt(downsampled, x);
+        expect(values.length).toBeGreaterThan(0);
+        expect(values).toEqual(tooltipAt(full, x));
+      }
+    });
+
+    it('finds the same rows at every x of a synced cursor as without downsampling', () => {
+      const [downsampled, full] = charts();
+      const foundAt = (store: Store, x: number) => {
+        store.dispatch(
+          onExternalPointerEvent({
+            chartId: 'another chart',
+            type: 'Over',
+            scale: ScaleType.Linear,
+            unit: undefined,
+            x,
+            y: [],
+            smVerticalValue: null,
+            smHorizontalValue: null,
+          }),
+        );
+        return getElementAtCursorPositionSelector(store.getState());
+      };
+      for (const x of new Set([...a, ...b].map((row) => row.x))) {
+        expect(foundAt(downsampled, x)).toEqual(foundAt(full, x));
+      }
+    });
+  });
+
+  it('reduces a dense area, keeping its gaps and its zero baseline', () => {
+    const denseArea = (props: Partial<AreaSeriesSpec> = {}) =>
+      MockSeriesSpec.area({
+        id: 'dense',
+        xAccessor: 'x',
+        yAccessors: ['y'],
+        xScaleType: ScaleType.Linear,
+        yScaleType: ScaleType.Linear,
+        data: denseData,
+        ...props,
+      });
+    const areaOf = (spec: AreaSeriesSpec) => getGeometriesFromSpecs([spec]).geometries.areas[0]!.value;
+    const downsampled = areaOf(denseArea());
+    const full = areaOf(denseArea({ pointStyleAccessor: () => null }));
+    expect(downsampled.points.length).toBeLessThanOrEqual(4 * 100);
+    expect(downsampled.points.length).toBeLessThan(full.points.length);
+    // each subpath of the fill runs along the values and back along the zero baseline
+    expect(subpathEnds(downsampled.area)).toHaveLength(2);
+    expect(subpathEnds(downsampled.area)).toEqual(subpathEnds(full.area));
+    expect(downsampled.lines.map(subpathEnds)).toEqual(full.lines.map(subpathEnds));
   });
 });
