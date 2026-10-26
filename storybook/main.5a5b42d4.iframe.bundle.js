@@ -8127,7 +8127,7 @@ Object.defineProperty(exports, "basic", ({ enumerable: true, get: function () { 
  * Side Public License, v 1.
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.fitInheritStyle = exports.areaWithGradient = exports.dimmedHighlightStyle = exports.highlighterStyle = exports.mixedPointShapes = exports.textureMultipleSeries = exports.withTexture = exports.darkTheme = exports.partitionLabels = exports.partitionBackground = exports.areaSeriesColorVariant = exports.lineSeriesColorVariant = exports.barSeriesColorVariant = exports.styleAccessorOverrides = exports.tickLabelPaddingBothPropAndTheme = exports.customSeriesNameFormatting = exports.customSeriesNameConfig = exports.customSeriesName = exports.customSeriesStylesArea = exports.customSeriesStylesLines = exports.customSeriesStylesBars = exports.customSeriesColorsViaAccessorFunction = exports.customSeriesColorsViaColorsArray = exports.multipleCustomPartialThemes = exports.partialCustomThemeWithBaseTheme = exports.partialCustomTheme = exports.themeStyling = exports.axis = exports.marginsAndPaddings = exports.chartSize = void 0;
+exports.dimmedPointStroke = exports.fitInheritStyle = exports.areaWithGradient = exports.dimmedHighlightStyle = exports.highlighterStyle = exports.mixedPointShapes = exports.textureMultipleSeries = exports.withTexture = exports.darkTheme = exports.partitionLabels = exports.partitionBackground = exports.areaSeriesColorVariant = exports.lineSeriesColorVariant = exports.barSeriesColorVariant = exports.styleAccessorOverrides = exports.tickLabelPaddingBothPropAndTheme = exports.customSeriesNameFormatting = exports.customSeriesNameConfig = exports.customSeriesName = exports.customSeriesStylesArea = exports.customSeriesStylesLines = exports.customSeriesStylesBars = exports.customSeriesColorsViaAccessorFunction = exports.customSeriesColorsViaColorsArray = exports.multipleCustomPartialThemes = exports.partialCustomThemeWithBaseTheme = exports.partialCustomTheme = exports.themeStyling = exports.axis = exports.marginsAndPaddings = exports.chartSize = void 0;
 exports["default"] = {
     title: 'Stylings',
 };
@@ -8191,6 +8191,8 @@ var _28_area_gradient_story_1 = __webpack_require__(/*! ./28_area_gradient.story
 Object.defineProperty(exports, "areaWithGradient", ({ enumerable: true, get: function () { return _28_area_gradient_story_1.Example; } }));
 var _29_fit_inherit_style_story_1 = __webpack_require__(/*! ./29_fit_inherit_style.story */ "./stories/stylings/29_fit_inherit_style.story.tsx");
 Object.defineProperty(exports, "fitInheritStyle", ({ enumerable: true, get: function () { return _29_fit_inherit_style_story_1.Example; } }));
+var _30_dimmed_point_stroke_story_1 = __webpack_require__(/*! ./30_dimmed_point_stroke.story */ "./stories/stylings/30_dimmed_point_stroke.story.tsx");
+Object.defineProperty(exports, "dimmedPointStroke", ({ enumerable: true, get: function () { return _30_dimmed_point_stroke_story_1.Example; } }));
 
 
 /***/ },
@@ -33690,6 +33692,65 @@ const Example = (_, { title, description }) => {
 };
 exports.Example = Example;
 exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const theme: PartialTheme = {\n    chartMargins: {\n      left: range('margin left', 0, 50, 10),\n      right: range('margin right', 0, 50, 10),\n      top: range('margin top', 0, 50, 10),\n      bottom: range('margin bottom', 0, 50, 10),\n    },\n    chartPaddings: {\n      left: range('padding left', 0, 50, 10),\n      right: range('padding right', 0, 50, 10),\n      top: range('padding top', 0, 50, 10),\n      bottom: range('padding bottom', 0, 50, 10),\n    },\n    scales: {\n      barsPadding: range('bar padding', 0, 1, 0.1, undefined, 0.01),\n    },\n  };\n  const withLeftTitle = boolean('left axis with title', true);\n  const withBottomTitle = boolean('bottom axis with title', true);\n  const withRightTitle = boolean('right axis with title', true);\n  const withTopTitle = boolean('top axis with title', true);\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        theme={theme}\n        baseTheme={useBaseTheme()}\n        debug={boolean('debug', true)}\n        showLegend\n        legendValues={[LegendValue.CurrentAndLastValue]}\n        legendPosition={Position.Right}\n      />\n      <Axis\n        id=\"bottom\"\n        position={Position.Bottom}\n        title={withBottomTitle ? 'Bottom axis' : undefined}\n        showOverlappingTicks\n        gridLine={{\n          visible: boolean('show bottom axis grid lines', false),\n        }}\n      />\n      <Axis\n        id=\"left2\"\n        title={withLeftTitle ? 'Left axis' : undefined}\n        position={Position.Left}\n        tickFormat={(d) => Number(d).toFixed(2)}\n        gridLine={{\n          visible: boolean('show left axis grid lines', false),\n        }}\n      />\n      <Axis\n        id=\"top\"\n        position={Position.Top}\n        title={withTopTitle ? 'Top axis' : undefined}\n        showOverlappingTicks\n        gridLine={{\n          visible: boolean('show top axis grid lines', false),\n        }}\n      />\n      <Axis\n        id=\"right\"\n        title={withRightTitle ? 'Right axis' : undefined}\n        position={Position.Right}\n        tickFormat={(d) => Number(d).toFixed(2)}\n        gridLine={{\n          visible: boolean('show right axis grid lines', false),\n        }}\n      />\n      <BarSeries\n        id=\"bars\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor=\"x\"\n        yAccessors={['y']}\n        data={[\n          { x: 0, y: 2 },\n          { x: 1, y: 7 },\n          { x: 2, y: 3 },\n          { x: 3, y: 6 },\n        ]}\n      />\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
+
+
+/***/ },
+
+/***/ "./stories/stylings/30_dimmed_point_stroke.story.tsx"
+/*!***********************************************************!*\
+  !*** ./stories/stylings/30_dimmed_point_stroke.story.tsx ***!
+  \***********************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Example = void 0;
+/* eslint-disable */
+// @ts-nocheck
+// @ts-ignore
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport { select } from '@storybook/addon-knobs';\nimport React from 'react';\n\nimport { AreaSeries, Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\n\nconst data = [\n  { x: 0, y: 2, series: 'First' },\n  { x: 1, y: 5, series: 'First' },\n  { x: 2, y: 3, series: 'First' },\n  { x: 0, y: 6, series: 'Second' },\n  { x: 1, y: 8, series: 'Second' },\n  { x: 2, y: 7, series: 'Second' },\n];\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const chartType = select('Chart type', { Line: 'line', Area: 'area' }, 'line');\n  const Series = chartType === 'line' ? LineSeries : AreaSeries;\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        baseTheme={useBaseTheme()}\n        theme={{\n          lineSeriesStyle: { point: { visible: 'always' } },\n          areaSeriesStyle: { point: { visible: 'always' } },\n        }}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} />\n      <Series\n        id=\"values\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor=\"x\"\n        yAccessors={['y']}\n        splitSeriesAccessors={['series']}\n        data={data}\n      />\n    </Chart>\n  );\n};\n\nExample.parameters = {\n  markdown:\n    'Hover either legend item. Dimmed point outlines use the same color as their connecting lines, while keeping their opaque fills. Compare line and area charts in light and dark themes.',\n};\n";
+// @ts-ignore
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 26 }, "endLoc": { "col": 1, "line": 53 }, "startBody": { "col": 36, "line": 26 }, "endBody": { "col": 1, "line": 53 } } };
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+const addon_knobs_1 = __webpack_require__(/*! @storybook/addon-knobs */ "../node_modules/@storybook/addon-knobs/dist/index.js");
+const react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
+const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
+const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
+const data = [
+    { x: 0, y: 2, series: 'First' },
+    { x: 1, y: 5, series: 'First' },
+    { x: 2, y: 3, series: 'First' },
+    { x: 0, y: 6, series: 'Second' },
+    { x: 1, y: 8, series: 'Second' },
+    { x: 2, y: 7, series: 'Second' },
+];
+const Example = (_, { title, description }) => {
+    const chartType = (0, addon_knobs_1.select)('Chart type', { Line: 'line', Area: 'area' }, 'line');
+    const Series = chartType === 'line' ? charts_1.LineSeries : charts_1.AreaSeries;
+    return (react_1.default.createElement(charts_1.Chart, { title: title, description: description },
+        react_1.default.createElement(charts_1.Settings, { showLegend: true, legendPosition: charts_1.Position.Right, baseTheme: (0, use_base_theme_1.useBaseTheme)(), theme: {
+                lineSeriesStyle: { point: { visible: 'always' } },
+                areaSeriesStyle: { point: { visible: 'always' } },
+            } }),
+        react_1.default.createElement(charts_1.Axis, { id: "x", position: charts_1.Position.Bottom }),
+        react_1.default.createElement(charts_1.Axis, { id: "y", position: charts_1.Position.Left }),
+        react_1.default.createElement(Series, { id: "values", xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: "x", yAccessors: ['y'], splitSeriesAccessors: ['series'], data: data })));
+};
+exports.Example = Example;
+exports.Example.parameters = {
+    markdown: 'Hover either legend item. Dimmed point outlines use the same color as their connecting lines, while keeping their opaque fills. Compare line and area charts in light and dark themes.',
+};
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const chartType = select('Chart type', { Line: 'line', Area: 'area' }, 'line');\n  const Series = chartType === 'line' ? LineSeries : AreaSeries;\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        baseTheme={useBaseTheme()}\n        theme={{\n          lineSeriesStyle: { point: { visible: 'always' } },\n          areaSeriesStyle: { point: { visible: 'always' } },\n        }}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} />\n      <Series\n        id=\"values\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor=\"x\"\n        yAccessors={['y']}\n        splitSeriesAccessors={['series']}\n        data={data}\n      />\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -100351,11 +100412,11 @@ exports.SEVERITY_COLORS = {
 /** @internal */
 exports.LIGHT_DIMMED_COLORS = {
     lineStroke: exports.SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
-    linePointStroke: exports.SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
+    linePointStroke: exports.SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
     linePointFill: exports.SEMANTIC_COLORS.plainLight,
     areaFill: exports.SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
     areaStroke: exports.SEMANTIC_ALPHA_COLORS.shade30RGBAlpha50,
-    areaPointStroke: exports.SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
+    areaPointStroke: exports.SEMANTIC_ALPHA_COLORS.shade30RGBAlpha50,
     areaPointFill: exports.SEMANTIC_COLORS.plainLight,
     barFill: exports.SEMANTIC_COLORS.shade15,
     partitionFill: exports.SEMANTIC_COLORS.shade15,
@@ -100363,11 +100424,11 @@ exports.LIGHT_DIMMED_COLORS = {
 /** @internal */
 exports.DARK_DIMMED_COLORS = {
     lineStroke: exports.SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
-    linePointStroke: exports.SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
+    linePointStroke: exports.SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
     linePointFill: exports.SEMANTIC_COLORS.shade145,
     areaFill: exports.SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
     areaStroke: exports.SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
-    areaPointStroke: exports.SEMANTIC_ALPHA_COLORS.shade60RGBAlpha15,
+    areaPointStroke: exports.SEMANTIC_ALPHA_COLORS.shade60RGBAlpha35,
     areaPointFill: exports.SEMANTIC_COLORS.shade145,
     barFill: exports.SEMANTIC_COLORS.shade110,
     partitionFill: exports.SEMANTIC_COLORS.shade110,
@@ -109470,6 +109531,7 @@ const map = {
 	"./stylings/28_area_gradient.story.tsx": "./stories/stylings/28_area_gradient.story.tsx",
 	"./stylings/29_fit_inherit_style.story.tsx": "./stories/stylings/29_fit_inherit_style.story.tsx",
 	"./stylings/2_margins.story.tsx": "./stories/stylings/2_margins.story.tsx",
+	"./stylings/30_dimmed_point_stroke.story.tsx": "./stories/stylings/30_dimmed_point_stroke.story.tsx",
 	"./stylings/3_axis.story.tsx": "./stories/stylings/3_axis.story.tsx",
 	"./stylings/4_theme_styling.story.tsx": "./stories/stylings/4_theme_styling.story.tsx",
 	"./stylings/5_partial_custom_theme.story.tsx": "./stories/stylings/5_partial_custom_theme.story.tsx",
@@ -109783,4 +109845,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.c9867bbe.iframe.bundle.js.map
+//# sourceMappingURL=main.5a5b42d4.iframe.bundle.js.map
