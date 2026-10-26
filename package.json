@@ -178,6 +178,7 @@
   },
   "dependencies": {},
   "resolutions": {
-    "**/d3-color": "npm:@elastic/kibana-d3-color@2.0.1"
+    "**/d3-color": "npm:@elastic/kibana-d3-color@2.0.1",
+    "**/@storybook/addon-knobs/react-select": "4.3.1"
   }
 }
