@@ -69,15 +69,15 @@ function getPanelValue(
   pointer: Point,
   spec: BulletSpec,
 ): Pick<ActiveValueDetails, 'value' | 'snapValue' | 'color' | 'pixelValue'> | undefined {
-  const { graphArea, scale } = panel;
+  const { graphArea, scale, subtype } = panel;
   const [min, max] = sortNumbers(scale.domain()) as ContinuousDomain;
   const isWithinDomain = isBetween(min, max);
 
-  switch (spec.subtype) {
+  switch (subtype) {
     case BulletSubtype.circle:
     case BulletSubtype.halfCircle:
     case BulletSubtype.twoThirdsCircle: {
-      const { radius } = getAngledChartSizing(graphArea.size, spec.subtype);
+      const { radius } = getAngledChartSizing(graphArea.size, subtype);
       const center = {
         x: graphArea.center.x,
         y: radius + TARGET_SIZE / 2,
