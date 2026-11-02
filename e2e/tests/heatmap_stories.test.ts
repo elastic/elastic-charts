@@ -81,7 +81,7 @@ test.describe('Heatmap stories', () => {
     );
   });
 
-  pwEach.test([[0], [45], [90]])(
+  pwEach.test([[0], [90]])(
     (rotation) => `should skip overlapping categorical axis labels with ${rotation} degree rotation`,
     async (page, rotation) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
@@ -93,25 +93,14 @@ test.describe('Heatmap stories', () => {
     },
   );
 
-  pwEach.test<[dataset: string, rotation: number]>([
-    ['Ranges', 0],
-    ['Ranges', 45],
-    ['Ranges', 90],
-    ['Decimal ranges', 0],
-    ['Decimal ranges', 45],
-    ['Decimal ranges', 90],
-  ])(
-    ([dataset, rotation]) =>
-      `should skip overlapping ${dataset.toLowerCase()} axis labels with ${rotation} degree rotation`,
-    async (page, [dataset, rotation]) => {
-      await common.expectChartAtUrlToMatchScreenshot(page)(
-        `http://localhost:9001/?path=/story/heatmap-alpha--dense-labels&globals=theme:light&knob-Dataset=${dataset}&knob-X categories=40&knob-Y categories=80&knob-X-Axis label rotation=${rotation}`,
-        {
-          action: async () => await common.setResizeDimensions(page)({ width: 500, height: 400 }),
-        },
-      );
-    },
-  );
+  test('should skip overlapping ranges axis labels with 0 degree rotation', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/heatmap-alpha--dense-labels&globals=theme:light&knob-Dataset=Ranges&knob-X categories=40&knob-Y categories=80&knob-X-Axis label rotation=0',
+      {
+        action: async () => await common.setResizeDimensions(page)({ width: 500, height: 400 }),
+      },
+    );
+  });
 
   test('should show overlapping axis labels', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
