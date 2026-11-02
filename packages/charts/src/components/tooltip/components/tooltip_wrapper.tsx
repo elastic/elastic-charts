@@ -8,7 +8,7 @@
 
 import classNames from 'classnames';
 import type { AriaRole, PropsWithChildren } from 'react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { TooltipActions } from './tooltip_actions';
 import { TooltipPrompt } from './tooltip_prompt';
@@ -45,26 +45,33 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   actionsLoading,
   noActionsLoaded,
 }: TooltipWrapperProps<D, SI>) => {
-  const { dir, pinned, canPinTooltip, selected, theme, actionable } = useTooltipContext<D, SI>();
+  const { dir, pinned, canPinTooltip, selected, values, theme, actionable } = useTooltipContext<D, SI>();
 
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const unpinnedWidth = useRef(0);
   const [minWidth, setMinWidth] = useState(0);
 
   useEffect(() => {
-    // Capture initial unpinned tooltip width
-    window.requestAnimationFrame(() => {
+    // Capture the unpinned tooltip width every time its content changes
+    if (pinned) return;
+    const frame = window.requestAnimationFrame(() => {
       if (tooltipRef.current) {
-        const { width } = tooltipRef.current.getBoundingClientRect();
-        setMinWidth(width);
+        unpinnedWidth.current = tooltipRef.current.getBoundingClientRect().width;
       }
     });
-  }, []);
+    return () => window.cancelAnimationFrame(frame);
+  }, [pinned, values]);
+
+  useLayoutEffect(() => {
+    // Prevent the tooltip from shrinking when pinned, without constraining the unpinned tooltip
+    setMinWidth(pinned ? unpinnedWidth.current : 0);
+  }, [pinned]);
 
   useEffect(() => {
     // Capture pinned tooltip with on change
     if (pinned && tooltipRef.current && typeof theme.maxWidth === 'number' && minWidth < theme.maxWidth) {
       const { width } = tooltipRef.current.getBoundingClientRect();
-      if (width > minWidth) setMinWidth(width);
+      if (width > minWidth) setMinWidth((prev) => Math.max(prev, width));
     }
   }, [selected, pinned, minWidth, theme.maxWidth]);
 
@@ -76,7 +83,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
       data-testid="echTooltip"
       dir={dir}
       ref={tooltipRef}
-      style={{ minWidth }}
+      style={{ minWidth: pinned ? minWidth : undefined }}
       onClick={(e) => e.stopPropagation()} // block propagation of tooltip click
       onKeyPress={(e) => e.stopPropagation()} // block propagation of tooltip click
     >

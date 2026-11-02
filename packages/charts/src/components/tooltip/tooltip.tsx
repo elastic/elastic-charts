@@ -231,7 +231,6 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     return null;
   }
 
-  const hideActions = (info?.disableActions ?? false) || info?.values.every((v) => v.displayOnly);
   const actionable = actions.length > 0 || !Array.isArray(actions);
   // divider visibility
   const hasHeader = TooltipCustomHeader !== 'none' && info.header;
@@ -283,7 +282,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
             />
           ) : (
             <TooltipWrapper
-              actions={hideActions || !canPinTooltip ? [] : actions}
+              actions={info.disableActions || !canPinTooltip ? [] : actions}
               actionPrompt={actionPrompt}
               pinningPrompt={pinningPrompt}
               selectionPrompt={selectionPrompt}
@@ -390,19 +389,20 @@ const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
       };
 };
 
-const mapStateToProps = (state: GlobalChartState): TooltipStateProps =>
-  getInternalIsInitializedSelector(state) !== InitStatus.Initialized
-    ? HIDDEN_TOOLTIP_PROPS
-    : {
-        ...mapStateToPropsBasic(state),
-        visible: getInternalIsTooltipVisibleSelector(state).visible,
-        position: getInternalTooltipAnchorPositionSelector(state),
-        info: getInternalTooltipInfoSelector(state),
-        pinned: state.interactions.tooltip.pinned,
-        selected: getTooltipSelectedItems(state),
-        canPinTooltip: isPinnableTooltip(state),
-        isBrushing: isBrushingSelector(state),
-      };
+const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
+  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return HIDDEN_TOOLTIP_PROPS;
+  const { visible, isPinnable, displayOnly } = getInternalIsTooltipVisibleSelector(state);
+  return {
+    ...mapStateToPropsBasic(state),
+    visible,
+    position: getInternalTooltipAnchorPositionSelector(state),
+    info: getInternalTooltipInfoSelector(state),
+    pinned: state.interactions.tooltip.pinned,
+    selected: getTooltipSelectedItems(state),
+    canPinTooltip: isPinnableTooltip(state) && isPinnable && !displayOnly,
+    isBrushing: isBrushingSelector(state),
+  };
+};
 
 /** @internal */
 export const Tooltip = memo(connect(mapStateToProps, mapDispatchToProps)(TooltipComponent));
