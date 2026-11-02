@@ -161,6 +161,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     xAxis: { width: 0, height: 0, left: 0, top: 0 },
     yAxis: { width: 0, height: 0, left: 0, top: 0 },
     xAxisTickCadence: 1,
+    yAxisTickCadence: 1,
     xLabelRotation: 0,
   },
   debug: false,

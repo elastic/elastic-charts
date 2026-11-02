@@ -117,19 +117,21 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
             };
             const { padding } = theme.yAxisLabel;
             const horizontalPadding = horizontalPad(padding);
-            yValues.forEach(({ x, y, text }) => {
-              const textLines = wrapLines(
-                ctx,
-                text,
-                font,
-                theme.yAxisLabel.fontSize,
-                Math.max(elementSizes.yAxis.width - horizontalPadding, 0),
-                theme.yAxisLabel.fontSize,
-                { shouldAddEllipsis: true, wrapAtWord: false },
-              ).lines;
-              // TODO improve the `wrapLines` code to handle results with short width
-              if (textLines[0]) renderText(ctx, { x, y }, textLines[0], font);
-            });
+            yValues
+              .filter(({ visible }) => visible)
+              .forEach(({ x, y, text }) => {
+                const textLines = wrapLines(
+                  ctx,
+                  text,
+                  font,
+                  theme.yAxisLabel.fontSize,
+                  Math.max(elementSizes.yAxis.width - horizontalPadding, 0),
+                  theme.yAxisLabel.fontSize,
+                  { shouldAddEllipsis: true, wrapAtWord: false },
+                ).lines;
+                // TODO improve the `wrapLines` code to handle results with short width
+                if (textLines[0]) renderText(ctx, { x, y }, textLines[0], font);
+              });
           });
         });
       },
@@ -142,7 +144,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
           withContext(ctx, () => {
             ctx.translate(x, y + elementSizes.xAxis.top);
             xValues
-              .filter((_, i) => i % elementSizes.xAxisTickCadence === 0)
+              .filter(({ visible }) => visible)
               .forEach(({ x, y, text, align }) => {
                 const textLines = wrapLines(
                   ctx,

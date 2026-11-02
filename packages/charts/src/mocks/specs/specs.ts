@@ -209,8 +209,10 @@ export class MockSeriesSpec {
     yAxisTitle: '',
     xAxisLabelName: 'X Value',
     xAxisLabelFormatter: String,
+    xAxisShowOverlappingLabels: true,
     yAxisLabelName: 'Y Value',
     yAxisLabelFormatter: String,
+    yAxisShowOverlappingLabels: true,
   };
 
   static bar(partial?: Partial<BarSeriesSpec>): BarSeriesSpec {

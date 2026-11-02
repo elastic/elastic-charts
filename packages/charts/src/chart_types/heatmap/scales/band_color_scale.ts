@@ -13,7 +13,12 @@ import type { ValueFormatter } from '../../../utils/common';
 import { isFiniteNumber, safeFormat } from '../../../utils/common';
 import type { ColorBand, HeatmapBandsColorScale } from '../specs/heatmap';
 
-function defaultColorBandFormatter(valueFormatter?: ValueFormatter) {
+/**
+ * Returns a formatter for `[start, end)` ranges, e.g. `0 - 250`, `< 250` or `≥ 750` for open ranges.
+ * @param valueFormatter - formats the start and end values
+ * @public
+ */
+export function defaultColorBandFormatter(valueFormatter?: ValueFormatter) {
   return (startValue: number, endValue: number) => {
     const finiteStart = Number.isFinite(startValue);
     const finiteEnd = Number.isFinite(endValue);

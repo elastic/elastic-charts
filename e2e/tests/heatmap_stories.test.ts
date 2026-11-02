@@ -81,6 +81,47 @@ test.describe('Heatmap stories', () => {
     );
   });
 
+  pwEach.test([[0], [45], [90]])(
+    (rotation) => `should skip overlapping categorical axis labels with ${rotation} degree rotation`,
+    async (page, rotation) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/heatmap-alpha--dense-labels&globals=theme:light&knob-X categories=40&knob-Y categories=80&knob-X-Axis label rotation=${rotation}`,
+        {
+          action: async () => await common.setResizeDimensions(page)({ width: 500, height: 400 }),
+        },
+      );
+    },
+  );
+
+  pwEach.test([
+    ['Ranges', 0],
+    ['Ranges', 45],
+    ['Ranges', 90],
+    ['Decimal ranges', 0],
+    ['Decimal ranges', 45],
+    ['Decimal ranges', 90],
+  ])(
+    ([dataset, rotation]) =>
+      `should skip overlapping ${dataset.toLowerCase()} axis labels with ${rotation} degree rotation`,
+    async (page, [dataset, rotation]) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/heatmap-alpha--dense-labels&globals=theme:light&knob-Dataset=${dataset}&knob-X categories=40&knob-Y categories=80&knob-X-Axis label rotation=${rotation}`,
+        {
+          action: async () => await common.setResizeDimensions(page)({ width: 500, height: 400 }),
+        },
+      );
+    },
+  );
+
+  test('should show overlapping axis labels', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/heatmap-alpha--dense-labels&globals=theme:light&knob-X categories=40&knob-Y categories=80&knob-X-Axis show overlapping labels=true&knob-Y-Axis show overlapping labels=true',
+      {
+        action: async () => await common.setResizeDimensions(page)({ width: 500, height: 400 }),
+      },
+    );
+  });
+
   test('render table with all nulls', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/heatmap-alpha--sorting&globals=theme:light&knob-Fill gaps with nulls=true&knob-Fill everything with nulls=true&knob-X sorting predicate=dataIndex&knob-Y sorting predicate=dataIndex',

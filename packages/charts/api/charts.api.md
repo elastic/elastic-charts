@@ -1104,6 +1104,9 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec;
 // @public (undocumented)
 export const DEFAULT_TOOLTIP_SPEC: TooltipSpec;
 
+// @public
+export function defaultColorBandFormatter(valueFormatter?: ValueFormatter): (startValue: number, endValue: number) => string;
+
 // @public (undocumented)
 export function defaultPartitionValueFormatter(d: number): string;
 
@@ -1627,6 +1630,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     xAxisLabelFormatter: LabelAccessor<string | number>;
     // (undocumented)
     xAxisLabelName: string;
+    xAxisShowOverlappingLabels: boolean;
     // (undocumented)
     xAxisTitle: string;
     // (undocumented)
@@ -1639,6 +1643,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     yAxisLabelFormatter: LabelAccessor<string | number>;
     // (undocumented)
     yAxisLabelName: string;
+    yAxisShowOverlappingLabels: boolean;
     // (undocumented)
     yAxisTitle: string;
     // (undocumented)

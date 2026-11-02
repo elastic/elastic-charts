@@ -8,17 +8,22 @@
 
 import { computeAxesSizesSelector } from './compute_axes_sizes';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
+import { getHeatmapTableSelector } from './get_heatmap_table';
 import { getPanelSize } from '../../../../common/panel_utils';
+import { getLabelsCadence } from '../../../../solvers/label_overlaps';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import type { Dimensions } from '../../../../utils/dimensions';
+import { getYAxisLabelSpans } from '../utils/axis';
 
 /** @internal */
 export type ChartElementSizes = {
   yAxis: Dimensions;
   xAxis: Dimensions;
   xAxisTickCadence: number;
+  yAxisTickCadence: number;
   xLabelRotation: number;
 };
 
@@ -27,8 +32,22 @@ export type ChartElementSizes = {
  * @internal
  */
 export const computeChartElementSizesSelector = createCustomCachedSelector(
-  [computeChartDimensionsSelector, computeAxesSizesSelector, getChartThemeSelector, computeSmallMultipleScalesSelector],
-  ({ chartDimensions }, axesSizes, { heatmap }, smScales): ChartElementSizes => {
+  [
+    computeChartDimensionsSelector,
+    computeAxesSizesSelector,
+    getChartThemeSelector,
+    computeSmallMultipleScalesSelector,
+    getHeatmapTableSelector,
+    getHeatmapSpecSelector,
+  ],
+  (
+    { chartDimensions },
+    axesSizes,
+    { heatmap },
+    smScales,
+    { yValues },
+    { yAxisShowOverlappingLabels },
+  ): ChartElementSizes => {
     const panelHeight = getPanelSize(smScales).height;
     const grid: Dimensions = {
       width: axesSizes.xAxis.width,
@@ -55,6 +74,9 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
       yAxis,
       xAxis,
       xAxisTickCadence: axesSizes.xAxis.tickCadence,
+      yAxisTickCadence: yAxisShowOverlappingLabels
+        ? 1
+        : getLabelsCadence(getYAxisLabelSpans(heatmap.yAxisLabel, panelHeight, yValues.length)),
       xLabelRotation: axesSizes.xAxis.minRotation,
     };
   },

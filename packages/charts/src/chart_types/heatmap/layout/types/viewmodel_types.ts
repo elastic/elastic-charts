@@ -45,6 +45,8 @@ export interface TextBox extends Box {
   x: number;
   y: number;
   align: TextAlign;
+  /** false if the label is hidden to avoid overlapping with the other labels */
+  visible: boolean;
 }
 
 /** @internal */
