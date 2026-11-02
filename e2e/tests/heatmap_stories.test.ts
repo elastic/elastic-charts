@@ -93,7 +93,7 @@ test.describe('Heatmap stories', () => {
     },
   );
 
-  pwEach.test([
+  pwEach.test<[dataset: string, rotation: number]>([
     ['Ranges', 0],
     ['Ranges', 45],
     ['Ranges', 90],
