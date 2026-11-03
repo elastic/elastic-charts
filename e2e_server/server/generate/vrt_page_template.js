@@ -54,6 +54,17 @@ import { ThemeIdProvider, BackgroundIdProvider } from '../../storybook/use_base_
 import { useGlobalsParameters } from '../server/mocks/use_global_parameters';
 import { StoryContext } from '../../storybook/types';
 
+/**
+ * Canvas text is painted once and does not repaint when a web font arrives later, so every
+ * font face declared so far (including the ones a story module brings along) is loaded before
+ * the story mounts.
+ */
+async function fontsLoaded() {
+  const loading: Promise<unknown>[] = [];
+  document.fonts.forEach((face) => loading.push(face.load()));
+  await Promise.allSettled(loading);
+}
+
 const ResizeWrapper: FC<PropsWithChildren<{ resize?: boolean | CSSProperties }>> = ({ resize, children }) => (
   <div id="story-root" className={classNames({ resizeHeight: (resize as CSSProperties)?.height === undefined })}>
     {resize ? (
