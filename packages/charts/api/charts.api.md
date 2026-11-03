@@ -759,11 +759,19 @@ export interface ColorBandSimpleConfig {
 
 // @public (undocumented)
 export interface ColorBandValue {
-    // Warning: (ae-forgotten-export) The symbol "ColorBandValueType" needs to be exported by the entry point index.d.ts
     type: ColorBandValueType;
     // (undocumented)
     value: number;
 }
+
+// @public (undocumented)
+export const ColorBandValueType: Readonly<{
+    Scale: "scale";
+    Percentage: "percentage";
+}>;
+
+// @public (undocumented)
+export type ColorBandValueType = $Values<typeof ColorBandValueType>;
 
 // @public (undocumented)
 export interface ColorConfig {
@@ -1759,6 +1767,9 @@ export const HistogramModeAlignments: Readonly<{
     Center: HistogramModeAlignment;
     End: HistogramModeAlignment;
 }>;
+
+// @public (undocumented)
+export type HistogramModeAlignments = $Values<typeof HistogramModeAlignments>;
 
 // @public (undocumented)
 export const HorizontalAlignment: Readonly<{

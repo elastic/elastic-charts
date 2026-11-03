@@ -701,6 +701,9 @@ export const HistogramModeAlignments = Object.freeze({
 });
 
 /** @public */
+export type HistogramModeAlignments = $Values<typeof HistogramModeAlignments>;
+
+/** @public */
 export type HistogramModeAlignment = 'start' | 'center' | 'end';
 
 /**

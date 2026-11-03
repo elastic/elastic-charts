@@ -161,10 +161,11 @@ export * from './chart_types/timeslip/timeslip_api';
 export type { LegacyAnimationConfig } from './common/animation';
 
 // Bullet
-export type {
-  ColorBandValue,
-  ColorBandConfig,
-  ColorBandSimpleConfig,
-  ColorBandComplexConfig,
-  BulletColorConfig,
+export {
+  ColorBandValueType,
+  type ColorBandValue,
+  type ColorBandConfig,
+  type ColorBandSimpleConfig,
+  type ColorBandComplexConfig,
+  type BulletColorConfig,
 } from './chart_types/bullet_graph/utils/color';
