@@ -63,7 +63,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   }, [pinned, values]);
 
   useLayoutEffect(() => {
-    // Prevent the tooltip from shrinking when pinned, without constraining the unpinned tooltip
+    // Prevent the tooltip from shrinking when pinned
     setMinWidth(pinned ? unpinnedWidth.current : 0);
   }, [pinned]);
 
