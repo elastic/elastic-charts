@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig",
   "compilerOptions": {
+    "module": "ES2022",
     "resolveJsonModule": true
   },
   "include": ["../packages/charts/src/**/*", "./**/*", "../scripts/custom_matchers.mock.ts"],

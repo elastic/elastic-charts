@@ -16,4 +16,4 @@ fi
 
 cd e2e_server/server
 
-node ../../node_modules/webpack/bin/webpack.js serve --progress "$@"
+node ../../node_modules/@rsbuild/core/bin/rsbuild.js dev "$@"
