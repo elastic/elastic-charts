@@ -44,6 +44,7 @@ export {
 
 export {
   Metric,
+  MetricTrendShape,
   type MetricSpecProps,
   type MetricSpec,
   type MetricBase,
@@ -54,7 +55,6 @@ export {
   type MetricWProgress,
   type MetricProgressValueLabels,
   type MetricWTrend,
-  type MetricTrendShape,
   type MetricDatum,
   type SecondaryMetricProps,
   type SecondaryMetricLabelTooltipProps,
