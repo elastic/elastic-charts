@@ -27,10 +27,11 @@ export default defineConfig({
       dts: {
         bundle: false,
         distPath: './dist/esm',
+        autoExtension: true,
       },
       redirect: {
         dts: {
-          extension: false,
+          extension: true,
         },
       },
       output: {
@@ -41,7 +42,16 @@ export default defineConfig({
       format: 'cjs',
       bundle: false,
       syntax: 'es2022',
-      dts: false,
+      dts: {
+        bundle: false,
+        distPath: './dist/cjs',
+        autoExtension: true,
+      },
+      redirect: {
+        dts: {
+          extension: true,
+        },
+      },
       output: {
         distPath: './dist/cjs',
       },

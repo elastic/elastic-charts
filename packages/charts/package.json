@@ -6,7 +6,7 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.mjs",
-  "types": "./dist/esm/index.d.ts",
+  "types": "./dist/cjs/index.d.ts",
   "repository": "git@github.com:elastic/elastic-charts.git",
   "publishConfig": {
     "access": "public"
@@ -20,13 +20,16 @@
   ],
   "exports": {
     ".": {
-      "types": "./dist/esm/index.d.ts",
-      "import": "./dist/esm/index.mjs",
-      "require": "./dist/cjs/index.js"
+      "import": {
+        "types": "./dist/esm/index.d.mts",
+        "default": "./dist/esm/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
     },
     "./package.json": "./package.json",
-    "./src": "./src/index.ts",
-    "./src/*": "./src/*",
     "./theme_light.css": "./dist/theme_light.css",
     "./theme_dark.css": "./dist/theme_dark.css",
     "./theme_only_light.css": "./dist/theme_only_light.css",
@@ -48,7 +51,8 @@
     "api:check:local": "yarn api:check --local",
     "api:extract": "yarn api-extractor run -c ./api-extractor.jsonc --verbose",
     "build": "yarn build:ts && yarn build:css",
-    "build:ts": "yarn build:clean && yarn build:compile",
+    "build:ts": "yarn build:clean && yarn build:compile && yarn build:check",
+    "build:check": "echo 'Type checking dist...' && node scripts/check_dts.js",
     "build:css": "yarn build:sass && yarn autoprefix:css && yarn concat:sass",
     "build:clean": "echo 'Cleaning dist...' && rm -rf ./dist",
     "build:compile": "echo 'Compiling...' && rslib build",
@@ -56,6 +60,7 @@
     "build:watch": "echo 'Watching build...' && yarn build:clean && yarn build:css && rslib build --watch",
     "concat:sass": "echo 'Concat SASS...' && node scripts/concat_sass.js",
     "semantic-release": "semantic-release",
+    "test:pack": "node scripts/smoke_pack.js",
     "typecheck": "tsc -p ./tsconfig.src.json --noEmit"
   },
   "dependencies": {
