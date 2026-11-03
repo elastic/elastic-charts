@@ -4,4 +4,6 @@ set -euo pipefail
 
 echo '--- Update commit status for jobs'
 
-npx ts-node .buildkite/scripts/pre_exit.ts
+# pre-command already installed `.buildkite` (including ts-node). Do not yarn
+# install the monorepo here — that added 3–5 minutes on Firebase jobs.
+yarn --cwd .buildkite --silent ts-node scripts/pre_exit.ts
