@@ -79,3 +79,23 @@ export function getMinAngularChartSize(subtype: AngularBulletSubtypes): Size {
     height: extent * heightModifiers[subtype] + GRAPH_PADDING.top + GRAPH_PADDING.bottom,
   };
 }
+
+/**
+ * Linear subtype to degrade to when the graph aspect ratio tall/wide to fit the angular aspect ratio.
+ * Returns 'null' when there's no need to degrade.
+ * @internal
+ */
+export function getAngularAspectFallback(
+  graphSize: Size,
+  subtype: AngularBulletSubtypes,
+): Extract<BulletSubtype, 'horizontal' | 'vertical'> | null {
+  const { maxWidth, maxHeight } = getAngledChartSizing(graphSize, subtype);
+  const aspect = maxWidth / maxHeight;
+
+  // these were empirically chosen. horizontal threshold is higher as labels run along the bullet
+  // while vertical take up horizontal space.
+  if (aspect > 4.5) return BulletSubtype.horizontal;
+  if (aspect < 1 / 3.5) return BulletSubtype.vertical;
+
+  return null;
+}
