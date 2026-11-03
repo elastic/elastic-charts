@@ -8,21 +8,21 @@
 
 export {
   AreaSeries,
-  AreaSeriesProps,
+  type AreaSeriesProps,
   Axis,
-  AxisProps,
+  type AxisProps,
   BarSeries,
-  BarSeriesProps,
+  type BarSeriesProps,
   BubbleSeries,
-  BubbleSeriesProps,
+  type BubbleSeriesProps,
   HistogramBarSeries,
-  HistogramBarSeriesProps,
+  type HistogramBarSeriesProps,
   LineAnnotation,
-  LineAnnotationProps,
+  type LineAnnotationProps,
   LineSeries,
-  LineSeriesProps,
+  type LineSeriesProps,
   RectAnnotation,
-  RectAnnotationProps,
+  type RectAnnotationProps,
 } from './xy_chart/specs';
 
 export * from './xy_chart/utils/specs';
@@ -33,25 +33,39 @@ export * from './goal_chart/specs';
 
 export { Partition } from './partition_chart/specs';
 
-export { Heatmap, HeatmapSpec, RasterTimeScale, TimeScale, LinearScale, OrdinalScale } from './heatmap/specs';
+export {
+  Heatmap,
+  type HeatmapSpec,
+  type RasterTimeScale,
+  type TimeScale,
+  type LinearScale,
+  type OrdinalScale,
+} from './heatmap/specs';
 
 export {
   Metric,
-  MetricSpecProps,
-  MetricSpec,
-  MetricBase,
-  MetricWText,
-  MetricWNumber,
-  MetricWNumberArrayValues,
-  MetricWStringArrayValues,
-  MetricWProgress,
-  MetricProgressValueLabels,
-  MetricWTrend,
-  MetricTrendShape,
-  MetricDatum,
-  SecondaryMetricProps,
-  SecondaryMetricLabelTooltipProps,
+  type MetricSpecProps,
+  type MetricSpec,
+  type MetricBase,
+  type MetricWText,
+  type MetricWNumber,
+  type MetricWNumberArrayValues,
+  type MetricWStringArrayValues,
+  type MetricWProgress,
+  type MetricProgressValueLabels,
+  type MetricWTrend,
+  type MetricTrendShape,
+  type MetricDatum,
+  type SecondaryMetricProps,
+  type SecondaryMetricLabelTooltipProps,
 } from './metric/specs';
 
-export { Bullet, BulletProps, BulletSpec, BulletDatum, BulletSubtype, BulletValueLabels } from './bullet_graph/spec';
-export { BulletStyle } from './bullet_graph/theme';
+export {
+  Bullet,
+  type BulletProps,
+  type BulletSpec,
+  type BulletDatum,
+  BulletSubtype,
+  type BulletValueLabels,
+} from './bullet_graph/spec';
+export type { BulletStyle } from './bullet_graph/theme';

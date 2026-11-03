@@ -1,9 +1,10 @@
 {
   "extends": "../../tsconfig",
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "dist/esm",
     "noUnusedLocals": true,
-    "removeComments": false
+    "removeComments": false,
+    "isolatedModules": true
   },
   "files": [],
   "include": ["src/**/*"],

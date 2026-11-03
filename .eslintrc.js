@@ -443,7 +443,7 @@ module.exports = {
       },
     },
     {
-      files: ['.*.js', './*.config.js'], // dot(.) and root config files
+      files: ['.*.js', './*.config.js', '**/rslib.config.ts'], // dot(.) and root config files
       rules: {
         'header/header': 0,
         'unicorn/filename-case': 0,

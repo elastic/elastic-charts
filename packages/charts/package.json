@@ -4,9 +4,9 @@
   "version": "73.3.2",
   "author": "Elastic DataVis",
   "license": "SEE LICENSE IN LICENSE.txt",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.mjs",
+  "types": "./dist/esm/index.d.ts",
   "repository": "git@github.com:elastic/elastic-charts.git",
   "publishConfig": {
     "access": "public"
@@ -14,22 +14,49 @@
   "files": [
     "dist/**/*"
   ],
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/cjs/index.js"
+    },
+    "./package.json": "./package.json",
+    "./src": "./src/index.ts",
+    "./src/*": "./src/*",
+    "./theme_light.css": "./dist/theme_light.css",
+    "./theme_dark.css": "./dist/theme_dark.css",
+    "./theme_only_light.css": "./dist/theme_only_light.css",
+    "./theme_only_dark.css": "./dist/theme_only_dark.css",
+    "./theme.scss": "./dist/theme.scss",
+    "./dist/theme_light.css": "./dist/theme_light.css",
+    "./dist/theme_dark.css": "./dist/theme_dark.css",
+    "./dist/theme_only_light.css": "./dist/theme_only_light.css",
+    "./dist/theme_only_dark.css": "./dist/theme_only_dark.css",
+    "./dist/theme.scss": "./dist/theme.scss",
+    "./dist/legacy/theme_light.css": "./dist/legacy/theme_light.css",
+    "./dist/legacy/theme_dark.css": "./dist/legacy/theme_dark.css",
+    "./dist/legacy/theme_only_light.css": "./dist/legacy/theme_only_light.css",
+    "./dist/legacy/theme_only_dark.css": "./dist/legacy/theme_only_dark.css"
+  },
   "scripts": {
     "autoprefix:css": "echo 'Autoprefixing...' && yarn postcss dist/*.css --no-map --use autoprefixer -d dist",
     "api:check": "yarn build:ts && yarn api:extract",
     "api:check:local": "yarn api:check --local",
     "api:extract": "yarn api-extractor run -c ./api-extractor.jsonc --verbose",
     "build": "yarn build:ts && yarn build:css",
-    "build:ts": "yarn build:clean && yarn build:compile && yarn build:check",
+    "build:ts": "yarn build:clean && yarn build:compile",
     "build:css": "yarn build:sass && yarn autoprefix:css && yarn concat:sass",
     "build:clean": "echo 'Cleaning dist...' && rm -rf ./dist",
-    "build:compile": "echo 'Compiling...' && tsc -p ./tsconfig.src.json && tsc -p ./tsconfig.nocomments.json",
+    "build:compile": "echo 'Compiling...' && rslib build",
     "build:sass": "echo 'Building sass...' && sass 'src/styles:dist' --style compressed --quiet --color --load-path ../../",
-    "build:check": "echo 'Type checking dist...' && tsc -p ./tsconfig.check.json",
-    "build:watch": "echo 'Watching build...' && yarn build:clean && yarn build:css && tsc -p ./tsconfig.src.json -w",
+    "build:watch": "echo 'Watching build...' && yarn build:clean && yarn build:css && rslib build --watch",
     "concat:sass": "echo 'Concat SASS...' && node scripts/concat_sass.js",
     "semantic-release": "semantic-release",
-    "typecheck": "tsc -p ./tsconfig.src.json --noEmit && tsc -p ./tsconfig.nocomments.json --noEmit"
+    "typecheck": "tsc -p ./tsconfig.src.json --noEmit"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",

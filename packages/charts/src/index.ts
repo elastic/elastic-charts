@@ -8,14 +8,14 @@
 
 export * from './components';
 export { ChartType } from './chart_types';
-export { ChartSize, ChartSizeArray, ChartSizeObject } from './utils/chart_size';
+export type { ChartSize, ChartSizeArray, ChartSizeObject } from './utils/chart_size';
 
-export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
+export type { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
 
 // Everything related to the specs types and react-components
 export * from './specs';
 export * from './specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-export {
+export type {
   DebugState,
   DebugStateLine,
   DebugStateValue,
@@ -34,23 +34,23 @@ export {
 } from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';
-export { ContinuousDomain, OrdinalDomain, GenericDomain, Range } from './utils/domain';
-export { Dimensions, SimplePadding, Padding, PerSideDistance, Margins } from './utils/dimensions';
+export type { ContinuousDomain, OrdinalDomain, GenericDomain, Range } from './utils/domain';
+export type { Dimensions, SimplePadding, Padding, PerSideDistance, Margins } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
-export { SeriesCompareFn } from './utils/series_sort';
-export { SeriesIdentifier, SeriesKey } from './common/series_id';
-export { XYChartSeriesIdentifier, DataSeriesDatum, FilledValues } from './chart_types/xy_chart/utils/series';
-export {
+export type { SeriesCompareFn } from './utils/series_sort';
+export type { SeriesIdentifier, SeriesKey } from './common/series_id';
+export type { XYChartSeriesIdentifier, DataSeriesDatum, FilledValues } from './chart_types/xy_chart/utils/series';
+export type {
   AnnotationTooltipFormatter,
   CustomAnnotationTooltip,
   ComponentWithAnnotationDatum,
 } from './chart_types/xy_chart/annotations/types';
-export { GeometryValue, BandedAccessorType } from './utils/geometry';
-export { LegendPath, LegendPathElement } from './state/actions/legend';
-export { LegendItemValue, LegendValue } from './common/legend';
-export { CategoryKey, CategoryLabel } from './common/category';
-export { Layer as PartitionLayer, PartitionProps } from './chart_types/partition_chart/specs';
-export {
+export { type GeometryValue, BandedAccessorType } from './utils/geometry';
+export type { LegendPath, LegendPathElement } from './state/actions/legend';
+export { type LegendItemValue, LegendValue } from './common/legend';
+export type { CategoryKey, CategoryLabel } from './common/category';
+export { type Layer as PartitionLayer, type PartitionProps } from './chart_types/partition_chart/specs';
+export type {
   FillLabelConfig as PartitionFillLabel,
   FillLabelHorizontalAlignment as PartitionFillLabelHorizontalAlignment,
   FillLabelVerticalAlignment as PartitionFillLabelVerticalAlignment,
@@ -59,7 +59,7 @@ export {
 } from './utils/themes/partition';
 export { PartitionLayout } from './chart_types/partition_chart/layout/types/config_types';
 
-export {
+export type {
   Accessor,
   AccessorFn,
   IndexedAccessorFn,
@@ -72,12 +72,12 @@ export * from './components/tooltip';
 
 // scales
 export { ScaleType } from './scales/constants';
-export { ScaleContinuousType, ScaleOrdinalType, ScaleBandType, LogScaleOptions } from './scales';
+export type { ScaleContinuousType, ScaleOrdinalType, ScaleBandType, LogScaleOptions } from './scales';
 
 // TODO move animation to its own package
 export {
-  AnimationOptions,
-  AnimatedValue,
+  type AnimationOptions,
+  type AnimatedValue,
   AnimationSpeed,
 } from './chart_types/xy_chart/renderer/canvas/animations/animation';
 
@@ -93,17 +93,17 @@ export { AMSTERDAM_LIGHT_THEME } from './utils/themes/amsterdam_light_theme';
 export { AMSTERDAM_DARK_THEME } from './utils/themes/amsterdam_dark_theme';
 
 // wordcloud
-export { WordcloudViewModel } from './chart_types/wordcloud/layout/types/viewmodel_types';
+export type { WordcloudViewModel } from './chart_types/wordcloud/layout/types/viewmodel_types';
 
 // partition
 export * from './chart_types/partition_chart/layout/types/viewmodel_types';
 export * from './chart_types/partition_chart/layout/utils/group_by_rollup';
-export { AnimKeyframe } from './chart_types/partition_chart/layout/types/config_types';
+export type { AnimKeyframe } from './chart_types/partition_chart/layout/types/config_types';
 
 // heatmap
-export { Cell } from './chart_types/heatmap/layout/types/viewmodel_types';
-export { HeatmapCellDatum } from './chart_types/heatmap/layout/viewmodel/viewmodel';
-export {
+export type { Cell } from './chart_types/heatmap/layout/types/viewmodel_types';
+export type { HeatmapCellDatum } from './chart_types/heatmap/layout/viewmodel/viewmodel';
+export type {
   ColorBand,
   HeatmapBandsColorScale,
   HeatmapProps,
@@ -112,21 +112,21 @@ export {
 
 // utilities
 export {
-  Datum,
+  type Datum,
   Position,
-  Rendering,
-  Rotation,
+  type Rendering,
+  type Rotation,
   VerticalAlignment,
   HorizontalAlignment,
-  RecursivePartial,
-  NonAny,
-  IsAny,
-  IsUnknown,
+  type RecursivePartial,
+  type NonAny,
+  type IsAny,
+  type IsUnknown,
   ColorVariant,
-  LabelAccessor,
-  ShowAccessor,
-  ValueAccessor,
-  ValueFormatter,
+  type LabelAccessor,
+  type ShowAccessor,
+  type ValueAccessor,
+  type ValueFormatter,
   LegendLayout,
   LayoutDirection,
 } from './utils/common';
@@ -135,13 +135,13 @@ export * from './utils/themes/merge_utils';
 export * from './utils/use_legend_action';
 export { MODEL_KEY, defaultPartitionValueFormatter } from './chart_types/partition_chart/layout/config';
 export { LegendStrategy } from './chart_types/partition_chart/layout/utils/highlighted_geoms';
-export { Pixels, Ratio, TimeMs } from './common/geometry';
-export { AdditiveNumber } from './utils/accessor';
-export { FontStyle, FONT_STYLES } from './common/text_utils';
-export { Color } from './common/colors';
-export { RGB, A, RgbaTuple } from './common/color_library_wrappers';
+export type { Pixels, Ratio, TimeMs } from './common/geometry';
+export type { AdditiveNumber } from './utils/accessor';
+export { type FontStyle, FONT_STYLES } from './common/text_utils';
+export type { Color } from './common/colors';
+export type { RGB, A, RgbaTuple } from './common/color_library_wrappers';
 export { Predicate } from './common/predicate';
-export { SmallMultiplesDatum } from './common/panel_utils';
+export type { SmallMultiplesDatum } from './common/panel_utils';
 
 export type {
   ESCalendarInterval,
@@ -153,15 +153,15 @@ export type { UnixTimestamp } from './utils/chrono/types';
 export { roundDateToESInterval } from './utils/chrono/elasticsearch';
 
 // data utils
-export { GroupKeysOrKeyFn, GroupByKeyFn } from './chart_types/xy_chart/utils/group_data_series';
+export type { GroupKeysOrKeyFn, GroupByKeyFn } from './chart_types/xy_chart/utils/group_data_series';
 export { computeRatioByGroups } from './utils/data/data_processing';
 export { TimeFunction } from './utils/time_functions';
 export * from './chart_types/flame_chart/flame_api';
 export * from './chart_types/timeslip/timeslip_api';
-export { LegacyAnimationConfig } from './common/animation';
+export type { LegacyAnimationConfig } from './common/animation';
 
 // Bullet
-export {
+export type {
   ColorBandValue,
   ColorBandConfig,
   ColorBandSimpleConfig,

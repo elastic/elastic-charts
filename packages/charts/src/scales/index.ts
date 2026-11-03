@@ -28,4 +28,4 @@ export { ScaleBand } from './scale_band';
 /** @internal */
 export { ScaleContinuous } from './scale_continuous';
 
-export { LogScaleOptions } from './types';
+export type { LogScaleOptions } from './types';
