@@ -13,6 +13,9 @@ const path = require('path');
 const chartsDir = path.resolve(__dirname, '..');
 const esmTypes = path.join(chartsDir, 'dist/esm/index.d.mts');
 const cjsTypes = path.join(chartsDir, 'dist/cjs/index.d.ts');
+const distError = /^(dist\/|\S*packages\/charts\/dist\/)/;
+const filePrefixedDiagnostic = /^\S+\(\d+,\d+\):/;
+const unprefixedTsError = /^error TS\d+/;
 
 function fail(message) {
   throw new Error(message);
@@ -26,7 +29,10 @@ if (!fs.existsSync(cjsTypes)) {
 }
 
 const tsc = path.join(chartsDir, '../../node_modules/.bin/tsc');
-let output = '';
+if (!fs.existsSync(tsc)) {
+  fail(`tsc not found at ${tsc}`);
+}
+
 try {
   execFileSync(tsc, ['-p', './tsconfig.check.json', '--pretty', 'false'], {
     cwd: chartsDir,
@@ -34,10 +40,28 @@ try {
     stdio: ['pipe', 'pipe', 'pipe'],
   });
 } catch (error) {
-  output = `${error.stdout ?? ''}${error.stderr ?? ''}`;
-}
+  if (error.status == null) {
+    fail(`Failed to run tsc: ${error.code ?? error.message}`);
+  }
 
-const distErrors = output.split('\n').filter((line) => /^(dist\/|\S*packages\/charts\/dist\/)/.test(line));
-if (distErrors.length > 0) {
-  fail(distErrors.join('\n'));
+  const output = `${error.stdout ?? ''}${error.stderr ?? ''}`;
+  const lines = output.split('\n').filter(Boolean);
+  const distErrors = lines.filter((line) => distError.test(line));
+  if (distErrors.length > 0) {
+    fail(distErrors.join('\n'));
+  }
+
+  const unprefixed = lines.filter((line) => unprefixedTsError.test(line));
+  if (unprefixed.length > 0) {
+    fail(unprefixed.join('\n'));
+  }
+
+  const filePrefixed = lines.filter((line) => filePrefixedDiagnostic.test(line));
+  const unexplained = filePrefixed.filter((line) => !line.includes('node_modules'));
+  if (unexplained.length > 0) {
+    fail(unexplained.join('\n'));
+  }
+  if (filePrefixed.length === 0) {
+    fail(output.trim() || `tsc exited ${error.status} with no file-prefixed diagnostics`);
+  }
 }
