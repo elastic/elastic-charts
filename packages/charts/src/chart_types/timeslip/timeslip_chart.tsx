@@ -27,7 +27,6 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import type { Size } from '../../utils/dimensions';
-import { roundUpSize } from '../flame_chart/render/common';
 // @ts-ignore until it becomes TS
 
 interface StateProps {
@@ -86,8 +85,10 @@ class TimeslipComponent extends React.Component<TimeslipProps> {
       chartDimensions: { width: requestedWidth, height: requestedHeight },
       a11ySettings,
     } = this.props;
-    const width = roundUpSize(requestedWidth);
-    const height = roundUpSize(requestedHeight);
+    // the canvas fills the content area exactly: a size rounded up (as the WebGL flame chart does for its textures)
+    // overflowed the clipped container and cropped the bottom label row and the right edge
+    const width = Math.floor(requestedWidth);
+    const height = Math.floor(requestedHeight);
     const style: CSSProperties = {
       width,
       height,
