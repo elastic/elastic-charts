@@ -33,43 +33,39 @@ export const getRNGSeed = (fallback?: string): string | undefined =>
  * when it switches story without reloading the document, see `checkpointRandomNumberGenerators`.
  */
 interface SeededGenerator {
-  /** remembers the draws made so far, once */
+  /** remembers the current state, once */
   checkpoint: () => void;
-  /** restarts from the seed and replays the remembered draws */
+  /** goes back to the remembered state, or to the seed without one */
   reset: () => void;
 }
 
 const seededGenerators = new Set<SeededGenerator>();
 
 /**
- * A seeded source of numbers in [0, 1) that counts its draws, so it can be brought back to the state it had
- * after its module was evaluated.
+ * A seeded source of numbers in [0, 1) that can be brought back to the state it had after its module was
+ * evaluated, through seedrandom's saved state (a replay of the draws would cost as much as the data
+ * generation of the story, on every story switch).
  */
 const seededSource = (seed: string | undefined) => {
-  let rng = seedrandom(seed);
-  let draws = 0;
-  let checkpointDraws: number | undefined;
+  let rng = seedrandom(seed, { state: true });
+  let checkpointState: seedrandom.State | undefined;
   if (process.env.VRT === 'true') {
     seededGenerators.add({
       checkpoint: () => {
-        checkpointDraws ??= draws;
+        checkpointState ??= rng.state();
       },
       reset: () => {
-        rng = seedrandom(seed);
-        for (draws = 0; draws < (checkpointDraws ?? 0); draws++) rng();
+        rng = seedrandom(seed, { state: checkpointState ?? true });
       },
     });
   }
-  return () => {
-    draws++;
-    return rng();
-  };
+  return () => rng();
 };
 
 /**
- * Remembers, for every seeded generator that has no checkpoint yet, how many numbers it has drawn: the VRT
- * page calls this right after a story module is imported, so the checkpoint of a generator created at
- * module level is its state after module evaluation (e.g. after the data of the story was generated).
+ * Remembers, for every seeded generator that has no checkpoint yet, its current state: the VRT page calls
+ * this right after a story module is imported, so the checkpoint of a generator created at module level is
+ * its state after module evaluation (e.g. after the data of the story was generated).
  * @internal
  */
 export const checkpointRandomNumberGenerators = () => {
