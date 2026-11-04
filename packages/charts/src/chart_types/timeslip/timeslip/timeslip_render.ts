@@ -498,6 +498,18 @@ const setupEventHandlers = (
   canvas.addEventListener('touchend', dragEnd, { passive: false });
   canvas.addEventListener('touchcancel', dragEnd, { passive: false });
   canvas.addEventListener('keydown', keydown, { passive: false });
+
+  return () => {
+    window.removeEventListener('resize', scheduleChartRender);
+    canvas.removeEventListener('wheel', wheel);
+    canvas.removeEventListener('mousemove', mousemove);
+    canvas.removeEventListener('mousedown', mousedown);
+    canvas.removeEventListener('mouseup', dragEnd);
+    canvas.removeEventListener('touchmove', touchmove);
+    canvas.removeEventListener('touchend', dragEnd);
+    canvas.removeEventListener('touchcancel', dragEnd);
+    canvas.removeEventListener('keydown', keydown);
+  };
 };
 
 /**
@@ -507,6 +519,8 @@ const setupEventHandlers = (
 export interface TimeslipLoop {
   /** schedules a frame, e.g. after the canvas was resized, which clears it */
   render: () => void;
+  /** stops the loop: listeners off, pending frame cancelled, so the component can restart it or unmount */
+  stop: () => void;
 }
 
 /** @internal */
@@ -520,8 +534,10 @@ export const timeslipRender = (
 
   const interactionState = getNullInteractionState();
   const dataState = getNullDataState();
+  let stopped = false;
 
   const chartWithUpdate = (t: DOMHighResTimeStamp) => {
+    if (stopped) return;
     const { dataArrived, yTweenOngoing, dataDemand } = chartWithTime(
       canvas,
       ctx,
@@ -542,7 +558,14 @@ export const timeslipRender = (
   // initial render
   scheduleChartRender();
 
-  setupEventHandlers(canvas, interactionState, timedRender, scheduleChartRender);
+  const removeEventHandlers = setupEventHandlers(canvas, interactionState, timedRender, scheduleChartRender);
 
-  return { render: scheduleChartRender };
+  return {
+    render: scheduleChartRender,
+    stop: () => {
+      stopped = true;
+      scheduleChartRender.cancel();
+      removeEventHandlers();
+    },
+  };
 };

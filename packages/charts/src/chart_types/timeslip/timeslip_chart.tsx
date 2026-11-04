@@ -60,6 +60,16 @@ class TimeslipComponent extends React.Component<TimeslipProps> {
 
   private loop: TimeslipLoop | null = null;
 
+  private readonly preventWheel = (e: WheelEvent) => e.preventDefault();
+
+  /** starts the frame loop on the canvas, stopping a running one first */
+  private startLoop() {
+    this.loop?.stop();
+    this.loop = null;
+    const canvas = this.props.forwardStageRef.current;
+    if (canvas && this.ctx) this.loop = timeslipRender(canvas, this.ctx, this.props.getData);
+  }
+
   componentDidMount = () => {
     /*
      * the DOM element has just been appended, and getContext('2d') is always non-null,
@@ -68,20 +78,24 @@ class TimeslipComponent extends React.Component<TimeslipProps> {
     this.tryCanvasContext();
     this.drawCanvas();
     this.props.onChartRendered();
-    this.props.containerRef().current?.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
-
-    const canvas = this.props.forwardStageRef.current;
-    if (canvas && this.ctx) this.loop = timeslipRender(canvas, this.ctx, this.props.getData);
+    this.props.containerRef().current?.addEventListener('wheel', this.preventWheel, { passive: false });
+    this.startLoop();
   };
 
   componentWillUnmount() {
-    this.props.containerRef().current?.removeEventListener('wheel', (e) => e.preventDefault());
+    this.props.containerRef().current?.removeEventListener('wheel', this.preventWheel);
+    this.loop?.stop();
+    this.loop = null;
   }
 
   componentDidUpdate = (prevProps: TimeslipProps) => {
     if (!this.ctx) this.tryCanvasContext();
-    // a new size resets the canvas bitmap, and the loop only renders on interaction or a window resize
-    if (prevProps.chartDimensions !== this.props.chartDimensions) this.loop?.render();
+    if (prevProps.getData !== this.props.getData) {
+      this.startLoop();
+    } else if (prevProps.chartDimensions !== this.props.chartDimensions) {
+      // a new size resets the canvas bitmap, and the loop only renders on interaction or a window resize
+      this.loop?.render();
+    }
   };
 
   render = () => {

@@ -7,12 +7,14 @@
  */
 
 /** @internal */
-export const withAnimation = (renderer: FrameRequestCallback) => {
+export const withAnimation = (renderer: FrameRequestCallback): (() => void) & { cancel: () => void } => {
   let rAF = -1;
-  return () => {
+  const schedule = () => {
     window.cancelAnimationFrame(rAF);
     rAF = window.requestAnimationFrame(renderer);
   };
+  schedule.cancel = () => window.cancelAnimationFrame(rAF);
+  return schedule;
 };
 
 /** @internal */
