@@ -12,6 +12,8 @@ module.exports = function lazyImportTemplate({ filePath, groupTitle, name }, ind
   return `
   const Component${index} = React.lazy(() => {
     return import('../../${filePath}').then(async (module) => {
+      // the generators created while the story module was evaluated keep that state as their checkpoint
+      checkpointRandomNumberGenerators();
       await fontsLoaded();
       setParams(urlParams, (module.Example as any).parameters);
       const Component = module.Example.bind(module.Example, {}, getStoryContext('${groupTitle}', '${capitalCase(

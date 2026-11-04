@@ -91,6 +91,7 @@ import React, { PropsWithChildren, FC, Suspense, CSSProperties } from 'react';
 import { EuiProvider } from '@elastic/eui';
 import classNames from 'classnames';
 
+import { checkpointRandomNumberGenerators } from '@elastic/charts/src/mocks/utils';
 import { ThemeIdProvider, BackgroundIdProvider } from '../../storybook/use_base_theme';
 import { useGlobalsParameters } from '../server/mocks/use_global_parameters';
 import { StoryContext } from '../../storybook/types';

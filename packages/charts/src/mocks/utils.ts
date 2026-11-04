@@ -29,22 +29,62 @@ export const getRNGSeed = (fallback?: string): string | undefined =>
   process.env.RNG_SEED ?? (process.env.VRT === 'true' ? 'elastic-charts' : fallback);
 
 /**
- * Re-seed callbacks of the seeded generators created in VRT mode, see `resetRandomNumberGenerators`
+ * The seeded generators created in VRT mode, so that the VRT page can bring them back to a known state
+ * when it switches story without reloading the document, see `checkpointRandomNumberGenerators`.
  */
-const seededGeneratorResets = new Set<() => void>();
+interface SeededGenerator {
+  /** remembers the draws made so far, once */
+  checkpoint: () => void;
+  /** restarts from the seed and replays the remembered draws */
+  reset: () => void;
+}
 
-const registerReset = (reset: () => void) => {
-  if (process.env.VRT === 'true') seededGeneratorResets.add(reset);
+const seededGenerators = new Set<SeededGenerator>();
+
+/**
+ * A seeded source of numbers in [0, 1) that counts its draws, so it can be brought back to the state it had
+ * after its module was evaluated.
+ */
+const seededSource = (seed: string | undefined) => {
+  let rng = seedrandom(seed);
+  let draws = 0;
+  let checkpointDraws: number | undefined;
+  if (process.env.VRT === 'true') {
+    seededGenerators.add({
+      checkpoint: () => {
+        checkpointDraws ??= draws;
+      },
+      reset: () => {
+        rng = seedrandom(seed);
+        for (draws = 0; draws < (checkpointDraws ?? 0); draws++) rng();
+      },
+    });
+  }
+  return () => {
+    draws++;
+    return rng();
+  };
 };
 
 /**
- * Restarts every seeded generator created so far from its seed. The VRT page calls this when it
- * switches story without reloading the document, so a story module whose generator lives at
- * module level produces the same data on every mount, as it would on a fresh page load.
+ * Remembers, for every seeded generator that has no checkpoint yet, how many numbers it has drawn: the VRT
+ * page calls this right after a story module is imported, so the checkpoint of a generator created at
+ * module level is its state after module evaluation (e.g. after the data of the story was generated).
+ * @internal
+ */
+export const checkpointRandomNumberGenerators = () => {
+  seededGenerators.forEach(({ checkpoint }) => checkpoint());
+};
+
+/**
+ * Brings every seeded generator back to its checkpoint. The VRT page calls this when it switches story
+ * without reloading the document, so a story drawing random numbers while it mounts (colors, paddings)
+ * gets the same numbers on every mount as it would on a fresh page load, where its module is evaluated
+ * first and the mount draws come after the module level draws.
  * @internal
  */
 export const resetRandomNumberGenerators = () => {
-  seededGeneratorResets.forEach((reset) => reset());
+  seededGenerators.forEach(({ reset }) => reset());
 };
 
 /**
@@ -54,10 +94,7 @@ export const resetRandomNumberGenerators = () => {
  * @internal
  */
 export const getRandomNumberGenerator = (seed = getRNGSeed()): RandomNumberGenerator => {
-  let rng = seedrandom(seed);
-  registerReset(() => {
-    rng = seedrandom(seed);
-  });
+  const rng = seededSource(seed);
 
   /**
    * Random number generator
@@ -89,10 +126,7 @@ export class SeededDataGenerator extends DataGenerator {
  * @internal
  */
 export const getRandomEntryFn = (seed = getRNGSeed()) => {
-  let rng = seedrandom(seed);
-  registerReset(() => {
-    rng = seedrandom(seed);
-  });
+  const rng = seededSource(seed);
 
   return function getRandomEntryClosure<T>(entries: T[] | Record<string, T>) {
     if (Array.isArray(entries)) {
