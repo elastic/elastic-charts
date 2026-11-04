@@ -54,6 +54,8 @@
     "test:e2e:generate:examples": "./e2e_server/scripts/extract_examples.sh",
     "test:e2e:generate:page": "./e2e_server/scripts/compile_vrt_page.sh",
     "test:e2e:server": "sh ./e2e_server/scripts/start.sh",
+    "test:e2e:svg": "cd e2e && yarn svg:screenshots",
+    "test:e2e:svg:review": "cd e2e && yarn svg:review",
     "test:e2e:server:build": "yarn test:e2e:generate && cd e2e_server/server && webpack build && cp -R ../../public/. ../.out/",
     "typecheck:base": "tsc -p ./tsconfig.base.json --noEmit",
     "typecheck:e2e": "tsc -p ./e2e/tsconfig.json --noEmit",
