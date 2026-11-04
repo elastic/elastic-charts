@@ -40,7 +40,7 @@ try {
     stdio: ['pipe', 'pipe', 'pipe'],
   });
 } catch (error) {
-  if (error.status == null) {
+  if (error.status === undefined || error.status === null) {
     fail(`Failed to run tsc: ${error.code ?? error.message}`);
   }
 

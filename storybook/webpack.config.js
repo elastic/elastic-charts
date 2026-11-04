@@ -123,9 +123,11 @@ module.exports = ({ config }) => {
   });
   config.resolve.extensions.push('.ts', '.tsx');
 
+  // Prefix `@elastic/charts/` does not match subpaths in webpack 5: enhanced-resolve
+  // appends another `/`, so `@elastic/charts/src/...` falls through to package exports.
   config.resolve.alias = {
     '@elastic/charts$': path.resolve(__dirname, '../packages/charts/src'),
-    '@elastic/charts/': path.resolve(__dirname, '../packages/charts/'),
+    '@elastic/charts/src': path.resolve(__dirname, '../packages/charts/src'),
   };
 
   return config;
