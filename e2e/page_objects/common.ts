@@ -660,9 +660,10 @@ export class CommonPage {
 
 function getSnapshotOptions(options?: ScreenshotDOMElementOptions) {
   if (options?.maxDiffPixels !== undefined) {
-    // need to clear default options for maxDiffPixels to be respected, else could still fail on threshold or maxDiffPixelRatio
+    // the config's `maxDiffPixelRatio: 0` would still fail the first differing pixel, so it is lifted; the per pixel
+    // color `threshold` stays at the config's exact match (a threshold of 1 made every comparison pass, leaving
+    // baselines stale for years)
     return {
-      threshold: 1,
       maxDiffPixelRatio: 1,
       ...options,
     };
