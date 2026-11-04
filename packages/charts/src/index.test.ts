@@ -53,6 +53,9 @@ import {
   TooltipType,
   VerticalAlignment,
   WeightFn,
+  percentValueGetter,
+  ratioValueGetter,
+  VALUE_GETTERS,
 } from '.';
 /* eslint-enable import/no-restricted-paths */
 
@@ -106,5 +109,18 @@ describe('public frozen enums', () => {
   it.each(Object.entries(publicFrozenEnums))('%s is exported as a frozen runtime object', (_name, value) => {
     expect(value).toEqual(expect.any(Object));
     expect(Object.isFrozen(value)).toBe(true);
+  });
+});
+
+describe('public partition value getters', () => {
+  it('exports percentValueGetter and ratioValueGetter as functions', () => {
+    expect(percentValueGetter).toEqual(expect.any(Function));
+    expect(ratioValueGetter).toEqual(expect.any(Function));
+  });
+
+  it('exports VALUE_GETTERS as a frozen runtime object', () => {
+    expect(VALUE_GETTERS.percent).toBe(percentValueGetter);
+    expect(VALUE_GETTERS.ratio).toBe(ratioValueGetter);
+    expect(Object.isFrozen(VALUE_GETTERS)).toBe(true);
   });
 });

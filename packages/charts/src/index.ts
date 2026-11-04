@@ -133,7 +133,14 @@ export {
 export { DataGenerator } from './utils/data_generators/data_generator';
 export * from './utils/themes/merge_utils';
 export * from './utils/use_legend_action';
-export { MODEL_KEY, defaultPartitionValueFormatter } from './chart_types/partition_chart/layout/config';
+export {
+  MODEL_KEY,
+  defaultPartitionValueFormatter,
+  percentValueGetter,
+  ratioValueGetter,
+  VALUE_GETTERS,
+  type ValueGetterName,
+} from './chart_types/partition_chart/layout/config';
 export { LegendStrategy } from './chart_types/partition_chart/layout/utils/highlighted_geoms';
 export type { Pixels, Ratio, TimeMs } from './common/geometry';
 export type { AdditiveNumber } from './utils/accessor';
