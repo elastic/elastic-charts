@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { test } from '@playwright/test';
-
+import { test } from '../fixtures';
 import { common } from '../page_objects/common';
 
 test.describe('Time zone', () => {

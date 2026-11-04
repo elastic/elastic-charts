@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { test, expect } from '@playwright/test';
-
+import { test, expect } from '../fixtures';
 import { common, CommonPage } from '../page_objects';
 
 test.describe.skip('Performance', () => {

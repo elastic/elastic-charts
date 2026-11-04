@@ -29,13 +29,35 @@ export const getRNGSeed = (fallback?: string): string | undefined =>
   process.env.RNG_SEED ?? (process.env.VRT === 'true' ? 'elastic-charts' : fallback);
 
 /**
+ * Re-seed callbacks of the seeded generators created in VRT mode, see `resetRandomNumberGenerators`
+ */
+const seededGeneratorResets = new Set<() => void>();
+
+const registerReset = (reset: () => void) => {
+  if (process.env.VRT === 'true') seededGeneratorResets.add(reset);
+};
+
+/**
+ * Restarts every seeded generator created so far from its seed. The VRT page calls this when it
+ * switches story without reloading the document, so a story module whose generator lives at
+ * module level produces the same data on every mount, as it would on a fresh page load.
+ * @internal
+ */
+export const resetRandomNumberGenerators = () => {
+  seededGeneratorResets.forEach((reset) => reset());
+};
+
+/**
  * Returns rng function with optional `min`, `max` and `fractionDigits` params
  *
  * @param string seed for deterministic algorithm
  * @internal
  */
 export const getRandomNumberGenerator = (seed = getRNGSeed()): RandomNumberGenerator => {
-  const rng = seedrandom(seed);
+  let rng = seedrandom(seed);
+  registerReset(() => {
+    rng = seedrandom(seed);
+  });
 
   /**
    * Random number generator
@@ -67,7 +89,10 @@ export class SeededDataGenerator extends DataGenerator {
  * @internal
  */
 export const getRandomEntryFn = (seed = getRNGSeed()) => {
-  const rng = seedrandom(seed);
+  let rng = seedrandom(seed);
+  registerReset(() => {
+    rng = seedrandom(seed);
+  });
 
   return function getRandomEntryClosure<T>(entries: T[] | Record<string, T>) {
     if (Array.isArray(entries)) {

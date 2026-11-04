@@ -15,9 +15,11 @@ const compileRouteTemplate = require('./route_template');
 function indexTemplate() {
   return `
 import '../../storybook/style.scss';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import { VRTPage } from './vrt_page';
+import { resetRandomNumberGenerators } from '@elastic/charts/src/mocks/utils';
 import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon';
 
 appendIconComponentCache({
@@ -33,13 +35,52 @@ appendIconComponentCache({
   visualizeApp: require('@elastic/eui/es/components/icon/assets/app_visualize').icon,
 });
 
-const path = new URL(window.location.toString()).searchParams.get('path');
-document.getElementsByTagName('body')[0].style.overflow = path ? 'hidden' : 'scroll';
+declare global {
+  interface Window {
+    /**
+     * Switch to another story URL without reloading the document (used by e2e tests to skip
+     * re-booting React/EUI for every test). Remounts the whole page tree synchronously, so by
+     * the time it returns, no element of the previous story is left in the DOM.
+     * Returns the navigation count.
+     */
+    __vrtNavigate?: (url: string) => number;
+  }
+}
+
+function applyBodyOverflow() {
+  const path = new URL(window.location.toString()).searchParams.get('path');
+  document.getElementsByTagName('body')[0].style.overflow = path ? 'hidden' : 'scroll';
+}
+
+let navigationCount = 0;
+
+function App() {
+  const [navigation, setNavigation] = useState(navigationCount);
+
+  useEffect(() => {
+    window.__vrtNavigate = (url: string) => {
+      window.history.replaceState(null, '', url);
+      window.scrollTo(0, 0);
+      applyBodyOverflow();
+      resetRandomNumberGenerators();
+      navigationCount += 1;
+      flushSync(() => setNavigation(navigationCount));
+      return navigationCount;
+    };
+    return () => {
+      delete window.__vrtNavigate;
+    };
+  }, []);
+
+  return <VRTPage key={navigation} />;
+}
+
+applyBodyOverflow();
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 
-root.render(<VRTPage />);
+root.render(<App />);
 
 `.trim();
 }
