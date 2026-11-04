@@ -29,7 +29,7 @@ import { getTextureStyles } from '../../../utils/texture';
  */
 export function buildAreaStyles(
   ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
+  imgCanvas: HTMLCanvasElement | undefined,
   seriesColor: Color | ColorVariant,
   themeAreaStyle: AreaStyle,
   highlightState: GeometryHighlightState,

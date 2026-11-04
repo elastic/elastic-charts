@@ -20,7 +20,7 @@ import { getGeometryStateStyle } from '../../rendering/utils';
 /** @internal */
 export function renderBars(
   ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
+  imgCanvas: HTMLCanvasElement | undefined,
   geoms: Array<PerPanel<BarGeometry[]>>,
   sharedStyle: SharedGeometryStateStyle,
   rotation: Rotation,

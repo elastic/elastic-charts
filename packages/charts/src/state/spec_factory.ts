@@ -7,7 +7,7 @@
  */
 
 import type { FC } from 'react';
-import { useEffect } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import type { OptionalKeys, RequiredKeys } from 'utility-types';
 
@@ -16,11 +16,20 @@ import type { Spec } from '../specs/spec_type'; // kept as long-winded import on
 import { stripUndefined } from '../utils/common';
 
 /**
+ * When provided, receives every spec while it renders. Effects do not run during server-side
+ * rendering, so this is how specs are collected without mounting a chart.
+ * @internal
+ */
+export const SpecCollectorContext = createContext<((spec: Spec) => void) | null>(null);
+
+/**
  * Used inside custom spec component to link component to state as new spec
  * @internal
  */
 export function useSpecFactory<Props extends Spec>(props: Props) {
   const dispatch = useDispatch();
+  const collectSpec = useContext(SpecCollectorContext);
+  collectSpec?.(props);
 
   useEffect(() => {
     dispatch(upsertSpec(props));

@@ -8,6 +8,7 @@
 
 import type { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { withClipRanges } from '../../../../../renderers/canvas';
+import { createPath2D } from '../../../../../renderers/canvas/path2d';
 import { applyCanvasFill, type FillBoundingBox } from '../../../../../renderers/canvas/primitives/fill';
 import { renderMultiLine } from '../../../../../renderers/canvas/primitives/line';
 import type { ClippedRanges } from '../../../../../utils/geometry';
@@ -62,6 +63,6 @@ function renderPathFill(
   bbox: FillBoundingBox,
 ) {
   ctx.translate(x, y);
-  const path2d = new Path2D(path);
+  const path2d = createPath2D(path);
   applyCanvasFill(ctx, fill, bbox, () => ctx.fill(path2d));
 }

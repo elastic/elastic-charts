@@ -9,6 +9,7 @@
 import { withContext } from '..';
 import { RGBATupleToString } from '../../../common/color_library_wrappers';
 import type { Line, Stroke } from '../../../geoms/types';
+import { createPath2D } from '../path2d';
 
 /**
  * Canvas2d stroke ignores an exact zero line width
@@ -34,7 +35,7 @@ export function renderMultiLine(ctx: CanvasRenderingContext2D, lines: Line[] | s
 
     for (const line of lines) {
       if (typeof line === 'string') {
-        ctx.stroke(new Path2D(line));
+        ctx.stroke(createPath2D(line));
       } else {
         ctx.moveTo(line.x1, line.y1);
         ctx.lineTo(line.x2, line.y2);

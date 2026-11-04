@@ -6,7 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { TextEncoder } from 'util';
+
 process.env.RNG_SEED = 'jest-unit-tests';
+
+// jsdom lacks TextEncoder, which the browser build of react-dom/server (used by headless rendering) needs.
+Object.assign(globalThis, { TextEncoder: globalThis.TextEncoder ?? TextEncoder });
 
 /**
  * Mocking RAF and ResizeObserver to missing RAF and RO in jsdom

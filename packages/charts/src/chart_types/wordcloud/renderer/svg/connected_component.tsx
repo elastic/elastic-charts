@@ -77,7 +77,8 @@ function log(minFontSize: number, maxFontSize: number, _exponent: number, weight
 
 const weightFnLookup = { linear, exponential, log, squareRoot };
 
-function layoutMaker({ data, ...viewModel }: WordcloudViewModel, chartSize: Size) {
+/** @internal */
+export function layoutMaker({ data, ...viewModel }: WordcloudViewModel, chartSize: Size) {
   const { height, width } = chartSize;
   const words = data.map<Word>((d) => {
     const weightFn = weightFnLookup[viewModel.weightFn];
