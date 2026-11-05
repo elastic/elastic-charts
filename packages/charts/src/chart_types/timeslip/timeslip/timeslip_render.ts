@@ -298,50 +298,47 @@ const renderChartWithTime = (
   return { yTweenOngoing, dataDemand };
 };
 
-const chartWithTime = (
-  surface: FrameSurface,
-  config: {
-    locale: string;
-    monospacedFontShorthand: string;
-    subduedFontColor: string;
-    defaultFontColor: string;
-    a11y: { contrast: 'low' | 'medium' | 'high' };
+interface TimeslipConfig {
+  locale: string;
+  monospacedFontShorthand: string;
+  subduedFontColor: string;
+  defaultFontColor: string;
+  a11y: { contrast: 'low' | 'medium' | 'high' };
 
-    domainFrom: number;
-    domainTo: number;
-  },
+  domainFrom: number;
+  domainTo: number;
+}
+
+/** the chart and cartesian extents, from the css size of the stage element */
+const layoutOf = (element: FrameSurface['element']) => ({
+  horizontal: elementSize(element, true, horizontalCartesianAreaPad),
+  vertical: elementSize(element, false, verticalCartesianAreaPad),
+});
+
+/** draws one frame into any context, advancing the tweens by `deltaT` */
+const drawFrame = (
+  ctx: Ctx2d,
+  { horizontal, vertical }: ReturnType<typeof layoutOf>,
+  config: TimeslipConfig,
   interactionState: InteractionState,
   dataState: DataState,
   deltaT: number,
   emWidth: number,
 ) => {
-  const newHorizontalScreenDimensions = elementSize(surface.element, true, horizontalCartesianAreaPad);
-  const chartWidth = newHorizontalScreenDimensions.outerSize;
-  const cartesianLeft = newHorizontalScreenDimensions.innerLeading;
-  const cartesianWidth = newHorizontalScreenDimensions.innerSize;
-
-  const newVerticalScreenDimensions = elementSize(surface.element, false, verticalCartesianAreaPad);
-  const chartHeight = newVerticalScreenDimensions.outerSize;
-  const cartesianTop = newVerticalScreenDimensions.innerLeading;
-  const cartesianHeight = newVerticalScreenDimensions.innerSize;
-
-  interactionState.horizontalScreenDimensions = newHorizontalScreenDimensions;
-  interactionState.verticalScreenDimensions = newVerticalScreenDimensions;
-
-  // render chart: the surface sizes itself for the frame and applies the device pixel ratio
-  const ctx = surface.beginFrame(chartWidth, chartHeight);
-  const { yTweenOngoing, dataDemand } = renderChartWithTime(
+  interactionState.horizontalScreenDimensions = horizontal;
+  interactionState.verticalScreenDimensions = vertical;
+  return renderChartWithTime(
     ctx,
     backgroundFillStyle,
-    chartWidth,
-    chartHeight,
+    horizontal.outerSize,
+    vertical.outerSize,
     config,
-    cartesianTop,
-    cartesianLeft,
-    cartesianHeight,
+    vertical.innerLeading,
+    horizontal.innerLeading,
+    vertical.innerSize,
     interactionState,
     deltaT,
-    cartesianWidth,
+    horizontal.innerSize,
     drawCartesianBox,
     chartTopFontSize,
     dataState,
@@ -349,6 +346,20 @@ const chartWithTime = (
     config.domainFrom,
     config.domainTo,
   );
+};
+
+const chartWithTime = (
+  surface: FrameSurface,
+  config: TimeslipConfig,
+  interactionState: InteractionState,
+  dataState: DataState,
+  deltaT: number,
+  emWidth: number,
+) => {
+  const layout = layoutOf(surface.element);
+  // render chart: the surface sizes itself for the frame and applies the device pixel ratio
+  const ctx = surface.beginFrame(layout.horizontal.outerSize, layout.vertical.outerSize);
+  const { yTweenOngoing, dataDemand } = drawFrame(ctx, layout, config, interactionState, dataState, deltaT, emWidth);
   surface.endFrame();
 
   const dataArrived =
@@ -365,7 +376,7 @@ const chartWithTime = (
 };
 
 const setupEventHandlers = (
-  canvas: GlobalEventHandlers, // the stage element
+  canvas: GlobalEventHandlers, // the stage element, canvas or svg
   interactionState: InteractionState,
   timedRender: FrameRequestCallback,
   scheduleChartRender: () => void,
@@ -493,6 +504,8 @@ export interface TimeslipLoop {
   render: () => void;
   /** stops the loop: listeners off, pending frame cancelled, so the component can restart it or unmount */
   stop: () => void;
+  /** draws the frame the chart currently shows into another context, e.g. for an export */
+  paint: (ctx: Ctx2d) => void;
 }
 
 /** @internal */
@@ -527,6 +540,9 @@ export const timeslipRender = (surface: FrameSurface, getData: GetData): Timesli
 
   return {
     render: scheduleChartRender,
+    paint: (ctx) => {
+      drawFrame(ctx, layoutOf(surface.element), config, interactionState, dataState, 0, emWidth);
+    },
     stop: () => {
       stopped = true;
       scheduleChartRender.cancel();

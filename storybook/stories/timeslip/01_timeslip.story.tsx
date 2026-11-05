@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { button } from '@storybook/addon-knobs';
 import React from 'react';
 
 import type { GetData } from '@elastic/charts';
@@ -38,8 +39,19 @@ const getData = (dataDemand: Parameters<GetData>[0]) => {
 };
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const chartRef = React.useRef<Chart>(null);
+  button('Export PNG', () => {
+    const snapshot = chartRef.current?.getPNGSnapshot({ backgroundColor: 'white' });
+    if (!snapshot) return;
+    const link = document.createElement('a');
+    link.download = 'timeslip.png';
+    link.href = snapshot.blobOrDataUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
   return (
-    <Chart title={title} description={description} size={{ width: 1024, height: 512 }}>
+    <Chart ref={chartRef} title={title} description={description} size={{ width: 1024, height: 512 }}>
       <Settings baseTheme={useBaseTheme()} />
       <Timeslip id="spec_1" getData={getData} />
     </Chart>

@@ -27,6 +27,20 @@ interface PaintedStage {
 const paintedStages = new WeakMap<Element, PaintedStage>();
 
 /**
+ * Makes a stage element exportable; the `Stage` does it for its own element, a chart with its own frame
+ * loop (timeslip) for the element it draws on.
+ * @internal
+ */
+export function registerPaintedStage(element: Element, stage: PaintedStage) {
+  paintedStages.set(element, stage);
+}
+
+/** @internal */
+export function unregisterPaintedStage(element: Element) {
+  paintedStages.delete(element);
+}
+
+/**
  * Paints what a stage element shows into a new canvas at its device pixel ratio, whichever backend the
  * stage uses: the PNG export of an svg chart. `null` when the element is not a stage.
  * @internal
