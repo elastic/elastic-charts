@@ -4,7 +4,8 @@
     "outDir": "dist/esm",
     "noUnusedLocals": true,
     "removeComments": false,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "declarationMap": false
   },
   "files": [],
   "include": ["src/**/*"],
