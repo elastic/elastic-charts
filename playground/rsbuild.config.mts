@@ -7,12 +7,13 @@
  */
 
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 import { pluginSass } from '@rsbuild/plugin-sass';
 
-const configDir = path.dirname(new URL(import.meta.url).pathname);
+const configDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(configDir, '..');
 const chartsRoot = path.resolve(repoRoot, 'packages/charts');
 
