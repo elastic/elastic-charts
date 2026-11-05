@@ -500,8 +500,21 @@ const setupEventHandlers = (
   canvas.addEventListener('keydown', keydown, { passive: false });
 };
 
+/**
+ * The running chart, for the component that owns the canvas.
+ * @internal
+ */
+export interface TimeslipLoop {
+  /** schedules a frame, e.g. after the canvas was resized, which clears it */
+  render: () => void;
+}
+
 /** @internal */
-export const timeslipRender = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, getData: GetData) => {
+export const timeslipRender = (
+  canvas: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D,
+  getData: GetData,
+): TimeslipLoop => {
   const dpi = window.devicePixelRatio;
   const emWidth = ctx.measureText('mmmmmmmmmm').width / 10; // approx width to avoid too many measurements
 
@@ -530,4 +543,6 @@ export const timeslipRender = (canvas: HTMLCanvasElement, ctx: CanvasRenderingCo
   scheduleChartRender();
 
   setupEventHandlers(canvas, interactionState, timedRender, scheduleChartRender);
+
+  return { render: scheduleChartRender };
 };

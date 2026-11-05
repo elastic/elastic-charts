@@ -6,10 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { test } from '@playwright/test';
-
 import type { DisplayValueStyleAlignment } from '../constants';
 import { HorizontalAlignment, VerticalAlignment } from '../constants';
+import { test } from '../fixtures';
 import { eachRotation, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
