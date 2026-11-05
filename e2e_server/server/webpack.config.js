@@ -108,8 +108,10 @@ module.exports = {
     alias: {
       '@storybook/addon-knobs': path.resolve(__dirname, 'mocks/@storybook/addon-knobs'),
       '@storybook/addon-actions': path.resolve(__dirname, 'mocks/@storybook/addon-actions'),
+      // Prefix `@elastic/charts/` does not match subpaths in webpack 5: enhanced-resolve
+      // appends another `/`, so `@elastic/charts/src/...` falls through to package exports.
       '@elastic/charts$': path.resolve(__dirname, '../../packages/charts/src'),
-      '@elastic/charts/': path.resolve(__dirname, '../../packages/charts/'),
+      '@elastic/charts/src': path.resolve(__dirname, '../../packages/charts/src'),
     },
     extensions: ['.tsx', '.ts', '.js'],
     fallback: {
