@@ -56,10 +56,11 @@
     "test:e2e:server": "sh ./e2e_server/scripts/start.sh",
     "test:e2e:server:build": "yarn test:e2e:generate && cd e2e_server/server && webpack build && cp -R ../../public/. ../.out/",
     "typecheck:base": "tsc -p ./tsconfig.base.json --noEmit",
+    "typecheck:e2e": "tsc -p ./e2e/tsconfig.json --noEmit",
     "typecheck:src": "lerna run --loglevel=silent --scope @elastic/charts typecheck --stream --no-prefix",
     "typecheck:docs": "lerna run --loglevel=silent --scope elastic-charts-docs typecheck --stream --no-prefix",
     "typecheck:storybook": "lerna run --loglevel=silent --scope charts-storybook typecheck --stream --no-prefix",
-    "typecheck:all": "yarn typecheck:base && yarn typecheck:src && yarn typecheck:docs && yarn typecheck:storybook",
+    "typecheck:all": "yarn typecheck:base && yarn typecheck:e2e && yarn typecheck:src && yarn typecheck:docs && yarn typecheck:storybook",
     "typedoc": "typedoc",
     "ts:prune": "ts-prune"
   },

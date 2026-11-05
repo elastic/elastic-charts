@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig",
+  "compilerOptions": {
+    // the e2e workspace installs its own @types/node (20.x); without this the root node_modules' transitive
+    // Node 12 typings apply, e.g. in editors, which run the TypeScript service against the nearest tsconfig
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node"]
+  },
+  "include": ["./**/*"],
+  "exclude": ["node_modules", "reports", "screenshots", "screenshots_svg", "test_failures"]
+}
