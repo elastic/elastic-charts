@@ -18,18 +18,20 @@ export function ChartDPRObserver() {
   useEffect(() => {
     if (typeof window.matchMedia !== 'function') return;
 
-    const setupListener = () => {
-      window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).addEventListener(
-        'change',
-        () => {
-          dispatch(updateDevicePixelRatio(window.devicePixelRatio));
-          setupListener();
-        },
-        { once: true },
-      );
+    // the query matches the current ratio only, so it is replaced after each change
+    let query: MediaQueryList | undefined;
+    const onChange = () => {
+      dispatch(updateDevicePixelRatio(window.devicePixelRatio));
+      listen();
+    };
+    const listen = () => {
+      query?.removeEventListener('change', onChange);
+      query = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+      query.addEventListener('change', onChange, { once: true });
     };
 
-    setupListener();
+    listen();
+    return () => query?.removeEventListener('change', onChange);
   }, [dispatch]);
 
   return null;
