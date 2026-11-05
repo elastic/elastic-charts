@@ -41,7 +41,7 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
     legendSize,
     { yValues, xValues },
     { heatmap, axes: { axisTitle: axisTitleStyle, axisPanelTitle: axisPanelTitleStyle }, chartMargins, chartPaddings },
-    { xAxisTitle, yAxisTitle, xAxisLabelFormatter, yAxisLabelFormatter, xScale },
+    { xAxisTitle, yAxisTitle, xAxisLabelFormatter, yAxisLabelFormatter, xScale, xAxisShowOverlappingLabels },
     smSpec,
     { smHDomain },
   ) => {
@@ -89,6 +89,7 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
           yAxisTitleHorizontalSize + yAxisPanelTitleHorizontalSize + yAxis.width,
           0, // this can be used if we have a right Y axis
         ],
+        xAxisShowOverlappingLabels,
       );
 
       return {

@@ -99,9 +99,22 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   xAxisTitle: string;
   xAxisLabelName: string;
   xAxisLabelFormatter: LabelAccessor<string | number>;
+  /**
+   * Shows all the X axis labels, also the overlapping ones.
+   * When `false`, labels are rendered at a regular interval to avoid overlaps.
+   * Not applied to time scales: their overlapping labels are always hidden.
+   * @defaultValue true
+   */
+  xAxisShowOverlappingLabels: boolean;
   yAxisTitle: string;
   yAxisLabelName: string;
   yAxisLabelFormatter: LabelAccessor<string | number>;
+  /**
+   * Shows all the Y axis labels, also the overlapping ones.
+   * When `false`, labels are rendered at a regular interval to avoid overlaps.
+   * @defaultValue true
+   */
+  yAxisShowOverlappingLabels: boolean;
 }
 
 /** @public */
@@ -125,8 +138,10 @@ export const heatmapBuildProps = buildSFProps<HeatmapSpec>()(
     yAxisTitle: '',
     xAxisLabelName: 'X Value',
     xAxisLabelFormatter: String,
+    xAxisShowOverlappingLabels: true,
     yAxisLabelName: 'Y Value',
     yAxisLabelFormatter: String,
+    yAxisShowOverlappingLabels: true,
   },
 );
 

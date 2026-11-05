@@ -22,6 +22,7 @@ import type { ScaleBand } from '../../../../scales';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { isContinuousScale } from '../../../../scales/types';
+import { createGreedyLabelFitter } from '../../../../solvers/label_overlaps';
 import type { AxisSpec, SettingsSpec } from '../../../../specs';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Position, Rotation } from '../../../../utils/common';
@@ -179,23 +180,20 @@ export function getVisibleTicks(
   const bypassOverlapCheck = showOverlappingLabels || multilayerTimeAxis || labelsHidden;
   if (bypassOverlapCheck) return allTicks;
 
+  const vertical = isVerticalAxis(position);
+  const tickLabelFits = createGreedyLabelFitter(MIN_LABEL_GAP);
   return allTicks
     .slice()
     .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
-    .reduce(
-      (prev, tick) => {
-        const requiredSpace = (isVerticalAxis(position) ? tick.layout.bboxHeight : tick.layout.bboxWidth) / 2;
-        const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace + MIN_LABEL_GAP;
-        if (tickLabelFits || showOverlappingTicks) {
-          prev.visibleTicks.push(tickLabelFits ? tick : withoutTickLabel(tick));
-          if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
-        } else if (adaptiveTickCount && !tickLabelFits && !showOverlappingTicks) {
-          prev.visibleTicks.push(withoutTickLabel(tick));
-        }
-        return prev;
-      },
-      { visibleTicks: [] as AxisTick[], occupiedSpace: -Infinity },
-    ).visibleTicks;
+    .reduce<AxisTick[]>((visibleTicks, tick) => {
+      const requiredSpace = (vertical ? tick.layout.bboxHeight : tick.layout.bboxWidth) / 2;
+      if (tickLabelFits(tick.position, requiredSpace, requiredSpace)) {
+        visibleTicks.push(tick);
+      } else if (showOverlappingTicks || adaptiveTickCount) {
+        visibleTicks.push(withoutTickLabel(tick));
+      }
+      return visibleTicks;
+    }, []);
 }
 
 function getVisibleTickSet(
