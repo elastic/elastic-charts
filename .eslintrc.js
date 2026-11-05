@@ -338,6 +338,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
     ecmaVersion: 6,
+    extraFileExtensions: ['.mts'],
     ecmaFeatures: {
       experimentalObjectRestSpread: true,
       jsx: true,
@@ -348,7 +349,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        extensions: ['.mjs', '.js', '.json', '.ts', '.d.ts', '.tsx'],
+        extensions: ['.mjs', '.mts', '.js', '.json', '.ts', '.d.ts', '.tsx'],
         moduleDirectory: ['node_modules', 'packages/charts/src/'],
       },
     },
@@ -443,16 +444,15 @@ module.exports = {
       },
     },
     {
-      files: [
-        '.*.js',
-        './*.config.js',
-        '**/rslib.config.ts',
-        '**/rslib.config.mts',
-        '**/rsbuild.config.ts',
-        '**/rsbuild.config.mts',
-      ], // dot(.) and root config files
+      files: ['.*.js', './*.config.js'], // dot(.) and root config files
       rules: {
         'header/header': 0,
+        'unicorn/filename-case': 0,
+      },
+    },
+    {
+      files: ['**/rslib.config.ts', '**/rslib.config.mts', '**/rsbuild.config.ts', '**/rsbuild.config.mts'],
+      rules: {
         'unicorn/filename-case': 0,
       },
     },
