@@ -21,6 +21,7 @@ import { ChartResizer } from './chart_resizer';
 import { ChartStatus } from './chart_status';
 import { Legend } from './legend/legend';
 import { getElementZIndex } from './portal/utils';
+import { paintStageToCanvas } from './stage';
 import { chartTypeSelectors } from '../chart_types/chart_type_selectors';
 import { Colors } from '../common/colors';
 import type { LegendPositionConfig, PointerEvent } from '../specs';
@@ -144,9 +145,13 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     blobOrDataUrl: any;
     browser: 'IE11' | 'other';
   } | null {
-    const canvas = this.chartStageRef.current;
-    // the svg stage has no bitmap to export yet
-    if (!(canvas instanceof HTMLCanvasElement)) {
+    const stage = this.chartStageRef.current;
+    if (!stage) {
+      return null;
+    }
+    // an svg stage is painted into a throwaway canvas through the same paint function
+    const canvas = stage instanceof HTMLCanvasElement ? stage : paintStageToCanvas(stage);
+    if (!canvas) {
       return null;
     }
     const backgroundCanvas = document.createElement('canvas');

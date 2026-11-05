@@ -16,6 +16,36 @@ import { SvgPainter } from '../renderers/svg/painter';
 import { svgNodesToReact } from '../renderers/svg/to_react';
 import type { StageElement } from '../state/internal_chart_renderer';
 
+interface PaintedStage {
+  paint: (painter: Painter) => void;
+  width: number;
+  height: number;
+  devicePixelRatio: number;
+}
+
+/** what each mounted stage element currently shows, for exports */
+const paintedStages = new WeakMap<Element, PaintedStage>();
+
+/**
+ * Paints what a stage element shows into a new canvas at its device pixel ratio, whichever backend the
+ * stage uses: the PNG export of an svg chart. `null` when the element is not a stage.
+ * @internal
+ */
+export function paintStageToCanvas(element: Element): HTMLCanvasElement | null {
+  const stage = paintedStages.get(element);
+  if (!stage) return null;
+  const canvas = document.createElement('canvas');
+  canvas.width = stage.width * stage.devicePixelRatio;
+  canvas.height = stage.height * stage.devicePixelRatio;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  // one frame with every animated value at its target: what the stage shows once settled
+  const painter = new CanvasPainter(ctx, { animates: false });
+  painter.begin(stage.devicePixelRatio);
+  stage.paint(painter);
+  return canvas;
+}
+
 /** @internal */
 export interface StageProps {
   renderer: RendererType;
@@ -64,8 +94,15 @@ export class Stage extends React.Component<StageProps> {
     this.afterCommit();
   }
 
+  componentWillUnmount() {
+    const element = this.props.forwardStageRef.current;
+    if (element) paintedStages.delete(element);
+  }
+
   private afterCommit() {
-    if (this.props.renderer === 'canvas') this.paintCanvas();
+    const { renderer, forwardStageRef, paint, width, height, devicePixelRatio } = this.props;
+    if (renderer === 'canvas') this.paintCanvas();
+    if (forwardStageRef.current) paintedStages.set(forwardStageRef.current, { paint, width, height, devicePixelRatio });
     this.props.onRendered?.();
   }
 

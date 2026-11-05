@@ -7,7 +7,7 @@
  */
 
 import type { AnimationContext } from './animations';
-import { getAnimationPoolFn } from './animations';
+import { getAnimationPoolFn, getTransitionAnimationContext } from './animations';
 import type { AnimationState } from './animations/animation';
 import { renderAnnotations } from './annotations';
 import { renderAreas } from './areas';
@@ -173,13 +173,13 @@ export function drawXYChart(painter: Painter, props: ReactiveChartStateProps, aC
 
 /**
  * Renders an XY chart: on canvas through the animation pool's frames, on svg as one frame per render
- * with every animated value at its target.
+ * whose values are at their targets, the elements transitioning to them through CSS.
  * @internal
  */
 export function renderXYChart(painter: Painter, props: ReactiveChartStateProps, animationState: AnimationState) {
   const render = (aCtx: AnimationContext) => drawXYChart(painter, props, aCtx);
   if (!painter.animates) {
-    render({ getValue: () => (_, value) => value });
+    render(getTransitionAnimationContext(painter));
   } else {
     void getAnimationPoolFn(animationState, render);
   }

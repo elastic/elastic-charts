@@ -7,9 +7,11 @@
  */
 
 import type { AnimatedValue, AnimationOptions, AnimationState } from './animation';
-import { Animation } from './animation';
+import { Animation, AnimationSpeed, resolveTime } from './animation';
+import type { Painter, PaintTransition } from '../../../../../renderers/painter';
 import { debounce } from '../../../../../utils/debounce';
 import { Logger } from '../../../../../utils/logger';
+import { TimeFunction } from '../../../../../utils/time_functions';
 
 // TODO find a better way to do this when we have an actual build process
 const DISABLE_ANIMATIONS =
@@ -27,6 +29,27 @@ export type AnimateFn = (options?: AnimationOptions) => (key: string, value: Ani
 export interface AnimationContext {
   getValue: AnimateFn;
 }
+
+/**
+ * The animation context of a backend that animates through the DOM: every value is returned at its
+ * target, and the painter is told to transition the elements drawn with it. Mirrors the pool's rules:
+ * nothing is animated under VRT, when disabled, or for a value the animation snaps to.
+ * @internal
+ */
+export const getTransitionAnimationContext = (painter: Painter): AnimationContext => ({
+  getValue: (options) => (_, value) => {
+    const transition: PaintTransition | null =
+      DISABLE_ANIMATIONS || options?.enabled === false || options?.snapValues?.includes(value)
+        ? null
+        : {
+            duration: resolveTime(options?.duration) ?? AnimationSpeed.slow,
+            delay: resolveTime(options?.delay) ?? 0,
+            timeFunction: options?.timeFunction ?? TimeFunction.linear,
+          };
+    painter.transition = transition;
+    return value;
+  },
+});
 
 /** @internal */
 export const getAnimationPoolFn = (

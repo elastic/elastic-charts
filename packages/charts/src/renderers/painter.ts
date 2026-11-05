@@ -120,7 +120,8 @@ export interface Painter extends Ctx2d {
   readonly kind: RendererType;
   /**
    * Whether a frame loop repaints this painter: the renderers then tween through requestAnimationFrame
-   * frames. Otherwise they draw one frame with every value at its target, as the svg backend does.
+   * frames. Otherwise they draw one frame with every value at its target, as the svg backend does (the DOM
+   * transitions the elements) and as an export into a throwaway canvas does.
    */
   readonly animates: boolean;
   /**

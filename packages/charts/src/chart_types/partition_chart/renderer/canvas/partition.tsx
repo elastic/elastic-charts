@@ -86,14 +86,46 @@ type PartitionProps = ReactiveChartStateProps & ReactiveChartDispatchProps & Rea
 /** @internal */
 export type AnimationState = { rafId: number };
 
-class PartitionComponent extends React.Component<PartitionProps> {
+interface PartitionState {
+  /** svg only: progress of the current drill-down focus change, 1 when settled */
+  drilldownTime: number;
+}
+
+class PartitionComponent extends React.Component<PartitionProps, PartitionState> {
   static displayName = 'Partition';
 
   // firstRender = true; // this will be useful for stable resizing of treemaps
   private readonly animationState: AnimationState = { rafId: NaN };
 
+  state: PartitionState = { drilldownTime: 1 };
+
+  componentDidUpdate(prevProps: PartitionProps) {
+    const { renderer, geometriesFoci, multiGeometries } = this.props;
+    const duration = multiGeometries[0]?.animation?.duration ?? 0;
+    const [focus] = geometriesFoci;
+    const focusChanged =
+      !!focus && (focus.currentFocusX0 !== focus.prevFocusX0 || focus.currentFocusX1 !== focus.prevFocusX1);
+    if (renderer === 'svg' && duration > 0 && focusChanged && prevProps.geometriesFoci !== geometriesFoci) {
+      this.animateDrilldown(duration);
+    }
+  }
+
   componentWillUnmount() {
     window.cancelAnimationFrame(this.animationState.rafId);
+  }
+
+  /** drives the svg frames of a focus change; the canvas backend runs its own loop in the renderer */
+  private animateDrilldown(duration: number) {
+    window.cancelAnimationFrame(this.animationState.rafId);
+    this.setState({ drilldownTime: 0 });
+    this.animationState.rafId = window.requestAnimationFrame((epochStartTime) => {
+      const frame = (t: number) => {
+        const drilldownTime = Math.max(0, Math.min(1, (t - epochStartTime) / duration));
+        this.setState({ drilldownTime });
+        if (drilldownTime < 1) this.animationState.rafId = window.requestAnimationFrame(frame);
+      };
+      this.animationState.rafId = window.requestAnimationFrame(frame);
+    });
   }
 
   private paint = (painter: Painter) => {
@@ -121,6 +153,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
           flatLegend,
           partitionStyle,
           this.animationState,
+          this.state.drilldownTime,
         );
       } else if (isWaffle(geometries.layout)) {
         renderWrappedPartitionCanvas2d(

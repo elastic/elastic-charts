@@ -21,13 +21,18 @@ import type { GradientHandle, Paint, Painter, PaintTransition, PatternHandle, Te
 export class CanvasPainter implements Painter {
   readonly kind = 'canvas' as const;
 
-  readonly animates = true;
+  readonly animates: boolean;
 
   private devicePixelRatio = 1;
   private readonly patterns = new Map<string, CanvasPattern>();
   private tile: HTMLCanvasElement | null = null;
 
-  constructor(private readonly ctx: CanvasRenderingContext2D) {}
+  constructor(
+    private readonly ctx: CanvasRenderingContext2D,
+    { animates = true }: { animates?: boolean } = {},
+  ) {
+    this.animates = animates;
+  }
 
   /**
    * Starts a frame: maps CSS pixels onto the device-pixel bitmap once, so the drawing code never

@@ -42,6 +42,8 @@ export function renderLinearPartitionCanvas2d(
   flatLegend: boolean | undefined,
   partitionStyle: PartitionStyle,
   animationState: AnimationState,
+  /** svg only: the progress of the focus change, 0 to 1, driven by the component's frame loop */
+  svgTime = 1,
 ) {
   // Calculate which quads are highlighted for legend dimming
   const highlightedQuadSet = new Set<QuadViewModel>();
@@ -51,8 +53,8 @@ export function renderLinearPartitionCanvas2d(
   }
 
   if (!ctx.animates) {
-    // one frame per render, at the settled focus
-    render(1);
+    // one frame per render; on svg the component re-renders through the focus change
+    render(svgTime);
     return;
   }
   if (animation?.duration) {
