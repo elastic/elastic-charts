@@ -38383,9 +38383,9 @@ exports.Example = void 0;
 /* eslint-disable */
 // @ts-nocheck
 // @ts-ignore
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React from 'react';\n\nimport type { GetData } from '@elastic/charts';\nimport { Chart, Timeslip, Settings } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\n\nconst getData = (dataDemand: Parameters<GetData>[0]) => {\n  const from = dataDemand.lo?.minimum ?? NaN;\n  const to = dataDemand.hi?.supremum ?? NaN;\n  const binWidthMs = (dataDemand.lo?.supremum ?? NaN) - from;\n  const result = [];\n  let time = from;\n  while (time < to) {\n    result.push({\n      epochMs: (time + 0.5 * binWidthMs) * 1000,\n      value:\n        8 * Math.sin(time / 100000000) +\n        4 * Math.sin(time / 1000000) +\n        2 * Math.sin(time / 10000) +\n        Math.sin(time / 100) +\n        0.5 * Math.sin(time) +\n        0.25 * Math.sin(time * 100) +\n        0.125 * Math.sin(time * 10000),\n    });\n    time += binWidthMs;\n  }\n  return result;\n};\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  // fixing width and height at multiples of 256 for now\n  return (\n    <Chart title={title} description={description} size={{ width: 1024, height: 512 }}>\n      <Settings baseTheme={useBaseTheme()} />\n      <Timeslip id=\"spec_1\" getData={getData} />\n    </Chart>\n  );\n};\n";
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React from 'react';\n\nimport type { GetData } from '@elastic/charts';\nimport { Chart, Timeslip, Settings } from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\n\nconst getData = (dataDemand: Parameters<GetData>[0]) => {\n  const from = dataDemand.lo?.minimum ?? NaN;\n  const to = dataDemand.hi?.supremum ?? NaN;\n  const binWidthMs = (dataDemand.lo?.supremum ?? NaN) - from;\n  const result = [];\n  let time = from;\n  while (time < to) {\n    result.push({\n      epochMs: (time + 0.5 * binWidthMs) * 1000,\n      value:\n        8 * Math.sin(time / 100000000) +\n        4 * Math.sin(time / 1000000) +\n        2 * Math.sin(time / 10000) +\n        Math.sin(time / 100) +\n        0.5 * Math.sin(time) +\n        0.25 * Math.sin(time * 100) +\n        0.125 * Math.sin(time * 10000),\n    });\n    time += binWidthMs;\n  }\n  return result;\n};\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  return (\n    <Chart title={title} description={description} size={{ width: 1024, height: 512 }}>\n      <Settings baseTheme={useBaseTheme()} />\n      <Timeslip id=\"spec_1\" getData={getData} />\n    </Chart>\n  );\n};\n";
 // @ts-ignore
-var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 40 }, "endLoc": { "col": 1, "line": 48 }, "startBody": { "col": 36, "line": 40 }, "endBody": { "col": 1, "line": 48 } } };
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 40 }, "endLoc": { "col": 1, "line": 47 }, "startBody": { "col": 36, "line": 40 }, "endBody": { "col": 1, "line": 47 } } };
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -38418,13 +38418,12 @@ const getData = (dataDemand) => {
     return result;
 };
 const Example = (_, { title, description }) => {
-    // fixing width and height at multiples of 256 for now
     return (react_1.default.createElement(charts_1.Chart, { title: title, description: description, size: { width: 1024, height: 512 } },
         react_1.default.createElement(charts_1.Settings, { baseTheme: (0, use_base_theme_1.useBaseTheme)() }),
         react_1.default.createElement(charts_1.Timeslip, { id: "spec_1", getData: getData })));
 };
 exports.Example = Example;
-exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  // fixing width and height at multiples of 256 for now\n  return (\n    <Chart title={title} description={description} size={{ width: 1024, height: 512 }}>\n      <Settings baseTheme={useBaseTheme()} />\n      <Timeslip id=\"spec_1\" getData={getData} />\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  return (\n    <Chart title={title} description={description} size={{ width: 1024, height: 512 }}>\n      <Settings baseTheme={useBaseTheme()} />\n      <Timeslip id=\"spec_1\" getData={getData} />\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -57116,6 +57115,7 @@ const timeslipRender = (canvas, ctx, getData) => {
     // initial render
     scheduleChartRender();
     setupEventHandlers(canvas, interactionState, timedRender, scheduleChartRender);
+    return { render: scheduleChartRender };
 };
 exports.timeslipRender = timeslipRender;
 
@@ -57194,11 +57194,11 @@ const get_accessibility_config_1 = __webpack_require__(/*! ../../state/selectors
 const get_settings_spec_1 = __webpack_require__(/*! ../../state/selectors/get_settings_spec */ "../packages/charts/src/state/selectors/get_settings_spec.ts");
 const get_tooltip_spec_1 = __webpack_require__(/*! ../../state/selectors/get_tooltip_spec */ "../packages/charts/src/state/selectors/get_tooltip_spec.ts");
 const get_specs_from_store_1 = __webpack_require__(/*! ../../state/utils/get_specs_from_store */ "../packages/charts/src/state/utils/get_specs_from_store.ts");
-const common_1 = __webpack_require__(/*! ../flame_chart/render/common */ "../packages/charts/src/chart_types/flame_chart/render/common.ts");
 class TimeslipComponent extends react_1.default.Component {
     static displayName = 'Timeslip';
     // DOM API Canvas2d and WebGL resources
     ctx = null;
+    loop = null;
     componentDidMount = () => {
         /*
          * the DOM element has just been appended, and getContext('2d') is always non-null,
@@ -57210,19 +57210,24 @@ class TimeslipComponent extends react_1.default.Component {
         this.props.containerRef().current?.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
         const canvas = this.props.forwardStageRef.current;
         if (canvas && this.ctx)
-            (0, timeslip_render_1.timeslipRender)(canvas, this.ctx, this.props.getData);
+            this.loop = (0, timeslip_render_1.timeslipRender)(canvas, this.ctx, this.props.getData);
     };
     componentWillUnmount() {
         this.props.containerRef().current?.removeEventListener('wheel', (e) => e.preventDefault());
     }
-    componentDidUpdate = () => {
+    componentDidUpdate = (prevProps) => {
         if (!this.ctx)
             this.tryCanvasContext();
+        // a new size resets the canvas bitmap, and the loop only renders on interaction or a window resize
+        if (prevProps.chartDimensions !== this.props.chartDimensions)
+            this.loop?.render();
     };
     render = () => {
         const { forwardStageRef, chartDimensions: { width: requestedWidth, height: requestedHeight }, a11ySettings, } = this.props;
-        const width = (0, common_1.roundUpSize)(requestedWidth);
-        const height = (0, common_1.roundUpSize)(requestedHeight);
+        // the canvas fills the content area exactly: a size rounded up (as the WebGL flame chart does for its textures)
+        // overflowed the clipped container and cropped the bottom label row and the right edge
+        const width = Math.floor(requestedWidth);
+        const height = Math.floor(requestedHeight);
         const style = {
             width,
             height,
@@ -82045,7 +82050,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getRandomEntryFn = exports.SeededDataGenerator = exports.getRandomNumberGenerator = exports.getRNGSeed = exports.forcedType = void 0;
+exports.getRandomEntryFn = exports.SeededDataGenerator = exports.getRandomNumberGenerator = exports.resetRandomNumberGenerators = exports.checkpointRandomNumberGenerators = exports.getRNGSeed = exports.forcedType = void 0;
 exports.shuffle = shuffle;
 const seedrandom_1 = __importDefault(__webpack_require__(/*! seedrandom */ "../node_modules/seedrandom/index.js"));
 const data_generator_1 = __webpack_require__(/*! ../utils/data_generators/data_generator */ "../packages/charts/src/utils/data_generators/data_generator.ts");
@@ -82065,6 +82070,48 @@ exports.forcedType = forcedType;
  */
 const getRNGSeed = (fallback) => process.env.RNG_SEED ?? (process.env.VRT === 'true' ? 'elastic-charts' : fallback);
 exports.getRNGSeed = getRNGSeed;
+const seededGenerators = new Set();
+/**
+ * A seeded source of numbers in [0, 1) that can be brought back to the state it had after its module was
+ * evaluated, through seedrandom's saved state (a replay of the draws would cost as much as the data
+ * generation of the story, on every story switch).
+ */
+const seededSource = (seed) => {
+    let rng = (0, seedrandom_1.default)(seed, { state: true });
+    let checkpointState;
+    if (process.env.VRT === 'true') {
+        seededGenerators.add({
+            checkpoint: () => {
+                checkpointState ??= rng.state();
+            },
+            reset: () => {
+                rng = (0, seedrandom_1.default)(seed, { state: checkpointState ?? true });
+            },
+        });
+    }
+    return () => rng();
+};
+/**
+ * Remembers, for every seeded generator that has no checkpoint yet, its current state: the VRT page calls
+ * this right after a story module is imported, so the checkpoint of a generator created at module level is
+ * its state after module evaluation (e.g. after the data of the story was generated).
+ * @internal
+ */
+const checkpointRandomNumberGenerators = () => {
+    seededGenerators.forEach(({ checkpoint }) => checkpoint());
+};
+exports.checkpointRandomNumberGenerators = checkpointRandomNumberGenerators;
+/**
+ * Brings every seeded generator back to its checkpoint. The VRT page calls this when it switches story
+ * without reloading the document, so a story drawing random numbers while it mounts (colors, paddings)
+ * gets the same numbers on every mount as it would on a fresh page load, where its module is evaluated
+ * first and the mount draws come after the module level draws.
+ * @internal
+ */
+const resetRandomNumberGenerators = () => {
+    seededGenerators.forEach(({ reset }) => reset());
+};
+exports.resetRandomNumberGenerators = resetRandomNumberGenerators;
 /**
  * Returns rng function with optional `min`, `max` and `fractionDigits` params
  *
@@ -82072,7 +82119,7 @@ exports.getRNGSeed = getRNGSeed;
  * @internal
  */
 const getRandomNumberGenerator = (seed = (0, exports.getRNGSeed)()) => {
-    const rng = (0, seedrandom_1.default)(seed);
+    const rng = seededSource(seed);
     /**
      * Random number generator
      *
@@ -82102,7 +82149,7 @@ exports.SeededDataGenerator = SeededDataGenerator;
  * @internal
  */
 const getRandomEntryFn = (seed = (0, exports.getRNGSeed)()) => {
-    const rng = (0, seedrandom_1.default)(seed);
+    const rng = seededSource(seed);
     return function getRandomEntryClosure(entries) {
         if (Array.isArray(entries)) {
             const index = Math.floor(rng() * entries.length);
@@ -103079,6 +103126,12 @@ const eui_theme_borealis_light_json_1 = __importDefault(__webpack_require__(/*! 
 const storybook_1 = __webpack_require__(/*! ./stories/utils/storybook */ "./stories/utils/storybook.ts");
 const euiLogoUrl = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0ibm9uZSIgdmlld0JveD0iMCAwIDMyIDMyIj4KICA8cGF0aCBmaWxsPSIjRkY5NTdEIiBkPSJNMTggMjVjLS41LTUuNS01LjUtMTAuNS0xMS0xMWw3LTdjLjUgNS41IDUuNSAxMC41IDExIDExbC03IDd6Ii8+CiAgPGNpcmNsZSBjeD0iNyIgY3k9IjciIHI9IjciIGZpbGw9IiNGMDRFOTgiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSI3IiBmaWxsPSIjRkVDNTE0Ii8+CiAgPHBhdGggZmlsbD0iIzAwQkZCMyIgZD0iTTMxIDE0Yy03LjE4IDAtMTMtNS44Mi0xMy0xM2gxM3YxM3oiLz4KICA8cGF0aCBmaWxsPSIjMUJBOUY1IiBkPSJNMSAxOGM3LjE4IDAgMTMgNS44MiAxMyAxM0gxVjE4eiIvPgo8L3N2Zz4K';
 exports.storybookParameters = {
+    docs: {
+        // The docs addon otherwise serializes every story's React tree to a JSX snippet on each render
+        // (react-element-to-jsx-string), which hangs the preview on the Metric stories; the source panel
+        // comes from addon-storysource anyway.
+        source: { type: 'code' },
+    },
     options: {
         selectedPanel:  false ? 0 : storybook_1.SB_SOURCE_PANEL,
     },
@@ -109845,4 +109898,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.5a5b42d4.iframe.bundle.js.map
+//# sourceMappingURL=main.bb10b391.iframe.bundle.js.map
