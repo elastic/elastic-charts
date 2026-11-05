@@ -9,9 +9,10 @@
 import { overrideOpacity } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
+import type { Painter } from '../../../../renderers/painter';
 import type { Dimensions, PerSideDistance } from '../../../../utils/dimensions';
 
-const renderDebugMargins = (ctx: CanvasRenderingContext2D, container: Dimensions, margins: PerSideDistance) => {
+const renderDebugMargins = (ctx: Painter, container: Dimensions, margins: PerSideDistance) => {
   const greenSemiTransparent = overrideOpacity(Colors.Green.rgba, 0.5);
 
   // left
@@ -65,7 +66,7 @@ const renderDebugMargins = (ctx: CanvasRenderingContext2D, container: Dimensions
 };
 
 const renderDebugPaddings = (
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   conatiner: Dimensions,
   chart: Dimensions,
   margins: PerSideDistance,
@@ -131,7 +132,7 @@ export const renderHeatmapDebugElements = ({
   margins,
   paddings,
 }: {
-  ctx: CanvasRenderingContext2D;
+  ctx: Painter;
   container: Dimensions;
   chart: Dimensions;
   margins: PerSideDistance;

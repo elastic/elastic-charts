@@ -13,6 +13,7 @@ import type { Pixels } from '../../../../common/geometry';
 import { cssFontShorthand, HorizontalAlignment } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { MIN_STROKE_WIDTH } from '../../../../renderers/canvas/primitives/line';
+import type { Ctx2d, Painter } from '../../../../renderers/painter';
 import type { LegendPath } from '../../../../state/actions/legend';
 import { getColorFromVariant } from '../../../../utils/common';
 import { getDimmedColor } from '../../../../utils/themes/dimmed_colors';
@@ -54,7 +55,7 @@ const getFillTextXOffset = (box: RowBox, rowLength: number, isRTL: boolean) => {
 };
 
 function renderTextRow(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   { fontSize, fillTextColor, rotation, verticalAlignment, horizontalAlignment, container, clipText, isRTL }: RowSet,
   linkLabelTextColor: string,
 ) {
@@ -100,16 +101,16 @@ function renderTextRow(
   };
 }
 
-function renderTextRows(ctx: CanvasRenderingContext2D, rowSet: RowSet, linkLabelTextColor: string) {
+function renderTextRows(ctx: Ctx2d, rowSet: RowSet, linkLabelTextColor: string) {
   rowSet.rows.forEach(renderTextRow(ctx, rowSet, linkLabelTextColor));
 }
 
-function renderRowSets(ctx: CanvasRenderingContext2D, rowSets: RowSet[], linkLabelTextColor: string) {
+function renderRowSets(ctx: Ctx2d, rowSets: RowSet[], linkLabelTextColor: string) {
   rowSets.forEach((rowSet: RowSet) => renderTextRows(ctx, rowSet, linkLabelTextColor));
 }
 
 function renderTaperedBorder(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   { strokeWidth, strokeStyle, x0, x1, y0px, y1px }: QuadViewModel,
   fillColor: Color,
 ) {
@@ -158,7 +159,7 @@ function renderTaperedBorder(
 }
 
 function renderSectors(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   quadViewModel: QuadViewModel[],
   highlightedQuadSet: Set<QuadViewModel>,
   partitionStyle: PartitionStyle,
@@ -184,7 +185,7 @@ function renderSectors(
 }
 
 function renderRectangles(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   quadViewModel: QuadViewModel[],
   highlightedQuadSet: Set<QuadViewModel>,
   partitionStyle: PartitionStyle,
@@ -225,7 +226,7 @@ function renderRectangles(
 }
 
 function renderFillOutsideLinks(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   outsideLinksViewModel: OutsideLinksViewModel[],
   linkLabelTextColor: string,
   linkLabelLineWidth: Pixels,
@@ -257,7 +258,7 @@ function getLinkTextXOffset(
 }
 
 function renderLinkLabels(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   linkLabelFontSize: Pixels,
   linkLabelLineWidth: Pixels,
   { linkLabels: allLinkLabels, labelFontSpec, valueFontSpec, strokeColor }: LinkLabelsViewModelSpec,
@@ -303,8 +304,7 @@ const midlineOffset = 0.35; // 0.35 is a [common constant](http://tavmjong.free.
 
 /** @internal */
 export function renderPartitionCanvas2d(
-  ctx: CanvasRenderingContext2D,
-  dpr: number,
+  ctx: Painter,
   {
     layout,
     width,
@@ -330,9 +330,6 @@ export function renderPartitionCanvas2d(
 
   withContext(ctx, () => {
     // set some defaults for the overall rendering
-
-    // let's set the devicePixelRatio once and for all; then we'll never worry about it again
-    ctx.scale(dpr, dpr);
 
     // all texts are currently center-aligned because
     //     - the calculations manually compute and lay out text (word) boxes, so we can choose whatever

@@ -11,6 +11,7 @@ import { buildBarStyle } from './styles/bar';
 import { withPanelTransform } from './utils/panel_transform';
 import type { SeriesKey } from '../../../../common/series_id';
 import { renderRect } from '../../../../renderers/canvas/primitives/rect';
+import type { Painter } from '../../../../renderers/painter';
 import type { Rotation } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
 import type { BarGeometry, PerPanel } from '../../../../utils/geometry';
@@ -19,8 +20,7 @@ import { getGeometryStateStyle } from '../../rendering/utils';
 
 /** @internal */
 export function renderBars(
-  ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
+  ctx: Painter,
   geoms: Array<PerPanel<BarGeometry[]>>,
   sharedStyle: SharedGeometryStateStyle,
   rotation: Rotation,
@@ -38,16 +38,7 @@ export function renderBars(
           const { x, y, width, height, color, seriesStyle: style, seriesIdentifier } = barGeometry;
           const rect = { x, y, width, height };
           const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedItems);
-          const barStyle = buildBarStyle(
-            ctx,
-            imgCanvas,
-            color,
-            style.rect,
-            style.rectBorder,
-            geometryStateStyle,
-            sharedStyle,
-            rect,
-          );
+          const barStyle = buildBarStyle(color, style.rect, style.rectBorder, geometryStateStyle, sharedStyle, rect);
           renderRect(ctx, rect, barStyle.fill, barStyle.stroke);
         }),
       { area: getPanelClipping(panel, rotation), shouldClip: true },

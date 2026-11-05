@@ -7,11 +7,12 @@
  */
 
 import type { AxisProps } from './axis_props';
+import type { Painter } from '../../../../../renderers/painter';
 import { Position as P } from '../../../../../utils/common';
 
 /** @internal */
 export function renderAxisLine(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   { axisSpec: { position: p }, size: { width, height }, axisStyle: { axisLine } }: AxisProps,
 ) {
   if (!axisLine.visible) return;

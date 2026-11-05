@@ -9,6 +9,7 @@
 import type { Layers } from './column';
 import { renderColumnBars, renderColumnTickLabels } from './column';
 import { doing, executing, filtering, mapping, pipeline } from '../../../../common/iterables';
+import type { Ctx2d } from '../../../../renderers/painter';
 import { isNil } from '../../../../utils/common';
 import type {
   NumberFormatter,
@@ -32,7 +33,7 @@ interface LoHi {
 }
 
 const renderHorizontalGridLines = (
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   config: TimeslipConfig,
   niceTicks: number[],
   yUnitScale: NumericScale,
@@ -136,7 +137,7 @@ const updateLoHi = (
 /** @internal */
 export const renderRaster =
   (
-    ctx: CanvasRenderingContext2D,
+    ctx: Ctx2d,
     config: TimeslipConfig,
     dataState: DataState,
     fadeOutPixelWidth: number,

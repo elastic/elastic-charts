@@ -13,14 +13,17 @@ import { connect } from 'react-redux';
 import { isVerticalRotation } from '../../chart_types/xy_chart/state/utils/common';
 import { colorToRgba, overrideOpacity } from '../../common/color_library_wrappers';
 import { Colors } from '../../common/colors';
-import { clearCanvas, withContext, withClip } from '../../renderers/canvas';
+import { withClip } from '../../renderers/canvas';
 import { renderRectStroke, renderRect } from '../../renderers/canvas/primitives/rect';
 import type { StrokedSides } from '../../renderers/canvas/primitives/rect';
+import type { Painter } from '../../renderers/painter';
 import { BrushAxis } from '../../specs/brush_axis';
 import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
 import type { GlobalChartState } from '../../state/chart_state';
+import type { StageElement } from '../../state/internal_chart_renderer';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
+import { getDevicePixelRatioSelector } from '../../state/selectors/get_device_pixel_ratio';
 import { getInternalChartStateSelector } from '../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
@@ -28,8 +31,10 @@ import type { Rotation } from '../../utils/common';
 import type { Dimensions } from '../../utils/dimensions';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import type { BrushStyle } from '../../utils/themes/theme';
+import { Stage } from '../stage';
 
 interface StateProps {
+  devicePixelRatio: number;
   initialized: boolean;
   mainProjectionArea: Dimensions;
   projectionContainer: Dimensions;
@@ -51,104 +56,62 @@ const BRUSH_STROKED_SIDES = Object.freeze({
 class BrushToolComponent extends React.Component<StateProps> {
   static displayName = 'BrushTool';
 
-  private readonly devicePixelRatio: number;
+  private readonly stageRef: RefObject<StageElement> = React.createRef();
 
-  private ctx: CanvasRenderingContext2D | null;
-
-  private canvasRef: RefObject<HTMLCanvasElement>;
-
-  constructor(props: Readonly<StateProps>) {
-    super(props);
-    this.ctx = null;
-    this.devicePixelRatio = window.devicePixelRatio;
-    this.canvasRef = React.createRef();
-  }
-
-  componentDidMount() {
-    /*
-     * the DOM element has just been appended, and getContext('2d') is always non-null,
-     * so we could use a couple of ! non-null assertions but no big plus
-     */
-    this.tryCanvasContext();
-    this.drawCanvas();
-  }
-
-  componentDidUpdate() {
-    if (!this.ctx) {
-      this.tryCanvasContext();
-    }
-    if (this.props.initialized) {
-      this.drawCanvas();
-    }
-  }
-
-  render() {
-    const { initialized, isBrushAvailable, isBrushing, projectionContainer, zIndex } = this.props;
-    if (!initialized || !isBrushAvailable || !isBrushing) {
-      this.ctx = null;
-      return null;
-    }
-    const { width, height } = projectionContainer;
-    return (
-      <canvas
-        ref={this.canvasRef}
-        className="echBrushTool"
-        width={width * this.devicePixelRatio}
-        height={height * this.devicePixelRatio}
-        style={{
-          width,
-          height,
-          zIndex,
-        }}
-      />
-    );
-  }
-
-  private drawCanvas = () => {
+  private paint = (painter: Painter) => {
     const { brushEvent, mainProjectionArea, style, brushAxis, chartRotation } = this.props;
-
-    const { ctx } = this;
-    if (!ctx || !brushEvent) {
+    painter.clear(Colors.Transparent.keyword);
+    if (!brushEvent) {
       return;
     }
     const strokedSides = getBrushStrokedSides(chartRotation, brushAxis);
     const { top, left, width, height } = brushEvent;
-    withContext(ctx, () => {
-      ctx.scale(this.devicePixelRatio, this.devicePixelRatio);
-      withClip(
-        ctx,
-        {
-          x: mainProjectionArea.left,
-          y: mainProjectionArea.top,
-          width: mainProjectionArea.width,
-          height: mainProjectionArea.height,
-        },
-        () => {
-          clearCanvas(ctx, Colors.Transparent.keyword);
-          ctx.translate(mainProjectionArea.left, mainProjectionArea.top);
-          renderRect(
-            ctx,
-            { x: left, y: top, width, height },
-            { color: overrideOpacity(colorToRgba(style.fill), style.opacity) },
-            { width: 0, color: Colors.Transparent.rgba },
-          );
-          renderRectStroke(
-            ctx,
-            { x: left, y: top, width, height },
-            {
-              width: style.strokeWidth,
-              color: colorToRgba(style.stroke),
-            },
-            strokedSides,
-          );
-        },
-      );
-    });
+    withClip(
+      painter,
+      {
+        x: mainProjectionArea.left,
+        y: mainProjectionArea.top,
+        width: mainProjectionArea.width,
+        height: mainProjectionArea.height,
+      },
+      () => {
+        painter.translate(mainProjectionArea.left, mainProjectionArea.top);
+        renderRect(
+          painter,
+          { x: left, y: top, width, height },
+          { color: overrideOpacity(colorToRgba(style.fill), style.opacity) },
+          { width: 0, color: Colors.Transparent.rgba },
+        );
+        renderRectStroke(
+          painter,
+          { x: left, y: top, width, height },
+          {
+            width: style.strokeWidth,
+            color: colorToRgba(style.stroke),
+          },
+          strokedSides,
+        );
+      },
+    );
   };
 
-  private tryCanvasContext() {
-    const canvas = this.canvasRef.current;
-    this.ctx = canvas && canvas.getContext('2d');
+  render() {
+    const { initialized, isBrushAvailable, isBrushing, projectionContainer, zIndex, devicePixelRatio } = this.props;
+    if (!initialized || !isBrushAvailable || !isBrushing) {
+      return null;
+    }
+    const { width, height } = projectionContainer;
+    return (
+      <Stage
+        width={width}
+        height={height}
+        devicePixelRatio={devicePixelRatio}
+        forwardStageRef={this.stageRef}
+        className="echBrushTool"
+        style={{ zIndex }}
+        paint={this.paint}
+      />
+    );
   }
 }
 
@@ -156,6 +119,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   const internalChartState = getInternalChartStateSelector(state);
   if (internalChartState === null || getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return {
+      devicePixelRatio: 1,
       initialized: false,
       projectionContainer: {
         width: 0,
@@ -180,6 +144,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   }
 
   return {
+    devicePixelRatio: getDevicePixelRatioSelector(state),
     initialized: state.specsInitialized,
     projectionContainer: internalChartState.getProjectionContainerArea(state),
     mainProjectionArea: internalChartState.getMainProjectionArea(state),
@@ -200,6 +165,7 @@ function getBrushStrokedSides(rotation: Rotation, brushAxis?: BrushAxis): Stroke
       return vertical ? BRUSH_STROKED_SIDES.TOP_BOTTOM : BRUSH_STROKED_SIDES.LEFT_RIGHT;
     case BrushAxis.Y:
       return vertical ? BRUSH_STROKED_SIDES.LEFT_RIGHT : BRUSH_STROKED_SIDES.TOP_BOTTOM;
+    case BrushAxis.Both:
     default:
       return BRUSH_STROKED_SIDES.ALL;
   }

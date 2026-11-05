@@ -22,10 +22,6 @@ jest.spyOn(commonColors, 'colorToRgba');
 const COLOR = 'aquamarine';
 
 describe('Area styles', () => {
-  // not used by the tests below (the texture path is mocked), only passed through
-  const ctx = {} as unknown as CanvasRenderingContext2D;
-  const imgCanvas = {} as unknown as HTMLCanvasElement;
-
   describe('#buildAreaStyles', () => {
     let result: Fill;
     let baseColor = COLOR;
@@ -39,7 +35,7 @@ describe('Area styles', () => {
     }
 
     beforeEach(() => {
-      result = buildAreaStyles(ctx, imgCanvas, baseColor, themeAreaStyle, geometryHighlightState);
+      result = buildAreaStyles(baseColor, themeAreaStyle, geometryHighlightState);
     });
 
     it('should call getColorFromVariant with correct args for fill', () => {
@@ -98,7 +94,7 @@ describe('Area styles', () => {
 
       it('should call getTextureStyles with params', () => {
         expect(getTextureStyles).toHaveBeenCalledTimes(1);
-        expect(getTextureStyles).toHaveBeenCalledWith(ctx, imgCanvas, baseColor, expect.anything(), texture);
+        expect(getTextureStyles).toHaveBeenCalledWith(baseColor, expect.anything(), texture);
       });
     });
 

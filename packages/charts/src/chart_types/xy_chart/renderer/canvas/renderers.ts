@@ -19,163 +19,163 @@ import { renderGridPanels, renderPanelSubstrates } from './panels/panels';
 import { renderBarValues } from './values/bar';
 import type { ReactiveChartStateProps } from './xy_chart';
 import { Colors } from '../../../../common/colors';
-import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
+import type { Painter } from '../../../../renderers/painter';
 
-/** @internal */
-export function renderXYChartCanvas2d(
-  ctx: CanvasRenderingContext2D,
-  props: ReactiveChartStateProps,
-  animationState: AnimationState,
-) {
-  function render(aCtx: AnimationContext) {
-    const imgCanvas = document.createElement('canvas');
+/**
+ * Draws one frame of an XY chart, every animated value as `aCtx` resolves it.
+ * @internal
+ */
+export function drawXYChart(painter: Painter, props: ReactiveChartStateProps, aCtx: AnimationContext) {
+  withContext(painter, () => {
+    const {
+      renderingArea,
+      chartTransform,
+      rotation,
+      geometries,
+      geometriesIndex,
+      theme: {
+        axes: sharedAxesStyle,
+        sharedStyle,
+        lineAnnotation: lineAnnotationStyle,
+        rectAnnotation: rectAnnotationStyle,
+        barSeriesStyle,
+        background,
+      },
+      highlightedItems,
+      annotationDimensions,
+      annotationSpecs,
+      perPanelAxisGeoms,
+      perPanelGridLines,
+      axesSpecs,
+      axesStyles,
+      debug,
+      panelGeoms,
+      hoveredAnnotationIds,
+      locale,
+    } = props;
 
-    withContext(ctx, () => {
-      // let's set the devicePixelRatio once and for all; then we'll never worry about it again
-      ctx.scale(props.devicePixelRatio, props.devicePixelRatio);
-      const {
-        renderingArea,
-        chartTransform,
-        rotation,
-        geometries,
-        geometriesIndex,
-        theme: {
-          axes: sharedAxesStyle,
-          sharedStyle,
-          lineAnnotation: lineAnnotationStyle,
-          rectAnnotation: rectAnnotationStyle,
-          barSeriesStyle,
-          background,
-        },
-        highlightedItems,
-        annotationDimensions,
-        annotationSpecs,
-        perPanelAxisGeoms,
-        perPanelGridLines,
-        axesSpecs,
-        axesStyles,
-        debug,
-        panelGeoms,
-        hoveredAnnotationIds,
-        locale,
-      } = props;
+    const transform = { x: renderingArea.left + chartTransform.x, y: renderingArea.top + chartTransform.y };
 
-      const transform = { x: renderingArea.left + chartTransform.x, y: renderingArea.top + chartTransform.y };
+    renderLayers(painter, [
+      () => painter.clear(Colors.Transparent.keyword),
 
-      renderLayers(ctx, [
-        () => clearCanvas(ctx, 'transparent'),
+      // render panel grid
+      () => debug && renderGridPanels(painter, transform, panelGeoms),
 
-        // render panel grid
-        () => debug && renderGridPanels(ctx, transform, panelGeoms),
+      () =>
+        renderGrids(painter, {
+          axesSpecs,
+          renderingArea,
+          perPanelGridLines,
+          axesStyles,
+          sharedAxesStyle,
+        }),
 
-        () =>
-          renderGrids(ctx, {
+      () =>
+        renderPanelSubstrates(
+          painter,
+          {
             axesSpecs,
+            perPanelAxisGeoms,
             renderingArea,
-            perPanelGridLines,
+            debug,
             axesStyles,
             sharedAxesStyle,
-          }),
+          },
+          locale,
+        ),
 
-        () =>
-          renderPanelSubstrates(
-            ctx,
-            {
-              axesSpecs,
-              perPanelAxisGeoms,
-              renderingArea,
-              debug,
-              axesStyles,
-              sharedAxesStyle,
-            },
-            locale,
-          ),
+      // rendering background annotations
+      () =>
+        renderAnnotations(
+          painter,
+          aCtx,
+          annotationDimensions,
+          annotationSpecs,
+          rotation,
+          renderingArea,
+          sharedStyle,
+          hoveredAnnotationIds,
+          lineAnnotationStyle,
+          rectAnnotationStyle,
+          true,
+        ),
 
-        // rendering background annotations
-        () =>
-          renderAnnotations(
-            ctx,
-            aCtx,
-            annotationDimensions,
-            annotationSpecs,
-            rotation,
+      // rendering bars
+      () => renderBars(painter, geometries.bars, sharedStyle, rotation, renderingArea, highlightedItems),
+
+      // rendering areas
+      () => renderAreas(painter, geometries.areas, rotation, renderingArea, highlightedItems),
+
+      // rendering lines
+      () => renderLines(painter, geometries.lines, rotation, renderingArea, highlightedItems),
+
+      // rendering bubbles
+      () => renderBubbles(painter, geometries.bubbles, sharedStyle, rotation, renderingArea, highlightedItems),
+
+      () =>
+        geometries.bars.forEach(({ value: bars, panel }) =>
+          renderBarValues(painter, {
+            bars,
+            panel,
             renderingArea,
-            sharedStyle,
-            hoveredAnnotationIds,
-            lineAnnotationStyle,
-            rectAnnotationStyle,
-            true,
-          ),
-
-        // rendering bars
-        () => renderBars(ctx, imgCanvas, geometries.bars, sharedStyle, rotation, renderingArea, highlightedItems),
-
-        // rendering areas
-        () => renderAreas(ctx, imgCanvas, geometries.areas, rotation, renderingArea, highlightedItems),
-
-        // rendering lines
-        () => renderLines(ctx, geometries.lines, rotation, renderingArea, highlightedItems),
-
-        // rendering bubbles
-        () => renderBubbles(ctx, geometries.bubbles, sharedStyle, rotation, renderingArea, highlightedItems),
-
-        () =>
-          geometries.bars.forEach(({ value: bars, panel }) =>
-            renderBarValues(ctx, {
-              bars,
-              panel,
-              renderingArea,
-              rotation,
-              debug,
-              barSeriesStyle,
-              background,
-            }),
-          ),
-
-        // rendering foreground annotations
-        () =>
-          renderAnnotations(
-            ctx,
-            aCtx,
-            annotationDimensions,
-            annotationSpecs,
             rotation,
-            renderingArea,
-            sharedStyle,
-            hoveredAnnotationIds,
-            lineAnnotationStyle,
-            rectAnnotationStyle,
-            false,
-          ),
-
-        // rendering debugger
-        () =>
-          debug &&
-          withContext(ctx, () => {
-            const { left, top, width, height } = renderingArea;
-
-            renderDebugRect(
-              ctx,
-              { x: left, y: top, width, height },
-              0,
-              { color: Colors.Transparent.rgba },
-              { color: Colors.Red.rgba, width: 4, dash: [4, 4] },
-            );
-            const voronoi = geometriesIndex.triangulation([0, 0, width, height]);
-            if (voronoi) {
-              ctx.beginPath();
-              ctx.translate(left, top);
-              ctx.setLineDash([5, 5]);
-              voronoi.render(ctx);
-              ctx.lineWidth = 1;
-              ctx.strokeStyle = 'blue';
-              ctx.stroke();
-            }
+            debug,
+            barSeriesStyle,
+            background,
           }),
-      ]);
-    });
-  }
+        ),
 
+      // rendering foreground annotations
+      () =>
+        renderAnnotations(
+          painter,
+          aCtx,
+          annotationDimensions,
+          annotationSpecs,
+          rotation,
+          renderingArea,
+          sharedStyle,
+          hoveredAnnotationIds,
+          lineAnnotationStyle,
+          rectAnnotationStyle,
+          false,
+        ),
+
+      // rendering debugger
+      () =>
+        debug &&
+        withContext(painter, () => {
+          const { left, top, width, height } = renderingArea;
+
+          renderDebugRect(
+            painter,
+            { x: left, y: top, width, height },
+            0,
+            { color: Colors.Transparent.rgba },
+            { color: Colors.Red.rgba, width: 4, dash: [4, 4] },
+          );
+          const voronoi = geometriesIndex.triangulation([0, 0, width, height]);
+          if (voronoi) {
+            painter.translate(left, top);
+            painter.setLineDash([5, 5]);
+            painter.lineWidth = 1;
+            painter.strokeStyle = 'blue';
+            // without a context, d3's voronoi renders to path data
+            painter.strokePath(voronoi.render());
+          }
+        }),
+    ]);
+  });
+}
+
+/**
+ * Renders an XY chart through the animation pool's frames.
+ * @internal
+ */
+export function renderXYChart(painter: Painter, props: ReactiveChartStateProps, animationState: AnimationState) {
+  const render = (aCtx: AnimationContext) => drawXYChart(painter, props, aCtx);
   void getAnimationPoolFn(animationState, render);
 }

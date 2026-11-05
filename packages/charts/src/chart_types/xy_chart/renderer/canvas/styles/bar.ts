@@ -27,8 +27,6 @@ import { getTextureStyles } from '../../../utils/texture';
  * @internal
  */
 export function buildBarStyle(
-  ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
   baseColor: string,
   themeRectStyle: RectStyle,
   themeRectBorderStyle: RectBorderStyle,
@@ -57,7 +55,7 @@ export function buildBarStyle(
       : geometryStateStyle.opacity;
 
   const texture = themeRectStyle.texture
-    ? getTextureStyles(ctx, imgCanvas, baseColor, textureOpacity, themeRectStyle.texture)
+    ? getTextureStyles(baseColor, textureOpacity, themeRectStyle.texture)
     : undefined;
 
   const fillColor = overrideOpacity(

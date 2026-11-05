@@ -9,6 +9,7 @@
 import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
 import type { Fill, Stroke } from '../../../../../geoms/types';
 import { renderRect } from '../../../../../renderers/canvas/primitives/rect';
+import type { Painter } from '../../../../../renderers/painter';
 import type { Rotation } from '../../../../../utils/common';
 import type { Dimensions } from '../../../../../utils/dimensions';
 import type { RectAnnotationStyle } from '../../../../../utils/themes/theme';
@@ -19,7 +20,7 @@ import { withPanelTransform } from '../utils/panel_transform';
 
 /** @internal */
 export function renderRectAnnotations(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   aCtx: AnimationContext,
   annotations: AnnotationRectProps[],
   rectStyle: RectAnnotationStyle,

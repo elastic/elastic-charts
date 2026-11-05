@@ -22,9 +22,6 @@ jest.spyOn(commonColors, 'colorToRgba');
 const COLOR = 'aquamarine';
 
 describe('Bar styles', () => {
-  let ctx: CanvasRenderingContext2D;
-  let imgCanvas: HTMLCanvasElement;
-
   describe('#buildBarStyles', () => {
     let result: { fill: Fill; stroke: Stroke };
     let baseColor = COLOR;
@@ -57,16 +54,7 @@ describe('Bar styles', () => {
 
     describe('Default', () => {
       beforeEach(() => {
-        result = buildBarStyle(
-          ctx,
-          imgCanvas,
-          baseColor,
-          themeRectStyle,
-          themeRectBorderStyle,
-          geometryStateStyle,
-          sharedStyle,
-          rect,
-        );
+        result = buildBarStyle(baseColor, themeRectStyle, themeRectBorderStyle, geometryStateStyle, sharedStyle, rect);
       });
 
       it('should call getColorFromVariant with correct args for fill', () => {
@@ -87,16 +75,7 @@ describe('Bar styles', () => {
           const { length } = (common.getColorFromVariant as jest.Mock).mock.calls;
           return length === 1 ? fillColor : strokeColor;
         });
-        result = buildBarStyle(
-          ctx,
-          imgCanvas,
-          baseColor,
-          themeRectStyle,
-          themeRectBorderStyle,
-          geometryStateStyle,
-          sharedStyle,
-          rect,
-        );
+        result = buildBarStyle(baseColor, themeRectStyle, themeRectBorderStyle, geometryStateStyle, sharedStyle, rect);
       });
 
       it('should call colorToRgba with values from getColorFromVariant', () => {
@@ -138,8 +117,6 @@ describe('Bar styles', () => {
           return length === 1 ? fillColor : strokeColor;
         });
         result = buildBarStyle(
-          ctx,
-          imgCanvas,
           baseColor,
           themeRectStyle,
           themeRectBorderStyle,
@@ -166,8 +143,6 @@ describe('Bar styles', () => {
             strokeOpacity: undefined,
           };
           result = buildBarStyle(
-            ctx,
-            imgCanvas,
             baseColor,
             themeRectStyle,
             themeRectBorderStyle,
@@ -189,8 +164,6 @@ describe('Bar styles', () => {
         beforeEach(() => {
           themeRectBorderStyle = MockStyles.rectBorder({ visible: false });
           result = buildBarStyle(
-            ctx,
-            imgCanvas,
             baseColor,
             themeRectStyle,
             themeRectBorderStyle,
@@ -211,8 +184,6 @@ describe('Bar styles', () => {
         beforeEach(() => {
           themeRectBorderStyle = MockStyles.rectBorder({ visible: true, strokeWidth });
           result = buildBarStyle(
-            ctx,
-            imgCanvas,
             baseColor,
             themeRectStyle,
             themeRectBorderStyle,
@@ -235,16 +206,7 @@ describe('Bar styles', () => {
       beforeEach(() => {
         themeRectStyle = MockStyles.rect({ texture });
         (getTextureStyles as jest.Mock).mockReturnValue(mockTexture);
-        result = buildBarStyle(
-          ctx,
-          imgCanvas,
-          baseColor,
-          themeRectStyle,
-          themeRectBorderStyle,
-          geometryStateStyle,
-          sharedStyle,
-          rect,
-        );
+        result = buildBarStyle(baseColor, themeRectStyle, themeRectBorderStyle, geometryStateStyle, sharedStyle, rect);
       });
 
       it('should return correct texture', () => {
@@ -253,7 +215,7 @@ describe('Bar styles', () => {
 
       it('should call getTextureStyles with params', () => {
         expect(getTextureStyles).toHaveBeenCalledTimes(1);
-        expect(getTextureStyles).toHaveBeenCalledWith(ctx, imgCanvas, baseColor, expect.anything(), texture);
+        expect(getTextureStyles).toHaveBeenCalledWith(baseColor, expect.anything(), texture);
       });
     });
   });

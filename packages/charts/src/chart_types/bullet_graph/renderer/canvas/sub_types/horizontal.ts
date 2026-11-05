@@ -10,6 +10,7 @@ import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import type { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { renderRectStroke } from '../../../../../renderers/canvas/primitives/rect';
+import type { Painter } from '../../../../../renderers/painter';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
 import type { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
@@ -29,7 +30,7 @@ import {
 
 /** @internal */
 export function horizontalBullet(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,

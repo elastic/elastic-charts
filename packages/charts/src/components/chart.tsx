@@ -29,6 +29,7 @@ import { updateChartTitles, updateParentDimensions } from '../state/actions/char
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
 import { createChartStore, type GlobalChartState } from '../state/chart_state';
+import type { StageElement } from '../state/internal_chart_renderer';
 import { getChartContainerUpdateStateSelector } from '../state/selectors/chart_container_updates';
 import { getInternalChartStateSelector, chartSelectorsRegistry } from '../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
@@ -72,7 +73,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   private chartContainerRef: React.RefObject<HTMLDivElement>;
 
-  private chartStageRef: React.RefObject<HTMLCanvasElement>;
+  private chartStageRef: React.RefObject<StageElement>;
 
   constructor(props: ChartProps) {
     super(props);

@@ -20,16 +20,12 @@ import { getTextureStyles } from '../../../utils/texture';
  * Returns the rendering properties for an area. If a fill color is specified in the
  * themeAreaStyle parameter, it will override the provided seriesColor.
  *
- * @param ctx - The canvas rendering context.
- * @param imgCanvas - The image canvas used for textures.
  * @param seriesColor - The base color or color variant for the area.
  * @param themeAreaStyle - The style configuration for the area.
  * @param highlightState - The current highlight state of the geometry.
  * @internal
  */
 export function buildAreaStyles(
-  ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
   seriesColor: Color | ColorVariant,
   themeAreaStyle: AreaStyle,
   highlightState: GeometryHighlightState,
@@ -43,8 +39,6 @@ export function buildAreaStyles(
 
   const texture = themeAreaStyle.texture
     ? getTextureStyles(
-        ctx,
-        imgCanvas,
         seriesColor,
         1,
         getTextureStyleFromFocusState(themeAreaStyle.texture, themeAreaStyle.dimmed, highlightState),

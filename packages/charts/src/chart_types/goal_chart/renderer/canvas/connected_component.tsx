@@ -8,17 +8,19 @@
 
 import type { Dispatch } from '@reduxjs/toolkit';
 import { bindActionCreators } from '@reduxjs/toolkit';
-import type { MouseEvent, RefObject } from 'react';
+import type { RefObject } from 'react';
 import React from 'react';
 import { connect } from 'react-redux';
 
 import { renderCanvas2d } from './canvas_renderers';
 import type { Color } from '../../../../common/colors';
 import { Colors } from '../../../../common/colors';
-import type { Rectangle } from '../../../../common/geometry';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
+import { Stage } from '../../../../components/stage';
+import type { Painter } from '../../../../renderers/painter';
 import { onChartRendered } from '../../../../state/actions/chart';
 import type { GlobalChartState } from '../../../../state/chart_state';
+import type { StageElement } from '../../../../state/internal_chart_renderer';
 import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -26,23 +28,18 @@ import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_dev
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import type { Dimensions } from '../../../../utils/dimensions';
 import { GoalSemanticDescription } from '../../components/goal_semantic_description';
-import type { BandViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { nullShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { BandViewModel } from '../../layout/types/viewmodel_types';
 import type { Mark } from '../../layout/viewmodel/geoms';
-import { initialBoundingBox } from '../../layout/viewmodel/geoms';
-import { geometries, getPrimitiveGeoms } from '../../state/selectors/geometries';
+import { getPrimitiveGeoms } from '../../state/selectors/geometries';
 import { getFirstTickValueSelector, getGoalChartSemanticDataSelector } from '../../state/selectors/get_goal_chart_data';
-import { getCaptureBoundingBox } from '../../state/selectors/picked_shapes';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
-  geometries: ShapeViewModel;
   geoms: Mark[];
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
   bandLabels: BandViewModel[];
   firstValue: number;
-  captureBoundingBox: Rectangle;
   background: Color;
   devicePixelRatio: number;
 }
@@ -52,7 +49,7 @@ interface ReactiveChartDispatchProps {
 }
 
 interface ReactiveChartOwnProps {
-  forwardStageRef: RefObject<HTMLCanvasElement>;
+  forwardStageRef: RefObject<StageElement>;
 }
 
 type Props = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
@@ -60,56 +57,9 @@ type Props = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChar
 class Component extends React.Component<Props> {
   static displayName = 'Goal';
 
-  // firstRender = true; // this'll be useful for stable resizing of treemaps
-  private ctx: CanvasRenderingContext2D | null;
-
-  constructor(props: Readonly<Props>) {
-    super(props);
-    this.ctx = null;
-  }
-
-  componentDidMount() {
-    /*
-     * the DOM element has just been appended, and getContext('2d') is always non-null,
-     * so we could use a couple of ! non-null assertions but no big plus
-     */
-    this.tryCanvasContext();
-    if (this.props.initialized) {
-      this.drawCanvas();
-      this.props.onChartRendered();
-    }
-  }
-
-  componentDidUpdate() {
-    if (!this.ctx) {
-      this.tryCanvasContext();
-    }
-    if (this.props.initialized) {
-      this.drawCanvas();
-      this.props.onChartRendered();
-    }
-  }
-
-  handleMouseMove(e: MouseEvent<HTMLCanvasElement>) {
-    const {
-      initialized,
-      chartContainerDimensions: { width, height },
-      forwardStageRef,
-      geometries,
-      captureBoundingBox: capture,
-    } = this.props;
-    if (!forwardStageRef.current || !this.ctx || !initialized || width === 0 || height === 0) {
-      return;
-    }
-    const picker = geometries.pickQuads;
-    const box = forwardStageRef.current.getBoundingClientRect();
-    const { chartCenter } = geometries;
-    const x = e.clientX - box.left;
-    const y = e.clientY - box.top;
-    if (capture.x0 <= x && x <= capture.x1 && capture.y0 <= y && y <= capture.y1) {
-      return picker(x - chartCenter.x, y - chartCenter.y);
-    }
-  }
+  private paint = (painter: Painter) => {
+    renderCanvas2d(painter, this.props.geoms, this.props.background);
+  };
 
   render() {
     const {
@@ -119,40 +69,26 @@ class Component extends React.Component<Props> {
       a11ySettings,
       bandLabels,
       firstValue,
+      devicePixelRatio,
+      onChartRendered: rendered,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
     }
     return (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
-        <canvas
-          ref={forwardStageRef}
-          className="echCanvasRenderer"
-          width={width * this.props.devicePixelRatio}
-          height={height * this.props.devicePixelRatio}
-          onMouseMove={this.handleMouseMove.bind(this)}
-          style={{
-            width,
-            height,
-          }}
-          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-          role="presentation"
+        <Stage
+          width={width}
+          height={height}
+          devicePixelRatio={devicePixelRatio}
+          forwardStageRef={forwardStageRef}
+          paint={this.paint}
+          onRendered={rendered}
         />
         <ScreenReaderSummary />
         <GoalSemanticDescription bandLabels={bandLabels} firstValue={firstValue} {...a11ySettings} />
       </figure>
     );
-  }
-
-  private tryCanvasContext() {
-    const canvas = this.props.forwardStageRef.current;
-    this.ctx = canvas && canvas.getContext('2d');
-  }
-
-  private drawCanvas() {
-    if (this.ctx) {
-      renderCanvas2d(this.ctx, this.props.devicePixelRatio, this.props.geoms, this.props.background);
-    }
   }
 }
 
@@ -166,7 +102,6 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
-  geometries: nullShapeViewModel(),
   geoms: [],
   chartContainerDimensions: {
     width: 0,
@@ -177,7 +112,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   bandLabels: [],
   firstValue: 0,
-  captureBoundingBox: initialBoundingBox(),
   background: Colors.Transparent.keyword,
   devicePixelRatio: 1,
 };
@@ -188,13 +122,11 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
   return {
     initialized: true,
-    geometries: geometries(state),
     chartContainerDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
     bandLabels: getGoalChartSemanticDataSelector(state),
     firstValue: getFirstTickValueSelector(state),
     geoms: getPrimitiveGeoms(state),
-    captureBoundingBox: getCaptureBoundingBox(state),
     background: getChartThemeSelector(state).background.color,
     devicePixelRatio: getDevicePixelRatioSelector(state),
   };

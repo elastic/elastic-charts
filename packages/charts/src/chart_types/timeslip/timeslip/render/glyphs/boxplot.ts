@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import type { Ctx2d } from '../../../../../renderers/painter';
 import type { NumericScale } from '../../../projections/scale';
 
 const goldenRatio = 1.618; // todo move it into constants
@@ -15,7 +16,7 @@ export type BoxplotRow = { boxplot: { lower: number; q1: number; q2: number; q3:
 
 /** @internal */
 export function renderBoxplotGlyph(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   barMaxWidthPixels: number,
   barX: number,
   leftShortfall: number,

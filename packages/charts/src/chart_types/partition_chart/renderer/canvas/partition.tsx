@@ -8,7 +8,7 @@
 
 import type { Dispatch } from '@reduxjs/toolkit';
 import { bindActionCreators } from '@reduxjs/toolkit';
-import type { MouseEvent, RefObject } from 'react';
+import type { RefObject } from 'react';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -18,11 +18,13 @@ import { renderWrappedPartitionCanvas2d } from './canvas_wrapped_renderers';
 import type { Color } from '../../../../common/colors';
 import { Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
-import { clearCanvas } from '../../../../renderers/canvas';
+import { Stage } from '../../../../components/stage';
+import type { Painter } from '../../../../renderers/painter';
 import type { SettingsSpec } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
 import type { LegendPath } from '../../../../state/actions/legend';
 import type { GlobalChartState } from '../../../../state/chart_state';
+import type { StageElement } from '../../../../state/internal_chart_renderer';
 import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
@@ -34,10 +36,8 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import type { Dimensions } from '../../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { PartitionStyle } from '../../../../utils/themes/partition';
-import { MODEL_KEY } from '../../layout/config';
-import type { QuadViewModel, ShapeViewModel, SmallMultiplesDescriptors } from '../../layout/types/viewmodel_types';
+import type { ShapeViewModel, SmallMultiplesDescriptors } from '../../layout/types/viewmodel_types';
 import { hasMostlyRTLLabels, nullShapeViewModel } from '../../layout/types/viewmodel_types';
-import { INPUT_KEY } from '../../layout/utils/group_by_rollup';
 import { isSimpleLinear, isWaffle } from '../../layout/viewmodel/viewmodel';
 import { partitionDrilldownFocus, partitionMultiGeometries } from '../../state/selectors/geometries';
 import { ScreenReaderPartitionTable } from '../dom/screen_reader_partition_table';
@@ -75,7 +75,7 @@ interface ReactiveChartDispatchProps {
 }
 
 interface ReactiveChartOwnProps {
-  forwardStageRef: RefObject<HTMLCanvasElement>;
+  forwardStageRef: RefObject<StageElement>;
 }
 
 type PartitionProps = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
@@ -87,65 +87,52 @@ class PartitionComponent extends React.Component<PartitionProps> {
   static displayName = 'Partition';
 
   // firstRender = true; // this will be useful for stable resizing of treemaps
-  private ctx: CanvasRenderingContext2D | null;
-  private animationState: AnimationState;
+  private readonly animationState: AnimationState = { rafId: NaN };
 
-  constructor(props: Readonly<PartitionProps>) {
-    super(props);
-    this.ctx = null;
-    this.animationState = { rafId: NaN };
+  componentWillUnmount() {
+    window.cancelAnimationFrame(this.animationState.rafId);
   }
 
-  componentDidMount() {
-    /*
-     * the DOM element has just been appended, and getContext('2d') is always non-null,
-     * so we could use a couple of ! non-null assertions but no big plus
-     */
-    this.tryCanvasContext();
-    if (this.props.initialized) {
-      this.drawCanvas();
-      this.props.onChartRendered();
-    }
-  }
-
-  componentDidUpdate() {
-    if (!this.ctx) {
-      this.tryCanvasContext();
-    }
-    if (this.props.initialized) {
-      this.drawCanvas();
-      this.props.onChartRendered();
-    }
-  }
-
-  handleMouseMove(e: MouseEvent<HTMLCanvasElement>) {
+  private paint = (painter: Painter) => {
     const {
-      initialized,
-      chartDimensions: { width, height },
-      forwardStageRef,
+      background,
+      multiGeometries,
+      geometriesFoci,
+      highlightedPaths,
+      legendStrategy,
+      flatLegend,
+      partitionStyle,
     } = this.props;
-    const [focus] = this.props.geometriesFoci;
-    if (!forwardStageRef.current || !this.ctx || !initialized || width === 0 || height === 0 || !focus) {
-      return;
-    }
-    const picker = this.props.geometries.pickQuads;
-    const box = forwardStageRef.current.getBoundingClientRect();
-    const { diskCenter } = this.props.geometries;
-    const x = e.clientX - box.left - diskCenter.x;
-    const y = e.clientY - box.top - diskCenter.y;
-    const pickedShapes: Array<QuadViewModel> = picker(x, y, focus);
-    const datumIndices = new Set();
-    pickedShapes.forEach((shape) => {
-      const node = shape[MODEL_KEY];
-      const shapeNode = node.children.find(([key]) => key === shape.dataName);
-      if (shapeNode) {
-        const indices = shapeNode[1][INPUT_KEY] || [];
-        indices.forEach((i) => datumIndices.add(i));
+    painter.clear(background);
+    multiGeometries.forEach((geometries, geometryIndex) => {
+      const focus = geometriesFoci[geometryIndex];
+      if (!focus) return;
+
+      if (isSimpleLinear(geometries.layout, geometries.style.fillLabel, geometries.layers)) {
+        renderLinearPartitionCanvas2d(
+          painter,
+          geometries,
+          focus,
+          highlightedPaths,
+          legendStrategy,
+          flatLegend,
+          partitionStyle,
+          this.animationState,
+        );
+      } else if (isWaffle(geometries.layout)) {
+        renderWrappedPartitionCanvas2d(
+          painter,
+          geometries,
+          highlightedPaths,
+          legendStrategy,
+          flatLegend,
+          partitionStyle,
+        );
+      } else {
+        renderPartitionCanvas2d(painter, geometries, highlightedPaths, legendStrategy, flatLegend, partitionStyle);
       }
     });
-
-    return pickedShapes; // placeholder
-  }
+  };
 
   render() {
     const {
@@ -153,82 +140,25 @@ class PartitionComponent extends React.Component<PartitionProps> {
       initialized,
       chartDimensions: { width, height },
       a11ySettings,
-      debug,
       isRTL,
+      devicePixelRatio,
+      onChartRendered: rendered,
     } = this.props;
     return width === 0 || height === 0 || !initialized ? null : (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
-        <canvas
+        <Stage
+          width={width}
+          height={height}
+          devicePixelRatio={devicePixelRatio}
           dir={isRTL ? 'rtl' : 'ltr'}
-          ref={forwardStageRef}
-          className="echCanvasRenderer"
-          width={width * this.props.devicePixelRatio}
-          height={height * this.props.devicePixelRatio}
-          onMouseMove={this.handleMouseMove.bind(this)}
-          style={{
-            width,
-            height,
-          }}
-          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-          role="presentation"
-        >
-          <ScreenReaderSummary />
-          {!debug && <ScreenReaderPartitionTable />}
-        </canvas>
-        {debug && <ScreenReaderPartitionTable />}
+          forwardStageRef={forwardStageRef}
+          paint={this.paint}
+          onRendered={rendered}
+        />
+        <ScreenReaderSummary />
+        <ScreenReaderPartitionTable />
       </figure>
     );
-  }
-
-  private drawCanvas() {
-    if (this.ctx) {
-      const { ctx, props } = this;
-      const { devicePixelRatio } = props;
-      clearCanvas(ctx, props.background);
-      props.multiGeometries.forEach((geometries, geometryIndex) => {
-        const focus = props.geometriesFoci[geometryIndex];
-        if (!focus) return;
-
-        if (isSimpleLinear(geometries.layout, geometries.style.fillLabel, geometries.layers)) {
-          renderLinearPartitionCanvas2d(
-            ctx,
-            devicePixelRatio,
-            geometries,
-            focus,
-            props.highlightedPaths,
-            props.legendStrategy,
-            props.flatLegend,
-            props.partitionStyle,
-            this.animationState,
-          );
-        } else if (isWaffle(geometries.layout)) {
-          renderWrappedPartitionCanvas2d(
-            ctx,
-            devicePixelRatio,
-            geometries,
-            props.highlightedPaths,
-            props.legendStrategy,
-            props.flatLegend,
-            props.partitionStyle,
-          );
-        } else {
-          renderPartitionCanvas2d(
-            ctx,
-            devicePixelRatio,
-            geometries,
-            props.highlightedPaths,
-            props.legendStrategy,
-            props.flatLegend,
-            props.partitionStyle,
-          );
-        }
-      });
-    }
-  }
-
-  private tryCanvasContext() {
-    const canvas = this.props.forwardStageRef.current;
-    this.ctx = canvas && canvas.getContext('2d');
   }
 }
 

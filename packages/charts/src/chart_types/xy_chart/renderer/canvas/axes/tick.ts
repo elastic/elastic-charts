@@ -10,6 +10,7 @@ import type { AxisProps } from './axis_props';
 import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import type { Line } from '../../../../../geoms/types';
 import { renderMultiLine } from '../../../../../renderers/canvas/primitives/line';
+import type { Painter } from '../../../../../renderers/painter';
 import { Position } from '../../../../../utils/common';
 import type { AxisTick } from '../../../axes/ticks/types';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
@@ -18,7 +19,7 @@ import { HIDE_MINOR_TIME_GRID, OUTSIDE_RANGE_TOLERANCE } from '../../../utils/gr
 const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the bottom alignment; todo consider measuring
 
 /** @internal */
-export function renderTicks(ctx: CanvasRenderingContext2D, ticks: AxisTick[], axisProps: AxisProps) {
+export function renderTicks(ctx: Painter, ticks: AxisTick[], axisProps: AxisProps) {
   const tickLines = ticks.reduce<Line[]>((acc, tick) => {
     const line = getTickLineCoordinates(tick, axisProps);
     if (line) acc.push(line);

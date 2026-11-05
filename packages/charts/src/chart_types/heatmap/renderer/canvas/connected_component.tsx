@@ -16,8 +16,11 @@ import { renderHeatmapCanvas2d } from './canvas_renderers';
 import type { Color } from '../../../../common/colors';
 import { Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
+import { Stage } from '../../../../components/stage';
+import type { Painter } from '../../../../renderers/painter';
 import { onChartRendered } from '../../../../state/actions/chart';
 import type { GlobalChartState } from '../../../../state/chart_state';
+import type { StageElement } from '../../../../state/internal_chart_renderer';
 import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -58,57 +61,20 @@ interface ReactiveChartDispatchProps {
 }
 
 interface ReactiveChartOwnProps {
-  forwardStageRef: RefObject<HTMLCanvasElement>;
+  forwardStageRef: RefObject<StageElement>;
 }
 
 type Props = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
 class Component extends React.Component<Props> {
   static displayName = 'Heatmap';
 
-  // firstRender = true; // this will be useful for stable resizing of treemaps
-  private ctx: CanvasRenderingContext2D | null;
-
-  constructor(props: Readonly<Props>) {
-    super(props);
-    this.ctx = null;
-  }
-
-  componentDidMount() {
-    /*
-     * the DOM element has just been appended, and getContext('2d') is always non-null,
-     * so we could use a couple of ! non-null assertions but no big plus
-     */
-    this.tryCanvasContext();
-    if (this.props.initialized) {
-      this.drawCanvas();
-      this.props.onChartRendered();
-    }
-  }
-
   shouldComponentUpdate(nextProps: ReactiveChartStateProps) {
     return !deepEqual(this.props, nextProps);
   }
 
-  componentDidUpdate() {
-    if (!this.ctx) {
-      this.tryCanvasContext();
-    }
-    if (this.props.initialized) {
-      this.drawCanvas();
-      this.props.onChartRendered();
-    }
-  }
-
-  private tryCanvasContext() {
-    const canvas = this.props.forwardStageRef.current;
-    this.ctx = canvas && canvas.getContext('2d');
-  }
-
-  private drawCanvas() {
-    if (this.ctx) {
-      renderHeatmapCanvas2d(this.ctx, this.props.devicePixelRatio, this.props);
-    }
-  }
+  private paint = (painter: Painter) => {
+    renderHeatmapCanvas2d(painter, this.props);
+  };
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   render() {
@@ -117,23 +83,21 @@ class Component extends React.Component<Props> {
       chartContainerDimensions: { width, height },
       forwardStageRef,
       a11ySettings,
+      devicePixelRatio,
+      onChartRendered: rendered,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
     }
     return (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
-        <canvas
-          ref={forwardStageRef}
-          className="echCanvasRenderer"
-          width={width * this.props.devicePixelRatio}
-          height={height * this.props.devicePixelRatio}
-          style={{
-            width,
-            height,
-          }}
-          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-          role="presentation"
+        <Stage
+          width={width}
+          height={height}
+          devicePixelRatio={devicePixelRatio}
+          forwardStageRef={forwardStageRef}
+          paint={this.paint}
+          onRendered={rendered}
         />
         <ScreenReaderSummary />
       </figure>

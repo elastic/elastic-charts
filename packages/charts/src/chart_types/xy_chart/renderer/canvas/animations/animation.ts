@@ -33,6 +33,14 @@ export const AnimationSpeed = Object.freeze({
 /** @public */
 export type AnimationSpeed = $Keys<typeof AnimationSpeed>;
 
+/**
+ * A duration or delay option in milliseconds, named speeds resolved.
+ * @internal
+ */
+export function resolveTime(time?: TimeMs | AnimationSpeed): TimeMs | undefined {
+  return typeof time === 'string' ? AnimationSpeed[time] : time;
+}
+
 /** @internal */
 export class Animation {
   private initial: AnimatedValue;

@@ -34,7 +34,7 @@ import { SpecType } from '../../specs/spec_type'; // kept as long-winded import 
 import { onChartRendered } from '../../state/actions/chart';
 import { onPointerMove } from '../../state/actions/mouse';
 import type { GlobalChartState } from '../../state/chart_state';
-import type { BackwardRef } from '../../state/internal_chart_renderer';
+import type { BackwardRef, StageElement } from '../../state/internal_chart_renderer';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
@@ -175,7 +175,7 @@ interface DispatchProps {
 
 interface OwnProps {
   containerRef: BackwardRef;
-  forwardStageRef: RefObject<HTMLCanvasElement>;
+  forwardStageRef: RefObject<StageElement>;
 }
 
 type FlameProps = StateProps & DispatchProps & OwnProps;
@@ -1349,7 +1349,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const canvas = this.props.forwardStageRef.current;
     const glCanvas = this.glCanvasRef.current;
 
-    this.ctx = canvas && canvas.getContext('2d');
+    this.ctx = canvas instanceof HTMLCanvasElement ? canvas.getContext('2d') : null;
     this.glContext = glCanvas && glCanvas.getContext('webgl2');
 
     this.ensurePickTexture();
@@ -1420,6 +1420,6 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
 const FlameChartLayers = connect(mapStateToProps, mapDispatchToProps)(FlameComponent);
 
 /** @internal */
-export const FlameWithTooltip = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
+export const FlameWithTooltip = (containerRef: BackwardRef, forwardStageRef: RefObject<StageElement>) => (
   <FlameChartLayers forwardStageRef={forwardStageRef} containerRef={containerRef} />
 );

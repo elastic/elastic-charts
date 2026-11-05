@@ -8,6 +8,7 @@
 
 import { RGBATupleToString } from '../../../common/color_library_wrappers';
 import type { Fill, ResolvedLinearGradient } from '../../../geoms/types';
+import type { Ctx2d, GradientHandle, Painter } from '../../painter';
 
 /**
  * Bounding box of the shape being filled, in the current canvas coordinate space.
@@ -22,10 +23,10 @@ export interface FillBoundingBox {
 }
 
 function buildCanvasGradient(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   gradient: ResolvedLinearGradient,
   { x0, y0, x1, y1 }: FillBoundingBox,
-): CanvasGradient {
+): GradientHandle {
   const width = x1 - x0;
   const height = y1 - y0;
   const canvasGradient = ctx.createLinearGradient(
@@ -40,13 +41,19 @@ function buildCanvasGradient(
   return canvasGradient;
 }
 
-/** @internal */
-export function applyCanvasFill(ctx: CanvasRenderingContext2D, fill: Fill, bbox: FillBoundingBox, paint: () => void) {
+/**
+ * Paints with the fill's color or gradient, then once more with its texture when it has one.
+ * @internal
+ */
+export function applyCanvasFill(ctx: Painter, fill: Fill, bbox: FillBoundingBox, paint: () => void) {
   ctx.fillStyle = fill.gradient ? buildCanvasGradient(ctx, fill.gradient, bbox) : RGBATupleToString(fill.color);
   paint();
 
   if (fill.texture) {
-    ctx.fillStyle = fill.texture.pattern;
-    paint();
+    const pattern = ctx.createPattern(fill.texture);
+    if (pattern) {
+      ctx.fillStyle = pattern;
+      paint();
+    }
   }
 }

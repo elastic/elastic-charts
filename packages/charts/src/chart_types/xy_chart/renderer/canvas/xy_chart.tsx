@@ -13,13 +13,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import type { AnimationState } from './animations/animation';
-import { renderXYChartCanvas2d } from './renderers';
+import { renderXYChart } from './renderers';
 import { hasMostlyRTL } from './utils/has_mostly_rtl';
 import type { SeriesKey } from '../../../../common/series_id';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
+import { Stage } from '../../../../components/stage';
+import type { Painter } from '../../../../renderers/painter';
 import { settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import type { GlobalChartState } from '../../../../state/chart_state';
+import type { StageElement } from '../../../../state/internal_chart_renderer';
 import type { PanelGeoms } from '../../../../state/selectors/compute_panels';
 import { computePanelsSelectors } from '../../../../state/selectors/compute_panels';
 import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
@@ -86,7 +89,7 @@ interface ReactiveChartDispatchProps {
 }
 
 interface ReactiveChartOwnProps {
-  forwardCanvasRef: RefObject<HTMLCanvasElement>;
+  forwardCanvasRef: RefObject<StageElement>;
 }
 
 type XYChartProps = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
@@ -94,39 +97,10 @@ type XYChartProps = ReactiveChartStateProps & ReactiveChartDispatchProps & React
 class XYChartComponent extends React.Component<XYChartProps> {
   static displayName = 'XYChart';
 
-  private ctx: CanvasRenderingContext2D | null;
-  private animationState: AnimationState;
-
-  constructor(props: Readonly<XYChartProps>) {
-    super(props);
-    this.ctx = null;
-    this.animationState = { rafId: NaN, pool: new Map() };
-  }
-
-  componentDidMount() {
-    /*
-     * the DOM element has just been appended, and getContext('2d') is always non-null,
-     * so we could use a couple of ! non-null assertions but no big plus
-     */
-    this.tryCanvasContext();
-    if (this.props.initialized) {
-      this.drawCanvas();
-      this.props.onChartRendered();
-    }
-  }
+  private readonly animationState: AnimationState = { rafId: NaN, pool: new Map() };
 
   shouldComponentUpdate(nextProps: ReactiveChartStateProps) {
     return !deepEqual(this.props, nextProps);
-  }
-
-  componentDidUpdate() {
-    if (!this.ctx) {
-      this.tryCanvasContext();
-    }
-    if (this.props.initialized) {
-      this.drawCanvas();
-      this.props.onChartRendered();
-    }
   }
 
   componentWillUnmount() {
@@ -134,16 +108,9 @@ class XYChartComponent extends React.Component<XYChartProps> {
     this.animationState.pool.clear();
   }
 
-  private drawCanvas() {
-    if (this.ctx) {
-      renderXYChartCanvas2d(this.ctx, this.props, this.animationState);
-    }
-  }
-
-  private tryCanvasContext() {
-    const canvas = this.props.forwardCanvasRef.current;
-    this.ctx = canvas && canvas.getContext('2d');
-  }
+  private paint = (painter: Painter) => {
+    renderXYChart(painter, this.props, this.animationState);
+  };
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   render() {
@@ -155,28 +122,25 @@ class XYChartComponent extends React.Component<XYChartProps> {
       a11ySettings,
       debug,
       isRTL,
+      devicePixelRatio,
+      onChartRendered: rendered,
     } = this.props;
 
     if (!initialized || isChartEmpty) {
-      this.ctx = null;
       return null;
     }
 
     return (
       <>
         <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
-          <canvas
+          <Stage
+            width={width}
+            height={height}
+            devicePixelRatio={devicePixelRatio}
             dir={isRTL ? 'rtl' : 'ltr'}
-            ref={forwardCanvasRef}
-            className="echCanvasRenderer"
-            width={width * this.props.devicePixelRatio}
-            height={height * this.props.devicePixelRatio}
-            style={{
-              width,
-              height,
-            }}
-            // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-            role="presentation"
+            forwardStageRef={forwardCanvasRef}
+            paint={this.paint}
+            onRendered={rendered}
           />
           {!debug && <ScreenReaderSummary />}
         </figure>
@@ -239,11 +203,11 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   devicePixelRatio: 1,
 };
 
-const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
-    return DEFAULT_PROPS;
-  }
-
+/**
+ * The props the XY renderer draws from. The chart state must be initialized.
+ * @internal
+ */
+export const getXYChartRendererProps = (state: GlobalChartState): ReactiveChartStateProps => {
   const { geometries, geometriesIndex } = computeSeriesGeometriesSelector(state);
   const { debug, locale } = getSettingsSpecSelector(state);
   const perPanelAxisGeoms = computePerPanelAxesGeomsSelector(state);
@@ -274,6 +238,9 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     devicePixelRatio: getDevicePixelRatioSelector(state),
   };
 };
+
+const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps =>
+  getInternalIsInitializedSelector(state) === InitStatus.Initialized ? getXYChartRendererProps(state) : DEFAULT_PROPS;
 
 /** @internal */
 export const XYChart = connect(mapStateToProps, mapDispatchToProps)(XYChartComponent);

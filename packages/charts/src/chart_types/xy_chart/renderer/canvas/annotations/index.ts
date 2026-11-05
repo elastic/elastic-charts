@@ -8,6 +8,7 @@
 
 import { renderLineAnnotations } from './lines';
 import { renderRectAnnotations } from './rect';
+import type { Painter } from '../../../../../renderers/painter';
 import type { Rotation } from '../../../../../utils/common';
 import type { Dimensions } from '../../../../../utils/dimensions';
 import type { AnnotationId } from '../../../../../utils/ids';
@@ -31,7 +32,7 @@ import type { AnimationContext } from '../animations';
 
 /** @internal */
 export function renderAnnotations(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   aCtx: AnimationContext,
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
   annotationSpecs: AnnotationSpec[],

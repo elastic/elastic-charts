@@ -9,17 +9,20 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 import { bindActionCreators } from '@reduxjs/toolkit';
 import type { RefObject } from 'react';
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { renderBullet } from './bullet';
 import { BulletMetricGrid } from './metric_grid';
 import type { Color } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
+import { Stage } from '../../../../components/stage';
+import type { Painter } from '../../../../renderers/painter';
 import type { ElementOverListener } from '../../../../specs';
 import { settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import type { GlobalChartState } from '../../../../state/chart_state';
+import type { StageElement } from '../../../../state/internal_chart_renderer';
 import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -67,7 +70,7 @@ interface DispatchProps {
 }
 
 interface OwnProps {
-  forwardStageRef: RefObject<HTMLCanvasElement>;
+  forwardStageRef: RefObject<StageElement>;
 }
 
 type Props = DispatchProps & StateProps & OwnProps;
@@ -92,36 +95,11 @@ const Component = (props: Props) => {
     devicePixelRatio,
   } = props;
 
-  useLayoutEffect(() => {
-    const ctx = forwardStageRef.current?.getContext('2d');
-
-    if (!initialized || !ctx) {
-      return;
-    }
-
-    renderBullet(ctx, devicePixelRatio, {
-      debug,
-      spec,
-      a11y,
-      dimensions,
-      activeValues,
-      style,
-      backgroundColor,
-    });
-    dispatchOnChartRendered();
-  }, [
-    initialized,
-    devicePixelRatio,
-    forwardStageRef,
-    debug,
-    spec,
-    a11y,
-    dimensions,
-    activeValues,
-    style,
-    backgroundColor,
-    dispatchOnChartRendered,
-  ]);
+  const paint = useCallback(
+    (painter: Painter) =>
+      renderBullet(painter, { debug, spec, a11y, dimensions, activeValues, style, backgroundColor }),
+    [debug, spec, a11y, dimensions, activeValues, style, backgroundColor],
+  );
 
   if (!initialized || size.width === 0 || size.height === 0 || !spec) {
     return null;
@@ -133,17 +111,15 @@ const Component = (props: Props) => {
       aria-describedby={a11y.descriptionId}
       style={{ width: '100%', height: '100%' }}
     >
-      <canvas
-        ref={forwardStageRef}
-        className="echCanvasRenderer"
-        width={size.width * devicePixelRatio}
-        height={size.height * devicePixelRatio}
-        style={size}
-        // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-        role="presentation"
-      >
-        <ScreenReaderSummary />
-      </canvas>
+      <Stage
+        width={size.width}
+        height={size.height}
+        devicePixelRatio={devicePixelRatio}
+        forwardStageRef={forwardStageRef}
+        paint={paint}
+        onRendered={dispatchOnChartRendered}
+      />
+      <ScreenReaderSummary />
       {dimensions.shouldRenderMetric && (
         <div className="echBulletAsMetric" style={{ width: '100%', height: '100%' }}>
           <BulletMetricGrid

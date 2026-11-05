@@ -15,6 +15,7 @@ import type { Radian } from '../../../../common/geometry';
 import type { SeriesKey } from '../../../../common/series_id';
 import type { Rect } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
+import type { Ctx2d, Painter } from '../../../../renderers/painter';
 import type { Rotation } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
 import {
@@ -27,7 +28,7 @@ import type { Point } from '../../../../utils/point';
 
 /** @internal */
 export function renderLines(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   lines: Array<PerPanel<LineGeometry>>,
   rotation: Rotation,
   renderingArea: Dimensions,
@@ -80,12 +81,7 @@ export function renderLines(
   });
 }
 
-function renderLine(
-  ctx: CanvasRenderingContext2D,
-  line: LineGeometry,
-  clippings: Rect,
-  highlightState: GeometryHighlightState,
-) {
+function renderLine(ctx: Painter, line: LineGeometry, clippings: Rect, highlightState: GeometryHighlightState) {
   const { color, transform, style, clippedRanges, shouldClip } = line;
   const lineStroke = buildLineStyles(color, style.line, highlightState);
 
@@ -112,7 +108,7 @@ function renderLine(
  * @internal
  */
 export function drawPolarLine(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   angle: Radian,
   radius: number,
   length: number,

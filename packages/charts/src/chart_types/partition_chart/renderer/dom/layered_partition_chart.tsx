@@ -11,7 +11,7 @@ import React from 'react';
 
 import { HighlighterFromHover } from './highlighter_hover';
 import { Tooltip } from '../../../../components/tooltip/tooltip';
-import type { BackwardRef, ChartRenderer } from '../../../../state/internal_chart_renderer';
+import type { BackwardRef, ChartRenderer, StageElement } from '../../../../state/internal_chart_renderer';
 import { Partition } from '../canvas/partition';
 
 /**
@@ -20,10 +20,7 @@ import { Partition } from '../canvas/partition';
  * - Canvas dimming: Used for legend hover (consistent with bar/line/area charts)
  * @internal
  */
-export const chartRenderer: ChartRenderer = (
-  containerRef: BackwardRef,
-  forwardStageRef: RefObject<HTMLCanvasElement>,
-) => (
+export const chartRenderer: ChartRenderer = (containerRef: BackwardRef, forwardStageRef: RefObject<StageElement>) => (
   <>
     <Tooltip getChartContainerRef={containerRef} />
     <Partition forwardStageRef={forwardStageRef} />

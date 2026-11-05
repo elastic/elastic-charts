@@ -11,13 +11,10 @@ import React from 'react';
 
 import { BulletRenderer } from './renderer/canvas';
 import { Tooltip } from '../../components/tooltip/tooltip';
-import type { BackwardRef, ChartRenderer } from '../../state/internal_chart_renderer';
+import type { BackwardRef, ChartRenderer, StageElement } from '../../state/internal_chart_renderer';
 
 /** @internal */
-export const chartRenderer: ChartRenderer = (
-  containerRef: BackwardRef,
-  forwardStageRef: RefObject<HTMLCanvasElement>,
-) => (
+export const chartRenderer: ChartRenderer = (containerRef: BackwardRef, forwardStageRef: RefObject<StageElement>) => (
   <>
     <BulletRenderer forwardStageRef={forwardStageRef} />
     <Tooltip getChartContainerRef={containerRef} />

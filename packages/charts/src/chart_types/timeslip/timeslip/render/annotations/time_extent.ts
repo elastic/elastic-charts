@@ -6,12 +6,14 @@
  * Side Public License, v 1.
  */
 
+import type { Ctx2d } from '../../../../../renderers/painter';
+
 /** @internal */
 export type LocaleOptions = Parameters<Date['toLocaleString']>[1];
 
 /** @internal */
 export function renderTimeExtentAnnotation(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   config: { locale: string; monospacedFontShorthand: string; subduedFontColor: string },
   localeOptions: LocaleOptions,
   { domainFrom, domainTo }: { domainFrom: number; domainTo: number },

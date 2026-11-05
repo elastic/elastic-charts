@@ -9,6 +9,7 @@
 import type { TextFont } from '../../../../../renderers/canvas/primitives/text';
 import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRect } from '../../../../../renderers/canvas/utils/debug';
+import type { Painter } from '../../../../../renderers/painter';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position } from '../../../../../utils/common';
 import { outerPad } from '../../../../../utils/dimensions';
@@ -34,7 +35,7 @@ const titleFontDefaults: Omit<TextFont, 'fontFamily' | 'textColor' | 'fontSize'>
 
 /** @internal */
 export function renderTitle(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   panel: boolean,
   {
     size: { width, height },

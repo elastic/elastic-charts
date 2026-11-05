@@ -12,12 +12,15 @@ import type { RefObject } from 'react';
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
 /**
+ * The element a chart draws on.
+ * @internal
+ */
+export type StageElement = HTMLCanvasElement;
+
+/**
  * Returns a JSX element with the chart rendered (legend excluded)
  * @param containerRef
  * @param forwardStageRef
  * @internal
  */
-export type ChartRenderer = (
-  containerRef: BackwardRef,
-  forwardStageRef: RefObject<HTMLCanvasElement>,
-) => JSX.Element | null;
+export type ChartRenderer = (containerRef: BackwardRef, forwardStageRef: RefObject<StageElement>) => JSX.Element | null;

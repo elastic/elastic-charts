@@ -12,6 +12,7 @@ import type { PointObject, Radian, Rectangle } from '../../../../common/geometry
 import type { Font } from '../../../../common/text_utils';
 import { cssFontShorthand } from '../../../../common/text_utils';
 import type { CanvasRenderer } from '../../../../renderers/canvas';
+import type { Ctx2d } from '../../../../renderers/painter';
 import { measureText } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Dimensions } from '../../../../utils/dimensions';
 import type { Theme } from '../../../../utils/themes/theme';
@@ -20,7 +21,7 @@ import type { BulletViewModel } from '../types/viewmodel_types';
 
 /** @internal */
 export interface Mark {
-  boundingBoxes: (ctx: CanvasRenderingContext2D) => Rectangle[];
+  boundingBoxes: (ctx: Ctx2d) => Rectangle[];
   render: CanvasRenderer;
 }
 
@@ -68,7 +69,7 @@ export class Section implements Mark {
         ];
   }
 
-  render(ctx: CanvasRenderingContext2D) {
+  render(ctx: Ctx2d) {
     ctx.beginPath();
     ctx.lineWidth = this.lineWidth;
     ctx.strokeStyle = this.strokeStyle;
@@ -161,7 +162,7 @@ export class Arc implements Mark {
     return Number.isFinite(box.x0) ? [box] : [];
   }
 
-  render(ctx: CanvasRenderingContext2D) {
+  render(ctx: Ctx2d) {
     ctx.beginPath();
     ctx.lineWidth = this.lineWidth;
     ctx.strokeStyle = this.strokeStyle;
@@ -204,13 +205,13 @@ export class Text implements Mark {
     this.capturePad = capturePad;
   }
 
-  setCanvasTextState(ctx: CanvasRenderingContext2D) {
+  setCanvasTextState(ctx: Ctx2d) {
     ctx.textAlign = this.textAlign;
     ctx.textBaseline = this.textBaseline;
     ctx.font = cssFontShorthand(this.fontShape, this.fontSize);
   }
 
-  boundingBoxes(ctx: CanvasRenderingContext2D) {
+  boundingBoxes(ctx: Ctx2d) {
     if (this.text.length === 0) return [];
     const box = measureText(ctx)(this.text, this.fontShape, this.fontSize);
     return [
@@ -223,7 +224,7 @@ export class Text implements Mark {
     ];
   }
 
-  render(ctx: CanvasRenderingContext2D) {
+  render(ctx: Ctx2d) {
     this.setCanvasTextState(ctx);
     ctx.beginPath();
     ctx.fillStyle = this.fillStyle;

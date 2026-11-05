@@ -7,16 +7,14 @@
  */
 
 import type { Color } from '../../../../common/colors';
-import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { renderLayers, withContext } from '../../../../renderers/canvas';
+import type { Painter } from '../../../../renderers/painter';
 import type { Mark } from '../../layout/viewmodel/geoms';
 
 /** @internal */
-export function renderCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, geomObjects: Mark[], background: Color) {
+export function renderCanvas2d(ctx: Painter, geomObjects: Mark[], background: Color) {
   withContext(ctx, () => {
     // set some defaults for the overall rendering
-
-    // let's set the devicePixelRatio once and for all; then we'll never worry about it again
-    ctx.scale(dpr, dpr);
 
     // all texts are currently center-aligned because
     //     - the calculations manually compute and lay out text (word) boxes, so we can choose whatever
@@ -31,7 +29,7 @@ export function renderCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, geomO
 
     renderLayers(ctx, [
       // clear the canvas
-      () => clearCanvas(ctx, background),
+      () => ctx.clear(background),
       () => geomObjects.forEach((mark) => withContext(ctx, () => mark.render(ctx))),
     ]);
   });

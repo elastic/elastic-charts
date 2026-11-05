@@ -17,18 +17,18 @@ import { timeslipRender } from './timeslip/timeslip_render';
 import type { TimeslipSpec, GetData } from './timeslip_api';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
+import { createFrameSurface } from '../../renderers/frame_surface';
 import type { SettingsSpec } from '../../specs';
 import { TooltipType } from '../../specs';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onChartRendered } from '../../state/actions/chart';
 import type { GlobalChartState } from '../../state/chart_state';
-import type { BackwardRef, ChartRenderer } from '../../state/internal_chart_renderer';
+import type { BackwardRef, ChartRenderer, StageElement } from '../../state/internal_chart_renderer';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import type { Size } from '../../utils/dimensions';
-// @ts-ignore until it becomes TS
 
 interface StateProps {
   getData: GetData;
@@ -47,40 +47,46 @@ interface DispatchProps {
 
 interface OwnProps {
   containerRef: BackwardRef;
-  forwardStageRef: RefObject<HTMLCanvasElement>;
+  forwardStageRef: RefObject<StageElement>;
 }
 
 type TimeslipProps = StateProps & DispatchProps & OwnProps;
 
+/**
+ * Timeslip runs its own frame loop and listens on its stage element itself, so it draws through a
+ * `FrameSurface` (a canvas, or an svg committed frame by frame) rather than the React driven `Stage`.
+ */
 class TimeslipComponent extends React.Component<TimeslipProps> {
   static displayName = 'Timeslip';
 
-  // DOM API Canvas2d and WebGL resources
-  private ctx: CanvasRenderingContext2D | null = null;
+  private readonly preventWheel = (e: WheelEvent) => e.preventDefault();
 
   private loop: TimeslipLoop | null = null;
 
-  private readonly preventWheel = (e: WheelEvent) => e.preventDefault();
-
-  /** starts the frame loop on the canvas, stopping a running one first */
-  private startLoop() {
+  /** starts the frame loop on the stage element currently in the DOM */
+  private startFrameLoop() {
     this.loop?.stop();
     this.loop = null;
-    const canvas = this.props.forwardStageRef.current;
-    if (canvas && this.ctx) this.loop = timeslipRender(canvas, this.ctx, this.props.getData);
+    const element = this.props.forwardStageRef.current;
+    const surface = element && createFrameSurface(element);
+    if (surface) this.loop = timeslipRender(surface, this.props.getData);
   }
 
   componentDidMount = () => {
-    /*
-     * the DOM element has just been appended, and getContext('2d') is always non-null,
-     * so we could use a couple of ! non-null assertions but no big plus
-     */
-    this.tryCanvasContext();
-    this.drawCanvas();
+    this.props.onRenderChange(true); // emit API callback
     this.props.onChartRendered();
     this.props.containerRef().current?.addEventListener('wheel', this.preventWheel, { passive: false });
-    this.startLoop();
+    this.startFrameLoop();
   };
+
+  componentDidUpdate(prevProps: TimeslipProps) {
+    if (prevProps.getData !== this.props.getData) {
+      this.startFrameLoop();
+    } else if (prevProps.chartDimensions !== this.props.chartDimensions) {
+      // a new size resets the canvas bitmap, and the loop only renders on interaction or a window resize
+      this.loop?.render();
+    }
+  }
 
   componentWillUnmount() {
     this.props.containerRef().current?.removeEventListener('wheel', this.preventWheel);
@@ -88,23 +94,13 @@ class TimeslipComponent extends React.Component<TimeslipProps> {
     this.loop = null;
   }
 
-  componentDidUpdate = (prevProps: TimeslipProps) => {
-    if (!this.ctx) this.tryCanvasContext();
-    if (prevProps.getData !== this.props.getData) {
-      this.startLoop();
-    } else if (prevProps.chartDimensions !== this.props.chartDimensions) {
-      // a new size resets the canvas bitmap, and the loop only renders on interaction or a window resize
-      this.loop?.render();
-    }
-  };
-
   render = () => {
     const {
       forwardStageRef,
       chartDimensions: { width: requestedWidth, height: requestedHeight },
       a11ySettings,
     } = this.props;
-    // the canvas fills the content area exactly: a size rounded up (as the WebGL flame chart does for its textures)
+    // the stage fills the content area exactly: a size rounded up (as the WebGL flame chart does for its textures)
     // overflowed the clipped container and cropped the bottom label row and the right edge
     const width = Math.floor(requestedWidth);
     const height = Math.floor(requestedHeight);
@@ -119,37 +115,23 @@ class TimeslipComponent extends React.Component<TimeslipProps> {
       position: 'absolute',
       cursor: DEFAULT_CSS_CURSOR,
       touchAction: 'none',
+      outline: 'none',
     };
 
-    const dpr = window.devicePixelRatio; /* * this.pinchZoomScale */
-    const canvasWidth = width * dpr;
-    const canvasHeight = height * dpr;
     return (
-      <>
-        <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
-          <canvas /* Canvas2d layer */
-            ref={forwardStageRef}
-            tabIndex={0}
-            className="echCanvasRenderer"
-            width={canvasWidth}
-            height={canvasHeight}
-            style={{ ...style, outline: 'none' }}
-            // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-            role="presentation"
-          />
-        </figure>
-      </>
+      <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
+        <canvas /* Canvas2d layer */
+          ref={forwardStageRef}
+          tabIndex={0}
+          className="echCanvasRenderer"
+          width={width * window.devicePixelRatio}
+          height={height * window.devicePixelRatio}
+          style={style}
+          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+          role="presentation"
+        />
+      </figure>
     );
-  };
-
-  private drawCanvas = () => {
-    if (!this.ctx) return;
-    this.props.onRenderChange(true); // emit API callback
-  };
-
-  private tryCanvasContext = () => {
-    const canvas = this.props.forwardStageRef.current;
-    this.ctx = canvas && canvas.getContext('2d');
   };
 }
 
@@ -181,7 +163,6 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
 const TimeslipChartLayers = connect(mapStateToProps, mapDispatchToProps)(TimeslipComponent);
 
 /** @internal */
-export const chartRenderer: ChartRenderer = (
-  containerRef: BackwardRef,
-  forwardStageRef: RefObject<HTMLCanvasElement>,
-) => <TimeslipChartLayers forwardStageRef={forwardStageRef} containerRef={containerRef} />;
+export const chartRenderer: ChartRenderer = (containerRef: BackwardRef, forwardStageRef: RefObject<StageElement>) => (
+  <TimeslipChartLayers forwardStageRef={forwardStageRef} containerRef={containerRef} />
+);

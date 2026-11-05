@@ -8,6 +8,7 @@
 
 import { withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../../renderers/canvas/primitives/line';
+import type { Painter } from '../../../../renderers/painter';
 import type { Dimensions } from '../../../../utils/dimensions';
 import type { AxisStyle } from '../../../../utils/themes/theme';
 import type { LinesGrid } from '../../utils/grid_lines';
@@ -22,10 +23,7 @@ interface GridProps {
 }
 
 /** @internal */
-export function renderGrids(
-  ctx: CanvasRenderingContext2D,
-  { perPanelGridLines, renderingArea: { left, top } }: GridProps,
-) {
+export function renderGrids(ctx: Painter, { perPanelGridLines, renderingArea: { left, top } }: GridProps) {
   withContext(ctx, () => {
     ctx.translate(left, top);
     perPanelGridLines.forEach(({ lineGroups, panelAnchor: { x, y } }) => {

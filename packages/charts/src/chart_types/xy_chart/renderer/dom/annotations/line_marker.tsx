@@ -19,6 +19,7 @@ import type {
   onDOMElementLeave as onDOMElementLeaveAction,
 } from '../../../../../state/actions/dom_element';
 import { DOMElementType } from '../../../../../state/actions/dom_element';
+import type { StageElement } from '../../../../../state/internal_chart_renderer';
 import { Position, renderWithProps } from '../../../../../utils/common';
 import type { Dimensions } from '../../../../../utils/dimensions';
 import type { AnnotationLineProps } from '../../../annotations/line/types';
@@ -28,7 +29,7 @@ import type { GetAnnotationParamsFn } from '../../common/utils';
 type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'panel'> & {
   chartId: string;
   marker: AnnotationLineProps['markers'][number];
-  chartAreaRef: RefObject<HTMLCanvasElement>;
+  chartAreaRef: RefObject<StageElement>;
   chartDimensions: Dimensions;
   onDOMElementEnter: typeof onDOMElementEnterAction;
   onDOMElementLeave: typeof onDOMElementLeaveAction;

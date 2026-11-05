@@ -11,6 +11,7 @@ import { Colors } from '../../../../../common/colors';
 import { withContext } from '../../../../../renderers/canvas';
 import { renderRect } from '../../../../../renderers/canvas/primitives/rect';
 import { renderDebugRect } from '../../../../../renderers/canvas/utils/debug';
+import type { Painter } from '../../../../../renderers/painter';
 import type { PanelGeoms } from '../../../../../state/selectors/compute_panels';
 import { Position } from '../../../../../utils/common';
 import type { AxisId } from '../../../../../utils/ids';
@@ -21,7 +22,7 @@ import { renderAxis } from '../axes';
 import type { AxesProps, AxisProps } from '../axes/axis_props';
 
 /** @internal */
-export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: chartY }: Point, panels: PanelGeoms) {
+export function renderGridPanels(ctx: Painter, { x: chartX, y: chartY }: Point, panels: PanelGeoms) {
   panels.forEach(({ width, height, panelAnchor: { x: panelX, y: panelY } }) =>
     withContext(ctx, () =>
       renderRect(
@@ -34,7 +35,7 @@ export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: 
   );
 }
 
-function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps, locale: string) {
+function renderPanel(ctx: Painter, props: AxisProps, locale: string) {
   const { size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary, multilayerTimeAxis } = props;
   const { position } = axisSpec;
   const x = anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x;
@@ -66,7 +67,7 @@ function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps, locale: st
 }
 
 /** @internal */
-export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: AxesProps, locale: string) {
+export function renderPanelSubstrates(ctx: Painter, props: AxesProps, locale: string) {
   const { axesSpecs, perPanelAxisGeoms, axesStyles, sharedAxesStyle, debug, renderingArea } = props;
   const seenAxesTitleIds = new Set<AxisId>();
 

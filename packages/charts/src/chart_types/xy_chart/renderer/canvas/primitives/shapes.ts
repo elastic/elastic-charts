@@ -11,13 +11,14 @@ import type { Circle, Fill, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
 import { applyCanvasFill } from '../../../../../renderers/canvas/primitives/fill';
 import { MIN_STROKE_WIDTH } from '../../../../../renderers/canvas/primitives/line';
+import type { Painter } from '../../../../../renderers/painter';
 import { degToRad } from '../../../../../utils/common';
 import type { PointShape } from '../../../../../utils/themes/theme';
 import { ShapeRendererFn } from '../../shapes_paths';
 
 /** @internal */
 export function renderShape(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   shape: PointShape,
   { x, y, radius }: Circle,
   fill: Fill,
@@ -29,16 +30,16 @@ export function renderShape(
     ctx.rotate(degToRad(rotation));
     ctx.beginPath();
 
-    const path = new Path2D(pathFn(radius));
+    const path = pathFn(radius);
 
     const bbox = { x0: -radius, y0: -radius, x1: radius, y1: radius };
-    applyCanvasFill(ctx, fill, bbox, () => ctx.fill(path));
+    applyCanvasFill(ctx, fill, bbox, () => ctx.fillPath(path));
 
     if (width > MIN_STROKE_WIDTH) {
       ctx.strokeStyle = RGBATupleToString(strokeColor);
       ctx.lineWidth = width;
       ctx.setLineDash(dash ?? []);
-      ctx.stroke(path);
+      ctx.strokePath(path);
     }
   });
 }

@@ -15,6 +15,7 @@ import { withPanelTransform } from './utils/panel_transform';
 import type { SeriesKey } from '../../../../common/series_id';
 import type { Rect } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
+import type { Painter } from '../../../../renderers/painter';
 import type { Rotation } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
 import {
@@ -27,8 +28,7 @@ import type { AreaStyle } from '../../../../utils/themes/theme';
 
 /** @internal */
 export function renderAreas(
-  ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
+  ctx: Painter,
   areas: Array<PerPanel<AreaGeometry>>,
   rotation: Rotation,
   renderingArea: Dimensions,
@@ -54,20 +54,19 @@ export function renderAreas(
   );
 
   withContext(ctx, () => {
-    renderAreasGroup(ctx, imgCanvas, rotation, renderingArea, sortedRenderingAreas.default.stacked, 'default');
-    renderAreasGroup(ctx, imgCanvas, rotation, renderingArea, sortedRenderingAreas.default.nonStacked, 'default');
+    renderAreasGroup(ctx, rotation, renderingArea, sortedRenderingAreas.default.stacked, 'default');
+    renderAreasGroup(ctx, rotation, renderingArea, sortedRenderingAreas.default.nonStacked, 'default');
 
-    renderAreasGroup(ctx, imgCanvas, rotation, renderingArea, sortedRenderingAreas.dimmed.stacked, 'dimmed');
-    renderAreasGroup(ctx, imgCanvas, rotation, renderingArea, sortedRenderingAreas.dimmed.nonStacked, 'dimmed');
+    renderAreasGroup(ctx, rotation, renderingArea, sortedRenderingAreas.dimmed.stacked, 'dimmed');
+    renderAreasGroup(ctx, rotation, renderingArea, sortedRenderingAreas.dimmed.nonStacked, 'dimmed');
 
-    renderAreasGroup(ctx, imgCanvas, rotation, renderingArea, sortedRenderingAreas.focused.stacked, 'focused');
-    renderAreasGroup(ctx, imgCanvas, rotation, renderingArea, sortedRenderingAreas.focused.nonStacked, 'focused');
+    renderAreasGroup(ctx, rotation, renderingArea, sortedRenderingAreas.focused.stacked, 'focused');
+    renderAreasGroup(ctx, rotation, renderingArea, sortedRenderingAreas.focused.nonStacked, 'focused');
   });
 }
 
 function renderAreasGroup(
-  ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
+  ctx: Painter,
   rotation: Rotation,
   renderingArea: Dimensions,
   areas: PerPanel<AreaGeometry>[],
@@ -76,14 +75,10 @@ function renderAreasGroup(
   areas.forEach(({ panel, value: geom }) => {
     const clippings = getPanelClipping(panel, rotation);
     if (geom.style.area.visible) {
-      withPanelTransform(
-        ctx,
-        panel,
-        rotation,
-        renderingArea,
-        () => renderArea(ctx, imgCanvas, geom, clippings, highlighedState),
-        { area: clippings, shouldClip: true },
-      );
+      withPanelTransform(ctx, panel, rotation, renderingArea, () => renderArea(ctx, geom, clippings, highlighedState), {
+        area: clippings,
+        shouldClip: true,
+      });
     }
 
     if (geom.style.line.visible) {
@@ -118,15 +113,9 @@ function renderAreasGroup(
   });
 }
 
-function renderArea(
-  ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
-  geometry: AreaGeometry,
-  clippings: Rect,
-  highlightState: GeometryHighlightState,
-) {
+function renderArea(ctx: Painter, geometry: AreaGeometry, clippings: Rect, highlightState: GeometryHighlightState) {
   const { area, color, transform, style, clippedRanges, shouldClip, bbox } = geometry;
-  const areaFill = buildAreaStyles(ctx, imgCanvas, color, style.area, highlightState);
+  const areaFill = buildAreaStyles(color, style.area, highlightState);
 
   // the fitted area inherits the main area's fill/texture/gradient unless explicitly overridden,
   const fitAreaFillThemeStyle: AreaStyle = {
@@ -138,7 +127,7 @@ function renderArea(
     gradient: style.fit.area.gradient ?? style.area.gradient,
     dimmed: style.area.dimmed,
   };
-  const fitAreaFill = buildAreaStyles(ctx, imgCanvas, color, fitAreaFillThemeStyle, highlightState);
+  const fitAreaFill = buildAreaStyles(color, fitAreaFillThemeStyle, highlightState);
 
   renderAreaPath(
     ctx,
@@ -154,7 +143,7 @@ function renderArea(
 }
 
 function renderAreaLines(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   geometry: AreaGeometry,
   clippings: Rect,
   highlightState: GeometryHighlightState,

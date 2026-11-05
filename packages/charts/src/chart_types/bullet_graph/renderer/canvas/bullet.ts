@@ -9,10 +9,10 @@
 import { angularBullet, horizontalBullet, verticalBullet } from './sub_types';
 import type { Color } from '../../../../common/colors';
 import { Colors } from '../../../../common/colors';
-import type { Ratio } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';
-import { withContext, clearCanvas } from '../../../../renderers/canvas';
+import { withContext } from '../../../../renderers/canvas';
 import { renderDebugRect, renderDebugPoint } from '../../../../renderers/canvas/utils/debug';
+import type { Painter } from '../../../../renderers/painter';
 import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
 import type { ActiveValue } from '../../selectors/get_active_values';
 import type { BulletDimensions } from '../../selectors/get_panel_dimensions';
@@ -38,8 +38,7 @@ import { needsBarBorder } from '../../utils/color';
 
 /** @internal */
 export function renderBullet(
-  ctx: CanvasRenderingContext2D,
-  dpr: Ratio,
+  ctx: Painter,
   props: {
     debug: boolean;
     spec?: BulletSpec;
@@ -57,8 +56,7 @@ export function renderBullet(
     const valueFont = getValueFont(style.fontFamily);
     const targetFont = getTargetFont(style.fontFamily);
 
-    ctx.scale(dpr, dpr);
-    clearCanvas(ctx, backgroundColor);
+    ctx.clear(backgroundColor);
 
     // clear only if need to render metric or no spec available
     if (!spec || dimensions.shouldRenderMetric) {

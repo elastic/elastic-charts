@@ -11,6 +11,7 @@ import { renderShape } from './primitives/shapes';
 import { buildLineStyles } from './styles/line';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { MockPointGeometry } from '../../../../mocks/geometries';
+import type { Painter } from '../../../../renderers/painter';
 import type { GeometryHighlightState } from '../../../../utils/geometry';
 import { DARK_THEME } from '../../../../utils/themes/dark_theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
@@ -25,7 +26,7 @@ const renderPoint = (pointStyle: PointStyle, state: GeometryHighlightState) => {
     ...MockPointGeometry.default({ color: seriesColor }),
     style: buildPointGeometryStyles(seriesColor, pointStyle),
   };
-  renderPoints({} as CanvasRenderingContext2D, [point], state, pointStyle, 1.5, 100, 20, true);
+  renderPoints({} as Painter, [point], state, pointStyle, 1.5, 100, 20, true);
   const [, , , fill, stroke] = jest.mocked(renderShape).mock.calls[0]!;
   return { fill, stroke };
 };

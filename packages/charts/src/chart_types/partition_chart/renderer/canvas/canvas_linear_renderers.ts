@@ -9,6 +9,7 @@
 import type { AnimationState, ContinuousDomainFocus } from './partition';
 import { multiplyColorOpacity } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
+import type { Painter } from '../../../../renderers/painter';
 import type { LegendPath } from '../../../../state/actions/legend';
 import { getColorFromVariant } from '../../../../utils/common';
 import { getDimmedColor } from '../../../../utils/themes/dimmed_colors';
@@ -24,8 +25,7 @@ const MAX_PADDING_RATIO = 0.25;
 
 /** @internal */
 export function renderLinearPartitionCanvas2d(
-  ctx: CanvasRenderingContext2D,
-  dpr: number,
+  ctx: Painter,
   {
     style: { sectorLineWidth: padding },
     quadViewModel,
@@ -86,7 +86,6 @@ export function renderLinearPartitionCanvas2d(
     ctx.save();
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
-    ctx.scale(dpr, dpr);
     ctx.translate(diskCenter.x, diskCenter.y);
     ctx.clearRect(0, 0, width, height);
 

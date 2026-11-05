@@ -10,6 +10,7 @@ import type { Color } from '../../../../../common/colors';
 import type { Radian } from '../../../../../common/geometry';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { renderDebugPoint } from '../../../../../renderers/canvas/utils/debug';
+import type { Painter } from '../../../../../renderers/painter';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
 import type { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
@@ -39,7 +40,7 @@ function getTickLabelBox(angle: Radian, radius: number, width: number) {
 
 /** @internal */
 export function angularBullet(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   dimensions: BulletPanelDimensions,
   style: BulletStyle,
   backgroundColor: Color,

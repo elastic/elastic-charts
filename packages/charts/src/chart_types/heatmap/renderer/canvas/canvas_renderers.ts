@@ -9,16 +9,17 @@
 import type { ReactiveChartStateProps } from './connected_component';
 import { renderHeatmapDebugElements } from './debug';
 import { getColorBandStyle, getGeometryStateStyle } from './utils';
-import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../../renderers/canvas/primitives/line';
 import { renderRect } from '../../../../renderers/canvas/primitives/rect';
 import type { TextFont } from '../../../../renderers/canvas/primitives/text';
 import { renderText, wrapLines } from '../../../../renderers/canvas/primitives/text';
+import type { Painter } from '../../../../renderers/painter';
 import { radToDeg } from '../../../../utils/common';
 import { horizontalPad } from '../../../../utils/dimensions';
 
 /** @internal */
-export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, props: ReactiveChartStateProps) {
+export function renderHeatmapCanvas2d(ctx: Painter, props: ReactiveChartStateProps) {
   const { theme } = props.geometries;
   const { heatmapViewModels } = props.geometries;
   const {
@@ -35,9 +36,6 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
   withContext(ctx, () => {
     // set some defaults for the overall rendering
 
-    // let's set the devicePixelRatio once and for all; then we'll never worry about it again
-    ctx.scale(dpr, dpr);
-
     // all texts are currently center-aligned because
     //     - the calculations manually compute and lay out text (word) boxes, so we can choose whatever
     //     - but center/middle has mathematical simplicity and the most unassuming thing
@@ -53,7 +51,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
     // ctx.scale(1, -1);
 
     renderLayers(ctx, [
-      () => clearCanvas(ctx, background),
+      () => ctx.clear(background),
 
       () => {
         // Grid

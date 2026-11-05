@@ -12,6 +12,7 @@ import type { Font, TextAlign, TextBaseline } from '../../../../../common/text_u
 import type { Rect } from '../../../../../geoms/types';
 import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRect } from '../../../../../renderers/canvas/utils/debug';
+import type { Painter } from '../../../../../renderers/painter';
 import type { Rotation } from '../../../../../utils/common';
 import { HorizontalAlignment, VerticalAlignment } from '../../../../../utils/common';
 import type { Dimensions } from '../../../../../utils/dimensions';
@@ -38,7 +39,7 @@ const CHART_DIRECTION: Record<string, Rotation> = {
 };
 
 /** @internal */
-export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesProps) {
+export function renderBarValues(ctx: Painter, props: BarValuesProps) {
   const { bars, debug, rotation, renderingArea, barSeriesStyle, panel, background } = props;
   const { fontFamily, fontStyle, fill, alignment } = barSeriesStyle.displayValue;
   bars.forEach((bar) => {

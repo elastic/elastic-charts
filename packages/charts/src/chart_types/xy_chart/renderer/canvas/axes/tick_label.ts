@@ -10,6 +10,7 @@ import type { AxisProps } from './axis_props';
 import type { TextFont } from '../../../../../renderers/canvas/primitives/text';
 import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRectCenterRotated } from '../../../../../renderers/canvas/utils/debug';
+import type { Painter } from '../../../../../renderers/painter';
 import { HorizontalAlignment, Position, VerticalAlignment } from '../../../../../utils/common';
 import type { Point } from '../../../../../utils/point';
 import { getTickLabelPosition, rotateVector, type ResolvedHorizontalAlign } from '../../../axes/ticks/geometry';
@@ -30,7 +31,7 @@ function getTextAnchorX(horizontalAlign: ResolvedHorizontalAlign, textWidth: num
 
 /** @internal */
 export function renderTickLabel(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   tick: AxisTick,
   showTicks: boolean,
   { axisSpec, dimension, size, debug, axisStyle }: AxisProps,

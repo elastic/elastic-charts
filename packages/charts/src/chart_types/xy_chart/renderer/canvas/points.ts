@@ -12,6 +12,7 @@ import { withPanelTransform } from './utils/panel_transform';
 import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
 import type { SeriesKey } from '../../../../common/series_id';
 import type { Circle, Fill, Stroke } from '../../../../geoms/types';
+import type { Painter } from '../../../../renderers/painter';
 import type { Rotation } from '../../../../utils/common';
 import { getColorFromVariant } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
@@ -25,7 +26,7 @@ import { isolatedPointRadius } from '../../rendering/points';
  * @internal
  */
 export function renderPoints(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   points: PointGeometry[],
   highlightState: GeometryHighlightState,
   pointStyle: PointStyle,
@@ -93,7 +94,7 @@ export function renderPoints(
  * @internal
  */
 export function renderPointGroup(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   points: PointGeometry[],
   geometryStateStyles: Record<SeriesKey, GeometryStateStyle>,
   rotation: Rotation,

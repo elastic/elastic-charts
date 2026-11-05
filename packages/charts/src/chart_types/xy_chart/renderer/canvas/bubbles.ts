@@ -9,6 +9,7 @@
 import { renderPointGroup } from './points';
 import type { SeriesKey } from '../../../../common/series_id';
 import { withContext } from '../../../../renderers/canvas';
+import type { Painter } from '../../../../renderers/painter';
 import type { Rotation } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
 import type { BubbleGeometry, PerPanel } from '../../../../utils/geometry';
@@ -17,7 +18,7 @@ import { getGeometryStateStyle } from '../../rendering/utils';
 
 /** @internal */
 export function renderBubbles(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   bubbles: Array<PerPanel<BubbleGeometry>>,
   sharedStyle: SharedGeometryStateStyle,
   rotation: Rotation,

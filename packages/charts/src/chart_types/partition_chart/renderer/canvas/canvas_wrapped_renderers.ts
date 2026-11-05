@@ -7,6 +7,7 @@
  */
 
 import { multiplyColorOpacity } from '../../../../common/color_library_wrappers';
+import type { Ctx2d } from '../../../../renderers/painter';
 import type { LegendPath } from '../../../../state/actions/legend';
 import { getColorFromVariant } from '../../../../utils/common';
 import { getDimmedColor } from '../../../../utils/themes/dimmed_colors';
@@ -19,8 +20,7 @@ const MAX_PADDING_RATIO = 0.25;
 
 /** @internal */
 export function renderWrappedPartitionCanvas2d(
-  ctx: CanvasRenderingContext2D,
-  dpr: number,
+  ctx: Ctx2d,
   {
     style: { sectorLineWidth: padding },
     quadViewModel,
@@ -50,7 +50,6 @@ export function renderWrappedPartitionCanvas2d(
   ctx.textBaseline = 'middle';
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  ctx.scale(dpr, dpr);
   ctx.translate(diskCenter.x, diskCenter.y);
   ctx.clearRect(0, 0, width, height);
 

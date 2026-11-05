@@ -7,20 +7,20 @@
  */
 
 import type { Rect } from '../../../../../geoms/types';
-import type { CanvasRenderer } from '../../../../../renderers/canvas';
 import { withContext } from '../../../../../renderers/canvas';
+import type { Ctx2d } from '../../../../../renderers/painter';
 import type { Rotation } from '../../../../../utils/common';
 import { degToRad } from '../../../../../utils/common';
 import type { Dimensions } from '../../../../../utils/dimensions';
 import { computeChartTransform } from '../../../state/utils/utils';
 
 /** @internal */
-export function withPanelTransform(
-  ctx: CanvasRenderingContext2D,
+export function withPanelTransform<C extends Ctx2d>(
+  ctx: C,
   panel: Dimensions,
   rotation: Rotation,
   renderingArea: Dimensions,
-  fn: CanvasRenderer,
+  fn: (ctx: C) => void,
   clippings?: {
     area: Rect;
     shouldClip?: boolean;
