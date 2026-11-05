@@ -12,6 +12,8 @@ import classNames from 'classnames';
 import type { CSSProperties, FC, PropsWithChildren } from 'react';
 import React from 'react';
 
+import { Chart } from '@elastic/charts';
+
 import type { StoryGlobals, StoryParameters } from './types';
 import { ThemeId, ThemeIdProvider, BackgroundIdProvider } from './use_base_theme';
 
@@ -40,6 +42,8 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
   } = globals.toggles ?? {};
   const { markdown, resize } = parameters;
   const colorMode = themeId.includes('light') ? 'light' : 'dark';
+  // the Renderer toolbar button (manager.tsx) selects the chart renderer for every chart of the story
+  Chart.defaultProps = { ...Chart.defaultProps, renderer: globals.renderer === 'svg' ? 'svg' : 'canvas' };
 
   return (
     <EuiProvider colorMode={colorMode}>

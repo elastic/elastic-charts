@@ -29,7 +29,12 @@ export type StoryParameters = SBParameters &
      */
     resize?: boolean | CSSProperties;
   };
-export type StoryGlobals = ThemeGlobals & BackgroundGlobals & TogglesGlobals;
+export type StoryGlobals = ThemeGlobals &
+  BackgroundGlobals &
+  TogglesGlobals & {
+    /** chart renderer, selected with the Renderer toolbar button (see manager.tsx) */
+    renderer?: 'canvas' | 'svg';
+  };
 
 export type StoryContext = Omit<SBStoryContext, 'globals'> & {
   /**

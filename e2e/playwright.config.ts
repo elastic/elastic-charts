@@ -10,6 +10,8 @@ import type { PlaywrightTestConfig } from '@playwright/test';
 import { expect } from '@playwright/test';
 import * as pwExpect from 'expect-playwright';
 
+import { snapshotDir } from './e2e_config';
+
 expect.extend(pwExpect.matchers);
 
 const isCI = process.env.CI === 'true';
@@ -50,7 +52,9 @@ const config: PlaywrightTestConfig = {
   forbidOnly: isCI,
   timeout: 10 * 1000,
   preserveOutput: 'failures-only',
-  snapshotDir: 'screenshots',
+  // one `chrome` project for both renderers (the project name is part of the snapshot file names), each
+  // renderer with its own baseline directory, see e2e_config.ts
+  snapshotDir,
   testDir: 'tests',
   outputDir: 'test_failures',
   fullyParallel: true, // all tests must be independent

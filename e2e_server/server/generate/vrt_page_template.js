@@ -88,12 +88,13 @@ root.render(<App />);
 function pageTemplate(imports, routes, urls) {
   return `
 import React, { PropsWithChildren, FC, Suspense, CSSProperties } from 'react';
+import { Chart } from '@elastic/charts';
 import { EuiProvider } from '@elastic/eui';
 import classNames from 'classnames';
 
 import { checkpointRandomNumberGenerators } from '@elastic/charts/src/mocks/utils';
 import { ThemeIdProvider, BackgroundIdProvider } from '../../storybook/use_base_theme';
-import { useGlobalsParameters } from '../server/mocks/use_global_parameters';
+import { getGlobalParams, useGlobalsParameters } from '../server/mocks/use_global_parameters';
 import { StoryContext } from '../../storybook/types';
 
 /**
@@ -128,6 +129,11 @@ export function VRTPage() {
     setParams,
   } = useGlobalsParameters();
   const urlParams = new URL(window.location.toString()).searchParams;
+  // Test infra only: \`globals=renderer:svg\` (set by e2e with \`--renderer=svg\`) selects the chart
+  // renderer. Read synchronously from the url, not from the \`toggles\` state which is set only after the lazy
+  // story import, and on every render since \`__vrtNavigate\` remounts this page with a new url.
+  const svgRenderer = getGlobalParams(urlParams).renderer === 'svg';
+  Chart.defaultProps = { ...Chart.defaultProps, renderer: svgRenderer ? 'svg' : 'canvas' };
   const colorMode = (themeId ?? '').includes('light') ? 'light' : 'dark';
   const getStoryContext = (title, name): StoryContext => ({
     globals: {
