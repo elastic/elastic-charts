@@ -121,7 +121,7 @@ class TimeslipComponent extends React.Component<TimeslipProps> {
     return (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <canvas /* Canvas2d layer */
-          ref={forwardStageRef}
+          ref={forwardStageRef as RefObject<HTMLCanvasElement>}
           tabIndex={0}
           className="echCanvasRenderer"
           width={width * window.devicePixelRatio}

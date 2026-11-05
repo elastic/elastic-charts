@@ -10,7 +10,12 @@ import type { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 import { onChartRendered } from './actions/chart';
-import { updateParentDimensions, updateChartTitles, updateDevicePixelRatio } from './actions/chart_settings';
+import {
+  updateParentDimensions,
+  updateChartTitles,
+  updateDevicePixelRatio,
+  updateRenderer,
+} from './actions/chart_settings';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from './actions/colors';
 import { onExternalPointerEvent } from './actions/events';
 import { upsertSpec, removeSpec, specParsed, specUnmounted } from './actions/specs';
@@ -28,6 +33,7 @@ import {
 import { getInitialPointerState } from './utils/get_initial_pointer_state';
 import { getInitialTooltipState } from './utils/get_initial_tooltip_state';
 import type { Color } from '../common/colors';
+import type { RendererType } from '../renderers/painter';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/default_settings_spec';
 import type { Spec } from '../specs/spec_type';
 import { deepEqual } from '../utils/fast_deep_equal';
@@ -78,6 +84,9 @@ const handleChartSettingsActions = (builder: ActionReducerMapBuilder<ChartSliceS
     })
     .addCase(updateDevicePixelRatio, (state, action) => {
       state.devicePixelRatio = action.payload;
+    })
+    .addCase(updateRenderer, (state, action) => {
+      state.renderer = action.payload;
     });
 };
 
@@ -187,8 +196,8 @@ const createChartSlice = (initialState: ChartSliceState) =>
   });
 
 /** @internal */
-export const createChartStore = (chartId: string, title?: string, description?: string) => {
-  const initialState = getInitialState(chartId, title, description);
+export const createChartStore = (chartId: string, title?: string, description?: string, renderer?: RendererType) => {
+  const initialState = getInitialState(chartId, title, description, renderer);
   const chartSlice = createChartSlice(initialState);
   return configureStore({
     reducer: chartSlice.reducer,

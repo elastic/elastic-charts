@@ -17,7 +17,7 @@ import type { Color } from '../../../../common/colors';
 import { Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { Stage } from '../../../../components/stage';
-import type { Painter } from '../../../../renderers/painter';
+import type { Painter, RendererType } from '../../../../renderers/painter';
 import { onChartRendered } from '../../../../state/actions/chart';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import type { StageElement } from '../../../../state/internal_chart_renderer';
@@ -26,6 +26,7 @@ import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../stat
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_device_pixel_ratio';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { getRendererSelector } from '../../../../state/selectors/get_renderer';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Dimensions } from '../../../../utils/dimensions';
 import type { GenericDomain } from '../../../../utils/domain';
@@ -43,6 +44,8 @@ import { getPerPanelHeatmapGeometries } from '../../state/selectors/get_per_pane
 
 /** @internal */
 export interface ReactiveChartStateProps {
+  chartId: string;
+  renderer: RendererType;
   initialized: boolean;
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
@@ -83,7 +86,9 @@ class Component extends React.Component<Props> {
       chartContainerDimensions: { width, height },
       forwardStageRef,
       a11ySettings,
+      renderer,
       devicePixelRatio,
+      chartId,
       onChartRendered: rendered,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
@@ -92,9 +97,11 @@ class Component extends React.Component<Props> {
     return (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <Stage
+          renderer={renderer}
           width={width}
           height={height}
           devicePixelRatio={devicePixelRatio}
+          idPrefix={`${chartId}-heatmap`}
           forwardStageRef={forwardStageRef}
           paint={this.paint}
           onRendered={rendered}
@@ -114,6 +121,8 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
   );
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
+  chartId: '',
+  renderer: 'canvas',
   initialized: false,
   geometries: nullShapeViewModel(),
   chartContainerDimensions: { width: 0, height: 0, left: 0, top: 0 },
@@ -137,6 +146,8 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     return DEFAULT_PROPS;
   }
   return {
+    chartId: state.chartId,
+    renderer: getRendererSelector(state),
     initialized: true,
     geometries: getPerPanelHeatmapGeometries(state),
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),

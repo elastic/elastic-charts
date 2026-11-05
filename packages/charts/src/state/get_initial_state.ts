@@ -9,10 +9,16 @@
 import type { ChartSliceState } from './chart_slice_state';
 import { getInitialPointerState } from './utils/get_initial_pointer_state';
 import { getInitialTooltipState } from './utils/get_initial_tooltip_state';
+import type { RendererType } from '../renderers/painter';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/default_settings_spec';
 
 /** @internal */
-export const getInitialState = (chartId: string, title?: string, description?: string): ChartSliceState => ({
+export const getInitialState = (
+  chartId: string,
+  title?: string,
+  description?: string,
+  renderer: RendererType = 'canvas',
+): ChartSliceState => ({
   chartId,
   title,
   description,
@@ -48,4 +54,5 @@ export const getInitialState = (chartId: string, title?: string, description?: s
     top: 0,
   },
   devicePixelRatio: typeof window === 'undefined' ? 1 : window.devicePixelRatio,
+  renderer,
 });

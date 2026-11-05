@@ -18,7 +18,7 @@ import { hasMostlyRTL } from './utils/has_mostly_rtl';
 import type { SeriesKey } from '../../../../common/series_id';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { Stage } from '../../../../components/stage';
-import type { Painter } from '../../../../renderers/painter';
+import type { Painter, RendererType } from '../../../../renderers/painter';
 import { settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import type { GlobalChartState } from '../../../../state/chart_state';
@@ -32,6 +32,7 @@ import { getChartRotationSelector } from '../../../../state/selectors/get_chart_
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_device_pixel_ratio';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { getRendererSelector } from '../../../../state/selectors/get_renderer';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Rotation } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
@@ -59,6 +60,8 @@ import type { AxisSpec, AnnotationSpec } from '../../utils/specs';
 
 /** @internal */
 export interface ReactiveChartStateProps {
+  chartId: string;
+  renderer: RendererType;
   isRTL: boolean;
   initialized: boolean;
   debug: boolean;
@@ -122,7 +125,9 @@ class XYChartComponent extends React.Component<XYChartProps> {
       a11ySettings,
       debug,
       isRTL,
+      renderer,
       devicePixelRatio,
+      chartId,
       onChartRendered: rendered,
     } = this.props;
 
@@ -134,10 +139,12 @@ class XYChartComponent extends React.Component<XYChartProps> {
       <>
         <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
           <Stage
+            renderer={renderer}
             width={width}
             height={height}
             devicePixelRatio={devicePixelRatio}
             dir={isRTL ? 'rtl' : 'ltr'}
+            idPrefix={`${chartId}-xy`}
             forwardStageRef={forwardCanvasRef}
             paint={this.paint}
             onRendered={rendered}
@@ -159,6 +166,8 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
   );
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
+  chartId: '',
+  renderer: 'canvas',
   isRTL: false,
   initialized: false,
   debug: false,
@@ -213,6 +222,8 @@ export const getXYChartRendererProps = (state: GlobalChartState): ReactiveChartS
   const perPanelAxisGeoms = computePerPanelAxesGeomsSelector(state);
 
   return {
+    chartId: state.chartId,
+    renderer: getRendererSelector(state),
     locale,
     isRTL: hasMostlyRTL(perPanelAxisGeoms),
     initialized: true,

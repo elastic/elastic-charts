@@ -938,7 +938,7 @@ class FlameComponent extends React.Component<FlameProps> {
             role="presentation"
           />
           <canvas /* Canvas2d layer */
-            ref={forwardStageRef}
+            ref={forwardStageRef as RefObject<HTMLCanvasElement>}
             tabIndex={0}
             className="echCanvasRenderer"
             width={canvasWidth}

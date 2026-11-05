@@ -19,7 +19,7 @@ import type { Color } from '../../../../common/colors';
 import { Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { Stage } from '../../../../components/stage';
-import type { Painter } from '../../../../renderers/painter';
+import type { Painter, RendererType } from '../../../../renderers/painter';
 import type { SettingsSpec } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
 import type { LegendPath } from '../../../../state/actions/legend';
@@ -32,6 +32,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_device_pixel_ratio';
 import { getHighlightedPaths } from '../../../../state/selectors/get_highlighted_paths';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { getRendererSelector } from '../../../../state/selectors/get_renderer';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Dimensions } from '../../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
@@ -54,6 +55,8 @@ export interface ContinuousDomainFocus {
 export interface IndexedContinuousDomainFocus extends ContinuousDomainFocus, SmallMultiplesDescriptors {}
 
 interface ReactiveChartStateProps {
+  chartId: string;
+  renderer: RendererType;
   isRTL: boolean;
   initialized: boolean;
   geometries: ShapeViewModel;
@@ -141,16 +144,20 @@ class PartitionComponent extends React.Component<PartitionProps> {
       chartDimensions: { width, height },
       a11ySettings,
       isRTL,
+      renderer,
       devicePixelRatio,
+      chartId,
       onChartRendered: rendered,
     } = this.props;
     return width === 0 || height === 0 || !initialized ? null : (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <Stage
+          renderer={renderer}
           width={width}
           height={height}
           devicePixelRatio={devicePixelRatio}
           dir={isRTL ? 'rtl' : 'ltr'}
+          idPrefix={`${chartId}-partition`}
           forwardStageRef={forwardStageRef}
           paint={this.paint}
           onRendered={rendered}
@@ -166,6 +173,8 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
   bindActionCreators({ onChartRendered }, dispatch);
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
+  chartId: '',
+  renderer: 'canvas',
   isRTL: false,
   initialized: false,
   geometries: nullShapeViewModel(),
@@ -196,6 +205,8 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   const theme = getChartThemeSelector(state);
 
   return {
+    chartId: state.chartId,
+    renderer: getRendererSelector(state),
     isRTL: hasMostlyRTLLabels(multiGeometries),
     initialized: true,
     geometries: multiGeometries[0] ?? nullShapeViewModel(),

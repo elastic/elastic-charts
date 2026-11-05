@@ -50,6 +50,11 @@ export function renderLinearPartitionCanvas2d(
     highlighted.forEach((quad) => highlightedQuadSet.add(quad));
   }
 
+  if (!ctx.animates) {
+    // one frame per render, at the settled focus
+    render(1);
+    return;
+  }
   if (animation?.duration) {
     window.cancelAnimationFrame(animationState.rafId);
     render(0);

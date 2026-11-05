@@ -10,7 +10,7 @@ import type { Color } from '../../common/colors';
 import { Colors } from '../../common/colors';
 import type { Texture } from '../../geoms/types';
 import { degToRad } from '../../utils/common';
-import type { GradientHandle, Paint, Painter, PatternHandle, TextMeasurement } from '../painter';
+import type { GradientHandle, Paint, Painter, PaintTransition, PatternHandle, TextMeasurement } from '../painter';
 
 /**
  * The canvas backend: a thin delegate over a real `CanvasRenderingContext2D`.
@@ -19,6 +19,10 @@ import type { GradientHandle, Paint, Painter, PatternHandle, TextMeasurement } f
  * @internal
  */
 export class CanvasPainter implements Painter {
+  readonly kind = 'canvas' as const;
+
+  readonly animates = true;
+
   private devicePixelRatio = 1;
   private readonly patterns = new Map<string, CanvasPattern>();
   private tile: HTMLCanvasElement | null = null;
@@ -257,6 +261,14 @@ export class CanvasPainter implements Painter {
 
   set direction(direction: CanvasDirection) {
     this.ctx.direction = direction;
+  }
+
+  get transition(): PaintTransition | null {
+    return null;
+  }
+
+  set transition(_: PaintTransition | null) {
+    // the frame loop tweens the values on canvas
   }
 
   get globalAlpha() {

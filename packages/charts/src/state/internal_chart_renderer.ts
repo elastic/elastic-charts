@@ -12,10 +12,10 @@ import type { RefObject } from 'react';
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
 /**
- * The element a chart draws on.
+ * The element a chart draws on: a `<canvas>` or, with `renderer="svg"`, an `<svg>`.
  * @internal
  */
-export type StageElement = HTMLCanvasElement;
+export type StageElement = HTMLCanvasElement | SVGSVGElement;
 
 /**
  * Returns a JSX element with the chart rendered (legend excluded)

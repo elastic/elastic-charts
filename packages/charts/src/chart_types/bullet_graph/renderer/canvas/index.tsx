@@ -17,7 +17,7 @@ import { BulletMetricGrid } from './metric_grid';
 import type { Color } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { Stage } from '../../../../components/stage';
-import type { Painter } from '../../../../renderers/painter';
+import type { Painter, RendererType } from '../../../../renderers/painter';
 import type { ElementOverListener } from '../../../../specs';
 import { settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -28,6 +28,7 @@ import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../stat
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getDevicePixelRatioSelector } from '../../../../state/selectors/get_device_pixel_ratio';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { getRendererSelector } from '../../../../state/selectors/get_renderer';
 import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/get_resolved_background_color';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Size } from '../../../../utils/dimensions';
@@ -46,6 +47,7 @@ import type { BulletStyle } from '../../theme';
 import type { BulletColorConfig } from '../../utils/color';
 
 interface StateProps {
+  renderer: RendererType;
   initialized: boolean;
   debug: boolean;
   chartId: string;
@@ -77,6 +79,7 @@ type Props = DispatchProps & StateProps & OwnProps;
 
 const Component = (props: Props) => {
   const {
+    renderer,
     initialized,
     debug,
     size,
@@ -112,9 +115,11 @@ const Component = (props: Props) => {
       style={{ width: '100%', height: '100%' }}
     >
       <Stage
+        renderer={renderer}
         width={size.width}
         height={size.height}
         devicePixelRatio={devicePixelRatio}
+        idPrefix={`${chartId}-bullet`}
         forwardStageRef={forwardStageRef}
         paint={paint}
         onRendered={dispatchOnChartRendered}
@@ -150,6 +155,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   );
 
 const DEFAULT_PROPS: StateProps = {
+  renderer: 'canvas',
   initialized: false,
   debug: false,
   chartId: '',
@@ -184,6 +190,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   const { debug, onElementOver, locale } = getSettingsSpecSelector(state);
 
   return {
+    renderer: getRendererSelector(state),
     initialized: true,
     debug,
     chartId: state.chartId,

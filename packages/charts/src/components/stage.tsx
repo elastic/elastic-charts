@@ -11,18 +11,24 @@ import type { CSSProperties, RefObject } from 'react';
 import React from 'react';
 
 import { CanvasPainter } from '../renderers/canvas/painter';
-import type { Painter } from '../renderers/painter';
+import type { Painter, RendererType } from '../renderers/painter';
+import { SvgPainter } from '../renderers/svg/painter';
+import { svgNodesToReact } from '../renderers/svg/to_react';
 import type { StageElement } from '../state/internal_chart_renderer';
 
 /** @internal */
 export interface StageProps {
+  renderer: RendererType;
   /** CSS pixel size of the stage */
   width: number;
   height: number;
+  /** used by the canvas backend only: SVG is resolution independent */
   devicePixelRatio: number;
   /** the inherited writing direction of the text drawn on the stage */
   dir?: 'ltr' | 'rtl';
-  /** the chart's stage element */
+  /** makes the ids of SVG defs unique on the page: the chart id plus a name for the stage */
+  idPrefix: string;
+  /** the chart's stage element, a `<canvas>` or an `<svg>` */
   forwardStageRef: RefObject<StageElement>;
   /** extra class and style for overlays, such as the brush tool */
   className?: string;
@@ -34,8 +40,13 @@ export interface StageProps {
 }
 
 /**
- * The drawing surface of a chart: a `<canvas>` painted imperatively after each commit by the
- * `paint` function the chart type supplies, through a `Painter`.
+ * The drawing surface of a chart: a `<canvas>` painted imperatively after each commit, or an
+ * `<svg>` whose children are produced during render by replaying the same `paint` function into
+ * an `SvgPainter`. Chart types only supply `paint`.
+ *
+ * Both elements share the `echCanvasRenderer` placement; the SVG one adds `echSvgRenderer`,
+ * which clips overflow (a canvas discards what lies outside its bitmap) and disables pointer
+ * events (hit testing goes through the pointer container and geometry picking).
  * @internal
  */
 export class Stage extends React.Component<StageProps> {
@@ -54,12 +65,13 @@ export class Stage extends React.Component<StageProps> {
   }
 
   private afterCommit() {
-    this.paintCanvas();
+    if (this.props.renderer === 'canvas') this.paintCanvas();
     this.props.onRendered?.();
   }
 
   private paintCanvas() {
-    const ctx = this.props.forwardStageRef.current?.getContext('2d') ?? null;
+    const element = this.props.forwardStageRef.current;
+    const ctx = element instanceof HTMLCanvasElement ? element.getContext('2d') : null;
     if (!ctx) return;
     if (ctx !== this.canvasContext || !this.canvasPainter) {
       this.canvasContext = ctx;
@@ -70,11 +82,35 @@ export class Stage extends React.Component<StageProps> {
   }
 
   render() {
-    const { width, height, devicePixelRatio, dir, forwardStageRef, className, style } = this.props;
+    const { renderer, width, height, devicePixelRatio, dir, idPrefix } = this.props;
+    const { forwardStageRef, className, style, paint } = this.props;
+
+    if (renderer === 'svg') {
+      const painter = new SvgPainter({ width, height, idPrefix, direction: dir });
+      paint(painter);
+      return (
+        <svg
+          ref={forwardStageRef as RefObject<SVGSVGElement>}
+          className={classNames('echCanvasRenderer', 'echSvgRenderer', className)}
+          width={width}
+          height={height}
+          viewBox={`0 0 ${width} ${height}`}
+          style={{ width, height, direction: dir, ...style }}
+          // canvas's miter limit default, inherited by every stroke
+          strokeMiterlimit={10}
+          role="presentation"
+          aria-hidden="true"
+          focusable="false"
+        >
+          {svgNodesToReact(painter.nodes())}
+        </svg>
+      );
+    }
+
     return (
       <canvas
         dir={dir}
-        ref={forwardStageRef}
+        ref={forwardStageRef as RefObject<HTMLCanvasElement>}
         className={classNames('echCanvasRenderer', className)}
         width={width * devicePixelRatio}
         height={height * devicePixelRatio}

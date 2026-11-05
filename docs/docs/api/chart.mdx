@@ -65,8 +65,19 @@ Careful adding too many styles, as this can lead to unexpected apperance and beh
 - Type: `renderer?: 'svg' | 'canvas'`
 - Default: `'canvas'`
 
-This sets the renderer type of the chart.
+The drawing backend of the chart. `canvas` draws into a bitmap, `svg` emits vector elements into an `<svg>` of the
+same size. Both share the layout and the drawing code, so switching never moves anything; the output differs only
+by antialiasing and sub-pixel text placement.
 
-:::info
-Currently this option not configurable per chart as there is not a parrallel renderer for all charts.
-:::
+Use `svg` when the chart has up to a few thousand marks and you want crisp output under browser zoom or CSS scaling,
+an inspectable DOM, or vector printing. Keep `canvas` for dense data, such as a heatmap with many cells or a line
+chart with thousands of points: every SVG mark is a DOM element.
+
+XY (bar, line, area, bubble), partition (sunburst, treemap, mosaic, waffle, icicle, flame layouts), heatmap, goal,
+bullet charts support both. The flame and timeslip charts draw on canvas and WebGL regardless of this option; metric
+and wordcloud are DOM and SVG regardless. Hover animations on `svg` run as CSS transitions, and `getPNGSnapshot`
+works with either backend.
+
+One limitation: a texture whose `path` is a `Path2D` object cannot be drawn on `svg`, since a `Path2D` cannot be
+read back; such a series falls back to its plain fill and a warning is logged. Give texture paths as SVG path data
+strings to use them with either backend.

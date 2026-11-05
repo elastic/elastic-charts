@@ -7,3 +7,11 @@
   border: 0;
   background: transparent;
 }
+
+.echSvgRenderer {
+  // a canvas discards what lies outside its bitmap; keep the vector stage the same
+  overflow: hidden;
+  display: block;
+  // hit testing goes through the pointer container and geometry picking, as with the canvas
+  pointer-events: none;
+}

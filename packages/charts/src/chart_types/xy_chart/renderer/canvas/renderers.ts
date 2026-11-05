@@ -172,10 +172,15 @@ export function drawXYChart(painter: Painter, props: ReactiveChartStateProps, aC
 }
 
 /**
- * Renders an XY chart through the animation pool's frames.
+ * Renders an XY chart: on canvas through the animation pool's frames, on svg as one frame per render
+ * with every animated value at its target.
  * @internal
  */
 export function renderXYChart(painter: Painter, props: ReactiveChartStateProps, animationState: AnimationState) {
   const render = (aCtx: AnimationContext) => drawXYChart(painter, props, aCtx);
-  void getAnimationPoolFn(animationState, render);
+  if (!painter.animates) {
+    render({ getValue: () => (_, value) => value });
+  } else {
+    void getAnimationPoolFn(animationState, render);
+  }
 }

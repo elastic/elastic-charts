@@ -62,6 +62,7 @@ class CanvasSurface implements FrameSurface {
  * @internal
  */
 export function createFrameSurface(element: StageElement): FrameSurface | null {
-  const ctx = element.getContext('2d');
-  return ctx ? new CanvasSurface(element, ctx) : null;
+  // the timeslip draws on canvas only so far
+  const ctx = element instanceof HTMLCanvasElement ? element.getContext('2d') : null;
+  return ctx ? new CanvasSurface(element as HTMLCanvasElement, ctx) : null;
 }

@@ -8,6 +8,13 @@
 
 import type { Color } from '../common/colors';
 import type { Texture } from '../geoms/types';
+import type { TimeFunction } from '../utils/time_functions';
+
+/**
+ * The rendering backend a chart stage draws with.
+ * @internal
+ */
+export type RendererType = 'canvas' | 'svg';
 
 /**
  * A gradient paint server. `CanvasGradient` satisfies it structurally.
@@ -29,6 +36,20 @@ export interface PatternHandle {
 export type Paint = string | GradientHandle | PatternHandle;
 
 /**
+ * How a change of an element's paint (fill, stroke, opacity) is animated by the SVG backend, as a
+ * CSS transition on the element. The canvas backend ignores it: there the frame loop tweens the
+ * values it draws with.
+ * @internal
+ */
+export interface PaintTransition {
+  /** milliseconds */
+  duration: number;
+  /** milliseconds */
+  delay: number;
+  timeFunction: TimeFunction;
+}
+
+/**
  * The subset of `TextMetrics` the renderers rely on. The font bounding box fields exist in current
  * browsers and are absent in jsdom.
  * @internal
@@ -44,7 +65,7 @@ export interface TextMeasurement {
 /**
  * The subset of the Canvas2D API that the chart renderers use. A real `CanvasRenderingContext2D`
  * satisfies it structurally (asserted below), and so does every `Painter` backend. Drawing code
- * written against this type does not depend on a real canvas context.
+ * written against this type runs unchanged on canvas and on SVG.
  *
  * Semantics are Canvas2D's: a post-multiplied transform stack driven by save/restore, a current
  * path built by the path methods, and style properties read at the time of fill/stroke/fillText.
@@ -95,6 +116,13 @@ export interface Ctx2d {
  * @internal
  */
 export interface Painter extends Ctx2d {
+  /** which backend this is */
+  readonly kind: RendererType;
+  /**
+   * Whether a frame loop repaints this painter: the renderers then tween through requestAnimationFrame
+   * frames. Otherwise they draw one frame with every value at its target, as the svg backend does.
+   */
+  readonly animates: boolean;
   /**
    * Clears the whole stage and paints the background, regardless of the current transform.
    * Replaces `clearCanvas`.
@@ -106,9 +134,11 @@ export interface Painter extends Ctx2d {
   strokePath(d: string): void;
   /**
    * The backend's paint server for a texture, to assign to `fillStyle`; `null` when the backend cannot
-   * paint it. Backends cache patterns per texture.
+   * paint it (an SVG backend given a `Path2D`). Backends cache patterns per texture.
    */
   createPattern(texture: Texture): PatternHandle | null;
+  /** part of the saved state, like the style properties */
+  transition: PaintTransition | null;
 }
 
 /**

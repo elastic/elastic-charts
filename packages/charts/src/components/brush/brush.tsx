@@ -16,7 +16,7 @@ import { Colors } from '../../common/colors';
 import { withClip } from '../../renderers/canvas';
 import { renderRectStroke, renderRect } from '../../renderers/canvas/primitives/rect';
 import type { StrokedSides } from '../../renderers/canvas/primitives/rect';
-import type { Painter } from '../../renderers/painter';
+import type { Painter, RendererType } from '../../renderers/painter';
 import { BrushAxis } from '../../specs/brush_axis';
 import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
 import type { GlobalChartState } from '../../state/chart_state';
@@ -26,6 +26,7 @@ import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getDevicePixelRatioSelector } from '../../state/selectors/get_device_pixel_ratio';
 import { getInternalChartStateSelector } from '../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
+import { getRendererSelector } from '../../state/selectors/get_renderer';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import type { Rotation } from '../../utils/common';
 import type { Dimensions } from '../../utils/dimensions';
@@ -34,6 +35,8 @@ import type { BrushStyle } from '../../utils/themes/theme';
 import { Stage } from '../stage';
 
 interface StateProps {
+  chartId: string;
+  renderer: RendererType;
   devicePixelRatio: number;
   initialized: boolean;
   mainProjectionArea: Dimensions;
@@ -96,16 +99,27 @@ class BrushToolComponent extends React.Component<StateProps> {
   };
 
   render() {
-    const { initialized, isBrushAvailable, isBrushing, projectionContainer, zIndex, devicePixelRatio } = this.props;
+    const {
+      initialized,
+      isBrushAvailable,
+      isBrushing,
+      projectionContainer,
+      zIndex,
+      renderer,
+      devicePixelRatio,
+      chartId,
+    } = this.props;
     if (!initialized || !isBrushAvailable || !isBrushing) {
       return null;
     }
     const { width, height } = projectionContainer;
     return (
       <Stage
+        renderer={renderer}
         width={width}
         height={height}
         devicePixelRatio={devicePixelRatio}
+        idPrefix={`${chartId}-brush`}
         forwardStageRef={this.stageRef}
         className="echBrushTool"
         style={{ zIndex }}
@@ -119,6 +133,8 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   const internalChartState = getInternalChartStateSelector(state);
   if (internalChartState === null || getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return {
+      chartId: state.chartId,
+      renderer: 'canvas',
       devicePixelRatio: 1,
       initialized: false,
       projectionContainer: {
@@ -144,6 +160,8 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   }
 
   return {
+    chartId: state.chartId,
+    renderer: getRendererSelector(state),
     devicePixelRatio: getDevicePixelRatioSelector(state),
     initialized: state.specsInitialized,
     projectionContainer: internalChartState.getProjectionContainerArea(state),
