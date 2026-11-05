@@ -9,6 +9,7 @@
 import type { Color } from '../../../common/colors';
 import type { Ratio } from '../../../common/geometry';
 import type { Texture } from '../../../geoms/types';
+import { createPath2D } from '../../../renderers/canvas/path2d';
 import { ColorVariant, degToRad, getColorFromVariant } from '../../../utils/common';
 import type { Point } from '../../../utils/point';
 import type { TexturedStyles } from '../../../utils/themes/theme';
@@ -22,7 +23,7 @@ const getSpacing = ({ spacing }: TexturedStyles): Point => ({
 
 const getPath = (textureStyle: TexturedStyles, size: number, strokeWidth: number): [path: Path2D, rotation: number] => {
   if ('path' in textureStyle) {
-    const path = typeof textureStyle.path === 'string' ? new Path2D(textureStyle.path) : textureStyle.path;
+    const path = typeof textureStyle.path === 'string' ? createPath2D(textureStyle.path) : textureStyle.path;
 
     return [path, 0];
   }
@@ -32,7 +33,7 @@ const getPath = (textureStyle: TexturedStyles, size: number, strokeWidth: number
     ? strokeWidth
     : 0;
 
-  return [new Path2D(pathFn((size - strokeWidthPadding) / 2)), rotation];
+  return [createPath2D(pathFn((size - strokeWidthPadding) / 2)), rotation];
 };
 
 /** @internal */
@@ -94,11 +95,13 @@ function createPattern(
 /** @internal */
 export const getTextureStyles = (
   ctx: CanvasRenderingContext2D,
-  patternCanvas: HTMLCanvasElement,
+  patternCanvas: HTMLCanvasElement | undefined,
   baseColor: Color | ColorVariant,
   sharedGeometryOpacity: Ratio,
   texture: TexturedStyles,
 ): Texture | undefined => {
+  // Without a canvas to draw the pattern on (headless rendering), the geometry keeps its plain fill.
+  if (!patternCanvas) return;
   const dpi = window.devicePixelRatio;
   const pattern = createPattern(ctx, dpi, patternCanvas, baseColor, sharedGeometryOpacity, texture);
 

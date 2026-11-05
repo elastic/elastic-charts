@@ -28,154 +28,163 @@ export function renderXYChartCanvas2d(
   props: ReactiveChartStateProps,
   animationState: AnimationState,
 ) {
-  function render(aCtx: AnimationContext) {
-    const imgCanvas = document.createElement('canvas');
+  void getAnimationPoolFn(animationState, (aCtx) =>
+    drawXYChartCanvas2d(ctx, props, aCtx, document.createElement('canvas')),
+  );
+}
 
-    withContext(ctx, () => {
-      // let's set the devicePixelRatio once and for all; then we'll never worry about it again
-      ctx.scale(props.devicePixelRatio, props.devicePixelRatio);
-      const {
-        renderingArea,
-        chartTransform,
-        rotation,
-        geometries,
-        geometriesIndex,
-        theme: {
-          axes: sharedAxesStyle,
-          sharedStyle,
-          lineAnnotation: lineAnnotationStyle,
-          rectAnnotation: rectAnnotationStyle,
-          barSeriesStyle,
-          background,
-        },
-        highlightedItems,
-        annotationDimensions,
-        annotationSpecs,
-        perPanelAxisGeoms,
-        perPanelGridLines,
-        axesSpecs,
-        axesStyles,
-        debug,
-        panelGeoms,
-        hoveredAnnotationIds,
-        locale,
-      } = props;
+/**
+ * Draws a single frame of an XY chart. Textures are only drawn when an `imgCanvas` is provided.
+ * @internal
+ */
+export function drawXYChartCanvas2d(
+  ctx: CanvasRenderingContext2D,
+  props: ReactiveChartStateProps,
+  aCtx: AnimationContext,
+  imgCanvas?: HTMLCanvasElement,
+) {
+  withContext(ctx, () => {
+    // let's set the devicePixelRatio once and for all; then we'll never worry about it again
+    ctx.scale(props.devicePixelRatio, props.devicePixelRatio);
+    const {
+      renderingArea,
+      chartTransform,
+      rotation,
+      geometries,
+      geometriesIndex,
+      theme: {
+        axes: sharedAxesStyle,
+        sharedStyle,
+        lineAnnotation: lineAnnotationStyle,
+        rectAnnotation: rectAnnotationStyle,
+        barSeriesStyle,
+        background,
+      },
+      highlightedItems,
+      annotationDimensions,
+      annotationSpecs,
+      perPanelAxisGeoms,
+      perPanelGridLines,
+      axesSpecs,
+      axesStyles,
+      debug,
+      panelGeoms,
+      hoveredAnnotationIds,
+      locale,
+    } = props;
 
-      const transform = { x: renderingArea.left + chartTransform.x, y: renderingArea.top + chartTransform.y };
+    const transform = { x: renderingArea.left + chartTransform.x, y: renderingArea.top + chartTransform.y };
 
-      renderLayers(ctx, [
-        () => clearCanvas(ctx, 'transparent'),
+    renderLayers(ctx, [
+      () => clearCanvas(ctx, 'transparent'),
 
-        // render panel grid
-        () => debug && renderGridPanels(ctx, transform, panelGeoms),
+      // render panel grid
+      () => debug && renderGridPanels(ctx, transform, panelGeoms),
 
-        () =>
-          renderGrids(ctx, {
+      () =>
+        renderGrids(ctx, {
+          axesSpecs,
+          renderingArea,
+          perPanelGridLines,
+          axesStyles,
+          sharedAxesStyle,
+        }),
+
+      () =>
+        renderPanelSubstrates(
+          ctx,
+          {
             axesSpecs,
+            perPanelAxisGeoms,
             renderingArea,
-            perPanelGridLines,
+            debug,
             axesStyles,
             sharedAxesStyle,
-          }),
+          },
+          locale,
+        ),
 
-        () =>
-          renderPanelSubstrates(
-            ctx,
-            {
-              axesSpecs,
-              perPanelAxisGeoms,
-              renderingArea,
-              debug,
-              axesStyles,
-              sharedAxesStyle,
-            },
-            locale,
-          ),
+      // rendering background annotations
+      () =>
+        renderAnnotations(
+          ctx,
+          aCtx,
+          annotationDimensions,
+          annotationSpecs,
+          rotation,
+          renderingArea,
+          sharedStyle,
+          hoveredAnnotationIds,
+          lineAnnotationStyle,
+          rectAnnotationStyle,
+          true,
+        ),
 
-        // rendering background annotations
-        () =>
-          renderAnnotations(
-            ctx,
-            aCtx,
-            annotationDimensions,
-            annotationSpecs,
-            rotation,
+      // rendering bars
+      () => renderBars(ctx, imgCanvas, geometries.bars, sharedStyle, rotation, renderingArea, highlightedItems),
+
+      // rendering areas
+      () => renderAreas(ctx, imgCanvas, geometries.areas, rotation, renderingArea, highlightedItems),
+
+      // rendering lines
+      () => renderLines(ctx, geometries.lines, rotation, renderingArea, highlightedItems),
+
+      // rendering bubbles
+      () => renderBubbles(ctx, geometries.bubbles, sharedStyle, rotation, renderingArea, highlightedItems),
+
+      () =>
+        geometries.bars.forEach(({ value: bars, panel }) =>
+          renderBarValues(ctx, {
+            bars,
+            panel,
             renderingArea,
-            sharedStyle,
-            hoveredAnnotationIds,
-            lineAnnotationStyle,
-            rectAnnotationStyle,
-            true,
-          ),
-
-        // rendering bars
-        () => renderBars(ctx, imgCanvas, geometries.bars, sharedStyle, rotation, renderingArea, highlightedItems),
-
-        // rendering areas
-        () => renderAreas(ctx, imgCanvas, geometries.areas, rotation, renderingArea, highlightedItems),
-
-        // rendering lines
-        () => renderLines(ctx, geometries.lines, rotation, renderingArea, highlightedItems),
-
-        // rendering bubbles
-        () => renderBubbles(ctx, geometries.bubbles, sharedStyle, rotation, renderingArea, highlightedItems),
-
-        () =>
-          geometries.bars.forEach(({ value: bars, panel }) =>
-            renderBarValues(ctx, {
-              bars,
-              panel,
-              renderingArea,
-              rotation,
-              debug,
-              barSeriesStyle,
-              background,
-            }),
-          ),
-
-        // rendering foreground annotations
-        () =>
-          renderAnnotations(
-            ctx,
-            aCtx,
-            annotationDimensions,
-            annotationSpecs,
             rotation,
-            renderingArea,
-            sharedStyle,
-            hoveredAnnotationIds,
-            lineAnnotationStyle,
-            rectAnnotationStyle,
-            false,
-          ),
-
-        // rendering debugger
-        () =>
-          debug &&
-          withContext(ctx, () => {
-            const { left, top, width, height } = renderingArea;
-
-            renderDebugRect(
-              ctx,
-              { x: left, y: top, width, height },
-              0,
-              { color: Colors.Transparent.rgba },
-              { color: Colors.Red.rgba, width: 4, dash: [4, 4] },
-            );
-            const voronoi = geometriesIndex.triangulation([0, 0, width, height]);
-            if (voronoi) {
-              ctx.beginPath();
-              ctx.translate(left, top);
-              ctx.setLineDash([5, 5]);
-              voronoi.render(ctx);
-              ctx.lineWidth = 1;
-              ctx.strokeStyle = 'blue';
-              ctx.stroke();
-            }
+            debug,
+            barSeriesStyle,
+            background,
           }),
-      ]);
-    });
-  }
+        ),
 
-  void getAnimationPoolFn(animationState, render);
+      // rendering foreground annotations
+      () =>
+        renderAnnotations(
+          ctx,
+          aCtx,
+          annotationDimensions,
+          annotationSpecs,
+          rotation,
+          renderingArea,
+          sharedStyle,
+          hoveredAnnotationIds,
+          lineAnnotationStyle,
+          rectAnnotationStyle,
+          false,
+        ),
+
+      // rendering debugger
+      () =>
+        debug &&
+        withContext(ctx, () => {
+          const { left, top, width, height } = renderingArea;
+
+          renderDebugRect(
+            ctx,
+            { x: left, y: top, width, height },
+            0,
+            { color: Colors.Transparent.rgba },
+            { color: Colors.Red.rgba, width: 4, dash: [4, 4] },
+          );
+          const voronoi = geometriesIndex.triangulation([0, 0, width, height]);
+          if (voronoi) {
+            ctx.beginPath();
+            ctx.translate(left, top);
+            ctx.setLineDash([5, 5]);
+            voronoi.render(ctx);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'blue';
+            ctx.stroke();
+          }
+        }),
+    ]);
+  });
 }

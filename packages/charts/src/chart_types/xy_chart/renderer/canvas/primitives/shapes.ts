@@ -9,6 +9,7 @@
 import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
 import type { Circle, Fill, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
+import { createPath2D } from '../../../../../renderers/canvas/path2d';
 import { applyCanvasFill } from '../../../../../renderers/canvas/primitives/fill';
 import { MIN_STROKE_WIDTH } from '../../../../../renderers/canvas/primitives/line';
 import { degToRad } from '../../../../../utils/common';
@@ -29,7 +30,7 @@ export function renderShape(
     ctx.rotate(degToRad(rotation));
     ctx.beginPath();
 
-    const path = new Path2D(pathFn(radius));
+    const path = createPath2D(pathFn(radius));
 
     const bbox = { x0: -radius, y0: -radius, x1: radius, y1: radius };
     applyCanvasFill(ctx, fill, bbox, () => ctx.fill(path));

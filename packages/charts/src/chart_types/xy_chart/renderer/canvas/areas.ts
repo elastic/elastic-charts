@@ -28,7 +28,7 @@ import type { AreaStyle } from '../../../../utils/themes/theme';
 /** @internal */
 export function renderAreas(
   ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
+  imgCanvas: HTMLCanvasElement | undefined,
   areas: Array<PerPanel<AreaGeometry>>,
   rotation: Rotation,
   renderingArea: Dimensions,
@@ -67,7 +67,7 @@ export function renderAreas(
 
 function renderAreasGroup(
   ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
+  imgCanvas: HTMLCanvasElement | undefined,
   rotation: Rotation,
   renderingArea: Dimensions,
   areas: PerPanel<AreaGeometry>[],
@@ -120,7 +120,7 @@ function renderAreasGroup(
 
 function renderArea(
   ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
+  imgCanvas: HTMLCanvasElement | undefined,
   geometry: AreaGeometry,
   clippings: Rect,
   highlightState: GeometryHighlightState,

@@ -28,7 +28,7 @@ import { getTextureStyles } from '../../../utils/texture';
  */
 export function buildBarStyle(
   ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
+  imgCanvas: HTMLCanvasElement | undefined,
   baseColor: string,
   themeRectStyle: RectStyle,
   themeRectBorderStyle: RectBorderStyle,

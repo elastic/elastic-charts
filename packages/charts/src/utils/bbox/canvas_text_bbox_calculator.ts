@@ -11,8 +11,26 @@ import { cssFontShorthand } from '../../common/text_utils';
 import { withContext } from '../../renderers/canvas';
 import type { Size } from '../dimensions';
 
+// Set while a chart renders headlessly, where there is no document to create a measuring canvas from.
+let textMeasureContextOverride: CanvasRenderingContext2D | undefined;
+
+/**
+ * Runs `fun` with text measured by `ctx` instead of a canvas created from the document.
+ * @internal
+ */
+export const withTextMeasureContext = <T>(ctx: CanvasRenderingContext2D, fun: () => T): T => {
+  const previous = textMeasureContextOverride;
+  textMeasureContextOverride = ctx;
+  try {
+    return fun();
+  } finally {
+    textMeasureContextOverride = previous;
+  }
+};
+
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
+  if (textMeasureContextOverride) return fun(measureText(textMeasureContextOverride));
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   return fun(ctx ? measureText(ctx) : () => ({ width: 0, height: 0 }));

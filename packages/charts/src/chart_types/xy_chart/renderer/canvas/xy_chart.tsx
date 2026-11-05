@@ -239,11 +239,11 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   devicePixelRatio: 1,
 };
 
-const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
-    return DEFAULT_PROPS;
-  }
-
+/**
+ * Computes the props the XY canvas renderer draws from. The chart state must be initialized.
+ * @internal
+ */
+export const getXYChartRendererProps = (state: GlobalChartState): ReactiveChartStateProps => {
   const { geometries, geometriesIndex } = computeSeriesGeometriesSelector(state);
   const { debug, locale } = getSettingsSpecSelector(state);
   const perPanelAxisGeoms = computePerPanelAxesGeomsSelector(state);
@@ -274,6 +274,9 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     devicePixelRatio: getDevicePixelRatioSelector(state),
   };
 };
+
+const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps =>
+  getInternalIsInitializedSelector(state) === InitStatus.Initialized ? getXYChartRendererProps(state) : DEFAULT_PROPS;
 
 /** @internal */
 export const XYChart = connect(mapStateToProps, mapDispatchToProps)(XYChartComponent);
