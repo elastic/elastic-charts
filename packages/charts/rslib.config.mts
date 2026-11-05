@@ -65,7 +65,10 @@ export default defineConfig({
   },
   output: {
     target: 'web',
-    sourceMap: true,
+    // Rslib embeds original sources in each JS map (~8 MB), unlike tsc. Keep them off.
+    sourceMap: {
+      js: false,
+    },
   },
   plugins: [
     pluginReact({

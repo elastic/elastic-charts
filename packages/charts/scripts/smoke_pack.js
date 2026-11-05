@@ -72,8 +72,7 @@ function symlinkDep(consumerNodeModules, name) {
   }
 }
 
-function setupConsumer(extractedPackage) {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'elastic-charts-smoke-'));
+function setupConsumer(extractedPackage, tmp) {
   const consumer = path.join(tmp, 'consumer');
   const nodeModules = path.join(consumer, 'node_modules');
   const chartsDest = path.join(nodeModules, '@elastic', 'charts');
@@ -92,7 +91,7 @@ function setupConsumer(extractedPackage) {
     `${JSON.stringify({ name: 'elastic-charts-smoke', private: true }, null, 2)}\n`,
   );
 
-  return { tmp, consumer, chartsDest };
+  return { consumer, chartsDest };
 }
 
 function writeProbe(consumer, filename, contents) {
@@ -116,12 +115,15 @@ function main() {
     fail(`Tarball not found: ${tarball}`);
   }
 
-  const extractRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'elastic-charts-pack-'));
-  execFileSync('tar', ['-xzf', tarball, '-C', extractRoot]);
-  const extracted = path.join(extractRoot, 'package');
-  const { tmp, consumer } = setupConsumer(extracted);
-
+  let extractRoot;
+  let tmp;
   try {
+    extractRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'elastic-charts-pack-'));
+    execFileSync('tar', ['-xzf', tarball, '-C', extractRoot]);
+    const extracted = path.join(extractRoot, 'package');
+    tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'elastic-charts-smoke-'));
+    const { consumer } = setupConsumer(extracted, tmp);
+
     const requireFromConsumer = createRequire(path.join(consumer, 'package.json'));
     const resolvedEntry = requireFromConsumer.resolve('@elastic/charts');
     assert(
@@ -141,6 +143,15 @@ function main() {
     }
     assert(!srcPublished, 'Packed package must not export ./src');
 
+    const chartsCjs = requireFromConsumer('@elastic/charts');
+    assert(chartsCjs.WeightFn?.exponential === 'exponential', 'WeightFn.exponential missing from CJS entry');
+    assert(chartsCjs.MetricTrendShape?.Bars === 'bars', 'MetricTrendShape.Bars missing from CJS entry');
+    assert(
+      chartsCjs.HistogramModeAlignments?.Center === 'center',
+      'HistogramModeAlignments.Center missing from CJS entry',
+    );
+    assert(typeof chartsCjs.percentValueGetter === 'function', 'percentValueGetter missing from CJS entry');
+
     writeProbe(
       consumer,
       'probe.mjs',
@@ -158,6 +169,14 @@ const esmEntry = await import.meta.resolve('@elastic/charts');
 if (!esmEntry.replaceAll('\\\\', '/').endsWith('/dist/esm/index.mjs')) {
   throw new Error(\`ESM resolve expected dist/esm/index.mjs, got \${esmEntry}\`);
 }
+
+const charts = await import('@elastic/charts');
+if (charts.WeightFn?.exponential !== 'exponential') throw new Error('WeightFn.exponential missing from ESM entry');
+if (charts.MetricTrendShape?.Bars !== 'bars') throw new Error('MetricTrendShape.Bars missing from ESM entry');
+if (charts.HistogramModeAlignments?.Center !== 'center') {
+  throw new Error('HistogramModeAlignments.Center missing from ESM entry');
+}
+if (typeof charts.percentValueGetter !== 'function') throw new Error('percentValueGetter missing from ESM entry');
 
 const chartsRoot = join(dirname(fileURLToPath(import.meta.url)), 'node_modules/@elastic/charts');
 const { WeightFn } = await import(
@@ -198,8 +217,12 @@ if (wordcloudSpecs.WeightFn !== WeightFn) throw new Error('WeightFn is not a val
 
     log('Packed package smoke test passed.');
   } finally {
-    fs.rmSync(tmp, { recursive: true, force: true });
-    fs.rmSync(extractRoot, { recursive: true, force: true });
+    if (tmp) {
+      fs.rmSync(tmp, { recursive: true, force: true });
+    }
+    if (extractRoot) {
+      fs.rmSync(extractRoot, { recursive: true, force: true });
+    }
     if (packedHere) {
       fs.rmSync(tarball, { force: true });
     }
