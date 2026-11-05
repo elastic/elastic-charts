@@ -12,6 +12,7 @@ import type { CSSProperties, RefObject } from 'react';
 import React from 'react';
 import { connect } from 'react-redux';
 
+import type { TimeslipLoop } from './timeslip/timeslip_render';
 import { timeslipRender } from './timeslip/timeslip_render';
 import type { TimeslipSpec, GetData } from './timeslip_api';
 import { ChartType } from '..';
@@ -27,7 +28,6 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import type { Size } from '../../utils/dimensions';
-import { roundUpSize } from '../flame_chart/render/common';
 // @ts-ignore until it becomes TS
 
 interface StateProps {
@@ -58,6 +58,8 @@ class TimeslipComponent extends React.Component<TimeslipProps> {
   // DOM API Canvas2d and WebGL resources
   private ctx: CanvasRenderingContext2D | null = null;
 
+  private loop: TimeslipLoop | null = null;
+
   componentDidMount = () => {
     /*
      * the DOM element has just been appended, and getContext('2d') is always non-null,
@@ -69,15 +71,17 @@ class TimeslipComponent extends React.Component<TimeslipProps> {
     this.props.containerRef().current?.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
 
     const canvas = this.props.forwardStageRef.current;
-    if (canvas && this.ctx) timeslipRender(canvas, this.ctx, this.props.getData);
+    if (canvas && this.ctx) this.loop = timeslipRender(canvas, this.ctx, this.props.getData);
   };
 
   componentWillUnmount() {
     this.props.containerRef().current?.removeEventListener('wheel', (e) => e.preventDefault());
   }
 
-  componentDidUpdate = () => {
+  componentDidUpdate = (prevProps: TimeslipProps) => {
     if (!this.ctx) this.tryCanvasContext();
+    // a new size resets the canvas bitmap, and the loop only renders on interaction or a window resize
+    if (prevProps.chartDimensions !== this.props.chartDimensions) this.loop?.render();
   };
 
   render = () => {
@@ -86,8 +90,10 @@ class TimeslipComponent extends React.Component<TimeslipProps> {
       chartDimensions: { width: requestedWidth, height: requestedHeight },
       a11ySettings,
     } = this.props;
-    const width = roundUpSize(requestedWidth);
-    const height = roundUpSize(requestedHeight);
+    // the canvas fills the content area exactly: a size rounded up (as the WebGL flame chart does for its textures)
+    // overflowed the clipped container and cropped the bottom label row and the right edge
+    const width = Math.floor(requestedWidth);
+    const height = Math.floor(requestedHeight);
     const style: CSSProperties = {
       width,
       height,

@@ -16,6 +16,13 @@ import { paramCase } from 'change-case';
 
 import { environmentUrl } from '../e2e_config';
 
+declare global {
+  interface Window {
+    /** in-page story navigation exposed by the VRT page, see e2e_server/server/generate/vrt_page_template.js */
+    __vrtNavigate?: (url: string) => number;
+  }
+}
+
 // TODO determine if this is still necessary
 const DRAG_DETECTION_TIMEOUT = 100; // the minimum amount of time to consider for for dragging purposes
 
@@ -557,7 +564,7 @@ export class CommonPage {
     (page: Page) =>
     async (url: string, waitSelector?: string, timeout?: number): Promise<boolean> => {
       const cleanUrl = CommonPage.parseUrl(url);
-      await page.goto(cleanUrl);
+      await this.navigate(page)(cleanUrl);
 
       if (waitSelector) {
         try {
@@ -572,6 +579,17 @@ export class CommonPage {
 
       return false;
     };
+
+  /**
+   * Navigate the page to a VRT url. When the VRT page is already loaded, switch story in place
+   * (remounting the page tree, no document reload) instead of a full `page.goto`.
+   */
+  navigate = (page: Page) => async (url: string) => {
+    const inPage =
+      page.url().startsWith(new URL(url).origin) &&
+      (await page.evaluate(() => typeof window.__vrtNavigate === 'function').catch(() => false));
+    await (inPage ? page.evaluate((nextUrl) => window.__vrtNavigate!(nextUrl), url) : page.goto(url));
+  };
 
   /**
    * Wait for an element to be on the DOM
@@ -642,9 +660,10 @@ export class CommonPage {
 
 function getSnapshotOptions(options?: ScreenshotDOMElementOptions) {
   if (options?.maxDiffPixels !== undefined) {
-    // need to clear default options for maxDiffPixels to be respected, else could still fail on threshold or maxDiffPixelRatio
+    // the config's `maxDiffPixelRatio: 0` would still fail the first differing pixel, so it is lifted; the per pixel
+    // color `threshold` stays at the config's exact match (a threshold of 1 made every comparison pass, leaving
+    // baselines stale for years)
     return {
-      threshold: 1,
       maxDiffPixelRatio: 1,
       ...options,
     };
