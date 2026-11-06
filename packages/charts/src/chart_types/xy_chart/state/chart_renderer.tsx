@@ -12,12 +12,12 @@ import React from 'react';
 import { BrushTool } from '../../../components/brush/brush';
 import { Tooltip } from '../../../components/tooltip/tooltip';
 import type { BackwardRef, ChartRenderer, StageElement } from '../../../state/internal_chart_renderer';
-import { XYChart } from '../renderer/canvas/xy_chart';
 import { Annotations } from '../renderer/dom/annotations';
 import { CursorBand } from '../renderer/dom/cursor_band';
 import { CursorCrossLine } from '../renderer/dom/cursor_crossline';
 import { CursorLine } from '../renderer/dom/cursor_line';
 import { Highlighter } from '../renderer/dom/highlighter';
+import { XYChart } from '../renderer/xy_chart';
 
 /** @internal */
 export const chartRenderer: ChartRenderer = (containerRef: BackwardRef, forwardStageRef: RefObject<StageElement>) => (

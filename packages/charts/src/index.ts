@@ -79,7 +79,7 @@ export {
   type AnimationOptions,
   type AnimatedValue,
   AnimationSpeed,
-} from './chart_types/xy_chart/renderer/canvas/animations/animation';
+} from './chart_types/xy_chart/renderer/animations/animation';
 
 // theme
 export * from './utils/themes/theme';

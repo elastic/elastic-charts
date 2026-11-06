@@ -23,7 +23,7 @@ import type { StageElement } from '../../../../../state/internal_chart_renderer'
 import { Position, renderWithProps } from '../../../../../utils/common';
 import type { Dimensions } from '../../../../../utils/dimensions';
 import type { AnnotationLineProps } from '../../../annotations/line/types';
-import type { AnimationOptions } from '../../canvas/animations/animation';
+import type { AnimationOptions } from '../../animations/animation';
 import type { GetAnnotationParamsFn } from '../../common/utils';
 
 type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'panel'> & {

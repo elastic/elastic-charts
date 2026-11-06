@@ -9,7 +9,7 @@
 import { Chart } from './chart';
 
 describe('test getPNGSnapshot in Chart class', () => {
-  jest.mock('../components/chart');
+  jest.mock('./chart');
   it('should be called', () => {
     const chart = new Chart({});
     const spy = jest.spyOn(chart, 'getPNGSnapshot');

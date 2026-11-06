@@ -16,7 +16,7 @@ import { getActivePointerPosition } from '../../../state/selectors/get_active_po
 import { isBetween, isFiniteNumber, roundTo, sortNumbers } from '../../../utils/common';
 import type { ContinuousDomain, Range } from '../../../utils/domain';
 import type { Point } from '../../../utils/point';
-import { BULLET_SIZE, HOVER_SLOP, TARGET_SIZE } from '../renderer/canvas/constants';
+import { BULLET_SIZE, HOVER_SLOP, TARGET_SIZE } from '../renderer/constants';
 import type { BulletSpec } from '../spec';
 import { BulletSubtype } from '../spec';
 import { GRAPH_PADDING } from '../theme';

@@ -9,7 +9,7 @@
 import type { RefObject } from 'react';
 import React from 'react';
 
-import { BulletRenderer } from './renderer/canvas';
+import { BulletRenderer } from './renderer';
 import { Tooltip } from '../../components/tooltip/tooltip';
 import type { BackwardRef, ChartRenderer, StageElement } from '../../state/internal_chart_renderer';
 

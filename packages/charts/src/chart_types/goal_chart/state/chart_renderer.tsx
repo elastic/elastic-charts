@@ -11,7 +11,7 @@ import React from 'react';
 
 import { Tooltip } from '../../../components/tooltip/tooltip';
 import type { BackwardRef, ChartRenderer, StageElement } from '../../../state/internal_chart_renderer';
-import { Goal } from '../renderer/canvas/connected_component';
+import { Goal } from '../renderer/connected_component';
 
 /** @internal */
 export const chartRenderer: ChartRenderer = (containerRef: BackwardRef, forwardStageRef: RefObject<StageElement>) => (

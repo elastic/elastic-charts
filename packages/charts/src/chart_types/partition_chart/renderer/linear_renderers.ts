@@ -1,0 +1,140 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+import type { AnimationState, ContinuousDomainFocus } from './partition';
+import { multiplyColorOpacity } from '../../../common/color_library_wrappers';
+import { Colors } from '../../../common/colors';
+import type { Painter } from '../../../renderers/painter';
+import type { LegendPath } from '../../../state/actions/legend';
+import { getColorFromVariant } from '../../../utils/common';
+import { getDimmedColor } from '../../../utils/themes/dimmed_colors';
+import type { PartitionStyle } from '../../../utils/themes/partition';
+import type { QuadViewModel, ShapeViewModel } from '../layout/types/viewmodel_types';
+import type { LegendStrategy } from '../layout/utils/highlighted_geoms';
+import { highlightedGeoms } from '../layout/utils/highlighted_geoms';
+
+const linear = (x: number) => x;
+const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);
+
+const MAX_PADDING_RATIO = 0.25;
+
+/** @internal */
+export function renderLinearPartition(
+  ctx: Painter,
+  {
+    style: { sectorLineWidth: padding },
+    quadViewModel,
+    diskCenter,
+    width: panelWidth,
+    height: panelHeight,
+    layers,
+    chartDimensions: { width: containerWidth, height: containerHeight },
+    animation,
+  }: ShapeViewModel,
+  { currentFocusX0, currentFocusX1, prevFocusX0, prevFocusX1 }: ContinuousDomainFocus,
+  highlightedPaths: LegendPath[],
+  legendStrategy: LegendStrategy | undefined,
+  flatLegend: boolean | undefined,
+  partitionStyle: PartitionStyle,
+  animationState: AnimationState,
+  /** svg only: the progress of the focus change, 0 to 1, driven by the component's frame loop */
+  svgTime = 1,
+) {
+  // Calculate which quads are highlighted for legend dimming
+  const highlightedQuadSet = new Set<QuadViewModel>();
+  if (highlightedPaths.length > 0) {
+    const highlighted = highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedPaths);
+    highlighted.forEach((quad) => highlightedQuadSet.add(quad));
+  }
+
+  if (!ctx.animates) {
+    // one frame per render; on svg the component re-renders through the focus change
+    render(svgTime);
+    return;
+  }
+  if (animation?.duration) {
+    window.cancelAnimationFrame(animationState.rafId);
+    render(0);
+    const focusChanged = currentFocusX0 !== prevFocusX0 || currentFocusX1 !== prevFocusX1;
+    if (focusChanged) {
+      animationState.rafId = window.requestAnimationFrame((epochStartTime) => {
+        const anim = (t: number) => {
+          const unitNormalizedTime = Math.max(0, Math.min(1, (t - epochStartTime) / animation.duration));
+          render(unitNormalizedTime);
+          if (unitNormalizedTime < 1) {
+            animationState.rafId = window.requestAnimationFrame(anim);
+          }
+        };
+        animationState.rafId = window.requestAnimationFrame(anim);
+      });
+    }
+  } else {
+    render(1);
+  }
+
+  function render(
+    logicalTime: number,
+    timeFunction: (time: number) => number = animation?.duration
+      ? easeInOut(Math.min(5, animation.duration / 100))
+      : linear,
+  ) {
+    const width = containerWidth * panelWidth;
+    const height = containerHeight * panelHeight;
+    const t = timeFunction(logicalTime);
+    const focusX0 = t * currentFocusX0 + (1 - t) * prevFocusX0 || 0;
+    const focusX1 = t * currentFocusX1 + (1 - t) * prevFocusX1 || 0;
+    const scale = containerWidth / (focusX1 - focusX0);
+
+    ctx.save();
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.translate(diskCenter.x, diskCenter.y);
+    ctx.clearRect(0, 0, width, height);
+
+    quadViewModel.forEach((quad) => {
+      const { fillColor, x0, x1, y0px: y0, y1px: y1, dataName, textColor, depth } = quad;
+      if (y1 - y0 <= padding) return;
+
+      const fx0 = Math.max((x0 - focusX0) * scale, 0);
+      const fx1 = Math.min((x1 - focusX0) * scale, width);
+
+      if (fx1 < 0 || fx0 > width) return;
+
+      const layer = layers[depth - 1]; // depth === 0 corresponds to root layer (above API `layers`)
+      const formatter = layer?.nodeLabel ?? String;
+
+      const label = formatter(dataName);
+      const fWidth = fx1 - fx0;
+      const fPadding = Math.min(padding, MAX_PADDING_RATIO * fWidth);
+
+      const isDimmed = highlightedQuadSet.size > 0 && !highlightedQuadSet.has(quad);
+      const baseFillColor = getColorFromVariant(
+        fillColor,
+        getDimmedColor(isDimmed, partitionStyle.dimmed, 'fill', fillColor),
+      );
+      // Apply opacity when dimmed with opacity config
+      const dimmedFillColor =
+        isDimmed && 'opacity' in partitionStyle.dimmed
+          ? multiplyColorOpacity(baseFillColor, partitionStyle.dimmed.opacity)
+          : baseFillColor;
+
+      ctx.fillStyle = dimmedFillColor;
+      ctx.beginPath();
+      ctx.rect(fx0 + fPadding, y0 + padding / 2, fWidth - fPadding, y1 - y0 - padding);
+      ctx.fill();
+      if (textColor === Colors.Transparent.keyword || label === '' || fWidth < 4) return;
+      ctx.fillStyle = textColor;
+      ctx.save();
+      ctx.clip(); // undoing a clip needs context save/restore, which is why it's wrapped in a save/restore
+      ctx.fillText(label, fx0 + 3 * fPadding, (y0 + y1) / 2);
+      ctx.restore();
+    });
+
+    ctx.restore();
+  }
+}

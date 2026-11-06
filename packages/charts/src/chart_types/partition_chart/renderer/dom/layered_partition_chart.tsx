@@ -12,7 +12,7 @@ import React from 'react';
 import { HighlighterFromHover } from './highlighter_hover';
 import { Tooltip } from '../../../../components/tooltip/tooltip';
 import type { BackwardRef, ChartRenderer, StageElement } from '../../../../state/internal_chart_renderer';
-import { Partition } from '../canvas/partition';
+import { Partition } from '../partition';
 
 /**
  * Partition chart renderer

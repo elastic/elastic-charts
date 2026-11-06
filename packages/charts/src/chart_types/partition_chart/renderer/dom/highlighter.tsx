@@ -16,7 +16,7 @@ import type { PartitionLayout } from '../../layout/types/config_types';
 import type { PartitionSmallMultiplesModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { nullPartitionSmallMultiplesModel } from '../../layout/types/viewmodel_types';
 import { isSunburst, isTreemap, isMosaic } from '../../layout/viewmodel/viewmodel';
-import type { ContinuousDomainFocus, IndexedContinuousDomainFocus } from '../canvas/partition';
+import type { ContinuousDomainFocus, IndexedContinuousDomainFocus } from '../partition';
 
 interface HighlightSet extends PartitionSmallMultiplesModel {
   geometries: QuadViewModel[];
