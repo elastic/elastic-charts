@@ -14,7 +14,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 import { paramCase } from 'change-case';
 
-import { environmentUrl } from '../e2e_config';
+import { environmentUrl, renderer } from '../e2e_config';
 
 declare global {
   interface Window {
@@ -107,6 +107,19 @@ function getCursorPosition(
   return { x, y };
 }
 
+/**
+ * Sets or replaces one entry of a storybook `globals` url parameter (`key:value;key2.sub:value2`,
+ * see `getGlobalParams` in e2e_server/server/mocks/use_global_parameters.ts), keeping the other entries.
+ */
+function setGlobalsEntry(globals: string, key: string, value: string): string {
+  const entries = globals.split(';').filter((entry) => entry !== '');
+  const index = entries.findIndex((entry) => entry.split(':')[0] === key);
+  const entry = `${key}:${value}`;
+  if (index === -1) entries.push(entry);
+  else entries[index] = entry;
+  return entries.join(';');
+}
+
 interface ScreenshotDOMElementOptions {
   padding?: number;
   /**
@@ -186,6 +199,11 @@ export class CommonPage {
     envUrl.searchParams.delete('id');
     envUrl.searchParams.set('path', path ?? `/story/${id}`);
     envUrl.searchParams.append('knob-debug', 'false');
+
+    if (renderer === 'svg') {
+      // the VRT page reads only the first `globals` parameter, so merge into it rather than append another
+      envUrl.searchParams.set('globals', setGlobalsEntry(envUrl.searchParams.get('globals') ?? '', 'renderer', 'svg'));
+    }
 
     return envUrl.toString();
   }

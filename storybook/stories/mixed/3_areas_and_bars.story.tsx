@@ -24,7 +24,7 @@ import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => (
-  <Chart title={title} description={description} renderer="canvas">
+  <Chart title={title} description={description}>
     <Settings
       showLegend
       legendValues={[LegendValue.CurrentAndLastValue]}

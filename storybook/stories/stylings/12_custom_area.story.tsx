@@ -107,7 +107,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const areaStyle2 = generateAreaSeriesStyleKnobs('Area 2 Style', 'area2', 'blue', 'violet', 2, 5, 4, undefined, 'red');
 
   return (
-    <Chart title={title} description={description} renderer="canvas">
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         legendValues={[LegendValue.CurrentAndLastValue]}
