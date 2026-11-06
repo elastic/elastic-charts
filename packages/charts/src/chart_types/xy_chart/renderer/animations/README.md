@@ -1,6 +1,6 @@
 # Animation in charts
 
-This directory contains shared logic for implementing animations throughout charts canvas render methods.
+This directory contains shared logic for implementing animations throughout the chart render methods that draw through a `Painter`.
 
 ## Animating a value
 
@@ -8,17 +8,17 @@ Currently this animation framework only targets animation or tweening of a speci
 
 ### Setup
 
-The setup is fairly simple and requires just a few changes inside the top-level chart type render functions. Starting with the chart type component within `packages/charts/src/chart_types/<chart_type>/renderer/canvas/xxx`. Using `XYChart` type as an example.
+The setup is fairly simple and requires just a few changes inside the top-level chart type render functions. Starting with the chart type component within `packages/charts/src/chart_types/<chart_type>/renderer/xxx`. Using `XYChart` type as an example.
 
 The changes required include:
 
 1) Add `animationState` instance property.
 2) Initialize the `animationState` in the `constructor`.
 3) Add logic to clear animation state on component unmount.
-4) Pass the `animationState` to your render function.
+4) Pass the `animationState` to your render function from the stage's paint callback.
 
 ```tsx
-// packages/charts/src/chart_types/xy_chart/renderer/canvas/xy_chart.tsx
+// packages/charts/src/chart_types/xy_chart/renderer/xy_chart.tsx
 
 class XYChartComponent extends React.Component<XYChartProps> {
   private animationState: AnimationState; // step 1
@@ -32,11 +32,9 @@ class XYChartComponent extends React.Component<XYChartProps> {
     this.animationState.pool.clear();
   }
 
-  private drawCanvas() {
-    if (this.ctx) {
-      renderXYChartCanvas2d(this.ctx, this.devicePixelRatio, this.props, this.animationState); // step 4
-    }
-  }
+  private paint = (painter: Painter) => {
+    renderXYChart(painter, this.props, this.animationState); // step 4
+  };
 }
 ```
 
@@ -45,26 +43,30 @@ Next we need to enable the animation context within the render function.
 The changes required include:
 
 1) Add the `animationState` to the render function parameters.
-2) Wrap all render logic in `render` function closure.
-3) Call `getAnimationPoolFn` with `animationState` and `render`.
+2) Draw one frame in a function that takes the `AnimationContext`.
+3) Call `getAnimationPoolFn` with `animationState` and that function when the painter animates (the
+   live canvas); otherwise draw one frame with every value at its target, which the svg stage
+   transitions through CSS and an export paints once.
 
 ```diff
-+ import { AnimationContext, getAnimationPoolFn } from './animations';
++ import { AnimationContext, getAnimationPoolFn, getTransitionAnimationContext } from './animations';
 + import { AnimationState } from './animations/animation';
 
-  export function renderXYChartCanvas2d(
-    ctx: CanvasRenderingContext2D,
-    dpr: number,
++ export function drawXYChart(painter: Painter, props: ReactiveChartStateProps, aCtx: AnimationContext) { // step 2
+    withContext(painter, () => {...});
++ }
+
+  export function renderXYChart(
+    painter: Painter,
     props: ReactiveChartStateProps,
 +   animationState: AnimationState, // step 1
   ) {
-+   function render(aCtx: AnimationContext) { // step 2
-      const imgCanvas = document.createElement('canvas');
-
-      withContext(ctx, () => {...}
++   const render = (aCtx: AnimationContext) => drawXYChart(painter, props, aCtx);
++   if (!painter.animates) {
++     render(getTransitionAnimationContext(painter));
++   } else {
++     void getAnimationPoolFn(animationState, render); // step 3
 +   }
-
-+   void getAnimationPoolFn(animationState, render); // step 3
   }
 ```
 
