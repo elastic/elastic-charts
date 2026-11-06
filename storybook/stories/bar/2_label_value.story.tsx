@@ -92,7 +92,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const splitSeriesAccessors = isSplitSeries ? ['g'] : undefined;
   const stackAccessors = isStackedSeries ? ['x'] : undefined;
   return (
-    <Chart title={title} description={description} renderer="canvas">
+    <Chart title={title} description={description}>
       <Settings
         theme={theme}
         baseTheme={useBaseTheme()}

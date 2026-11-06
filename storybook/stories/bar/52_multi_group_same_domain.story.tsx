@@ -49,7 +49,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const useDefaultDomain = boolean('Use the same data domain for each group', false);
 
   return (
-    <Chart title={title} description={description} renderer="canvas">
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} />
       <Axis
