@@ -7,8 +7,7 @@
  */
 
 import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
-import { getTooltipAnchorSelector } from './get_tooltip_anchor';
-import { getPickedShapes, hasPicketVisibleCells } from './picked_shapes';
+import { getPickedGridCell } from './picked_shapes';
 import type { Rect } from '../../../../geoms/types';
 import { isPointerOverEvent } from '../../../../specs';
 import type { GlobalChartState } from '../../../../state/chart_state';
@@ -23,18 +22,11 @@ export const getCursorBandPositionSelector = createCustomCachedSelector(
   [
     getPerPanelHeatmapGeometries,
     getExternalPointerEventStateSelector,
-    getPickedShapes,
-    getTooltipAnchorSelector,
+    getPickedGridCell,
     getInternalIsBrushingSelector,
   ],
-  (
-    geoms,
-    externalPointerEvent,
-    pickedShapes,
-    tooltipShape,
-    isBrushing,
-  ): (Rect & { fromExternalEvent: boolean }) | undefined => {
-    // block cursor when brusing
+  (geoms, externalPointerEvent, pickedGridCell, isBrushing): (Rect & { fromExternalEvent: boolean }) | undefined => {
+    // block cursor when brushing
     if (isBrushing) return;
 
     // external pointer events takes precedence over the current mouse pointer
@@ -51,11 +43,14 @@ export const getCursorBandPositionSelector = createCustomCachedSelector(
       }
     }
 
-    if (hasPicketVisibleCells(pickedShapes)) {
-      return {
-        ...tooltipShape,
-        fromExternalEvent: false,
-      };
+    if (pickedGridCell) {
+      const band = geoms.pickCursorBand(pickedGridCell.x);
+      if (band) {
+        return {
+          ...band,
+          fromExternalEvent: false,
+        };
+      }
     }
   },
 );
