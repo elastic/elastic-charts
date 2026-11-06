@@ -35,6 +35,10 @@ test.describe('Canvas DPR zoom', () => {
     pwEach.test<[string, string]>(CHARTS)(
       ([type]) => `${type} renders crisp chart`,
       async (page, [, url]) => {
+        // The shared page switches stories in place, and an init script only runs on a document load,
+        // so leave the VRT page: the next story load is then a real navigation that runs the script.
+        await page.goto('about:blank');
+
         // Intercept matchMedia before navigation to capture every MediaQueryList
         // the chart registers. Exposes __simulateDPRChange(newDPR) in page context
         // to fire the 'change' event on resolution queries — replicating what a

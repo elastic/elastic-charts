@@ -34,6 +34,8 @@ import { renderTimeExtentAnnotation } from './render/annotations/time_extent';
 import { renderTimeUnitAnnotation } from './render/annotations/time_unit';
 import { renderCartesian } from './render/cartesian';
 import { renderDebugBox } from './render/glyphs/debug_box';
+import type { FrameSurface } from '../../../renderers/frame_surface';
+import type { Ctx2d } from '../../../renderers/painter';
 import type { NumberFormatter } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
 import { continuousTimeRasters } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
 import { numericalRasters } from '../../xy_chart/axes/timeslip/numerical_rasters';
@@ -177,23 +179,8 @@ const touchUpdate = (interactionState: InteractionState, newMultitouch: Multitou
 
 const inCartesianBand = (size: ElementSize, value: number) => size.innerLeading <= value && value <= size.innerTrailing;
 
-const ensureCanvasResolution = (
-  canvas: HTMLCanvasElement,
-  outerWidth: number,
-  outerHeight: number,
-  newCanvasWidth: number,
-  newCanvasHeight: number,
-) => {
-  if (newCanvasWidth !== outerWidth) {
-    canvas.setAttribute('width', String(newCanvasWidth));
-  }
-  if (newCanvasHeight !== outerHeight) {
-    canvas.setAttribute('height', String(newCanvasHeight));
-  }
-};
-
 const doCartesian = (
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   cartesianHeight: number,
   interactionState: InteractionState,
   deltaT: number,
@@ -238,10 +225,10 @@ const doCartesian = (
 };
 
 const renderChartWithTime = (
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   backgroundFillStyle: string,
-  newCanvasWidth: number,
-  newCanvasHeight: number,
+  chartWidth: number,
+  chartHeight: number,
   config: {
     locale: string;
     monospacedFontShorthand: string;
@@ -249,7 +236,6 @@ const renderChartWithTime = (
     defaultFontColor: string;
     a11y: { contrast: 'low' | 'medium' | 'high' };
   },
-  chartWidth: number,
   cartesianTop: number,
   cartesianLeft: number,
   cartesianHeight: number,
@@ -260,15 +246,13 @@ const renderChartWithTime = (
   chartTopFontSize: number,
   dataState: DataState,
   emWidth: number,
-  dpi: number,
   fromSec: number,
   toSec: number,
 ) => {
   ctx.save();
-  ctx.scale(dpi, dpi);
   ctx.fillStyle = backgroundFillStyle;
   // clearRect is not enough, as browser image copy ignores canvas background color
-  ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
+  ctx.fillRect(0, 0, chartWidth, chartHeight);
 
   // chart title
   renderChartTitle(ctx, config.subduedFontColor, chartWidth /*, cartesianTop*/);
@@ -314,70 +298,69 @@ const renderChartWithTime = (
   return { yTweenOngoing, dataDemand };
 };
 
-const chartWithTime = (
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  config: {
-    locale: string;
-    monospacedFontShorthand: string;
-    subduedFontColor: string;
-    defaultFontColor: string;
-    a11y: { contrast: 'low' | 'medium' | 'high' };
+interface TimeslipConfig {
+  locale: string;
+  monospacedFontShorthand: string;
+  subduedFontColor: string;
+  defaultFontColor: string;
+  a11y: { contrast: 'low' | 'medium' | 'high' };
 
-    domainFrom: number;
-    domainTo: number;
-  },
+  domainFrom: number;
+  domainTo: number;
+}
+
+/** the chart and cartesian extents, from the css size of the stage element */
+const layoutOf = (element: FrameSurface['element']) => ({
+  horizontal: elementSize(element, true, horizontalCartesianAreaPad),
+  vertical: elementSize(element, false, verticalCartesianAreaPad),
+});
+
+/** draws one frame into any context, advancing the tweens by `deltaT` */
+const drawFrame = (
+  ctx: Ctx2d,
+  { horizontal, vertical }: ReturnType<typeof layoutOf>,
+  config: TimeslipConfig,
   interactionState: InteractionState,
   dataState: DataState,
   deltaT: number,
-  dpi: number,
   emWidth: number,
 ) => {
-  const newHorizontalScreenDimensions = elementSize(canvas, true, horizontalCartesianAreaPad);
-  const chartWidth = newHorizontalScreenDimensions.outerSize;
-  const cartesianLeft = newHorizontalScreenDimensions.innerLeading;
-  const cartesianWidth = newHorizontalScreenDimensions.innerSize;
-
-  const newVerticalScreenDimensions = elementSize(canvas, false, verticalCartesianAreaPad);
-  const chartHeight = newVerticalScreenDimensions.outerSize;
-  const cartesianTop = newVerticalScreenDimensions.innerLeading;
-  const cartesianHeight = newVerticalScreenDimensions.innerSize;
-
-  // resize if needed
-  const newCanvasWidth = dpi * chartWidth;
-  const newCanvasHeight = dpi * chartHeight;
-  ensureCanvasResolution(
-    canvas,
-    interactionState.horizontalScreenDimensions.outerSize,
-    interactionState.verticalScreenDimensions.outerSize,
-    newCanvasWidth,
-    newCanvasHeight,
-  );
-  interactionState.horizontalScreenDimensions = newHorizontalScreenDimensions;
-  interactionState.verticalScreenDimensions = newVerticalScreenDimensions;
-
-  // render chart
-  const { yTweenOngoing, dataDemand } = renderChartWithTime(
+  interactionState.horizontalScreenDimensions = horizontal;
+  interactionState.verticalScreenDimensions = vertical;
+  return renderChartWithTime(
     ctx,
     backgroundFillStyle,
-    newCanvasWidth,
-    newCanvasHeight,
+    horizontal.outerSize,
+    vertical.outerSize,
     config,
-    chartWidth,
-    cartesianTop,
-    cartesianLeft,
-    cartesianHeight,
+    vertical.innerLeading,
+    horizontal.innerLeading,
+    vertical.innerSize,
     interactionState,
     deltaT,
-    cartesianWidth,
+    horizontal.innerSize,
     drawCartesianBox,
     chartTopFontSize,
     dataState,
     emWidth,
-    dpi,
     config.domainFrom,
     config.domainTo,
   );
+};
+
+const chartWithTime = (
+  surface: FrameSurface,
+  config: TimeslipConfig,
+  interactionState: InteractionState,
+  dataState: DataState,
+  deltaT: number,
+  emWidth: number,
+) => {
+  const layout = layoutOf(surface.element);
+  // render chart: the surface sizes itself for the frame and applies the device pixel ratio
+  const ctx = surface.beginFrame(layout.horizontal.outerSize, layout.vertical.outerSize);
+  const { yTweenOngoing, dataDemand } = drawFrame(ctx, layout, config, interactionState, dataState, deltaT, emWidth);
+  surface.endFrame();
 
   const dataArrived =
     !dataState.pending &&
@@ -393,7 +376,7 @@ const chartWithTime = (
 };
 
 const setupEventHandlers = (
-  canvas: HTMLCanvasElement,
+  canvas: GlobalEventHandlers, // the stage element, canvas or svg
   interactionState: InteractionState,
   timedRender: FrameRequestCallback,
   scheduleChartRender: () => void,
@@ -498,38 +481,49 @@ const setupEventHandlers = (
   canvas.addEventListener('touchend', dragEnd, { passive: false });
   canvas.addEventListener('touchcancel', dragEnd, { passive: false });
   canvas.addEventListener('keydown', keydown, { passive: false });
+
+  return () => {
+    window.removeEventListener('resize', scheduleChartRender);
+    canvas.removeEventListener('wheel', wheel);
+    canvas.removeEventListener('mousemove', mousemove);
+    canvas.removeEventListener('mousedown', mousedown);
+    canvas.removeEventListener('mouseup', dragEnd);
+    canvas.removeEventListener('touchmove', touchmove);
+    canvas.removeEventListener('touchend', dragEnd);
+    canvas.removeEventListener('touchcancel', dragEnd);
+    canvas.removeEventListener('keydown', keydown);
+  };
 };
 
 /**
- * The running chart, for the component that owns the canvas.
+ * The running chart, for the component that owns the surface.
  * @internal
  */
 export interface TimeslipLoop {
-  /** schedules a frame, e.g. after the canvas was resized, which clears it */
+  /** schedules a frame, e.g. after the surface was resized, which clears a canvas */
   render: () => void;
+  /** stops the loop: listeners off, pending frame cancelled, so the component can restart it or unmount */
+  stop: () => void;
+  /** draws the frame the chart currently shows into another context, e.g. for an export */
+  paint: (ctx: Ctx2d) => void;
 }
 
 /** @internal */
-export const timeslipRender = (
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  getData: GetData,
-): TimeslipLoop => {
-  const dpi = window.devicePixelRatio;
-  const emWidth = ctx.measureText('mmmmmmmmmm').width / 10; // approx width to avoid too many measurements
+export const timeslipRender = (surface: FrameSurface, getData: GetData): TimeslipLoop => {
+  const emWidth = surface.measureText('mmmmmmmmmm') / 10; // approx width to avoid too many measurements
 
   const interactionState = getNullInteractionState();
   const dataState = getNullDataState();
+  let stopped = false;
 
   const chartWithUpdate = (t: DOMHighResTimeStamp) => {
+    if (stopped) return;
     const { dataArrived, yTweenOngoing, dataDemand } = chartWithTime(
-      canvas,
-      ctx,
+      surface,
       config,
       interactionState,
       dataState,
       t,
-      dpi,
       emWidth,
     );
     if (dataArrived) updateDataState(dataState, dataDemand, getEnrichedData(getData(dataDemand)));
@@ -542,7 +536,17 @@ export const timeslipRender = (
   // initial render
   scheduleChartRender();
 
-  setupEventHandlers(canvas, interactionState, timedRender, scheduleChartRender);
+  const removeEventHandlers = setupEventHandlers(surface.element, interactionState, timedRender, scheduleChartRender);
 
-  return { render: scheduleChartRender };
+  return {
+    render: scheduleChartRender,
+    paint: (ctx) => {
+      drawFrame(ctx, layoutOf(surface.element), config, interactionState, dataState, 0, emWidth);
+    },
+    stop: () => {
+      stopped = true;
+      scheduleChartRender.cancel();
+      removeEventHandlers();
+    },
+  };
 };

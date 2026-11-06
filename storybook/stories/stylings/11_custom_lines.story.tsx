@@ -76,7 +76,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const dataset3 = dataset1.map((datum) => ({ ...datum, y: datum.y - 2 }));
 
   return (
-    <Chart title={title} description={description} renderer="canvas">
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         legendValues={[LegendValue.CurrentAndLastValue]}
