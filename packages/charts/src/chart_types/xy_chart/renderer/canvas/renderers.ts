@@ -163,8 +163,9 @@ export function drawXYChart(painter: Painter, props: ReactiveChartStateProps, aC
             painter.setLineDash([5, 5]);
             painter.lineWidth = 1;
             painter.strokeStyle = 'blue';
-            // without a context, d3's voronoi renders to path data
-            painter.strokePath(voronoi.render());
+            painter.beginPath();
+            voronoi.render(painter);
+            painter.stroke();
           }
         }),
     ]);

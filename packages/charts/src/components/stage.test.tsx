@@ -10,7 +10,8 @@ import { render } from '@testing-library/react';
 import React from 'react';
 
 import { Chart } from './chart';
-import { Partition, Settings } from '../specs';
+import { ScaleType } from '../scales/constants';
+import { BubbleSeries, Partition, Settings } from '../specs';
 
 const data = [
   { region: 'EMEA', size: 40 },
@@ -54,5 +55,31 @@ describe('Stage', () => {
     expect(svg!.querySelector('.echScreenReaderOnly')).toBeNull();
     // the chart reports itself rendered
     expect(container.querySelector('.echChartStatus')).toHaveAttribute('data-ech-render-complete', 'true');
+  });
+
+  it('draws the debug overlay on svg, including the spatial grid of a bubble chart', () => {
+    const bubbles = Array.from({ length: 30 }, (_, i) => ({ x: i, y: Math.sin(i / 5) * 10, z: (i % 7) + 1 }));
+    const errors = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const { container } = render(
+      <Chart size={[400, 300]} id="debug-test" renderer="svg">
+        <Settings debug />
+        <BubbleSeries
+          id="bubbles"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          markSizeAccessor="z"
+          data={bubbles}
+        />
+      </Chart>,
+    );
+    const { calls } = errors.mock;
+    errors.mockRestore();
+    expect(calls).toEqual([]);
+    // the triangulation is stroked dashed in blue over the points
+    const grid = Array.from(container.querySelectorAll('svg.echSvgRenderer path[stroke="blue"]'));
+    expect(grid.length).toBeGreaterThan(0);
+    expect(grid[0]).toHaveAttribute('stroke-dasharray');
   });
 });
