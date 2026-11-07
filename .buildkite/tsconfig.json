@@ -9,7 +9,7 @@
     "strict": true,
     "esModuleInterop": true,
     "module": "node16",
-    "target": "ES2025",
+    "target": "ES2022",
     "lib": ["esnext", "dom"],
     "moduleResolution": "node16",
     "jsx": "react",
