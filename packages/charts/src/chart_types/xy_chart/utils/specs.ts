@@ -38,7 +38,7 @@ import type {
   ComponentWithAnnotationDatum,
   CustomAnnotationTooltip,
 } from '../annotations/types';
-import type { AnimationOptions } from '../renderer/canvas/animations/animation';
+import type { AnimationOptions } from '../renderer/animations/animation';
 
 /** @public */
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;

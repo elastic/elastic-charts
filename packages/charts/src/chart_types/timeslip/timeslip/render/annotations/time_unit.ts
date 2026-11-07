@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import type { Ctx2d } from '../../../../../renderers/painter';
 import type { BinUnit } from '../../../../xy_chart/axes/timeslip/continuous_time_rasters';
 
 /** @internal */
@@ -24,7 +25,7 @@ const LOCALE_TRANSLATIONS = {
 
 /** @internal */
 export function renderTimeUnitAnnotation(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   config: {
     monospacedFontShorthand: string;
     subduedFontColor: string;

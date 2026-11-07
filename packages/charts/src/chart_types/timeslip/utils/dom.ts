@@ -21,8 +21,12 @@ export interface ElementSize {
 }
 
 /** @internal */
-export const elementSize = (canvas: HTMLCanvasElement, horizontal: boolean, pad: [number, number]): ElementSize => {
-  const outerSize = Number.parseFloat(horizontal ? canvas.style.width : canvas.style.height);
+export const elementSize = (
+  element: HTMLElement | SVGElement,
+  horizontal: boolean,
+  pad: [number, number],
+): ElementSize => {
+  const outerSize = Number.parseFloat(horizontal ? element.style.width : element.style.height);
 
   const innerLeading = outerSize * pad[0];
   const innerSize = outerSize * (1 - pad.reduce((p, n) => p + n));

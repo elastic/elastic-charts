@@ -9,6 +9,7 @@
 import type { ColorOverrides } from './color_overrides';
 import type { InteractionsState } from './interactions_state';
 import type { ChartType } from '../chart_types';
+import type { RendererType } from '../renderers/painter';
 import type { PointerEvent } from '../specs';
 import type { SpecList } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import type { Dimensions } from '../utils/dimensions';
@@ -68,6 +69,10 @@ export interface ChartSliceState {
    * the current device pixel ratio, updated when the browser zoom level changes
    */
   devicePixelRatio: number;
+  /**
+   * the drawing backend of the chart stage
+   */
+  renderer: RendererType;
   /**
    * the state of the interactions
    */

@@ -61,6 +61,9 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
+    // Match webpack-dev-server `allowedHosts: 'all'` so Docker VRT can
+    // reach this process via http://host.docker.internal:9002.
+    allowedHosts: true,
     port: 9002,
     strictPort: true,
     compress: true,

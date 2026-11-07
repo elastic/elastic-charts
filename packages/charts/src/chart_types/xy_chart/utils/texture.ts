@@ -9,7 +9,7 @@
 import type { Color } from '../../../common/colors';
 import type { Ratio } from '../../../common/geometry';
 import type { Texture } from '../../../geoms/types';
-import { ColorVariant, degToRad, getColorFromVariant } from '../../../utils/common';
+import { ColorVariant, getColorFromVariant } from '../../../utils/common';
 import type { Point } from '../../../utils/point';
 import type { TexturedStyles } from '../../../utils/themes/theme';
 import { TextureShape } from '../../../utils/themes/theme';
@@ -20,11 +20,13 @@ const getSpacing = ({ spacing }: TexturedStyles): Point => ({
   y: typeof spacing === 'number' ? spacing : spacing?.y ?? 0,
 });
 
-const getPath = (textureStyle: TexturedStyles, size: number, strokeWidth: number): [path: Path2D, rotation: number] => {
+const getPath = (
+  textureStyle: TexturedStyles,
+  size: number,
+  strokeWidth: number,
+): [path: string | Path2D, rotation: number] => {
   if ('path' in textureStyle) {
-    const path = typeof textureStyle.path === 'string' ? new Path2D(textureStyle.path) : textureStyle.path;
-
-    return [path, 0];
+    return [textureStyle.path, 0];
   }
   const [pathFn, rotation] = TextureRendererFn[textureStyle.shape];
   // Prevents clipping shapes near edge
@@ -32,82 +34,33 @@ const getPath = (textureStyle: TexturedStyles, size: number, strokeWidth: number
     ? strokeWidth
     : 0;
 
-  return [new Path2D(pathFn((size - strokeWidthPadding) / 2)), rotation];
+  return [pathFn((size - strokeWidthPadding) / 2), rotation];
 };
 
-/** @internal */
-function createPattern(
-  ctx: CanvasRenderingContext2D,
-  dpi: number,
-  patternCanvas: HTMLCanvasElement,
+/**
+ * Resolves a themed texture into the tile description that each painter turns into its own
+ * pattern paint server (see `Painter.createPattern`).
+ * @internal
+ */
+export const getTextureStyles = (
   baseColor: Color | ColorVariant,
   sharedGeometryOpacity: Ratio,
   textureStyle: TexturedStyles,
-): CanvasPattern | null {
-  const pCtx = patternCanvas.getContext('2d');
-  if (!pCtx) return null;
-
-  const { size = 10, stroke, strokeWidth = 1, opacity, shapeRotation, fill, dash } = textureStyle;
-
+): Texture => {
+  const { size = 10, stroke, strokeWidth = 1, opacity, shapeRotation, fill, dash, rotation, offset } = textureStyle;
   const spacing = getSpacing(textureStyle);
-  const cssWidth = size + spacing.x;
-  const cssHeight = size + spacing.y;
-  patternCanvas.width = dpi * cssWidth;
-  patternCanvas.height = dpi * cssHeight;
-
-  pCtx.globalAlpha = sharedGeometryOpacity * (opacity ?? 1);
-
-  pCtx.lineWidth = strokeWidth;
-
-  pCtx.strokeStyle = getColorFromVariant(baseColor, stroke ?? ColorVariant.Series);
-  if (dash) pCtx.setLineDash(dash);
-
-  if (fill) pCtx.fillStyle = getColorFromVariant(baseColor, fill);
-
   const [path, pathRotation] = getPath(textureStyle, size, strokeWidth);
-  const itemRotation = (shapeRotation ?? 0) + pathRotation;
-
-  pCtx.scale(dpi, dpi);
-  pCtx.translate(cssWidth / 2, cssHeight / 2);
-
-  if (itemRotation) pCtx.rotate(degToRad(itemRotation));
-
-  pCtx.beginPath();
-
-  if (path) {
-    pCtx.stroke(path);
-    if (fill) pCtx.fill(path);
-  }
-
-  const pattern = ctx.createPattern(patternCanvas, 'repeat')!; // HTMLCanvasElement always yields a CanvasPattern anyway
-
-  const { offset, rotation } = textureStyle;
-  const matrix = new DOMMatrix([1 / dpi, 0, 0, 1 / dpi, 0, 0]);
-  if (offset?.global) matrix.translateSelf(offset.x ?? 0, offset.y ?? 0);
-  matrix.rotateSelf(rotation ?? 0);
-  if (offset && !offset.global) matrix.translateSelf(offset.x ?? 0, offset.y ?? 0);
-
-  pattern.setTransform(matrix);
-  return pattern;
-}
-
-/** @internal */
-export const getTextureStyles = (
-  ctx: CanvasRenderingContext2D,
-  patternCanvas: HTMLCanvasElement,
-  baseColor: Color | ColorVariant,
-  sharedGeometryOpacity: Ratio,
-  texture: TexturedStyles,
-): Texture | undefined => {
-  const dpi = window.devicePixelRatio;
-  const pattern = createPattern(ctx, dpi, patternCanvas, baseColor, sharedGeometryOpacity, texture);
-
-  if (!pattern) return;
-
-  const { rotation, offset } = texture;
 
   return {
-    pattern,
+    width: size + spacing.x,
+    height: size + spacing.y,
+    path,
+    shapeRotation: (shapeRotation ?? 0) + pathRotation,
+    stroke: getColorFromVariant(baseColor, stroke ?? ColorVariant.Series),
+    strokeWidth,
+    fill: fill ? getColorFromVariant(baseColor, fill) : undefined,
+    dash,
+    opacity: sharedGeometryOpacity * (opacity ?? 1),
     rotation,
     offset,
   };

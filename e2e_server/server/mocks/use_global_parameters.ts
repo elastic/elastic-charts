@@ -84,7 +84,7 @@ export function useGlobalsParameters(): GlobalParameters {
   };
 }
 
-function getGlobalParams(params: URLSearchParams): StoryGlobals {
+export function getGlobalParams(params: URLSearchParams): StoryGlobals {
   const rawGlobals = params.get('globals') ?? '';
   const globalsArr = rawGlobals.split(';').map((pair: string) => pair.split(':'));
   return globalsArr.reduce((acc, [key, value]) => {

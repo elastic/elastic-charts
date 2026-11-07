@@ -54,12 +54,33 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
+"@types/node@*":
+  version "26.6.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-26.6.6.tgz#9ed7b5817e728ed9216ef7c5b7d373fe3b777104"
+  integrity sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog==
+  dependencies:
+    undici-types "~8.9.0"
+
 "@types/node@^20.10.0":
   version "20.11.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-20.11.0.tgz#8e0b99e70c0c1ade1a86c4a282f7b7ef87c9552f"
   integrity sha512-o9bjXmDNcF7GbM4CNQpmi+TutCgap/K3w1JyKgxAjqx41zp9qlIAVFi0IhCNsJcXolEqLWhbFbEeL0PvYm4pcQ==
   dependencies:
     undici-types "~5.26.4"
+
+"@types/pixelmatch@^5.2.6":
+  version "5.2.6"
+  resolved "https://registry.yarnpkg.com/@types/pixelmatch/-/pixelmatch-5.2.6.tgz#fba6de304ac958495f27d85989f5c6bb7499a686"
+  integrity sha512-wC83uexE5KGuUODn6zkm9gMzTwdY5L0chiK+VrKcDfEjzxh1uadlWTvOmAbCpnM9zx/Ww3f8uKlYQVnO/TrqVg==
+  dependencies:
+    "@types/node" "*"
+
+"@types/pngjs@^6.0.5":
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/@types/pngjs/-/pngjs-6.0.5.tgz#6dec2f7eb8284543ca4e423f3c09b119fa939ea3"
+  integrity sha512-0k5eKfrA83JOZPppLtS2C7OUtyNAl2wKNxfyYl9Q5g9lPkgBl/9hNyAu6HuEH2J4XmIv2znEpkDd0SaZVxW6iQ==
+  dependencies:
+    "@types/node" "*"
 
 acorn-walk@^8.1.1:
   version "8.2.0"
@@ -195,6 +216,13 @@ path-case@^3.0.4:
     dot-case "^3.0.4"
     tslib "^2.0.3"
 
+pixelmatch@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/pixelmatch/-/pixelmatch-5.3.0.tgz#5e5321a7abedfb7962d60dbf345deda87cb9560a"
+  integrity sha512-o8mkY4E/+LNUf6LzX96ht6k6CEDi65k9G2rjMtBe9Oo+VPKSvl+0GKHuH/AlG+GA5LPG/i5hrekkxUc3s2HU+Q==
+  dependencies:
+    pngjs "^6.0.0"
+
 playwright-core@1.63.0:
   version "1.63.0"
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.63.0.tgz#e57665bc32846c213ac39a1e4d5bc6228e76b376"
@@ -206,6 +234,16 @@ playwright@1.63.0:
   integrity sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==
   dependencies:
     playwright-core "1.63.0"
+
+pngjs@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-6.0.0.tgz#ca9e5d2aa48db0228a52c419c3308e87720da821"
+  integrity sha512-TRzzuFRRmEoSW/p1KVAmiOgPco2Irlah+bGFCeNfJXxxYGwSw7YwAOAcd7X28K/m5bjBWKsC29KyoMfHbypayg==
+
+pngjs@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-7.0.0.tgz#a8b7446020ebbc6ac739db6c5415a65d17090e26"
+  integrity sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow==
 
 sentence-case@^3.0.4:
   version "3.0.4"
@@ -262,6 +300,11 @@ undici-types@~5.26.4:
   version "5.26.5"
   resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-5.26.5.tgz#bcd539893d00b56e964fd2657a4866b221a65617"
   integrity sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==
+
+undici-types@~8.9.0:
+  version "8.9.0"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-8.9.0.tgz#e240d97c8b5d85e5347ce73d25865c7906c1ec9f"
+  integrity sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==
 
 upper-case-first@^2.0.2:
   version "2.0.2"
