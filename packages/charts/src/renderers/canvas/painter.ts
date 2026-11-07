@@ -201,7 +201,7 @@ export class CanvasPainter implements Painter {
   }
 
   set fillStyle(paint: Paint) {
-    this.ctx.fillStyle = paint as CanvasRenderingContext2D['fillStyle'];
+    this.ctx.fillStyle = paint;
   }
 
   get strokeStyle(): Paint {
@@ -209,7 +209,7 @@ export class CanvasPainter implements Painter {
   }
 
   set strokeStyle(paint: Paint) {
-    this.ctx.strokeStyle = paint as CanvasRenderingContext2D['strokeStyle'];
+    this.ctx.strokeStyle = paint;
   }
 
   get lineWidth() {

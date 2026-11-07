@@ -185,7 +185,7 @@ export type AreaFitStyle = Visible & Opacity & {
 // Warning: (ae-forgotten-export) The symbol "buildProps_3" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const AreaSeries: <D extends BaseDatum = any>(props: SFProps<AreaSeriesSpec<D>, keyof (typeof buildProps_3)["overrides"], keyof (typeof buildProps_3)["defaults"], keyof (typeof buildProps_3)["optionals"], keyof (typeof buildProps_3)["requires"]>) => null;
+export const AreaSeries: <D extends BaseDatum = Datum>(props: SFProps<AreaSeriesSpec<D>, keyof (typeof buildProps_3)["overrides"], keyof (typeof buildProps_3)["defaults"], keyof (typeof buildProps_3)["optionals"], keyof (typeof buildProps_3)["requires"]>) => null;
 
 // @public (undocumented)
 export type AreaSeriesProps = ComponentProps<typeof AreaSeries>;
@@ -354,7 +354,7 @@ export interface BandFillColorAccessorInput {
 // Warning: (ae-forgotten-export) The symbol "buildProps_4" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const BarSeries: <D extends BaseDatum = any>(props: SFProps<BarSeriesSpec<D>, keyof (typeof buildProps_4)["overrides"], keyof (typeof buildProps_4)["defaults"], keyof (typeof buildProps_4)["optionals"], keyof (typeof buildProps_4)["requires"]>) => null;
+export const BarSeries: <D extends BaseDatum = Datum>(props: SFProps<BarSeriesSpec<D>, keyof (typeof buildProps_4)["overrides"], keyof (typeof buildProps_4)["defaults"], keyof (typeof buildProps_4)["optionals"], keyof (typeof buildProps_4)["requires"]>) => null;
 
 // @public (undocumented)
 export type BarSeriesProps = ComponentProps<typeof BarSeries>;
@@ -462,7 +462,7 @@ export interface BrushStyle {
 // Warning: (ae-incompatible-release-tags) The symbol "BubbleSeries" is marked as @public, but its signature references "BubbleSeriesSpec" which is marked as @alpha
 //
 // @public
-export const BubbleSeries: <D extends BaseDatum = any>(props: SFProps<BubbleSeriesSpec<D>, keyof (typeof buildProps_5)["overrides"], keyof (typeof buildProps_5)["defaults"], keyof (typeof buildProps_5)["optionals"], keyof (typeof buildProps_5)["requires"]>) => null;
+export const BubbleSeries: <D extends BaseDatum = Datum>(props: SFProps<BubbleSeriesSpec<D>, keyof (typeof buildProps_5)["overrides"], keyof (typeof buildProps_5)["defaults"], keyof (typeof buildProps_5)["optionals"], keyof (typeof buildProps_5)["requires"]>) => null;
 
 // @public (undocumented)
 export type BubbleSeriesProps = ComponentProps<typeof BubbleSeries>;
@@ -655,7 +655,7 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     // (undocumented)
     componentDidMount(): void;
     // (undocumented)
-    componentDidUpdate({ title, description, size, renderer }: Readonly<ChartProps>): void;
+    componentDidUpdate(input: Readonly<ChartProps>): void;
     // (undocumented)
     componentWillUnmount(): void;
     // (undocumented)
@@ -1199,10 +1199,10 @@ export type ElementClickListener = (elements: Array<XYChartElementEvent | Partit
 export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>) => void;
 
 // @public (undocumented)
-export const entryKey: ([key]: ArrayEntry) => string;
+export const entryKey: (input: ArrayEntry) => string;
 
 // @public (undocumented)
-export const entryValue: ([, value]: ArrayEntry) => ArrayNode;
+export const entryValue: (input: ArrayEntry) => ArrayNode;
 
 // @public
 export interface ESCalendarInterval {
@@ -1277,7 +1277,7 @@ export type FitConfig = {
 // Warning: (ae-forgotten-export) The symbol "buildProps_11" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const Flame: <D extends BaseDatum = any>(props: SFProps<FlameSpec<D>, keyof (typeof buildProps_11)["overrides"], keyof (typeof buildProps_11)["defaults"], keyof (typeof buildProps_11)["optionals"], keyof (typeof buildProps_11)["requires"]>) => null;
+export const Flame: <D extends BaseDatum = Datum>(props: SFProps<FlameSpec<D>, keyof (typeof buildProps_11)["overrides"], keyof (typeof buildProps_11)["defaults"], keyof (typeof buildProps_11)["optionals"], keyof (typeof buildProps_11)["requires"]>) => null;
 
 // @public
 export type FlameElementEvent = FlameLayerValue;
@@ -1371,7 +1371,7 @@ export interface GeometryValue {
 }
 
 // @public
-export function getChartsTheme({ name, darkMode }: {
+export function getChartsTheme(input: {
     name: string;
     darkMode: boolean;
 }): Theme;
@@ -1527,7 +1527,7 @@ export interface GroupBrushExtent {
 // Warning: (ae-incompatible-release-tags) The symbol "GroupBy" is marked as @public, but its signature references "GroupBySpec" which is marked as @alpha
 //
 // @public
-export const GroupBy: <D extends BaseDatum = any>(props: SFProps<GroupBySpec<D>, keyof (typeof buildProps_2)["overrides"], keyof (typeof buildProps_2)["defaults"], keyof (typeof buildProps_2)["optionals"], keyof (typeof buildProps_2)["requires"]>) => null;
+export const GroupBy: <D extends BaseDatum = Datum>(props: SFProps<GroupBySpec<D>, keyof (typeof buildProps_2)["overrides"], keyof (typeof buildProps_2)["defaults"], keyof (typeof buildProps_2)["optionals"], keyof (typeof buildProps_2)["requires"]>) => null;
 
 // @public (undocumented)
 export type GroupByAccessor<D extends BaseDatum = any> = (spec: Spec, datum: D) => string | number;
@@ -1560,7 +1560,7 @@ export type GroupKeysOrKeyFn<T> = Array<keyof T> | GroupByKeyFn<T>;
 // Warning: (ae-forgotten-export) The symbol "heatmapBuildProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha
-export const Heatmap: <D extends BaseDatum = any>(props: SFProps<HeatmapSpec<D>, keyof (typeof heatmapBuildProps)["overrides"], keyof (typeof heatmapBuildProps)["defaults"], keyof (typeof heatmapBuildProps)["optionals"], keyof (typeof heatmapBuildProps)["requires"]>) => null;
+export const Heatmap: <D extends BaseDatum = Datum>(props: SFProps<HeatmapSpec<D>, keyof (typeof heatmapBuildProps)["overrides"], keyof (typeof heatmapBuildProps)["defaults"], keyof (typeof heatmapBuildProps)["optionals"], keyof (typeof heatmapBuildProps)["requires"]>) => null;
 
 // @alpha (undocumented)
 export interface HeatmapBandsColorScale {
@@ -1743,7 +1743,7 @@ export interface HighlighterStyle {
 // Warning: (ae-forgotten-export) The symbol "buildProps_6" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const HistogramBarSeries: <D extends BaseDatum = any>(props: SFProps<HistogramBarSeriesSpec<D>, keyof (typeof buildProps_6)["overrides"], keyof (typeof buildProps_6)["defaults"], keyof (typeof buildProps_6)["optionals"], keyof (typeof buildProps_6)["requires"]>) => null;
+export const HistogramBarSeries: <D extends BaseDatum = Datum>(props: SFProps<HistogramBarSeriesSpec<D>, keyof (typeof buildProps_6)["overrides"], keyof (typeof buildProps_6)["defaults"], keyof (typeof buildProps_6)["optionals"], keyof (typeof buildProps_6)["requires"]>) => null;
 
 // @public (undocumented)
 export type HistogramBarSeriesProps = ComponentProps<typeof HistogramBarSeries>;
@@ -2062,7 +2062,7 @@ export type LineFitStyle = Visible & Opacity & StrokeDashArray & {
 // Warning: (ae-forgotten-export) The symbol "buildProps_8" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const LineSeries: <D extends BaseDatum = any>(props: SFProps<LineSeriesSpec<D>, keyof (typeof buildProps_8)["overrides"], keyof (typeof buildProps_8)["defaults"], keyof (typeof buildProps_8)["optionals"], keyof (typeof buildProps_8)["requires"]>) => null;
+export const LineSeries: <D extends BaseDatum = Datum>(props: SFProps<LineSeriesSpec<D>, keyof (typeof buildProps_8)["overrides"], keyof (typeof buildProps_8)["defaults"], keyof (typeof buildProps_8)["optionals"], keyof (typeof buildProps_8)["requires"]>) => null;
 
 // @public (undocumented)
 export type LineSeriesProps = ComponentProps<typeof LineSeries>;
@@ -2483,7 +2483,7 @@ export type PartialTheme = RecursivePartial<Theme>;
 // Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const Partition: <D extends BaseDatum = any>(props: SFProps<PartitionSpec<D>, keyof (typeof buildProps)["overrides"], keyof (typeof buildProps)["defaults"], keyof (typeof buildProps)["optionals"], keyof (typeof buildProps)["requires"]>) => null;
+export const Partition: <D extends BaseDatum = Datum>(props: SFProps<PartitionSpec<D>, keyof (typeof buildProps)["overrides"], keyof (typeof buildProps)["defaults"], keyof (typeof buildProps)["optionals"], keyof (typeof buildProps)["requires"]>) => null;
 
 // @public (undocumented)
 export type PartitionDimmedStyle = {
@@ -3452,7 +3452,7 @@ export function toEntries<T extends Record<string, string>, S>(array: T[], acces
 export type ToggleSelectedTooltipItemCallback = (item: TooltipValue<any, SeriesIdentifier>) => any;
 
 // @public
-export const Tooltip: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: SFProps<TooltipSpec<D, SI>, keyof (typeof tooltipBuildProps)["overrides"], keyof (typeof tooltipBuildProps)["defaults"], keyof (typeof tooltipBuildProps)["optionals"], keyof (typeof tooltipBuildProps)["requires"]>) => null;
+export const Tooltip: <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(props: SFProps<TooltipSpec<D, SI>, keyof (typeof tooltipBuildProps)["overrides"], keyof (typeof tooltipBuildProps)["defaults"], keyof (typeof tooltipBuildProps)["optionals"], keyof (typeof tooltipBuildProps)["requires"]>) => null;
 
 // @public
 export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
@@ -3469,7 +3469,7 @@ export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "
 export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
 
 // @public (undocumented)
-export const TooltipContainer: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: PropsWithChildren_2<{
+export const TooltipContainer: <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(props: PropsWithChildren_2<{
     className?: string;
 }>) => React_2.JSX.Element;
 
@@ -3504,12 +3504,12 @@ export interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesId
 // Warning: (ae-forgotten-export) The symbol "TooltipDividerProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipDivider: ({ margin }: TooltipDividerProps) => React_2.JSX.Element;
+export const TooltipDivider: (input: TooltipDividerProps) => React_2.JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipFooterProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipFooter: ({ children }: TooltipFooterProps) => React_2.JSX.Element;
+export const TooltipFooter: (input: TooltipFooterProps) => React_2.JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipHeaderInner" needs to be exported by the entry point index.d.ts
 //
@@ -3534,7 +3534,7 @@ export interface TooltipInfo<D extends BaseDatum = Datum, SI extends SeriesIdent
 // Warning: (ae-forgotten-export) The symbol "TooltipMetricRowProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipMetricRow: React_2.MemoExoticComponent<({ label, metric }: TooltipMetricRowProps) => React_2.JSX.Element>;
+export const TooltipMetricRow: React_2.MemoExoticComponent<(input: TooltipMetricRowProps) => React_2.JSX.Element>;
 
 // @public
 export interface TooltipPortalSettings<B = never> {
@@ -3609,15 +3609,15 @@ export interface TooltipStyle {
 // Warning: (ae-forgotten-export) The symbol "TooltipTableProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTable: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableProps<D, SI>) => React_2.JSX.Element;
+export const TooltipTable: <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(input: TooltipTableProps<D, SI>) => React_2.JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableBodyProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableBody: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableBodyProps<D, SI>) => React_2.JSX.Element;
+export const TooltipTableBody: <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(input: TooltipTableBodyProps<D, SI>) => React_2.JSX.Element;
 
 // @public (undocumented)
-export const TooltipTableCell: ({ style, truncate, tagName, className, children, title: manualTitle, }: TooltipTableCellProps) => React_2.JSX.Element;
+export const TooltipTableCell: (input: TooltipTableCellProps) => React_2.JSX.Element;
 
 // @public (undocumented)
 export type TooltipTableCellProps = PropsWithChildren_2<{
@@ -3629,7 +3629,7 @@ export type TooltipTableCellProps = PropsWithChildren_2<{
 }>;
 
 // @public
-export function TooltipTableColorCell({ color, className, displayOnly, ...cellProps }: ColorStripCellProps): JSX.Element | null;
+export function TooltipTableColorCell(input: ColorStripCellProps): JSX.Element | null;
 
 // @alpha
 export type TooltipTableColumn<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = TooltipTableColumnCustom<D, SI> | TooltipTableColumnColor<D, SI> | TooltipTableColumnNumber<D, SI> | TooltipTableColumnText<D, SI>;
@@ -3680,17 +3680,17 @@ export interface TooltipTableColumnText<D extends BaseDatum = Datum, SI extends 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableFooterProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableFooter: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableFooterProps<D, SI>) => React_2.JSX.Element | null;
+export const TooltipTableFooter: <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(input: TooltipTableFooterProps<D, SI>) => React_2.JSX.Element | null;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableHeaderProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableHeader: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableHeaderProps<D, SI>) => React_2.JSX.Element | null;
+export const TooltipTableHeader: <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(input: TooltipTableHeaderProps<D, SI>) => React_2.JSX.Element | null;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableRowProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableRow: ({ id, isHighlighted, isSelected, children, onSelect, className, }: TooltipTableRowProps) => React_2.JSX.Element;
+export const TooltipTableRow: (input: TooltipTableRowProps) => React_2.JSX.Element;
 
 // @public
 export const TooltipType: Readonly<{
@@ -3752,7 +3752,7 @@ export type UnixTimestamp = TimeMs;
 export function useLegendAction<T extends HTMLElement>(): [ref: LegacyRef<T>, onClose: () => void];
 
 // @public (undocumented)
-export const useTooltipContext: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>() => TooltipContext<D, SI>;
+export const useTooltipContext: <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>() => TooltipContext<D, SI>;
 
 // @public (undocumented)
 export const VALUE_GETTERS: Readonly<{

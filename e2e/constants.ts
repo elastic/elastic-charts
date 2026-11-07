@@ -14,7 +14,6 @@
  * TODO revisit this logic
  */
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export declare type $Values<T extends object> = T[keyof T];
 
 export type Rotation = 0 | 90 | -90 | 180;

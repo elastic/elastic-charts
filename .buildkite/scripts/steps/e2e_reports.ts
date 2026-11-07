@@ -9,7 +9,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import type { InstallationAccessTokenAuthentication, InstallationAuthOptions } from '@octokit/auth-app';
+import type { InstallationAccessTokenAuthentication } from '@octokit/auth-app';
 import { setMetadata } from 'buildkite-agent-node';
 
 import type { ScreenshotMeta } from '../../utils';
@@ -117,7 +117,7 @@ async function commitNewScreenshots() {
 
   const { token } = (await octokit.auth({
     type: 'installation',
-  } as InstallationAuthOptions)) as InstallationAccessTokenAuthentication;
+  })) as InstallationAccessTokenAuthentication;
 
   const remoteUrl = `https://${encodeURI(botName)}:${token}@github.com/${
     bkEnv.username ?? 'elastic'

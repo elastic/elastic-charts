@@ -18,7 +18,7 @@ type ExtractParameters<T> = 'parameters' extends keyof T
         [K in keyof T['parameters']]: T['parameters'][K];
       }[keyof T['parameters']]
     >
-  : {}; // eslint-disable-line @typescript-eslint/ban-types
+  : {}; // eslint-disable-line @typescript-eslint/no-empty-object-type
 type ExtractRequestBody<T> = 'requestBody' extends keyof T
   ? 'content' extends keyof T['requestBody']
     ? 'application/json' extends keyof T['requestBody']['content']
@@ -35,7 +35,7 @@ type ExtractRequestBody<T> = 'requestBody' extends keyof T
             [K in keyof T['requestBody']]: T['requestBody'][K];
           }[keyof T['requestBody']];
         }
-  : {}; // eslint-disable-line @typescript-eslint/ban-types
+  : {}; // eslint-disable-line @typescript-eslint/no-empty-object-type
 type SuccessStatuses = 200 | 201 | 202 | 204;
 type RedirectStatuses = 301 | 302;
 type EmptyResponseStatuses = 201 | 204;

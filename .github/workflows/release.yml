@@ -9,7 +9,7 @@ permissions:
   contents: read # for checkout
 
 env:
-  ECH_NODE_VERSION: '22.22.0'
+  ECH_NODE_VERSION: '24.22.1'
 
 jobs:
   checks:

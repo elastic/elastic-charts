@@ -14,7 +14,7 @@ type Utils = typeof UtilsModule;
 function loadModule(): Utils {
   let utils: Utils | undefined;
   jest.isolateModules(() => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, global-require
     utils = require('./utils') as Utils;
   });
   return utils!;

@@ -343,7 +343,7 @@ const HIDDEN_TOOLTIP_PROPS: TooltipStateProps = {
   info: undefined,
   position: null,
   settings: {},
-  rotation: 0 as Rotation,
+  rotation: 0,
   chartId: '',
   canPinTooltip: false,
   backgroundColor: Colors.Transparent.keyword,

@@ -9,20 +9,24 @@
     "strict": true,
     "esModuleInterop": true,
     "noUncheckedIndexedAccess": true,
-    "module": "CommonJS",
-    "target": "ES2022",
-    "lib": ["ES2022", "DOM"],
-    "moduleResolution": "node",
+    "module": "preserve",
+    "target": "ES2025",
+    "lib": ["ES2025", "DOM"],
+    // TS 6 no longer includes every @types package by default
+    "types": ["node", "jest", "jest-extended", "@testing-library/jest-dom"],
+    "moduleResolution": "bundler",
+    // side-effect style imports (`import './x.scss'`) are resolved by the bundlers, not by TS
+    "noUncheckedSideEffectImports": false,
     "jsx": "react",
     "allowJs": false,
     "skipLibCheck": true,
-    "downlevelIteration": true,
     "stripInternal": true,
     "resolveJsonModule": true,
     "paths": {
       "*": ["./declarations/*", "./*"],
-      "/@elastic/charts$": ["./packages/charts/src"],
-      "/@elastic/charts/src/*": ["./packages/charts/src/*"]
+      "@elastic/charts": ["./packages/charts/src"],
+      "@elastic/charts/src": ["./packages/charts/src"],
+      "@elastic/charts/src/*": ["./packages/charts/src/*"]
     }
   },
   "exclude": ["**/tmp", "**/dist"]

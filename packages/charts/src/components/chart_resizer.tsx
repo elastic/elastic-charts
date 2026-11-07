@@ -41,7 +41,7 @@ class Resizer extends React.Component<ResizerProps> {
 
   componentDidMount() {
     if (this.containerRef.current) {
-      this.ro.observe(this.containerRef.current as Element);
+      this.ro.observe(this.containerRef.current);
     }
   }
 

@@ -535,7 +535,7 @@ export interface SeriesScales {
 }
 
 type MarkFormatter<Type extends string = ''> = Type extends 'bar'
-  ? // eslint-disable-next-line @typescript-eslint/ban-types
+  ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     {} // these options are to be empty thus {}
   : {
       /**
@@ -693,12 +693,14 @@ export interface HistogramConfig {
   histogramModeAlignment?: HistogramModeAlignment;
 }
 
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion -- widen to the union in the public type */
 /** @public */
 export const HistogramModeAlignments = Object.freeze({
   Start: 'start' as HistogramModeAlignment,
   Center: 'center' as HistogramModeAlignment,
   End: 'end' as HistogramModeAlignment,
 });
+/* eslint-enable @typescript-eslint/no-unnecessary-type-assertion */
 
 /** @public */
 export type HistogramModeAlignments = $Values<typeof HistogramModeAlignments>;

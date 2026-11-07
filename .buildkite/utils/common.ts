@@ -27,7 +27,7 @@ export const compress = (opts: targz.options) =>
     fs.mkdirSync(destPath, { recursive: true });
     targz.compress(opts, function (err) {
       if (err) {
-        reject(err);
+        reject(err instanceof Error ? err : new Error(String(err)));
       } else {
         console.log(`Compressed files successfully to "${opts.dest}"`);
         resolve();
@@ -42,7 +42,7 @@ export const decompress = (opts: targz.options) =>
     fs.mkdirSync(destPath, { recursive: true });
     targz.decompress(opts, function (err) {
       if (err) {
-        reject(err);
+        reject(err instanceof Error ? err : new Error(String(err)));
       } else {
         // fs.rmSync(opts.src); // delete source to prevent uploading again
         console.log(`Decompressed files successfully to "${opts.dest}"`);
