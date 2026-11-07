@@ -390,7 +390,7 @@ export async function ghpDeploy(outDir: string) {
         repo: `https://git:${token}@github.com/elastic/elastic-charts.git`,
       },
       (error) => {
-        if (error) reject(error);
+        if (error) reject(error instanceof Error ? error : new Error(String(error)));
         else resolve();
       },
     );

@@ -103,7 +103,7 @@ describe('generateTicks', () => {
       minInterval: moment.duration(30, 'minutes').asMilliseconds(),
     });
     const scale = computeXScale({ xDomain, totalBarsInCluster: 0, range: [0, 603.5] });
-    const formatTickLabel = (value: unknown) => formatter(value as number, { timeZone: 'utc' });
+    const formatTickLabel = (value: unknown) => formatter(value, { timeZone: 'utc' });
     const ticks = [offDomainTick, ...scale.ticks()];
 
     const dropped = generateTicks(scale, ticks, 0, layoutTickLabel, formatTickLabel, 0, 0, true, false);

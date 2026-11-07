@@ -34,7 +34,7 @@ interface WorkerSlot {
  * Tracing (when enabled by the config) still works: Playwright instruments every context
  * created from the `browser` fixture. Video recording is not supported.
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export const test = base.extend<{}, { workerSlot: WorkerSlot }>({
   workerSlot: [
     // eslint-disable-next-line no-empty-pattern

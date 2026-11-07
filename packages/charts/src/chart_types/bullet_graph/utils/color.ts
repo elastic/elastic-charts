@@ -289,7 +289,7 @@ export function getColorScaleWithBands(
   bands: ColorTick[];
 } {
   const domain = scale.domain() as GenericDomain;
-  const baseDomain = sortNumbers(domain) as ContinuousDomain;
+  const baseDomain = sortNumbers(domain);
   const [colorScale, colorScaleInputs] = getColorScale(baseDomain, config, backgroundColor, fallbackBandColor);
 
   return {

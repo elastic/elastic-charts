@@ -51,7 +51,11 @@ module.exports = {
     'no-param-reassign': [1, { props: false }],
     '@typescript-eslint/comma-spacing': 0,
     'unicorn/no-nested-ternary': 0,
-    '@typescript-eslint/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+    // typescript-eslint 8 removed its formatting rules; airbnb-typescript still names the removed ones
+    '@typescript-eslint/lines-between-class-members': 0,
+    'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+    '@typescript-eslint/no-throw-literal': 0,
+    '@typescript-eslint/only-throw-error': 2,
     'no-extra-parens': 0, // it was already off by default; this line addition is just for documentation purposes
     '@typescript-eslint/restrict-template-expressions': 0, // it's OK to use numbers etc. in string templates
     'unicorn/prefer-string-slice': 0, // substr is just as fine as it's string specific and well named
@@ -176,7 +180,10 @@ module.exports = {
      */
     '@typescript-eslint/consistent-type-imports': 2,
     '@typescript-eslint/interface-name-prefix': 0,
-    '@typescript-eslint/ban-types': 1,
+    // typescript-eslint 8 split `ban-types` into these, kept at its former warning level
+    '@typescript-eslint/no-empty-object-type': 1,
+    '@typescript-eslint/no-unsafe-function-type': 1,
+    '@typescript-eslint/no-wrapper-object-types': 1,
     '@typescript-eslint/return-await': ['error', 'always'], // https://v8.dev/blog/fast-async
     '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }],
     '@typescript-eslint/no-explicit-any': 0,
@@ -429,7 +436,7 @@ module.exports = {
     {
       files: ['*.js'],
       rules: {
-        '@typescript-eslint/no-var-requires': 0,
+        '@typescript-eslint/no-require-imports': 0,
         '@typescript-eslint/no-unsafe-call': 0,
         'import/no-dynamic-require': 0,
         'global-require': 0,

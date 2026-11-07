@@ -19,6 +19,8 @@ import type { AxisSpec } from '../../utils/specs';
 /** @internal */
 export type AxisLabelFormatter<V = unknown> = (value: V) => string;
 
+// stringifying arbitrary tick values is the intent here
+// eslint-disable-next-line @typescript-eslint/no-base-to-string
 const toLabelString = (value: unknown): string => (value === null || value === undefined ? '' : String(value));
 
 /** @internal */

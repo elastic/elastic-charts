@@ -40,8 +40,11 @@ function setAttributes(element: Element, attrs: Record<string, unknown>) {
         .join(';');
       if (style) element.setAttribute('style', style);
     } else if (name === 'xmlSpace') {
+      // attribute values are primitives by construction
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
       element.setAttributeNS(XML_NS, 'xml:space', String(value));
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
       element.setAttribute(ATTRIBUTE_NAMES[name] ?? name, String(value));
     }
   }

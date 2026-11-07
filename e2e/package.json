@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@playwright/test": "^1.63.0",
-    "@types/node": "^20.10.0",
+    "@types/node": "^24.10.0",
     "@types/pixelmatch": "^5.2.6",
     "@types/pngjs": "^6.0.5",
     "change-case": "^4.1.2",
@@ -27,6 +27,6 @@
     "pngjs": "^7.0.0",
     "slugify": "^1.6.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.3"
+    "typescript": "~6.0.3"
   }
 }

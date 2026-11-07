@@ -160,8 +160,8 @@ describe('Settings spec component', () => {
     const updatedProps: Partial<SettingsSpec> = {
       theme: partialTheme,
       baseTheme: DARK_THEME,
-      rotation: 90 as Rotation,
-      rendering: 'svg' as Rendering,
+      rotation: 90,
+      rendering: 'svg',
       animateData: true,
       showLegend: true,
       legendPosition: Position.Bottom,

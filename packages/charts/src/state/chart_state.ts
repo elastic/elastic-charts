@@ -52,7 +52,7 @@ function skipImmerWalkOfSpecData(spec: Spec) {
   if (!('data' in spec)) {
     return;
   }
-  const { data } = spec as Spec & { data: unknown };
+  const { data } = spec;
   if (Array.isArray(data) && !Object.isFrozen(data)) {
     Object.freeze(data);
   }

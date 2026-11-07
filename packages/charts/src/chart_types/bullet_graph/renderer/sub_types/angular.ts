@@ -62,7 +62,7 @@ export function angularBullet(
 
   ctx.translate(GRAPH_PADDING.left, GRAPH_PADDING.top);
 
-  const [min, max] = sortNumbers([start, end]) as ContinuousDomain;
+  const [min, max] = sortNumbers<ContinuousDomain>([start, end]);
   const filteredTicks =
     spec.subtype !== BulletSubtype.circle
       ? ticks
