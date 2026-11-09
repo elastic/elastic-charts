@@ -8,6 +8,7 @@
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeChartElementSizesSelector } from './compute_chart_element_sizes';
+import { getHeatmapTableSelector } from './get_heatmap_table';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
@@ -108,5 +109,49 @@ describe('computeAxesSizesSelector', () => {
     expect(plainCadence).toBeGreaterThan(0);
     expect(insetCadence).toBeGreaterThan(plainCadence);
     expect((panelWidth / LABEL_COUNT) * insetCadence).toBeGreaterThanOrEqual(labelSpace);
+  });
+
+  it('skips more time x labels when left padding and margin shrink the panel', () => {
+    const start = Date.UTC(2020, 0, 1);
+    const hour = 60 * 60 * 1000;
+    const count = 80;
+    const timeLabel = String(start);
+    const timeLabelSpace = timeLabel.length * CHAR_WIDTH + horizontalPad(LIGHT_THEME.heatmap.xAxisLabel.padding);
+    const timeState = (left: number) => {
+      const store = MockStore.default(CONTAINER);
+      MockStore.addSpecs(
+        [
+          MockGlobalSpec.settingsNoMargins({
+            showLegend: false,
+            theme: {
+              chartPaddings: { left, right: 0, top: 0, bottom: 0 },
+              chartMargins: { left, right: 0, top: 0, bottom: 0 },
+            },
+          }),
+          MockSeriesSpec.heatmap({
+            xScale: { type: ScaleType.Time, interval: { type: 'fixed', unit: 'h', value: 1 } },
+            xAxisShowOverlappingLabels: true,
+            yAxisLabelFormatter: () => 'Y',
+            data: Array.from({ length: count }, (_, i) => ({ x: start + i * hour, y: 'row', value: i })),
+            xAccessor: 'x',
+            yAccessor: 'y',
+            valueAccessor: 'value',
+          }),
+        ],
+        store,
+      );
+      return store.getState();
+    };
+
+    const plain = timeState(0);
+    const inset = timeState(250);
+    const plainCadence = computeChartElementSizesSelector(plain).xAxisTickCadence;
+    const insetCadence = computeChartElementSizesSelector(inset).xAxisTickCadence;
+    const valuesCount = getHeatmapTableSelector(inset).xValues.length;
+    const panelWidth = computeChartDimensionsSelector(inset).chartDimensions.width;
+
+    expect(plainCadence).toBeGreaterThan(1);
+    expect(insetCadence).toBeGreaterThan(plainCadence);
+    expect((panelWidth / valuesCount) * insetCadence).toBeGreaterThanOrEqual(timeLabelSpace);
   });
 });
