@@ -185,8 +185,10 @@ export function getXAxisSize(
           );
 
     const validCompression = isFiniteNumber(dimension.width);
-    // the scale is compressed with every label, so it fits whether the overlapping labels are hidden or not
-    const tickCadence = !validCompression ? NaN : showOverlappingLabels ? 1 : getLabelsCadence(dimension.labelSpans);
+    // the scale is compressed with every label, so the axis fits whether overlapping labels are hidden or not.
+    // time scales always hide overlapping labels, including when rotated; the flag only applies to categorical scales
+    const showEveryLabel = isCategoricalScale && showOverlappingLabels;
+    const tickCadence = !validCompression ? NaN : showEveryLabel ? 1 : getLabelsCadence(dimension.labelSpans);
     return {
       height: validCompression ? dimension.height : 0,
       width: validCompression

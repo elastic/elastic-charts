@@ -186,13 +186,31 @@ describe('Heatmap axis', () => {
   });
 
   describe('getXAxisSize with a time scale', () => {
+    const labels = Array.from({ length: 100 }, (_, i) => 1_600_000_000_000 + i * 60_000);
+
     it.each([true, false])(
       'should skip overlapping labels regardless of showOverlappingLabels %s',
       (showOverlappingLabels) => {
-        const labels = Array.from({ length: 100 }, (_, i) => 1_600_000_000_000 + i * 60_000);
         const { tickCadence } = getXAxisSize(
           false,
           getXStyle(),
+          formatter,
+          labels,
+          textMeasure,
+          400,
+          [0, 0],
+          showOverlappingLabels,
+        );
+        expect(tickCadence).toBeGreaterThan(1);
+      },
+    );
+
+    it.each([true, false])(
+      'should skip overlapping rotated labels regardless of showOverlappingLabels %s',
+      (showOverlappingLabels) => {
+        const { tickCadence } = getXAxisSize(
+          false,
+          getXStyle(45),
           formatter,
           labels,
           textMeasure,
