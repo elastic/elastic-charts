@@ -1,0 +1,160 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+import { colorToRgba } from '../../../../common/color_library_wrappers';
+import type { Color } from '../../../../common/colors';
+import { cssFontShorthand } from '../../../../common/text_utils';
+import { renderRectStroke } from '../../../../renderers/canvas/primitives/rect';
+import type { Painter } from '../../../../renderers/painter';
+import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../utils/common';
+import type { ContinuousDomain, GenericDomain } from '../../../../utils/domain';
+import type { ActiveValue } from '../../selectors/get_active_values';
+import type { BulletPanelDimensions } from '../../selectors/get_panel_dimensions';
+import type { BulletStyle } from '../../theme';
+import { GRAPH_PADDING, TICK_FONT_SIZE, getTickFont } from '../../theme';
+import {
+  TARGET_SIZE,
+  BULLET_SIZE,
+  TICK_WIDTH,
+  BAR_SIZE,
+  TARGET_STROKE_WIDTH,
+  TICK_LABEL_PADDING,
+  BAR_STROKE_WIDTH,
+} from '../constants';
+
+/** @internal */
+export function verticalBullet(
+  ctx: Painter,
+  dimensions: BulletPanelDimensions,
+  style: BulletStyle,
+  backgroundColor: Color,
+  hasStroke: boolean,
+  activeValue?: ActiveValue | null,
+) {
+  const tickFont = getTickFont(style.fontFamily);
+  ctx.translate(0, GRAPH_PADDING.top);
+
+  const { datum, graphArea, scale, colorBands, ticks } = dimensions;
+  const [start, end] = scale.domain() as GenericDomain;
+  const [min, max] = sortNumbers([start, end]) as ContinuousDomain;
+  const graphPaddedHeight = graphArea.size.height - GRAPH_PADDING.bottom - GRAPH_PADDING.top;
+
+  // color bands
+  colorBands
+    .slice()
+    .reverse()
+    .forEach((band) => {
+      ctx.fillStyle = band.color;
+      ctx.fillRect(
+        graphArea.size.width / 2 - BULLET_SIZE / 2,
+        graphPaddedHeight - band.start - band.size,
+        BULLET_SIZE,
+        band.size,
+      );
+    });
+
+  // Ticks
+  ctx.beginPath();
+  ctx.strokeStyle = backgroundColor;
+  ctx.lineWidth = TICK_WIDTH;
+
+  ticks
+    .filter((tick) => tick > min && tick < max)
+    .forEach((tick) => {
+      ctx.moveTo(graphArea.size.width / 2 - BULLET_SIZE / 2, graphPaddedHeight - scale(tick));
+      ctx.lineTo(graphArea.size.width / 2 + BULLET_SIZE / 2, graphPaddedHeight - scale(tick));
+    });
+  ctx.stroke();
+
+  // Bar
+  const overflows = datum.value > max || datum.value < min;
+  const confinedValue = clamp(datum.value, min, max);
+  const adjustedZero = clamp(0, min, max);
+  const x = graphArea.size.width / 2 - BAR_SIZE / 2;
+  const y0 = graphPaddedHeight - scale(adjustedZero);
+  const y1 = graphPaddedHeight - scale(confinedValue);
+
+  ctx.fillStyle = style.barBackground;
+  ctx.fillRect(x, y0, BAR_SIZE, y1 - y0);
+
+  if (hasStroke && Math.abs(confinedValue - adjustedZero) > 0) {
+    const strokedSides = {
+      top: y0 > y1 && !overflows ? true : false,
+      right: true,
+      bottom: y0 < y1 && !overflows ? true : false,
+      left: true,
+    };
+    renderRectStroke(
+      ctx,
+      { x, y: y0, width: BAR_SIZE, height: y1 - y0 },
+      { color: colorToRgba(backgroundColor), width: BAR_STROKE_WIDTH },
+      strokedSides,
+    );
+  }
+
+  // Target
+  if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
+    const targetX = graphArea.size.width / 2 - TARGET_SIZE / 2;
+    const targetY = graphPaddedHeight - scale(datum.target) - TARGET_STROKE_WIDTH / 2;
+
+    if (hasStroke) {
+      renderRectStroke(
+        ctx,
+        { x: targetX, y: targetY, width: TARGET_SIZE, height: TARGET_STROKE_WIDTH },
+        { color: colorToRgba(backgroundColor), width: TARGET_STROKE_WIDTH + BAR_STROKE_WIDTH },
+        { top: true, right: true, bottom: true, left: true },
+      );
+    }
+    ctx.fillRect(targetX, targetY, TARGET_SIZE, TARGET_STROKE_WIDTH);
+  }
+
+  // Zero baseline
+  if (isBetween(min, max, true)(0)) {
+    ctx.fillRect(
+      graphArea.size.width / 2 - BULLET_SIZE / 2,
+      graphPaddedHeight - scale(0) - TICK_WIDTH / 2,
+      BULLET_SIZE,
+      TICK_WIDTH,
+    );
+  }
+
+  // Active Value
+  if (activeValue && (datum.syncCursor || !activeValue.external)) {
+    ctx.fillRect(
+      graphArea.size.width / 2 - TARGET_SIZE / 2,
+      graphPaddedHeight - activeValue.value - TARGET_STROKE_WIDTH / 2,
+      TARGET_SIZE,
+      TARGET_STROKE_WIDTH,
+    );
+  }
+
+  // Tick labels
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = style.textColor;
+  ctx.font = cssFontShorthand(tickFont, TICK_FONT_SIZE);
+  ticks
+    .filter((tick) => tick >= min && tick <= max)
+    .forEach((tick, i) => {
+      ctx.textAlign = 'end';
+
+      const labelText = datum.tickFormatter(tick);
+      if (i === ticks.length - 1) {
+        const availableHeight = Math.abs((start > end ? min : max) - (ticks.at(i) ?? NaN));
+        const labelHeight = TICK_FONT_SIZE;
+        ctx.textBaseline = labelHeight >= Math.abs(scale(availableHeight) - scale(0)) ? 'hanging' : 'bottom';
+      } else {
+        ctx.textBaseline = 'bottom';
+      }
+
+      ctx.fillText(
+        labelText,
+        graphArea.size.width / 2 - TARGET_SIZE / 2 - TICK_LABEL_PADDING,
+        graphPaddedHeight - scale(tick),
+      );
+    });
+}

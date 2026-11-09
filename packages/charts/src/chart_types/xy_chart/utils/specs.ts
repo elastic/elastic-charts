@@ -38,7 +38,7 @@ import type {
   ComponentWithAnnotationDatum,
   CustomAnnotationTooltip,
 } from '../annotations/types';
-import type { AnimationOptions } from '../renderer/canvas/animations/animation';
+import type { AnimationOptions } from '../renderer/animations/animation';
 
 /** @public */
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
@@ -699,6 +699,9 @@ export const HistogramModeAlignments = Object.freeze({
   Center: 'center' as HistogramModeAlignment,
   End: 'end' as HistogramModeAlignment,
 });
+
+/** @public */
+export type HistogramModeAlignments = $Values<typeof HistogramModeAlignments>;
 
 /** @public */
 export type HistogramModeAlignment = 'start' | 'center' | 'end';

@@ -12,6 +12,7 @@ import { Colors } from '../../../common/colors';
 import type { Fill, Stroke, Rect } from '../../../geoms/types';
 import { degToRad } from '../../../utils/common';
 import type { Point } from '../../../utils/point';
+import type { Painter } from '../../painter';
 import { renderRect } from '../primitives/rect';
 
 /** @internal */
@@ -27,7 +28,7 @@ export const DEFAULT_DEBUG_STROKE: Stroke = {
 
 /** @internal */
 export function renderDebugRect(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   rect: Rect,
   rotation = 0,
   fill = DEFAULT_DEBUG_FILL,
@@ -42,7 +43,7 @@ export function renderDebugRect(
 
 /** @internal */
 export function renderDebugRectCenterRotated(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   center: Point,
   rect: Rect,
   fill = DEFAULT_DEBUG_FILL,
@@ -60,13 +61,7 @@ export function renderDebugRectCenterRotated(
 }
 
 /** @internal */
-export function renderDebugPoint(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  size = 16,
-  stroke = DEFAULT_DEBUG_STROKE,
-) {
+export function renderDebugPoint(ctx: Painter, x: number, y: number, size = 16, stroke = DEFAULT_DEBUG_STROKE) {
   withContext(ctx, () => {
     ctx.beginPath();
     ctx.lineWidth = stroke.width;

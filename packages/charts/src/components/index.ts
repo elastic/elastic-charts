@@ -7,4 +7,4 @@
  */
 
 export * from './chart';
-export { Placement, TooltipPortalSettings } from './portal';
+export { Placement, type TooltipPortalSettings } from './portal';

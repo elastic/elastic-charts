@@ -7,9 +7,9 @@
  */
 
 import type { Page } from '@playwright/test';
-import { test } from '@playwright/test';
 
 import type { Rotation } from './constants';
+import { test } from './fixtures';
 
 interface FileExample {
   slugifiedName: string;

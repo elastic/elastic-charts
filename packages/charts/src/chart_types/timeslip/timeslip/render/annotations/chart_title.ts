@@ -6,8 +6,10 @@
  * Side Public License, v 1.
  */
 
+import type { Ctx2d } from '../../../../../renderers/painter';
+
 /** @internal */
-export function renderChartTitle(ctx: CanvasRenderingContext2D, fontColor: string, chartWidth: number) {
+export function renderChartTitle(ctx: Ctx2d, fontColor: string, chartWidth: number) {
   ctx.save();
   const titleFontSize = 32; // todo move to config
   ctx.textBaseline = 'top';
