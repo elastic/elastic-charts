@@ -95,7 +95,13 @@
     "@types/react-dom": "^18"
   },
   "browserslist": [
-    "last 2 versions",
-    "ie 11"
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "Firefox ESR",
+    "last 2 Safari versions",
+    "last 2 Edge versions",
+    "last 1 iOS versions",
+    "last 1 ChromeAndroid versions",
+    "last 1 Samsung versions"
   ]
 }

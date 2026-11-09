@@ -66,20 +66,18 @@ void (async () => {
           ) as string | undefined;
           return { skip: step.skip, checkId };
         })
-        .filter(({ checkId }) => Boolean(checkId))
-        .map(({ skip, checkId }) => {
-          if (skip) {
-            return updateCheckStatus(
-              {
-                status: 'completed',
-                conclusion: 'skipped',
-                details_url: bkEnv.buildUrl,
-              },
-              checkId,
-              skip,
-            );
-          }
-        }),
+        .filter(({ skip, checkId }) => Boolean(checkId) && skip)
+        .map(({ skip, checkId }) =>
+          updateCheckStatus(
+            {
+              status: 'completed',
+              conclusion: 'skipped',
+              details_url: bkEnv.buildUrl,
+            },
+            checkId,
+            skip,
+          ),
+        ),
     );
 
     const skipDeployStep = (steps.find(({ key }) => key === 'deploy_fb') as CustomCommandStep)?.skip ?? false;

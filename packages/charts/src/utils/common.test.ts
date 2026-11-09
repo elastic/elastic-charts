@@ -391,7 +391,7 @@ describe('common utilities', () => {
     });
 
     test('should override base value with partial', () => {
-      expect(mergePartial(1 as number, 2)).toBe(2);
+      expect(mergePartial<number>(1, 2)).toBe(2);
     });
 
     test('should NOT return original base structure', () => {

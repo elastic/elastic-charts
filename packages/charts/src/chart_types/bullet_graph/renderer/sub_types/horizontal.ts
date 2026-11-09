@@ -42,7 +42,7 @@ export function horizontalBullet(
 
   const { datum, colorBands, ticks, scale } = dimensions;
   const [start, end] = scale.domain() as GenericDomain;
-  const [min, max] = sortNumbers([start, end]) as ContinuousDomain;
+  const [min, max] = sortNumbers<ContinuousDomain>([start, end]);
 
   // Color bands
   const verticalAlignment = TARGET_SIZE / 2;

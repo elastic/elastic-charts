@@ -17,7 +17,7 @@ import { Logger } from '../../utils/logger';
 
 // jsdom lacks TextEncoder, which the React server renderer needs
 Object.assign(globalThis, { TextEncoder: globalThis.TextEncoder ?? TextEncoder });
-// eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
+// eslint-disable-next-line @typescript-eslint/no-require-imports, global-require
 const { renderToStaticMarkup } = require('react-dom/server') as { renderToStaticMarkup: (e: ReactElement) => string };
 
 const paint = (draw: (p: SvgPainter) => void, options?: Partial<ConstructorParameters<typeof SvgPainter>[0]>) => {

@@ -46,7 +46,9 @@ export const getJobCheckName = (checkId: string) => {
   const job = jobs.find(({ id }) => id === checkId);
 
   if (!job) {
-    throw new Error(`Failed to find check name from step id ${checkId}. Job ids are:\n\n\t${jobs.join('\n\t')}`);
+    throw new Error(
+      `Failed to find check name from step id ${checkId}. Job ids are:\n\n\t${jobs.map(({ id }) => id).join('\n\t')}`,
+    );
   }
   return job.name;
 };

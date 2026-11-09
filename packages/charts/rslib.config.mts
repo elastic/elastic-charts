@@ -23,7 +23,7 @@ export default defineConfig({
     {
       format: 'esm',
       bundle: false,
-      syntax: 'es2022',
+      syntax: 'es2025',
       dts: {
         bundle: false,
         distPath: './dist/esm',
@@ -41,7 +41,7 @@ export default defineConfig({
     {
       format: 'cjs',
       bundle: false,
-      syntax: 'es2022',
+      syntax: 'es2025',
       dts: {
         bundle: false,
         distPath: './dist/cjs',
