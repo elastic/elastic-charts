@@ -13,8 +13,6 @@ const os = require('os');
 const path = require('path');
 
 const chartsDir = path.resolve(__dirname, '..');
-const repoRoot = path.resolve(chartsDir, '../..');
-const repoNodeModules = path.join(repoRoot, 'node_modules');
 
 const stylesheetExports = [
   '@elastic/charts/theme_light.css',
@@ -60,11 +58,36 @@ function packCharts() {
   return path.join(chartsDir, result.filename);
 }
 
-function symlinkDep(consumerNodeModules, name) {
-  const src = path.join(repoNodeModules, name);
-  if (!fs.existsSync(src)) {
-    fail(`Missing dependency in repo node_modules: ${name}`);
+// Yarn may hoist a different major of the same package to the repo root
+// (e.g. uuid@3 from Storybook's webpack stack vs uuid@14 for @elastic/charts).
+// Resolve from the charts package so the smoke consumer gets the version a
+// real install of the tarball would get.
+function resolveInstalledPackageDir(fromDir, name) {
+  const req = createRequire(path.join(fromDir, 'package.json'));
+  let entry;
+  try {
+    entry = req.resolve(name);
+  } catch (error) {
+    fail(`Missing dependency ${name}: ${error instanceof Error ? error.message : error}`);
   }
+
+  let dir = path.dirname(entry);
+  while (dir !== path.dirname(dir)) {
+    const pkgPath = path.join(dir, 'package.json');
+    if (fs.existsSync(pkgPath)) {
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+      if (pkg.name === name) {
+        return dir;
+      }
+    }
+    dir = path.dirname(dir);
+  }
+
+  fail(`Could not find package directory for ${name} (resolved ${entry})`);
+}
+
+function symlinkDep(consumerNodeModules, name) {
+  const src = resolveInstalledPackageDir(chartsDir, name);
   const dest = path.join(consumerNodeModules, name);
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   if (!fs.existsSync(dest)) {

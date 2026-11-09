@@ -25,7 +25,6 @@ void (async () => {
   await exec('yarn test:e2e:server:build', {
     env: {
       NODE_ENV: 'production',
-      NODE_OPTIONS: '--openssl-legacy-provider',
     },
   });
 
