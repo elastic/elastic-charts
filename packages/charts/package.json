@@ -92,7 +92,10 @@
   },
   "devDependencies": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "autoprefixer": "^9.0.0",
+    "postcss": "^8.3.0",
+    "postcss-cli": "^8.3.1"
   },
   "browserslist": [
     "last 2 versions",

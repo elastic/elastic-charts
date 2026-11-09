@@ -84,8 +84,13 @@ $meter-border-radius: 8px;
 }
 
 @mixin meter-mark-size($is-vertical: false) {
-  width: if($is-vertical, $meter-target-size - 3px, 1px);
-  height: if($is-vertical, 1px, $meter-target-size - 3px);
+  @if $is-vertical {
+    width: $meter-target-size - 3px;
+    height: 1px;
+  } @else {
+    width: 1px;
+    height: $meter-target-size - 3px;
+  }
 }
 
 .echMeterBaselineMarker {
