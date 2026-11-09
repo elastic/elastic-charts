@@ -655,7 +655,7 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     // (undocumented)
     componentDidMount(): void;
     // (undocumented)
-    componentDidUpdate({ title, description, size }: Readonly<ChartProps>): void;
+    componentDidUpdate({ title, description, size, renderer }: Readonly<ChartProps>): void;
     // (undocumented)
     componentWillUnmount(): void;
     // (undocumented)
@@ -759,11 +759,19 @@ export interface ColorBandSimpleConfig {
 
 // @public (undocumented)
 export interface ColorBandValue {
-    // Warning: (ae-forgotten-export) The symbol "ColorBandValueType" needs to be exported by the entry point index.d.ts
     type: ColorBandValueType;
     // (undocumented)
     value: number;
 }
+
+// @public (undocumented)
+export const ColorBandValueType: Readonly<{
+    Scale: "scale";
+    Percentage: "percentage";
+}>;
+
+// @public (undocumented)
+export type ColorBandValueType = $Values<typeof ColorBandValueType>;
 
 // @public (undocumented)
 export interface ColorConfig {
@@ -1766,6 +1774,9 @@ export const HistogramModeAlignments: Readonly<{
 }>;
 
 // @public (undocumented)
+export type HistogramModeAlignments = $Values<typeof HistogramModeAlignments>;
+
+// @public (undocumented)
 export const HorizontalAlignment: Readonly<{
     Center: "center";
     Right: "right";
@@ -2583,6 +2594,16 @@ export const PATH_KEY = "path";
 // @public (undocumented)
 export function pathAccessor(n: ArrayEntry): LegendPath;
 
+// @public (undocumented)
+export function percentValueGetter(node: {
+    [AGGREGATE_KEY]: number;
+    [MODEL_KEY]: {
+        [STATISTICS_KEY]: {
+            globalAggregate: number;
+        };
+    };
+}): number;
+
 // @public
 export interface PerSideDistance {
     // (undocumented)
@@ -2790,10 +2811,13 @@ export interface RasterTimeScale extends TimeScale {
 export type Ratio = number;
 
 // @public (undocumented)
+export function ratioValueGetter(node: ShapeTreeNode): number;
+
+// @public (undocumented)
 export type RawTextGetter = (node: ShapeTreeNode) => string;
 
 // @public (undocumented)
-export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "groupId" | "zIndex" | "annotationType" | "outside", "style" | "offset" | "customTooltip" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
+export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "groupId" | "zIndex" | "outside" | "annotationType", "style" | "offset" | "customTooltip" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
 
 // @public
 export interface RectAnnotationDatum {
@@ -3736,18 +3760,25 @@ export function useLegendAction<T extends HTMLElement>(): [ref: LegacyRef<T>, on
 export const useTooltipContext: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>() => TooltipContext<D, SI>;
 
 // @public (undocumented)
+export const VALUE_GETTERS: Readonly<{
+    readonly percent: typeof percentValueGetter;
+    readonly ratio: typeof ratioValueGetter;
+}>;
+
+// @public (undocumented)
 export type ValueAccessor<D extends BaseDatum = Datum> = (d: D) => AdditiveNumber;
 
 // @public (undocumented)
 export type ValueFormatter<T = number> = (value: T) => string;
 
-// Warning: (ae-forgotten-export) The symbol "ValueGetterName" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export type ValueGetter = ValueGetterFunction | ValueGetterName;
 
 // @public (undocumented)
 export type ValueGetterFunction = (node: ShapeTreeNode) => number;
+
+// @public (undocumented)
+export type ValueGetterName = keyof typeof VALUE_GETTERS;
 
 // @public (undocumented)
 export const VerticalAlignment: Readonly<{

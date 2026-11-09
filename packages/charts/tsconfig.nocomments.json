@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.src",
-  "compilerOptions": {
-    "removeComments": true,
-    "declaration": false,
-    "declarationMap": false
-  },
-  "files": []
-}

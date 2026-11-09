@@ -4,8 +4,12 @@ set -e
 
 ### starts up a playwright docker container to run e2e tests
 
-# Parse command line options, if --a11y is passed, set A11Y_MODE to true
+# Parse command line options:
+#  --a11y                     runs the accessibility tests instead of the VRT
+#  --renderer=<canvas|svg>    chart renderer under test (also `--renderer <name>`), default: $VRT_RENDERER or canvas
+# Both are consumed here, not forwarded to playwright (it rejects unknown options).
 A11Y_MODE=false
+VRT_RENDERER="${VRT_RENDERER:-canvas}"
 SCRIPT_ARGS=()
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -13,12 +17,30 @@ while [[ $# -gt 0 ]]; do
       A11Y_MODE=true
       shift
       ;;
+    --renderer=*)
+      VRT_RENDERER="${1#--renderer=}"
+      shift
+      ;;
+    --renderer)
+      if [[ $# -lt 2 ]]; then
+        echo "--renderer requires a value: canvas or svg"
+        exit 1
+      fi
+      VRT_RENDERER="$2"
+      shift 2
+      ;;
     *)
       SCRIPT_ARGS+=("$1")
       shift
       ;;
   esac
 done
+
+if [[ "$VRT_RENDERER" != "canvas" && "$VRT_RENDERER" != "svg" ]]; then
+  echo "Invalid renderer '${VRT_RENDERER}', expected canvas or svg"
+  exit 1
+fi
+export VRT_RENDERER
 
 # Get correct playwright image - must match installed version of @playwright/test
 regex="@playwright/test@(.+)"
@@ -52,6 +74,7 @@ docker run \
   -e ENV_URL=${ENV_URL} `# url of web server, overrides hostname and PORT ` \
   -e PLAYWRIGHT_HTML_REPORT=${PLAYWRIGHT_HTML_REPORT} `# where to save the playwright html report ` \
   -e VRT_FAST=${VRT_FAST} `# trades diagnostics for speed on local runs ` \
+  -e VRT_RENDERER=${VRT_RENDERER} `# chart renderer under test: canvas (default) or svg ` \
   -w /app/e2e `# working directory` \
   -v $(pwd)/:/app/e2e `# mount local e2e/ directory in app/e2e directory in container` \
   -v $(pwd)/../e2e_server/tmp/:/app/e2e_server/tmp `# mount required example.json file in container` \

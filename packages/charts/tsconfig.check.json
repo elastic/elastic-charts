@@ -2,11 +2,11 @@
   "extends": "../../tsconfig",
   "compilerOptions": {
     "noUnusedLocals": true,
-    "removeComments": true,
     "noEmit": true,
     "skipLibCheck": false,
-    "rootDir": "dist"
+    "isolatedModules": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   },
-  "files": [],
-  "include": ["dist"]
+  "files": ["dist/esm/index.d.mts", "dist/cjs/index.d.ts"]
 }
