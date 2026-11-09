@@ -84,16 +84,13 @@ export default defineConfig({
   output: {
     target: 'web',
     polyfill: 'off',
-    cleanDistPath: true,
+    cleanDistPath: process.env.NODE_ENV === 'production',
     // Relative URLs so the Firebase preview at /e2e/ can load JS/CSS.
     assetPrefix: 'auto',
     distPath: {
       root: '../.out',
     },
-    filenameHash: false,
     filename: {
-      js: '[name].bundle.js',
-      css: '[name].css',
       font: 'fonts/[name][ext]',
     },
   },
