@@ -116,6 +116,9 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     heatmapTheme.cell.maxWidth !== 'fill' && xScale.bandwidth() > heatmapTheme.cell.maxWidth
       ? heatmapTheme.cell.maxWidth
       : xScale.bandwidth();
+  // a numeric maxWidth centers the cell inside its scale bucket
+  const cellCenteringOffset =
+    heatmapTheme.cell.maxWidth !== 'fill' ? xScale.bandwidth() / 2 - heatmapTheme.cell.maxWidth / 2 : 0;
 
   // compute the cell height, we already computed the max size for that
   const cellHeight = yScale.bandwidth();
@@ -189,9 +192,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     if (!acc.has(panelKey)) acc.set(panelKey, cellMap);
 
     cellMap.set(cellKey, {
-      x:
-        (heatmapTheme.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - heatmapTheme.cell.maxWidth / 2 : x) +
-        gridStrokeWidth / 2,
+      x: x + cellCenteringOffset + gridStrokeWidth / 2,
       y: y + gridStrokeWidth / 2,
       yIndex,
       width: cellWidthInner,
@@ -216,6 +217,9 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const getScaledSMValue = (value: number | string, scale: 'horizontal' | 'vertical') => {
     return hasSMDomain(smScales[scale]) ? smScales[scale].scale(value) : 0;
   };
+
+  const getPanelOffset = (value: string | number | null | undefined, scale: 'horizontal' | 'vertical') =>
+    isNil(value) ? 0 : getScaledSMValue(value, scale);
 
   const getPanelPointCoordinate = (value: Pixels, scale: 'horizontal' | 'vertical') => {
     const category = smScales[scale].invert(value) ?? '';
@@ -260,21 +264,23 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     y < chartDimensions.top + chartDimensions.height;
 
   /**
-   * Returns the corresponding x & y values of grid cell from the x & y positions
+   * Returns the corresponding x & y values of grid cell from the x & y positions,
+   * resolved inside the small-multiple panel under the pointer.
    * @param x
    * @param y
    */
   const pickGridCell = (x: Pixels, y: Pixels): GridCell | undefined => {
-    if (x < chartDimensions.left || y < chartDimensions.top) return undefined;
-    if (x > chartDimensions.width + chartDimensions.left || y > chartDimensions.top + chartDimensions.height)
-      return undefined;
+    if (!isPointerOverPanel({ x, y })) return undefined;
 
-    const xValue = xInvertedScale(x - chartDimensions.left);
-    const yValue = yInvertedScale(y);
+    const { x: panelX, y: panelY, h, v } = getPanelPointCoordinates(x, y);
+    if (panelX === undefined || panelY === undefined) return undefined;
 
-    if (xValue === undefined || yValue === undefined) return undefined;
-
-    return { x: xValue, y: yValue };
+    return {
+      x: panelX,
+      y: panelY,
+      ...(hasSMDomain(smScales.horizontal) ? { smHorizontalAccessorValue: h } : {}),
+      ...(hasSMDomain(smScales.vertical) ? { smVerticalAccessorValue: v } : {}),
+    };
   };
 
   /**
@@ -393,10 +399,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       return null;
     }
 
-    const panelXOffset = isNil(smHorizontalAccessorValue)
-      ? 0
-      : getScaledSMValue(smHorizontalAccessorValue, 'horizontal');
-    const panelYOffset = isNil(smVerticalAccessorValue) ? 0 : getScaledSMValue(smVerticalAccessorValue, 'vertical');
+    const panelXOffset = getPanelOffset(smHorizontalAccessorValue, 'horizontal');
+    const panelYOffset = getPanelOffset(smVerticalAccessorValue, 'vertical');
 
     const xStart = chartDimensions.left + startFromScale + panelXOffset;
 
@@ -432,7 +436,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     return pickHighlightedArea(x, y, smHorizontalAccessorValue, smVerticalAccessorValue);
   };
 
-  const pickCursorBand: PickCursorBand = (x) => {
+  const pickCursorBand: PickCursorBand = ({ x, smHorizontalAccessorValue, smVerticalAccessorValue }) => {
     // TODO for Linear scale we need to round the numerical interval. see also https://github.com/elastic/elastic-charts/issues/1701
     const roundedValue =
       isRasterTimeScale(spec.xScale) && isFiniteNumber(x)
@@ -440,14 +444,17 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         : x;
 
     const index = xValues.indexOf(roundedValue);
-    return index < 0
-      ? undefined
-      : {
-          width: cellWidth,
-          x: chartDimensions.left + (xScale(xValues[index] ?? NaN) ?? NaN),
-          y: chartDimensions.top,
-          height: chartDimensions.height,
-        };
+    if (index < 0) return undefined;
+
+    const bucketX = xScale(xValues[index] ?? NaN) ?? NaN;
+
+    return {
+      width: cellWidth,
+      x: chartDimensions.left + bucketX + cellCenteringOffset + getPanelOffset(smHorizontalAccessorValue, 'horizontal'),
+      // one panel fills the grid, so this is the full column when there are no vertical small multiples
+      y: chartDimensions.top + getPanelOffset(smVerticalAccessorValue, 'vertical'),
+      height: panelSize.height,
+    };
   };
 
   // ordered left-right vertical lines

@@ -22,7 +22,9 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 function isSameEventValue(a: PointerOverEvent, b: PointerOverEvent, changeTrigger: PointerUpdateTrigger) {
   const checkX = changeTrigger === PointerUpdateTrigger.X || changeTrigger === PointerUpdateTrigger.Both;
   const checkY = changeTrigger === PointerUpdateTrigger.Y || changeTrigger === PointerUpdateTrigger.Both;
+  const samePanel = a.smHorizontalValue === b.smHorizontalValue && a.smVerticalValue === b.smVerticalValue;
   return (
+    samePanel &&
     (!checkX || (a.x === b.x && a.scale === b.scale && a.unit === b.unit)) &&
     (!checkY || a.y.every((y, i) => y.value === b.y[i]?.value))
   );
@@ -71,8 +73,8 @@ export function createOnPointerUpdateCaller(): (state: GlobalChartState) => void
                 scale: spec.xScale.type,
                 x: gridCell.x,
                 y: [{ value: gridCell.y, groupId: '' }],
-                smHorizontalValue: null,
-                smVerticalValue: null,
+                smHorizontalValue: gridCell.smHorizontalAccessorValue ?? null,
+                smVerticalValue: gridCell.smVerticalAccessorValue ?? null,
               }
             : { chartId, type: PointerEventType.Out };
           // we have to update the prevPointerEvents before possibly calling the onPointerUpdate

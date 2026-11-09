@@ -14,6 +14,7 @@ import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getInternalIsBrushingSelector } from '../../../../state/selectors/get_internal_is_brushing';
 import { isNil } from '../../../../utils/common';
+import type { CursorBandTarget } from '../../layout/types/viewmodel_types';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
@@ -29,28 +30,25 @@ export const getCursorBandPositionSelector = createCustomCachedSelector(
     // block cursor when brushing
     if (isBrushing) return;
 
+    const bandFrom = (cell: CursorBandTarget, fromExternalEvent: boolean) => {
+      const band = geoms.pickCursorBand(cell);
+      return band && { ...band, fromExternalEvent };
+    };
+
     // external pointer events takes precedence over the current mouse pointer
     if (isPointerOverEvent(externalPointerEvent)) {
-      const { x } = externalPointerEvent;
-      if (!isNil(x)) {
-        const band = geoms.pickCursorBand(x);
-        if (band) {
-          return {
-            ...band,
-            fromExternalEvent: true,
-          };
-        }
-      }
+      const { x, smHorizontalValue, smVerticalValue } = externalPointerEvent;
+      if (isNil(x)) return;
+      return bandFrom(
+        {
+          x,
+          smHorizontalAccessorValue: smHorizontalValue,
+          smVerticalAccessorValue: smVerticalValue,
+        },
+        true,
+      );
     }
 
-    if (pickedGridCell) {
-      const band = geoms.pickCursorBand(pickedGridCell.x);
-      if (band) {
-        return {
-          ...band,
-          fromExternalEvent: false,
-        };
-      }
-    }
+    return pickedGridCell ? bandFrom(pickedGridCell, false) : undefined;
   },
 );
