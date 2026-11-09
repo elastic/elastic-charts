@@ -78,19 +78,19 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         'height',
         !smSpec?.splitHorizontally,
       );
+      const isCategoricalScale = !isRasterTimeScale(xScale);
+      // Left padding and margin are already applied as a translation when the chart
+      // dimensions are computed. Subtracting them here too shifts overflowing labels
+      // and can drop the axis. They shrink the fit width only when overlaps are hidden,
+      // so the skipped labels match the narrower panel.
+      const leftInset = isCategoricalScale && !xAxisShowOverlappingLabels ? chartPaddings.left + chartMargins.left : 0;
       const xAxis = getXAxisSize(
-        !isRasterTimeScale(xScale),
+        isCategoricalScale,
         heatmap.xAxisLabel,
         xAxisLabelFormatter,
         xValues,
         textMeasure,
-        panelWidth -
-          legendWidth -
-          heatmap.grid.stroke.width / 2 -
-          chartPaddings.left -
-          chartPaddings.right -
-          chartMargins.left -
-          chartMargins.right,
+        panelWidth - legendWidth - heatmap.grid.stroke.width / 2 - chartPaddings.right - chartMargins.right - leftInset,
         [
           yAxisTitleHorizontalSize + yAxisPanelTitleHorizontalSize + yAxis.width,
           0, // this can be used if we have a right Y axis

@@ -59,6 +59,45 @@ describe('computeAxesSizesSelector', () => {
     return store.getState();
   };
 
+  it('keeps overflowing x labels in place when they stay visible', () => {
+    const labels = ['A'.repeat(60), 'B'.repeat(70), 'C'.repeat(55)];
+    const state = (left: number) => {
+      const store = MockStore.default(CONTAINER);
+      MockStore.addSpecs(
+        [
+          MockGlobalSpec.settingsNoMargins({
+            showLegend: false,
+            theme: {
+              chartPaddings: { left, right: 0, top: 0, bottom: 0 },
+              chartMargins: { left, right: 0, top: 0, bottom: 0 },
+            },
+          }),
+          MockSeriesSpec.heatmap({
+            xScale: { type: ScaleType.Ordinal },
+            xAxisShowOverlappingLabels: true,
+            xAxisLabelFormatter: (value) => `${value}`,
+            yAxisLabelFormatter: () => 'Y',
+            data: labels.map((x, value) => ({ x, y: 'row', value })),
+            xAccessor: 'x',
+            yAccessor: 'y',
+            valueAccessor: 'value',
+          }),
+        ],
+        store,
+      );
+      return store.getState();
+    };
+
+    const plain = computeChartElementSizesSelector(state(0));
+    const inset = computeChartElementSizesSelector(state(40));
+
+    expect(plain.xAxis.height).toBeGreaterThan(0);
+    expect(inset.xAxis.height).toBe(plain.xAxis.height);
+    expect(inset.xAxisTickCadence).toBe(1);
+    // left padding and margin are translated once; they must not also shift the axis
+    expect(inset.xAxis.left - plain.xAxis.left).toBe(80);
+  });
+
   it('skips more x labels when left padding and margin shrink the panel', () => {
     const plain = chartState(0);
     const inset = chartState(250);
