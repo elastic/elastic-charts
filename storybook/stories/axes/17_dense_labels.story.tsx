@@ -10,7 +10,7 @@ import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import type { Rotation } from '@elastic/charts';
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, defaultColorBandFormatter } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -36,9 +36,12 @@ const RANGE_STEPS = {
 type DatasetKey = keyof typeof RANGE_STEPS;
 
 // rounds away floating point errors, e.g. 3 * 0.1 = 0.30000000000000004
-const formatRange = defaultColorBandFormatter((value) => `${Number(value.toFixed(2))}`);
+const formatValue = (value: number) => `${Number(value.toFixed(2))}`;
 
-const rangeFormatter = (step: number) => (value: string | number) => formatRange(Number(value), Number(value) + step);
+const rangeFormatter = (step: number) => (value: string | number) => {
+  const start = Number(value);
+  return `${formatValue(start)} - ${formatValue(start + step)}`;
+};
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const chartRotation = customKnobs.numberSelect<Rotation>(

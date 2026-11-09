@@ -1112,9 +1112,6 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec;
 // @public (undocumented)
 export const DEFAULT_TOOLTIP_SPEC: TooltipSpec;
 
-// @public
-export function defaultColorBandFormatter(valueFormatter?: ValueFormatter): (startValue: number, endValue: number) => string;
-
 // @public (undocumented)
 export function defaultPartitionValueFormatter(d: number): string;
 

@@ -37,7 +37,6 @@ export { CurveType } from './utils/curves';
 export type { ContinuousDomain, OrdinalDomain, GenericDomain, Range } from './utils/domain';
 export type { Dimensions, SimplePadding, Padding, PerSideDistance, Margins } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
-export { defaultColorBandFormatter } from './chart_types/heatmap/scales/band_color_scale';
 export type { SeriesCompareFn } from './utils/series_sort';
 export type { SeriesIdentifier, SeriesKey } from './common/series_id';
 export type { XYChartSeriesIdentifier, DataSeriesDatum, FilledValues } from './chart_types/xy_chart/utils/series';
