@@ -14,15 +14,14 @@ import { connect } from 'react-redux';
 
 import { AnnotationTooltip } from './annotation_tooltip';
 import { LineMarker } from './line_marker';
+import type { AnnotationClickListener } from '../../../../../specs/settings';
 import {
   onDOMElementEnter as onDOMElementEnterAction,
   onDOMElementLeave as onDOMElementLeaveAction,
-  onDOMElementClick as onDOMElementClickAction,
-  onDOMElementClick,
 } from '../../../../../state/actions/dom_element';
 import { onPointerMove as onPointerMoveAction } from '../../../../../state/actions/mouse';
 import type { GlobalChartState } from '../../../../../state/chart_state';
-import type { BackwardRef } from '../../../../../state/internal_chart_renderer';
+import type { BackwardRef, StageElement } from '../../../../../state/internal_chart_renderer';
 import { getChartThemeSelector } from '../../../../../state/selectors/get_chart_theme';
 import {
   getInternalIsInitializedSelector,
@@ -63,17 +62,18 @@ interface AnnotationsStateProps {
   zIndex: number;
   hoveredAnnotationIds: string[];
   clickable: boolean;
+  onAnnotationClick?: AnnotationClickListener;
 }
 
 interface AnnotationsOwnProps {
   getChartContainerRef: BackwardRef;
-  chartAreaRef: RefObject<HTMLCanvasElement>;
+  chartAreaRef: RefObject<StageElement>;
 }
 
 type AnnotationsProps = AnnotationsDispatchProps & AnnotationsStateProps & AnnotationsOwnProps;
 
 function renderAnnotationLineMarkers(
-  chartAreaRef: RefObject<HTMLCanvasElement>,
+  chartAreaRef: RefObject<StageElement>,
   chartDimensions: Dimensions,
   chartId: string,
   annotationLines: AnnotationLineProps[],
@@ -82,6 +82,7 @@ function renderAnnotationLineMarkers(
   hoveredIds: string[],
   sharedStyle: SharedGeometryStateStyle,
   clickable: boolean,
+  onAnnotationClick: AnnotationClickListener | undefined,
   animations?: AnnotationAnimationConfig[],
 ) {
   const getHoverParams = getAnnotationHoverParamsFn(hoveredIds, sharedStyle, animations);
@@ -98,7 +99,7 @@ function renderAnnotationLineMarkers(
         chartDimensions={chartDimensions}
         onDOMElementEnter={onDOMElementEnter}
         onDOMElementLeave={onDOMElementLeave}
-        onDOMElementClick={onDOMElementClick}
+        onAnnotationClick={onAnnotationClick}
         clickable={clickable}
         getHoverParams={getHoverParams}
       />,
@@ -123,6 +124,7 @@ const AnnotationsComponent = ({
   clickable,
   hoveredAnnotationIds,
   sharedStyle,
+  onAnnotationClick,
 }: AnnotationsProps) => {
   const renderAnnotationMarkers = useCallback((): JSX.Element[] => {
     const markers: JSX.Element[] = [];
@@ -144,6 +146,7 @@ const AnnotationsComponent = ({
           hoveredAnnotationIds,
           sharedStyle,
           clickable,
+          onAnnotationClick,
           annotationSpec.animations,
         );
         lineMarkers.forEach((m) => markers.push(m));
@@ -162,6 +165,7 @@ const AnnotationsComponent = ({
     hoveredAnnotationIds,
     sharedStyle,
     clickable,
+    onAnnotationClick,
   ]);
 
   const onScroll = useCallback(() => {
@@ -194,7 +198,6 @@ const mapDispatchToProps = (dispatch: Dispatch): AnnotationsDispatchProps =>
       onPointerMove: onPointerMoveAction,
       onDOMElementLeave: onDOMElementLeaveAction,
       onDOMElementEnter: onDOMElementEnterAction,
-      onDOMElementClick: onDOMElementClickAction,
     },
     dispatch,
   );
@@ -213,6 +216,7 @@ const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
       zIndex,
       hoveredAnnotationIds: [],
       clickable: false,
+      onAnnotationClick: undefined,
     };
   }
   return {
@@ -226,6 +230,7 @@ const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
     zIndex,
     hoveredAnnotationIds: getHighlightedAnnotationIdsSelector(state),
     clickable: Boolean(getSettingsSpecSelector(state).onAnnotationClick),
+    onAnnotationClick: getSettingsSpecSelector(state).onAnnotationClick,
   };
 };
 

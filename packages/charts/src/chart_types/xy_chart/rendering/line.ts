@@ -31,7 +31,7 @@ export function renderLine(
   yScale: ScaleContinuous,
   panel: Dimensions,
   color: Color,
-  curve: CurveType,
+  curve: CurveType | undefined, // getCurveFactory defaults it to linear
   hasY0Accessors: boolean,
   xScaleOffset: number,
   style: LineSeriesStyle,

@@ -6,9 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { test } from '@playwright/test';
-
 import { Fit, StackMode, SeriesType } from '../constants';
+import { test } from '../fixtures';
 import { pwEach } from '../helpers';
 import { common } from '../page_objects';
 
@@ -92,6 +91,21 @@ test.describe('Mixed series stories', () => {
           );
         });
       });
+    });
+
+    test.describe('Sparse series with gaps that only other series cover', () => {
+      pwEach.test([
+        { stacked: false, fit: Fit.Nearest, curve: 9 },
+        { stacked: true, fit: Fit.Carry, curve: 9 },
+        { stacked: false, fit: Fit.Linear, curve: 5 },
+      ])(
+        ({ stacked, fit, curve }) => `should display correct fit - stacked: ${stacked}, ${fit}, curve ${curve}`,
+        async (page, { stacked, fit, curve }) => {
+          await common.expectChartAtUrlToMatchScreenshot(page)(
+            `http://localhost:9001/?path=/story/mixed-charts--fitting-functions-sparse-series&knob-stacked=${stacked}&knob-fitting function=${fit}&knob-Curve=${curve}`,
+          );
+        },
+      );
     });
   });
 

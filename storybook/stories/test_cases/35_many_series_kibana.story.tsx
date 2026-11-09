@@ -90,7 +90,7 @@ export const Example: ChartsStory = (_, context) => {
   const renderButton = (
     <button
       type="button"
-      style={{ all: 'revert' }} // it should look like a button, not just text
+      style={{ all: 'revert', alignSelf: 'flex-start' }} // it should look like a button, not just text
       onClick={() => {
         setData([]);
         setRunId(runId + 1);
@@ -101,68 +101,70 @@ export const Example: ChartsStory = (_, context) => {
   );
   if (data.length === 0) {
     return (
-      <>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {renderButton}
         <div style={{ marginTop: 4 }}>Rendering...</div>
-      </>
+      </div>
     );
   }
 
   const color = buildColorAccessor(data);
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {renderButton}
-      <Chart title={title} description={description}>
-        <Tooltip type={TooltipType.VerticalCursor} />
-        <Settings
-          showLegend
-          legendPosition={Position.Right}
-          legendSize={50}
-          legendValues={[]}
-          rotation={0}
-          xDomain={X_DOMAIN}
-          allowBrushingLastHistogramBin
-          baseTheme={theme}
-          theme={{
-            legend: { labelOptions: { maxLines: 1 } },
-            chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },
-          }}
-          onRenderChange={(isRendered) => {
-            if (isRendered) {
-              window.performance.mark('Perf:Ended');
-              const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');
-              // eslint-disable-next-line no-console
-              console.log(`chart rendered in ${duration.toFixed(0)} ms`);
-            }
-          }}
-        />
-        <Axis id="x" position={Position.Bottom} title="order_date" gridLine={{ visible: true }} />
-        <Axis id="left" groupId="left" position={Position.Left} title="total_quantity" gridLine={{ visible: true }} />
-        {Y_ACCESSORS.map((yAccessor) => {
-          const name: SeriesNameFn = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;
-          return (
-            <BarSeries
-              key={yAccessor}
-              id={`${LAYER_ID}:order_date:${yAccessor}:order_id`}
-              name={name}
-              xAccessor="order_date"
-              yAccessors={[yAccessor]}
-              splitSeriesAccessors={['order_id']}
-              stackAccessors={['order_date']}
-              data={data}
-              xScaleType={ScaleType.Time}
-              yScaleType={ScaleType.Linear}
-              groupId="left"
-              enableHistogramMode
-              minBarHeight={1}
-              timeZone="UTC"
-              color={color}
-              displayValueSettings={{ showValueLabel: false }}
-            />
-          );
-        })}
-      </Chart>
-    </>
+      <div style={{ flex: 1, minHeight: 0 }}>
+        <Chart title={title} description={description}>
+          <Tooltip type={TooltipType.VerticalCursor} />
+          <Settings
+            showLegend
+            legendPosition={Position.Right}
+            legendSize={50}
+            legendValues={[]}
+            rotation={0}
+            xDomain={X_DOMAIN}
+            allowBrushingLastHistogramBin
+            baseTheme={theme}
+            theme={{
+              legend: { labelOptions: { maxLines: 1 } },
+              chartMargins: { left: 0, right: 0, top: 0, bottom: 0 },
+            }}
+            onRenderChange={(isRendered) => {
+              if (isRendered) {
+                window.performance.mark('Perf:Ended');
+                const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');
+                // eslint-disable-next-line no-console
+                console.log(`chart rendered in ${duration.toFixed(0)} ms`);
+              }
+            }}
+          />
+          <Axis id="x" position={Position.Bottom} title="order_date" gridLine={{ visible: true }} />
+          <Axis id="left" groupId="left" position={Position.Left} title="total_quantity" gridLine={{ visible: true }} />
+          {Y_ACCESSORS.map((yAccessor) => {
+            const name: SeriesNameFn = ({ splitAccessors }) => `${splitAccessors.get('order_id')} - ${yAccessor}`;
+            return (
+              <BarSeries
+                key={yAccessor}
+                id={`${LAYER_ID}:order_date:${yAccessor}:order_id`}
+                name={name}
+                xAccessor="order_date"
+                yAccessors={[yAccessor]}
+                splitSeriesAccessors={['order_id']}
+                stackAccessors={['order_date']}
+                data={data}
+                xScaleType={ScaleType.Time}
+                yScaleType={ScaleType.Linear}
+                groupId="left"
+                enableHistogramMode
+                minBarHeight={1}
+                timeZone="UTC"
+                color={color}
+                displayValueSettings={{ showValueLabel: false }}
+              />
+            );
+          })}
+        </Chart>
+      </div>
+    </div>
   );
 };

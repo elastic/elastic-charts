@@ -21,6 +21,8 @@ import { round, stripUndefined } from '../../../utils/common';
 import { Logger } from '../../../utils/logger';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';
 
+export { GoalSubtype } from './constants';
+
 /** @alpha */
 export interface BandFillColorAccessorInput {
   value: number;

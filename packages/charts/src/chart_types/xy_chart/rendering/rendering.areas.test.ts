@@ -9,6 +9,7 @@
 import type { Store } from '@reduxjs/toolkit';
 
 import { computeAreaBoundingBox, type YDefinedFn } from './utils';
+import { sortedByPosition } from '../../../mocks/geometries';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
@@ -109,7 +110,7 @@ describe('Rendering points - areas', () => {
 
     test('Can render two points', () => {
       const { points } = areaGeometry;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -170,13 +171,13 @@ describe('Rendering points - areas', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
       expect(firstArea.points.length).toEqual(2);
-      expect(firstArea.points).toMatchSnapshot();
+      expect(sortedByPosition(firstArea.points)).toMatchSnapshot();
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
       const { value: secondArea } = areas[1]!;
       expect(secondArea.points.length).toEqual(2);
-      expect(secondArea.points).toMatchSnapshot();
+      expect(sortedByPosition(secondArea.points)).toMatchSnapshot();
     });
     test('has the right number of geometry in the indexes', () => {
       const { areas } = geometries.geometries;
@@ -217,7 +218,7 @@ describe('Rendering points - areas', () => {
     test('Can render two points', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
-      expect(firstArea.points).toMatchSnapshot();
+      expect(sortedByPosition(firstArea.points)).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
   });
@@ -274,14 +275,14 @@ describe('Rendering points - areas', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
       expect(firstArea.points.length).toEqual(2);
-      expect(firstArea.points).toMatchSnapshot();
+      expect(sortedByPosition(firstArea.points)).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
       const { value: secondArea } = areas[1]!;
       expect(secondArea.points.length).toEqual(2);
-      expect(secondArea.points).toMatchSnapshot();
+      expect(sortedByPosition(secondArea.points)).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(secondArea.points.length);
     });
   });
@@ -317,7 +318,7 @@ describe('Rendering points - areas', () => {
     test('Can render two points', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
-      expect(firstArea.points).toMatchSnapshot();
+      expect(sortedByPosition(firstArea.points)).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
   });
@@ -355,14 +356,14 @@ describe('Rendering points - areas', () => {
     test('can render first spec points', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
-      expect(firstArea.points).toMatchSnapshot();
+      expect(sortedByPosition(firstArea.points)).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
       const { value: secondArea } = areas[1]!;
 
-      expect(secondArea.points).toMatchSnapshot();
+      expect(sortedByPosition(secondArea.points)).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(secondArea.points.length);
     });
   });

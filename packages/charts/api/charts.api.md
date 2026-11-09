@@ -248,7 +248,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "integersOnly" | "gridLine" | "tickFormat" | "labelFormat" | "ticks" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "groupId" | "position" | "hide" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "tickFormat" | "style" | "title" | "maximumFractionDigits" | "domain" | "integersOnly" | "gridLine" | "labelFormat" | "ticks" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -655,7 +655,7 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     // (undocumented)
     componentDidMount(): void;
     // (undocumented)
-    componentDidUpdate({ title, description, size }: Readonly<ChartProps>): void;
+    componentDidUpdate({ title, description, size, renderer }: Readonly<ChartProps>): void;
     // (undocumented)
     componentWillUnmount(): void;
     // (undocumented)
@@ -759,11 +759,19 @@ export interface ColorBandSimpleConfig {
 
 // @public (undocumented)
 export interface ColorBandValue {
-    // Warning: (ae-forgotten-export) The symbol "ColorBandValueType" needs to be exported by the entry point index.d.ts
     type: ColorBandValueType;
     // (undocumented)
     value: number;
 }
+
+// @public (undocumented)
+export const ColorBandValueType: Readonly<{
+    Scale: "scale";
+    Percentage: "percentage";
+}>;
+
+// @public (undocumented)
+export type ColorBandValueType = $Values<typeof ColorBandValueType>;
 
 // @public (undocumented)
 export interface ColorConfig {
@@ -1427,8 +1435,6 @@ export interface GoalSpec extends Spec {
     labelMinor: string | GoalLabelAccessor;
     // (undocumented)
     specType: typeof SpecType.Series;
-    // Warning: (ae-forgotten-export) The symbol "GoalSubtype" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     subtype: GoalSubtype;
     // (undocumented)
@@ -1477,6 +1483,16 @@ export interface GoalStyles {
     // (undocumented)
     tickLine: Pick<StrokeStyle, 'stroke'>;
 }
+
+// @public (undocumented)
+export const GoalSubtype: Readonly<{
+    Goal: "goal";
+    HorizontalBullet: "horizontalBullet";
+    VerticalBullet: "verticalBullet";
+}>;
+
+// @public (undocumented)
+export type GoalSubtype = $Values<typeof GoalSubtype>;
 
 // @public
 export interface GradientStop {
@@ -1751,6 +1767,9 @@ export const HistogramModeAlignments: Readonly<{
     Center: HistogramModeAlignment;
     End: HistogramModeAlignment;
 }>;
+
+// @public (undocumented)
+export type HistogramModeAlignments = $Values<typeof HistogramModeAlignments>;
 
 // @public (undocumented)
 export const HorizontalAlignment: Readonly<{
@@ -2482,7 +2501,15 @@ export type PartitionElementEvent = [layers: Array<LayerValue>, seriesIdentifier
 export interface PartitionFillLabel extends LabelConfig {
     // (undocumented)
     clipText: boolean;
+    horizontalAlignment?: PartitionFillLabelHorizontalAlignment;
+    verticalAlignment?: PartitionFillLabelVerticalAlignment;
 }
+
+// @public
+export type PartitionFillLabelHorizontalAlignment = Exclude<HorizontalAlignment, 'far' | 'near'>;
+
+// @public
+export type PartitionFillLabelVerticalAlignment = Exclude<VerticalAlignment, 'far' | 'near'>;
 
 // @public
 export interface PartitionLayer<D extends BaseDatum = Datum> {
@@ -2561,6 +2588,16 @@ export const PATH_KEY = "path";
 
 // @public (undocumented)
 export function pathAccessor(n: ArrayEntry): LegendPath;
+
+// @public (undocumented)
+export function percentValueGetter(node: {
+    [AGGREGATE_KEY]: number;
+    [MODEL_KEY]: {
+        [STATISTICS_KEY]: {
+            globalAggregate: number;
+        };
+    };
+}): number;
 
 // @public
 export interface PerSideDistance {
@@ -2769,10 +2806,13 @@ export interface RasterTimeScale extends TimeScale {
 export type Ratio = number;
 
 // @public (undocumented)
+export function ratioValueGetter(node: ShapeTreeNode): number;
+
+// @public (undocumented)
 export type RawTextGetter = (node: ShapeTreeNode) => string;
 
 // @public (undocumented)
-export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "zIndex" | "groupId" | "annotationType" | "outside", "style" | "offset" | "customTooltip" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
+export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "groupId" | "zIndex" | "outside" | "annotationType", "style" | "offset" | "customTooltip" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
 
 // @public
 export interface RectAnnotationDatum {
@@ -3715,18 +3755,25 @@ export function useLegendAction<T extends HTMLElement>(): [ref: LegacyRef<T>, on
 export const useTooltipContext: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>() => TooltipContext<D, SI>;
 
 // @public (undocumented)
+export const VALUE_GETTERS: Readonly<{
+    readonly percent: typeof percentValueGetter;
+    readonly ratio: typeof ratioValueGetter;
+}>;
+
+// @public (undocumented)
 export type ValueAccessor<D extends BaseDatum = Datum> = (d: D) => AdditiveNumber;
 
 // @public (undocumented)
 export type ValueFormatter<T = number> = (value: T) => string;
 
-// Warning: (ae-forgotten-export) The symbol "ValueGetterName" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export type ValueGetter = ValueGetterFunction | ValueGetterName;
 
 // @public (undocumented)
 export type ValueGetterFunction = (node: ShapeTreeNode) => number;
+
+// @public (undocumented)
+export type ValueGetterName = keyof typeof VALUE_GETTERS;
 
 // @public (undocumented)
 export const VerticalAlignment: Readonly<{
@@ -3761,7 +3808,7 @@ export type WeightFn = $Values<typeof WeightFn>;
 export type WillRenderListener = () => void;
 
 // @alpha
-export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontStyle" | "fontWeight" | "fontFamily" | "padding" | "minFontSize" | "maxFontSize" | "exponent" | "startAngle" | "endAngle" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
+export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontFamily" | "fontStyle" | "fontWeight" | "padding" | "minFontSize" | "maxFontSize" | "exponent" | "startAngle" | "endAngle" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
 
 // @public
 export type WordCloudElementEvent = [model: WordModel, seriesIdentifier: SeriesIdentifier];

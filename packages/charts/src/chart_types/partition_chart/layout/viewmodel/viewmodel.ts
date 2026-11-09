@@ -429,7 +429,7 @@ export function shapeViewModel(
     layers,
     textFillOrigins,
     maxRowCount,
-    !sunburstLayout,
+    sunburstLayout,
     !(treemapLayout || mosaicLayout),
   );
 

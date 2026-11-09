@@ -8,8 +8,9 @@
 
 import { createSelector, lruMemoize } from '@reduxjs/toolkit';
 import type { ICacheObject } from 're-reselect';
-// eslint-disable-next-line no-restricted-imports
-import createCachedSelector from 're-reselect';
+// Named import: Kibana rspack prefers the `browser` field, which is a UMD bundle.
+// Default-importing that UMD module yields the exports object, not the function.
+import { createCachedSelector } from 're-reselect';
 
 import type { GlobalChartState } from './chart_state';
 

@@ -20,3 +20,4 @@ export { Example as percentage } from './7_percentage.story';
 export { Example as grooveText } from './8_groove_text.story';
 export { Example as zeroValues } from './9_zero_values.story';
 export { Example as threeLayer } from './10_three_layers.story';
+export { Example as labelAlignment } from './11_label_alignment.story';

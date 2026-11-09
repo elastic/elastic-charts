@@ -21,41 +21,41 @@
  * THIS SOFTWARE.
  */
 
-import type { Series, SeriesPoint } from 'd3-shape';
+import { StackMode } from './specs';
+import { clamp } from '../../../utils/common';
 
-import type { DataSeriesDatum } from './series';
-import type { SeriesKey } from '../../../common/series_id';
+interface StackColumns {
+  // cell indices, each < series.length === y0.length === y1.length
+  columns: readonly (readonly number[])[];
+  series: readonly number[];
+  y0: Float64Array;
+  y1: Float64Array;
+}
 
-type XValue = string | number;
-type SeriesValueMap = Map<SeriesKey, DataSeriesDatum>;
-
-/** @internal */
-export type XValueMap = Map<XValue, SeriesValueMap>;
-/** @internal */
-export type XValueSeriesDatum = [XValue, SeriesValueMap];
+type StackOffset = (stack: StackColumns) => void;
 
 /**
  * Computes required wiggle offset for each x value __WITHOUT__ mutations
  */
-function getWiggleOffsets<K = string>(series: Series<XValueSeriesDatum, K>, order: number[]): number[] {
+function wiggleOffsets({ columns, series, y1 }: StackColumns): number[] {
   const offsets = [];
-  let y, j;
-  for (y = 0, j = 1; j < (series[order[0] ?? 0]?.length ?? 0); ++j) {
-    let i, s1, s2;
-    for (i = 0, s1 = 0, s2 = 0; i < series.length; ++i) {
-      // @ts-ignore - d3-shape type here is inaccurate
-      const si = series[order[i]] as SeriesPoint<XValueSeriesDatum>[];
-      const sij0 = si[j]?.[1] || 0;
-      const sij1 = si[j - 1]?.[1] || 0;
-      let s3 = (sij0 - sij1) / 2;
-
-      for (let k = 0; k < i; ++k) {
-        // @ts-ignore - d3-shape type here is inaccurate
-        const sk = series[order[k]] as SeriesPoint<XValueSeriesDatum>[];
-        const skj0 = sk[j]?.[1] || 0;
-        const skj1 = sk[j - 1]?.[1] || 0;
-        s3 += skj0 - skj1;
-      }
+  let y = 0;
+  for (let j = 1; j < columns.length; ++j) {
+    const previous = columns[j - 1]!;
+    const current = columns[j]!;
+    let p = 0;
+    let q = 0;
+    let s1 = 0;
+    let s2 = 0;
+    let prefix = 0;
+    // sorted-list merge join with a running prefix sum, now O(N)
+    while (p < previous.length || q < current.length) {
+      const previousSeries = p < previous.length ? series[previous[p]!]! : Infinity;
+      const currentSeries = q < current.length ? series[current[q]!]! : Infinity;
+      const sij1 = previousSeries <= currentSeries ? y1[previous[p++]!]! || 0 : 0;
+      const sij0 = currentSeries <= previousSeries ? y1[current[q++]!]! || 0 : 0;
+      const s3 = (sij0 - sij1) / 2 + prefix;
+      prefix += sij0 - sij1;
       s1 += sij0;
       s2 += s3 * sij0;
     }
@@ -67,112 +67,63 @@ function getWiggleOffsets<K = string>(series: Series<XValueSeriesDatum, K>, orde
   return offsets;
 }
 
-/** @internal */
-const divergingOffset = (isSilhouette = false) => {
-  return function <K = 'string'>(series: Series<XValueSeriesDatum, K>, order: number[]): void {
-    const n = series.length;
-    if (!(n > 0)) return;
-    for (let i, j = 0, sumYn, sumYp, yp, yn = 0, s0 = series[order[0] ?? 0], m = s0?.length ?? 0; j < m; ++j) {
+const divergingOffset =
+  (baseline: 'zero' | 'silhouette' | 'wiggle'): StackOffset =>
+  (stack) => {
+    const { columns, y0, y1 } = stack;
+    const offsets = baseline === 'wiggle' ? wiggleOffsets(stack) : [];
+    for (let j = 0; j < columns.length; ++j) {
+      const column = columns[j]!;
       // sum negative values per x before to maintain original sort for negative values
-      for (yn = 0, sumYn = 0, sumYp = 0, i = 0; i < n; ++i) {
-        // @ts-ignore - d3-shape type here is inaccurate
-        const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
-        const dy = d[1] - d[0];
+      let yn = 0;
+      let sumYn = 0;
+      let sumYp = 0;
+      for (const c of column) {
+        const dy = y1[c]! - y0[c]!;
         if (dy < 0) {
-          sumYn += Math.abs(d[1]) || 0;
+          sumYn += Math.abs(y1[c]!) || 0;
           yn += dy;
         } else {
-          sumYp += d[1] || 0;
+          sumYp += y1[c]! || 0;
         }
       }
 
-      const silhouetteOffset = sumYp / 2 - sumYn / 2;
-      const offset = isSilhouette ? -silhouetteOffset : 0;
-      yn += offset;
+      let yp: number;
+      if (baseline === 'wiggle') {
+        const offset = offsets[j] ?? 0;
+        yp = offset + sumYn;
+        yn = offset;
+      } else {
+        yp = baseline === 'silhouette' ? -(sumYp / 2 - sumYn / 2) : 0;
+        yn += yp;
+      }
 
-      for (yp = offset, i = 0; i < n; ++i) {
-        // @ts-ignore - d3-shape type here is inaccurate
-        const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
-        const dy = d[1] - d[0];
+      for (const c of column) {
+        const dy = y1[c]! - y0[c]!;
         if (dy >= 0) {
-          d[0] = yp;
-          d[1] = yp += dy;
+          y0[c] = yp;
+          y1[c] = yp += dy;
         } else {
-          d[1] = yn;
-          d[0] = yn -= dy;
+          y1[c] = yn;
+          y0[c] = yn -= dy;
         }
       }
     }
   };
-};
-
-/**
- * Stacked offset function with diverging polarity offset
- * @internal
- */
-export const diverging = divergingOffset();
-/**
- * Stacked Silhouette offset function with diverging polarity offset
- * @internal
- */
-export const divergingSilhouette = divergingOffset(true);
-
-/**
- * Stacked Wiggle offset function to account for diverging offset
- * @internal
- */
-export function divergingWiggle<K = 'string'>(series: Series<XValueSeriesDatum, K>, order: number[]): void {
-  const n = series.length;
-  const s0 = series[order[0] ?? 0];
-  const m = s0?.length ?? 0;
-  if (!(n > 0) || !(m > 0)) return diverging(series, order);
-
-  const offsets = getWiggleOffsets(series, order);
-
-  for (let i, j = 0, sumYn, yp, yn = 0; j < m; ++j) {
-    // sum negative values per x before to maintain original sort for negative values
-    for (i = 0, yn = 0, sumYn = 0; i < n; ++i) {
-      // @ts-ignore - d3-shape type here is inaccurate
-      const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
-      if (d[1] - d[0] < 0) {
-        sumYn += Math.abs(d[1]) || 0;
-      }
-    }
-
-    const offset = offsets[j] ?? 0;
-    yn += offset;
-
-    for (yp = offset + sumYn, yn = offset, i = 0; i < n; ++i) {
-      // @ts-ignore - d3-shape type here is inaccurate
-      const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
-      const dy = d[1] - d[0];
-      if (dy >= 0) {
-        d[0] = yp;
-        d[1] = yp += dy;
-      } else {
-        d[1] = yn;
-        d[0] = yn -= dy;
-      }
-    }
-  }
-}
 
 /**
  * Stacked Percentage offset function with diverging polarity offset
  * Treats percentage as participation for mixed polarity data
- * @internal
  */
-export function divergingPercentage<K = 'string'>(series: Series<XValueSeriesDatum, K>, order: number[]): void {
-  const n = series.length;
-  if (!(n > 0)) return;
-  for (let i, j = 0, sumYn, sumYp; j < (series[0]?.length ?? 0); ++j) {
-    for (sumYn = sumYp = i = 0; i < n; ++i) {
-      // @ts-ignore - d3-shape type here is inaccurate
-      const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
-      if (d[1] - d[0] < 0) {
-        sumYn += Math.abs(d[1]) || 0;
+const divergingPercentage: StackOffset = ({ columns, y0, y1 }) => {
+  for (const column of columns) {
+    let sumYn = 0;
+    let sumYp = 0;
+    for (const c of column) {
+      if (y1[c]! - y0[c]! < 0) {
+        sumYn += Math.abs(y1[c]!) || 0;
       } else {
-        sumYp += d[1] || 0;
+        sumYp += y1[c]! || 0;
       }
     }
 
@@ -182,21 +133,75 @@ export function divergingPercentage<K = 'string'>(series: Series<XValueSeriesDat
     let yp = sumYn / sumY;
     let yn = 0;
 
-    for (i = 0; i < n; ++i) {
-      // @ts-ignore - d3-shape type here is inaccurate
-      const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
-      const dy = d[1] - d[0];
+    for (const c of column) {
+      const dy = y1[c]! - y0[c]!;
       const participation = Math.abs(dy / sumY);
 
       if (dy >= 0) {
-        d[0] = yp;
-        d[1] = yp += participation;
+        y0[c] = yp;
+        y1[c] = yp += participation;
       } else {
-        d[0] = yn;
-        d[1] = yn += participation;
+        y0[c] = yn;
+        y1[c] = yn += participation;
       }
     }
   }
+};
+
+const stackOffsetWiggle: StackOffset = (stack) => {
+  const { columns, y0, y1 } = stack;
+  const offsets = wiggleOffsets(stack);
+
+  for (let j = 0; j < columns.length; ++j) {
+    let base = offsets[j] ?? 0;
+    for (const c of columns[j]!) {
+      y1[c] = y1[c]! + (y0[c] = base);
+      base = isNaN(y1[c]) ? y0[c] : y1[c];
+    }
+  }
+};
+
+function stackOffset(stackMode: StackMode | undefined, onlyNegative: boolean): StackOffset {
+  // TODO: fix diverging wiggle offset for negative polarity data (from https://github.com/elastic/elastic-charts/pull/1502)
+  if (onlyNegative && stackMode === StackMode.Wiggle) return stackOffsetWiggle;
+
+  switch (stackMode) {
+    case StackMode.Percentage:
+      return divergingPercentage;
+    case StackMode.Silhouette:
+      return divergingOffset('silhouette');
+    case StackMode.Wiggle:
+      return divergingOffset('wiggle');
+    default:
+      return divergingOffset('zero');
+  }
+}
+
+/** @internal */
+export function stackCells(
+  columns: readonly (readonly number[])[],
+  series: readonly number[],
+  values: ArrayLike<number>,
+  stackMode: StackMode | undefined,
+  onlyNegative: boolean,
+): { y0: Float64Array; y1: Float64Array } {
+  const y0 = new Float64Array(values.length);
+  const y1 = Float64Array.from(values);
+  stackOffset(stackMode, onlyNegative)({ columns, series, y0, y1 });
+
+  if (stackMode === StackMode.Percentage) {
+    /**
+     * Due to floating point errors, values computed on a stack
+     * could fall out of the current defined domain boundaries.
+     * This can particularly happen with percent stacks, where the domain
+     * is hardcoded to [0,1] and some values can fall outside that domain.
+     */
+    for (let c = 0; c < values.length; ++c) {
+      y0[c] = clamp(y0[c]!, 0, 1);
+      y1[c] = clamp(y1[c]!, 0, 1);
+    }
+  }
+  return { y0, y1 };
 }
 
 /* eslint-enable header/header, no-param-reassign */

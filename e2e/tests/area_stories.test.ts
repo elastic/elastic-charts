@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { test } from '@playwright/test';
-
+import { test } from '../fixtures';
 import { common } from '../page_objects';
 
 test.describe('Area series stories', () => {
@@ -98,6 +97,12 @@ test.describe('Area series stories', () => {
   test('small multiples with log scale dont clip', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/small-multiples-alpha--vertical-areas&globals=theme:light&knob-Show Legend=true&knob-Use log scale (different data)=true',
+    );
+  });
+
+  test('small multiples with sparse stacked areas', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/small-multiples-alpha--sparse-stacked&knob-series type=area',
     );
   });
 

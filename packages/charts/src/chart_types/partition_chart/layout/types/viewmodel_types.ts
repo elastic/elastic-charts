@@ -27,7 +27,7 @@ import type { LegendPath } from '../../../../state/actions/legend';
 import type { Size } from '../../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { Theme } from '../../../../utils/themes/theme';
-import type { ContinuousDomainFocus } from '../../renderer/canvas/partition';
+import type { ContinuousDomainFocus } from '../../renderer/partition';
 import type { Layer } from '../../specs';
 import type { MODEL_KEY, ValueGetterName } from '../config';
 import type { ArrayNode, HierarchyOfArrays, Key } from '../utils/group_by_rollup';

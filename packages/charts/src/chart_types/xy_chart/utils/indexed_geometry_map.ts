@@ -32,6 +32,12 @@ export class IndexedGeometryMap {
 
   private spatialMap = new IndexedGeometrySpatialMap();
 
+  // series that draw only some of their rows: the x values of the drawn rows, which the pointer snaps to, and finders
+  // of the geometries of all their rows at an x
+  private lookupKeys = new Set<number | string>();
+
+  private lookups: Array<(x: number | string) => IndexedGeometry[]> = [];
+
   /**
    * Returns triangulation instance to render spatial grid
    *
@@ -42,11 +48,16 @@ export class IndexedGeometryMap {
   }
 
   keys(): Array<number | string> {
-    return [...this.linearMap.keys(), ...this.spatialMap.keys()];
+    return [...this.linearMap.keys(), ...this.spatialMap.keys(), ...this.lookupKeys];
   }
 
   get size(): number {
-    return this.linearMap.size + this.spatialMap.size;
+    return this.linearMap.size + this.spatialMap.size + this.lookupKeys.size;
+  }
+
+  setLookup(keys: Array<number | string>, lookup: (x: number | string) => IndexedGeometry[]) {
+    keys.forEach((key) => this.lookupKeys.add(key));
+    this.lookups.push(lookup);
   }
 
   set(geometry: IndexedGeometry, type: GeometryType = GeometryType.linear) {
@@ -70,7 +81,8 @@ export class IndexedGeometryMap {
     }
 
     const spatialValues = point === undefined ? [] : this.spatialMap.find(point, pointBuffer);
-    return [...this.linearMap.find(x), ...spatialValues].filter(
+    const lookedUp = x === null ? [] : this.lookups.flatMap((lookup) => lookup(x));
+    return [...this.linearMap.find(x), ...lookedUp, ...spatialValues].filter(
       ({ seriesIdentifier: { smHorizontalAccessorValue, smVerticalAccessorValue } }) =>
         (isNil(smVerticalValue) || smVerticalAccessorValue === smVerticalValue) &&
         (isNil(smHorizontalValue) || smHorizontalAccessorValue === smHorizontalValue),
@@ -93,6 +105,8 @@ export class IndexedGeometryMap {
     for (const indexedMap of indexedMaps) {
       const { spatialGeometries, linearGeometries } = indexedMap.getMergeData();
       this.spatialMap.set(spatialGeometries);
+      this.lookups.push(...indexedMap.lookups);
+      indexedMap.lookupKeys.forEach((key) => this.lookupKeys.add(key));
       linearGeometries.forEach((geometry) => {
         if (Array.isArray(geometry)) {
           geometry.forEach((geometry) => this.linearMap.set(geometry));

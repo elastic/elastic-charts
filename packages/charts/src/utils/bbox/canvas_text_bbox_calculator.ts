@@ -9,6 +9,7 @@
 import type { Font } from '../../common/text_utils';
 import { cssFontShorthand } from '../../common/text_utils';
 import { withContext } from '../../renderers/canvas';
+import type { Ctx2d } from '../../renderers/painter';
 import type { Size } from '../dimensions';
 
 /** @internal */
@@ -22,7 +23,7 @@ export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
 export type TextMeasure = (text: string, font: Omit<Font, 'textColor'>, fontSize: number, lineHeight?: number) => Size;
 
 /** @internal */
-export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
+export function measureText(ctx: Ctx2d): TextMeasure {
   return (text, font, fontSize, lineHeight = 1) => {
     if (text.length === 0) {
       return { width: 0, height: fontSize * lineHeight };

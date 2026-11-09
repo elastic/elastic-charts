@@ -9,7 +9,7 @@
 import { TAU } from '../../../common/constants';
 import { clamp } from '../../../utils/common';
 import type { Size } from '../../../utils/dimensions';
-import { MIN_ANGULAR_RADIUS, TARGET_SIZE } from '../renderer/canvas/constants';
+import { MIN_ANGULAR_RADIUS, TARGET_SIZE } from '../renderer/constants';
 import { BulletSubtype } from '../spec';
 import { GRAPH_PADDING } from '../theme';
 

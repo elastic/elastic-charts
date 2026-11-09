@@ -6,9 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { test } from '@playwright/test';
-
 import { PartitionLayout } from '../constants';
+import { test } from '../fixtures';
 import { eachTheme, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
@@ -88,6 +87,19 @@ test.describe('Axis stories', () => {
           `http://localhost:9001/?path=/story/treemap--one-layer2&knob-partitionLayout=${partitionLayout}&knob-custom fillLabel.textColor=true&knob-fillLabel.textColor=rgba(0, 0, 0, 0.3)`,
         );
       });
+    },
+  );
+
+  pwEach.test([
+    ['middle', 'center'],
+    ['bottom', 'right'],
+  ])(
+    ([verticalAlignment, horizontalAlignment]) =>
+      `should align treemap fill labels ${verticalAlignment} ${horizontalAlignment}`,
+    async (page, [verticalAlignment, horizontalAlignment]) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/treemap--label-alignment&globals=theme:light&knob-fillLabel.verticalAlignment_Partition=${verticalAlignment}&knob-fillLabel.horizontalAlignment_Partition=${horizontalAlignment}`,
+      );
     },
   );
 

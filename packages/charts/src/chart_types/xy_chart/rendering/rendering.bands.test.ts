@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { sortedByPosition } from '../../../mocks/geometries';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
@@ -53,7 +54,7 @@ describe('Rendering bands - areas', () => {
       const {
         value: { points },
       } = areas[0]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
     });
   });
   describe('Single band area chart with null values', () => {
@@ -97,7 +98,7 @@ describe('Rendering bands - areas', () => {
       const {
         value: { points },
       } = areas[0]!;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
     });
   });
   describe('Single series band bar chart - ordinal', () => {

@@ -234,8 +234,8 @@ describe('Series', () => {
         ],
       }),
     ];
-    const xValues = new Set([1, 2, 3, 4]);
-    const stackedValues = formatStackedDataSeriesValues(dataSeries, xValues, 'bar');
+    const xIndex = new Map([1, 2, 3, 4].map((x, position) => [x, position]));
+    const stackedValues = formatStackedDataSeriesValues(dataSeries, xIndex, 'bar');
     expect(stackedValues.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });
   test('Can stack unsorted dataseries', () => {
@@ -261,6 +261,54 @@ describe('Series', () => {
 
     expect(formattedDataSeries.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });
+  test('Pads a gap even when duplicate x values make the series as long as the x domain', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(
+      MockSeriesSpec.line({
+        splitSeriesAccessors: ['g'],
+        xScaleType: ScaleType.Ordinal,
+        data: [
+          { x: 'a', y: 1, g: 'complete' },
+          { x: 'b', y: 1, g: 'complete' },
+          { x: 'c', y: 1, g: 'complete' },
+          { x: 'a', y: 1, g: 'duplicates' },
+          { x: 'a', y: 2, g: 'duplicates' },
+          { x: 'c', y: 3, g: 'duplicates' },
+        ],
+      }),
+      store,
+    );
+    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+    const { data } = formattedDataSeries.find(({ seriesKeys }) => seriesKeys[0] === 'duplicates')!;
+
+    expect(data.map(({ x, filled }) => [x, filled?.x])).toEqual([
+      ['a', undefined],
+      ['a', undefined],
+      ['b', 'b'],
+      ['c', undefined],
+    ]);
+  });
+  test('Does not pad bubble series', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(
+      MockSeriesSpec.bubble({
+        splitSeriesAccessors: ['g'],
+        xScaleType: ScaleType.Ordinal,
+        data: [
+          { x: 'a', y: 1, g: 'complete' },
+          { x: 'b', y: 1, g: 'complete' },
+          { x: 'c', y: 1, g: 'complete' },
+          { x: 'a', y: 1, g: 'sparse' },
+          { x: 'c', y: 3, g: 'sparse' },
+        ],
+      }),
+      store,
+    );
+    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+    const { data } = formattedDataSeries.find(({ seriesKeys }) => seriesKeys[0] === 'sparse')!;
+
+    expect(data.map(({ x }) => x)).toEqual(['a', 'c']);
+  });
   test('Can stack high volume of dataseries', () => {
     const maxArrayItems = 1000;
     const dataSeries: DataSeries[] = [
@@ -285,8 +333,8 @@ describe('Series', () => {
           .map((d, i) => ({ x: i, y1: i, mark: null, y0: null, initialY1: i, initialY0: null, datum: undefined })),
       }),
     ];
-    const xValues = new Set(new Array(maxArrayItems).fill(0).map((d, i) => i));
-    const stackedValues = formatStackedDataSeriesValues(dataSeries, xValues, 'bar');
+    const xIndex = new Map(new Array(maxArrayItems).fill(0).map((d, i) => [i, i]));
+    const stackedValues = formatStackedDataSeriesValues(dataSeries, xIndex, 'bar');
     expect(stackedValues.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });
   test('Can stack simple dataseries with scale to extent', () => {
@@ -484,10 +532,10 @@ describe('Series', () => {
       data: TestDataset.BARCHART_2Y0G,
       hideInLegend: false,
     };
-    const xValues = new Set([0, 1, 2, 3]);
+    const xIndex = new Map([0, 1, 2, 3].map((x, position) => [x, position]));
 
     const { dataSeries } = getDataSeriesFromSpecs([spec1, spec2]);
-    const stackedDataSeries = getFormattedDataSeries([spec1, spec2], dataSeries, xValues, ScaleType.Linear);
+    const stackedDataSeries = getFormattedDataSeries(dataSeries, xIndex, ScaleType.Linear);
 
     expect(stackedDataSeries.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });

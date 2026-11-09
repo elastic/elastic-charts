@@ -211,8 +211,8 @@ function Component({
       aria-labelledby={a11y.labelId}
       aria-describedby={a11y.descriptionId}
       style={{
-        gridTemplateColumns: `repeat(${maxColumns}, minmax(0, 1fr)`,
-        gridTemplateRows: `repeat(${totalRows}, minmax(${style.minHeight}px, 1fr)`,
+        gridTemplateColumns: `repeat(${maxColumns}, minmax(0, 1fr))`,
+        gridTemplateRows: `repeat(${totalRows}, minmax(${style.minHeight}px, 1fr))`,
       }}
     >
       {metricsConfigs.configs.map((config) => {

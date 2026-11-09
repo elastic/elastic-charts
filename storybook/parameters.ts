@@ -26,6 +26,12 @@ const euiLogoUrl =
   'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0ibm9uZSIgdmlld0JveD0iMCAwIDMyIDMyIj4KICA8cGF0aCBmaWxsPSIjRkY5NTdEIiBkPSJNMTggMjVjLS41LTUuNS01LjUtMTAuNS0xMS0xMWw3LTdjLjUgNS41IDUuNSAxMC41IDExIDExbC03IDd6Ii8+CiAgPGNpcmNsZSBjeD0iNyIgY3k9IjciIHI9IjciIGZpbGw9IiNGMDRFOTgiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSI3IiBmaWxsPSIjRkVDNTE0Ii8+CiAgPHBhdGggZmlsbD0iIzAwQkZCMyIgZD0iTTMxIDE0Yy03LjE4IDAtMTMtNS44Mi0xMy0xM2gxM3YxM3oiLz4KICA8cGF0aCBmaWxsPSIjMUJBOUY1IiBkPSJNMSAxOGM3LjE4IDAgMTMgNS44MiAxMyAxM0gxVjE4eiIvPgo8L3N2Zz4K';
 
 export const storybookParameters: Parameters = {
+  docs: {
+    // The docs addon otherwise serializes every story's React tree to a JSX snippet on each render
+    // (react-element-to-jsx-string), which hangs the preview on the Metric stories; the source panel
+    // comes from addon-storysource anyway.
+    source: { type: 'code' },
+  },
   options: {
     selectedPanel: process.env.NODE_ENV === 'development' ? SB_KNOBS_PANEL : SB_SOURCE_PANEL,
   },
