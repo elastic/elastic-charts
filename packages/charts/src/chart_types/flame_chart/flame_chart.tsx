@@ -605,16 +605,18 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleContextMenu = (e: React.MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
-    e.preventDefault(); // prevent browser context menu
 
     if (this.tooltipPinned) {
+      e.preventDefault(); // prevent browser context menu
       this.handleUnpinningTooltip();
       return;
     }
     if (!Number.isFinite(this.getHoveredDatumIndex())) {
-      // NOP if not hover a node
+      // Keep the browser context menu when no node is hovered
       return;
     }
+
+    e.preventDefault(); // prevent browser context menu
     window.addEventListener('keyup', this.handleKeyUp);
     window.addEventListener('click', this.handleUnpinningTooltip);
     window.addEventListener('visibilitychange', this.handleUnpinningTooltip);

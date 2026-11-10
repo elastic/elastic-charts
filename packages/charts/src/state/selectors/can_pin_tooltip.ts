@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getInternalIsTooltipVisibleSelector } from './get_internal_is_tooltip_visible';
 import { getTooltipSpecSelector } from './get_tooltip_spec';
 import { isExternalTooltipVisibleSelector } from './is_external_tooltip_visible';
 import { ChartType } from '../../chart_types';
@@ -29,12 +30,19 @@ const getChartType = ({ chartType }: GlobalChartState) => chartType;
  * @internal
  */
 export const isPinnableTooltip = createCustomCachedSelector(
-  [getChartType, isExternalTooltipVisibleSelector, getTooltipSpecSelector, getTooltipInfoAndGeomsSelector],
+  [
+    getChartType,
+    isExternalTooltipVisibleSelector,
+    getTooltipSpecSelector,
+    getTooltipInfoAndGeomsSelector,
+    getInternalIsTooltipVisibleSelector,
+  ],
   (
     chartType,
     isExternal,
     { maxVisibleTooltipItems, maxTooltipItems, actions },
     { tooltip, highlightedGeometries },
+    { isPinnable, displayOnly },
   ): boolean => {
     const isPinnableChartType = Boolean(chartType && pinnableTooltipCharts.has(chartType));
     const actionable = actions.length > 0 || !Array.isArray(actions);
@@ -47,6 +55,6 @@ export const isPinnableTooltip = createCustomCachedSelector(
         (infoCount > highlightCount && infoCount > maxTooltipItems) || infoCount > maxVisibleTooltipItems;
     }
 
-    return isPinnableChartType && !isExternal && (hasHiddenSeries || actionable);
+    return isPinnableChartType && !isExternal && (hasHiddenSeries || actionable) && isPinnable && !displayOnly;
   },
 );
