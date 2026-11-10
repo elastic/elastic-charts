@@ -39,7 +39,7 @@ import { getInternalMainProjectionAreaSelector } from '../../state/selectors/get
 import { getLegendConfigSelector } from '../../state/selectors/get_legend_config_selector';
 import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_items_values';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
-import { getLongestLegendFormattedValueWidthSelector } from '../../state/selectors/get_longest_legend_formatted_value';
+import { getLongestLegendFormattedValueSelector } from '../../state/selectors/get_longest_legend_formatted_value';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { isBrushingSelector } from '../../state/selectors/is_brushing';
 import { hasMostlyRTLItems, HorizontalAlignment, LayoutDirection, VerticalAlignment } from '../../utils/common';
@@ -57,7 +57,7 @@ interface LegendStateProps {
   config: LegendSpec;
   items: ReadonlyArray<LegendItem>;
   extraValues: ReadonlyMap<string, LegendItemExtraValues>;
-  maxFormattedValueWidth?: number;
+  maxFormattedValue?: string;
 }
 
 interface LegendDispatchProps {
@@ -79,7 +79,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     chartDimensions,
     containerDimensions,
     config,
-    maxFormattedValueWidth,
+    maxFormattedValue,
   } = props;
 
   const { onLegendItemOut, onLegendItemOver, legendLayout, legendPosition } = config;
@@ -191,7 +191,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
                   item={item}
                   {...itemProps}
                   isListLayout
-                  maxFormattedValueWidth={maxFormattedValueWidth}
+                  maxFormattedValue={maxFormattedValue}
                 />
               ))}
             </ul>
@@ -246,7 +246,7 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
     size: getLegendSizeSelector(state),
     items: internalChartState.getLegendItems(state),
     extraValues: getLegendExtraValuesSelector(state),
-    maxFormattedValueWidth: getLongestLegendFormattedValueWidthSelector(state),
+    maxFormattedValue: getLongestLegendFormattedValueSelector(state),
     config,
   };
 };
