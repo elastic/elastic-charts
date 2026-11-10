@@ -391,7 +391,7 @@ const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
 
 const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return HIDDEN_TOOLTIP_PROPS;
-  const { visible, isPinnable, displayOnly } = getInternalIsTooltipVisibleSelector(state);
+  const { visible } = getInternalIsTooltipVisibleSelector(state);
   return {
     ...mapStateToPropsBasic(state),
     visible,
@@ -399,7 +399,7 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
     info: getInternalTooltipInfoSelector(state),
     pinned: state.interactions.tooltip.pinned,
     selected: getTooltipSelectedItems(state),
-    canPinTooltip: isPinnableTooltip(state) && isPinnable && !displayOnly,
+    canPinTooltip: isPinnableTooltip(state),
     isBrushing: isBrushingSelector(state),
   };
 };

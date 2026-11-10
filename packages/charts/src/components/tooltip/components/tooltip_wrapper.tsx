@@ -51,20 +51,15 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   const unpinnedWidth = useRef(0);
   const [minWidth, setMinWidth] = useState(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Capture the unpinned tooltip width every time its content changes
-    if (pinned) return;
-    const frame = window.requestAnimationFrame(() => {
-      if (tooltipRef.current) {
-        unpinnedWidth.current = tooltipRef.current.getBoundingClientRect().width;
-      }
-    });
-    return () => window.cancelAnimationFrame(frame);
+    if (pinned || !tooltipRef.current) return;
+    unpinnedWidth.current = tooltipRef.current.getBoundingClientRect().width;
   }, [pinned, values]);
 
   useLayoutEffect(() => {
-    // Prevent the tooltip from shrinking when pinned
-    setMinWidth(pinned ? unpinnedWidth.current : 0);
+    // Keep the width from the last unpinned hover. Unpinning clears minWidth via style.
+    if (pinned) setMinWidth(unpinnedWidth.current);
   }, [pinned]);
 
   useEffect(() => {

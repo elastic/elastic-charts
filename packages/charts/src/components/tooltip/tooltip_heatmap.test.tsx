@@ -18,8 +18,7 @@ import { MockStore } from '../../mocks/store/store';
 import { onPointerMove } from '../../state/actions/mouse';
 import { pinTooltip } from '../../state/actions/tooltip';
 import type { GlobalChartState } from '../../state/chart_state';
-import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
-import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
+import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
 
 jest.mock('@popperjs/core', () => {
   const actual = jest.requireActual('@popperjs/core');
@@ -86,45 +85,22 @@ describe('heatmap tooltip hover sizing', () => {
           actions: [{ label: 'Go', onSelect: () => {} }],
         }),
         MockSeriesSpec.heatmap({
-          data: [
-            { x: WIDE_X, y: NARROW_Y, value: 5 },
-            { x: WIDE_X, y: 'B', value: 15 },
-          ],
+          data: [{ x: WIDE_X, y: NARROW_Y, value: 5 }],
         }),
       ],
       store,
     );
 
     const { chartDimensions } = computeChartDimensionsSelector(store.getState());
+    const y = chartDimensions.top + chartDimensions.height / 2;
     cell = {
       x: chartDimensions.left + chartDimensions.width / 2,
-      y: chartDimensions.top + chartDimensions.height / 2,
+      y,
     };
     axis = {
       x: Math.max(chartDimensions.left / 2, 1),
-      y: chartDimensions.top + chartDimensions.height / 2,
+      y,
     };
-    hover(cell);
-    const cellVisibility = getInternalIsTooltipVisibleSelector(store.getState());
-    const cellInfo = getInternalTooltipInfoSelector(store.getState());
-    hover(axis);
-    const axisVisibility = getInternalIsTooltipVisibleSelector(store.getState());
-    const axisInfo = getInternalTooltipInfoSelector(store.getState());
-    const hitWideCell =
-      cellVisibility.visible &&
-      !cellVisibility.displayOnly &&
-      cellInfo?.values.some((value) => value.formattedValue === WIDE_X);
-    const hitNarrowAxis =
-      axisVisibility.visible &&
-      axisVisibility.displayOnly &&
-      !axisInfo?.values.some((value) => value.formattedValue === WIDE_X);
-    if (!hitWideCell || !hitNarrowAxis) {
-      throw new Error(
-        `heatmap hover targets missed cell=${JSON.stringify(cellVisibility)} axis=${JSON.stringify(axisVisibility)}`,
-      );
-    }
-    // Mount the tooltip on the hover each test starts with, not on this probe.
-    hover({ x: -1, y: -1 });
 
     render(
       <Provider store={store}>
@@ -154,6 +130,7 @@ describe('heatmap tooltip hover sizing', () => {
     const axisWidth = axisTooltip.getBoundingClientRect().width;
     expect(axisWidth).toBeLessThan(cellWidth);
     expect(screen.queryByText(ACTION_PROMPT)).not.toBeInTheDocument();
+    expect(axisTooltip).toHaveTextContent(NARROW_Y);
     expect(axisTooltip).not.toHaveTextContent(WIDE_X);
     expect(axisTooltip.style.minWidth).toBe('');
   });
@@ -176,5 +153,13 @@ describe('heatmap tooltip hover sizing', () => {
     expect(screen.queryByText(ACTION_PROMPT)).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Go' })).toBeInTheDocument();
     expect(Number.parseFloat(screen.getByTestId('echTooltip').style.minWidth)).toBe(cellWidth);
+  });
+
+  it('allows pinning a cell and not a y-axis label', () => {
+    hover(cell);
+    expect(isPinnableTooltip(store.getState())).toBe(true);
+
+    hover(axis);
+    expect(isPinnableTooltip(store.getState())).toBe(false);
   });
 });
