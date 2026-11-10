@@ -37,7 +37,12 @@ export interface Cell {
 }
 
 /** @internal */
-export type GridCell = { x: NonNullable<PrimitiveValue>; y: NonNullable<PrimitiveValue> };
+export type GridCell = {
+  x: NonNullable<PrimitiveValue>;
+  y: NonNullable<PrimitiveValue>;
+  smHorizontalAccessorValue?: string | number;
+  smVerticalAccessorValue?: string | number;
+};
 
 /** @internal */
 export interface TextBox extends Box {
@@ -103,7 +108,14 @@ export type PickHighlightedArea = (
 ) => Rect | null;
 
 /** @internal */
-export type PickCursorBand = (x: NonNullable<PrimitiveValue>) => Rect | undefined;
+export type CursorBandTarget = {
+  x: NonNullable<PrimitiveValue>;
+  smHorizontalAccessorValue?: string | number | null;
+  smVerticalAccessorValue?: string | number | null;
+};
+
+/** @internal */
+export type PickCursorBand = (cell: CursorBandTarget) => Rect | undefined;
 
 /** @internal */
 export type PickGridCell = (x: Pixels, y: Pixels) => GridCell | undefined;
