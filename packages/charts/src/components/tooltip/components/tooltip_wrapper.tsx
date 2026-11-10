@@ -51,10 +51,12 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   const unpinnedWidth = useRef(0);
   const [minWidth, setMinWidth] = useState(0);
 
-  useLayoutEffect(() => {
-    // Capture the unpinned tooltip width every time its content changes
-    if (pinned || !tooltipRef.current) return;
-    unpinnedWidth.current = tooltipRef.current.getBoundingClientRect().width;
+  useEffect(() => {
+    // Runs after TooltipPortal's layout effect removes echTooltipPortal__invisible.
+    const node = tooltipRef.current;
+    if (!node || pinned) return;
+    const { width } = node.getBoundingClientRect();
+    if (width > 0) unpinnedWidth.current = width;
   }, [pinned, values]);
 
   useLayoutEffect(() => {

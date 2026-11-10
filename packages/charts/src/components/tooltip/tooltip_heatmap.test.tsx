@@ -155,6 +155,25 @@ describe('heatmap tooltip hover sizing', () => {
     expect(Number.parseFloat(screen.getByTestId('echTooltip').style.minWidth)).toBe(cellWidth);
   });
 
+  it('pins the displayed width when the first measure happens while the portal is hidden', () => {
+    getBoundingClientRect.mockImplementation(function (this: HTMLElement) {
+      if (this.getAttribute('data-testid') === 'echTooltip') {
+        const hidden = this.closest('.echTooltipPortal__invisible');
+        return new DOMRect(0, 0, hidden ? 0 : (this.textContent ?? '').length, 20);
+      }
+      return new DOMRect();
+    });
+
+    hover(cell);
+    const tooltip = screen.getByTestId('echTooltip');
+    expect(tooltip.closest('.echTooltipPortal__invisible')).toBeNull();
+    const visibleWidth = tooltip.getBoundingClientRect().width;
+    expect(visibleWidth).toBeGreaterThan(0);
+
+    pin(true);
+    expect(Number.parseFloat(screen.getByTestId('echTooltip').style.minWidth)).toBe(visibleWidth);
+  });
+
   it('allows pinning a cell and not a y-axis label', () => {
     hover(cell);
     expect(isPinnableTooltip(store.getState())).toBe(true);
