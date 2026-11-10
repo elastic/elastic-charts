@@ -20,7 +20,9 @@ import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { PointerEventType, TooltipType } from '../../../../specs';
+import type { PointerEvent } from '../../../../specs';
 import type { Spec } from '../../../../specs/spec_type';
+import { onExternalPointerEvent } from '../../../../state/actions/events';
 import { onPointerMove } from '../../../../state/actions/mouse';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import type { Datum } from '../../../../utils/common';
@@ -51,8 +53,9 @@ function setupChart(partial?: {
   data?: Datum[];
   extraSpecs?: ReturnType<typeof MockGlobalSpec.smallMultiple>[];
   onPointerUpdate?: jest.Mock;
+  chartId?: string;
 }) {
-  const store = MockStore.default({ width: 300, height: 300, top: 0, left: 0 }, 'chartId');
+  const store = MockStore.default({ width: 300, height: 300, top: 0, left: 0 }, partial?.chartId ?? 'chartId');
   MockStore.addSpecs(
     [
       MockGlobalSpec.settingsNoMargins({
@@ -156,6 +159,82 @@ describe('Heatmap cursor band', () => {
         smHorizontalValue: 'right',
       }),
     );
+  });
+
+  it('forwards a same x/y panel change to the receiving chart', () => {
+    const panelData = [
+      { x: 'a', y: 'y', value: 1, panel: 'left' },
+      { x: 'b', y: 'y', value: 2, panel: 'left' },
+      { x: 'a', y: 'y', value: 3, panel: 'right' },
+      { x: 'b', y: 'y', value: 4, panel: 'right' },
+    ];
+    const panelSpecs = [
+      MockGlobalSpec.smallMultiple({ splitHorizontally: 'panel' }),
+      MockGlobalSpec.groupBy({
+        id: 'panel',
+        by: (_spec: Spec, datum: { panel: string }) => datum.panel,
+        sort: Predicate.AlphaAsc,
+      }),
+    ];
+    const onPointerUpdate = jest.fn();
+    const source = setupChart({
+      chartId: 'source',
+      onPointerUpdate,
+      extraSpecs: panelSpecs,
+      data: panelData,
+    });
+    const receiving = setupChart({
+      chartId: 'receiving',
+      extraSpecs: panelSpecs,
+      data: panelData,
+    });
+    const { chartDimensions } = computeChartDimensionsSelector(source.getState());
+    const panelWidth = chartDimensions.width / 2;
+    const cellBandwidth = panelWidth / 2;
+    const y = chartDimensions.top + chartDimensions.height / 2;
+    const caller = createOnPointerUpdateCaller();
+
+    const publish = () => {
+      caller(source.getState());
+      MockStore.flush(source);
+    };
+
+    // Two positions in the left panel's "a" column share x/y, so only the first is published.
+    hover(source, chartDimensions.left + cellBandwidth * 0.25, y);
+    publish();
+    hover(source, chartDimensions.left + cellBandwidth * 0.6, y);
+    publish();
+    expect(onPointerUpdate).toHaveBeenCalledTimes(1);
+    expect(onPointerUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        chartId: 'source',
+        type: PointerEventType.Over,
+        x: 'a',
+        smHorizontalValue: 'left',
+      }),
+    );
+
+    // The same x/y on the other panel is a different pointer event and must be forwarded.
+    hover(source, chartDimensions.left + panelWidth + cellBandwidth * 0.25, y);
+    publish();
+    expect(onPointerUpdate).toHaveBeenCalledTimes(2);
+    const forwarded = onPointerUpdate.mock.calls[1][0] as PointerEvent;
+    expect(forwarded).toEqual(
+      expect.objectContaining({
+        chartId: 'source',
+        type: PointerEventType.Over,
+        x: 'a',
+        smHorizontalValue: 'right',
+      }),
+    );
+
+    receiving.dispatch(onExternalPointerEvent(forwarded));
+    const band = getCursorBandPositionSelector(receiving.getState());
+    expect(band?.fromExternalEvent).toBe(true);
+    expect(band?.x).toBeCloseTo(chartDimensions.left + panelWidth);
+    expect(band?.width).toBeCloseTo(cellBandwidth);
+    expect(band?.height).toBeCloseTo(chartDimensions.height);
+    expect(band?.x).toBeGreaterThanOrEqual(chartDimensions.left + panelWidth);
   });
 
   describe('CursorBand rendering', () => {
