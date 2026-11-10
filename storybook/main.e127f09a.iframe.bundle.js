@@ -42268,6 +42268,14 @@ exports.chartSelectorsFactory = (0, chart_selectors_1.createChartSelectorsFactor
     isInitialized: () => get_internal_is_intialized_1.InitStatus.Initialized,
     isChartEmpty: () => false,
     getTooltipInfo: () => ({ header: null, values: [] }),
+    // Flame pinning is decided in the chart component. Visibility stays false so the shared
+    // tooltip does not render, but isPinnable must stay true or isPinnableTooltip disables the menu.
+    isTooltipVisible: () => ({
+        visible: false,
+        isExternal: false,
+        displayOnly: false,
+        isPinnable: true,
+    }),
 });
 
 
@@ -42834,15 +42842,16 @@ class FlameComponent extends react_1.default.Component {
     };
     handleContextMenu = (e) => {
         e.stopPropagation();
-        e.preventDefault(); // prevent browser context menu
         if (this.tooltipPinned) {
+            e.preventDefault(); // prevent browser context menu
             this.handleUnpinningTooltip();
             return;
         }
         if (!Number.isFinite(this.getHoveredDatumIndex())) {
-            // NOP if not hover a node
+            // Keep the browser context menu when no node is hovered
             return;
         }
+        e.preventDefault(); // prevent browser context menu
         window.addEventListener('keyup', this.handleKeyUp);
         window.addEventListener('click', this.handleUnpinningTooltip);
         window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
@@ -78553,7 +78562,7 @@ const TooltipPortalComponent = ({ anchor, scope, settings, children, visible, ch
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [visible, anchorNode, position?.x, position?.y, position?.width, position?.height]);
-    (0, react_1.useEffect)(() => {
+    (0, react_1.useLayoutEffect)(() => {
         if (!position && !skipPositioning) {
             portalNode.classList.add('echTooltipPortal__invisible');
             return;
@@ -79775,27 +79784,33 @@ const tooltip_prompt_1 = __webpack_require__(/*! ./tooltip_prompt */ "../package
 const tooltip_provider_1 = __webpack_require__(/*! ./tooltip_provider */ "../packages/charts/src/components/tooltip/components/tooltip_provider.tsx");
 /** @internal */
 const TooltipWrapper = ({ children, className, id, role, actions, actionPrompt, pinningPrompt, selectionPrompt, actionsLoading, noActionsLoaded, }) => {
-    const { dir, pinned, canPinTooltip, selected, theme, actionable } = (0, tooltip_provider_1.useTooltipContext)();
+    const { dir, pinned, canPinTooltip, selected, values, theme, actionable } = (0, tooltip_provider_1.useTooltipContext)();
     const tooltipRef = (0, react_1.useRef)(null);
+    const unpinnedWidth = (0, react_1.useRef)(0);
     const [minWidth, setMinWidth] = (0, react_1.useState)(0);
     (0, react_1.useEffect)(() => {
-        // Capture initial unpinned tooltip width
-        window.requestAnimationFrame(() => {
-            if (tooltipRef.current) {
-                const { width } = tooltipRef.current.getBoundingClientRect();
-                setMinWidth(width);
-            }
-        });
-    }, []);
+        // Runs after TooltipPortal's layout effect removes echTooltipPortal__invisible.
+        const node = tooltipRef.current;
+        if (!node || pinned)
+            return;
+        const { width } = node.getBoundingClientRect();
+        if (width > 0)
+            unpinnedWidth.current = width;
+    }, [pinned, values]);
+    (0, react_1.useLayoutEffect)(() => {
+        // Keep the width from the last unpinned hover. Unpinning clears minWidth via style.
+        if (pinned)
+            setMinWidth(unpinnedWidth.current);
+    }, [pinned]);
     (0, react_1.useEffect)(() => {
         // Capture pinned tooltip with on change
         if (pinned && tooltipRef.current && typeof theme.maxWidth === 'number' && minWidth < theme.maxWidth) {
             const { width } = tooltipRef.current.getBoundingClientRect();
             if (width > minWidth)
-                setMinWidth(width);
+                setMinWidth((prev) => Math.max(prev, width));
         }
     }, [selected, pinned, minWidth, theme.maxWidth]);
-    return (react_1.default.createElement("div", { id: id, role: role, className: (0, classnames_1.default)('echTooltip', className, { 'echTooltip--pinned': pinned }), "data-testid": "echTooltip", dir: dir, ref: tooltipRef, style: { minWidth }, onClick: (e) => e.stopPropagation(), onKeyPress: (e) => e.stopPropagation() },
+    return (react_1.default.createElement("div", { id: id, role: role, className: (0, classnames_1.default)('echTooltip', className, { 'echTooltip--pinned': pinned }), "data-testid": "echTooltip", dir: dir, ref: tooltipRef, style: { minWidth: pinned ? minWidth : undefined }, onClick: (e) => e.stopPropagation(), onKeyPress: (e) => e.stopPropagation() },
         children,
         !canPinTooltip ? null : pinned ? (react_1.default.createElement(tooltip_actions_1.TooltipActions, { actions: actions, actionsLoading: actionsLoading, noActionsLoaded: noActionsLoaded, selectionPrompt: selectionPrompt })) : (react_1.default.createElement(tooltip_prompt_1.TooltipPrompt, null, actionable ? actionPrompt : pinningPrompt))));
 };
@@ -80067,7 +80082,6 @@ const TooltipComponent = ({ tooltip: { header: TooltipCustomHeader, body: Toolti
     if (!info || !visible) {
         return null;
     }
-    const hideActions = (info?.disableActions ?? false) || info?.values.every((v) => v.displayOnly);
     const actionable = actions.length > 0 || !Array.isArray(actions);
     // divider visibility
     const hasHeader = TooltipCustomHeader !== 'none' && info.header;
@@ -80080,7 +80094,7 @@ const TooltipComponent = ({ tooltip: { header: TooltipCustomHeader, body: Toolti
         // increasing by 100 the tooltip portal zIndex to avoid conflicts with highlighters and other elements in the DOM
         zIndex: zIndex + 100, anchor: anchorRef ?? { position, appendRef: chartRef }, settings: popperSettings, chartId: chartId, visible: visible, onPlacementChange: setComputedPlacement },
         react_1.default.createElement(tooltip_provider_1.TooltipProvider, { backgroundColor: backgroundColor, dir: textDirectionality, pinned: pinned, actionable: actionable, canPinTooltip: canPinTooltip, selected: selected, setSelection: setSelectedTooltipItems, toggleSelected: toggleSelectedTooltipItem, values: info?.values ?? [], pinTooltip: pinTooltip, theme: tooltipTheme, maxItems: maxVisibleTooltipItems },
-            react_1.default.createElement("div", { className: "echTooltip__outerWrapper", style: (0, placement_1.getStylesFromPlacement)(actionable, tooltipTheme, computedPlacement) }, settings?.customTooltip ? (react_1.default.createElement(settings.customTooltip, { ...info, dir: textDirectionality, pinned: pinned, selected: selected, setSelection: setSelectedTooltipItems, toggleSelected: toggleSelectedTooltipItem, headerFormatter: headerFormatter, backgroundColor: backgroundColor })) : (react_1.default.createElement(components_1.TooltipWrapper, { actions: hideActions || !canPinTooltip ? [] : actions, actionPrompt: actionPrompt, pinningPrompt: pinningPrompt, selectionPrompt: selectionPrompt, actionsLoading: actionsLoading, noActionsLoaded: noActionsLoaded },
+            react_1.default.createElement("div", { className: "echTooltip__outerWrapper", style: (0, placement_1.getStylesFromPlacement)(actionable, tooltipTheme, computedPlacement) }, settings?.customTooltip ? (react_1.default.createElement(settings.customTooltip, { ...info, dir: textDirectionality, pinned: pinned, selected: selected, setSelection: setSelectedTooltipItems, toggleSelected: toggleSelectedTooltipItem, headerFormatter: headerFormatter, backgroundColor: backgroundColor })) : (react_1.default.createElement(components_1.TooltipWrapper, { actions: info.disableActions || !canPinTooltip ? [] : actions, actionPrompt: actionPrompt, pinningPrompt: pinningPrompt, selectionPrompt: selectionPrompt, actionsLoading: actionsLoading, noActionsLoaded: noActionsLoaded },
                 TooltipCustomHeader === 'none' ? null : TooltipCustomHeader === 'default' ? (react_1.default.createElement(components_1.TooltipHeader, { header: info.header, formatter: headerFormatter })) : (react_1.default.createElement(components_1.TooltipHeader, null,
                     react_1.default.createElement(TooltipCustomHeader, { items: info.values, header: info.header }))),
                 headerBottomDividerVisibility && react_1.default.createElement(components_1.TooltipDivider, null),
@@ -80132,11 +80146,13 @@ const mapStateToPropsBasic = (state) => {
             backgroundColor,
         };
 };
-const mapStateToProps = (state) => (0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(state) !== get_internal_is_intialized_1.InitStatus.Initialized
-    ? HIDDEN_TOOLTIP_PROPS
-    : {
+const mapStateToProps = (state) => {
+    if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(state) !== get_internal_is_intialized_1.InitStatus.Initialized)
+        return HIDDEN_TOOLTIP_PROPS;
+    const { visible } = (0, get_internal_is_tooltip_visible_1.getInternalIsTooltipVisibleSelector)(state);
+    return {
         ...mapStateToPropsBasic(state),
-        visible: (0, get_internal_is_tooltip_visible_1.getInternalIsTooltipVisibleSelector)(state).visible,
+        visible,
         position: (0, get_internal_tooltip_anchor_position_1.getInternalTooltipAnchorPositionSelector)(state),
         info: (0, get_internal_tooltip_info_1.getInternalTooltipInfoSelector)(state),
         pinned: state.interactions.tooltip.pinned,
@@ -80144,6 +80160,7 @@ const mapStateToProps = (state) => (0, get_internal_is_intialized_1.getInternalI
         canPinTooltip: (0, can_pin_tooltip_1.isPinnableTooltip)(state),
         isBrushing: (0, is_brushing_1.isBrushingSelector)(state),
     };
+};
 /** @internal */
 exports.Tooltip = (0, react_1.memo)((0, react_redux_1.connect)(mapStateToProps, mapDispatchToProps)(exports.TooltipComponent));
 /** @internal */
@@ -85813,8 +85830,8 @@ const key_1 = __webpack_require__(/*! ../actions/key */ "../packages/charts/src/
 const legend_1 = __webpack_require__(/*! ../actions/legend */ "../packages/charts/src/state/actions/legend.ts");
 const mouse_1 = __webpack_require__(/*! ../actions/mouse */ "../packages/charts/src/state/actions/mouse.ts");
 const tooltip_1 = __webpack_require__(/*! ../actions/tooltip */ "../packages/charts/src/state/actions/tooltip.ts");
+const can_pin_tooltip_1 = __webpack_require__(/*! ../selectors/can_pin_tooltip */ "../packages/charts/src/state/selectors/can_pin_tooltip.ts");
 const get_internal_is_intialized_1 = __webpack_require__(/*! ../selectors/get_internal_is_intialized */ "../packages/charts/src/state/selectors/get_internal_is_intialized.ts");
-const get_internal_is_tooltip_visible_1 = __webpack_require__(/*! ../selectors/get_internal_is_tooltip_visible */ "../packages/charts/src/state/selectors/get_internal_is_tooltip_visible.ts");
 const get_internal_tooltip_info_1 = __webpack_require__(/*! ../selectors/get_internal_tooltip_info */ "../packages/charts/src/state/selectors/get_internal_tooltip_info.ts");
 const get_legend_items_1 = __webpack_require__(/*! ../selectors/get_legend_items */ "../packages/charts/src/state/selectors/get_legend_items.ts");
 const get_tooltip_spec_1 = __webpack_require__(/*! ../selectors/get_tooltip_spec */ "../packages/charts/src/state/selectors/get_tooltip_spec.ts");
@@ -85972,8 +85989,7 @@ const handleTooltipActions = (builder) => {
             state.tooltip = (0, get_initial_tooltip_state_1.getInitialTooltipState)();
             return;
         }
-        const { isPinnable, displayOnly } = (0, get_internal_is_tooltip_visible_1.getInternalIsTooltipVisibleSelector)(globalState);
-        if (!isPinnable || displayOnly) {
+        if (!(0, can_pin_tooltip_1.isPinnableTooltip)(globalState)) {
             return;
         }
         const tooltipSpec = (0, get_tooltip_spec_1.getTooltipSpecSelector)(globalState);
@@ -86082,6 +86098,7 @@ var __webpack_unused_export__;
  */
 __webpack_unused_export__ = ({ value: true });
 exports.isPinnableTooltip = void 0;
+const get_internal_is_tooltip_visible_1 = __webpack_require__(/*! ./get_internal_is_tooltip_visible */ "../packages/charts/src/state/selectors/get_internal_is_tooltip_visible.ts");
 const get_tooltip_spec_1 = __webpack_require__(/*! ./get_tooltip_spec */ "../packages/charts/src/state/selectors/get_tooltip_spec.ts");
 const is_external_tooltip_visible_1 = __webpack_require__(/*! ./is_external_tooltip_visible */ "../packages/charts/src/state/selectors/is_external_tooltip_visible.ts");
 const chart_types_1 = __webpack_require__(/*! ../../chart_types */ "../packages/charts/src/chart_types/index.ts");
@@ -86100,7 +86117,13 @@ const getChartType = ({ chartType }) => chartType;
 /**
  * @internal
  */
-exports.isPinnableTooltip = (0, create_selector_1.createCustomCachedSelector)([getChartType, is_external_tooltip_visible_1.isExternalTooltipVisibleSelector, get_tooltip_spec_1.getTooltipSpecSelector, get_tooltip_values_highlighted_geoms_1.getTooltipInfoAndGeomsSelector], (chartType, isExternal, { maxVisibleTooltipItems, maxTooltipItems, actions }, { tooltip, highlightedGeometries }) => {
+exports.isPinnableTooltip = (0, create_selector_1.createCustomCachedSelector)([
+    getChartType,
+    is_external_tooltip_visible_1.isExternalTooltipVisibleSelector,
+    get_tooltip_spec_1.getTooltipSpecSelector,
+    get_tooltip_values_highlighted_geoms_1.getTooltipInfoAndGeomsSelector,
+    get_internal_is_tooltip_visible_1.getInternalIsTooltipVisibleSelector,
+], (chartType, isExternal, { maxVisibleTooltipItems, maxTooltipItems, actions }, { tooltip, highlightedGeometries }, { isPinnable, displayOnly }) => {
     const isPinnableChartType = Boolean(chartType && pinnableTooltipCharts.has(chartType));
     const actionable = actions.length > 0 || !Array.isArray(actions);
     let hasHiddenSeries = false;
@@ -86110,7 +86133,7 @@ exports.isPinnableTooltip = (0, create_selector_1.createCustomCachedSelector)([g
         hasHiddenSeries =
             (infoCount > highlightCount && infoCount > maxTooltipItems) || infoCount > maxVisibleTooltipItems;
     }
-    return isPinnableChartType && !isExternal && (hasHiddenSeries || actionable);
+    return isPinnableChartType && !isExternal && (hasHiddenSeries || actionable) && isPinnable && !displayOnly;
 });
 
 
@@ -110896,4 +110919,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.3f858802.iframe.bundle.js.map
+//# sourceMappingURL=main.e127f09a.iframe.bundle.js.map
