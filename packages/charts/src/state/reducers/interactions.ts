@@ -24,8 +24,8 @@ import { onMouseDown, onMouseUp, onPointerMove } from '../actions/mouse';
 import { toggleSelectedTooltipItem, pinTooltip, setSelectedTooltipItems } from '../actions/tooltip';
 import type { ChartSliceState } from '../chart_slice_state';
 import type { GlobalChartState } from '../chart_state';
+import { isPinnableTooltip } from '../selectors/can_pin_tooltip';
 import { getInternalIsInitializedSelector, InitStatus } from '../selectors/get_internal_is_intialized';
-import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipInfoSelector } from '../selectors/get_internal_tooltip_info';
 import { getLegendItemsSelector } from '../selectors/get_legend_items';
 import { getTooltipSpecSelector } from '../selectors/get_tooltip_spec';
@@ -197,9 +197,7 @@ export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSlice
         return;
       }
 
-      const { isPinnable, displayOnly } = getInternalIsTooltipVisibleSelector(globalState);
-
-      if (!isPinnable || displayOnly) {
+      if (!isPinnableTooltip(globalState)) {
         return;
       }
 
