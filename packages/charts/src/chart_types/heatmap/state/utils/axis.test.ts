@@ -54,6 +54,24 @@ describe('Heatmap axis', () => {
       expect((width / labels.length) * tickCadence).toBeGreaterThanOrEqual(labelWidth);
     });
 
+    it('should keep a non-overlapping label that sets the right bound', () => {
+      const labels = ['A', 'B'.repeat(20)];
+      const containerWidth = 200;
+      const { tickCadence, width } = getXAxisSize(
+        true,
+        getXStyle(),
+        formatter,
+        labels,
+        textMeasure,
+        containerWidth,
+        [0, 0],
+        false,
+      );
+      // the long label compresses the scale from the right and still fits beside the short one
+      expect(tickCadence).toBe(1);
+      expect(width).toBeLessThan(containerWidth);
+    });
+
     it('should not reserve axis space for a wide label hidden by the cadence', () => {
       const labels = ['A', 'W'.repeat(26), 'B', 'C'];
       const containerWidth = 200;

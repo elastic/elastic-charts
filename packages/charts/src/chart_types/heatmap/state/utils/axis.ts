@@ -255,7 +255,11 @@ function fitCompressedScaleByCadence(
   // TODO refactor and move to monotonic hill climber and no mutations
   for (let i = 1; i < labels.length; i++) {
     const labelsOverlap = overlaps === 'cadence' ? getLabelsCadence(fitted.labelSpans) > 1 : fitted.overlaps;
-    if ((!labelsOverlap && !fitted.overflow.right) || !isFiniteNumber(fitted.width)) {
+    // overflow.right names the label that set the compressed right edge. On a time axis that
+    // label still sticks past the container, so the cadence has to rise. On a categorical axis
+    // the edge is already the fitted bound, and a label that sets it without overlapping stays visible.
+    const exceedsRightBound = overlaps === 'compressor' && fitted.overflow.right;
+    if ((!labelsOverlap && !exceedsRightBound) || !isFiniteNumber(fitted.width)) {
       break;
     }
     fitted = computeCompressedScale(
