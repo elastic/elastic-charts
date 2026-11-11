@@ -6,6 +6,17 @@
  * Side Public License, v 1.
  */
 
+// only types are imported from the series module, which imports this one
+import type { DataSeries, RawValues } from './series';
+
+/**
+ * Whether the series is M4 downsampled: its `data` only holds its summary rows, for layout, and its `rawValues` hold
+ * the x and y values of all its rows, for the geometries
+ * @internal
+ */
+export const isDownsampled = (series: DataSeries): series is DataSeries & { rawValues: RawValues } =>
+  series.rawValues !== undefined;
+
 /**
  * M4 reduction of rows sorted by x: returns the indices of the first, lowest, highest and last row of every run of
  * consecutive rows in the same pixel bin `floor(offset + scale * (x - origin))`, so a line through the kept rows
