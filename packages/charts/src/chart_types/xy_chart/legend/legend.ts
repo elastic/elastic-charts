@@ -23,14 +23,15 @@ import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
 import { defaultXYLegendSeriesSort } from '../utils/default_series_sort_fn';
 import { groupBy } from '../utils/group_data_series';
+import { isDownsampled } from '../utils/m4';
 import type { DataSeries, DataSeriesDatum } from '../utils/series';
-import { toSeriesData } from '../utils/series';
 import {
   getSeriesIndex,
   getSeriesName,
   getSeriesKey,
   getSeriesIdentifierFromDataSeries,
   isBandedSpec,
+  toSeriesData,
 } from '../utils/series';
 import type { AxisSpec, BasicSeriesSpec, Postfixes } from '../utils/specs';
 import { StackMode, isAreaSeriesSpec, isBarSeriesSpec, isBubbleSeriesSpec, isLineSeriesSpec } from '../utils/specs';
@@ -150,7 +151,7 @@ export function computeLegend(
 
     const pointStyle = getPointStyle(spec, theme);
 
-    const dataLacksLegendRows = series.rawValues !== undefined && !summaryHasAllLegendValues;
+    const dataLacksLegendRows = isDownsampled(series) && !summaryHasAllLegendValues;
     const source = dataLacksLegendRows ? { ...series, data: toSeriesData(series.spec, series.spec.data) } : series;
     const legendValuesItems = getLegendValues(source, xDomain, legendValues, y1Accessor(series.stackMode), formatter);
 

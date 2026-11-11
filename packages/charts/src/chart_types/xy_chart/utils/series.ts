@@ -6,11 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { parseConfig } from './fit_function';
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
 import { m4 } from './m4';
 import type { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesType, StackMode } from './specs';
-import { isAreaSeriesSpec, isLineSeriesSpec } from './specs';
+import { Fit, isAreaSeriesSpec, isLineSeriesSpec } from './specs';
 import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
 import type { Color } from '../../../common/colors';
 import { Colors } from '../../../common/colors';
@@ -38,7 +39,10 @@ import { getSpecDomainGroupId } from '../state/utils/spec';
 /** @internal */
 export const SERIES_DELIMITER = ' - ';
 
-/** @public */
+/**
+ * The values of a datum that were filled in, as the data had none: by a fit, or to mark a gap
+ * @public
+ */
 export interface FilledValues {
   /** the x value */
   x?: number | string;
@@ -48,7 +52,10 @@ export interface FilledValues {
   y0?: number;
 }
 
-/** @public */
+/**
+ * A row of a data series: its x and y values as laid out and as given, with the datum it comes from
+ * @public
+ */
 export interface DataSeriesDatum<T = any> {
   /** the x value */
   x: number | string;
@@ -68,7 +75,10 @@ export interface DataSeriesDatum<T = any> {
   filled?: FilledValues;
 }
 
-/** @public */
+/**
+ * Identifies a series of an XY chart by its spec, its accessors and the values it is split by
+ * @public
+ */
 export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends SeriesIdentifier, SmallMultiplesDatum {
   xAccessor: Accessor<D>;
   yAccessor: Accessor<D>;
@@ -335,15 +345,18 @@ function numericValues({ data, xAccessor, yAccessors }: BasicSeriesSpec) {
   const ys = new Float64Array(data.length); // the y of each row, NaN where missing or not numeric
   const nonNumericValues = new Map<unknown, number>(); // how often each non-numeric y occurs, for the warning
   let previousX = -Infinity; // the x of the previous row, to check that x is sorted
+  let hasMissingY = false;
   for (let i = 0; i < data.length; i++) {
     const datum = data[i];
     const x = typeof datum === 'object' && datum !== null ? getAccessorValue(datum, xAccessor) : undefined;
     if (typeof x !== 'number' || !Number.isFinite(x) || x < previousX) return;
     xs[i] = previousX = x;
     const y = getAccessorValue(datum, yAccessor);
-    ys[i] = typeof y === 'number' && Number.isFinite(y) ? y : finiteOrNull(y, nonNumericValues) ?? NaN;
+    const numericY = typeof y === 'number' && Number.isFinite(y) ? y : finiteOrNull(y, nonNumericValues) ?? NaN;
+    ys[i] = numericY;
+    hasMissingY ||= Number.isNaN(numericY);
   }
-  return { xs, ys, nonNumericValues };
+  return { xs, ys, nonNumericValues, hasMissingY };
 }
 
 /**
@@ -440,19 +453,40 @@ const MONOTONIC_CURVES: ReadonlySet<CurveType> = new Set([
   CurveType.CURVE_STEP_BEFORE,
 ]);
 
+function fitOf(spec: BasicSeriesSpec) {
+  return isLineSeriesSpec(spec) || isAreaSeriesSpec(spec) ? spec.fit : undefined;
+}
+
+/**
+ * Whether the fit of a spec fills in its missing y values. A fit that doesn't, leaves the rows of the series as they
+ * are, as long as no other series has an x value that this series lacks, see `markGaps`.
+ */
+function fitFillsMissingY(spec: BasicSeriesSpec) {
+  const fit = fitOf(spec);
+  return fit !== undefined && parseConfig(fit).type !== Fit.None;
+}
+
+function haveSameValues(lists: Float64Array[]) {
+  const [first, ...rest] = lists;
+  return (
+    first === undefined || rest.every((list) => list.length === first.length && list.every((v, i) => v === first[i]))
+  );
+}
+
 // nothing is downsampled without the scale configs; some of these restrictions could be lifted in the future
 function canDownsample(
   spec: BasicSeriesSpec,
   isStacked: boolean,
   scaleConfigs?: ScaleConfigs,
   smallMultiples?: SmallMultiplesGroupBy,
+  downsampleFitted = true,
 ) {
   return (
     scaleConfigs !== undefined &&
     (isLineSeriesSpec(spec) || isAreaSeriesSpec(spec)) &&
     MONOTONIC_CURVES.has(spec.curve ?? DEFAULT_CURVE) &&
     !isStacked &&
-    spec.fit === undefined &&
+    (downsampleFitted || spec.fit === undefined) &&
     spec.yAccessors.length === 1 &&
     !spec.y0Accessors?.length &&
     !spec.splitSeriesAccessors?.length &&
@@ -468,16 +502,22 @@ function canDownsample(
 /**
  * The rows the data series of a spec start with, for the domains and the legend: the summary of a series that is
  * downsampled, with the numeric values of all its rows in `rawValues`, otherwise all the rows of the spec.
+ * A series with a `fit` is downsampled only if the fit has no y value to fill in; the caller checks that it has no x
+ * value to fill in either.
  */
 function layoutRows(
   spec: BasicSeriesSpec,
   isStacked: boolean,
   scaleConfigs?: ScaleConfigs,
   smallMultiples?: SmallMultiplesGroupBy,
+  downsampleFitted = true,
 ): { data: Datum[]; rawValues?: RawValues } {
-  const values = canDownsample(spec, isStacked, scaleConfigs, smallMultiples) ? numericValues(spec) : undefined;
+  const values = canDownsample(spec, isStacked, scaleConfigs, smallMultiples, downsampleFitted)
+    ? numericValues(spec)
+    : undefined;
   if (!values) return { data: spec.data };
-  const { xs, ys, nonNumericValues } = values;
+  const { xs, ys, nonNumericValues, hasMissingY } = values;
+  if (hasMissingY && fitFillsMissingY(spec)) return { data: spec.data };
   // the summary: the first and last rows with a y, and the lowest and highest, as M4 keeps them for a single bin,
   // plus the first and last rows, whose missing y the first and last legend values report
   const extremes = m4(xs, ys, 0, 0, 0, false);
@@ -496,6 +536,7 @@ export function getDataSeriesFromSpecs(
   seriesSort?: SeriesCompareFn,
   groupBySpec?: SmallMultiplesGroupBy,
   scaleConfigs?: ScaleConfigs,
+  downsampleFitted = true,
 ): {
   dataSeries: DataSeries[];
   /** the x values of the data rows of every series; a downsampled series may contribute only its summary rows */
@@ -517,8 +558,10 @@ export function getDataSeriesFromSpecs(
 
   let isNumberArray = true;
   let isOrdinalScale = false;
-  // stacked and fitted series get gaps at the x values of every other series, so they need them all
+  // stacked and fitted series get gaps at the x values of every other series, so they need them all, unless downsampled
   let needsEveryXValue = false;
+  // whether a series with a `fit` is downsampled, which requires that no other series has an x value it lacks
+  let hasDownsampledFit = false;
   // whether a series that isn't downsampled adds x values, which only `xValues` holds
   let hasNonDownsampledXValues = false;
 
@@ -535,9 +578,11 @@ export function getDataSeriesFromSpecs(
     const specGroup = specsByYGroup.get(spec.groupId);
     const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
     const isBanded = isBandedSpec(spec);
-    const { data, rawValues } = layoutRows(spec, isStacked, scaleConfigs, groupBySpec);
+    const { data, rawValues } = layoutRows(spec, isStacked, scaleConfigs, groupBySpec, downsampleFitted);
     if (rawValues) rawXValues.push(rawValues.xs);
-    needsEveryXValue ||= isStacked || ((isLineSeriesSpec(spec) || isAreaSeriesSpec(spec)) && spec.fit !== undefined);
+    const hasFit = fitOf(spec) !== undefined;
+    needsEveryXValue ||= isStacked || (hasFit && !rawValues);
+    hasDownsampledFit ||= hasFit && rawValues !== undefined;
 
     const { dataSeries, xValues } = splitSeriesDataByAccessors(
       spec,
@@ -574,6 +619,18 @@ export function getDataSeriesFromSpecs(
 
   if (rawXValues.length > 0 && !isNumberArray) {
     return getDataSeriesFromSpecs(seriesSpecs, deselectedDataSeries, orderOrdinalBinsBy, seriesSort, groupBySpec);
+  }
+  // a fit fills in the x values that only other series have: no such x exists if all series share their x values
+  if (hasDownsampledFit && (hasNonDownsampledXValues || !haveSameValues(rawXValues))) {
+    return getDataSeriesFromSpecs(
+      seriesSpecs,
+      deselectedDataSeries,
+      orderOrdinalBinsBy,
+      seriesSort,
+      groupBySpec,
+      scaleConfigs,
+      false,
+    );
   }
   if (needsEveryXValue) {
     for (const xs of rawXValues) for (const x of xs) globalXValues.add(x);
