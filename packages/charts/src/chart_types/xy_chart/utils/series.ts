@@ -39,7 +39,10 @@ import { getSpecDomainGroupId } from '../state/utils/spec';
 /** @internal */
 export const SERIES_DELIMITER = ' - ';
 
-/** @public */
+/**
+ * The values of a datum that were filled in, as the data had none: by a fit, or to mark a gap
+ * @public
+ */
 export interface FilledValues {
   /** the x value */
   x?: number | string;
@@ -49,7 +52,10 @@ export interface FilledValues {
   y0?: number;
 }
 
-/** @public */
+/**
+ * A row of a data series: its x and y values as laid out and as given, with the datum it comes from
+ * @public
+ */
 export interface DataSeriesDatum<T = any> {
   /** the x value */
   x: number | string;
@@ -69,7 +75,10 @@ export interface DataSeriesDatum<T = any> {
   filled?: FilledValues;
 }
 
-/** @public */
+/**
+ * Identifies a series of an XY chart by its spec, its accessors and the values it is split by
+ * @public
+ */
 export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends SeriesIdentifier, SmallMultiplesDatum {
   xAccessor: Accessor<D>;
   yAccessor: Accessor<D>;
