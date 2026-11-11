@@ -8,6 +8,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
+import type { LineSeriesProps } from '@elastic/charts';
 import { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -41,18 +42,20 @@ const PROFILE_LABEL = 'Perf:DataToRender';
 
 /**
  * A chart of `seriesCount` dense line series of `pointsPerSeries` points each, or one less with
- * `missingPointPerSeries`, logging how long it takes to render
+ * `missingPointPerSeries`, logging how long it takes to render. The series get the `fit`, if any.
  */
 export function DenseLines({
   seriesCount,
   pointsPerSeries,
   missingPointPerSeries = false,
+  fit,
   title,
   description,
 }: {
   seriesCount: number;
   pointsPerSeries: number;
   missingPointPerSeries?: boolean;
+  fit?: LineSeriesProps['fit'];
   title?: string;
   description?: string;
 }) {
@@ -131,6 +134,7 @@ export function DenseLines({
               yAccessors={[1]}
               data={seriesData}
               curve={CurveType.LINEAR}
+              fit={fit}
             />
           ))}
         </Chart>
