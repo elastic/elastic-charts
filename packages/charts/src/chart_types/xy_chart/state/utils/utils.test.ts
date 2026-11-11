@@ -41,7 +41,7 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { XYChartSeriesIdentifier } from '../../utils/series';
 import { getSeriesIndex } from '../../utils/series';
 import type { AreaSeriesSpec, BasicSeriesSpec, LineSeriesSpec, SeriesColorAccessorFn } from '../../utils/specs';
-import { HistogramModeAlignments } from '../../utils/specs';
+import { Fit, HistogramModeAlignments } from '../../utils/specs';
 import { computeLegendSelector } from '../selectors/compute_legend';
 import { computeSeriesDomainsSelector } from '../selectors/compute_series_domains';
 import { computeSeriesGeometriesSelector } from '../selectors/compute_series_geometries';
@@ -997,6 +997,74 @@ describe('Downsampling dense line series', () => {
     const { formattedDataSeries } = domainsOf([denseLine({ curve: CurveType.CURVE_NATURAL })]);
     expect(formattedDataSeries[0]?.rawValues).toBeUndefined();
     expect(formattedDataSeries[0]?.data).toHaveLength(rows);
+  });
+
+  describe('with a fit', () => {
+    const fullData = denseData.filter(({ y }) => y !== null);
+    const isDownsampled = ({ formattedDataSeries }: ReturnType<typeof domainsOf>) =>
+      formattedDataSeries.map(({ rawValues }) => rawValues !== undefined);
+    const lineOf = (spec: LineSeriesSpec) => getGeometriesFromSpecs([spec]).geometries.lines[0]!.value;
+
+    it.each([Fit.Linear, Fit.Zero, Fit.Carry, { type: Fit.None }, { type: Fit.Linear, endValue: 0 }])(
+      'downsamples a series with no missing y, as fit %j has nothing to fill in',
+      (fit) => {
+        const downsampled = domainsOf([denseLine({ data: fullData, fit })]);
+        const full = domainsOf([denseLine({ data: fullData, fit, pointStyleAccessor: () => null })]);
+        expect(isDownsampled(downsampled)).toEqual([true]);
+        expect(downsampled.xDomain).toEqual(full.xDomain);
+        expect(downsampled.yDomains).toEqual(full.yDomains);
+        const fitted = lineOf(denseLine({ data: fullData, fit }));
+        expect(fitted.line).toBe(lineOf(denseLine({ data: fullData })).line);
+        expect(fitted.clippedRanges).toEqual([]);
+      },
+    );
+
+    it('keeps every row of a series whose missing ys the fit fills in', () => {
+      const { formattedDataSeries } = domainsOf([denseLine({ fit: Fit.Linear })]);
+      expect(formattedDataSeries[0]?.rawValues).toBeUndefined();
+      expect(formattedDataSeries[0]?.data).toHaveLength(rows);
+    });
+
+    it.each([Fit.None, { type: Fit.None, endValue: 0 }, { type: Fit.Explicit }] as const)(
+      'downsamples a series with missing ys that fit %j leaves missing',
+      (fit) => {
+        expect(isDownsampled(domainsOf([denseLine({ fit })]))).toEqual([true]);
+        expect(lineOf(denseLine({ fit })).line).toBe(lineOf(denseLine()).line);
+      },
+    );
+
+    it('downsamples series that share their x values, without filling in the x values of their summaries', () => {
+      // the extremes of the two series are at different x values, where a fit to zero would pull the y domain to 0
+      const specs = (props: Partial<LineSeriesSpec> = {}) => [
+        denseLine({ id: 'a', data: fullData, fit: Fit.Zero, ...props }),
+        denseLine({ id: 'b', data: fullData.map(({ x, y }) => ({ x, y: 100 - y! })), fit: Fit.Zero, ...props }),
+      ];
+      const downsampled = domainsOf(specs());
+      const full = domainsOf(specs({ pointStyleAccessor: () => null }));
+      expect(isDownsampled(downsampled)).toEqual([true, true]);
+      expect(downsampled.formattedDataSeries.flatMap(({ data }) => data).some(({ filled }) => filled)).toBe(false);
+      expect(downsampled.xDomain).toEqual(full.xDomain);
+      expect(downsampled.yDomains).toEqual(full.yDomains);
+    });
+
+    it.each([
+      ['a downsampled series', {}],
+      ['a series that is not downsampled', { pointStyleAccessor: () => null }],
+    ])('keeps every row of a fitted series that lacks an x value of %s', (_, props: Partial<LineSeriesSpec>) => {
+      const specs = (fittedProps: Partial<LineSeriesSpec> = {}) => [
+        denseLine({ id: 'fitted', data: fullData.filter(({ x }) => x % 2 === 0), fit: Fit.Linear, ...fittedProps }),
+        denseLine({ id: 'other', data: fullData, ...props }),
+      ];
+      const downsampled = domainsOf(specs());
+      const full = domainsOf(specs({ pointStyleAccessor: () => null }));
+      expect(isDownsampled(downsampled)).toEqual([false, props.pointStyleAccessor === undefined]);
+      const fitted = ({ formattedDataSeries }: ReturnType<typeof domainsOf>) =>
+        formattedDataSeries.find(({ specId }) => specId === 'fitted')?.data;
+      expect(fitted(downsampled)).toHaveLength(fullData.length);
+      expect(fitted(downsampled)).toEqual(fitted(full));
+      expect(downsampled.xDomain).toEqual(full.xDomain);
+      expect(downsampled.yDomains).toEqual(full.yDomains);
+    });
   });
 
   it('checks the y scale of the domain group the series is drawn on', () => {

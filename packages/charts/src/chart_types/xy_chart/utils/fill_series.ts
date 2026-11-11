@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { isDownsampled } from './m4';
 import type { DataSeries, DataSeriesDatum } from './series';
 import { isLineSeriesSpec, isAreaSeriesSpec } from './specs';
 import { ScaleType } from '../../../scales/constants';
@@ -28,6 +29,8 @@ export function markGaps(
 
     if (!isAreaSeriesSpec(spec) && !isLineSeriesSpec(spec)) return series;
     if (!spec.fit && isContinuous && !isStacked) return series;
+    // a downsampled series has no x value to fill in, and `data` only holds its summary rows
+    if (isDownsampled(series)) return series;
     const gapEndsOnly = !spec.fit;
     // xIndex holds every x of every series
     const positions = data.map(({ x }) => xIndex.get(x)!).sort((a, b) => a - b);
