@@ -185,26 +185,31 @@ export function getXAxisSize(
           );
 
     const validCompression = isFiniteNumber(dimension.width);
-    // the scale is compressed with every label, so the axis fits whether overlapping labels are hidden or not.
-    // time scales always hide overlapping labels, including when rotated; the flag only applies to categorical scales
+    // time scales always hide overlapping labels, including when rotated; the flag only applies to categorical scales.
+    // categorical axes that show every label, and rotated time scales, keep this full-label fit.
     const showEveryLabel = isCategoricalScale && showOverlappingLabels;
-    const tickCadence = !validCompression ? NaN : showEveryLabel ? 1 : getLabelsCadence(dimension.labelSpans);
-    return {
-      height: validCompression ? dimension.height : 0,
-      width: validCompression
-        ? dimension.width
-        : Math.max(containerWidth - surroundingSpace[0] - surroundingSpace[1], 0),
-      left: validCompression ? dimension.left : surroundingSpace[0],
-      right: validCompression ? dimension.right : surroundingSpace[1],
-      tickCadence,
+    if (!validCompression || showEveryLabel || !isCategoricalScale) {
+      const tickCadence = showEveryLabel ? 1 : getLabelsCadence(dimension.labelSpans);
+      return axisSizeFromCompression(dimension, tickCadence, minRotation, containerWidth, surroundingSpace);
+    }
+
+    // refit with only the labels kept at each cadence, so a hidden label no longer sets the width or insets.
+    // overlaps are decided with getLabelsCadence: the compressor check skips the last pair of labels
+    const fitted = fitCompressedScaleByCadence(
+      style,
+      scale,
+      measuredLabels,
+      containerWidth,
+      surroundingSpace,
+      alignment,
       minRotation,
-    };
+      dimension,
+      'cadence',
+    );
+    return axisSizeFromCompression(fitted.dimension, fitted.tickCadence, minRotation, containerWidth, surroundingSpace);
   }
 
-  // TODO refactor and move to monotonic hill climber and no mutations
-  // reduce the tick cadence on time scale to avoid overlaps and overflows
-  let tickCadence = 1;
-  let dimension = computeCompressedScale(
+  const compressedScale = computeCompressedScale(
     style,
     scale,
     measuredLabels,
@@ -213,23 +218,68 @@ export function getXAxisSize(
     alignment,
     rotationRad,
   );
+  const fitted = fitCompressedScaleByCadence(
+    style,
+    scale,
+    measuredLabels,
+    containerWidth,
+    surroundingSpace,
+    alignment,
+    rotationRad,
+    compressedScale,
+    'compressor',
+  );
 
-  for (let i = 1; i < measuredLabels.length; i++) {
-    if ((!dimension.overlaps && !dimension.overflow.right) || !isFiniteNumber(dimension.width)) {
+  return axisSizeFromCompression(fitted.dimension, fitted.tickCadence, rotationRad, containerWidth, surroundingSpace);
+}
+
+/**
+ * Increases the tick cadence until the visible labels fit in the container.
+ * Each attempt compresses the scale with only the labels that stay visible,
+ * so hidden labels stop taking width and insets.
+ */
+function fitCompressedScaleByCadence(
+  style: HeatmapStyle['xAxisLabel'],
+  scale: (d: NonNullable<PrimitiveValue>) => number,
+  labels: MeasuredLabel[],
+  containerWidth: number,
+  surroundingSpace: [number, number],
+  alignment: 'left' | 'right' | 'center',
+  rotation: Radian,
+  dimension: CompressedScale,
+  overlaps: 'compressor' | 'cadence',
+): { dimension: CompressedScale; tickCadence: number } {
+  let tickCadence = 1;
+  let fitted = dimension;
+
+  // TODO refactor and move to monotonic hill climber and no mutations
+  for (let i = 1; i < labels.length; i++) {
+    const labelsOverlap = overlaps === 'cadence' ? getLabelsCadence(fitted.labelSpans) > 1 : fitted.overlaps;
+    if ((!labelsOverlap && !fitted.overflow.right) || !isFiniteNumber(fitted.width)) {
       break;
     }
-    dimension = computeCompressedScale(
+    fitted = computeCompressedScale(
       style,
       scale,
-      measuredLabels.filter((_, index) => index % (i + 1) === 0),
+      labels.filter((_, index) => index % (i + 1) === 0),
       containerWidth,
       surroundingSpace,
       alignment,
-      rotationRad,
+      rotation,
     );
     tickCadence++;
   }
 
+  return { dimension: fitted, tickCadence };
+}
+
+function axisSizeFromCompression(
+  dimension: CompressedScale,
+  tickCadence: number,
+  minRotation: Radian,
+  containerWidth: number,
+  surroundingSpace: [number, number],
+): Size & { right: number; left: number; tickCadence: number; minRotation: Radian } {
   // hide the axis because there is no space for labels
   if (!isFiniteNumber(dimension.width)) {
     return {
@@ -240,7 +290,7 @@ export function getXAxisSize(
       right: surroundingSpace[1],
       // hide all ticks
       tickCadence: NaN,
-      minRotation: rotationRad,
+      minRotation,
     };
   }
 
@@ -250,7 +300,7 @@ export function getXAxisSize(
     left: dimension.left,
     right: dimension.right,
     tickCadence,
-    minRotation: rotationRad,
+    minRotation,
   };
 }
 

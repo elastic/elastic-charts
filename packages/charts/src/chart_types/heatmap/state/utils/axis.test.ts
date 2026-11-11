@@ -54,6 +54,33 @@ describe('Heatmap axis', () => {
       expect((width / labels.length) * tickCadence).toBeGreaterThanOrEqual(labelWidth);
     });
 
+    it('should not reserve axis space for a wide label hidden by the cadence', () => {
+      const labels = ['A', 'W'.repeat(26), 'B', 'C'];
+      const containerWidth = 200;
+      // fitting every label lets the wide one shrink the scale and push the axis right
+      const fittingAll = getXAxisSize(true, getXStyle(), formatter, labels, textMeasure, containerWidth, [0, 0], true);
+      const fittingVisible = getXAxisSize(
+        true,
+        getXStyle(),
+        formatter,
+        labels,
+        textMeasure,
+        containerWidth,
+        [0, 0],
+        false,
+      );
+
+      // cadence 2 keeps the narrow labels at index 0 and 2, centered on the full domain.
+      // those two fit in the container, so the refit is the compression of only the kept labels
+      expect(fittingVisible.tickCadence).toBe(2);
+      expect(fittingVisible.width).toBe(containerWidth);
+      expect(fittingVisible.left).toBe(0);
+      expect(fittingVisible.right).toBe(0);
+      expect(fittingAll.tickCadence).toBe(1);
+      expect(fittingAll.width).toBeLessThan(fittingVisible.width);
+      expect(fittingAll.left).toBeGreaterThan(fittingVisible.left);
+    });
+
     it('should render every overlapping label when showOverlappingLabels is set', () => {
       const labels = getLabels(50);
       const { tickCadence } = getXAxisSize(true, getXStyle(), formatter, labels, textMeasure, 400, [0, 0], true);
