@@ -438,6 +438,13 @@ module.exports = {
       },
     },
     {
+      // jest reads `@jest-environment` only from the first comment, which the license header would otherwise be
+      files: ['packages/charts/src/headless/**/*.test.ts?(x)'],
+      rules: {
+        'header/header': 0,
+      },
+    },
+    {
       files: ['docs/**/*'],
       rules: {
         'react/react-in-jsx-scope': 0,
