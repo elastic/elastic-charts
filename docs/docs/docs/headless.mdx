@@ -1,0 +1,58 @@
+---
+id: headless
+sidebar_label: Rendering without a browser
+---
+
+# Rendering without a browser
+
+`@elastic/charts/headless` renders a chart to a string in plain Node. It needs no DOM, no jsdom and no canvas.
+
+```tsx
+import { Chart, Settings, Axis, BarSeries, Position, ScaleType } from '@elastic/charts';
+import { renderChart } from '@elastic/charts/headless';
+
+const html = renderChart(
+  <Chart id="revenue" size={{ width: 600, height: 300 }}>
+    <Settings showLegend />
+    <Axis id="left" position={Position.Left} />
+    <BarSeries id="bars" xScaleType={ScaleType.Ordinal} xAccessor="x" yAccessors={['y']} data={data} />
+  </Chart>,
+);
+```
+
+## Input
+
+The same `<Chart>` element a browser renders, or any element that renders exactly one. The chart needs a `size`
+in pixels, since there is no container to measure. The `renderer` prop is ignored: the chart is always drawn as SVG.
+
+## Output
+
+One root `<div class="echChart">` as a string. Inside it:
+
+- the chart drawn as an inline `<svg>`, with real `<text>` elements;
+- the legend, metric panels and line annotation markers as HTML, exactly as in a browser.
+
+Add one of the Charts stylesheets, such as `@elastic/charts/theme_only_light.css`, to the page that hosts the
+markup. Without it the legend and the metric panels are unstyled and misplaced.
+
+Ids inside the `<svg>` start with the chart's `id`, so several charts can share a page. Give each chart its own
+`id`; without one a random id is used and the markup differs between runs.
+
+`<Settings debugState />` adds the debug state as the `data-ech-debug-state` attribute, as in a browser.
+
+## Text measurement
+
+Layout depends on the width of text: axis sizes, legend size, label fitting, metric text size. Without a
+browser, text is measured with the advance widths of Helvetica for printable ASCII characters.
+
+- The size and the weight of the font are honored. The font family is not.
+- Any other character counts as one average glyph.
+- The markup still names the font of the theme, so whatever draws it uses that font.
+
+So the result is close to a browser's but not identical, and text in another script can overflow or be cut early.
+
+## Not supported
+
+- Word cloud, flame and timeslip charts, which draw on a canvas of their own. `renderChart` throws for them.
+- Interactions: tooltips, hover, brushing and legend actions need a browser.
+- Callbacks that report rendering, such as `onRenderChange`, are not called.
