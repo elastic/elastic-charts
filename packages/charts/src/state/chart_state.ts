@@ -18,7 +18,7 @@ import {
 } from './actions/chart_settings';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from './actions/colors';
 import { onExternalPointerEvent } from './actions/events';
-import { upsertSpec, removeSpec, specParsed, specUnmounted } from './actions/specs';
+import { upsertSpec, upsertSpecs, removeSpec, specParsed, specUnmounted } from './actions/specs';
 import { onComputedZIndex } from './actions/z_index';
 import type { ChartSliceState } from './chart_slice_state';
 import { chartTypeFromSpecs } from './chart_type_from_specs';
@@ -126,6 +126,17 @@ const handleSpecsActions = (builder: ActionReducerMapBuilder<ChartSliceState>) =
         state.specs = { [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC, [action.payload.id]: action.payload };
       }
 
+      state.specsInitialized = false;
+      state.chartRendered = false;
+      state.specParsing = true;
+    })
+    .addCase(upsertSpecs, (state, action) => {
+      const specs = state.specParsing ? state.specs : { [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC };
+      for (const spec of action.payload) {
+        skipImmerWalkOfSpecData(spec);
+        specs[spec.id] = spec;
+      }
+      state.specs = specs;
       state.specsInitialized = false;
       state.chartRendered = false;
       state.specParsing = true;

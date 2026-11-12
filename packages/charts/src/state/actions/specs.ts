@@ -13,6 +13,12 @@ import type { Spec } from '../../specs/spec_type'; // kept as long-winded import
 /** @internal */
 export const upsertSpec = createAction<Spec>('UPSERT_SPEC');
 
+/**
+ * Adds several specs at once, so the state changes once however many there are.
+ * @internal
+ */
+export const upsertSpecs = createAction<Spec[]>('UPSERT_SPECS');
+
 /** @internal */
 export const removeSpec = createAction<string>('REMOVE_SPEC');
 

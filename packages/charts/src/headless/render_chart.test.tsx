@@ -71,7 +71,7 @@ describe('renderChart without a DOM', () => {
   });
 
   describe('xy', () => {
-    it.failing('draws the chart as one inline svg under a single root', () => {
+    it('draws the chart as one inline svg under a single root', () => {
       const markup = renderChart(xyChart('xy'));
       expect(markup.startsWith('<div')).toBe(true);
       expect(markup.endsWith('</div>')).toBe(true);
@@ -79,7 +79,7 @@ describe('renderChart without a DOM', () => {
       expect(markup).not.toContain('<canvas');
     });
 
-    it.failing('draws the six bars and the axis text', () => {
+    it('draws the six bars and the axis text', () => {
       const markup = renderChart(xyChart('xy'));
       const start = markup.search(STAGE);
       const svg = markup.slice(start, markup.indexOf('</svg>', start));
@@ -90,7 +90,7 @@ describe('renderChart without a DOM', () => {
       }
     });
 
-    it.failing('lays out with measured text, so the left axis has room for its labels', () => {
+    it('lays out with measured text, so the left axis has room for its labels', () => {
       const markup = renderChart(xyChart('xy'));
       expect(markup).toMatch(/<text[^>]*>70{6}<\/text>/);
       // the plot starts right of the axis title, the widest tick label and the paddings;
@@ -99,18 +99,18 @@ describe('renderChart without a DOM', () => {
       expect(Number(plotLeft)).toBeGreaterThan(70);
     });
 
-    it.failing('keeps ids of two charts in one page apart', () => {
+    it('keeps ids of two charts in one page apart', () => {
       const first = ids(renderChart(xyChart('first')));
       const second = ids(renderChart(xyChart('second')));
       expect(first.length).toBeGreaterThan(0);
       expect(first.filter((id) => second.includes(id))).toEqual([]);
     });
 
-    it.failing('renders the same markup for the same chart', () => {
+    it('renders the same markup for the same chart', () => {
       expect(renderChart(xyChart('same'))).toBe(renderChart(xyChart('same')));
     });
 
-    it.failing('needs a size in pixels', () => {
+    it('needs a size in pixels', () => {
       expect(() =>
         renderChart(
           <Chart>
@@ -122,7 +122,7 @@ describe('renderChart without a DOM', () => {
   });
 
   describe('legend', () => {
-    it.failing('renders the legend items as HTML beside the svg', () => {
+    it('renders the legend items as HTML beside the svg', () => {
       const markup = renderChart(xyChart('legend', true));
       expect(markup).toContain('echLegend');
       const beforeStage = markup.slice(0, markup.search(STAGE));
@@ -130,7 +130,7 @@ describe('renderChart without a DOM', () => {
       expect(beforeStage).toMatch(/echLegendItem__label[^>]*>second</);
     });
 
-    it.failing('gives the legend room: the plot is narrower than without it', () => {
+    it('gives the legend room: the plot is narrower than without it', () => {
       const withLegend = stageWidth(renderChart(xyChart('legend', true)));
       const without = stageWidth(renderChart(xyChart('legend', false)));
       expect(withLegend).toBeLessThan(without);
@@ -161,7 +161,7 @@ describe('renderChart without a DOM', () => {
       </Chart>
     );
 
-    it.failing('renders the panels as HTML with their titles and values', () => {
+    it('renders the panels as HTML with their titles and values', () => {
       const markup = renderChart(metric);
       expect(markup).toContain('echMetric');
       for (const text of ['Requests', 'per second', '1234 rps', 'Errors', 'none']) {
@@ -169,7 +169,7 @@ describe('renderChart without a DOM', () => {
       }
     });
 
-    it.failing('fits the value text with measured widths', () => {
+    it('fits the value text with measured widths', () => {
       const markup = renderChart(metric);
       const [, fontSize] = /echMetricText__value[^>]*font-size:\s*([\d.]+)px/.exec(markup) ?? [];
       expect(Number(fontSize)).toBeGreaterThan(10);
@@ -191,7 +191,7 @@ describe('renderChart without a DOM', () => {
     );
     const stageHeight = (markup: string) => Number(/\sheight="([\d.]+)"/.exec(markup.match(STAGE)?.[0] ?? '')?.[1]);
 
-    it.failing('takes height, not width, from the plot when the legend is at the bottom', () => {
+    it('takes height, not width, from the plot when the legend is at the bottom', () => {
       const markup = renderChart(
         <Chart id="bottom" size={size}>
           <Settings showLegend legendPosition={Position.Bottom} />
@@ -203,7 +203,7 @@ describe('renderChart without a DOM', () => {
       expect(stageHeight(markup)).toBeLessThan(300);
     });
 
-    it.failing('floats an inside legend over a plot of full size', () => {
+    it('floats an inside legend over a plot of full size', () => {
       const markup = renderChart(
         <Chart id="inside" size={size}>
           <Settings
@@ -220,7 +220,7 @@ describe('renderChart without a DOM', () => {
   });
 
   describe('annotations', () => {
-    it.failing('draws the annotations in the svg and line markers as positioned HTML', () => {
+    it('draws the annotations in the svg and line markers as positioned HTML', () => {
       const markup = renderChart(
         <Chart id="annotations" size={{ width: 600, height: 300 }}>
           <LineAnnotation
@@ -247,7 +247,7 @@ describe('renderChart without a DOM', () => {
       return markup.slice(start, markup.indexOf('</svg>', start));
     };
 
-    it.failing('partition', () => {
+    it('partition', () => {
       const markup = renderChart(
         <Chart id="partition" size={size}>
           <Settings showLegend />
@@ -267,7 +267,7 @@ describe('renderChart without a DOM', () => {
       expect(markup).toMatch(/echLegendItem__label[^>]*>south</);
     });
 
-    it.failing('heatmap', () => {
+    it('heatmap', () => {
       const markup = renderChart(
         <Chart id="heatmap" size={size}>
           <Heatmap
@@ -293,7 +293,7 @@ describe('renderChart without a DOM', () => {
         expect(stage(markup)).toMatch(new RegExp(`<text[^>]*>${label}</text>`));
     });
 
-    it.failing('goal', () => {
+    it('goal', () => {
       const markup = renderChart(
         <Chart id="goal" size={size}>
           <Goal
@@ -317,7 +317,7 @@ describe('renderChart without a DOM', () => {
       }
     });
 
-    it.failing('bullet', () => {
+    it('bullet', () => {
       const markup = renderChart(
         <Chart id="bullet" size={size}>
           <Bullet
@@ -344,7 +344,7 @@ describe('renderChart without a DOM', () => {
   });
 
   describe('metric variants', () => {
-    it.failing('renders a trend as an svg sparkline and a progress bar as HTML', () => {
+    it('renders a trend as an svg sparkline and a progress bar as HTML', () => {
       const markup = renderChart(
         <Chart id="variants" size={{ width: 400, height: 200 }}>
           <Metric
@@ -382,7 +382,7 @@ describe('renderChart without a DOM', () => {
   });
 
   describe('debug state', () => {
-    it.failing('is in the markup when the chart asks for it, as in a browser', () => {
+    it('is in the markup when the chart asks for it, as in a browser', () => {
       const markup = renderChart(
         <Chart id="debug" size={{ width: 600, height: 300 }}>
           <Settings debugState />
@@ -399,7 +399,7 @@ describe('renderChart without a DOM', () => {
   });
 
   describe('a chart with nothing to draw', () => {
-    it.failing('renders the no results message', () => {
+    it('renders the no results message', () => {
       const markup = renderChart(
         <Chart id="empty" size={{ width: 400, height: 200 }}>
           <Settings showLegend />
@@ -422,7 +422,7 @@ describe('renderChart without a DOM', () => {
   });
 
   describe('many series', () => {
-    it.failing('collects two thousand series with one store update', () => {
+    it('collects two thousand series with one store update', () => {
       const series = Array.from({ length: 2000 }, (_, i) => (
         <LineSeries
           key={i}

@@ -29,6 +29,16 @@
         "default": "./dist/cjs/index.js"
       }
     },
+    "./headless": {
+      "import": {
+        "types": "./dist/esm/headless/index.d.mts",
+        "default": "./dist/esm/headless/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/headless/index.d.ts",
+        "default": "./dist/cjs/headless/index.js"
+      }
+    },
     "./package.json": "./package.json",
     "./theme_light.css": "./dist/theme_light.css",
     "./theme_dark.css": "./dist/theme_dark.css",
@@ -49,7 +59,7 @@
     "autoprefix:css": "echo 'Autoprefixing...' && yarn postcss dist/*.css --no-map --use autoprefixer -d dist",
     "api:check": "yarn build:ts && yarn api:extract",
     "api:check:local": "yarn api:check --local",
-    "api:extract": "yarn api-extractor run -c ./api-extractor.jsonc --verbose",
+    "api:extract": "node scripts/api_extract.js",
     "build": "yarn build:ts && yarn build:css",
     "build:ts": "yarn build:clean && yarn build:compile && yarn build:check",
     "build:check": "echo 'Type checking dist...' && node scripts/check_dts.js",
