@@ -12,6 +12,7 @@ import type { PointObject, Radian, Rectangle } from '../../../../common/geometry
 import type { Font } from '../../../../common/text_utils';
 import { cssFontShorthand } from '../../../../common/text_utils';
 import type { CanvasRenderer } from '../../../../renderers/canvas';
+import type { MeasureContext } from '../../../../renderers/measure';
 import type { Ctx2d } from '../../../../renderers/painter';
 import { measureText } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Dimensions } from '../../../../utils/dimensions';
@@ -21,7 +22,7 @@ import type { BulletViewModel } from '../types/viewmodel_types';
 
 /** @internal */
 export interface Mark {
-  boundingBoxes: (ctx: Ctx2d) => Rectangle[];
+  boundingBoxes: (ctx: MeasureContext) => Rectangle[];
   render: CanvasRenderer;
 }
 
@@ -211,7 +212,7 @@ export class Text implements Mark {
     ctx.font = cssFontShorthand(this.fontShape, this.fontSize);
   }
 
-  boundingBoxes(ctx: Ctx2d) {
+  boundingBoxes(ctx: MeasureContext) {
     if (this.text.length === 0) return [];
     const box = measureText(ctx)(this.text, this.fontShape, this.fontSize);
     return [

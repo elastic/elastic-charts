@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { getMeasureContext } from './measure';
 import { round, SvgPathBuilder } from './path';
 import { baselineOffset, textAnchor } from './text';
 import { colorToRgba } from '../../common/color_library_wrappers';
@@ -15,6 +14,7 @@ import { Colors } from '../../common/colors';
 import type { Texture } from '../../geoms/types';
 import { Logger } from '../../utils/logger';
 import type { TimeFunction } from '../../utils/time_functions';
+import { getMeasureContext } from '../measure';
 import type { GradientHandle, Paint, Painter, PaintTransition, PatternHandle, TextMeasurement } from '../painter';
 
 /**

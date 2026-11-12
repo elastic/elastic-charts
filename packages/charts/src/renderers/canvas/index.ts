@@ -17,7 +17,7 @@ import type { Ctx2d } from '../painter';
 export type CanvasRenderer<R = void, C extends Ctx2d = Ctx2d> = (ctx: C) => R;
 
 /** @internal */
-export function withContext<C extends Ctx2d, R = void>(ctx: C, fun: (ctx: C) => R): R {
+export function withContext<C extends Pick<Ctx2d, 'save' | 'restore'>, R = void>(ctx: C, fun: (ctx: C) => R): R {
   ctx.save();
   const r = fun(ctx);
   ctx.restore();

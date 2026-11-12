@@ -8,6 +8,8 @@
 
 import { geometries, getPrimitiveGeoms } from './geometries';
 import type { Rectangle } from '../../../../common/geometry';
+import type { MeasureContext } from '../../../../renderers/measure';
+import { getMeasureContext } from '../../../../renderers/measure';
 import type { LayerValue } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
@@ -15,7 +17,7 @@ import type { BulletViewModel } from '../../layout/types/viewmodel_types';
 import type { Mark } from '../../layout/viewmodel/geoms';
 import { initialBoundingBox } from '../../layout/viewmodel/geoms';
 
-function fullBoundingBox(ctx: CanvasRenderingContext2D | null, geoms: Mark[]) {
+function fullBoundingBox(ctx: MeasureContext | null, geoms: Mark[]) {
   const box = initialBoundingBox();
   if (ctx) {
     for (const g of geoms) {
@@ -32,9 +34,7 @@ function fullBoundingBox(ctx: CanvasRenderingContext2D | null, geoms: Mark[]) {
 
 /** @internal */
 export const getCaptureBoundingBox = createCustomCachedSelector([getPrimitiveGeoms], (geoms): Rectangle => {
-  const textMeasurer = document.createElement('canvas');
-  const ctx = textMeasurer.getContext('2d');
-  return fullBoundingBox(ctx, geoms);
+  return fullBoundingBox(getMeasureContext(), geoms);
 });
 
 /** @internal */
