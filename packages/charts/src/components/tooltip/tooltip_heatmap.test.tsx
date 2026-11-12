@@ -15,6 +15,7 @@ import { Tooltip } from './tooltip';
 import { computeChartDimensionsSelector } from '../../chart_types/heatmap/state/selectors/compute_chart_dimensions';
 import { MockGlobalSpec, MockSeriesSpec } from '../../mocks/specs/specs';
 import { MockStore } from '../../mocks/store/store';
+import type { TooltipValue } from '../../specs/tooltip';
 import { onPointerMove } from '../../state/actions/mouse';
 import { pinTooltip } from '../../state/actions/tooltip';
 import type { GlobalChartState } from '../../state/chart_state';
@@ -69,6 +70,10 @@ describe('heatmap tooltip hover sizing', () => {
     });
 
     store = MockStore.default({ width: 500, height: 300, top: 0, left: 0 }, 'heatmap-tooltip');
+    const tooltipSpec = MockGlobalSpec.tooltip({
+      actions: [{ label: 'Go', onSelect: () => {} }],
+    });
+    tooltipSpec.footer = ({ items }: { items: TooltipValue[] }) => (items.length > 1 ? <span>Cell footer</span> : null);
     MockStore.addSpecs(
       [
         MockGlobalSpec.settingsNoMargins({
@@ -81,9 +86,7 @@ describe('heatmap tooltip hover sizing', () => {
             },
           },
         }),
-        MockGlobalSpec.tooltip({
-          actions: [{ label: 'Go', onSelect: () => {} }],
-        }),
+        tooltipSpec,
         MockSeriesSpec.heatmap({
           data: [{ x: WIDE_X, y: NARROW_Y, value: 5 }],
         }),
@@ -172,6 +175,23 @@ describe('heatmap tooltip hover sizing', () => {
 
     pin(true);
     expect(Number.parseFloat(screen.getByTestId('echTooltip').style.minWidth)).toBe(visibleWidth);
+  });
+
+  it('hides the custom footer and its divider on y-axis labels and restores them on cells', () => {
+    hover(cell);
+    expect(screen.getByText('Cell footer')).toBeInTheDocument();
+    expect(document.querySelector('.echTooltipFooter')).toBeInTheDocument();
+    expect(document.querySelectorAll('.echTooltipDivider')).toHaveLength(2);
+
+    hover(axis);
+    expect(screen.queryByText('Cell footer')).not.toBeInTheDocument();
+    expect(document.querySelector('.echTooltipFooter')).not.toBeInTheDocument();
+    expect(document.querySelectorAll('.echTooltipDivider')).toHaveLength(0);
+
+    hover(cell);
+    expect(screen.getByText('Cell footer')).toBeInTheDocument();
+    expect(document.querySelector('.echTooltipFooter')).toBeInTheDocument();
+    expect(document.querySelectorAll('.echTooltipDivider')).toHaveLength(2);
   });
 
   it('allows pinning a cell and not a y-axis label', () => {

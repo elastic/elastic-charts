@@ -236,7 +236,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   const hasHeader = TooltipCustomHeader !== 'none' && info.header;
   const hasBody = TooltipCustomBody !== 'none' && info.values.length > 0;
   // footer is empty by default, so default and none are the same at the moment
-  const hasFooter = TooltipCustomFooter !== 'default' && TooltipCustomFooter !== 'none';
+  const hasFooter = !info.disableActions && TooltipCustomFooter !== 'default' && TooltipCustomFooter !== 'none';
   const headerBottomDividerVisibility = hasHeader && (hasBody || hasFooter);
   const bodyBottomDividerVisibility = hasBody && hasFooter;
 
@@ -319,7 +319,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
 
               {bodyBottomDividerVisibility && <TooltipDivider />}
 
-              {TooltipCustomFooter === 'default' || TooltipCustomFooter === 'none' ? null : (
+              {hasFooter && (
                 <TooltipFooter>
                   <TooltipCustomFooter items={info.values} header={info.header} />
                 </TooltipFooter>
