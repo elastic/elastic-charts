@@ -31,22 +31,23 @@ type ResizeFn = (entries: ResizeObserverEntry[]) => void;
 class Resizer extends React.Component<ResizerProps> {
   private readonly containerRef: RefObject<HTMLDivElement>;
 
-  private ro: ResizeObserver;
+  private ro: ResizeObserver | null = null;
 
   constructor(props: ResizerProps) {
     super(props);
     this.containerRef = React.createRef();
-    this.ro = new ResizeObserver(this.onResize);
   }
 
   componentDidMount() {
+    // created here, not in the constructor, which also runs where there is no DOM to observe
+    this.ro = new ResizeObserver(this.onResize);
     if (this.containerRef.current) {
       this.ro.observe(this.containerRef.current as Element);
     }
   }
 
   componentWillUnmount() {
-    this.ro.disconnect();
+    this.ro?.disconnect();
   }
 
   onResize: ResizeFn = (entries) => {
