@@ -7,6 +7,7 @@
  */
 
 import type { Ctx2d } from './painter';
+import { createTableMeasureContext } from './table_measure';
 
 /**
  * What text measurement needs of a 2D context.
@@ -19,13 +20,17 @@ let measureContext: MeasureContext | undefined;
 /**
  * The one place that decides what measures text: the layout code, the legend and metric sizing and
  * the SVG backend all ask here, so they agree with each other whatever answers.
- * In a browser it is one shared offscreen canvas context, so every renderer measures text exactly
- * like canvas draws it. `null` where no canvas is available (jsdom, server).
+ *
+ * - In a browser it is one shared offscreen canvas context, so every renderer measures text exactly
+ *   like canvas draws it.
+ * - Without a DOM, as on a server, it is a table of Helvetica advance widths: no canvas is involved.
+ * - `null` where a DOM exists but has no canvas support (jsdom).
  * @internal
  */
 export function getMeasureContext(): MeasureContext | null {
   if (measureContext) return measureContext;
-  const ctx = typeof document === 'undefined' ? null : document.createElement('canvas').getContext('2d');
+  if (typeof document === 'undefined') return (measureContext = createTableMeasureContext());
+  const ctx = document.createElement('canvas').getContext('2d');
   if (ctx) measureContext = ctx;
   return ctx ?? null;
 }
