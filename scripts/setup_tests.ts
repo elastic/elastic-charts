@@ -8,14 +8,6 @@
 
 process.env.RNG_SEED = 'jest-unit-tests';
 
-/**
- * Mocking RAF and ResizeObserver to missing RAF and RO in jsdom
- */
-window.requestAnimationFrame = (callback) => {
-  callback(0);
-  return 0;
-};
-
 type ResizeObserverMockCallback = (entries: Array<{ contentRect: { width: number; height: number } }>) => void;
 class ResizeObserverMock {
   callback: ResizeObserverMockCallback;
@@ -33,7 +25,18 @@ class ResizeObserverMock {
   disconnect() {}
 }
 
-// @ts-ignore - setting mock override
-window.ResizeObserver = ResizeObserverMock;
+// tests under `@jest-environment node` have no window
+if (typeof window !== 'undefined') {
+  /**
+   * Mocking RAF and ResizeObserver to missing RAF and RO in jsdom
+   */
+  window.requestAnimationFrame = (callback) => {
+    callback(0);
+    return 0;
+  };
 
-window.HTMLCanvasElement.prototype.getContext = jest.fn();
+  // @ts-ignore - setting mock override
+  window.ResizeObserver = ResizeObserverMock;
+
+  window.HTMLCanvasElement.prototype.getContext = jest.fn();
+}

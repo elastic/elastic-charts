@@ -29,6 +29,16 @@
         "default": "./dist/cjs/index.js"
       }
     },
+    "./server": {
+      "import": {
+        "types": "./dist/esm/server.d.mts",
+        "default": "./dist/esm/server.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/server.d.ts",
+        "default": "./dist/cjs/server.js"
+      }
+    },
     "./package.json": "./package.json",
     "./theme_light.css": "./dist/theme_light.css",
     "./theme_dark.css": "./dist/theme_dark.css",

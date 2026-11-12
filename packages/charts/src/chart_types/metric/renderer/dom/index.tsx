@@ -67,7 +67,8 @@ interface DispatchProps {
   onChartRendered: typeof onChartRenderedAction;
 }
 
-function getTextContrastOptions(style: MetricStyle): TextContrastOptions {
+/** @internal */
+export function getTextContrastOptions(style: MetricStyle): TextContrastOptions {
   return {
     text: { lightColor: colorToRgba(style.textLightColor), darkColor: colorToRgba(style.textDarkColor) },
     subtitle: {

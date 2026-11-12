@@ -126,6 +126,50 @@ function isColorContrastOptions(options: ColorContrastOptions | TextContrastOpti
   return !('text' in options);
 }
 
+/**
+ * The colors of a metric panel: its background, the blended datum color with and without the
+ * hover/press lightness change, and the text colors that contrast with them.
+ * @internal
+ */
+export function getMetricPanelColors(
+  datum: MetricDatum,
+  style: MetricStyle,
+  chartBackgroundColor: Color,
+  contrastOptions: ColorContrastOptions | TextContrastOptions,
+  lightnessAmount = 0,
+) {
+  const hasProgressBar = isMetricWProgress(datum) || isBulletMetric(datum);
+  const hasTrend = isMetricWTrend(datum);
+  const backgroundColor = datum.background
+    ? RGBATupleToString(combineColors(colorToRgba(datum.background), colorToRgba(chartBackgroundColor)))
+    : chartBackgroundColor;
+  const blendingBackgroundColor = !style.blendingBackground
+    ? colorToRgba(backgroundColor)
+    : combineColors(colorToRgba(style.blendingBackground), colorToRgba(backgroundColor));
+  const interactionColor = changeColorLightness(hasProgressBar ? backgroundColor : datum.color, lightnessAmount, 0.8);
+  const blendedColor = RGBATupleToString(combineColors(colorToRgba(datum.color), blendingBackgroundColor));
+  const blendedInteractionColor = RGBATupleToString(
+    combineColors(colorToRgba(interactionColor), blendingBackgroundColor),
+  );
+  const textContrastOptions = isColorContrastOptions(contrastOptions)
+    ? { text: contrastOptions, subtitle: contrastOptions, extra: contrastOptions }
+    : contrastOptions;
+  const textColors = getTextColors({
+    metricContext: { backgroundColor, blendedColor, hasProgressBar, hasTrend },
+    textContrastOptions,
+  });
+  return {
+    backgroundColor,
+    blendingBackgroundColor,
+    blendedColor,
+    blendedInteractionColor,
+    textContrastOptions,
+    textColors,
+    /** what the panel is filled with: the datum color unless a trend or a progress bar shows it */
+    panelColor: hasTrend || hasProgressBar ? backgroundColor : blendedInteractionColor,
+  };
+}
+
 /** @internal */
 export const Metric: React.FunctionComponent<{
   chartId: string;
@@ -187,17 +231,15 @@ export const Metric: React.FunctionComponent<{
 
   const lightnessAmount = mouseState === 'leave' ? 0 : mouseState === 'enter' ? 0.05 : 0.1;
 
-  const backgroundColor = datum.background
-    ? RGBATupleToString(combineColors(colorToRgba(datum.background), colorToRgba(chartBackgroundColor)))
-    : chartBackgroundColor;
-  const blendingBackgroundColor = !style.blendingBackground
-    ? colorToRgba(backgroundColor)
-    : combineColors(colorToRgba(style.blendingBackground), colorToRgba(backgroundColor));
-  const interactionColor = changeColorLightness(hasProgressBar ? backgroundColor : datum.color, lightnessAmount, 0.8);
-  const blendedColor = RGBATupleToString(combineColors(colorToRgba(datum.color), blendingBackgroundColor));
-  const blendedInteractionColor = RGBATupleToString(
-    combineColors(colorToRgba(interactionColor), blendingBackgroundColor),
-  );
+  const {
+    backgroundColor,
+    blendingBackgroundColor,
+    blendedColor,
+    blendedInteractionColor,
+    textContrastOptions,
+    textColors,
+    panelColor,
+  } = getMetricPanelColors(datum, style, chartBackgroundColor, contrastOptions, lightnessAmount);
   const progressBarFill = progressDatum?.progressBarFill;
 
   const datumWithInteractionColor: MetricDatum = { ...datum, color: blendedInteractionColor };
@@ -208,7 +250,7 @@ export const Metric: React.FunctionComponent<{
   const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
 
   const containerStyle: CSSProperties & MetricSpacingCSSVars = {
-    backgroundColor: hasTrend || hasProgressBar ? backgroundColor : datumWithInteractionColor.color,
+    backgroundColor: panelColor,
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
     borderColor: style.border,
     fontFamily: style.fontFamily,
@@ -217,19 +259,6 @@ export const Metric: React.FunctionComponent<{
     '--echMetricExtraPaddingTop': `${metricSpacing.extraPaddingTop}px`,
     '--echMetricProgressTextGap': `${metricSpacing.progressTextGap}px`,
   };
-
-  const textContrastOptions = isColorContrastOptions(contrastOptions)
-    ? {
-        text: contrastOptions,
-        subtitle: contrastOptions,
-        extra: contrastOptions,
-      }
-    : contrastOptions;
-
-  const textColors = getTextColors({
-    metricContext: { backgroundColor, blendedColor, hasProgressBar, hasTrend },
-    textContrastOptions,
-  });
 
   // Compute automatic border color based on contrast ratio
   let defaultBadgeBorderColor: Color | undefined;

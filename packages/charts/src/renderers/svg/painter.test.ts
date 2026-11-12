@@ -130,7 +130,7 @@ describe('SvgPainter', () => {
         p.fillStyle = 'blue';
         p.fillText('hi', 1, 2);
       }),
-    ).toBe('<text x="1" y="2" dy="3.6" text-anchor="middle" style="font:12px Arial" fill="blue">hi</text>');
+    ).toBe('<text x="1" y="2" dy="3.6" text-anchor="middle" font-size="12" font-family="Arial" fill="blue">hi</text>');
   });
 
   it('resolves left and right against the inherited direction and emits an explicit direction', () => {
@@ -145,8 +145,8 @@ describe('SvgPainter', () => {
         { direction: 'rtl' },
       ),
     ).toBe(
-      '<text x="0" y="0" text-anchor="end" style="font:10px sans-serif" fill="#000000">a</text>' +
-        '<text x="0" y="0" direction="ltr" style="font:10px sans-serif" fill="#000000">b</text>',
+      '<text x="0" y="0" text-anchor="end" font-size="10" font-family="sans-serif" fill="#000000">a</text>' +
+        '<text x="0" y="0" direction="ltr" font-size="10" font-family="sans-serif" fill="#000000">b</text>',
     );
   });
 
@@ -158,7 +158,7 @@ describe('SvgPainter', () => {
         p.strokeText(' a  b', 0, 0);
       }),
     ).toBe(
-      '<text x="0" y="0" xml:space="preserve" style="font:10px sans-serif" fill="none" stroke="white" stroke-width="3"> a  b</text>',
+      '<text x="0" y="0" xml:space="preserve" font-size="10" font-family="sans-serif" fill="none" stroke="white" stroke-width="3"> a  b</text>',
     );
   });
 

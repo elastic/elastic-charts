@@ -42,3 +42,8 @@ playground/playground.tsx
 
 # screenshots of the svg renderer, produced by `yarn test --renderer=svg -u` in e2e and compared against the canvas baselines
 e2e/screenshots_svg/
+
+# stories rendered to svg in node by `yarn --cwd e2e node-svg:review`, and their bundle
+e2e/screenshots_node_svg/
+e2e_server/.out_node_svg/
+e2e/.cache/
