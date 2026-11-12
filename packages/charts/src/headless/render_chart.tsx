@@ -10,6 +10,7 @@ import type { ReactElement } from 'react';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
+import { ChartType } from '../chart_types';
 import type { HeadlessRender } from '../components/headless_context';
 import { HeadlessContext } from '../components/headless_context';
 import type { Spec } from '../specs/spec_type';
@@ -17,11 +18,18 @@ import { updateParentDimensions, updateRenderer } from '../state/actions/chart_s
 import { specParsed, upsertSpecs } from '../state/actions/specs';
 import { globalSelectorCache } from '../state/create_selector';
 
+/** these draw on a canvas of their own (word cloud layout, WebGL), which needs a DOM */
+const NEEDS_A_DOM: ReadonlySet<ChartType | null> = new Set([ChartType.Wordcloud, ChartType.Flame, ChartType.Timeslip]);
+
 /**
  * Renders a chart to markup without a DOM: one root element holding the chart drawn as an inline
  * `<svg>` and, as HTML, its legend or its metric panels. Style it with the Charts stylesheet.
  *
  * The element is a `Chart` with a `size` in pixels, or a tree that renders exactly one.
+ * Word cloud, flame and timeslip charts are not supported: they draw on a canvas of their own.
+ *
+ * Text is measured with Helvetica's advance widths, whatever the font of the theme, so
+ * layout that depends on text width is close to a browser's but not identical.
  * @public
  */
 export function renderChart(chart: ReactElement): string {
@@ -39,12 +47,15 @@ export function renderChart(chart: ReactElement): string {
   store.dispatch(specParsed());
   store.dispatch(updateParentDimensions({ ...size, top: 0, left: 0 }));
 
+  const { chartType, chartId } = store.getState();
+  if (NEEDS_A_DOM.has(chartType)) throw new Error(`renderChart does not support ${chartType} charts`);
+
   try {
     return renderToStaticMarkup(
       <HeadlessContext.Provider value={{ charts: 1, store }}>{chart}</HeadlessContext.Provider>,
     );
   } finally {
     // nothing unmounts here, which is what frees a chart's memoized selectors in a browser
-    globalSelectorCache.removeKeyFromAll(store.getState().chartId);
+    globalSelectorCache.removeKeyFromAll(chartId);
   }
 }

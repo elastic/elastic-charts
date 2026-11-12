@@ -410,7 +410,7 @@ describe('renderChart without a DOM', () => {
   });
 
   describe('chart types that need a canvas of their own', () => {
-    it.failing('are refused by name', () => {
+    it('are refused by name', () => {
       expect(() =>
         renderChart(
           <Chart id="words" size={{ width: 400, height: 200 }}>
