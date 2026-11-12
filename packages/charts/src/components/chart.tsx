@@ -19,6 +19,8 @@ import { ChartContainer } from './chart_container';
 import { ChartDPRObserver } from './chart_dpr_observer';
 import { ChartResizer } from './chart_resizer';
 import { ChartStatus } from './chart_status';
+import type { HeadlessRender } from './headless_context';
+import { HeadlessContext } from './headless_context';
 import { Legend } from './legend/legend';
 import { getElementZIndex } from './portal/utils';
 import { paintStageToCanvas } from './stage';
@@ -69,16 +71,25 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     renderer: 'canvas',
   };
 
+  /** @internal */
+  static contextType = HeadlessContext;
+
   private unsubscribeToStore: Unsubscribe;
 
   private chartStore: Store<GlobalChartState>;
+
+  private headless: HeadlessRender | null;
 
   private chartContainerRef: React.RefObject<HTMLDivElement>;
 
   private chartStageRef: React.RefObject<StageElement>;
 
-  constructor(props: ChartProps) {
+  constructor(props: ChartProps);
+  /** @internal */
+  constructor(props: ChartProps, headless?: HeadlessRender | null);
+  constructor(props: ChartProps, headless?: HeadlessRender | null) {
     super(props);
+    this.headless = headless ?? null;
     this.chartContainerRef = createRef();
     this.chartStageRef = createRef();
 
@@ -87,13 +98,24 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
     // set up the redux store
     const id = props.id ?? uuidv4();
-    this.chartStore = createChartStore(id, this.props.title, this.props.description, this.props.renderer);
-    this.state = {
-      legendDirection: LayoutDirection.Vertical,
-      paddingLeft: LIGHT_THEME.chartMargins.left,
-      paddingRight: LIGHT_THEME.chartMargins.right,
-      displayTitles: true,
-    };
+    this.chartStore =
+      headless?.store ?? createChartStore(id, this.props.title, this.props.description, this.props.renderer);
+    if (headless?.collect) {
+      headless.charts += 1;
+      headless.store = this.chartStore;
+      headless.size = getFixedChartSize(this.props.size);
+    }
+    // a store that is already initialized, as in a render without a DOM, is reflected from the first render
+    const state = this.chartStore.getState();
+    this.state =
+      getInternalIsInitializedSelector(state) === InitStatus.Initialized
+        ? getChartContainerUpdateStateSelector(state)
+        : {
+            legendDirection: LayoutDirection.Vertical,
+            paddingLeft: LIGHT_THEME.chartMargins.left,
+            paddingRight: LIGHT_THEME.chartMargins.right,
+            displayTitles: true,
+          };
     this.unsubscribeToStore = this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
       const internalChartState = getInternalChartStateSelector(state);
@@ -183,6 +205,9 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const chartContentClassNames = classNames('echChartContent', className, {
       'echChartContent--column': this.state.legendDirection === LayoutDirection.Horizontal,
     });
+
+    // the first pass of a render without a DOM only gathers the specs
+    if (this.headless?.collect) return <Provider store={this.chartStore}>{this.props.children}</Provider>;
 
     return (
       <Provider store={this.chartStore}>

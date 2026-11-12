@@ -7,11 +7,12 @@
  */
 
 import type { FC } from 'react';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import type { OptionalKeys, RequiredKeys } from 'utility-types';
 
 import { upsertSpec, removeSpec } from './actions/specs';
+import { HeadlessContext } from '../components/headless_context';
 import type { Spec } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { stripUndefined } from '../utils/common';
 
@@ -21,6 +22,8 @@ import { stripUndefined } from '../utils/common';
  */
 export function useSpecFactory<Props extends Spec>(props: Props) {
   const dispatch = useDispatch();
+  // effects do not run without a DOM, where the spec is handed over while rendering
+  useContext(HeadlessContext)?.collect?.(props);
 
   useEffect(() => {
     dispatch(upsertSpec(props));
