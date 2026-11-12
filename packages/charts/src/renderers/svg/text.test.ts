@@ -6,7 +6,24 @@
  * Side Public License, v 1.
  */
 
-import { baselineOffset, textAnchor } from './text';
+import { baselineOffset, fontAttributes, textAnchor } from './text';
+
+describe('fontAttributes', () => {
+  it('spells a canvas font out as the SVG font attributes, dropping the defaults', () => {
+    expect(fontAttributes('normal normal 400 12px Inter, "Helvetica Neue", sans-serif')).toEqual({
+      fontSize: 12,
+      fontFamily: 'Inter, "Helvetica Neue", sans-serif',
+    });
+    expect(fontAttributes('italic small-caps bold 10.5px Arial')).toEqual({
+      fontStyle: 'italic',
+      fontVariant: 'small-caps',
+      fontWeight: 'bold',
+      fontSize: 10.5,
+      fontFamily: 'Arial',
+    });
+    expect(fontAttributes('600 9px/1.2 x')).toEqual({ fontWeight: '600', fontSize: 9, fontFamily: 'x' });
+  });
+});
 
 describe('textAnchor', () => {
   it('maps canvas alignments onto text-anchor, resolving left and right against the direction', () => {

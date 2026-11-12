@@ -13,7 +13,7 @@ import type { OptionalKeys, RequiredKeys } from 'utility-types';
 
 import { upsertSpec, removeSpec } from './actions/specs';
 import type { Spec } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { stripUndefined } from '../utils/common';
+import { isServerSide, stripUndefined } from '../utils/common';
 
 /**
  * Used inside custom spec component to link component to state as new spec
@@ -22,6 +22,7 @@ import { stripUndefined } from '../utils/common';
 export function useSpecFactory<Props extends Spec>(props: Props) {
   const dispatch = useDispatch();
 
+  if (isServerSide()) dispatch(upsertSpec(props));
   useEffect(() => {
     dispatch(upsertSpec(props));
   });

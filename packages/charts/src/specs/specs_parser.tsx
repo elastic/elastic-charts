@@ -9,10 +9,11 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 import { bindActionCreators } from '@reduxjs/toolkit';
 import type { FC, PropsWithChildren } from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { specParsed, specUnmounted } from '../state/actions/specs';
+import { isServerSide } from '../utils/common';
 
 const SpecsParserComponent: FC<PropsWithChildren<DispatchProps>> = (props) => {
   const injected = props as DispatchProps;
@@ -26,8 +27,22 @@ const SpecsParserComponent: FC<PropsWithChildren<DispatchProps>> = (props) => {
     },
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
+  if (isServerSide()) {
+    return (
+      <>
+        {props.children}
+        <ServerSpecsParsed onRender={injected.specParsed} />
+      </>
+    );
+  }
   // TODO eliminate the need for this type casting
   return props.children ? (props.children as React.ReactElement) : null;
+};
+
+/** Rendered after the specs, so on the server it runs once every spec has registered itself. */
+const ServerSpecsParsed: FC<{ onRender: () => void }> = ({ onRender }) => {
+  onRender();
+  return null;
 };
 
 interface DispatchProps {

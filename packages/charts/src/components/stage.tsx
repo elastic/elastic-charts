@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import type { CSSProperties, RefObject } from 'react';
 import React from 'react';
 
+import { SvgExportContext } from './svg_export_context';
 import { CanvasPainter } from '../renderers/canvas/painter';
 import type { Painter, RendererType } from '../renderers/painter';
 import { SvgPainter } from '../renderers/svg/painter';
@@ -96,6 +97,10 @@ export interface StageProps {
 export class Stage extends React.Component<StageProps> {
   static displayName = 'Stage';
 
+  static contextType = SvgExportContext;
+
+  declare context: React.ContextType<typeof SvgExportContext>;
+
   // one painter per context: it caches pattern tiles across frames
   private canvasContext: CanvasRenderingContext2D | null = null;
   private canvasPainter: CanvasPainter | null = null;
@@ -139,6 +144,7 @@ export class Stage extends React.Component<StageProps> {
     if (renderer === 'svg') {
       const painter = new SvgPainter({ width, height, idPrefix, direction: dir });
       paint(painter);
+      this.context?.stages.push({ nodes: painter.nodes(), width, height });
       return (
         <svg
           ref={forwardStageRef as RefObject<SVGSVGElement>}

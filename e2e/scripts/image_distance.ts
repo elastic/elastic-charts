@@ -19,6 +19,8 @@
  * `yarn test -u` run (modified files are compared, untracked ones listed as new).
  * With `--cross`: every svg screenshot in e2e/screenshots_svg (untracked, written by
  * `yarn test --renderer=svg -u`) against the canvas baseline of the same story in e2e/screenshots.
+ * `--svg-dir <dir>` compares another directory laid out like e2e/screenshots instead, such as
+ * e2e/screenshots_node_svg written by `yarn node-svg:review`.
  *
  * The distance of a pair is its count of differing pixels; the ratio is that count over the area of the
  * chart screenshot, so stories of different sizes compare.
@@ -80,6 +82,7 @@ function getArgs() {
     scale: num('scale', 1),
     page: args.includes('--page'),
     open: args.includes('--open'),
+    svgDir: get('svg-dir') ?? SVG_DIR,
   };
 }
 
@@ -147,9 +150,9 @@ const committedPair =
 
 /** the canvas baseline of a story against its svg baseline, both from the working tree */
 const crossPair =
-  (root: string): PairReader =>
+  (root: string, svgDir: string): PairReader =>
   (file) => [
-    PNG.sync.read(fs.readFileSync(path.join(root, CANVAS_DIR, path.relative(SVG_DIR, file)))),
+    PNG.sync.read(fs.readFileSync(path.join(root, CANVAS_DIR, path.relative(svgDir, file)))),
     PNG.sync.read(fs.readFileSync(path.join(root, file))),
   ];
 
@@ -194,7 +197,15 @@ const escapeHtml = (text: string) => text.replaceAll('&', '&amp;').replaceAll('<
  * with the diff between them, so a reviewer scrolls from the stories that need a look to the ones that
  * do not. The diff images are written next to the page; the screenshots are linked where they are.
  */
-function writePage(root: string, rows: Row[], newRows: Row[], readPair: PairReader, threshold: number, cross: boolean) {
+function writePage(
+  root: string,
+  rows: Row[],
+  newRows: Row[],
+  readPair: PairReader,
+  threshold: number,
+  cross: boolean,
+  svgDir: string,
+) {
   const pageDir = path.join(root, PAGE_DIR);
   const diffDir = path.join(pageDir, 'diff');
   fs.rmSync(diffDir, { recursive: true, force: true });
@@ -205,7 +216,7 @@ function writePage(root: string, rows: Row[], newRows: Row[], readPair: PairRead
     const [expected, actual] = readPair(file);
     const diffFile = path.join(diffDir, `${file.replaceAll(/[^\w.-]+/g, '_')}`);
     fs.writeFileSync(diffFile, PNG.sync.write(compare(expected, actual, threshold).images[2]));
-    const expectedFile = cross ? path.join(CANVAS_DIR, path.relative(SVG_DIR, file)) : file;
+    const expectedFile = cross ? path.join(CANVAS_DIR, path.relative(svgDir, file)) : file;
     const story = escapeHtml(path.relative(E2E_DIR, file));
     const images = [
       [
@@ -291,12 +302,11 @@ function listPngs(dir: string): string[] {
 }
 
 /** files to compare and files only listed as new, for both modes */
-function collect(root: string, cross: boolean): { compared: string[]; added: string[] } {
+function collect(root: string, cross: boolean, svgDir: string): { compared: string[]; added: string[] } {
   if (cross) {
     // the svg screenshots are git ignored, so they are listed from the file system
-    const svgFiles = listPngs(path.join(root, SVG_DIR)).map((file) => path.relative(root, file));
-    const hasCanvasBaseline = (file: string) =>
-      fs.existsSync(path.join(root, CANVAS_DIR, path.relative(SVG_DIR, file)));
+    const svgFiles = listPngs(path.join(root, svgDir)).map((file) => path.relative(root, file));
+    const hasCanvasBaseline = (file: string) => fs.existsSync(path.join(root, CANVAS_DIR, path.relative(svgDir, file)));
     return { compared: svgFiles.filter(hasCanvasBaseline), added: svgFiles.filter((f) => !hasCanvasBaseline(f)) };
   }
   const dirs = [CANVAS_DIR];
@@ -310,14 +320,16 @@ function collect(root: string, cross: boolean): { compared: string[]; added: str
 }
 
 function main() {
-  const { cross, threshold, top, filter, exclude, sheet, scale, page, open } = getArgs();
+  const args = getArgs();
+  const { cross, threshold, top, filter, exclude, sheet, scale, page, open } = args;
+  const { svgDir } = args;
   const root = execFileSync('git', ['rev-parse', '--show-toplevel']).toString().trim();
-  const readPair = cross ? crossPair(root) : committedPair(root);
+  const readPair = cross ? crossPair(root, svgDir) : committedPair(root);
   const matches = (file: string) => {
     const lower = file.toLowerCase();
     return lower.includes(filter) && !exclude.some((part) => lower.includes(part));
   };
-  const { compared, added } = collect(root, cross);
+  const { compared, added } = collect(root, cross, svgDir);
 
   if (compared.length + added.length === 0) {
     console.log(cross ? 'no svg screenshots' : 'no changed screenshots');
@@ -365,7 +377,7 @@ function main() {
 
   if (sheet > 0 && rows.length > 0) writeSheet(root, rows.slice(0, sheet), readPair, threshold, scale);
   if (page) {
-    const file = writePage(root, rows, newRows, readPair, threshold, cross);
+    const file = writePage(root, rows, newRows, readPair, threshold, cross, svgDir);
     if (open) openFile(file);
   }
 }

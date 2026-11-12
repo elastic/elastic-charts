@@ -14,10 +14,12 @@
     "image-distance": "ts-node --transpile-only ./scripts/image_distance.ts",
     "svg:screenshots": "./scripts/start.sh --renderer=svg -u",
     "svg:review": "yarn svg:screenshots; yarn image-distance --cross --page --open",
+    "node-svg:review": "node ./scripts/node_svg_vrt.mjs",
     "playwright": "playwright"
   },
   "dependencies": {
     "@playwright/test": "^1.63.0",
+    "@resvg/resvg-js": "^2.6.2",
     "@types/node": "^20.10.0",
     "@types/pixelmatch": "^5.2.6",
     "@types/pngjs": "^6.0.5",

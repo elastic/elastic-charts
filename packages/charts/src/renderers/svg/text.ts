@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { onFontRegistered } from './font/registry';
 import { getMeasureContext } from './measure';
 import { round } from './path';
 
@@ -30,6 +31,27 @@ export function textAnchor(align: CanvasTextAlign, direction: 'ltr' | 'rtl'): 's
   }
 }
 
+const CANVAS_FONT_RE = /^(.*?)(\d*\.?\d+)px(?:\s*\/\s*\S+)?\s+(.+)$/;
+
+/**
+ * A canvas font shorthand as the SVG font presentation attributes, the ones every SVG renderer reads:
+ * many, resvg and Inkscape among them, ignore the CSS `font` shorthand.
+ * @internal
+ */
+export function fontAttributes(font: string): Record<string, string | number> {
+  const [, prefix = '', size, family] = CANVAS_FONT_RE.exec(font.trim()) ?? [];
+  if (size === undefined || family === undefined) return {};
+  const attributes: Record<string, string | number> = {};
+  for (const token of prefix.trim().split(/\s+/)) {
+    if (token === 'italic' || token === 'oblique') attributes.fontStyle = token;
+    else if (token === 'small-caps') attributes.fontVariant = token;
+    else if (/^(bold|bolder|lighter|[1-9]00)$/.test(token) && token !== '400') attributes.fontWeight = token;
+  }
+  attributes.fontSize = Number(size);
+  attributes.fontFamily = family.trim();
+  return attributes;
+}
+
 /**
  * Fractions of the font size used when no canvas is available to measure the font
  * (the same constants Vega uses across its renderers).
@@ -45,10 +67,11 @@ const FALLBACK_BASELINE_FRACTION: Record<CanvasTextBaseline, number> = {
 
 const baselineOffsetCache = new Map<string, number>();
 
-// a web font finishing to load changes the metrics of any text measured before
+// a web font finishing to load, or a font registered on the server, changes the metrics of any text measured before
 if (typeof document !== 'undefined' && document.fonts?.addEventListener) {
   document.fonts.addEventListener('loadingdone', () => baselineOffsetCache.clear());
 }
+onFontRegistered(() => baselineOffsetCache.clear());
 
 const FONT_SIZE_RE = /(\d*\.?\d+)px/;
 

@@ -9,7 +9,8 @@
 import moment from 'moment';
 
 function getParams() {
-  return new URL(window.location.toString()).searchParams;
+  // stories rendered in node have no url to read knobs from, they get the defaults
+  return typeof window === 'undefined' ? new URLSearchParams() : new URL(window.location.toString()).searchParams;
 }
 
 function getKnobKey(name: string, groupId?: string) {

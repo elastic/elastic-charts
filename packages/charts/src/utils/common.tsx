@@ -795,3 +795,10 @@ export const clampAll = (
     [],
   ];
 };
+
+/**
+ * True when rendering without a DOM, e.g. with `renderToString` in Node. Effects, refs and
+ * observers never run there, so the chart must be fed while rendering.
+ * @internal
+ */
+export const isServerSide = () => typeof document === 'undefined';

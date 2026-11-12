@@ -22,6 +22,7 @@ import { ChartStatus } from './chart_status';
 import { Legend } from './legend/legend';
 import { getElementZIndex } from './portal/utils';
 import { paintStageToCanvas } from './stage';
+import { SvgExportContext } from './svg_export_context';
 import { chartTypeSelectors } from '../chart_types/chart_type_selectors';
 import { Colors } from '../common/colors';
 import type { LegendPositionConfig, PointerEvent } from '../specs';
@@ -36,7 +37,7 @@ import { getInternalChartStateSelector, chartSelectorsRegistry } from '../state/
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import type { ChartSize } from '../utils/chart_size';
 import { getChartSize, getFixedChartSize } from '../utils/chart_size';
-import { LayoutDirection } from '../utils/common';
+import { isServerSide, LayoutDirection } from '../utils/common';
 import { deepEqual } from '../utils/fast_deep_equal';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 
@@ -69,6 +70,10 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     renderer: 'canvas',
   };
 
+  static contextType = SvgExportContext;
+
+  declare context: React.ContextType<typeof SvgExportContext>;
+
   private unsubscribeToStore: Unsubscribe;
 
   private chartStore: Store<GlobalChartState>;
@@ -77,7 +82,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   private chartStageRef: React.RefObject<StageElement>;
 
-  constructor(props: ChartProps) {
+  constructor(props: ChartProps, context?: React.ContextType<typeof SvgExportContext>) {
     super(props);
     this.chartContainerRef = createRef();
     this.chartStageRef = createRef();
@@ -88,6 +93,10 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     // set up the redux store
     const id = props.id ?? uuidv4();
     this.chartStore = createChartStore(id, this.props.title, this.props.description, this.props.renderer);
+    const fixedSize = getFixedChartSize(props.size) ?? context?.size;
+    if (fixedSize && isServerSide()) {
+      this.chartStore.dispatch(updateParentDimensions({ ...fixedSize, top: 0, left: 0 }));
+    }
     this.state = {
       legendDirection: LayoutDirection.Vertical,
       paddingLeft: LIGHT_THEME.chartMargins.left,
@@ -178,6 +187,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   }
 
   render() {
+    this.context?.stores.add(this.chartStore);
     const { size, className } = this.props;
     const containerSizeStyle = getChartSize(size);
     const chartContentClassNames = classNames('echChartContent', className, {

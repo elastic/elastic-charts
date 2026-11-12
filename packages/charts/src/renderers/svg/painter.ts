@@ -8,7 +8,7 @@
 
 import { getMeasureContext } from './measure';
 import { round, SvgPathBuilder } from './path';
-import { baselineOffset, textAnchor } from './text';
+import { baselineOffset, fontAttributes, textAnchor } from './text';
 import { colorToRgba } from '../../common/color_library_wrappers';
 import type { Color } from '../../common/colors';
 import { Colors } from '../../common/colors';
@@ -295,10 +295,9 @@ export class SvgPainter implements Painter {
   }
 
   /** the inline style animating paint changes, when a transition is in effect */
-  private transitionAttrs(font?: string): Record<string, unknown> {
+  private transitionAttrs(): Record<string, unknown> {
     const { transition } = this.style;
-    const style = { ...(font && { font }), ...(transition && { transition: cssTransition(transition) }) };
-    return Object.keys(style).length > 0 ? { style } : {};
+    return transition ? { style: { transition: cssTransition(transition) } } : {};
   }
 
   clearRect() {
@@ -352,7 +351,8 @@ export class SvgPainter implements Painter {
       ...(anchor !== 'start' && { textAnchor: anchor }),
       ...(direction !== 'inherit' && { direction }),
       ...(needsSpacePreserve(text) && { xmlSpace: 'preserve' }),
-      ...this.transitionAttrs(font),
+      ...fontAttributes(font),
+      ...this.transitionAttrs(),
     };
   }
 
