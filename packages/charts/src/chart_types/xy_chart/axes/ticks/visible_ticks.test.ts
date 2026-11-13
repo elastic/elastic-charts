@@ -191,6 +191,29 @@ describe('getVisibleTicks', () => {
     expect(result.map((tick) => tick.label)).toEqual(['0', '50', '100']);
   });
 
+  test.each([
+    ['showOverlappingTicks', true, false],
+    ['adaptiveTickCount', false, true],
+  ])('keeps overlapping ticks without labels when %s is set', (_, showOverlappingTicks, adaptiveTickCount) => {
+    const axisSpec = MockGlobalSpec.yAxis({ id: 'y', position: Position.Left, showOverlappingTicks });
+    const result = getVisibleTicks(
+      axisSpec,
+      layoutFor({ height: 80 }),
+      String,
+      0,
+      0,
+      linearScale(),
+      false,
+      0,
+      0,
+      ticks,
+      adaptiveTickCount,
+      0,
+    );
+
+    expect(result.map((tick) => tick.label)).toEqual(['0', '', '50', '', '100']);
+  });
+
   test('preserves every overlapping tick and label when showOverlappingLabels is set', () => {
     const axisSpec = MockGlobalSpec.yAxis({
       id: 'y',
