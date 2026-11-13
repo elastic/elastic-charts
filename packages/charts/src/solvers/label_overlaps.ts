@@ -36,6 +36,14 @@ export function getLabelsCadence(labels: LabelSpan[], minGap: Pixels = 0): numbe
 }
 
 /**
+ * True when two neighboring labels overlap. Two labels must be at least `minGap` pixels apart.
+ * @internal
+ */
+export function hasOverlappingLabels(labels: LabelSpan[], minGap: Pixels = 0): boolean {
+  return hasOverlaps(labels, 1, minGap);
+}
+
+/**
  * Returns a stateful check to call label by label, sorted by position, while laying out an axis.
  * Two labels must be at least `minGap` pixels apart.
  *

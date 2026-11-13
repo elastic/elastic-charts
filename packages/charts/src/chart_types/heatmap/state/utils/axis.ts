@@ -13,7 +13,7 @@ import { extent } from '../../../../common/math';
 import type { Vec2 } from '../../../../common/vectors';
 import { rotate2, sub2 } from '../../../../common/vectors';
 import type { LabelSpan } from '../../../../solvers/label_overlaps';
-import { getLabelsCadence } from '../../../../solvers/label_overlaps';
+import { hasOverlappingLabels } from '../../../../solvers/label_overlaps';
 import { screenspaceMarkerScaleCompressor } from '../../../../solvers/screenspace_marker_scale_compressor';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isFiniteNumber, degToRad } from '../../../../utils/common';
@@ -60,24 +60,21 @@ export function getYAxisHorizontalUsedSpace(
 }
 
 /**
- * Returns the vertical space occupied by each Y axis label, centered on its row.
+ * Returns how many Y rows sit between two visible labels.
+ * The labels are identical and evenly spaced, so the cadence is the label height divided by the row height.
  * @internal
  */
-export function getYAxisLabelSpans(
+export function getYAxisTickCadence(
   style: HeatmapStyle['yAxisLabel'],
   panelHeight: number,
   valuesCount: number,
-): LabelSpan[] {
+): number {
   const rowHeight = panelHeight / valuesCount;
   if (!isFiniteNumber(rowHeight) || rowHeight <= 0) {
-    return [];
+    return 1;
   }
-  const halfLabelHeight = (style.fontSize + verticalPad(style.padding)) / 2;
-  return Array.from({ length: valuesCount }, (_, i) => ({
-    position: (i + 0.5) * rowHeight,
-    before: halfLabelHeight,
-    after: halfLabelHeight,
-  }));
+  const labelHeight = style.fontSize + verticalPad(style.padding);
+  return Math.min(valuesCount, Math.max(1, Math.ceil(labelHeight / rowHeight)));
 }
 
 /** @internal */
@@ -185,27 +182,29 @@ export function getXAxisSize(
           );
 
     const validCompression = isFiniteNumber(dimension.width);
-    // time scales always hide overlapping labels, including when rotated; the flag only applies to categorical scales.
-    // categorical axes that show every label, and rotated time scales, keep this full-label fit.
+    // The flag only applies to categorical scales. Rotated time labels stay visible: raising the
+    // rotation already separates the glyphs, and a slanted label's horizontal box overlaps its
+    // neighbor before the text does. The same holds for a rotated categorical axis once the font
+    // height fits in the step. At 90° that box is the font height, so a remaining collision is real.
     const showEveryLabel = isCategoricalScale && showOverlappingLabels;
-    if (!validCompression || showEveryLabel || !isCategoricalScale) {
-      const tickCadence = showEveryLabel ? 1 : getLabelsCadence(dimension.labelSpans);
-      return axisSizeFromCompression(dimension, tickCadence, minRotation, containerWidth, surroundingSpace);
+    const rotationClearsLabels = isRotated && maxLabelBBox.height < scaleStep;
+    if (!validCompression || showEveryLabel || !isCategoricalScale || rotationClearsLabels) {
+      return axisSizeFromCompression(dimension, 1, minRotation, containerWidth, surroundingSpace);
     }
 
     // refit with only the labels kept at each cadence, so a hidden label no longer sets the width or insets.
-    // overlaps are decided with getLabelsCadence: the compressor check skips the last pair of labels
-    const fitted = fitCompressedScaleByCadence(
+    // a label that sets the right edge is already inside the fitted bound
+    const fitted = fitCompressedScaleByCadence({
       style,
       scale,
-      measuredLabels,
+      labels: measuredLabels,
       containerWidth,
       surroundingSpace,
       alignment,
-      minRotation,
+      rotation: minRotation,
       dimension,
-      'cadence',
-    );
+      hideRightOverflow: false,
+    });
     return axisSizeFromCompression(fitted.dimension, fitted.tickCadence, minRotation, containerWidth, surroundingSpace);
   }
 
@@ -218,19 +217,36 @@ export function getXAxisSize(
     alignment,
     rotationRad,
   );
-  const fitted = fitCompressedScaleByCadence(
+  // a time label that sets the right edge still draws past the container
+  const fitted = fitCompressedScaleByCadence({
     style,
     scale,
-    measuredLabels,
+    labels: measuredLabels,
     containerWidth,
     surroundingSpace,
     alignment,
-    rotationRad,
-    compressedScale,
-    'compressor',
-  );
+    rotation: rotationRad,
+    dimension: compressedScale,
+    hideRightOverflow: true,
+  });
 
   return axisSizeFromCompression(fitted.dimension, fitted.tickCadence, rotationRad, containerWidth, surroundingSpace);
+}
+
+interface FitCompressedScaleArgs {
+  style: HeatmapStyle['xAxisLabel'];
+  scale: (d: NonNullable<PrimitiveValue>) => number;
+  labels: MeasuredLabel[];
+  containerWidth: number;
+  surroundingSpace: [number, number];
+  alignment: 'left' | 'right' | 'center';
+  rotation: Radian;
+  dimension: CompressedScale;
+  /**
+   * Time axes only. A label that sets the right edge still draws past the container.
+   * Categorical axes already treat that edge as the fitted bound.
+   */
+  hideRightOverflow: boolean;
 }
 
 /**
@@ -238,28 +254,27 @@ export function getXAxisSize(
  * Each attempt compresses the scale with only the labels that stay visible,
  * so hidden labels stop taking width and insets.
  */
-function fitCompressedScaleByCadence(
-  style: HeatmapStyle['xAxisLabel'],
-  scale: (d: NonNullable<PrimitiveValue>) => number,
-  labels: MeasuredLabel[],
-  containerWidth: number,
-  surroundingSpace: [number, number],
-  alignment: 'left' | 'right' | 'center',
-  rotation: Radian,
-  dimension: CompressedScale,
-  overlaps: 'compressor' | 'cadence',
-): { dimension: CompressedScale; tickCadence: number } {
+function fitCompressedScaleByCadence({
+  style,
+  scale,
+  labels,
+  containerWidth,
+  surroundingSpace,
+  alignment,
+  rotation,
+  dimension,
+  hideRightOverflow,
+}: FitCompressedScaleArgs): { dimension: CompressedScale; tickCadence: number } {
   let tickCadence = 1;
   let fitted = dimension;
 
   // TODO refactor and move to monotonic hill climber and no mutations
   for (let i = 1; i < labels.length; i++) {
-    const labelsOverlap = overlaps === 'cadence' ? getLabelsCadence(fitted.labelSpans) > 1 : fitted.overlaps;
     // overflow.right names the label that set the compressed right edge. On a time axis that
     // label still sticks past the container, so the cadence has to rise. On a categorical axis
     // the edge is already the fitted bound, and a label that sets it without overlapping stays visible.
-    const exceedsRightBound = overlaps === 'compressor' && fitted.overflow.right;
-    if ((!labelsOverlap && !exceedsRightBound) || !isFiniteNumber(fitted.width)) {
+    const exceedsRightBound = hideRightOverflow && fitted.overflow.right;
+    if ((!hasOverlappingLabels(fitted.labelSpans) && !exceedsRightBound) || !isFiniteNumber(fitted.width)) {
       break;
     }
     fitted = computeCompressedScale(
@@ -366,7 +381,7 @@ function computeCompressedScale(
 
   // check label overlaps using the computed compressed scale
   const overlaps = itemsPerSideSize.some(([, rightSide], i) => {
-    if (i >= itemsPerSideSize.length - 2) {
+    if (i >= itemsPerSideSize.length - 1) {
       return false;
     }
 

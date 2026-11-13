@@ -7,7 +7,7 @@
  */
 
 import type { LabelSpan } from './label_overlaps';
-import { createGreedyLabelFitter, getLabelsCadence } from './label_overlaps';
+import { createGreedyLabelFitter, getLabelsCadence, hasOverlappingLabels } from './label_overlaps';
 
 /** a label occupying the `[start, end]` interval */
 const span = (start: number, end: number): LabelSpan => ({ position: start, before: 0, after: end - start });
@@ -51,6 +51,16 @@ describe('Label overlaps', () => {
     it('should show only the first label when every label overlaps with all the others', () => {
       const labels = Array.from({ length: 4 }, (_, i) => span(i, 100));
       expect(getLabelsCadence(labels)).toBe(4);
+    });
+  });
+
+  describe('hasOverlappingLabels', () => {
+    it('should be false when neighbors only touch', () => {
+      expect(hasOverlappingLabels([span(0, 10), span(10, 20), span(20, 30)])).toBe(false);
+    });
+
+    it('should be true when only the last two labels overlap', () => {
+      expect(hasOverlappingLabels([span(0, 10), span(20, 30), span(25, 35)])).toBe(true);
     });
   });
 

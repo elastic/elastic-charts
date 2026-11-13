@@ -11,12 +11,11 @@ import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import { getPanelSize } from '../../../../common/panel_utils';
-import { getLabelsCadence } from '../../../../solvers/label_overlaps';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import type { Dimensions } from '../../../../utils/dimensions';
-import { getYAxisLabelSpans } from '../utils/axis';
+import { getYAxisTickCadence } from '../utils/axis';
 
 /** @internal */
 export type ChartElementSizes = {
@@ -76,7 +75,7 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
       xAxisTickCadence: axesSizes.xAxis.tickCadence,
       yAxisTickCadence: yAxisShowOverlappingLabels
         ? 1
-        : getLabelsCadence(getYAxisLabelSpans(heatmap.yAxisLabel, panelHeight, yValues.length)),
+        : getYAxisTickCadence(heatmap.yAxisLabel, panelHeight, yValues.length),
       xLabelRotation: axesSizes.xAxis.minRotation,
     };
   },
