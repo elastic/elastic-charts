@@ -17,7 +17,7 @@
     "playwright": "playwright"
   },
   "dependencies": {
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "^1.64.1",
     "@types/node": "^20.10.0",
     "@types/pixelmatch": "^5.2.6",
     "@types/pngjs": "^6.0.5",
