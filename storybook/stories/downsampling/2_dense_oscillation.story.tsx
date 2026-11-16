@@ -11,6 +11,7 @@ import React, { useMemo } from 'react';
 import { Axis, Chart, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { getM4Knob, m4SeriesProps } from './m4_knob';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme, useThemeId } from '../../use_base_theme';
 import { noiseTable, sample } from '../utils/datasets/smooth_noise';
@@ -41,6 +42,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const data = useMemo(generateData, []);
   const baseTheme = useBaseTheme();
   const isDarkTheme = useThemeId().includes('dark');
+  const m4Props = m4SeriesProps(getM4Knob());
   return (
     <Chart title={title} description={description}>
       <Settings
@@ -68,6 +70,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         data={data}
         color={isDarkTheme ? 'white' : 'black'}
         lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}
+        {...m4Props}
       />
     </Chart>
   );
