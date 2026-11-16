@@ -1085,6 +1085,24 @@ describe('Downsampling dense line series', () => {
       expect(xAccessor).toHaveBeenCalledTimes(barRows.length + 1);
     });
 
+    it.each([
+      ['once if no series has a fit', undefined],
+      ['twice if a series has a fit', Fit.Linear],
+    ])('reads the rows of a series without x values %s', (_, fit) => {
+      const xAccessor = jest.fn((): undefined => undefined);
+      const bars = MockSeriesSpec.bar({
+        id: 'bars',
+        xAccessor,
+        yAccessors: ['y'],
+        xScaleType: ScaleType.Linear,
+        yScaleType: ScaleType.Linear,
+        data: Array.from({ length: 100 }, () => ({ y: 1 })),
+      });
+      expect(downsampledOf(domainsOf([denseLine({ data: fullData, fit }), bars]))).toEqual([true]);
+      // without a fit, only to split the rows into series; with a fit, once more to look for x values
+      expect(xAccessor).toHaveBeenCalledTimes(fit ? 200 : 100);
+    });
+
     it('reads the rows of a fitted series once if a series that is never downsampled has x values', () => {
       const yAccessor = jest.fn(({ y }: { y: number }) => y);
       const fitted = denseLine({ data: fullData, yAccessors: [yAccessor], fit: Fit.Linear });

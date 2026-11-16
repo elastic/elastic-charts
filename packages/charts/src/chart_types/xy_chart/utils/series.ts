@@ -488,19 +488,6 @@ function hasXValue({ data, xAccessor }: BasicSeriesSpec) {
 /** The rows a spec is laid out with, see `layoutRows` */
 type Layout = { data: Datum[]; rawValues?: RawValues; nonNumericValues?: Map<unknown, number> };
 
-/**
- * Whether a downsampled series with a `fit` may lack an x value of another series, which the fit would fill in, see
- * `markGaps`. No such x value exists if every series that has x values is downsampled, and they all share them.
- */
-function downsampledFitLacksXValues(layouts: Array<{ spec: BasicSeriesSpec; layout: Layout }>) {
-  const downsampled = layouts.filter(({ layout }) => layout.rawValues !== undefined);
-  if (!downsampled.some(({ spec }) => fitOf(spec) !== undefined)) return false;
-  return (
-    layouts.some(({ spec, layout }) => layout.rawValues === undefined && hasXValue(spec)) ||
-    !haveSameValues(downsampled.flatMap(({ layout }) => (layout.rawValues ? [layout.rawValues.xs] : [])))
-  );
-}
-
 // nothing is downsampled without the scale configs; some of these restrictions could be lifted in the future
 function canDownsample(
   spec: BasicSeriesSpec,
@@ -592,14 +579,15 @@ export function getDataSeriesFromSpecs(
   const specLayouts = seriesSpecs.map((spec) => {
     const specGroup = specsByYGroup.get(spec.groupId);
     const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
-    return { spec, specGroup, isStacked };
+    return { spec, specGroup, isStacked, canDownsample: canDownsample(spec, isStacked, scaleConfigs, groupBySpec) };
   });
-  // whether no series with a `fit` can be downsampled, see `downsampledFitLacksXValues`: known up front for the specs
-  // that are never downsampled, and otherwise as soon as a spec is laid out, which saves reading the rows of the
-  // series with a `fit` that follow
-  let fitNeedsEveryRow = specLayouts.some(
-    ({ spec, isStacked }) => !canDownsample(spec, isStacked, scaleConfigs, groupBySpec) && hasXValue(spec),
-  );
+  // the rest of the layout only differs from laying out each spec on its own if a series has a `fit`
+  const hasFit = seriesSpecs.some((spec) => fitOf(spec) !== undefined);
+  // whether a series with a `fit` may lack an x value of another series, which the fit would fill in, see `markGaps`,
+  // so no series with a `fit` can be downsampled. No such x value exists if every series that has x values is
+  // downsampled, and they all share them. It is known up front for the specs that are never downsampled, and
+  // otherwise as soon as a spec is laid out, which saves reading the rows of the series with a `fit` that follow
+  let fitNeedsEveryRow = hasFit && specLayouts.some((entry) => !entry.canDownsample && hasXValue(entry.spec));
   let firstRawXValues: Float64Array | undefined;
   const layouts = specLayouts.map((entry) => {
     const { spec, isStacked } = entry;
@@ -607,15 +595,19 @@ export function getDataSeriesFromSpecs(
       fitNeedsEveryRow && fitOf(spec) !== undefined
         ? { data: spec.data }
         : layoutRows(spec, isStacked, scaleConfigs, groupBySpec);
-    if (layout.rawValues) {
-      firstRawXValues ??= layout.rawValues.xs;
-      fitNeedsEveryRow ||= !haveSameValues([firstRawXValues, layout.rawValues.xs]);
-    } else {
-      fitNeedsEveryRow ||= hasXValue(spec);
+    if (hasFit && !fitNeedsEveryRow) {
+      if (layout.rawValues) {
+        firstRawXValues ??= layout.rawValues.xs;
+        fitNeedsEveryRow = !haveSameValues([firstRawXValues, layout.rawValues.xs]);
+      } else if (entry.canDownsample) {
+        // the x values of the specs that are never downsampled were looked for up front
+        fitNeedsEveryRow = hasXValue(spec);
+      }
     }
     return { ...entry, layout };
   });
-  if (downsampledFitLacksXValues(layouts)) {
+  // the series with a `fit` that were laid out before it was known
+  if (fitNeedsEveryRow) {
     for (const entry of layouts) if (fitOf(entry.spec) !== undefined) entry.layout = { data: entry.spec.data };
   }
 
