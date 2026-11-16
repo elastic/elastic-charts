@@ -19537,9 +19537,9 @@ exports.Example = void 0;
 /* eslint-disable */
 // @ts-nocheck
 // @ts-ignore
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo } from 'react';\n\nimport { Axis, Chart, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\nimport { upToTwoDecimals } from '../utils/formatters';\n\nconst SERIES_COUNT = 5;\nconst POINTS_PER_SERIES = 50_000;\n\ntype SeriesDatum = [x: number, y: number];\n\nfunction generateData(): SeriesDatum[][] {\n  const rng = getRandomNumberGenerator('dense-rotated-lines');\n  return Array.from({ length: SERIES_COUNT }, (_, seriesIndex) => {\n    const trend = noiseTable(rng, 24);\n    const ripple = noiseTable(rng, 96);\n    return Array.from({ length: POINTS_PER_SERIES }, (__, i): SeriesDatum => {\n      const noise = sample(trend, i / 2000) * 8 + sample(ripple, i / 40) * 3 + rng(0, 2, 3);\n      return [i, seriesIndex * 10 + noise];\n    });\n  });\n}\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const baseTheme = useBaseTheme();\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // all exact from the summary of a downsampled series\n        legendValues={[\n          LegendValue.FirstValue,\n          LegendValue.LastValue,\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Range,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        rotation={90}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Left} />\n      <Axis id=\"y\" position={Position.Bottom} tickFormat={upToTwoDecimals} />\n      {data.map((seriesData, index) => (\n        <LineSeries\n          key={index}\n          id={`series-${index + 1}`}\n          xScaleType={ScaleType.Linear}\n          yScaleType={ScaleType.Linear}\n          xAccessor={0}\n          yAccessors={[1]}\n          data={seriesData}\n        />\n      ))}\n    </Chart>\n  );\n};\n";
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo } from 'react';\n\nimport { Axis, Chart, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport { getM4Knob, m4SeriesProps } from './m4_knob';\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\nimport { upToTwoDecimals } from '../utils/formatters';\n\nconst SERIES_COUNT = 5;\nconst POINTS_PER_SERIES = 50_000;\n\ntype SeriesDatum = [x: number, y: number];\n\nfunction generateData(): SeriesDatum[][] {\n  const rng = getRandomNumberGenerator('dense-rotated-lines');\n  return Array.from({ length: SERIES_COUNT }, (_, seriesIndex) => {\n    const trend = noiseTable(rng, 24);\n    const ripple = noiseTable(rng, 96);\n    return Array.from({ length: POINTS_PER_SERIES }, (__, i): SeriesDatum => {\n      const noise = sample(trend, i / 2000) * 8 + sample(ripple, i / 40) * 3 + rng(0, 2, 3);\n      return [i, seriesIndex * 10 + noise];\n    });\n  });\n}\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const baseTheme = useBaseTheme();\n  const m4Props = m4SeriesProps(getM4Knob());\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // all exact from the summary of a downsampled series\n        legendValues={[\n          LegendValue.FirstValue,\n          LegendValue.LastValue,\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Range,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        rotation={90}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Left} />\n      <Axis id=\"y\" position={Position.Bottom} tickFormat={upToTwoDecimals} />\n      {data.map((seriesData, index) => (\n        <LineSeries\n          key={index}\n          id={`series-${index + 1}`}\n          xScaleType={ScaleType.Linear}\n          yScaleType={ScaleType.Linear}\n          xAccessor={0}\n          yAccessors={[1]}\n          data={seriesData}\n          {...m4Props}\n        />\n      ))}\n    </Chart>\n  );\n};\n";
 // @ts-ignore
-var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 36 }, "endLoc": { "col": 1, "line": 71 }, "startBody": { "col": 36, "line": 36 }, "endBody": { "col": 1, "line": 71 } } };
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 37 }, "endLoc": { "col": 1, "line": 74 }, "startBody": { "col": 36, "line": 37 }, "endBody": { "col": 1, "line": 74 } } };
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -19550,6 +19550,7 @@ var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 36 }, "e
 const react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
 const utils_1 = __webpack_require__(/*! @elastic/charts/src/mocks/utils */ "../packages/charts/src/mocks/utils.ts");
+const m4_knob_1 = __webpack_require__(/*! ./m4_knob */ "./stories/downsampling/m4_knob.ts");
 const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
 const smooth_noise_1 = __webpack_require__(/*! ../utils/datasets/smooth_noise */ "./stories/utils/datasets/smooth_noise.ts");
 const formatters_1 = __webpack_require__(/*! ../utils/formatters */ "./stories/utils/formatters.ts");
@@ -19569,6 +19570,7 @@ function generateData() {
 const Example = (_, { title, description }) => {
     const data = (0, react_1.useMemo)(generateData, []);
     const baseTheme = (0, use_base_theme_1.useBaseTheme)();
+    const m4Props = (0, m4_knob_1.m4SeriesProps)((0, m4_knob_1.getM4Knob)());
     return (react_1.default.createElement(charts_1.Chart, { title: title, description: description },
         react_1.default.createElement(charts_1.Settings, { showLegend: true, legendPosition: charts_1.Position.Right, 
             // all exact from the summary of a downsampled series
@@ -19582,10 +19584,10 @@ const Example = (_, { title, description }) => {
             ], rotation: 90, baseTheme: baseTheme }),
         react_1.default.createElement(charts_1.Axis, { id: "x", position: charts_1.Position.Left }),
         react_1.default.createElement(charts_1.Axis, { id: "y", position: charts_1.Position.Bottom, tickFormat: formatters_1.upToTwoDecimals }),
-        data.map((seriesData, index) => (react_1.default.createElement(charts_1.LineSeries, { key: index, id: `series-${index + 1}`, xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: seriesData })))));
+        data.map((seriesData, index) => (react_1.default.createElement(charts_1.LineSeries, { key: index, id: `series-${index + 1}`, xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: seriesData, ...m4Props })))));
 };
 exports.Example = Example;
-exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const baseTheme = useBaseTheme();\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // all exact from the summary of a downsampled series\n        legendValues={[\n          LegendValue.FirstValue,\n          LegendValue.LastValue,\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Range,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        rotation={90}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Left} />\n      <Axis id=\"y\" position={Position.Bottom} tickFormat={upToTwoDecimals} />\n      {data.map((seriesData, index) => (\n        <LineSeries\n          key={index}\n          id={`series-${index + 1}`}\n          xScaleType={ScaleType.Linear}\n          yScaleType={ScaleType.Linear}\n          xAccessor={0}\n          yAccessors={[1]}\n          data={seriesData}\n        />\n      ))}\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const baseTheme = useBaseTheme();\n  const m4Props = m4SeriesProps(getM4Knob());\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // all exact from the summary of a downsampled series\n        legendValues={[\n          LegendValue.FirstValue,\n          LegendValue.LastValue,\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Range,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        rotation={90}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Left} />\n      <Axis id=\"y\" position={Position.Bottom} tickFormat={upToTwoDecimals} />\n      {data.map((seriesData, index) => (\n        <LineSeries\n          key={index}\n          id={`series-${index + 1}`}\n          xScaleType={ScaleType.Linear}\n          yScaleType={ScaleType.Linear}\n          xAccessor={0}\n          yAccessors={[1]}\n          data={seriesData}\n          {...m4Props}\n        />\n      ))}\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -19626,9 +19628,9 @@ exports.Example = void 0;
 /* eslint-disable */
 // @ts-nocheck
 // @ts-ignore
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo } from 'react';\n\nimport { Axis, Chart, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme, useThemeId } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\nimport { upToTwoDecimals } from '../utils/formatters';\n\nconst POINTS = 200_000;\nconst SPIKE_EVERY = 9973; // odd, so the spikes alternate between up and down\n\ntype SeriesDatum = [x: number, y: number];\n\nfunction generateData(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('dense-oscillation');\n  const trend = noiseTable(rng, 16);\n  let level = 0; // the y the line holds until the next jump\n  let nextJump = 0; // the row of the next jump to a random level\n  return Array.from({ length: POINTS }, (_, i): SeriesDatum => {\n    if (i === nextJump) {\n      level = rng(-40, 40, 2);\n      nextJump += rng(100, 2000); // at ~170 rows per pixel on a 1200 px plot: part of a pixel to a dozen pixels\n    }\n    // the sign flips on every row: a narrow band around the level, with rare single-row spikes\n    const swing = (i % 2 === 0 ? 1 : -1) * rng(0, 3, 2) * (i % SPIKE_EVERY === 0 ? 10 : 1);\n    return [i, sample(trend, i / 25_000) * 30 + level + swing];\n  });\n}\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // average, median and count aren't in the summary, so the legend rebuilds every row\n        legendValues={[\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Average,\n          LegendValue.Median,\n          LegendValue.Count,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} tickFormat={upToTwoDecimals} />\n      <LineSeries\n        id=\"oscillation\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={data}\n        color={isDarkTheme ? 'white' : 'black'}\n        lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n      />\n    </Chart>\n  );\n};\n";
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo } from 'react';\n\nimport { Axis, Chart, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport { getM4Knob, m4SeriesProps } from './m4_knob';\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme, useThemeId } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\nimport { upToTwoDecimals } from '../utils/formatters';\n\nconst POINTS = 200_000;\nconst SPIKE_EVERY = 9973; // odd, so the spikes alternate between up and down\n\ntype SeriesDatum = [x: number, y: number];\n\nfunction generateData(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('dense-oscillation');\n  const trend = noiseTable(rng, 16);\n  let level = 0; // the y the line holds until the next jump\n  let nextJump = 0; // the row of the next jump to a random level\n  return Array.from({ length: POINTS }, (_, i): SeriesDatum => {\n    if (i === nextJump) {\n      level = rng(-40, 40, 2);\n      nextJump += rng(100, 2000); // at ~170 rows per pixel on a 1200 px plot: part of a pixel to a dozen pixels\n    }\n    // the sign flips on every row: a narrow band around the level, with rare single-row spikes\n    const swing = (i % 2 === 0 ? 1 : -1) * rng(0, 3, 2) * (i % SPIKE_EVERY === 0 ? 10 : 1);\n    return [i, sample(trend, i / 25_000) * 30 + level + swing];\n  });\n}\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  const m4Props = m4SeriesProps(getM4Knob());\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // average, median and count aren't in the summary, so the legend rebuilds every row\n        legendValues={[\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Average,\n          LegendValue.Median,\n          LegendValue.Count,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} tickFormat={upToTwoDecimals} />\n      <LineSeries\n        id=\"oscillation\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={data}\n        color={isDarkTheme ? 'white' : 'black'}\n        lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n        {...m4Props}\n      />\n    </Chart>\n  );\n};\n";
 // @ts-ignore
-var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 40 }, "endLoc": { "col": 1, "line": 74 }, "startBody": { "col": 36, "line": 40 }, "endBody": { "col": 1, "line": 74 } } };
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 41 }, "endLoc": { "col": 1, "line": 77 }, "startBody": { "col": 36, "line": 41 }, "endBody": { "col": 1, "line": 77 } } };
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -19639,6 +19641,7 @@ var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 40 }, "e
 const react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
 const utils_1 = __webpack_require__(/*! @elastic/charts/src/mocks/utils */ "../packages/charts/src/mocks/utils.ts");
+const m4_knob_1 = __webpack_require__(/*! ./m4_knob */ "./stories/downsampling/m4_knob.ts");
 const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
 const smooth_noise_1 = __webpack_require__(/*! ../utils/datasets/smooth_noise */ "./stories/utils/datasets/smooth_noise.ts");
 const formatters_1 = __webpack_require__(/*! ../utils/formatters */ "./stories/utils/formatters.ts");
@@ -19663,6 +19666,7 @@ const Example = (_, { title, description }) => {
     const data = (0, react_1.useMemo)(generateData, []);
     const baseTheme = (0, use_base_theme_1.useBaseTheme)();
     const isDarkTheme = (0, use_base_theme_1.useThemeId)().includes('dark');
+    const m4Props = (0, m4_knob_1.m4SeriesProps)((0, m4_knob_1.getM4Knob)());
     return (react_1.default.createElement(charts_1.Chart, { title: title, description: description },
         react_1.default.createElement(charts_1.Settings, { showLegend: true, legendPosition: charts_1.Position.Right, 
             // average, median and count aren't in the summary, so the legend rebuilds every row
@@ -19676,10 +19680,10 @@ const Example = (_, { title, description }) => {
             ], baseTheme: baseTheme }),
         react_1.default.createElement(charts_1.Axis, { id: "x", position: charts_1.Position.Bottom }),
         react_1.default.createElement(charts_1.Axis, { id: "y", position: charts_1.Position.Left, tickFormat: formatters_1.upToTwoDecimals }),
-        react_1.default.createElement(charts_1.LineSeries, { id: "oscillation", xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: data, color: isDarkTheme ? 'white' : 'black', lineSeriesStyle: { line: { strokeWidth: 0.25 } } })));
+        react_1.default.createElement(charts_1.LineSeries, { id: "oscillation", xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: data, color: isDarkTheme ? 'white' : 'black', lineSeriesStyle: { line: { strokeWidth: 0.25 } }, ...m4Props })));
 };
 exports.Example = Example;
-exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // average, median and count aren't in the summary, so the legend rebuilds every row\n        legendValues={[\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Average,\n          LegendValue.Median,\n          LegendValue.Count,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} tickFormat={upToTwoDecimals} />\n      <LineSeries\n        id=\"oscillation\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={data}\n        color={isDarkTheme ? 'white' : 'black'}\n        lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n      />\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  const m4Props = m4SeriesProps(getM4Knob());\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // average, median and count aren't in the summary, so the legend rebuilds every row\n        legendValues={[\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Average,\n          LegendValue.Median,\n          LegendValue.Count,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} tickFormat={upToTwoDecimals} />\n      <LineSeries\n        id=\"oscillation\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={data}\n        color={isDarkTheme ? 'white' : 'black'}\n        lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n        {...m4Props}\n      />\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -19720,9 +19724,9 @@ exports.Example = void 0;
 /* eslint-disable */
 // @ts-nocheck
 // @ts-ignore
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo } from 'react';\n\nimport { Axis, Chart, CurveType, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme, useThemeId } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\nimport { upToTwoDecimals } from '../utils/formatters';\n\ntype SeriesDatum = [x: number, y: number | null];\n\nfunction generateData(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('dense-sparse-and-gaps');\n  const trend = noiseTable(rng, 32);\n  let level = 0; // the y the line holds until the next jump\n  let nextJump = 0; // the x of the next jump to a random level\n  // called in x order; the sign flips on every row, so dense stretches draw a narrow band around the level\n  const value = (x: number, k: number) => {\n    if (x >= nextJump) {\n      level = rng(-8, 8, 2);\n      nextJump = x + rng(0.2, 4, 2); // at about a pixel per x unit: part of a pixel to a few pixels\n    }\n    return 10 + sample(trend, x / 40) * 10 + level + (k % 2 === 0 ? 1 : -1) * rng(0, 1.5, 2);\n  };\n  const data: SeriesDatum[] = [];\n  // appends `count` rows from x `from`, `step` apart\n  const append = (from: number, count: number, step: number, y: (x: number, k: number) => number | null) => {\n    for (let k = 0; k < count; k++) data.push([from + k * step, y(from + k * step, k)]);\n  };\n  append(0, 80_000, 0.0025, value); // super dense: hundreds of rows per pixel\n  append(200, 8, 25, value); // super sparse: tens of pixels apart\n  append(400, 5000, 0.01, () => null); // a long gap\n  append(450, 20, 5, (x, k) => (k % 2 === 0 ? value(x, k) : null)); // isolated points between missing ys\n  // dense, with gaps of 5, 15, 25 and 35 x units ending at x 650, 750, 850 and 950, and a single missing y\n  const isGap = (k: number) => k % 20_000 >= 20_000 - 1000 * (1 + 2 * Math.floor(k / 20_000)) || k === 33_333;\n  append(550, 90_000, 0.005, (x, k) => (isGap(k) ? null : value(x, k)));\n  return data;\n}\n\n// a sparse, continuous series of independent values, whose overshooting curve and dash M4 can't reduce\nfunction generateCurveData(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('dense-sparse-and-gaps-curve');\n  return Array.from({ length: 21 }, (_, k): SeriesDatum => [k * 50, rng(5, 20, 2)]);\n}\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const curveData = useMemo(generateCurveData, []);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // exact from the summary of the downsampled black series; the magenta one isn't downsampled\n        legendValues={[\n          LegendValue.FirstNonNullValue,\n          LegendValue.LastNonNullValue,\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Difference,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} tickFormat={upToTwoDecimals} />\n      <LineSeries\n        id=\"dense, sparse and gaps\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={data}\n        color={isDarkTheme ? 'white' : 'black'}\n        curve={CurveType.CURVE_MONOTONE_X}\n        lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n      />\n      <LineSeries\n        id=\"sparse curve\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={curveData}\n        color=\"magenta\"\n        curve={CurveType.CURVE_NATURAL}\n        lineSeriesStyle={{ line: { dash: [4, 4] }, point: { visible: 'always' } }}\n      />\n    </Chart>\n  );\n};\n";
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo } from 'react';\n\nimport { Axis, Chart, CurveType, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport { getM4Knob, m4SeriesProps } from './m4_knob';\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme, useThemeId } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\nimport { upToTwoDecimals } from '../utils/formatters';\n\ntype SeriesDatum = [x: number, y: number | null];\n\nfunction generateData(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('dense-sparse-and-gaps');\n  const trend = noiseTable(rng, 32);\n  let level = 0; // the y the line holds until the next jump\n  let nextJump = 0; // the x of the next jump to a random level\n  // called in x order; the sign flips on every row, so dense stretches draw a narrow band around the level\n  const value = (x: number, k: number) => {\n    if (x >= nextJump) {\n      level = rng(-8, 8, 2);\n      nextJump = x + rng(0.2, 4, 2); // at about a pixel per x unit: part of a pixel to a few pixels\n    }\n    return 10 + sample(trend, x / 40) * 10 + level + (k % 2 === 0 ? 1 : -1) * rng(0, 1.5, 2);\n  };\n  const data: SeriesDatum[] = [];\n  // appends `count` rows from x `from`, `step` apart\n  const append = (from: number, count: number, step: number, y: (x: number, k: number) => number | null) => {\n    for (let k = 0; k < count; k++) data.push([from + k * step, y(from + k * step, k)]);\n  };\n  append(0, 80_000, 0.0025, value); // super dense: hundreds of rows per pixel\n  append(200, 8, 25, value); // super sparse: tens of pixels apart\n  append(400, 5000, 0.01, () => null); // a long gap\n  append(450, 20, 5, (x, k) => (k % 2 === 0 ? value(x, k) : null)); // isolated points between missing ys\n  // dense, with gaps of 5, 15, 25 and 35 x units ending at x 650, 750, 850 and 950, and a single missing y\n  const isGap = (k: number) => k % 20_000 >= 20_000 - 1000 * (1 + 2 * Math.floor(k / 20_000)) || k === 33_333;\n  append(550, 90_000, 0.005, (x, k) => (isGap(k) ? null : value(x, k)));\n  return data;\n}\n\n// a sparse, continuous series of independent values, whose overshooting curve and dash M4 can't reduce\nfunction generateCurveData(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('dense-sparse-and-gaps-curve');\n  return Array.from({ length: 21 }, (_, k): SeriesDatum => [k * 50, rng(5, 20, 2)]);\n}\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const curveData = useMemo(generateCurveData, []);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  // the magenta series is never downsampled\n  const m4Props = m4SeriesProps(getM4Knob());\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // exact from the summary of the downsampled black series; the magenta one isn't downsampled\n        legendValues={[\n          LegendValue.FirstNonNullValue,\n          LegendValue.LastNonNullValue,\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Difference,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} tickFormat={upToTwoDecimals} />\n      <LineSeries\n        id=\"dense, sparse and gaps\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={data}\n        color={isDarkTheme ? 'white' : 'black'}\n        curve={CurveType.CURVE_MONOTONE_X}\n        lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n        {...m4Props}\n      />\n      <LineSeries\n        id=\"sparse curve\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={curveData}\n        color=\"magenta\"\n        curve={CurveType.CURVE_NATURAL}\n        lineSeriesStyle={{ line: { dash: [4, 4] }, point: { visible: 'always' } }}\n      />\n    </Chart>\n  );\n};\n";
 // @ts-ignore
-var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 55 }, "endLoc": { "col": 1, "line": 102 }, "startBody": { "col": 36, "line": 55 }, "endBody": { "col": 1, "line": 102 } } };
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 56 }, "endLoc": { "col": 1, "line": 106 }, "startBody": { "col": 36, "line": 56 }, "endBody": { "col": 1, "line": 106 } } };
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -19733,6 +19737,7 @@ var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 55 }, "e
 const react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
 const utils_1 = __webpack_require__(/*! @elastic/charts/src/mocks/utils */ "../packages/charts/src/mocks/utils.ts");
+const m4_knob_1 = __webpack_require__(/*! ./m4_knob */ "./stories/downsampling/m4_knob.ts");
 const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
 const smooth_noise_1 = __webpack_require__(/*! ../utils/datasets/smooth_noise */ "./stories/utils/datasets/smooth_noise.ts");
 const formatters_1 = __webpack_require__(/*! ../utils/formatters */ "./stories/utils/formatters.ts");
@@ -19774,6 +19779,8 @@ const Example = (_, { title, description }) => {
     const curveData = (0, react_1.useMemo)(generateCurveData, []);
     const baseTheme = (0, use_base_theme_1.useBaseTheme)();
     const isDarkTheme = (0, use_base_theme_1.useThemeId)().includes('dark');
+    // the magenta series is never downsampled
+    const m4Props = (0, m4_knob_1.m4SeriesProps)((0, m4_knob_1.getM4Knob)());
     return (react_1.default.createElement(charts_1.Chart, { title: title, description: description },
         react_1.default.createElement(charts_1.Settings, { showLegend: true, legendPosition: charts_1.Position.Right, 
             // exact from the summary of the downsampled black series; the magenta one isn't downsampled
@@ -19787,11 +19794,11 @@ const Example = (_, { title, description }) => {
             ], baseTheme: baseTheme }),
         react_1.default.createElement(charts_1.Axis, { id: "x", position: charts_1.Position.Bottom }),
         react_1.default.createElement(charts_1.Axis, { id: "y", position: charts_1.Position.Left, tickFormat: formatters_1.upToTwoDecimals }),
-        react_1.default.createElement(charts_1.LineSeries, { id: "dense, sparse and gaps", xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: data, color: isDarkTheme ? 'white' : 'black', curve: charts_1.CurveType.CURVE_MONOTONE_X, lineSeriesStyle: { line: { strokeWidth: 0.25 } } }),
+        react_1.default.createElement(charts_1.LineSeries, { id: "dense, sparse and gaps", xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: data, color: isDarkTheme ? 'white' : 'black', curve: charts_1.CurveType.CURVE_MONOTONE_X, lineSeriesStyle: { line: { strokeWidth: 0.25 } }, ...m4Props }),
         react_1.default.createElement(charts_1.LineSeries, { id: "sparse curve", xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: curveData, color: "magenta", curve: charts_1.CurveType.CURVE_NATURAL, lineSeriesStyle: { line: { dash: [4, 4] }, point: { visible: 'always' } } })));
 };
 exports.Example = Example;
-exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const curveData = useMemo(generateCurveData, []);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // exact from the summary of the downsampled black series; the magenta one isn't downsampled\n        legendValues={[\n          LegendValue.FirstNonNullValue,\n          LegendValue.LastNonNullValue,\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Difference,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} tickFormat={upToTwoDecimals} />\n      <LineSeries\n        id=\"dense, sparse and gaps\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={data}\n        color={isDarkTheme ? 'white' : 'black'}\n        curve={CurveType.CURVE_MONOTONE_X}\n        lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n      />\n      <LineSeries\n        id=\"sparse curve\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={curveData}\n        color=\"magenta\"\n        curve={CurveType.CURVE_NATURAL}\n        lineSeriesStyle={{ line: { dash: [4, 4] }, point: { visible: 'always' } }}\n      />\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => {\n  const data = useMemo(generateData, []);\n  const curveData = useMemo(generateCurveData, []);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  // the magenta series is never downsampled\n  const m4Props = m4SeriesProps(getM4Knob());\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        showLegend\n        legendPosition={Position.Right}\n        // exact from the summary of the downsampled black series; the magenta one isn't downsampled\n        legendValues={[\n          LegendValue.FirstNonNullValue,\n          LegendValue.LastNonNullValue,\n          LegendValue.Min,\n          LegendValue.Max,\n          LegendValue.Difference,\n          LegendValue.CurrentAndLastValue,\n        ]}\n        baseTheme={baseTheme}\n      />\n      <Axis id=\"x\" position={Position.Bottom} />\n      <Axis id=\"y\" position={Position.Left} tickFormat={upToTwoDecimals} />\n      <LineSeries\n        id=\"dense, sparse and gaps\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={data}\n        color={isDarkTheme ? 'white' : 'black'}\n        curve={CurveType.CURVE_MONOTONE_X}\n        lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n        {...m4Props}\n      />\n      <LineSeries\n        id=\"sparse curve\"\n        xScaleType={ScaleType.Linear}\n        yScaleType={ScaleType.Linear}\n        xAccessor={0}\n        yAccessors={[1]}\n        data={curveData}\n        color=\"magenta\"\n        curve={CurveType.CURVE_NATURAL}\n        lineSeriesStyle={{ line: { dash: [4, 4] }, point: { visible: 'always' } }}\n      />\n    </Chart>\n  );\n}" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -19832,9 +19839,9 @@ exports.Example = void 0;
 /* eslint-disable */
 // @ts-nocheck
 // @ts-ignore
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo } from 'react';\n\nimport { Chart, CurveType, LineSeries, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme, useThemeId } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\n\ntype SeriesDatum = [x: number, y: number | null];\n\n// x runs from 0 to 1000: dense stretches have 100 rows per x unit, sparse ones a row every 25 units\nconst DENSE_STEP = 0.01;\nconst SPARSE_STEP = 25;\n\n// rows from x `from` up to `to`, `step` apart, called in x order\nfunction rows(from: number, to: number, step: number, y: (x: number) => number | null): SeriesDatum[] {\n  return Array.from({ length: Math.round((to - from) / step) }, (_, k) => [from + k * step, y(from + k * step)]);\n}\n\nfunction smooth(): SeriesDatum[] {\n  const trend = noiseTable(getRandomNumberGenerator('grid-smooth'), 12);\n  const y = (x: number) => sample(trend, x / 80) * 100;\n  return [...rows(0, 400, DENSE_STEP, y), ...rows(400, 700, SPARSE_STEP, y), ...rows(700, 1000, DENSE_STEP, y)];\n}\n\nfunction noisy(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('grid-noisy');\n  const trend = noiseTable(rng, 12);\n  const level = (x: number) => sample(trend, x / 80) * 100;\n  const y = (x: number) => level(x) + rng(-20, 20, 2);\n  return [...rows(0, 400, DENSE_STEP, y), ...rows(400, 700, SPARSE_STEP, level), ...rows(700, 1000, DENSE_STEP, y)];\n}\n\nfunction brownian(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('grid-brownian');\n  let y = 0;\n  return rows(0, 1000, DENSE_STEP, () => (y += rng(-1, 1, 3)));\n}\n\nfunction brownianWithSparseMiddle(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('grid-brownian-sparse');\n  let y = 0;\n  const step = () => (y += rng(-1, 1, 3));\n  // the same walk, but only every SPARSE_STEP / DENSE_STEP steps is a row\n  const skip = () => {\n    for (let k = 1; k < SPARSE_STEP / DENSE_STEP; k++) step();\n    return step();\n  };\n  return [\n    ...rows(0, 400, DENSE_STEP, step),\n    ...rows(400, 700, SPARSE_STEP, skip),\n    ...rows(700, 1000, DENSE_STEP, step),\n  ];\n}\n\nfunction wild(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('grid-wild');\n  const y = () => rng(0, 100, 2);\n  return [\n    ...rows(0, 200, DENSE_STEP, y),\n    ...rows(200, 400, SPARSE_STEP, y),\n    ...rows(400, 600, DENSE_STEP, y),\n    ...rows(600, 800, SPARSE_STEP, y),\n    ...rows(800, 1000, DENSE_STEP, y),\n  ];\n}\n\nfunction gapsAndSpikes(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('grid-gaps-spikes');\n  const trend = noiseTable(rng, 12);\n  const level = (x: number) => 20 + sample(trend, x / 80) * 60;\n  return [\n    ...rows(0, 300, DENSE_STEP, (x) => level(x) + (Math.round(x / DENSE_STEP) % 7919 === 0 ? 40 : 0)), // single-row spikes\n    ...rows(300, 400, DENSE_STEP, () => null), // a long gap\n    ...rows(400, 500, 10, (x) => (Math.round(x / 10) % 2 === 0 ? level(x) : null)), // isolated points\n    ...rows(500, 1000, DENSE_STEP, (x) => (Math.floor(x / 50) % 3 === 2 ? null : level(x) + rng(-3, 3, 2))), // gaps\n  ];\n}\n\nconst CASES = [\n  ['smooth', smooth],\n  ['noisy', noisy],\n  ['Brownian', brownian],\n  ['Brownian, sparse middle', brownianWithSparseMiddle],\n  ['wild, dense and sparse', wild],\n  ['gaps and spikes', gapsAndSpikes],\n] as const;\n\nconst CURVES = [\n  ['linear', CurveType.LINEAR],\n  ['monotone X', CurveType.CURVE_MONOTONE_X],\n  ['step after', CurveType.CURVE_STEP_AFTER],\n] as const;\n\n// the six rows, 940 px with the gaps, fit the 1000 px tall VRT window with the story's 20 px padding\nconst ROW_HEIGHT = 150;\nconst GAP = 8;\n\nexport const Example: ChartsStory = () => {\n  const data = useMemo(() => CASES.map(([, generate]) => generate()), []);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  return (\n    <div\n      style={{\n        display: 'grid',\n        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',\n        gridAutoRows: ROW_HEIGHT,\n        gap: GAP,\n        height: '100%',\n        overflow: 'auto',\n      }}\n    >\n      {CASES.map(([name], row) =>\n        CURVES.map(([curveName, curve]) => (\n          <Chart key={`${name}, ${curveName}`} title={`${name}, ${curveName}`}>\n            <Settings baseTheme={baseTheme} />\n            <LineSeries\n              id=\"line\"\n              xScaleType={ScaleType.Linear}\n              yScaleType={ScaleType.Linear}\n              xAccessor={0}\n              yAccessors={[1]}\n              data={data[row]!}\n              curve={curve}\n              color={isDarkTheme ? 'white' : 'black'}\n              lineSeriesStyle={{ line: { strokeWidth: 0.5 } }}\n            />\n          </Chart>\n        )),\n      )}\n    </div>\n  );\n};\n\nExample.parameters = {\n  // tall enough for every row of charts, in a box that can be resized\n  resize: { height: CASES.length * ROW_HEIGHT + (CASES.length - 1) * GAP, maxHeight: 'none' },\n};\n";
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo } from 'react';\n\nimport { Chart, CurveType, LineSeries, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport { getM4Knob, m4SeriesProps } from './m4_knob';\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme, useThemeId } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\n\ntype SeriesDatum = [x: number, y: number | null];\n\n// x runs from 0 to 1000: dense stretches have 100 rows per x unit, sparse ones a row every 25 units\nconst DENSE_STEP = 0.01;\nconst SPARSE_STEP = 25;\n\n// rows from x `from` up to `to`, `step` apart, called in x order\nfunction rows(from: number, to: number, step: number, y: (x: number) => number | null): SeriesDatum[] {\n  return Array.from({ length: Math.round((to - from) / step) }, (_, k) => [from + k * step, y(from + k * step)]);\n}\n\nfunction smooth(): SeriesDatum[] {\n  const trend = noiseTable(getRandomNumberGenerator('grid-smooth'), 12);\n  const y = (x: number) => sample(trend, x / 80) * 100;\n  return [...rows(0, 400, DENSE_STEP, y), ...rows(400, 700, SPARSE_STEP, y), ...rows(700, 1000, DENSE_STEP, y)];\n}\n\nfunction noisy(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('grid-noisy');\n  const trend = noiseTable(rng, 12);\n  const level = (x: number) => sample(trend, x / 80) * 100;\n  const y = (x: number) => level(x) + rng(-20, 20, 2);\n  return [...rows(0, 400, DENSE_STEP, y), ...rows(400, 700, SPARSE_STEP, level), ...rows(700, 1000, DENSE_STEP, y)];\n}\n\nfunction brownian(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('grid-brownian');\n  let y = 0;\n  return rows(0, 1000, DENSE_STEP, () => (y += rng(-1, 1, 3)));\n}\n\nfunction brownianWithSparseMiddle(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('grid-brownian-sparse');\n  let y = 0;\n  const step = () => (y += rng(-1, 1, 3));\n  // the same walk, but only every SPARSE_STEP / DENSE_STEP steps is a row\n  const skip = () => {\n    for (let k = 1; k < SPARSE_STEP / DENSE_STEP; k++) step();\n    return step();\n  };\n  return [\n    ...rows(0, 400, DENSE_STEP, step),\n    ...rows(400, 700, SPARSE_STEP, skip),\n    ...rows(700, 1000, DENSE_STEP, step),\n  ];\n}\n\nfunction wild(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('grid-wild');\n  const y = () => rng(0, 100, 2);\n  return [\n    ...rows(0, 200, DENSE_STEP, y),\n    ...rows(200, 400, SPARSE_STEP, y),\n    ...rows(400, 600, DENSE_STEP, y),\n    ...rows(600, 800, SPARSE_STEP, y),\n    ...rows(800, 1000, DENSE_STEP, y),\n  ];\n}\n\nfunction gapsAndSpikes(): SeriesDatum[] {\n  const rng = getRandomNumberGenerator('grid-gaps-spikes');\n  const trend = noiseTable(rng, 12);\n  const level = (x: number) => 20 + sample(trend, x / 80) * 60;\n  return [\n    ...rows(0, 300, DENSE_STEP, (x) => level(x) + (Math.round(x / DENSE_STEP) % 7919 === 0 ? 40 : 0)), // single-row spikes\n    ...rows(300, 400, DENSE_STEP, () => null), // a long gap\n    ...rows(400, 500, 10, (x) => (Math.round(x / 10) % 2 === 0 ? level(x) : null)), // isolated points\n    ...rows(500, 1000, DENSE_STEP, (x) => (Math.floor(x / 50) % 3 === 2 ? null : level(x) + rng(-3, 3, 2))), // gaps\n  ];\n}\n\nconst CASES = [\n  ['smooth', smooth],\n  ['noisy', noisy],\n  ['Brownian', brownian],\n  ['Brownian, sparse middle', brownianWithSparseMiddle],\n  ['wild, dense and sparse', wild],\n  ['gaps and spikes', gapsAndSpikes],\n] as const;\n\nconst CURVES = [\n  ['linear', CurveType.LINEAR],\n  ['monotone X', CurveType.CURVE_MONOTONE_X],\n  ['step after', CurveType.CURVE_STEP_AFTER],\n] as const;\n\n// the six rows, 940 px with the gaps, fit the 1000 px tall VRT window with the story's 20 px padding\nconst ROW_HEIGHT = 150;\nconst GAP = 8;\n\nexport const Example: ChartsStory = () => {\n  const data = useMemo(() => CASES.map(([, generate]) => generate()), []);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  const m4Props = m4SeriesProps(getM4Knob());\n  return (\n    <div\n      style={{\n        display: 'grid',\n        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',\n        gridAutoRows: ROW_HEIGHT,\n        gap: GAP,\n        height: '100%',\n        overflow: 'auto',\n      }}\n    >\n      {CASES.map(([name], row) =>\n        CURVES.map(([curveName, curve]) => (\n          <Chart key={`${name}, ${curveName}`} title={`${name}, ${curveName}`}>\n            <Settings baseTheme={baseTheme} />\n            <LineSeries\n              id=\"line\"\n              xScaleType={ScaleType.Linear}\n              yScaleType={ScaleType.Linear}\n              xAccessor={0}\n              yAccessors={[1]}\n              data={data[row]!}\n              curve={curve}\n              color={isDarkTheme ? 'white' : 'black'}\n              lineSeriesStyle={{ line: { strokeWidth: 0.5 } }}\n              {...m4Props}\n            />\n          </Chart>\n        )),\n      )}\n    </div>\n  );\n};\n\nExample.parameters = {\n  // tall enough for every row of charts, in a box that can be resized\n  resize: { height: CASES.length * ROW_HEIGHT + (CASES.length - 1) * GAP, maxHeight: 'none' },\n};\n";
 // @ts-ignore
-var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 108 }, "endLoc": { "col": 1, "line": 143 }, "startBody": { "col": 36, "line": 108 }, "endBody": { "col": 1, "line": 143 } } };
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 109 }, "endLoc": { "col": 1, "line": 146 }, "startBody": { "col": 36, "line": 109 }, "endBody": { "col": 1, "line": 146 } } };
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -19845,6 +19852,7 @@ var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 108 }, "
 const react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
 const utils_1 = __webpack_require__(/*! @elastic/charts/src/mocks/utils */ "../packages/charts/src/mocks/utils.ts");
+const m4_knob_1 = __webpack_require__(/*! ./m4_knob */ "./stories/downsampling/m4_knob.ts");
 const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
 const smooth_noise_1 = __webpack_require__(/*! ../utils/datasets/smooth_noise */ "./stories/utils/datasets/smooth_noise.ts");
 // x runs from 0 to 1000: dense stretches have 100 rows per x unit, sparse ones a row every 25 units
@@ -19929,6 +19937,7 @@ const Example = () => {
     const data = (0, react_1.useMemo)(() => CASES.map(([, generate]) => generate()), []);
     const baseTheme = (0, use_base_theme_1.useBaseTheme)();
     const isDarkTheme = (0, use_base_theme_1.useThemeId)().includes('dark');
+    const m4Props = (0, m4_knob_1.m4SeriesProps)((0, m4_knob_1.getM4Knob)());
     return (react_1.default.createElement("div", { style: {
             display: 'grid',
             gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
@@ -19938,14 +19947,14 @@ const Example = () => {
             overflow: 'auto',
         } }, CASES.map(([name], row) => CURVES.map(([curveName, curve]) => (react_1.default.createElement(charts_1.Chart, { key: `${name}, ${curveName}`, title: `${name}, ${curveName}` },
         react_1.default.createElement(charts_1.Settings, { baseTheme: baseTheme }),
-        react_1.default.createElement(charts_1.LineSeries, { id: "line", xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: data[row], curve: curve, color: isDarkTheme ? 'white' : 'black', lineSeriesStyle: { line: { strokeWidth: 0.5 } } })))))));
+        react_1.default.createElement(charts_1.LineSeries, { id: "line", xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: data[row], curve: curve, color: isDarkTheme ? 'white' : 'black', lineSeriesStyle: { line: { strokeWidth: 0.5 } }, ...m4Props })))))));
 };
 exports.Example = Example;
 exports.Example.parameters = {
     // tall enough for every row of charts, in a box that can be resized
     resize: { height: CASES.length * ROW_HEIGHT + (CASES.length - 1) * GAP, maxHeight: 'none' },
 };
-exports.Example.parameters = { storySource: { source: "() => {\n  const data = useMemo(() => CASES.map(([, generate]) => generate()), []);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  return (\n    <div\n      style={{\n        display: 'grid',\n        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',\n        gridAutoRows: ROW_HEIGHT,\n        gap: GAP,\n        height: '100%',\n        overflow: 'auto',\n      }}\n    >\n      {CASES.map(([name], row) =>\n        CURVES.map(([curveName, curve]) => (\n          <Chart key={`${name}, ${curveName}`} title={`${name}, ${curveName}`}>\n            <Settings baseTheme={baseTheme} />\n            <LineSeries\n              id=\"line\"\n              xScaleType={ScaleType.Linear}\n              yScaleType={ScaleType.Linear}\n              xAccessor={0}\n              yAccessors={[1]}\n              data={data[row]!}\n              curve={curve}\n              color={isDarkTheme ? 'white' : 'black'}\n              lineSeriesStyle={{ line: { strokeWidth: 0.5 } }}\n            />\n          </Chart>\n        )),\n      )}\n    </div>\n  );\n}" }, ...exports.Example.parameters };
+exports.Example.parameters = { storySource: { source: "() => {\n  const data = useMemo(() => CASES.map(([, generate]) => generate()), []);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  const m4Props = m4SeriesProps(getM4Knob());\n  return (\n    <div\n      style={{\n        display: 'grid',\n        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',\n        gridAutoRows: ROW_HEIGHT,\n        gap: GAP,\n        height: '100%',\n        overflow: 'auto',\n      }}\n    >\n      {CASES.map(([name], row) =>\n        CURVES.map(([curveName, curve]) => (\n          <Chart key={`${name}, ${curveName}`} title={`${name}, ${curveName}`}>\n            <Settings baseTheme={baseTheme} />\n            <LineSeries\n              id=\"line\"\n              xScaleType={ScaleType.Linear}\n              yScaleType={ScaleType.Linear}\n              xAccessor={0}\n              yAccessors={[1]}\n              data={data[row]!}\n              curve={curve}\n              color={isDarkTheme ? 'white' : 'black'}\n              lineSeriesStyle={{ line: { strokeWidth: 0.5 } }}\n              {...m4Props}\n            />\n          </Chart>\n        )),\n      )}\n    </div>\n  );\n}" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -19986,9 +19995,9 @@ exports.Example = void 0;
 /* eslint-disable */
 // @ts-nocheck
 // @ts-ignore
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo, useRef } from 'react';\n\nimport type { PointerEvent } from '@elastic/charts';\nimport {\n  Axis,\n  Chart,\n  CurveType,\n  LineSeries,\n  Position,\n  ScaleType,\n  Settings,\n  Tooltip,\n  TooltipType,\n} from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme, useThemeId } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\n\n// the regimes of both series, by x in seconds:\n//      0 -  832  points joined by lines, without rows between them\n//    833 - 1666  points, each kept isolated by a null row on either side, without other rows\n//   1667 - 3332  continuous, a row every second\n//   3333 - 8332  gaps: runs of null rows, some in both series, some in either one\n//   8333 - 9999  isolated points, with a null row in each of the other seconds\n\ntype SeriesDatum = [x: number, y: number | null];\n\nconst ROWS = 10000; // one row per second\nconst CPU_MAX = 5;\nconst MEMORY_MAX = 10_000_000;\nconst ISOLATED_FROM = 833;\nconst CONTINUOUS_FROM = 1667;\nconst GAPPY_FROM = 3333;\nconst POINTY_FROM = 8333;\nconst POINT_EVERY = 50;\n\n// runs of missing seconds in the gappy part, from 1 to 150 s long, as [from, to) pairs\nfunction gaps(seed: string): Array<[number, number]> {\n  const rng = getRandomNumberGenerator(seed);\n  const runs: Array<[number, number]> = [];\n  for (let from = GAPPY_FROM + rng(0, 300); from < POINTY_FROM; from += rng(150, 700)) {\n    const to = Math.min(from + rng(1, 150), POINTY_FROM);\n    runs.push([from, to]);\n    from = to;\n  }\n  return runs;\n}\n\n// the gaps of both series, besides the gaps of either one, which sometimes overlap\nconst sharedGaps = gaps('synced-shared-gaps');\n\n// the points of the first and last sixth, every POINT_EVERY seconds from the start of the part, in turn: only cpu,\n// only memory, both at the same second, and both a second apart, which nearly always falls into one pixel column\nfunction isPoint(series: 'cpu' | 'memory', sinceStart: number) {\n  const offset = sinceStart % POINT_EVERY;\n  switch (Math.floor(sinceStart / POINT_EVERY) % 4) {\n    case 0:\n      return series === 'cpu' && offset === 0;\n    case 1:\n      return series === 'memory' && offset === 0;\n    case 2:\n      return offset === 0;\n    default:\n      return offset === (series === 'cpu' ? 0 : 1);\n  }\n}\n\n// a smooth level with noise on top, between 5% and 95% of max, so M4 keeps different rows of each series, without\n// other rows than the points of the first sixth and the nulls keeping its second half's points isolated, and null in\n// the gaps and between the isolated points of the last sixth\nfunction usage(series: 'cpu' | 'memory', max: number, fractionDigits: number): SeriesDatum[] {\n  const rng = getRandomNumberGenerator(`synced-${series}`);\n  const trend = noiseTable(rng, 12);\n  const seriesGaps = [...sharedGaps, ...gaps(`synced-${series}-gaps`)];\n  return Array.from({ length: ROWS }, (_, x): SeriesDatum[] => {\n    // every second draws from rng, so each part keeps its values whatever the other parts do\n    const level = (0.3 + 0.4 * sample(trend, x / 800)) * max;\n    const y = Number((level + rng(-0.25 * max, 0.25 * max, fractionDigits)).toFixed(fractionDigits));\n    if (x < CONTINUOUS_FROM) {\n      if (isPoint(series, x)) return [[x, y]];\n      const isNextToPoint = isPoint(series, x - 1) || isPoint(series, x + 1);\n      return x >= ISOLATED_FROM && isNextToPoint ? [[x, null]] : [];\n    }\n    const isMissing =\n      x < POINTY_FROM ? seriesGaps.some(([from, to]) => x >= from && x < to) : !isPoint(series, x - POINTY_FROM);\n    return [[x, isMissing ? null : y]];\n  }).flat();\n}\n\nexport const Example: ChartsStory = () => {\n  const cpu = useMemo(() => usage('cpu', CPU_MAX, 3), []);\n  const memory = useMemo(() => usage('memory', MEMORY_MAX, 0), []);\n  const cpuChart = useRef<Chart>(null);\n  const memoryChart = useRef<Chart>(null);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n\n  const pointerUpdate = (event: PointerEvent) => {\n    cpuChart.current?.dispatchExternalPointerEvent(event);\n    memoryChart.current?.dispatchExternalPointerEvent(event);\n  };\n\n  // the y tick labels of the two charts differ in width, so their plot areas start at different x offsets\n  const charts = [\n    { id: 'cpu', title: 'CPU load', ref: cpuChart, data: cpu, max: CPU_MAX },\n    { id: 'memory', title: 'Memory (bytes)', ref: memoryChart, data: memory, max: MEMORY_MAX },\n  ];\n\n  return (\n    <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', gap: 16, height: '100%' }}>\n      {charts.map(({ id, title, ref, data, max }) => (\n        <Chart key={id} id={id} title={title} ref={ref}>\n          <Settings\n            baseTheme={baseTheme}\n            pointerUpdateDebounce={0}\n            onPointerUpdate={pointerUpdate}\n            externalPointerEvents={{ tooltip: { visible: true } }}\n            // the first rows of the two series differ, but the charts span the same seconds\n            xDomain={{ min: 0, max: ROWS - 1 }}\n          />\n          {/* the tooltips show the exact x and y of the hovered and the synced rows */}\n          <Tooltip type={TooltipType.VerticalCursor} />\n          <Axis id=\"x\" position={Position.Bottom} title=\"seconds\" />\n          <Axis id=\"y\" position={Position.Left} domain={{ min: 0, max }} />\n          <LineSeries\n            id={id}\n            xScaleType={ScaleType.Linear}\n            yScaleType={ScaleType.Linear}\n            xAccessor={0}\n            yAccessors={[1]}\n            data={data}\n            color={isDarkTheme ? 'white' : 'black'}\n            curve={CurveType.CURVE_STEP_AFTER}\n            lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n          />\n        </Chart>\n      ))}\n    </div>\n  );\n};\n\nExample.parameters = {\n  resize: { height: 640, maxHeight: 'none' },\n};\n";
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useMemo, useRef } from 'react';\n\nimport type { PointerEvent } from '@elastic/charts';\nimport {\n  Axis,\n  Chart,\n  CurveType,\n  LineSeries,\n  Position,\n  ScaleType,\n  Settings,\n  Tooltip,\n  TooltipType,\n} from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport { getM4Knob, m4SeriesProps } from './m4_knob';\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme, useThemeId } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\n\n// the regimes of both series, by x in seconds:\n//      0 -  832  points joined by lines, without rows between them\n//    833 - 1666  points, each kept isolated by a null row on either side, without other rows\n//   1667 - 3332  continuous, a row every second\n//   3333 - 8332  gaps: runs of null rows, some in both series, some in either one\n//   8333 - 9999  isolated points, with a null row in each of the other seconds\n\ntype SeriesDatum = [x: number, y: number | null];\n\nconst ROWS = 10000; // one row per second\nconst CPU_MAX = 5;\nconst MEMORY_MAX = 10_000_000;\nconst ISOLATED_FROM = 833;\nconst CONTINUOUS_FROM = 1667;\nconst GAPPY_FROM = 3333;\nconst POINTY_FROM = 8333;\nconst POINT_EVERY = 50;\n\n// runs of missing seconds in the gappy part, from 1 to 150 s long, as [from, to) pairs\nfunction gaps(seed: string): Array<[number, number]> {\n  const rng = getRandomNumberGenerator(seed);\n  const runs: Array<[number, number]> = [];\n  for (let from = GAPPY_FROM + rng(0, 300); from < POINTY_FROM; from += rng(150, 700)) {\n    const to = Math.min(from + rng(1, 150), POINTY_FROM);\n    runs.push([from, to]);\n    from = to;\n  }\n  return runs;\n}\n\n// the gaps of both series, besides the gaps of either one, which sometimes overlap\nconst sharedGaps = gaps('synced-shared-gaps');\n\n// the points of the first and last sixth, every POINT_EVERY seconds from the start of the part, in turn: only cpu,\n// only memory, both at the same second, and both a second apart, which nearly always falls into one pixel column\nfunction isPoint(series: 'cpu' | 'memory', sinceStart: number) {\n  const offset = sinceStart % POINT_EVERY;\n  switch (Math.floor(sinceStart / POINT_EVERY) % 4) {\n    case 0:\n      return series === 'cpu' && offset === 0;\n    case 1:\n      return series === 'memory' && offset === 0;\n    case 2:\n      return offset === 0;\n    default:\n      return offset === (series === 'cpu' ? 0 : 1);\n  }\n}\n\n// a smooth level with noise on top, between 5% and 95% of max, so M4 keeps different rows of each series, without\n// other rows than the points of the first sixth and the nulls keeping its second half's points isolated, and null in\n// the gaps and between the isolated points of the last sixth\nfunction usage(series: 'cpu' | 'memory', max: number, fractionDigits: number): SeriesDatum[] {\n  const rng = getRandomNumberGenerator(`synced-${series}`);\n  const trend = noiseTable(rng, 12);\n  const seriesGaps = [...sharedGaps, ...gaps(`synced-${series}-gaps`)];\n  return Array.from({ length: ROWS }, (_, x): SeriesDatum[] => {\n    // every second draws from rng, so each part keeps its values whatever the other parts do\n    const level = (0.3 + 0.4 * sample(trend, x / 800)) * max;\n    const y = Number((level + rng(-0.25 * max, 0.25 * max, fractionDigits)).toFixed(fractionDigits));\n    if (x < CONTINUOUS_FROM) {\n      if (isPoint(series, x)) return [[x, y]];\n      const isNextToPoint = isPoint(series, x - 1) || isPoint(series, x + 1);\n      return x >= ISOLATED_FROM && isNextToPoint ? [[x, null]] : [];\n    }\n    const isMissing =\n      x < POINTY_FROM ? seriesGaps.some(([from, to]) => x >= from && x < to) : !isPoint(series, x - POINTY_FROM);\n    return [[x, isMissing ? null : y]];\n  }).flat();\n}\n\nexport const Example: ChartsStory = () => {\n  const cpu = useMemo(() => usage('cpu', CPU_MAX, 3), []);\n  const memory = useMemo(() => usage('memory', MEMORY_MAX, 0), []);\n  const cpuChart = useRef<Chart>(null);\n  const memoryChart = useRef<Chart>(null);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  const m4Props = m4SeriesProps(getM4Knob());\n\n  const pointerUpdate = (event: PointerEvent) => {\n    cpuChart.current?.dispatchExternalPointerEvent(event);\n    memoryChart.current?.dispatchExternalPointerEvent(event);\n  };\n\n  // the y tick labels of the two charts differ in width, so their plot areas start at different x offsets\n  const charts = [\n    { id: 'cpu', title: 'CPU load', ref: cpuChart, data: cpu, max: CPU_MAX },\n    { id: 'memory', title: 'Memory (bytes)', ref: memoryChart, data: memory, max: MEMORY_MAX },\n  ];\n\n  return (\n    <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', gap: 16, height: '100%' }}>\n      {charts.map(({ id, title, ref, data, max }) => (\n        <Chart key={id} id={id} title={title} ref={ref}>\n          <Settings\n            baseTheme={baseTheme}\n            pointerUpdateDebounce={0}\n            onPointerUpdate={pointerUpdate}\n            externalPointerEvents={{ tooltip: { visible: true } }}\n            // the first rows of the two series differ, but the charts span the same seconds\n            xDomain={{ min: 0, max: ROWS - 1 }}\n          />\n          {/* the tooltips show the exact x and y of the hovered and the synced rows */}\n          <Tooltip type={TooltipType.VerticalCursor} />\n          <Axis id=\"x\" position={Position.Bottom} title=\"seconds\" />\n          <Axis id=\"y\" position={Position.Left} domain={{ min: 0, max }} />\n          <LineSeries\n            id={id}\n            xScaleType={ScaleType.Linear}\n            yScaleType={ScaleType.Linear}\n            xAccessor={0}\n            yAccessors={[1]}\n            data={data}\n            color={isDarkTheme ? 'white' : 'black'}\n            curve={CurveType.CURVE_STEP_AFTER}\n            lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n            {...m4Props}\n          />\n        </Chart>\n      ))}\n    </div>\n  );\n};\n\nExample.parameters = {\n  resize: { height: 640, maxHeight: 'none' },\n};\n";
 // @ts-ignore
-var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 100 }, "endLoc": { "col": 1, "line": 150 }, "startBody": { "col": 36, "line": 100 }, "endBody": { "col": 1, "line": 150 } } };
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 101 }, "endLoc": { "col": 1, "line": 153 }, "startBody": { "col": 36, "line": 101 }, "endBody": { "col": 1, "line": 153 } } };
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -19999,6 +20008,7 @@ var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 100 }, "
 const react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
 const utils_1 = __webpack_require__(/*! @elastic/charts/src/mocks/utils */ "../packages/charts/src/mocks/utils.ts");
+const m4_knob_1 = __webpack_require__(/*! ./m4_knob */ "./stories/downsampling/m4_knob.ts");
 const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
 const smooth_noise_1 = __webpack_require__(/*! ../utils/datasets/smooth_noise */ "./stories/utils/datasets/smooth_noise.ts");
 const ROWS = 10000; // one row per second
@@ -20065,6 +20075,7 @@ const Example = () => {
     const memoryChart = (0, react_1.useRef)(null);
     const baseTheme = (0, use_base_theme_1.useBaseTheme)();
     const isDarkTheme = (0, use_base_theme_1.useThemeId)().includes('dark');
+    const m4Props = (0, m4_knob_1.m4SeriesProps)((0, m4_knob_1.getM4Knob)());
     const pointerUpdate = (event) => {
         cpuChart.current?.dispatchExternalPointerEvent(event);
         memoryChart.current?.dispatchExternalPointerEvent(event);
@@ -20081,13 +20092,13 @@ const Example = () => {
         react_1.default.createElement(charts_1.Tooltip, { type: charts_1.TooltipType.VerticalCursor }),
         react_1.default.createElement(charts_1.Axis, { id: "x", position: charts_1.Position.Bottom, title: "seconds" }),
         react_1.default.createElement(charts_1.Axis, { id: "y", position: charts_1.Position.Left, domain: { min: 0, max } }),
-        react_1.default.createElement(charts_1.LineSeries, { id: id, xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: data, color: isDarkTheme ? 'white' : 'black', curve: charts_1.CurveType.CURVE_STEP_AFTER, lineSeriesStyle: { line: { strokeWidth: 0.25 } } }))))));
+        react_1.default.createElement(charts_1.LineSeries, { id: id, xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: data, color: isDarkTheme ? 'white' : 'black', curve: charts_1.CurveType.CURVE_STEP_AFTER, lineSeriesStyle: { line: { strokeWidth: 0.25 } }, ...m4Props }))))));
 };
 exports.Example = Example;
 exports.Example.parameters = {
     resize: { height: 640, maxHeight: 'none' },
 };
-exports.Example.parameters = { storySource: { source: "() => {\n  const cpu = useMemo(() => usage('cpu', CPU_MAX, 3), []);\n  const memory = useMemo(() => usage('memory', MEMORY_MAX, 0), []);\n  const cpuChart = useRef<Chart>(null);\n  const memoryChart = useRef<Chart>(null);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n\n  const pointerUpdate = (event: PointerEvent) => {\n    cpuChart.current?.dispatchExternalPointerEvent(event);\n    memoryChart.current?.dispatchExternalPointerEvent(event);\n  };\n\n  // the y tick labels of the two charts differ in width, so their plot areas start at different x offsets\n  const charts = [\n    { id: 'cpu', title: 'CPU load', ref: cpuChart, data: cpu, max: CPU_MAX },\n    { id: 'memory', title: 'Memory (bytes)', ref: memoryChart, data: memory, max: MEMORY_MAX },\n  ];\n\n  return (\n    <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', gap: 16, height: '100%' }}>\n      {charts.map(({ id, title, ref, data, max }) => (\n        <Chart key={id} id={id} title={title} ref={ref}>\n          <Settings\n            baseTheme={baseTheme}\n            pointerUpdateDebounce={0}\n            onPointerUpdate={pointerUpdate}\n            externalPointerEvents={{ tooltip: { visible: true } }}\n            // the first rows of the two series differ, but the charts span the same seconds\n            xDomain={{ min: 0, max: ROWS - 1 }}\n          />\n          {/* the tooltips show the exact x and y of the hovered and the synced rows */}\n          <Tooltip type={TooltipType.VerticalCursor} />\n          <Axis id=\"x\" position={Position.Bottom} title=\"seconds\" />\n          <Axis id=\"y\" position={Position.Left} domain={{ min: 0, max }} />\n          <LineSeries\n            id={id}\n            xScaleType={ScaleType.Linear}\n            yScaleType={ScaleType.Linear}\n            xAccessor={0}\n            yAccessors={[1]}\n            data={data}\n            color={isDarkTheme ? 'white' : 'black'}\n            curve={CurveType.CURVE_STEP_AFTER}\n            lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n          />\n        </Chart>\n      ))}\n    </div>\n  );\n}" }, ...exports.Example.parameters };
+exports.Example.parameters = { storySource: { source: "() => {\n  const cpu = useMemo(() => usage('cpu', CPU_MAX, 3), []);\n  const memory = useMemo(() => usage('memory', MEMORY_MAX, 0), []);\n  const cpuChart = useRef<Chart>(null);\n  const memoryChart = useRef<Chart>(null);\n  const baseTheme = useBaseTheme();\n  const isDarkTheme = useThemeId().includes('dark');\n  const m4Props = m4SeriesProps(getM4Knob());\n\n  const pointerUpdate = (event: PointerEvent) => {\n    cpuChart.current?.dispatchExternalPointerEvent(event);\n    memoryChart.current?.dispatchExternalPointerEvent(event);\n  };\n\n  // the y tick labels of the two charts differ in width, so their plot areas start at different x offsets\n  const charts = [\n    { id: 'cpu', title: 'CPU load', ref: cpuChart, data: cpu, max: CPU_MAX },\n    { id: 'memory', title: 'Memory (bytes)', ref: memoryChart, data: memory, max: MEMORY_MAX },\n  ];\n\n  return (\n    <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', gap: 16, height: '100%' }}>\n      {charts.map(({ id, title, ref, data, max }) => (\n        <Chart key={id} id={id} title={title} ref={ref}>\n          <Settings\n            baseTheme={baseTheme}\n            pointerUpdateDebounce={0}\n            onPointerUpdate={pointerUpdate}\n            externalPointerEvents={{ tooltip: { visible: true } }}\n            // the first rows of the two series differ, but the charts span the same seconds\n            xDomain={{ min: 0, max: ROWS - 1 }}\n          />\n          {/* the tooltips show the exact x and y of the hovered and the synced rows */}\n          <Tooltip type={TooltipType.VerticalCursor} />\n          <Axis id=\"x\" position={Position.Bottom} title=\"seconds\" />\n          <Axis id=\"y\" position={Position.Left} domain={{ min: 0, max }} />\n          <LineSeries\n            id={id}\n            xScaleType={ScaleType.Linear}\n            yScaleType={ScaleType.Linear}\n            xAccessor={0}\n            yAccessors={[1]}\n            data={data}\n            color={isDarkTheme ? 'white' : 'black'}\n            curve={CurveType.CURVE_STEP_AFTER}\n            lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}\n            {...m4Props}\n          />\n        </Chart>\n      ))}\n    </div>\n  );\n}" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -20128,9 +20139,9 @@ exports.Example = exports.DenseLines = void 0;
 /* eslint-disable */
 // @ts-nocheck
 // @ts-ignore
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useEffect, useRef, useState } from 'react';\n\nimport { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\n\nconst rng = getRandomNumberGenerator('line-multi-series');\n\ntype SeriesDatum = [x: number, y: number];\n\nfunction generateData(seriesCount: number, pointsPerSeries: number, missingPointPerSeries: boolean): SeriesDatum[][] {\n  return Array.from({ length: seriesCount }, (_, seriesIndex) => {\n    const trend = noiseTable(rng, 24);\n    const swell = noiseTable(rng, 48);\n    const ripple = noiseTable(rng, 96);\n    const data = new Array<SeriesDatum>(pointsPerSeries);\n\n    for (let i = 0; i < pointsPerSeries; i++) {\n      const noise = sample(trend, i / 500) * 10 + sample(swell, i / 90) * 4 + sample(ripple, i / 18) * 1.2;\n      data[i] = [i, seriesIndex * 3 + 4 * Math.sin((Math.PI * i) / (pointsPerSeries - 1)) ** 2 * noise];\n    }\n    // series n lacks point n, so no two series have the same x values\n    if (missingPointPerSeries) data.splice(seriesIndex, 1);\n\n    return data;\n  });\n}\n\nconst PROFILE_LABEL = 'Perf:DataToRender';\n\n/**\n * A chart of `seriesCount` dense line series of `pointsPerSeries` points each, or one less with\n * `missingPointPerSeries`, logging how long it takes to render\n */\nexport function DenseLines({\n  seriesCount,\n  pointsPerSeries,\n  missingPointPerSeries = false,\n  title,\n  description,\n}: {\n  seriesCount: number;\n  pointsPerSeries: number;\n  missingPointPerSeries?: boolean;\n  title?: string;\n  description?: string;\n}) {\n  const [data, setData] = useState<SeriesDatum[][]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    const generatedData = generateData(seriesCount, pointsPerSeries, missingPointPerSeries);\n    window.performance.mark('Perf:Started');\n    setData(generatedData);\n  }, [runId, pointsPerSeries, seriesCount, missingPointPerSeries]);\n\n  // a resize starts a new measurement, as the chart lays out and renders again\n  const containerRef = useRef<HTMLDivElement>(null);\n  useEffect(() => {\n    const container = containerRef.current;\n    if (!container) return;\n    let { width, height } = container.getBoundingClientRect();\n    const observer = new ResizeObserver(([entry]) => {\n      if (!entry || (entry.contentRect.width === width && entry.contentRect.height === height)) return;\n      ({ width, height } = entry.contentRect);\n      window.performance.mark('Perf:Started');\n    });\n    observer.observe(container);\n    return () => observer.disconnect();\n  }, []);\n\n  const baseTheme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert', alignSelf: 'flex-start' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </div>\n    );\n  }\n\n  return (\n    <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n      {renderButton}\n      <div style={{ flex: 1, minHeight: 0 }}>\n        <Chart title={title} description={description}>\n          <Settings\n            showLegend\n            legendPosition={Position.Right}\n            baseTheme={baseTheme}\n            onRenderChange={(isRendered) => {\n              if (isRendered) {\n                window.performance.mark('Perf:Ended');\n                const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n                \n                console.log(`chart rendered in ${duration.toFixed(0)} ms`);\n              }\n            }}\n          />\n          <Axis id=\"bottom\" position={Position.Bottom} />\n          <Axis id=\"left\" position={Position.Left} />\n          {data.map((seriesData, index) => (\n            <LineSeries\n              key={index}\n              id={`series-${index + 1}`}\n              xScaleType={ScaleType.Linear}\n              yScaleType={ScaleType.Linear}\n              xAccessor={0}\n              yAccessors={[1]}\n              data={seriesData}\n              curve={CurveType.LINEAR}\n            />\n          ))}\n        </Chart>\n      </div>\n    </div>\n  );\n}\n\nexport const Example: ChartsStory = (_, { title, description }) => (\n  <DenseLines seriesCount={50} pointsPerSeries={40_000} title={title} description={description} />\n);\n";
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React, { useEffect, useRef, useState } from 'react';\n\nimport type { LineSeriesProps } from '@elastic/charts';\nimport { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';\nimport { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';\n\nimport { getM4Knob, m4SeriesProps } from './m4_knob';\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { noiseTable, sample } from '../utils/datasets/smooth_noise';\n\nconst rng = getRandomNumberGenerator('line-multi-series');\n\ntype SeriesDatum = [x: number, y: number];\n\nfunction generateData(seriesCount: number, pointsPerSeries: number, missingPointPerSeries: boolean): SeriesDatum[][] {\n  return Array.from({ length: seriesCount }, (_, seriesIndex) => {\n    const trend = noiseTable(rng, 24);\n    const swell = noiseTable(rng, 48);\n    const ripple = noiseTable(rng, 96);\n    const data = new Array<SeriesDatum>(pointsPerSeries);\n\n    for (let i = 0; i < pointsPerSeries; i++) {\n      const noise = sample(trend, i / 500) * 10 + sample(swell, i / 90) * 4 + sample(ripple, i / 18) * 1.2;\n      data[i] = [i, seriesIndex * 3 + 4 * Math.sin((Math.PI * i) / (pointsPerSeries - 1)) ** 2 * noise];\n    }\n    // series n lacks point n, so no two series have the same x values\n    if (missingPointPerSeries) data.splice(seriesIndex, 1);\n\n    return data;\n  });\n}\n\nconst PROFILE_LABEL = 'Perf:DataToRender';\n\n/**\n * A chart of `seriesCount` dense line series of `pointsPerSeries` points each, or one less with\n * `missingPointPerSeries`, logging how long it takes to render. The series get the `fit`, if any, and are M4\n * downsampled unless `downsample` is false.\n */\nexport function DenseLines({\n  seriesCount,\n  pointsPerSeries,\n  missingPointPerSeries = false,\n  fit,\n  downsample = true,\n  title,\n  description,\n}: {\n  seriesCount: number;\n  pointsPerSeries: number;\n  missingPointPerSeries?: boolean;\n  fit?: LineSeriesProps['fit'];\n  downsample?: boolean;\n  title?: string;\n  description?: string;\n}) {\n  const [data, setData] = useState<SeriesDatum[][]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    const generatedData = generateData(seriesCount, pointsPerSeries, missingPointPerSeries);\n    window.performance.mark('Perf:Started');\n    setData(generatedData);\n  }, [runId, pointsPerSeries, seriesCount, missingPointPerSeries]);\n\n  // so does turning the downsampling on or off; the mark is set while rendering, before the chart renders again\n  const previousDownsample = useRef(downsample);\n  if (previousDownsample.current !== downsample) {\n    previousDownsample.current = downsample;\n    window.performance.mark('Perf:Started');\n  }\n\n  // a resize starts a new measurement, as the chart lays out and renders again\n  const containerRef = useRef<HTMLDivElement>(null);\n  useEffect(() => {\n    const container = containerRef.current;\n    if (!container) return;\n    let { width, height } = container.getBoundingClientRect();\n    const observer = new ResizeObserver(([entry]) => {\n      if (!entry || (entry.contentRect.width === width && entry.contentRect.height === height)) return;\n      ({ width, height } = entry.contentRect);\n      window.performance.mark('Perf:Started');\n    });\n    observer.observe(container);\n    return () => observer.disconnect();\n  }, []);\n\n  const baseTheme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert', alignSelf: 'flex-start' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </div>\n    );\n  }\n\n  return (\n    <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n      {renderButton}\n      <div style={{ flex: 1, minHeight: 0 }}>\n        <Chart title={title} description={description}>\n          <Settings\n            showLegend\n            legendPosition={Position.Right}\n            baseTheme={baseTheme}\n            onRenderChange={(isRendered) => {\n              if (isRendered) {\n                window.performance.mark('Perf:Ended');\n                const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n                \n                console.log(`chart rendered in ${duration.toFixed(0)} ms`);\n              }\n            }}\n          />\n          <Axis id=\"bottom\" position={Position.Bottom} />\n          <Axis id=\"left\" position={Position.Left} />\n          {data.map((seriesData, index) => (\n            <LineSeries\n              key={index}\n              id={`series-${index + 1}`}\n              xScaleType={ScaleType.Linear}\n              yScaleType={ScaleType.Linear}\n              xAccessor={0}\n              yAccessors={[1]}\n              data={seriesData}\n              curve={CurveType.LINEAR}\n              fit={fit}\n              {...m4SeriesProps(downsample)}\n            />\n          ))}\n        </Chart>\n      </div>\n    </div>\n  );\n}\n\nexport const Example: ChartsStory = (_, { title, description }) => (\n  <DenseLines\n    seriesCount={50}\n    pointsPerSeries={40_000}\n    downsample={getM4Knob()}\n    title={title}\n    description={description}\n  />\n);\n";
 // @ts-ignore
-var __LOCATIONS_MAP__ = { "DenseLines": { "startLoc": { "col": 7, "line": 46 }, "endLoc": { "col": 1, "line": 140 }, "startBody": { "col": 7, "line": 46 }, "endBody": { "col": 1, "line": 140 } }, "Example": { "startLoc": { "col": 36, "line": 142 }, "endLoc": { "col": 1, "line": 144 }, "startBody": { "col": 36, "line": 142 }, "endBody": { "col": 1, "line": 144 } } };
+var __LOCATIONS_MAP__ = { "DenseLines": { "startLoc": { "col": 7, "line": 49 }, "endLoc": { "col": 1, "line": 156 }, "startBody": { "col": 7, "line": 49 }, "endBody": { "col": 1, "line": 156 } }, "Example": { "startLoc": { "col": 36, "line": 158 }, "endLoc": { "col": 1, "line": 166 }, "startBody": { "col": 36, "line": 158 }, "endBody": { "col": 1, "line": 166 } } };
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -20141,6 +20152,7 @@ var __LOCATIONS_MAP__ = { "DenseLines": { "startLoc": { "col": 7, "line": 46 }, 
 const react_1 = __importStar(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
 const utils_1 = __webpack_require__(/*! @elastic/charts/src/mocks/utils */ "../packages/charts/src/mocks/utils.ts");
+const m4_knob_1 = __webpack_require__(/*! ./m4_knob */ "./stories/downsampling/m4_knob.ts");
 const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
 const smooth_noise_1 = __webpack_require__(/*! ../utils/datasets/smooth_noise */ "./stories/utils/datasets/smooth_noise.ts");
 const rng = (0, utils_1.getRandomNumberGenerator)('line-multi-series');
@@ -20163,9 +20175,10 @@ function generateData(seriesCount, pointsPerSeries, missingPointPerSeries) {
 const PROFILE_LABEL = 'Perf:DataToRender';
 /**
  * A chart of `seriesCount` dense line series of `pointsPerSeries` points each, or one less with
- * `missingPointPerSeries`, logging how long it takes to render
+ * `missingPointPerSeries`, logging how long it takes to render. The series get the `fit`, if any, and are M4
+ * downsampled unless `downsample` is false.
  */
-const DenseLines = function DenseLines({ seriesCount, pointsPerSeries, missingPointPerSeries = false, title, description, }) {
+const DenseLines = function DenseLines({ seriesCount, pointsPerSeries, missingPointPerSeries = false, fit, downsample = true, title, description, }) {
     const [data, setData] = (0, react_1.useState)([]);
     const [runId, setRunId] = (0, react_1.useState)(0);
     (0, react_1.useEffect)(() => {
@@ -20173,6 +20186,12 @@ const DenseLines = function DenseLines({ seriesCount, pointsPerSeries, missingPo
         window.performance.mark('Perf:Started');
         setData(generatedData);
     }, [runId, pointsPerSeries, seriesCount, missingPointPerSeries]);
+    // so does turning the downsampling on or off; the mark is set while rendering, before the chart renders again
+    const previousDownsample = (0, react_1.useRef)(downsample);
+    if (previousDownsample.current !== downsample) {
+        previousDownsample.current = downsample;
+        window.performance.mark('Perf:Started');
+    }
     // a resize starts a new measurement, as the chart lays out and renders again
     const containerRef = (0, react_1.useRef)(null);
     (0, react_1.useEffect)(() => {
@@ -20213,13 +20232,13 @@ const DenseLines = function DenseLines({ seriesCount, pointsPerSeries, missingPo
                     } }),
                 react_1.default.createElement(charts_1.Axis, { id: "bottom", position: charts_1.Position.Bottom }),
                 react_1.default.createElement(charts_1.Axis, { id: "left", position: charts_1.Position.Left }),
-                data.map((seriesData, index) => (react_1.default.createElement(charts_1.LineSeries, { key: index, id: `series-${index + 1}`, xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: seriesData, curve: charts_1.CurveType.LINEAR })))))));
+                data.map((seriesData, index) => (react_1.default.createElement(charts_1.LineSeries, { key: index, id: `series-${index + 1}`, xScaleType: charts_1.ScaleType.Linear, yScaleType: charts_1.ScaleType.Linear, xAccessor: 0, yAccessors: [1], data: seriesData, curve: charts_1.CurveType.LINEAR, fit: fit, ...(0, m4_knob_1.m4SeriesProps)(downsample) })))))));
 };
 exports.DenseLines = DenseLines;
-const Example = (_, { title, description }) => (react_1.default.createElement(exports.DenseLines, { seriesCount: 50, pointsPerSeries: 40_000, title: title, description: description }));
+const Example = (_, { title, description }) => (react_1.default.createElement(exports.DenseLines, { seriesCount: 50, pointsPerSeries: 40_000, downsample: (0, m4_knob_1.getM4Knob)(), title: title, description: description }));
 exports.Example = Example;
-exports.DenseLines.parameters = { storySource: { source: "function DenseLines({\n  seriesCount,\n  pointsPerSeries,\n  missingPointPerSeries = false,\n  title,\n  description,\n}: {\n  seriesCount: number;\n  pointsPerSeries: number;\n  missingPointPerSeries?: boolean;\n  title?: string;\n  description?: string;\n}) {\n  const [data, setData] = useState<SeriesDatum[][]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    const generatedData = generateData(seriesCount, pointsPerSeries, missingPointPerSeries);\n    window.performance.mark('Perf:Started');\n    setData(generatedData);\n  }, [runId, pointsPerSeries, seriesCount, missingPointPerSeries]);\n\n  // a resize starts a new measurement, as the chart lays out and renders again\n  const containerRef = useRef<HTMLDivElement>(null);\n  useEffect(() => {\n    const container = containerRef.current;\n    if (!container) return;\n    let { width, height } = container.getBoundingClientRect();\n    const observer = new ResizeObserver(([entry]) => {\n      if (!entry || (entry.contentRect.width === width && entry.contentRect.height === height)) return;\n      ({ width, height } = entry.contentRect);\n      window.performance.mark('Perf:Started');\n    });\n    observer.observe(container);\n    return () => observer.disconnect();\n  }, []);\n\n  const baseTheme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert', alignSelf: 'flex-start' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </div>\n    );\n  }\n\n  return (\n    <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n      {renderButton}\n      <div style={{ flex: 1, minHeight: 0 }}>\n        <Chart title={title} description={description}>\n          <Settings\n            showLegend\n            legendPosition={Position.Right}\n            baseTheme={baseTheme}\n            onRenderChange={(isRendered) => {\n              if (isRendered) {\n                window.performance.mark('Perf:Ended');\n                const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n                \n                console.log(`chart rendered in ${duration.toFixed(0)} ms`);\n              }\n            }}\n          />\n          <Axis id=\"bottom\" position={Position.Bottom} />\n          <Axis id=\"left\" position={Position.Left} />\n          {data.map((seriesData, index) => (\n            <LineSeries\n              key={index}\n              id={`series-${index + 1}`}\n              xScaleType={ScaleType.Linear}\n              yScaleType={ScaleType.Linear}\n              xAccessor={0}\n              yAccessors={[1]}\n              data={seriesData}\n              curve={CurveType.LINEAR}\n            />\n          ))}\n        </Chart>\n      </div>\n    </div>\n  );\n}" }, ...exports.DenseLines.parameters };
-exports.Example.parameters = { storySource: { source: "(_, { title, description }) => (\n  <DenseLines seriesCount={50} pointsPerSeries={40_000} title={title} description={description} />\n)" }, ...exports.Example.parameters };
+exports.DenseLines.parameters = { storySource: { source: "function DenseLines({\n  seriesCount,\n  pointsPerSeries,\n  missingPointPerSeries = false,\n  fit,\n  downsample = true,\n  title,\n  description,\n}: {\n  seriesCount: number;\n  pointsPerSeries: number;\n  missingPointPerSeries?: boolean;\n  fit?: LineSeriesProps['fit'];\n  downsample?: boolean;\n  title?: string;\n  description?: string;\n}) {\n  const [data, setData] = useState<SeriesDatum[][]>([]);\n  const [runId, setRunId] = useState(0);\n  useEffect(() => {\n    const generatedData = generateData(seriesCount, pointsPerSeries, missingPointPerSeries);\n    window.performance.mark('Perf:Started');\n    setData(generatedData);\n  }, [runId, pointsPerSeries, seriesCount, missingPointPerSeries]);\n\n  // so does turning the downsampling on or off; the mark is set while rendering, before the chart renders again\n  const previousDownsample = useRef(downsample);\n  if (previousDownsample.current !== downsample) {\n    previousDownsample.current = downsample;\n    window.performance.mark('Perf:Started');\n  }\n\n  // a resize starts a new measurement, as the chart lays out and renders again\n  const containerRef = useRef<HTMLDivElement>(null);\n  useEffect(() => {\n    const container = containerRef.current;\n    if (!container) return;\n    let { width, height } = container.getBoundingClientRect();\n    const observer = new ResizeObserver(([entry]) => {\n      if (!entry || (entry.contentRect.width === width && entry.contentRect.height === height)) return;\n      ({ width, height } = entry.contentRect);\n      window.performance.mark('Perf:Started');\n    });\n    observer.observe(container);\n    return () => observer.disconnect();\n  }, []);\n\n  const baseTheme = useBaseTheme();\n  const renderButton = (\n    <button\n      type=\"button\"\n      style={{ all: 'revert', alignSelf: 'flex-start' }} // it should look like a button, not just text\n      onClick={() => {\n        setData([]);\n        setRunId(runId + 1);\n      }}\n    >\n      Render\n    </button>\n  );\n  if (data.length === 0) {\n    return (\n      <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n        {renderButton}\n        <div style={{ marginTop: 4 }}>Rendering...</div>\n      </div>\n    );\n  }\n\n  return (\n    <div ref={containerRef} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>\n      {renderButton}\n      <div style={{ flex: 1, minHeight: 0 }}>\n        <Chart title={title} description={description}>\n          <Settings\n            showLegend\n            legendPosition={Position.Right}\n            baseTheme={baseTheme}\n            onRenderChange={(isRendered) => {\n              if (isRendered) {\n                window.performance.mark('Perf:Ended');\n                const { duration } = window.performance.measure(PROFILE_LABEL, 'Perf:Started', 'Perf:Ended');\n                \n                console.log(`chart rendered in ${duration.toFixed(0)} ms`);\n              }\n            }}\n          />\n          <Axis id=\"bottom\" position={Position.Bottom} />\n          <Axis id=\"left\" position={Position.Left} />\n          {data.map((seriesData, index) => (\n            <LineSeries\n              key={index}\n              id={`series-${index + 1}`}\n              xScaleType={ScaleType.Linear}\n              yScaleType={ScaleType.Linear}\n              xAccessor={0}\n              yAccessors={[1]}\n              data={seriesData}\n              curve={CurveType.LINEAR}\n              fit={fit}\n              {...m4SeriesProps(downsample)}\n            />\n          ))}\n        </Chart>\n      </div>\n    </div>\n  );\n}" }, ...exports.DenseLines.parameters };
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => (\n  <DenseLines\n    seriesCount={50}\n    pointsPerSeries={40_000}\n    downsample={getM4Knob()}\n    title={title}\n    description={description}\n  />\n)" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -20240,9 +20259,9 @@ exports.Example = void 0;
 /* eslint-disable */
 // @ts-nocheck
 // @ts-ignore
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React from 'react';\n\nimport { DenseLines } from './6_dense_multi_series.story';\nimport type { ChartsStory } from '../../types';\n\nexport const Example: ChartsStory = (_, { title, description }) => (\n  <DenseLines seriesCount={1} pointsPerSeries={2_000_000} title={title} description={description} />\n);\n";
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React from 'react';\n\nimport { Fit } from '@elastic/charts';\n\nimport { DenseLines } from './6_dense_multi_series.story';\nimport { getM4Knob } from './m4_knob';\nimport type { ChartsStory } from '../../types';\n\n// the series has a fit, as the charts of Kibana Lens always do, though it has no missing value to fill in\nexport const Example: ChartsStory = (_, { title, description }) => (\n  <DenseLines\n    seriesCount={1}\n    pointsPerSeries={2_000_000}\n    fit={{ type: Fit.Linear }}\n    downsample={getM4Knob()}\n    title={title}\n    description={description}\n  />\n);\n";
 // @ts-ignore
-var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 14 }, "endLoc": { "col": 1, "line": 16 }, "startBody": { "col": 36, "line": 14 }, "endBody": { "col": 1, "line": 16 } } };
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 18 }, "endLoc": { "col": 1, "line": 27 }, "startBody": { "col": 36, "line": 18 }, "endBody": { "col": 1, "line": 27 } } };
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -20251,10 +20270,13 @@ var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 14 }, "e
  * Side Public License, v 1.
  */
 const react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
+const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
 const _6_dense_multi_series_story_1 = __webpack_require__(/*! ./6_dense_multi_series.story */ "./stories/downsampling/6_dense_multi_series.story.tsx");
-const Example = (_, { title, description }) => (react_1.default.createElement(_6_dense_multi_series_story_1.DenseLines, { seriesCount: 1, pointsPerSeries: 2_000_000, title: title, description: description }));
+const m4_knob_1 = __webpack_require__(/*! ./m4_knob */ "./stories/downsampling/m4_knob.ts");
+// the series has a fit, as the charts of Kibana Lens always do, though it has no missing value to fill in
+const Example = (_, { title, description }) => (react_1.default.createElement(_6_dense_multi_series_story_1.DenseLines, { seriesCount: 1, pointsPerSeries: 2_000_000, fit: { type: charts_1.Fit.Linear }, downsample: (0, m4_knob_1.getM4Knob)(), title: title, description: description }));
 exports.Example = Example;
-exports.Example.parameters = { storySource: { source: "(_, { title, description }) => (\n  <DenseLines seriesCount={1} pointsPerSeries={2_000_000} title={title} description={description} />\n)" }, ...exports.Example.parameters };
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => (\n  <DenseLines\n    seriesCount={1}\n    pointsPerSeries={2_000_000}\n    fit={{ type: Fit.Linear }}\n    downsample={getM4Knob()}\n    title={title}\n    description={description}\n  />\n)" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -20275,9 +20297,9 @@ exports.Example = void 0;
 /* eslint-disable */
 // @ts-nocheck
 // @ts-ignore
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React from 'react';\n\nimport { DenseLines } from './6_dense_multi_series.story';\nimport type { ChartsStory } from '../../types';\n\nexport const Example: ChartsStory = (_, { title, description }) => (\n  <DenseLines seriesCount={50} pointsPerSeries={40_000} missingPointPerSeries title={title} description={description} />\n);\n";
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport React from 'react';\n\nimport { DenseLines } from './6_dense_multi_series.story';\nimport { getM4Knob } from './m4_knob';\nimport type { ChartsStory } from '../../types';\n\nexport const Example: ChartsStory = (_, { title, description }) => (\n  <DenseLines\n    seriesCount={50}\n    pointsPerSeries={40_000}\n    missingPointPerSeries\n    downsample={getM4Knob()}\n    title={title}\n    description={description}\n  />\n);\n";
 // @ts-ignore
-var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 14 }, "endLoc": { "col": 1, "line": 16 }, "startBody": { "col": 36, "line": 14 }, "endBody": { "col": 1, "line": 16 } } };
+var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 15 }, "endLoc": { "col": 1, "line": 24 }, "startBody": { "col": 36, "line": 15 }, "endBody": { "col": 1, "line": 24 } } };
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -20287,9 +20309,10 @@ var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 14 }, "e
  */
 const react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 const _6_dense_multi_series_story_1 = __webpack_require__(/*! ./6_dense_multi_series.story */ "./stories/downsampling/6_dense_multi_series.story.tsx");
-const Example = (_, { title, description }) => (react_1.default.createElement(_6_dense_multi_series_story_1.DenseLines, { seriesCount: 50, pointsPerSeries: 40_000, missingPointPerSeries: true, title: title, description: description }));
+const m4_knob_1 = __webpack_require__(/*! ./m4_knob */ "./stories/downsampling/m4_knob.ts");
+const Example = (_, { title, description }) => (react_1.default.createElement(_6_dense_multi_series_story_1.DenseLines, { seriesCount: 50, pointsPerSeries: 40_000, missingPointPerSeries: true, downsample: (0, m4_knob_1.getM4Knob)(), title: title, description: description }));
 exports.Example = Example;
-exports.Example.parameters = { storySource: { source: "(_, { title, description }) => (\n  <DenseLines seriesCount={50} pointsPerSeries={40_000} missingPointPerSeries title={title} description={description} />\n)" }, ...exports.Example.parameters };
+exports.Example.parameters = { storySource: { source: "(_, { title, description }) => (\n  <DenseLines\n    seriesCount={50}\n    pointsPerSeries={40_000}\n    missingPointPerSeries\n    downsample={getM4Knob()}\n    title={title}\n    description={description}\n  />\n)" }, ...exports.Example.parameters };
 
 
 /***/ },
@@ -61141,8 +61164,8 @@ const tooltip_1 = __webpack_require__(/*! ../tooltip/tooltip */ "../packages/cha
 const axis_utils_1 = __webpack_require__(/*! ../utils/axis_utils */ "../packages/charts/src/chart_types/xy_chart/utils/axis_utils.ts");
 const default_series_sort_fn_1 = __webpack_require__(/*! ../utils/default_series_sort_fn */ "../packages/charts/src/chart_types/xy_chart/utils/default_series_sort_fn.ts");
 const group_data_series_1 = __webpack_require__(/*! ../utils/group_data_series */ "../packages/charts/src/chart_types/xy_chart/utils/group_data_series.ts");
+const m4_1 = __webpack_require__(/*! ../utils/m4 */ "../packages/charts/src/chart_types/xy_chart/utils/m4.ts");
 const series_1 = __webpack_require__(/*! ../utils/series */ "../packages/charts/src/chart_types/xy_chart/utils/series.ts");
-const series_2 = __webpack_require__(/*! ../utils/series */ "../packages/charts/src/chart_types/xy_chart/utils/series.ts");
 const specs_1 = __webpack_require__(/*! ../utils/specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
 function getPostfix(spec) {
     if ((0, specs_1.isAreaSeriesSpec)(spec) || (0, specs_1.isBarSeriesSpec)(spec)) {
@@ -61205,17 +61228,17 @@ function computeLegend(xDomain, dataSeries, seriesColors, specs, axesSpecs, sett
     const summaryHasAllLegendValues = legendValues.every((value) => SUMMARY_LEGEND_VALUES.has(value));
     dataSeries.forEach((series) => {
         const { specId, yAccessor } = series;
-        const banded = (0, series_2.isBandedSpec)(series.spec);
+        const banded = (0, series_1.isBandedSpec)(series.spec);
         const spec = (0, spec_1.getSpecsById)(specs, specId);
-        const dataSeriesKey = (0, series_2.getSeriesKey)({
+        const dataSeriesKey = (0, series_1.getSeriesKey)({
             specId: series.specId,
             yAccessor: series.yAccessor,
             splitAccessors: series.splitAccessors,
         }, series.groupId);
         const color = seriesColors.get(dataSeriesKey) || defaultColor;
         const hasSingleSeries = dataSeries.length === 1;
-        const name = (0, series_2.getSeriesName)(series, hasSingleSeries, false, spec);
-        const isSeriesHidden = deselectedDataSeries && (0, series_2.getSeriesIndex)(deselectedDataSeries, series) >= 0;
+        const name = (0, series_1.getSeriesName)(series, hasSingleSeries, false, spec);
+        const isSeriesHidden = deselectedDataSeries && (0, series_1.getSeriesIndex)(deselectedDataSeries, series) >= 0;
         if (name === '' || !spec)
             return;
         const postFixes = getPostfix(spec);
@@ -61223,9 +61246,9 @@ function computeLegend(xDomain, dataSeries, seriesColors, specs, axesSpecs, sett
         const { yAxis } = (0, spec_1.getAxesSpecForSpecId)(axesSpecs, spec.groupId, settingsSpec.rotation);
         const formatter = spec.tickFormat ?? yAxis?.tickFormat ?? axis_utils_1.defaultTickFormatter;
         const { hideInLegend } = spec;
-        const seriesIdentifier = (0, series_2.getSeriesIdentifierFromDataSeries)(series);
+        const seriesIdentifier = (0, series_1.getSeriesIdentifierFromDataSeries)(series);
         const pointStyle = getPointStyle(spec, theme);
-        const dataLacksLegendRows = series.rawValues !== undefined && !summaryHasAllLegendValues;
+        const dataLacksLegendRows = (0, m4_1.isDownsampled)(series) && !summaryHasAllLegendValues;
         const source = dataLacksLegendRows ? { ...series, data: (0, series_1.toSeriesData)(series.spec, series.spec.data) } : series;
         const legendValuesItems = (0, get_legend_values_1.getLegendValues)(source, xDomain, legendValues, y1Accessor(series.stackMode), formatter);
         legendItems.push({
@@ -64830,6 +64853,7 @@ const accessor_1 = __webpack_require__(/*! ../../../utils/accessor */ "../packag
 const common_1 = __webpack_require__(/*! ../../../utils/common */ "../packages/charts/src/utils/common.tsx");
 const geometry_1 = __webpack_require__(/*! ../../../utils/geometry */ "../packages/charts/src/utils/geometry.ts");
 const indexed_geometry_map_1 = __webpack_require__(/*! ../utils/indexed_geometry_map */ "../packages/charts/src/chart_types/xy_chart/utils/indexed_geometry_map.ts");
+const m4_1 = __webpack_require__(/*! ../utils/m4 */ "../packages/charts/src/chart_types/xy_chart/utils/m4.ts");
 const series_1 = __webpack_require__(/*! ../utils/series */ "../packages/charts/src/chart_types/xy_chart/utils/series.ts");
 const specs_1 = __webpack_require__(/*! ../utils/specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
 /** @internal */
@@ -64917,10 +64941,10 @@ function renderPoints(shift, dataSeries, xScale, yScale, panel, color, pointStyl
             acc.minDistanceBetweenPoints = Math.min(acc.minDistanceBetweenPoints, Math.abs(x - acc.prevX));
         }
         acc.prevX = x;
-        if (dataSeries.rawValues)
+        if ((0, m4_1.isDownsampled)(dataSeries))
             drawnXs.push(datum.x);
         points.forEach(([pointGeometry, isDrawn]) => {
-            if (!dataSeries.rawValues)
+            if (!(0, m4_1.isDownsampled)(dataSeries))
                 indexedGeometryMap.set(pointGeometry, geometryType);
             if (isDrawn)
                 acc.pointGeometries.push(pointGeometry);
@@ -64932,7 +64956,7 @@ function renderPoints(shift, dataSeries, xScale, yScale, panel, color, pointStyl
     if (!markSizeOptions.enabled && styleAccessor) {
         pointGeometries.sort((a, b) => a.radius - b.radius);
     }
-    if (dataSeries.rawValues) {
+    if ((0, m4_1.isDownsampled)(dataSeries)) {
         // the pointer snaps to the drawn rows, which are some of the spec's rows, but finds all the spec's rows at an x,
         // so every series shows at an x that M4 drops from some
         const { spec } = dataSeries;
@@ -69447,6 +69471,7 @@ const default_series_sort_fn_1 = __webpack_require__(/*! ../../utils/default_ser
 const fill_series_1 = __webpack_require__(/*! ../../utils/fill_series */ "../packages/charts/src/chart_types/xy_chart/utils/fill_series.ts");
 const group_data_series_1 = __webpack_require__(/*! ../../utils/group_data_series */ "../packages/charts/src/chart_types/xy_chart/utils/group_data_series.ts");
 const indexed_geometry_map_1 = __webpack_require__(/*! ../../utils/indexed_geometry_map */ "../packages/charts/src/chart_types/xy_chart/utils/indexed_geometry_map.ts");
+const m4_1 = __webpack_require__(/*! ../../utils/m4 */ "../packages/charts/src/chart_types/xy_chart/utils/m4.ts");
 const scales_1 = __webpack_require__(/*! ../../utils/scales */ "../packages/charts/src/chart_types/xy_chart/utils/scales.ts");
 const series_1 = __webpack_require__(/*! ../../utils/series */ "../packages/charts/src/chart_types/xy_chart/utils/series.ts");
 const specs_1 = __webpack_require__(/*! ../../utils/specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
@@ -69599,7 +69624,7 @@ function computeXScaleOffset(xScale, enableHistogramMode, histogramModeAlignment
     }
 }
 function renderedDataSeries(ds, style, xScale, xAxis, xShift) {
-    if (!ds.rawValues)
+    if (!(0, m4_1.isDownsampled)(ds))
         return ds;
     const isM4 = (0, types_1.isContinuousScale)(xScale) && !style.line.dash?.length && style.point.visible !== 'always';
     return {
@@ -70298,6 +70323,7 @@ var __webpack_unused_export__;
  */
 __webpack_unused_export__ = ({ value: true });
 exports.markGaps = markGaps;
+const m4_1 = __webpack_require__(/*! ./m4 */ "../packages/charts/src/chart_types/xy_chart/utils/m4.ts");
 const specs_1 = __webpack_require__(/*! ./specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
 const constants_1 = __webpack_require__(/*! ../../../scales/constants */ "../packages/charts/src/scales/constants.ts");
 /**
@@ -70313,6 +70339,9 @@ function markGaps(dataSeries, xIndex, groupScaleType) {
         if (!(0, specs_1.isAreaSeriesSpec)(spec) && !(0, specs_1.isLineSeriesSpec)(spec))
             return series;
         if (!spec.fit && isContinuous && !isStacked)
+            return series;
+        // a downsampled series has no x value to fill in, and `data` only holds its summary rows
+        if ((0, m4_1.isDownsampled)(series))
             return series;
         const gapEndsOnly = !spec.fit;
         // xIndex holds every x of every series
@@ -70591,11 +70620,15 @@ var __webpack_unused_export__;
 __webpack_unused_export__ = ({ value: true });
 exports.applyFitFunctionToDataSeries = void 0;
 const fit_function_1 = __webpack_require__(/*! ./fit_function */ "../packages/charts/src/chart_types/xy_chart/utils/fit_function.ts");
+const m4_1 = __webpack_require__(/*! ./m4 */ "../packages/charts/src/chart_types/xy_chart/utils/m4.ts");
 const specs_1 = __webpack_require__(/*! ./specs */ "../packages/charts/src/chart_types/xy_chart/utils/specs.ts");
 /** @internal */
 const applyFitFunctionToDataSeries = (dataSeries, xScaleType) => dataSeries.map((series) => {
     const { spec, data } = series;
     if ((!(0, specs_1.isAreaSeriesSpec)(spec) && !(0, specs_1.isLineSeriesSpec)(spec)) || spec.fit === undefined)
+        return series;
+    // a downsampled series has no y value to fill in
+    if ((0, m4_1.isDownsampled)(series))
         return series;
     return { ...series, data: (0, fit_function_1.fitFunction)(data, spec.fit, xScaleType, true) };
 });
@@ -71223,7 +71256,15 @@ var __webpack_unused_export__;
  * Side Public License, v 1.
  */
 __webpack_unused_export__ = ({ value: true });
+exports.isDownsampled = void 0;
 exports.m4 = m4;
+/**
+ * Whether the series is M4 downsampled: its `data` only holds its summary rows, for layout, and its `rawValues` hold
+ * the x and y values of all its rows, for the geometries
+ * @internal
+ */
+const isDownsampled = (series) => series.rawValues !== undefined;
+exports.isDownsampled = isDownsampled;
 /**
  * M4 reduction of rows sorted by x: returns the indices of the first, lowest, highest and last row of every run of
  * consecutive rows in the same pixel bin `floor(offset + scale * (x - origin))`, so a line through the kept rows
@@ -71446,6 +71487,7 @@ exports.isBandedSpec = isBandedSpec;
 exports.getSeriesName = getSeriesName;
 exports.getSeriesColors = getSeriesColors;
 exports.getSeriesIdentifierFromDataSeries = getSeriesIdentifierFromDataSeries;
+const fit_function_1 = __webpack_require__(/*! ./fit_function */ "../packages/charts/src/chart_types/xy_chart/utils/fit_function.ts");
 const fit_function_utils_1 = __webpack_require__(/*! ./fit_function_utils */ "../packages/charts/src/chart_types/xy_chart/utils/fit_function_utils.ts");
 const group_data_series_1 = __webpack_require__(/*! ./group_data_series */ "../packages/charts/src/chart_types/xy_chart/utils/group_data_series.ts");
 const m4_1 = __webpack_require__(/*! ./m4 */ "../packages/charts/src/chart_types/xy_chart/utils/m4.ts");
@@ -71612,9 +71654,10 @@ function warnNonNumericValues(specId, nonNumericValues) {
     }
 }
 /**
- * The x and y values of the first y accessor, y being NaN where missing, unless an x is not finite or not sorted.
+ * The x and y values of the first y accessor, y being NaN where missing, unless an x is not finite or not sorted, or,
+ * with `needsEveryY`, a y is missing.
  */
-function numericValues({ data, xAccessor, yAccessors }) {
+function numericValues({ data, xAccessor, yAccessors }, needsEveryY) {
     const yAccessor = yAccessors[0];
     const xs = new Float64Array(data.length); // the x of each row
     const ys = new Float64Array(data.length); // the y of each row, NaN where missing or not numeric
@@ -71627,7 +71670,10 @@ function numericValues({ data, xAccessor, yAccessors }) {
             return;
         xs[i] = previousX = x;
         const y = (0, accessor_1.getAccessorValue)(datum, yAccessor);
-        ys[i] = typeof y === 'number' && Number.isFinite(y) ? y : finiteOrNull(y, nonNumericValues) ?? NaN;
+        const numericY = typeof y === 'number' && Number.isFinite(y) ? y : finiteOrNull(y, nonNumericValues) ?? NaN;
+        if (needsEveryY && Number.isNaN(numericY))
+            return;
+        ys[i] = numericY;
     }
     return { xs, ys, nonNumericValues };
 }
@@ -71695,13 +71741,50 @@ const MONOTONIC_CURVES = new Set([
     curves_1.CurveType.CURVE_STEP_AFTER,
     curves_1.CurveType.CURVE_STEP_BEFORE,
 ]);
+function fitOf(spec) {
+    return (0, specs_1.isLineSeriesSpec)(spec) || (0, specs_1.isAreaSeriesSpec)(spec) ? spec.fit : undefined;
+}
+/**
+ * Whether the fit of a spec fills in its missing y values. A fit that doesn't, leaves the rows of the series as they
+ * are, as long as no other series has an x value that this series lacks, see `markGaps`.
+ */
+function fitFillsMissingY(spec) {
+    const fit = fitOf(spec);
+    return fit !== undefined && (0, fit_function_1.parseConfig)(fit).type !== specs_1.Fit.None;
+}
+function haveSameValues(lists) {
+    const [first, ...rest] = lists;
+    if (first === undefined)
+        return true;
+    for (const list of rest) {
+        if (list.length !== first.length)
+            return false;
+        for (let i = 0; i < list.length; i++)
+            if (list[i] !== first[i])
+                return false;
+    }
+    return true;
+}
+/**
+ * Whether `splitSeriesDataByAccessors` finds an x value in a row of the spec. It skips the rows that the spec is split
+ * by but that have no value to split by, without reading their x value, so this does too.
+ */
+function hasXValue({ data, xAccessor, splitSeriesAccessors = [] }) {
+    return data.some((datum) => {
+        if (splitSeriesAccessors.length > 0 && getSplitAccessors(datum, splitSeriesAccessors).size < 1)
+            return false;
+        if (typeof datum !== 'object' || datum === null)
+            return false;
+        const x = (0, accessor_1.getAccessorValue)(datum, xAccessor);
+        return typeof x === 'string' || typeof x === 'number';
+    });
+}
 // nothing is downsampled without the scale configs; some of these restrictions could be lifted in the future
 function canDownsample(spec, isStacked, scaleConfigs, smallMultiples) {
     return (scaleConfigs !== undefined &&
         ((0, specs_1.isLineSeriesSpec)(spec) || (0, specs_1.isAreaSeriesSpec)(spec)) &&
         MONOTONIC_CURVES.has(spec.curve ?? curves_1.DEFAULT_CURVE) &&
         !isStacked &&
-        spec.fit === undefined &&
         spec.yAccessors.length === 1 &&
         !spec.y0Accessors?.length &&
         !spec.splitSeriesAccessors?.length &&
@@ -71715,9 +71798,14 @@ function canDownsample(spec, isStacked, scaleConfigs, smallMultiples) {
 /**
  * The rows the data series of a spec start with, for the domains and the legend: the summary of a series that is
  * downsampled, with the numeric values of all its rows in `rawValues`, otherwise all the rows of the spec.
+ * A series with a `fit` is downsampled only if the fit has no y value to fill in; the caller checks that it has no x
+ * value to fill in either, and warns about the `nonNumericValues` of a series that it keeps downsampled.
  */
 function layoutRows(spec, isStacked, scaleConfigs, smallMultiples) {
-    const values = canDownsample(spec, isStacked, scaleConfigs, smallMultiples) ? numericValues(spec) : undefined;
+    // a fit that fills in missing y values has none to fill in if the series is downsampled
+    const values = canDownsample(spec, isStacked, scaleConfigs, smallMultiples)
+        ? numericValues(spec, fitFillsMissingY(spec))
+        : undefined;
     if (!values)
         return { data: spec.data };
     const { xs, ys, nonNumericValues } = values;
@@ -71729,8 +71817,7 @@ function layoutRows(spec, isStacked, scaleConfigs, smallMultiples) {
     const kept = [...new Set([0, ...extremes, spec.data.length - 1])];
     if (kept.length >= spec.data.length)
         return { data: spec.data };
-    warnNonNumericValues(spec.id, nonNumericValues);
-    return { data: kept.map((i) => spec.data[i]), rawValues: { xs, ys } };
+    return { data: kept.map((i) => spec.data[i]), rawValues: { xs, ys }, nonNumericValues };
 }
 /** @internal */
 function getDataSeriesFromSpecs(seriesSpecs, deselectedDataSeries = [], orderOrdinalBinsBy, seriesSort, groupBySpec, scaleConfigs) {
@@ -71741,26 +71828,66 @@ function getDataSeriesFromSpecs(seriesSpecs, deselectedDataSeries = [], orderOrd
     const rawXValues = [];
     let isNumberArray = true;
     let isOrdinalScale = false;
-    // stacked and fitted series get gaps at the x values of every other series, so they need them all
+    // stacked and fitted series get gaps at the x values of every other series, so they need them all, unless downsampled
     let needsEveryXValue = false;
     // whether a series that isn't downsampled adds x values, which only `xValues` holds
     let hasNonDownsampledXValues = false;
     const specsByYGroup = (0, y_domain_1.groupSeriesByYGroup)(seriesSpecs);
+    // every spec is laid out before any of its rows are split into series, as whether a series with a `fit` can be
+    // downsampled depends on the other series; such a series is laid out with all its rows if it cannot be
+    const specLayouts = seriesSpecs.map((spec) => {
+        const specGroup = specsByYGroup.get(spec.groupId);
+        const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
+        return { spec, specGroup, isStacked, canDownsample: canDownsample(spec, isStacked, scaleConfigs, groupBySpec) };
+    });
+    // the rest of the layout only differs from laying out each spec on its own if a series with a `fit` could be
+    // downsampled
+    const hasFit = specLayouts.some((entry) => entry.canDownsample && fitOf(entry.spec) !== undefined);
+    // whether a series with a `fit` may lack an x value of another series, which the fit would fill in, see `markGaps`,
+    // so no series with a `fit` can be downsampled. No such x value exists if every series that has x values is
+    // downsampled, and they all share them. It is known up front for the specs that are never downsampled, and
+    // otherwise as soon as a spec is laid out, which saves reading the rows of the series with a `fit` that follow
+    let fitNeedsEveryRow = hasFit && specLayouts.some((entry) => !entry.canDownsample && hasXValue(entry.spec));
+    let firstRawXValues;
+    const layouts = specLayouts.map((entry) => {
+        const { spec, isStacked } = entry;
+        const layout = fitNeedsEveryRow && fitOf(spec) !== undefined
+            ? { data: spec.data }
+            : layoutRows(spec, isStacked, scaleConfigs, groupBySpec);
+        if (hasFit && !fitNeedsEveryRow) {
+            if (layout.rawValues) {
+                firstRawXValues ??= layout.rawValues.xs;
+                fitNeedsEveryRow = !haveSameValues([firstRawXValues, layout.rawValues.xs]);
+            }
+            else if (entry.canDownsample) {
+                // the x values of the specs that are never downsampled were looked for up front
+                fitNeedsEveryRow = hasXValue(spec);
+            }
+        }
+        return { ...entry, layout };
+    });
+    // the series with a `fit` that were laid out before it was known
+    if (fitNeedsEveryRow) {
+        for (const entry of layouts)
+            if (fitOf(entry.spec) !== undefined)
+                entry.layout = { data: entry.spec.data };
+    }
     let insertOrder = 0;
     // eslint-disable-next-line no-restricted-syntax
-    for (const spec of seriesSpecs) {
+    for (const { spec, specGroup, isStacked, layout } of layouts) {
         // check scale type and cast to Ordinal if we found at least one series
         // with Ordinal Scale
         if (spec.xScaleType === constants_1.ScaleType.Ordinal) {
             isOrdinalScale = true;
         }
-        const specGroup = specsByYGroup.get(spec.groupId);
-        const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
         const isBanded = isBandedSpec(spec);
-        const { data, rawValues } = layoutRows(spec, isStacked, scaleConfigs, groupBySpec);
+        const { data, rawValues, nonNumericValues } = layout;
         if (rawValues)
             rawXValues.push(rawValues.xs);
-        needsEveryXValue ||= isStacked || (((0, specs_1.isLineSeriesSpec)(spec) || (0, specs_1.isAreaSeriesSpec)(spec)) && spec.fit !== undefined);
+        // splitSeriesDataByAccessors only gets the summary rows of a downsampled spec
+        if (rawValues && nonNumericValues)
+            warnNonNumericValues(spec.id, nonNumericValues);
+        needsEveryXValue ||= isStacked || (fitOf(spec) !== undefined && !rawValues);
         const { dataSeries, xValues } = splitSeriesDataByAccessors(spec, mutatedXValueSums, insertOrder, isStacked, isBanded, specGroup?.stackMode, groupBySpec, deselectedDataSeries, data);
         insertOrder += dataSeries.size;
         for (const [, ds] of dataSeries) {
@@ -108371,6 +108498,40 @@ exports.TooltipShowcase = (0, react_1.memo)(TooltipShowcaseInner);
 
 /***/ },
 
+/***/ "./stories/downsampling/m4_knob.ts"
+/*!*****************************************!*\
+  !*** ./stories/downsampling/m4_knob.ts ***!
+  \*****************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+var __webpack_unused_export__;
+
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+__webpack_unused_export__ = ({ value: true });
+exports.m4SeriesProps = exports.getM4Knob = void 0;
+const addon_knobs_1 = __webpack_require__(/*! @storybook/addon-knobs */ "../node_modules/@storybook/addon-knobs/dist/index.js");
+// it overrides the style of no point; the same function on every render, so the spec doesn't change with it
+const noPointStyleOverride = () => null;
+/** The knob that tells whether the series of a story are M4 downsampled, which they are by default */
+const getM4Knob = () => (0, addon_knobs_1.boolean)('M4 downsampling', true);
+exports.getM4Knob = getM4Knob;
+/**
+ * The props that keep a series from being M4 downsampled, or none if it is to be downsampled. No option turns the
+ * downsampling off, but a series with a point style accessor is never downsampled, and this one changes no point.
+ */
+const m4SeriesProps = (downsample) => downsample ? {} : { pointStyleAccessor: noPointStyleOverride };
+exports.m4SeriesProps = m4SeriesProps;
+
+
+/***/ },
+
 /***/ "./stories/legend/legend_size_knob.ts"
 /*!********************************************!*\
   !*** ./stories/legend/legend_size_knob.ts ***!
@@ -110919,4 +111080,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.e127f09a.iframe.bundle.js.map
+//# sourceMappingURL=main.f726a6d7.iframe.bundle.js.map
