@@ -1103,6 +1103,14 @@ describe('Downsampling dense line series', () => {
       expect(xAccessor).toHaveBeenCalledTimes(fit ? 200 : 100);
     });
 
+    it('reads the rows of a series without x values once if the series with a fit is never downsampled', () => {
+      const xAccessor = jest.fn((): undefined => undefined);
+      // the point style accessor keeps the series from being downsampled
+      const fitted = denseLine({ xAccessor, fit: Fit.Linear, pointStyleAccessor: () => null });
+      expect(downsampledOf(domainsOf([fitted]))).toEqual([]);
+      expect(xAccessor).toHaveBeenCalledTimes(rows);
+    });
+
     describe('next to a series that is split, with rows that have no value to split by', () => {
       type Row = { g?: string; point?: { x: number }; y: number };
       const splitBars = (data: Row[]) =>

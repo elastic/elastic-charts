@@ -585,8 +585,9 @@ export function getDataSeriesFromSpecs(
     const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
     return { spec, specGroup, isStacked, canDownsample: canDownsample(spec, isStacked, scaleConfigs, groupBySpec) };
   });
-  // the rest of the layout only differs from laying out each spec on its own if a series has a `fit`
-  const hasFit = seriesSpecs.some((spec) => fitOf(spec) !== undefined);
+  // the rest of the layout only differs from laying out each spec on its own if a series with a `fit` could be
+  // downsampled
+  const hasFit = specLayouts.some((entry) => entry.canDownsample && fitOf(entry.spec) !== undefined);
   // whether a series with a `fit` may lack an x value of another series, which the fit would fill in, see `markGaps`,
   // so no series with a `fit` can be downsampled. No such x value exists if every series that has x values is
   // downsampled, and they all share them. It is known up front for the specs that are never downsampled, and
