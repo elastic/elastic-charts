@@ -88,7 +88,7 @@ export const Example: ChartsStory = () => {
 
   return (
     <>
-      <Chart title="Response times" ref={ref1} size={{ height: '30%' }} id="chart1">
+      <Chart title="Response times" ref={ref1} size={{ height: '28%' }} id="chart1">
         <Settings
           baseTheme={baseTheme}
           theme={{
@@ -133,7 +133,7 @@ export const Example: ChartsStory = () => {
 
       <br />
 
-      <Chart title="Number of requests" ref={ref2} size={{ height: '30%' }} id="chart2">
+      <Chart title="Number of requests" ref={ref2} size={{ height: '28%' }} id="chart2">
         <Settings
           baseTheme={baseTheme}
           pointerUpdateDebounce={0}
@@ -176,7 +176,7 @@ export const Example: ChartsStory = () => {
 
       <br />
 
-      <Chart title="Memory pressure" ref={ref3} size={{ height: '40%' }} id="heatmap">
+      <Chart title="Memory pressure" ref={ref3} size={{ height: '36%' }} id="heatmap">
         <Settings
           baseTheme={baseTheme}
           theme={{
