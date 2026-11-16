@@ -26,7 +26,7 @@ import {
 import { pinTooltip as pinTooltipAction } from '../state/actions/tooltip';
 import type { GlobalChartState } from '../state/chart_state';
 import type { TooltipInteractionState } from '../state/interactions_state';
-import type { BackwardRef, ChartRenderer } from '../state/internal_chart_renderer';
+import type { BackwardRef, ChartRenderer, StageElement } from '../state/internal_chart_renderer';
 import { isPinnableTooltip } from '../state/selectors/can_pin_tooltip';
 import { getInternalChartStateSelector } from '../state/selectors/get_internal_chart_state';
 import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor_pointer';
@@ -60,7 +60,7 @@ interface ChartContainerComponentDispatchProps {
 
 interface ChartContainerComponentOwnProps {
   getChartContainerRef: BackwardRef;
-  forwardStageRef: React.RefObject<HTMLCanvasElement>;
+  forwardStageRef: React.RefObject<StageElement>;
 }
 
 type ReactiveChartProps = ChartContainerComponentStateProps &

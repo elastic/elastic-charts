@@ -21,6 +21,7 @@ import type { PointGeometry } from '../../../utils/geometry';
 import { BandedAccessorType } from '../../../utils/geometry';
 import type { PointStyle } from '../../../utils/themes/theme';
 import { GeometryType, IndexedGeometryMap } from '../utils/indexed_geometry_map';
+import { isDownsampled } from '../utils/m4';
 import type { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
 import { getSeriesIdentifierFromDataSeries, toSeriesData } from '../utils/series';
 import type { PointStyleAccessor } from '../utils/specs';
@@ -146,9 +147,9 @@ export function renderPoints(
       }
       acc.prevX = x;
 
-      if (dataSeries.rawValues) drawnXs.push(datum.x);
+      if (isDownsampled(dataSeries)) drawnXs.push(datum.x);
       points.forEach(([pointGeometry, isDrawn]) => {
-        if (!dataSeries.rawValues) indexedGeometryMap.set(pointGeometry, geometryType);
+        if (!isDownsampled(dataSeries)) indexedGeometryMap.set(pointGeometry, geometryType);
         if (isDrawn) acc.pointGeometries.push(pointGeometry);
       });
       return acc;
@@ -162,7 +163,7 @@ export function renderPoints(
     pointGeometries.sort((a, b) => a.radius - b.radius);
   }
 
-  if (dataSeries.rawValues) {
+  if (isDownsampled(dataSeries)) {
     // the pointer snaps to the drawn rows, which are some of the spec's rows, but finds all the spec's rows at an x,
     // so every series shows at an x that M4 drops from some
     const { spec } = dataSeries;

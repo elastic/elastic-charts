@@ -6,9 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { test } from '@playwright/test';
-
 import { SeriesType } from '../constants';
+import { test } from '../fixtures';
 import { eachTheme, pwEach } from '../helpers';
 import { common } from '../page_objects';
 

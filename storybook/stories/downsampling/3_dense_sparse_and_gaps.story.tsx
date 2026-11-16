@@ -11,6 +11,7 @@ import React, { useMemo } from 'react';
 import { Axis, Chart, CurveType, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { getM4Knob, m4SeriesProps } from './m4_knob';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme, useThemeId } from '../../use_base_theme';
 import { noiseTable, sample } from '../utils/datasets/smooth_noise';
@@ -57,6 +58,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const curveData = useMemo(generateCurveData, []);
   const baseTheme = useBaseTheme();
   const isDarkTheme = useThemeId().includes('dark');
+  // the magenta series is never downsampled
+  const m4Props = m4SeriesProps(getM4Knob());
   return (
     <Chart title={title} description={description}>
       <Settings
@@ -85,6 +88,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         color={isDarkTheme ? 'white' : 'black'}
         curve={CurveType.CURVE_MONOTONE_X}
         lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}
+        {...m4Props}
       />
       <LineSeries
         id="sparse curve"

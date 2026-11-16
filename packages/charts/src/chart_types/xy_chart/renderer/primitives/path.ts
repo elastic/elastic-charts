@@ -1,0 +1,61 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+import type { Fill, Rect, Stroke } from '../../../../geoms/types';
+import { withClipRanges } from '../../../../renderers/canvas';
+import { applyCanvasFill, type FillBoundingBox } from '../../../../renderers/canvas/primitives/fill';
+import { renderMultiLine } from '../../../../renderers/canvas/primitives/line';
+import type { Painter } from '../../../../renderers/painter';
+import type { ClippedRanges } from '../../../../utils/geometry';
+import type { Point } from '../../../../utils/point';
+
+/** @internal */
+export function renderLinePaths(
+  ctx: Painter,
+  transform: Point,
+  linePaths: Array<string>,
+  stroke: Stroke,
+  fitStroke: Stroke,
+  clippedRanges: ClippedRanges,
+  clippings: Rect,
+  shouldClip: boolean,
+) {
+  withClipRanges(ctx, clippedRanges, clippings, false, () => {
+    ctx.translate(transform.x, transform.y);
+    renderMultiLine(ctx, linePaths, stroke);
+  });
+  if (clippedRanges.length > 0 && shouldClip) {
+    withClipRanges(ctx, clippedRanges, clippings, true, () => {
+      ctx.translate(transform.x, transform.y);
+      renderMultiLine(ctx, linePaths, fitStroke);
+    });
+  }
+}
+
+/** @internal */
+export function renderAreaPath(
+  ctx: Painter,
+  transform: Point,
+  area: string,
+  fill: Fill,
+  fitFill: Fill,
+  clippedRanges: ClippedRanges,
+  clippings: Rect,
+  shouldClip: boolean,
+  bbox: FillBoundingBox,
+) {
+  withClipRanges(ctx, clippedRanges, clippings, false, () => renderPathFill(ctx, area, fill, transform, bbox));
+  if (clippedRanges.length > 0 && shouldClip) {
+    withClipRanges(ctx, clippedRanges, clippings, true, () => renderPathFill(ctx, area, fitFill, transform, bbox));
+  }
+}
+
+function renderPathFill(ctx: Painter, path: string, fill: Fill, { x, y }: Point, bbox: FillBoundingBox) {
+  ctx.translate(x, y);
+  applyCanvasFill(ctx, fill, bbox, () => ctx.fillPath(path));
+}

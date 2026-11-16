@@ -77,6 +77,9 @@ void (async () => {
   fs.renameSync(packagedTarballPath, liveArtifactTarballPath);
   fs.copyFileSync(liveArtifactTarballPath, commitArtifactTarballPath);
 
+  startGroup('Smoking packed @elastic/charts');
+  await exec(`node ./packages/charts/scripts/smoke_pack.js --tarball ${liveArtifactTarballPath}`);
+
   fs.writeFileSync(manifestPath, JSON.stringify(createChartsPackageManifest(chartsPackageMetadata, prNumber), null, 2));
 
   await setChartsPackageMetadata(chartsPackageMetadata);

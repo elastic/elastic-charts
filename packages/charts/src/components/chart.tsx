@@ -21,14 +21,16 @@ import { ChartResizer } from './chart_resizer';
 import { ChartStatus } from './chart_status';
 import { Legend } from './legend/legend';
 import { getElementZIndex } from './portal/utils';
+import { paintStageToCanvas } from './stage';
 import { chartTypeSelectors } from '../chart_types/chart_type_selectors';
 import { Colors } from '../common/colors';
 import type { LegendPositionConfig, PointerEvent } from '../specs';
 import { SpecsParser } from '../specs/specs_parser';
-import { updateChartTitles, updateParentDimensions } from '../state/actions/chart_settings';
+import { updateChartTitles, updateParentDimensions, updateRenderer } from '../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
 import { createChartStore, type GlobalChartState } from '../state/chart_state';
+import type { StageElement } from '../state/internal_chart_renderer';
 import { getChartContainerUpdateStateSelector } from '../state/selectors/chart_container_updates';
 import { getInternalChartStateSelector, chartSelectorsRegistry } from '../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
@@ -41,7 +43,8 @@ import { LIGHT_THEME } from '../utils/themes/light_theme';
 /** @public */
 export interface ChartProps {
   /**
-   * The type of rendered
+   * The drawing backend: `canvas` draws into a bitmap, `svg` emits vector elements.
+   * Both share the same layout, so switching never moves anything.
    * @defaultValue `canvas`
    */
   renderer?: 'svg' | 'canvas';
@@ -72,7 +75,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   private chartContainerRef: React.RefObject<HTMLDivElement>;
 
-  private chartStageRef: React.RefObject<HTMLCanvasElement>;
+  private chartStageRef: React.RefObject<StageElement>;
 
   constructor(props: ChartProps) {
     super(props);
@@ -84,7 +87,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
     // set up the redux store
     const id = props.id ?? uuidv4();
-    this.chartStore = createChartStore(id, this.props.title, this.props.description);
+    this.chartStore = createChartStore(id, this.props.title, this.props.description, this.props.renderer);
     this.state = {
       legendDirection: LayoutDirection.Vertical,
       paddingLeft: LIGHT_THEME.chartMargins.left,
@@ -118,7 +121,10 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.unsubscribeToStore();
   }
 
-  componentDidUpdate({ title, description, size }: Readonly<ChartProps>) {
+  componentDidUpdate({ title, description, size, renderer }: Readonly<ChartProps>) {
+    if (renderer !== this.props.renderer) {
+      this.chartStore.dispatch(updateRenderer(this.props.renderer ?? 'canvas'));
+    }
     if (title !== this.props.title || description !== this.props.description) {
       this.chartStore.dispatch(updateChartTitles({ title: this.props.title, description: this.props.description }));
     }
@@ -139,10 +145,15 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     blobOrDataUrl: any;
     browser: 'IE11' | 'other';
   } | null {
-    if (!this.chartStageRef.current) {
+    const stage = this.chartStageRef.current;
+    if (!stage) {
       return null;
     }
-    const canvas = this.chartStageRef.current;
+    // an svg stage is painted into a throwaway canvas through the same paint function
+    const canvas = stage instanceof HTMLCanvasElement ? stage : paintStageToCanvas(stage);
+    if (!canvas) {
+      return null;
+    }
     const backgroundCanvas = document.createElement('canvas');
     backgroundCanvas.width = canvas.width;
     backgroundCanvas.height = canvas.height;

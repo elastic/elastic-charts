@@ -18,6 +18,7 @@ module.exports = {
     'storybook-addon-background-toggle',
     'storybook-addon-theme-toggle',
     'storybook-addon-toggles',
+    './addons/renderer/manager.tsx',
   ],
   core: {
     builder: 'webpack5',

@@ -13,7 +13,7 @@ import { HorizontalAlignment, VerticalAlignments } from '../../../../common/text
 import type { Datum } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { FillLabelHorizontalAlignment } from '../../../../utils/themes/partition';
-import { getCurrentRowX } from '../../renderer/canvas/canvas_renderers';
+import { getCurrentRowX } from '../../renderer/renderers';
 import type { Layer } from '../../specs';
 import type { QuadViewModel, TextRow } from '../types/viewmodel_types';
 

@@ -15,4 +15,12 @@ export const chartSelectorsFactory = createChartSelectorsFactory({
   isInitialized: () => InitStatus.Initialized,
   isChartEmpty: () => false,
   getTooltipInfo: () => ({ header: null, values: [] }),
+  // Flame pinning is decided in the chart component. Visibility stays false so the shared
+  // tooltip does not render, but isPinnable must stay true or isPinnableTooltip disables the menu.
+  isTooltipVisible: () => ({
+    visible: false,
+    isExternal: false,
+    displayOnly: false,
+    isPinnable: true,
+  }),
 });

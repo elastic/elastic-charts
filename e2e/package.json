@@ -11,13 +11,20 @@
     "test:playwright": "./scripts/test.sh",
     "test:playwright:a11y": "./scripts/test.sh --a11y",
     "merge:reports": "ts-node --transpile-only ./merge_html_reports.ts",
+    "image-distance": "ts-node --transpile-only ./scripts/image_distance.ts",
+    "svg:screenshots": "./scripts/start.sh --renderer=svg -u",
+    "svg:review": "yarn svg:screenshots; yarn image-distance --cross --page --open",
     "playwright": "playwright"
   },
   "dependencies": {
     "@playwright/test": "^1.63.0",
     "@types/node": "^20.10.0",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
     "change-case": "^4.1.2",
     "expect-playwright": "^0.8.0",
+    "pixelmatch": "^5.3.0",
+    "pngjs": "^7.0.0",
     "slugify": "^1.6.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"

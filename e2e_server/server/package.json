@@ -1,0 +1,8 @@
+{
+  "name": "elastic-charts-e2e-server",
+  "private": true,
+  "scripts": {
+    "build": "node ../../node_modules/@rsbuild/core/bin/rsbuild.js build",
+    "start": "node ../../node_modules/@rsbuild/core/bin/rsbuild.js dev"
+  }
+}

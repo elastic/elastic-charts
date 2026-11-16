@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 
 import { environmentUrl } from '../e2e_config';
+import { expect, test } from '../fixtures';
 import { eachTheme } from '../helpers';
 
 const storySelector = '[data-test-subj="echMeterStory"]';

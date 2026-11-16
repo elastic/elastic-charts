@@ -13,3 +13,9 @@ import './style.scss';
 export const decorators = [StoryWrapper];
 
 export { storybookParameters as parameters } from './parameters';
+
+/**
+ * Globals must be declared here for storybook to accept them from the url, so that a link with
+ * `globals=renderer:svg` opens the story on the svg renderer (the Chart renderer toolbar button sets it).
+ */
+export const globals = { renderer: 'canvas' };

@@ -6,8 +6,10 @@
  * Side Public License, v 1.
  */
 
+import type { Ctx2d } from '../../../../../renderers/painter';
+
 /** @internal */
-export function renderDebugBox(ctx: CanvasRenderingContext2D, cartesianWidth: number, cartesianHeight: number) {
+export function renderDebugBox(ctx: Ctx2d, cartesianWidth: number, cartesianHeight: number) {
   ctx.save();
   ctx.beginPath();
   ctx.rect(0, 0, cartesianWidth, cartesianHeight);

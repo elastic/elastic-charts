@@ -71,7 +71,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     [9, 8],
   ];
   return (
-    <Chart title={title} description={description} renderer="canvas">
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis

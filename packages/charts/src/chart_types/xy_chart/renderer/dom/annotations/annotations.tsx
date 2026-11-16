@@ -21,7 +21,7 @@ import {
 } from '../../../../../state/actions/dom_element';
 import { onPointerMove as onPointerMoveAction } from '../../../../../state/actions/mouse';
 import type { GlobalChartState } from '../../../../../state/chart_state';
-import type { BackwardRef } from '../../../../../state/internal_chart_renderer';
+import type { BackwardRef, StageElement } from '../../../../../state/internal_chart_renderer';
 import { getChartThemeSelector } from '../../../../../state/selectors/get_chart_theme';
 import {
   getInternalIsInitializedSelector,
@@ -67,13 +67,13 @@ interface AnnotationsStateProps {
 
 interface AnnotationsOwnProps {
   getChartContainerRef: BackwardRef;
-  chartAreaRef: RefObject<HTMLCanvasElement>;
+  chartAreaRef: RefObject<StageElement>;
 }
 
 type AnnotationsProps = AnnotationsDispatchProps & AnnotationsStateProps & AnnotationsOwnProps;
 
 function renderAnnotationLineMarkers(
-  chartAreaRef: RefObject<HTMLCanvasElement>,
+  chartAreaRef: RefObject<StageElement>,
   chartDimensions: Dimensions,
   chartId: string,
   annotationLines: AnnotationLineProps[],

@@ -13,6 +13,7 @@ import { cssFontShorthand, DASH, ELLIPSIS, SPACE } from '../../../common/text_ut
 import { measureText } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { degToRad } from '../../../utils/common';
 import type { Point } from '../../../utils/point';
+import type { Ctx2d } from '../../painter';
 
 /** @internal */
 export type TextDirection = 'rtl' | 'ltr'; // TODO: export this
@@ -28,7 +29,7 @@ export type TextFont = Font & {
 
 /** @internal */
 export function renderText(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   origin: Point,
   text: string,
   font: TextFont,
@@ -67,7 +68,7 @@ interface Options {
 
 /** @internal */
 export function wrapLines(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   text: string,
   font: Font,
   fontSize: number,

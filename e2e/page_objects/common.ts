@@ -14,7 +14,14 @@ import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 import { paramCase } from 'change-case';
 
-import { environmentUrl } from '../e2e_config';
+import { environmentUrl, renderer } from '../e2e_config';
+
+declare global {
+  interface Window {
+    /** in-page story navigation exposed by the VRT page, see e2e_server/server/generate/vrt_page_template.js */
+    __vrtNavigate?: (url: string) => number;
+  }
+}
 
 // TODO determine if this is still necessary
 const DRAG_DETECTION_TIMEOUT = 100; // the minimum amount of time to consider for for dragging purposes
@@ -100,6 +107,19 @@ function getCursorPosition(
   return { x, y };
 }
 
+/**
+ * Sets or replaces one entry of a storybook `globals` url parameter (`key:value;key2.sub:value2`,
+ * see `getGlobalParams` in e2e_server/server/mocks/use_global_parameters.ts), keeping the other entries.
+ */
+function setGlobalsEntry(globals: string, key: string, value: string): string {
+  const entries = globals.split(';').filter((entry) => entry !== '');
+  const index = entries.findIndex((entry) => entry.split(':')[0] === key);
+  const entry = `${key}:${value}`;
+  if (index === -1) entries.push(entry);
+  else entries[index] = entry;
+  return entries.join(';');
+}
+
 interface ScreenshotDOMElementOptions {
   padding?: number;
   /**
@@ -179,6 +199,11 @@ export class CommonPage {
     envUrl.searchParams.delete('id');
     envUrl.searchParams.set('path', path ?? `/story/${id}`);
     envUrl.searchParams.append('knob-debug', 'false');
+
+    if (renderer === 'svg') {
+      // the VRT page reads only the first `globals` parameter, so merge into it rather than append another
+      envUrl.searchParams.set('globals', setGlobalsEntry(envUrl.searchParams.get('globals') ?? '', 'renderer', 'svg'));
+    }
 
     return envUrl.toString();
   }
@@ -557,7 +582,7 @@ export class CommonPage {
     (page: Page) =>
     async (url: string, waitSelector?: string, timeout?: number): Promise<boolean> => {
       const cleanUrl = CommonPage.parseUrl(url);
-      await page.goto(cleanUrl);
+      await this.navigate(page)(cleanUrl);
 
       if (waitSelector) {
         try {
@@ -572,6 +597,17 @@ export class CommonPage {
 
       return false;
     };
+
+  /**
+   * Navigate the page to a VRT url. When the VRT page is already loaded, switch story in place
+   * (remounting the page tree, no document reload) instead of a full `page.goto`.
+   */
+  navigate = (page: Page) => async (url: string) => {
+    const inPage =
+      page.url().startsWith(new URL(url).origin) &&
+      (await page.evaluate(() => typeof window.__vrtNavigate === 'function').catch(() => false));
+    await (inPage ? page.evaluate((nextUrl) => window.__vrtNavigate!(nextUrl), url) : page.goto(url));
+  };
 
   /**
    * Wait for an element to be on the DOM
@@ -642,9 +678,10 @@ export class CommonPage {
 
 function getSnapshotOptions(options?: ScreenshotDOMElementOptions) {
   if (options?.maxDiffPixels !== undefined) {
-    // need to clear default options for maxDiffPixels to be respected, else could still fail on threshold or maxDiffPixelRatio
+    // the config's `maxDiffPixelRatio: 0` would still fail the first differing pixel, so it is lifted; the per pixel
+    // color `threshold` stays at the config's exact match (a threshold of 1 made every comparison pass, leaving
+    // baselines stale for years)
     return {
-      threshold: 1,
       maxDiffPixelRatio: 1,
       ...options,
     };

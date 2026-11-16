@@ -1,0 +1,7 @@
+{
+  "name": "elastic-charts-playground",
+  "private": true,
+  "scripts": {
+    "start": "node ../node_modules/@rsbuild/core/bin/rsbuild.js dev"
+  }
+}

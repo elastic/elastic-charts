@@ -9,6 +9,7 @@
 import { withContext } from '..';
 import { RGBATupleToString } from '../../../common/color_library_wrappers';
 import type { Line, Stroke } from '../../../geoms/types';
+import type { Painter } from '../../painter';
 
 /**
  * Canvas2d stroke ignores an exact zero line width
@@ -17,8 +18,11 @@ import type { Line, Stroke } from '../../../geoms/types';
  */
 export const MIN_STROKE_WIDTH = 0.001;
 
-/** @internal */
-export function renderMultiLine(ctx: CanvasRenderingContext2D, lines: Line[] | string[], stroke: Stroke) {
+/**
+ * Strokes line segments, or paths given as SVG path data, with one stroke style.
+ * @internal
+ */
+export function renderMultiLine(ctx: Painter, lines: Line[] | string[], stroke: Stroke) {
   if (stroke.width < MIN_STROKE_WIDTH || lines.length === 0) {
     return;
   }
@@ -34,7 +38,7 @@ export function renderMultiLine(ctx: CanvasRenderingContext2D, lines: Line[] | s
 
     for (const line of lines) {
       if (typeof line === 'string') {
-        ctx.stroke(new Path2D(line));
+        ctx.strokePath(line);
       } else {
         ctx.moveTo(line.x1, line.y1);
         ctx.lineTo(line.x2, line.y2);

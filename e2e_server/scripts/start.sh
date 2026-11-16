@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env bash
 
 export TZ=UTC
 export RNG_SEED=elastic-charts
@@ -14,6 +14,4 @@ if [[ -n "${LOCAL_VRT_SERVER}" ]] && [[ ! -f "$FILE" ]]; then
   exit 1
 fi
 
-cd e2e_server/server
-
-node ../../node_modules/webpack/bin/webpack.js serve --progress "$@"
+yarn --cwd e2e_server/server start "$@"
