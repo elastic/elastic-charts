@@ -1068,6 +1068,51 @@ describe('Downsampling dense line series', () => {
       expect(downsampled.xDomain).toEqual(full.xDomain);
       expect(downsampled.yDomains).toEqual(full.yDomains);
     });
+
+    it('reads the rows of the other series once if a fitted series cannot be downsampled', () => {
+      const barRows = Array.from({ length: 100 }, (_, i) => ({ x: i * 10, y: 1 }));
+      const xAccessor = jest.fn(({ x }: { x: number }) => x);
+      const bars = MockSeriesSpec.bar({
+        id: 'bars',
+        xAccessor,
+        yAccessors: ['y'],
+        xScaleType: ScaleType.Linear,
+        yScaleType: ScaleType.Linear,
+        data: barRows,
+      });
+      expect(downsampledOf(domainsOf([denseLine({ data: fullData, fit: Fit.Linear }), bars]))).toEqual([false, false]);
+      // once per row, and once more to tell that the bars have x values
+      expect(xAccessor).toHaveBeenCalledTimes(barRows.length + 1);
+    });
+
+    it('reads the rows of a fitted series once if a series that is never downsampled has x values', () => {
+      const yAccessor = jest.fn(({ y }: { y: number }) => y);
+      const fitted = denseLine({ data: fullData, yAccessors: [yAccessor], fit: Fit.Linear });
+      const bars = MockSeriesSpec.bar({
+        id: 'bars',
+        xAccessor: 'x',
+        yAccessors: ['y'],
+        xScaleType: ScaleType.Linear,
+        yScaleType: ScaleType.Linear,
+        data: [{ x: 0, y: 1 }],
+      });
+      expect(downsampledOf(domainsOf([fitted, bars]))).toEqual([false, false]);
+      expect(yAccessor).toHaveBeenCalledTimes(fullData.length);
+    });
+
+    it('warns once about the missing ys of a fitted series that cannot be downsampled', () => {
+      const warn = jest.spyOn(Logger, 'warn').mockImplementation(() => {});
+      // the fit leaves the missing ys of the dense series missing, but the other series has x values that it lacks
+      const downsampled = domainsOf([
+        denseLine({ fit: Fit.None }),
+        denseLine({ id: 'other', data: [0.5, 300.5, 600.5].map((x) => ({ x, y: 1 })) }),
+      ]);
+      const calls = [...warn.mock.calls];
+      warn.mockRestore();
+      // the other series has no fit, so it stays downsampled
+      expect(downsampledOf(downsampled)).toEqual([false, true]);
+      expect(calls).toEqual([['Found 7 non-numeric y values in dataset for spec "dense"', '(7: null)']]);
+    });
   });
 
   it('checks the y scale of the domain group the series is drawn on', () => {

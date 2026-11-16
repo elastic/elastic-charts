@@ -337,15 +337,15 @@ function warnNonNumericValues(specId: string, nonNumericValues: Map<unknown, num
 }
 
 /**
- * The x and y values of the first y accessor, y being NaN where missing, unless an x is not finite or not sorted.
+ * The x and y values of the first y accessor, y being NaN where missing, unless an x is not finite or not sorted, or,
+ * with `needsEveryY`, a y is missing.
  */
-function numericValues({ data, xAccessor, yAccessors }: BasicSeriesSpec) {
+function numericValues({ data, xAccessor, yAccessors }: BasicSeriesSpec, needsEveryY: boolean) {
   const yAccessor = yAccessors[0]!;
   const xs = new Float64Array(data.length); // the x of each row
   const ys = new Float64Array(data.length); // the y of each row, NaN where missing or not numeric
   const nonNumericValues = new Map<unknown, number>(); // how often each non-numeric y occurs, for the warning
   let previousX = -Infinity; // the x of the previous row, to check that x is sorted
-  let hasMissingY = false;
   for (let i = 0; i < data.length; i++) {
     const datum = data[i];
     const x = typeof datum === 'object' && datum !== null ? getAccessorValue(datum, xAccessor) : undefined;
@@ -353,10 +353,10 @@ function numericValues({ data, xAccessor, yAccessors }: BasicSeriesSpec) {
     xs[i] = previousX = x;
     const y = getAccessorValue(datum, yAccessor);
     const numericY = typeof y === 'number' && Number.isFinite(y) ? y : finiteOrNull(y, nonNumericValues) ?? NaN;
+    if (needsEveryY && Number.isNaN(numericY)) return;
     ys[i] = numericY;
-    hasMissingY ||= Number.isNaN(numericY);
   }
-  return { xs, ys, nonNumericValues, hasMissingY };
+  return { xs, ys, nonNumericValues };
 }
 
 /**
@@ -468,8 +468,36 @@ function fitFillsMissingY(spec: BasicSeriesSpec) {
 
 function haveSameValues(lists: Float64Array[]) {
   const [first, ...rest] = lists;
+  if (first === undefined) return true;
+  for (const list of rest) {
+    if (list.length !== first.length) return false;
+    for (let i = 0; i < list.length; i++) if (list[i] !== first[i]) return false;
+  }
+  return true;
+}
+
+/** Whether a row of the spec has an x value, as `splitSeriesDataByAccessors` reads them */
+function hasXValue({ data, xAccessor }: BasicSeriesSpec) {
+  return data.some((datum) => {
+    if (typeof datum !== 'object' || datum === null) return false;
+    const x = getAccessorValue(datum, xAccessor);
+    return typeof x === 'string' || typeof x === 'number';
+  });
+}
+
+/** The rows a spec is laid out with, see `layoutRows` */
+type Layout = { data: Datum[]; rawValues?: RawValues; nonNumericValues?: Map<unknown, number> };
+
+/**
+ * Whether a downsampled series with a `fit` may lack an x value of another series, which the fit would fill in, see
+ * `markGaps`. No such x value exists if every series that has x values is downsampled, and they all share them.
+ */
+function downsampledFitLacksXValues(layouts: Array<{ spec: BasicSeriesSpec; layout: Layout }>) {
+  const downsampled = layouts.filter(({ layout }) => layout.rawValues !== undefined);
+  if (!downsampled.some(({ spec }) => fitOf(spec) !== undefined)) return false;
   return (
-    first === undefined || rest.every((list) => list.length === first.length && list.every((v, i) => v === first[i]))
+    layouts.some(({ spec, layout }) => layout.rawValues === undefined && hasXValue(spec)) ||
+    !haveSameValues(downsampled.flatMap(({ layout }) => (layout.rawValues ? [layout.rawValues.xs] : [])))
   );
 }
 
@@ -479,14 +507,12 @@ function canDownsample(
   isStacked: boolean,
   scaleConfigs?: ScaleConfigs,
   smallMultiples?: SmallMultiplesGroupBy,
-  downsampleFitted = true,
 ) {
   return (
     scaleConfigs !== undefined &&
     (isLineSeriesSpec(spec) || isAreaSeriesSpec(spec)) &&
     MONOTONIC_CURVES.has(spec.curve ?? DEFAULT_CURVE) &&
     !isStacked &&
-    (downsampleFitted || spec.fit === undefined) &&
     spec.yAccessors.length === 1 &&
     !spec.y0Accessors?.length &&
     !spec.splitSeriesAccessors?.length &&
@@ -503,29 +529,27 @@ function canDownsample(
  * The rows the data series of a spec start with, for the domains and the legend: the summary of a series that is
  * downsampled, with the numeric values of all its rows in `rawValues`, otherwise all the rows of the spec.
  * A series with a `fit` is downsampled only if the fit has no y value to fill in; the caller checks that it has no x
- * value to fill in either.
+ * value to fill in either, and warns about the `nonNumericValues` of a series that it keeps downsampled.
  */
 function layoutRows(
   spec: BasicSeriesSpec,
   isStacked: boolean,
   scaleConfigs?: ScaleConfigs,
   smallMultiples?: SmallMultiplesGroupBy,
-  downsampleFitted = true,
-): { data: Datum[]; rawValues?: RawValues } {
-  const values = canDownsample(spec, isStacked, scaleConfigs, smallMultiples, downsampleFitted)
-    ? numericValues(spec)
+): Layout {
+  // a fit that fills in missing y values has none to fill in if the series is downsampled
+  const values = canDownsample(spec, isStacked, scaleConfigs, smallMultiples)
+    ? numericValues(spec, fitFillsMissingY(spec))
     : undefined;
   if (!values) return { data: spec.data };
-  const { xs, ys, nonNumericValues, hasMissingY } = values;
-  if (hasMissingY && fitFillsMissingY(spec)) return { data: spec.data };
+  const { xs, ys, nonNumericValues } = values;
   // the summary: the first and last rows with a y, and the lowest and highest, as M4 keeps them for a single bin,
   // plus the first and last rows, whose missing y the first and last legend values report
   const extremes = m4(xs, ys, 0, 0, 0, false);
   if (extremes.length === 0) return { data: spec.data };
   const kept = [...new Set([0, ...extremes, spec.data.length - 1])];
   if (kept.length >= spec.data.length) return { data: spec.data };
-  warnNonNumericValues(spec.id, nonNumericValues);
-  return { data: kept.map((i) => spec.data[i]), rawValues: { xs, ys } };
+  return { data: kept.map((i) => spec.data[i]), rawValues: { xs, ys }, nonNumericValues };
 }
 
 /** @internal */
@@ -536,7 +560,6 @@ export function getDataSeriesFromSpecs(
   seriesSort?: SeriesCompareFn,
   groupBySpec?: SmallMultiplesGroupBy,
   scaleConfigs?: ScaleConfigs,
-  downsampleFitted = true,
 ): {
   dataSeries: DataSeries[];
   /** the x values of the data rows of every series; a downsampled series may contribute only its summary rows */
@@ -560,29 +583,57 @@ export function getDataSeriesFromSpecs(
   let isOrdinalScale = false;
   // stacked and fitted series get gaps at the x values of every other series, so they need them all, unless downsampled
   let needsEveryXValue = false;
-  // whether a series with a `fit` is downsampled, which requires that no other series has an x value it lacks
-  let hasDownsampledFit = false;
   // whether a series that isn't downsampled adds x values, which only `xValues` holds
   let hasNonDownsampledXValues = false;
 
   const specsByYGroup = groupSeriesByYGroup(seriesSpecs);
+  // every spec is laid out before any of its rows are split into series, as whether a series with a `fit` can be
+  // downsampled depends on the other series; such a series is laid out with all its rows if it cannot be
+  const specLayouts = seriesSpecs.map((spec) => {
+    const specGroup = specsByYGroup.get(spec.groupId);
+    const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
+    return { spec, specGroup, isStacked };
+  });
+  // whether no series with a `fit` can be downsampled, see `downsampledFitLacksXValues`: known up front for the specs
+  // that are never downsampled, and otherwise as soon as a spec is laid out, which saves reading the rows of the
+  // series with a `fit` that follow
+  let fitNeedsEveryRow = specLayouts.some(
+    ({ spec, isStacked }) => !canDownsample(spec, isStacked, scaleConfigs, groupBySpec) && hasXValue(spec),
+  );
+  let firstRawXValues: Float64Array | undefined;
+  const layouts = specLayouts.map((entry) => {
+    const { spec, isStacked } = entry;
+    const layout: Layout =
+      fitNeedsEveryRow && fitOf(spec) !== undefined
+        ? { data: spec.data }
+        : layoutRows(spec, isStacked, scaleConfigs, groupBySpec);
+    if (layout.rawValues) {
+      firstRawXValues ??= layout.rawValues.xs;
+      fitNeedsEveryRow ||= !haveSameValues([firstRawXValues, layout.rawValues.xs]);
+    } else {
+      fitNeedsEveryRow ||= hasXValue(spec);
+    }
+    return { ...entry, layout };
+  });
+  if (downsampledFitLacksXValues(layouts)) {
+    for (const entry of layouts) if (fitOf(entry.spec) !== undefined) entry.layout = { data: entry.spec.data };
+  }
+
   let insertOrder = 0;
   // eslint-disable-next-line no-restricted-syntax
-  for (const spec of seriesSpecs) {
+  for (const { spec, specGroup, isStacked, layout } of layouts) {
     // check scale type and cast to Ordinal if we found at least one series
     // with Ordinal Scale
     if (spec.xScaleType === ScaleType.Ordinal) {
       isOrdinalScale = true;
     }
 
-    const specGroup = specsByYGroup.get(spec.groupId);
-    const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
     const isBanded = isBandedSpec(spec);
-    const { data, rawValues } = layoutRows(spec, isStacked, scaleConfigs, groupBySpec, downsampleFitted);
+    const { data, rawValues, nonNumericValues } = layout;
     if (rawValues) rawXValues.push(rawValues.xs);
-    const hasFit = fitOf(spec) !== undefined;
-    needsEveryXValue ||= isStacked || (hasFit && !rawValues);
-    hasDownsampledFit ||= hasFit && rawValues !== undefined;
+    // splitSeriesDataByAccessors only gets the summary rows of a downsampled spec
+    if (rawValues && nonNumericValues) warnNonNumericValues(spec.id, nonNumericValues);
+    needsEveryXValue ||= isStacked || (fitOf(spec) !== undefined && !rawValues);
 
     const { dataSeries, xValues } = splitSeriesDataByAccessors(
       spec,
@@ -619,18 +670,6 @@ export function getDataSeriesFromSpecs(
 
   if (rawXValues.length > 0 && !isNumberArray) {
     return getDataSeriesFromSpecs(seriesSpecs, deselectedDataSeries, orderOrdinalBinsBy, seriesSort, groupBySpec);
-  }
-  // a fit fills in the x values that only other series have: no such x exists if all series share their x values
-  if (hasDownsampledFit && (hasNonDownsampledXValues || !haveSameValues(rawXValues))) {
-    return getDataSeriesFromSpecs(
-      seriesSpecs,
-      deselectedDataSeries,
-      orderOrdinalBinsBy,
-      seriesSort,
-      groupBySpec,
-      scaleConfigs,
-      false,
-    );
   }
   if (needsEveryXValue) {
     for (const xs of rawXValues) for (const x of xs) globalXValues.add(x);
