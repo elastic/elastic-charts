@@ -1103,6 +1103,35 @@ describe('Downsampling dense line series', () => {
       expect(xAccessor).toHaveBeenCalledTimes(fit ? 200 : 100);
     });
 
+    describe('next to a series that is split, with rows that have no value to split by', () => {
+      type Row = { g?: string; point?: { x: number }; y: number };
+      const splitBars = (data: Row[]) =>
+        MockSeriesSpec.bar({
+          id: 'bars',
+          // it throws on a row without a point
+          xAccessor: ({ point }: Row) => point!.x,
+          yAccessors: ['y'],
+          splitSeriesAccessors: ['g'],
+          xScaleType: ScaleType.Linear,
+          yScaleType: ScaleType.Linear,
+          data,
+        });
+
+      it('does not read the x value of such rows', () => {
+        const bars = splitBars([{ y: 1 }, { g: 'a', point: { x: 0 }, y: 1 }]);
+        // the bars have an x value, so the series with a fit keeps every row
+        expect(downsampledOf(domainsOf([denseLine({ data: fullData, fit: Fit.Linear }), bars]))).toEqual([
+          false,
+          false,
+        ]);
+      });
+
+      it('downsamples the series with a fit if no other row has an x value', () => {
+        const bars = splitBars([{ point: { x: 0.5 }, y: 1 }]);
+        expect(downsampledOf(domainsOf([denseLine({ data: fullData, fit: Fit.Linear }), bars]))).toEqual([true]);
+      });
+    });
+
     it('reads the rows of a fitted series once if a series that is never downsampled has x values', () => {
       const yAccessor = jest.fn(({ y }: { y: number }) => y);
       const fitted = denseLine({ data: fullData, yAccessors: [yAccessor], fit: Fit.Linear });

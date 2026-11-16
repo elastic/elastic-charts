@@ -476,9 +476,13 @@ function haveSameValues(lists: Float64Array[]) {
   return true;
 }
 
-/** Whether a row of the spec has an x value, as `splitSeriesDataByAccessors` reads them */
-function hasXValue({ data, xAccessor }: BasicSeriesSpec) {
+/**
+ * Whether `splitSeriesDataByAccessors` finds an x value in a row of the spec. It skips the rows that the spec is split
+ * by but that have no value to split by, without reading their x value, so this does too.
+ */
+function hasXValue({ data, xAccessor, splitSeriesAccessors = [] }: BasicSeriesSpec) {
   return data.some((datum) => {
+    if (splitSeriesAccessors.length > 0 && getSplitAccessors(datum, splitSeriesAccessors).size < 1) return false;
     if (typeof datum !== 'object' || datum === null) return false;
     const x = getAccessorValue(datum, xAccessor);
     return typeof x === 'string' || typeof x === 'number';
