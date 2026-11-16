@@ -258,7 +258,7 @@ test.describe('Interactions', () => {
 
     test('show synced cursor band on every panel of a small multiples heatmap', async ({ page }) => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/interactions--multi-chart-cursor-sync-small-multiples',
+        'http://localhost:9001/?path=/story/interactions--multi-chart-cursor-sync&knob-heatmap small multiples=true',
         { left: 400, top: 60 },
         {
           screenshotSelector: '#story-root',
