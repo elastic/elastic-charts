@@ -8,9 +8,11 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
+import type { LineSeriesProps } from '@elastic/charts';
 import { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { getM4Knob, m4SeriesProps } from './m4_knob';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { noiseTable, sample } from '../utils/datasets/smooth_noise';
@@ -41,18 +43,23 @@ const PROFILE_LABEL = 'Perf:DataToRender';
 
 /**
  * A chart of `seriesCount` dense line series of `pointsPerSeries` points each, or one less with
- * `missingPointPerSeries`, logging how long it takes to render
+ * `missingPointPerSeries`, logging how long it takes to render. The series get the `fit`, if any, and are M4
+ * downsampled unless `downsample` is false.
  */
 export function DenseLines({
   seriesCount,
   pointsPerSeries,
   missingPointPerSeries = false,
+  fit,
+  downsample = true,
   title,
   description,
 }: {
   seriesCount: number;
   pointsPerSeries: number;
   missingPointPerSeries?: boolean;
+  fit?: LineSeriesProps['fit'];
+  downsample?: boolean;
   title?: string;
   description?: string;
 }) {
@@ -63,6 +70,13 @@ export function DenseLines({
     window.performance.mark('Perf:Started');
     setData(generatedData);
   }, [runId, pointsPerSeries, seriesCount, missingPointPerSeries]);
+
+  // so does turning the downsampling on or off; the mark is set while rendering, before the chart renders again
+  const previousDownsample = useRef(downsample);
+  if (previousDownsample.current !== downsample) {
+    previousDownsample.current = downsample;
+    window.performance.mark('Perf:Started');
+  }
 
   // a resize starts a new measurement, as the chart lays out and renders again
   const containerRef = useRef<HTMLDivElement>(null);
@@ -131,6 +145,8 @@ export function DenseLines({
               yAccessors={[1]}
               data={seriesData}
               curve={CurveType.LINEAR}
+              fit={fit}
+              {...m4SeriesProps(downsample)}
             />
           ))}
         </Chart>
@@ -140,5 +156,11 @@ export function DenseLines({
 }
 
 export const Example: ChartsStory = (_, { title, description }) => (
-  <DenseLines seriesCount={50} pointsPerSeries={40_000} title={title} description={description} />
+  <DenseLines
+    seriesCount={50}
+    pointsPerSeries={40_000}
+    downsample={getM4Knob()}
+    title={title}
+    description={description}
+  />
 );
