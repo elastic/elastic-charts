@@ -256,6 +256,16 @@ test.describe('Interactions', () => {
       );
     });
 
+    test('show synced cursor band on every panel of a small multiples heatmap', async ({ page }) => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/interactions--multi-chart-cursor-sync-small-multiples',
+        { left: 400, top: 60 },
+        {
+          screenshotSelector: '#story-root',
+        },
+      );
+    });
+
     test('show synced extra values in legend', async ({ page }) => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/interactions--cursor-update-action&knob-Series type_Top Chart=line&knob-enable external tooltip_Top Chart=true&knob-Series type_Bottom Chart=line&knob-enable external tooltip_Bottom Chart=false&knob-pointer update debounce=0',
