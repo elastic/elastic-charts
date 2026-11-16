@@ -101,7 +101,11 @@ export class CanvasPainter implements Painter {
   }
 
   fillPath(d: string, fillRule?: CanvasFillRule) {
-    this.ctx.fill(new Path2D(d), fillRule);
+    // an omitted rule is left out of the call: an explicit `undefined` is not a valid `CanvasFillRule`, and
+    // context implementations that check arguments by count, such as jest-canvas-mock, throw on it
+    const path = new Path2D(d);
+    if (fillRule) this.ctx.fill(path, fillRule);
+    else this.ctx.fill(path);
   }
 
   strokePath(d: string) {
@@ -157,7 +161,8 @@ export class CanvasPainter implements Painter {
   }
 
   fill(fillRule?: CanvasFillRule) {
-    this.ctx.fill(fillRule);
+    if (fillRule) this.ctx.fill(fillRule);
+    else this.ctx.fill();
   }
 
   stroke() {
@@ -165,7 +170,8 @@ export class CanvasPainter implements Painter {
   }
 
   clip(fillRule?: CanvasFillRule) {
-    this.ctx.clip(fillRule);
+    if (fillRule) this.ctx.clip(fillRule);
+    else this.ctx.clip();
   }
 
   fillRect(x: number, y: number, width: number, height: number) {
