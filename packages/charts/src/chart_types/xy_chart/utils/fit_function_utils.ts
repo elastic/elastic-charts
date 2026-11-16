@@ -7,6 +7,7 @@
  */
 
 import { fitFunction } from './fit_function';
+import { isDownsampled } from './m4';
 import type { DataSeries } from './series';
 import { isAreaSeriesSpec, isLineSeriesSpec } from './specs';
 import type { ScaleType } from '../../../scales/constants';
@@ -16,5 +17,7 @@ export const applyFitFunctionToDataSeries = (dataSeries: DataSeries[], xScaleTyp
   dataSeries.map((series) => {
     const { spec, data } = series;
     if ((!isAreaSeriesSpec(spec) && !isLineSeriesSpec(spec)) || spec.fit === undefined) return series;
+    // a downsampled series has no y value to fill in
+    if (isDownsampled(series)) return series;
     return { ...series, data: fitFunction(data, spec.fit, xScaleType, true) };
   });

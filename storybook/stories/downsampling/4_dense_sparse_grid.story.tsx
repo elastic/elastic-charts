@@ -11,6 +11,7 @@ import React, { useMemo } from 'react';
 import { Chart, CurveType, LineSeries, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { getM4Knob, m4SeriesProps } from './m4_knob';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme, useThemeId } from '../../use_base_theme';
 import { noiseTable, sample } from '../utils/datasets/smooth_noise';
@@ -109,6 +110,7 @@ export const Example: ChartsStory = () => {
   const data = useMemo(() => CASES.map(([, generate]) => generate()), []);
   const baseTheme = useBaseTheme();
   const isDarkTheme = useThemeId().includes('dark');
+  const m4Props = m4SeriesProps(getM4Knob());
   return (
     <div
       style={{
@@ -134,6 +136,7 @@ export const Example: ChartsStory = () => {
               curve={curve}
               color={isDarkTheme ? 'white' : 'black'}
               lineSeriesStyle={{ line: { strokeWidth: 0.5 } }}
+              {...m4Props}
             />
           </Chart>
         )),
