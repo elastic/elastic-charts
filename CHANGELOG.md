@@ -1,3 +1,11 @@
+## [73.4.1](https://github.com/elastic/elastic-charts/compare/v73.4.0...v73.4.1) (2026-11-17)
+
+
+### Bug Fixes
+
+* **legend:** match table row height to rendered line-height ([#2922](https://github.com/elastic/elastic-charts/issues/2922)) ([d7498c2](https://github.com/elastic/elastic-charts/commit/d7498c2f4a1852e1fa46b07bf22069f4b42c04d9))
+* omit an absent fill rule in painter fill, fillPath and clip ([#2954](https://github.com/elastic/elastic-charts/issues/2954)) ([41527b2](https://github.com/elastic/elastic-charts/commit/41527b28eeb13068342a84a16462d81b4cff8551))
+
 # [73.4.0](https://github.com/elastic/elastic-charts/compare/v73.3.2...v73.4.0) (2026-11-16)
 
 
