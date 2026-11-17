@@ -35,18 +35,21 @@ export const getCursorBandPositionSelector = createCustomCachedSelector(
       return band && { ...band, fromExternalEvent };
     };
 
-    // external pointer events takes precedence over the current mouse pointer
+    // external pointer events take precedence only when they resolve a column on this chart
     if (isPointerOverEvent(externalPointerEvent)) {
       const { x, smHorizontalValue, smVerticalValue } = externalPointerEvent;
-      if (isNil(x)) return;
-      return bandFrom(
-        {
-          x,
-          smHorizontalAccessorValue: smHorizontalValue,
-          smVerticalAccessorValue: smVerticalValue,
-        },
-        true,
-      );
+      if (!isNil(x)) {
+        const band = bandFrom(
+          {
+            x,
+            // PointerOverEvent uses null where GridCell uses undefined
+            smHorizontalAccessorValue: smHorizontalValue ?? undefined,
+            smVerticalAccessorValue: smVerticalValue ?? undefined,
+          },
+          true,
+        );
+        if (band) return band;
+      }
     }
 
     return pickedGridCell ? bandFrom(pickedGridCell, false) : undefined;

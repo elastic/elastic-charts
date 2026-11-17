@@ -108,11 +108,7 @@ export type PickHighlightedArea = (
 ) => Rect | null;
 
 /** @internal */
-export type CursorBandTarget = {
-  x: NonNullable<PrimitiveValue>;
-  smHorizontalAccessorValue?: string | number | null;
-  smVerticalAccessorValue?: string | number | null;
-};
+export type CursorBandTarget = Pick<GridCell, 'x' | 'smHorizontalAccessorValue' | 'smVerticalAccessorValue'>;
 
 /** @internal */
 export type PickCursorBand = (cell: CursorBandTarget) => Rect | undefined;

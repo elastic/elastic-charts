@@ -12,17 +12,19 @@ import React from 'react';
 import { Provider } from 'react-redux';
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeLegendSelector } from './compute_legend';
 import { getCursorBandPositionSelector } from './get_cursor_band';
 import { createOnPointerUpdateCaller } from './on_pointer_update_caller';
-import { getPickedGridCell } from './picked_shapes';
+import { getPickedGridCell, getPickedShapes } from './picked_shapes';
 import { Predicate } from '../../../../common/predicate';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { PointerEventType, TooltipType } from '../../../../specs';
-import type { PointerEvent } from '../../../../specs';
+import type { PointerEvent, PointerOverEvent } from '../../../../specs';
 import type { Spec } from '../../../../specs/spec_type';
 import { onExternalPointerEvent } from '../../../../state/actions/events';
+import { onToggleDeselectSeriesAction } from '../../../../state/actions/legend';
 import { onPointerMove } from '../../../../state/actions/mouse';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import type { Datum } from '../../../../utils/common';
@@ -51,7 +53,7 @@ function setupChart(partial?: {
   maxWidth?: number;
   tooltipType?: TooltipType;
   data?: Datum[];
-  extraSpecs?: ReturnType<typeof MockGlobalSpec.smallMultiple>[];
+  extraSpecs?: Array<ReturnType<typeof MockGlobalSpec.smallMultiple> | ReturnType<typeof MockGlobalSpec.groupBy>>;
   onPointerUpdate?: jest.Mock;
   chartId?: string;
 }) {
@@ -76,6 +78,39 @@ function setupChart(partial?: {
 
 function hover(store: Store<GlobalChartState>, x: number, y: number) {
   store.dispatch(onPointerMove({ position: { x, y }, time: 0 }));
+}
+
+function externalOver(
+  x: PointerOverEvent['x'],
+  smVerticalValue: PointerOverEvent['smVerticalValue'] = null,
+): PointerEvent {
+  return {
+    chartId: 'other',
+    type: PointerEventType.Over,
+    scale: ScaleType.Ordinal,
+    x,
+    y: [],
+    smHorizontalValue: null,
+    smVerticalValue,
+  };
+}
+
+const verticalPanelData = [
+  { x: 'a', y: 'y', value: 1, panel: 'a' },
+  { x: 'b', y: 'y', value: 2, panel: 'a' },
+  { x: 'a', y: 'y', value: 3, panel: 'b' },
+  { x: 'b', y: 'y', value: 4, panel: 'b' },
+];
+
+function verticalPanelSpecs() {
+  return [
+    MockGlobalSpec.smallMultiple({ splitVertically: 'panel' }),
+    MockGlobalSpec.groupBy({
+      id: 'panel',
+      by: (_spec: Spec, datum: { panel: string }) => datum.panel,
+      sort: Predicate.AlphaAsc,
+    }),
+  ];
 }
 
 describe('Heatmap cursor band', () => {
@@ -106,6 +141,74 @@ describe('Heatmap cursor band', () => {
     expect(band?.width).toBeCloseTo(maxWidth);
     expect(band?.x).toBeCloseTo(chartDimensions.left + (bandwidth - maxWidth) / 2);
     expect(band?.height).toBeCloseTo(chartDimensions.height);
+  });
+
+  it('keeps the band inside the column when maxWidth exceeds the bandwidth', () => {
+    const store = setupChart({ maxWidth: 500 });
+    const { chartDimensions } = computeChartDimensionsSelector(store.getState());
+    const bandwidth = chartDimensions.width / 3;
+    hover(store, chartDimensions.left + bandwidth / 2, chartDimensions.top + chartDimensions.height / 2);
+
+    const band = getCursorBandPositionSelector(store.getState());
+    expect(band?.width).toBeCloseTo(bandwidth);
+    expect(band?.x).toBeCloseTo(chartDimensions.left);
+    expect(band?.x).toBeGreaterThanOrEqual(chartDimensions.left);
+  });
+
+  it('highlights the column when the hovered cell is empty', () => {
+    const store = setupChart({ data: ordinalData.filter((datum) => !(datum.x === 'b' && datum.y === 'ya')) });
+    const { chartDimensions } = computeChartDimensionsSelector(store.getState());
+    const bandwidth = chartDimensions.width / 3;
+    const rowHeight = chartDimensions.height / 2;
+    hover(store, chartDimensions.left + bandwidth * 1.5, chartDimensions.top + rowHeight / 2);
+
+    expect(getPickedShapes(store.getState())).toEqual([]);
+    const band = getCursorBandPositionSelector(store.getState());
+    expect(band?.x).toBeCloseTo(chartDimensions.left + bandwidth);
+    expect(band?.width).toBeCloseTo(bandwidth);
+    expect(band?.height).toBeCloseTo(chartDimensions.height);
+  });
+
+  it('highlights the column when the hovered cell is hidden by a deselected color band', () => {
+    const store = setupChart();
+    const hiddenBand = computeLegendSelector(store.getState())[0];
+    expect(hiddenBand).toBeDefined();
+    store.dispatch(onToggleDeselectSeriesAction({ legendItemIds: hiddenBand?.seriesIdentifiers ?? [], metaKey: true }));
+    const { chartDimensions } = computeChartDimensionsSelector(store.getState());
+    const bandwidth = chartDimensions.width / 3;
+    hover(store, chartDimensions.left + bandwidth / 2, chartDimensions.top + chartDimensions.height / 2);
+
+    const picked = getPickedShapes(store.getState());
+    expect(Array.isArray(picked) && picked.length > 0 && picked.every((cell) => !cell.visible)).toBe(true);
+    const band = getCursorBandPositionSelector(store.getState());
+    expect(band?.width).toBeCloseTo(bandwidth);
+    expect(band?.height).toBeCloseTo(chartDimensions.height);
+  });
+
+  it('falls through to the local column when the external event has no x', () => {
+    const store = setupChart();
+    const { chartDimensions } = computeChartDimensionsSelector(store.getState());
+    const bandwidth = chartDimensions.width / 3;
+    store.dispatch(onExternalPointerEvent(externalOver(null)));
+    hover(store, chartDimensions.left + bandwidth * 1.5, chartDimensions.top + chartDimensions.height / 2);
+
+    const band = getCursorBandPositionSelector(store.getState());
+    expect(band?.fromExternalEvent).toBe(false);
+    expect(band?.x).toBeCloseTo(chartDimensions.left + bandwidth);
+    expect(band?.width).toBeCloseTo(bandwidth);
+  });
+
+  it('falls through to the local column when the external x matches no column', () => {
+    const store = setupChart();
+    const { chartDimensions } = computeChartDimensionsSelector(store.getState());
+    const bandwidth = chartDimensions.width / 3;
+    store.dispatch(onExternalPointerEvent(externalOver('missing')));
+    hover(store, chartDimensions.left + bandwidth * 1.5, chartDimensions.top + chartDimensions.height / 2);
+
+    const band = getCursorBandPositionSelector(store.getState());
+    expect(band?.fromExternalEvent).toBe(false);
+    expect(band?.x).toBeCloseTo(chartDimensions.left + bandwidth);
+    expect(band?.width).toBeCloseTo(bandwidth);
   });
 
   it('places the band on the hovered column of a right-hand small multiple', () => {
@@ -237,9 +340,58 @@ describe('Heatmap cursor band', () => {
     expect(band?.x).toBeGreaterThanOrEqual(chartDimensions.left + panelWidth);
   });
 
+  describe('vertical small multiples', () => {
+    function setupVerticalChart() {
+      return setupChart({ extraSpecs: verticalPanelSpecs(), data: verticalPanelData });
+    }
+
+    it('spans every panel when an external event has no panel values', () => {
+      const store = setupVerticalChart();
+      const { chartDimensions } = computeChartDimensionsSelector(store.getState());
+      const panelHeight = chartDimensions.height / 2;
+      store.dispatch(onExternalPointerEvent(externalOver('a')));
+
+      const band = getCursorBandPositionSelector(store.getState());
+      expect(Number.isFinite(band?.x)).toBe(true);
+      expect(Number.isFinite(band?.y)).toBe(true);
+      expect(band?.x).toBeCloseTo(chartDimensions.left);
+      expect(band?.y).toBeCloseTo(chartDimensions.top);
+      expect(band?.width).toBeCloseTo(chartDimensions.width / 2);
+      expect(band?.height).toBeCloseTo(chartDimensions.height);
+      expect(band?.height).toBeGreaterThan(panelHeight);
+      expect(band?.fromExternalEvent).toBe(true);
+    });
+
+    it('spans the full grid when the external panel is not in this chart', () => {
+      const store = setupVerticalChart();
+      const { chartDimensions } = computeChartDimensionsSelector(store.getState());
+      store.dispatch(onExternalPointerEvent(externalOver('a', 'missing')));
+
+      const band = getCursorBandPositionSelector(store.getState());
+      expect(Number.isFinite(band?.x)).toBe(true);
+      expect(Number.isFinite(band?.y)).toBe(true);
+      expect(band?.x).toBeCloseTo(chartDimensions.left);
+      expect(band?.y).toBeCloseTo(chartDimensions.top);
+      expect(band?.width).toBeCloseTo(chartDimensions.width / 2);
+      expect(band?.height).toBeCloseTo(chartDimensions.height);
+    });
+
+    it('highlights only the matching vertical panel', () => {
+      const store = setupVerticalChart();
+      const { chartDimensions } = computeChartDimensionsSelector(store.getState());
+      const panelHeight = chartDimensions.height / 2;
+      store.dispatch(onExternalPointerEvent(externalOver('a', 'b')));
+
+      const band = getCursorBandPositionSelector(store.getState());
+      expect(band?.y).toBeCloseTo(chartDimensions.top + panelHeight);
+      expect(band?.height).toBeCloseTo(panelHeight);
+      expect(band?.width).toBeCloseTo(chartDimensions.width / 2);
+    });
+  });
+
   describe('CursorBand rendering', () => {
-    function renderBand(tooltipType: TooltipType) {
-      const store = setupChart({ tooltipType });
+    function renderBand(tooltipType?: TooltipType) {
+      const store = setupChart(tooltipType ? { tooltipType } : undefined);
       const { chartDimensions } = computeChartDimensionsSelector(store.getState());
       hover(store, chartDimensions.left + chartDimensions.width / 2, chartDimensions.top + chartDimensions.height / 2);
       return render(
@@ -249,9 +401,19 @@ describe('Heatmap cursor band', () => {
       );
     }
 
-    it('renders the column band when the tooltip follows the pointer', () => {
-      const { container } = renderBand(TooltipType.Follow);
+    it('renders the column band for the default tooltip type', () => {
+      const { container } = renderBand();
       expect(container.querySelector('.echCrosshair__cursor rect')).not.toBeNull();
+    });
+
+    it('renders the column band for a vertical cursor', () => {
+      const { container } = renderBand(TooltipType.VerticalCursor);
+      expect(container.querySelector('.echCrosshair__cursor rect')).not.toBeNull();
+    });
+
+    it('does not render the column band when the tooltip follows the pointer', () => {
+      const { container } = renderBand(TooltipType.Follow);
+      expect(container.querySelector('.echCrosshair__cursor rect')).toBeNull();
     });
 
     it('does not render the column band when tooltips are hidden', () => {

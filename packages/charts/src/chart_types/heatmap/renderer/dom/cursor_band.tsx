@@ -29,13 +29,7 @@ interface CursorBandProps {
 }
 
 function canRenderBand(type: TooltipType, visible: boolean, fromExternalEvent?: boolean) {
-  return (
-    visible &&
-    (type === TooltipType.Crosshairs ||
-      type === TooltipType.VerticalCursor ||
-      type === TooltipType.Follow ||
-      fromExternalEvent)
-  );
+  return visible && (type === TooltipType.Crosshairs || type === TooltipType.VerticalCursor || fromExternalEvent);
 }
 
 class CursorBandComponent extends React.Component<CursorBandProps> {

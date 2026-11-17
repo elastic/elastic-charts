@@ -116,9 +116,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     heatmapTheme.cell.maxWidth !== 'fill' && xScale.bandwidth() > heatmapTheme.cell.maxWidth
       ? heatmapTheme.cell.maxWidth
       : xScale.bandwidth();
-  // a numeric maxWidth centers the cell inside its scale bucket
-  const cellCenteringOffset =
-    heatmapTheme.cell.maxWidth !== 'fill' ? xScale.bandwidth() / 2 - heatmapTheme.cell.maxWidth / 2 : 0;
+  // center the drawn cell in its scale bucket; a maxWidth wider than the bucket contributes no offset
+  const cellCenteringOffset = (xScale.bandwidth() - cellWidth) / 2;
 
   // compute the cell height, we already computed the max size for that
   const cellHeight = yScale.bandwidth();
@@ -220,6 +219,29 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
   const getPanelOffset = (value: string | number | null | undefined, scale: 'horizontal' | 'vertical') =>
     isNil(value) ? 0 : getScaledSMValue(value, scale);
+
+  // A panel value that is missing or not on this chart cannot be placed. Callers fall back to the full grid.
+  const panelOffsetInDomain = (value: string | number | undefined, axis: 'horizontal' | 'vertical') => {
+    const scale = smScales[axis];
+    if (isNil(value) || !hasSMDomain(scale)) return;
+    const offset = scale.scale(value);
+    return isFiniteNumber(offset) ? offset : undefined;
+  };
+
+  const fullVerticalGrid = () => {
+    const scale = smScales.vertical;
+    const firstValue = scale.domain[0];
+    const lastValue = scale.domain.at(-1);
+    if (!hasSMDomain(scale) || firstValue === undefined || lastValue === undefined) {
+      return { offset: 0, height: panelSize.height };
+    }
+    const first = scale.scale(firstValue);
+    const last = scale.scale(lastValue);
+    if (!isFiniteNumber(first) || !isFiniteNumber(last)) {
+      return { offset: 0, height: panelSize.height };
+    }
+    return { offset: first, height: last + panelSize.height - first };
+  };
 
   const getPanelPointCoordinate = (value: Pixels, scale: 'horizontal' | 'vertical') => {
     const category = smScales[scale].invert(value) ?? '';
@@ -447,13 +469,17 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     if (index < 0) return undefined;
 
     const bucketX = xScale(xValues[index] ?? NaN) ?? NaN;
+    const horizontalOffset = panelOffsetInDomain(smHorizontalAccessorValue, 'horizontal') ?? 0;
+    const verticalOffset = panelOffsetInDomain(smVerticalAccessorValue, 'vertical');
+    // a resolved panel is one row of panels; a missing or unknown panel spans the whole grid
+    const vertical =
+      verticalOffset === undefined ? fullVerticalGrid() : { offset: verticalOffset, height: panelSize.height };
 
     return {
       width: cellWidth,
-      x: chartDimensions.left + bucketX + cellCenteringOffset + getPanelOffset(smHorizontalAccessorValue, 'horizontal'),
-      // one panel fills the grid, so this is the full column when there are no vertical small multiples
-      y: chartDimensions.top + getPanelOffset(smVerticalAccessorValue, 'vertical'),
-      height: panelSize.height,
+      x: chartDimensions.left + bucketX + cellCenteringOffset + horizontalOffset,
+      y: chartDimensions.top + vertical.offset,
+      height: vertical.height,
     };
   };
 
