@@ -31,6 +31,7 @@ const fakeContext = () => {
     fillRect: record('fillRect'),
     fill: record('fill'),
     stroke: record('stroke'),
+    clip: record('clip'),
     translate: record('translate'),
   };
   return ctx;
@@ -88,6 +89,27 @@ describe('CanvasPainter', () => {
     expect(ctx.calls).toEqual([
       ['fill', new FakePath2D('M0,0L1,1'), 'evenodd'],
       ['stroke', new FakePath2D('M2,2L3,3')],
+    ]);
+  });
+
+  it('leaves an omitted fill rule out of the context calls', () => {
+    const ctx = fakeContext();
+    const painter = new CanvasPainter(ctx as unknown as CanvasRenderingContext2D);
+    painter.fill();
+    painter.clip();
+    painter.fillPath('M0,0L1,1');
+    // strict equality tells `fill()` from `fill(undefined)`, which argument counting contexts reject
+    expect(ctx.calls).toStrictEqual([['fill'], ['clip'], ['fill', new FakePath2D('M0,0L1,1')]]);
+  });
+
+  it('passes a given fill rule on to the context', () => {
+    const ctx = fakeContext();
+    const painter = new CanvasPainter(ctx as unknown as CanvasRenderingContext2D);
+    painter.fill('evenodd');
+    painter.clip('nonzero');
+    expect(ctx.calls).toStrictEqual([
+      ['fill', 'evenodd'],
+      ['clip', 'nonzero'],
     ]);
   });
 });
