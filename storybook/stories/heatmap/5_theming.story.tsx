@@ -92,6 +92,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
     },
   };
 
+  const crosshairBandFill = color('crosshair band fill', '', 'Theme');
+  const crosshair = crosshairBandFill ? { band: { fill: crosshairBandFill } } : undefined;
+
   const chartMargins: Margins = {
     left: number('chart margin left', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
     right: number('chart margin right', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
@@ -116,7 +119,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         brushAxis="both"
         xDomain={{ min: 1572868800000, max: 1572912000000, minInterval: 1800000 }}
         debugState={debugState}
-        theme={{ axes, heatmap, chartMargins, chartPaddings }}
+        theme={{ axes, heatmap, chartMargins, chartPaddings, crosshair }}
         baseTheme={useBaseTheme()}
         debug={debug}
       />
