@@ -22,6 +22,7 @@ import {
 } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { getM4Knob, m4SeriesProps } from './m4_knob';
 import type { ChartsStory } from '../../types';
 import { useBaseTheme, useThemeId } from '../../use_base_theme';
 import { noiseTable, sample } from '../utils/datasets/smooth_noise';
@@ -104,6 +105,7 @@ export const Example: ChartsStory = () => {
   const memoryChart = useRef<Chart>(null);
   const baseTheme = useBaseTheme();
   const isDarkTheme = useThemeId().includes('dark');
+  const m4Props = m4SeriesProps(getM4Knob());
 
   const pointerUpdate = (event: PointerEvent) => {
     cpuChart.current?.dispatchExternalPointerEvent(event);
@@ -142,6 +144,7 @@ export const Example: ChartsStory = () => {
             color={isDarkTheme ? 'white' : 'black'}
             curve={CurveType.CURVE_STEP_AFTER}
             lineSeriesStyle={{ line: { strokeWidth: 0.25 } }}
+            {...m4Props}
           />
         </Chart>
       ))}

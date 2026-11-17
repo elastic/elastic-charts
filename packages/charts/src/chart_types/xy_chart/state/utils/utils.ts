@@ -36,6 +36,7 @@ import { defaultXYSeriesSort } from '../../utils/default_series_sort_fn';
 import { markGaps } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
+import { isDownsampled } from '../../utils/m4';
 import { computeXScale, computeYScales } from '../../utils/scales';
 import type { DataSeries } from '../../utils/series';
 import {
@@ -294,7 +295,7 @@ function renderedDataSeries(
   xAxis: { start: number; direction: number },
   xShift: number,
 ): DataSeries {
-  if (!ds.rawValues) return ds;
+  if (!isDownsampled(ds)) return ds;
   const isM4 = isContinuousScale(xScale) && !style.line.dash?.length && style.point.visible !== 'always';
   return {
     ...ds,
