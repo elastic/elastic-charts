@@ -1,3 +1,21 @@
+# [73.4.0](https://github.com/elastic/elastic-charts/compare/v73.3.2...v73.4.0) (2026-11-16)
+
+
+### Bug Fixes
+
+* **tooltip:** match width to the current hover ([#2935](https://github.com/elastic/elastic-charts/issues/2935)) ([e065ce2](https://github.com/elastic/elastic-charts/commit/e065ce25832aed72295f138c278953dd712fdd75))
+* **xy:** match dimmed point and line stroke colors ([#2917](https://github.com/elastic/elastic-charts/issues/2917)) ([b000bc9](https://github.com/elastic/elastic-charts/commit/b000bc93e214124f4d4f1a8eb30079f600dba81d))
+
+
+### Features
+
+* SVG renderer behind a shared Canvas2D-like painter ([#2941](https://github.com/elastic/elastic-charts/issues/2941)) ([c830c3b](https://github.com/elastic/elastic-charts/commit/c830c3bce1b03c807c7faa1204b0a734551ecdbf))
+
+
+### Performance Improvements
+
+* **xy:** M4 downsampling of fitted series with nothing to fill in ([#2948](https://github.com/elastic/elastic-charts/issues/2948)) ([a8342a9](https://github.com/elastic/elastic-charts/commit/a8342a91a4d4f67093dd180ba802ccf7bd2d115d))
+
 ## [73.3.2](https://github.com/elastic/elastic-charts/compare/v73.3.1...v73.3.2) (2026-10-23)
 
 

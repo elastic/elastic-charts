@@ -957,7 +957,7 @@ export class DataGenerator {
 // @public (undocumented)
 export type DataName = CategoryKey;
 
-// @public (undocumented)
+// @public
 export interface DataSeriesDatum<T = any> {
     datum: T;
     filled?: FilledValues;
@@ -1237,7 +1237,7 @@ export interface ExternalPointerEventsSettings {
     };
 }
 
-// @public (undocumented)
+// @public
 export interface FilledValues {
     x?: number | string;
     y0?: number;
@@ -3882,7 +3882,7 @@ export interface XYBrushEvent {
 // @public
 export type XYChartElementEvent = [geometry: GeometryValue, seriesIdentifier: XYChartSeriesIdentifier];
 
-// @public (undocumented)
+// @public
 export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends SeriesIdentifier, SmallMultiplesDatum {
     // (undocumented)
     seriesKeys: (string | number)[];

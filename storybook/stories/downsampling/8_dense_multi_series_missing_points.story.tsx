@@ -9,8 +9,16 @@
 import React from 'react';
 
 import { DenseLines } from './6_dense_multi_series.story';
+import { getM4Knob } from './m4_knob';
 import type { ChartsStory } from '../../types';
 
 export const Example: ChartsStory = (_, { title, description }) => (
-  <DenseLines seriesCount={50} pointsPerSeries={40_000} missingPointPerSeries title={title} description={description} />
+  <DenseLines
+    seriesCount={50}
+    pointsPerSeries={40_000}
+    missingPointPerSeries
+    downsample={getM4Knob()}
+    title={title}
+    description={description}
+  />
 );

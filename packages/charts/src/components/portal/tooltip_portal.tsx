@@ -9,7 +9,7 @@
 import type { Instance, Placement as PopperPlacement } from '@popperjs/core';
 import { createPopper } from '@popperjs/core';
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 import type { PortalAnchorRef, PositionedPortalAnchorRef, TooltipPortalSettings } from './types';
@@ -228,7 +228,7 @@ const TooltipPortalComponent = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, anchorNode, position?.x, position?.y, position?.width, position?.height]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!position && !skipPositioning) {
       portalNode.classList.add('echTooltipPortal__invisible');
       return;
