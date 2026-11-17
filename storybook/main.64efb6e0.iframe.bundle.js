@@ -82280,7 +82280,13 @@ class CanvasPainter {
         ctx.restore();
     }
     fillPath(d, fillRule) {
-        this.ctx.fill(new Path2D(d), fillRule);
+        // an omitted rule is left out of the call: an explicit `undefined` is not a valid `CanvasFillRule`, and
+        // context implementations that check arguments by count, such as jest-canvas-mock, throw on it
+        const path = new Path2D(d);
+        if (fillRule)
+            this.ctx.fill(path, fillRule);
+        else
+            this.ctx.fill(path);
     }
     strokePath(d) {
         this.ctx.stroke(new Path2D(d));
@@ -82322,13 +82328,19 @@ class CanvasPainter {
         this.ctx.rect(x, y, width, height);
     }
     fill(fillRule) {
-        this.ctx.fill(fillRule);
+        if (fillRule)
+            this.ctx.fill(fillRule);
+        else
+            this.ctx.fill();
     }
     stroke() {
         this.ctx.stroke();
     }
     clip(fillRule) {
-        this.ctx.clip(fillRule);
+        if (fillRule)
+            this.ctx.clip(fillRule);
+        else
+            this.ctx.clip();
     }
     fillRect(x, y, width, height) {
         this.ctx.fillRect(x, y, width, height);
@@ -87419,7 +87431,7 @@ const fontArgs = [
         textColor: 'black',
     },
     12,
-    1.34,
+    1.5,
 ];
 const headerFontArgs = [
     {
@@ -111080,4 +111092,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.f726a6d7.iframe.bundle.js.map
+//# sourceMappingURL=main.64efb6e0.iframe.bundle.js.map
