@@ -43,7 +43,7 @@ const fontArgs: [Font, number, number] = [
     textColor: 'black',
   },
   12,
-  1.34,
+  1.5,
 ];
 
 const headerFontArgs: [Font, number, number] = [
@@ -61,8 +61,14 @@ const calcApprValuesWidth = ({ label }: LegendItemValue) =>
     : label.length * MONO_LETTER_WIDTH;
 
 /** @internal */
+export type LegendTableSizeConfig = Pick<
+  ReturnType<typeof getLegendConfigSelector>,
+  'legendSize' | 'legendValues' | 'legendPosition' | 'legendAction' | 'legendTitle'
+>;
+
+/** @internal */
 export function getLegendTableSize(
-  config: ReturnType<typeof getLegendConfigSelector>,
+  config: LegendTableSizeConfig,
   theme: Theme,
   parentDimensions: Dimensions,
   items: ReadonlyArray<LegendItem>,
