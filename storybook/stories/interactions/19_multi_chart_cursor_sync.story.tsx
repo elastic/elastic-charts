@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -21,6 +22,8 @@ import {
   LineSeries,
   Heatmap,
   Tooltip,
+  GroupBy,
+  SmallMultiples,
 } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
@@ -83,10 +86,14 @@ export const Example: ChartsStory = () => {
     }
   };
   const baseTheme = useBaseTheme();
+  const smallMultiples = boolean('heatmap small multiples', false);
+  // the split heatmap gets more room, so each of its panels keeps a readable height
+  const lineChartHeight = smallMultiples ? '28%' : '30%';
+  const heatmapHeight = smallMultiples ? '36%' : '30%';
 
   return (
     <>
-      <Chart title="Response times" ref={ref1} size={{ height: '30%' }} id="chart1">
+      <Chart title="Response times" ref={ref1} size={{ height: lineChartHeight }} id="chart1">
         <Settings
           baseTheme={baseTheme}
           theme={{
@@ -131,7 +138,7 @@ export const Example: ChartsStory = () => {
 
       <br />
 
-      <Chart title="Number of requests" ref={ref2} size={{ height: '30%' }} id="chart2">
+      <Chart title="Number of requests" ref={ref2} size={{ height: lineChartHeight }} id="chart2">
         <Settings
           baseTheme={baseTheme}
           pointerUpdateDebounce={0}
@@ -174,12 +181,16 @@ export const Example: ChartsStory = () => {
 
       <br />
 
-      <Chart title="Memory pressure" ref={ref3} size={{ height: '30%' }} id="heatmap">
+      <Chart title="Memory pressure" ref={ref3} size={{ height: heatmapHeight }} id="heatmap">
         <Settings
           baseTheme={baseTheme}
           theme={{
             chartPaddings: { top: 0, bottom: 0, left: 0, right: 0 },
             chartMargins: { top: 0, bottom: 0, left: 16, right: 0 },
+            // the default band fill is almost transparent; make the synced cursor obvious
+            crosshair: { band: { fill: 'rgba(0, 0, 0, 0.5)' } },
+            // without a y axis title, the heatmap reserves no room for the vertical panel titles
+            axes: { axisPanelTitle: { visible: false } },
             heatmap: {
               grid: {
                 stroke: {
@@ -249,6 +260,8 @@ export const Example: ChartsStory = () => {
           ySortPredicate="dataIndex"
           yAxisLabelFormatter={(laneLabel) => `${laneLabel}`}
         />
+        {smallMultiples && <GroupBy id="v_split" by={(_, d) => (d.y === 'f9560' ? 'B' : 'A')} sort="alphaAsc" />}
+        {smallMultiples && <SmallMultiples splitVertically="v_split" />}
       </Chart>
     </>
   );
