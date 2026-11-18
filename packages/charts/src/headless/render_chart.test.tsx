@@ -452,6 +452,13 @@ describe('renderChart without a DOM', () => {
       expect(cachedSelectorsOf('released')).toBe(0);
     });
 
+    it('are not created anew for every render', () => {
+      renderChart(xyChart('first-of-many', true));
+      const registered = selectorCaches().length;
+      for (let i = 0; i < 20; i++) renderChart(xyChart(`one-of-many-${i}`, true));
+      expect(selectorCaches().length).toBe(registered);
+    });
+
     it('are released when the chart type is refused', () => {
       expect(() =>
         renderChart(
