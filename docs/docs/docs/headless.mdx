@@ -90,3 +90,144 @@ So the result is close to a browser's but not identical, and text in another scr
 - Word cloud, flame and timeslip charts, which draw on a canvas of their own. `renderChart` throws for them.
 - Interactions: tooltips, hover, brushing and legend actions need a browser.
 - Callbacks that report rendering, such as `onRenderChange`, are not called.
+
+## Example: a single HTML page {#html-example}
+
+`renderChart` also runs in a browser, which makes for a quick way to look at its output. The page below loads
+React and the other dependencies of Charts from [esm.sh](https://esm.sh), calls `renderChart` for an XY chart and
+a metric chart, and assigns each returned string to the `innerHTML` of an empty element. Nothing on the page is
+mounted by React.
+
+It loads Charts from a local checkout of this repository, so three things have to be in place:
+
+- **A peer directory.** Save the page as `index.html` in a directory next to the checkout, for example
+  `chart-headless-test` beside `elastic-charts`. The page reaches the build through the relative path
+  `../elastic-charts/packages/charts/dist`.
+- **A build.** Run `yarn build` in `elastic-charts/packages/charts` first. It produces both the modules and the
+  stylesheets under `dist`.
+- **A server over the parent directory.** Browsers do not load modules from `file://`, so serve the directory
+  that holds both, on this machine only:
+
+```bash
+npx http-server .. -a 127.0.0.1 -p 8377 -c-1
+```
+
+Run it in the directory of the page, then open `http://127.0.0.1:8377/chart-headless-test/`.
+
+In a browser a canvas exists, so text is measured with it. The Helvetica width table is used only where there is
+no `document`, as in Node. The metric grid is a list, and the Charts stylesheet does not reset list styles or
+paragraph margins, so the page adds the few rules a host page is expected to bring.
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>@elastic/charts/headless test</title>
+
+    <!-- The Charts stylesheet: layout of the legend, the metric panels and the placement of the svg -->
+    <link rel="stylesheet" href="../elastic-charts/packages/charts/dist/theme_only_light.css" />
+    <style>
+      body { font-family: Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif; margin: 24px; background: #fff; color: #1d2a3e; }
+      /* The metric grid is a <ul>. The Charts stylesheet does not reset list styles and expects the host
+         page to, as Kibana does through EUI. Without this the grid gets a bullet and an indent. */
+      .echMetricContainer { margin: 0; padding: 0; list-style: none; }
+      h2.echMetricText__title, p.echMetricText__subtitle, p.echMetricText__value { margin: 0; }
+      .box { width: 600px; height: 300px; border: 1px solid #cad3e2; margin-bottom: 24px; }
+      #log { white-space: pre-wrap; font: 12px ui-monospace, monospace; color: #516381; }
+    </style>
+
+    <!-- `external=react,react-dom` makes every package share the one React of this import map. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@elastic/charts": "../elastic-charts/packages/charts/dist/esm/index.mjs",
+          "@elastic/charts/headless": "../elastic-charts/packages/charts/dist/esm/headless/index.mjs",
+
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1?external=react",
+          "react-dom/server": "https://esm.sh/react-dom@18.3.1/server?external=react",
+          "react-redux": "https://esm.sh/react-redux@9.2.0?external=react,react-dom",
+          "@reduxjs/toolkit": "https://esm.sh/@reduxjs/toolkit@2.12.0?external=react,react-dom",
+          "re-reselect": "https://esm.sh/re-reselect@4.0.1",
+
+          "@popperjs/core": "https://esm.sh/@popperjs/core@2.11.8",
+          "bezier-easing": "https://esm.sh/bezier-easing@2.1.0",
+          "chroma-js": "https://esm.sh/chroma-js@2.4.2",
+          "classnames": "https://esm.sh/classnames@2.2.6",
+          "d3-array": "https://esm.sh/d3-array@1.2.4",
+          "d3-cloud": "https://esm.sh/d3-cloud@1.2.5",
+          "d3-scale": "https://esm.sh/d3-scale@3.3.0",
+          "d3-shape": "https://esm.sh/d3-shape@2.1.0",
+          "luxon": "https://esm.sh/luxon@1.28.1",
+          "moment-timezone": "https://esm.sh/moment-timezone@0.5.35",
+          "ts-debounce": "https://esm.sh/ts-debounce@4.0.0",
+          "utility-types": "https://esm.sh/utility-types@3.10.0",
+          "uuid": "https://esm.sh/uuid@14.0.0"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>renderChart → innerHTML</h1>
+    <p>Nothing below is mounted by React. Each box gets a string from <code>renderChart</code> as its <code>innerHTML</code>.</p>
+
+    <div id="xy" class="box"></div>
+    <div id="metric" class="box" style="height: 160px"></div>
+    <div id="log"></div>
+
+    <script type="module">
+      import React from 'react';
+      import { Chart, Settings, Axis, BarSeries, LineSeries, Metric, Position, ScaleType } from '@elastic/charts';
+      import { renderChart } from '@elastic/charts/headless';
+
+      const h = React.createElement;
+      const log = (text) => (document.getElementById('log').textContent += text + '\n');
+
+      const data = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].flatMap((day, i) => [
+        { day, visits: [12, 19, 7, 15, 22][i], site: 'docs' },
+        { day, visits: [8, 11, 14, 9, 17][i], site: 'blog' },
+      ]);
+
+      try {
+        const start = performance.now();
+        const xy = renderChart(
+          h(Chart, { id: 'xy-chart', size: { width: 600, height: 300 } },
+            h(Settings, { showLegend: true, legendPosition: Position.Right }),
+            h(Axis, { id: 'days', position: Position.Bottom, title: 'day' }),
+            h(Axis, { id: 'visits', position: Position.Left, title: 'visits' }),
+            h(BarSeries, {
+              id: 'bars', xScaleType: ScaleType.Ordinal, yScaleType: ScaleType.Linear,
+              xAccessor: 'day', yAccessors: ['visits'], splitSeriesAccessors: ['site'], data,
+            }),
+            h(LineSeries, {
+              id: 'target', xScaleType: ScaleType.Ordinal, yScaleType: ScaleType.Linear,
+              xAccessor: 'day', yAccessors: ['target'], data: data.filter((d) => d.site === 'docs').map((d) => ({ ...d, target: 15 })),
+            }),
+          ),
+        );
+        document.getElementById('xy').innerHTML = xy;
+
+        const metric = renderChart(
+          h(Chart, { id: 'metric-chart', size: { width: 600, height: 160 } },
+            h(Metric, {
+              id: 'metric',
+              data: [[
+                { color: '#16C5C0', title: 'Requests', subtitle: 'per second', value: 1234, valueFormatter: (d) => `${d} rps` },
+                { color: '#A6EDEA', title: 'Error rate', value: 0.7, valueFormatter: (d) => `${d}%` },
+              ]],
+            }),
+          ),
+        );
+        document.getElementById('metric').innerHTML = metric;
+
+        log(`two charts rendered to strings in ${(performance.now() - start).toFixed(1)} ms`);
+        log(`xy markup: ${xy.length} chars, metric markup: ${metric.length} chars`);
+      } catch (error) {
+        log(`FAILED: ${error.stack ?? error}`);
+        throw error;
+      }
+    </script>
+  </body>
+</html>
+```
