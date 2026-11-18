@@ -76,6 +76,13 @@ describe('renderChart without a DOM', () => {
     expect(typeof window).toBe('undefined');
   });
 
+  it('requires a direct Chart element', () => {
+    const Wrapper = () => xyChart('wrapped');
+    expect(() => renderChart(<Wrapper />)).toThrow('renderChart expects a <Chart> element');
+    expect(() => renderChart(<div>{xyChart('wrapped')}</div>)).toThrow('renderChart expects a <Chart> element');
+    expect(() => renderChart(<>{xyChart('wrapped')}</>)).toThrow('renderChart expects a <Chart> element');
+  });
+
   describe('xy', () => {
     it('draws the chart as one inline svg under a single root', () => {
       const markup = renderChart(xyChart('xy'));

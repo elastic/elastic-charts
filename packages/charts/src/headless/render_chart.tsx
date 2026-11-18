@@ -11,6 +11,7 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import { ChartType } from '../chart_types';
+import { Chart, type ChartProps } from '../components/chart';
 import type { HeadlessRender } from '../components/headless_context';
 import { HeadlessContext } from '../components/headless_context';
 import type { Spec } from '../specs/spec_type';
@@ -25,7 +26,7 @@ const NEEDS_A_DOM: ReadonlySet<ChartType | null> = new Set([ChartType.Wordcloud,
  * Renders a chart to markup without a DOM: one root element holding the chart drawn as an inline
  * `<svg>` and, as HTML, its legend or its metric panels. Style it with the Charts stylesheet.
  *
- * The element is a `Chart` with a `size` in pixels, or a tree that renders exactly one.
+ * The element must be a `Chart` with a `size` in pixels.
  * Word cloud, flame and timeslip charts are not supported: they draw on a canvas of their own.
  *
  * Text is measured with Helvetica's advance widths, whatever the font of the theme, so
@@ -33,6 +34,10 @@ const NEEDS_A_DOM: ReadonlySet<ChartType | null> = new Set([ChartType.Wordcloud,
  * @public
  */
 export function renderChart(chart: ReactElement): string {
+  if (!React.isValidElement<ChartProps>(chart) || chart.type !== Chart) {
+    throw new Error('renderChart expects a <Chart> element');
+  }
+
   // effects do not run here, so a first pass gathers what they would have put into the store
   const specs = new Map<string, Spec>();
   const collecting: HeadlessRender = { charts: 0, collect: (spec) => specs.set(spec.id, spec) };
