@@ -103,6 +103,16 @@ describe('renderChart without a DOM', () => {
       }
     });
 
+    it('renders a series whose ID is __proto__', () => {
+      const markup = renderChart(
+        <Chart id="prototype-id" size={{ width: 400, height: 200 }}>
+          <BarSeries id="__proto__" xScaleType={ScaleType.Ordinal} xAccessor="x" yAccessors={['y']} data={data} />
+        </Chart>,
+      );
+      expect(count(markup, STAGE)).toBe(1);
+      expect(count(markup, /<path[^>]*fill="rgb\([^"]+"/g)).toBe(6);
+    });
+
     it('lays out with measured text, so the left axis has room for its labels', () => {
       const markup = renderChart(xyChart('xy'));
       expect(markup).toMatch(/<text[^>]*>70{6}<\/text>/);

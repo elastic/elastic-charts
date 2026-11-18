@@ -131,10 +131,11 @@ const handleSpecsActions = (builder: ActionReducerMapBuilder<ChartSliceState>) =
       state.specParsing = true;
     })
     .addCase(upsertSpecs, (state, action) => {
-      const specs = state.specParsing ? state.specs : { [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC };
+      const specs = { ...(state.specParsing ? state.specs : { [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC }) };
       for (const spec of action.payload) {
         skipImmerWalkOfSpecData(spec);
-        specs[spec.id] = spec;
+        // Define an own property even for IDs such as "__proto__".
+        Object.defineProperty(specs, spec.id, { value: spec, enumerable: true, writable: true, configurable: true });
       }
       state.specs = specs;
       state.specsInitialized = false;
