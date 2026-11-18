@@ -25,6 +25,10 @@ const html = renderChart(
 A `<Chart>` element, passed directly rather than wrapped in another element or component. The chart needs a `size`
 in pixels, since there is no container to measure. The `renderer` prop is ignored: the chart is always drawn as SVG.
 
+Use the same installed copy and module format of `@elastic/charts` for `renderChart` and every chart component:
+use `import` for both entry points, or `require` for both. The ESM and CommonJS builds have separate chart
+contexts, so mixing components from them can cause an error or produce an empty chart.
+
 ## Output
 
 One root `<div class="echChart">` as a string. Inside it:

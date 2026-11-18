@@ -26,7 +26,8 @@ const NEEDS_A_DOM: ReadonlySet<ChartType | null> = new Set([ChartType.Wordcloud,
  * Renders a chart to markup without a DOM: one root element holding the chart drawn as an inline
  * `<svg>` and, as HTML, its legend or its metric panels. Style it with the Charts stylesheet.
  *
- * The element must be a `Chart` with a `size` in pixels. Its title and description are omitted.
+ * The element must be a `Chart` with a `size` in pixels. Use the same module format and installed
+ * copy of Charts for the renderer and every chart component. Its title and description are omitted.
  * Word cloud, flame and timeslip charts are not supported: they draw on a canvas of their own.
  *
  * Text is measured with Helvetica's advance widths, whatever the font of the theme, so
@@ -35,7 +36,7 @@ const NEEDS_A_DOM: ReadonlySet<ChartType | null> = new Set([ChartType.Wordcloud,
  */
 export function renderChart(chart: ReactElement): string {
   if (!React.isValidElement<ChartProps>(chart) || chart.type !== Chart) {
-    throw new Error('renderChart expects a <Chart> element');
+    throw new Error('renderChart expects a <Chart> element from the same @elastic/charts build');
   }
 
   // The title and description are HTML outside the measured chart area. Omit them from both
