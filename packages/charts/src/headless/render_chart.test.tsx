@@ -30,6 +30,7 @@ import {
 import { Chart } from '../components/chart';
 import { ScaleType } from '../scales/constants';
 import { Settings } from '../specs/settings';
+import * as chartState from '../state/chart_state';
 import { globalSelectorCache } from '../state/create_selector';
 import { Position } from '../utils/common';
 
@@ -527,7 +528,7 @@ describe('renderChart without a DOM', () => {
   });
 
   describe('many series', () => {
-    it('collects two thousand series with one store update', () => {
+    it('keeps store dispatches constant as the number of series grows', () => {
       const series = Array.from({ length: 2000 }, (_, i) => (
         <LineSeries
           key={i}
@@ -540,15 +541,34 @@ describe('renderChart without a DOM', () => {
           ]}
         />
       ));
-      const start = performance.now();
-      const markup = renderChart(
-        <Chart id="many" size={{ width: 800, height: 400 }}>
-          {series}
-        </Chart>,
-      );
-      // eslint-disable-next-line no-console
-      console.info(`2000 line series rendered in ${Math.round(performance.now() - start)} ms`);
-      expect(count(markup, /<path[\s>]/g)).toBeGreaterThanOrEqual(2000);
+      const dispatchCounts: Array<() => number> = [];
+      const createChartStore = chartState.createChartStore;
+      const spy = jest.spyOn(chartState, 'createChartStore').mockImplementation((...args) => {
+        const store = createChartStore(...args);
+        const dispatch = jest.spyOn(store, 'dispatch');
+        dispatchCounts.push(() => dispatch.mock.calls.length);
+        return store;
+      });
+
+      try {
+        renderChart(
+          <Chart id="few" size={{ width: 800, height: 400 }}>
+            {series.slice(0, 1)}
+          </Chart>,
+        );
+        const markup = renderChart(
+          <Chart id="many" size={{ width: 800, height: 400 }}>
+            {series}
+          </Chart>,
+        );
+        expect(count(markup, /<path[\s>]/g)).toBeGreaterThanOrEqual(2000);
+        expect(dispatchCounts).toHaveLength(2);
+        const [fewDispatches, manyDispatches] = dispatchCounts.map((countDispatches) => countDispatches());
+        expect(fewDispatches).toBeGreaterThan(0);
+        expect(manyDispatches).toBe(fewDispatches);
+      } finally {
+        spy.mockRestore();
+      }
     });
   });
 });
