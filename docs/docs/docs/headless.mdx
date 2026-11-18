@@ -91,6 +91,131 @@ So the result is close to a browser's but not identical, and text in another scr
 - Interactions: tooltips, hover, brushing and legend actions need a browser.
 - Callbacks that report rendering, such as `onRenderChange`, are not called.
 
+## Example: a Node project {#node-example}
+
+Two files make a project that renders two charts in Node and writes them, with the stylesheet, into one HTML file
+that any browser shows without running a script.
+
+`package.json`, with the peer dependencies of Charts spelled out:
+
+```json
+{
+  "name": "chart-headless-test",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "@elastic/charts": "latest",
+    "moment-timezone": "^0.5.32",
+    "react": "^18.0",
+    "react-dom": "^18.0"
+  }
+}
+```
+
+Install and run. Both steps can be repeated: the first does nothing when the dependencies are in place, the
+second overwrites `chart.html`.
+
+```bash
+yarn && yarn start
+```
+
+To try a version that is not released yet, replace `latest` with the address of a package tarball. Every pull
+request of this repository publishes one, linked as "Packages" in the deployment comment of the pull request. A
+tarball made locally with `npm pack` in `packages/charts` works too, as `file:./elastic-charts-<version>.tgz`.
+
+`index.mjs` uses `createElement` in place of JSX, so it needs no build step:
+
+```js
+import { readFileSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+
+import { Axis, BarSeries, Chart, LineSeries, Metric, Position, ScaleType, Settings } from '@elastic/charts';
+import { renderChart } from '@elastic/charts/headless';
+import { createElement as h } from 'react';
+
+const data = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].flatMap((day, i) => [
+  { day, visits: [12, 19, 7, 15, 22][i], site: 'docs' },
+  { day, visits: [8, 11, 14, 9, 17][i], site: 'blog' },
+]);
+
+const xy = renderChart(
+  h(
+    Chart,
+    { id: 'xy-chart', size: { width: 600, height: 300 } },
+    h(Settings, { showLegend: true, legendPosition: Position.Right }),
+    h(Axis, { id: 'days', position: Position.Bottom, title: 'day' }),
+    h(Axis, { id: 'visits', position: Position.Left, title: 'visits' }),
+    h(BarSeries, {
+      id: 'bars',
+      xScaleType: ScaleType.Ordinal,
+      yScaleType: ScaleType.Linear,
+      xAccessor: 'day',
+      yAccessors: ['visits'],
+      splitSeriesAccessors: ['site'],
+      data,
+    }),
+    h(LineSeries, {
+      id: 'target',
+      xScaleType: ScaleType.Ordinal,
+      yScaleType: ScaleType.Linear,
+      xAccessor: 'day',
+      yAccessors: ['target'],
+      data: data.filter(({ site }) => site === 'docs').map((d) => ({ ...d, target: 15 })),
+    }),
+  ),
+);
+
+const metric = renderChart(
+  h(
+    Chart,
+    { id: 'metric-chart', size: { width: 600, height: 160 } },
+    h(Metric, {
+      id: 'metric',
+      data: [
+        [
+          { color: '#16C5C0', title: 'Requests', subtitle: 'per second', value: 1234, valueFormatter: (d) => `${d} rps` },
+          { color: '#A6EDEA', title: 'Error rate', value: 0.7, valueFormatter: (d) => `${d}%` },
+        ],
+      ],
+    }),
+  ),
+);
+
+// the Charts stylesheet, read as text: there is no bundler here to turn an import into page CSS
+const require = createRequire(import.meta.url);
+const css = readFileSync(require.resolve('@elastic/charts/theme_only_light.css'), 'utf8');
+
+// what a host page is expected to bring: the metric grid is a list with a heading and paragraphs
+const reset = `
+  body { font-family: Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif; margin: 24px; }
+  .box { border: 1px solid #cad3e2; margin-bottom: 24px; }
+  .echMetricContainer { margin: 0; padding: 0; list-style: none; }
+  h2.echMetricText__title, p.echMetricText__subtitle, p.echMetricText__value { margin: 0; }
+`;
+
+const page = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>@elastic/charts/headless</title>
+    <style>${css}</style>
+    <style>${reset}</style>
+  </head>
+  <body>
+    <div class="box" style="width: 600px; height: 300px">${xy}</div>
+    <div class="box" style="width: 600px; height: 160px">${metric}</div>
+  </body>
+</html>
+`;
+
+const out = new URL('./chart.html', import.meta.url);
+writeFileSync(out, page);
+console.log(`document is ${typeof document}; wrote ${page.length} characters to ${out.pathname}`);
+```
+
 ## Example: a single HTML page {#html-example}
 
 `renderChart` also runs in a browser, which makes for a quick way to look at its output. The page below loads
