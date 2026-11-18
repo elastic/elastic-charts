@@ -421,6 +421,25 @@ describe('renderChart without a DOM', () => {
     });
   });
 
+  describe('callbacks of the chart', () => {
+    it('are not called, so one written for a browser does no harm', () => {
+      const callbacks = {
+        onProjectionAreaChange: jest.fn(() => window.devicePixelRatio),
+        onRenderChange: jest.fn(),
+        onWillRender: jest.fn(),
+        onPointerUpdate: jest.fn(),
+      };
+      const markup = renderChart(
+        <Chart id="callbacks" size={{ width: 600, height: 300 }}>
+          <Settings {...callbacks} />
+          <BarSeries id="bars" xScaleType={ScaleType.Ordinal} xAccessor="x" yAccessors={['y']} data={data} />
+        </Chart>,
+      );
+      expect(count(markup, STAGE)).toBe(1);
+      for (const callback of Object.values(callbacks)) expect(callback).not.toHaveBeenCalled();
+    });
+  });
+
   describe('many series', () => {
     it('collects two thousand series with one store update', () => {
       const series = Array.from({ length: 2000 }, (_, i) => (

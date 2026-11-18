@@ -116,6 +116,12 @@ export class Chart extends React.Component<ChartProps, ChartState> {
             paddingRight: LIGHT_THEME.chartMargins.right,
             displayTitles: true,
           };
+    // A render without a DOM draws once from a store that is already filled: nothing would re-render, and
+    // callbacks written for a browser must not run there.
+    if (headless) {
+      this.unsubscribeToStore = () => {};
+      return;
+    }
     this.unsubscribeToStore = this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
       const internalChartState = getInternalChartStateSelector(state);
