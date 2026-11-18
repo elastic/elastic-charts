@@ -99,6 +99,13 @@ test.describe('Heatmap stories', () => {
     );
   });
 
+  test('should render cursor band over the hovered cell', async ({ page }) => {
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/heatmap-alpha--theming&globals=theme:light&knob-Enable debug state=true&knob-yAxisLabel width type_Theme=static&knob-yAxisLabel width max/static_Theme=100&knob-crosshair band fill_Theme=black&knob-chart margin left_Chart Margins and Paddings=20&knob-chart margin top_Chart Margins and Paddings=20&knob-chart padding left_Chart Margins and Paddings=20&knob-chart padding top_Chart Margins and Paddings=20',
+      { left: 600, top: 126 },
+    );
+  });
+
   test.describe('Small multiples', () => {
     const titleOptions = {
       panel: ' without panel titles',
