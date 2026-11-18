@@ -42,20 +42,23 @@ export function renderChart(chart: ReactElement): string {
   if (!store || charts !== 1) throw new Error(`renderChart expects one Chart, the element rendered ${charts}`);
   if (!size) throw new Error('renderChart needs a Chart with a size in pixels');
 
-  store.dispatch(updateRenderer('svg'));
-  store.dispatch(upsertSpecs([...specs.values()]));
-  store.dispatch(specParsed());
-  store.dispatch(updateParentDimensions({ ...size, top: 0, left: 0 }));
-
-  const { chartType, chartId } = store.getState();
-  if (NEEDS_A_DOM.has(chartType)) throw new Error(`renderChart does not support ${chartType} charts`);
-
+  // from here on the chart's memoized selectors fill up, so everything is inside the `try`
+  const { chartId } = store.getState();
   try {
+    store.dispatch(updateRenderer('svg'));
+    store.dispatch(upsertSpecs([...specs.values()]));
+    store.dispatch(specParsed());
+    store.dispatch(updateParentDimensions({ ...size, top: 0, left: 0 }));
+
+    const { chartType } = store.getState();
+    if (NEEDS_A_DOM.has(chartType)) throw new Error(`renderChart does not support ${chartType} charts`);
+
     return renderToStaticMarkup(
       <HeadlessContext.Provider value={{ charts: 1, store }}>{chart}</HeadlessContext.Provider>,
     );
   } finally {
-    // nothing unmounts here, which is what frees a chart's memoized selectors in a browser
+    // nothing unmounts here, which is what frees a chart's memoized selectors in a browser;
+    // a render that fails must free them too
     globalSelectorCache.removeKeyFromAll(chartId);
   }
 }

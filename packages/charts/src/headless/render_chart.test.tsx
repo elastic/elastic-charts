@@ -30,6 +30,7 @@ import {
 import { Chart } from '../components/chart';
 import { ScaleType } from '../scales/constants';
 import { Settings } from '../specs/settings';
+import { globalSelectorCache } from '../state/create_selector';
 import { Position } from '../utils/common';
 
 const data = [
@@ -57,6 +58,11 @@ const xyChart = (id: string, showLegend = false) => (
     />
   </Chart>
 );
+
+/** the caches of the memoized selectors, one per selector, each keyed by chart id */
+const selectorCaches = () =>
+  (globalSelectorCache as unknown as { selectorCaches: Array<{ get(key: string): unknown }> }).selectorCaches;
+const cachedSelectorsOf = (chartId: string) => selectorCaches().filter((cache) => cache.get(chartId)).length;
 
 const count = (markup: string, pattern: RegExp) => (markup.match(pattern) ?? []).length;
 /** the svg the chart is drawn in; legend icons are small svgs of their own */
@@ -437,6 +443,42 @@ describe('renderChart without a DOM', () => {
       );
       expect(count(markup, STAGE)).toBe(1);
       for (const callback of Object.values(callbacks)) expect(callback).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('memoized selectors of the chart', () => {
+    it('are released after a render', () => {
+      renderChart(xyChart('released', true));
+      expect(cachedSelectorsOf('released')).toBe(0);
+    });
+
+    it('are released when the chart type is refused', () => {
+      expect(() =>
+        renderChart(
+          <Chart id="refused" size={{ width: 400, height: 200 }}>
+            <Wordcloud id="words" data={[{ text: 'hello', weight: 1, color: '#000000' }]} />
+          </Chart>,
+        ),
+      ).toThrow();
+      expect(cachedSelectorsOf('refused')).toBe(0);
+    });
+
+    it('are released when rendering throws', () => {
+      expect(() =>
+        renderChart(
+          <Chart id="throws" size={{ width: 400, height: 200 }}>
+            <Axis
+              id="left"
+              position={Position.Left}
+              tickFormat={() => {
+                throw new Error('a formatter that fails');
+              }}
+            />
+            <BarSeries id="bars" xScaleType={ScaleType.Ordinal} xAccessor="x" yAccessors={['y']} data={data} />
+          </Chart>,
+        ),
+      ).toThrow('a formatter that fails');
+      expect(cachedSelectorsOf('throws')).toBe(0);
     });
   });
 
