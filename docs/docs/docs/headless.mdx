@@ -32,13 +32,47 @@ One root `<div class="echChart">` as a string. Inside it:
 - the chart drawn as an inline `<svg>`, with real `<text>` elements;
 - the legend, metric panels and line annotation markers as HTML, exactly as in a browser.
 
-Add one of the Charts stylesheets, such as `@elastic/charts/theme_only_light.css`, to the page that hosts the
-markup. Without it the legend and the metric panels are unstyled and misplaced.
+The markup needs a Charts stylesheet on the page that hosts it, see [Adding the stylesheet](#stylesheet).
 
 Ids inside the `<svg>` start with the chart's `id`, so several charts can share a page. Give each chart its own
 `id`; without one a random id is used and the markup differs between runs.
 
 `<Settings debugState />` adds the debug state as the `data-ech-debug-state` attribute, as in a browser.
+
+## Adding the stylesheet {#stylesheet}
+
+The parts of the chart get their layout from CSS classes: where the `<svg>` and the legend sit inside the root
+element, how legend items flow, how metric text is arranged and truncated. The markup carries only the computed
+parts, such as sizes and series colors, as inline styles. Without a Charts stylesheet the legend and the metric
+panels are unstyled and the parts are misplaced. What is drawn inside the `<svg>` does not depend on it.
+
+In a web app a bundler turns a stylesheet import into page CSS. Node has no such step, so read the file as text
+and put it wherever the CSS of your page goes:
+
+```ts
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { renderChart } from '@elastic/charts/headless';
+
+const require = createRequire(import.meta.url);
+const css = readFileSync(require.resolve('@elastic/charts/theme_only_light.css'), 'utf8');
+
+const page = `<style>${css}</style>${renderChart(chart)}`;
+```
+
+In a CommonJS module `require.resolve` is already available, so the `createRequire` lines are not needed.
+
+Which file to use:
+
+| File | Contents | Use it when |
+| --- | --- | --- |
+| `theme_only_light.css`, `theme_only_dark.css` | The styles of the chart components, nothing else. | The page has styles of its own. This is the usual choice. |
+| `theme_light.css`, `theme_dark.css` | The same, plus two page-wide rules: the font family of `html` and `body`, and the letter spacing of SVG text. | The page holds nothing but charts. |
+
+Pick light or dark to match the theme of the chart. Colors that the chart draws come from the theme you pass in
+`Settings`, but the color of the legend text and of the "no data" message comes from the stylesheet.
+
+The stylesheet is the same for every chart, about 35 kB, so add it once per page, not once per chart.
 
 ## Text measurement
 
