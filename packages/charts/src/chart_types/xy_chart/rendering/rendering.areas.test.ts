@@ -6,8 +6,10 @@
  * Side Public License, v 1.
  */
 
-import type { Store } from 'redux';
+import type { Store } from '@reduxjs/toolkit';
 
+import { computeAreaBoundingBox, type YDefinedFn } from './utils';
+import { sortedByPosition } from '../../../mocks/geometries';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
@@ -19,6 +21,7 @@ import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';
 import type { ComputedGeometries } from '../state/utils/types';
 import type { IndexedGeometryMap } from '../utils/indexed_geometry_map';
+import type { DataSeriesDatum } from '../utils/series';
 import type { AreaSeriesSpec } from '../utils/specs';
 import { StackMode } from '../utils/specs';
 
@@ -42,6 +45,18 @@ function initStore(specs: Spec[], vizColors: string[] = ['red'], width = 100): S
   );
   return store;
 }
+
+// helpers for the pure computeAreaBoundingBox tests: datum carries already-scaled
+// coordinates, and the injected scaling fns simply read them back
+const bboxDatum = (x: number, y1: number | null, y0: number | null = 100): DataSeriesDatum =>
+  ({ x, y1, y0, initialY1: y1, initialY0: y0, mark: null, datum: null }) as DataSeriesDatum;
+const bboxXFn = (d: DataSeriesDatum) => d.x as number;
+const bboxY0Fn = (d: DataSeriesDatum) => d.y0 as number;
+const bboxY1Fn = (d: DataSeriesDatum) => d.y1 as number;
+const bboxY1Accessor = (d: DataSeriesDatum) => d.y1;
+const bboxDefinedFn: YDefinedFn = (d, accessor) => accessor(d) !== null;
+const computeBbox = (data: DataSeriesDatum[]) =>
+  computeAreaBoundingBox(data, bboxXFn, bboxY0Fn, bboxY1Fn, bboxDefinedFn, bboxY1Accessor);
 
 describe('Rendering points - areas', () => {
   test('Missing geometry if no data', () => {
@@ -95,7 +110,7 @@ describe('Rendering points - areas', () => {
 
     test('Can render two points', () => {
       const { points } = areaGeometry;
-      expect(points).toMatchSnapshot();
+      expect(sortedByPosition(points)).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -156,13 +171,13 @@ describe('Rendering points - areas', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
       expect(firstArea.points.length).toEqual(2);
-      expect(firstArea.points).toMatchSnapshot();
+      expect(sortedByPosition(firstArea.points)).toMatchSnapshot();
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
       const { value: secondArea } = areas[1]!;
       expect(secondArea.points.length).toEqual(2);
-      expect(secondArea.points).toMatchSnapshot();
+      expect(sortedByPosition(secondArea.points)).toMatchSnapshot();
     });
     test('has the right number of geometry in the indexes', () => {
       const { areas } = geometries.geometries;
@@ -203,7 +218,7 @@ describe('Rendering points - areas', () => {
     test('Can render two points', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
-      expect(firstArea.points).toMatchSnapshot();
+      expect(sortedByPosition(firstArea.points)).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
   });
@@ -260,14 +275,14 @@ describe('Rendering points - areas', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
       expect(firstArea.points.length).toEqual(2);
-      expect(firstArea.points).toMatchSnapshot();
+      expect(sortedByPosition(firstArea.points)).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
       const { value: secondArea } = areas[1]!;
       expect(secondArea.points.length).toEqual(2);
-      expect(secondArea.points).toMatchSnapshot();
+      expect(sortedByPosition(secondArea.points)).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(secondArea.points.length);
     });
   });
@@ -303,7 +318,7 @@ describe('Rendering points - areas', () => {
     test('Can render two points', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
-      expect(firstArea.points).toMatchSnapshot();
+      expect(sortedByPosition(firstArea.points)).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
   });
@@ -341,14 +356,14 @@ describe('Rendering points - areas', () => {
     test('can render first spec points', () => {
       const { areas } = geometries.geometries;
       const { value: firstArea } = areas[0]!;
-      expect(firstArea.points).toMatchSnapshot();
+      expect(sortedByPosition(firstArea.points)).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
       const { value: secondArea } = areas[1]!;
 
-      expect(secondArea.points).toMatchSnapshot();
+      expect(sortedByPosition(secondArea.points)).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(secondArea.points.length);
     });
   });
@@ -476,5 +491,22 @@ describe('Rendering points - areas', () => {
 
     expect(domains.formattedDataSeries[0]?.data).toMatchSnapshot();
     expect(domains.formattedDataSeries[1]?.data).toMatchSnapshot();
+  });
+
+  describe('computeAreaBoundingBox', () => {
+    it('spans the min/max of the scaled x and y0/y1 coordinates', () => {
+      const bbox = computeBbox([bboxDatum(0, 0), bboxDatum(50, 50), bboxDatum(100, 20)]);
+      expect(bbox).toEqual({ x0: 0, y0: 0, x1: 100, y1: 100 });
+    });
+
+    it('skips data points that are not defined', () => {
+      const bbox = computeBbox([bboxDatum(0, 0), bboxDatum(50, 50), bboxDatum(200, null)]);
+      expect(bbox).toEqual({ x0: 0, y0: 0, x1: 50, y1: 100 });
+    });
+
+    it('falls back to a zero box when there are no finite points', () => {
+      expect(computeBbox([])).toEqual({ x0: 0, y0: 0, x1: 0, y1: 0 });
+      expect(computeBbox([bboxDatum(0, null), bboxDatum(50, null)])).toEqual({ x0: 0, y0: 0, x1: 0, y1: 0 });
+    });
   });
 });

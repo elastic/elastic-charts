@@ -634,33 +634,43 @@ describe('X Domain', () => {
     const mergedDomain = mergeXDomain(scalesConfig.x, xValues, DEFAULT_LOCALE);
     expect(mergedDomain.domain.length).toEqual(maxValues);
   });
-  test('should compute minInterval an ordered list of numbers', () => {
-    const minInterval = findMinInterval([0, 1, 2, 3, 4, 5]);
-    expect(minInterval).toBe(1);
+  test('should compute minInterval of a sorted list of numbers', () => {
+    expect(findMinInterval([Float64Array.of(0, 1, 2, 3, 4, 5)])).toBe(1);
   });
-  test('should compute minInterval an unordered list of numbers', () => {
-    const minInterval = findMinInterval([2, 10, 3, 1, 5]);
-    expect(minInterval).toBe(1);
+  test('should compute minInterval of an unordered set of x values', () => {
+    const specs = [MockSeriesSpec.line({ xScaleType: ScaleType.Linear })];
+    const { x } = getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings());
+    expect(mergeXDomain(x, new Set([2, 10, 3, 1, 5]), DEFAULT_LOCALE).minInterval).toBe(1);
   });
-  test('should compute minInterval an list greater than 9', () => {
-    const minInterval = findMinInterval([0, 2, 4, 6, 8, 10, 20, 30, 40, 50, 80]);
-    expect(minInterval).toBe(2);
+  test('should compute minInterval of a list greater than 9', () => {
+    expect(findMinInterval([Float64Array.of(0, 2, 4, 6, 8, 10, 20, 30, 40, 50, 80)])).toBe(2);
   });
-  test('should compute minInterval an list with negative numbers', () => {
-    const minInterval = findMinInterval([-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12]);
-    expect(minInterval).toBe(1);
+  test('should compute minInterval of a list with negative numbers', () => {
+    expect(findMinInterval([Float64Array.of(-12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1)])).toBe(1);
   });
-  test('should compute minInterval an list with negative and positive numbers', () => {
-    const minInterval = findMinInterval([-2, -4, -6, -8, -10, -12, 0, 2, 4, 6, 8, 10, 12]);
-    expect(minInterval).toBe(2);
+  test('should compute minInterval of a list with negative and positive numbers', () => {
+    expect(findMinInterval([Float64Array.of(-12, -10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10, 12)])).toBe(2);
   });
-  test('should compute minInterval a single element array', () => {
-    const minInterval = findMinInterval([100]);
-    expect(minInterval).toBe(1);
+  test('should compute minInterval of a single value, also repeated', () => {
+    expect(findMinInterval([Float64Array.of(100)])).toBe(1);
+    expect(findMinInterval([Float64Array.of(100, 100), Float64Array.of(100)])).toBe(1);
   });
-  test('should compute minInterval a empty element array', () => {
-    const minInterval = findMinInterval([]);
-    expect(minInterval).toBe(0);
+  test('should compute minInterval of no values', () => {
+    expect(findMinInterval([])).toBe(1);
+    expect(findMinInterval([Float64Array.of()])).toBe(1);
+  });
+  test('should compute minInterval of sorted lists as if merged', () => {
+    // the lists interleave, so their values are closer together than within either list
+    expect(findMinInterval([Float64Array.of(0, 4, 8), Float64Array.of(2, 6)])).toBe(2);
+    // a repeated value is no gap, and an equal list adds nothing
+    expect(findMinInterval([Float64Array.of(0, 0, 3, 9), Float64Array.of(0, 0, 3, 9)])).toBe(3);
+  });
+  test('should compute minInterval of sorted lists that each lack a different value', () => {
+    // like series that each miss a different sample: no two lists are equal, yet they share most of their values
+    const lists = [0, 1, 2, 3, 4].map((missing) => Float64Array.from([0, 3, 6, 9, 12].filter((_, i) => i !== missing)));
+    expect(findMinInterval(lists)).toBe(3);
+    // an odd number of lists splits into unequal halves; only the last list has close values
+    expect(findMinInterval([...lists.slice(0, 2), Float64Array.of(7, 8)])).toBe(1);
   });
   test('should account for custom domain when merging a linear domain: complete bounded domain', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);

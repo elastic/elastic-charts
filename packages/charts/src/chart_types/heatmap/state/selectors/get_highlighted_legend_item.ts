@@ -8,17 +8,15 @@
 
 import { computeLegendSelector } from './compute_legend';
 import type { LegendItem } from '../../../../common/legend';
-import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-
-const getHighlightedLegendPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;
+import { getHighlightedLegendPath } from '../../../../state/selectors/get_highlighted_paths';
 
 /** @internal */
 export const getHighlightedLegendItemSelector = createCustomCachedSelector(
   [getHighlightedLegendPath, computeLegendSelector],
-  (highlightedLegendPaths, legendItems): LegendItem | undefined => {
-    if (highlightedLegendPaths.length > 0) {
-      const lookup = new Set(highlightedLegendPaths.map(({ value }) => value));
+  (highlightedLegendPath, legendItems): LegendItem | undefined => {
+    if (highlightedLegendPath && highlightedLegendPath.length > 0) {
+      const lookup = new Set(highlightedLegendPath.map(({ value }) => value));
       return legendItems.find(({ seriesIdentifiers }) => seriesIdentifiers.some(({ key }) => lookup.has(key)));
     }
   },

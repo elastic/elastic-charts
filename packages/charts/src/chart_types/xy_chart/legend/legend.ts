@@ -8,6 +8,7 @@
 
 import type { Color } from '../../../common/colors';
 import type { LegendItem } from '../../../common/legend';
+import { LegendValue } from '../../../common/legend';
 import type { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import type { SettingsSpec } from '../../../specs';
 import { isDefined, mergePartial } from '../../../utils/common';
@@ -22,6 +23,7 @@ import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
 import { defaultXYLegendSeriesSort } from '../utils/default_series_sort_fn';
 import { groupBy } from '../utils/group_data_series';
+import { isDownsampled } from '../utils/m4';
 import type { DataSeries, DataSeriesDatum } from '../utils/series';
 import {
   getSeriesIndex,
@@ -29,6 +31,7 @@ import {
   getSeriesKey,
   getSeriesIdentifierFromDataSeries,
   isBandedSpec,
+  toSeriesData,
 } from '../utils/series';
 import type { AxisSpec, BasicSeriesSpec, Postfixes } from '../utils/specs';
 import { StackMode, isAreaSeriesSpec, isBarSeriesSpec, isBubbleSeriesSpec, isLineSeriesSpec } from '../utils/specs';
@@ -64,6 +67,22 @@ function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefi
     return mergePartial(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point);
   }
 }
+
+// values that are extracted from a downsampled series' summary (first, lowest, highest, last rows, and the rows at
+// either end even without a y)
+// other values need every row
+const SUMMARY_LEGEND_VALUES: ReadonlySet<LegendValue> = new Set([
+  LegendValue.CurrentAndLastValue,
+  LegendValue.LastValue,
+  LegendValue.LastNonNullValue,
+  LegendValue.FirstValue,
+  LegendValue.FirstNonNullValue,
+  LegendValue.Min,
+  LegendValue.Max,
+  LegendValue.Range,
+  LegendValue.Difference,
+  LegendValue.DifferencePercent,
+]);
 
 const y1Accessor =
   (stackMode?: StackMode) =>
@@ -101,6 +120,7 @@ export function computeLegend(
   const defaultColor = theme.colors.defaultVizColor;
 
   const legendValues = settingsSpec.legendValues ?? [];
+  const summaryHasAllLegendValues = legendValues.every((value) => SUMMARY_LEGEND_VALUES.has(value));
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
@@ -131,7 +151,9 @@ export function computeLegend(
 
     const pointStyle = getPointStyle(spec, theme);
 
-    const legendValuesItems = getLegendValues(series, xDomain, legendValues, y1Accessor(series.stackMode), formatter);
+    const dataLacksLegendRows = isDownsampled(series) && !summaryHasAllLegendValues;
+    const source = dataLacksLegendRows ? { ...series, data: toSeriesData(series.spec, series.spec.data) } : series;
+    const legendValuesItems = getLegendValues(source, xDomain, legendValues, y1Accessor(series.stackMode), formatter);
 
     legendItems.push({
       depth: 0,

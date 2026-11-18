@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import type { SmallMultipleScales } from '../../../../common/panel_utils';
 import { BrushAxis } from '../../../../specs';
 import type { GlobalChartState } from '../../../../state/chart_state';
@@ -31,11 +31,18 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     getMouseDownPosition,
     getCurrentPointerPosition,
     getChartRotationSelector,
-    computeChartDimensionsSelector,
+    computeChartLayoutSelector,
     getSettingsSpecSelector,
     computeSmallMultipleScalesSelector,
   ],
-  (start, end, chartRotation, { chartDimensions }, { brushAxis }, smallMultipleScales): Dimensions | null => {
+  (
+    start,
+    end,
+    chartRotation,
+    { dimensions: { chartDimensions } },
+    { brushAxis },
+    smallMultipleScales,
+  ): Dimensions | null => {
     if (!start) {
       return null;
     }

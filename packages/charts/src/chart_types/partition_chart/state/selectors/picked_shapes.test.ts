@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { Store } from 'redux';
+import type { Store } from '@reduxjs/toolkit';
 
 import { partitionMultiGeometries } from './geometries';
 import { createOnElementClickCaller } from './on_element_click_caller';

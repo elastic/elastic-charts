@@ -1,0 +1,222 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+import { buildBarStyle } from './bar';
+import * as commonColors from '../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../common/color_library_wrappers';
+import type { Fill, Rect, Stroke } from '../../../../geoms/types';
+import { MockStyles } from '../../../../mocks';
+import * as common from '../../../../utils/common';
+import type { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
+import { getTextureStyles } from '../../utils/texture';
+
+jest.mock('../../utils/texture');
+jest.spyOn(common, 'getColorFromVariant');
+jest.spyOn(commonColors, 'colorToRgba');
+
+const COLOR = 'aquamarine';
+
+describe('Bar styles', () => {
+  describe('#buildBarStyles', () => {
+    let result: { fill: Fill; stroke: Stroke };
+    let baseColor = COLOR;
+    let themeRectStyle = MockStyles.rect();
+    let themeRectBorderStyle = MockStyles.rectBorder();
+    let geometryStateStyle = MockStyles.geometryState();
+    let sharedStyle: SharedGeometryStateStyle;
+    const rect: Rect = {
+      height: 250,
+      width: 200,
+      x: 560,
+      y: 30,
+    };
+
+    function setDefaults() {
+      baseColor = COLOR;
+      themeRectStyle = MockStyles.rect();
+      themeRectBorderStyle = MockStyles.rectBorder();
+      geometryStateStyle = MockStyles.geometryState();
+      sharedStyle = {
+        default: MockStyles.geometryState({ opacity: 1 }),
+        highlighted: MockStyles.geometryState({ opacity: 0.5 }),
+        unhighlighted: MockStyles.geometryState({ opacity: 0.25 }),
+      };
+    }
+
+    beforeEach(() => {
+      setDefaults();
+    });
+
+    describe('Default', () => {
+      beforeEach(() => {
+        result = buildBarStyle(baseColor, themeRectStyle, themeRectBorderStyle, geometryStateStyle, sharedStyle, rect);
+      });
+
+      it('should call getColorFromVariant with correct args for fill', () => {
+        expect(common.getColorFromVariant).toHaveBeenNthCalledWith(1, baseColor, themeRectStyle.fill);
+      });
+
+      it('should call getColorFromVariant with correct args for border', () => {
+        expect(common.getColorFromVariant).toHaveBeenNthCalledWith(1, baseColor, themeRectBorderStyle.stroke);
+      });
+    });
+
+    describe('Colors', () => {
+      const fillColor = '#4aefb8';
+      const strokeColor = '#a740cf';
+
+      beforeEach(() => {
+        (common.getColorFromVariant as jest.Mock).mockImplementation(() => {
+          const { length } = (common.getColorFromVariant as jest.Mock).mock.calls;
+          return length === 1 ? fillColor : strokeColor;
+        });
+        result = buildBarStyle(baseColor, themeRectStyle, themeRectBorderStyle, geometryStateStyle, sharedStyle, rect);
+      });
+
+      it('should call colorToRgba with values from getColorFromVariant', () => {
+        expect(colorToRgba).toHaveBeenNthCalledWith(1, fillColor);
+        expect(colorToRgba).toHaveBeenNthCalledWith(2, strokeColor);
+      });
+
+      it('should return fill with color', () => {
+        expect(result.fill.color).toEqual(colorToRgba(fillColor));
+      });
+
+      it('should return stroke with color', () => {
+        expect(result.stroke.color).toEqual(colorToRgba(strokeColor));
+      });
+    });
+
+    describe('Opacity', () => {
+      const fillColorOpacity = 0.5;
+      const strokeColorOpacity = 0.25;
+      const fillColor = `rgba(10,10,10,${fillColorOpacity})`;
+      const strokeColor = `rgba(10,10,10,${strokeColorOpacity})`;
+      const fillOpacity = 0.6;
+      const strokeOpacity = 0.8;
+      const geoOpacity = 0.75;
+      let localSharedStyle: SharedGeometryStateStyle;
+
+      beforeEach(() => {
+        themeRectStyle = MockStyles.rect({ opacity: fillOpacity });
+        themeRectBorderStyle = MockStyles.rectBorder({ strokeOpacity });
+        geometryStateStyle = MockStyles.geometryState({ opacity: geoOpacity });
+        // Create a sharedStyle where none of the states match geometryStateStyle
+        localSharedStyle = {
+          default: MockStyles.geometryState({ opacity: 1 }),
+          highlighted: MockStyles.geometryState({ opacity: 0.5 }),
+          unhighlighted: MockStyles.geometryState({ opacity: 0.25 }),
+        };
+        (common.getColorFromVariant as jest.Mock).mockImplementation(() => {
+          const { length } = (common.getColorFromVariant as jest.Mock).mock.calls;
+          return length === 1 ? fillColor : strokeColor;
+        });
+        result = buildBarStyle(
+          baseColor,
+          themeRectStyle,
+          themeRectBorderStyle,
+          geometryStateStyle,
+          localSharedStyle,
+          rect,
+        );
+      });
+
+      it('should return correct fill opacity', () => {
+        const expected = fillColorOpacity * fillOpacity * geoOpacity;
+        expect(result.fill.color[3]).toEqual(expected);
+      });
+
+      it('should return correct stroke opacity', () => {
+        const expected = strokeColorOpacity * strokeOpacity * geoOpacity;
+        expect(result.stroke.color[3]).toEqual(expected);
+      });
+
+      describe('themeRectBorderStyle opacity is undefined', () => {
+        beforeEach(() => {
+          themeRectBorderStyle = {
+            ...MockStyles.rectBorder(),
+            strokeOpacity: undefined,
+          };
+          result = buildBarStyle(
+            baseColor,
+            themeRectStyle,
+            themeRectBorderStyle,
+            geometryStateStyle,
+            localSharedStyle,
+            rect,
+          );
+        });
+
+        it('should use themeRectStyle opacity', () => {
+          const expected = strokeColorOpacity * fillOpacity * geoOpacity;
+          expect(result.stroke.color[3]).toEqual(expected);
+        });
+      });
+    });
+
+    describe('Width', () => {
+      describe('visible is set to false', () => {
+        beforeEach(() => {
+          themeRectBorderStyle = MockStyles.rectBorder({ visible: false });
+          result = buildBarStyle(
+            baseColor,
+            themeRectStyle,
+            themeRectBorderStyle,
+            geometryStateStyle,
+            sharedStyle,
+            rect,
+          );
+        });
+
+        it('should set stroke width to zero', () => {
+          expect(result.stroke.width).toEqual(0);
+        });
+      });
+
+      describe('visible is set to true', () => {
+        const strokeWidth = 22;
+
+        beforeEach(() => {
+          themeRectBorderStyle = MockStyles.rectBorder({ visible: true, strokeWidth });
+          result = buildBarStyle(
+            baseColor,
+            themeRectStyle,
+            themeRectBorderStyle,
+            geometryStateStyle,
+            sharedStyle,
+            rect,
+          );
+        });
+
+        it('should set stroke width to strokeWidth', () => {
+          expect(result.stroke.width).toEqual(strokeWidth);
+        });
+      });
+    });
+
+    describe('Texture', () => {
+      const texture = {};
+      const mockTexture = {};
+
+      beforeEach(() => {
+        themeRectStyle = MockStyles.rect({ texture });
+        (getTextureStyles as jest.Mock).mockReturnValue(mockTexture);
+        result = buildBarStyle(baseColor, themeRectStyle, themeRectBorderStyle, geometryStateStyle, sharedStyle, rect);
+      });
+
+      it('should return correct texture', () => {
+        expect(result.fill.texture).toEqual(mockTexture);
+      });
+
+      it('should call getTextureStyles with params', () => {
+        expect(getTextureStyles).toHaveBeenCalledTimes(1);
+        expect(getTextureStyles).toHaveBeenCalledWith(baseColor, expect.anything(), texture);
+      });
+    });
+  });
+});

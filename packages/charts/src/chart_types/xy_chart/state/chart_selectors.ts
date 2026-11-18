@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
+import { computeChartLayoutSelector } from './selectors/compute_chart_layout';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { computeSeriesDomainsSelector } from './selectors/compute_series_domains';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
@@ -55,7 +55,7 @@ export const chartSelectorsFactory = createChartSelectorsFactory(
     getTooltipAnchor: getTooltipAnchorPositionSelector,
 
     getProjectionContainerArea: getChartContainerDimensionsSelector,
-    getMainProjectionArea: (state: GlobalChartState) => computeChartDimensionsSelector(state).chartDimensions,
+    getMainProjectionArea: (state: GlobalChartState) => computeChartLayoutSelector(state).dimensions.chartDimensions,
     getBrushArea: getBrushAreaSelector,
 
     getDebugState: getDebugStateSelector,

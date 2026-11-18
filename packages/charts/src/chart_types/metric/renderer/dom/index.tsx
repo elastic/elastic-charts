@@ -9,11 +9,11 @@
 /* eslint-disable-next-line eslint-comments/disable-enable-pair */
 /* eslint-disable react/no-array-index-key */
 
+import type { Dispatch } from '@reduxjs/toolkit';
+import { bindActionCreators } from '@reduxjs/toolkit';
 import classNames from 'classnames';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
-import { bindActionCreators } from 'redux';
 
 import { Metric as MetricComponent } from './metric';
 import type { TextContrastOptions } from './metric';
@@ -155,6 +155,7 @@ function Component({
             style.minValueFontSize,
             datum.valueIcon !== undefined,
             style.valueFontSize === 'fit',
+            textDimensions.metricSpacing.panelPadding,
             style.fontFamily,
           );
           acc.fittedValueFontSize = Math.min(acc.fittedValueFontSize, valueFontSize);
@@ -210,8 +211,8 @@ function Component({
       aria-labelledby={a11y.labelId}
       aria-describedby={a11y.descriptionId}
       style={{
-        gridTemplateColumns: `repeat(${maxColumns}, minmax(0, 1fr)`,
-        gridTemplateRows: `repeat(${totalRows}, minmax(${style.minHeight}px, 1fr)`,
+        gridTemplateColumns: `repeat(${maxColumns}, minmax(0, 1fr))`,
+        gridTemplateRows: `repeat(${totalRows}, minmax(${style.minHeight}px, 1fr))`,
       }}
     >
       {metricsConfigs.configs.map((config) => {

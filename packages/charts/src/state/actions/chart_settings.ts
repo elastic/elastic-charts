@@ -8,6 +8,7 @@
 
 import { createAction } from '@reduxjs/toolkit';
 
+import type { RendererType } from '../../renderers/painter';
 import type { Dimensions } from '../../utils/dimensions';
 
 interface UpdateChartTitles {
@@ -20,3 +21,8 @@ export const updateParentDimensions = createAction<Dimensions>('UPDATE_PARENT_DI
 
 /** @internal */
 export const updateChartTitles = createAction<UpdateChartTitles>('UPDATE_CHART_TITLES');
+
+/** @internal */
+export const updateDevicePixelRatio = createAction<number>('UPDATE_DEVICE_PIXEL_RATIO');
+/** @internal */
+export const updateRenderer = createAction<RendererType>('UPDATE_RENDERER');

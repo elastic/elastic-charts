@@ -7,11 +7,11 @@
  */
 
 import type { Placement as PopperPlacement } from '@popperjs/core';
+import type { Dispatch } from '@reduxjs/toolkit';
+import { bindActionCreators } from '@reduxjs/toolkit';
 import type { RefObject } from 'react';
 import React, { useEffect, useMemo, memo, useState } from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
-import { bindActionCreators } from 'redux';
 
 import {
   computeTableMaxHeight,
@@ -231,7 +231,6 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     return null;
   }
 
-  const hideActions = (info?.disableActions ?? false) || info?.values.every((v) => v.displayOnly);
   const actionable = actions.length > 0 || !Array.isArray(actions);
   // divider visibility
   const hasHeader = TooltipCustomHeader !== 'none' && info.header;
@@ -283,7 +282,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
             />
           ) : (
             <TooltipWrapper
-              actions={hideActions || !canPinTooltip ? [] : actions}
+              actions={info.disableActions || !canPinTooltip ? [] : actions}
               actionPrompt={actionPrompt}
               pinningPrompt={pinningPrompt}
               selectionPrompt={selectionPrompt}
@@ -390,19 +389,20 @@ const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
       };
 };
 
-const mapStateToProps = (state: GlobalChartState): TooltipStateProps =>
-  getInternalIsInitializedSelector(state) !== InitStatus.Initialized
-    ? HIDDEN_TOOLTIP_PROPS
-    : {
-        ...mapStateToPropsBasic(state),
-        visible: getInternalIsTooltipVisibleSelector(state).visible,
-        position: getInternalTooltipAnchorPositionSelector(state),
-        info: getInternalTooltipInfoSelector(state),
-        pinned: state.interactions.tooltip.pinned,
-        selected: getTooltipSelectedItems(state),
-        canPinTooltip: isPinnableTooltip(state),
-        isBrushing: isBrushingSelector(state),
-      };
+const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
+  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return HIDDEN_TOOLTIP_PROPS;
+  const { visible } = getInternalIsTooltipVisibleSelector(state);
+  return {
+    ...mapStateToPropsBasic(state),
+    visible,
+    position: getInternalTooltipAnchorPositionSelector(state),
+    info: getInternalTooltipInfoSelector(state),
+    pinned: state.interactions.tooltip.pinned,
+    selected: getTooltipSelectedItems(state),
+    canPinTooltip: isPinnableTooltip(state),
+    isBrushing: isBrushingSelector(state),
+  };
+};
 
 /** @internal */
 export const Tooltip = memo(connect(mapStateToProps, mapDispatchToProps)(TooltipComponent));

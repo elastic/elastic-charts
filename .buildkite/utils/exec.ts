@@ -38,6 +38,20 @@ interface ExecOptions extends ExecSyncOptionsWithBufferEncoding {
 
 export const wait = (n: number) => new Promise((resolve) => setTimeout(resolve, n));
 
+const REPO_ROOT = path.resolve(__dirname, '../../');
+
+function withSafeGitDirectory(command: string) {
+  if (!/^\s*git(?:\s|$)/.test(command)) {
+    return command;
+  }
+
+  // Buildkite screenshot-update jobs run git commands inside a dockerized
+  // checkout mounted at /app. Git can reject that mount as an unsafe
+  // repository when ownership differs, so scope the safe.directory override to
+  // the command rather than mutating global git config.
+  return command.replace(/^(\s*)git(?=\s|$)/, `$1git -c safe.directory=${JSON.stringify(REPO_ROOT)}`);
+}
+
 /**
  * Wrapper for execSync to catch and handle errors.
  * Runs commands from repo root directory.
@@ -62,7 +76,7 @@ export const exec = async (
   let retryCount = 0;
   async function execInner(): Promise<string> {
     try {
-      const result = execSync([command, args].filter(Boolean).join(' '), {
+      const result = execSync(withSafeGitDirectory([command, args].filter(Boolean).join(' ')), {
         encoding: 'utf8',
         input,
         cwd: cwd && path.isAbsolute(cwd) ? cwd : path.resolve(__dirname, '../../', cwd ?? ''),

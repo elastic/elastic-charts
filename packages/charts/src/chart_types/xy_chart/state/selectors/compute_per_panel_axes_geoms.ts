@@ -13,8 +13,8 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
 import type { Position } from '../../../../utils/common';
+import type { AxisGeometry } from '../../axes/geometry';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
-import type { AxisGeometry } from '../../utils/axis_utils';
 
 /** @internal */
 export type PerPanelAxisGeoms = {

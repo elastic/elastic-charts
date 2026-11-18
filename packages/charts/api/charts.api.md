@@ -174,10 +174,11 @@ export interface ArcStyle {
     visible: boolean;
 }
 
-// @public (undocumented)
+// @public
 export type AreaFitStyle = Visible & Opacity & {
-    fill: Color | typeof ColorVariant.Series;
+    fill?: Color | typeof ColorVariant.Series;
     texture?: TexturedStyles;
+    gradient?: LinearGradient;
 };
 
 // Warning: (ae-forgotten-export) The symbol "SFProps" needs to be exported by the entry point index.d.ts
@@ -225,6 +226,7 @@ export interface AreaStyle {
         };
     };
     fill?: Color | ColorVariant;
+    gradient?: LinearGradient;
     opacity: number;
     texture?: TexturedStyles;
     visible: boolean;
@@ -246,7 +248,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "tickFormat" | "ticks" | "tickLabelMaxLength" | "tickLabelTruncate" | "gridLine" | "labelFormat" | "integersOnly" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "groupId" | "position" | "hide" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "tickFormat" | "style" | "title" | "maximumFractionDigits" | "domain" | "integersOnly" | "gridLine" | "labelFormat" | "ticks" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -275,8 +277,6 @@ export interface AxisSpec extends Spec {
     specType: typeof SpecType.Axis;
     style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
     tickFormat?: TickFormatter;
-    tickLabelMaxLength?: Pixels | string;
-    tickLabelTruncate?: Truncate;
     ticks?: number;
     // @alpha
     timeAxisLayerCount: number;
@@ -296,11 +296,18 @@ export interface AxisStyle {
         horizontal: GridLineStyle;
         vertical: GridLineStyle;
     };
+    maxExtent: Pixels | string;
+    minExtent: Pixels | string;
     // (undocumented)
     tickLabel: TextStyle & Visible & {
         rotation: number;
         offset: TextOffset;
         alignment: TextAlignment;
+        wrapLines: number;
+        lineHeight: number;
+        maxLength?: Pixels;
+        minLength: Pixels;
+        truncate: Truncate | false;
     };
     // (undocumented)
     tickLine: TickStyle;
@@ -648,7 +655,7 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     // (undocumented)
     componentDidMount(): void;
     // (undocumented)
-    componentDidUpdate({ title, description, size }: Readonly<ChartProps>): void;
+    componentDidUpdate({ title, description, size, renderer }: Readonly<ChartProps>): void;
     // (undocumented)
     componentWillUnmount(): void;
     // (undocumented)
@@ -752,11 +759,19 @@ export interface ColorBandSimpleConfig {
 
 // @public (undocumented)
 export interface ColorBandValue {
-    // Warning: (ae-forgotten-export) The symbol "ColorBandValueType" needs to be exported by the entry point index.d.ts
     type: ColorBandValueType;
     // (undocumented)
     value: number;
 }
+
+// @public (undocumented)
+export const ColorBandValueType: Readonly<{
+    Scale: "scale";
+    Percentage: "percentage";
+}>;
+
+// @public (undocumented)
+export type ColorBandValueType = $Values<typeof ColorBandValueType>;
 
 // @public (undocumented)
 export interface ColorConfig {
@@ -942,7 +957,7 @@ export class DataGenerator {
 // @public (undocumented)
 export type DataName = CategoryKey;
 
-// @public (undocumented)
+// @public
 export interface DataSeriesDatum<T = any> {
     datum: T;
     filled?: FilledValues;
@@ -1222,7 +1237,7 @@ export interface ExternalPointerEventsSettings {
     };
 }
 
-// @public (undocumented)
+// @public
 export interface FilledValues {
     x?: number | string;
     y0?: number;
@@ -1420,8 +1435,6 @@ export interface GoalSpec extends Spec {
     labelMinor: string | GoalLabelAccessor;
     // (undocumented)
     specType: typeof SpecType.Series;
-    // Warning: (ae-forgotten-export) The symbol "GoalSubtype" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     subtype: GoalSubtype;
     // (undocumented)
@@ -1469,6 +1482,23 @@ export interface GoalStyles {
     tickLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
     // (undocumented)
     tickLine: Pick<StrokeStyle, 'stroke'>;
+}
+
+// @public (undocumented)
+export const GoalSubtype: Readonly<{
+    Goal: "goal";
+    HorizontalBullet: "horizontalBullet";
+    VerticalBullet: "verticalBullet";
+}>;
+
+// @public (undocumented)
+export type GoalSubtype = $Values<typeof GoalSubtype>;
+
+// @public
+export interface GradientStop {
+    color: Color | typeof ColorVariant.Series;
+    offset: Ratio;
+    opacity?: Ratio;
 }
 
 // @public (undocumented)
@@ -1739,6 +1769,9 @@ export const HistogramModeAlignments: Readonly<{
 }>;
 
 // @public (undocumented)
+export type HistogramModeAlignments = $Values<typeof HistogramModeAlignments>;
+
+// @public (undocumented)
 export const HorizontalAlignment: Readonly<{
     Center: "center";
     Right: "right";
@@ -2004,6 +2037,17 @@ export interface LineAnnotationStyle {
     line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
 }
 
+// @public
+export interface LinearGradient {
+    stops: GradientStop[];
+    // (undocumented)
+    type: 'linear';
+    x0?: Ratio;
+    x1?: Ratio;
+    y0?: Ratio;
+    y1?: Ratio;
+}
+
 // @public (undocumented)
 export interface LinearScale {
     // (undocumented)
@@ -2083,6 +2127,109 @@ export function mergeWithDefaultAnnotationLine(defaultStyles: LineAnnotationStyl
 export function mergeWithDefaultAnnotationRect(defaultStyles: RectAnnotationStyle, config?: RecursivePartial<RectAnnotationStyle>): RectAnnotationStyle;
 
 // @alpha (undocumented)
+export const Meter: React_2.FunctionComponent<MeterProps>;
+
+// @alpha
+export interface MeterColorStop {
+    // (undocumented)
+    color: Color;
+    stop: number;
+}
+
+// @alpha
+export type MeterFill = MeterSingleFill | MeterPaletteFill;
+
+// @alpha
+export const MeterFillStyle: Readonly<{
+    Single: "single";
+    Solid: "solid";
+    Gradient: "gradient";
+}>;
+
+// @alpha (undocumented)
+export type MeterFillStyle = $Values<typeof MeterFillStyle>;
+
+// @alpha (undocumented)
+export type MeterOrientation = LayoutDirection;
+
+// @alpha
+export interface MeterPaletteFill {
+    colorStops: MeterColorStop[];
+    fallbackColor?: Color;
+    style: Exclude<MeterFillStyle, typeof MeterFillStyle.Single>;
+    // (undocumented)
+    type: 'palette';
+}
+
+// @alpha
+export interface MeterProps {
+    // (undocumented)
+    ariaLabel?: string;
+    // (undocumented)
+    ariaValueMax?: number;
+    // (undocumented)
+    ariaValueMin?: number;
+    // (undocumented)
+    ariaValueNow?: number;
+    // (undocumented)
+    ariaValueText?: string;
+    baseline?: number;
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    domain: ContinuousDomain;
+    // (undocumented)
+    fill: MeterFill;
+    // (undocumented)
+    fillBorderColor?: Color;
+    // (undocumented)
+    fillBorderWidth?: number;
+    // (undocumented)
+    markerColor?: Color;
+    // (undocumented)
+    orientation?: MeterOrientation;
+    roundFillEnd?: boolean;
+    roundFillStart?: boolean;
+    roundTrackEnd?: boolean;
+    roundTrackStart?: boolean;
+    showBaselineMarker?: boolean;
+    // (undocumented)
+    size?: MeterSize;
+    // (undocumented)
+    style?: CSSProperties;
+    // (undocumented)
+    target?: number;
+    // (undocumented)
+    targetTitle?: string;
+    // (undocumented)
+    title?: string;
+    // (undocumented)
+    trackColor: Color;
+    // (undocumented)
+    value: number;
+    // (undocumented)
+    valueTitle?: string;
+}
+
+// @alpha
+export interface MeterSingleFill {
+    // (undocumented)
+    color: Color;
+    // (undocumented)
+    type: typeof MeterFillStyle.Single;
+}
+
+// @alpha
+export const MeterSize: Readonly<{
+    Small: "small";
+    Medium: "medium";
+    Large: "large";
+}>;
+
+// @alpha (undocumented)
+export type MeterSize = $Values<typeof MeterSize>;
+
+// @alpha (undocumented)
 export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data", never, "id">>;
 
 // @alpha (undocumented)
@@ -2125,6 +2272,17 @@ export type MetricElementEvent = {
 // @public
 export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal' | 500>;
 
+// @alpha
+export interface MetricProgressValueLabels {
+    // (undocumented)
+    target: string;
+    // (undocumented)
+    value: string;
+}
+
+// @public
+export type MetricSpacing = 'small' | 'large';
+
 // @alpha (undocumented)
 export interface MetricSpec extends Spec {
     // (undocumented)
@@ -2159,6 +2317,8 @@ export interface MetricStyle {
     minValueFontSize: number;
     // (undocumented)
     nonFiniteText: string;
+    // (undocumented)
+    spacing: MetricSpacing;
     // (undocumented)
     textDarkColor: Color;
     // (undocumented)
@@ -2210,8 +2370,12 @@ export type MetricWNumberArrayValues = MetricBase & {
 
 // @alpha (undocumented)
 export type MetricWProgress = MetricWNumber & {
-    domainMax: number;
     progressBarDirection: LayoutDirection;
+    progressBarFill?: MeterFill;
+    progressBarSize?: MeterSize;
+    domainMax: number;
+    domainMin?: number;
+    progressValueLabels?: MetricProgressValueLabels;
 };
 
 // @alpha (undocumented)
@@ -2337,7 +2501,15 @@ export type PartitionElementEvent = [layers: Array<LayerValue>, seriesIdentifier
 export interface PartitionFillLabel extends LabelConfig {
     // (undocumented)
     clipText: boolean;
+    horizontalAlignment?: PartitionFillLabelHorizontalAlignment;
+    verticalAlignment?: PartitionFillLabelVerticalAlignment;
 }
+
+// @public
+export type PartitionFillLabelHorizontalAlignment = Exclude<HorizontalAlignment, 'far' | 'near'>;
+
+// @public
+export type PartitionFillLabelVerticalAlignment = Exclude<VerticalAlignment, 'far' | 'near'>;
 
 // @public
 export interface PartitionLayer<D extends BaseDatum = Datum> {
@@ -2416,6 +2588,16 @@ export const PATH_KEY = "path";
 
 // @public (undocumented)
 export function pathAccessor(n: ArrayEntry): LegendPath;
+
+// @public (undocumented)
+export function percentValueGetter(node: {
+    [AGGREGATE_KEY]: number;
+    [MODEL_KEY]: {
+        [STATISTICS_KEY]: {
+            globalAggregate: number;
+        };
+    };
+}): number;
 
 // @public
 export interface PerSideDistance {
@@ -2624,10 +2806,13 @@ export interface RasterTimeScale extends TimeScale {
 export type Ratio = number;
 
 // @public (undocumented)
+export function ratioValueGetter(node: ShapeTreeNode): number;
+
+// @public (undocumented)
 export type RawTextGetter = (node: ShapeTreeNode) => string;
 
 // @public (undocumented)
-export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "zIndex" | "groupId" | "annotationType" | "outside", "style" | "offset" | "customTooltip" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
+export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "groupId" | "zIndex" | "outside" | "annotationType", "style" | "offset" | "customTooltip" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
 
 // @public
 export interface RectAnnotationDatum {
@@ -2748,6 +2933,14 @@ export const ScaleType: Readonly<{
 export type ScaleType = $Values<typeof ScaleType>;
 
 // @alpha
+export interface SecondaryMetricLabelTooltipProps {
+    children: ReactElement;
+    label: string;
+    placement: 'top' | 'left' | 'right';
+    value: string;
+}
+
+// @alpha
 export interface SecondaryMetricProps {
     ariaDescription?: string;
     badgeBorderColor?: {
@@ -2763,7 +2956,8 @@ export interface SecondaryMetricProps {
     icon?: string;
     iconPosition?: 'before' | 'after';
     label?: string;
-    labelPosition?: 'before' | 'after';
+    labelPosition?: 'before' | 'after' | 'tooltip';
+    labelTooltip?: ComponentType<SecondaryMetricLabelTooltipProps>;
     style?: CSSProperties;
     value: string;
 }
@@ -3542,7 +3736,7 @@ export interface TreeNode extends AngleFromTo {
 }
 
 // @public (undocumented)
-export type Truncate = 'start' | 'middle' | 'end';
+export type Truncate = 'start' | 'end' | 'middle';
 
 // @public
 export interface UnaryAccessorFn<D extends BaseDatum = any, Return = any> {
@@ -3561,18 +3755,25 @@ export function useLegendAction<T extends HTMLElement>(): [ref: LegacyRef<T>, on
 export const useTooltipContext: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>() => TooltipContext<D, SI>;
 
 // @public (undocumented)
+export const VALUE_GETTERS: Readonly<{
+    readonly percent: typeof percentValueGetter;
+    readonly ratio: typeof ratioValueGetter;
+}>;
+
+// @public (undocumented)
 export type ValueAccessor<D extends BaseDatum = Datum> = (d: D) => AdditiveNumber;
 
 // @public (undocumented)
 export type ValueFormatter<T = number> = (value: T) => string;
 
-// Warning: (ae-forgotten-export) The symbol "ValueGetterName" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export type ValueGetter = ValueGetterFunction | ValueGetterName;
 
 // @public (undocumented)
 export type ValueGetterFunction = (node: ShapeTreeNode) => number;
+
+// @public (undocumented)
+export type ValueGetterName = keyof typeof VALUE_GETTERS;
 
 // @public (undocumented)
 export const VerticalAlignment: Readonly<{
@@ -3607,7 +3808,7 @@ export type WeightFn = $Values<typeof WeightFn>;
 export type WillRenderListener = () => void;
 
 // @alpha
-export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontStyle" | "fontWeight" | "fontFamily" | "padding" | "minFontSize" | "maxFontSize" | "exponent" | "startAngle" | "endAngle" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
+export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontFamily" | "fontStyle" | "fontWeight" | "padding" | "minFontSize" | "maxFontSize" | "exponent" | "startAngle" | "endAngle" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
 
 // @public
 export type WordCloudElementEvent = [model: WordModel, seriesIdentifier: SeriesIdentifier];
@@ -3681,7 +3882,7 @@ export interface XYBrushEvent {
 // @public
 export type XYChartElementEvent = [geometry: GeometryValue, seriesIdentifier: XYChartSeriesIdentifier];
 
-// @public (undocumented)
+// @public
 export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends SeriesIdentifier, SmallMultiplesDatum {
     // (undocumented)
     seriesKeys: (string | number)[];

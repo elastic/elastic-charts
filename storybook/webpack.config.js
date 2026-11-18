@@ -67,6 +67,14 @@ module.exports = ({ config }) => {
     );
   }
 
+  // Storybook's default babel config has no preset-env targets (i.e. ES5), so keep it off TS sources:
+  // ts-loader alone compiles them to the tsconfig ES2022 target, as in the charts package build
+  config.module.rules
+    .filter((r) => r?.use?.some?.((u) => /babel-loader/.test(u?.loader)) && r.test?.test?.('.tsx'))
+    .forEach((r) => {
+      r.test = /\.(mjs|jsx?)$/;
+    });
+
   config.module.rules.push({
     test: /\.tsx?$/,
     loader: 'ts-loader',
@@ -113,23 +121,13 @@ module.exports = ({ config }) => {
       ...scssLoaders,
     ],
   });
-  // exception for this library that can't be parsed by webpack4 due to their optional chaining method
-  config.module.rules.push({
-    test: /\.js$/,
-    include: [path.resolve(__dirname, '../node_modules/@hello-pangea/dnd')],
-    use: {
-      loader: 'babel-loader',
-      options: {
-        presets: ['@babel/preset-env'],
-      },
-    },
-  });
-
   config.resolve.extensions.push('.ts', '.tsx');
 
+  // Prefix `@elastic/charts/` does not match subpaths in webpack 5: enhanced-resolve
+  // appends another `/`, so `@elastic/charts/src/...` falls through to package exports.
   config.resolve.alias = {
     '@elastic/charts$': path.resolve(__dirname, '../packages/charts/src'),
-    '@elastic/charts/': path.resolve(__dirname, '../packages/charts/'),
+    '@elastic/charts/src': path.resolve(__dirname, '../packages/charts/src'),
   };
 
   return config;

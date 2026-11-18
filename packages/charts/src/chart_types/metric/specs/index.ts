@@ -11,12 +11,29 @@ import type { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
 import type { Color } from '../../../common/colors';
+import type { MeterFill, MeterSize } from '../../../components/meter';
 import type { Spec } from '../../../specs/spec_type';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { specComponentFactory } from '../../../state/spec_factory';
 import type { LayoutDirection, ValueFormatter } from '../../../utils/common';
 import type { GenericDomain } from '../../../utils/domain';
 import type { BulletValueLabels } from '../../bullet_graph/spec';
+
+/**
+ * Props passed to a custom `labelTooltip` component, see {@link SecondaryMetricProps}.
+ *
+ * @alpha
+ */
+export interface SecondaryMetricLabelTooltipProps {
+  /** The secondary metric element. Render it as the tooltip's trigger. */
+  children: ReactElement;
+  /** The label to display in the tooltip */
+  label: string;
+  /** The secondary metric value */
+  value: string;
+  /** Suggested tooltip placement, derived from the `extraTextAlign` property of the secondary metric */
+  placement: 'top' | 'left' | 'right';
+}
 
 /**
  * Props for displaying a secondary metric value with optional label and badge styling.
@@ -32,8 +49,12 @@ export interface SecondaryMetricProps {
   badgeColor?: Color;
   /** Optional text color for the value badge. If not provided, it will be computed automatically for contrast */
   badgeTextColor?: Color;
-  /** Determines whether the label appears before or after the value */
-  labelPosition?: 'before' | 'after';
+  /** Determines whether the label appears before or after the value or is displayed in a tooltip */
+  labelPosition?: 'before' | 'after' | 'tooltip';
+  /**
+   * Custom component used to render the label tooltip when `labelPosition` is `'tooltip'`, ignored when `labelPosition` is `'before'` or `'after'`.
+   */
+  labelTooltip?: ComponentType<SecondaryMetricLabelTooltipProps>;
   /**  Optional CSS properties to apply to the container element */
   style?: CSSProperties;
   /** Optional aria description */
@@ -101,21 +122,66 @@ export type MetricWNumber = MetricBase & {
   targetFormatter?: ValueFormatter;
 };
 
+/**
+ * Accessible labels used by explicit-domain Metric progress bars.
+ *
+ * When `MetricWProgress.domain` is provided, Metric exposes actual values rather
+ * than derived percentages for titles and aria text. These labels customize that
+ * value and target wording.
+ *
+ * @alpha
+ */
+export interface MetricProgressValueLabels {
+  value: string;
+  target: string;
+}
+
 /** @alpha */
 export type MetricWProgress = MetricWNumber & {
-  domainMax: number;
   progressBarDirection: LayoutDirection;
+  /**
+   * Optional Meter fill configuration for the progress bar.
+   *
+   * Colors are resolved against the Metric tile background before rendering.
+   * Defaults to a single-color fill derived from `color`.
+   */
+  progressBarFill?: MeterFill;
+  /**
+   * Optional Meter thickness preset for the progress bar.
+   * Use this when a parent layout, such as Lens table row density, needs to map
+   * onto a fixed progress bar thickness. When omitted, the bar size is derived
+   * from the Metric tile layout.
+   */
+  progressBarSize?: MeterSize;
+  /**
+   * Maximum value of the Metric progress domain.
+   */
+  domainMax: number;
+  /**
+   * Optional minimum value of the Metric progress domain.
+   * Defaults to `0`, preserving the existing zero-based Metric behavior.
+   * Set this when Metric should render a signed or custom range.
+   */
+  domainMin?: number;
+  /**
+   * Optional labels for explicit-domain value and target text.
+   * Defaults to `Value` and `Target`.
+   * Ignored when `domainMin` is omitted.
+   */
+  progressValueLabels?: MetricProgressValueLabels;
 };
 
-/**
- * Type used internally by bullet
- * TODO - discuss usage of this externally
- *
- * @internal
- */
-export type BulletMetricWProgress = Omit<MetricWProgress, 'domainMax'> & {
+/** @internal Type used by Bullet chart Metric rendering. */
+export type BulletMetricWProgress = MetricWNumber & {
+  progressBarDirection: LayoutDirection;
+  progressBarFill?: MeterFill;
+  progressBarSize?: MeterSize;
   domain: GenericDomain;
+  /** Preserve Bullet's tick-domain nicing behavior in the shared Metric progress adapter. */
   niceDomain?: boolean;
+  /**
+   * Bullet uses value/target wording that is owned by the Bullet chart contract.
+   */
   valueLabels: Omit<BulletValueLabels, 'active'>;
 };
 
@@ -175,7 +241,11 @@ export type MetricProps = ComponentProps<typeof Metric>;
 
 /** @internal */
 export function isBulletMetric(datum: MetricDatum): datum is BulletMetricWProgress {
-  return Array.isArray((datum as BulletMetricWProgress).domain);
+  return (
+    isMetricWNumber(datum) &&
+    Array.isArray((datum as BulletMetricWProgress).domain) &&
+    datum.hasOwnProperty('valueLabels')
+  );
 }
 
 /** @internal */
@@ -194,16 +264,13 @@ export function isMetricWNumber(datum: MetricDatum): datum is MetricWNumber {
 }
 
 /** @internal */
-export function isMetricWText(datum: MetricDatum): datum is MetricWNumber {
+export function isMetricWText(datum: MetricDatum): datum is MetricWText {
   return 'value' in datum && typeof datum.value === 'string';
 }
 
 /** @internal */
 export function isMetricWProgress(datum: MetricDatum): datum is MetricWProgress {
-  return (
-    (isMetricWNumber(datum) && datum.hasOwnProperty('domainMax') && !datum.hasOwnProperty('trend')) ||
-    isBulletMetric(datum)
-  );
+  return isMetricWNumber(datum) && !datum.hasOwnProperty('trend') && datum.hasOwnProperty('domainMax');
 }
 
 /** @internal */

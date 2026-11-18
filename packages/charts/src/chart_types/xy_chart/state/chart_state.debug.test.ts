@@ -7,6 +7,7 @@
  */
 
 import { getDebugStateSelector } from './selectors/get_debug_state';
+import { sortedByPosition } from '../../../mocks/geometries';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store/store';
 import { ScaleType } from '../../../scales/constants';
@@ -45,6 +46,7 @@ describe('XYChart - debug state', () => {
       store,
     );
     const debugState = getDebugStateSelector(store.getState());
-    expect(debugState).toMatchSnapshot();
+    const lines = debugState.lines?.map((line) => ({ ...line, points: sortedByPosition(line.points) }));
+    expect({ ...debugState, lines }).toMatchSnapshot();
   });
 });

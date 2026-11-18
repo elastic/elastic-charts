@@ -6,49 +6,34 @@
  * Side Public License, v 1.
  */
 
-import type { Color } from '../../common/colors';
 import type { Rect } from '../../geoms/types';
 import type { ClippedRanges } from '../../utils/geometry';
-
-/** @internal */
-export type CanvasRenderer<R = void> = (ctx: CanvasRenderingContext2D) => R;
+import type { Ctx2d } from '../painter';
 
 /**
- * withContext abstracts out the otherwise error-prone save/restore pairing; it can be nested and/or put into sequence
- * The idea is that you just set what's needed for the enclosed snippet, which may temporarily override values in the
- * outer withContext. Example: we use a +y = top convention, so when doing text rendering, y has to be flipped (ctx.scale)
- * otherwise the text will render upside down.
- * @param ctx
- * @param fun
+ * A drawing callback over any Canvas2D-like context (a real context or a `Painter`).
  * @internal
  */
-export function withContext<R = void>(ctx: CanvasRenderingContext2D, fun: CanvasRenderer<R>): R {
+export type CanvasRenderer<R = void, C extends Ctx2d = Ctx2d> = (ctx: C) => R;
+
+/** @internal */
+export function withContext<C extends Ctx2d, R = void>(ctx: C, fun: (ctx: C) => R): R {
   ctx.save();
   const r = fun(ctx);
   ctx.restore();
   return r;
 }
 
-/** @internal */
-export function clearCanvas(ctx: CanvasRenderingContext2D, bgColor: Color) {
-  withContext(ctx, () => {
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    // with transparent background, clearRect is required
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.fillStyle = bgColor;
-    // filling with the background color is required to have a precise text color contrast calculation
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  });
-}
-
-// order of rendering is important; determined by the order of layers in the array
-/** @internal */
-export function renderLayers(ctx: CanvasRenderingContext2D, layers: Array<CanvasRenderer>) {
+/**
+ * order of rendering is important; determined by the order of layers in the array
+ * @internal
+ */
+export function renderLayers<C extends Ctx2d>(ctx: C, layers: Array<(ctx: C) => void>) {
   layers.forEach((renderLayer) => renderLayer(ctx));
 }
 
 /** @internal */
-export function withClip(ctx: CanvasRenderingContext2D, clippings: Rect, fun: CanvasRenderer, shouldClip = true) {
+export function withClip<C extends Ctx2d>(ctx: C, clippings: Rect, fun: (ctx: C) => void, shouldClip = true) {
   withContext(ctx, () => {
     if (shouldClip) {
       const { x, y, width, height } = clippings;
@@ -60,16 +45,13 @@ export function withClip(ctx: CanvasRenderingContext2D, clippings: Rect, fun: Ca
   });
 }
 
-/**
- * Create clip from a set of clipped ranges
- * @internal
- */
-export function withClipRanges(
-  ctx: CanvasRenderingContext2D,
+/** @internal */
+export function withClipRanges<C extends Ctx2d>(
+  ctx: C,
   clippedRanges: ClippedRanges,
   { width, height, y }: Rect,
   negate: boolean,
-  fun: CanvasRenderer,
+  fun: (ctx: C) => void,
 ) {
   withContext(ctx, () => {
     if (clippedRanges.length > 0) {

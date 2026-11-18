@@ -21,7 +21,7 @@ import { isWithinRange } from '../../../utils/common';
 import type { Size } from '../../../utils/dimensions';
 import type { GenericDomain, Range } from '../../../utils/domain';
 import type { Point } from '../../../utils/point';
-import { ANGULAR_TICK_INTERVAL, TICK_INTERVAL } from '../renderer/canvas/constants';
+import { ANGULAR_TICK_INTERVAL, TICK_INTERVAL } from '../renderer/constants';
 import type { BulletDatum, BulletSpec } from '../spec';
 import { BulletSubtype } from '../spec';
 import type { BulletStyle } from '../theme';

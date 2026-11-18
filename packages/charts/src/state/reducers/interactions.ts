@@ -24,8 +24,8 @@ import { onMouseDown, onMouseUp, onPointerMove } from '../actions/mouse';
 import { toggleSelectedTooltipItem, pinTooltip, setSelectedTooltipItems } from '../actions/tooltip';
 import type { ChartSliceState } from '../chart_slice_state';
 import type { GlobalChartState } from '../chart_state';
+import { isPinnableTooltip } from '../selectors/can_pin_tooltip';
 import { getInternalIsInitializedSelector, InitStatus } from '../selectors/get_internal_is_intialized';
-import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipInfoSelector } from '../selectors/get_internal_tooltip_info';
 import { getLegendItemsSelector } from '../selectors/get_legend_items';
 import { getTooltipSpecSelector } from '../selectors/get_tooltip_spec';
@@ -141,7 +141,7 @@ export const handleLegendActions = (builder: ActionReducerMapBuilder<ChartSliceS
     if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
     const state = globalState.interactions;
 
-    state.highlightedLegendPath = [];
+    state.highlightedLegendPath = null;
   });
 
   builder.addCase(onLegendItemOverAction, (globalState, action) => {
@@ -197,9 +197,7 @@ export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSlice
         return;
       }
 
-      const { isPinnable, displayOnly } = getInternalIsTooltipVisibleSelector(globalState);
-
-      if (!isPinnable || displayOnly) {
+      if (!isPinnableTooltip(globalState)) {
         return;
       }
 
@@ -207,10 +205,16 @@ export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSlice
       const getSelectedValues = () => {
         const values = getInternalTooltipInfoSelector(globalState)?.values ?? [];
         if (globalState.chartType === ChartType.Heatmap) return values.slice(0, 1); // just use the x value
-        return values.filter((v) =>
+        return values.filter((v) => {
+          if (!v.isVisible) {
+            return false;
+          }
           // TODO find a better way to distinguish these two
-          globalState.chartType === ChartType.XYAxis ? v.isHighlighted : !v.displayOnly,
-        );
+          if (globalState.chartType === ChartType.XYAxis) {
+            return v.isHighlighted;
+          }
+          return !v.displayOnly;
+        });
       };
       const selected =
         // don't pre-populate selection when values are not actionable

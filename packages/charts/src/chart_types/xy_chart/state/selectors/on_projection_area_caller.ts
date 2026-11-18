@@ -8,7 +8,7 @@
 
 import type { Selector } from 'react-redux';
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import { ChartType } from '../../..';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -35,8 +35,8 @@ export function createOnProjectionAreaCaller(): (state: GlobalChartState) => voi
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.XYAxis) {
       selector = createCustomCachedSelector(
-        [computeChartDimensionsSelector, getSettingsSpecSelector, getParentDimension],
-        ({ chartDimensions }, { onProjectionAreaChange }, parent): void => {
+        [computeChartLayoutSelector, getSettingsSpecSelector, getParentDimension],
+        ({ dimensions: { chartDimensions } }, { onProjectionAreaChange }, parent): void => {
           const nextProps = { projection: { ...chartDimensions }, parent: { ...parent } };
           const areDifferent =
             !prevProps ||

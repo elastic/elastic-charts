@@ -7,6 +7,7 @@
  */
 
 import { renderRaster } from './raster';
+import type { Ctx2d } from '../../../../renderers/painter';
 import type {
   BinUnit,
   NumberFormatter,
@@ -31,7 +32,7 @@ export type DataDemand = {
 
 /** @internal */
 export const renderCartesian = (
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   config: TimeslipConfig,
   dataState: DataState,
   defaultMinorTickLabelFormat: TimeFormatter,

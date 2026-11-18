@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import type { Store } from '@reduxjs/toolkit';
 import type { Cancelable } from 'lodash';
-import type { Store } from 'redux';
 import { v4 as uuidv4 } from 'uuid';
 
 import { chartTypeSelectors } from '../../chart_types/chart_type_selectors';

@@ -7,7 +7,9 @@
  */
 
 import type { RgbaTuple } from '../common/color_library_wrappers';
-import type { TexturedStyles } from '../utils/themes/theme';
+import type { Color } from '../common/colors';
+import type { Ratio } from '../common/geometry';
+import type { LinearGradient, TexturedStyles } from '../utils/themes/theme';
 
 /** @internal */
 export interface Text {
@@ -39,15 +41,37 @@ export interface Circle {
 }
 
 /**
- * render options for texture
+ * A resolved texture: the repeating tile a rendering backend turns into its pattern paint server
+ * (a `CanvasPattern`, an SVG `<pattern>`). Colors are resolved, sizes are in CSS pixels.
  * @public
  */
 export interface Texture extends Pick<TexturedStyles, 'rotation' | 'offset'> {
+  /** tile width in CSS pixels: the shape size plus the horizontal spacing */
+  width: number;
+  /** tile height in CSS pixels: the shape size plus the vertical spacing */
+  height: number;
   /**
-   * pattern to apply to canvas fill
+   * the shape as SVG path data, centred on the origin and drawn at the tile centre.
+   * A `Path2D` is accepted for backwards compatibility but only paints on canvas.
    */
-  pattern: CanvasPattern;
+  path: string | Path2D;
+  /** rotation of the shape within its tile, in degrees */
+  shapeRotation: number;
+  stroke: Color;
+  strokeWidth: number;
+  fill?: Color;
+  dash?: number[];
+  /** opacity of the tile's ink, with the geometry's shared opacity folded in */
+  opacity: number;
 }
+
+/**
+ * Linear gradient fill config, currently only used for areas.
+ *  @public
+ */
+export type ResolvedLinearGradient = Required<Omit<LinearGradient, 'stops'>> & {
+  stops: Array<{ offset: Ratio; color: RgbaTuple }>;
+};
 
 /**
  * Fill style for every geometry
@@ -59,6 +83,8 @@ export interface Fill {
    */
   color: RgbaTuple;
   texture?: Texture;
+  /** resolved gradient fill, painted in place of the solid `color` when present */
+  gradient?: ResolvedLinearGradient;
 }
 
 /**

@@ -6,9 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { test, expect } from '@playwright/test';
-
 import { PartitionLayout, Position } from '../constants';
+import { test, expect } from '../fixtures';
 import { pwEach } from '../helpers';
 import { common } from '../page_objects';
 

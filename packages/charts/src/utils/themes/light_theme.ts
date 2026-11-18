@@ -131,7 +131,6 @@ export const LIGHT_THEME: Theme = {
       area: {
         visible: true,
         opacity: 0.15,
-        fill: ColorVariant.Series,
       },
     },
     pointVisibilityMinDistance: 20,
@@ -215,6 +214,10 @@ export const LIGHT_THEME: Theme = {
         vertical: 'near',
         horizontal: 'near',
       },
+      wrapLines: 1,
+      lineHeight: 1.2,
+      minLength: 12,
+      truncate: false,
     },
     tickLine: {
       visible: false,
@@ -223,6 +226,8 @@ export const LIGHT_THEME: Theme = {
       size: 10,
       padding: 10,
     },
+    minExtent: 0,
+    maxExtent: '100%',
     gridLine: {
       horizontal: {
         visible: true,
@@ -460,11 +465,12 @@ export const LIGHT_THEME: Theme = {
     valueTextAlign: 'right',
     valuePosition: 'bottom',
     iconAlign: 'right',
+    spacing: 'small',
     border: LIGHT_BORDER_COLORS.borderBaseSubdued,
     barBackground: LIGHT_BACKGROUND_COLORS.backgroundBaseDisabled,
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
-    minHeight: 64,
+    minHeight: 80,
     titleWeight: 500,
   },
   bulletGraph: LIGHT_THEME_BULLET_STYLE,

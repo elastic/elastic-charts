@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { Store } from 'redux';
+import type { Store } from '@reduxjs/toolkit';
 
 import { isTooltipVisibleSelector } from './is_tooltip_visible';
 import * as tooltipInfo from './tooltip';

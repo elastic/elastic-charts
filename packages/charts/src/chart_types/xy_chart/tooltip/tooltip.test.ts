@@ -127,6 +127,7 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue.value).toBe(10);
     expect(tooltipValue.formattedValue).toBe('10');
     expect(tooltipValue.formattedValue).toBe('10');
+    expect(tooltipValue.path).toEqual([{ index: 0, value: indexedGeometry.seriesIdentifier.key }]);
     expect(YAXIS_SPEC.tickFormat).not.toHaveBeenCalledWith(null);
   });
   it('should set name as spec name when provided', () => {

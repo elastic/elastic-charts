@@ -16,8 +16,9 @@ import { Chart, isMetricElementEvent, Metric, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { getProgressBarFill, progressBarPaletteOptions, progressBarSizeOptions } from './progress_bar_story_helpers';
 import type { ChartsStory } from '../../types';
-import { useBaseTheme } from '../../use_base_theme';
+import { useBaseTheme, useThemeId } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator();
 
@@ -39,18 +40,22 @@ const arrayToGrid: <T>(array: T[], nColumns: number) => T[][] = (array, nColumns
   return ret;
 };
 
-const maxTileSideLength = 200;
-const getContainerWidth = (_data: (MetricDatum | undefined)[][]) => _data[0].length * maxTileSideLength;
-const getContainerHeight = (_data: (MetricDatum | undefined)[][]) => _data.length * maxTileSideLength;
+const getTileSize = (spacing: 'small' | 'large') =>
+  spacing === 'large' ? { width: 300, height: 158 } : { width: 200, height: 200 };
+const getContainerWidth = (_data: (MetricDatum | undefined)[][], tileWidth: number) => _data[0].length * tileWidth;
+const getContainerHeight = (_data: (MetricDatum | undefined)[][], tileHeight: number) => _data.length * tileHeight;
 
 const defaultValueFormatter = (d: number) => `${d}`;
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const isDarkTheme = useThemeId().includes('dark');
   const showGridBorder = boolean('show grid border', false);
   const addMetricClick = boolean('attach click handler', true);
   const useProgressBar = boolean('use progress bar', true);
 
   const progressBarDirection = select('progress bar direction', ['horizontal', 'vertical'], 'vertical');
+  const progressBarPalette = select('progress bar palette', progressBarPaletteOptions, 'none');
+  const progressBarSize = select('progress bar size', progressBarSizeOptions, 'auto');
   const maxDataPoints = number('max trend data points', 30, { min: 0, max: 50, step: 1 });
   const emptyBackground = color('empty background', 'transparent');
   const valueFontSizeMode = select(
@@ -63,7 +68,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'default',
   );
   const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
+  const spacing = select('space and size', { Small: 'small', Large: 'large' }, 'small');
   const valuePosition = select('value position', { Bottom: 'bottom', Middle: 'middle', Top: 'top' }, 'bottom');
+  const progressBarFill = useMemo(
+    () => getProgressBarFill(progressBarPalette, [0, 100], isDarkTheme),
+    [isDarkTheme, progressBarPalette],
+  );
+  const progressBarSizeOverride = progressBarSize === 'auto' ? undefined : progressBarSize;
 
   const data: (MetricDatum | undefined)[] = useMemo(
     () => [
@@ -99,15 +110,19 @@ export const Example: ChartsStory = (_, { title, description }) => {
         icon: getIcon('sortUp'),
         value: 12.57,
         valueFormatter: (d) => `${d} Mb/s`,
-        ...(useProgressBar && {
-          domainMax: 100,
-          progressBarDirection,
-          extra: (
-            <span>
-              max <b>100Mb/s</b>
-            </span>
-          ),
-        }),
+        ...(useProgressBar
+          ? {
+              domainMax: 100,
+              progressBarDirection,
+              progressBarFill,
+              progressBarSize: progressBarSizeOverride,
+              extra: (
+                <span>
+                  max <b>100Mb/s</b>
+                </span>
+              ),
+            }
+          : {}),
       },
       {
         color: '#5e5e5e',
@@ -116,15 +131,19 @@ export const Example: ChartsStory = (_, { title, description }) => {
         icon: getIcon('sortDown'),
         value: 41.12,
         valueFormatter: (d) => `${d} Mb/s`,
-        ...(useProgressBar && {
-          domainMax: 100,
-          progressBarDirection,
-          extra: (
-            <span>
-              max <b>100Mb/s</b>
-            </span>
-          ),
-        }),
+        ...(useProgressBar
+          ? {
+              domainMax: 100,
+              progressBarDirection,
+              progressBarFill,
+              progressBarSize: progressBarSizeOverride,
+              extra: (
+                <span>
+                  max <b>100Mb/s</b>
+                </span>
+              ),
+            }
+          : {}),
       },
       {
         color: '#6DCCB1',
@@ -167,21 +186,23 @@ export const Example: ChartsStory = (_, { title, description }) => {
           'The trend shows the daily Cloud revenue in the last quarter, showing peaks during weekends.',
       },
     ],
-    [maxDataPoints, useProgressBar, progressBarDirection],
+    [maxDataPoints, progressBarFill, progressBarDirection, progressBarSizeOverride, useProgressBar],
   );
 
   const nColumns = number('number of columns', 4, { min: 1, max: data.length, step: 1 });
 
+  const tileSize = getTileSize(spacing);
+
   const [chartData, setChartData] = useState(arrayToGrid(data, nColumns));
-  const [containerHeight, setContainerHeight] = useState(getContainerHeight(chartData));
-  const [containerWidth, setContainerWidth] = useState(getContainerWidth(chartData));
+  const [containerHeight, setContainerHeight] = useState(getContainerHeight(chartData, tileSize.height));
+  const [containerWidth, setContainerWidth] = useState(getContainerWidth(chartData, tileSize.width));
 
   useEffect(() => {
     const newData = arrayToGrid(data, nColumns);
     setChartData(newData);
-    setContainerHeight(getContainerHeight(newData));
-    setContainerWidth(getContainerWidth(newData));
-  }, [data, progressBarDirection, useProgressBar, maxDataPoints, nColumns]);
+    setContainerHeight(getContainerHeight(newData, tileSize.height));
+    setContainerWidth(getContainerWidth(newData, tileSize.width));
+  }, [data, progressBarDirection, useProgressBar, maxDataPoints, nColumns, tileSize.width, tileSize.height]);
 
   button('randomize data', () => {
     setChartData(
@@ -228,6 +249,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             metric: {
               emptyBackground,
               valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
+              spacing,
               valuePosition,
             },
           }}

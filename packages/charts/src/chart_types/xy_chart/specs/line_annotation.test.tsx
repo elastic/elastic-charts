@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
+import type { Store } from '@reduxjs/toolkit';
 import { render } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import type { Store } from 'redux';
 
 import { LineSeries } from './line_series';
 import { LineAnnotation, AnnotationDomainType } from '../../../specs';

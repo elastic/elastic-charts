@@ -31,7 +31,7 @@ export function renderLine(
   yScale: ScaleContinuous,
   panel: Dimensions,
   color: Color,
-  curve: CurveType,
+  curve: CurveType | undefined, // getCurveFactory defaults it to linear
   hasY0Accessors: boolean,
   xScaleOffset: number,
   style: LineSeriesStyle,
@@ -67,7 +67,6 @@ export function renderLine(
     pointStyleAccessor,
   );
 
-  // TODO we can probably avoid computing the clipped ranges if no fit function is applied.
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
   const lineGeometry: LineGeometry = {

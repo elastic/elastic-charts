@@ -10,6 +10,7 @@ import type { BarRow } from './glyphs/bar';
 import { renderBarGlyph } from './glyphs/bar';
 import type { BoxplotRow } from './glyphs/boxplot';
 import { renderBoxplotGlyph } from './glyphs/boxplot';
+import type { Ctx2d } from '../../../../renderers/painter';
 import type { Interval, TimeFormatter, AxisLayer } from '../../../xy_chart/axes/timeslip/continuous_time_rasters';
 import type { NumericScale } from '../../projections/scale';
 import type { TimeslipConfig } from '../config';
@@ -23,7 +24,7 @@ export type Layers = AxisLayer<Interval>[];
 
 /** @internal */
 export const renderColumnTickLabels = (
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   config: TimeslipConfig,
   fadeOutPixelWidth: number,
   emWidth: number,
@@ -101,7 +102,7 @@ export const renderColumnTickLabels = (
 
 /** @internal */
 export const renderColumnBars = (
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   getPixelX: NumericScale,
   cartesianWidth: number,
   cartesianHeight: number,

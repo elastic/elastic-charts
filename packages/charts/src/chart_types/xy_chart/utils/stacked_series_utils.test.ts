@@ -347,4 +347,180 @@ describe('Stacked Series Utils', () => {
       mark: null,
     });
   });
+
+  describe('Stack modes with mixed and negative polarity', () => {
+    const MIXED_DATA = [
+      { x: 0, y1: 1, g: 'a' },
+      { x: 1, y1: 2, g: 'a' },
+      { x: 2, y1: -1, g: 'a' },
+      { x: 0, y1: 3, g: 'b' },
+      { x: 1, y1: -2, g: 'b' },
+      { x: 2, y1: 4, g: 'b' },
+      { x: 0, y1: -1, g: 'c' },
+      { x: 1, y1: 1, g: 'c' },
+      { x: 2, y1: 2, g: 'c' },
+    ];
+    const NEGATIVE_DATA = [
+      { x: 0, y1: -2, g: 'a' },
+      { x: 1, y1: -3, g: 'a' },
+      { x: 2, y1: -2, g: 'a' },
+      { x: 0, y1: -4, g: 'b' },
+      { x: 1, y1: -3, g: 'b' },
+      { x: 2, y1: -5, g: 'b' },
+      { x: 0, y1: -2, g: 'c' },
+      { x: 1, y1: -2, g: 'c' },
+      { x: 2, y1: -3, g: 'c' },
+    ];
+    const stackedXY0Y1 = (data: typeof MIXED_DATA, stackMode?: StackMode) => {
+      const store = MockStore.default();
+      MockStore.addSpecs(
+        MockSeriesSpec.bar({
+          xScaleType: ScaleType.Linear,
+          yAccessors: ['y1'],
+          splitSeriesAccessors: ['g'],
+          stackAccessors: ['x'],
+          stackMode,
+          data,
+        }),
+        store,
+      );
+      const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+      return formattedDataSeries.map(({ data: series }) => series.map(({ x, y0, y1 }) => [x, y0, y1]));
+    };
+
+    test('default stacking with mixed polarity stacks negative values downward', () => {
+      expect(stackedXY0Y1(MIXED_DATA)).toEqual([
+        [
+          [0, 0, 1],
+          [1, 0, 2],
+          [2, 0, -1],
+        ],
+        [
+          [0, 1, 4],
+          [1, 0, -2],
+          [2, 0, 4],
+        ],
+        [
+          [0, 0, -1],
+          [1, 2, 3],
+          [2, 4, 6],
+        ],
+      ]);
+    });
+
+    test('percentage with mixed polarity treats negative values as participation', () => {
+      expect(stackedXY0Y1(MIXED_DATA, StackMode.Percentage)).toEqual([
+        [
+          [0, 0.2, 0.4],
+          [1, 0.4, 0.8],
+          [2, 0, 0.14285714285714285],
+        ],
+        [
+          [0, 0.4, 1],
+          [1, 0, 0.4],
+          [2, 0.14285714285714285, 0.7142857142857142],
+        ],
+        [
+          [0, 0, 0.2],
+          [1, 0.8, 1],
+          [2, 0.7142857142857142, 0.9999999999999999],
+        ],
+      ]);
+    });
+
+    test('wiggle with mixed polarity uses the diverging wiggle offset', () => {
+      expect(stackedXY0Y1(MIXED_DATA, StackMode.Wiggle)).toEqual([
+        [
+          [0, 1, 2],
+          [1, 1, 3],
+          [2, -1.7000000000000002, -2.7],
+        ],
+        [
+          [0, 2, 5],
+          [1, 1, -1],
+          [2, -1.7000000000000002, 2.3],
+        ],
+        [
+          [0, 1, 0],
+          [1, 3, 4],
+          [2, 2.3, 4.3],
+        ],
+      ]);
+    });
+
+    test('wiggle with only negative values uses the non-diverging wiggle offset', () => {
+      expect(stackedXY0Y1(NEGATIVE_DATA, StackMode.Wiggle)).toEqual([
+        [
+          [0, 0, -2],
+          [1, 0.375, -2.625],
+          [2, 0.725, -1.275],
+        ],
+        [
+          [0, -2, -6],
+          [1, -2.625, -5.625],
+          [2, -1.275, -6.275],
+        ],
+        [
+          [0, -6, -8],
+          [1, -5.625, -7.625],
+          [2, -6.275, -9.275],
+        ],
+      ]);
+    });
+
+    test('silhouette centers the stack around zero', () => {
+      expect(stackedXY0Y1(MIXED_DATA, StackMode.Silhouette)).toEqual([
+        [
+          [0, -1.5, -0.5],
+          [1, -0.5, 1.5],
+          [2, -2.5, -3.5],
+        ],
+        [
+          [0, -0.5, 2.5],
+          [1, -0.5, -2.5],
+          [2, -2.5, 1.5],
+        ],
+        [
+          [0, -1.5, -2.5],
+          [1, 1.5, 2.5],
+          [2, 1.5, 3.5],
+        ],
+      ]);
+    });
+  });
+
+  test('stacks only the first of duplicate x values in a series, whatever the input order', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(
+      MockSeriesSpec.bar({
+        xScaleType: ScaleType.Linear,
+        yAccessors: ['y1'],
+        splitSeriesAccessors: ['g'],
+        stackAccessors: ['x'],
+        data: [
+          { x: 2, y1: 3, g: 'a' },
+          { x: 0, y1: 1, g: 'a' },
+          { x: 2, y1: 30, g: 'a' },
+          { x: 1, y1: 2, g: 'a' },
+          { x: 0, y1: 4, g: 'b' },
+          { x: 1, y1: 5, g: 'b' },
+          { x: 2, y1: 6, g: 'b' },
+        ],
+      }),
+      store,
+    );
+    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+    expect(formattedDataSeries.map(({ data }) => data.map(({ x, y0, y1 }) => [x, y0, y1]))).toEqual([
+      [
+        [0, 0, 1],
+        [1, 0, 2],
+        [2, 0, 3],
+      ],
+      [
+        [0, 1, 5],
+        [1, 2, 7],
+        [2, 3, 9],
+      ],
+    ]);
+  });
 });

@@ -14,7 +14,6 @@ import type { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/seri
 import type { LabelOverflowConstraint, SeriesType } from '../chart_types/xy_chart/utils/specs';
 import type { Color } from '../common/colors';
 import type { Pixels } from '../common/geometry';
-import type { LegendItem } from '../common/legend';
 import type { SeriesKey } from '../common/series_id';
 import type { Fill, Stroke } from '../geoms/types';
 
@@ -139,6 +138,10 @@ export interface AreaGeometry {
     x: number;
     y: number;
   };
+  /**
+   * `(x0, y0)` is the top-left corner and `(x1, y1)` the bottom-right corner (pre-transformed).
+   */
+  bbox: { x0: number; y0: number; x1: number; y1: number };
   seriesIdentifier: XYChartSeriesIdentifier;
   style: AreaSeriesStyle;
   isStacked: boolean;
@@ -173,12 +176,9 @@ export function isBarGeometry(ig: IndexedGeometry): ig is BarGeometry {
 export type GeometryHighlightState = 'dimmed' | 'focused' | 'default';
 
 /** @internal */
-export function getGeometryHighlightState(key: SeriesKey, highlightedLegendItem?: LegendItem): GeometryHighlightState {
-  return !highlightedLegendItem
-    ? 'default'
-    : highlightedLegendItem.seriesIdentifiers.some((si) => si.key === key)
-      ? 'focused'
-      : 'dimmed';
+export function getGeometryHighlightState(key: SeriesKey, highlightedItems: SeriesKey[] = []): GeometryHighlightState {
+  if (highlightedItems.length === 0) return 'default';
+  return highlightedItems.includes(key) ? 'focused' : 'dimmed';
 }
 
 /** @internal */

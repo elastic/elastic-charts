@@ -77,6 +77,11 @@ export const getSectorRowGeometry: GetShapeRowGeometry<RingSectorConstruction> =
   return { rowAnchorX, rowAnchorY, maximumRowLength };
 };
 
+function getDefaultVerticalAlignment(middleAlign: boolean, depth: number, layerCount: number) {
+  if (middleAlign) return VerticalAlignments.middle;
+  return depth < layerCount ? VerticalAlignments.bottom : VerticalAlignments.top;
+}
+
 function getVerticalAlignment(
   container: RectangleConstruction,
   verticalAlignment: VerticalAlignments,
@@ -94,7 +99,8 @@ function getVerticalAlignment(
     case VerticalAlignments.bottom:
       return -(container.y1 - linePitch * (totalRowCount - 1 - rowIndex) - paddingBottom - fontSize * overhang);
     default:
-      return -((container.y0 + container.y1) / 2 + (linePitch * (rowIndex + 1 - totalRowCount)) / 2);
+      // center the whole row block on the container midpoint
+      return -((container.y0 + container.y1) / 2 + linePitch * (rowIndex - (totalRowCount - 1) / 2));
   }
 }
 
@@ -224,10 +230,10 @@ function fill<C>(
     valueGetter: ValueGetterFunction,
     formatter: ValueFormatter,
     maxRowCount: number,
-    leftAlign: boolean,
+    isSectorLayout: boolean,
     middleAlign: boolean,
   ) {
-    const horizontalAlignment = leftAlign ? HorizontalAlignment.left : HorizontalAlignment.center;
+    const defaultHorizontalAlignment = isSectorLayout ? HorizontalAlignment.center : HorizontalAlignment.left;
     return (allFontSizes: Pixels[][], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
       const container = shapeConstructor(node);
       const rotation = getRotation(node);
@@ -238,18 +244,31 @@ function fill<C>(
         throw new Error(`Failed to find layer at ${node.depth - 1}`);
       }
 
-      const verticalAlignment = middleAlign
-        ? VerticalAlignments.middle
-        : node.depth < layers.length
-          ? VerticalAlignments.bottom
-          : VerticalAlignments.top;
       const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1] ?? [];
-      const { fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding, clipText } = {
+      const {
+        fontStyle,
+        fontVariant,
+        fontFamily,
+        fontWeight,
+        valueFormatter,
+        padding,
+        clipText,
+        verticalAlignment: specifiedVerticalAlignment,
+        horizontalAlignment: specifiedHorizontalAlignment,
+      } = {
         ...fillLabel,
         valueFormatter: formatter,
         ...layer.fillLabel,
         ...layer.shape,
       };
+
+      const defaultVerticalAlignment = getDefaultVerticalAlignment(middleAlign, node.depth, layers.length);
+      const verticalAlignment = isSectorLayout
+        ? defaultVerticalAlignment // sector rows are placed by the ring geometry, not by the label alignment
+        : specifiedVerticalAlignment ?? defaultVerticalAlignment;
+      const horizontalAlignment = isSectorLayout
+        ? defaultHorizontalAlignment // the sector row length is a sentinel, so left or right alignment would displace the label
+        : specifiedHorizontalAlignment ?? defaultHorizontalAlignment;
 
       const valueFont = {
         ...fillLabel,
@@ -494,7 +513,7 @@ export function fillTextLayout<C>(
     layers: Layer[],
     textFillOrigins: PointTuple[],
     maxRowCount: number,
-    leftAlign: boolean,
+    isSectorLayout: boolean,
     middleAlign: boolean,
   ): RowSet[] {
     const allFontSizes: Pixels[][] = [];
@@ -525,7 +544,7 @@ export function fillTextLayout<C>(
       valueGetter,
       valueFormatter,
       maxRowCount,
-      leftAlign,
+      isSectorLayout,
       middleAlign,
     );
 

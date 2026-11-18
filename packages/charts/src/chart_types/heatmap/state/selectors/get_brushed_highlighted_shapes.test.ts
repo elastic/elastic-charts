@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import type { Store } from '@reduxjs/toolkit';
 import { DateTime } from 'luxon';
-import type { Store } from 'redux';
 
 import { createOnBrushEndCaller } from './on_brush_end_caller';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import type { Ctx2d } from '../../../../../renderers/painter';
 import type { NumericScale } from '../../../projections/scale';
 
 /** @internal */
@@ -13,7 +14,7 @@ export type BarRow = { value: number };
 
 /** @internal */
 export function renderBarGlyph(
-  ctx: CanvasRenderingContext2D,
+  ctx: Ctx2d,
   barWidthPixels: number,
   leftShortfall: number,
   maxBarHeight: number,

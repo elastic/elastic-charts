@@ -24,7 +24,7 @@ import type { Dimensions } from '../../../../utils/dimensions';
 import type { QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { nullShapeViewModel } from '../../layout/types/viewmodel_types';
 import { getShapeViewModel } from '../../layout/viewmodel/scenegraph';
-import type { IndexedContinuousDomainFocus } from '../../renderer/canvas/partition';
+import type { IndexedContinuousDomainFocus } from '../../renderer/partition';
 
 const horizontalSplit = (s?: SmallMultiplesSpec) => s?.splitHorizontally;
 const verticalSplit = (s?: SmallMultiplesSpec) => s?.splitVertically;

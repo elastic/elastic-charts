@@ -1,0 +1,11 @@
+version: 1
+enabled: true
+review_drafts: false
+skip_labels:
+  - libra-skip
+draft_bypass_labels:
+  - libra-review-draft
+paths:
+  exclude:
+    - e2e/screenshots/**
+    - '**/__snapshots__/**'

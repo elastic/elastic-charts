@@ -29,6 +29,3 @@ export const onDOMElementLeave = createAction('ON_DOM_ELEMENT_LEAVE');
 
 /** @internal */
 export const onDOMElementEnter = createAction<DOMElement>('ON_DOM_ELEMENT_ENTER');
-
-/** @internal */
-export const onDOMElementClick = createAction('ON_DOM_ELEMENT_CLICK');

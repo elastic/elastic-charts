@@ -54,25 +54,31 @@
     // TODO: Find a better way to style based on sizes (i.e. sass functions)
     &.echMetric--withProgressBar {
       &--small {
-        padding-left: $progress-bar-width-small + $padding;
+        padding-left: calc(#{$progress-bar-width-small} + var(--echMetricProgressTextGap, #{$padding}));
       }
       &--medium {
-        padding-left: $progress-bar-width-medium + $padding;
+        padding-left: calc(#{$progress-bar-width-medium} + var(--echMetricProgressTextGap, #{$padding}));
       }
       &--large {
-        padding-left: $progress-bar-width-large + $padding;
+        padding-left: calc(#{$progress-bar-width-large} + var(--echMetricProgressTextGap, #{$padding}));
       }
     }
 
     &.echMetric--withTargetProgressBar {
       &--small {
-        padding-left: $progress-bar-width-small + $padding + $progress-bar-target-width;
+        padding-left: calc(
+          #{$progress-bar-width-small} + #{$progress-bar-target-width} + var(--echMetricProgressTextGap, #{$padding})
+        );
       }
       &--medium {
-        padding-left: $progress-bar-width-medium + $padding + $progress-bar-target-width;
+        padding-left: calc(
+          #{$progress-bar-width-medium} + #{$progress-bar-target-width} + var(--echMetricProgressTextGap, #{$padding})
+        );
       }
       &--large {
-        padding-left: $progress-bar-width-large + $padding + $progress-bar-target-width;
+        padding-left: calc(
+          #{$progress-bar-width-large} + #{$progress-bar-target-width} + var(--echMetricProgressTextGap, #{$padding})
+        );
       }
     }
   }
@@ -80,25 +86,31 @@
   &--horizontal {
     &.echMetric--withProgressBar {
       &--small {
-        padding-bottom: $progress-bar-height-small + $padding;
+        padding-bottom: calc(#{$progress-bar-height-small} + var(--echMetricProgressTextGap, #{$padding}));
       }
       &--medium {
-        padding-bottom: $progress-bar-height-medium + $padding;
+        padding-bottom: calc(#{$progress-bar-height-medium} + var(--echMetricProgressTextGap, #{$padding}));
       }
       &--large {
-        padding-bottom: $progress-bar-height-large + $padding;
+        padding-bottom: calc(#{$progress-bar-height-large} + var(--echMetricProgressTextGap, #{$padding}));
       }
     }
 
     &.echMetric--withTargetProgressBar {
       &--small {
-        padding-bottom: $progress-bar-height-small + $padding + $progress-bar-target-height;
+        padding-bottom: calc(
+          #{$progress-bar-height-small} + #{$progress-bar-target-height} + var(--echMetricProgressTextGap, #{$padding})
+        );
       }
       &--medium {
-        padding-bottom: $progress-bar-height-medium + $padding + $progress-bar-target-height;
+        padding-bottom: calc(
+          #{$progress-bar-height-medium} + #{$progress-bar-target-height} + var(--echMetricProgressTextGap, #{$padding})
+        );
       }
       &--large {
-        padding-bottom: $progress-bar-height-large + $padding + $progress-bar-target-height;
+        padding-bottom: calc(
+          #{$progress-bar-height-large} + #{$progress-bar-target-height} + var(--echMetricProgressTextGap, #{$padding})
+        );
       }
     }
   }

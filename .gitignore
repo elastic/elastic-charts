@@ -15,6 +15,7 @@ coverage/
 .DS_Store
 .eslintcache
 .yo-rc.json
+.tmp-shallow/
 npm-debug.log
 yarn-error.log
 playground/playground.tsx
@@ -38,3 +39,6 @@ playground/playground.tsx
 
 # We keep node module archives in this folder
 .yarn-offline-cache/
+
+# screenshots of the svg renderer, produced by `yarn test --renderer=svg -u` in e2e and compared against the canvas baselines
+e2e/screenshots_svg/

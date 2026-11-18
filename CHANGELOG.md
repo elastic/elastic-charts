@@ -1,3 +1,217 @@
+## [73.4.1](https://github.com/elastic/elastic-charts/compare/v73.4.0...v73.4.1) (2026-11-17)
+
+
+### Bug Fixes
+
+* **legend:** match table row height to rendered line-height ([#2922](https://github.com/elastic/elastic-charts/issues/2922)) ([d7498c2](https://github.com/elastic/elastic-charts/commit/d7498c2f4a1852e1fa46b07bf22069f4b42c04d9))
+* omit an absent fill rule in painter fill, fillPath and clip ([#2954](https://github.com/elastic/elastic-charts/issues/2954)) ([41527b2](https://github.com/elastic/elastic-charts/commit/41527b28eeb13068342a84a16462d81b4cff8551))
+
+# [73.4.0](https://github.com/elastic/elastic-charts/compare/v73.3.2...v73.4.0) (2026-11-16)
+
+
+### Bug Fixes
+
+* **tooltip:** match width to the current hover ([#2935](https://github.com/elastic/elastic-charts/issues/2935)) ([e065ce2](https://github.com/elastic/elastic-charts/commit/e065ce25832aed72295f138c278953dd712fdd75))
+* **xy:** match dimmed point and line stroke colors ([#2917](https://github.com/elastic/elastic-charts/issues/2917)) ([b000bc9](https://github.com/elastic/elastic-charts/commit/b000bc93e214124f4d4f1a8eb30079f600dba81d))
+
+
+### Features
+
+* SVG renderer behind a shared Canvas2D-like painter ([#2941](https://github.com/elastic/elastic-charts/issues/2941)) ([c830c3b](https://github.com/elastic/elastic-charts/commit/c830c3bce1b03c807c7faa1204b0a734551ecdbf))
+
+
+### Performance Improvements
+
+* **xy:** M4 downsampling of fitted series with nothing to fill in ([#2948](https://github.com/elastic/elastic-charts/issues/2948)) ([a8342a9](https://github.com/elastic/elastic-charts/commit/a8342a91a4d4f67093dd180ba802ccf7bd2d115d))
+
+## [73.3.2](https://github.com/elastic/elastic-charts/compare/v73.3.1...v73.3.2) (2026-10-23)
+
+
+### Bug Fixes
+
+* **style:** minor defects and alignments in the style and APIs ([#2923](https://github.com/elastic/elastic-charts/issues/2923)) ([51740cc](https://github.com/elastic/elastic-charts/commit/51740cc238e5433f2e00ba605a9421c42cc9c440))
+* **xy:** cardinal interpolation not to render as linear interpolation ([#2926](https://github.com/elastic/elastic-charts/issues/2926)) ([c69df2e](https://github.com/elastic/elastic-charts/commit/c69df2ef66946156a956c07eb46f48a6630537d8))
+
+
+### Performance Improvements
+
+* **xy:** add the M4 reduction ([873e6c8](https://github.com/elastic/elastic-charts/commit/873e6c808a04b39d4e175fc4d2aa65470ec1a861))
+* **xy:** downsample dense line and area series with M4 ([4fdb1e7](https://github.com/elastic/elastic-charts/commit/4fdb1e7abfcfd532eea67df19006572aa244913f))
+* **xy:** faster rendering of dense series with millions of distinct x values ([#2929](https://github.com/elastic/elastic-charts/issues/2929)) ([df838fd](https://github.com/elastic/elastic-charts/commit/df838fd51aa560821692ac915c645aa02b62c01d))
+* **xy:** M4 downsampling of dense line and area series ([#2928](https://github.com/elastic/elastic-charts/issues/2928)) ([5a3a844](https://github.com/elastic/elastic-charts/commit/5a3a844de1f4c5111640bcd28a8beadf0857e196))
+
+
+### Reverts
+
+* **xy:** M4 downsampling of dense line and area series ([#2927](https://github.com/elastic/elastic-charts/issues/2927)) ([f3e36a4](https://github.com/elastic/elastic-charts/commit/f3e36a492de4c746d43cda09dead924ff7d3cf4f))
+
+## [73.3.1](https://github.com/elastic/elastic-charts/compare/v73.3.0...v73.3.1) (2026-10-15)
+
+
+### Bug Fixes
+
+* **annotations:** handle line marker clicks ([#2903](https://github.com/elastic/elastic-charts/issues/2903)) ([cd4316c](https://github.com/elastic/elastic-charts/commit/cd4316cc6810c7d663fe68edf15d6557af59dce7)), closes [#2893](https://github.com/elastic/elastic-charts/issues/2893)
+
+
+### Performance Improvements
+
+* **xy:** skip quadratic point insertion ([#2921](https://github.com/elastic/elastic-charts/issues/2921)) ([ab7b3ab](https://github.com/elastic/elastic-charts/commit/ab7b3ab926e241043204c27034e5761763247069))
+
+# [73.3.0](https://github.com/elastic/elastic-charts/compare/v73.2.5...v73.3.0) (2026-10-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @playwright/test to ^1.63.0 ([#2894](https://github.com/elastic/elastic-charts/issues/2894)) ([c0e93f2](https://github.com/elastic/elastic-charts/commit/c0e93f24091cccd21249895ac864f5998382a402))
+
+
+### Features
+
+* **partition:** add fill label alignment options for treemap and mosaic ([#2912](https://github.com/elastic/elastic-charts/issues/2912)) ([996182f](https://github.com/elastic/elastic-charts/commit/996182f9f9469f576b07326e3c490d0e5187a084))
+
+
+### Performance Improvements
+
+* **xy:** stack sparse series without densifying them ([#2916](https://github.com/elastic/elastic-charts/issues/2916)) ([cadaafb](https://github.com/elastic/elastic-charts/commit/cadaafb8efae9944670226b1e6f5fe634fddd759))
+
+## [73.2.5](https://github.com/elastic/elastic-charts/compare/v73.2.4...v73.2.5) (2026-10-02)
+
+
+### Bug Fixes
+
+* **bullet:** improve angular responsiveness ([#2896](https://github.com/elastic/elastic-charts/issues/2896)) ([07eca7b](https://github.com/elastic/elastic-charts/commit/07eca7b5ee796533e0f15b1c15eb1d907cf1a1f5)), closes [elastic/kibana#280034](https://github.com/elastic/kibana/issues/280034)
+
+## [73.2.4](https://github.com/elastic/elastic-charts/compare/v73.2.3...v73.2.4) (2026-09-30)
+
+## [73.2.3](https://github.com/elastic/elastic-charts/compare/v73.2.2...v73.2.3) (2026-09-30)
+
+
+### Bug Fixes
+
+* **build:** remove duplicate hashes from yarn.lock ([#2907](https://github.com/elastic/elastic-charts/issues/2907)) ([e796c9e](https://github.com/elastic/elastic-charts/commit/e796c9e6e67438ffa978b1a1eee1adc017d4ac83))
+
+## [73.2.2](https://github.com/elastic/elastic-charts/compare/v73.2.1...v73.2.2) (2026-09-29)
+
+
+### Bug Fixes
+
+* **theme:** align dark background color to Kibana dark mode ([#2895](https://github.com/elastic/elastic-charts/issues/2895)) ([bbe41a2](https://github.com/elastic/elastic-charts/commit/bbe41a2aebfbe6f0630bcb4e8f5242025a209bb9))
+
+
+### Performance Improvements
+
+* **chart:** extract scale calculation for multi-series and other improvements ([#2901](https://github.com/elastic/elastic-charts/issues/2901)) ([e4edb26](https://github.com/elastic/elastic-charts/commit/e4edb26a490880afc1fcca9f58109c8b399334cc))
+
+## [73.2.1](https://github.com/elastic/elastic-charts/compare/v73.2.0...v73.2.1) (2026-09-18)
+
+
+### Performance Improvements
+
+* **chart:** speed up charts by lowering the algorithmic complexity ([#2892](https://github.com/elastic/elastic-charts/issues/2892)) ([626d028](https://github.com/elastic/elastic-charts/commit/626d02895338641595c35af245450bd5378c9e0b))
+
+# [73.2.0](https://github.com/elastic/elastic-charts/compare/v73.1.0...v73.2.0) (2026-09-17)
+
+
+### Features
+
+* **metric:** add tooltip label position for secondary metrics ([#2886](https://github.com/elastic/elastic-charts/issues/2886)) ([3960f5d](https://github.com/elastic/elastic-charts/commit/3960f5ddcd0e1703d5ce6260d6ca9119ea5f949b))
+
+
+### Performance Improvements
+
+* Add performance playground ([#2887](https://github.com/elastic/elastic-charts/issues/2887)) ([2792d23](https://github.com/elastic/elastic-charts/commit/2792d232e74c4fde62fea88ed1b564d34d6e7c99))
+
+# [73.1.0](https://github.com/elastic/elastic-charts/compare/v73.0.1...v73.1.0) (2026-09-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @playwright/test to ^1.62.1 ([#2873](https://github.com/elastic/elastic-charts/issues/2873)) ([022f9ce](https://github.com/elastic/elastic-charts/commit/022f9ce6fcab3055071cfe12b9d0fd6ed4e60769))
+
+
+### Features
+
+* **tooltip:** highlight selected tooltip items ([#2874](https://github.com/elastic/elastic-charts/issues/2874)) ([a3e9aa9](https://github.com/elastic/elastic-charts/commit/a3e9aa9af581442a0c40c811841f7297423511ed))
+
+## [73.0.1](https://github.com/elastic/elastic-charts/compare/v73.0.0...v73.0.1) (2026-09-02)
+
+
+### Bug Fixes
+
+* **canvas:** chart reacts to `devicePixelRatio` change ([#2877](https://github.com/elastic/elastic-charts/issues/2877)) ([70fc873](https://github.com/elastic/elastic-charts/commit/70fc87305d5bea9b71e2df47015d657f26168a05))
+
+# [73.0.0](https://github.com/elastic/elastic-charts/compare/v72.0.1...v73.0.0) (2026-08-31)
+
+
+### Bug Fixes
+
+* **bullet:** add adaptive bar stroke when color band contrast is low ([#2870](https://github.com/elastic/elastic-charts/issues/2870)) ([dababad](https://github.com/elastic/elastic-charts/commit/dababad8807361cf46cf1b2226db9f764700f32f))
+* **deps:** update dependency @playwright/test to ^1.62.0 ([#2869](https://github.com/elastic/elastic-charts/issues/2869)) ([1c33926](https://github.com/elastic/elastic-charts/commit/1c33926290d7224cf5fe189cd60f6f48d3ce6b79))
+
+
+### Features
+
+* **deps:** drop React 16/17 peer support ([#2878](https://github.com/elastic/elastic-charts/issues/2878)) ([2992c12](https://github.com/elastic/elastic-charts/commit/2992c122ec301891778b7477d8bd54976009c8de)), closes [#2872](https://github.com/elastic/elastic-charts/issues/2872)
+
+
+### BREAKING CHANGES
+
+* **deps:** React `^16.12` and `^17.0` are no longer supported as peer dependencies. `react` and `react-dom` peer ranges are now `^18.0`, required by react-redux v9 (which relies on React 18's native `useSyncExternalStore`).
+
+## [72.0.1](https://github.com/elastic/elastic-charts/compare/v72.0.0...v72.0.1) (2026-07-31)
+
+
+### Bug Fixes
+
+* **axis:** clip tick labels that overflow chart ([#2866](https://github.com/elastic/elastic-charts/issues/2866)) ([aebe7ba](https://github.com/elastic/elastic-charts/commit/aebe7bafd57f707e8b95e672e7e768983bf0682c))
+* **axis:** no longer reserve space for hidden tick labels ([#2868](https://github.com/elastic/elastic-charts/issues/2868)) ([3357441](https://github.com/elastic/elastic-charts/commit/3357441cbbd1212b4fea0d3ebae07c7c5ab9d056))
+* **deps:** update dependency @playwright/test to ^1.61.1 ([#2858](https://github.com/elastic/elastic-charts/issues/2858)) ([a118800](https://github.com/elastic/elastic-charts/commit/a1188009b904fcc9e48d19d6c3f9569b97ad2935))
+* **metric:** increase metric `minHeight` in theme to avoid clipped metric tiles  ([#2864](https://github.com/elastic/elastic-charts/issues/2864)) ([f70cf98](https://github.com/elastic/elastic-charts/commit/f70cf9865568e08fd25cd98a1457d33a3c9758cc))
+
+# [72.0.0](https://github.com/elastic/elastic-charts/compare/v71.9.0...v72.0.0) (2026-07-22)
+
+
+### Bug Fixes
+
+* **deps:** resolve d3-color to @elastic/kibana-d3-color ([#2860](https://github.com/elastic/elastic-charts/issues/2860)) ([bd492d6](https://github.com/elastic/elastic-charts/commit/bd492d697c9771058ff4d1e24cd80d262f897272))
+* **tooltip:** Add spacing between colors in the tooltip ([#2861](https://github.com/elastic/elastic-charts/issues/2861)) ([b59720f](https://github.com/elastic/elastic-charts/commit/b59720fc1c355ed590043ce76ff8dffb812f3129))
+
+
+### Features
+
+* **axis:** improve axis label overflow ([#2845](https://github.com/elastic/elastic-charts/issues/2845)) ([2c3a06c](https://github.com/elastic/elastic-charts/commit/2c3a06c4b8509f7cf9a12d5c7d22ed61ed8de2c4)), closes [#1490](https://github.com/elastic/elastic-charts/issues/1490) [#313](https://github.com/elastic/elastic-charts/issues/313)
+
+
+### BREAKING CHANGES
+
+* **axis:** AxisSpec.tickLabelMaxLength and tickLabelTruncate are removed. Configure via theme.axes.tickLabel (wrapLines, lineHeight, minLength, maxLength, truncate) and theme.axes.minExtent/maxExtent instead.
+
+# [71.9.0](https://github.com/elastic/elastic-charts/compare/v71.8.0...v71.9.0) (2026-07-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @playwright/test to ^1.61.0 ([#2853](https://github.com/elastic/elastic-charts/issues/2853)) ([d27ab3c](https://github.com/elastic/elastic-charts/commit/d27ab3cd757f7e00f9da58a4a525c9d9113a656b))
+* reduce selector cache memory leaks and tooltip DOM cleanup ([#2856](https://github.com/elastic/elastic-charts/issues/2856)) ([9498b9b](https://github.com/elastic/elastic-charts/commit/9498b9b0a4141877b2601742de51a632c31ba2b2))
+
+
+### Features
+
+* **area:** add gradient fill for area ([#2854](https://github.com/elastic/elastic-charts/issues/2854)) ([886841c](https://github.com/elastic/elastic-charts/commit/886841c79773c87765e97e8d4c2a70967baa6361))
+
+# [71.8.0](https://github.com/elastic/elastic-charts/compare/v71.7.0...v71.8.0) (2026-06-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @playwright/test to 1.61.0 ([#2803](https://github.com/elastic/elastic-charts/issues/2803)) ([42f00bc](https://github.com/elastic/elastic-charts/commit/42f00bceea0fa78fe3c363eb912d289d002d0d5a))
+
+
+### Features
+
+* **components:** Add Meter component ([#2846](https://github.com/elastic/elastic-charts/issues/2846)) ([fa4c39f](https://github.com/elastic/elastic-charts/commit/fa4c39fa422d2d049163c8d1156b1972aaf1a306))
+* **metric:** add large spacing param to the metric chart ([#2815](https://github.com/elastic/elastic-charts/issues/2815)) ([4c16c20](https://github.com/elastic/elastic-charts/commit/4c16c2093f07feb926466c99b008e84fc6ab9951))
+
 # [71.7.0](https://github.com/elastic/elastic-charts/compare/v71.6.1...v71.7.0) (2026-05-20)
 
 

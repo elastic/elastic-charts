@@ -6,9 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { applyCanvasFill } from './fill';
 import { MIN_STROKE_WIDTH } from './line';
 import { RGBATupleToString } from '../../../common/color_library_wrappers';
 import type { Fill, Rect, Stroke } from '../../../geoms/types';
+import type { Ctx2d, Painter } from '../../painter';
 
 /** @internal */
 export interface StrokedSides {
@@ -20,9 +22,9 @@ export interface StrokedSides {
 
 /** @internal */
 export function renderRect(
-  ctx: CanvasRenderingContext2D,
+  ctx: Painter,
   { x, y, width, height }: Rect,
-  { color, texture }: Fill,
+  fill: Fill,
   stroke: Stroke,
   disableBorderOffset: boolean = false,
 ) {
@@ -37,15 +39,21 @@ export function renderRect(
     ctx.stroke();
   }
 
-  ctx.beginPath();
-  ctx.rect(x + borderOffset, y + borderOffset, width - borderOffset * 2, height - borderOffset * 2);
-  ctx.fillStyle = RGBATupleToString(color);
-  ctx.fill();
+  const rectFill = {
+    x: x + borderOffset,
+    y: y + borderOffset,
+    width: width - borderOffset * 2,
+    height: height - borderOffset * 2,
+  };
 
-  if (texture) {
-    ctx.fillStyle = texture.pattern;
-    ctx.fill();
-  }
+  ctx.beginPath();
+  ctx.rect(rectFill.x, rectFill.y, rectFill.width, rectFill.height);
+  applyCanvasFill(
+    ctx,
+    fill,
+    { x0: rectFill.x, y0: rectFill.y, x1: rectFill.x + rectFill.width, y1: rectFill.y + rectFill.height },
+    () => ctx.fill(),
+  );
 }
 
 /**
@@ -54,12 +62,7 @@ export function renderRect(
  * Each stroked side is drawn so the stroke lies fully inside the original rect box.
  * @internal
  */
-export function renderRectStroke(
-  ctx: CanvasRenderingContext2D,
-  rect: Rect,
-  stroke: Stroke,
-  strokedSides: StrokedSides,
-) {
+export function renderRectStroke(ctx: Ctx2d, rect: Rect, stroke: Stroke, strokedSides: StrokedSides) {
   if (
     stroke.width < MIN_STROKE_WIDTH ||
     (!strokedSides.left && !strokedSides.right && !strokedSides.top && !strokedSides.bottom)

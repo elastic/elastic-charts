@@ -8,8 +8,8 @@
 
 /* eslint-disable jest/no-conditional-expect */
 
+import type { Store } from '@reduxjs/toolkit';
 import React from 'react';
-import type { Store } from 'redux';
 
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getCursorBandPositionSelector } from './selectors/get_cursor_band';

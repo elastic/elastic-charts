@@ -187,6 +187,10 @@ void (async () => {
 
   await downloadArtifacts(artifactPath);
 
+  // Collect every shard's `blob` report (`*.zip`) into a single directory so the
+  // native `playwright merge-reports` can consume them. Blob report names contain
+  // the shard number, so they will not clash.
+  const blobReportsDir = 'reports/all-blob-reports';
   const files = fs.readdirSync(reportDir);
   await Promise.all<void>(
     files
@@ -194,7 +198,7 @@ void (async () => {
       .map((f) =>
         decompress({
           src: path.join(reportDir, f),
-          dest: path.join('e2e/reports', path.basename(f, '.gz')),
+          dest: path.join('e2e', blobReportsDir),
         }),
       ),
   );
@@ -205,6 +209,7 @@ void (async () => {
     cwd: 'e2e',
     env: {
       HTML_REPORT_DIR: outputDir,
+      BLOB_REPORTS_DIR: blobReportsDir,
     },
   });
 
@@ -213,19 +218,20 @@ void (async () => {
     dest: outputArtifact,
   });
 
-  if (bkEnv.steps.playwright.updateScreenshots) {
-    if (bkEnv.canModifyPR) {
+  if (bkEnv.steps.playwright.updateScreenshots && bkEnv.isPullRequest) {
+    try {
       await commitNewScreenshots();
-    } else {
-      if (bkEnv.isPullRequest) {
+    } catch {
+      if (!bkEnv.canModifyPR) {
         await octokit.issues.createComment({
           ...defaultGHOptions,
           issue_number: bkEnv.pullRequestNumber!,
-          body: `Your latest commit indicated you would like me to update the vrt screenshots but this PR disallows edits. Please update your PR to allow edits and tell me to \`test this\` again.
-          <img width="297" alt="image" src="https://user-images.githubusercontent.com/19007109/175552884-7f8e4bba-3440-444b-b19c-de15d618ac23.png">`,
+          body: `Failed to update screenshots. Please ensure your PR allows edits and re-run the build.
+            <img width="297" alt="image" src="https://user-images.githubusercontent.com/19007109/175552884-7f8e4bba-3440-444b-b19c-de15d618ac23.png">`,
         });
-        throw new Error('CI run in update mode but PR does not allow edits');
       }
+
+      throw new Error('failed to commit new screenshots to branch');
     }
   }
 })();

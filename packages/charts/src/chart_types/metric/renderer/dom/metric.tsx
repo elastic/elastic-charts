@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import type { CSSProperties } from 'react';
 import React, { useState } from 'react';
 
-import { ProgressBar } from './progress';
+import { ProgressBar, getMetricProgressBarSize } from './progress';
 import { SparkLine, getSparkLineColor } from './sparkline';
 import type { TextColors } from './text';
 import { MetricText } from './text';
@@ -21,6 +21,7 @@ import { RGBATupleToString, changeColorLightness, colorToRgba } from '../../../.
 import type { Color } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
+import { MeterSize } from '../../../../components/meter';
 import type {
   BasicListener,
   ElementClickListener,
@@ -31,7 +32,7 @@ import type {
 import { LayoutDirection, isNil } from '../../../../utils/common';
 import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricWNumber } from '../../specs';
-import { isMetricWProgress, isMetricWTrend, isSecondaryMetricProps } from '../../specs';
+import { isBulletMetric, isMetricWProgress, isMetricWTrend, isSecondaryMetricProps } from '../../specs';
 
 /** @internal */
 export interface TextContrastOptions {
@@ -40,23 +41,28 @@ export interface TextContrastOptions {
   extra: ColorContrastOptions;
 }
 
-/**
- * Synced with _index.scss
- * @internal
- */
-export type ProgressBarSize = 'small' | 'medium' | 'large';
-const progressBarMap: Record<number, ProgressBarSize> = {
-  4: 'small',
-  8: 'medium',
-  16: 'large',
-};
-
 interface MetricContext {
   backgroundColor: Color;
   blendedColor: Color;
   hasProgressBar: boolean;
   hasTrend: boolean;
 }
+
+/**
+ * CSS custom properties exposed on the metric container for use by descendant
+ * stylesheets. These mirror the spacing values produced by `MetricSpacingLayout`
+ * so the SCSS layer can react to the active spacing/breakpoint.
+ */
+type MetricSpacingCSSVars = {
+  /** Padding applied to the metric panel (matches `MetricSpacingLayout.panelPadding`). */
+  '--echMetricPadding': string;
+  /** Vertical gap between the title and subtitle (matches `MetricSpacingLayout.titleSubtitleGap`). */
+  '--echMetricTitleSubtitleGap': string;
+  /** Top padding for the extra/badge element (matches `MetricSpacingLayout.extraPaddingTop`). */
+  '--echMetricExtraPaddingTop': string;
+  /** Gap between the progress bar and the adjacent text block (matches `MetricSpacingLayout.progressTextGap`). */
+  '--echMetricProgressTextGap': string;
+};
 
 const getTextColor = ({
   metricContext: { backgroundColor, blendedColor, hasProgressBar, hasTrend },
@@ -152,17 +158,22 @@ export const Metric: React.FunctionComponent<{
   onElementOver,
   onElementOut,
 }) => {
+  const progressDatum = isMetricWProgress(datum) || isBulletMetric(datum) ? datum : undefined;
+  const hasProgressBar = progressDatum !== undefined;
   const { progressBarThickness } = textDimensions.heightBasedSizes;
-  const progressBarSize = progressBarMap[progressBarThickness] ?? 'medium';
+  // An explicit progress size wins over the responsive Metric breakpoint preset.
+  const progressBarSize = progressDatum
+    ? progressDatum.progressBarSize ?? getMetricProgressBarSize(progressBarThickness)
+    : MeterSize.Small;
 
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');
   const [lastMouseDownTimestamp, setLastMouseDownTimestamp] = useState<number>(0);
   const metricHTMLId = `echMetric-${chartId}-${rowIndex}-${columnIndex}`;
 
-  const hasProgressBar = isMetricWProgress(datum);
-  const progressBarDirection = hasProgressBar ? datum.progressBarDirection : undefined;
+  const progressBarDirection = progressDatum?.progressBarDirection;
 
   const hasTrend = isMetricWTrend(datum);
+  const { metricSpacing } = textDimensions;
 
   const containerClassName = classNames('echMetric', {
     'echMetric--rightBorder': columnIndex < totalColumns - 1,
@@ -187,16 +198,24 @@ export const Metric: React.FunctionComponent<{
   const blendedInteractionColor = RGBATupleToString(
     combineColors(colorToRgba(interactionColor), blendingBackgroundColor),
   );
+  const progressBarFill = progressDatum?.progressBarFill;
 
   const datumWithInteractionColor: MetricDatum = { ...datum, color: blendedInteractionColor };
+  const progressDatumWithInteractionColor = progressDatum
+    ? { ...progressDatum, color: blendedInteractionColor }
+    : undefined;
 
   const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
 
-  const containerStyle: CSSProperties = {
+  const containerStyle: CSSProperties & MetricSpacingCSSVars = {
     backgroundColor: hasTrend || hasProgressBar ? backgroundColor : datumWithInteractionColor.color,
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
     borderColor: style.border,
     fontFamily: style.fontFamily,
+    '--echMetricPadding': `${metricSpacing.panelPadding}px`,
+    '--echMetricTitleSubtitleGap': `${metricSpacing.titleSubtitleGap}px`,
+    '--echMetricExtraPaddingTop': `${metricSpacing.extraPaddingTop}px`,
+    '--echMetricProgressTextGap': `${metricSpacing.progressTextGap}px`,
   };
 
   const textContrastOptions = isColorContrastOptions(contrastOptions)
@@ -289,12 +308,14 @@ export const Metric: React.FunctionComponent<{
         defaultBadgeBorderColor={defaultBadgeBorderColor}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
-      {isMetricWProgress(datumWithInteractionColor) && (
+      {progressDatumWithInteractionColor && (
         <ProgressBar
-          datum={datumWithInteractionColor}
+          datum={progressDatumWithInteractionColor}
           barBackground={style.barBackground}
           panelBackground={backgroundColor}
+          fillBackgroundColor={RGBATupleToString(blendingBackgroundColor)}
           blendedBarColor={blendedColor}
+          fill={progressBarFill}
           size={progressBarSize}
         />
       )}

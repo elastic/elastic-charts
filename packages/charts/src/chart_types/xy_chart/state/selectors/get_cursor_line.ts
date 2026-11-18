@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartLayoutSelector } from './compute_chart_layout';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import type { Line } from '../../../../geoms/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -15,7 +15,7 @@ import { getCursorLinePosition } from '../../crosshair/crosshair_utils';
 
 /** @internal */
 export const getCursorLinePositionSelector = createCustomCachedSelector(
-  [computeChartDimensionsSelector, getSettingsSpecSelector, getProjectedPointerPositionSelector],
-  (chartDimensions, settingsSpec, projectedPointerPosition): Line | undefined =>
-    getCursorLinePosition(settingsSpec.rotation, chartDimensions.chartDimensions, projectedPointerPosition),
+  [computeChartLayoutSelector, getSettingsSpecSelector, getProjectedPointerPositionSelector],
+  ({ dimensions: { chartDimensions } }, settingsSpec, projectedPointerPosition): Line | undefined =>
+    getCursorLinePosition(settingsSpec.rotation, chartDimensions, projectedPointerPosition),
 );

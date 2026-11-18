@@ -10,18 +10,27 @@ import type { PlaywrightTestConfig } from '@playwright/test';
 import { expect } from '@playwright/test';
 import * as pwExpect from 'expect-playwright';
 
+import { snapshotDir } from './e2e_config';
+
 expect.extend(pwExpect.matchers);
 
 const isCI = process.env.CI === 'true';
+
+// On sharded CI runs each shard emits a `blob` report that is later merged into a
+// single HTML report via `playwright merge-reports`. Locally we keep the directly
+// viewable `html` report.
+const useBlobReport = process.env.PLAYWRIGHT_BLOB_REPORT === 'true';
+
+const fastMode = process.env.VRT_FAST === 'true';
 
 const config: PlaywrightTestConfig = {
   use: {
     headless: true,
     locale: 'en-us',
     viewport: { width: 785, height: 1000 },
-    trace: 'retain-on-failure',
+    trace: fastMode ? 'off' : 'retain-on-failure',
     screenshot: 'off', // already testing screenshots
-    video: 'retain-on-failure',
+    video: fastMode ? 'off' : 'retain-on-failure',
     launchOptions: {
       ignoreDefaultArgs: ['--hide-scrollbars'],
       args: ['--use-gl=egl'],
@@ -29,7 +38,7 @@ const config: PlaywrightTestConfig = {
   },
   reporter: [
     ['list'],
-    ['html', { open: 'never', outputFolder: 'reports/html' }],
+    useBlobReport ? ['blob', { outputDir: 'reports/blob' }] : ['html', { open: 'never', outputFolder: 'reports/html' }],
     ['json', { outputFile: 'reports/json/report.json' }],
   ],
   expect: {
@@ -43,7 +52,9 @@ const config: PlaywrightTestConfig = {
   forbidOnly: isCI,
   timeout: 10 * 1000,
   preserveOutput: 'failures-only',
-  snapshotDir: 'screenshots',
+  // one `chrome` project for both renderers (the project name is part of the snapshot file names), each
+  // renderer with its own baseline directory, see e2e_config.ts
+  snapshotDir,
   testDir: 'tests',
   outputDir: 'test_failures',
   fullyParallel: true, // all tests must be independent

@@ -7,9 +7,9 @@
  */
 
 import type { Page } from '@playwright/test';
-import { test } from '@playwright/test';
 
 import type { Rotation } from './constants';
+import { test } from './fixtures';
 
 interface FileExample {
   slugifiedName: string;
@@ -38,7 +38,7 @@ export interface StoryGroupInfo {
 /**
  * Groups to skip in all vrt.
  */
-const groupsToSkip: Set<string> = new Set(['Components/Tooltip', 'Bullet Graph']);
+const groupsToSkip: Set<string> = new Set(['Components/Tooltip', 'Components/Meter', 'Bullet Graph']);
 
 /**
  * Stories to skip in all vrt based by group.
@@ -47,6 +47,7 @@ const storiesToSkip: Map<string, string[]> = new Map(
   Object.entries({
     'Test Cases': ['noSeries', 'errorBoundary'],
     Interactions: ['multiChartCursorSync'],
+    Downsampling: ['denseSparseGrid', 'syncedCpuAndMemory'],
     'Metric (@alpha)': ['bodyContent'],
   }),
 );

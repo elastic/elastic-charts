@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { test } from '@playwright/test';
 import { paramCase } from 'change-case';
 
+import { test } from '../fixtures';
 import { getStorybookInfo } from '../helpers';
 import { common } from '../page_objects';
 

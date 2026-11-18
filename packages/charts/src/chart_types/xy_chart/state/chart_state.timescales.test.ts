@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import type { Store } from '@reduxjs/toolkit';
 import { DateTime } from 'luxon';
-import type { Store } from 'redux';
 
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getComputedScalesSelector } from './selectors/get_computed_scales';

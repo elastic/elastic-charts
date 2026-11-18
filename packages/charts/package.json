@@ -1,12 +1,12 @@
 {
   "name": "@elastic/charts",
   "description": "Elastic-Charts data visualization library",
-  "version": "71.7.0",
+  "version": "73.4.1",
   "author": "Elastic DataVis",
   "license": "SEE LICENSE IN LICENSE.txt",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.mjs",
+  "types": "./dist/cjs/index.d.ts",
   "repository": "git@github.com:elastic/elastic-charts.git",
   "publishConfig": {
     "access": "public"
@@ -14,6 +14,37 @@
   "files": [
     "dist/**/*"
   ],
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.mts",
+        "default": "./dist/esm/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    },
+    "./package.json": "./package.json",
+    "./theme_light.css": "./dist/theme_light.css",
+    "./theme_dark.css": "./dist/theme_dark.css",
+    "./theme_only_light.css": "./dist/theme_only_light.css",
+    "./theme_only_dark.css": "./dist/theme_only_dark.css",
+    "./theme.scss": "./dist/theme.scss",
+    "./dist/theme_light.css": "./dist/theme_light.css",
+    "./dist/theme_dark.css": "./dist/theme_dark.css",
+    "./dist/theme_only_light.css": "./dist/theme_only_light.css",
+    "./dist/theme_only_dark.css": "./dist/theme_only_dark.css",
+    "./dist/theme.scss": "./dist/theme.scss",
+    "./dist/legacy/theme_light.css": "./dist/legacy/theme_light.css",
+    "./dist/legacy/theme_dark.css": "./dist/legacy/theme_dark.css",
+    "./dist/legacy/theme_only_light.css": "./dist/legacy/theme_only_light.css",
+    "./dist/legacy/theme_only_dark.css": "./dist/legacy/theme_only_dark.css"
+  },
   "scripts": {
     "autoprefix:css": "echo 'Autoprefixing...' && yarn postcss dist/*.css --no-map --use autoprefixer -d dist",
     "api:check": "yarn build:ts && yarn api:extract",
@@ -21,19 +52,20 @@
     "api:extract": "yarn api-extractor run -c ./api-extractor.jsonc --verbose",
     "build": "yarn build:ts && yarn build:css",
     "build:ts": "yarn build:clean && yarn build:compile && yarn build:check",
+    "build:check": "echo 'Type checking dist...' && node scripts/check_dts.js",
     "build:css": "yarn build:sass && yarn autoprefix:css && yarn concat:sass",
     "build:clean": "echo 'Cleaning dist...' && rm -rf ./dist",
-    "build:compile": "echo 'Compiling...' && tsc -p ./tsconfig.src.json && tsc -p ./tsconfig.nocomments.json",
+    "build:compile": "echo 'Compiling...' && rslib build",
     "build:sass": "echo 'Building sass...' && sass 'src/styles:dist' --style compressed --quiet --color --load-path ../../",
-    "build:check": "echo 'Type checking dist...' && tsc -p ./tsconfig.check.json",
-    "build:watch": "echo 'Watching build...' && yarn build:clean && yarn build:css && tsc -p ./tsconfig.src.json -w",
+    "build:watch": "echo 'Watching build...' && yarn build:clean && yarn build:css && rslib build --watch",
     "concat:sass": "echo 'Concat SASS...' && node scripts/concat_sass.js",
     "semantic-release": "semantic-release",
-    "typecheck": "tsc -p ./tsconfig.src.json --noEmit && tsc -p ./tsconfig.nocomments.json --noEmit"
+    "test:pack": "node scripts/smoke_pack.js",
+    "typecheck": "tsc -p ./tsconfig.src.json --noEmit"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
-    "@reduxjs/toolkit": "1.9.7",
+    "@reduxjs/toolkit": "2.12.0",
     "bezier-easing": "^2.1.0",
     "chroma-js": "^2.4.2",
     "classnames": "^2.2.6",
@@ -43,11 +75,10 @@
     "d3-interpolate": "^3.0.1",
     "d3-scale": "^3.3.0",
     "d3-shape": "^2.0.0",
-    "immer": "^9.0.21",
+    "immer": "11.1.8",
     "prop-types": "^15.7.2",
     "re-reselect": "^4.0.1",
-    "react-redux": "^8.1.3",
-    "redux": "^4.2.1",
+    "react-redux": "9.2.0",
     "ts-debounce": "^4.0.0",
     "utility-types": "^3.10.0",
     "uuid": "^14.0.0",
@@ -56,12 +87,15 @@
   "peerDependencies": {
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.32",
-    "react": "^16.12 || ^17.0 || ^18.0",
-    "react-dom": "^16.12 || ^17.0 || ^18.0"
+    "react": "^18.0",
+    "react-dom": "^18.0"
   },
   "devDependencies": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "autoprefixer": "^9.0.0",
+    "postcss": "^8.3.0",
+    "postcss-cli": "^8.3.1"
   },
   "browserslist": [
     "last 2 versions",

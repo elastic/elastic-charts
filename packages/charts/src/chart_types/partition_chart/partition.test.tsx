@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { Store } from 'redux';
+import type { Store } from '@reduxjs/toolkit';
 
 import { computeLegendSelector } from './state/selectors/compute_legend';
 import { partitionMultiGeometries } from './state/selectors/geometries';

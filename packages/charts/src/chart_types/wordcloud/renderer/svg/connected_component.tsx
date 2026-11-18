@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import type { Dispatch } from '@reduxjs/toolkit';
+import { bindActionCreators } from '@reduxjs/toolkit';
 import d3TagCloud from 'd3-cloud';
 import React from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
-import { bindActionCreators } from 'redux';
 
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import type { SettingsSpec, WordCloudElementEvent } from '../../../../specs/settings';

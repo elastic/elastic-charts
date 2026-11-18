@@ -10,7 +10,6 @@ import type { Optional } from 'utility-types';
 
 import type { XDomain } from './types';
 import { ScaleType } from '../../../scales/constants';
-import { compareByValueAsc } from '../../../utils/common';
 import { computeContinuousDataDomain, computeOrdinalDataDomain } from '../../../utils/domain';
 import { Logger } from '../../../utils/logger';
 import { getZoneFromSpecs, getValidatedTimeZone } from '../../../utils/time_zone';
@@ -21,14 +20,35 @@ import { SeriesType } from '../utils/specs';
 
 /**
  * Merge X domain value between a set of chart specification.
+ *
+ * The x values of a downsampled series arrive in one of two ways:
+ * - no series of the chart is stacked or has a fit: `xValues` holds those of its summary rows, which include its
+ *   first and last, and `rawXValues` has a list of all of them
+ * - some series is stacked or has a fit: those series get gaps at every x value of the chart, so `xValues` holds all
+ *   of them, and `rawXValues` has no list for it
+ *
+ * @param xScaleConfig the x scale configuration of the specs and settings
+ * @param xValues the distinct x values of the data rows of every series:
+ * - non-downsampled series: all its x values
+ * - downsampled series: those of its summary rows, or all its x values, as above
+ * @param locale unused: ordinal x values keep the order of `xValues`
+ * @param fallbackScale default ordinal scale for when the x values of a continuous scale aren't all numbers
+ * @param rawXValues the x values of all the rows of a series, sorted, one list per series:
+ * - non-downsampled series: not represented, as `xValues` holds all its x values
+ * - downsampled series: represented, unless `xValues` holds all its x values, as above
+ * @param rawXValuesHoldAll whether `rawXValues` hold every x value of `xValues`, which then only adds those of the
+ * summary rows of downsampled series
  * @internal
  */
 export function mergeXDomain(
-  { type, nice, isBandScale, timeZone, desiredTickCount, customDomain }: ScaleConfigs['x'],
+  xScaleConfig: ScaleConfigs['x'],
   xValues: Set<string | number>,
   locale: string,
   fallbackScale?: XScaleType,
+  rawXValues: Float64Array[] = [],
+  rawXValuesHoldAll = false,
 ): XDomain {
+  const { type, nice, isBandScale, timeZone, desiredTickCount, customDomain } = xScaleConfig;
   let domain;
   let dataDomain;
   let minInterval = 0;
@@ -93,7 +113,9 @@ export function mergeXDomain(
         }
       }
     }
-    const computedMinInterval = findMinInterval([...xValues.values()] as number[]);
+    const computedMinInterval = findMinInterval(
+      rawXValuesHoldAll ? rawXValues : [Float64Array.from(xValues as Set<number>).sort(), ...rawXValues],
+    );
     minInterval = getMinInterval(computedMinInterval, xValues.size, customMinInterval);
   }
 
@@ -130,21 +152,42 @@ function getMinInterval(computedMinInterval: number, size: number, customMinInte
 }
 
 /**
- * Find the minimum interval between xValues.
- * Default to 0 if an empty array, 1 if one item array
+ * The smallest gap between the distinct values of sorted arrays, as if merged into one, or 1 with fewer than two
+ * distinct values.
  * @internal
  */
-export function findMinInterval(xValues: number[]): number {
-  return xValues.length < 2
-    ? xValues.length
-    : xValues
-        .slice()
-        .sort(compareByValueAsc)
-        .reduce((minInterval, current, i, sortedValues) => {
-          return i < xValues.length - 1
-            ? Math.min(minInterval, Math.abs((sortedValues[i + 1] ?? 0) - current))
-            : minInterval;
-        }, Infinity);
+export function findMinInterval(sortedArrays: Float64Array[]): number {
+  if (sortedArrays.length === 0) return 1;
+  const values = sortedUnionOf(sortedArrays);
+  let minInterval = Infinity;
+  for (let i = 1; i < values.length; i++) {
+    const step = values[i]! - values[i - 1]!;
+    if (step > 0 && step < minInterval) minInterval = step;
+  }
+  return Number.isFinite(minInterval) ? minInterval : 1;
+}
+
+/**
+ * The distinct, sorted values of one or more sorted arrays. Hierarchical aggregation helps with cases where each series
+ * covers part of the full domain, but their union covers the entire domain, as each pairwise union uses shorter arrays.
+ */
+function sortedUnionOf(arrays: Float64Array[]): Float64Array {
+  if (arrays.length === 1) return arrays[0]!;
+  const mid = Math.floor(arrays.length / 2);
+  return sortedUnion(sortedUnionOf(arrays.slice(0, mid)), sortedUnionOf(arrays.slice(mid)));
+}
+
+/** The distinct values of two sorted arrays, sorted */
+function sortedUnion(a: Float64Array, b: Float64Array): Float64Array {
+  const union = new Float64Array(a.length + b.length);
+  let i = 0; // the index of the next value of a
+  let j = 0; // the index of the next value of b
+  let n = 0; // the count of distinct values so far
+  while (i < a.length || j < b.length) {
+    const value = j >= b.length || (i < a.length && a[i]! <= b[j]!) ? a[i++]! : b[j++]!;
+    if (n === 0 || value !== union[n - 1]) union[n++] = value;
+  }
+  return union.subarray(0, n);
 }
 
 /**

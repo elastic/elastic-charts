@@ -20,14 +20,11 @@ void (async () => {
     await createDeploymentStatus({ state: 'pending' });
   }
 
-  startGroup('Generating e2e server files');
-  await exec('yarn test:e2e:generate');
-
   startGroup('Building e2e server');
+  // `test:e2e:server:build` generates the examples and the VRT page first
   await exec('yarn test:e2e:server:build', {
     env: {
       NODE_ENV: 'production',
-      NODE_OPTIONS: '--openssl-legacy-provider',
     },
   });
 

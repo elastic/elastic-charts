@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { Store } from 'redux';
+import type { Store } from '@reduxjs/toolkit';
 
 import type { KeyPressed } from '../../specs';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../state/actions/mouse';

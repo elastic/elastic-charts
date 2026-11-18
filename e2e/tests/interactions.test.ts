@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { test } from '@playwright/test';
 import { camelCase } from 'change-case';
 
 import { Placement } from '../constants';
+import { test } from '../fixtures';
 import { eachRotation, eachTheme, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
@@ -250,6 +250,16 @@ test.describe('Interactions', () => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/interactions--cursor-update-action&knob-local%20tooltip%20type_Top%20Chart=vertical&knob-local%20tooltip%20type_Bottom%20Chart=vertical&knob-enable%20external%20tooltip_Top%20Chart=true&knob-enable%20external%20tooltip_Bottom%20Chart=false&knob-external%20tooltip%20placement_Top%20Chart=left&knob-external%20tooltip%20placement_Bottom%20Chart=left&knob-pointer update debounce=0',
         { right: 200, top: 80 },
+        {
+          screenshotSelector: '#story-root',
+        },
+      );
+    });
+
+    test('show synced cursor band on every panel of a small multiples heatmap', async ({ page }) => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/interactions--multi-chart-cursor-sync&knob-heatmap small multiples=true',
+        { left: 400, top: 60 },
         {
           screenshotSelector: '#story-root',
         },
