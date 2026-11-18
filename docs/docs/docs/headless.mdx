@@ -22,8 +22,10 @@ const html = renderChart(
 
 ## Input
 
-A `<Chart>` element, passed directly rather than wrapped in another element or component. The chart needs a `size`
-in pixels, since there is no container to measure. The `renderer` prop is ignored: the chart is always drawn as SVG.
+A `<Chart>` element, passed directly rather than wrapped in another element or component. The chart needs numeric
+width and height in pixels, since there is no container to measure. For example, use `size={400}`,
+`size={[400, 300]}` or `size={{ width: 400, height: 300 }}`. CSS strings such as `"400px"` and `"100%"` are not
+supported. The `renderer` prop is ignored: the chart is always drawn as SVG.
 
 Use the same installed copy and module format of `@elastic/charts` for `renderChart` and every chart component:
 use `import` for both entry points, or `require` for both. The ESM and CommonJS builds have separate chart

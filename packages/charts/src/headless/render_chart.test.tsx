@@ -132,14 +132,20 @@ describe('renderChart without a DOM', () => {
       expect(markup).toMatch(/<text[^>]*>category<\/text>/);
     });
 
-    it('needs a size in pixels', () => {
+    it('needs numeric width and height in pixels', () => {
       expect(() =>
         renderChart(
           <Chart>
             <LineSeries id="line" xAccessor="x" yAccessors={['y']} data={data} />
           </Chart>,
         ),
-      ).toThrow(/size in pixels/);
+      ).toThrow(/numeric width and height in pixels/);
+      expect(() => renderChart(React.cloneElement(xyChart('string-size'), { size: '400px' }))).toThrow(
+        /numeric width and height in pixels/,
+      );
+      expect(() => renderChart(React.cloneElement(xyChart('mixed-size'), { size: [400, '300px'] }))).toThrow(
+        /numeric width and height in pixels/,
+      );
     });
   });
 

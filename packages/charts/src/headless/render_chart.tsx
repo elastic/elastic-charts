@@ -26,7 +26,7 @@ const NEEDS_A_DOM: ReadonlySet<ChartType | null> = new Set([ChartType.Wordcloud,
  * Renders a chart to markup without a DOM: one root element holding the chart drawn as an inline
  * `<svg>` and, as HTML, its legend or its metric panels. Style it with the Charts stylesheet.
  *
- * The element must be a `Chart` with a `size` in pixels. Use the same module format and installed
+ * The element must be a `Chart` with numeric width and height in pixels. Use the same module format and installed
  * copy of Charts for the renderer and every chart component. Its title and description are omitted.
  * Word cloud, flame and timeslip charts are not supported: they draw on a canvas of their own.
  *
@@ -50,7 +50,7 @@ export function renderChart(chart: ReactElement): string {
 
   const { store, size, charts } = collecting;
   if (!store || charts !== 1) throw new Error(`renderChart expects one Chart, the element rendered ${charts}`);
-  if (!size) throw new Error('renderChart needs a Chart with a size in pixels');
+  if (!size) throw new Error('renderChart needs a Chart with numeric width and height in pixels');
 
   // from here on the chart's memoized selectors fill up, so everything is inside the `try`
   const { chartId } = store.getState();
