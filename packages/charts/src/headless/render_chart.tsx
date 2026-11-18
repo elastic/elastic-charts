@@ -26,7 +26,7 @@ const NEEDS_A_DOM: ReadonlySet<ChartType | null> = new Set([ChartType.Wordcloud,
  * Renders a chart to markup without a DOM: one root element holding the chart drawn as an inline
  * `<svg>` and, as HTML, its legend or its metric panels. Style it with the Charts stylesheet.
  *
- * The element must be a `Chart` with a `size` in pixels.
+ * The element must be a `Chart` with a `size` in pixels. Its title and description are omitted.
  * Word cloud, flame and timeslip charts are not supported: they draw on a canvas of their own.
  *
  * Text is measured with Helvetica's advance widths, whatever the font of the theme, so
@@ -38,10 +38,14 @@ export function renderChart(chart: ReactElement): string {
     throw new Error('renderChart expects a <Chart> element');
   }
 
+  // The title and description are HTML outside the measured chart area. Omit them from both
+  // passes so that neither the markup nor chart-specific layout reserves room for them.
+  const headlessChart = React.cloneElement(chart, { title: undefined, description: undefined });
+
   // effects do not run here, so a first pass gathers what they would have put into the store
   const specs = new Map<string, Spec>();
   const collecting: HeadlessRender = { charts: 0, collect: (spec) => specs.set(spec.id, spec) };
-  renderToStaticMarkup(<HeadlessContext.Provider value={collecting}>{chart}</HeadlessContext.Provider>);
+  renderToStaticMarkup(<HeadlessContext.Provider value={collecting}>{headlessChart}</HeadlessContext.Provider>);
 
   const { store, size, charts } = collecting;
   if (!store || charts !== 1) throw new Error(`renderChart expects one Chart, the element rendered ${charts}`);
@@ -59,7 +63,7 @@ export function renderChart(chart: ReactElement): string {
     if (NEEDS_A_DOM.has(chartType)) throw new Error(`renderChart does not support ${chartType} charts`);
 
     return renderToStaticMarkup(
-      <HeadlessContext.Provider value={{ charts: 1, store }}>{chart}</HeadlessContext.Provider>,
+      <HeadlessContext.Provider value={{ charts: 1, store }}>{headlessChart}</HeadlessContext.Provider>,
     );
   } finally {
     // nothing unmounts here, which is what frees a chart's memoized selectors in a browser;

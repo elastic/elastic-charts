@@ -123,6 +123,15 @@ describe('renderChart without a DOM', () => {
       expect(renderChart(xyChart('same'))).toBe(renderChart(xyChart('same')));
     });
 
+    it('omits the chart title and description without affecting the plot', () => {
+      const chart = xyChart('titled');
+      const titled = React.cloneElement(chart, { title: 'Chart title', description: 'Chart description' });
+      const markup = renderChart(titled);
+      expect(markup).toBe(renderChart(chart));
+      expect(markup).not.toContain('echChart__titles');
+      expect(markup).toMatch(/<text[^>]*>category<\/text>/);
+    });
+
     it('needs a size in pixels', () => {
       expect(() =>
         renderChart(
@@ -186,6 +195,11 @@ describe('renderChart without a DOM', () => {
       const markup = renderChart(metric);
       const [, fontSize] = /echMetricText__value[^>]*font-size:\s*([\d.]+)px/.exec(markup) ?? [];
       expect(Number(fontSize)).toBeGreaterThan(10);
+    });
+
+    it('does not reserve space for an omitted chart title or description', () => {
+      const titled = React.cloneElement(metric, { title: 'Chart title', description: 'Chart description' });
+      expect(renderChart(titled)).toBe(renderChart(metric));
     });
   });
 

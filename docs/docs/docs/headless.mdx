@@ -32,6 +32,9 @@ One root `<div class="echChart">` as a string. Inside it:
 - the chart drawn as an inline `<svg>`, with real `<text>` elements;
 - the legend, metric panels and line annotation markers as HTML, exactly as in a browser.
 
+The `Chart`'s `title` and `description` props are omitted. Add a heading or description outside the returned
+markup if needed. Axis titles and metric titles are still rendered.
+
 The markup needs a Charts stylesheet on the page that hosts it, see [Adding the stylesheet](#stylesheet).
 
 Ids inside the `<svg>` start with the chart's `id`, so several charts can share a page. Give each chart its own
