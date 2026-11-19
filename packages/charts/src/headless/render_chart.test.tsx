@@ -173,6 +173,12 @@ describe('renderChart without a DOM', () => {
       expect(() => renderChart(React.cloneElement(xyChart('mixed-size'), { size: [400, '300px'] }))).toThrow(
         /numeric width and height in pixels/,
       );
+      // numbers that are not a size: they would end up as `NaN` in the markup, or as a chart with nothing in it
+      for (const width of [0, -100, NaN, Infinity]) {
+        expect(() =>
+          renderChart(React.cloneElement(xyChart('no-such-size'), { size: { width, height: 300 } })),
+        ).toThrow(/positive numeric width and height in pixels/);
+      }
     });
   });
 
