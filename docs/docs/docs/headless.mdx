@@ -46,8 +46,8 @@ The markup needs a Charts stylesheet on the page that hosts it, see [Adding the 
 Ids inside the `<svg>` start with the chart's `id`, so several charts can share a page. Give each chart its own
 `id`; without one a random id is used and the markup differs between runs.
 
-In a browser, do not reuse the `id` of a chart that is mounted on the page. Ids in the markup would collide
-with that chart's, and the two would share memoized state while `renderChart` runs.
+In a browser, do not reuse the `id` of a chart that is mounted on the page: the ids in the markup would collide
+with that chart's.
 
 `<Settings debugState />` adds the debug state as the `data-ech-debug-state` attribute, as in a browser.
 

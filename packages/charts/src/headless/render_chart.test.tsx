@@ -499,8 +499,8 @@ describe('renderChart without a DOM', () => {
       expect(selectorCaches().length).toBe(registered);
     });
 
-    it('are left alone when a mounted chart with the same id owns them', () => {
-      // what a mounted chart with this id leaves in the registry
+    it('are kept apart from those of another chart with the same id', () => {
+      // what a chart with this id, mounted or rendered by React on a server, leaves in the registry
       const mounted = createChartStore('shared').getState();
       const settings = getSettingsSpecSelector(mounted);
       const owned = selectorCaches().filter((cache) => cache.get('shared'));
@@ -510,6 +510,7 @@ describe('renderChart without a DOM', () => {
       renderChart(xyChart('shared', true));
 
       expect(owned.map((cache) => cache.get('shared'))).toEqual(entries);
+      expect(cachedSelectorsOf('shared')).toBe(owned.length);
       expect(getSettingsSpecSelector(mounted)).toBe(settings);
     });
 

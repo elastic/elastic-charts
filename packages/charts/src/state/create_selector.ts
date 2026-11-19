@@ -65,7 +65,7 @@ class CustomMapCache implements ICacheObject {
   }
 }
 
-const keySelector = ({ chartId }: GlobalChartState) => chartId;
+const keySelector = ({ chartId, selectorCacheKey }: GlobalChartState) => selectorCacheKey ?? chartId;
 
 class GlobalSelectorCache {
   private selectorCaches: CustomMapCache[] = [];
@@ -78,11 +78,6 @@ class GlobalSelectorCache {
       cacheObject: cache,
       selectorCreator: createSelectorWithLRU,
     };
-  }
-
-  /** whether any selector holds memoized results for the key, as it does for a chart that is mounted */
-  hasKey(key: string) {
-    return this.selectorCaches.some((cache) => cache.get(key) !== undefined);
   }
 
   removeKeyFromAll(key: string) {

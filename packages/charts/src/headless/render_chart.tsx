@@ -46,18 +46,13 @@ export function renderChart(chart: ReactElement): string {
   // effects do not run here, so a first pass gathers what they would have put into the store
   const specs = new Map<string, Spec>();
   const collecting: HeadlessRender = { charts: 0, collect: (spec) => specs.set(spec.id, spec) };
-  renderToStaticMarkup(<HeadlessContext.Provider value={collecting}>{headlessChart}</HeadlessContext.Provider>);
-
-  const { store, size, charts } = collecting;
-  if (!store || charts !== 1) throw new Error(`renderChart expects one Chart, the element rendered ${charts}`);
-  if (!size) throw new Error('renderChart needs a Chart with numeric width and height in pixels');
-
-  // from here on the chart's memoized selectors fill up, so everything is inside the `try`
-  const { chartId } = store.getState();
-  // A chart mounted on the same page with the same id already owns the selectors of that id. They are
-  // then shared for the duration of this render, and releasing them is left to that chart's unmount.
-  const ownedByMountedChart = globalSelectorCache.hasKey(chartId);
   try {
+    renderToStaticMarkup(<HeadlessContext.Provider value={collecting}>{headlessChart}</HeadlessContext.Provider>);
+
+    const { store, size, charts } = collecting;
+    if (!store || charts !== 1) throw new Error(`renderChart expects one Chart, the element rendered ${charts}`);
+    if (!size) throw new Error('renderChart needs a Chart with numeric width and height in pixels');
+
     store.dispatch(updateRenderer('svg'));
     store.dispatch(upsertSpecs([...specs.values()]));
     store.dispatch(specParsed());
@@ -70,8 +65,9 @@ export function renderChart(chart: ReactElement): string {
       <HeadlessContext.Provider value={{ charts: 1, store }}>{headlessChart}</HeadlessContext.Provider>,
     );
   } finally {
-    // nothing unmounts here, which is what frees a chart's memoized selectors in a browser;
-    // a render that fails must free them too
-    if (!ownedByMountedChart) globalSelectorCache.removeKeyFromAll(chartId);
+    // Nothing unmounts here, which is what frees a chart's memoized selectors in a browser. They are kept
+    // under a key of this render alone, so no other chart with the same id is affected.
+    const key = collecting.store?.getState().selectorCacheKey;
+    if (key) globalSelectorCache.removeKeyFromAll(key);
   }
 }
