@@ -1,0 +1,16 @@
+/**
+ * The `@elastic/charts/headless` entry point, reported next to the main one.
+ */
+{
+  "extends": "./api-extractor.jsonc",
+  "mainEntryPointFilePath": "<projectFolder>/dist/cjs/headless/index.d.ts",
+  "apiReport": {
+    "enabled": true,
+    "reportFileName": "charts-headless.api.md",
+    "reportFolder": "<projectFolder>/api/",
+    "reportTempFolder": "<projectFolder>/tmp/"
+  },
+  "tsdocMetadata": {
+    "enabled": false
+  }
+}

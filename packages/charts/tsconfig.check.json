@@ -8,5 +8,10 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext"
   },
-  "files": ["dist/esm/index.d.mts", "dist/cjs/index.d.ts"]
+  "files": [
+    "dist/esm/index.d.mts",
+    "dist/cjs/index.d.ts",
+    "dist/esm/headless/index.d.mts",
+    "dist/cjs/headless/index.d.ts"
+  ]
 }
