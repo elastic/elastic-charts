@@ -42,3 +42,5 @@ playground/playground.tsx
 
 # screenshots of the svg renderer, produced by `yarn test --renderer=svg -u` in e2e and compared against the canvas baselines
 e2e/screenshots_svg/
+# screenshots of the markup of `renderChart`, produced by `yarn headless:screenshots` in e2e and compared the same way
+e2e/screenshots_headless/
