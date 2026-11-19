@@ -54,6 +54,9 @@ export function renderChart(chart: ReactElement): string {
 
   // from here on the chart's memoized selectors fill up, so everything is inside the `try`
   const { chartId } = store.getState();
+  // A chart mounted on the same page with the same id already owns the selectors of that id. They are
+  // then shared for the duration of this render, and releasing them is left to that chart's unmount.
+  const ownedByMountedChart = globalSelectorCache.hasKey(chartId);
   try {
     store.dispatch(updateRenderer('svg'));
     store.dispatch(upsertSpecs([...specs.values()]));
@@ -69,6 +72,6 @@ export function renderChart(chart: ReactElement): string {
   } finally {
     // nothing unmounts here, which is what frees a chart's memoized selectors in a browser;
     // a render that fails must free them too
-    globalSelectorCache.removeKeyFromAll(chartId);
+    if (!ownedByMountedChart) globalSelectorCache.removeKeyFromAll(chartId);
   }
 }

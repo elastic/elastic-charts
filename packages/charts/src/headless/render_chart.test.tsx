@@ -31,7 +31,9 @@ import { Chart } from '../components/chart';
 import { ScaleType } from '../scales/constants';
 import { Settings } from '../specs/settings';
 import * as chartState from '../state/chart_state';
+import { createChartStore } from '../state/chart_state';
 import { globalSelectorCache } from '../state/create_selector';
+import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { Position } from '../utils/common';
 
 const data = [
@@ -497,6 +499,20 @@ describe('renderChart without a DOM', () => {
       expect(selectorCaches().length).toBe(registered);
     });
 
+    it('are left alone when a mounted chart with the same id owns them', () => {
+      // what a mounted chart with this id leaves in the registry
+      const mounted = createChartStore('shared').getState();
+      const settings = getSettingsSpecSelector(mounted);
+      const owned = selectorCaches().filter((cache) => cache.get('shared'));
+      const entries = owned.map((cache) => cache.get('shared'));
+      expect(owned.length).toBeGreaterThan(0);
+
+      renderChart(xyChart('shared', true));
+
+      expect(owned.map((cache) => cache.get('shared'))).toEqual(entries);
+      expect(getSettingsSpecSelector(mounted)).toBe(settings);
+    });
+
     it('are released when the chart type is refused', () => {
       expect(() =>
         renderChart(
@@ -542,7 +558,7 @@ describe('renderChart without a DOM', () => {
         />
       ));
       const dispatchCounts: Array<() => number> = [];
-      const createChartStore = chartState.createChartStore;
+      const { createChartStore } = chartState;
       const spy = jest.spyOn(chartState, 'createChartStore').mockImplementation((...args) => {
         const store = createChartStore(...args);
         const dispatch = jest.spyOn(store, 'dispatch');

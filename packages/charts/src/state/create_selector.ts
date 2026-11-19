@@ -80,6 +80,11 @@ class GlobalSelectorCache {
     };
   }
 
+  /** whether any selector holds memoized results for the key, as it does for a chart that is mounted */
+  hasKey(key: string) {
+    return this.selectorCaches.some((cache) => cache.get(key) !== undefined);
+  }
+
   removeKeyFromAll(key: string) {
     this.selectorCaches.forEach((cache) => {
       cache.remove(key);
