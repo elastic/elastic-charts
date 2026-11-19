@@ -88,8 +88,9 @@ The stylesheet is the same for every chart, about 35 kB, so add it once per page
 
 ### What the stylesheet expects of the page {#host-styles}
 
-The stylesheet is written for a page that has EUI's global styles, as Kibana does. On any other page the HTML
-parts of a chart need four things that those styles would have provided:
+The stylesheet is written for a page that has EUI's global styles, as Kibana does. None of the four files
+includes those styles or EUI's reset: `theme_light.css` and `theme_dark.css` add only the two page-wide rules
+listed above. On any other page the HTML parts of a chart need four things that EUI's styles would have provided:
 
 - **The font of the page.** Legend text and annotation markers take their font family, size and line height from
   the page. EUI sets Inter at 14px with a line height of 16px.
