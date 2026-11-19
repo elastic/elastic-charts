@@ -75,9 +75,13 @@ function getArgs() {
   };
   const num = (name: string, fallback: number) => (get(name) === undefined ? fallback : Number(get(name)));
   // `--cross` alone compares svg; the word after it is its value only if it names what to compare
-  const crossValue = args.some((arg) => /^--cross(=|$)/.test(arg)) ? get('cross') ?? '' : undefined;
-  const cross: Cross | undefined =
-    crossValue === undefined ? undefined : crossValue in CROSS_DIRS ? (crossValue as Cross) : 'svg';
+  const crossArg = args.find((arg) => /^--cross(=|$)/.test(arg));
+  const crossValue = get('cross') ?? '';
+  const named = Object.hasOwn(CROSS_DIRS, crossValue);
+  if (crossArg?.includes('=') && !named) {
+    throw new Error(`--cross=${crossValue}: expected ${Object.keys(CROSS_DIRS).join(' or ')}`);
+  }
+  const cross: Cross | undefined = crossArg === undefined ? undefined : named ? (crossValue as Cross) : 'svg';
   return {
     cross,
     threshold: num('threshold', 0.3),
