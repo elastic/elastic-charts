@@ -86,6 +86,47 @@ Pick light or dark to match the theme of the chart. Colors that the chart draws 
 
 The stylesheet is the same for every chart, about 35 kB, so add it once per page, not once per chart.
 
+### What the stylesheet expects of the page {#host-styles}
+
+The stylesheet is written for a page that has EUI's global styles, as Kibana does. On any other page the HTML
+parts of a chart need four things that those styles would have provided:
+
+- **The font of the page.** Legend text and annotation markers take their font family, size and line height from
+  the page. EUI sets Inter at 14px with a line height of 16px.
+- **Border-box sizing.** Without it the metric text is taller than its panel and the value is cut at the bottom.
+- **No default margins, paddings or list bullets.** The metric grid is a list with a heading and paragraphs in
+  it, which browsers indent, space out and mark with a bullet.
+- **Legend text of 12px.** The stylesheet sizes it in `rem` against EUI's root font size of 14px. With the usual
+  root of 16px the legend text is drawn larger than it was measured, and gets cut.
+
+These rules provide all four inside the chart and nowhere else. With them, every element of the chart is laid out
+the same as on a page with EUI's global styles:
+
+```css
+.echChart {
+  font: 400 14px/1.1428571429 Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+}
+:where(.echChart) *,
+:where(.echChart) *::before,
+:where(.echChart) *::after {
+  box-sizing: border-box;
+}
+:where(.echChart) :is(ul, li, h2, p, figure) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.echChart :is(.echLegendItem__label, .echLegendItem__legendValue, .echLegendTable__cell, .echLegend__legendValue),
+.echChart .echReactiveChart_noResults {
+  font-size: 12px;
+}
+```
+
+Put them after the Charts stylesheet and after the page's own styles. The two middle rules weigh no more than a
+rule for a bare element, so that the stylesheet's own rules win over them. They win over page rules such as
+`p { margin: 1em 0 }` only by coming later, and a more specific page rule, such as `.content p`, still reaches
+into the chart. Use the font family of the chart's theme in the first rule.
+
 ## Text measurement
 
 Layout depends on the width of text: axis sizes, legend size, label fitting, metric text size. Without a
@@ -205,12 +246,15 @@ const metric = renderChart(
 const require = createRequire(import.meta.url);
 const css = readFileSync(require.resolve('@elastic/charts/theme_only_light.css'), 'utf8');
 
-// what a host page is expected to bring: the metric grid is a list with a heading and paragraphs
-const reset = `
+// what the Charts stylesheet expects of its page, which EUI's global styles provide in Kibana:
+// the font, border-box sizing, no default margins, paddings or bullets, and legend text of 12px
+const hostStyles = `
+  .echChart { font: 400 14px/1.1428571429 Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif; }
+  :where(.echChart) *, :where(.echChart) *::before, :where(.echChart) *::after { box-sizing: border-box; }
+  :where(.echChart) :is(ul, li, h2, p, figure) { margin: 0; padding: 0; list-style: none; }
+  .echChart :is(.echLegendItem__label, .echLegendItem__legendValue, .echLegendTable__cell, .echLegend__legendValue) { font-size: 12px; }
   body { font-family: Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif; margin: 24px; }
   .box { border: 1px solid #cad3e2; margin-bottom: 24px; }
-  .echMetricContainer { margin: 0; padding: 0; list-style: none; }
-  h2.echMetricText__title, p.echMetricText__subtitle, p.echMetricText__value { margin: 0; }
 `;
 
 const page = `<!doctype html>
@@ -219,7 +263,7 @@ const page = `<!doctype html>
     <meta charset="utf-8" />
     <title>@elastic/charts/headless</title>
     <style>${css}</style>
-    <style>${reset}</style>
+    <style>${hostStyles}</style>
   </head>
   <body>
     <div class="box" style="width: 600px; height: 300px">${xy}</div>
@@ -257,8 +301,7 @@ npx http-server .. -a 127.0.0.1 -p 8377 -c-1
 Run it in the directory of the page, then open `http://127.0.0.1:8377/chart-headless-test/`.
 
 In a browser a canvas exists, so text is measured with it. The Helvetica width table is used only where there is
-no `document`, as in Node. The metric grid is a list, and the Charts stylesheet does not reset list styles or
-paragraph margins, so the page adds the few rules a host page is expected to bring.
+no `document`, as in Node. The page adds the rules from [What the stylesheet expects of the page](#host-styles).
 
 ```html
 <!doctype html>
@@ -271,10 +314,12 @@ paragraph margins, so the page adds the few rules a host page is expected to bri
     <link rel="stylesheet" href="../elastic-charts/packages/charts/dist/theme_only_light.css" />
     <style>
       body { font-family: Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif; margin: 24px; background: #fff; color: #1d2a3e; }
-      /* The metric grid is a <ul>. The Charts stylesheet does not reset list styles and expects the host
-         page to, as Kibana does through EUI. Without this the grid gets a bullet and an indent. */
-      .echMetricContainer { margin: 0; padding: 0; list-style: none; }
-      h2.echMetricText__title, p.echMetricText__subtitle, p.echMetricText__value { margin: 0; }
+      /* What the Charts stylesheet expects of its page, which EUI's global styles provide in Kibana:
+         the font, border-box sizing, no default margins, paddings or bullets, and legend text of 12px. */
+      .echChart { font: 400 14px/1.1428571429 Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif; }
+      :where(.echChart) *, :where(.echChart) *::before, :where(.echChart) *::after { box-sizing: border-box; }
+      :where(.echChart) :is(ul, li, h2, p, figure) { margin: 0; padding: 0; list-style: none; }
+      .echChart :is(.echLegendItem__label, .echLegendItem__legendValue, .echLegendTable__cell, .echLegend__legendValue) { font-size: 12px; }
       .box { width: 600px; height: 300px; border: 1px solid #cad3e2; margin-bottom: 24px; }
       #log { white-space: pre-wrap; font: 12px ui-monospace, monospace; color: #516381; }
     </style>
