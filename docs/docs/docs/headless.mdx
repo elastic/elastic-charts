@@ -137,9 +137,11 @@ ASCII characters.
 - Kerning is left out, so a text is measured up to a few percent wider than a browser draws it, or a fraction of
   a percent narrower.
 - Any other character counts as one average glyph, so text in another script can overflow or be cut early.
-- The markup still names the font of the theme, so whatever draws it uses that font.
+- The markup only names the font of the theme. It does not carry the font.
 
-So the result is close to a browser's when the page draws the chart in Inter, and less so with another font.
+So the result is close to a browser's when the page draws the chart in Inter. Inter has to be installed where the
+markup is drawn, or loaded by the page with `@font-face`. Otherwise the text is drawn in the next font of the list
+or in a fallback, and one with wider glyphs can cut labels that were measured to fit.
 
 ## Not supported
 
@@ -259,6 +261,8 @@ const hostStyles = `
   body { font-family: Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif; margin: 24px; }
   .box { border: 1px solid #cad3e2; margin-bottom: 24px; }
 `;
+// The page names Inter and does not load it. Where Inter is not installed, a browser draws a fallback font,
+// while the text was measured as Inter: add an `@font-face` rule for Inter to see the layout as measured.
 
 const page = `<!doctype html>
 <html lang="en">
@@ -316,6 +320,7 @@ no `document`, as in Node. The page adds the rules from [What the stylesheet exp
     <!-- The Charts stylesheet: layout of the legend, the metric panels and the placement of the svg -->
     <link rel="stylesheet" href="../elastic-charts/packages/charts/dist/theme_only_light.css" />
     <style>
+      /* The page names Inter and does not load it: where Inter is not installed, a fallback font is drawn. */
       body { font-family: Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif; margin: 24px; background: #fff; color: #1d2a3e; }
       /* What the Charts stylesheet expects of its page, which EUI's global styles provide in Kibana:
          the font, border-box sizing, no default margins, paddings or bullets, and legend text of 12px. */
