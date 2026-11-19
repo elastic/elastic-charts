@@ -30,6 +30,11 @@ describe('text measured from the Inter tables', () => {
     // a family named like a weight is not a weight, and neither is a font size
     expect(measureTextWidthFromTable('Hello', '10px bold')).toBeCloseTo(23.93, 5);
     expect(measureTextWidthFromTable('Hello', '700px Inter')).toBeCloseTo(23.93 * 70, 5);
+    // nor is the whole part of a fractional size
+    expect(measureTextWidthFromTable('Hello', '700.5px Inter')).toBeCloseTo(23.93 * 70.05, 5);
+    expect(measureTextWidthFromTable('Hello', 'normal normal normal 450.5px Inter')).toBeCloseTo(23.93 * 45.05, 5);
+    expect(measureTextWidthFromTable('Hello', 'normal normal 700 450.5px Inter')).toBeCloseTo(25.02 * 45.05, 5);
+    expect(measureTextWidthFromTable('Hello', '12.5px Roboto 900')).toBeCloseTo(23.93 * 1.25, 5);
   });
 
   it('gives every other character one default advance', () => {

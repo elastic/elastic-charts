@@ -29,8 +29,7 @@ const DEFAULT_REGULAR = 603;
 const DEFAULT_BOLD = 632;
 
 const FONT_SIZE_RE = /(\d*\.?\d+)px/;
-// the weight precedes the size in a CSS font shorthand
-const WEIGHT_RE = /\b(bold|bolder|\d{3,4})\b(?=.*\dpx)/;
+const WEIGHT_RE = /\b(bold|bolder|\d{3,4})\b/;
 
 /**
  * Width of a text in CSS pixels for a CSS font shorthand, from Inter's advance widths at the weight of the font.
@@ -40,8 +39,10 @@ const WEIGHT_RE = /\b(bold|bolder|\d{3,4})\b(?=.*\dpx)/;
  * @internal
  */
 export function measureTextWidthFromTable(text: string, font: string): number {
-  const fontSize = Number(FONT_SIZE_RE.exec(font)?.[1] ?? 10);
-  const [, weight = '400'] = WEIGHT_RE.exec(font) ?? [];
+  const size = FONT_SIZE_RE.exec(font);
+  const fontSize = Number(size?.[1] ?? 10);
+  // the weight precedes the size in a CSS font shorthand; what follows it, the size included, can look like one
+  const [, weight = '400'] = WEIGHT_RE.exec(font.slice(0, size?.index ?? 0)) ?? [];
   // faces lighter than Regular are a little narrower; measuring them as Regular errs on the side of room
   const bolder = Math.max(0, ((Number(weight) || 700) - 400) / 300);
   let units = 0;
