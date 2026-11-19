@@ -185,6 +185,11 @@ export type YDefinedFn = (datum: DataSeriesDatum, getValueAccessor: (d: DataSeri
 export function isYValueDefinedFn(yScale: ScaleContinuous, xScale: ScaleBand | ScaleContinuous): YDefinedFn {
   const validator = getScaleTypeValueValidator(yScale);
   return (datum, getValueAccessor) => {
+    // Stacking replaces a null y with 0 so series above still have a baseline.
+    // That stacked y is not a value of this series unless a fit function filled it.
+    if (isDatumFilled(datum) && datum.filled?.y1 === undefined) {
+      return false;
+    }
     const yValue = getValueAccessor(datum);
     return yValue !== null && validator(yValue) && xScale.isValueInDomain(datum.x);
   };
