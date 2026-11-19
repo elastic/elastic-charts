@@ -62,19 +62,14 @@ const xyChart = (id: string, showLegend = false) => (
   </Chart>
 );
 
-/** the caches of the memoized selectors, one per selector, each keyed by chart id or by a headless render's key */
-const selectorCaches = () =>
-  (
-    globalSelectorCache as unknown as {
-      selectorCaches: Array<{ cache: Map<string, unknown>; get(key: string): unknown }>;
-    }
-  ).selectorCaches;
-const cachedSelectorsOf = (chartId: string) => selectorCaches().filter((cache) => cache.get(chartId)).length;
-/** what headless renders have left in the registry: nothing, once each has released its own key */
-const headlessLeftovers = () =>
-  selectorCaches()
-    .flatMap(({ cache }) => [...cache.keys()])
-    .filter((key) => key.startsWith('headless-'));
+/**
+ * Every key in the registry of memoized selectors, per selector: chart ids of mounted charts, and for
+ * the duration of a headless render, the key of that render.
+ */
+const selectorRegistry = () =>
+  (globalSelectorCache as unknown as { selectorCaches: Array<{ cache: Map<string, unknown> }> }).selectorCaches.map(
+    ({ cache }) => [...cache.keys()].sort(),
+  );
 
 const count = (markup: string, pattern: RegExp) => (markup.match(pattern) ?? []).length;
 /** the svg the chart is drawn in; legend icons are small svgs of their own */
@@ -83,6 +78,16 @@ const stageWidth = (markup: string) => Number(/\swidth="([\d.]+)"/.exec(markup.m
 const ids = (markup: string) => [...markup.matchAll(/\sid="([^"]+)"/g)].map(([, id]) => id);
 
 describe('renderChart without a DOM', () => {
+  // Whatever a test renders, and however that ends, the registry is as it was: no key added under any
+  // name, none removed, no selector registered.
+  let registryBefore: string[][];
+  beforeEach(() => {
+    registryBefore = selectorRegistry();
+  });
+  afterEach(() => {
+    expect(selectorRegistry()).toEqual(registryBefore);
+  });
+
   it('runs where no document or window exists', () => {
     expect(typeof document).toBe('undefined');
     expect(typeof window).toBe('undefined');
@@ -496,34 +501,26 @@ describe('renderChart without a DOM', () => {
   });
 
   describe('memoized selectors of the chart', () => {
-    it('are released after a render', () => {
-      renderChart(xyChart('released', true));
-      expect(headlessLeftovers()).toEqual([]);
-    });
-
-    it('are not created anew for every render', () => {
-      renderChart(xyChart('first-of-many', true));
-      const registered = selectorCaches().length;
+    it('leave the registry as it was, however many charts are rendered', () => {
       for (let i = 0; i < 20; i++) renderChart(xyChart(`one-of-many-${i}`, true));
-      expect(selectorCaches().length).toBe(registered);
-      expect(headlessLeftovers()).toEqual([]);
+      expect(selectorRegistry()).toEqual(registryBefore);
     });
 
     it('are kept apart from those of another chart with the same id', () => {
       // what a chart with this id, mounted or rendered by React on a server, leaves in the registry
       const mounted = createChartStore('shared').getState();
       const settings = getSettingsSpecSelector(mounted);
-      const owned = selectorCaches().filter((cache) => cache.get('shared'));
-      const entries = owned.map((cache) => cache.get('shared'));
-      expect(owned.length).toBeGreaterThan(0);
+      const withMounted = selectorRegistry();
+      expect(withMounted).not.toEqual(registryBefore);
 
       renderChart(xyChart('shared', true));
 
-      expect(owned.map((cache) => cache.get('shared'))).toEqual(entries);
-      expect(cachedSelectorsOf('shared')).toBe(owned.length);
+      expect(selectorRegistry()).toEqual(withMounted);
       expect(getSettingsSpecSelector(mounted)).toBe(settings);
+      globalSelectorCache.removeKeyFromAll('shared');
     });
 
+    // the registry check after each test is what these four are about: one per way out of `renderChart`
     it('are released when the chart type is refused', () => {
       expect(() =>
         renderChart(
@@ -531,11 +528,10 @@ describe('renderChart without a DOM', () => {
             <Wordcloud id="words" data={[{ text: 'hello', weight: 1, color: '#000000' }]} />
           </Chart>,
         ),
-      ).toThrow();
-      expect(headlessLeftovers()).toEqual([]);
+      ).toThrow('does not support');
     });
 
-    it('are released when rendering throws', () => {
+    it('are released when drawing throws', () => {
       expect(() =>
         renderChart(
           <Chart id="throws" size={{ width: 400, height: 200 }}>
@@ -550,7 +546,30 @@ describe('renderChart without a DOM', () => {
           </Chart>,
         ),
       ).toThrow('a formatter that fails');
-      expect(headlessLeftovers()).toEqual([]);
+    });
+
+    it('are released when a child of the chart throws while the specs are gathered', () => {
+      const Failing = () => {
+        throw new Error('a child that fails');
+      };
+      expect(() =>
+        renderChart(
+          <Chart id="child-throws" size={{ width: 400, height: 200 }}>
+            <BarSeries id="bars" xScaleType={ScaleType.Ordinal} xAccessor="x" yAccessors={['y']} data={data} />
+            <Failing />
+          </Chart>,
+        ),
+      ).toThrow('a child that fails');
+    });
+
+    it('are released when a chart is nested in the chart', () => {
+      expect(() =>
+        renderChart(
+          <Chart id="outer" size={{ width: 400, height: 200 }}>
+            {xyChart('inner')}
+          </Chart>,
+        ),
+      ).toThrow('expects one Chart, the element rendered 2');
     });
   });
 
