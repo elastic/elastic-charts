@@ -62,10 +62,19 @@ const xyChart = (id: string, showLegend = false) => (
   </Chart>
 );
 
-/** the caches of the memoized selectors, one per selector, each keyed by chart id */
+/** the caches of the memoized selectors, one per selector, each keyed by chart id or by a headless render's key */
 const selectorCaches = () =>
-  (globalSelectorCache as unknown as { selectorCaches: Array<{ get(key: string): unknown }> }).selectorCaches;
+  (
+    globalSelectorCache as unknown as {
+      selectorCaches: Array<{ cache: Map<string, unknown>; get(key: string): unknown }>;
+    }
+  ).selectorCaches;
 const cachedSelectorsOf = (chartId: string) => selectorCaches().filter((cache) => cache.get(chartId)).length;
+/** what headless renders have left in the registry: nothing, once each has released its own key */
+const headlessLeftovers = () =>
+  selectorCaches()
+    .flatMap(({ cache }) => [...cache.keys()])
+    .filter((key) => key.startsWith('headless-'));
 
 const count = (markup: string, pattern: RegExp) => (markup.match(pattern) ?? []).length;
 /** the svg the chart is drawn in; legend icons are small svgs of their own */
@@ -489,7 +498,7 @@ describe('renderChart without a DOM', () => {
   describe('memoized selectors of the chart', () => {
     it('are released after a render', () => {
       renderChart(xyChart('released', true));
-      expect(cachedSelectorsOf('released')).toBe(0);
+      expect(headlessLeftovers()).toEqual([]);
     });
 
     it('are not created anew for every render', () => {
@@ -497,6 +506,7 @@ describe('renderChart without a DOM', () => {
       const registered = selectorCaches().length;
       for (let i = 0; i < 20; i++) renderChart(xyChart(`one-of-many-${i}`, true));
       expect(selectorCaches().length).toBe(registered);
+      expect(headlessLeftovers()).toEqual([]);
     });
 
     it('are kept apart from those of another chart with the same id', () => {
@@ -522,7 +532,7 @@ describe('renderChart without a DOM', () => {
           </Chart>,
         ),
       ).toThrow();
-      expect(cachedSelectorsOf('refused')).toBe(0);
+      expect(headlessLeftovers()).toEqual([]);
     });
 
     it('are released when rendering throws', () => {
@@ -540,7 +550,7 @@ describe('renderChart without a DOM', () => {
           </Chart>,
         ),
       ).toThrow('a formatter that fails');
-      expect(cachedSelectorsOf('throws')).toBe(0);
+      expect(headlessLeftovers()).toEqual([]);
     });
   });
 
