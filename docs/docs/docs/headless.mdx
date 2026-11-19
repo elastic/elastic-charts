@@ -101,7 +101,9 @@ So the result is close to a browser's but not identical, and text in another scr
 
 - Word cloud, flame and timeslip charts, which draw on a canvas of their own. `renderChart` throws for them.
 - Interactions: tooltips, hover, brushing and legend actions need a browser.
-- Callbacks that report rendering, such as `onRenderChange`, are not called.
+- Listeners of `Settings`, the props that start with `on`, such as `onRenderChange` and `onProjectionAreaChange`,
+  are not called. Functions that shape what is drawn are: accessors, formatters, and sort functions such as
+  `legendSort` and `renderingSort`.
 
 ## Example: a Node project {#node-example}
 
@@ -137,6 +139,9 @@ yarn && yarn start
 To try a version that is not released yet, replace `latest` with the address of a package tarball. Every pull
 request of this repository publishes one, linked as "Packages" in the deployment comment of the pull request. A
 tarball made locally with `npm pack` in `packages/charts` works too, as `file:./elastic-charts-<version>.tgz`.
+Yarn identifies a tarball by its name and version, so a tarball packed again does not reach a project that has
+installed it before. Reinstall from scratch: remove `node_modules`, `yarn.lock`, and the folder of
+`@elastic/charts` in the yarn cache (`yarn cache dir`).
 
 `index.mjs` uses `createElement` in place of JSX, so it needs no build step:
 
