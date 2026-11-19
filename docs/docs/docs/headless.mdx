@@ -130,13 +130,17 @@ into the chart. Use the font family of the chart's theme in the first rule.
 ## Text measurement
 
 Layout depends on the width of text: axis sizes, legend size, label fitting, metric text size. Without a
-browser, text is measured with the advance widths of Helvetica for printable ASCII characters.
+browser, text is measured with the advance widths of Inter, the first font of the default theme, for printable
+ASCII characters.
 
-- The size and the weight of the font are honored. The font family is not.
-- Any other character counts as one average glyph.
+- The size and the weight of the font are honored. The font family is not: text is measured as Inter even when
+  the theme names another font.
+- Kerning is left out, so a text is measured up to a few percent wider than a browser draws it, or a fraction of
+  a percent narrower.
+- Any other character counts as one average glyph, so text in another script can overflow or be cut early.
 - The markup still names the font of the theme, so whatever draws it uses that font.
 
-So the result is close to a browser's but not identical, and text in another script can overflow or be cut early.
+So the result is close to a browser's when the page draws the chart in Inter, and less so with another font.
 
 ## Not supported
 
@@ -300,7 +304,7 @@ npx http-server .. -a 127.0.0.1 -p 8377 -c-1
 
 Run it in the directory of the page, then open `http://127.0.0.1:8377/chart-headless-test/`.
 
-In a browser a canvas exists, so text is measured with it. The Helvetica width table is used only where there is
+In a browser a canvas exists, so text is measured with it. The Inter width tables are used only where there is
 no `document`, as in Node. The page adds the rules from [What the stylesheet expects of the page](#host-styles).
 
 ```html

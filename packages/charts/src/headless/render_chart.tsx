@@ -30,7 +30,7 @@ const NEEDS_A_DOM: ReadonlySet<ChartType | null> = new Set([ChartType.Wordcloud,
  * are omitted. Use the same module format and installed copy of Charts for the renderer and every chart component.
  * Word cloud, flame and timeslip charts are not supported: they draw on a canvas of their own.
  *
- * Where there is no DOM, text is measured with Helvetica's advance widths, whatever the font of the theme, so
+ * Where there is no DOM, text is measured with Inter's advance widths, whatever the font of the theme, so
  * layout that depends on text width is close to a browser's but not identical.
  * @public
  */

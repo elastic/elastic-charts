@@ -8,41 +8,54 @@
 
 import type { MeasureContext } from './measure';
 
-// Helvetica advance widths per 1000 em for ASCII 32..126 (standard AFM metrics)
-const HELVETICA_WIDTHS = [
-  278, 278, 355, 556, 556, 889, 667, 191, 333, 333, 389, 584, 278, 333, 278, 278, 556, 556, 556, 556, 556, 556, 556,
-  556, 556, 556, 278, 278, 584, 584, 584, 556, 1015, 667, 667, 722, 722, 667, 611, 778, 722, 278, 500, 667, 556, 833,
-  722, 778, 667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 278, 278, 278, 469, 556, 333, 556, 556, 500, 556,
-  556, 278, 556, 556, 222, 222, 500, 222, 833, 556, 556, 556, 556, 333, 500, 278, 556, 500, 722, 500, 500, 500, 334,
-  260, 334, 584,
+// Advance widths of Inter, the first font of the default theme, per 1000 em for ASCII 32..126, in its Regular
+// (400) and Bold (700) faces. The advances of every weight from 400 to 900 lie on the line through these two.
+const INTER_REGULAR = [
+  281, 278, 403, 631, 638, 812, 639, 222, 362, 362, 500, 659, 280, 460, 276, 357, 625, 464, 605, 636, 642, 608, 624,
+  571, 616, 624, 276, 280, 659, 659, 659, 507, 936, 676, 651, 727, 719, 598, 587, 743, 740, 264, 543, 652, 562, 889,
+  753, 761, 635, 761, 639, 638, 642, 741, 676, 949, 642, 665, 625, 362, 357, 362, 469, 452, 497, 564, 621, 558, 621,
+  582, 361, 609, 591, 237, 237, 544, 237, 869, 585, 597, 609, 609, 372, 523, 364, 581, 557, 812, 540, 557, 541, 362,
+  327, 362, 659,
 ];
-/** the advance of anything outside the table, which is every character that is not printable ASCII */
-const DEFAULT_GLYPH_WIDTH = 556;
-/** Helvetica Bold runs about this much wider than the regular face */
-const BOLD_WIDTH_FACTOR = 1.07;
+const INTER_BOLD = [
+  232, 325, 392, 650, 655, 859, 674, 209, 409, 409, 565, 680, 303, 469, 298, 390, 688, 489, 630, 659, 678, 645, 660,
+  595, 661, 660, 298, 303, 680, 680, 680, 562, 1031, 748, 661, 752, 727, 613, 585, 761, 746, 281, 570, 690, 567, 915,
+  735, 782, 648, 783, 656, 655, 668, 729, 748, 1036, 714, 724, 667, 409, 390, 409, 488, 477, 497, 580, 635, 587, 635,
+  598, 386, 633, 624, 272, 272, 582, 272, 912, 622, 614, 632, 632, 409, 562, 388, 622, 586, 850, 574, 586, 572, 409,
+  374, 409, 680,
+];
+/** the advance of anything outside the tables, which is every character that is not printable ASCII */
+const DEFAULT_REGULAR = 603;
+const DEFAULT_BOLD = 632;
 
 const FONT_SIZE_RE = /(\d*\.?\d+)px/;
 // the weight precedes the size in a CSS font shorthand
-const BOLD_RE = /\b(bold|bolder|[5-9]00)\b(?=.*\dpx)/;
+const WEIGHT_RE = /\b(bold|bolder|\d{3,4})\b(?=.*\dpx)/;
 
 /**
- * Width of a text in CSS pixels for a CSS font shorthand, from Helvetica's advance widths.
- * It ignores the font family: whatever the font, the text is measured as Helvetica of that size.
+ * Width of a text in CSS pixels for a CSS font shorthand, from Inter's advance widths at the weight of the font.
+ * It ignores the font family: whatever the font, the text is measured as Inter of that size and weight.
+ * Kerning is left out, so a text comes out up to a few percent wider than a browser draws it, or a fraction of
+ * a percent narrower.
  * @internal
  */
 export function measureTextWidthFromTable(text: string, font: string): number {
   const fontSize = Number(FONT_SIZE_RE.exec(font)?.[1] ?? 10);
+  const [, weight = '400'] = WEIGHT_RE.exec(font) ?? [];
+  // faces lighter than Regular are a little narrower; measuring them as Regular errs on the side of room
+  const bolder = Math.max(0, ((Number(weight) || 700) - 400) / 300);
   let units = 0;
   for (const char of text) {
-    const code = char.codePointAt(0) ?? 0;
-    units += HELVETICA_WIDTHS[code - 32] ?? DEFAULT_GLYPH_WIDTH;
+    const index = (char.codePointAt(0) ?? 0) - 32;
+    const regular = INTER_REGULAR[index] ?? DEFAULT_REGULAR;
+    units += regular + ((INTER_BOLD[index] ?? DEFAULT_BOLD) - regular) * bolder;
   }
-  return (units / 1000) * fontSize * (BOLD_RE.test(font) ? BOLD_WIDTH_FACTOR : 1);
+  return (units / 1000) * fontSize;
 }
 
 /**
- * A measuring context that needs no canvas and no DOM: widths come from a table of Helvetica
- * advances. Close to a browser for ASCII text in a Helvetica-like font, approximate otherwise.
+ * A measuring context that needs no canvas and no DOM: widths come from tables of Inter's
+ * advances. Close to a browser for ASCII text drawn in Inter, approximate otherwise.
  * It reports no vertical metrics, so baselines fall back to fixed fractions of the font size.
  * @internal
  */

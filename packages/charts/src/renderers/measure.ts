@@ -23,7 +23,7 @@ let measureContext: MeasureContext | undefined;
  *
  * - In a browser it is one shared offscreen canvas context, so every renderer measures text exactly
  *   like canvas draws it.
- * - Without a DOM, as on a server, it is a table of Helvetica advance widths: no canvas is involved.
+ * - Without a DOM, as on a server, it is a table of Inter's advance widths: no canvas is involved.
  * - `null` where a DOM exists but has no canvas support (jsdom).
  * @internal
  */
