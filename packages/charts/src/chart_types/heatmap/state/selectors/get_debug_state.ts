@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { computeChartElementSizesSelector } from './compute_chart_element_sizes';
 import { computeLegendSelector } from './compute_legend';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHighlightedAreaSelector, getHighlightedDataSelector } from './get_highlighted_area';
@@ -29,20 +28,12 @@ export const getDebugStateSelector = createCustomCachedSelector(
     getHighlightedAreaSelector,
     getHighlightedDataSelector,
     getChartThemeSelector,
-    computeChartElementSizesSelector,
     getHeatmapSpecSelector,
   ],
-  (
-    geoms,
-    legend,
-    pickedArea,
-    highlightedData,
-    { heatmap },
-    { xAxisTickCadence },
-    { xAxisTitle, yAxisTitle },
-  ): DebugState => {
+  (geoms, legend, pickedArea, highlightedData, { heatmap }, { xAxisTitle, yAxisTitle }): DebugState => {
     const heatmapViewModel = geoms.heatmapViewModels[0];
-    const xAxisValues = heatmapViewModel?.xValues.filter((_, i) => i % xAxisTickCadence === 0) ?? [];
+    const xAxisValues = heatmapViewModel?.xValues.filter(({ visible }) => visible) ?? [];
+    const yAxisValues = heatmapViewModel?.yValues.filter(({ visible }) => visible) ?? [];
 
     return {
       // Common debug state
@@ -64,8 +55,8 @@ export const getDebugStateSelector = createCustomCachedSelector(
           {
             id: 'y',
             position: Position.Bottom,
-            labels: (heatmapViewModel?.yValues ?? []).map(({ text }) => text),
-            values: (heatmapViewModel?.yValues ?? []).map(({ value }) => value),
+            labels: yAxisValues.map(({ text }) => text),
+            values: yAxisValues.map(({ value }) => value),
             // horizontal lines
             gridlines: (heatmapViewModel?.gridLines?.y ?? []).map((line) => ({ x: line.x2, y: line.y1 })),
             ...(yAxisTitle ? { title: yAxisTitle } : {}),

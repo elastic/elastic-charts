@@ -128,18 +128,20 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     heatmapTable.xValues,
     chartMargins,
     chartPaddings,
+    elementSizes.xAxisTickCadence,
   );
 
   const { padding } = heatmapTheme.yAxisLabel;
 
   // compute the position of each row label
-  const textYValues = boxedYValues.map<TextBox>((d) => {
+  const textYValues = boxedYValues.map<TextBox>((d, i) => {
     return {
       ...d,
       // position of the Y labels
       x: -pad(padding, 'right') - chartPaddings.left,
       y: cellHeight / 2 + (yScale(d.value) || 0),
       align: 'right',
+      visible: i % elementSizes.yAxisTickCadence === 0,
     };
   });
 
@@ -630,10 +632,11 @@ function getXTicks(
   values: NonNullable<PrimitiveValue>[],
   chartMargins: Theme['chartMargins'],
   chartPaddings: Theme['chartPaddings'],
+  tickCadence: number,
 ): Array<TextBox> {
   const isTimeScale = isRasterTimeScale(spec.xScale);
   const isRotated = style.rotation !== 0;
-  return values.map<TextBox>((value) => {
+  return values.map<TextBox>((value, i) => {
     return {
       text: spec.xAxisLabelFormatter(value),
       value,
@@ -642,6 +645,7 @@ function getXTicks(
       y: style.fontSize / 2 + pad(style.padding, 'top') - chartMargins.top - chartPaddings.top + chartPaddings.bottom,
       x: (scale(value) ?? 0) + (isTimeScale ? 0 : scale.bandwidth() / 2),
       align: isRotated ? 'right' : isTimeScale ? 'left' : 'center',
+      visible: i % tickCadence === 0,
     };
   });
 }

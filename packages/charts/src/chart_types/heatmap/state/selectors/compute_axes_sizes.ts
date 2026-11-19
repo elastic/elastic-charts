@@ -41,7 +41,7 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
     legendSize,
     { yValues, xValues },
     { heatmap, axes: { axisTitle: axisTitleStyle, axisPanelTitle: axisPanelTitleStyle }, chartMargins, chartPaddings },
-    { xAxisTitle, yAxisTitle, xAxisLabelFormatter, yAxisLabelFormatter, xScale },
+    { xAxisTitle, yAxisTitle, xAxisLabelFormatter, yAxisLabelFormatter, xScale, xAxisShowOverlappingLabels },
     smSpec,
     { smHDomain },
   ) => {
@@ -78,17 +78,24 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         'height',
         !smSpec?.splitHorizontally,
       );
+      const isCategoricalScale = !isRasterTimeScale(xScale);
+      // Left padding and margin are applied again as a chart translation. Categorical
+      // axes that show every label keep the full fit width so those labels stay put.
+      // Time axes always hide overlaps, so they use the narrower width, as do
+      // categorical axes that skip overlapping labels.
+      const leftInset = isCategoricalScale && xAxisShowOverlappingLabels ? 0 : chartPaddings.left + chartMargins.left;
       const xAxis = getXAxisSize(
-        !isRasterTimeScale(xScale),
+        isCategoricalScale,
         heatmap.xAxisLabel,
         xAxisLabelFormatter,
         xValues,
         textMeasure,
-        panelWidth - legendWidth - heatmap.grid.stroke.width / 2 - chartPaddings.right - chartMargins.right,
+        panelWidth - legendWidth - heatmap.grid.stroke.width / 2 - chartPaddings.right - chartMargins.right - leftInset,
         [
           yAxisTitleHorizontalSize + yAxisPanelTitleHorizontalSize + yAxis.width,
           0, // this can be used if we have a right Y axis
         ],
+        xAxisShowOverlappingLabels,
       );
 
       return {
