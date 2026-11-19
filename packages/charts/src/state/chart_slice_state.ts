@@ -25,7 +25,7 @@ export type ChartId = string;
 /** @internal */
 export interface ChartSliceState {
   /**
-   * a unique ID for each chart used by re-reselect to memoize selector per chart
+   * a unique ID for each chart, by which the selectors keep what they computed for it
    */
   chartId: ChartId;
   /** memoizes the selectors under this instead of the chart id, which a render without a DOM must not share */

@@ -74,13 +74,13 @@ const bars = (
 );
 
 /**
- * Every key in the registry of memoized selectors, per selector: chart ids of mounted charts, and for
- * the duration of a headless render, the key of that render.
+ * What the memoized selectors hold, by chart: the chart ids of mounted charts and, for the duration of a
+ * headless render, the key of that render, each with the number of selectors that computed for it.
  */
 const selectorRegistry = () =>
-  (globalSelectorCache as unknown as { selectorCaches: Array<{ cache: Map<string, unknown> }> }).selectorCaches.map(
-    ({ cache }) => [...cache.keys()].sort(),
-  );
+  [...(globalSelectorCache as unknown as { charts: Map<string, Map<unknown, unknown>> }).charts]
+    .map(([key, selectors]) => `${key}: ${selectors.size}`)
+    .sort();
 
 const count = (markup: string, pattern: RegExp) => (markup.match(pattern) ?? []).length;
 /** the svg the chart is drawn in; legend icons are small svgs of their own */
@@ -91,7 +91,7 @@ const ids = (markup: string) => [...markup.matchAll(/\sid="([^"]+)"/g)].map(([, 
 describe('renderChart without a DOM', () => {
   // Whatever a test renders, and however that ends, the registry is as it was: no key added under any
   // name, none removed, no selector registered.
-  let registryBefore: string[][];
+  let registryBefore: string[];
   beforeEach(() => {
     registryBefore = selectorRegistry();
   });

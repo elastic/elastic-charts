@@ -6,89 +6,42 @@
  * Side Public License, v 1.
  */
 
-import { createSelector, lruMemoize } from '@reduxjs/toolkit';
-import type { ICacheObject } from 're-reselect';
-// Named import: Kibana rspack prefers the `browser` field, which is a UMD bundle.
-// Default-importing that UMD module yields the exports object, not the function.
-import { createCachedSelector } from 're-reselect';
+import type { createSelector } from '@reduxjs/toolkit';
 
 import type { GlobalChartState } from './chart_state';
 
-/**
- * Wraps RTK's `createSelector` with a bounded LRU memo cache per chartId.
- * maxSize=2 captures all hit-rate gains with minimal memory footprint.
- * Keeping this small is critical because every cached entry can retain
- * large chart objects (geometry arrays, scales, tooltip info) and the
- * cost is multiplied by ~170 selectors × N charts on the page.
- */
-const createSelectorWithLRU = ((selectors: any[], combiner: (...args: any[]) => any) =>
-  createSelector(selectors, combiner, {
-    // RTK 2 / reselect 5 defaults to `weakMapMemoize` (unbounded, reference-keyed cache).
-    // Explicitly keep the bounded LRU memoizer to preserve the memory constraints described above.
-    memoize: lruMemoize,
-    memoizeOptions: {
-      maxSize: 2,
-    },
-  })) as unknown as typeof createSelector;
-
-/**
- * Custom cache backed by Map (re-reselect ICacheObject).
- * Map is preferred over a plain object because .size is O(1),
- * .delete() doesn't deoptimize V8 hidden classes
- * see https://github.com/toomuchdesign/re-reselect/tree/master/src/cache#write-your-custom-cache-object
- */
-class CustomMapCache implements ICacheObject {
-  private cache = new Map<string, () => any>();
-
-  set(key: string, selectorFn: () => any) {
-    this.cache.set(key, selectorFn);
-  }
-
-  get(key: string) {
-    return this.cache.get(key);
-  }
-
-  remove(key: string) {
-    this.cache.delete(key);
-  }
-
-  clear() {
-    this.cache.clear();
-  }
-
-  isEmpty() {
-    return this.cache.size === 0;
-  }
-
-  isValidCacheKey(key: string) {
-    return typeof key === 'string';
-  }
+/** What a selector computed: for which state, from which inputs, with which result */
+interface Computation {
+  state: unknown;
+  inputs: unknown[];
+  result: unknown;
 }
+
+/**
+ * How many computations a selector keeps for a chart. Two capture all of the hit rate; each one can hold on to
+ * large objects (geometry arrays, scales, tooltip info), for every selector of every chart on the page.
+ */
+const KEPT = 2;
 
 const keySelector = ({ chartId, selectorCacheKey }: GlobalChartState) => selectorCacheKey ?? chartId;
 
+/**
+ * What the selectors remember, in one table for each chart: the selectors themselves hold nothing. Dropping
+ * the table of a chart drops everything computed for it, and nothing is made for a chart but its table.
+ */
 class GlobalSelectorCache {
-  private selectorCaches: CustomMapCache[] = [];
+  private readonly charts = new Map<string, Map<unknown, Computation[]>>();
 
-  registerSelector() {
-    const cache = new CustomMapCache();
-    this.selectorCaches.push(cache);
-    return {
-      keySelector,
-      cacheObject: cache,
-      selectorCreator: createSelectorWithLRU,
-    };
+  computations(key: string, selector: unknown): Computation[] {
+    let ofChart = this.charts.get(key);
+    if (!ofChart) this.charts.set(key, (ofChart = new Map()));
+    let computations = ofChart.get(selector);
+    if (!computations) ofChart.set(selector, (computations = []));
+    return computations;
   }
 
   removeKeyFromAll(key: string) {
-    this.selectorCaches.forEach((cache) => {
-      cache.remove(key);
-    });
-    // NOTE: we intentionally do NOT prune empty caches from the array.
-    // Each cache is shared by closure with a live re-reselect selector.
-    // Pruning it here would orphan the cache: future chartIds written to
-    // it by re-reselect would never be cleaned up by subsequent
-    // removeKeyFromAll calls, causing a memory leak.
+    this.charts.delete(key);
   }
 }
 
@@ -100,17 +53,42 @@ class GlobalSelectorCache {
 export const globalSelectorCache = new GlobalSelectorCache();
 
 /**
- * Wrapper around `createCachedSelector` to provide `keySelector` and `cacheObject`
- * for all selector instances in one place. This should be used in place of `createCachedSelector`.
+ * Makes a memoized selector of the chart state: `createCustomCachedSelector([...inputSelectors], combiner)`.
+ * It computes again only when an input selector returns something else than for the computations it kept,
+ * which it keeps apart for each chart, by `chartId`.
  *
- * The types defining `createCachedSelector` are very complex and essentially hardcoded overloads for having any
- * number of selector inputs up to about 20 with generic types. Thus the types are extremely hard to duplciate.
- * To fix this I used the type of `createSelector` which is what is the same as that of `createCachedSelector`
- * method with the added curring for the cached options which this wrapper handles.
+ * Typed as `createSelector` of reselect, whose call signatures and inference its call sites rely on.
  *
  * @internal
  */
 export const createCustomCachedSelector = ((...args: any[]) => {
-  // @ts-ignore - forced types to simplify usage. All types align correctly
-  return createCachedSelector(...args)(globalSelectorCache.registerSelector());
+  const combiner: (...inputs: unknown[]) => unknown = args.at(-1);
+  const inputSelectors: Array<(...a: unknown[]) => unknown> = args.slice(0, -1).flat();
+  let recomputations = 0;
+
+  const selector = (state: GlobalChartState, ...rest: unknown[]) => {
+    const kept = globalSelectorCache.computations(keySelector(state), selector);
+    // the state it was last asked about: the same result, with no input to look at
+    let at = rest.length === 0 ? kept.findIndex((c) => c.state === state) : -1;
+    let computation = kept[at];
+    if (!computation) {
+      const inputs = inputSelectors.map((input) => input(state, ...rest));
+      at = kept.findIndex((c) => c.inputs.every((input, i) => input === inputs[i]));
+      computation = kept[at];
+      if (computation) computation.state = state;
+      else {
+        recomputations++;
+        computation = { state, inputs, result: combiner(...inputs) };
+      }
+    }
+    // the latest first; past what is kept, the oldest goes
+    if (at !== 0) {
+      if (at > 0) kept.splice(at, 1);
+      else if (kept.length === KEPT) kept.pop();
+      kept.unshift(computation);
+    }
+    return computation.result;
+  };
+  selector.recomputations = () => recomputations;
+  return selector;
 }) as unknown as typeof createSelector;
