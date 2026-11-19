@@ -57,4 +57,40 @@ describe('createCustomCachedSelector', () => {
 
     globalSelectorCache.removeKeyFromAll('chart-lru');
   });
+
+  it('computes once for a state, and again only when an input is another object', () => {
+    const selector = createCustomCachedSelector([(state: GlobalChartState) => state.parentDimensions], ({ width }) => ({
+      width,
+    }));
+    const state = getState('chart-memo', 1);
+    const result = selector(state);
+    expect(selector(state)).toBe(result);
+    // another state with the same input
+    expect(selector({ ...state })).toBe(result);
+    expect(selector.recomputations()).toBe(1);
+
+    expect(selector({ ...state, parentDimensions: { ...state.parentDimensions } })).not.toBe(result);
+    expect(selector.recomputations()).toBe(2);
+    // the one before is kept too
+    expect(selector(state)).toBe(result);
+    expect(selector.recomputations()).toBe(2);
+
+    globalSelectorCache.removeKeyFromAll('chart-memo');
+  });
+
+  it('keeps what it computed for one chart apart from another chart', () => {
+    const selector = createCustomCachedSelector(
+      [(state: GlobalChartState) => state.parentDimensions.width],
+      (width) => ({ width }),
+    );
+    const one = getState('chart-one', 1);
+    const other = getState('chart-other', 1);
+    const result = selector(one);
+    expect(selector(other)).not.toBe(result);
+    expect(selector(other)).toEqual(result);
+
+    globalSelectorCache.removeKeyFromAll('chart-other');
+    expect(selector(one)).toBe(result);
+    globalSelectorCache.removeKeyFromAll('chart-one');
+  });
 });
