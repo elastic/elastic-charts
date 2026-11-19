@@ -116,8 +116,7 @@ the same as on a page with EUI's global styles:
   padding: 0;
   list-style: none;
 }
-.echChart :is(.echLegendItem__label, .echLegendItem__legendValue, .echLegendTable__cell, .echLegend__legendValue),
-.echChart .echReactiveChart_noResults {
+.echChart :is(.echLegendItem__label, .echLegendItem__legendValue, .echLegendTable__cell, .echLegend__legendValue, .echReactiveChart_noResults) {
   font-size: 12px;
 }
 ```
@@ -256,7 +255,7 @@ const hostStyles = `
   .echChart { font: 400 14px/1.1428571429 Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif; }
   :where(.echChart) *, :where(.echChart) *::before, :where(.echChart) *::after { box-sizing: border-box; }
   :where(.echChart) :is(ul, li, h2, p, figure) { margin: 0; padding: 0; list-style: none; }
-  .echChart :is(.echLegendItem__label, .echLegendItem__legendValue, .echLegendTable__cell, .echLegend__legendValue) { font-size: 12px; }
+  .echChart :is(.echLegendItem__label, .echLegendItem__legendValue, .echLegendTable__cell, .echLegend__legendValue, .echReactiveChart_noResults) { font-size: 12px; }
   body { font-family: Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif; margin: 24px; }
   .box { border: 1px solid #cad3e2; margin-bottom: 24px; }
 `;
@@ -323,7 +322,7 @@ no `document`, as in Node. The page adds the rules from [What the stylesheet exp
       .echChart { font: 400 14px/1.1428571429 Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif; }
       :where(.echChart) *, :where(.echChart) *::before, :where(.echChart) *::after { box-sizing: border-box; }
       :where(.echChart) :is(ul, li, h2, p, figure) { margin: 0; padding: 0; list-style: none; }
-      .echChart :is(.echLegendItem__label, .echLegendItem__legendValue, .echLegendTable__cell, .echLegend__legendValue) { font-size: 12px; }
+      .echChart :is(.echLegendItem__label, .echLegendItem__legendValue, .echLegendTable__cell, .echLegend__legendValue, .echReactiveChart_noResults) { font-size: 12px; }
       .box { width: 600px; height: 300px; border: 1px solid #cad3e2; margin-bottom: 24px; }
       #log { white-space: pre-wrap; font: 12px ui-monospace, monospace; color: #516381; }
     </style>
