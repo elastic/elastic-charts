@@ -151,6 +151,8 @@ or in a fallback, and one with wider glyphs can cut labels that were measured to
 - Listeners of `Settings`, the props that start with `on`, such as `onRenderChange` and `onProjectionAreaChange`,
   are not called. Functions that shape what is drawn are: accessors, formatters, and sort functions such as
   `legendSort` and `renderingSort`.
+- The `markerBody` of a line annotation is in the markup, but stays next to its `marker`: a browser measures it and
+  moves it to keep it inside the chart.
 
 ## Example: a Node project {#node-example}
 
