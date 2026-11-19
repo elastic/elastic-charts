@@ -62,6 +62,17 @@ const xyChart = (id: string, showLegend = false) => (
   </Chart>
 );
 
+const bars = (
+  <BarSeries
+    id="bars"
+    xScaleType={ScaleType.Ordinal}
+    xAccessor="x"
+    yAccessors={['y']}
+    splitSeriesAccessors={['g']}
+    data={data}
+  />
+);
+
 /**
  * Every key in the registry of memoized selectors, per selector: chart ids of mounted charts, and for
  * the duration of a headless render, the key of that render.
@@ -244,17 +255,6 @@ describe('renderChart without a DOM', () => {
 
   describe('legend positions', () => {
     const size = { width: 600, height: 300 };
-    const bars = (
-      <BarSeries
-        id="bars"
-        xScaleType={ScaleType.Ordinal}
-        yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y']}
-        splitSeriesAccessors={['g']}
-        data={data}
-      />
-    );
     const stageHeight = (markup: string) => Number(/\sheight="([\d.]+)"/.exec(markup.match(STAGE)?.[0] ?? '')?.[1]);
 
     it('takes height, not width, from the plot when the legend is at the bottom', () => {
@@ -487,22 +487,36 @@ describe('renderChart without a DOM', () => {
     });
   });
 
-  describe('callbacks of the chart', () => {
-    it('are not called, so one written for a browser does no harm', () => {
-      const callbacks = {
-        onProjectionAreaChange: jest.fn(() => window.devicePixelRatio),
-        onRenderChange: jest.fn(),
-        onWillRender: jest.fn(),
-        onPointerUpdate: jest.fn(),
-      };
+  describe('functions given to Settings', () => {
+    it('listeners are not called, so one written for a browser does no harm', () => {
+      const listeners = Object.fromEntries(
+        [
+          ...['onProjectionAreaChange', 'onRenderChange', 'onWillRender', 'onResize', 'onPointerUpdate', 'onBrushEnd'],
+          ...['onElementClick', 'onElementOver', 'onElementOut', 'onProjectionClick', 'onAnnotationClick'],
+          ...['onLegendItemOver', 'onLegendItemOut', 'onLegendItemClick', 'onLegendItemPlusClick'],
+          'onLegendItemMinusClick',
+        ].map((name) => [name, jest.fn(() => window.devicePixelRatio)]),
+      );
       const markup = renderChart(
-        <Chart id="callbacks" size={{ width: 600, height: 300 }}>
-          <Settings {...callbacks} />
-          <BarSeries id="bars" xScaleType={ScaleType.Ordinal} xAccessor="x" yAccessors={['y']} data={data} />
-        </Chart>,
+        React.cloneElement(xyChart('listeners', true), {}, <Settings showLegend {...listeners} />, bars),
       );
       expect(count(markup, STAGE)).toBe(1);
-      for (const callback of Object.values(callbacks)) expect(callback).not.toHaveBeenCalled();
+      for (const listener of Object.values(listeners)) expect(listener).not.toHaveBeenCalled();
+    });
+
+    it('functions that shape what is drawn are called', () => {
+      const legendSort = jest.fn(() => 0);
+      const renderingSort = jest.fn(() => 0);
+      renderChart(
+        React.cloneElement(
+          xyChart('sorts'),
+          {},
+          <Settings showLegend legendSort={legendSort} renderingSort={renderingSort} />,
+          bars,
+        ),
+      );
+      expect(legendSort).toHaveBeenCalled();
+      expect(renderingSort).toHaveBeenCalled();
     });
   });
 
