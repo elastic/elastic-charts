@@ -256,7 +256,8 @@ function interactive(name, make) {
   const moves = Array.from({ length: 2000 }, (_, i) => timed(() => move(i)));
   const resizes = Array.from({ length: 9 }, (_, i) => timed(() => size(807 + i * 7)));
 
-  const items = ask();
+  // those that a click on the legend toggles: none of a sunburst
+  const items = ask().filter((item) => item.isToggleable);
   const toggles = items.length === 0 ? [NaN] : [];
   for (let i = 0; i < 20 && items.length > 0; i++) {
     const legendItemIds = items[i % items.length].seriesIdentifiers;
