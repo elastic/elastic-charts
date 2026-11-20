@@ -209,12 +209,13 @@ function liveChart(id, make) {
 function held(make) {
   const n = 30;
   const keys = [];
-  const before = live();
   globalSelectorCache.removeKeyFromAll = (key) => keys.push(key);
   for (let i = 0; i < n; i++) renderChart(make());
   delete globalSelectorCache.removeKeyFromAll;
-  const bytes = (live() - before) / n;
+  // what the release frees: nothing else that the renders may have left counts
+  const before = live();
   keys.forEach((key) => globalSelectorCache.removeKeyFromAll(key));
+  const bytes = (before - live()) / n;
   return keys.length === n ? bytes / 1024 : NaN;
 }
 
