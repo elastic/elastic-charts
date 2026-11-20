@@ -182,11 +182,7 @@ function liveChart(id, make) {
     const selectors = getInternalChartStateSelector(state);
     for (const key of Object.keys(selectors)) {
       if (typeof selectors[key] !== 'function' || key === 'eventCallbacks' || key === 'getDebugState') continue;
-      try {
-        selectors[key](state);
-      } catch {
-        // some selectors expect a state this benchmark does not set up
-      }
+      selectors[key](state);
     }
     return getLegendItemsSelector(state);
   };
