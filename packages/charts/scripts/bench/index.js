@@ -21,8 +21,9 @@
  * repeat within about 1% and barely change with the version of Node.
  *   allocated    what a headless render allocates in the heap, so without the buffers of typed arrays; all
  *                of it is garbage once the render is over
- *   held         what a chart keeps reachable while it exists: what lives through a whole render, which a
- *                collector ends up moving to its old generation, to free late and at a cost
+ *   held         what the selectors of a rendered chart keep reachable while it exists: what lives through
+ *                a whole render, which a collector ends up moving to its old generation, to free late and at
+ *                a cost. Without the store of the chart, which holds its specs
  *   left behind  what stays reachable after 3000 charts that differ, for each of them: a leak. It is near
  *                zero, within about 0.2 kB, unless something piles up: a ceiling to gate on, not to compare
  *
@@ -201,15 +202,20 @@ function liveChart(id, make) {
   return { store, ask, size, fill, release };
 }
 
-/** Kilobytes that a chart keeps reachable while it exists */
-function held(name, make) {
+/**
+ * Kilobytes that a chart keeps reachable while it exists: headless renders, for all that a chart computes,
+ * whose release of what their selectors computed waits until it is measured
+ */
+function held(make) {
   const n = 30;
+  const keys = [];
   const before = live();
-  const charts = Array.from({ length: n }, (_, i) => liveChart(`held ${name} ${i}`, make));
-  charts.forEach((chart) => chart.fill());
+  globalSelectorCache.removeKeyFromAll = (key) => keys.push(key);
+  for (let i = 0; i < n; i++) renderChart(make());
+  delete globalSelectorCache.removeKeyFromAll;
   const bytes = (live() - before) / n;
-  charts.forEach((chart) => chart.release());
-  return bytes / 1024;
+  keys.forEach((key) => globalSelectorCache.removeKeyFromAll(key));
+  return keys.length === n ? bytes / 1024 : NaN;
 }
 
 // As a child process, so that nothing else it ran is there to be freed: renders of charts that differ, and
@@ -286,7 +292,7 @@ function interactive(name, make) {
 async function measure(name, make) {
   const allocatedMB = await allocated(make);
   const renderMs = median(Array.from({ length: 50 }, () => milliseconds(() => renderChart(make()))));
-  const heldKB = held(name, make);
+  const heldKB = held(make);
   const leftKB = leftBehind(name);
   const smallHeap = inSmallHeap(name, allocatedMB);
   return { allocatedMB, heldKB, leftKB, renderMs, smallHeap, ...interactive(name, make) };
