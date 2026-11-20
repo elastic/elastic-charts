@@ -361,9 +361,9 @@ async function main() {
   const only = options.find((text) => !text.startsWith('--'));
   await post('HeapProfiler.enable');
   const results = {};
-  for (const [name, make] of Object.entries(allCharts)) {
-    if (!only || name.includes(only)) results[name] = await measure(name, make);
-  }
+  const charts = Object.entries(allCharts).filter(([name]) => !only || name.includes(only));
+  if (charts.length === 0) throw new Error(`No chart has "${only}" in its name`);
+  for (const [name, make] of charts) results[name] = await measure(name, make);
   const against = option('against');
   report(results, against ? JSON.parse(fs.readFileSync(against, 'utf8')) : undefined, against);
   const save = option('save');
