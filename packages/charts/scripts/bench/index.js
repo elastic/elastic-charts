@@ -312,7 +312,8 @@ function report(results, before, file) {
   // a figure, after the one of the file compared against where there is one; the bytes are steady enough for a percent
   const figure = (pick, digits, unit, percent) => (name, r) => {
     const [was, now] = [before?.[name] && pick(before[name]), pick(r)];
-    if (was === undefined) return `${now.toFixed(digits)}${unit}`;
+    // a figure that was not a number, as of a chart with nothing to toggle, is saved as null
+    if (typeof was !== 'number') return `${now.toFixed(digits)}${unit}`;
     const change = `${now >= was ? '+' : ''}${(((now - was) / was) * 100).toFixed(0)}%`.padStart(6);
     return `${was.toFixed(digits)} -> ${now.toFixed(digits)}${unit}${percent ? change : ''}`;
   };
