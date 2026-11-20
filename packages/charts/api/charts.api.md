@@ -1638,8 +1638,8 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     // (undocumented)
     xAxisTitle: string;
     // (undocumented)
-    xScale: RasterTimeScale | OrdinalScale | LinearScale;
-    // (undocumented)
+    xScale: RasterTimeScale | RasterLinearScale | OrdinalScale | LinearScale;
+    // @deprecated (undocumented)
     xSortPredicate: Predicate;
     // (undocumented)
     yAccessor: Accessor<D> | AccessorFn<D>;
@@ -1649,7 +1649,8 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     yAxisLabelName: string;
     // (undocumented)
     yAxisTitle: string;
-    // (undocumented)
+    yScale: RasterLinearScale | OrdinalScale;
+    // @deprecated (undocumented)
     ySortPredicate: Predicate;
 }
 
@@ -2048,7 +2049,7 @@ export interface LinearGradient {
     y1?: Ratio;
 }
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface LinearScale {
     // (undocumented)
     type: typeof ScaleType.Linear;
@@ -2460,6 +2461,7 @@ export type OrdinalDomain = (number | string)[];
 
 // @public (undocumented)
 export interface OrdinalScale {
+    sort?: Predicate;
     // (undocumented)
     type: typeof ScaleType.Ordinal;
 }
@@ -2797,7 +2799,22 @@ type Range_2 = [min: number, max: number];
 export { Range_2 as Range }
 
 // @public (undocumented)
+export type RasterDomain = Partial<Pick<DomainRange, 'min' | 'max'>>;
+
+// @public
+export interface RasterLinearScale {
+    // (undocumented)
+    domain?: RasterDomain;
+    // (undocumented)
+    interval: number;
+    // (undocumented)
+    type: typeof ScaleType.Linear;
+}
+
+// @public (undocumented)
 export interface RasterTimeScale extends TimeScale {
+    // (undocumented)
+    domain?: RasterDomain;
     // (undocumented)
     interval: ESCalendarInterval | ESFixedInterval;
 }

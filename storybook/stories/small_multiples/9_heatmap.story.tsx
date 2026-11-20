@@ -233,9 +233,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
                   unit: 'week',
                 },
               }
-            : {
-                type: xScaleType,
-              }
+            : xScaleType === ScaleType.Linear
+              ? { type: ScaleType.Linear }
+              : { type: ScaleType.Ordinal }
         }
         xAxisLabelFormatter={timeBasedData ? tickTimeFormatter : (v) => `C${v}`}
         yAxisLabelFormatter={(v) => `R${v}`}

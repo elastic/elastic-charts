@@ -24,9 +24,9 @@ import {
 import type { Box, Font } from '../../../../common/text_utils';
 import { maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
-import type { LinearScale, OrdinalScale, RasterTimeScale, BaseDatum } from '../../../../specs';
+import type { RasterTimeScale, BaseDatum } from '../../../../specs';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
+import { roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import type { Datum } from '../../../../utils/common';
 import { clamp, isFiniteNumber, isNil } from '../../../../utils/common';
 import type { ChartDimensions } from '../../../../utils/dimensions';
@@ -37,6 +37,7 @@ import type { PrimitiveValue } from '../../../partition_chart/layout/utils/group
 import type { HeatmapSpec } from '../../specs';
 import type { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import type { HeatmapTable } from '../../state/selectors/get_heatmap_table';
+import { addRasterInterval, isRasterScale } from '../../state/utils/raster';
 import type {
   Cell,
   GridCell,
@@ -88,7 +89,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   groupBySpec: SmallMultiplesGroupBy,
   bandsToHide: Array<[number, number]>,
 ): ShapeViewModel {
-  const { table, yValues, xValues } = heatmapTable;
+  const { table, xValues } = heatmapTable;
+  const isYRaster = isRasterScale(spec.yScale);
+  // rows are laid out from top to bottom, raster bins ascend upwards
+  const yValues = isYRaster ? [...heatmapTable.yValues].reverse() : heatmapTable.yValues;
   const gridStrokeWidth = heatmapTheme.grid.stroke.width;
   const isPointerOverPanel = isPointerOverPanelFn(smScales, chartDimensions, gridStrokeWidth);
 
@@ -138,7 +142,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       ...d,
       // position of the Y labels
       x: -pad(padding, 'right') - chartPaddings.left,
-      y: cellHeight / 2 + (yScale(d.value) || 0),
+      // a raster bin starts at the bottom edge of its row
+      y: (isYRaster ? cellHeight : cellHeight / 2) + (yScale(d.value) || 0),
       align: 'right',
     };
   });
@@ -344,9 +349,13 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const allXValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(xValues, startX, endX);
     const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);
     const invertedXValues: Array<NonNullable<PrimitiveValue>> =
-      isRasterTimeScale(spec.xScale) && typeof endX === 'number'
-        ? [startX, addIntervalToTime(endX, spec.xScale.interval, spec.timeZone)]
+      isRasterScale(spec.xScale) && typeof endX === 'number'
+        ? [startX, addRasterInterval(spec.xScale, endX, spec.timeZone)]
         : [...allXValuesInRange];
+    const invertedYValues: Array<NonNullable<PrimitiveValue>> =
+      isRasterScale(spec.yScale) && typeof startY === 'number'
+        ? [endY, addRasterInterval(spec.yScale, startY, spec.timeZone)]
+        : [...allYValuesInRange];
     const cells: Cell[] = [];
 
     allXValuesInRange.forEach((x) => {
@@ -361,7 +370,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     return {
       cells: cells.filter(Boolean),
       x: invertedXValues,
-      y: allYValuesInRange,
+      y: invertedYValues,
       smHorizontalAccessorValue,
       smVerticalAccessorValue,
     };
@@ -381,7 +390,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const startValue = x[0];
     const endValue = x.at(-1);
     const leftIndex = xValues.indexOf(startValue ?? NaN);
-    const rightIndex = xValues.indexOf(endValue ?? NaN) + (isRasterTimeScale(spec.xScale) && x.length > 1 ? 0 : 1);
+    const rightIndex = xValues.indexOf(endValue ?? NaN) + (isRasterScale(spec.xScale) && x.length > 1 ? 0 : 1);
 
     const isRightOutOfRange = rightIndex > xValues.length - 1 || rightIndex < 0;
     const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;
@@ -403,19 +412,23 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     // extend the range in case the right boundary has been selected
     const width = endFromScale - startFromScale + (isRightOutOfRange || isLeftOutOfRange ? cellWidth : 0);
 
+    const [yRangeStart, yRangeEnd] = [y[0], y.at(-1)];
+    const highlightedYValues =
+      isYRaster && y.length > 1 && isFiniteNumber(yRangeStart) && isFiniteNumber(yRangeEnd)
+        ? yValues.filter((v) => isFiniteNumber(v) && v >= yRangeStart && v < yRangeEnd)
+        : y.filter((v) => yValues.includes(v));
+
     // resolve Y coordinated making sure the order is correct
-    const { y: yStart, totalHeight } = y
-      .filter((v) => yValues.includes(v))
-      .reduce(
-        (acc, current, i) => {
-          if (i === 0) {
-            acc.y = (yScale(current) || 0) + panelYOffset;
-          }
-          acc.totalHeight += cellHeight;
-          return acc;
-        },
-        { y: 0, totalHeight: 0 },
-      );
+    const { y: yStart, totalHeight } = highlightedYValues.reduce(
+      (acc, current, i) => {
+        if (i === 0) {
+          acc.y = (yScale(current) || 0) + panelYOffset;
+        }
+        acc.totalHeight += cellHeight;
+        return acc;
+      },
+      { y: 0, totalHeight: 0 },
+    );
     return {
       x: xStart,
       y: yStart + chartMargins.top + chartPaddings.top + gridStrokeWidth / 2,
@@ -619,7 +632,7 @@ export function isValueInRanges(value: number, ranges: Array<[number, number]>) 
 }
 
 /** @internal */
-export function isRasterTimeScale(scale: RasterTimeScale | OrdinalScale | LinearScale): scale is RasterTimeScale {
+export function isRasterTimeScale(scale: HeatmapSpec['xScale']): scale is RasterTimeScale {
   return scale.type === ScaleType.Time;
 }
 
@@ -631,7 +644,7 @@ function getXTicks(
   chartMargins: Theme['chartMargins'],
   chartPaddings: Theme['chartPaddings'],
 ): Array<TextBox> {
-  const isTimeScale = isRasterTimeScale(spec.xScale);
+  const isRaster = isRasterScale(spec.xScale);
   const isRotated = style.rotation !== 0;
   return values.map<TextBox>((value) => {
     return {
@@ -640,8 +653,8 @@ function getXTicks(
       isValue: false,
       ...style,
       y: style.fontSize / 2 + pad(style.padding, 'top') - chartMargins.top - chartPaddings.top + chartPaddings.bottom,
-      x: (scale(value) ?? 0) + (isTimeScale ? 0 : scale.bandwidth() / 2),
-      align: isRotated ? 'right' : isTimeScale ? 'left' : 'center',
+      x: (scale(value) ?? 0) + (isRaster ? 0 : scale.bandwidth() / 2),
+      align: isRotated ? 'right' : spec.xScale.type === ScaleType.Time ? 'left' : 'center',
     };
   });
 }

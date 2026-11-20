@@ -141,3 +141,130 @@ describe('Temporal heatmap brush', () => {
     expect(brushEvent.y).toEqual(['ya']);
   });
 });
+describe('Linear raster heatmap brush', () => {
+  let store: Store<GlobalChartState>;
+  let onBrushEndMock = jest.fn();
+  beforeEach(() => {
+    store = MockStore.default({ width: 300, height: 300, top: 0, left: 0 }, 'chartId');
+    onBrushEndMock = jest.fn();
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settingsNoMargins({
+          theme: {
+            heatmap: {
+              xAxisLabel: {
+                visible: false,
+              },
+              yAxisLabel: {
+                visible: false,
+              },
+            },
+          },
+          onBrushEnd: onBrushEndMock,
+        }),
+        MockSeriesSpec.heatmap({
+          xScale: { type: ScaleType.Linear, interval: 0.1 },
+          data: [
+            { x: 0.1, y: 'ya', value: 1 },
+            { x: 0.3, y: 'ya', value: 3 },
+            { x: 0.1, y: 'yb', value: 4 },
+            { x: 0.2, y: 'yb', value: 5 },
+            { x: 0.3, y: 'yb', value: 6 },
+          ],
+        }),
+      ],
+      store,
+    );
+  });
+
+  it('should brush from the start of the first bin to the end of the last bin', () => {
+    const caller = createOnBrushEndCaller();
+    store.dispatch(onPointerMove({ position: { x: 50, y: 50 }, time: 0 }));
+    store.dispatch(onMouseDown({ position: { x: 50, y: 50 }, time: 100 }));
+    store.dispatch(onPointerMove({ position: { x: 250, y: 250 }, time: 200 }));
+    store.dispatch(onMouseUp({ position: { x: 250, y: 250 }, time: 300 }));
+    caller(store.getState());
+    expect(onBrushEndMock).toHaveBeenCalledTimes(1);
+    const brushEvent = onBrushEndMock.mock.calls[0][0];
+    expect(brushEvent.cells).toHaveLength(5);
+    expect(brushEvent.x).toEqual([0.1, 0.4]);
+    expect(brushEvent.y).toEqual(['ya', 'yb']);
+  });
+
+  it('should brush a single bin', () => {
+    const caller = createOnBrushEndCaller();
+    store.dispatch(onPointerMove({ position: { x: 150, y: 250 }, time: 0 }));
+    store.dispatch(onMouseDown({ position: { x: 150, y: 250 }, time: 100 }));
+    store.dispatch(onPointerMove({ position: { x: 160, y: 260 }, time: 200 }));
+    store.dispatch(onMouseUp({ position: { x: 160, y: 260 }, time: 300 }));
+    caller(store.getState());
+    expect(onBrushEndMock).toHaveBeenCalledTimes(1);
+    const brushEvent = onBrushEndMock.mock.calls[0][0];
+    expect(brushEvent.cells).toHaveLength(1);
+    expect(brushEvent.x).toEqual([0.2, 0.3]);
+    expect(brushEvent.y).toEqual(['yb']);
+  });
+});
+describe('Linear raster y heatmap brush', () => {
+  let store: Store<GlobalChartState>;
+  let onBrushEndMock = jest.fn();
+  beforeEach(() => {
+    store = MockStore.default({ width: 300, height: 300, top: 0, left: 0 }, 'chartId');
+    onBrushEndMock = jest.fn();
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settingsNoMargins({
+          theme: {
+            heatmap: {
+              xAxisLabel: {
+                visible: false,
+              },
+              yAxisLabel: {
+                visible: false,
+              },
+            },
+          },
+          onBrushEnd: onBrushEndMock,
+        }),
+        MockSeriesSpec.heatmap({
+          xScale: { type: ScaleType.Ordinal },
+          yScale: { type: ScaleType.Linear, interval: 10 },
+          data: [
+            { x: 'a', y: 0, value: 1 },
+            { x: 'b', y: 0, value: 2 },
+            { x: 'a', y: 10, value: 3 },
+            { x: 'b', y: 10, value: 4 },
+          ],
+        }),
+      ],
+      store,
+    );
+  });
+
+  it('should brush from the start of the lowest bin to the end of the highest bin', () => {
+    const caller = createOnBrushEndCaller();
+    store.dispatch(onPointerMove({ position: { x: 50, y: 50 }, time: 0 }));
+    store.dispatch(onMouseDown({ position: { x: 50, y: 50 }, time: 100 }));
+    store.dispatch(onPointerMove({ position: { x: 250, y: 250 }, time: 200 }));
+    store.dispatch(onMouseUp({ position: { x: 250, y: 250 }, time: 300 }));
+    caller(store.getState());
+    expect(onBrushEndMock).toHaveBeenCalledTimes(1);
+    const brushEvent = onBrushEndMock.mock.calls[0][0];
+    expect(brushEvent.cells).toHaveLength(4);
+    expect(brushEvent.y).toEqual([0, 20]);
+  });
+
+  it('should brush the top bin', () => {
+    const caller = createOnBrushEndCaller();
+    store.dispatch(onPointerMove({ position: { x: 50, y: 50 }, time: 0 }));
+    store.dispatch(onMouseDown({ position: { x: 50, y: 50 }, time: 100 }));
+    store.dispatch(onPointerMove({ position: { x: 60, y: 60 }, time: 200 }));
+    store.dispatch(onMouseUp({ position: { x: 60, y: 60 }, time: 300 }));
+    caller(store.getState());
+    expect(onBrushEndMock).toHaveBeenCalledTimes(1);
+    const brushEvent = onBrushEndMock.mock.calls[0][0];
+    expect(brushEvent.cells).toHaveLength(1);
+    expect(brushEvent.cells[0].datum.y).toBe(10);
+    expect(brushEvent.y).toEqual([10, 20]);
+  });
+});
