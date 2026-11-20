@@ -58,7 +58,7 @@ export interface TimeScale {
   type: typeof ScaleType.Time;
 }
 
-/** @internal */
+/** @public */
 export type RasterDomain = Partial<Pick<DomainRange, 'min' | 'max'>>;
 
 /** @public */
@@ -120,7 +120,8 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   /** @deprecated use `yScale.sort` instead */
   ySortPredicate: Predicate;
   xScale: RasterTimeScale | RasterLinearScale | OrdinalScale | LinearScale;
-  yScale: OrdinalScale;
+  /** raster bins are rendered in ascending order from bottom to top */
+  yScale: RasterLinearScale | OrdinalScale;
   highlightedData?: HeatmapHighlightedData;
   name?: string;
   timeZone: string;

@@ -89,7 +89,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   groupBySpec: SmallMultiplesGroupBy,
   bandsToHide: Array<[number, number]>,
 ): ShapeViewModel {
-  const { table, yValues, xValues } = heatmapTable;
+  const { table, xValues } = heatmapTable;
+  const isYRaster = isRasterScale(spec.yScale);
+  // rows are laid out from top to bottom, raster bins ascend upwards
+  const yValues = isYRaster ? [...heatmapTable.yValues].reverse() : heatmapTable.yValues;
   const gridStrokeWidth = heatmapTheme.grid.stroke.width;
   const isPointerOverPanel = isPointerOverPanelFn(smScales, chartDimensions, gridStrokeWidth);
 
@@ -139,7 +142,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       ...d,
       // position of the Y labels
       x: -pad(padding, 'right') - chartPaddings.left,
-      y: cellHeight / 2 + (yScale(d.value) || 0),
+      // a raster bin starts at the bottom edge of its row
+      y: (isYRaster ? cellHeight : cellHeight / 2) + (yScale(d.value) || 0),
       align: 'right',
     };
   });
@@ -348,6 +352,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       isRasterScale(spec.xScale) && typeof endX === 'number'
         ? [startX, addRasterInterval(spec.xScale, endX, spec.timeZone)]
         : [...allXValuesInRange];
+    const invertedYValues: Array<NonNullable<PrimitiveValue>> =
+      isRasterScale(spec.yScale) && typeof startY === 'number'
+        ? [endY, addRasterInterval(spec.yScale, startY, spec.timeZone)]
+        : [...allYValuesInRange];
     const cells: Cell[] = [];
 
     allXValuesInRange.forEach((x) => {
@@ -362,7 +370,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     return {
       cells: cells.filter(Boolean),
       x: invertedXValues,
-      y: allYValuesInRange,
+      y: invertedYValues,
       smHorizontalAccessorValue,
       smVerticalAccessorValue,
     };
@@ -404,19 +412,23 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     // extend the range in case the right boundary has been selected
     const width = endFromScale - startFromScale + (isRightOutOfRange || isLeftOutOfRange ? cellWidth : 0);
 
+    const [yRangeStart, yRangeEnd] = [y[0], y.at(-1)];
+    const highlightedYValues =
+      isYRaster && y.length > 1 && isFiniteNumber(yRangeStart) && isFiniteNumber(yRangeEnd)
+        ? yValues.filter((v) => isFiniteNumber(v) && v >= yRangeStart && v < yRangeEnd)
+        : y.filter((v) => yValues.includes(v));
+
     // resolve Y coordinated making sure the order is correct
-    const { y: yStart, totalHeight } = y
-      .filter((v) => yValues.includes(v))
-      .reduce(
-        (acc, current, i) => {
-          if (i === 0) {
-            acc.y = (yScale(current) || 0) + panelYOffset;
-          }
-          acc.totalHeight += cellHeight;
-          return acc;
-        },
-        { y: 0, totalHeight: 0 },
-      );
+    const { y: yStart, totalHeight } = highlightedYValues.reduce(
+      (acc, current, i) => {
+        if (i === 0) {
+          acc.y = (yScale(current) || 0) + panelYOffset;
+        }
+        acc.totalHeight += cellHeight;
+        return acc;
+      },
+      { y: 0, totalHeight: 0 },
+    );
     return {
       x: xStart,
       y: yStart + chartMargins.top + chartPaddings.top + gridStrokeWidth / 2,

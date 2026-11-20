@@ -1649,8 +1649,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     yAxisLabelName: string;
     // (undocumented)
     yAxisTitle: string;
-    // (undocumented)
-    yScale: OrdinalScale;
+    yScale: RasterLinearScale | OrdinalScale;
     // @deprecated (undocumented)
     ySortPredicate: Predicate;
 }
@@ -2799,13 +2798,14 @@ export type PropsWithoutChildren<Props extends Record<string, unknown> = Record<
 type Range_2 = [min: number, max: number];
 export { Range_2 as Range }
 
-// @public
+// @public (undocumented)
 export type RasterDomain = Partial<Pick<DomainRange, 'min' | 'max'>>;
 
 // @public
 export interface RasterLinearScale {
     // (undocumented)
     domain?: RasterDomain;
+    // (undocumented)
     interval: number;
     // (undocumented)
     type: typeof ScaleType.Linear;
@@ -2813,6 +2813,7 @@ export interface RasterLinearScale {
 
 // @public (undocumented)
 export interface RasterTimeScale extends TimeScale {
+    // (undocumented)
     domain?: RasterDomain;
     // (undocumented)
     interval: ESCalendarInterval | ESFixedInterval;

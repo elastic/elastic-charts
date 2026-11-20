@@ -136,5 +136,16 @@ describe('getHeatmapTableSelector', () => {
       });
       expect(xValues).toEqual([0, 10, 20, 30]);
     });
+
+    it('should fill the y bins', () => {
+      const { yValues } = getTable({
+        data: [
+          { x: 'a', y: 0, value: 1 },
+          { x: 'a', y: 20, value: 2 },
+        ],
+        yScale: { type: ScaleType.Linear, interval: 10 },
+      });
+      expect(yValues).toEqual([0, 10, 20]);
+    });
   });
 });
