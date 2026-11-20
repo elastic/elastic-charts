@@ -7,6 +7,7 @@
  */
 
 import type { GlobalChartState } from './chart_state';
+import { createChartStore } from './chart_state';
 import { createCustomCachedSelector, globalSelectorCache } from './create_selector';
 import { getInitialState } from './get_initial_state';
 
@@ -92,5 +93,19 @@ describe('createCustomCachedSelector', () => {
     globalSelectorCache.removeKeyFromAll('chart-other');
     expect(selector(one)).toBe(result);
     globalSelectorCache.removeKeyFromAll('chart-one');
+  });
+
+  it('keeps what it computed for each of several charts that share an id', () => {
+    const selector = createCustomCachedSelector([(state: GlobalChartState) => state.interactions], (interactions) => ({
+      interactions,
+    }));
+    const states = [1, 2, 3, 4].map(() => createChartStore('shared-id').getState());
+    const results = states.map((state) => selector(state));
+    // every chart asks again about its state, which has not changed
+    expect(states.map((state) => selector(state))).toEqual(results);
+    states.forEach((state, i) => expect(selector(state)).toBe(results[i]));
+    expect(selector.recomputations()).toBe(4);
+
+    states.forEach((state) => globalSelectorCache.removeKeyFromAll(state.selectorCacheKey ?? state.chartId));
   });
 });
