@@ -6,10 +6,20 @@
  * Side Public License, v 1.
  */
 
+import { createNextState } from '@reduxjs/toolkit';
+
+import { onDOMElementLeave } from './actions/dom_element';
+import { onKeyPress } from './actions/key';
+import { onLegendItemOutAction, onLegendItemOverAction, onToggleDeselectSeriesAction } from './actions/legend';
+import { onMouseDown, onMouseUp, onPointerMove } from './actions/mouse';
+import { pinTooltip, setSelectedTooltipItems } from './actions/tooltip';
 import type { GlobalChartState } from './chart_state';
 import { createChartStore } from './chart_state';
 import { createCustomCachedSelector, globalSelectorCache } from './create_selector';
 import { getInitialState } from './get_initial_state';
+import { MockSeriesSpec } from '../mocks/specs';
+import { MockStore } from '../mocks/store';
+import { Logger } from '../utils/logger';
 
 const getState = (chartId: string, width: number): GlobalChartState => ({
   ...getInitialState(chartId),
@@ -107,5 +117,44 @@ describe('createCustomCachedSelector', () => {
     expect(selector.recomputations()).toBe(4);
 
     states.forEach((state) => globalSelectorCache.removeKeyFromAll(state.selectorCacheKey ?? state.chartId));
+  });
+});
+
+describe('selectors and reducers', () => {
+  it('a selector asked about the draft of a reducer answers about the state it was given, and logs an error', () => {
+    // every object of a draft is new: an answer about it could not come from what was computed, nor serve later
+    const error = jest.spyOn(Logger, 'error').mockImplementation(() => {});
+    const selector = createCustomCachedSelector([(state: GlobalChartState) => state.parentDimensions], (d) => ({ d }));
+    const state = getState('chart-draft', 1);
+    const result = selector(state);
+    createNextState(state, (draft) => {
+      draft.parentDimensions.width = 2;
+      expect(selector(draft as GlobalChartState)).toBe(result);
+    });
+    expect(error).toHaveBeenCalledTimes(1);
+    expect(selector.recomputations()).toBe(1);
+    globalSelectorCache.removeKeyFromAll('chart-draft');
+  });
+
+  it('the reducers of interactions ask about the state that the store holds', () => {
+    const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    MockStore.addSpecs([MockSeriesSpec.bar({ data: [{ x: 0, y: 1 }] })], store);
+    const at = { position: { x: 50, y: 50 }, time: 0 };
+    const actions = [
+      onPointerMove(at),
+      onMouseDown({ ...at, keyPressed: { shiftKey: false, ctrlKey: false, altKey: false, metaKey: false } }),
+      onMouseUp(at),
+      onLegendItemOverAction([]),
+      onLegendItemOutAction(),
+      onToggleDeselectSeriesAction({ legendItemIds: [], metaKey: false }),
+      onDOMElementLeave(),
+      pinTooltip({ pinned: true }),
+      setSelectedTooltipItems([]),
+      pinTooltip({ pinned: false, resetPointer: true }),
+      onKeyPress('Escape'),
+    ];
+    const error = jest.spyOn(Logger, 'error').mockImplementation(() => {});
+    actions.forEach((action) => store.dispatch(action));
+    expect(error).not.toHaveBeenCalled();
   });
 });
