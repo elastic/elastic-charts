@@ -25,10 +25,13 @@ export type ChartId = string;
 /** @internal */
 export interface ChartSliceState {
   /**
-   * a unique ID for each chart, by which the selectors keep what they computed for it
+   * the ID of the chart, which charts on a page may share
    */
   chartId: ChartId;
-  /** memoizes the selectors under this instead of the chart id, which a render without a DOM must not share */
+  /**
+   * The key by which the selectors keep what they computed for this chart, of its store alone. Only a state
+   * that no store made is without one, and its chart id stands in.
+   */
   selectorCacheKey?: string;
   /**
    * Chart title

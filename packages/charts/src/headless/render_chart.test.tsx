@@ -537,7 +537,7 @@ describe('renderChart without a DOM', () => {
 
       expect(selectorRegistry()).toEqual(withMounted);
       expect(getSettingsSpecSelector(mounted)).toBe(settings);
-      globalSelectorCache.removeKeyFromAll('shared');
+      globalSelectorCache.removeKeyFromAll(mounted.selectorCacheKey!);
     });
 
     // the registry check after each test is what these four are about: one per way out of `renderChart`

@@ -11,13 +11,13 @@ import { connect } from 'react-redux';
 
 import type { RenderChangeListener, WillRenderListener } from '../specs';
 import type { GlobalChartState } from '../state/chart_state';
-import { globalSelectorCache } from '../state/create_selector';
+import { globalSelectorCache, keySelector } from '../state/create_selector';
 import { getInternalChartStateSelector } from '../state/selectors/get_internal_chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import type { DebugState } from '../state/types';
 
 interface ChartStatusStateProps {
-  chartId: string;
+  selectorCacheKey: string;
   rendered: boolean;
   renderedCount: number;
   onRenderChange?: RenderChangeListener;
@@ -35,7 +35,7 @@ class ChartStatusComponent extends React.Component<ChartStatusStateProps> {
   }
 
   componentWillUnmount() {
-    globalSelectorCache.removeKeyFromAll(this.props.chartId);
+    globalSelectorCache.removeKeyFromAll(this.props.selectorCacheKey);
   }
 
   dispatchRenderChange = () => {
@@ -68,7 +68,7 @@ const mapStateToProps = (state: GlobalChartState): ChartStatusStateProps => {
   const { onWillRender, onRenderChange, debugState } = getSettingsSpecSelector(state);
 
   return {
-    chartId: state.chartId,
+    selectorCacheKey: keySelector(state),
     rendered: state.chartRendered,
     renderedCount: state.chartRenderedCount,
     onWillRender,

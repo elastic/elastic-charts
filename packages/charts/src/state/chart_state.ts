@@ -8,6 +8,7 @@
 
 import type { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 
 import { onChartRendered } from './actions/chart';
 import {
@@ -208,14 +209,9 @@ const createChartSlice = (initialState: ChartSliceState) =>
   });
 
 /** @internal */
-export const createChartStore = (
-  chartId: string,
-  title?: string,
-  description?: string,
-  renderer?: RendererType,
-  selectorCacheKey?: string,
-) => {
-  const initialState = getInitialState(chartId, title, description, renderer, selectorCacheKey);
+export const createChartStore = (chartId: string, title?: string, description?: string, renderer?: RendererType) => {
+  // the selectors keep what they compute by a key of this store alone: charts may share an id
+  const initialState = getInitialState(chartId, title, description, renderer, uuidv4());
   const chartSlice = createChartSlice(initialState);
   return configureStore({
     reducer: chartSlice.reducer,

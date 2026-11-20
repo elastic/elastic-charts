@@ -23,7 +23,11 @@ interface Computation {
  */
 const KEPT = 2;
 
-const keySelector = ({ chartId, selectorCacheKey }: GlobalChartState) => selectorCacheKey ?? chartId;
+/**
+ * The key by which the selectors keep what they computed for the chart of a state
+ * @internal
+ */
+export const keySelector = ({ chartId, selectorCacheKey }: GlobalChartState) => selectorCacheKey ?? chartId;
 
 /**
  * What the selectors remember, in one table for each chart: the selectors themselves hold nothing. Dropping
@@ -55,7 +59,7 @@ export const globalSelectorCache = new GlobalSelectorCache();
 /**
  * Makes a memoized selector of the chart state: `createCustomCachedSelector([...inputSelectors], combiner)`.
  * It computes again only when an input selector returns something else than for the computations it kept,
- * which it keeps apart for each chart, by `chartId`.
+ * which it keeps apart for each chart.
  *
  * Typed as `createSelector` of reselect, whose call signatures and inference its call sites rely on.
  *
