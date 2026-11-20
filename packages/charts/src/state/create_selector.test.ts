@@ -52,21 +52,22 @@ describe('createCustomCachedSelector', () => {
     expect(selector.recomputations()).toBe(3);
   });
 
-  it('limits each chart id memo cache to two input combinations', () => {
+  it('keeps one computation for a chart: the latest', () => {
     const selector = createCustomCachedSelector(
       [(state: GlobalChartState) => state.parentDimensions.width],
       (width) => ({ width }),
     );
 
-    selector(getState('chart-lru', 1));
-    selector(getState('chart-lru', 2));
-    selector(getState('chart-lru', 3));
+    selector(getState('chart-one-kept', 1));
+    selector(getState('chart-one-kept', 2));
+    expect(selector.recomputations()).toBe(2);
+    selector(getState('chart-one-kept', 2));
+    expect(selector.recomputations()).toBe(2);
+
+    selector(getState('chart-one-kept', 1));
     expect(selector.recomputations()).toBe(3);
 
-    selector(getState('chart-lru', 1));
-    expect(selector.recomputations()).toBe(4);
-
-    globalSelectorCache.removeKeyFromAll('chart-lru');
+    globalSelectorCache.removeKeyFromAll('chart-one-kept');
   });
 
   it('computes once for a state, and again only when an input is another object', () => {
@@ -81,9 +82,6 @@ describe('createCustomCachedSelector', () => {
     expect(selector.recomputations()).toBe(1);
 
     expect(selector({ ...state, parentDimensions: { ...state.parentDimensions } })).not.toBe(result);
-    expect(selector.recomputations()).toBe(2);
-    // the one before is kept too
-    expect(selector(state)).toBe(result);
     expect(selector.recomputations()).toBe(2);
 
     globalSelectorCache.removeKeyFromAll('chart-memo');

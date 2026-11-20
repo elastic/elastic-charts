@@ -7,8 +7,10 @@
  */
 
 import type { createSelector } from '@reduxjs/toolkit';
+import { isDraft, original } from '@reduxjs/toolkit';
 
 import type { GlobalChartState } from './chart_state';
+import { Logger } from '../utils/logger';
 
 /** What a selector computed: for which state, from which inputs, with which result */
 interface Computation {
@@ -16,12 +18,6 @@ interface Computation {
   inputs: unknown[];
   result: unknown;
 }
-
-/**
- * How many computations a selector keeps for a chart. Two capture all of the hit rate; each one can hold on to
- * large objects (geometry arrays, scales, tooltip info), for every selector of every chart on the page.
- */
-const KEPT = 2;
 
 /**
  * The key by which the selectors keep what they computed for the chart of a state
@@ -34,14 +30,13 @@ export const keySelector = ({ chartId, selectorCacheKey }: GlobalChartState) => 
  * the table of a chart drops everything computed for it, and nothing is made for a chart but its table.
  */
 class GlobalSelectorCache {
-  private readonly charts = new Map<string, Map<unknown, Computation[]>>();
+  private readonly charts = new Map<string, Map<unknown, Computation>>();
 
-  computations(key: string, selector: unknown): Computation[] {
+  /** what the selectors last computed for a chart */
+  ofChart(key: string): Map<unknown, Computation> {
     let ofChart = this.charts.get(key);
     if (!ofChart) this.charts.set(key, (ofChart = new Map()));
-    let computations = ofChart.get(selector);
-    if (!computations) ofChart.set(selector, (computations = []));
-    return computations;
+    return ofChart;
   }
 
   removeKeyFromAll(key: string) {
@@ -58,8 +53,14 @@ export const globalSelectorCache = new GlobalSelectorCache();
 
 /**
  * Makes a memoized selector of the chart state: `createCustomCachedSelector([...inputSelectors], combiner)`.
- * It computes again only when an input selector returns something else than for the computations it kept,
- * which it keeps apart for each chart.
+ * It keeps its last computation for each chart, and computes again only when an input selector returns
+ * something else than it did for that one.
+ *
+ * One computation is enough because a selector is asked about one line of states: those that the store of
+ * a chart holds, one after the other. A reducer has to ask about the state it was given, not about the draft
+ * it writes to, of which every object is new: an answer about a draft would be computed from scratch, and
+ * would replace the computation that the next state could have used. Asked about a draft all the same, it
+ * logs an error and answers about the state the reducer was given.
  *
  * Typed as `createSelector` of reselect, whose call signatures and inference its call sites rely on.
  *
@@ -70,28 +71,25 @@ export const createCustomCachedSelector = ((...args: any[]) => {
   const inputSelectors: Array<(...a: unknown[]) => unknown> = args.slice(0, -1).flat();
   let recomputations = 0;
 
-  const selector = (state: GlobalChartState, ...rest: unknown[]) => {
-    const kept = globalSelectorCache.computations(keySelector(state), selector);
+  const selector = (asked: GlobalChartState, ...rest: unknown[]) => {
+    let state = asked;
+    if (isDraft(asked)) {
+      Logger.error('A selector was asked about the draft of a reducer. It answers about the state the reducer got.');
+      state = original(asked) ?? asked;
+    }
+    const ofChart = globalSelectorCache.ofChart(keySelector(state));
+    const last = ofChart.get(selector);
     // the state it was last asked about: the same result, with no input to look at
-    let at = rest.length === 0 ? kept.findIndex((c) => c.state === state) : -1;
-    let computation = kept[at];
-    if (!computation) {
-      const inputs = inputSelectors.map((input) => input(state, ...rest));
-      at = kept.findIndex((c) => c.inputs.every((input, i) => input === inputs[i]));
-      computation = kept[at];
-      if (computation) computation.state = state;
-      else {
-        recomputations++;
-        computation = { state, inputs, result: combiner(...inputs) };
-      }
+    if (last && last.state === state && rest.length === 0) return last.result;
+    const inputs = inputSelectors.map((input) => input(state, ...rest));
+    if (last && last.inputs.every((input, i) => input === inputs[i])) {
+      last.state = state;
+      return last.result;
     }
-    // the latest first; past what is kept, the oldest goes
-    if (at !== 0) {
-      if (at > 0) kept.splice(at, 1);
-      else if (kept.length === KEPT) kept.pop();
-      kept.unshift(computation);
-    }
-    return computation.result;
+    recomputations++;
+    const result = combiner(...inputs);
+    ofChart.set(selector, { state, inputs, result });
+    return result;
   };
   selector.recomputations = () => recomputations;
   return selector;
