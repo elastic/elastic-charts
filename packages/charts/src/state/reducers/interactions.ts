@@ -7,6 +7,7 @@
  */
 
 import type { ActionReducerMapBuilder } from '@reduxjs/toolkit';
+import { isDraft, original } from '@reduxjs/toolkit';
 
 import { ChartType } from '../../chart_types';
 import { drilldownActive } from '../../chart_types/partition_chart/state/selectors/drilldown_active';
@@ -32,6 +33,17 @@ import { getTooltipSpecSelector } from '../selectors/get_tooltip_spec';
 import { getInitialPointerState } from '../utils/get_initial_pointer_state';
 import { getInitialTooltipState } from '../utils/get_initial_tooltip_state';
 
+/**
+ * The state a reducer was given, as the store holds it. Selectors are asked about this, never about the draft the
+ * reducer writes to: every object of a draft is new, so they could not answer about it from what they computed.
+ *
+ * It is the state from before the reducer wrote anything. No reducer here asks about what it has written: the one
+ * that writes first, on mouse down, writes `prevDrilldown`, which the picked shapes it then asks for do not use.
+ *
+ * `isDraft` and `original` have to be the toolkit's: it makes the drafts with its own copy of immer.
+ */
+const committed = (state: ChartSliceState): ChartSliceState => (isDraft(state) ? original(state) ?? state : state);
+
 /** @internal */
 function createItemId(item: TooltipValue<any, SeriesIdentifier>) {
   return `${item.seriesIdentifier.key}-${item.label}-${item.value}`;
@@ -45,7 +57,7 @@ const DRAG_DETECTION_PIXEL_DELTA = 4;
 /** @internal */
 export const handleKeyActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder.addCase(onKeyPress, (globalState, action) => {
-    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    if (getInternalIsInitializedSelector(committed(globalState)) !== InitStatus.Initialized) return;
     const state = globalState.interactions;
 
     if (action.payload === 'Escape') {
@@ -64,7 +76,7 @@ export const handleKeyActions = (builder: ActionReducerMapBuilder<ChartSliceStat
 export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder
     .addCase(onPointerMove, (globalState, action) => {
-      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(committed(globalState)) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       // The dragging is enabled when the delta between down and move positions is greater than a constant.
@@ -80,11 +92,11 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
       // Do not update state.pointer.keyPressed here, only the mouseDown event should store the pressed keys
     })
     .addCase(onMouseDown, (globalState, action) => {
-      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(committed(globalState)) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       state.prevDrilldown = state.drilldown;
-      state.drilldown = getDrilldownData(globalState);
+      state.drilldown = getDrilldownData(committed(globalState));
       state.pointer.dragging = false;
       state.pointer.up = null;
       state.pointer.down = {
@@ -94,7 +106,7 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
       state.pointer.keyPressed = action.payload.keyPressed ?? noModifierKeysPressed;
     })
     .addCase(onMouseUp, (globalState, action) => {
-      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(committed(globalState)) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       state.pointer.lastDrag =
@@ -138,27 +150,27 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
 /** @internal */
 export const handleLegendActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder.addCase(onLegendItemOutAction, (globalState) => {
-    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    if (getInternalIsInitializedSelector(committed(globalState)) !== InitStatus.Initialized) return;
     const state = globalState.interactions;
 
     state.highlightedLegendPath = null;
   });
 
   builder.addCase(onLegendItemOverAction, (globalState, action) => {
-    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    if (getInternalIsInitializedSelector(committed(globalState)) !== InitStatus.Initialized) return;
     const state = globalState.interactions;
 
     state.highlightedLegendPath = action.payload;
   });
 
   builder.addCase(onToggleDeselectSeriesAction, (globalState, action) => {
-    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    if (getInternalIsInitializedSelector(committed(globalState)) !== InitStatus.Initialized) return;
     const state = globalState.interactions;
 
     state.deselectedDataSeries = toggleDeselectedDataSeries(
       action.payload,
       state.deselectedDataSeries,
-      getLegendItemsSelector(globalState),
+      getLegendItemsSelector(committed(globalState)),
     );
   });
 };
@@ -167,13 +179,13 @@ export const handleLegendActions = (builder: ActionReducerMapBuilder<ChartSliceS
 export const handleDOMElementActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder
     .addCase(onDOMElementEnter, (globalState, action) => {
-      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(committed(globalState)) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       state.hoveredDOMElement = action.payload;
     })
     .addCase(onDOMElementLeave, (globalState) => {
-      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(committed(globalState)) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       state.hoveredDOMElement = null;
@@ -184,7 +196,7 @@ export const handleDOMElementActions = (builder: ActionReducerMapBuilder<ChartSl
 export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder
     .addCase(pinTooltip, (globalState, action) => {
-      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(committed(globalState)) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       if (!action.payload.pinned) {
@@ -197,13 +209,13 @@ export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSlice
         return;
       }
 
-      if (!isPinnableTooltip(globalState)) {
+      if (!isPinnableTooltip(committed(globalState))) {
         return;
       }
 
-      const tooltipSpec = getTooltipSpecSelector(globalState);
+      const tooltipSpec = getTooltipSpecSelector(committed(globalState));
       const getSelectedValues = () => {
-        const values = getInternalTooltipInfoSelector(globalState)?.values ?? [];
+        const values = getInternalTooltipInfoSelector(committed(globalState))?.values ?? [];
         if (globalState.chartType === ChartType.Heatmap) return values.slice(0, 1); // just use the x value
         return values.filter((v) => {
           if (!v.isVisible) {
@@ -225,7 +237,7 @@ export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSlice
       state.pointer.pinned = state.pointer.current;
     })
     .addCase(toggleSelectedTooltipItem, (globalState, action) => {
-      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(committed(globalState)) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       if (!state.tooltip.pinned) return;
@@ -238,7 +250,7 @@ export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSlice
       }
     })
     .addCase(setSelectedTooltipItems, (globalState, action) => {
-      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(committed(globalState)) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       if (!state.tooltip.pinned) return;
@@ -286,9 +298,9 @@ function toggleDeselectedDataSeries(
 }
 
 function getDrilldownData(globalState: GlobalChartState) {
-  if (globalState.chartType !== ChartType.Partition || !drilldownActive(globalState)) {
+  if (globalState.chartType !== ChartType.Partition || !drilldownActive(committed(globalState))) {
     return [];
   }
-  const layerValues = getPickedShapesLayerValues(globalState)[0];
+  const layerValues = getPickedShapesLayerValues(committed(globalState))[0];
   return layerValues ? layerValues.at(-1)?.path.map((n) => n.value) ?? [] : [];
 }
