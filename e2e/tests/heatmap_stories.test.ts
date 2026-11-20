@@ -35,6 +35,20 @@ test.describe('Heatmap stories', () => {
     });
   });
 
+  test('should render numeric bins', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/heatmap-alpha--numeric-bins&globals=theme:light',
+    );
+  });
+
+  test('should render correct brush area with numeric bins', async ({ page }) => {
+    await common.expectChartWithDragAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/heatmap-alpha--numeric-bins&globals=theme:light',
+      { left: 200, top: 100 },
+      { left: 400, top: 250 },
+    );
+  });
+
   test('should maximize the label with an unique fontSize', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/heatmap-alpha--categorical',
