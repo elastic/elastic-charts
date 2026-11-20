@@ -654,7 +654,7 @@ function getXTicks(
       ...style,
       y: style.fontSize / 2 + pad(style.padding, 'top') - chartMargins.top - chartPaddings.top + chartPaddings.bottom,
       x: (scale(value) ?? 0) + (isRaster ? 0 : scale.bandwidth() / 2),
-      align: isRotated ? 'right' : isRaster ? 'left' : 'center',
+      align: isRotated ? 'right' : spec.xScale.type === ScaleType.Time ? 'left' : 'center',
     };
   });
 }

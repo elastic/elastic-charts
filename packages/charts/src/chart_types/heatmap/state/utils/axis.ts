@@ -8,10 +8,12 @@
 
 import { scaleBand } from 'd3-scale';
 
+import { isRasterScale } from './raster';
 import type { Radian } from '../../../../common/geometry';
 import { extent } from '../../../../common/math';
 import type { Vec2 } from '../../../../common/vectors';
 import { rotate2, sub2 } from '../../../../common/vectors';
+import { ScaleType } from '../../../../scales/constants';
 import { screenspaceMarkerScaleCompressor } from '../../../../solvers/screenspace_marker_scale_compressor';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isFiniteNumber, degToRad } from '../../../../utils/common';
@@ -75,7 +77,7 @@ export function getTextSizeDimension(
 
 /** @internal */
 export function getXAxisSize(
-  isCategoricalScale: boolean,
+  xScale: HeatmapSpec['xScale'],
   style: HeatmapStyle['xAxisLabel'],
   formatter: HeatmapSpec['xAxisLabelFormatter'],
   labels: (string | number)[],
@@ -93,10 +95,11 @@ export function getXAxisSize(
       minRotation: 0,
     };
   }
+  const isCategoricalScale = !isRasterScale(xScale);
   const isRotated = style.rotation !== 0;
   const normalizedScale = scaleBand<NonNullable<PrimitiveValue>>().domain(labels).range([0, 1]);
 
-  const alignment = isRotated ? 'right' : isCategoricalScale ? 'center' : 'left';
+  const alignment = isRotated ? 'right' : xScale.type === ScaleType.Time ? 'left' : 'center';
   const alignmentOffset = isCategoricalScale ? normalizedScale.bandwidth() / 2 : 0;
   const scale = (d: NonNullable<PrimitiveValue>) => (normalizedScale(d) ?? 0) + alignmentOffset;
 
