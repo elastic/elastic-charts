@@ -37,6 +37,7 @@ import type { PrimitiveValue } from '../../../partition_chart/layout/utils/group
 import type { HeatmapSpec } from '../../specs';
 import type { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import type { HeatmapTable } from '../../state/selectors/get_heatmap_table';
+import { isRasterScale } from '../../state/utils/scales';
 import type {
   Cell,
   GridCell,
@@ -381,7 +382,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const startValue = x[0];
     const endValue = x.at(-1);
     const leftIndex = xValues.indexOf(startValue ?? NaN);
-    const rightIndex = xValues.indexOf(endValue ?? NaN) + (isRasterTimeScale(spec.xScale) && x.length > 1 ? 0 : 1);
+    const rightIndex = xValues.indexOf(endValue ?? NaN) + (isRasterScale(spec.xScale) && x.length > 1 ? 0 : 1);
 
     const isRightOutOfRange = rightIndex > xValues.length - 1 || rightIndex < 0;
     const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;
@@ -631,7 +632,7 @@ function getXTicks(
   chartMargins: Theme['chartMargins'],
   chartPaddings: Theme['chartPaddings'],
 ): Array<TextBox> {
-  const isTimeScale = isRasterTimeScale(spec.xScale);
+  const isRaster = isRasterScale(spec.xScale);
   const isRotated = style.rotation !== 0;
   return values.map<TextBox>((value) => {
     return {
@@ -640,8 +641,8 @@ function getXTicks(
       isValue: false,
       ...style,
       y: style.fontSize / 2 + pad(style.padding, 'top') - chartMargins.top - chartPaddings.top + chartPaddings.bottom,
-      x: (scale(value) ?? 0) + (isTimeScale ? 0 : scale.bandwidth() / 2),
-      align: isRotated ? 'right' : isTimeScale ? 'left' : 'center',
+      x: (scale(value) ?? 0) + (isRaster ? 0 : scale.bandwidth() / 2),
+      align: isRotated ? 'right' : isRaster ? 'left' : 'center',
     };
   });
 }

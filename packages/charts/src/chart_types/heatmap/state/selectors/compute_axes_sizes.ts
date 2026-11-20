@@ -17,8 +17,8 @@ import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_mul
 import { getSmallMultiplesScale } from '../../../../state/utils/get_small_multiples_scale';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isHorizontalLegend } from '../../../../utils/legend';
-import { isRasterTimeScale } from '../../layout/viewmodel/viewmodel';
 import { getTextSizeDimension, getYAxisHorizontalUsedSpace, getXAxisSize } from '../utils/axis';
+import { isRasterScale } from '../utils/scales';
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 
@@ -79,7 +79,7 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         !smSpec?.splitHorizontally,
       );
       const xAxis = getXAxisSize(
-        !isRasterTimeScale(xScale),
+        !isRasterScale(xScale),
         heatmap.xAxisLabel,
         xAxisLabelFormatter,
         xValues,

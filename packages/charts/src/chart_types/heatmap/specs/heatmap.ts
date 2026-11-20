@@ -13,7 +13,7 @@ import { ChartType } from '../..';
 import type { Color } from '../../../common/colors';
 import type { SmallMultiplesDatum } from '../../../common/panel_utils';
 import { Predicate } from '../../../common/predicate';
-import type { ScaleType } from '../../../scales/constants';
+import { ScaleType } from '../../../scales/constants';
 import type { BaseDatum } from '../../../specs';
 import type { Spec } from '../../../specs/spec_type';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
@@ -62,7 +62,10 @@ export interface RasterTimeScale extends TimeScale {
   interval: ESCalendarInterval | ESFixedInterval;
 }
 
-/** @public */
+/**
+ * @public
+ * @deprecated rendered as an {@link OrdinalScale} preserving the data order. Use `OrdinalScale` instead.
+ */
 export interface LinearScale {
   type: typeof ScaleType.Linear;
 }
@@ -70,6 +73,11 @@ export interface LinearScale {
 /** @public */
 export interface OrdinalScale {
   type: typeof ScaleType.Ordinal;
+  /**
+   * The order of the categories. `Predicate.DataIndex` preserves the data order.
+   * Falls back to the axis sort predicate of the spec.
+   */
+  sort?: Predicate;
 }
 
 /**
@@ -90,9 +98,12 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   yAccessor: Accessor<D> | AccessorFn<D>;
   valueAccessor: Accessor<never> | AccessorFn;
   valueFormatter: ValueFormatter;
+  /** @deprecated use `xScale.sort` instead */
   xSortPredicate: Predicate;
+  /** @deprecated use `yScale.sort` instead */
   ySortPredicate: Predicate;
   xScale: RasterTimeScale | OrdinalScale | LinearScale;
+  yScale: OrdinalScale;
   highlightedData?: HeatmapHighlightedData;
   name?: string;
   timeZone: string;
@@ -114,6 +125,7 @@ export const heatmapBuildProps = buildSFProps<HeatmapSpec>()(
     data: [],
     valueAccessor: ({ value }) => value,
     xScale: { type: X_SCALE_DEFAULT.type },
+    yScale: { type: ScaleType.Ordinal },
     valueFormatter: (value) => `${value}`,
     xSortPredicate: Predicate.AlphaAsc,
     ySortPredicate: Predicate.AlphaAsc,

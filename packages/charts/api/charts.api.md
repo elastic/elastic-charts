@@ -1639,7 +1639,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     xAxisTitle: string;
     // (undocumented)
     xScale: RasterTimeScale | OrdinalScale | LinearScale;
-    // (undocumented)
+    // @deprecated (undocumented)
     xSortPredicate: Predicate;
     // (undocumented)
     yAccessor: Accessor<D> | AccessorFn<D>;
@@ -1650,6 +1650,8 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     // (undocumented)
     yAxisTitle: string;
     // (undocumented)
+    yScale: OrdinalScale;
+    // @deprecated (undocumented)
     ySortPredicate: Predicate;
 }
 
@@ -2048,7 +2050,7 @@ export interface LinearGradient {
     y1?: Ratio;
 }
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface LinearScale {
     // (undocumented)
     type: typeof ScaleType.Linear;
@@ -2460,6 +2462,7 @@ export type OrdinalDomain = (number | string)[];
 
 // @public (undocumented)
 export interface OrdinalScale {
+    sort?: Predicate;
     // (undocumented)
     type: typeof ScaleType.Ordinal;
 }
