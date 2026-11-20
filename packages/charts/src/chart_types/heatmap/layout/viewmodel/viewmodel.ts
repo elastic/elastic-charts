@@ -24,9 +24,9 @@ import {
 import type { Box, Font } from '../../../../common/text_utils';
 import { maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
-import type { LinearScale, OrdinalScale, RasterTimeScale, BaseDatum } from '../../../../specs';
+import type { RasterTimeScale, BaseDatum } from '../../../../specs';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
+import { roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import type { Datum } from '../../../../utils/common';
 import { clamp, isFiniteNumber, isNil } from '../../../../utils/common';
 import type { ChartDimensions } from '../../../../utils/dimensions';
@@ -37,7 +37,7 @@ import type { PrimitiveValue } from '../../../partition_chart/layout/utils/group
 import type { HeatmapSpec } from '../../specs';
 import type { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import type { HeatmapTable } from '../../state/selectors/get_heatmap_table';
-import { isRasterScale } from '../../state/utils/scales';
+import { addRasterInterval, isRasterScale } from '../../state/utils/raster';
 import type {
   Cell,
   GridCell,
@@ -345,8 +345,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const allXValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(xValues, startX, endX);
     const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);
     const invertedXValues: Array<NonNullable<PrimitiveValue>> =
-      isRasterTimeScale(spec.xScale) && typeof endX === 'number'
-        ? [startX, addIntervalToTime(endX, spec.xScale.interval, spec.timeZone)]
+      isRasterScale(spec.xScale) && typeof endX === 'number'
+        ? [startX, addRasterInterval(spec.xScale, endX, spec.timeZone)]
         : [...allXValuesInRange];
     const cells: Cell[] = [];
 
@@ -620,7 +620,7 @@ export function isValueInRanges(value: number, ranges: Array<[number, number]>) 
 }
 
 /** @internal */
-export function isRasterTimeScale(scale: RasterTimeScale | OrdinalScale | LinearScale): scale is RasterTimeScale {
+export function isRasterTimeScale(scale: HeatmapSpec['xScale']): scale is RasterTimeScale {
   return scale.type === ScaleType.Time;
 }
 

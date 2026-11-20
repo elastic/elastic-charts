@@ -21,6 +21,7 @@ import { getAccessorValue } from '../../../../utils/accessor';
 import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
 import { isFiniteNumber, isNil, isNonNullablePrimitiveValue } from '../../../../utils/common';
 import type { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
+import { getRasterDomainFilter, linearRange } from '../utils/raster';
 import type { ResolvedHeatmapScale } from '../utils/scales';
 
 /**
@@ -45,6 +46,8 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
     const { data, valueAccessor, xAccessor, yAccessor, timeZone } = spec;
     const smVValues = new Set<string | number>();
     const smHValues = new Set<string | number>();
+    const isInXDomain = getRasterDomainFilter(scales.x, timeZone);
+    const isInYDomain = getRasterDomainFilter(scales.y, timeZone);
     const resultData = data.reduce<HeatmapTable>(
       (acc, curr, index) => {
         const x = getAccessorValue(curr, xAccessor);
@@ -52,6 +55,9 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
         const value = getAccessorValue(curr, valueAccessor);
 
         if (!isNonNullablePrimitiveValue(x) || !isNonNullablePrimitiveValue(y)) {
+          return acc;
+        }
+        if (!(isInXDomain?.(x) ?? true) || !(isInYDomain?.(y) ?? true)) {
           return acc;
         }
         // add a cell and update extent only if the value is finite
@@ -132,10 +138,24 @@ function getAxisDomain(
     const [customMin, customMax] = !Array.isArray(customDomain)
       ? [customDomain?.min ?? NaN, customDomain?.max ?? NaN]
       : [NaN, NaN];
-    const [min, max] = extent([dataMin, customMin, customMax, dataMaxExtended]);
+    const { min: domainMin, max: domainMax } = scale.domain ?? {};
+    const [min = NaN, max = NaN] = scale.domain
+      ? [isFiniteNumber(domainMin) ? domainMin : dataMin, isFiniteNumber(domainMax) ? domainMax : dataMaxExtended]
+      : extent([dataMin, customMin, customMax, dataMaxExtended]);
     return {
       values: isFiniteNumber(min) && isFiniteNumber(max) ? timeRange(min, max, scale.interval, timeZone) : [],
-      numericExtent: [min ?? NaN, max ?? NaN],
+      numericExtent: [min, max],
+    };
+  }
+  if (scale.type === ScaleType.Linear) {
+    const [dataMin = NaN, dataMax = NaN] = extent(dataValues.filter(isFiniteNumber));
+    const { min: domainMin, max: domainMax } = scale.domain ?? {};
+    const min = isFiniteNumber(domainMin) ? domainMin : dataMin;
+    const max = isFiniteNumber(domainMax) ? domainMax : dataMax + scale.interval;
+    const anchor = isFiniteNumber(dataMin) ? dataMin : 0;
+    return {
+      values: isFiniteNumber(min) && isFiniteNumber(max) ? linearRange(min, max, scale.interval, anchor) : [],
+      numericExtent: [min, max],
     };
   }
   return {

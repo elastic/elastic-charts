@@ -18,7 +18,7 @@ import { getSmallMultiplesScale } from '../../../../state/utils/get_small_multip
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { getTextSizeDimension, getYAxisHorizontalUsedSpace, getXAxisSize } from '../utils/axis';
-import { isRasterScale } from '../utils/scales';
+import { isRasterScale } from '../utils/raster';
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 

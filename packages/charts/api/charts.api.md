@@ -1638,7 +1638,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     // (undocumented)
     xAxisTitle: string;
     // (undocumented)
-    xScale: RasterTimeScale | OrdinalScale | LinearScale;
+    xScale: RasterTimeScale | RasterLinearScale | OrdinalScale | LinearScale;
     // @deprecated (undocumented)
     xSortPredicate: Predicate;
     // (undocumented)
@@ -2799,8 +2799,21 @@ export type PropsWithoutChildren<Props extends Record<string, unknown> = Record<
 type Range_2 = [min: number, max: number];
 export { Range_2 as Range }
 
+// @public
+export type RasterDomain = Partial<Pick<DomainRange, 'min' | 'max'>>;
+
+// @public
+export interface RasterLinearScale {
+    // (undocumented)
+    domain?: RasterDomain;
+    interval: number;
+    // (undocumented)
+    type: typeof ScaleType.Linear;
+}
+
 // @public (undocumented)
 export interface RasterTimeScale extends TimeScale {
+    domain?: RasterDomain;
     // (undocumented)
     interval: ESCalendarInterval | ESFixedInterval;
 }

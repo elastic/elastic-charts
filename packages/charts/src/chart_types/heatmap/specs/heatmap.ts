@@ -23,6 +23,7 @@ import type { Accessor, AccessorFn } from '../../../utils/accessor';
 import type { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import type { Datum, LabelAccessor, ValueFormatter } from '../../../utils/common';
 import { stripUndefined } from '../../../utils/common';
+import type { DomainRange } from '../../xy_chart/utils/specs';
 import type { Cell } from '../layout/types/viewmodel_types';
 
 /** @public */
@@ -57,14 +58,30 @@ export interface TimeScale {
   type: typeof ScaleType.Time;
 }
 
+/** @internal */
+export type RasterDomain = Partial<Pick<DomainRange, 'min' | 'max'>>;
+
 /** @public */
 export interface RasterTimeScale extends TimeScale {
   interval: ESCalendarInterval | ESFixedInterval;
+  domain?: RasterDomain;
+}
+
+/**
+ * A numeric scale of uniform bins, e.g. the buckets of a histogram aggregation.
+ * The data values are expected to be the start of their bin.
+ * @public
+ */
+export interface RasterLinearScale {
+  type: typeof ScaleType.Linear;
+  interval: number;
+  domain?: RasterDomain;
 }
 
 /**
  * @public
- * @deprecated rendered as an {@link OrdinalScale} preserving the data order. Use `OrdinalScale` instead.
+ * @deprecated rendered as an {@link OrdinalScale} preserving the data order.
+ * Use `OrdinalScale`, or `RasterLinearScale` for numeric bins.
  */
 export interface LinearScale {
   type: typeof ScaleType.Linear;
@@ -102,7 +119,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   xSortPredicate: Predicate;
   /** @deprecated use `yScale.sort` instead */
   ySortPredicate: Predicate;
-  xScale: RasterTimeScale | OrdinalScale | LinearScale;
+  xScale: RasterTimeScale | RasterLinearScale | OrdinalScale | LinearScale;
   yScale: OrdinalScale;
   highlightedData?: HeatmapHighlightedData;
   name?: string;

@@ -1,0 +1,66 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+import { ScaleType } from '../../../../scales/constants';
+import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
+import { isFiniteNumber } from '../../../../utils/common';
+import type { HeatmapSpec, RasterLinearScale, RasterTimeScale } from '../../specs/heatmap';
+
+type HeatmapScale = HeatmapSpec['xScale'] | HeatmapSpec['yScale'];
+
+/** @internal */
+export type RasterScale = RasterTimeScale | RasterLinearScale;
+
+/** @internal */
+export function isRasterScale(scale: HeatmapScale): scale is RasterScale {
+  if (scale.type === ScaleType.Time) return true;
+  if (scale.type !== ScaleType.Linear || !('interval' in scale)) return false;
+  return isFiniteNumber(scale.interval) && scale.interval > 0;
+}
+
+/** @internal */
+export function addRasterInterval(scale: RasterScale, value: number, timeZone: string): number {
+  return scale.type === ScaleType.Time
+    ? addIntervalToTime(value, scale.interval, timeZone)
+    : roundFloatError(value + scale.interval);
+}
+
+/**
+ * Matches the bins overlapping the custom domain.
+ * @internal
+ */
+export function getRasterDomainFilter(
+  scale: HeatmapScale,
+  timeZone: string,
+): ((value: string | number) => boolean) | undefined {
+  if (!isRasterScale(scale) || !scale.domain) return undefined;
+  const { min, max } = scale.domain;
+  const upper = isFiniteNumber(max) ? max : Infinity;
+  if (scale.type === ScaleType.Time) {
+    // snapping the bound once avoids adding a calendar interval to every datum
+    const lower = isFiniteNumber(min) ? roundDateToESInterval(min, scale.interval, 'start', timeZone) : -Infinity;
+    return (value) => isFiniteNumber(value) && value >= lower && value < upper;
+  }
+  const lower = isFiniteNumber(min) ? min : -Infinity;
+  return (value) => isFiniteNumber(value) && value + scale.interval > lower && value < upper;
+}
+
+/**
+ * Generates the bins `anchor + k * interval` overlapping `[min, max)`.
+ * @internal
+ */
+export function linearRange(min: number, max: number, interval: number, anchor: number): number[] {
+  const first = Math.floor(roundFloatError((min - anchor) / interval));
+  const end = Math.ceil(roundFloatError((max - anchor) / interval));
+  return Array.from({ length: Math.max(end - first, 0) }, (_, i) => roundFloatError(anchor + (first + i) * interval));
+}
+
+/** generated bins must match the data values, e.g. 0.1 + 2 * 0.1 = 0.30000000000000004 */
+function roundFloatError(value: number): number {
+  return Number(value.toPrecision(15));
+}
