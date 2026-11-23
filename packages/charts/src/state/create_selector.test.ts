@@ -31,6 +31,15 @@ const getState = (chartId: string, width: number): GlobalChartState => ({
   },
 });
 
+/** whether one thing leads to another, through properties and through the keys and values of maps */
+const reaches = (from: unknown, to: unknown, seen = new Set<unknown>()): boolean => {
+  if (from === to) return true;
+  if (typeof from !== 'object' || from === null || seen.has(from)) return false;
+  seen.add(from);
+  const next: unknown[] = from instanceof Map ? [...from.keys(), ...from.values()] : Object.values(from);
+  return next.some((value) => reaches(value, to, seen));
+};
+
 describe('createCustomCachedSelector', () => {
   it('keeps empty selector caches registered so future chart ids can be cleaned up', () => {
     const selector = createCustomCachedSelector(
@@ -101,6 +110,21 @@ describe('createCustomCachedSelector', () => {
     selectorMemos.release('chart-other');
     expect(selector(one)).toBe(result);
     selectorMemos.release('chart-one');
+  });
+
+  it('holds on to no state of a chart but the one last asked about', () => {
+    const askedOnce = createCustomCachedSelector([(state: GlobalChartState) => state.chartId], (id) => ({ id }));
+    const askedAgain = createCustomCachedSelector([(state: GlobalChartState) => state.chartId], (id) => ({ id }));
+    const earlier = getState('chart-states', 1);
+    const latest = getState('chart-states', 2);
+    askedOnce(earlier);
+    askedAgain(earlier);
+    askedAgain(latest);
+    expect(reaches(selectorMemos, latest)).toBe(true);
+    // a selector that is no longer asked would otherwise keep a state for as long as the chart lives
+    expect(reaches(selectorMemos, earlier)).toBe(false);
+
+    selectorMemos.release('chart-states');
   });
 
   it('keeps what it computed for each of several charts that share an id', () => {
