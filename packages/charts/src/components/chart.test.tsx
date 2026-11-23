@@ -11,6 +11,7 @@ import React from 'react';
 
 import { Chart } from './chart';
 import { Settings, BarSeries } from '../specs';
+import { selectorMemos } from '../state/create_selector';
 
 interface Datum {
   x: number;
@@ -50,5 +51,21 @@ describe('Chart', () => {
       </Chart>,
     );
     expect(screen.getByText('tests the series name in legend')).toBeInTheDocument();
+  });
+
+  it('lets go of the memos of its selectors when it unmounts', () => {
+    const chartMemos = jest.spyOn(selectorMemos, 'chartMemos');
+    const release = jest.spyOn(selectorMemos, 'release');
+    const { unmount } = render(
+      <Chart size={[100, 100]}>
+        <BarSeries id="test" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
+      </Chart>,
+    );
+    expect(release).not.toHaveBeenCalled();
+    unmount();
+    expect(release).toHaveBeenCalledTimes(1);
+    // the key of the states that the selectors of this chart were asked about
+    expect(release.mock.calls[0]?.[0]).toBe(chartMemos.mock.calls[0]?.[0].uniqueChartKey);
+    jest.restoreAllMocks();
   });
 });
