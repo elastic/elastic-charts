@@ -7,7 +7,7 @@
  */
 
 import type { Font } from './text_utils';
-import { fitText } from './text_utils';
+import { fitText, maximiseFontSize } from './text_utils';
 import type { TextMeasure } from '../utils/bbox/canvas_text_bbox_calculator';
 
 const monospaceMeasure: TextMeasure = (text) => ({
@@ -142,5 +142,21 @@ describe('fitText', () => {
         },
       );
     });
+  });
+});
+
+describe('maximiseFontSize', () => {
+  it('returns the largest font size that fits the box', () => {
+    expect(maximiseFontSize(monospaceMeasure, 'abc', font, 8, 20, 100, 14)).toBe(14);
+  });
+
+  it('returns NaN without measuring when the box is shorter than the min font size', () => {
+    const measure = jest.fn(monospaceMeasure);
+    expect(maximiseFontSize(measure, 'abc', font, 8, 20, 100, 4)).toBeNaN();
+    expect(measure).not.toHaveBeenCalled();
+  });
+
+  it('compares the box height with the min font size snapped down to an integer', () => {
+    expect(maximiseFontSize(monospaceMeasure, 'abc', font, 7.5, 20, 100, 7.2)).toBe(7);
   });
 });

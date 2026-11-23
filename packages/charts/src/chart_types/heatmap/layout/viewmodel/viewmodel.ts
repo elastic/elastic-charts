@@ -172,16 +172,18 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
     const formattedValue = spec.valueFormatter(d.value);
 
-    const fontSize = maximiseFontSize(
-      textMeasure,
-      formattedValue,
-      heatmapTheme.cell.label,
-      heatmapTheme.cell.label.minFontSize,
-      heatmapTheme.cell.label.maxFontSize,
-      // adding 3px padding per side to avoid that text touches the edges
-      cellWidthInner - 6,
-      cellHeightInner - 6,
-    );
+    const fontSize = heatmapTheme.cell.label.visible
+      ? maximiseFontSize(
+          textMeasure,
+          formattedValue,
+          heatmapTheme.cell.label,
+          heatmapTheme.cell.label.minFontSize,
+          heatmapTheme.cell.label.maxFontSize,
+          // adding 3px padding per side to avoid that text touches the edges
+          cellWidthInner - 6,
+          cellHeightInner - 6,
+        )
+      : NaN;
     tableMinFontSize = Math.min(tableMinFontSize, fontSize);
 
     const cellMap = acc.get(panelKey) ?? new Map<string, Cell>();

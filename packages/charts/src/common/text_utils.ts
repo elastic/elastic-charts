@@ -231,6 +231,7 @@ export function maximiseFontSize(
   boxWidth: Pixels,
   boxHeight: Pixels,
 ): Pixels {
+  if (boxHeight < integerSnap(minFontSize)) return NaN;
   const response = (fontSize: number) => {
     const { width } = measure(text, font, fontSize);
     const widthDiff = boxWidth - width;
