@@ -32,6 +32,7 @@ import { clamp, isFiniteNumber, isNil } from '../../../../utils/common';
 import type { ChartDimensions } from '../../../../utils/dimensions';
 import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
+import type { Point } from '../../../../utils/point';
 import type { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import type { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import type { HeatmapSpec } from '../../specs';
@@ -316,9 +317,9 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   };
 
   /**
-   * Return selected cells and X,Y ranges based on the drag selection.
+   * Return the X,Y values and ranges covered by the drag selection, confined to the start panel.
    */
-  const pickDragArea: PickDragFunction = (bound) => {
+  const getDragBounds = (bound: [start: Point, end: Point]) => {
     const [start, end] = bound;
 
     const { left, top } = chartDimensions;
@@ -356,21 +357,37 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       isRasterScale(spec.yScale) && typeof startY === 'number'
         ? [endY, addRasterInterval(spec.yScale, startY, spec.timeZone)]
         : [...allYValuesInRange];
+
+    return {
+      allXValuesInRange,
+      allYValuesInRange,
+      x: invertedXValues,
+      y: invertedYValues,
+      smHorizontalAccessorValue,
+      smVerticalAccessorValue,
+    };
+  };
+
+  /**
+   * Return selected cells and X,Y ranges based on the drag selection.
+   */
+  const pickDragArea: PickDragFunction = (bound) => {
+    const { allXValuesInRange, allYValuesInRange, x, y, smHorizontalAccessorValue, smVerticalAccessorValue } =
+      getDragBounds(bound);
+    const panelCells = panelCellMap.get(getPanelKey(smHorizontalAccessorValue, smVerticalAccessorValue));
     const cells: Cell[] = [];
 
-    allXValuesInRange.forEach((x) => {
-      allYValuesInRange.forEach((y) => {
-        const panelKey = getPanelKey(smHorizontalAccessorValue, smVerticalAccessorValue);
-        const cellKey = getCellKey(x, y);
-        const cellValue = panelCellMap.get(panelKey)?.get(cellKey);
+    allXValuesInRange.forEach((xValue) => {
+      allYValuesInRange.forEach((yValue) => {
+        const cellValue = panelCells?.get(getCellKey(xValue, yValue));
         if (cellValue) cells.push(cellValue);
       });
     });
 
     return {
-      cells: cells.filter(Boolean),
-      x: invertedXValues,
-      y: invertedYValues,
+      cells,
+      x,
+      y,
       smHorizontalAccessorValue,
       smVerticalAccessorValue,
     };
@@ -441,7 +458,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
    * Resolves coordinates and metrics of the selected rect area.
    */
   const pickDragShape: PickDragShapeFunction = (bound) => {
-    const { x, y, smHorizontalAccessorValue, smVerticalAccessorValue } = pickDragArea(bound);
+    const { x, y, smHorizontalAccessorValue, smVerticalAccessorValue } = getDragBounds(bound);
     return pickHighlightedArea(x, y, smHorizontalAccessorValue, smVerticalAccessorValue);
   };
 
