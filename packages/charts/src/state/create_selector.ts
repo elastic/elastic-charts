@@ -23,7 +23,7 @@ interface Computation {
  * The key by which the selectors keep what they computed for the chart of a state
  * @internal
  */
-export const keySelector = ({ chartId, selectorCacheKey }: GlobalChartState) => selectorCacheKey ?? chartId;
+export const uniqueChartKeyOf = ({ chartId, uniqueChartKey }: GlobalChartState) => uniqueChartKey ?? chartId;
 
 /**
  * What the selectors remember, in one table for each chart: the selectors themselves hold nothing. Dropping
@@ -77,7 +77,7 @@ export const createCustomCachedSelector = ((...args: any[]) => {
       Logger.error('A selector was asked about the draft of a reducer. It answers about the state the reducer got.');
       state = original(asked) ?? asked;
     }
-    const ofChart = globalSelectorCache.ofChart(keySelector(state));
+    const ofChart = globalSelectorCache.ofChart(uniqueChartKeyOf(state));
     const last = ofChart.get(selector);
     // the state it was last asked about: the same result, with no input to look at
     if (last && last.state === state && rest.length === 0) return last.result;

@@ -69,7 +69,7 @@ export function renderChart(chart: ReactElement): string {
   } finally {
     // Nothing unmounts here, which is what frees a chart's memoized selectors in a browser. They are kept
     // under a key of this render alone, so no other chart with the same id is affected.
-    const key = collecting.store?.getState().selectorCacheKey;
+    const key = collecting.store?.getState().uniqueChartKey;
     if (key) globalSelectorCache.removeKeyFromAll(key);
   }
 }

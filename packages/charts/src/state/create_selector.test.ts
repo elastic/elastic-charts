@@ -114,7 +114,7 @@ describe('createCustomCachedSelector', () => {
     states.forEach((state, i) => expect(selector(state)).toBe(results[i]));
     expect(selector.recomputations()).toBe(4);
 
-    states.forEach((state) => globalSelectorCache.removeKeyFromAll(state.selectorCacheKey ?? state.chartId));
+    states.forEach((state) => globalSelectorCache.removeKeyFromAll(state.uniqueChartKey ?? state.chartId));
   });
 });
 

@@ -32,7 +32,7 @@ export interface ChartSliceState {
    * The key by which the selectors keep what they computed for this chart, of its store alone. Only a state
    * that no store made is without one, and its chart id stands in.
    */
-  selectorCacheKey?: string;
+  uniqueChartKey?: string;
   /**
    * Chart title
    */

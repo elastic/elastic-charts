@@ -196,8 +196,8 @@ function liveChart(id, make) {
   };
   // as a chart does when it is gone: what its selectors computed stays reachable until then
   const release = () => {
-    const { chartId, selectorCacheKey } = store.getState();
-    globalSelectorCache.removeKeyFromAll(selectorCacheKey ?? chartId);
+    const { chartId, uniqueChartKey } = store.getState();
+    globalSelectorCache.removeKeyFromAll(uniqueChartKey ?? chartId);
   };
   return { store, ask, size, fill, release };
 }
