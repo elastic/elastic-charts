@@ -544,7 +544,6 @@ describe('renderChart without a DOM', () => {
       renderChart(xyChart('shared', true));
 
       expect(getSettingsSpecSelector(mounted)).toBe(settings);
-      selectorMemos.release(mounted.uniqueChartKey!);
     });
 
     // the check after each test is what these four are about: one per way out of `renderChart`

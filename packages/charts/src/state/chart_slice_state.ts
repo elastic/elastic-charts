@@ -29,10 +29,10 @@ export interface ChartSliceState {
    */
   chartId: ChartId;
   /**
-   * Tells this chart instance from every other, even one with the same chart ID: the selectors keep what
-   * they computed under it. Only a state that no store made is without one; its chart ID then stands in.
+   * Tells this chart instance from every other, even one with the same chart ID. The selectors keep their
+   * memos under it, weakly, which takes an object: the memos go once no state of the chart is left.
    */
-  uniqueChartKey?: string;
+  uniqueChartKey: object;
   /**
    * Chart title
    */

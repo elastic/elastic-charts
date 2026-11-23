@@ -21,8 +21,9 @@ import { MockSeriesSpec } from '../mocks/specs';
 import { MockStore } from '../mocks/store';
 import { Logger } from '../utils/logger';
 
-const getState = (chartId: string, width: number): GlobalChartState => ({
-  ...getInitialState(chartId),
+/** A state of the chart that another state is of, with the width */
+const sized = (chart: GlobalChartState, width: number): GlobalChartState => ({
+  ...chart,
   parentDimensions: {
     top: 0,
     left: 0,
@@ -41,24 +42,19 @@ const reaches = (from: unknown, to: unknown, seen = new Set<unknown>()): boolean
 };
 
 describe('createCustomCachedSelector', () => {
-  it('keeps empty selector caches registered so future chart ids can be cleaned up', () => {
+  it('computes again for a chart whose memos were released', () => {
     const selector = createCustomCachedSelector(
       [(state: GlobalChartState) => state.parentDimensions.width],
       (width) => ({ width }),
     );
-
-    selector(getState('chart-a', 1));
+    const state = sized(getInitialState('chart-released'), 1);
+    selector(state);
+    selector(state);
     expect(selector.computationCount()).toBe(1);
 
-    selectorMemos.release('chart-a');
-
-    selector(getState('chart-b', 2));
+    selectorMemos.release(state.uniqueChartKey);
+    selector(state);
     expect(selector.computationCount()).toBe(2);
-
-    selectorMemos.release('chart-b');
-
-    selector(getState('chart-b', 2));
-    expect(selector.computationCount()).toBe(3);
   });
 
   it('keeps one computation for a chart: the latest', () => {
@@ -66,24 +62,23 @@ describe('createCustomCachedSelector', () => {
       [(state: GlobalChartState) => state.parentDimensions.width],
       (width) => ({ width }),
     );
+    const chart = getInitialState('chart-one-kept');
 
-    selector(getState('chart-one-kept', 1));
-    selector(getState('chart-one-kept', 2));
+    selector(sized(chart, 1));
+    selector(sized(chart, 2));
     expect(selector.computationCount()).toBe(2);
-    selector(getState('chart-one-kept', 2));
+    selector(sized(chart, 2));
     expect(selector.computationCount()).toBe(2);
 
-    selector(getState('chart-one-kept', 1));
+    selector(sized(chart, 1));
     expect(selector.computationCount()).toBe(3);
-
-    selectorMemos.release('chart-one-kept');
   });
 
   it('computes once for a state, and again only when an input is another object', () => {
     const selector = createCustomCachedSelector([(state: GlobalChartState) => state.parentDimensions], ({ width }) => ({
       width,
     }));
-    const state = getState('chart-memo', 1);
+    const state = sized(getInitialState('chart-memo'), 1);
     const result = selector(state);
     expect(selector(state)).toBe(result);
     // another state with the same input
@@ -92,39 +87,34 @@ describe('createCustomCachedSelector', () => {
 
     expect(selector({ ...state, parentDimensions: { ...state.parentDimensions } })).not.toBe(result);
     expect(selector.computationCount()).toBe(2);
-
-    selectorMemos.release('chart-memo');
   });
 
-  it('keeps what it computed for one chart apart from another chart', () => {
+  it('keeps what it computed for one chart apart from another chart, even one with the same id', () => {
     const selector = createCustomCachedSelector(
       [(state: GlobalChartState) => state.parentDimensions.width],
       (width) => ({ width }),
     );
-    const one = getState('chart-one', 1);
-    const other = getState('chart-other', 1);
+    const one = sized(getInitialState('chart'), 1);
+    const other = sized(getInitialState('chart'), 1);
     const result = selector(one);
     expect(selector(other)).not.toBe(result);
     expect(selector(other)).toEqual(result);
-
-    selectorMemos.release('chart-other');
     expect(selector(one)).toBe(result);
-    selectorMemos.release('chart-one');
   });
 
   it('holds on to no state of a chart but the one last asked about', () => {
     const askedOnce = createCustomCachedSelector([(state: GlobalChartState) => state.chartId], (id) => ({ id }));
     const askedAgain = createCustomCachedSelector([(state: GlobalChartState) => state.chartId], (id) => ({ id }));
-    const earlier = getState('chart-states', 1);
-    const latest = getState('chart-states', 2);
+    const chart = getInitialState('chart-states');
+    const earlier = sized(chart, 1);
+    const latest = sized(chart, 2);
     askedOnce(earlier);
     askedAgain(earlier);
     askedAgain(latest);
-    expect(reaches(selectorMemos, latest)).toBe(true);
+    const memos = selectorMemos.chartMemos(latest);
+    expect(reaches(memos, latest)).toBe(true);
     // a selector that is no longer asked would otherwise keep a state for as long as the chart lives
-    expect(reaches(selectorMemos, earlier)).toBe(false);
-
-    selectorMemos.release('chart-states');
+    expect(reaches(memos, earlier)).toBe(false);
   });
 
   it('keeps what it computed for each of several charts that share an id', () => {
@@ -137,8 +127,6 @@ describe('createCustomCachedSelector', () => {
     expect(states.map((state) => selector(state))).toEqual(results);
     states.forEach((state, i) => expect(selector(state)).toBe(results[i]));
     expect(selector.computationCount()).toBe(4);
-
-    states.forEach((state) => selectorMemos.release(state.uniqueChartKey ?? state.chartId));
   });
 });
 
@@ -147,7 +135,7 @@ describe('selectors and reducers', () => {
     // every object of a draft is new: an answer about one can neither reuse a computation nor be reused
     const error = jest.spyOn(Logger, 'error').mockImplementation(() => {});
     const selector = createCustomCachedSelector([(state: GlobalChartState) => state.parentDimensions], (d) => ({ d }));
-    const state = getState('chart-draft', 1);
+    const state = sized(getInitialState('chart-draft'), 1);
     const result = selector(state);
     createNextState(state, (draft) => {
       draft.parentDimensions.width = 2;
@@ -155,7 +143,6 @@ describe('selectors and reducers', () => {
     });
     expect(error).toHaveBeenCalledTimes(1);
     expect(selector.computationCount()).toBe(1);
-    selectorMemos.release('chart-draft');
   });
 
   it('the reducers of interactions ask about the state that the store holds', () => {

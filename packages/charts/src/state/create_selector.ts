@@ -25,8 +25,8 @@ interface Memo<Result = unknown> {
 }
 
 /**
- * The memo of each selector that was asked about one chart: a selector is the key of its own memo. The memos
- * hold no state: the chart holds the one last asked about, and its revision counts the states asked about so far.
+ * The memo of each selector that was asked about one chart: a selector is the key of its own memo. The memos hold
+ * no state: the chart holds the one last asked about, to tell when another comes, which its revision counts.
  */
 interface ChartMemos {
   state: GlobalChartState;
@@ -35,21 +35,15 @@ interface ChartMemos {
 }
 
 /**
- * The unique key of the chart a state belongs to: its chart ID, where no store gave it one
- * @internal
- */
-export const uniqueChartKeyOf = ({ chartId, uniqueChartKey }: GlobalChartState) => uniqueChartKey ?? chartId;
-
-/**
- * The memos of the selectors, in one table for each chart instance: the selectors themselves hold nothing.
- * Releasing a chart frees all that was computed for it; a chart adds nothing here but its table.
+ * The memos of the selectors, in one table for each chart instance: the selectors themselves hold nothing. A table
+ * is held weakly, by the unique chart key of the states: it goes with them, even if the chart is never released.
  */
 class SelectorMemos {
-  private readonly memosByChartKey = new Map<string, ChartMemos>();
+  private readonly memosByChartKey = new WeakMap<object, ChartMemos>();
 
   /** the memos of the chart of a state: the one place that tells a state from the last, so no revision is missed */
   chartMemos(state: GlobalChartState): ChartMemos {
-    const uniqueChartKey = uniqueChartKeyOf(state);
+    const { uniqueChartKey } = state;
     let chart = this.memosByChartKey.get(uniqueChartKey);
     if (!chart) this.memosByChartKey.set(uniqueChartKey, (chart = { state, revision: 0, memos: new Map() }));
     if (chart.state !== state) {
@@ -59,7 +53,8 @@ class SelectorMemos {
     return chart;
   }
 
-  release(uniqueChartKey: string) {
+  /** lets go of the memos of a chart at once: its states may stay reachable for a while, as React keeps some */
+  release(uniqueChartKey: object) {
     this.memosByChartKey.delete(uniqueChartKey);
   }
 }

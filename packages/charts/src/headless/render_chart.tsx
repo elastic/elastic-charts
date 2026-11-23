@@ -67,8 +67,8 @@ export function renderChart(chart: ReactElement): string {
       <HeadlessContext.Provider value={{ charts: 1, store }}>{headlessChart}</HeadlessContext.Provider>,
     );
   } finally {
-    // Nothing unmounts here, which is what frees a chart's memoized selectors in a browser. They are kept
-    // under a key of this render alone, so no other chart with the same id is affected.
+    // The memos of this chart go at once, on every way out. Its states would keep them for a while: React
+    // holds on to the store of a render that threw until it renders again.
     const key = collecting.store?.getState().uniqueChartKey;
     if (key) selectorMemos.release(key);
   }
