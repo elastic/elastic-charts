@@ -17,15 +17,22 @@ type Selector<Result = unknown> = (state: GlobalChartState) => Result;
 /** What each of the selectors returns */
 type Results<Selectors extends readonly Selector<any>[]> = { [I in keyof Selectors]: ReturnType<Selectors[I]> };
 
-/** What a selector last computed for a chart: for which state, from which inputs, with which result */
+/** What a selector last computed for a chart: for which revision of its state, from which inputs, with which result */
 interface Memo<Result = unknown> {
-  state: GlobalChartState;
+  revision: number;
   inputs: readonly unknown[];
   result: Result;
 }
 
-/** The memo of each selector that was asked about one chart: a selector is the key of its own memo */
-type ChartMemos = Map<Selector, Memo>;
+/**
+ * The memo of each selector that was asked about one chart: a selector is the key of its own memo. The memos
+ * hold no state: the chart holds the one last asked about, and its revision counts the states asked about so far.
+ */
+interface ChartMemos {
+  state: GlobalChartState;
+  revision: number;
+  memos: Map<Selector, Memo>;
+}
 
 /**
  * The unique key of the chart a state belongs to: its chart ID, where no store gave it one
@@ -40,11 +47,16 @@ export const uniqueChartKeyOf = ({ chartId, uniqueChartKey }: GlobalChartState) 
 class SelectorMemos {
   private readonly memosByChartKey = new Map<string, ChartMemos>();
 
-  /** the memos of the chart with this unique chart key */
-  chartMemos(uniqueChartKey: string): ChartMemos {
-    let memos = this.memosByChartKey.get(uniqueChartKey);
-    if (!memos) this.memosByChartKey.set(uniqueChartKey, (memos = new Map<Selector, Memo>()));
-    return memos;
+  /** the memos of the chart of a state: the one place that tells a state from the last, so no revision is missed */
+  chartMemos(state: GlobalChartState): ChartMemos {
+    const uniqueChartKey = uniqueChartKeyOf(state);
+    let chart = this.memosByChartKey.get(uniqueChartKey);
+    if (!chart) this.memosByChartKey.set(uniqueChartKey, (chart = { state, revision: 0, memos: new Map() }));
+    if (chart.state !== state) {
+      chart.state = state;
+      chart.revision++;
+    }
+    return chart;
   }
 
   release(uniqueChartKey: string) {
@@ -86,18 +98,18 @@ export const createCustomCachedSelector = <Inputs extends readonly Selector<any>
       );
       state = original(asked) ?? asked;
     }
-    const memos = selectorMemos.chartMemos(uniqueChartKeyOf(state));
+    const { revision, memos } = selectorMemos.chartMemos(state);
     const memo = memos.get(selector) as Memo<Result> | undefined;
     // the same state as the last time: the same result, without asking the input selectors
-    if (memo && memo.state === state) return memo.result;
+    if (memo && memo.revision === revision) return memo.result;
     const inputs = inputSelectors.map((input) => input(state)) as Results<Inputs>;
     if (memo && memo.inputs.every((input, i) => input === inputs[i])) {
-      memo.state = state;
+      memo.revision = revision;
       return memo.result;
     }
     computationCount++;
     const result = combiner(...inputs);
-    memos.set(selector, { state, inputs, result });
+    memos.set(selector, { revision, inputs, result });
     return result;
   };
   selector.computationCount = () => computationCount;

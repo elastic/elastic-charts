@@ -78,8 +78,8 @@ const bars = (
  * selectors that computed for it. A headless render is an instance only while it runs.
  */
 const selectorRegistry = () =>
-  [...(selectorMemos as unknown as { memosByChartKey: Map<string, Map<unknown, unknown>> }).memosByChartKey]
-    .map(([key, selectors]) => `${key}: ${selectors.size}`)
+  [...(selectorMemos as unknown as { memosByChartKey: Map<string, { memos: Map<unknown, unknown> }> }).memosByChartKey]
+    .map(([key, { memos }]) => `${key}: ${memos.size}`)
     .sort();
 
 const count = (markup: string, pattern: RegExp) => (markup.match(pattern) ?? []).length;
