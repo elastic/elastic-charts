@@ -10,7 +10,11 @@
  * Side Public License, v 1.
  */
 
+import { setFlagsFromString } from 'v8';
+import { runInNewContext } from 'vm';
+
 import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 import { renderChart } from './render_chart';
 import { Metric } from '../chart_types/metric/specs';
@@ -73,14 +77,9 @@ const bars = (
   />
 );
 
-/**
- * What the memoized selectors hold, for each chart instance: its unique chart key, with the number of
- * selectors that computed for it. A headless render is an instance only while it runs.
- */
-const selectorRegistry = () =>
-  [...(selectorMemos as unknown as { memosByChartKey: Map<string, { memos: Map<unknown, unknown> }> }).memosByChartKey]
-    .map(([key, { memos }]) => `${key}: ${memos.size}`)
-    .sort();
+setFlagsFromString('--expose-gc');
+/** Collects all that nothing leads to any more */
+const collectGarbage: () => void = runInNewContext('gc');
 
 const count = (markup: string, pattern: RegExp) => (markup.match(pattern) ?? []).length;
 /** the svg the chart is drawn in; legend icons are small svgs of their own */
@@ -89,14 +88,21 @@ const stageWidth = (markup: string) => Number(/\swidth="([\d.]+)"/.exec(markup.m
 const ids = (markup: string) => [...markup.matchAll(/\sid="([^"]+)"/g)].map(([, id]) => id);
 
 describe('renderChart without a DOM', () => {
-  // Whatever a test renders, and however that ends, the registry is as it was: no key added under any
-  // name, none removed, no selector registered.
-  let registryBefore: string[];
+  // Whatever a test renders, and however that ends, nothing holds on to the memos of the selectors of a
+  // chart: they are collected once the test is over.
+  let chartMemos: jest.SpyInstance<object>;
   beforeEach(() => {
-    registryBefore = selectorRegistry();
+    chartMemos = jest.spyOn(selectorMemos, 'chartMemos');
   });
-  afterEach(() => {
-    expect(selectorRegistry()).toEqual(registryBefore);
+  afterEach(async () => {
+    const charts = [...new Set(chartMemos.mock.results.map(({ value }) => value as object))];
+    const memos = charts.map((ofChart) => new WeakRef(ofChart));
+    charts.length = 0;
+    chartMemos.mockRestore();
+    // what a WeakRef was made of stays until the turn ends
+    await new Promise((resolve) => setTimeout(resolve));
+    collectGarbage();
+    expect(memos.filter((ofChart) => ofChart.deref())).toHaveLength(0);
   });
 
   it('runs where no document or window exists', () => {
@@ -521,27 +527,28 @@ describe('renderChart without a DOM', () => {
   });
 
   describe('memoized selectors of the chart', () => {
-    it('leave the registry as it was, however many charts are rendered', () => {
+    it('are not held on to, however many charts are rendered', () => {
       for (let i = 0; i < 20; i++) renderChart(xyChart(`one-of-many-${i}`, true));
-      expect(selectorRegistry()).toEqual(registryBefore);
+      expect(chartMemos.mock.results.length).toBeGreaterThan(20);
+    });
+
+    it('are not held on to for a chart that React renders on a server, outside `renderChart`', () => {
+      expect(renderToStaticMarkup(xyChart('on-a-server'))).toContain('echChart');
+      expect(chartMemos).toHaveBeenCalled();
     });
 
     it('are kept apart from those of another chart with the same id', () => {
-      // what a chart with this id, mounted or rendered by React on a server, leaves in the registry
       const mounted = createChartStore('shared').getState();
       const settings = getSettingsSpecSelector(mounted);
-      const withMounted = selectorRegistry();
-      expect(withMounted).not.toEqual(registryBefore);
 
       renderChart(xyChart('shared', true));
 
-      expect(selectorRegistry()).toEqual(withMounted);
       expect(getSettingsSpecSelector(mounted)).toBe(settings);
       selectorMemos.release(mounted.uniqueChartKey!);
     });
 
-    // the registry check after each test is what these four are about: one per way out of `renderChart`
-    it('are released when the chart type is refused', () => {
+    // the check after each test is what these four are about: one per way out of `renderChart`
+    it('are not held on to when the chart type is refused', () => {
       expect(() =>
         renderChart(
           <Chart id="refused" size={{ width: 400, height: 200 }}>
@@ -551,7 +558,7 @@ describe('renderChart without a DOM', () => {
       ).toThrow('does not support');
     });
 
-    it('are released when drawing throws', () => {
+    it('are not held on to when drawing throws', () => {
       expect(() =>
         renderChart(
           <Chart id="throws" size={{ width: 400, height: 200 }}>
@@ -568,7 +575,7 @@ describe('renderChart without a DOM', () => {
       ).toThrow('a formatter that fails');
     });
 
-    it('are released when a child of the chart throws while the specs are gathered', () => {
+    it('are not held on to when a child of the chart throws while the specs are gathered', () => {
       const Failing = () => {
         throw new Error('a child that fails');
       };
@@ -582,7 +589,7 @@ describe('renderChart without a DOM', () => {
       ).toThrow('a child that fails');
     });
 
-    it('are released when a chart is nested in the chart', () => {
+    it('are not held on to when a chart is nested in the chart', () => {
       expect(() =>
         renderChart(
           <Chart id="outer" size={{ width: 400, height: 200 }}>
