@@ -74,7 +74,9 @@ export const createCustomCachedSelector = ((...args: any[]) => {
   const selector = (asked: GlobalChartState, ...rest: unknown[]) => {
     let state = asked;
     if (isDraft(asked)) {
-      Logger.error('A selector was asked about the draft of a reducer. It answers about the state the reducer got.');
+      Logger.error(
+        'A selector was called with a draft state, from inside a reducer. It used the state the draft was made from; pass that state instead.',
+      );
       state = original(asked) ?? asked;
     }
     const ofChart = globalSelectorCache.ofChart(uniqueChartKeyOf(state));
