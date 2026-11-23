@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { bisectRight } from 'd3-array';
+
 import { ScaleType } from '../../../../scales/constants';
 import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { isFiniteNumber } from '../../../../utils/common';
@@ -27,7 +29,23 @@ export function isRasterScale(scale: HeatmapScale): scale is RasterScale {
 export function addRasterInterval(scale: RasterScale, value: number, timeZone: string): number {
   return scale.type === ScaleType.Time
     ? addIntervalToTime(value, scale.interval, timeZone)
-    : roundFloatError(value + scale.interval);
+    : addLinearInterval(scale, value);
+}
+
+function addLinearInterval(scale: RasterLinearScale, value: number): number {
+  return roundFloatError(value + scale.interval);
+}
+
+/**
+ * @internal
+ */
+export function findLinearBinIndex(scale: RasterLinearScale, bins: number[], value: number): number {
+  const roundedValue = roundFloatError(value);
+  const index = bisectRight(bins, roundedValue) - 1;
+  const bin = bins[index];
+  if (!isFiniteNumber(bin)) return -1;
+  const binEnd = bins[index + 1] ?? addLinearInterval(scale, bin);
+  return roundedValue < binEnd ? index : -1;
 }
 
 /**
@@ -47,7 +65,7 @@ export function getRasterDomainFilter(
     return (value) => isFiniteNumber(value) && value >= lower && value < upper;
   }
   const lower = isFiniteNumber(min) ? min : -Infinity;
-  return (value) => isFiniteNumber(value) && value + scale.interval > lower && value < upper;
+  return (value) => isFiniteNumber(value) && addRasterInterval(scale, value, timeZone) > lower && value < upper;
 }
 
 /**

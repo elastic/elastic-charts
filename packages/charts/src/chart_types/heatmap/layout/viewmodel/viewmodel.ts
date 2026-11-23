@@ -38,7 +38,7 @@ import type { PrimitiveValue } from '../../../partition_chart/layout/utils/group
 import type { HeatmapSpec } from '../../specs';
 import type { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import type { HeatmapTable } from '../../state/selectors/get_heatmap_table';
-import { addRasterInterval, isRasterScale } from '../../state/utils/raster';
+import { addRasterInterval, findLinearBinIndex, isRasterScale } from '../../state/utils/raster';
 import type {
   Cell,
   GridCell,
@@ -462,14 +462,17 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     return pickHighlightedArea(x, y, smHorizontalAccessorValue, smVerticalAccessorValue);
   };
 
-  const pickCursorBand: PickCursorBand = (x) => {
-    // TODO for Linear scale we need to round the numerical interval. see also https://github.com/elastic/elastic-charts/issues/1701
-    const roundedValue =
-      isRasterTimeScale(spec.xScale) && isFiniteNumber(x)
-        ? roundDateToESInterval(x, spec.xScale.interval, 'start', spec.timeZone)
-        : x;
+  const getXValueIndex = (x: NonNullable<PrimitiveValue>) => {
+    if (!isFiniteNumber(x)) return xValues.indexOf(x);
+    if (isRasterTimeScale(spec.xScale)) {
+      return xValues.indexOf(roundDateToESInterval(x, spec.xScale.interval, 'start', spec.timeZone));
+    }
+    if (isRasterScale(spec.xScale)) return findLinearBinIndex(spec.xScale, xValues as number[], x);
+    return xValues.indexOf(x);
+  };
 
-    const index = xValues.indexOf(roundedValue);
+  const pickCursorBand: PickCursorBand = (x) => {
+    const index = getXValueIndex(x);
     return index < 0
       ? undefined
       : {

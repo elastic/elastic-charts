@@ -93,6 +93,19 @@ describe('getHeatmapTableSelector', () => {
       expect(xValues).toEqual([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]);
     });
 
+    it('should exclude the decimal bin ending on the domain min', () => {
+      const { xValues, yValues, table } = getTable({
+        data: [
+          { x: 0.2, y: 'a', value: 1 },
+          { x: 0.3, y: 'b', value: 2 },
+        ],
+        xScale: { type: ScaleType.Linear, interval: 0.1, domain: { min: 0.3 } },
+      });
+      expect(xValues).toEqual([0.3]);
+      expect(yValues).toEqual(['b']);
+      expect(table.map(({ x }) => x)).toEqual([0.3]);
+    });
+
     it('should not add a bin before a domain bound on a decimal bin edge', () => {
       const { xValues } = getTable({
         data: [
