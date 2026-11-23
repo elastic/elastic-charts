@@ -68,23 +68,22 @@ export interface RasterTimeScale extends TimeScale {
 }
 
 /**
+ * Without an `interval`, values are rendered as ordinal bands preserving the data order.
+ * Use {@link RasterLinearScale} for numeric bins.
+ * @public
+ */
+export interface LinearScale {
+  type: typeof ScaleType.Linear;
+}
+
+/**
  * A numeric scale of uniform bins, e.g. the buckets of a histogram aggregation.
  * The data values are expected to be the start of their bin.
  * @public
  */
-export interface RasterLinearScale {
-  type: typeof ScaleType.Linear;
+export interface RasterLinearScale extends LinearScale {
   interval: number;
   domain?: RasterDomain;
-}
-
-/**
- * @public
- * @deprecated rendered as an {@link OrdinalScale} preserving the data order.
- * Use `OrdinalScale`, or `RasterLinearScale` for numeric bins.
- */
-export interface LinearScale {
-  type: typeof ScaleType.Linear;
 }
 
 /** @public */

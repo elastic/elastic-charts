@@ -62,7 +62,7 @@ describe('getHeatmapTableSelector', () => {
     expect(yValues).toEqual([20, 3, 100]);
   });
 
-  it('should render the deprecated linear scale as ordinal preserving the data order', () => {
+  it('should render a linear scale without an interval as ordinal preserving the data order', () => {
     const { xValues } = getTable({
       xScale: { type: ScaleType.Linear },
       xSortPredicate: Predicate.AlphaAsc,
@@ -70,7 +70,7 @@ describe('getHeatmapTableSelector', () => {
     expect(xValues).toEqual(['b', 'c', 'a']);
   });
 
-  it('should render a linear scale with an invalid interval as the deprecated linear scale', () => {
+  it('should render a linear scale with an invalid interval as ordinal preserving the data order', () => {
     const { xValues } = getTable({ data: linearData, xScale: { type: ScaleType.Linear, interval: 0 } });
     expect(xValues).toEqual([0, 20, 50]);
   });

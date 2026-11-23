@@ -2049,7 +2049,7 @@ export interface LinearGradient {
     y1?: Ratio;
 }
 
-// @public @deprecated (undocumented)
+// @public
 export interface LinearScale {
     // (undocumented)
     type: typeof ScaleType.Linear;
@@ -2802,13 +2802,11 @@ export { Range_2 as Range }
 export type RasterDomain = Partial<Pick<DomainRange, 'min' | 'max'>>;
 
 // @public
-export interface RasterLinearScale {
+export interface RasterLinearScale extends LinearScale {
     // (undocumented)
     domain?: RasterDomain;
     // (undocumented)
     interval: number;
-    // (undocumented)
-    type: typeof ScaleType.Linear;
 }
 
 // @public (undocumented)
