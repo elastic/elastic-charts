@@ -18,7 +18,7 @@ import {
 } from './actions/chart_settings';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from './actions/colors';
 import { onExternalPointerEvent } from './actions/events';
-import { upsertSpec, removeSpec, specParsed, specUnmounted } from './actions/specs';
+import { upsertSpec, upsertSpecs, removeSpec, specParsed, specUnmounted } from './actions/specs';
 import { onComputedZIndex } from './actions/z_index';
 import type { ChartSliceState } from './chart_slice_state';
 import { chartTypeFromSpecs } from './chart_type_from_specs';
@@ -130,6 +130,18 @@ const handleSpecsActions = (builder: ActionReducerMapBuilder<ChartSliceState>) =
       state.chartRendered = false;
       state.specParsing = true;
     })
+    .addCase(upsertSpecs, (state, action) => {
+      const specs = { ...(state.specParsing ? state.specs : { [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC }) };
+      for (const spec of action.payload) {
+        skipImmerWalkOfSpecData(spec);
+        // Define an own property even for IDs such as "__proto__".
+        Object.defineProperty(specs, spec.id, { value: spec, enumerable: true, writable: true, configurable: true });
+      }
+      state.specs = specs;
+      state.specsInitialized = false;
+      state.chartRendered = false;
+      state.specParsing = true;
+    })
     .addCase(removeSpec, (state, action) => {
       const { [action.payload]: specToRemove, ...rest } = state.specs;
       state.specsInitialized = false;
@@ -196,8 +208,14 @@ const createChartSlice = (initialState: ChartSliceState) =>
   });
 
 /** @internal */
-export const createChartStore = (chartId: string, title?: string, description?: string, renderer?: RendererType) => {
-  const initialState = getInitialState(chartId, title, description, renderer);
+export const createChartStore = (
+  chartId: string,
+  title?: string,
+  description?: string,
+  renderer?: RendererType,
+  selectorCacheKey?: string,
+) => {
+  const initialState = getInitialState(chartId, title, description, renderer, selectorCacheKey);
   const chartSlice = createChartSlice(initialState);
   return configureStore({
     reducer: chartSlice.reducer,

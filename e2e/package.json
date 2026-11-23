@@ -13,7 +13,9 @@
     "merge:reports": "ts-node --transpile-only ./merge_html_reports.ts",
     "image-distance": "ts-node --transpile-only ./scripts/image_distance.ts",
     "svg:screenshots": "./scripts/start.sh --renderer=svg -u",
-    "svg:review": "yarn svg:screenshots; yarn image-distance --cross --page --open",
+    "svg:review": "yarn svg:screenshots && yarn image-distance --cross --page --open",
+    "headless:screenshots": "./scripts/start.sh --renderer=headless all.test.ts -u",
+    "headless:review": "yarn headless:screenshots && yarn image-distance --cross=headless --page --open",
     "playwright": "playwright"
   },
   "dependencies": {

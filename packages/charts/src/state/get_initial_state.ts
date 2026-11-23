@@ -18,8 +18,10 @@ export const getInitialState = (
   title?: string,
   description?: string,
   renderer: RendererType = 'canvas',
+  selectorCacheKey?: string,
 ): ChartSliceState => ({
   chartId,
+  selectorCacheKey,
   title,
   description,
   zIndex: 0,

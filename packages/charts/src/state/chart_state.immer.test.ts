@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { upsertSpec, upsertSpecs } from './actions/specs';
 import { MockSeriesSpec } from '../mocks/specs';
 import { MockStore } from '../mocks/store';
 import type { LineSeriesSpec } from '../specs';
@@ -23,5 +24,21 @@ describe('chart store - spec data and Immer', () => {
     expect(stored.data).toBe(data);
     expect(Object.isFrozen(data)).toBe(true);
     expect(Object.isFrozen(row)).toBe(false);
+  });
+
+  it('preserves special IDs and existing specs when extending a batch', () => {
+    const store = MockStore.default();
+    const existing = MockSeriesSpec.line({ id: 'existing', data: [[0, 1]] });
+    const special = MockSeriesSpec.line({ id: '__proto__', data: [[1, 2]] });
+    const later = MockSeriesSpec.line({ id: 'later', data: [[2, 3]] });
+
+    store.dispatch(upsertSpec(existing));
+    store.dispatch(upsertSpecs([special]));
+    store.dispatch(upsertSpecs([later]));
+
+    const { specs } = store.getState();
+    expect(Object.keys(specs)).toEqual(expect.arrayContaining(['existing', '__proto__', 'later']));
+    expect(Object.getOwnPropertyDescriptor(specs, '__proto__')?.value).toEqual(special);
+    expect(Object.getPrototypeOf(specs)).toBe(Object.prototype);
   });
 });

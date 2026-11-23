@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { getMeasureContext } from './measure';
 import { round } from './path';
+import { getMeasureContext } from '../measure';
 
 /**
  * Canvas `textAlign` to SVG `text-anchor`. `left` and `right` are absolute on canvas but

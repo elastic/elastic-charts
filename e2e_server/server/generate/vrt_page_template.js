@@ -95,6 +95,7 @@ import classNames from 'classnames';
 import { checkpointRandomNumberGenerators } from '@elastic/charts/src/mocks/utils';
 import { ThemeIdProvider, BackgroundIdProvider } from '../../storybook/use_base_theme';
 import { getGlobalParams, useGlobalsParameters } from '../server/mocks/use_global_parameters';
+import { renderChartsHeadlessly } from '../server/mocks/headless_chart';
 import { StoryContext } from '../../storybook/types';
 
 /**
@@ -132,8 +133,10 @@ export function VRTPage() {
   // Test infra only: \`globals=renderer:svg\` (set by e2e with \`--renderer=svg\`) selects the chart
   // renderer. Read synchronously from the url, not from the \`toggles\` state which is set only after the lazy
   // story import, and on every render since \`__vrtNavigate\` remounts this page with a new url.
-  const svgRenderer = getGlobalParams(urlParams).renderer === 'svg';
-  Chart.defaultProps = { ...Chart.defaultProps, renderer: svgRenderer ? 'svg' : 'canvas' };
+  const renderer: string | undefined = getGlobalParams(urlParams).renderer;
+  Chart.defaultProps = { ...Chart.defaultProps, renderer: renderer === 'svg' ? 'svg' : 'canvas' };
+  // \`globals=renderer:headless\` (e2e with \`--renderer=headless\`): every chart shows the markup of \`renderChart\`
+  renderChartsHeadlessly(renderer === 'headless');
   const colorMode = (themeId ?? '').includes('light') ? 'light' : 'dark';
   const getStoryContext = (title, name): StoryContext => ({
     globals: {

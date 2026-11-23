@@ -153,6 +153,11 @@ function main() {
       resolvedEntry.replaceAll('\\', '/').endsWith('/dist/cjs/index.js'),
       `CJS resolve expected dist/cjs/index.js, got ${resolvedEntry}`,
     );
+    const resolvedHeadless = requireFromConsumer.resolve('@elastic/charts/headless');
+    assert(
+      resolvedHeadless.replaceAll('\\', '/').endsWith('/dist/cjs/headless/index.js'),
+      `CJS resolve expected dist/cjs/headless/index.js, got ${resolvedHeadless}`,
+    );
 
     stylesheetExports.forEach((specifier) => {
       requireFromConsumer.resolve(specifier);
@@ -174,6 +179,23 @@ function main() {
       'HistogramModeAlignments.Center missing from CJS entry',
     );
     assert(typeof chartsCjs.percentValueGetter === 'function', 'percentValueGetter missing from CJS entry');
+    const { renderChart: renderCjsChart } = requireFromConsumer('@elastic/charts/headless');
+    assert(typeof renderCjsChart === 'function', 'renderChart missing from CJS headless entry');
+    const { createElement } = requireFromConsumer('react');
+    const cjsMarkup = renderCjsChart(
+      createElement(
+        chartsCjs.Chart,
+        { id: 'pack-cjs', size: 200 },
+        createElement(chartsCjs.BarSeries, {
+          id: 'bars',
+          xScaleType: chartsCjs.ScaleType.Ordinal,
+          xAccessor: 'x',
+          yAccessors: ['y'],
+          data: [{ x: 'one', y: 1 }],
+        }),
+      ),
+    );
+    assert(cjsMarkup.includes('echSvgRenderer') && cjsMarkup.includes('<path'), 'CJS headless chart did not render');
 
     writeProbe(
       consumer,
@@ -192,6 +214,10 @@ const esmEntry = await import.meta.resolve('@elastic/charts');
 if (!esmEntry.replaceAll('\\\\', '/').endsWith('/dist/esm/index.mjs')) {
   throw new Error(\`ESM resolve expected dist/esm/index.mjs, got \${esmEntry}\`);
 }
+const esmHeadlessEntry = await import.meta.resolve('@elastic/charts/headless');
+if (!esmHeadlessEntry.replaceAll('\\\\', '/').endsWith('/dist/esm/headless/index.mjs')) {
+  throw new Error(\`ESM resolve expected dist/esm/headless/index.mjs, got \${esmHeadlessEntry}\`);
+}
 
 const charts = await import('@elastic/charts');
 if (charts.WeightFn?.exponential !== 'exponential') throw new Error('WeightFn.exponential missing from ESM entry');
@@ -200,6 +226,18 @@ if (charts.HistogramModeAlignments?.Center !== 'center') {
   throw new Error('HistogramModeAlignments.Center missing from ESM entry');
 }
 if (typeof charts.percentValueGetter !== 'function') throw new Error('percentValueGetter missing from ESM entry');
+const { renderChart } = await import('@elastic/charts/headless');
+if (typeof renderChart !== 'function') throw new Error('renderChart missing from ESM headless entry');
+const { createElement } = await import('react');
+const markup = renderChart(
+  createElement(charts.Chart, { id: 'pack-esm', size: 200 },
+    createElement(charts.BarSeries, {
+      id: 'bars', xScaleType: charts.ScaleType.Ordinal, xAccessor: 'x', yAccessors: ['y'],
+      data: [{ x: 'one', y: 1 }],
+    }),
+  ),
+);
+if (!markup.includes('echSvgRenderer') || !markup.includes('<path')) throw new Error('ESM headless chart did not render');
 
 const chartsRoot = join(dirname(fileURLToPath(import.meta.url)), 'node_modules/@elastic/charts');
 const { WeightFn } = await import(

@@ -9,13 +9,13 @@
 import type { Font } from '../../common/text_utils';
 import { cssFontShorthand } from '../../common/text_utils';
 import { withContext } from '../../renderers/canvas';
-import type { Ctx2d } from '../../renderers/painter';
+import type { MeasureContext } from '../../renderers/measure';
+import { getMeasureContext } from '../../renderers/measure';
 import type { Size } from '../dimensions';
 
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+  const ctx = getMeasureContext();
   return fun(ctx ? measureText(ctx) : () => ({ width: 0, height: 0 }));
 };
 
@@ -23,7 +23,7 @@ export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
 export type TextMeasure = (text: string, font: Omit<Font, 'textColor'>, fontSize: number, lineHeight?: number) => Size;
 
 /** @internal */
-export function measureText(ctx: Ctx2d): TextMeasure {
+export function measureText(ctx: MeasureContext): TextMeasure {
   return (text, font, fontSize, lineHeight = 1) => {
     if (text.length === 0) {
       return { width: 0, height: fontSize * lineHeight };
