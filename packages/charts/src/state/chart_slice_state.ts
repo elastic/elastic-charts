@@ -25,12 +25,12 @@ export type ChartId = string;
 /** @internal */
 export interface ChartSliceState {
   /**
-   * the ID of the chart, which charts on a page may share
+   * the ID the chart was given, which several charts on a page may share
    */
   chartId: ChartId;
   /**
-   * The key by which the selectors keep what they computed for this chart, of its store alone. Only a state
-   * that no store made is without one, and its chart id stands in.
+   * Tells this chart instance from every other, even one with the same chart ID: the selectors keep what
+   * they computed under it. Only a state that no store made is without one; its chart ID then stands in.
    */
   uniqueChartKey?: string;
   /**

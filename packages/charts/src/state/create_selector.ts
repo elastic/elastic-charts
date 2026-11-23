@@ -20,14 +20,14 @@ interface Computation {
 }
 
 /**
- * The key by which the selectors keep what they computed for the chart of a state
+ * The unique key of the chart a state belongs to: its chart ID, where no store gave it one
  * @internal
  */
 export const uniqueChartKeyOf = ({ chartId, uniqueChartKey }: GlobalChartState) => uniqueChartKey ?? chartId;
 
 /**
- * What the selectors remember, in one table for each chart: the selectors themselves hold nothing. Dropping
- * the table of a chart drops everything computed for it, and nothing is made for a chart but its table.
+ * What the selectors computed, in one table for each chart instance: the selectors themselves hold nothing.
+ * Deleting the table of a chart frees all that was computed for it; a chart adds nothing here but its table.
  */
 class GlobalSelectorCache {
   private readonly charts = new Map<string, Map<unknown, Computation>>();
@@ -53,14 +53,14 @@ export const globalSelectorCache = new GlobalSelectorCache();
 
 /**
  * Makes a memoized selector of the chart state: `createCustomCachedSelector([...inputSelectors], combiner)`.
- * It keeps its last computation for each chart, and computes again only when an input selector returns
- * something else than it did for that one.
+ * For each chart it keeps its latest computation, and computes again only when an input selector returns
+ * something other than it did for that computation.
  *
- * One computation is enough because a selector is asked about one line of states: those that the store of
- * a chart holds, one after the other. A reducer has to ask about the state it was given, not about the draft
- * it writes to, of which every object is new: an answer about a draft would be computed from scratch, and
- * would replace the computation that the next state could have used. Asked about a draft all the same, it
- * logs an error and answers about the state the reducer was given.
+ * One computation is enough because the states it is asked about form a single sequence: those that the
+ * store of the chart holds, one after the other. So a reducer has to ask about the state it was given, not
+ * the draft it writes to. Every object of a draft is new: an answer about one is computed from scratch, and
+ * replaces the computation that the next state could have reused. If asked about a draft anyway, the
+ * selector logs an error and answers about the state the reducer was given.
  *
  * Typed as `createSelector` of reselect, whose call signatures and inference its call sites rely on.
  *
@@ -79,7 +79,7 @@ export const createCustomCachedSelector = ((...args: any[]) => {
     }
     const ofChart = globalSelectorCache.ofChart(uniqueChartKeyOf(state));
     const last = ofChart.get(selector);
-    // the state it was last asked about: the same result, with no input to look at
+    // the same state as the last time: the same result, without asking the input selectors
     if (last && last.state === state && rest.length === 0) return last.result;
     const inputs = inputSelectors.map((input) => input(state, ...rest));
     if (last && last.inputs.every((input, i) => input === inputs[i])) {

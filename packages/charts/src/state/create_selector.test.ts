@@ -120,7 +120,7 @@ describe('createCustomCachedSelector', () => {
 
 describe('selectors and reducers', () => {
   it('a selector asked about the draft of a reducer answers about the state it was given, and logs an error', () => {
-    // every object of a draft is new: an answer about it could not come from what was computed, nor serve later
+    // every object of a draft is new: an answer about one can neither reuse a computation nor be reused
     const error = jest.spyOn(Logger, 'error').mockImplementation(() => {});
     const selector = createCustomCachedSelector([(state: GlobalChartState) => state.parentDimensions], (d) => ({ d }));
     const state = getState('chart-draft', 1);

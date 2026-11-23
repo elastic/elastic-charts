@@ -210,7 +210,7 @@ const createChartSlice = (initialState: ChartSliceState) =>
 
 /** @internal */
 export const createChartStore = (chartId: string, title?: string, description?: string, renderer?: RendererType) => {
-  // the selectors keep what they compute by a key of this store alone: charts may share an id
+  // a key of this store alone, for what its selectors compute: an id may be shared by several charts
   const initialState = getInitialState(chartId, title, description, renderer, uuidv4());
   const chartSlice = createChartSlice(initialState);
   return configureStore({

@@ -34,12 +34,12 @@ import { getTooltipSpecSelector } from '../selectors/get_tooltip_spec';
 import { getInitialPointerState } from '../utils/get_initial_pointer_state';
 import { getInitialTooltipState } from '../utils/get_initial_tooltip_state';
 
-/** A reducer of interactions: what it writes to, the action, and what it asks the selectors about */
+/** A reducer of interactions gets the interactions to write to, the action, and the state to ask selectors about */
 type InteractionsReducer<A> = (state: Draft<InteractionsState>, action: A, globalState: GlobalChartState) => void;
 
 /**
- * Adds reducers of interactions: each gets the interactions to write to and the state the store holds to ask
- * selectors about, never the draft of the whole state. `isDraft` and `original` must be the toolkit's own.
+ * Adds reducers of interactions. Each writes to the draft of the interactions alone, and asks selectors about
+ * the state the store holds, never about a draft. `isDraft` and `original` must be those of the toolkit.
  */
 function interactions(builder: ActionReducerMapBuilder<ChartSliceState>) {
   const reducers = {
