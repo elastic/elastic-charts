@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 
 import type { RenderChangeListener, WillRenderListener } from '../specs';
 import type { GlobalChartState } from '../state/chart_state';
-import { globalSelectorCache, uniqueChartKeyOf } from '../state/create_selector';
+import { selectorMemos, uniqueChartKeyOf } from '../state/create_selector';
 import { getInternalChartStateSelector } from '../state/selectors/get_internal_chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import type { DebugState } from '../state/types';
@@ -35,7 +35,7 @@ class ChartStatusComponent extends React.Component<ChartStatusStateProps> {
   }
 
   componentWillUnmount() {
-    globalSelectorCache.removeKeyFromAll(this.props.uniqueChartKey);
+    selectorMemos.release(this.props.uniqueChartKey);
   }
 
   dispatchRenderChange = () => {

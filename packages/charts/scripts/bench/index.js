@@ -75,7 +75,7 @@ const { pinTooltip } = use('state/actions/tooltip.js');
 const { chartSelectorsRegistry, getInternalChartStateSelector } = use('state/selectors/get_internal_chart_state.js');
 const { chartTypeSelectors } = use('chart_types/chart_type_selectors.js');
 const { getLegendItemsSelector } = use('state/selectors/get_legend_items.js');
-const { globalSelectorCache } = use('state/create_selector.js');
+const { selectorMemos } = use('state/create_selector.js');
 
 chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
 const allCharts = require('./charts')(c, React);
@@ -197,7 +197,7 @@ function liveChart(id, make) {
   // as a chart does when it is gone: what its selectors computed stays reachable until then
   const release = () => {
     const { chartId, uniqueChartKey } = store.getState();
-    globalSelectorCache.removeKeyFromAll(uniqueChartKey ?? chartId);
+    selectorMemos.release(uniqueChartKey ?? chartId);
   };
   return { store, ask, size, fill, release };
 }
@@ -209,12 +209,12 @@ function liveChart(id, make) {
 function held(make) {
   const n = 30;
   const keys = [];
-  globalSelectorCache.removeKeyFromAll = (key) => keys.push(key);
+  selectorMemos.release = (key) => keys.push(key);
   for (let i = 0; i < n; i++) renderChart(make());
-  delete globalSelectorCache.removeKeyFromAll;
+  delete selectorMemos.release;
   // what the release frees: nothing else that the renders may have left counts
   const before = live();
-  keys.forEach((key) => globalSelectorCache.removeKeyFromAll(key));
+  keys.forEach((key) => selectorMemos.release(key));
   const bytes = (before - live()) / n;
   return keys.length === n ? bytes / 1024 : NaN;
 }

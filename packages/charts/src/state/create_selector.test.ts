@@ -15,7 +15,7 @@ import { onMouseDown, onMouseUp, onPointerMove } from './actions/mouse';
 import { pinTooltip, setSelectedTooltipItems } from './actions/tooltip';
 import type { GlobalChartState } from './chart_state';
 import { createChartStore } from './chart_state';
-import { createCustomCachedSelector, globalSelectorCache } from './create_selector';
+import { createCustomCachedSelector, selectorMemos } from './create_selector';
 import { getInitialState } from './get_initial_state';
 import { MockSeriesSpec } from '../mocks/specs';
 import { MockStore } from '../mocks/store';
@@ -41,12 +41,12 @@ describe('createCustomCachedSelector', () => {
     selector(getState('chart-a', 1));
     expect(selector.recomputations()).toBe(1);
 
-    globalSelectorCache.removeKeyFromAll('chart-a');
+    selectorMemos.release('chart-a');
 
     selector(getState('chart-b', 2));
     expect(selector.recomputations()).toBe(2);
 
-    globalSelectorCache.removeKeyFromAll('chart-b');
+    selectorMemos.release('chart-b');
 
     selector(getState('chart-b', 2));
     expect(selector.recomputations()).toBe(3);
@@ -67,7 +67,7 @@ describe('createCustomCachedSelector', () => {
     selector(getState('chart-one-kept', 1));
     expect(selector.recomputations()).toBe(3);
 
-    globalSelectorCache.removeKeyFromAll('chart-one-kept');
+    selectorMemos.release('chart-one-kept');
   });
 
   it('computes once for a state, and again only when an input is another object', () => {
@@ -84,7 +84,7 @@ describe('createCustomCachedSelector', () => {
     expect(selector({ ...state, parentDimensions: { ...state.parentDimensions } })).not.toBe(result);
     expect(selector.recomputations()).toBe(2);
 
-    globalSelectorCache.removeKeyFromAll('chart-memo');
+    selectorMemos.release('chart-memo');
   });
 
   it('keeps what it computed for one chart apart from another chart', () => {
@@ -98,9 +98,9 @@ describe('createCustomCachedSelector', () => {
     expect(selector(other)).not.toBe(result);
     expect(selector(other)).toEqual(result);
 
-    globalSelectorCache.removeKeyFromAll('chart-other');
+    selectorMemos.release('chart-other');
     expect(selector(one)).toBe(result);
-    globalSelectorCache.removeKeyFromAll('chart-one');
+    selectorMemos.release('chart-one');
   });
 
   it('keeps what it computed for each of several charts that share an id', () => {
@@ -114,7 +114,7 @@ describe('createCustomCachedSelector', () => {
     states.forEach((state, i) => expect(selector(state)).toBe(results[i]));
     expect(selector.recomputations()).toBe(4);
 
-    states.forEach((state) => globalSelectorCache.removeKeyFromAll(state.uniqueChartKey ?? state.chartId));
+    states.forEach((state) => selectorMemos.release(state.uniqueChartKey ?? state.chartId));
   });
 });
 
@@ -131,7 +131,7 @@ describe('selectors and reducers', () => {
     });
     expect(error).toHaveBeenCalledTimes(1);
     expect(selector.recomputations()).toBe(1);
-    globalSelectorCache.removeKeyFromAll('chart-draft');
+    selectorMemos.release('chart-draft');
   });
 
   it('the reducers of interactions ask about the state that the store holds', () => {

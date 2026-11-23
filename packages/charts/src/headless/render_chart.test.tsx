@@ -32,7 +32,7 @@ import { ScaleType } from '../scales/constants';
 import { Settings } from '../specs/settings';
 import * as chartState from '../state/chart_state';
 import { createChartStore } from '../state/chart_state';
-import { globalSelectorCache } from '../state/create_selector';
+import { selectorMemos } from '../state/create_selector';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { Position } from '../utils/common';
 
@@ -78,7 +78,7 @@ const bars = (
  * selectors that computed for it. A headless render is an instance only while it runs.
  */
 const selectorRegistry = () =>
-  [...(globalSelectorCache as unknown as { charts: Map<string, Map<unknown, unknown>> }).charts]
+  [...(selectorMemos as unknown as { memosByChartKey: Map<string, Map<unknown, unknown>> }).memosByChartKey]
     .map(([key, selectors]) => `${key}: ${selectors.size}`)
     .sort();
 
@@ -537,7 +537,7 @@ describe('renderChart without a DOM', () => {
 
       expect(selectorRegistry()).toEqual(withMounted);
       expect(getSettingsSpecSelector(mounted)).toBe(settings);
-      globalSelectorCache.removeKeyFromAll(mounted.uniqueChartKey!);
+      selectorMemos.release(mounted.uniqueChartKey!);
     });
 
     // the registry check after each test is what these four are about: one per way out of `renderChart`

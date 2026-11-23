@@ -12,12 +12,15 @@ import { isDraft, original } from '@reduxjs/toolkit';
 import type { GlobalChartState } from './chart_state';
 import { Logger } from '../utils/logger';
 
-/** What a selector computed: for which state, from which inputs, with which result */
-interface Computation {
+/** What a selector last computed for a chart: for which state, from which inputs, with which result */
+interface Memo {
   state: unknown;
   inputs: unknown[];
   result: unknown;
 }
+
+/** The memo of each selector that was asked about one chart: a selector is the key of its own memo */
+type ChartMemos = Map<unknown, Memo>;
 
 /**
  * The unique key of the chart a state belongs to: its chart ID, where no store gave it one
@@ -26,41 +29,41 @@ interface Computation {
 export const uniqueChartKeyOf = ({ chartId, uniqueChartKey }: GlobalChartState) => uniqueChartKey ?? chartId;
 
 /**
- * What the selectors computed, in one table for each chart instance: the selectors themselves hold nothing.
- * Deleting the table of a chart frees all that was computed for it; a chart adds nothing here but its table.
+ * The memos of the selectors, in one table for each chart instance: the selectors themselves hold nothing.
+ * Releasing a chart frees all that was computed for it; a chart adds nothing here but its table.
  */
-class GlobalSelectorCache {
-  private readonly charts = new Map<string, Map<unknown, Computation>>();
+class SelectorMemos {
+  private readonly memosByChartKey = new Map<string, ChartMemos>();
 
-  /** what the selectors last computed for a chart */
-  ofChart(key: string): Map<unknown, Computation> {
-    let ofChart = this.charts.get(key);
-    if (!ofChart) this.charts.set(key, (ofChart = new Map()));
-    return ofChart;
+  /** the memos of the chart with this unique chart key */
+  chartMemos(uniqueChartKey: string): ChartMemos {
+    let memos = this.memosByChartKey.get(uniqueChartKey);
+    if (!memos) this.memosByChartKey.set(uniqueChartKey, (memos = new Map()));
+    return memos;
   }
 
-  removeKeyFromAll(key: string) {
-    this.charts.delete(key);
+  release(uniqueChartKey: string) {
+    this.memosByChartKey.delete(uniqueChartKey);
   }
 }
 
 /**
- * Global singleton to manage state of selector caches
+ * Global singleton of the memos of all selectors
  *
  * @internal
  */
-export const globalSelectorCache = new GlobalSelectorCache();
+export const selectorMemos = new SelectorMemos();
 
 /**
  * Makes a memoized selector of the chart state: `createCustomCachedSelector([...inputSelectors], combiner)`.
- * For each chart it keeps its latest computation, and computes again only when an input selector returns
- * something other than it did for that computation.
+ * For each chart it keeps one memo, of its latest computation, and computes again only when an input selector
+ * returns something other than it did for that memo.
  *
- * One computation is enough because the states it is asked about form a single sequence: those that the
- * store of the chart holds, one after the other. So a reducer has to ask about the state it was given, not
- * the draft it writes to. Every object of a draft is new: an answer about one is computed from scratch, and
- * replaces the computation that the next state could have reused. If asked about a draft anyway, the
- * selector logs an error and answers about the state the reducer was given.
+ * One memo is enough because the states it is asked about form a single sequence: those that the store of the
+ * chart holds, one after the other. So a reducer has to ask about the state it was given, not the draft it writes
+ * to. Every object of a draft is new: an answer about one is computed from scratch, and replaces the memo that
+ * the next state could have reused. If asked about a draft anyway, the selector logs an error and answers about
+ * the state the reducer was given.
  *
  * Typed as `createSelector` of reselect, whose call signatures and inference its call sites rely on.
  *
@@ -79,18 +82,18 @@ export const createCustomCachedSelector = ((...args: any[]) => {
       );
       state = original(asked) ?? asked;
     }
-    const ofChart = globalSelectorCache.ofChart(uniqueChartKeyOf(state));
-    const last = ofChart.get(selector);
+    const memos = selectorMemos.chartMemos(uniqueChartKeyOf(state));
+    const memo = memos.get(selector);
     // the same state as the last time: the same result, without asking the input selectors
-    if (last && last.state === state && rest.length === 0) return last.result;
+    if (memo && memo.state === state && rest.length === 0) return memo.result;
     const inputs = inputSelectors.map((input) => input(state, ...rest));
-    if (last && last.inputs.every((input, i) => input === inputs[i])) {
-      last.state = state;
-      return last.result;
+    if (memo && memo.inputs.every((input, i) => input === inputs[i])) {
+      memo.state = state;
+      return memo.result;
     }
     recomputations++;
     const result = combiner(...inputs);
-    ofChart.set(selector, { state, inputs, result });
+    memos.set(selector, { state, inputs, result });
     return result;
   };
   selector.recomputations = () => recomputations;
