@@ -177,7 +177,12 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
 };
 
 export class CommonPage {
-  readonly chartWaitSelector = '.echChartStatus[data-ech-render-complete=true]';
+  // Nothing reports a finished render in the markup of a headless chart, so the page marks the element it
+  // fills. A story without a chart, which marks itself as rendered, still counts.
+  readonly chartWaitSelector =
+    renderer === 'headless'
+      ? '.echHeadlessChart[data-rendered=true], .echChartStatus[data-ech-render-complete=true]'
+      : '.echChartStatus[data-ech-render-complete=true]';
 
   readonly chartSelector = '.echChart';
 
@@ -200,9 +205,12 @@ export class CommonPage {
     envUrl.searchParams.set('path', path ?? `/story/${id}`);
     envUrl.searchParams.append('knob-debug', 'false');
 
-    if (renderer === 'svg') {
+    if (renderer !== 'canvas') {
       // the VRT page reads only the first `globals` parameter, so merge into it rather than append another
-      envUrl.searchParams.set('globals', setGlobalsEntry(envUrl.searchParams.get('globals') ?? '', 'renderer', 'svg'));
+      envUrl.searchParams.set(
+        'globals',
+        setGlobalsEntry(envUrl.searchParams.get('globals') ?? '', 'renderer', renderer),
+      );
     }
 
     return envUrl.toString();

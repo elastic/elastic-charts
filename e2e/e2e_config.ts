@@ -9,14 +9,18 @@
 export const environmentUrl = process.env.ENV_URL;
 
 /**
- * Chart renderer under test, selected with `--renderer=<canvas|svg>` on `yarn test` (see scripts/start.sh)
- * or the `VRT_RENDERER` env variable. Anything but `svg` is `canvas`.
+ * Chart renderer under test, selected with `--renderer=<canvas|svg|headless>` on `yarn test` (see
+ * scripts/start.sh) or the `VRT_RENDERER` env variable. Anything but `svg` and `headless` is `canvas`.
+ * `headless` shows, in place of each chart, the markup that `renderChart` of `@elastic/charts/headless`
+ * returns for it; it is meant for the tests of all.test.ts, which need no interaction.
  */
-export const renderer: 'canvas' | 'svg' = process.env.VRT_RENDERER === 'svg' ? 'svg' : 'canvas';
+export const renderer: 'canvas' | 'svg' | 'headless' =
+  process.env.VRT_RENDERER === 'svg' || process.env.VRT_RENDERER === 'headless' ? process.env.VRT_RENDERER : 'canvas';
 
 /**
- * The canvas baselines in `screenshots` are the committed reference. An svg run writes the same stories
- * into `screenshots_svg`, which git ignores: run it with `-u` so the screenshots are written, and compare
- * them against the canvas baselines (see scripts/image_distance.ts) instead of keeping a second baseline set.
+ * The canvas baselines in `screenshots` are the committed reference. An svg or a headless run writes the same
+ * stories into `screenshots_svg` or `screenshots_headless`, which git ignores: run it with `-u` so the
+ * screenshots are written, and compare them against the canvas baselines (see scripts/image_distance.ts)
+ * instead of keeping more baseline sets.
  */
-export const snapshotDir = renderer === 'svg' ? 'screenshots_svg' : 'screenshots';
+export const snapshotDir = renderer === 'canvas' ? 'screenshots' : `screenshots_${renderer}`;

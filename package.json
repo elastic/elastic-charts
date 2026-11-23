@@ -56,6 +56,8 @@
     "test:e2e:server": "./e2e_server/scripts/start.sh",
     "test:e2e:svg": "cd e2e && yarn svg:screenshots",
     "test:e2e:svg:review": "cd e2e && yarn svg:review",
+    "test:e2e:headless": "cd e2e && yarn headless:screenshots",
+    "test:e2e:headless:review": "cd e2e && yarn headless:review",
     "test:e2e:server:build": "yarn test:e2e:generate && yarn --cwd e2e_server/server build",
     "typecheck:base": "tsc -p ./tsconfig.base.json --noEmit",
     "typecheck:e2e": "tsc -p ./e2e/tsconfig.json --noEmit",
@@ -175,6 +177,7 @@
   },
   "dependencies": {},
   "resolutions": {
-    "**/d3-color": "npm:@elastic/kibana-d3-color@2.0.1"
+    "**/d3-color": "npm:@elastic/kibana-d3-color@2.0.1",
+    "**/@storybook/addon-knobs/react-select": "4.3.1"
   }
 }

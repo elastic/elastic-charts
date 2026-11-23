@@ -12,13 +12,15 @@
  * Reports how far screenshots are from a reference, as differing pixel counts, so that most image pairs
  * need no looking at.
  *
- *   yarn image-distance [--cross] [--threshold 0.3] [--top N] [--filter <substring>] [--exclude <a,b>]
- *                       [--sheet N] [--scale 1] [--page] [--open]
+ *   yarn image-distance [--cross[=svg|headless]] [--threshold 0.3] [--top N] [--filter <substring>]
+ *                       [--exclude <a,b>] [--sheet N] [--scale 1] [--page] [--open]
  *
  * Without `--cross`: every changed PNG under e2e/screenshots against its committed version, e.g. after a
  * `yarn test -u` run (modified files are compared, untracked ones listed as new).
  * With `--cross`: every svg screenshot in e2e/screenshots_svg (untracked, written by
  * `yarn test --renderer=svg -u`) against the canvas baseline of the same story in e2e/screenshots.
+ * With `--cross=headless`: the same for the screenshots of the markup of `renderChart` in
+ * e2e/screenshots_headless (untracked, written by `yarn headless:screenshots`).
  *
  * The distance of a pair is its count of differing pixels; the ratio is that count over the area of the
  * chart screenshot, so stories of different sizes compare.
@@ -27,9 +29,9 @@
  * the comma separated substrings (both case-insensitive).
  * `--sheet N` writes a contact sheet of the N worst stories (expected | actual | diff per row) to
  * e2e/reports/image_distance_sheet.png, `--scale` downsamples it by nearest neighbour.
- * `--page` writes a web page of every compared story, worst first, each with its canvas and svg
- * screenshots and the diff between them, to e2e/reports/image_distance/index.html; `--open` then opens it in the
- * default browser.
+ * `--page` writes a web page of every compared story, worst first, each with its two screenshots and the diff
+ * between them, to e2e/reports/image_distance/index.html (image_distance_headless for `--cross=headless`, so
+ * one report does not replace the other); `--open` then opens it in the default browser.
  */
 
 import { execFileSync, spawn } from 'child_process';
@@ -41,9 +43,11 @@ import { PNG } from 'pngjs';
 
 const E2E_DIR = 'e2e';
 const CANVAS_DIR = 'e2e/screenshots';
-const SVG_DIR = 'e2e/screenshots_svg';
+/** what `--cross` compares against the canvas baselines: the screenshots of another way of drawing the stories */
+const CROSS_DIRS = { svg: 'e2e/screenshots_svg', headless: 'e2e/screenshots_headless' } as const;
+type Cross = keyof typeof CROSS_DIRS;
 const SHEET_PATH = 'e2e/reports/image_distance_sheet.png';
-const PAGE_DIR = 'e2e/reports/image_distance';
+const pageDirOf = (cross?: Cross) => `e2e/reports/image_distance${cross === 'headless' ? '_headless' : ''}`;
 const GAP = 4;
 /** fills the area a smaller image lacks when sizes differ, so that area counts as different */
 const SENTINEL = [255, 0, 255, 255];
@@ -70,8 +74,16 @@ function getArgs() {
     return args[index]!.includes('=') ? args[index]!.slice(name.length + 3) : args[index + 1];
   };
   const num = (name: string, fallback: number) => (get(name) === undefined ? fallback : Number(get(name)));
+  // `--cross` alone compares svg; the word after it is its value only if it names what to compare
+  const crossArg = args.find((arg) => /^--cross(=|$)/.test(arg));
+  const crossValue = get('cross') ?? '';
+  const named = Object.hasOwn(CROSS_DIRS, crossValue);
+  if (crossArg?.includes('=') && !named) {
+    throw new Error(`--cross=${crossValue}: expected ${Object.keys(CROSS_DIRS).join(' or ')}`);
+  }
+  const cross: Cross | undefined = crossArg === undefined ? undefined : named ? (crossValue as Cross) : 'svg';
   return {
-    cross: args.includes('--cross'),
+    cross,
     threshold: num('threshold', 0.3),
     top: num('top', Infinity),
     filter: (get('filter') ?? '').toLowerCase(),
@@ -145,11 +157,11 @@ const committedPair =
   (root: string): PairReader =>
   (file) => [PNG.sync.read(git(root, ['show', `HEAD:${file}`])), PNG.sync.read(fs.readFileSync(path.join(root, file)))];
 
-/** the canvas baseline of a story against its svg baseline, both from the working tree */
+/** the canvas baseline of a story against its svg or headless screenshot, both from the working tree */
 const crossPair =
-  (root: string): PairReader =>
+  (root: string, cross: Cross): PairReader =>
   (file) => [
-    PNG.sync.read(fs.readFileSync(path.join(root, CANVAS_DIR, path.relative(SVG_DIR, file)))),
+    PNG.sync.read(fs.readFileSync(path.join(root, CANVAS_DIR, path.relative(CROSS_DIRS[cross], file)))),
     PNG.sync.read(fs.readFileSync(path.join(root, file))),
   ];
 
@@ -194,18 +206,18 @@ const escapeHtml = (text: string) => text.replaceAll('&', '&amp;').replaceAll('<
  * with the diff between them, so a reviewer scrolls from the stories that need a look to the ones that
  * do not. The diff images are written next to the page; the screenshots are linked where they are.
  */
-function writePage(root: string, rows: Row[], newRows: Row[], readPair: PairReader, threshold: number, cross: boolean) {
-  const pageDir = path.join(root, PAGE_DIR);
+function writePage(root: string, rows: Row[], newRows: Row[], readPair: PairReader, threshold: number, cross?: Cross) {
+  const pageDir = path.join(root, pageDirOf(cross));
   const diffDir = path.join(pageDir, 'diff');
   fs.rmSync(diffDir, { recursive: true, force: true });
   fs.mkdirSync(diffDir, { recursive: true });
-  const [expectedLabel, actualLabel] = cross ? ['canvas', 'svg'] : ['committed', 'working tree'];
+  const [expectedLabel, actualLabel] = cross ? ['canvas', cross] : ['committed', 'working tree'];
   const href = (file: string) => path.relative(pageDir, path.join(root, file)).split(path.sep).join('/');
   const sections = rows.map(({ file, diff, total, ratio, bbox, note }, index) => {
     const [expected, actual] = readPair(file);
     const diffFile = path.join(diffDir, `${file.replaceAll(/[^\w.-]+/g, '_')}`);
     fs.writeFileSync(diffFile, PNG.sync.write(compare(expected, actual, threshold).images[2]));
-    const expectedFile = cross ? path.join(CANVAS_DIR, path.relative(SVG_DIR, file)) : file;
+    const expectedFile = cross ? path.join(CANVAS_DIR, path.relative(CROSS_DIRS[cross], file)) : file;
     const story = escapeHtml(path.relative(E2E_DIR, file));
     const images = [
       [
@@ -238,7 +250,7 @@ function writePage(root: string, rows: Row[], newRows: Row[], readPair: PairRead
   ];
   const html = `<!doctype html>
 <meta charset="utf-8">
-<title>image distance: ${cross ? 'svg vs canvas' : 'changed screenshots'}</title>
+<title>image distance: ${cross ? `${cross} vs canvas` : 'changed screenshots'}</title>
 <style>
   body { font: 14px/1.4 system-ui, sans-serif; margin: 0 16px 48px; color: #222; }
   h1 { font-size: 20px; margin: 24px 0 4px; }
@@ -254,14 +266,14 @@ function writePage(root: string, rows: Row[], newRows: Row[], readPair: PairRead
   img { max-width: 100%; height: auto; display: block; background: #fff; box-shadow: 0 0 0 1px #ddd; }
   .new { color: #555; font-family: ui-monospace, monospace; font-size: 12px; }
 </style>
-<h1>Image distance: ${cross ? 'svg screenshots vs canvas baselines' : 'changed screenshots vs committed'}</h1>
+<h1>Image distance: ${cross ? `${cross} screenshots vs canvas baselines` : 'changed screenshots vs committed'}</h1>
 <p class="summary">${rows.length} stories, worst first, by differing pixels over the chart area
   (pixelmatch threshold ${threshold}): ${buckets.map(([label, count]) => `${label}: ${count}`).join(' · ')}.</p>
 ${sections.join('\n')}
 ${newRows.length > 0 ? `<section><h2>${cross ? 'No canvas baseline' : 'New'}</h2>${newRows.map(({ file }) => `<p class="new">${escapeHtml(path.relative(E2E_DIR, file))}</p>`).join('')}</section>` : ''}
 `;
   fs.writeFileSync(path.join(pageDir, 'index.html'), html);
-  console.log(`\npage (${rows.length} stories, worst first): ${PAGE_DIR}/index.html`);
+  console.log(`\npage (${rows.length} stories, worst first): ${pageDirOf(cross)}/index.html`);
   return path.join(pageDir, 'index.html');
 }
 
@@ -291,13 +303,13 @@ function listPngs(dir: string): string[] {
 }
 
 /** files to compare and files only listed as new, for both modes */
-function collect(root: string, cross: boolean): { compared: string[]; added: string[] } {
+function collect(root: string, cross?: Cross): { compared: string[]; added: string[] } {
   if (cross) {
-    // the svg screenshots are git ignored, so they are listed from the file system
-    const svgFiles = listPngs(path.join(root, SVG_DIR)).map((file) => path.relative(root, file));
+    // these screenshots are git ignored, so they are listed from the file system
+    const files = listPngs(path.join(root, CROSS_DIRS[cross])).map((file) => path.relative(root, file));
     const hasCanvasBaseline = (file: string) =>
-      fs.existsSync(path.join(root, CANVAS_DIR, path.relative(SVG_DIR, file)));
-    return { compared: svgFiles.filter(hasCanvasBaseline), added: svgFiles.filter((f) => !hasCanvasBaseline(f)) };
+      fs.existsSync(path.join(root, CANVAS_DIR, path.relative(CROSS_DIRS[cross], file)));
+    return { compared: files.filter(hasCanvasBaseline), added: files.filter((f) => !hasCanvasBaseline(f)) };
   }
   const dirs = [CANVAS_DIR];
   return {
@@ -312,7 +324,7 @@ function collect(root: string, cross: boolean): { compared: string[]; added: str
 function main() {
   const { cross, threshold, top, filter, exclude, sheet, scale, page, open } = getArgs();
   const root = execFileSync('git', ['rev-parse', '--show-toplevel']).toString().trim();
-  const readPair = cross ? crossPair(root) : committedPair(root);
+  const readPair = cross ? crossPair(root, cross) : committedPair(root);
   const matches = (file: string) => {
     const lower = file.toLowerCase();
     return lower.includes(filter) && !exclude.some((part) => lower.includes(part));
@@ -320,7 +332,7 @@ function main() {
   const { compared, added } = collect(root, cross);
 
   if (compared.length + added.length === 0) {
-    console.log(cross ? 'no svg screenshots' : 'no changed screenshots');
+    console.log(cross ? `no ${cross} screenshots` : 'no changed screenshots');
     return;
   }
 
@@ -342,7 +354,7 @@ function main() {
     ['>=5%', (r) => r >= 5],
   ];
   const histogram = buckets.map(([label, test]) => `${label}: ${rows.filter(({ ratio }) => test(ratio)).length}`);
-  const what = cross ? 'svg vs canvas' : 'changed';
+  const what = cross ? `${cross} vs canvas` : 'changed';
   console.log(
     `${histogram.join(' | ')} | ${newLabel}: ${newRows.length}   (${rows.length} ${what}, threshold ${threshold})`,
   );

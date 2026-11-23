@@ -65,7 +65,7 @@ class CustomMapCache implements ICacheObject {
   }
 }
 
-const keySelector = ({ chartId }: GlobalChartState) => chartId;
+const keySelector = ({ chartId, selectorCacheKey }: GlobalChartState) => selectorCacheKey ?? chartId;
 
 class GlobalSelectorCache {
   private selectorCaches: CustomMapCache[] = [];

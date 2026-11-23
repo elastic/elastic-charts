@@ -28,6 +28,8 @@ export interface ChartSliceState {
    * a unique ID for each chart used by re-reselect to memoize selector per chart
    */
   chartId: ChartId;
+  /** memoizes the selectors under this instead of the chart id, which a render without a DOM must not share */
+  selectorCacheKey?: string;
   /**
    * Chart title
    */
