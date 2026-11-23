@@ -74,8 +74,8 @@ const bars = (
 );
 
 /**
- * What the memoized selectors hold, by chart: the chart ids of mounted charts and, for the duration of a
- * headless render, the key of that render, each with the number of selectors that computed for it.
+ * What the memoized selectors hold, for each chart instance: its unique chart key, with the number of
+ * selectors that computed for it. A headless render is an instance only while it runs.
  */
 const selectorRegistry = () =>
   [...(globalSelectorCache as unknown as { charts: Map<string, Map<unknown, unknown>> }).charts]
