@@ -39,17 +39,17 @@ describe('createCustomCachedSelector', () => {
     );
 
     selector(getState('chart-a', 1));
-    expect(selector.recomputations()).toBe(1);
+    expect(selector.computationCount()).toBe(1);
 
     selectorMemos.release('chart-a');
 
     selector(getState('chart-b', 2));
-    expect(selector.recomputations()).toBe(2);
+    expect(selector.computationCount()).toBe(2);
 
     selectorMemos.release('chart-b');
 
     selector(getState('chart-b', 2));
-    expect(selector.recomputations()).toBe(3);
+    expect(selector.computationCount()).toBe(3);
   });
 
   it('keeps one computation for a chart: the latest', () => {
@@ -60,12 +60,12 @@ describe('createCustomCachedSelector', () => {
 
     selector(getState('chart-one-kept', 1));
     selector(getState('chart-one-kept', 2));
-    expect(selector.recomputations()).toBe(2);
+    expect(selector.computationCount()).toBe(2);
     selector(getState('chart-one-kept', 2));
-    expect(selector.recomputations()).toBe(2);
+    expect(selector.computationCount()).toBe(2);
 
     selector(getState('chart-one-kept', 1));
-    expect(selector.recomputations()).toBe(3);
+    expect(selector.computationCount()).toBe(3);
 
     selectorMemos.release('chart-one-kept');
   });
@@ -79,10 +79,10 @@ describe('createCustomCachedSelector', () => {
     expect(selector(state)).toBe(result);
     // another state with the same input
     expect(selector({ ...state })).toBe(result);
-    expect(selector.recomputations()).toBe(1);
+    expect(selector.computationCount()).toBe(1);
 
     expect(selector({ ...state, parentDimensions: { ...state.parentDimensions } })).not.toBe(result);
-    expect(selector.recomputations()).toBe(2);
+    expect(selector.computationCount()).toBe(2);
 
     selectorMemos.release('chart-memo');
   });
@@ -112,7 +112,7 @@ describe('createCustomCachedSelector', () => {
     // every chart asks again about its state, which has not changed
     expect(states.map((state) => selector(state))).toEqual(results);
     states.forEach((state, i) => expect(selector(state)).toBe(results[i]));
-    expect(selector.recomputations()).toBe(4);
+    expect(selector.computationCount()).toBe(4);
 
     states.forEach((state) => selectorMemos.release(state.uniqueChartKey ?? state.chartId));
   });
@@ -130,7 +130,7 @@ describe('selectors and reducers', () => {
       expect(selector(draft as GlobalChartState)).toBe(result);
     });
     expect(error).toHaveBeenCalledTimes(1);
-    expect(selector.recomputations()).toBe(1);
+    expect(selector.computationCount()).toBe(1);
     selectorMemos.release('chart-draft');
   });
 

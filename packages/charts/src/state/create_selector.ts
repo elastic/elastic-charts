@@ -76,7 +76,7 @@ export const createCustomCachedSelector = <Inputs extends readonly Selector<any>
   inputSelectors: readonly [...Inputs],
   combiner: (...inputs: Results<Inputs>) => Result,
 ) => {
-  let recomputations = 0;
+  let computationCount = 0;
 
   const selector = (asked: GlobalChartState): Result => {
     let state = asked;
@@ -95,11 +95,11 @@ export const createCustomCachedSelector = <Inputs extends readonly Selector<any>
       memo.state = state;
       return memo.result;
     }
-    recomputations++;
+    computationCount++;
     const result = combiner(...inputs);
     memos.set(selector, { state, inputs, result });
     return result;
   };
-  selector.recomputations = () => recomputations;
+  selector.computationCount = () => computationCount;
   return selector;
 };
