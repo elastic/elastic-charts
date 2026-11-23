@@ -6,21 +6,26 @@
  * Side Public License, v 1.
  */
 
-import type { createSelector } from '@reduxjs/toolkit';
 import { isDraft, original } from '@reduxjs/toolkit';
 
 import type { GlobalChartState } from './chart_state';
 import { Logger } from '../utils/logger';
 
+/** A function of the state of a chart */
+type Selector<Result = unknown> = (state: GlobalChartState) => Result;
+
+/** What each of the selectors returns */
+type Results<Selectors extends readonly Selector<any>[]> = { [I in keyof Selectors]: ReturnType<Selectors[I]> };
+
 /** What a selector last computed for a chart: for which state, from which inputs, with which result */
-interface Memo {
-  state: unknown;
-  inputs: unknown[];
-  result: unknown;
+interface Memo<Result = unknown> {
+  state: GlobalChartState;
+  inputs: readonly unknown[];
+  result: Result;
 }
 
 /** The memo of each selector that was asked about one chart: a selector is the key of its own memo */
-type ChartMemos = Map<unknown, Memo>;
+type ChartMemos = Map<Selector, Memo>;
 
 /**
  * The unique key of the chart a state belongs to: its chart ID, where no store gave it one
@@ -38,7 +43,7 @@ class SelectorMemos {
   /** the memos of the chart with this unique chart key */
   chartMemos(uniqueChartKey: string): ChartMemos {
     let memos = this.memosByChartKey.get(uniqueChartKey);
-    if (!memos) this.memosByChartKey.set(uniqueChartKey, (memos = new Map()));
+    if (!memos) this.memosByChartKey.set(uniqueChartKey, (memos = new Map<Selector, Memo>()));
     return memos;
   }
 
@@ -65,16 +70,15 @@ export const selectorMemos = new SelectorMemos();
  * the next state could have reused. If asked about a draft anyway, the selector logs an error and answers about
  * the state the reducer was given.
  *
- * Typed as `createSelector` of reselect, whose call signatures and inference its call sites rely on.
- *
  * @internal
  */
-export const createCustomCachedSelector = ((...args: any[]) => {
-  const combiner: (...inputs: unknown[]) => unknown = args.at(-1);
-  const inputSelectors: Array<(...a: unknown[]) => unknown> = args.slice(0, -1).flat();
+export const createCustomCachedSelector = <Inputs extends readonly Selector<any>[], Result>(
+  inputSelectors: readonly [...Inputs],
+  combiner: (...inputs: Results<Inputs>) => Result,
+) => {
   let recomputations = 0;
 
-  const selector = (asked: GlobalChartState, ...rest: unknown[]) => {
+  const selector = (asked: GlobalChartState): Result => {
     let state = asked;
     if (isDraft(asked)) {
       Logger.error(
@@ -83,10 +87,10 @@ export const createCustomCachedSelector = ((...args: any[]) => {
       state = original(asked) ?? asked;
     }
     const memos = selectorMemos.chartMemos(uniqueChartKeyOf(state));
-    const memo = memos.get(selector);
+    const memo = memos.get(selector) as Memo<Result> | undefined;
     // the same state as the last time: the same result, without asking the input selectors
-    if (memo && memo.state === state && rest.length === 0) return memo.result;
-    const inputs = inputSelectors.map((input) => input(state, ...rest));
+    if (memo && memo.state === state) return memo.result;
+    const inputs = inputSelectors.map((input) => input(state)) as Results<Inputs>;
     if (memo && memo.inputs.every((input, i) => input === inputs[i])) {
       memo.state = state;
       return memo.result;
@@ -98,4 +102,4 @@ export const createCustomCachedSelector = ((...args: any[]) => {
   };
   selector.recomputations = () => recomputations;
   return selector;
-}) as unknown as typeof createSelector;
+};
