@@ -102,7 +102,7 @@ describe('createCustomCachedSelector', () => {
     expect(selector(one)).toBe(result);
   });
 
-  it('holds on to no state of a chart but the one last asked about', () => {
+  it('stamps a memo with a revision, not a state: the chart holds the one last asked about for that', () => {
     const askedOnce = createCustomCachedSelector([(state: GlobalChartState) => state.chartId], (id) => ({ id }));
     const askedAgain = createCustomCachedSelector([(state: GlobalChartState) => state.chartId], (id) => ({ id }));
     const chart = getInitialState('chart-states');
@@ -113,7 +113,8 @@ describe('createCustomCachedSelector', () => {
     askedAgain(latest);
     const memos = selectorMemos.chartMemos(latest);
     expect(reaches(memos, latest)).toBe(true);
-    // a selector that is no longer asked would otherwise keep a state for as long as the chart lives
+    // a selector that is no longer asked would otherwise keep its state for as long as the chart lives; one
+    // whose input is the whole state still does
     expect(reaches(memos, earlier)).toBe(false);
   });
 

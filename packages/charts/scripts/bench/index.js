@@ -23,7 +23,7 @@
  *                of it is garbage once the render is over
  *   held         what the selectors of a rendered chart keep reachable while it exists: what lives through
  *                a whole render, which a collector ends up moving to its old generation, to free late and at
- *                a cost. Without the store of the chart, which holds its specs
+ *                a cost. With the last state of the chart, which they hold too: 2 to 5 kB of these figures
  *   left behind  what stays reachable after 3000 charts that differ, for each of them: a leak. It is near
  *                zero, within about 0.2 kB, unless something piles up: a ceiling to gate on, not to compare
  *

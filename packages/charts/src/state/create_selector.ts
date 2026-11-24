@@ -25,8 +25,8 @@ interface Memo<Result = unknown> {
 }
 
 /**
- * The memo of each selector that was asked about one chart: a selector is the key of its own memo. The memos hold
- * no state: the chart holds the one last asked about, to tell when another comes, which its revision counts.
+ * The memo of each selector that was asked about one chart: a selector is the key of its own memo. A memo is
+ * stamped with a revision, not a state: the chart holds the state last asked about, to tell when another comes.
  */
 interface ChartMemos {
   state: GlobalChartState;
