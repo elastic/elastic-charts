@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Absolute, since callers source this file and then change directory
+BUILDKITE_SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 retry() {
   local retries=$1; shift
   local delay=$1; shift
@@ -25,7 +28,7 @@ retry() {
 # A node module could end up in a bad state that can cause all future builds to fail
 # So, let's prune the store and try again to make sure that's not what caused the error
 install_deps() {
-  bash "$(dirname "${BASH_SOURCE[0]}")/purge_foreign_node_modules.sh"
+  bash "$BUILDKITE_SCRIPTS_DIR/purge_foreign_node_modules.sh"
   pnpm install --frozen-lockfile --prod --filter elastic-charts-buildkite --config.confirmModulesPurge=false
   EXIT=$?
   if [[ "$EXIT" != "0" ]]; then
