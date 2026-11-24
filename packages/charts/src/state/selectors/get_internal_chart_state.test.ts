@@ -7,6 +7,7 @@
  */
 
 import { getInternalChartStateSelector } from './get_internal_chart_state';
+import { getInternalIsInitializedSelector, InitStatus } from './get_internal_is_intialized';
 import { getSettingsSpecSelector } from './get_settings_spec';
 import { ChartType } from '../../chart_types';
 import { MockSeriesSpec } from '../../mocks/specs';
@@ -28,13 +29,17 @@ const bars = MockSeriesSpec.bar({
   ],
 });
 
-/** A chart with a brush end listener, that calls back on every change as a mounted chart does */
+/** A chart with a brush end listener, that calls back as a mounted chart does: on every change, once initialized */
 const chart = () => {
   const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
   const onBrushEnd = jest.fn();
   const settings = { ...getSettingsSpecSelector(store.getState()), onBrushEnd };
   const chartSelectors = () => getInternalChartStateSelector(store.getState());
-  store.subscribe(() => chartSelectors()?.eventCallbacks(store.getState()));
+  store.subscribe(() => {
+    const ofChartType = chartSelectors();
+    if (getInternalIsInitializedSelector(store.getState()) !== InitStatus.Initialized) return;
+    ofChartType?.eventCallbacks(store.getState());
+  });
   const become = (series?: Spec) => {
     store.dispatch(removeSpec('series'));
     if (series) MockStore.addSpecs([series, settings], store);
@@ -86,6 +91,25 @@ describe('the chart selectors of a chart type', () => {
       become(bars);
     }
     expect(onBrushEnd).toHaveBeenCalledTimes(1);
+  });
+
+  it('do not call back again for a brush that ended before the chart was two other chart types', () => {
+    // three chart types in turn: one more than the two computations that a selector used to keep
+    const { store, onBrushEnd, become } = chart();
+    become(bars);
+    store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0 }));
+    store.dispatch(onPointerMove({ position: { x: 60, y: 10 }, time: 200 }));
+    store.dispatch(onMouseUp({ position: { x: 60, y: 10 }, time: 300 }));
+    expect(onBrushEnd).toHaveBeenCalledTimes(1);
+
+    become(MockSeriesSpec.sunburst({ id: 'series' }));
+    expect(store.getState().chartType).toBe(ChartType.Partition);
+    become(MockSeriesSpec.heatmap({ id: 'series' }));
+    expect(store.getState().chartType).toBe(ChartType.Heatmap);
+    // a heatmap has a brush end callback of its own, new to this brush: what counts here is the way back
+    const calls = onBrushEnd.mock.calls.length;
+    become(bars);
+    expect(onBrushEnd).toHaveBeenCalledTimes(calls);
   });
 
   it('add no memos to the chart, however often it leaves the chart type and comes back', () => {
