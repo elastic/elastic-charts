@@ -6,111 +6,107 @@
  * Side Public License, v 1.
  */
 
-import { createSelector, lruMemoize } from '@reduxjs/toolkit';
-import type { ICacheObject } from 're-reselect';
-// Named import: Kibana rspack prefers the `browser` field, which is a UMD bundle.
-// Default-importing that UMD module yields the exports object, not the function.
-import { createCachedSelector } from 're-reselect';
+import { isDraft, original } from '@reduxjs/toolkit';
 
 import type { GlobalChartState } from './chart_state';
+import { Logger } from '../utils/logger';
 
-/**
- * Wraps RTK's `createSelector` with a bounded LRU memo cache per chartId.
- * maxSize=2 captures all hit-rate gains with minimal memory footprint.
- * Keeping this small is critical because every cached entry can retain
- * large chart objects (geometry arrays, scales, tooltip info) and the
- * cost is multiplied by ~170 selectors × N charts on the page.
- */
-const createSelectorWithLRU = ((selectors: any[], combiner: (...args: any[]) => any) =>
-  createSelector(selectors, combiner, {
-    // RTK 2 / reselect 5 defaults to `weakMapMemoize` (unbounded, reference-keyed cache).
-    // Explicitly keep the bounded LRU memoizer to preserve the memory constraints described above.
-    memoize: lruMemoize,
-    memoizeOptions: {
-      maxSize: 2,
-    },
-  })) as unknown as typeof createSelector;
+/** A function of the state of a chart */
+type Selector<Result = unknown> = (state: GlobalChartState) => Result;
 
-/**
- * Custom cache backed by Map (re-reselect ICacheObject).
- * Map is preferred over a plain object because .size is O(1),
- * .delete() doesn't deoptimize V8 hidden classes
- * see https://github.com/toomuchdesign/re-reselect/tree/master/src/cache#write-your-custom-cache-object
- */
-class CustomMapCache implements ICacheObject {
-  private cache = new Map<string, () => any>();
+/** What each of the selectors returns */
+type Results<Selectors extends readonly Selector[]> = { [I in keyof Selectors]: ReturnType<Selectors[I]> };
 
-  set(key: string, selectorFn: () => any) {
-    this.cache.set(key, selectorFn);
-  }
-
-  get(key: string) {
-    return this.cache.get(key);
-  }
-
-  remove(key: string) {
-    this.cache.delete(key);
-  }
-
-  clear() {
-    this.cache.clear();
-  }
-
-  isEmpty() {
-    return this.cache.size === 0;
-  }
-
-  isValidCacheKey(key: string) {
-    return typeof key === 'string';
-  }
+/** What a selector last computed for a chart: for which revision of its state, from which inputs, with which result */
+interface Memo<Result = unknown> {
+  revision: number;
+  inputs: readonly unknown[];
+  result: Result;
 }
 
-const keySelector = ({ chartId, selectorCacheKey }: GlobalChartState) => selectorCacheKey ?? chartId;
+/**
+ * The memo of each selector that was asked about one chart: a selector is the key of its own memo. A memo is
+ * stamped with a revision, not a state: the chart holds the state last asked about, to tell when another comes.
+ */
+interface ChartMemos {
+  state: GlobalChartState;
+  revision: number;
+  memos: Map<Selector, Memo>;
+}
 
-class GlobalSelectorCache {
-  private selectorCaches: CustomMapCache[] = [];
+/**
+ * The memos of the selectors, in one table for each chart instance: the selectors themselves hold nothing. A table
+ * is held weakly, by the unique chart key of the states: it goes with them, even if the chart is never released.
+ */
+class SelectorMemos {
+  private readonly memosByChartKey = new WeakMap<object, ChartMemos>();
 
-  registerSelector() {
-    const cache = new CustomMapCache();
-    this.selectorCaches.push(cache);
-    return {
-      keySelector,
-      cacheObject: cache,
-      selectorCreator: createSelectorWithLRU,
-    };
+  /** the memos of the chart of a state: the one place that tells a state from the last, so no revision is missed */
+  chartMemos(state: GlobalChartState): ChartMemos {
+    const { uniqueChartKey } = state;
+    let chart = this.memosByChartKey.get(uniqueChartKey);
+    if (!chart) this.memosByChartKey.set(uniqueChartKey, (chart = { state, revision: 0, memos: new Map() }));
+    if (chart.state !== state) {
+      chart.state = state;
+      chart.revision++;
+    }
+    return chart;
   }
 
-  removeKeyFromAll(key: string) {
-    this.selectorCaches.forEach((cache) => {
-      cache.remove(key);
-    });
-    // NOTE: we intentionally do NOT prune empty caches from the array.
-    // Each cache is shared by closure with a live re-reselect selector.
-    // Pruning it here would orphan the cache: future chartIds written to
-    // it by re-reselect would never be cleaned up by subsequent
-    // removeKeyFromAll calls, causing a memory leak.
+  /** lets go of the memos of a chart at once: its states may stay reachable for a while, as React keeps some */
+  release(uniqueChartKey: object) {
+    this.memosByChartKey.delete(uniqueChartKey);
   }
 }
 
 /**
- * Global singleton to manage state of selector caches
+ * Global singleton of the memos of all selectors
  *
  * @internal
  */
-export const globalSelectorCache = new GlobalSelectorCache();
+export const selectorMemos = new SelectorMemos();
 
 /**
- * Wrapper around `createCachedSelector` to provide `keySelector` and `cacheObject`
- * for all selector instances in one place. This should be used in place of `createCachedSelector`.
+ * Makes a memoized selector of the chart state: `createCustomCachedSelector([...inputSelectors], combiner)`.
+ * For each chart it keeps one memo, of its latest computation, and computes again only when an input selector
+ * returns something other than it did for that memo.
  *
- * The types defining `createCachedSelector` are very complex and essentially hardcoded overloads for having any
- * number of selector inputs up to about 20 with generic types. Thus the types are extremely hard to duplciate.
- * To fix this I used the type of `createSelector` which is what is the same as that of `createCachedSelector`
- * method with the added curring for the cached options which this wrapper handles.
+ * One memo is enough because the states it is asked about form a single sequence: those that the store of the
+ * chart holds, one after the other. So a reducer has to ask about the state it was given, not the draft it writes
+ * to. Every object of a draft is new: an answer about one is computed from scratch, and replaces the memo that
+ * the next state could have reused. If asked about a draft anyway, the selector logs an error and answers about
+ * the state the reducer was given.
  *
  * @internal
  */
-export const createCustomCachedSelector = ((...args: any[]) => {
-  // @ts-ignore - forced types to simplify usage. All types align correctly
-  return createCachedSelector(...args)(globalSelectorCache.registerSelector());
-}) as unknown as typeof createSelector;
+export const createCustomCachedSelector = <Inputs extends readonly Selector[], Result>(
+  inputSelectors: readonly [...Inputs],
+  combiner: (...inputs: Results<Inputs>) => Result,
+) => {
+  let computationCount = 0;
+
+  const selector = (asked: GlobalChartState): Result => {
+    let state = asked;
+    if (isDraft(asked)) {
+      Logger.error(
+        'A selector was called with a draft state, from inside a reducer. It used the state the draft was made from; pass that state instead.',
+      );
+      state = original(asked) ?? asked;
+    }
+    const { revision, memos } = selectorMemos.chartMemos(state);
+    const memo = memos.get(selector) as Memo<Result> | undefined;
+    // the same state as the last time: the same result, without asking the input selectors
+    if (memo && memo.revision === revision) return memo.result;
+    const inputs = inputSelectors.map((input) => input(state)) as Results<Inputs>;
+    if (memo && memo.inputs.every((input, i) => input === inputs[i])) {
+      memo.revision = revision;
+      return memo.result;
+    }
+    computationCount++;
+    const result = combiner(...inputs);
+    memos.set(selector, { revision, inputs, result });
+    return result;
+  };
+  selector.computationCount = () => computationCount;
+  return selector;
+};
