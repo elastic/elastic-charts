@@ -1,3 +1,10 @@
+## [73.5.1](https://github.com/elastic/elastic-charts/compare/v73.5.0...v73.5.1) (2026-11-24)
+
+
+### Performance Improvements
+
+* **state:** stop building a set of memoized selectors for every chart ([#2966](https://github.com/elastic/elastic-charts/issues/2966)) ([3ff4c40](https://github.com/elastic/elastic-charts/commit/3ff4c40d3552731385c3e6aacaa83cf58f3361a4))
+
 # [73.5.0](https://github.com/elastic/elastic-charts/compare/v73.4.1...v73.5.0) (2026-11-24)
 
 
