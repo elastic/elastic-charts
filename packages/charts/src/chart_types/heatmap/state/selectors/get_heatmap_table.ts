@@ -18,10 +18,10 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
 import { getAccessorValue } from '../../../../utils/accessor';
-import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
+import { timeRange } from '../../../../utils/chrono/elasticsearch';
 import { isFiniteNumber, isNil, isNonNullablePrimitiveValue } from '../../../../utils/common';
 import type { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
-import { getRasterDomainFilter, linearRange } from '../utils/raster';
+import { addRasterInterval, getRasterDomainFilter, linearRange } from '../utils/raster';
 import type { ResolvedHeatmapScale } from '../utils/scales';
 
 /**
@@ -132,29 +132,29 @@ function getAxisDomain(
 ): { values: Array<string | number>; numericExtent: [number, number] } {
   if (scale.type === ScaleType.Time) {
     const [dataMin = NaN, dataMax = NaN] = extent(dataValues as number[]);
-    // to correctly compute the time extent from data, we need to add an interval to the max value of the dataset
-    const dataMaxExtended = dataMax ? addIntervalToTime(dataMax, scale.interval, timeZone) : NaN;
-
+    // the last data value is the start of the last bin
+    const dataEnd = isFiniteNumber(dataMax) ? addRasterInterval(scale, dataMax, timeZone) : NaN;
     const [customMin, customMax] = !Array.isArray(customDomain)
       ? [customDomain?.min ?? NaN, customDomain?.max ?? NaN]
       : [NaN, NaN];
-    const { min: domainMin, max: domainMax } = scale.domain ?? {};
     const [min = NaN, max = NaN] = scale.domain
-      ? [isFiniteNumber(domainMin) ? domainMin : dataMin, isFiniteNumber(domainMax) ? domainMax : dataMaxExtended]
-      : extent([dataMin, customMin, customMax, dataMaxExtended]);
+      ? [scale.domain.min ?? dataMin, scale.domain.max ?? dataEnd]
+      : extent([dataMin, customMin, customMax, dataEnd]);
     return {
-      values: isFiniteNumber(min) && isFiniteNumber(max) ? timeRange(min, max, scale.interval, timeZone) : [],
+      values:
+        isFiniteNumber(min) && isFiniteNumber(max) && min < max ? timeRange(min, max, scale.interval, timeZone) : [],
       numericExtent: [min, max],
     };
   }
   if (scale.type === ScaleType.Linear) {
     const [dataMin = NaN, dataMax = NaN] = extent(dataValues.filter(isFiniteNumber));
-    const { min: domainMin, max: domainMax } = scale.domain ?? {};
-    const min = isFiniteNumber(domainMin) ? domainMin : dataMin;
-    const max = isFiniteNumber(domainMax) ? domainMax : dataMax + scale.interval;
+    // the last data value is the start of the last bin
+    const min = scale.domain?.min ?? dataMin;
+    const max = scale.domain?.max ?? dataMax + scale.interval;
     const anchor = isFiniteNumber(dataMin) ? dataMin : 0;
     return {
-      values: isFiniteNumber(min) && isFiniteNumber(max) ? linearRange(min, max, scale.interval, anchor) : [],
+      values:
+        isFiniteNumber(min) && isFiniteNumber(max) && min < max ? linearRange(min, max, scale.interval, anchor) : [],
       numericExtent: [min, max],
     };
   }

@@ -132,7 +132,10 @@ function esFixedIntervalSnap(
   return snapTo === 'start' ? roundedDate : roundedDate + unitMultiplier - 1;
 }
 
-/** @internal */
+/**
+ * Returns the start of every bin overlapping `[from, to)`.
+ * @internal
+ */
 export function timeRange(
   from: number,
   to: number,
@@ -146,10 +149,9 @@ export function timeRange(
 
 function calendarTimeRange(from: number, to: number, interval: ESCalendarInterval, timeZone: string): number[] {
   const snappedFrom = roundDateToESInterval(from, interval, 'start', timeZone);
-  const snappedTo = roundDateToESInterval(to, interval, 'start', timeZone);
   const values: number[] = [snappedFrom];
   let current = snappedFrom;
-  while (addTime(current, timeZone, esCalendarIntervalToChronoInterval[interval.unit], interval.value) < snappedTo) {
+  while (addTime(current, timeZone, esCalendarIntervalToChronoInterval[interval.unit], interval.value) < to) {
     current = addTime(current, timeZone, esCalendarIntervalToChronoInterval[interval.unit], interval.value);
     values.push(current);
   }
@@ -158,8 +160,7 @@ function calendarTimeRange(from: number, to: number, interval: ESCalendarInterva
 
 function fixedTimeRange(from: number, to: number, interval: ESFixedInterval, timeZone: string): number[] {
   const snappedFrom = roundDateToESInterval(from, interval, 'start', timeZone);
-  const snappedTo = roundDateToESInterval(to, interval, 'start', timeZone);
-  const utcTo = localToUTC(snappedTo, timeZone);
+  const utcTo = localToUTC(to, timeZone);
   let current = localToUTC(snappedFrom, timeZone);
   const values: number[] = [current];
   while (current + interval.value * ES_FIXED_INTERVAL_UNIT_TO_BASE[interval.unit] < utcTo) {

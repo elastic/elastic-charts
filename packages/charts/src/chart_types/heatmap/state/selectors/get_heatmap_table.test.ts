@@ -142,6 +142,15 @@ describe('getHeatmapTableSelector', () => {
       expect(xValues).toEqual([-20, -10, 0, 10, 20]);
     });
 
+    it('should render nothing for an empty domain', () => {
+      const { xValues, table } = getTable({
+        data: [{ x: 10, y: 'a', value: 1 }],
+        xScale: { type: ScaleType.Linear, interval: 10, domain: { min: 15, max: 15 } },
+      });
+      expect(xValues).toEqual([]);
+      expect(table).toEqual([]);
+    });
+
     it('should fill the y bins', () => {
       const { yValues } = getTable({
         data: [
@@ -151,6 +160,65 @@ describe('getHeatmapTableSelector', () => {
         yScale: { type: ScaleType.Linear, interval: 10 },
       });
       expect(yValues).toEqual([0, 10, 20]);
+    });
+  });
+
+  describe('raster time scale', () => {
+    const hour = 60 * 60 * 1000;
+    const hourlyData = [
+      { x: 0, y: 'a', value: 1 },
+      { x: hour, y: 'a', value: 2 },
+      { x: 2 * hour, y: 'a', value: 3 },
+    ];
+    const hourly = { type: 'fixed', unit: 'h', value: 1 } as const;
+
+    it('should keep the bins overlapping the domain', () => {
+      const { xValues, table } = getTable({
+        data: hourlyData,
+        xScale: { type: ScaleType.Time, interval: hourly, domain: { min: 0.5 * hour, max: 1.5 * hour } },
+      });
+      expect(xValues).toEqual([0, hour]);
+      expect(table.map(({ x }) => x)).toEqual([0, hour]);
+    });
+
+    it('should exclude the bin starting on the domain max', () => {
+      const { xValues, table } = getTable({
+        data: hourlyData,
+        xScale: { type: ScaleType.Time, interval: hourly, domain: { min: 0, max: hour } },
+      });
+      expect(xValues).toEqual([0]);
+      expect(table.map(({ x }) => x)).toEqual([0]);
+    });
+
+    it('should render nothing for an inverted domain', () => {
+      const { xValues, table } = getTable({
+        data: hourlyData,
+        xScale: { type: ScaleType.Time, interval: hourly, domain: { min: 1.5 * hour, max: 0.5 * hour } },
+      });
+      expect(xValues).toEqual([]);
+      expect(table).toEqual([]);
+    });
+
+    it('should snap the domain to calendar days in the chart time zone', () => {
+      // DST starts on 2026-03-29 in Lisbon, moving from UTC to UTC+1
+      const mar29 = Date.parse('2026-03-29T00:00:00+00:00');
+      const mar30 = Date.parse('2026-03-30T00:00:00+01:00');
+      const mar31 = Date.parse('2026-03-31T00:00:00+01:00');
+      const { xValues, table } = getTable({
+        data: [
+          { x: mar29, y: 'a', value: 1 },
+          { x: mar30, y: 'a', value: 2 },
+          { x: mar31, y: 'a', value: 3 },
+        ],
+        timeZone: 'Europe/Lisbon',
+        xScale: {
+          type: ScaleType.Time,
+          interval: { type: 'calendar', unit: 'd', value: 1 },
+          domain: { min: Date.parse('2026-03-29T12:00:00+01:00'), max: Date.parse('2026-03-30T12:00:00+01:00') },
+        },
+      });
+      expect(xValues).toEqual([mar29, mar30]);
+      expect(table.map(({ x }) => x)).toEqual([mar29, mar30]);
     });
   });
 });

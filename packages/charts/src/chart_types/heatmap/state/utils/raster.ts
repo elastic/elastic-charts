@@ -43,7 +43,7 @@ export function findLinearBinIndex(scale: RasterLinearScale, bins: number[], val
   const roundedValue = roundFloatError(value);
   const index = bisectRight(bins, roundedValue) - 1;
   const bin = bins[index];
-  if (!isFiniteNumber(bin)) return -1;
+  if (bin === undefined) return -1;
   const binEnd = bins[index + 1] ?? addLinearInterval(scale, bin);
   return roundedValue < binEnd ? index : -1;
 }
@@ -58,13 +58,14 @@ export function getRasterDomainFilter(
 ): ((value: string | number) => boolean) | undefined {
   if (!isRasterScale(scale) || !scale.domain) return undefined;
   const { min, max } = scale.domain;
-  const upper = isFiniteNumber(max) ? max : Infinity;
+  const lower = min === undefined ? -Infinity : min;
+  const upper = max === undefined ? Infinity : max;
+  if (upper <= lower) return () => false;
   if (scale.type === ScaleType.Time) {
     // snapping the bound once avoids adding a calendar interval to every datum
-    const lower = isFiniteNumber(min) ? roundDateToESInterval(min, scale.interval, 'start', timeZone) : -Infinity;
-    return (value) => isFiniteNumber(value) && value >= lower && value < upper;
+    const timeLower = min === undefined ? -Infinity : roundDateToESInterval(min, scale.interval, 'start', timeZone);
+    return (value) => isFiniteNumber(value) && value >= timeLower && value < upper;
   }
-  const lower = isFiniteNumber(min) ? min : -Infinity;
   return (value) => isFiniteNumber(value) && addRasterInterval(scale, value, timeZone) > lower && value < upper;
 }
 
