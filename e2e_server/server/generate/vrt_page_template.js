@@ -23,14 +23,14 @@ import { resetRandomNumberGenerators } from '@elastic/charts/src/mocks/utils';
 import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon';
 
 appendIconComponentCache({
-  arrowUp: require('@elastic/eui/es/components/icon/assets/arrow_up').icon,
-  arrowLeft: require('@elastic/eui/es/components/icon/assets/arrow_left').icon,
-  arrowDown: require('@elastic/eui/es/components/icon/assets/arrow_down').icon,
-  arrowRight: require('@elastic/eui/es/components/icon/assets/arrow_right').icon,
-  iInCircle: require('@elastic/eui/es/components/icon/assets/iInCircle').icon,
-  tokenKey: require('@elastic/eui/es/components/icon/assets/tokenKey').icon,
+  chevronSingleUp: require('@elastic/eui/es/components/icon/assets/chevron_single_up').icon,
+  chevronSingleLeft: require('@elastic/eui/es/components/icon/assets/chevron_single_left').icon,
+  chevronSingleDown: require('@elastic/eui/es/components/icon/assets/chevron_single_down').icon,
+  chevronSingleRight: require('@elastic/eui/es/components/icon/assets/chevron_single_right').icon,
+  info: require('@elastic/eui/es/components/icon/assets/info').icon,
+  tokenKey: require('@elastic/eui/es/components/icon/assets/token_key').icon,
   filter: require('@elastic/eui/es/components/icon/assets/filter').icon,
-  starFilled: require('@elastic/eui/es/components/icon/assets/star_filled').icon,
+  starFill: require('@elastic/eui/es/components/icon/assets/star_fill').icon,
   pencil: require('@elastic/eui/es/components/icon/assets/pencil').icon,
   visualizeApp: require('@elastic/eui/es/components/icon/assets/app_visualize').icon,
 });

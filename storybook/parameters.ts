@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
-import euiDarkVars from '@elastic/eui/dist/eui_theme_dark.json';
-import euiLightVars from '@elastic/eui/dist/eui_theme_light.json';
 import euiBorealisDarkVars from '@elastic/eui-theme-borealis/lib/eui_theme_borealis_dark.json';
 import euiBorealisLightVars from '@elastic/eui-theme-borealis/lib/eui_theme_borealis_light.json';
 import type { Parameters as SBParameters } from '@storybook/addons';
 import type { BackgroundParameter } from 'storybook-addon-background-toggle';
 import type { ThemeParameter } from 'storybook-addon-theme-toggle';
 import type { TogglesParameter } from 'storybook-addon-toggles';
+
+import { AMSTERDAM_DARK_THEME, AMSTERDAM_LIGHT_THEME } from '@elastic/charts';
 
 import { SB_KNOBS_PANEL, SB_SOURCE_PANEL } from './stories/utils/storybook';
 
@@ -68,14 +68,14 @@ export const storybookParameters: Parameters = {
         id: 'legacy-amsterdam-light',
         title: 'Legacy Amsterdam Light',
         class: ['light-theme', 'legacy', 'amsterdam'],
-        color: euiLightVars.euiColorEmptyShade,
+        color: AMSTERDAM_LIGHT_THEME.background.color,
         imageUrl: euiLogoUrl,
       },
       {
         id: 'legacy-amsterdam-dark',
         title: 'Legacy Amsterdam Dark',
         class: ['dark-theme', 'legacy', 'amsterdam'],
-        color: euiDarkVars.euiColorEmptyShade,
+        color: AMSTERDAM_DARK_THEME.background.color,
         imageUrl: euiLogoUrl,
       },
       {

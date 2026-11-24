@@ -10,8 +10,6 @@ import {
   euiPaletteColorBlind,
   euiPaletteComplementary,
   euiPaletteCool,
-  euiPaletteForDarkBackground,
-  euiPaletteForLightBackground,
   euiPaletteForStatus,
   euiPaletteForTemperature,
   euiPaletteGray,
@@ -30,6 +28,7 @@ import type { ChartsStory } from '../../types';
 import { useBaseTheme, useThemeId } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 import { getKnobFromEnum } from '../utils/knobs/utils';
+import { getEuiVisTextPalette } from '../utils/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const baseTheme = useBaseTheme();
@@ -41,7 +40,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       ['#F1EAFF', '#E5D4FF', '#DCBFFF', '#D0A2F7'],
       ['#0802A3', '#FF4B91', '#FF7676', '#FFCD4B'],
       euiPaletteColorBlind(),
-      isDarkTheme ? euiPaletteForDarkBackground() : euiPaletteForLightBackground(),
+      getEuiVisTextPalette(isDarkTheme),
       euiPaletteForTemperature(steps),
       euiPaletteForStatus(steps),
       euiPaletteComplementary(steps),

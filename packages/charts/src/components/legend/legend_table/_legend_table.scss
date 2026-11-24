@@ -8,7 +8,7 @@
   overflow-x: hidden;
 
   :focus {
-    @include euiFocusRing(null, 1);
+    @include euiFocusRing;
     background-color: $euiFocusBackgroundColor;
     border-radius: $euiBorderRadius / 2;
   }

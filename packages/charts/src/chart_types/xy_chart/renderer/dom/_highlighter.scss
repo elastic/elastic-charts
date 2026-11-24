@@ -10,11 +10,11 @@
 }
 
 .echHighlighterOverlay__fill {
-  fill: transparentize($euiColorGhost, 0.8);
+  fill: transparentize($euiColorPlainLight, 0.8);
 }
 
 .echHighlighterOverlay__stroke {
-  stroke: transparentize($euiColorGhost, 0.8);
+  stroke: transparentize($euiColorPlainLight, 0.8);
 }
 
 .echHighlighter__mask {

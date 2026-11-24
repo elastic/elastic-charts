@@ -6,19 +6,13 @@
  * Side Public License, v 1.
  */
 
-import {
-  euiPaletteColorBlind,
-  euiPaletteComplementary,
-  euiPaletteCool,
-  euiPaletteForDarkBackground,
-  euiPaletteForLightBackground,
-  euiPaletteForStatus,
-} from '@elastic/eui';
+import { euiPaletteColorBlind, euiPaletteComplementary, euiPaletteCool, euiPaletteForStatus } from '@elastic/eui';
 
 import type { MeterFill } from '@elastic/charts';
 import { MeterFillStyle } from '@elastic/charts';
 
 import { positivePalette, signedPalette } from '../components/meter/meter_story_helpers';
+import { getEuiVisTextPalette } from '../utils/utils';
 
 export const labelsGroup = 'Labels';
 export const metricGroup = 'Metric';
@@ -96,7 +90,7 @@ function getProgressBarPalettePresets(isDarkTheme: boolean, domain: [number, num
       getStops: (resolvedDomain) => getEvenlyDistributedStops(resolvedDomain, 3),
     },
     {
-      colors: (isDarkTheme ? euiPaletteForDarkBackground() : euiPaletteForLightBackground()).slice(0, 3),
+      colors: getEuiVisTextPalette(isDarkTheme).slice(0, 3),
       getStops: (resolvedDomain) => getEvenlyDistributedStops(resolvedDomain, 3),
     },
     {

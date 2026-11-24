@@ -26,7 +26,7 @@ export const getLegendAction =
         items: [
           {
             name: 'Alert series specId',
-            icon: <EuiIcon type="iInCircle" size="m" />,
+            icon: <EuiIcon type="info" size="m" />,
             onClick: () => {
               setPopoverOpen(false);
               setTimeout(() => {
@@ -58,7 +58,7 @@ export const getLegendAction =
           },
           {
             name: 'Like series',
-            icon: <EuiIcon type="starFilled" size="m" />,
+            icon: <EuiIcon type="starFill" size="m" />,
             onClick: () => {
               setPopoverOpen(false);
               setTimeout(() => {
