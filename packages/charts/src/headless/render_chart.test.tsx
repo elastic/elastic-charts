@@ -566,9 +566,9 @@ describe('renderChart without a DOM', () => {
 
       renderChart(xyChart('shared', true));
 
-      expect(getSettingsSpecSelector(mounted)).toBe(settings);
-      // those of the render, not those of the other chart
+      // those of the render, not those of the other chart: looked at before asking again, which would make a table
       expect(released()).toEqual([false, true]);
+      expect(getSettingsSpecSelector(mounted)).toBe(settings);
     });
 
     // one per way out of `renderChart` that throws
