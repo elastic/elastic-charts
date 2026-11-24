@@ -13,7 +13,7 @@ import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chro
 import { isFiniteNumber } from '../../../../utils/common';
 import type { HeatmapSpec, RasterLinearScale, RasterTimeScale } from '../../specs/heatmap';
 
-type HeatmapScale = HeatmapSpec['xScale'] | HeatmapSpec['yScale'];
+type HeatmapScale = HeatmapSpec['xScale'] | NonNullable<HeatmapSpec['yScale']>;
 
 /** @internal */
 export type RasterScale = RasterTimeScale | RasterLinearScale;

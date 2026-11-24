@@ -91,7 +91,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   bandsToHide: Array<[number, number]>,
 ): ShapeViewModel {
   const { table, xValues } = heatmapTable;
-  const isYRaster = isRasterScale(spec.yScale);
+  const isYRaster = !!spec.yScale && isRasterScale(spec.yScale);
   // rows are laid out from top to bottom, raster bins ascend upwards
   const yValues = isYRaster ? [...heatmapTable.yValues].reverse() : heatmapTable.yValues;
   const gridStrokeWidth = heatmapTheme.grid.stroke.width;
@@ -354,7 +354,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         ? [startX, addRasterInterval(spec.xScale, endX, spec.timeZone)]
         : [...allXValuesInRange];
     const invertedYValues: Array<NonNullable<PrimitiveValue>> =
-      isRasterScale(spec.yScale) && typeof startY === 'number'
+      spec.yScale && isRasterScale(spec.yScale) && typeof startY === 'number'
         ? [endY, addRasterInterval(spec.yScale, startY, spec.timeZone)]
         : [...allYValuesInRange];
 

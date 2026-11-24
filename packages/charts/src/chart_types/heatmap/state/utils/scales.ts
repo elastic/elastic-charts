@@ -23,7 +23,7 @@ export type ResolvedHeatmapScale = RasterScale | ResolvedOrdinalScale;
  * @internal
  */
 export function resolveHeatmapScale(
-  scale: HeatmapSpec['xScale'] | HeatmapSpec['yScale'],
+  scale: HeatmapSpec['xScale'] | NonNullable<HeatmapSpec['yScale']>,
   fallbackSort: Predicate,
 ): ResolvedHeatmapScale {
   switch (scale.type) {

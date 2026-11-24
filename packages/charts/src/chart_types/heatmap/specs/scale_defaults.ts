@@ -11,6 +11,9 @@ import { ScaleType } from '../../../scales/constants';
 /** @internal */
 export const X_SCALE_DEFAULT = {
   type: ScaleType.Ordinal,
-  nice: false,
-  desiredTickCount: 10,
+};
+
+/** @internal */
+export const Y_SCALE_DEFAULT = {
+  type: ScaleType.Ordinal,
 };

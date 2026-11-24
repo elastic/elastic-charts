@@ -1649,7 +1649,8 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     yAxisLabelName: string;
     // (undocumented)
     yAxisTitle: string;
-    yScale: RasterLinearScale | OrdinalScale;
+    // (undocumented)
+    yScale?: RasterLinearScale | OrdinalScale;
     // @deprecated (undocumented)
     ySortPredicate: Predicate;
 }

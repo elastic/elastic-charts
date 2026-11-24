@@ -8,12 +8,12 @@
 
 import type { ComponentProps } from 'react';
 
-import { X_SCALE_DEFAULT } from './scale_defaults';
+import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from './scale_defaults';
 import { ChartType } from '../..';
 import type { Color } from '../../../common/colors';
 import type { SmallMultiplesDatum } from '../../../common/panel_utils';
 import { Predicate } from '../../../common/predicate';
-import { ScaleType } from '../../../scales/constants';
+import type { ScaleType } from '../../../scales/constants';
 import type { BaseDatum } from '../../../specs';
 import type { Spec } from '../../../specs/spec_type';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
@@ -119,8 +119,10 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   /** @deprecated use `yScale.sort` instead */
   ySortPredicate: Predicate;
   xScale: RasterTimeScale | RasterLinearScale | OrdinalScale | LinearScale;
-  /** raster bins are rendered in ascending order from bottom to top */
-  yScale: RasterLinearScale | OrdinalScale;
+  /**
+   * @defaultValue `{ type: ScaleType.Ordinal }`
+   */
+  yScale?: RasterLinearScale | OrdinalScale;
   highlightedData?: HeatmapHighlightedData;
   name?: string;
   timeZone: string;
@@ -141,8 +143,8 @@ export const heatmapBuildProps = buildSFProps<HeatmapSpec>()(
   {
     data: [],
     valueAccessor: ({ value }) => value,
-    xScale: { type: X_SCALE_DEFAULT.type },
-    yScale: { type: ScaleType.Ordinal },
+    xScale: X_SCALE_DEFAULT,
+    yScale: Y_SCALE_DEFAULT,
     valueFormatter: (value) => `${value}`,
     xSortPredicate: Predicate.AlphaAsc,
     ySortPredicate: Predicate.AlphaAsc,

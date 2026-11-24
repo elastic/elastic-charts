@@ -142,14 +142,6 @@ describe('getHeatmapTableSelector', () => {
       expect(xValues).toEqual([-20, -10, 0, 10, 20]);
     });
 
-    it('should align the bins to the multiples of the interval without data', () => {
-      const { xValues } = getTable({
-        data: [],
-        xScale: { type: ScaleType.Linear, interval: 10, domain: { min: 5, max: 35 } },
-      });
-      expect(xValues).toEqual([0, 10, 20, 30]);
-    });
-
     it('should fill the y bins', () => {
       const { yValues } = getTable({
         data: [

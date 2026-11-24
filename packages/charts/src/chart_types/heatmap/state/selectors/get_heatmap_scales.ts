@@ -8,6 +8,7 @@
 
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { Y_SCALE_DEFAULT } from '../../specs/scale_defaults';
 import type { ResolvedHeatmapScale } from '../utils/scales';
 import { resolveHeatmapScale } from '../utils/scales';
 
@@ -22,6 +23,6 @@ export const getHeatmapScalesSelector = createCustomCachedSelector(
   [getHeatmapSpecSelector],
   ({ xScale, yScale, xSortPredicate, ySortPredicate }): HeatmapScales => ({
     x: resolveHeatmapScale(xScale, xSortPredicate),
-    y: resolveHeatmapScale(yScale, ySortPredicate),
+    y: resolveHeatmapScale(yScale ?? Y_SCALE_DEFAULT, ySortPredicate),
   }),
 );
