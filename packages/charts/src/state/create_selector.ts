@@ -15,7 +15,7 @@ import { Logger } from '../utils/logger';
 type Selector<Result = unknown> = (state: GlobalChartState) => Result;
 
 /** What each of the selectors returns */
-type Results<Selectors extends readonly Selector<any>[]> = { [I in keyof Selectors]: ReturnType<Selectors[I]> };
+type Results<Selectors extends readonly Selector[]> = { [I in keyof Selectors]: ReturnType<Selectors[I]> };
 
 /** What a selector last computed for a chart: for which revision of its state, from which inputs, with which result */
 interface Memo<Result = unknown> {
@@ -79,7 +79,7 @@ export const selectorMemos = new SelectorMemos();
  *
  * @internal
  */
-export const createCustomCachedSelector = <Inputs extends readonly Selector<any>[], Result>(
+export const createCustomCachedSelector = <Inputs extends readonly Selector[], Result>(
   inputSelectors: readonly [...Inputs],
   combiner: (...inputs: Results<Inputs>) => Result,
 ) => {
