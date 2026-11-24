@@ -1,3 +1,17 @@
+# [73.5.0](https://github.com/elastic/elastic-charts/compare/v73.4.1...v73.5.0) (2026-11-24)
+
+
+### Bug Fixes
+
+* **heatmap:** render cursor band and tooltip over the hovered cell ([#2955](https://github.com/elastic/elastic-charts/issues/2955)) ([0873500](https://github.com/elastic/elastic-charts/commit/0873500afa9a0bb77a0fb44df78887c02315e3dc))
+* **heatmap:** stop keeping tens of MB of text measurement memory ([#2960](https://github.com/elastic/elastic-charts/issues/2960)) ([f1e900d](https://github.com/elastic/elastic-charts/commit/f1e900d8790fa13c1cc955c5a1f38bce81a8896d))
+* **storybook:** allow clearing multi-select knobs ([#2914](https://github.com/elastic/elastic-charts/issues/2914)) ([7d59295](https://github.com/elastic/elastic-charts/commit/7d592959e17e324091ab3647414d72b1d8380fee))
+
+
+### Features
+
+* headless chart rendering to an HTML string in Node ([#2958](https://github.com/elastic/elastic-charts/issues/2958)) ([5288e1e](https://github.com/elastic/elastic-charts/commit/5288e1e67e951948c48a254d5a082e24dad140e9))
+
 ## [73.4.1](https://github.com/elastic/elastic-charts/compare/v73.4.0...v73.4.1) (2026-11-17)
 
 
