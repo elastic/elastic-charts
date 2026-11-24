@@ -106,7 +106,7 @@ describe('the chart selectors of a chart type', () => {
     expect(store.getState().chartType).toBe(ChartType.Partition);
     become(MockSeriesSpec.heatmap({ id: 'series' }));
     expect(store.getState().chartType).toBe(ChartType.Heatmap);
-    // a heatmap has a brush end callback of its own, new to this brush: what counts here is the way back
+    // a chart that becomes a heatmap reports the old brush once more, as on main: what counts here is the way back
     const calls = onBrushEnd.mock.calls.length;
     become(bars);
     expect(onBrushEnd).toHaveBeenCalledTimes(calls);

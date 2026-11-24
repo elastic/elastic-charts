@@ -569,7 +569,8 @@ describe('renderChart without a DOM', () => {
       expect(released()).toEqual([false, true]);
     });
 
-    // one per way out of `renderChart` that throws
+    // One per way out of `renderChart` that throws. Only on the one while drawing has a selector been asked by
+    // then: on the others there is no table to release yet, so their check bites once a selector is asked earlier.
     it('are released when the chart type is refused', () => {
       expect(() =>
         renderChart(
