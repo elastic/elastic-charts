@@ -13,8 +13,6 @@ import type { BackgroundParameter } from 'storybook-addon-background-toggle';
 import type { ThemeParameter } from 'storybook-addon-theme-toggle';
 import type { TogglesParameter } from 'storybook-addon-toggles';
 
-import { AMSTERDAM_DARK_THEME, AMSTERDAM_LIGHT_THEME } from '@elastic/charts';
-
 import { SB_KNOBS_PANEL, SB_SOURCE_PANEL } from './stories/utils/storybook';
 
 /**
@@ -62,20 +60,6 @@ export const storybookParameters: Parameters = {
         title: 'Dark',
         class: 'dark-theme',
         color: euiBorealisDarkVars.euiColorEmptyShade,
-        imageUrl: euiLogoUrl,
-      },
-      {
-        id: 'legacy-amsterdam-light',
-        title: 'Legacy Amsterdam Light',
-        class: ['light-theme', 'legacy', 'amsterdam'],
-        color: AMSTERDAM_LIGHT_THEME.background.color,
-        imageUrl: euiLogoUrl,
-      },
-      {
-        id: 'legacy-amsterdam-dark',
-        title: 'Legacy Amsterdam Dark',
-        class: ['dark-theme', 'legacy', 'amsterdam'],
-        color: AMSTERDAM_DARK_THEME.background.color,
         imageUrl: euiLogoUrl,
       },
       {

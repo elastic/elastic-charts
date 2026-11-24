@@ -49,11 +49,7 @@
     "./dist/theme_dark.css": "./dist/theme_dark.css",
     "./dist/theme_only_light.css": "./dist/theme_only_light.css",
     "./dist/theme_only_dark.css": "./dist/theme_only_dark.css",
-    "./dist/theme.scss": "./dist/theme.scss",
-    "./dist/legacy/theme_light.css": "./dist/legacy/theme_light.css",
-    "./dist/legacy/theme_dark.css": "./dist/legacy/theme_dark.css",
-    "./dist/legacy/theme_only_light.css": "./dist/legacy/theme_only_light.css",
-    "./dist/legacy/theme_only_dark.css": "./dist/legacy/theme_only_dark.css"
+    "./dist/theme.scss": "./dist/theme.scss"
   },
   "scripts": {
     "autoprefix:css": "echo 'Autoprefixing...' && yarn postcss dist/*.css --no-map --use autoprefixer -d dist",
