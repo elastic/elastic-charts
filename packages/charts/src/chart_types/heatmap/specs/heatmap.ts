@@ -101,6 +101,8 @@ export interface OrdinalScale {
 }
 
 /**
+ * The selected values of each axis. On raster axes, `[start, end]` selects the bins in `[start, end)`
+ * and a single value selects its bin. On ordinal axes, the array lists the selected values.
  * @public
  */
 export interface HeatmapHighlightedData extends SmallMultiplesDatum {

@@ -1596,7 +1596,7 @@ export interface HeatmapCellDatum extends SmallMultiplesDatum {
 // @public
 export type HeatmapElementEvent = [cell: Cell, seriesIdentifier: SeriesIdentifier];
 
-// @public (undocumented)
+// @public
 export interface HeatmapHighlightedData extends SmallMultiplesDatum {
     // (undocumented)
     x: Array<string | number>;
