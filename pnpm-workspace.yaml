@@ -37,6 +37,3 @@ overrides:
   # pnpm floats the root's ^4.14.121 to 4.17.x, which drops the `Cancelable`
   # type used in packages/charts/src/mocks (matches yarn).
   '@types/lodash@^4.14.121': '4.14.144'
-  # 5.5.4 makes transpileModule reject the root tsconfig's `declarationMap`, which
-  # fails storybook's ts-loader (transpileOnly) build (matches yarn).
-  'typescript@^5.5.3': '5.5.3'

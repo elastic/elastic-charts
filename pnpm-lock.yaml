@@ -168,7 +168,6 @@ overrides:
   webpack@^5.88.1: 5.105.1
   webpack@^5.95.0: 5.105.1
   '@types/lodash@^4.14.121': 4.14.144
-  typescript@^5.5.3: 5.5.3
 
 importers:
 
@@ -481,7 +480,7 @@ importers:
         specifier: ^4.0.0-next.36
         version: 4.0.0-next.36(typedoc@0.25.4(typescript@5.5.3))
       typescript:
-        specifier: 5.5.3
+        specifier: ^5.5.3
         version: 5.5.3
 
   .buildkite:
@@ -532,7 +531,7 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.11.0)(typescript@5.5.3)
       typescript:
-        specifier: 5.5.3
+        specifier: ^5.5.3
         version: 5.5.3
       utility-types:
         specifier: ^3.10.0
@@ -591,7 +590,7 @@ importers:
         specifier: ^3.10.0
         version: 3.10.0(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.32))(csso@5.0.5)(html-minifier-terser@7.2.0)(postcss@8.5.32)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@8.1.1)(uglify-js@3.13.5)
       typescript:
-        specifier: 5.5.3
+        specifier: ~5.5.3
         version: 5.5.3
 
   e2e:
@@ -627,7 +626,7 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.11.0)(typescript@5.5.3)
       typescript:
-        specifier: 5.5.3
+        specifier: ^5.5.3
         version: 5.5.3
 
   packages/charts:
@@ -838,7 +837,7 @@ importers:
         specifier: ^9.6.2
         version: 9.6.2(loader-utils@2.0.4)(typescript@5.5.3)(webpack@5.105.1(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.32))(csso@5.0.5)(html-minifier-terser@7.2.0)(postcss@8.5.32)(uglify-js@3.13.5))
       typescript:
-        specifier: 5.5.3
+        specifier: ^5.5.3
         version: 5.5.3
       utility-types:
         specifier: ^3.10.0
@@ -2402,7 +2401,7 @@ packages:
       moment: ^2.13.0
       react: ^16.12 || ^17.0 || ^18.0
       react-dom: ^16.12 || ^17.0 || ^18.0
-      typescript: 5.5.3
+      typescript: ~4.5.3 || ^5
 
   '@elastic/kibana-d3-color@2.0.1':
     resolution: {integrity: sha512-YZ8hV2bWNyYi833Yj3UWczmTxdHzmo/Xc2IVkNXr/ZqtkrTDlTLysCyJm7SfAt9iBy6EVRGWTn8cPz8QOY6Ixw==}
@@ -3127,7 +3126,7 @@ packages:
     hasBin: true
     peerDependencies:
       '@microsoft/api-extractor': ^7
-      typescript: 5.5.3
+      typescript: ^5 || ^6 || ^7 || ^7.1.0-0
     peerDependenciesMeta:
       '@microsoft/api-extractor':
         optional: true
@@ -3501,7 +3500,7 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      typescript: 5.5.3
+      typescript: '*'
       webpack: 5.105.1
     peerDependenciesMeta:
       typescript:
@@ -3512,7 +3511,7 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      typescript: 5.5.3
+      typescript: '*'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -3527,7 +3526,7 @@ packages:
       '@storybook/manager-webpack5': '*'
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      typescript: 5.5.3
+      typescript: '*'
     peerDependenciesMeta:
       '@storybook/builder-webpack5':
         optional: true
@@ -3543,7 +3542,7 @@ packages:
       '@storybook/manager-webpack5': '*'
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      typescript: 5.5.3
+      typescript: '*'
       webpack: 5.105.1
     peerDependenciesMeta:
       '@storybook/builder-webpack5':
@@ -3605,7 +3604,7 @@ packages:
   '@storybook/react-docgen-typescript-plugin@1.0.2-canary.6.9d540b91e815f8fc2f8829189deb00553559ff63.0':
     resolution: {integrity: sha512-eVg3BxlOm2P+chijHBTByr90IZVUtgRW56qEOLX7xlww2NBuKrcavBlcmn+HH7GIUktquWkMPtvy6e0W0NgA5w==}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: '>= 3.x'
       webpack: 5.105.1
 
   '@storybook/react@6.5.16':
@@ -3621,7 +3620,7 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
       require-from-string: ^2.0.2
-      typescript: 5.5.3
+      typescript: '*'
     peerDependenciesMeta:
       '@babel/core':
         optional: true
@@ -4180,7 +4179,7 @@ packages:
     peerDependencies:
       '@typescript-eslint/parser': ^7.0.0
       eslint: ^8.56.0
-      typescript: 5.5.3
+      typescript: '*'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -4190,7 +4189,7 @@ packages:
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
       eslint: ^8.56.0
-      typescript: 5.5.3
+      typescript: '*'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -4208,7 +4207,7 @@ packages:
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
       eslint: ^8.56.0
-      typescript: 5.5.3
+      typescript: '*'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -4225,7 +4224,7 @@ packages:
     resolution: {integrity: sha512-0vFPk8tMjj6apaAZ1HlwM8w7jbghC8jc1aRNJG5vN8Ym5miyhTQGMqU++kuBFDNKe9NcPeZ6x0zfSzV8xC1UlQ==}
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: '*'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -4234,7 +4233,7 @@ packages:
     resolution: {integrity: sha512-kiG4EDUT4dImplOsbh47B1QnNmXSoUqOjWDvCJw/o8LgfD0yr7k2uy54D5Wm0j4t71Ge1NkynGhpWdS0dEIAUA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: '*'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -5773,7 +5772,7 @@ packages:
     resolution: {integrity: sha512-kcZ6+W5QzcJ3P1Mt+83OUv/oHFqZHIx8DuxG6eZ5RGMERoLqp4BuGjhHLYGK+Kf5XVkQvqBSmAy/nGWN3qDgEA==}
     engines: {node: '>=14'}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: '>=4.9.5'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -5782,7 +5781,7 @@ packages:
     resolution: {integrity: sha512-itvL5h8RETACmOTFc4UfIyB2RfEHi71Ax6E/PivVxq9NseKbOWpeyHEOIbmAw1rs8Ak0VursQNww7lf7YtUwzg==}
     engines: {node: '>=14'}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: '>=4.9.5'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -7133,7 +7132,7 @@ packages:
     engines: {node: '>=6.11.5', yarn: '>=1.0.0'}
     peerDependencies:
       eslint: '>= 6'
-      typescript: 5.5.3
+      typescript: '>= 2.7'
       vue-template-compiler: '*'
       webpack: 5.105.1
     peerDependenciesMeta:
@@ -7147,7 +7146,7 @@ packages:
     engines: {node: '>=10', yarn: '>=1.0.0'}
     peerDependencies:
       eslint: '>= 6'
-      typescript: 5.5.3
+      typescript: '>= 2.7'
       vue-template-compiler: '*'
       webpack: 5.105.1
     peerDependenciesMeta:
@@ -8446,7 +8445,7 @@ packages:
     engines: {node: ^18.12.0 || ^20.9.0 || ^22.11.0 || >=23.0.0}
     peerDependencies:
       jest: '>=27.2.5'
-      typescript: 5.5.3
+      typescript: '>=5.0.0'
     peerDependenciesMeta:
       jest:
         optional: true
@@ -11017,7 +11016,7 @@ packages:
   react-docgen-typescript-loader@3.7.2:
     resolution: {integrity: sha512-fNzUayyUGzSyoOl7E89VaPKJk9dpvdSgyXg81cUkwy0u+NBvkzQG3FC5WBIlXda0k/iaxS+PWi+OC+tUiGxzPA==}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: '*'
 
   react-docgen-typescript-webpack-plugin@1.1.0:
     resolution: {integrity: sha512-9e71HtUPHMzRzTCR0piXKvQzHGNMSFq7S1LUtfYL0bp4HRYVKjseV2WatpnkTrd4AGM4h8pb7AJtRIwy7cTE7g==}
@@ -11026,12 +11025,12 @@ packages:
   react-docgen-typescript@1.22.0:
     resolution: {integrity: sha512-MPLbF8vzRwAG3GcjdL+OHQlhgtWsLTXs+7uJiHfEeT3Ur7IsZaNYqRTLQ9sj2nB6M6jylcPCeCmH7qbszJmecg==}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: '>= 3.x'
 
   react-docgen-typescript@2.4.0:
     resolution: {integrity: sha512-ZtAp5XTO5HRzQctjPU0ybY0RRCQO19X/8fxn3w7y2VVTUbGHDKULPTL4ky3vB05euSgG5NpALhEhDPvQ56wvXg==}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: '>= 4.3.x'
 
   react-docgen@5.3.0:
     resolution: {integrity: sha512-hUrv69k6nxazOuOmdGeOpC/ldiKy7Qj/UFpxaQi0eDMrUFUTIPGtY5HJu7BggSmiyAMfREaESbtBL9UzdQ+hyg==}
@@ -11602,7 +11601,7 @@ packages:
     peerDependencies:
       '@microsoft/api-extractor': ^7
       '@rsbuild/core': ^2.0.0
-      typescript: 5.5.3
+      typescript: ^5 || ^6 || ^7 || ^7.1.0-0
     peerDependenciesMeta:
       '@microsoft/api-extractor':
         optional: true
@@ -12816,7 +12815,7 @@ packages:
     resolution: {integrity: sha512-UQMIo7pb8WRomKR1/+MFVLTroIvDVtMX3K6OUir8ynLyzB8Jeriont2bTAtmNPa1ekAgN7YPDyf6V+ygrdU+eQ==}
     engines: {node: '>=16'}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: '>=4.2.0'
 
   ts-debounce@4.0.0:
     resolution: {integrity: sha512-+1iDGY6NmOGidq7i7xZGA4cm8DAa6fqdYcvO5Z6yBevH++Bdo9Qt/mN0TzHUgcCcKv1gmh9+W5dHqz8pMWbCbg==}
@@ -12837,7 +12836,7 @@ packages:
       esbuild: '*'
       jest: ^29.0.0 || ^30.0.0
       jest-util: ^29.0.0 || ^30.0.0
-      typescript: 5.5.3
+      typescript: '>=4.3 <6'
     peerDependenciesMeta:
       '@babel/core':
         optional: true
@@ -12857,7 +12856,7 @@ packages:
     engines: {node: '>=12.0.0'}
     peerDependencies:
       loader-utils: '*'
-      typescript: 5.5.3
+      typescript: '*'
       webpack: 5.105.1
     peerDependenciesMeta:
       loader-utils:
@@ -12873,7 +12872,7 @@ packages:
       '@swc/core': '>=1.2.50'
       '@swc/wasm': '>=1.2.50'
       '@types/node': '*'
-      typescript: 5.5.3
+      typescript: '>=2.7'
     peerDependenciesMeta:
       '@swc/core':
         optional: true
@@ -12884,7 +12883,7 @@ packages:
     resolution: {integrity: sha512-csd+vJOb/gkzvcCHgTGSChYpy5f1/XKNsmvBGO4JXS+z1v2HobugDz4s1IeFXM3wZB44uczs+eazB5Q/ccdhQw==}
     engines: {node: '>=6'}
     peerDependencies:
-      typescript: 5.5.3
+      typescript: '*'
     peerDependenciesMeta:
       typescript:
         optional: true

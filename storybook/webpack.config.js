@@ -82,6 +82,8 @@ module.exports = ({ config }) => {
     options: {
       configFile: 'tsconfig.json',
       transpileOnly: true,
+      // transpileOnly drops `declaration`, and TS >= 5.5.4 then rejects the root tsconfig's `declarationMap`
+      compilerOptions: { declarationMap: false },
     },
   });
 

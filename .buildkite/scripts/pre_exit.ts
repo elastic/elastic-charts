@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { pnpmInstall } from './../utils/exec';
 import { bkEnv, buildkiteGQLQuery, codeCheckIsCompleted, getJobMetadata, updateCheckStatus } from '../utils';
 
 const skipChecks = new Set(['playwright_vrt', 'playwright_a11y']);
@@ -15,7 +14,6 @@ void (async function () {
   const { checkId, jobId, jobUrl } = bkEnv;
 
   if (checkId && jobId && !skipChecks.has(checkId)) {
-    await pnpmInstall();
     const jobStatus = await getJobStatus(jobId);
 
     if (jobStatus) {
