@@ -528,13 +528,15 @@ describe('renderChart without a DOM', () => {
 
   describe('memoized selectors of the chart', () => {
     // The stores of the charts that a test renders are held until it is over, so their memos cannot have gone
-    // by collection: only the release in `renderChart` lets them go, and `released` tells it right away.
+    // by collection: only the release in `renderChart` lets them go, and `released` tells it right away. Each
+    // chart starts with a memo, so that there is a table to release on whichever way `renderChart` is left.
     let stores: Array<ReturnType<typeof createChartStore>>;
     beforeEach(() => {
       stores = [];
       const { createChartStore: makeStore } = chartState;
       jest.spyOn(chartState, 'createChartStore').mockImplementation((...args) => {
         stores.push(makeStore(...args));
+        getSettingsSpecSelector(stores.at(-1)!.getState());
         return stores.at(-1)!;
       });
     });
@@ -569,8 +571,7 @@ describe('renderChart without a DOM', () => {
       expect(released()).toEqual([false, true]);
     });
 
-    // One per way out of `renderChart` that throws. Only on the one while drawing has a selector been asked by
-    // then: on the others there is no table to release yet, so their check bites once a selector is asked earlier.
+    // one per way out of `renderChart` that throws
     it('are released when the chart type is refused', () => {
       expect(() =>
         renderChart(
