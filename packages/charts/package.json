@@ -65,6 +65,7 @@
     "build:sass": "echo 'Building sass...' && sass 'src/styles:dist' --style compressed --quiet --color --load-path ../../",
     "build:watch": "echo 'Watching build...' && yarn build:clean && yarn build:css && rslib build --watch",
     "concat:sass": "echo 'Concat SASS...' && node scripts/concat_sass.js",
+    "generate:eui-colors": "ts-node scripts/generate_eui_colors.ts",
     "semantic-release": "semantic-release",
     "test:pack": "node scripts/smoke_pack.js",
     "typecheck": "tsc -p ./tsconfig.src.json --noEmit"
