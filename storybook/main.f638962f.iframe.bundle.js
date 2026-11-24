@@ -83042,10 +83042,12 @@ let measureContext;
  * The one place that decides what measures text: the layout code, the legend and metric sizing and
  * the SVG backend all ask here, so they agree with each other whatever answers.
  *
- * - In a browser it is one shared offscreen canvas context, so every renderer measures text exactly
- *   like canvas draws it.
+ * - In a browser it is an offscreen canvas context shared by everything measured in the current
+ *   task, so every renderer measures text exactly like canvas draws it.
  * - Without a DOM, as on a server, it is a table of Inter's advance widths: no canvas is involved.
  * - `null` where a DOM exists but has no canvas support (jsdom).
+ *
+ * Do not keep the returned context beyond the current task: ask again instead.
  * @internal
  */
 function getMeasureContext() {
@@ -83054,9 +83056,16 @@ function getMeasureContext() {
     if (typeof document === 'undefined')
         return (measureContext = (0, table_measure_1.createTableMeasureContext)());
     const ctx = document.createElement('canvas').getContext('2d');
-    if (ctx)
-        measureContext = ctx;
-    return ctx ?? null;
+    if (!ctx)
+        return null;
+    measureContext = ctx;
+    // a browser keeps the shaped text of every string measured on a canvas for as long as the canvas
+    // lives, so unique labels, such as heatmap cell values, would pile up for the life of the page
+    queueMicrotask(() => {
+        if (measureContext === ctx)
+            measureContext = undefined;
+    });
+    return ctx;
 }
 
 
@@ -88785,25 +88794,29 @@ exports.measureText = measureText;
 const text_utils_1 = __webpack_require__(/*! ../../common/text_utils */ "../packages/charts/src/common/text_utils.ts");
 const canvas_1 = __webpack_require__(/*! ../../renderers/canvas */ "../packages/charts/src/renderers/canvas/index.ts");
 const measure_1 = __webpack_require__(/*! ../../renderers/measure */ "../packages/charts/src/renderers/measure.ts");
-/** @internal */
-const withTextMeasure = (fun) => {
-    const ctx = (0, measure_1.getMeasureContext)();
-    return fun(ctx ? measureText(ctx) : () => ({ width: 0, height: 0 }));
-};
-exports.withTextMeasure = withTextMeasure;
+function measureWith(ctx, text, font, fontSize, lineHeight) {
+    if (text.length === 0) {
+        return { width: 0, height: fontSize * lineHeight };
+    }
+    return (0, canvas_1.withContext)(ctx, (ctx) => {
+        ctx.font = (0, text_utils_1.cssFontShorthand)(font, fontSize);
+        const { width } = ctx.measureText(text);
+        return { width, height: fontSize * lineHeight };
+    });
+}
 /** @internal */
 function measureText(ctx) {
-    return (text, font, fontSize, lineHeight = 1) => {
-        if (text.length === 0) {
-            return { width: 0, height: fontSize * lineHeight };
-        }
-        return (0, canvas_1.withContext)(ctx, (ctx) => {
-            ctx.font = (0, text_utils_1.cssFontShorthand)(font, fontSize);
-            const { width } = ctx.measureText(text);
-            return { width, height: fontSize * lineHeight };
-        });
-    };
+    return (text, font, fontSize, lineHeight = 1) => measureWith(ctx, text, font, fontSize, lineHeight);
 }
+// asks for the context on every call: layouts keep closures sharing scope with the measure, and
+// those must not keep a canvas, with its text cache, alive
+const measureOnSharedContext = (text, font, fontSize, lineHeight = 1) => {
+    const ctx = (0, measure_1.getMeasureContext)();
+    return ctx ? measureWith(ctx, text, font, fontSize, lineHeight) : { width: 0, height: 0 };
+};
+/** @internal */
+const withTextMeasure = (fun) => fun(measureOnSharedContext);
+exports.withTextMeasure = withTextMeasure;
 
 
 /***/ },
@@ -111274,4 +111287,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.770813f7.iframe.bundle.js.map
+//# sourceMappingURL=main.f638962f.iframe.bundle.js.map
