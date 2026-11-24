@@ -30,7 +30,7 @@ export interface ChartSliceState {
   chartId: ChartId;
   /**
    * Tells this chart instance from every other, even one with the same chart ID. The selectors keep their
-   * memos under it, weakly, which takes an object: the memos go once no state of the chart is left.
+   * memos under it weakly, which requires a type `object`: the memos go once no state of the chart is left.
    */
   uniqueChartKey: object;
   /**
