@@ -527,9 +527,30 @@ describe('renderChart without a DOM', () => {
   });
 
   describe('memoized selectors of the chart', () => {
-    it('are not held on to, however many charts are rendered', () => {
+    // The stores of the charts that a test renders are held until it is over, so their memos cannot have gone
+    // by collection: only the release in `renderChart` lets them go, and `released` tells it right away.
+    let stores: Array<ReturnType<typeof createChartStore>>;
+    beforeEach(() => {
+      stores = [];
+      const { createChartStore: makeStore } = chartState;
+      jest.spyOn(chartState, 'createChartStore').mockImplementation((...args) => {
+        stores.push(makeStore(...args));
+        return stores.at(-1)!;
+      });
+    });
+    afterEach(() => {
+      jest.mocked(chartState.createChartStore).mockRestore();
+      stores = [];
+    });
+    /** For each chart made, whether the table of its memos is gone: looked up as it is, for asking would make one */
+    const released = () => {
+      const { memosByChartKey } = selectorMemos as unknown as { memosByChartKey: WeakMap<object, unknown> };
+      return stores.map((store) => !memosByChartKey.has(store.getState().uniqueChartKey));
+    };
+
+    it('are released by the time `renderChart` returns, however many charts are rendered', () => {
       for (let i = 0; i < 20; i++) renderChart(xyChart(`one-of-many-${i}`, true));
-      expect(chartMemos.mock.results.length).toBeGreaterThan(20);
+      expect(released()).toEqual(Array.from({ length: 20 }, () => true));
     });
 
     it('are not held on to for a chart that React renders on a server, outside `renderChart`', () => {
@@ -544,10 +565,12 @@ describe('renderChart without a DOM', () => {
       renderChart(xyChart('shared', true));
 
       expect(getSettingsSpecSelector(mounted)).toBe(settings);
+      // those of the render, not those of the other chart
+      expect(released()).toEqual([false, true]);
     });
 
-    // the check after each test is what these four are about: one per way out of `renderChart`
-    it('are not held on to when the chart type is refused', () => {
+    // one per way out of `renderChart` that throws
+    it('are released when the chart type is refused', () => {
       expect(() =>
         renderChart(
           <Chart id="refused" size={{ width: 400, height: 200 }}>
@@ -555,9 +578,10 @@ describe('renderChart without a DOM', () => {
           </Chart>,
         ),
       ).toThrow('does not support');
+      expect(released()).toEqual([true]);
     });
 
-    it('are not held on to when drawing throws', () => {
+    it('are released when drawing throws', () => {
       expect(() =>
         renderChart(
           <Chart id="throws" size={{ width: 400, height: 200 }}>
@@ -572,9 +596,10 @@ describe('renderChart without a DOM', () => {
           </Chart>,
         ),
       ).toThrow('a formatter that fails');
+      expect(released()).toEqual([true]);
     });
 
-    it('are not held on to when a child of the chart throws while the specs are gathered', () => {
+    it('are released when a child of the chart throws while the specs are gathered', () => {
       const Failing = () => {
         throw new Error('a child that fails');
       };
@@ -586,9 +611,10 @@ describe('renderChart without a DOM', () => {
           </Chart>,
         ),
       ).toThrow('a child that fails');
+      expect(released()).toEqual([true]);
     });
 
-    it('are not held on to when a chart is nested in the chart', () => {
+    it('are released when a chart is nested in the chart', () => {
       expect(() =>
         renderChart(
           <Chart id="outer" size={{ width: 400, height: 200 }}>
@@ -596,6 +622,7 @@ describe('renderChart without a DOM', () => {
           </Chart>,
         ),
       ).toThrow('expects one Chart, the element rendered 2');
+      expect(released()).toEqual([true]);
     });
   });
 
