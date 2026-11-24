@@ -12,15 +12,15 @@
  * Reports how far screenshots are from a reference, as differing pixel counts, so that most image pairs
  * need no looking at.
  *
- *   yarn image-distance [--cross[=svg|headless]] [--threshold 0.3] [--top N] [--filter <substring>]
+ *   pnpm image-distance [--cross[=svg|headless]] [--threshold 0.3] [--top N] [--filter <substring>]
  *                       [--exclude <a,b>] [--sheet N] [--scale 1] [--page] [--open]
  *
  * Without `--cross`: every changed PNG under e2e/screenshots against its committed version, e.g. after a
- * `yarn test -u` run (modified files are compared, untracked ones listed as new).
+ * `pnpm test -u` run (modified files are compared, untracked ones listed as new).
  * With `--cross`: every svg screenshot in e2e/screenshots_svg (untracked, written by
- * `yarn test --renderer=svg -u`) against the canvas baseline of the same story in e2e/screenshots.
+ * `pnpm test --renderer=svg -u`) against the canvas baseline of the same story in e2e/screenshots.
  * With `--cross=headless`: the same for the screenshots of the markup of `renderChart` in
- * e2e/screenshots_headless (untracked, written by `yarn headless:screenshots`).
+ * e2e/screenshots_headless (untracked, written by `pnpm headless:screenshots`).
  *
  * The distance of a pair is its count of differing pixels; the ratio is that count over the area of the
  * chart screenshot, so stories of different sizes compare.

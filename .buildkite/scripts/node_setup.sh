@@ -12,7 +12,7 @@ CACHE_DIR="$HOME/.elastic-charts"
 NODE_VERSION="$(cat "$ELASTIC_CHARTS_DIR/.node-version")"
 NODE_DIR="$CACHE_DIR/node/$NODE_VERSION"
 NODE_BIN_DIR="$NODE_DIR/bin"
-YARN_OFFLINE_CACHE="$CACHE_DIR/yarn-offline-cache"
+PNPM_STORE_CACHE="$CACHE_DIR/pnpm-store"
 
 ## Install node for whatever the current os/arch are
 hostArch="$(command uname -m)"
@@ -61,24 +61,11 @@ fi
 
 export PATH="$NODE_BIN_DIR:$PATH"
 
-echo "--- Setup Yarn"
+source .buildkite/scripts/setup_pnpm.sh
 
-YARN_VERSION=$(node -e "console.log(String(require('./package.json').engines.yarn || '').replace(/^[^\d]+/,''))")
-export YARN_VERSION
-
-if [[ ! $(which yarn) || $(yarn --version) != "$YARN_VERSION" ]]; then
-  npm_install_global yarn "^$YARN_VERSION"
+# Move the prewarmed store into the repo so it's visible inside the docker plugin
+# container (mounted at /app), where pnpm-workspace.yaml's storeDir points to it.
+if [[ -d "$PNPM_STORE_CACHE" ]] && [[ ! -d "$ELASTIC_CHARTS_DIR/.pnpm-store" ]]; then
+  echo " -- moving pnpm store to $ELASTIC_CHARTS_DIR/.pnpm-store"
+  mv "$PNPM_STORE_CACHE" "$ELASTIC_CHARTS_DIR/.pnpm-store"
 fi
-
-# Move the prewarmed offline cache into the repo so it's visible inside the
-# docker plugin container (mounted at /app). The container reads the location
-# from YARN_YARN_OFFLINE_MIRROR set by the docker plugin environment.
-if [[ -d "$YARN_OFFLINE_CACHE" ]]; then
-  echo " -- moving yarn offline cache to $ELASTIC_CHARTS_DIR/.yarn-offline-cache"
-  mv -v "$YARN_OFFLINE_CACHE" "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
-  yarn config set yarn-offline-mirror "$ELASTIC_CHARTS_DIR/.yarn-offline-cache"
-fi
-
-YARN_GLOBAL_BIN=$(yarn global bin)
-export YARN_GLOBAL_BIN
-export PATH="$PATH:$YARN_GLOBAL_BIN"

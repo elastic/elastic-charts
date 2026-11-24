@@ -32,14 +32,14 @@ else
     echo "
   !!! Warning: you are running e2e tests outside of docker !!!
 
-  Please run 'yarn test:e2e:a11y' from the root package.json
+  Please run 'pnpm test:e2e:a11y' from the root package.json
 
   "
   else
     echo "
   !!! Warning: you are running e2e tests outside of docker !!!
 
-  Please run 'yarn test' from e2e/package.json
+  Please run 'pnpm test' from e2e/package.json
 
   "
   fi
@@ -61,8 +61,8 @@ export ENV_URL="${ENV_URL:-"http://${hostname}:${PORT}"}"
 
 echo "Connected to e2e server at ${ENV_URL}"
 
-# Install dependencies only e2e modules for testing
-yarn install --frozen-lockfile
+# Dependencies are installed on the host by start.sh; inside docker this script is run directly
+export PATH="$(pwd)/node_modules/.bin:$PATH"
 
 # This setting is used to "seed" randomized data of the charts,
 # so while it says VRT, we enabled it for A11y tests as well.

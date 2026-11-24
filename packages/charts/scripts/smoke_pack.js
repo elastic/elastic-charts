@@ -58,7 +58,7 @@ function packCharts() {
   return path.join(chartsDir, result.filename);
 }
 
-// Yarn may hoist a different major of the same package to the repo root
+// The repo root may resolve a different major of the same package, or none at all
 // (e.g. uuid@3 from Storybook's webpack stack vs uuid@14 for @elastic/charts).
 // Resolve from the charts package so the smoke consumer gets the version a
 // real install of the tarball would get.
@@ -128,7 +128,7 @@ function main() {
   const distCjs = path.join(chartsDir, 'dist/cjs/index.js');
   const distEsm = path.join(chartsDir, 'dist/esm/index.mjs');
   if (!fs.existsSync(distCss) || !fs.existsSync(distCjs) || !fs.existsSync(distEsm)) {
-    fail('Built package output is missing. Run `yarn build` in packages/charts before `yarn test:pack`.');
+    fail('Built package output is missing. Run `pnpm build` in packages/charts before `pnpm test:pack`.');
   }
 
   const tarballFlagIndex = process.argv.indexOf('--tarball');

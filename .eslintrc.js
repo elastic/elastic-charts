@@ -408,7 +408,8 @@ module.exports = {
           },
         ],
         'no-underscore-dangle': 2,
-        'import/no-unresolved': 'error',
+        // uuid v10+ only declares `exports`, which eslint-import-resolver-node cannot read
+        'import/no-unresolved': ['error', { ignore: ['^uuid$'] }],
         'import/no-extraneous-dependencies': 2,
         'prefer-destructuring': [
           'warn',

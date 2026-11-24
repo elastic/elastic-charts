@@ -30,7 +30,7 @@ Shared scripts to be used throughout `.buildkite/`. Includes buildkite and GitHu
 - [ ] Improve buildkite environment lookup
 - [ ] Report annotations for failed steps
 - [ ] Report check summary output for steps
-- [ ] Improve yarn install, better isolation of required dependencies
+- [ ] Improve pnpm install, better isolation of required dependencies
 - [ ] Improve node module caching
 - [ ] Improve agent run time with our own agents
 - [ ] Improve skip logic to build a running state of previously successful runs based on files changed since then

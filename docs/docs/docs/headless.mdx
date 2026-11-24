@@ -299,7 +299,7 @@ It loads Charts from a local checkout of this repository, so three things have t
 - **A peer directory.** Save the page as `index.html` in a directory next to the checkout, for example
   `chart-headless-test` beside `elastic-charts`. The page reaches the build through the relative path
   `../elastic-charts/packages/charts/dist`.
-- **A build.** Run `yarn build` in `elastic-charts/packages/charts` first. It produces both the modules and the
+- **A build.** Run `pnpm build` in `elastic-charts/packages/charts` first. It produces both the modules and the
   stylesheets under `dist`.
 - **A server over the parent directory.** Browsers do not load modules from `file://`, so serve the directory
   that holds both, on this machine only:

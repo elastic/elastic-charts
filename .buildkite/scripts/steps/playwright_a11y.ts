@@ -11,7 +11,7 @@ import path from 'path';
 import { getMetadata, setMetadata } from 'buildkite-agent-node';
 
 import { updateCheckStatus } from './../../utils/github';
-import { exec, downloadArtifacts, startGroup, yarnInstall, getNumber, decompress, compress, bkEnv } from '../../utils';
+import { exec, downloadArtifacts, startGroup, pnpmInstall, getNumber, decompress, compress, bkEnv } from '../../utils';
 import { ENV_URL } from '../../utils/constants';
 
 const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);
@@ -25,7 +25,7 @@ if (jobIndex !== null && jobTotal !== null) {
 }
 
 void (async () => {
-  await yarnInstall('e2e');
+  await pnpmInstall(['charts-e2e']);
 
   const key = `${bkEnv.checkId}--activeJobs`;
   const value = shardIndex === jobTotal ? jobTotal - 1 : Number(await getMetadata(key));
@@ -60,7 +60,7 @@ void (async () => {
     });
   }
 
-  const command = `yarn playwright test ${pwFlags.join(' ')}`;
+  const command = `pnpm exec playwright test ${pwFlags.join(' ')}`;
 
   try {
     await exec(command, {

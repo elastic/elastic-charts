@@ -6,12 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { bkEnv, compress, exec, getOrCreateDeploymentUrl, startGroup, yarnInstall } from '../../utils';
+import { bkEnv, compress, exec, getOrCreateDeploymentUrl, pnpmInstall, ROOT_PROJECTS, startGroup } from '../../utils';
 import { createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
 
 void (async () => {
-  await yarnInstall();
-  await yarnInstall('docs');
+  await pnpmInstall([...ROOT_PROJECTS, 'elastic-charts-docs']);
 
   if (bkEnv.isPullRequest) {
     await createOrUpdateDeploymentComment({
@@ -23,8 +22,8 @@ void (async () => {
 
   startGroup('Building docs - firebase');
   const firebaseChannelUrl = await getOrCreateDeploymentUrl();
-  await exec('yarn typedoc');
-  await exec('yarn build', {
+  await exec('pnpm typedoc');
+  await exec('pnpm build', {
     cwd: 'docs',
     env: {
       DOCUSAURUS_URL: firebaseChannelUrl,
@@ -42,7 +41,7 @@ void (async () => {
 
   if (bkEnv.isMainBranch) {
     startGroup('Building docs - github pages');
-    await exec('yarn build', {
+    await exec('pnpm build', {
       cwd: 'docs',
       env: {
         DOCUSAURUS_URL: 'https://elastic.github.io',

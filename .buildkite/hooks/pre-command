@@ -31,7 +31,7 @@ retry 5 15 install_deps
 
 echo '--- Generating buildkite files'
 
-yarn build:bk:types
+pnpm build:bk:types
 
 echo '--- Updating commit status for jobs'
 

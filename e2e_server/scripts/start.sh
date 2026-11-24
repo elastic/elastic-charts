@@ -9,9 +9,9 @@ FILE=e2e_server/tmp/examples.json
 if [[ -n "${LOCAL_VRT_SERVER}" ]] && [[ ! -f "$FILE" ]]; then
   echo
   echo -e "\033[31m$FILE does not exist"
-  echo -e "Please run yarn test:e2e:generate first"
+  echo -e "Please run pnpm test:e2e:generate first"
   echo
   exit 1
 fi
 
-yarn --cwd e2e_server/server start "$@"
+pnpm -C e2e_server/server start "$@"

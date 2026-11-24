@@ -24,7 +24,8 @@ module.exports = {
   ],
   clearMocks: true,
   // uuid v10+ ships ESM-only; Jest does not transform node_modules by default.
-  transformIgnorePatterns: ['/node_modules/(?!uuid/)'],
+  // pnpm places it under node_modules/.pnpm/uuid@<version>/node_modules/uuid.
+  transformIgnorePatterns: ['/node_modules/(?!(\\.pnpm/uuid@[^/]+/node_modules/)?uuid/)'],
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',

@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { exec, yarnInstall } from '../../utils';
+import { exec, pnpmInstall } from '../../utils';
 
 void (async () => {
-  await yarnInstall();
+  await pnpmInstall();
 
-  await exec('yarn api:check');
+  await exec('pnpm api:check');
 })();

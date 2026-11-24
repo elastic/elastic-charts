@@ -15,7 +15,7 @@ export const typeCheckStep = createStep<CustomCommandStep>((ctx) => {
     label: ':typescript: Types',
     key: 'types',
     skip: isSkippable(ctx),
-    commands: ['npx ts-node .buildkite/scripts/steps/type_check.ts'],
+    commands: ['.buildkite/node_modules/.bin/ts-node .buildkite/scripts/steps/type_check.ts'],
     env: {
       ECH_CHECK_ID: 'types',
     },
@@ -24,7 +24,7 @@ export const typeCheckStep = createStep<CustomCommandStep>((ctx) => {
 
 function isSkippable(changes: ChangeContext): boolean | string {
   const hasTSChanges = changes.files.has('**/*.ts?(x)');
-  const hasConfigChanges = changes.files.has(['yarn.lock', 'package.json', 'tsconfig.json']);
+  const hasConfigChanges = changes.files.has(['pnpm-lock.yaml', 'package.json', 'tsconfig.json']);
 
   if (hasTSChanges || hasConfigChanges) {
     return false;

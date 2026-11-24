@@ -17,7 +17,7 @@ import {
   setChartsPackageMetadata,
   startGroup,
   uploadArtifacts,
-  yarnInstall,
+  pnpmInstall,
 } from '../../utils';
 
 interface NpmPackResult {
@@ -33,13 +33,13 @@ void (async () => {
     throw new Error('Charts package tarballs are only published for pull request builds with a commit SHA');
   }
 
-  await yarnInstall();
+  await pnpmInstall();
 
   startGroup('Preparing @elastic/charts package files');
   await exec('node ./packages/charts/scripts/move_txt_files.js');
 
   startGroup('Building @elastic/charts package');
-  await exec('yarn build', {
+  await exec('pnpm build', {
     cwd: 'packages/charts',
   });
 

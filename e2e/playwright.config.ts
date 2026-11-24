@@ -68,7 +68,7 @@ const config: PlaywrightTestConfig = {
   ],
   webServer: isCI
     ? {
-        command: 'yarn start',
+        command: 'pnpm start',
         port: 9002,
         timeout: 120 * 1000,
         reuseExistingServer: process.env.CI !== 'true',

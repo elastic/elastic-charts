@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { exec, startGroup, yarnInstall } from '../../utils';
+import { exec, startGroup, pnpmInstall } from '../../utils';
 
 void (async () => {
-  await yarnInstall();
+  await pnpmInstall();
 
   startGroup('Running jest tests');
 
-  await exec('yarn test');
+  await exec('pnpm test');
 })();

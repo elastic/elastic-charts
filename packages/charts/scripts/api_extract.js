@@ -12,8 +12,12 @@ const { spawnSync } = require('child_process');
 const configs = ['./api-extractor.jsonc', './api-extractor.headless.jsonc'];
 
 for (const config of configs) {
-  const { status } = spawnSync('yarn', ['api-extractor', 'run', '-c', config, '--verbose', ...process.argv.slice(2)], {
-    stdio: 'inherit',
-  });
+  const { status } = spawnSync(
+    'pnpm',
+    ['exec', 'api-extractor', 'run', '-c', config, '--verbose', ...process.argv.slice(2)],
+    {
+      stdio: 'inherit',
+    },
+  );
   if (status !== 0) throw new Error(`API extraction failed for ${config}`);
 }

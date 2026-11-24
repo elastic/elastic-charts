@@ -1,0 +1,42 @@
+packages:
+  - 'packages/*'
+  - 'storybook'
+  - 'docs'
+  - 'e2e'
+  - '.buildkite'
+
+storeDir: .pnpm-store
+autoInstallPeers: false
+strictPeerDependencies: false
+dedupePeerDependents: true
+minimumReleaseAge: 0
+# CI installs only the projects a step needs; checking all of them before
+# `pnpm run`/`pnpm exec` would turn every filtered install into a full one.
+verifyDepsBeforeRun: false
+
+# pnpm runs a dependency's install/postinstall only when it's set true below.
+# strictDepBuilds fails the install if a dependency with a build script is not
+# listed, so each one is an explicit decision with a one-line reason.
+strictDepBuilds: true
+allowBuilds:
+  '@parcel/watcher': false # native build; prebuilds are sufficient
+  'backport': false # writes config into the home dir
+  'core-js': false # donation banner
+  'core-js-pure': false # donation banner
+  'es5-ext': false # prints an informational message
+  'fsevents': false # optional macOS watcher; v1 (via storybook 6 / webpack 4) needs node-gyp, polling fallback works
+  'unrs-resolver': false # native build; prebuilds are sufficient
+
+overrides:
+  'd3-color': 'npm:@elastic/kibana-d3-color@2.0.1'
+  '@storybook/addon-knobs>react-select': '4.3.1'
+  # Docusaurus requests webpack with these ranges; newer webpack releases changed
+  # its packing output (#2817). Storybook 6 uses other ranges and isn't affected.
+  'webpack@^5.88.1': '5.105.1'
+  'webpack@^5.95.0': '5.105.1'
+  # pnpm floats the root's ^4.14.121 to 4.17.x, which drops the `Cancelable`
+  # type used in packages/charts/src/mocks (matches yarn).
+  '@types/lodash@^4.14.121': '4.14.144'
+  # 5.5.4 makes transpileModule reject the root tsconfig's `declarationMap`, which
+  # fails storybook's ts-loader (transpileOnly) build (matches yarn).
+  'typescript@^5.5.3': '5.5.3'
