@@ -29,9 +29,9 @@ export function getOrCreateNode(
   parent?: HTMLElement | null,
   zIndex: number = 0,
 ): HTMLDivElement {
-  // eslint-disable-next-line unicorn/prefer-query-selector
   const node = document.getElementById(id);
   if (node) {
+    node.style.zIndex = `${zIndex}`;
     return node as HTMLDivElement;
   }
 
@@ -77,38 +77,35 @@ export function getElementZIndex(element: HTMLElement, cousin: HTMLElement): num
    * so `div` needs to copy `section`'s z-index in order to
    * appear next to / over `button`
    *
-   * calculate this by starting at `button` and finding its offsetParents
+   * calculate this by starting at `button` and finding its DOM parents,
    * then walk the parents from top -> down until the stacking context
    * split is found, or if there is no split then a specific z-index is unimportant
+   *
+   * `offsetParent` is not enough here: it can skip ancestors that still affect
+   * body-level stacking, such as flex/grid items with a z-index.
    */
 
-  // build the array of the element + its offset parents
+  // build the array of the element + its DOM parents
   const nodesToInspect: HTMLElement[] = [];
-  while (true) {
-    nodesToInspect.push(element);
-
-    // AFAICT this is a valid cast - the libdefs appear wrong
-    element = element.offsetParent as HTMLElement;
-
-    // stop if there is no parent
-    if (!element) {
-      break;
-    }
-
+  let node: HTMLElement | null = element;
+  while (node) {
+    nodesToInspect.push(node);
     // stop if the parent contains the related element
     // as this is the z-index ancestor
-    if (element.contains(cousin)) {
+    if (node.contains(cousin)) {
       break;
     }
+
+    node = node.parentElement;
   }
 
   // reverse the nodes to walk from top -> element
   for (let i = nodesToInspect.length - 1; i >= 0; i--) {
-    const node = nodesToInspect[i];
-    if (!node) continue;
+    const inspectedNode = nodesToInspect[i];
+    if (!inspectedNode) continue;
 
     // get this node's z-index css value
-    const zIndex = window.document.defaultView!.getComputedStyle(node).getPropertyValue('z-index');
+    const zIndex = window.document.defaultView!.getComputedStyle(inspectedNode).getPropertyValue('z-index');
 
     // if the z-index is not a number (e.g. "auto") return null, else the value
     const parsedZIndex = parseInt(zIndex, 10);
