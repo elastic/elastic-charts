@@ -7,7 +7,6 @@
  */
 
 import { euiThemeBorealis } from '@elastic/eui-theme-borealis';
-// The package's `./lib/*` export maps paths verbatim, so the extension is required.
 // eslint-disable-next-line import/extensions
 import { SEMANTIC_COLORS } from '@elastic/eui-theme-borealis/lib/cjs/variables/colors/_semantic_colors.js';
 
