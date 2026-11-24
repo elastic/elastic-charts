@@ -34,7 +34,7 @@ describe('Legend icons', () => {
 
     const items = screen.queryAllByTestId('echLegendIconPath');
     expect(items).toHaveLength(1);
-    expect(items[0]?.getAttribute('fill')).toEqual('#16C5C0');
+    expect(items[0]?.getAttribute('fill')).toEqual('#00BDA0');
   });
 
   it('should align styles - stroke', () => {

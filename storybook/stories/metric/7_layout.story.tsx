@@ -102,8 +102,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const valueColor = select(
     'Value color',
     {
-      euiColorVisText0: '#065B58',
-      euiColorVisText1: '#047471',
+      euiColorVisText0: '#035749',
+      euiColorVisText1: '#006A59',
       euiColorVisText2: '#154399',
       euiColorVisText3: '#0B64DD',
       euiColorVisText4: '#A11262',
@@ -113,7 +113,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
       euiColorVisText8: '#6A4906',
       euiColorVisText9: '#966B03',
     },
-    '#065B58',
+    '#035749',
     metricGroup,
   );
   const useBlendingBackground = boolean('Use blending background', false, metricGroup);

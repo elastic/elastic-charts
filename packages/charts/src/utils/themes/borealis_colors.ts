@@ -12,8 +12,8 @@ import type { Color } from '../../common/colors';
  * @internal
  */
 export const BOREALIS_COLORS_PALETTE: Color[] = [
-  '#16C5C0',
-  '#A6EDEA',
+  '#00BDA0',
+  '#93F0D9',
   '#61A2FF',
   '#BFDBFF',
   '#EE72A6',
