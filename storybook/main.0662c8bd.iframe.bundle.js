@@ -68097,7 +68097,7 @@ const get_specs_from_store_1 = __webpack_require__(/*! ../../../../state/utils/g
 /** @internal */
 exports.getAxisSpecsSelector = (0, create_selector_1.createCustomCachedSelector)([get_specs_1.getSpecs], (specs) => (0, get_specs_from_store_1.getSpecsFromStore)(specs, __1.ChartType.XYAxis, spec_type_1.SpecType.Axis));
 /** @internal */
-__webpack_unused_export__ = (0, create_selector_1.createCustomCachedSelector)(exports.getAxisSpecsSelector, (axisSpecs) => axisSpecs.reduce((acc, spec) => acc.set(spec.id, spec), new Map()));
+__webpack_unused_export__ = (0, create_selector_1.createCustomCachedSelector)([exports.getAxisSpecsSelector], (axisSpecs) => axisSpecs.reduce((acc, spec) => acc.set(spec.id, spec), new Map()));
 /** @internal */
 exports.getSeriesSpecsSelector = (0, create_selector_1.createCustomCachedSelector)([get_specs_1.getSpecs], (specs) => {
     return (0, get_specs_from_store_1.getSpecsFromStore)(specs, __1.ChartType.XYAxis, spec_type_1.SpecType.Series);
@@ -75615,9 +75615,7 @@ class Chart extends react_1.default.Component {
         get_internal_chart_state_1.chartSelectorsRegistry.setChartSelectors(chart_type_selectors_1.chartTypeSelectors);
         // set up the redux store
         const id = props.id ?? (0, uuid_1.v4)();
-        this.chartStore =
-            headless?.store ??
-                (0, chart_state_1.createChartStore)(id, props.title, props.description, props.renderer, headless ? `headless-${(0, uuid_1.v4)()}` : undefined);
+        this.chartStore = headless?.store ?? (0, chart_state_1.createChartStore)(id, props.title, props.description, props.renderer);
         if (headless?.collect) {
             headless.charts += 1;
             headless.store = this.chartStore;
@@ -76155,7 +76153,7 @@ class ChartStatusComponent extends react_1.default.Component {
         this.dispatchRenderChange();
     }
     componentWillUnmount() {
-        create_selector_1.globalSelectorCache.removeKeyFromAll(this.props.chartId);
+        create_selector_1.selectorMemos.release(this.props.uniqueChartKey);
     }
     dispatchRenderChange = () => {
         const { onWillRender, onRenderChange, rendered } = this.props;
@@ -76176,7 +76174,7 @@ const mapStateToProps = (state) => {
     const internalChartState = (0, get_internal_chart_state_1.getInternalChartStateSelector)(state);
     const { onWillRender, onRenderChange, debugState } = (0, get_settings_spec_1.getSettingsSpecSelector)(state);
     return {
-        chartId: state.chartId,
+        uniqueChartKey: state.uniqueChartKey,
         rendered: state.chartRendered,
         renderedCount: state.chartRenderedCount,
         onWillRender,
@@ -85891,8 +85889,8 @@ const createChartSlice = (initialState) => (0, toolkit_1.createSlice)({
     },
 });
 /** @internal */
-const createChartStore = (chartId, title, description, renderer, selectorCacheKey) => {
-    const initialState = (0, get_initial_state_1.getInitialState)(chartId, title, description, renderer, selectorCacheKey);
+const createChartStore = (chartId, title, description, renderer) => {
+    const initialState = (0, get_initial_state_1.getInitialState)(chartId, title, description, renderer);
     const chartSlice = createChartSlice(initialState);
     return (0, toolkit_1.configureStore)({
         reducer: chartSlice.reducer,
@@ -85968,97 +85966,78 @@ var __webpack_unused_export__;
  * Side Public License, v 1.
  */
 __webpack_unused_export__ = ({ value: true });
-exports.createCustomCachedSelector = exports.globalSelectorCache = void 0;
+exports.createCustomCachedSelector = exports.selectorMemos = void 0;
 const toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs");
-// Named import: Kibana rspack prefers the `browser` field, which is a UMD bundle.
-// Default-importing that UMD module yields the exports object, not the function.
-const re_reselect_1 = __webpack_require__(/*! re-reselect */ "../node_modules/re-reselect/dist/index.js");
+const logger_1 = __webpack_require__(/*! ../utils/logger */ "../packages/charts/src/utils/logger.ts");
 /**
- * Wraps RTK's `createSelector` with a bounded LRU memo cache per chartId.
- * maxSize=2 captures all hit-rate gains with minimal memory footprint.
- * Keeping this small is critical because every cached entry can retain
- * large chart objects (geometry arrays, scales, tooltip info) and the
- * cost is multiplied by ~170 selectors × N charts on the page.
+ * The memos of the selectors, in one table for each chart instance: the selectors themselves hold nothing. A table
+ * is held weakly, by the unique chart key of the states: it goes with them, even if the chart is never released.
  */
-const createSelectorWithLRU = ((selectors, combiner) => (0, toolkit_1.createSelector)(selectors, combiner, {
-    // RTK 2 / reselect 5 defaults to `weakMapMemoize` (unbounded, reference-keyed cache).
-    // Explicitly keep the bounded LRU memoizer to preserve the memory constraints described above.
-    memoize: toolkit_1.lruMemoize,
-    memoizeOptions: {
-        maxSize: 2,
-    },
-}));
-/**
- * Custom cache backed by Map (re-reselect ICacheObject).
- * Map is preferred over a plain object because .size is O(1),
- * .delete() doesn't deoptimize V8 hidden classes
- * see https://github.com/toomuchdesign/re-reselect/tree/master/src/cache#write-your-custom-cache-object
- */
-class CustomMapCache {
-    cache = new Map();
-    set(key, selectorFn) {
-        this.cache.set(key, selectorFn);
+class SelectorMemos {
+    memosByChartKey = new WeakMap();
+    /** the memos of the chart of a state: the one place that tells a state from the last, so no revision is missed */
+    chartMemos(state) {
+        const { uniqueChartKey } = state;
+        let chart = this.memosByChartKey.get(uniqueChartKey);
+        if (!chart)
+            this.memosByChartKey.set(uniqueChartKey, (chart = { state, revision: 0, memos: new Map() }));
+        if (chart.state !== state) {
+            chart.state = state;
+            chart.revision++;
+        }
+        return chart;
     }
-    get(key) {
-        return this.cache.get(key);
-    }
-    remove(key) {
-        this.cache.delete(key);
-    }
-    clear() {
-        this.cache.clear();
-    }
-    isEmpty() {
-        return this.cache.size === 0;
-    }
-    isValidCacheKey(key) {
-        return typeof key === 'string';
-    }
-}
-const keySelector = ({ chartId, selectorCacheKey }) => selectorCacheKey ?? chartId;
-class GlobalSelectorCache {
-    selectorCaches = [];
-    registerSelector() {
-        const cache = new CustomMapCache();
-        this.selectorCaches.push(cache);
-        return {
-            keySelector,
-            cacheObject: cache,
-            selectorCreator: createSelectorWithLRU,
-        };
-    }
-    removeKeyFromAll(key) {
-        this.selectorCaches.forEach((cache) => {
-            cache.remove(key);
-        });
-        // NOTE: we intentionally do NOT prune empty caches from the array.
-        // Each cache is shared by closure with a live re-reselect selector.
-        // Pruning it here would orphan the cache: future chartIds written to
-        // it by re-reselect would never be cleaned up by subsequent
-        // removeKeyFromAll calls, causing a memory leak.
+    /** lets go of the memos of a chart at once: its states may stay reachable for a while, as React keeps some */
+    release(uniqueChartKey) {
+        this.memosByChartKey.delete(uniqueChartKey);
     }
 }
 /**
- * Global singleton to manage state of selector caches
+ * Global singleton of the memos of all selectors
  *
  * @internal
  */
-exports.globalSelectorCache = new GlobalSelectorCache();
+exports.selectorMemos = new SelectorMemos();
 /**
- * Wrapper around `createCachedSelector` to provide `keySelector` and `cacheObject`
- * for all selector instances in one place. This should be used in place of `createCachedSelector`.
+ * Makes a memoized selector of the chart state: `createCustomCachedSelector([...inputSelectors], combiner)`.
+ * For each chart it keeps one memo, of its latest computation, and computes again only when an input selector
+ * returns something other than it did for that memo.
  *
- * The types defining `createCachedSelector` are very complex and essentially hardcoded overloads for having any
- * number of selector inputs up to about 20 with generic types. Thus the types are extremely hard to duplciate.
- * To fix this I used the type of `createSelector` which is what is the same as that of `createCachedSelector`
- * method with the added curring for the cached options which this wrapper handles.
+ * One memo is enough because the states it is asked about form a single sequence: those that the store of the
+ * chart holds, one after the other. So a reducer has to ask about the state it was given, not the draft it writes
+ * to. Every object of a draft is new: an answer about one is computed from scratch, and replaces the memo that
+ * the next state could have reused. If asked about a draft anyway, the selector logs an error and answers about
+ * the state the reducer was given.
  *
  * @internal
  */
-exports.createCustomCachedSelector = ((...args) => {
-    // @ts-ignore - forced types to simplify usage. All types align correctly
-    return (0, re_reselect_1.createCachedSelector)(...args)(exports.globalSelectorCache.registerSelector());
-});
+const createCustomCachedSelector = (inputSelectors, combiner) => {
+    let computationCount = 0;
+    const selector = (asked) => {
+        let state = asked;
+        if ((0, toolkit_1.isDraft)(asked)) {
+            logger_1.Logger.error('A selector was called with a draft state, from inside a reducer. It used the state the draft was made from; pass that state instead.');
+            state = (0, toolkit_1.original)(asked) ?? asked;
+        }
+        const { revision, memos } = exports.selectorMemos.chartMemos(state);
+        const memo = memos.get(selector);
+        // the same state as the last time: the same result, without asking the input selectors
+        if (memo && memo.revision === revision)
+            return memo.result;
+        const inputs = inputSelectors.map((input) => input(state));
+        if (memo && memo.inputs.every((input, i) => input === inputs[i])) {
+            memo.revision = revision;
+            return memo.result;
+        }
+        computationCount++;
+        const result = combiner(...inputs);
+        memos.set(selector, { revision, inputs, result });
+        return result;
+    };
+    selector.computationCount = () => computationCount;
+    return selector;
+};
+exports.createCustomCachedSelector = createCustomCachedSelector;
 
 
 /***/ },
@@ -86085,9 +86064,9 @@ const get_initial_pointer_state_1 = __webpack_require__(/*! ./utils/get_initial_
 const get_initial_tooltip_state_1 = __webpack_require__(/*! ./utils/get_initial_tooltip_state */ "../packages/charts/src/state/utils/get_initial_tooltip_state.ts");
 const default_settings_spec_1 = __webpack_require__(/*! ../specs/default_settings_spec */ "../packages/charts/src/specs/default_settings_spec.ts");
 /** @internal */
-const getInitialState = (chartId, title, description, renderer = 'canvas', selectorCacheKey) => ({
+const getInitialState = (chartId, title, description, renderer = 'canvas') => ({
     chartId,
-    selectorCacheKey,
+    uniqueChartKey: {},
     title,
     description,
     zIndex: 0,
@@ -86147,6 +86126,7 @@ var __webpack_unused_export__;
  */
 __webpack_unused_export__ = ({ value: true });
 exports.handleTooltipActions = exports.handleDOMElementActions = exports.handleLegendActions = exports.handleMouseActions = exports.handleKeyActions = void 0;
+const toolkit_1 = __webpack_require__(/*! @reduxjs/toolkit */ "../node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs");
 const chart_types_1 = __webpack_require__(/*! ../../chart_types */ "../packages/charts/src/chart_types/index.ts");
 const drilldown_active_1 = __webpack_require__(/*! ../../chart_types/partition_chart/state/selectors/drilldown_active */ "../packages/charts/src/chart_types/partition_chart/state/selectors/drilldown_active.ts");
 const picked_shapes_1 = __webpack_require__(/*! ../../chart_types/partition_chart/state/selectors/picked_shapes */ "../packages/charts/src/chart_types/partition_chart/state/selectors/picked_shapes.ts");
@@ -86164,6 +86144,24 @@ const get_legend_items_1 = __webpack_require__(/*! ../selectors/get_legend_items
 const get_tooltip_spec_1 = __webpack_require__(/*! ../selectors/get_tooltip_spec */ "../packages/charts/src/state/selectors/get_tooltip_spec.ts");
 const get_initial_pointer_state_1 = __webpack_require__(/*! ../utils/get_initial_pointer_state */ "../packages/charts/src/state/utils/get_initial_pointer_state.ts");
 const get_initial_tooltip_state_1 = __webpack_require__(/*! ../utils/get_initial_tooltip_state */ "../packages/charts/src/state/utils/get_initial_tooltip_state.ts");
+/**
+ * Adds reducers of interactions. Each writes to the draft of the interactions alone, and asks selectors about
+ * the state the store holds, never about a draft. `isDraft` and `original` must be those of the toolkit.
+ */
+function interactions(builder) {
+    const reducers = {
+        addCase(actionCreator, reducer) {
+            builder.addCase(actionCreator, (draft, action) => {
+                const globalState = (0, toolkit_1.isDraft)(draft) ? (0, toolkit_1.original)(draft) ?? draft : draft;
+                if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
+                    return;
+                reducer(draft.interactions, action, globalState);
+            });
+            return reducers;
+        },
+    };
+    return reducers;
+}
 /** @internal */
 function createItemId(item) {
     return `${item.seriesIdentifier.key}-${item.label}-${item.value}`;
@@ -86174,10 +86172,7 @@ function createItemId(item) {
 const DRAG_DETECTION_PIXEL_DELTA = 4;
 /** @internal */
 const handleKeyActions = (builder) => {
-    builder.addCase(key_1.onKeyPress, (globalState, action) => {
-        if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
-            return;
-        const state = globalState.interactions;
+    interactions(builder).addCase(key_1.onKeyPress, (state, action) => {
         if (action.payload === 'Escape') {
             if (state.tooltip.pinned) {
                 state.pointer = (0, get_initial_pointer_state_1.getInitialPointerState)();
@@ -86191,11 +86186,8 @@ const handleKeyActions = (builder) => {
 exports.handleKeyActions = handleKeyActions;
 /** @internal */
 const handleMouseActions = (builder) => {
-    builder
-        .addCase(mouse_1.onPointerMove, (globalState, action) => {
-        if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
-            return;
-        const state = globalState.interactions;
+    interactions(builder)
+        .addCase(mouse_1.onPointerMove, (state, action) => {
         // The dragging is enabled when the delta between down and move positions is greater than a constant.
         // After this initial threshold, the dragging still enabled until the mouse up event
         const dragging = state.pointer.dragging ||
@@ -86206,10 +86198,7 @@ const handleMouseActions = (builder) => {
         state.pointer.current.time = action.payload.time;
         // Do not update state.pointer.keyPressed here, only the mouseDown event should store the pressed keys
     })
-        .addCase(mouse_1.onMouseDown, (globalState, action) => {
-        if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
-            return;
-        const state = globalState.interactions;
+        .addCase(mouse_1.onMouseDown, (state, action, globalState) => {
         state.prevDrilldown = state.drilldown;
         state.drilldown = getDrilldownData(globalState);
         state.pointer.dragging = false;
@@ -86220,10 +86209,7 @@ const handleMouseActions = (builder) => {
         };
         state.pointer.keyPressed = action.payload.keyPressed ?? keys_1.noModifierKeysPressed;
     })
-        .addCase(mouse_1.onMouseUp, (globalState, action) => {
-        if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
-            return;
-        const state = globalState.interactions;
+        .addCase(mouse_1.onMouseUp, (state, action) => {
         state.pointer.lastDrag =
             state.pointer.down && state.pointer.dragging
                 ? {
@@ -86262,50 +86248,32 @@ const handleMouseActions = (builder) => {
 exports.handleMouseActions = handleMouseActions;
 /** @internal */
 const handleLegendActions = (builder) => {
-    builder.addCase(legend_1.onLegendItemOutAction, (globalState) => {
-        if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
-            return;
-        const state = globalState.interactions;
+    interactions(builder).addCase(legend_1.onLegendItemOutAction, (state) => {
         state.highlightedLegendPath = null;
     });
-    builder.addCase(legend_1.onLegendItemOverAction, (globalState, action) => {
-        if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
-            return;
-        const state = globalState.interactions;
+    interactions(builder).addCase(legend_1.onLegendItemOverAction, (state, action) => {
         state.highlightedLegendPath = action.payload;
     });
-    builder.addCase(legend_1.onToggleDeselectSeriesAction, (globalState, action) => {
-        if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
-            return;
-        const state = globalState.interactions;
+    interactions(builder).addCase(legend_1.onToggleDeselectSeriesAction, (state, action, globalState) => {
         state.deselectedDataSeries = toggleDeselectedDataSeries(action.payload, state.deselectedDataSeries, (0, get_legend_items_1.getLegendItemsSelector)(globalState));
     });
 };
 exports.handleLegendActions = handleLegendActions;
 /** @internal */
 const handleDOMElementActions = (builder) => {
-    builder
-        .addCase(dom_element_1.onDOMElementEnter, (globalState, action) => {
-        if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
-            return;
-        const state = globalState.interactions;
+    interactions(builder)
+        .addCase(dom_element_1.onDOMElementEnter, (state, action) => {
         state.hoveredDOMElement = action.payload;
     })
-        .addCase(dom_element_1.onDOMElementLeave, (globalState) => {
-        if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
-            return;
-        const state = globalState.interactions;
+        .addCase(dom_element_1.onDOMElementLeave, (state) => {
         state.hoveredDOMElement = null;
     });
 };
 exports.handleDOMElementActions = handleDOMElementActions;
 /** @internal */
 const handleTooltipActions = (builder) => {
-    builder
-        .addCase(tooltip_1.pinTooltip, (globalState, action) => {
-        if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
-            return;
-        const state = globalState.interactions;
+    interactions(builder)
+        .addCase(tooltip_1.pinTooltip, (state, action, globalState) => {
         if (!action.payload.pinned) {
             if (action.payload.resetPointer) {
                 state.pointer = (0, get_initial_pointer_state_1.getInitialPointerState)();
@@ -86342,10 +86310,7 @@ const handleTooltipActions = (builder) => {
         state.tooltip.selected = selected;
         state.pointer.pinned = state.pointer.current;
     })
-        .addCase(tooltip_1.toggleSelectedTooltipItem, (globalState, action) => {
-        if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
-            return;
-        const state = globalState.interactions;
+        .addCase(tooltip_1.toggleSelectedTooltipItem, (state, action) => {
         if (!state.tooltip.pinned)
             return;
         const index = state.tooltip.selected.findIndex((item) => createItemId(item) === createItemId(action.payload));
@@ -86356,10 +86321,7 @@ const handleTooltipActions = (builder) => {
             state.tooltip.selected.push(action.payload);
         }
     })
-        .addCase(tooltip_1.setSelectedTooltipItems, (globalState, action) => {
-        if ((0, get_internal_is_intialized_1.getInternalIsInitializedSelector)(globalState) !== get_internal_is_intialized_1.InitStatus.Initialized)
-            return;
-        const state = globalState.interactions;
+        .addCase(tooltip_1.setSelectedTooltipItems, (state, action) => {
         if (!state.tooltip.pinned)
             return;
         state.tooltip.selected = action.payload;
@@ -86952,12 +86914,25 @@ const chartSelectorsRegistryFactory = () => {
 };
 /** @internal */
 exports.chartSelectorsRegistry = chartSelectorsRegistryFactory();
+/**
+ * The chart selectors of every chart type that a chart has been. A selector with no input computes once for a
+ * chart, so they are made once: a chart that comes back to a type finds them, with what their callbacks remember.
+ */
+const getChartSelectorsByType = (0, create_selector_1.createCustomCachedSelector)([], () => new Map());
 /** @internal */
-exports.getInternalChartStateSelector = (0, create_selector_1.createCustomCachedSelector)([(state) => state.chartType], (chartType) => {
+const getInternalChartStateSelector = (state) => {
+    const { chartType } = state;
     if (chartType === null)
         return null;
-    return exports.chartSelectorsRegistry.getChartSelectors(chartType);
-});
+    const byType = getChartSelectorsByType(state);
+    const made = byType.get(chartType);
+    if (made !== undefined)
+        return made;
+    const chartSelectors = exports.chartSelectorsRegistry.getChartSelectors(chartType);
+    byType.set(chartType, chartSelectors);
+    return chartSelectors;
+};
+exports.getInternalChartStateSelector = getInternalChartStateSelector;
 
 
 /***/ },
@@ -111283,8 +111258,8 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 },
 /******/ __webpack_require__ => { // webpackRuntimeModules
 /******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(moduleId))
-/******/ __webpack_require__.O(0, ["vendors-node_modules_elastic_eui_es_index_js-node_modules_popperjs_core_lib_index_js-node_mod-4d50e3"], () => (__webpack_exec__("../node_modules/@storybook/core-client/dist/esm/globals/polyfills.js"), __webpack_exec__("../node_modules/@storybook/core-client/dist/esm/globals/globals.js"), __webpack_exec__("./storybook-init-framework-entry.js"), __webpack_exec__("../node_modules/@storybook/react/dist/esm/client/docs/config-generated-config-entry.js"), __webpack_exec__("../node_modules/@storybook/react/dist/esm/client/preview/config-generated-config-entry.js"), __webpack_exec__("../node_modules/@storybook/addon-actions/preview.js-generated-config-entry.js"), __webpack_exec__("../node_modules/@storybook/addon-docs/preview.js-generated-config-entry.js"), __webpack_exec__("../node_modules/@storybook/addon-knobs/dist/preset/addDecorator.js-generated-config-entry.js"), __webpack_exec__("../node_modules/storybook-addon-background-toggle/dist/esm/preset/preview.js-generated-config-entry.js"), __webpack_exec__("../node_modules/storybook-addon-theme-toggle/dist/esm/preset/preview.js-generated-config-entry.js"), __webpack_exec__("../node_modules/storybook-addon-toggles/dist/esm/preset/preview.js-generated-config-entry.js"), __webpack_exec__("./preview.ts-generated-config-entry.js"), __webpack_exec__("./generated-stories-entry.cjs")));
+/******/ __webpack_require__.O(0, ["vendors-node_modules_elastic_eui_es_index_js-node_modules_popperjs_core_lib_index_js-node_mod-c1b03f"], () => (__webpack_exec__("../node_modules/@storybook/core-client/dist/esm/globals/polyfills.js"), __webpack_exec__("../node_modules/@storybook/core-client/dist/esm/globals/globals.js"), __webpack_exec__("./storybook-init-framework-entry.js"), __webpack_exec__("../node_modules/@storybook/react/dist/esm/client/docs/config-generated-config-entry.js"), __webpack_exec__("../node_modules/@storybook/react/dist/esm/client/preview/config-generated-config-entry.js"), __webpack_exec__("../node_modules/@storybook/addon-actions/preview.js-generated-config-entry.js"), __webpack_exec__("../node_modules/@storybook/addon-docs/preview.js-generated-config-entry.js"), __webpack_exec__("../node_modules/@storybook/addon-knobs/dist/preset/addDecorator.js-generated-config-entry.js"), __webpack_exec__("../node_modules/storybook-addon-background-toggle/dist/esm/preset/preview.js-generated-config-entry.js"), __webpack_exec__("../node_modules/storybook-addon-theme-toggle/dist/esm/preset/preview.js-generated-config-entry.js"), __webpack_exec__("../node_modules/storybook-addon-toggles/dist/esm/preset/preview.js-generated-config-entry.js"), __webpack_exec__("./preview.ts-generated-config-entry.js"), __webpack_exec__("./generated-stories-entry.cjs")));
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.f638962f.iframe.bundle.js.map
+//# sourceMappingURL=main.0662c8bd.iframe.bundle.js.map
