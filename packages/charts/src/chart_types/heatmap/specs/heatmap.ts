@@ -58,7 +58,11 @@ export interface TimeScale {
   type: typeof ScaleType.Time;
 }
 
-/** @public */
+/**
+ * Raster domain to be rendered, will match the bins overlapping `[min, max)`, this means a bound
+ * inside a bin keeps the whole bin, data outside is excluded. Missing bins are inferred from the data.
+ * @public
+ */
 export type RasterDomain = Partial<Pick<DomainRange, 'min' | 'max'>>;
 
 /** @public */

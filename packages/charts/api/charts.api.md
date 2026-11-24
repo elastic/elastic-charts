@@ -2799,7 +2799,7 @@ export type PropsWithoutChildren<Props extends Record<string, unknown> = Record<
 type Range_2 = [min: number, max: number];
 export { Range_2 as Range }
 
-// @public (undocumented)
+// @public
 export type RasterDomain = Partial<Pick<DomainRange, 'min' | 'max'>>;
 
 // @public
