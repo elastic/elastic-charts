@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@octokit/auth-app": "^3.6.1",
+    "@octokit/openapi-types": "^11.2.0",
     "@octokit/plugin-retry": "^3.0.9",
     "@octokit/rest": "^18.12.0",
     "@types/gh-pages": "^3.2.1",
@@ -30,7 +31,6 @@
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
-    "@octokit/openapi-types": "^11.2.0",
     "dotenv": "^16.0.0",
     "nodejs-file-downloader": "^4.9.3"
   }

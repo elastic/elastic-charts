@@ -489,6 +489,9 @@ importers:
       '@octokit/auth-app':
         specifier: ^3.6.1
         version: 3.6.1(encoding@0.1.13)
+      '@octokit/openapi-types':
+        specifier: ^11.2.0
+        version: 11.2.0
       '@octokit/plugin-retry':
         specifier: ^3.0.9
         version: 3.0.9
@@ -535,9 +538,6 @@ importers:
         specifier: ^3.10.0
         version: 3.10.0
     devDependencies:
-      '@octokit/openapi-types':
-        specifier: ^11.2.0
-        version: 11.2.0
       dotenv:
         specifier: ^16.0.0
         version: 16.0.0
@@ -3501,7 +3501,7 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      typescript: '*'
+      typescript: 5.5.3
       webpack: 5.105.1
     peerDependenciesMeta:
       typescript:
@@ -3512,7 +3512,7 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      typescript: '*'
+      typescript: 5.5.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -3527,7 +3527,7 @@ packages:
       '@storybook/manager-webpack5': '*'
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      typescript: '*'
+      typescript: 5.5.3
     peerDependenciesMeta:
       '@storybook/builder-webpack5':
         optional: true
@@ -3543,7 +3543,7 @@ packages:
       '@storybook/manager-webpack5': '*'
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      typescript: '*'
+      typescript: 5.5.3
       webpack: 5.105.1
     peerDependenciesMeta:
       '@storybook/builder-webpack5':
@@ -3621,7 +3621,7 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
       require-from-string: ^2.0.2
-      typescript: '*'
+      typescript: 5.5.3
     peerDependenciesMeta:
       '@babel/core':
         optional: true
@@ -4180,7 +4180,7 @@ packages:
     peerDependencies:
       '@typescript-eslint/parser': ^7.0.0
       eslint: ^8.56.0
-      typescript: '*'
+      typescript: 5.5.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -4190,7 +4190,7 @@ packages:
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
       eslint: ^8.56.0
-      typescript: '*'
+      typescript: 5.5.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -4208,7 +4208,7 @@ packages:
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
       eslint: ^8.56.0
-      typescript: '*'
+      typescript: 5.5.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -4225,7 +4225,7 @@ packages:
     resolution: {integrity: sha512-0vFPk8tMjj6apaAZ1HlwM8w7jbghC8jc1aRNJG5vN8Ym5miyhTQGMqU++kuBFDNKe9NcPeZ6x0zfSzV8xC1UlQ==}
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
-      typescript: '*'
+      typescript: 5.5.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -4234,7 +4234,7 @@ packages:
     resolution: {integrity: sha512-kiG4EDUT4dImplOsbh47B1QnNmXSoUqOjWDvCJw/o8LgfD0yr7k2uy54D5Wm0j4t71Ge1NkynGhpWdS0dEIAUA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      typescript: '*'
+      typescript: 5.5.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -12884,7 +12884,7 @@ packages:
     resolution: {integrity: sha512-csd+vJOb/gkzvcCHgTGSChYpy5f1/XKNsmvBGO4JXS+z1v2HobugDz4s1IeFXM3wZB44uczs+eazB5Q/ccdhQw==}
     engines: {node: '>=6'}
     peerDependencies:
-      typescript: '*'
+      typescript: 5.5.3
     peerDependenciesMeta:
       typescript:
         optional: true
