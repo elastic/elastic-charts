@@ -526,6 +526,12 @@ describe('renderChart without a DOM', () => {
     });
   });
 
+  // outside the tests below, in which every chart starts with a memo: here it is the rendering that asks selectors
+  it('holds on to no memo of a chart that React renders on a server, outside `renderChart`', () => {
+    expect(renderToStaticMarkup(xyChart('on-a-server'))).toContain('echChart');
+    expect(chartMemos).toHaveBeenCalled();
+  });
+
   describe('memoized selectors of the chart', () => {
     // The stores of the charts that a test renders are held until it is over, so their memos cannot have gone
     // by collection: only the release in `renderChart` lets them go, and `released` tells it right away. Each
@@ -553,11 +559,6 @@ describe('renderChart without a DOM', () => {
     it('are released by the time `renderChart` returns, however many charts are rendered', () => {
       for (let i = 0; i < 20; i++) renderChart(xyChart(`one-of-many-${i}`, true));
       expect(released()).toEqual(Array.from({ length: 20 }, () => true));
-    });
-
-    it('are not held on to for a chart that React renders on a server, outside `renderChart`', () => {
-      expect(renderToStaticMarkup(xyChart('on-a-server'))).toContain('echChart');
-      expect(chartMemos).toHaveBeenCalled();
     });
 
     it('are kept apart from those of another chart with the same id', () => {
