@@ -45,7 +45,13 @@ const chart = () => {
     if (series) MockStore.addSpecs([series, settings], store);
     else store.dispatch(specParsed());
   };
-  return { store, onBrushEnd, chartSelectors, become };
+  /** a brush from left to right that starts at a time */
+  const brush = (time: number) => {
+    store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time }));
+    store.dispatch(onPointerMove({ position: { x: 60, y: 10 }, time: time + 200 }));
+    store.dispatch(onMouseUp({ position: { x: 60, y: 10 }, time: time + 300 }));
+  };
+  return { store, onBrushEnd, chartSelectors, become, brush };
 };
 
 describe('the chart selectors of a chart type', () => {
@@ -79,11 +85,9 @@ describe('the chart selectors of a chart type', () => {
   });
 
   it('do not call back again for a brush that ended before the chart lost its series', () => {
-    const { store, onBrushEnd, become } = chart();
+    const { onBrushEnd, become, brush } = chart();
     become(bars);
-    store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0 }));
-    store.dispatch(onPointerMove({ position: { x: 60, y: 10 }, time: 200 }));
-    store.dispatch(onMouseUp({ position: { x: 60, y: 10 }, time: 300 }));
+    brush(0);
     expect(onBrushEnd).toHaveBeenCalledTimes(1);
 
     for (let i = 0; i < 3; i++) {
@@ -95,11 +99,9 @@ describe('the chart selectors of a chart type', () => {
 
   it('do not call back again for a brush that ended before the chart was two other chart types', () => {
     // three chart types in turn: one more than the two computations that a selector used to keep
-    const { store, onBrushEnd, become } = chart();
+    const { store, onBrushEnd, become, brush } = chart();
     become(bars);
-    store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0 }));
-    store.dispatch(onPointerMove({ position: { x: 60, y: 10 }, time: 200 }));
-    store.dispatch(onMouseUp({ position: { x: 60, y: 10 }, time: 300 }));
+    brush(0);
     expect(onBrushEnd).toHaveBeenCalledTimes(1);
 
     become(MockSeriesSpec.sunburst({ id: 'series' }));
@@ -110,6 +112,9 @@ describe('the chart selectors of a chart type', () => {
     const calls = onBrushEnd.mock.calls.length;
     become(bars);
     expect(onBrushEnd).toHaveBeenCalledTimes(calls);
+    // not for want of calling back at all: a brush that ends now is reported, once
+    brush(1000);
+    expect(onBrushEnd).toHaveBeenCalledTimes(calls + 1);
   });
 
   it('add no memos to the chart, however often it leaves the chart type and comes back', () => {
