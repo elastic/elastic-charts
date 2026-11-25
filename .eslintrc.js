@@ -403,11 +403,6 @@ module.exports = {
         'no-restricted-imports': [
           'error',
           {
-            name: 're-reselect',
-            importNames: ['default'],
-            message: 'Please use `createCustomCachedSelector` instead.',
-          },
-          {
             name: 'ts-debounce',
             message: 'Please import from packages/charts/src/state/utils.ts',
           },

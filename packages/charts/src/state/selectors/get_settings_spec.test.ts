@@ -18,13 +18,13 @@ describe('selectors - getSettingsSpecSelector', () => {
   });
   it('shall avoid recomputations', () => {
     getSettingsSpecSelector(state);
-    expect(getSettingsSpecSelector.recomputations()).toBe(1);
+    expect(getSettingsSpecSelector.computationCount()).toBe(1);
     getSettingsSpecSelector(state);
-    expect(getSettingsSpecSelector.recomputations()).toBe(1);
+    expect(getSettingsSpecSelector.computationCount()).toBe(1);
     getSettingsSpecSelector({ ...state, specsInitialized: true });
-    expect(getSettingsSpecSelector.recomputations()).toBe(1);
+    expect(getSettingsSpecSelector.computationCount()).toBe(1);
     getSettingsSpecSelector({ ...state, parentDimensions: { width: 100, height: 100, top: 100, left: 100 } });
-    expect(getSettingsSpecSelector.recomputations()).toBe(1);
+    expect(getSettingsSpecSelector.computationCount()).toBe(1);
   });
   it('shall return new settings if settings changed', () => {
     const updatedSettings = {
@@ -39,8 +39,8 @@ describe('selectors - getSettingsSpecSelector', () => {
     };
     const settingsSpecToCheck = getSettingsSpecSelector(updatedState);
     expect(settingsSpecToCheck).toBe(updatedSettings);
-    expect(getSettingsSpecSelector.recomputations()).toBe(2);
+    expect(getSettingsSpecSelector.computationCount()).toBe(2);
     getSettingsSpecSelector(updatedState);
-    expect(getSettingsSpecSelector.recomputations()).toBe(2);
+    expect(getSettingsSpecSelector.computationCount()).toBe(2);
   });
 });

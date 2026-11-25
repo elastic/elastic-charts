@@ -17,7 +17,7 @@ import { HeadlessContext } from '../components/headless_context';
 import type { Spec } from '../specs/spec_type';
 import { updateParentDimensions, updateRenderer } from '../state/actions/chart_settings';
 import { specParsed, upsertSpecs } from '../state/actions/specs';
-import { globalSelectorCache } from '../state/create_selector';
+import { selectorMemos } from '../state/create_selector';
 
 /** these draw on a canvas of their own (word cloud layout, WebGL), which needs a DOM */
 const NEEDS_A_DOM: ReadonlySet<ChartType | null> = new Set([ChartType.Wordcloud, ChartType.Flame, ChartType.Timeslip]);
@@ -67,9 +67,9 @@ export function renderChart(chart: ReactElement): string {
       <HeadlessContext.Provider value={{ charts: 1, store }}>{headlessChart}</HeadlessContext.Provider>,
     );
   } finally {
-    // Nothing unmounts here, which is what frees a chart's memoized selectors in a browser. They are kept
-    // under a key of this render alone, so no other chart with the same id is affected.
-    const key = collecting.store?.getState().selectorCacheKey;
-    if (key) globalSelectorCache.removeKeyFromAll(key);
+    // The memos of this chart go at once, on every way out. Its states would keep them for a while: React
+    // holds on to the store of a render that threw until it renders again.
+    const key = collecting.store?.getState().uniqueChartKey;
+    if (key) selectorMemos.release(key);
   }
 }
