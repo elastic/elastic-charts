@@ -98,15 +98,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
     // set up the redux store
     const id = props.id ?? uuidv4();
-    this.chartStore =
-      headless?.store ??
-      createChartStore(
-        id,
-        props.title,
-        props.description,
-        props.renderer,
-        headless ? `headless-${uuidv4()}` : undefined,
-      );
+    this.chartStore = headless?.store ?? createChartStore(id, props.title, props.description, props.renderer);
     if (headless?.collect) {
       headless.charts += 1;
       headless.store = this.chartStore;
