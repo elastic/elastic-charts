@@ -15,7 +15,7 @@ export const eslintStep = createStep<CustomCommandStep>((ctx) => {
     label: ':eslint: Eslint',
     key: 'eslint',
     skip: isSkippable(ctx),
-    commands: ['.buildkite/node_modules/.bin/ts-node .buildkite/scripts/steps/eslint.ts'],
+    commands: ['pnpm exec ts-node .buildkite/scripts/steps/eslint.ts'],
     env: {
       ECH_CHECK_ID: 'eslint',
     },

@@ -13,6 +13,10 @@ minimumReleaseAge: 0
 # CI installs only the projects a step needs; checking all of them before
 # `pnpm run`/`pnpm exec` would turn every filtered install into a full one.
 verifyDepsBeforeRun: false
+# CI starts every step with `pnpm exec ts-node` from the repo root, where only the
+# .buildkite project is installed: hoisting gives ts-node a bin in the root node_modules.
+publicHoistPattern:
+  - 'ts-node'
 
 # pnpm runs a dependency's install/postinstall only when it's set true below.
 # strictDepBuilds fails the install if a dependency with a build script is not

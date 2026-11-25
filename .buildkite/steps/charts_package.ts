@@ -18,7 +18,7 @@ export const chartsPackageStep = createStep<CustomCommandStep>(() => {
     key: 'build_charts_package_preview',
     ignoreForced: true,
     skip: isPullRequest ? false : 'Only pull request builds publish charts package tarballs',
-    commands: ['.buildkite/node_modules/.bin/ts-node .buildkite/scripts/steps/charts_package.ts'],
+    commands: ['pnpm exec ts-node .buildkite/scripts/steps/charts_package.ts'],
     env: {
       ECH_CHECK_ID: isPullRequest ? 'build_charts_package_preview' : undefined,
     },

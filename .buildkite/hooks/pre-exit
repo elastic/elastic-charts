@@ -4,4 +4,4 @@ set -euo pipefail
 
 echo '--- Update commit status for jobs'
 
-.buildkite/node_modules/.bin/ts-node .buildkite/scripts/pre_exit.ts
+pnpm exec ts-node .buildkite/scripts/pre_exit.ts
