@@ -33,6 +33,10 @@ playground/playground.tsx
 .pnpm-store
 .pnpm
 
+# lockfiles of other package managers; pnpm-lock.yaml is the only lockfile
+yarn.lock
+package-lock.json
+
 # screenshots of the svg renderer, produced by `pnpm test --renderer=svg -u` in e2e and compared against the canvas baselines
 e2e/screenshots_svg/
 # screenshots of the markup of `renderChart`, produced by `pnpm headless:screenshots` in e2e and compared the same way
