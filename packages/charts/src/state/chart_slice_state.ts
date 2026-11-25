@@ -25,11 +25,14 @@ export type ChartId = string;
 /** @internal */
 export interface ChartSliceState {
   /**
-   * a unique ID for each chart used by re-reselect to memoize selector per chart
+   * the ID the chart was given, which several charts on a page may share
    */
   chartId: ChartId;
-  /** memoizes the selectors under this instead of the chart id, which a render without a DOM must not share */
-  selectorCacheKey?: string;
+  /**
+   * Tells this chart instance from every other, even one with the same chart ID. The selectors keep their
+   * memos under it weakly, which requires a type `object`: the memos go once no state of the chart is left.
+   */
+  uniqueChartKey: object;
   /**
    * Chart title
    */

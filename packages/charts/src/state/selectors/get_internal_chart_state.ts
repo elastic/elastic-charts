@@ -30,11 +30,20 @@ const chartSelectorsRegistryFactory = () => {
 /** @internal */
 export const chartSelectorsRegistry = chartSelectorsRegistryFactory();
 
+/**
+ * The chart selectors of every chart type that a chart has been. A selector with no input computes once for a
+ * chart, so they are made once: a chart that comes back to a type finds them, with what their callbacks remember.
+ */
+const getChartSelectorsByType = createCustomCachedSelector([], () => new Map<ChartType, ChartSelectors | null>());
+
 /** @internal */
-export const getInternalChartStateSelector = createCustomCachedSelector(
-  [(state: GlobalChartState) => state.chartType],
-  (chartType) => {
-    if (chartType === null) return null;
-    return chartSelectorsRegistry.getChartSelectors(chartType);
-  },
-);
+export const getInternalChartStateSelector = (state: GlobalChartState): ChartSelectors | null => {
+  const { chartType } = state;
+  if (chartType === null) return null;
+  const byType = getChartSelectorsByType(state);
+  const made = byType.get(chartType);
+  if (made !== undefined) return made;
+  const chartSelectors = chartSelectorsRegistry.getChartSelectors(chartType);
+  byType.set(chartType, chartSelectors);
+  return chartSelectors;
+};

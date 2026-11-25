@@ -21,16 +21,24 @@ let measureContext: MeasureContext | undefined;
  * The one place that decides what measures text: the layout code, the legend and metric sizing and
  * the SVG backend all ask here, so they agree with each other whatever answers.
  *
- * - In a browser it is one shared offscreen canvas context, so every renderer measures text exactly
- *   like canvas draws it.
+ * - In a browser it is an offscreen canvas context shared by everything measured in the current
+ *   task, so every renderer measures text exactly like canvas draws it.
  * - Without a DOM, as on a server, it is a table of Inter's advance widths: no canvas is involved.
  * - `null` where a DOM exists but has no canvas support (jsdom).
+ *
+ * Do not keep the returned context beyond the current task: ask again instead.
  * @internal
  */
 export function getMeasureContext(): MeasureContext | null {
   if (measureContext) return measureContext;
   if (typeof document === 'undefined') return (measureContext = createTableMeasureContext());
   const ctx = document.createElement('canvas').getContext('2d');
-  if (ctx) measureContext = ctx;
-  return ctx ?? null;
+  if (!ctx) return null;
+  measureContext = ctx;
+  // a browser keeps the shaped text of every string measured on a canvas for as long as the canvas
+  // lives, so unique labels, such as heatmap cell values, would pile up for the life of the page
+  queueMicrotask(() => {
+    if (measureContext === ctx) measureContext = undefined;
+  });
+  return ctx;
 }
