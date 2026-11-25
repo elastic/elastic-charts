@@ -30,6 +30,8 @@
     "build:watch": "lerna run --loglevel=silent --scope @elastic/charts build:watch --stream --no-prefix",
     "concat:sass": "lerna run --loglevel=silent --scope @elastic/charts concat:sass --stream --no-prefix",
     "cz": "git-cz",
+    "eui-colors:check": "lerna run --loglevel=silent --scope @elastic/charts eui-colors:check --stream --no-prefix",
+    "eui-colors:extract": "lerna run --loglevel=silent --scope @elastic/charts eui-colors:extract --stream --no-prefix",
     "lint": "NODE_ENV=production eslint --quiet --ext .tsx,.ts,.mts,.js .",
     "lint:fix": "yarn lint --fix",
     "lint:it": "NODE_ENV=production eslint --quiet --ext .tsx,.ts,.mts,.js",

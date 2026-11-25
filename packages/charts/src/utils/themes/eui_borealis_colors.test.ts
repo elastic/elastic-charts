@@ -11,7 +11,7 @@ import * as generated from './eui_borealis_colors.generated';
 import { extractEuiColors } from '../../../scripts/extract_eui_colors';
 
 describe('EUI Borealis colors', () => {
-  it('matches the installed @elastic/eui-theme-borealis (run `yarn generate:eui-colors` in packages/charts)', () => {
+  it('matches the installed @elastic/eui-theme-borealis (run `yarn eui-colors:extract`)', () => {
     expect({ ...generated }).toEqual(extractEuiColors());
   });
 });

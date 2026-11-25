@@ -9,7 +9,9 @@
 /**
  * Generates `src/utils/themes/eui_borealis_colors.generated.ts` from `@elastic/eui-theme-borealis`.
  *
- * Usage: yarn generate:eui-colors (from packages/charts)
+ * Usage (from packages/charts):
+ *   yarn eui-colors:extract  writes the generated file
+ *   yarn eui-colors:check    fails if the generated file is missing or out of date, without writing it
  */
 
 import fs from 'fs';
@@ -45,16 +47,41 @@ function toSource(constants: Record<string, unknown>, version: string): string {
   return `${header}\n${body}\n`;
 }
 
-async function main() {
+async function renderSource(version: string): Promise<string> {
   const config = await prettier.resolveConfig(OUTPUT_PATH);
-  const source = toSource(extractEuiColors(), getEuiThemeBorealisVersion());
-  const formatted = await prettier.format(source, { ...config, filepath: OUTPUT_PATH });
-  fs.writeFileSync(OUTPUT_PATH, formatted);
+  const source = toSource(extractEuiColors(), version);
+  return await prettier.format(source, { ...config, filepath: OUTPUT_PATH });
+}
+
+async function check() {
+  const version = getEuiThemeBorealisVersion();
+  const expected = await renderSource(version);
+  const current = fs.existsSync(OUTPUT_PATH) ? fs.readFileSync(OUTPUT_PATH, 'utf8') : null;
+  const relativePath = path.relative(process.cwd(), OUTPUT_PATH);
+
+  if (current === expected) {
+    // eslint-disable-next-line no-console
+    console.log(`${relativePath} is up to date with @elastic/eui-theme-borealis@${version}`);
+    return;
+  }
+
+  // eslint-disable-next-line no-console
+  console.error(
+    `${relativePath} is ${current === null ? 'missing' : 'out of date'} for @elastic/eui-theme-borealis@${version}.\n` +
+      'Run `yarn eui-colors:extract` and commit the result.',
+  );
+  process.exitCode = 1;
+}
+
+async function extract() {
+  fs.writeFileSync(OUTPUT_PATH, await renderSource(getEuiThemeBorealisVersion()));
   // eslint-disable-next-line no-console
   console.log(`Wrote ${path.relative(process.cwd(), OUTPUT_PATH)}`);
 }
 
-main().catch((error) => {
+const run = process.argv.includes('--check') ? check : extract;
+
+run().catch((error) => {
   // eslint-disable-next-line no-console
   console.error(error);
   process.exitCode = 1;

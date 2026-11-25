@@ -9,6 +9,7 @@
 export * from './jest';
 export * from './eslint';
 export * from './api_check';
+export * from './eui_colors_check';
 export * from './type_check';
 export * from './prettier';
 export * from './playwright_vrt';
