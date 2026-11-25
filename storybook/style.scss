@@ -57,12 +57,26 @@ html {
       .echChart {
         background: white !important;
       }
+
+      &.amsterdam {
+        body,
+        .echChart {
+          background: #fff !important;
+        }
+      }
     }
 
     &.dark-theme {
       body,
       .echChart {
         background: black !important;
+      }
+
+      &.amsterdam {
+        body,
+        .echChart {
+          background: #1d1e24 !important;
+        }
       }
     }
   }

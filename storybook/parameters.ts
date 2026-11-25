@@ -63,6 +63,18 @@ export const storybookParameters: Parameters = {
         imageUrl: euiLogoUrl,
       },
       {
+        id: 'legacy-amsterdam-light',
+        title: 'Legacy Amsterdam Light',
+        class: ['light-theme', 'legacy', 'amsterdam'],
+        color: '#FFF',
+      },
+      {
+        id: 'legacy-amsterdam-dark',
+        title: 'Legacy Amsterdam Dark',
+        class: ['dark-theme', 'legacy', 'amsterdam'],
+        color: '#1D1E24',
+      },
+      {
         id: 'legacy-light',
         title: 'Legacy Light',
         class: ['light-theme', 'legacy'],

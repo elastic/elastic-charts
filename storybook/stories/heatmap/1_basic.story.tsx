@@ -28,7 +28,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const showYAxisTitle = boolean('Show y axis title', false);
   const showBrushTool = boolean('Show pointer brush area', true);
   const themeId = useThemeId();
-  const severity = (themeId === ThemeId.Dark || themeId === ThemeId.LegacyDark ? EUI_DARK : EUI_LIGHT).severity;
+  const isDarkTheme =
+    themeId === ThemeId.Dark || themeId === ThemeId.LegacyDark || themeId === ThemeId.LegacyAmsterdamDark;
+  const severity = (isDarkTheme ? EUI_DARK : EUI_LIGHT).severity;
 
   const pointerUpdate = (event: PointerEvent) => {
     action('onPointerUpdate')(event);
