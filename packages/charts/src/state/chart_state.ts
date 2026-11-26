@@ -208,14 +208,8 @@ const createChartSlice = (initialState: ChartSliceState) =>
   });
 
 /** @internal */
-export const createChartStore = (
-  chartId: string,
-  title?: string,
-  description?: string,
-  renderer?: RendererType,
-  selectorCacheKey?: string,
-) => {
-  const initialState = getInitialState(chartId, title, description, renderer, selectorCacheKey);
+export const createChartStore = (chartId: string, title?: string, description?: string, renderer?: RendererType) => {
+  const initialState = getInitialState(chartId, title, description, renderer);
   const chartSlice = createChartSlice(initialState);
   return configureStore({
     reducer: chartSlice.reducer,

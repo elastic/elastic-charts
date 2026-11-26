@@ -23,7 +23,7 @@
  *                of it is garbage once the render is over
  *   held         what the selectors of a rendered chart keep reachable while it exists: what lives through
  *                a whole render, which a collector ends up moving to its old generation, to free late and at
- *                a cost. Without the store of the chart, which holds its specs
+ *                a cost. With the last state of the chart, which they hold too: 2 to 5 kB of these figures
  *   left behind  what stays reachable after 3000 charts that differ, for each of them: a leak. It is near
  *                zero, within about 0.2 kB, unless something piles up: a ceiling to gate on, not to compare
  *
@@ -75,7 +75,7 @@ const { pinTooltip } = use('state/actions/tooltip.js');
 const { chartSelectorsRegistry, getInternalChartStateSelector } = use('state/selectors/get_internal_chart_state.js');
 const { chartTypeSelectors } = use('chart_types/chart_type_selectors.js');
 const { getLegendItemsSelector } = use('state/selectors/get_legend_items.js');
-const { globalSelectorCache } = use('state/create_selector.js');
+const { selectorMemos } = use('state/create_selector.js');
 
 chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
 const allCharts = require('./charts')(c, React);
@@ -196,8 +196,7 @@ function liveChart(id, make) {
   };
   // as a chart does when it is gone: what its selectors computed stays reachable until then
   const release = () => {
-    const { chartId, selectorCacheKey } = store.getState();
-    globalSelectorCache.removeKeyFromAll(selectorCacheKey ?? chartId);
+    selectorMemos.release(store.getState().uniqueChartKey);
   };
   return { store, ask, size, fill, release };
 }
@@ -209,12 +208,12 @@ function liveChart(id, make) {
 function held(make) {
   const n = 30;
   const keys = [];
-  globalSelectorCache.removeKeyFromAll = (key) => keys.push(key);
+  selectorMemos.release = (key) => keys.push(key);
   for (let i = 0; i < n; i++) renderChart(make());
-  delete globalSelectorCache.removeKeyFromAll;
+  delete selectorMemos.release;
   // what the release frees: nothing else that the renders may have left counts
   const before = live();
-  keys.forEach((key) => globalSelectorCache.removeKeyFromAll(key));
+  keys.forEach((key) => selectorMemos.release(key));
   const bytes = (before - live()) / n;
   return keys.length === n ? bytes / 1024 : NaN;
 }

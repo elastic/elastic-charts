@@ -20,7 +20,7 @@ export const getAxisSpecsSelector = createCustomCachedSelector([getSpecs], (spec
 
 /** @internal */
 export const axisSpecsLookupSelector = createCustomCachedSelector(
-  getAxisSpecsSelector,
+  [getAxisSpecsSelector],
   (axisSpecs: AxisSpec[]): Map<string, AxisSpec> => axisSpecs.reduce((acc, spec) => acc.set(spec.id, spec), new Map()),
 );
 
