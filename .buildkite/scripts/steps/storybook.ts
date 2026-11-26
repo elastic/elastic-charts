@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { bkEnv, compress, exec, startGroup, yarnInstall } from '../../utils';
+import { bkEnv, buildStorybookSite, compress, startGroup, storybookOutDir, yarnInstall } from '../../utils';
 import { createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
 
 void (async () => {
@@ -21,17 +21,12 @@ void (async () => {
   }
 
   startGroup('Building storybook');
-  await exec('yarn build', {
-    cwd: 'storybook',
-    env: {
-      NODE_ENV: bkEnv.isMainBranch ? 'production' : 'development',
-      NODE_OPTIONS: '--openssl-legacy-provider',
-    },
+  buildStorybookSite({
+    nodeEnv: bkEnv.isMainBranch ? 'production' : 'development',
   });
 
-  const outDir = `.out`;
   await compress({
-    src: outDir,
+    src: storybookOutDir,
     dest: '.buildkite/artifacts/storybook.gz',
   });
 })();

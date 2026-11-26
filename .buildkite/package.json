@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build:bk:types": "ts-node scripts/get_buildkite_types.ts",
+    "build:release-site": "ts-node scripts/build_release_site.ts",
     "postinstall": "yarn build:bk:types",
     "build:pipeline": "ts-node pipelines/pull_request/pipeline.ts",
     "print:pipeline": "yarn -s build:bk:types && TEST_BK_PIPELINE=true ts-node -r dotenv/config pipelines/pull_request/pipeline.ts",
