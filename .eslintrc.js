@@ -241,6 +241,8 @@ module.exports = {
       },
     ],
     'import/no-unresolved': ['error', { ignore: ['theme_dark.scss', 'theme_light.scss'] }],
+    // we use namespace-style default imports such as `React.Component`
+    'import/no-named-as-default-member': 0,
     // https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
     'import/prefer-default-export': 0,
     // Limit usage in development directories
@@ -348,10 +350,7 @@ module.exports = {
   },
   settings: {
     'import/resolver': {
-      node: {
-        extensions: ['.mjs', '.mts', '.js', '.json', '.ts', '.d.ts', '.tsx'],
-        moduleDirectory: ['node_modules', 'packages/charts/src/'],
-      },
+      typescript: {},
     },
     react: {
       version: 'detect',
