@@ -83,6 +83,7 @@ function hover(store: Store<GlobalChartState>, x: number, y: number) {
 function externalOver(
   x: PointerOverEvent['x'],
   smVerticalValue: PointerOverEvent['smVerticalValue'] = null,
+  smHorizontalValue: PointerOverEvent['smHorizontalValue'] = null,
 ): PointerEvent {
   return {
     chartId: 'other',
@@ -90,9 +91,27 @@ function externalOver(
     scale: ScaleType.Ordinal,
     x,
     y: [],
-    smHorizontalValue: null,
+    smHorizontalValue,
     smVerticalValue,
   };
+}
+
+const horizontalPanelData = [
+  { x: 'a', y: 'y', value: 1, panel: 'left' },
+  { x: 'b', y: 'y', value: 2, panel: 'left' },
+  { x: 'a', y: 'y', value: 3, panel: 'right' },
+  { x: 'b', y: 'y', value: 4, panel: 'right' },
+];
+
+function horizontalPanelSpecs() {
+  return [
+    MockGlobalSpec.smallMultiple({ splitHorizontally: 'panel' }),
+    MockGlobalSpec.groupBy({
+      id: 'panel',
+      by: (_spec: Spec, datum: { panel: string }) => datum.panel,
+      sort: Predicate.AlphaAsc,
+    }),
+  ];
 }
 
 const verticalPanelData = [
@@ -215,20 +234,8 @@ describe('Heatmap cursor band', () => {
     const onPointerUpdate = jest.fn();
     const store = setupChart({
       onPointerUpdate,
-      extraSpecs: [
-        MockGlobalSpec.smallMultiple({ splitHorizontally: 'panel' }),
-        MockGlobalSpec.groupBy({
-          id: 'panel',
-          by: (_spec: Spec, datum: { panel: string }) => datum.panel,
-          sort: Predicate.AlphaAsc,
-        }),
-      ],
-      data: [
-        { x: 'a', y: 'y', value: 1, panel: 'left' },
-        { x: 'b', y: 'y', value: 2, panel: 'left' },
-        { x: 'a', y: 'y', value: 3, panel: 'right' },
-        { x: 'b', y: 'y', value: 4, panel: 'right' },
-      ],
+      extraSpecs: horizontalPanelSpecs(),
+      data: horizontalPanelData,
     });
     const { chartDimensions } = computeChartDimensionsSelector(store.getState());
     const panelWidth = chartDimensions.width / 2;
@@ -265,31 +272,17 @@ describe('Heatmap cursor band', () => {
   });
 
   it('forwards a same x/y panel change to the receiving chart', () => {
-    const panelData = [
-      { x: 'a', y: 'y', value: 1, panel: 'left' },
-      { x: 'b', y: 'y', value: 2, panel: 'left' },
-      { x: 'a', y: 'y', value: 3, panel: 'right' },
-      { x: 'b', y: 'y', value: 4, panel: 'right' },
-    ];
-    const panelSpecs = [
-      MockGlobalSpec.smallMultiple({ splitHorizontally: 'panel' }),
-      MockGlobalSpec.groupBy({
-        id: 'panel',
-        by: (_spec: Spec, datum: { panel: string }) => datum.panel,
-        sort: Predicate.AlphaAsc,
-      }),
-    ];
     const onPointerUpdate = jest.fn();
     const source = setupChart({
       chartId: 'source',
       onPointerUpdate,
-      extraSpecs: panelSpecs,
-      data: panelData,
+      extraSpecs: horizontalPanelSpecs(),
+      data: horizontalPanelData,
     });
     const receiving = setupChart({
       chartId: 'receiving',
-      extraSpecs: panelSpecs,
-      data: panelData,
+      extraSpecs: horizontalPanelSpecs(),
+      data: horizontalPanelData,
     });
     const { chartDimensions } = computeChartDimensionsSelector(source.getState());
     const panelWidth = chartDimensions.width / 2;
@@ -386,6 +379,53 @@ describe('Heatmap cursor band', () => {
       expect(band?.y).toBeCloseTo(chartDimensions.top + panelHeight);
       expect(band?.height).toBeCloseTo(panelHeight);
       expect(band?.width).toBeCloseTo(chartDimensions.width / 2);
+    });
+  });
+
+  describe('horizontal small multiples', () => {
+    function setupHorizontalChart() {
+      return setupChart({ extraSpecs: horizontalPanelSpecs(), data: horizontalPanelData });
+    }
+
+    // unlike vertical splits, a horizontal split has no full-grid fallback
+    it('falls back to the first panel column when the external event has no horizontal panel', () => {
+      const store = setupHorizontalChart();
+      const { chartDimensions } = computeChartDimensionsSelector(store.getState());
+      const panelWidth = chartDimensions.width / 2;
+      store.dispatch(onExternalPointerEvent(externalOver('a')));
+
+      const band = getCursorBandPositionSelector(store.getState());
+      expect(band?.fromExternalEvent).toBe(true);
+      expect(band?.x).toBeCloseTo(chartDimensions.left);
+      expect(band?.y).toBeCloseTo(chartDimensions.top);
+      expect(band?.width).toBeCloseTo(panelWidth / 2);
+      expect(band?.height).toBeCloseTo(chartDimensions.height);
+    });
+
+    it('falls back to the first panel column when the external horizontal panel is not in this chart', () => {
+      const store = setupHorizontalChart();
+      const { chartDimensions } = computeChartDimensionsSelector(store.getState());
+      const panelWidth = chartDimensions.width / 2;
+      store.dispatch(onExternalPointerEvent(externalOver('a', null, 'missing')));
+
+      const band = getCursorBandPositionSelector(store.getState());
+      expect(band?.fromExternalEvent).toBe(true);
+      expect(band?.x).toBeCloseTo(chartDimensions.left);
+      expect(band?.width).toBeCloseTo(panelWidth / 2);
+      expect(band?.height).toBeCloseTo(chartDimensions.height);
+    });
+
+    it('highlights only the matching horizontal panel', () => {
+      const store = setupHorizontalChart();
+      const { chartDimensions } = computeChartDimensionsSelector(store.getState());
+      const panelWidth = chartDimensions.width / 2;
+      store.dispatch(onExternalPointerEvent(externalOver('a', null, 'right')));
+
+      const band = getCursorBandPositionSelector(store.getState());
+      expect(band?.fromExternalEvent).toBe(true);
+      expect(band?.x).toBeCloseTo(chartDimensions.left + panelWidth);
+      expect(band?.width).toBeCloseTo(panelWidth / 2);
+      expect(band?.height).toBeCloseTo(chartDimensions.height);
     });
   });
 

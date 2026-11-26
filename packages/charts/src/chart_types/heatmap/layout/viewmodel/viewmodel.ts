@@ -228,21 +228,6 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     return isFiniteNumber(offset) ? offset : undefined;
   };
 
-  const fullVerticalGrid = () => {
-    const scale = smScales.vertical;
-    const firstValue = scale.domain[0];
-    const lastValue = scale.domain.at(-1);
-    if (!hasSMDomain(scale) || firstValue === undefined || lastValue === undefined) {
-      return { offset: 0, height: panelSize.height };
-    }
-    const first = scale.scale(firstValue);
-    const last = scale.scale(lastValue);
-    if (!isFiniteNumber(first) || !isFiniteNumber(last)) {
-      return { offset: 0, height: panelSize.height };
-    }
-    return { offset: first, height: last + panelSize.height - first };
-  };
-
   const getPanelPointCoordinate = (value: Pixels, scale: 'horizontal' | 'vertical') => {
     const category = smScales[scale].invert(value) ?? '';
     const panelOffset = getScaledSMValue(category, scale);
@@ -471,9 +456,12 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const bucketX = xScale(xValues[index] ?? NaN) ?? NaN;
     const horizontalOffset = panelOffsetInDomain(smHorizontalAccessorValue, 'horizontal') ?? 0;
     const verticalOffset = panelOffsetInDomain(smVerticalAccessorValue, 'vertical');
-    // a resolved panel is one row of panels; a missing or unknown panel spans the whole grid
+    // a resolved vertical panel is one row of panels; a missing or unknown one spans the full chart height.
+    // a missing or unknown horizontal panel falls back to the first panel column.
     const vertical =
-      verticalOffset === undefined ? fullVerticalGrid() : { offset: verticalOffset, height: panelSize.height };
+      verticalOffset === undefined
+        ? { offset: 0, height: chartDimensions.height }
+        : { offset: verticalOffset, height: panelSize.height };
 
     return {
       width: cellWidth,
