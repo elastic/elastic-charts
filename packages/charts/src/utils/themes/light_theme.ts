@@ -247,7 +247,7 @@ export const LIGHT_THEME: Theme = {
   },
   colors: {
     vizColors: BOREALIS_COLORS_PALETTE,
-    defaultVizColor: '#16C5C0',
+    defaultVizColor: '#00BDA0',
   },
   legend: {
     verticalWidth: 200,

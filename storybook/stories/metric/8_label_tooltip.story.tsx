@@ -94,7 +94,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
       value: '5.3%',
       label,
       labelPosition: 'tooltip',
-      badgeColor: '#a6edea',
+      badgeColor: '#93f0d9',
       labelTooltip,
     },
   };
