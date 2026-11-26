@@ -46045,6 +46045,8 @@ function shapeViewModel(textMeasure, spec, { heatmap: heatmapTheme, axes: { axis
     const cellWidth = heatmapTheme.cell.maxWidth !== 'fill' && xScale.bandwidth() > heatmapTheme.cell.maxWidth
         ? heatmapTheme.cell.maxWidth
         : xScale.bandwidth();
+    // center the drawn cell in its scale bucket; a maxWidth wider than the bucket contributes no offset
+    const cellCenteringOffset = (xScale.bandwidth() - cellWidth) / 2;
     // compute the cell height, we already computed the max size for that
     const cellHeight = yScale.bandwidth();
     // compute the position of each column label
@@ -46087,8 +46089,7 @@ function shapeViewModel(textMeasure, spec, { heatmap: heatmapTheme, axes: { axis
         if (!acc.has(panelKey))
             acc.set(panelKey, cellMap);
         cellMap.set(cellKey, {
-            x: (heatmapTheme.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - heatmapTheme.cell.maxWidth / 2 : x) +
-                gridStrokeWidth / 2,
+            x: x + cellCenteringOffset + gridStrokeWidth / 2,
             y: y + gridStrokeWidth / 2,
             yIndex,
             width: cellWidthInner,
@@ -46111,6 +46112,15 @@ function shapeViewModel(textMeasure, spec, { heatmap: heatmapTheme, axes: { axis
     }, new Map());
     const getScaledSMValue = (value, scale) => {
         return (0, panel_utils_1.hasSMDomain)(smScales[scale]) ? smScales[scale].scale(value) : 0;
+    };
+    const getPanelOffset = (value, scale) => (0, common_1.isNil)(value) ? 0 : getScaledSMValue(value, scale);
+    // A panel value that is missing or not on this chart cannot be placed. Callers fall back to the full grid.
+    const panelOffsetInDomain = (value, axis) => {
+        const scale = smScales[axis];
+        if ((0, common_1.isNil)(value) || !(0, panel_utils_1.hasSMDomain)(scale))
+            return;
+        const offset = scale.scale(value);
+        return (0, common_1.isFiniteNumber)(offset) ? offset : undefined;
     };
     const getPanelPointCoordinate = (value, scale) => {
         const category = smScales[scale].invert(value) ?? '';
@@ -46141,20 +46151,23 @@ function shapeViewModel(textMeasure, spec, { heatmap: heatmapTheme, axes: { axis
         y > chartDimensions.top &&
         y < chartDimensions.top + chartDimensions.height;
     /**
-     * Returns the corresponding x & y values of grid cell from the x & y positions
+     * Returns the corresponding x & y values of grid cell from the x & y positions,
+     * resolved inside the small-multiple panel under the pointer.
      * @param x
      * @param y
      */
     const pickGridCell = (x, y) => {
-        if (x < chartDimensions.left || y < chartDimensions.top)
+        if (!isPointerOverPanel({ x, y }))
             return undefined;
-        if (x > chartDimensions.width + chartDimensions.left || y > chartDimensions.top + chartDimensions.height)
+        const { x: panelX, y: panelY, h, v } = getPanelPointCoordinates(x, y);
+        if (panelX === undefined || panelY === undefined)
             return undefined;
-        const xValue = xInvertedScale(x - chartDimensions.left);
-        const yValue = yInvertedScale(y);
-        if (xValue === undefined || yValue === undefined)
-            return undefined;
-        return { x: xValue, y: yValue };
+        return {
+            x: panelX,
+            y: panelY,
+            ...((0, panel_utils_1.hasSMDomain)(smScales.horizontal) ? { smHorizontalAccessorValue: h } : {}),
+            ...((0, panel_utils_1.hasSMDomain)(smScales.vertical) ? { smVerticalAccessorValue: v } : {}),
+        };
     };
     /**
      * Returns selected elements based on coordinates.
@@ -46244,10 +46257,8 @@ function shapeViewModel(textMeasure, spec, { heatmap: heatmapTheme, axes: { axis
         if (startFromScale === undefined || endFromScale === undefined) {
             return null;
         }
-        const panelXOffset = (0, common_1.isNil)(smHorizontalAccessorValue)
-            ? 0
-            : getScaledSMValue(smHorizontalAccessorValue, 'horizontal');
-        const panelYOffset = (0, common_1.isNil)(smVerticalAccessorValue) ? 0 : getScaledSMValue(smVerticalAccessorValue, 'vertical');
+        const panelXOffset = getPanelOffset(smHorizontalAccessorValue, 'horizontal');
+        const panelYOffset = getPanelOffset(smVerticalAccessorValue, 'vertical');
         const xStart = chartDimensions.left + startFromScale + panelXOffset;
         // extend the range in case the right boundary has been selected
         const width = endFromScale - startFromScale + (isRightOutOfRange || isLeftOutOfRange ? cellWidth : 0);
@@ -46275,20 +46286,28 @@ function shapeViewModel(textMeasure, spec, { heatmap: heatmapTheme, axes: { axis
         const { x, y, smHorizontalAccessorValue, smVerticalAccessorValue } = pickDragArea(bound);
         return pickHighlightedArea(x, y, smHorizontalAccessorValue, smVerticalAccessorValue);
     };
-    const pickCursorBand = (x) => {
+    const pickCursorBand = ({ x, smHorizontalAccessorValue, smVerticalAccessorValue }) => {
         // TODO for Linear scale we need to round the numerical interval. see also https://github.com/elastic/elastic-charts/issues/1701
         const roundedValue = isRasterTimeScale(spec.xScale) && (0, common_1.isFiniteNumber)(x)
             ? (0, elasticsearch_1.roundDateToESInterval)(x, spec.xScale.interval, 'start', spec.timeZone)
             : x;
         const index = xValues.indexOf(roundedValue);
-        return index < 0
-            ? undefined
-            : {
-                width: cellWidth,
-                x: chartDimensions.left + (xScale(xValues[index] ?? NaN) ?? NaN),
-                y: chartDimensions.top,
-                height: chartDimensions.height,
-            };
+        if (index < 0)
+            return undefined;
+        const bucketX = xScale(xValues[index] ?? NaN) ?? NaN;
+        const horizontalOffset = panelOffsetInDomain(smHorizontalAccessorValue, 'horizontal') ?? 0;
+        const verticalOffset = panelOffsetInDomain(smVerticalAccessorValue, 'vertical');
+        // a resolved vertical panel is one row of panels; a missing or unknown one spans the full chart height.
+        // a missing or unknown horizontal panel falls back to the first panel column.
+        const vertical = verticalOffset === undefined
+            ? { offset: 0, height: chartDimensions.height }
+            : { offset: verticalOffset, height: panelSize.height };
+        return {
+            width: cellWidth,
+            x: chartDimensions.left + bucketX + cellCenteringOffset + horizontalOffset,
+            y: chartDimensions.top + vertical.offset,
+            height: vertical.height,
+        };
     };
     // ordered left-right vertical lines
     const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => {
@@ -47762,7 +47781,6 @@ var __webpack_unused_export__;
 __webpack_unused_export__ = ({ value: true });
 exports.getCursorBandPositionSelector = void 0;
 const get_per_panel_heatmap_geometries_1 = __webpack_require__(/*! ./get_per_panel_heatmap_geometries */ "../packages/charts/src/chart_types/heatmap/state/selectors/get_per_panel_heatmap_geometries.ts");
-const get_tooltip_anchor_1 = __webpack_require__(/*! ./get_tooltip_anchor */ "../packages/charts/src/chart_types/heatmap/state/selectors/get_tooltip_anchor.ts");
 const picked_shapes_1 = __webpack_require__(/*! ./picked_shapes */ "../packages/charts/src/chart_types/heatmap/state/selectors/picked_shapes.ts");
 const specs_1 = __webpack_require__(/*! ../../../../specs */ "../packages/charts/src/specs/index.ts");
 const create_selector_1 = __webpack_require__(/*! ../../../../state/create_selector */ "../packages/charts/src/state/create_selector.ts");
@@ -47773,32 +47791,31 @@ const getExternalPointerEventStateSelector = (state) => state.externalEvents.poi
 exports.getCursorBandPositionSelector = (0, create_selector_1.createCustomCachedSelector)([
     get_per_panel_heatmap_geometries_1.getPerPanelHeatmapGeometries,
     getExternalPointerEventStateSelector,
-    picked_shapes_1.getPickedShapes,
-    get_tooltip_anchor_1.getTooltipAnchorSelector,
+    picked_shapes_1.getPickedGridCell,
     get_internal_is_brushing_1.getInternalIsBrushingSelector,
-], (geoms, externalPointerEvent, pickedShapes, tooltipShape, isBrushing) => {
-    // block cursor when brusing
+], (geoms, externalPointerEvent, pickedGridCell, isBrushing) => {
+    // block cursor when brushing
     if (isBrushing)
         return;
-    // external pointer events takes precedence over the current mouse pointer
+    const bandFrom = (cell, fromExternalEvent) => {
+        const band = geoms.pickCursorBand(cell);
+        return band && { ...band, fromExternalEvent };
+    };
+    // external pointer events take precedence only when they resolve a column on this chart
     if ((0, specs_1.isPointerOverEvent)(externalPointerEvent)) {
-        const { x } = externalPointerEvent;
+        const { x, smHorizontalValue, smVerticalValue } = externalPointerEvent;
         if (!(0, common_1.isNil)(x)) {
-            const band = geoms.pickCursorBand(x);
-            if (band) {
-                return {
-                    ...band,
-                    fromExternalEvent: true,
-                };
-            }
+            const band = bandFrom({
+                x,
+                // PointerOverEvent uses null where GridCell uses undefined
+                smHorizontalAccessorValue: smHorizontalValue ?? undefined,
+                smVerticalAccessorValue: smVerticalValue ?? undefined,
+            }, true);
+            if (band)
+                return band;
         }
     }
-    if ((0, picked_shapes_1.hasPicketVisibleCells)(pickedShapes)) {
-        return {
-            ...tooltipShape,
-            fromExternalEvent: false,
-        };
-    }
+    return pickedGridCell ? bandFrom(pickedGridCell, false) : undefined;
 });
 
 
@@ -48846,7 +48863,9 @@ const get_settings_spec_1 = __webpack_require__(/*! ../../../../state/selectors/
 function isSameEventValue(a, b, changeTrigger) {
     const checkX = changeTrigger === specs_1.PointerUpdateTrigger.X || changeTrigger === specs_1.PointerUpdateTrigger.Both;
     const checkY = changeTrigger === specs_1.PointerUpdateTrigger.Y || changeTrigger === specs_1.PointerUpdateTrigger.Both;
-    return ((!checkX || (a.x === b.x && a.scale === b.scale && a.unit === b.unit)) &&
+    const samePanel = a.smHorizontalValue === b.smHorizontalValue && a.smVerticalValue === b.smVerticalValue;
+    return (samePanel &&
+        (!checkX || (a.x === b.x && a.scale === b.scale && a.unit === b.unit)) &&
         (!checkY || a.y.every((y, i) => y.value === b.y[i]?.value)));
 }
 const hasPointerEventChanged = (prev, next, changeTrigger) => next?.type !== prev.type ||
@@ -48886,8 +48905,8 @@ function createOnPointerUpdateCaller() {
                         scale: spec.xScale.type,
                         x: gridCell.x,
                         y: [{ value: gridCell.y, groupId: '' }],
-                        smHorizontalValue: null,
-                        smVerticalValue: null,
+                        smHorizontalValue: gridCell.smHorizontalAccessorValue ?? null,
+                        smVerticalValue: gridCell.smVerticalAccessorValue ?? null,
                     }
                     : { chartId, type: specs_1.PointerEventType.Out };
                 // we have to update the prevPointerEvents before possibly calling the onPointerUpdate
@@ -111239,4 +111258,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.ba9c467f.iframe.bundle.js.map
+//# sourceMappingURL=main.df98336e.iframe.bundle.js.map
