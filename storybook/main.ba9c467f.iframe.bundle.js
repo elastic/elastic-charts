@@ -23201,29 +23201,6 @@ exports.Example.parameters = { storySource: { source: "(_, { title, description 
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -23232,7 +23209,7 @@ exports.Example = void 0;
 /* eslint-disable */
 // @ts-nocheck
 // @ts-ignore
-var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport { action } from '@storybook/addon-actions';\nimport { boolean } from '@storybook/addon-knobs';\nimport { DateTime } from 'luxon';\nimport * as moment from 'moment-timezone';\nimport React from 'react';\n\nimport type { BrushEndListener } from '@elastic/charts';\nimport {\n  Axis,\n  Chart,\n  HistogramBarSeries,\n  LineSeries,\n  niceTimeFormatter,\n  Position,\n  ScaleType,\n  Settings,\n} from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { customKnobs } from '../utils/knobs';\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();\n  const oneDay = 1000 * 60 * 60 * 24;\n  const oneDays = moment.duration(1, 'd');\n  const twoDays = moment.duration(2, 'd');\n  const fiveDays = moment.duration(5, 'd');\n  const formatter = niceTimeFormatter([now, fiveDays.add(now).asMilliseconds()]);\n  const brushEndListener: BrushEndListener = ({ x }) => {\n    if (!x) {\n      return;\n    }\n    action('onBrushEnd')(formatter(x[0]), formatter(x[1]));\n  };\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        baseTheme={useBaseTheme()}\n        debug={boolean('debug', false)}\n        onBrushEnd={brushEndListener}\n        onElementClick={action('onElementClick')}\n        rotation={customKnobs.enum.rotation()}\n      />\n      <Axis id=\"bottom\" position={Position.Bottom} title=\"bottom\" showOverlappingTicks tickFormat={formatter} />\n      <Axis id=\"left\" title=\"left\" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />\n\n      <HistogramBarSeries\n        id=\"bars\"\n        xScaleType={ScaleType.Time}\n        yScaleType={ScaleType.Linear}\n        xAccessor=\"x\"\n        yAccessors={['y']}\n        timeZone=\"Europe/Rome\"\n        data={[\n          { x: now, y: 2 },\n          { x: oneDays.add(now).asMilliseconds(), y: 7 },\n          { x: twoDays.add(now).asMilliseconds(), y: 3 },\n          { x: now + oneDay * 5, y: 6 },\n        ]}\n      />\n      <LineSeries\n        id=\"baras\"\n        xScaleType={ScaleType.Time}\n        yScaleType={ScaleType.Linear}\n        xAccessor=\"x\"\n        yAccessors={['y']}\n        timeZone=\"Europe/Rome\"\n        data={[\n          { x: now, y: 2 },\n          { x: now + oneDay, y: 7 },\n          { x: now + oneDay * 2, y: 3 },\n          { x: now + oneDay * 5, y: 6 },\n        ]}\n      />\n    </Chart>\n  );\n};\n";
+var __STORY__ = "/*\n * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one\n * or more contributor license agreements. Licensed under the Elastic License\n * 2.0 and the Server Side Public License, v 1; you may not use this file except\n * in compliance with, at your election, the Elastic License 2.0 or the Server\n * Side Public License, v 1.\n */\n\nimport { action } from '@storybook/addon-actions';\nimport { boolean } from '@storybook/addon-knobs';\nimport { DateTime } from 'luxon';\nimport moment from 'moment-timezone';\nimport React from 'react';\n\nimport type { BrushEndListener } from '@elastic/charts';\nimport {\n  Axis,\n  Chart,\n  HistogramBarSeries,\n  LineSeries,\n  niceTimeFormatter,\n  Position,\n  ScaleType,\n  Settings,\n} from '@elastic/charts';\n\nimport type { ChartsStory } from '../../types';\nimport { useBaseTheme } from '../../use_base_theme';\nimport { customKnobs } from '../utils/knobs';\n\nexport const Example: ChartsStory = (_, { title, description }) => {\n  const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();\n  const oneDay = 1000 * 60 * 60 * 24;\n  const oneDays = moment.duration(1, 'd');\n  const twoDays = moment.duration(2, 'd');\n  const fiveDays = moment.duration(5, 'd');\n  const formatter = niceTimeFormatter([now, fiveDays.add(now).asMilliseconds()]);\n  const brushEndListener: BrushEndListener = ({ x }) => {\n    if (!x) {\n      return;\n    }\n    action('onBrushEnd')(formatter(x[0]), formatter(x[1]));\n  };\n  return (\n    <Chart title={title} description={description}>\n      <Settings\n        baseTheme={useBaseTheme()}\n        debug={boolean('debug', false)}\n        onBrushEnd={brushEndListener}\n        onElementClick={action('onElementClick')}\n        rotation={customKnobs.enum.rotation()}\n      />\n      <Axis id=\"bottom\" position={Position.Bottom} title=\"bottom\" showOverlappingTicks tickFormat={formatter} />\n      <Axis id=\"left\" title=\"left\" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />\n\n      <HistogramBarSeries\n        id=\"bars\"\n        xScaleType={ScaleType.Time}\n        yScaleType={ScaleType.Linear}\n        xAccessor=\"x\"\n        yAccessors={['y']}\n        timeZone=\"Europe/Rome\"\n        data={[\n          { x: now, y: 2 },\n          { x: oneDays.add(now).asMilliseconds(), y: 7 },\n          { x: twoDays.add(now).asMilliseconds(), y: 3 },\n          { x: now + oneDay * 5, y: 6 },\n        ]}\n      />\n      <LineSeries\n        id=\"baras\"\n        xScaleType={ScaleType.Time}\n        yScaleType={ScaleType.Linear}\n        xAccessor=\"x\"\n        yAccessors={['y']}\n        timeZone=\"Europe/Rome\"\n        data={[\n          { x: now, y: 2 },\n          { x: now + oneDay, y: 7 },\n          { x: now + oneDay * 2, y: 3 },\n          { x: now + oneDay * 5, y: 6 },\n        ]}\n      />\n    </Chart>\n  );\n};\n";
 // @ts-ignore
 var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 31 }, "endLoc": { "col": 1, "line": 86 }, "startBody": { "col": 36, "line": 31 }, "endBody": { "col": 1, "line": 86 } } };
 /*
@@ -23245,7 +23222,7 @@ var __LOCATIONS_MAP__ = { "Example": { "startLoc": { "col": 36, "line": 31 }, "e
 const addon_actions_1 = __webpack_require__(/*! @storybook/addon-actions */ "../node_modules/@storybook/addon-actions/dist/esm/index.js");
 const addon_knobs_1 = __webpack_require__(/*! @storybook/addon-knobs */ "../node_modules/@storybook/addon-knobs/dist/index.js");
 const luxon_1 = __webpack_require__(/*! luxon */ "../node_modules/luxon/build/cjs-browser/luxon.js");
-const moment = __importStar(__webpack_require__(/*! moment-timezone */ "../node_modules/moment-timezone/index.js"));
+const moment_timezone_1 = __importDefault(__webpack_require__(/*! moment-timezone */ "../node_modules/moment-timezone/index.js"));
 const react_1 = __importDefault(__webpack_require__(/*! react */ "../node_modules/react/index.js"));
 const charts_1 = __webpack_require__(/*! @elastic/charts */ "../packages/charts/src/index.ts");
 const use_base_theme_1 = __webpack_require__(/*! ../../use_base_theme */ "./use_base_theme.ts");
@@ -23253,9 +23230,9 @@ const knobs_1 = __webpack_require__(/*! ../utils/knobs */ "./stories/utils/knobs
 const Example = (_, { title, description }) => {
     const now = luxon_1.DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
     const oneDay = 1000 * 60 * 60 * 24;
-    const oneDays = moment.duration(1, 'd');
-    const twoDays = moment.duration(2, 'd');
-    const fiveDays = moment.duration(5, 'd');
+    const oneDays = moment_timezone_1.default.duration(1, 'd');
+    const twoDays = moment_timezone_1.default.duration(2, 'd');
+    const fiveDays = moment_timezone_1.default.duration(5, 'd');
     const formatter = (0, charts_1.niceTimeFormatter)([now, fiveDays.add(now).asMilliseconds()]);
     const brushEndListener = ({ x }) => {
         if (!x) {
@@ -111262,4 +111239,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"1 passenger ":{"doc_count":975811,"b
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=main.0662c8bd.iframe.bundle.js.map
+//# sourceMappingURL=main.ba9c467f.iframe.bundle.js.map
