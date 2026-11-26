@@ -31,7 +31,6 @@ export type MeasuredLabel = Size & { label: NonNullable<PrimitiveValue> };
 export type CompressedScale = Size & {
   left: number;
   right: number;
-  overlaps: boolean;
   overflow: { left: boolean; right: boolean };
   /** the horizontal space occupied by each label, padding included, on the compressed scale */
   labelSpans: LabelSpan[];
@@ -182,13 +181,13 @@ export function getXAxisSize(
           );
 
     const validCompression = isFiniteNumber(dimension.width);
-    // The flag only applies to categorical scales. Rotated time labels stay visible: raising the
-    // rotation already separates the glyphs, and a slanted label's horizontal box overlaps its
-    // neighbor before the text does. The same holds for a rotated categorical axis once the font
-    // height fits in the step. At 90° that box is the font height, so a remaining collision is real.
+    // The flag only applies to categorical scales: time labels are always thinned when they collide.
+    // A slanted label's horizontal box overlaps its neighbor before the text does, so rotated labels
+    // stay visible while their rotated boxes clear each other at the final rotation.
     const showEveryLabel = isCategoricalScale && showOverlappingLabels;
-    const rotationClearsLabels = isRotated && maxLabelBBox.height < scaleStep;
-    if (!validCompression || showEveryLabel || !isCategoricalScale || rotationClearsLabels) {
+    const rotationClearsLabels =
+      isRotated && rotatedLabelsClear(dimension.width / labels.length, minRotation, maxLabelBBox);
+    if (!validCompression || showEveryLabel || rotationClearsLabels) {
       return axisSizeFromCompression(dimension, 1, minRotation, containerWidth, surroundingSpace);
     }
 
@@ -231,6 +230,15 @@ export function getXAxisSize(
   });
 
   return axisSizeFromCompression(fitted.dimension, fitted.tickCadence, rotationRad, containerWidth, surroundingSpace);
+}
+
+/**
+ * True if two equal label boxes, rotated by `rotation` and `step` pixels apart horizontally, don't intersect.
+ * The boxes clear each other when the step projected on the label direction exceeds the width,
+ * or the step projected on its normal exceeds the height.
+ */
+function rotatedLabelsClear(step: number, rotation: Radian, { width, height }: Size): boolean {
+  return step * Math.sin(rotation) >= height || step * Math.cos(rotation) >= width;
 }
 
 interface FitCompressedScaleArgs {
@@ -333,7 +341,6 @@ function computeCompressedScale(
   rotation: Radian,
 ): CompressedScale {
   const { itemsPerSideSize, domainPositions, hMax } = labels.reduce<{
-    wMax: number;
     hMax: number;
     itemsPerSideSize: [number, number][];
     domainPositions: number[];
@@ -355,7 +362,6 @@ function computeCompressedScale(
       // find the rotated bounding box
       const x = extent(rotatedVectors.map((v) => v[0]));
       const y = extent(rotatedVectors.map((v) => v[1]));
-      acc.wMax = Math.max(acc.wMax, Math.abs(x[1] - x[0]));
       acc.hMax = Math.max(acc.hMax, Math.abs(y[1] - y[0]));
 
       // describe the item width as the left and right vector size from the rotation origin
@@ -366,7 +372,7 @@ function computeCompressedScale(
       acc.domainPositions.push(domainPosition);
       return acc;
     },
-    { wMax: -Infinity, hMax: -Infinity, itemsPerSideSize: [], domainPositions: [] },
+    { hMax: -Infinity, itemsPerSideSize: [], domainPositions: [] },
   );
 
   // account for the left and right space (Y axes, overflows etc)
@@ -378,20 +384,6 @@ function computeCompressedScale(
     globalItemWidth,
     containerWidth,
   );
-
-  // check label overlaps using the computed compressed scale
-  const overlaps = itemsPerSideSize.some(([, rightSide], i) => {
-    if (i >= itemsPerSideSize.length - 1) {
-      return false;
-    }
-
-    const currentItemRightSide = (domainPositions[i] ?? 0) * scaleMultiplier + rightSide + pad(style.padding, 'right');
-    const nextItemLeftSize =
-      (domainPositions[i + 1] ?? 0) * scaleMultiplier -
-      (itemsPerSideSize[i + 1]?.[0] ?? 0) -
-      pad(style.padding, 'left');
-    return currentItemRightSide > nextItemLeftSize;
-  });
 
   const leftMargin = isFiniteNumber(bounds[0])
     ? (globalItemWidth[bounds[0]]?.[0] ?? 0) - scaleMultiplier * (globalDomainPositions[bounds[0]] ?? 0)
@@ -411,7 +403,6 @@ function computeCompressedScale(
     left: leftMargin,
     // the height represent the height of the max rotated bbox plus the padding and the vertical position of the rotation origin
     height: hMax + pad(style.padding, 'top') + style.fontSize / 2,
-    overlaps,
     labelSpans,
     overflow: {
       // true if a label exist protrude to the left making the scale shrink from the left

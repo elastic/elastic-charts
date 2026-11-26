@@ -102,8 +102,8 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   /**
    * Shows all the X axis labels, also the overlapping ones.
    * When `false`, labels are rendered at a regular interval to avoid overlaps.
-   * Not applied to time scales. Unrotated time labels are always thinned.
-   * Rotated time labels stay visible and the rotation is raised until the glyphs no longer collide.
+   * Not applied to time scales: time labels are always thinned when they overlap.
+   * Rotated labels first get a higher rotation, and are thinned only if they still collide.
    * @defaultValue true
    */
   xAxisShowOverlappingLabels: boolean;

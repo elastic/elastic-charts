@@ -79,11 +79,11 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         !smSpec?.splitHorizontally,
       );
       const isCategoricalScale = !isRasterTimeScale(xScale);
-      // Left padding and margin are applied again as a chart translation. Categorical
-      // axes that show every label keep the full fit width so those labels stay put.
-      // Time axes always hide overlaps, so they use the narrower width, as do
-      // categorical axes that skip overlapping labels.
-      const leftInset = isCategoricalScale && xAxisShowOverlappingLabels ? 0 : chartPaddings.left + chartMargins.left;
+      // Left padding and margin are applied again as a chart translation. Only categorical
+      // axes that skip overlapping labels fit against that narrower width, so the skipped
+      // labels match the rendered panel. The other axes keep the full fit width so their
+      // labels stay put.
+      const leftInset = isCategoricalScale && !xAxisShowOverlappingLabels ? chartPaddings.left + chartMargins.left : 0;
       const xAxis = getXAxisSize(
         isCategoricalScale,
         heatmap.xAxisLabel,

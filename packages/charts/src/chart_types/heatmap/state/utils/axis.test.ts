@@ -14,6 +14,7 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import type { HeatmapStyle } from '../../../../utils/themes/theme';
 
 const CHAR_WIDTH = 7;
+const FONT_SIZE = LIGHT_THEME.heatmap.xAxisLabel.fontSize;
 const textMeasure: TextMeasure = (text, _font, fontSize) => ({ width: text.length * CHAR_WIDTH, height: fontSize });
 const formatter = (value: string | number) => `${value}`;
 const getLabels = (count: number) => Array.from({ length: count }, (_, i) => `Label-${String(i).padStart(2, '0')}`);
@@ -23,22 +24,44 @@ const rangeFormatter = (value: string | number) => `${value} – ${Number(value)
 const getRangeLabels = (count: number) => Array.from({ length: count }, (_, i) => i * RANGE_STEP);
 const getMaxLabelWidth = (labels: (string | number)[], format: (value: string | number) => string) =>
   Math.max(...labels.map((label) => format(label).length * CHAR_WIDTH));
+/** `Label-00` */
+const LABEL_WIDTH = 8 * CHAR_WIDTH;
 
-/** height of an unrotated label: measured font size, top padding, and the rotation origin */
-const unrotatedAxisHeight = (style: HeatmapStyle['xAxisLabel']) =>
-  style.fontSize + pad(style.padding, 'top') + style.fontSize / 2;
+/** center of the i-th of `count` categorical bands, as a fraction of the axis */
+const bandCenter = (i: number, count: number) => (i + 0.5) / count;
+
+/** axis height: the rotated label box, the top padding, and the vertical position of the rotation origin */
+const axisHeight = (labelWidth: number, rotation = 0, style = getXStyle()) =>
+  labelWidth * Math.sin(rotation) + FONT_SIZE * Math.cos(rotation) + pad(style.padding, 'top') + style.fontSize / 2;
+
+/** horizontal space a rotated label takes before and after its tick: rotated labels are right aligned */
+const rotatedSides = (labelWidth: number, rotation: number, labelHeight = FONT_SIZE): [number, number] => [
+  labelWidth * Math.cos(rotation) + (labelHeight / 2) * Math.sin(rotation),
+  (labelHeight / 2) * Math.sin(rotation),
+];
+
+/**
+ * `left` when the first visible label protrudes past the start of the axis.
+ * The compressed scale spans from that label to the label, or the end of the domain, that bounds it on the right.
+ */
+const protrudingLeft = (
+  containerWidth: number,
+  [firstSide, firstCenter]: [number, number],
+  [lastSide, lastCenter]: [number, number] = [0, 1],
+) => {
+  const width = (containerWidth - firstSide - lastSide) / (lastCenter - firstCenter);
+  return firstSide - firstCenter * width;
+};
 
 /** fields the heatmap view reads when placing and rotating x labels */
 const expectRenderedAxis = (
   size: { left: number; height: number; tickCadence: number; minRotation: number },
-  minRotation: number,
-  height = unrotatedAxisHeight(getXStyle()),
+  expected: { left: number; height: number; tickCadence: number; minRotation: number },
 ) => {
-  expect(Number.isFinite(size.left)).toBe(true);
-  expect(size.left).toBeGreaterThanOrEqual(0);
-  expect(size.height).toBeCloseTo(height);
-  expect(Number.isFinite(size.tickCadence)).toBe(true);
-  expect(size.minRotation).toBeCloseTo(minRotation);
+  expect(size.tickCadence).toBe(expected.tickCadence);
+  expect(size.left).toBeCloseTo(expected.left);
+  expect(size.height).toBeCloseTo(expected.height);
+  expect(size.minRotation).toBeCloseTo(expected.minRotation);
 };
 
 describe('Heatmap axis', () => {
@@ -46,42 +69,44 @@ describe('Heatmap axis', () => {
     it('should render every label when they fit', () => {
       const labels = getLabels(3);
       const size = getXAxisSize(true, getXStyle(), formatter, labels, textMeasure, 600, [0, 0], false);
-      expect(size.tickCadence).toBe(1);
-      expectRenderedAxis(size, 0);
+      expectRenderedAxis(size, { left: 0, height: axisHeight(LABEL_WIDTH), tickCadence: 1, minRotation: 0 });
     });
 
     it('should skip labels at a regular interval when they would overlap', () => {
       const style = getXStyle();
       const labels = getLabels(50);
-      const size = getXAxisSize(true, style, formatter, labels, textMeasure, 400, [0, 0], false);
-      expect(size.tickCadence).toBeGreaterThan(1);
-      expect(size.tickCadence).toBeLessThan(labels.length);
-      expectRenderedAxis(size, 0);
-      // the distance between two rendered labels must fit the label width and its padding
-      const labelWidth = (labels[0]?.length ?? 0) * CHAR_WIDTH + horizontalPad(style.padding);
-      expect((size.width / labels.length) * size.tickCadence).toBeGreaterThanOrEqual(labelWidth);
+      const containerWidth = 400;
+      const size = getXAxisSize(true, style, formatter, labels, textMeasure, containerWidth, [0, 0], false);
+      // the first label sets the left inset, so the scale is compressed to 375.8px: a 7.5px step.
+      // a label and its padding take 66px, so 9 steps are needed
+      expectRenderedAxis(size, {
+        left: protrudingLeft(containerWidth, [LABEL_WIDTH / 2, bandCenter(0, labels.length)]),
+        height: axisHeight(LABEL_WIDTH),
+        tickCadence: 9,
+        minRotation: 0,
+      });
+      // the rendered distance between two visible labels fits the label width and its padding
+      const labelSpace = LABEL_WIDTH + horizontalPad(style.padding);
+      expect((containerWidth / labels.length) * size.tickCadence).toBeGreaterThanOrEqual(labelSpace);
     });
 
     it('should keep a non-overlapping label that sets the right bound', () => {
       const labels = ['A', 'B'.repeat(20)];
-      const containerWidth = 200;
-      const size = getXAxisSize(true, getXStyle(), formatter, labels, textMeasure, containerWidth, [0, 0], false);
+      const size = getXAxisSize(true, getXStyle(), formatter, labels, textMeasure, 200, [0, 0], false);
       // the long label compresses the scale from the right and still fits beside the short one
-      expect(size.tickCadence).toBe(1);
-      expect(size.width).toBeLessThan(containerWidth);
-      expectRenderedAxis(size, 0);
+      expectRenderedAxis(size, { left: 0, height: axisHeight(CHAR_WIDTH), tickCadence: 1, minRotation: 0 });
     });
 
     it('should thin two labels when only that pair overlaps', () => {
       const labels = ['W'.repeat(10), 'W'.repeat(10)];
       const size = getXAxisSize(true, getXStyle(), formatter, labels, textMeasure, 120, [0, 0], false);
-      expect(size.tickCadence).toBe(2);
-      expectRenderedAxis(size, 0);
+      expectRenderedAxis(size, { left: 0, height: axisHeight(10 * CHAR_WIDTH), tickCadence: 2, minRotation: 0 });
     });
 
     it('should not reserve axis space for a wide label hidden by the cadence', () => {
       const labels = ['A', 'W'.repeat(26), 'B', 'C'];
       const containerWidth = 200;
+      const wideLabelWidth = 26 * CHAR_WIDTH;
       // fitting every label lets the wide one shrink the scale and push the axis right
       const fittingAll = getXAxisSize(true, getXStyle(), formatter, labels, textMeasure, containerWidth, [0, 0], true);
       const fittingVisible = getXAxisSize(
@@ -95,65 +120,117 @@ describe('Heatmap axis', () => {
         false,
       );
 
-      // cadence 2 keeps the narrow labels at index 0 and 2, centered on the full domain.
-      // those two fit in the container, so the refit is the compression of only the kept labels
-      expect(fittingVisible.tickCadence).toBe(2);
-      expect(fittingVisible.width).toBe(containerWidth);
-      expect(fittingVisible.left).toBe(0);
-      expect(fittingVisible.right).toBe(0);
-      expectRenderedAxis(fittingVisible, 0);
-      expect(fittingAll.tickCadence).toBe(1);
-      expect(fittingAll.width).toBeLessThan(fittingVisible.width);
-      expect(fittingAll.left).toBeGreaterThan(fittingVisible.left);
-      expectRenderedAxis(fittingAll, 0);
+      // cadence 2 keeps the narrow labels at index 0 and 2, and neither of them protrudes
+      expectRenderedAxis(fittingVisible, { left: 0, height: axisHeight(CHAR_WIDTH), tickCadence: 2, minRotation: 0 });
+      expectRenderedAxis(fittingAll, {
+        left: protrudingLeft(containerWidth, [wideLabelWidth / 2, bandCenter(1, labels.length)]),
+        height: axisHeight(CHAR_WIDTH),
+        tickCadence: 1,
+        minRotation: 0,
+      });
     });
 
     it('should render every overlapping label when showOverlappingLabels is set', () => {
       const labels = getLabels(50);
-      const size = getXAxisSize(true, getXStyle(), formatter, labels, textMeasure, 400, [0, 0], true);
-      expect(size.tickCadence).toBe(1);
-      expectRenderedAxis(size, 0);
+      const containerWidth = 400;
+      const size = getXAxisSize(true, getXStyle(), formatter, labels, textMeasure, containerWidth, [0, 0], true);
+      // the first and the last labels protrude on both sides
+      expectRenderedAxis(size, {
+        left: protrudingLeft(
+          containerWidth,
+          [LABEL_WIDTH / 2, bandCenter(0, labels.length)],
+          [LABEL_WIDTH / 2, bandCenter(labels.length - 1, labels.length)],
+        ),
+        height: axisHeight(LABEL_WIDTH),
+        tickCadence: 1,
+        minRotation: 0,
+      });
     });
 
     it('should keep the requested rotation when rotated labels fit', () => {
-      const labels = getLabels(5);
-      const size = getXAxisSize(true, getXStyle(45), formatter, labels, textMeasure, 600, [0, 0], false);
-      expect(size.tickCadence).toBe(1);
-      expect(size.minRotation).toBeCloseTo(degToRad(45));
-      expect(size.left).toBeGreaterThanOrEqual(0);
-      expect(size.height).toBeGreaterThan(0);
+      const rotation = degToRad(45);
+      const size = getXAxisSize(true, getXStyle(45), formatter, getLabels(5), textMeasure, 600, [0, 0], false);
+      expectRenderedAxis(size, {
+        left: 0,
+        height: axisHeight(LABEL_WIDTH, rotation),
+        tickCadence: 1,
+        minRotation: rotation,
+      });
     });
 
-    it('should keep every slanted label when the glyphs clear and the horizontal boxes overlap', () => {
-      const style = getXStyle(45);
+    it('should keep every slanted label when the rotated boxes clear and the horizontal boxes overlap', () => {
+      const rotation = degToRad(45);
       const labels = getLabels(10);
-      const size = getXAxisSize(true, style, formatter, labels, textMeasure, 400, [0, 0], false);
-      // the horizontal box of a 45° label is wider than the cell, but the font height fits the step
-      expect(size.tickCadence).toBe(1);
-      expect(size.minRotation).toBeCloseTo(degToRad(45));
-      expect(size.left).toBeGreaterThanOrEqual(0);
-      expect(size.height).toBeGreaterThan(style.fontSize);
+      const containerWidth = 400;
+      const size = getXAxisSize(true, getXStyle(45), formatter, labels, textMeasure, containerWidth, [0, 0], false);
+      // the horizontal box of a 45° label is wider than the cell, but the step projected on its normal
+      // is larger than the font height
+      const step = containerWidth / labels.length;
+      expect(rotatedSides(LABEL_WIDTH, rotation)[0]).toBeGreaterThan(step);
+      expect(step * Math.sin(rotation)).toBeGreaterThan(FONT_SIZE);
+      expectRenderedAxis(size, {
+        left: protrudingLeft(containerWidth, [rotatedSides(LABEL_WIDTH, rotation)[0], bandCenter(0, labels.length)]),
+        height: axisHeight(LABEL_WIDTH, rotation),
+        tickCadence: 1,
+        minRotation: rotation,
+      });
+    });
+
+    it('should skip rotated labels whose boxes intersect even if the font height fits the step', () => {
+      const boxMeasure: TextMeasure = () => ({ width: 14, height: 12 });
+      const rotation = degToRad(45);
+      const labels = Array.from({ length: 20 }, (_, i) => `${i + 10}`);
+      const containerWidth = 330;
+      // a 16.5px step is wider than the label and taller than the font, so no extra rotation is needed.
+      // at 45° it projects to 11.7px on both axes of the label box, under its 12px height and 14px width
+      const step = containerWidth / labels.length;
+      expect(step).toBeGreaterThan(14);
+      expect(step).toBeGreaterThan(12);
+      expect(step * Math.sin(rotation)).toBeLessThan(12);
+      expect(step * Math.cos(rotation)).toBeLessThan(14);
+
+      const expected = {
+        left: protrudingLeft(containerWidth, [rotatedSides(14, rotation, 12)[0], bandCenter(0, labels.length)]),
+        height: axisHeight(14, rotation),
+        minRotation: rotation,
+      };
+      const showAll = getXAxisSize(true, getXStyle(45), formatter, labels, boxMeasure, containerWidth, [0, 0], true);
+      const skip = getXAxisSize(true, getXStyle(45), formatter, labels, boxMeasure, containerWidth, [0, 0], false);
+      expectRenderedAxis(showAll, { ...expected, tickCadence: 1 });
+      expectRenderedAxis(skip, { ...expected, tickCadence: 2 });
     });
 
     it('should increase the rotation and skip labels when rotated labels would overlap', () => {
       const style = getXStyle(45);
       const labels = getLabels(200);
-      const size = getXAxisSize(true, style, formatter, labels, textMeasure, 300, [0, 0], false);
-      expect(size.minRotation).toBeGreaterThanOrEqual(degToRad(45));
-      expect(size.tickCadence).toBeGreaterThan(1);
-      expect(size.left).toBeGreaterThanOrEqual(0);
-      expect(size.height).toBeGreaterThan(0);
-      // vertical labels take the font size as horizontal space
-      expect((size.width / labels.length) * size.tickCadence).toBeGreaterThanOrEqual(style.fontSize);
+      const containerWidth = 300;
+      const size = getXAxisSize(true, style, formatter, labels, textMeasure, containerWidth, [0, 0], false);
+      // a 1.5px step forces vertical labels: each takes the font size and its padding, 22px, horizontally
+      expectRenderedAxis(size, {
+        left: protrudingLeft(containerWidth, [FONT_SIZE / 2, bandCenter(0, labels.length)]),
+        height: axisHeight(9 * CHAR_WIDTH, Math.PI / 2),
+        tickCadence: 15,
+        minRotation: Math.PI / 2,
+      });
+      expect((containerWidth / labels.length) * size.tickCadence).toBeGreaterThanOrEqual(
+        FONT_SIZE + horizontalPad(style.padding),
+      );
     });
 
     it('should increase the rotation but render every rotated label when showOverlappingLabels is set', () => {
       const labels = getLabels(200);
-      const size = getXAxisSize(true, getXStyle(45), formatter, labels, textMeasure, 300, [0, 0], true);
-      expect(size.minRotation).toBeGreaterThanOrEqual(degToRad(45));
-      expect(size.tickCadence).toBe(1);
-      expect(size.left).toBeGreaterThanOrEqual(0);
-      expect(size.height).toBeGreaterThan(0);
+      const containerWidth = 300;
+      const size = getXAxisSize(true, getXStyle(45), formatter, labels, textMeasure, containerWidth, [0, 0], true);
+      expectRenderedAxis(size, {
+        left: protrudingLeft(
+          containerWidth,
+          [FONT_SIZE / 2, bandCenter(0, labels.length)],
+          [FONT_SIZE / 2, bandCenter(labels.length - 1, labels.length)],
+        ),
+        height: axisHeight(9 * CHAR_WIDTH, Math.PI / 2),
+        tickCadence: 1,
+        minRotation: Math.PI / 2,
+      });
     });
 
     it.each([true, false])(
@@ -173,19 +250,27 @@ describe('Heatmap axis', () => {
     it('should render every range label when they fit', () => {
       const labels = getRangeLabels(4);
       const size = getXAxisSize(true, getXStyle(), rangeFormatter, labels, textMeasure, 800, [0, 0], false);
-      expect(size.tickCadence).toBe(1);
-      expectRenderedAxis(size, 0);
+      expectRenderedAxis(size, { left: 0, height: axisHeight(CHAR_WIDTH), tickCadence: 1, minRotation: 0 });
     });
 
     it('should not overlap rendered range labels of uneven width', () => {
       const style = getXStyle();
       // label widths vary, e.g. `0 – 0.25`, `10.25 – 10.5`, `24.75 – 25`
       const labels = getRangeLabels(100);
-      const size = getXAxisSize(true, style, rangeFormatter, labels, textMeasure, 600, [0, 0], false);
-      expect(size.tickCadence).toBeGreaterThan(1);
-      expect(size.tickCadence).toBeLessThan(labels.length);
-      expectRenderedAxis(size, 0);
-      const step = size.width / labels.length;
+      const containerWidth = 600;
+      const size = getXAxisSize(true, style, rangeFormatter, labels, textMeasure, containerWidth, [0, 0], false);
+      // `0 – 0.25` protrudes on the left, and the last visible label `24 – 24.25` bounds the right side
+      expectRenderedAxis(size, {
+        left: protrudingLeft(
+          containerWidth,
+          [getMaxLabelWidth([0], rangeFormatter) / 2, bandCenter(0, labels.length)],
+          [getMaxLabelWidth([24], rangeFormatter) / 2, bandCenter(96, labels.length)],
+        ),
+        height: axisHeight(CHAR_WIDTH),
+        tickCadence: 16,
+        minRotation: 0,
+      });
+      const step = containerWidth / labels.length;
       const rendered = labels.filter((_, i) => i % size.tickCadence === 0);
       rendered.slice(1).forEach((label, i) => {
         const previous = rendered[i] ?? 0;
@@ -200,28 +285,40 @@ describe('Heatmap axis', () => {
     it('should skip more range labels than shorter category labels', () => {
       const labels = getRangeLabels(100);
       const style = getXStyle();
-      const range = getXAxisSize(true, style, rangeFormatter, labels, textMeasure, 600, [0, 0], false);
-      const category = getXAxisSize(true, style, formatter, labels, textMeasure, 600, [0, 0], false);
+      const containerWidth = 600;
+      const range = getXAxisSize(true, style, rangeFormatter, labels, textMeasure, containerWidth, [0, 0], false);
+      const category = getXAxisSize(true, style, formatter, labels, textMeasure, containerWidth, [0, 0], false);
       expect(range.tickCadence).toBeGreaterThan(category.tickCadence);
-      expectRenderedAxis(range, 0);
-      expectRenderedAxis(category, 0);
+      expectRenderedAxis(category, {
+        left: protrudingLeft(containerWidth, [CHAR_WIDTH / 2, bandCenter(0, labels.length)]),
+        height: axisHeight(CHAR_WIDTH),
+        tickCadence: 6,
+        minRotation: 0,
+      });
     });
 
     it.each([45, 90])('should skip overlapping range labels with %d degree rotation', (rotation) => {
       const style = getXStyle(rotation);
       const labels = getRangeLabels(200);
-      const size = getXAxisSize(true, style, rangeFormatter, labels, textMeasure, 400, [0, 0], false);
-      expect(size.minRotation).toBeGreaterThanOrEqual(degToRad(rotation));
-      expect(size.tickCadence).toBeGreaterThan(1);
-      expect(size.tickCadence).toBeLessThan(labels.length);
-      expect(size.left).toBeGreaterThanOrEqual(0);
-      expect(size.height).toBeGreaterThan(0);
-      expect((size.width / labels.length) * size.tickCadence).toBeGreaterThanOrEqual(style.fontSize);
+      const containerWidth = 400;
+      const size = getXAxisSize(true, style, rangeFormatter, labels, textMeasure, containerWidth, [0, 0], false);
+      // the rotation is raised to vertical labels, and only the visible ones set the axis height
+      const visibleLabels = labels.filter((_, i) => i % 12 === 0);
+      expectRenderedAxis(size, {
+        left: protrudingLeft(containerWidth, [FONT_SIZE / 2, bandCenter(0, labels.length)]),
+        height: axisHeight(getMaxLabelWidth(visibleLabels, rangeFormatter), Math.PI / 2),
+        tickCadence: 12,
+        minRotation: Math.PI / 2,
+      });
+      expect((containerWidth / labels.length) * size.tickCadence).toBeGreaterThanOrEqual(
+        FONT_SIZE + horizontalPad(style.padding),
+      );
     });
   });
 
   describe('getXAxisSize with a time scale', () => {
     const labels = Array.from({ length: 100 }, (_, i) => 1_600_000_000_000 + i * 60_000);
+    const timeLabelWidth = formatter(labels[0] ?? 0).length * CHAR_WIDTH;
 
     it.each([true, false])(
       'should skip overlapping labels regardless of showOverlappingLabels %s',
@@ -236,28 +333,61 @@ describe('Heatmap axis', () => {
           [0, 0],
           showOverlappingLabels,
         );
-        expect(size.tickCadence).toBeGreaterThan(1);
-        expectRenderedAxis(size, 0);
+        // left aligned labels need 26 steps of 4px to not overlap, and the last visible label
+        // must also end inside the container: 34 is the first cadence that also satisfies that
+        expectRenderedAxis(size, { left: 0, height: axisHeight(timeLabelWidth), tickCadence: 34, minRotation: 0 });
       },
     );
 
     it.each([true, false])(
-      'should keep every rotated label regardless of showOverlappingLabels %s',
+      'should raise the rotation and skip rotated labels that still collide regardless of showOverlappingLabels %s',
       (showOverlappingLabels) => {
+        const style = getXStyle(45);
+        const containerWidth = 400;
+        const size = getXAxisSize(
+          false,
+          style,
+          formatter,
+          labels,
+          textMeasure,
+          containerWidth,
+          [0, 0],
+          showOverlappingLabels,
+        );
+        // a 4px step is smaller than the font height even with vertical labels
+        expectRenderedAxis(size, {
+          left: FONT_SIZE / 2,
+          height: axisHeight(timeLabelWidth, Math.PI / 2),
+          tickCadence: 6,
+          minRotation: Math.PI / 2,
+        });
+        expect((containerWidth / labels.length) * size.tickCadence).toBeGreaterThanOrEqual(
+          FONT_SIZE + horizontalPad(style.padding),
+        );
+      },
+    );
+
+    it.each([true, false])(
+      'should keep every rotated label when the rotated boxes clear regardless of showOverlappingLabels %s',
+      (showOverlappingLabels) => {
+        const rotation = degToRad(45);
         const size = getXAxisSize(
           false,
           getXStyle(45),
           formatter,
-          labels,
+          labels.slice(0, 10),
           textMeasure,
           400,
           [0, 0],
           showOverlappingLabels,
         );
-        expect(size.tickCadence).toBe(1);
-        expect(size.minRotation).toBeGreaterThanOrEqual(degToRad(45));
-        expect(size.left).toBeGreaterThanOrEqual(0);
-        expect(size.height).toBeGreaterThan(0);
+        // the first label sits at the start of the axis, so it protrudes by its whole left side
+        expectRenderedAxis(size, {
+          left: rotatedSides(timeLabelWidth, rotation)[0],
+          height: axisHeight(timeLabelWidth, rotation),
+          tickCadence: 1,
+          minRotation: rotation,
+        });
       },
     );
   });
