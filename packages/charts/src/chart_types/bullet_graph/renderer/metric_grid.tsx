@@ -6,15 +6,15 @@
  * Side Public License, v 1.
  */
 
-import type { ColorContrastOptions } from 'packages/charts/src/common/color_calcs';
-import type { Size } from 'packages/charts/src/utils/dimensions';
-import type { MetricStyle } from 'packages/charts/src/utils/themes/theme';
 import React, { useMemo } from 'react';
 
+import type { ColorContrastOptions } from '../../../common/color_calcs';
 import { colorToRgba } from '../../../common/color_library_wrappers';
 import { Colors, type Color } from '../../../common/colors';
 import { AlignedGrid } from '../../../components/grid/aligned_grid';
 import { mergePartial } from '../../../utils/common';
+import type { Size } from '../../../utils/dimensions';
+import type { MetricStyle } from '../../../utils/themes/theme';
 import { Metric } from '../../metric/renderer/dom/metric';
 import {
   getFitValueFontSize,
