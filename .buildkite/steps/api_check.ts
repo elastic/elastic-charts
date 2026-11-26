@@ -15,7 +15,7 @@ export const apiCheckStep = createStep<CustomCommandStep>((ctx) => {
     label: ':api-extractor: API',
     key: 'api',
     skip: isSkippable(ctx),
-    commands: ['npx ts-node .buildkite/scripts/steps/api_check.ts'],
+    commands: ['pnpm exec ts-node .buildkite/scripts/steps/api_check.ts'],
     env: {
       ECH_CHECK_ID: 'api',
     },
@@ -25,7 +25,7 @@ export const apiCheckStep = createStep<CustomCommandStep>((ctx) => {
 function isSkippable(changes: ChangeContext): boolean | string {
   const hasTSChanges = changes.files.has('**/*.ts?(x)');
   const hasApiConfigChanges = changes.files.has([
-    'yarn.lock',
+    'pnpm-lock.yaml',
     'package.json',
     'packages/charts/package.json',
     'tsconfig.json',

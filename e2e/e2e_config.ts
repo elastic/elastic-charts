@@ -9,7 +9,7 @@
 export const environmentUrl = process.env.ENV_URL;
 
 /**
- * Chart renderer under test, selected with `--renderer=<canvas|svg|headless>` on `yarn test` (see
+ * Chart renderer under test, selected with `--renderer=<canvas|svg|headless>` on `pnpm test` (see
  * scripts/start.sh) or the `VRT_RENDERER` env variable. Anything but `svg` and `headless` is `canvas`.
  * `headless` shows, in place of each chart, the markup that `renderChart` of `@elastic/charts/headless`
  * returns for it; it is meant for the tests of all.test.ts, which need no interaction.

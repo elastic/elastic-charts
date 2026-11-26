@@ -41,13 +41,21 @@ To install and use the correct node version with `nvm`:
 nvm install
 ```
 
+### pnpm
+
+The repository is a [pnpm](https://pnpm.io) workspace. The pnpm version is pinned in the `packageManager` field of [package.json](package.json); enable it through [corepack](https://nodejs.org/api/corepack.html):
+
+```
+corepack enable
+```
+
 ### Development environment
 
 You can run the dev environment locally at [http://localhost:9001](http://localhost:9001/) by running:
 
 ```
-yarn
-yarn start
+pnpm install
+pnpm start
 ```
 
 We use [storybook](https://storybook.js.org) to document API, edge-cases, and the usage of the library.

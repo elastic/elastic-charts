@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { bkEnv, compress, exec, startGroup, yarnInstall } from '../../utils';
+import { bkEnv, compress, exec, startGroup, pnpmInstall } from '../../utils';
 import { createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
 
 void (async () => {
-  await yarnInstall();
+  await pnpmInstall();
 
   if (bkEnv.isPullRequest) {
     await createOrUpdateDeploymentComment({
@@ -21,7 +21,7 @@ void (async () => {
   }
 
   startGroup('Building storybook');
-  await exec('yarn build', {
+  await exec('pnpm build', {
     cwd: 'storybook',
     env: {
       NODE_ENV: bkEnv.isMainBranch ? 'production' : 'development',

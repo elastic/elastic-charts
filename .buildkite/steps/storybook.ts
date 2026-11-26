@@ -14,7 +14,7 @@ export const storybookStep = createStep<CustomCommandStep>(() => {
     ...commandStepDefaults,
     label: ':storybook: Build - Storybook',
     key: 'build_storybook',
-    commands: ['npx ts-node .buildkite/scripts/steps/storybook.ts'],
+    commands: ['pnpm exec ts-node .buildkite/scripts/steps/storybook.ts'],
     env: {
       ECH_CHECK_ID: 'build_storybook',
     },

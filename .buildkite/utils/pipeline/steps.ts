@@ -58,6 +58,20 @@ export const commandStepDefaults: Partial<CustomCommandStep> = {
   artifact_paths: ['.buildkite/artifacts/**/*.gz'],
 };
 
+// Steps run in docker plugin containers, where the corepack pnpm shim is not enabled
+const SETUP_PNPM_COMMAND = 'bash .buildkite/scripts/setup_pnpm.sh';
+
+function withPnpmSetup<S extends Partial<Step>>(step: S): S {
+  if ('steps' in step && step.steps) {
+    return { ...step, steps: step.steps.map(withPnpmSetup) };
+  }
+  if ('commands' in step && step.commands) {
+    const commands = typeof step.commands === 'string' ? [step.commands] : step.commands;
+    return { ...step, commands: [SETUP_PNPM_COMMAND, ...commands] };
+  }
+  return step;
+}
+
 export const createStep =
   <S extends Step>(getStep: (ctx: ChangeContext) => S) =>
   (overrides?: Partial<S>) =>
@@ -65,9 +79,9 @@ export const createStep =
     const { skip, ignoreForced = false, ...step } = getStep(ctx);
     const forceRunStep = !ignoreForced && !bkEnv.isPullRequest;
 
-    return {
+    return withPnpmSetup({
       ...step,
       ...overrides,
       skip: forceRunStep ? false : skip ?? commandStepDefaults.skip ?? false,
-    };
+    });
   };

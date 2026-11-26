@@ -123,10 +123,25 @@ export const exec = async (
   return await execInner();
 };
 
-export const yarnInstall = async (cwd?: string, ignoreScripts = true) => {
-  startGroup(`Installing node modules${cwd ? ` [${cwd}]` : ` [${process.cwd()}]`}`);
+/**
+ * Workspace projects needed to build, test and lint the charts package
+ */
+export const ROOT_PROJECTS = ['elastic-charts-mono...', 'charts-storybook...'];
+
+/**
+ * Installs the dependencies of the given workspace projects. The buildkite project is always
+ * included: node_modules linked by the other side (host or docker step) are purged first, and
+ * the host hooks still need it.
+ */
+export const pnpmInstall = async (projects: string[] = ROOT_PROJECTS, ignoreScripts = true) => {
+  startGroup(`Installing node modules [${projects.join(', ')}]`);
+  await exec('bash .buildkite/scripts/purge_foreign_node_modules.sh');
+  const filters = [...projects, 'elastic-charts-buildkite'].map((p) => `--filter ${p}`).join(' ');
   const scriptFlag = ignoreScripts ? ' --ignore-scripts' : '';
-  await exec(`yarn install --frozen-lockfile${scriptFlag}`, { cwd, retry: 5, retryWait: 15 });
+  await exec(`pnpm install --frozen-lockfile --config.confirmModulesPurge=false ${filters}${scriptFlag}`, {
+    retry: 5,
+    retryWait: 15,
+  });
 };
 
 function getErrorMsg(error: unknown): string {

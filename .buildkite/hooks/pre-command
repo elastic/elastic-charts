@@ -31,10 +31,10 @@ retry 5 15 install_deps
 
 echo '--- Generating buildkite files'
 
-yarn build:bk:types
+pnpm build:bk:types
 
 echo '--- Updating commit status for jobs'
 
-npx ts-node scripts/pre_command.ts
+pnpm exec ts-node scripts/pre_command.ts
 
 cd '../'

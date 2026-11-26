@@ -11,7 +11,7 @@
 /**
  * Benchmarks of the package, in Node: it compiles the sources, then measures that build. From the root:
  *
- *   yarn && node packages/charts/scripts/bench [name] [--save=file] [--against=file]
+ *   pnpm install && node packages/charts/scripts/bench [name] [--save=file] [--against=file]
  *
  *   name             only the charts with this in their name
  *   --save=file      also write the figures to a file
@@ -58,7 +58,7 @@ const { renderToStaticMarkup } = require('react-dom/server');
 const packageRoot = path.resolve(__dirname, '../..');
 if (!['--small-heap', '--left-behind'].includes(process.argv[2])) {
   // what is measured is the build of the sources as they are, never one left from another branch
-  const build = spawnSync('yarn', ['build:compile'], { cwd: packageRoot, encoding: 'utf8' });
+  const build = spawnSync('pnpm', ['build:compile'], { cwd: packageRoot, encoding: 'utf8' });
   if (build.status !== 0) throw new Error(`The build failed\n${build.stdout}${build.stderr}`);
 }
 const dist = path.join(packageRoot, 'dist/cjs');

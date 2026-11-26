@@ -10,11 +10,11 @@
     "typecheck": "tsc -p ./tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@elastic/charts": "*",
+    "@elastic/charts": "workspace:*",
     "@elastic/datemath": "^5.0.3",
     "@elastic/eui": "^99.2.0",
-    "@emotion/react": "^11.10.5",
     "@emotion/css": "^11.10.5",
+    "@emotion/react": "^11.10.5",
     "luxon": "^1.27.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.32",
@@ -31,7 +31,10 @@
     "@storybook/addon-postcss": "^2.0.0",
     "@storybook/addon-storysource": "^6.5.16",
     "@storybook/addon-viewport": "^6.5.16",
+    "@storybook/addons": "^6.5.16",
+    "@storybook/api": "^6.5.16",
     "@storybook/builder-webpack5": "^6.5.16",
+    "@storybook/components": "^6.5.16",
     "@storybook/core": "^6.5.16",
     "@storybook/core-common": "^6.5.16",
     "@storybook/manager-webpack5": "^6.5.16",
@@ -40,6 +43,8 @@
     "@storybook/theming": "^6.5.16",
     "autoprefixer": "^9.0.0",
     "circular-dependency-plugin": "^5.2.2",
+    "css-loader": "^5.2.7",
+    "d3-array": "^1.2.4",
     "postcss": "^8.3.0",
     "postcss-loader": "^4.2.0",
     "sass": "^1.49.9",
@@ -47,8 +52,10 @@
     "storybook-addon-background-toggle": "^0.0.3",
     "storybook-addon-theme-toggle": "^0.0.1",
     "storybook-addon-toggles": "^0.0.3",
+    "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^5.6.1",
     "ts-loader": "^9.6.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "utility-types": "^3.10.0"
   }
 }

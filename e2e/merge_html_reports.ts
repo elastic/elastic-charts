@@ -34,7 +34,7 @@ void (() => {
   const outputDir = path.join(outputBasePath, outputFolderName);
 
   // The html reporter honors PLAYWRIGHT_HTML_REPORT for the output directory.
-  execFileSync('yarn', ['playwright', 'merge-reports', '--reporter', 'html', blobReportsDir], {
+  execFileSync('pnpm', ['exec', 'playwright', 'merge-reports', '--reporter', 'html', blobReportsDir], {
     stdio: 'inherit',
     env: {
       ...process.env,

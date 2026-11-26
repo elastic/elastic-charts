@@ -25,40 +25,30 @@ jobs:
         uses: actions/checkout@v4.1.7
         with:
           persist-credentials: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
       - name: Setup node
         uses: actions/setup-node@v4.0.2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
+          cache: pnpm
 
-      # TODO: fix unnecessary yarn installs
       - name: Install node_modules
-        uses: bahmutov/npm-install@v1.10.9
-        with:
-          useRollingCache: true
-      - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1.10.9
-        with:
-          working-directory: e2e
-          useRollingCache: true
-      - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1.10.9
-        with:
-          working-directory: .buildkite
-          useRollingCache: true
+        run: pnpm install --frozen-lockfile
 
       # TODO: fix this to avoid requiring build to run linting
       # currently the storybook and others are loosely coupled to @elastic/charts/src
       # such that types point to the local source and not a packaged release
       - name: Build charts typescript lib
-        run: yarn build:ts
+        run: pnpm build:ts
       - name: Lint check
-        run: yarn lint
+        run: pnpm lint
       - name: Prettier check
-        run: yarn prettier:check
+        run: pnpm prettier:check
       - name: TimeZone testing
-        run: yarn test:tz --ci
+        run: pnpm test:tz --ci
       - name: Testing
-        run: yarn test --ci
+        run: pnpm test --ci
 
   release:
     name: Release
@@ -75,18 +65,19 @@ jobs:
         uses: actions/checkout@v4.1.7
         with:
           persist-credentials: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
       - name: Setup node
         uses: actions/setup-node@v4.0.2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
+          cache: pnpm
 
       - name: Install node_modules
-        uses: bahmutov/npm-install@v1.10.9
-        with:
-          useRollingCache: true
+        run: pnpm install --frozen-lockfile
 
       - name: Build library
-        run: yarn build
+        run: pnpm build
 
       - name: Upgrade npm for trusted publishing (OIDC) support
         run: npm install -g npm@11.5.1
@@ -95,4 +86,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        run: yarn semantic-release
+        run: pnpm semantic-release

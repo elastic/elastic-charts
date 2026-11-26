@@ -39,10 +39,10 @@ function sameFile(left, right) {
 }
 
 if (!fs.existsSync(esmTypes)) {
-  fail('Missing dist/esm/index.d.mts. Run `yarn build:compile` first.');
+  fail('Missing dist/esm/index.d.mts. Run `pnpm build:compile` first.');
 }
 if (!fs.existsSync(cjsTypes)) {
-  fail('Missing dist/cjs/index.d.ts. Run `yarn build:compile` first.');
+  fail('Missing dist/cjs/index.d.ts. Run `pnpm build:compile` first.');
 }
 
 const configFile = ts.readConfigFile(configPath, ts.sys.readFile);

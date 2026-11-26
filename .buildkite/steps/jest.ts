@@ -15,7 +15,7 @@ export const jestStep = createStep<CustomCommandStep>((ctx) => {
     label: ':jest: Jest',
     key: 'jest',
     skip: isSkippable(ctx),
-    commands: ['npx ts-node .buildkite/scripts/steps/jest.ts'],
+    commands: ['pnpm exec ts-node .buildkite/scripts/steps/jest.ts'],
     env: {
       ECH_CHECK_ID: 'jest',
     },
@@ -25,7 +25,7 @@ export const jestStep = createStep<CustomCommandStep>((ctx) => {
 function isSkippable(changes: ChangeContext): boolean | string {
   const hasTSChanges = changes.files.has('packages/charts/src/**/*.ts?(x)');
   const hasJestConfigChanges = changes.files.has([
-    'yarn.lock',
+    'pnpm-lock.yaml',
     'jest.config.js',
     'jest.tz.config.js',
     'tsconfig.jest.json',

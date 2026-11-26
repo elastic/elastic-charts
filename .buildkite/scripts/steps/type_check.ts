@@ -6,16 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { exec, startGroup, yarnInstall } from '../../utils';
+import { exec, pnpmInstall, ROOT_PROJECTS, startGroup } from '../../utils';
 
 void (async () => {
-  await yarnInstall();
-  // TODO: fix this to where we can install only the necessary packages in one script
-  await yarnInstall('e2e');
-  await yarnInstall('docs');
-  await yarnInstall('.buildkite');
+  await pnpmInstall([...ROOT_PROJECTS, 'charts-e2e', 'elastic-charts-docs']);
 
   startGroup('Running type checks');
 
-  await exec('yarn typecheck:all');
+  await exec('pnpm typecheck:all');
 })();

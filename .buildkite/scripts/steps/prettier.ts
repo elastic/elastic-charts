@@ -6,12 +6,18 @@
  * Side Public License, v 1.
  */
 
-import { exec, startGroup, yarnInstall } from '../../utils';
+import { exec, startGroup, pnpmInstall } from '../../utils';
 
 void (async () => {
-  await yarnInstall();
+  await pnpmInstall();
 
   startGroup('Running prettier checks');
 
-  await exec('yarn prettier:check');
+  await exec('pnpm prettier:check');
+
+  startGroup('Checking pnpm-lock.yaml is deduplicated');
+
+  await exec('pnpm dedupe --check', {
+    failureMsg: 'pnpm-lock.yaml has duplicate dependencies, run `pnpm dedupe` and commit the lockfile',
+  });
 })();

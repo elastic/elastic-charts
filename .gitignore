@@ -17,7 +17,6 @@ coverage/
 .yo-rc.json
 .tmp-shallow/
 npm-debug.log
-yarn-error.log
 playground/playground.tsx
 .jest-image-snapshot-touched-files
 
@@ -31,16 +30,14 @@ playground/playground.tsx
 .buildkite/buildkite.d.ts
 .buildkite/artifacts/
 
-# keep only top-level lock file unless a workspace manages its own install
-**/*/yarn.lock
-!.buildkite/yarn.lock
-!docs/yarn.lock
-!e2e/yarn.lock
+.pnpm-store
+.pnpm
 
-# We keep node module archives in this folder
-.yarn-offline-cache/
+# lockfiles of other package managers; pnpm-lock.yaml is the only lockfile
+yarn.lock
+package-lock.json
 
-# screenshots of the svg renderer, produced by `yarn test --renderer=svg -u` in e2e and compared against the canvas baselines
+# screenshots of the svg renderer, produced by `pnpm test --renderer=svg -u` in e2e and compared against the canvas baselines
 e2e/screenshots_svg/
-# screenshots of the markup of `renderChart`, produced by `yarn headless:screenshots` in e2e and compared the same way
+# screenshots of the markup of `renderChart`, produced by `pnpm headless:screenshots` in e2e and compared the same way
 e2e/screenshots_headless/

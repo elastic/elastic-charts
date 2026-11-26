@@ -42,12 +42,14 @@ if [[ "$VRT_RENDERER" != "canvas" && "$VRT_RENDERER" != "svg" && "$VRT_RENDERER"
 fi
 export VRT_RENDERER
 
-# Get correct playwright image - must match installed version of @playwright/test
-regex="@playwright/test@(.+)"
-result="$(yarn list --pattern "@playwright/test" --depth=0 | grep playwright/test)"
+# The container only runs the tests: pnpm's node_modules record the host store path,
+# so dependencies are installed here and the whole repo is mounted to keep its symlinks valid
+pnpm install --frozen-lockfile --filter charts-e2e
 
-if [[ $result =~ $regex ]]; then
-  pw_version=${BASH_REMATCH[1]}
+# Get correct playwright image - must match installed version of @playwright/test
+pw_version="$(node -p "require('@playwright/test/package.json').version" 2>/dev/null || true)"
+
+if [[ -n "$pw_version" ]]; then
   pw_image="mcr.microsoft.com/playwright:v${pw_version}-noble"
 else
   echo "Unable to find '@playwright/test' version"
@@ -57,10 +59,10 @@ fi
 # Set container name and command based on mode
 if [ "$A11Y_MODE" = true ]; then
   CONTAINER_NAME="e2e-playwright-a11y-tests"
-  TEST_COMMAND="yarn test:playwright:a11y"
+  TEST_COMMAND="./scripts/test.sh --a11y"
 else
   CONTAINER_NAME="e2e-playwright-tests"
-  TEST_COMMAND="yarn test:playwright"
+  TEST_COMMAND="./scripts/test.sh"
 fi
 
 # Run e2e playwright tests inside container
@@ -76,7 +78,6 @@ docker run \
   -e VRT_FAST=${VRT_FAST} `# trades diagnostics for speed on local runs ` \
   -e VRT_RENDERER=${VRT_RENDERER} `# chart renderer under test: canvas (default), svg or headless ` \
   -w /app/e2e `# working directory` \
-  -v $(pwd)/:/app/e2e `# mount local e2e/ directory in app/e2e directory in container` \
-  -v $(pwd)/../e2e_server/tmp/:/app/e2e_server/tmp `# mount required example.json file in container` \
+  -v $(pwd)/..:/app `# mount the repo, e2e/node_modules links into the root node_modules` \
   ${pw_image} `# playwright docker image derived above from @playwright/test version used ` \
   ${TEST_COMMAND} "${SCRIPT_ARGS[@]}" # runs test script forwarding any additional passed args

@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { exec, yarnInstall, compress, startGroup, bkEnv } from '../../utils';
+import { exec, pnpmInstall, compress, startGroup, bkEnv } from '../../utils';
 import { createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
 
 void (async () => {
-  await yarnInstall();
+  await pnpmInstall();
 
   if (bkEnv.isPullRequest) {
     await createOrUpdateDeploymentComment({
@@ -22,7 +22,7 @@ void (async () => {
 
   startGroup('Building e2e server');
   // `test:e2e:server:build` generates the examples and the VRT page first
-  await exec('yarn test:e2e:server:build', {
+  await exec('pnpm test:e2e:server:build', {
     env: {
       NODE_ENV: 'production',
     },

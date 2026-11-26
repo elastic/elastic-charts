@@ -15,7 +15,7 @@ export const eslintStep = createStep<CustomCommandStep>((ctx) => {
     label: ':eslint: Eslint',
     key: 'eslint',
     skip: isSkippable(ctx),
-    commands: ['npx ts-node .buildkite/scripts/steps/eslint.ts'],
+    commands: ['pnpm exec ts-node .buildkite/scripts/steps/eslint.ts'],
     env: {
       ECH_CHECK_ID: 'eslint',
     },
@@ -32,7 +32,7 @@ function isSkippable(changes: ChangeContext): boolean | string {
     'tsconfig.lint.json',
     'tsconfig.json',
     'package.json',
-    'yarn.lock',
+    'pnpm-lock.yaml',
   ]);
 
   if (hasTSChanges || hasLintConfigChanges) {

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { exec, yarnInstall } from '../../utils';
+import { exec, pnpmInstall, ROOT_PROJECTS } from '../../utils';
 import { bkEnv, startGroup } from '../../utils/buildkite';
 import { ChangeContext } from '../../utils/github';
 
@@ -21,18 +21,15 @@ void (async () => {
     'tsconfig.lint.json',
     'tsconfig.json',
     'package.json',
-    'yarn.lock',
+    'pnpm-lock.yaml',
   ]);
 
-  await yarnInstall();
-  // TODO: fix this to where we can install only the necessary packages in one script
-  await yarnInstall('e2e');
-  await yarnInstall('.buildkite');
+  await pnpmInstall([...ROOT_PROJECTS, 'charts-e2e']);
 
   // TODO: fix this to avoid requiring build to run linting
   // currently the storybook and others are loosely coupled to @elastic/charts/src
   // such that types point to the local source and not a packaged release
-  await exec('yarn build:ts');
+  await exec('pnpm build:ts');
 
   if (bkEnv.isPullRequest && !hasLintConfigChanges) {
     const filesToLint = changes.files.byType('DELETED', true).filter('**/*.ts?(x)');
@@ -40,12 +37,12 @@ void (async () => {
     if (filesToLint.length > 0) {
       startGroup(`Running eslint checks - ${filesToLint.length} files`);
 
-      await exec('yarn lint:it', {
+      await exec('pnpm lint:it', {
         args: filesToLint.join(' '),
       });
     }
   } else {
     startGroup('Running eslint checks - all files');
-    await exec('yarn lint');
+    await exec('pnpm lint');
   }
 })();

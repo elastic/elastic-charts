@@ -19,7 +19,7 @@ import {
   downloadArtifacts,
   getBuildJobs,
   startGroup,
-  yarnInstall,
+  pnpmInstall,
   compress,
   decompress,
   octokit,
@@ -172,7 +172,7 @@ export async function getLatestCommits(count = 2) {
 }
 
 void (async () => {
-  await yarnInstall('e2e');
+  await pnpmInstall(['charts-e2e']);
 
   await setGroupStatus();
 
@@ -205,7 +205,7 @@ void (async () => {
 
   startGroup(`Merging ${isA11y ? 'a11y' : 'e2e'} reports`);
 
-  await exec('yarn merge:reports', {
+  await exec('pnpm merge:reports', {
     cwd: 'e2e',
     env: {
       HTML_REPORT_DIR: outputDir,
