@@ -37,6 +37,8 @@ export {
   Heatmap,
   type HeatmapSpec,
   type RasterTimeScale,
+  type RasterLinearScale,
+  type RasterDomain,
   type TimeScale,
   type LinearScale,
   type OrdinalScale,

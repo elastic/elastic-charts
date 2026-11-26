@@ -8,7 +8,7 @@
 
 import type { ComponentProps } from 'react';
 
-import { X_SCALE_DEFAULT } from './scale_defaults';
+import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from './scale_defaults';
 import { ChartType } from '../..';
 import type { Color } from '../../../common/colors';
 import type { SmallMultiplesDatum } from '../../../common/panel_utils';
@@ -23,6 +23,7 @@ import type { Accessor, AccessorFn } from '../../../utils/accessor';
 import type { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import type { Datum, LabelAccessor, ValueFormatter } from '../../../utils/common';
 import { stripUndefined } from '../../../utils/common';
+import type { DomainRange } from '../../xy_chart/utils/specs';
 import type { Cell } from '../layout/types/viewmodel_types';
 
 /** @public */
@@ -57,22 +58,51 @@ export interface TimeScale {
   type: typeof ScaleType.Time;
 }
 
+/**
+ * Raster domain to be rendered, will match the bins overlapping `[min, max)`, this means a bound
+ * inside a bin keeps the whole bin, data outside is excluded. Missing bins are inferred from the data.
+ * @public
+ */
+export type RasterDomain = Partial<Pick<DomainRange, 'min' | 'max'>>;
+
 /** @public */
 export interface RasterTimeScale extends TimeScale {
   interval: ESCalendarInterval | ESFixedInterval;
+  domain?: RasterDomain;
 }
 
-/** @public */
+/**
+ * Without an `interval`, values are rendered as ordinal bands preserving the data order.
+ * Use {@link RasterLinearScale} for numeric bins.
+ * @public
+ */
 export interface LinearScale {
   type: typeof ScaleType.Linear;
+}
+
+/**
+ * A numeric scale of uniform bins, e.g. the buckets of a histogram aggregation.
+ * The data values are expected to be the start of their bin.
+ * @public
+ */
+export interface RasterLinearScale extends LinearScale {
+  interval: number;
+  domain?: RasterDomain;
 }
 
 /** @public */
 export interface OrdinalScale {
   type: typeof ScaleType.Ordinal;
+  /**
+   * The order of the categories. `Predicate.DataIndex` preserves the data order.
+   * Falls back to the axis sort predicate of the spec.
+   */
+  sort?: Predicate;
 }
 
 /**
+ * The selected values of each axis. On raster axes, `[start, end]` selects the bins in `[start, end)`
+ * and a single value selects its bin. On ordinal axes, the array lists the selected values.
  * @public
  */
 export interface HeatmapHighlightedData extends SmallMultiplesDatum {
@@ -90,9 +120,15 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   yAccessor: Accessor<D> | AccessorFn<D>;
   valueAccessor: Accessor<never> | AccessorFn;
   valueFormatter: ValueFormatter;
+  /** @deprecated use `xScale.sort` instead */
   xSortPredicate: Predicate;
+  /** @deprecated use `yScale.sort` instead */
   ySortPredicate: Predicate;
-  xScale: RasterTimeScale | OrdinalScale | LinearScale;
+  xScale: RasterTimeScale | RasterLinearScale | OrdinalScale | LinearScale;
+  /**
+   * @defaultValue `{ type: ScaleType.Ordinal }`
+   */
+  yScale?: RasterLinearScale | OrdinalScale;
   highlightedData?: HeatmapHighlightedData;
   name?: string;
   timeZone: string;
@@ -113,7 +149,8 @@ export const heatmapBuildProps = buildSFProps<HeatmapSpec>()(
   {
     data: [],
     valueAccessor: ({ value }) => value,
-    xScale: { type: X_SCALE_DEFAULT.type },
+    xScale: X_SCALE_DEFAULT,
+    yScale: Y_SCALE_DEFAULT,
     valueFormatter: (value) => `${value}`,
     xSortPredicate: Predicate.AlphaAsc,
     ySortPredicate: Predicate.AlphaAsc,

@@ -8,17 +8,21 @@
 
 import { extent } from 'd3-array';
 
+import { getHeatmapScalesSelector } from './get_heatmap_scales';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import type { SmallMultiplesSeriesDomains } from '../../../../common/panel_utils';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { ScaleType } from '../../../../scales/constants';
+import type { CustomXDomain } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
 import { getAccessorValue } from '../../../../utils/accessor';
-import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
+import { timeRange } from '../../../../utils/chrono/elasticsearch';
 import { isFiniteNumber, isNil, isNonNullablePrimitiveValue } from '../../../../utils/common';
 import type { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
+import { addRasterInterval, getRasterDomainFilter, linearRange } from '../utils/raster';
+import type { ResolvedHeatmapScale } from '../utils/scales';
 
 /**
  * @internal
@@ -28,6 +32,7 @@ export interface HeatmapTable extends SmallMultiplesSeriesDomains {
   yValues: Array<string | number>;
   xValues: Array<string | number>;
   xNumericExtent: [number, number];
+  yNumericExtent: [number, number];
   extent: [number, number];
 }
 
@@ -36,11 +41,13 @@ export interface HeatmapTable extends SmallMultiplesSeriesDomains {
  * @internal
  */
 export const getHeatmapTableSelector = createCustomCachedSelector(
-  [getHeatmapSpecSelector, getSettingsSpecSelector, getSmallMultiplesIndexOrderSelector],
-  (spec, { xDomain, locale }, smallMultiples): HeatmapTable => {
-    const { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate, xScale, timeZone } = spec;
+  [getHeatmapSpecSelector, getHeatmapScalesSelector, getSettingsSpecSelector, getSmallMultiplesIndexOrderSelector],
+  (spec, scales, { xDomain, locale }, smallMultiples): HeatmapTable => {
+    const { data, valueAccessor, xAccessor, yAccessor, timeZone } = spec;
     const smVValues = new Set<string | number>();
     const smHValues = new Set<string | number>();
+    const isInXDomain = getRasterDomainFilter(scales.x, timeZone);
+    const isInYDomain = getRasterDomainFilter(scales.y, timeZone);
     const resultData = data.reduce<HeatmapTable>(
       (acc, curr, index) => {
         const x = getAccessorValue(curr, xAccessor);
@@ -48,6 +55,9 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
         const value = getAccessorValue(curr, valueAccessor);
 
         if (!isNonNullablePrimitiveValue(x) || !isNonNullablePrimitiveValue(y)) {
+          return acc;
+        }
+        if (!(isInXDomain?.(x) ?? true) || !(isInYDomain?.(y) ?? true)) {
           return acc;
         }
         // add a cell and update extent only if the value is finite
@@ -88,24 +98,11 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
         smVDomain: [],
         extent: [+Infinity, -Infinity],
         xNumericExtent: [+Infinity, -Infinity],
+        yNumericExtent: [+Infinity, -Infinity],
       },
     );
-    if (xScale.type === ScaleType.Time) {
-      const [xDataMin = NaN, xDataMax = NaN] = extent(resultData.xValues as number[]);
-      // to correctly compute the time extent from data, we need to add an interval to the max value of the dataset
-      const dataMaxExtended = xDataMax ? addIntervalToTime(xDataMax, xScale.interval, timeZone) : NaN;
-
-      const [customMin, customMax] = !Array.isArray(xDomain) ? [xDomain?.min ?? NaN, xDomain?.max ?? NaN] : [NaN, NaN];
-      const [min, max] = extent([xDataMin, customMin, customMax, dataMaxExtended]);
-      resultData.xNumericExtent = [min ?? NaN, max ?? NaN];
-      resultData.xValues =
-        isFiniteNumber(min) && isFiniteNumber(max) ? timeRange(min, max, xScale.interval, timeZone) : [];
-    } else if (xScale.type === ScaleType.Ordinal) {
-      resultData.xValues.sort(getPredicateFn(xSortPredicate, locale));
-    }
-
-    // sort Y values by their predicates
-    resultData.yValues.sort(getPredicateFn(ySortPredicate, locale));
+    const xAxisDomain = getAxisDomain(resultData.xValues, scales.x, timeZone, locale, xDomain);
+    const yAxisDomain = getAxisDomain(resultData.yValues, scales.y, timeZone, locale);
 
     // sort small multiples values
     const horizontalPredicate = smallMultiples?.horizontal?.sort ?? Predicate.DataIndex;
@@ -116,8 +113,53 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
 
     return {
       ...resultData,
+      xValues: xAxisDomain.values,
+      xNumericExtent: xAxisDomain.numericExtent,
+      yValues: yAxisDomain.values,
+      yNumericExtent: yAxisDomain.numericExtent,
       smHDomain,
       smVDomain,
     };
   },
 );
+
+function getAxisDomain(
+  dataValues: Array<string | number>,
+  scale: ResolvedHeatmapScale,
+  timeZone: string,
+  locale: string,
+  customDomain?: CustomXDomain,
+): { values: Array<string | number>; numericExtent: [number, number] } {
+  if (scale.type === ScaleType.Time) {
+    const [dataMin = NaN, dataMax = NaN] = extent(dataValues as number[]);
+    // the last data value is the start of the last bin
+    const dataEnd = isFiniteNumber(dataMax) ? addRasterInterval(scale, dataMax, timeZone) : NaN;
+    const [customMin, customMax] = !Array.isArray(customDomain)
+      ? [customDomain?.min ?? NaN, customDomain?.max ?? NaN]
+      : [NaN, NaN];
+    const [min = NaN, max = NaN] = scale.domain
+      ? [scale.domain.min ?? dataMin, scale.domain.max ?? dataEnd]
+      : extent([dataMin, customMin, customMax, dataEnd]);
+    return {
+      values:
+        isFiniteNumber(min) && isFiniteNumber(max) && min < max ? timeRange(min, max, scale.interval, timeZone) : [],
+      numericExtent: [min, max],
+    };
+  }
+  if (scale.type === ScaleType.Linear) {
+    const [dataMin = NaN, dataMax = NaN] = extent(dataValues.filter(isFiniteNumber));
+    // the last data value is the start of the last bin
+    const min = scale.domain?.min ?? dataMin;
+    const max = scale.domain?.max ?? dataMax + scale.interval;
+    const anchor = isFiniteNumber(dataMin) ? dataMin : 0;
+    return {
+      values:
+        isFiniteNumber(min) && isFiniteNumber(max) && min < max ? linearRange(min, max, scale.interval, anchor) : [],
+      numericExtent: [min, max],
+    };
+  }
+  return {
+    values: [...dataValues].sort(getPredicateFn(scale.sort, locale)),
+    numericExtent: [+Infinity, -Infinity],
+  };
+}

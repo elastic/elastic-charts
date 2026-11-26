@@ -1596,7 +1596,7 @@ export interface HeatmapCellDatum extends SmallMultiplesDatum {
 // @public
 export type HeatmapElementEvent = [cell: Cell, seriesIdentifier: SeriesIdentifier];
 
-// @public (undocumented)
+// @public
 export interface HeatmapHighlightedData extends SmallMultiplesDatum {
     // (undocumented)
     x: Array<string | number>;
@@ -1638,8 +1638,8 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     // (undocumented)
     xAxisTitle: string;
     // (undocumented)
-    xScale: RasterTimeScale | OrdinalScale | LinearScale;
-    // (undocumented)
+    xScale: RasterTimeScale | RasterLinearScale | OrdinalScale | LinearScale;
+    // @deprecated (undocumented)
     xSortPredicate: Predicate;
     // (undocumented)
     yAccessor: Accessor<D> | AccessorFn<D>;
@@ -1650,6 +1650,8 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     // (undocumented)
     yAxisTitle: string;
     // (undocumented)
+    yScale?: RasterLinearScale | OrdinalScale;
+    // @deprecated (undocumented)
     ySortPredicate: Predicate;
 }
 
@@ -2048,7 +2050,7 @@ export interface LinearGradient {
     y1?: Ratio;
 }
 
-// @public (undocumented)
+// @public
 export interface LinearScale {
     // (undocumented)
     type: typeof ScaleType.Linear;
@@ -2460,6 +2462,7 @@ export type OrdinalDomain = (number | string)[];
 
 // @public (undocumented)
 export interface OrdinalScale {
+    sort?: Predicate;
     // (undocumented)
     type: typeof ScaleType.Ordinal;
 }
@@ -2796,8 +2799,21 @@ export type PropsWithoutChildren<Props extends Record<string, unknown> = Record<
 type Range_2 = [min: number, max: number];
 export { Range_2 as Range }
 
+// @public
+export type RasterDomain = Partial<Pick<DomainRange, 'min' | 'max'>>;
+
+// @public
+export interface RasterLinearScale extends LinearScale {
+    // (undocumented)
+    domain?: RasterDomain;
+    // (undocumented)
+    interval: number;
+}
+
 // @public (undocumented)
 export interface RasterTimeScale extends TimeScale {
+    // (undocumented)
+    domain?: RasterDomain;
     // (undocumented)
     interval: ESCalendarInterval | ESFixedInterval;
 }

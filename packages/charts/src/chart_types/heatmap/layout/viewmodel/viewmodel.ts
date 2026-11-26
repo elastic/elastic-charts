@@ -24,19 +24,21 @@ import {
 import type { Box, Font } from '../../../../common/text_utils';
 import { maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
-import type { LinearScale, OrdinalScale, RasterTimeScale, BaseDatum } from '../../../../specs';
+import type { RasterTimeScale, BaseDatum } from '../../../../specs';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
+import { roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import type { Datum } from '../../../../utils/common';
 import { clamp, isFiniteNumber, isNil } from '../../../../utils/common';
 import type { ChartDimensions } from '../../../../utils/dimensions';
 import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
+import type { Point } from '../../../../utils/point';
 import type { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import type { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import type { HeatmapSpec } from '../../specs';
 import type { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import type { HeatmapTable } from '../../state/selectors/get_heatmap_table';
+import { addRasterInterval, findLinearBinIndex, isRasterScale } from '../../state/utils/raster';
 import type {
   Cell,
   GridCell,
@@ -88,7 +90,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   groupBySpec: SmallMultiplesGroupBy,
   bandsToHide: Array<[number, number]>,
 ): ShapeViewModel {
-  const { table, yValues, xValues } = heatmapTable;
+  const { table, xValues } = heatmapTable;
+  const isYRaster = !!spec.yScale && isRasterScale(spec.yScale);
+  // rows are laid out from top to bottom, raster bins ascend upwards
+  const yValues = isYRaster ? [...heatmapTable.yValues].reverse() : heatmapTable.yValues;
   const gridStrokeWidth = heatmapTheme.grid.stroke.width;
   const isPointerOverPanel = isPointerOverPanelFn(smScales, chartDimensions, gridStrokeWidth);
 
@@ -138,7 +143,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       ...d,
       // position of the Y labels
       x: -pad(padding, 'right') - chartPaddings.left,
-      y: cellHeight / 2 + (yScale(d.value) || 0),
+      // a raster bin starts at the bottom edge of its row
+      y: (isYRaster ? cellHeight : cellHeight / 2) + (yScale(d.value) || 0),
       align: 'right',
     };
   });
@@ -311,9 +317,9 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   };
 
   /**
-   * Return selected cells and X,Y ranges based on the drag selection.
+   * Return the X,Y values and ranges covered by the drag selection, confined to the start panel.
    */
-  const pickDragArea: PickDragFunction = (bound) => {
+  const getDragBounds = (bound: [start: Point, end: Point]) => {
     const [start, end] = bound;
 
     const { left, top } = chartDimensions;
@@ -344,24 +350,44 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const allXValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(xValues, startX, endX);
     const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);
     const invertedXValues: Array<NonNullable<PrimitiveValue>> =
-      isRasterTimeScale(spec.xScale) && typeof endX === 'number'
-        ? [startX, addIntervalToTime(endX, spec.xScale.interval, spec.timeZone)]
+      isRasterScale(spec.xScale) && typeof endX === 'number'
+        ? [startX, addRasterInterval(spec.xScale, endX, spec.timeZone)]
         : [...allXValuesInRange];
+    const invertedYValues: Array<NonNullable<PrimitiveValue>> =
+      spec.yScale && isRasterScale(spec.yScale) && typeof startY === 'number'
+        ? [endY, addRasterInterval(spec.yScale, startY, spec.timeZone)]
+        : [...allYValuesInRange];
+
+    return {
+      allXValuesInRange,
+      allYValuesInRange,
+      x: invertedXValues,
+      y: invertedYValues,
+      smHorizontalAccessorValue,
+      smVerticalAccessorValue,
+    };
+  };
+
+  /**
+   * Return selected cells and X,Y ranges based on the drag selection.
+   */
+  const pickDragArea: PickDragFunction = (bound) => {
+    const { allXValuesInRange, allYValuesInRange, x, y, smHorizontalAccessorValue, smVerticalAccessorValue } =
+      getDragBounds(bound);
+    const panelCells = panelCellMap.get(getPanelKey(smHorizontalAccessorValue, smVerticalAccessorValue));
     const cells: Cell[] = [];
 
-    allXValuesInRange.forEach((x) => {
-      allYValuesInRange.forEach((y) => {
-        const panelKey = getPanelKey(smHorizontalAccessorValue, smVerticalAccessorValue);
-        const cellKey = getCellKey(x, y);
-        const cellValue = panelCellMap.get(panelKey)?.get(cellKey);
+    allXValuesInRange.forEach((xValue) => {
+      allYValuesInRange.forEach((yValue) => {
+        const cellValue = panelCells?.get(getCellKey(xValue, yValue));
         if (cellValue) cells.push(cellValue);
       });
     });
 
     return {
-      cells: cells.filter(Boolean),
-      x: invertedXValues,
-      y: allYValuesInRange,
+      cells,
+      x,
+      y,
       smHorizontalAccessorValue,
       smVerticalAccessorValue,
     };
@@ -381,7 +407,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const startValue = x[0];
     const endValue = x.at(-1);
     const leftIndex = xValues.indexOf(startValue ?? NaN);
-    const rightIndex = xValues.indexOf(endValue ?? NaN) + (isRasterTimeScale(spec.xScale) && x.length > 1 ? 0 : 1);
+    const rightIndex = xValues.indexOf(endValue ?? NaN) + (isRasterScale(spec.xScale) && x.length > 1 ? 0 : 1);
 
     const isRightOutOfRange = rightIndex > xValues.length - 1 || rightIndex < 0;
     const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;
@@ -403,19 +429,23 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     // extend the range in case the right boundary has been selected
     const width = endFromScale - startFromScale + (isRightOutOfRange || isLeftOutOfRange ? cellWidth : 0);
 
+    const [yRangeStart, yRangeEnd] = [y[0], y.at(-1)];
+    const highlightedYValues =
+      isYRaster && y.length > 1 && isFiniteNumber(yRangeStart) && isFiniteNumber(yRangeEnd)
+        ? yValues.filter((v) => isFiniteNumber(v) && v >= yRangeStart && v < yRangeEnd)
+        : y.filter((v) => yValues.includes(v));
+
     // resolve Y coordinated making sure the order is correct
-    const { y: yStart, totalHeight } = y
-      .filter((v) => yValues.includes(v))
-      .reduce(
-        (acc, current, i) => {
-          if (i === 0) {
-            acc.y = (yScale(current) || 0) + panelYOffset;
-          }
-          acc.totalHeight += cellHeight;
-          return acc;
-        },
-        { y: 0, totalHeight: 0 },
-      );
+    const { y: yStart, totalHeight } = highlightedYValues.reduce(
+      (acc, current, i) => {
+        if (i === 0) {
+          acc.y = (yScale(current) || 0) + panelYOffset;
+        }
+        acc.totalHeight += cellHeight;
+        return acc;
+      },
+      { y: 0, totalHeight: 0 },
+    );
     return {
       x: xStart,
       y: yStart + chartMargins.top + chartPaddings.top + gridStrokeWidth / 2,
@@ -428,18 +458,21 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
    * Resolves coordinates and metrics of the selected rect area.
    */
   const pickDragShape: PickDragShapeFunction = (bound) => {
-    const { x, y, smHorizontalAccessorValue, smVerticalAccessorValue } = pickDragArea(bound);
+    const { x, y, smHorizontalAccessorValue, smVerticalAccessorValue } = getDragBounds(bound);
     return pickHighlightedArea(x, y, smHorizontalAccessorValue, smVerticalAccessorValue);
   };
 
-  const pickCursorBand: PickCursorBand = (x) => {
-    // TODO for Linear scale we need to round the numerical interval. see also https://github.com/elastic/elastic-charts/issues/1701
-    const roundedValue =
-      isRasterTimeScale(spec.xScale) && isFiniteNumber(x)
-        ? roundDateToESInterval(x, spec.xScale.interval, 'start', spec.timeZone)
-        : x;
+  const getXValueIndex = (x: NonNullable<PrimitiveValue>) => {
+    if (!isFiniteNumber(x)) return xValues.indexOf(x);
+    if (isRasterTimeScale(spec.xScale)) {
+      return xValues.indexOf(roundDateToESInterval(x, spec.xScale.interval, 'start', spec.timeZone));
+    }
+    if (isRasterScale(spec.xScale)) return findLinearBinIndex(spec.xScale, xValues as number[], x);
+    return xValues.indexOf(x);
+  };
 
-    const index = xValues.indexOf(roundedValue);
+  const pickCursorBand: PickCursorBand = (x) => {
+    const index = getXValueIndex(x);
     return index < 0
       ? undefined
       : {
@@ -619,7 +652,7 @@ export function isValueInRanges(value: number, ranges: Array<[number, number]>) 
 }
 
 /** @internal */
-export function isRasterTimeScale(scale: RasterTimeScale | OrdinalScale | LinearScale): scale is RasterTimeScale {
+export function isRasterTimeScale(scale: HeatmapSpec['xScale']): scale is RasterTimeScale {
   return scale.type === ScaleType.Time;
 }
 
@@ -631,7 +664,7 @@ function getXTicks(
   chartMargins: Theme['chartMargins'],
   chartPaddings: Theme['chartPaddings'],
 ): Array<TextBox> {
-  const isTimeScale = isRasterTimeScale(spec.xScale);
+  const isRaster = isRasterScale(spec.xScale);
   const isRotated = style.rotation !== 0;
   return values.map<TextBox>((value) => {
     return {
@@ -640,8 +673,8 @@ function getXTicks(
       isValue: false,
       ...style,
       y: style.fontSize / 2 + pad(style.padding, 'top') - chartMargins.top - chartPaddings.top + chartPaddings.bottom,
-      x: (scale(value) ?? 0) + (isTimeScale ? 0 : scale.bandwidth() / 2),
-      align: isRotated ? 'right' : isTimeScale ? 'left' : 'center',
+      x: (scale(value) ?? 0) + (isRaster ? 0 : scale.bandwidth() / 2),
+      align: isRotated ? 'right' : spec.xScale.type === ScaleType.Time ? 'left' : 'center',
     };
   });
 }
