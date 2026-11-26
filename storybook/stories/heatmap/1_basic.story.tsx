@@ -12,11 +12,11 @@ import React, { useMemo } from 'react';
 
 import type { HeatmapStyle, PointerEvent, RecursivePartial } from '@elastic/charts';
 import { Chart, Heatmap, niceTimeFormatter, ScaleType, Settings } from '@elastic/charts';
-import { SEVERITY_COLORS } from '@elastic/charts/src/utils/themes/base_colors';
+import { EUI_DARK, EUI_LIGHT } from '@elastic/charts/src/utils/themes/eui_borealis_colors.generated';
 
 import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
 import type { ChartsStory } from '../../types';
-import { useBaseTheme } from '../../use_base_theme';
+import { ThemeId, useBaseTheme, useThemeId } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { useHeatmapSelection } from '../utils/use_heatmap_selection';
 
@@ -27,6 +27,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const showXAxisTitle = boolean('Show x axis title', false);
   const showYAxisTitle = boolean('Show y axis title', false);
   const showBrushTool = boolean('Show pointer brush area', true);
+  const themeId = useThemeId();
+  const isDarkTheme =
+    themeId === ThemeId.Dark || themeId === ThemeId.LegacyDark || themeId === ThemeId.LegacyAmsterdamDark;
+  const severity = (isDarkTheme ? EUI_DARK : EUI_LIGHT).severity;
 
   const pointerUpdate = (event: PointerEvent) => {
     action('onPointerUpdate')(event);
@@ -78,11 +82,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
         colorScale={{
           type: 'bands',
           bands: [
-            { start: -Infinity, end: 3.5, color: SEVERITY_COLORS.euiColorSeverity5 },
-            { start: 3.5, end: 25, color: SEVERITY_COLORS.euiColorSeverity7 },
-            { start: 25, end: 50, color: SEVERITY_COLORS.euiColorSeverity10 },
-            { start: 50, end: 75, color: SEVERITY_COLORS.euiColorSeverity12 },
-            { start: 75, end: Infinity, color: SEVERITY_COLORS.euiColorSeverity14 },
+            { start: -Infinity, end: 3.5, color: severity.neutral },
+            { start: 3.5, end: 25, color: severity.success },
+            { start: 25, end: 50, color: severity.warning },
+            { start: 50, end: 75, color: severity.risk },
+            { start: 75, end: Infinity, color: severity.danger },
           ],
         }}
         data={DATA_6.data}

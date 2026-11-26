@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-import euiDarkVars from '@elastic/eui/dist/eui_theme_dark.json';
-import euiLightVars from '@elastic/eui/dist/eui_theme_light.json';
 import euiBorealisDarkVars from '@elastic/eui-theme-borealis/lib/eui_theme_borealis_dark.json';
 import euiBorealisLightVars from '@elastic/eui-theme-borealis/lib/eui_theme_borealis_light.json';
 import type { Parameters as SBParameters } from '@storybook/addons';
@@ -68,15 +66,13 @@ export const storybookParameters: Parameters = {
         id: 'legacy-amsterdam-light',
         title: 'Legacy Amsterdam Light',
         class: ['light-theme', 'legacy', 'amsterdam'],
-        color: euiLightVars.euiColorEmptyShade,
-        imageUrl: euiLogoUrl,
+        color: '#FFF',
       },
       {
         id: 'legacy-amsterdam-dark',
         title: 'Legacy Amsterdam Dark',
         class: ['dark-theme', 'legacy', 'amsterdam'],
-        color: euiDarkVars.euiColorEmptyShade,
-        imageUrl: euiLogoUrl,
+        color: '#1D1E24',
       },
       {
         id: 'legacy-light',

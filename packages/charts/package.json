@@ -49,11 +49,7 @@
     "./dist/theme_dark.css": "./dist/theme_dark.css",
     "./dist/theme_only_light.css": "./dist/theme_only_light.css",
     "./dist/theme_only_dark.css": "./dist/theme_only_dark.css",
-    "./dist/theme.scss": "./dist/theme.scss",
-    "./dist/legacy/theme_light.css": "./dist/legacy/theme_light.css",
-    "./dist/legacy/theme_dark.css": "./dist/legacy/theme_dark.css",
-    "./dist/legacy/theme_only_light.css": "./dist/legacy/theme_only_light.css",
-    "./dist/legacy/theme_only_dark.css": "./dist/legacy/theme_only_dark.css"
+    "./dist/theme.scss": "./dist/theme.scss"
   },
   "scripts": {
     "autoprefix:css": "echo 'Autoprefixing...' && yarn postcss dist/*.css --no-map --use autoprefixer -d dist",
@@ -69,6 +65,8 @@
     "build:sass": "echo 'Building sass...' && sass 'src/styles:dist' --style compressed --quiet --color --load-path ../../",
     "build:watch": "echo 'Watching build...' && yarn build:clean && yarn build:css && rslib build --watch",
     "concat:sass": "echo 'Concat SASS...' && node scripts/concat_sass.js",
+    "eui-colors:check": "echo 'Checking EUI colors...' && ts-node scripts/generate_eui_colors.ts --check",
+    "eui-colors:extract": "ts-node scripts/generate_eui_colors.ts",
     "semantic-release": "semantic-release",
     "test:pack": "node scripts/smoke_pack.js",
     "typecheck": "tsc -p ./tsconfig.src.json --noEmit"

@@ -13,6 +13,7 @@ import { updateCheckStatus } from './../../utils/github';
 import type { JSONSchemaForBuildkitePipelineConfigurationFiles as BuildkitePipeline } from '../../buildkite.d';
 import {
   apiCheckStep,
+  euiColorsCheckStep,
   ghpDeployStep,
   firebaseDeployStep,
   e2eServerStep,
@@ -45,6 +46,7 @@ void (async () => {
       jestStep(),
       eslintStep(),
       apiCheckStep(),
+      euiColorsCheckStep(),
       prettierStep(),
       typeCheckStep(),
       docsStep(),

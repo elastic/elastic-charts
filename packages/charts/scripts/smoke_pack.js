@@ -25,10 +25,6 @@ const stylesheetExports = [
   '@elastic/charts/dist/theme_only_light.css',
   '@elastic/charts/dist/theme_only_dark.css',
   '@elastic/charts/dist/theme.scss',
-  '@elastic/charts/dist/legacy/theme_light.css',
-  '@elastic/charts/dist/legacy/theme_dark.css',
-  '@elastic/charts/dist/legacy/theme_only_light.css',
-  '@elastic/charts/dist/legacy/theme_only_dark.css',
 ];
 
 function log(message) {

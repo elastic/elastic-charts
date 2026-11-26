@@ -1,0 +1,24 @@
+0 silly argv {
+0 silly argv   _: [ 'run' ],
+0 silly argv   scope: '@elastic/charts',
+0 silly argv   stream: true,
+0 silly argv   prefix: false,
+0 silly argv   lernaVersion: '5.5.2',
+0 silly argv   '$0': '/Users/beatrizmalveiro/Documents/elastic/elastic-charts/node_modules/.bin/lerna',
+0 silly argv   script: 'eui-colors:check'
+0 silly argv }
+1 notice cli v5.5.2
+2 verbose rootPath /Users/beatrizmalveiro/Documents/elastic/elastic-charts
+3 info versioning independent
+4 warn EWORKSPACES Workspaces exist in the root package.json, but Lerna is not configured to use them.
+4 warn EWORKSPACES To fix this and have Lerna use workspaces to resolve packages, set `useWorkspaces: true` in lerna.json.
+5 error Error: fastqueue concurrency must be greater than 1
+5 error     at fastqueue (/Users/beatrizmalveiro/Documents/elastic/elastic-charts/node_modules/fastq/queue.js:13:11)
+5 error     at new AsyncReader (/Users/beatrizmalveiro/Documents/elastic/elastic-charts/node_modules/@nodelib/fs.walk/out/readers/async.js:14:23)
+5 error     at new StreamProvider (/Users/beatrizmalveiro/Documents/elastic/elastic-charts/node_modules/@nodelib/fs.walk/out/providers/stream.js:9:24)
+5 error     at ReaderStream.walkStream [as _walkStream] (/Users/beatrizmalveiro/Documents/elastic/elastic-charts/node_modules/@nodelib/fs.walk/out/index.js:24:22)
+5 error     at ReaderStream.dynamic (/Users/beatrizmalveiro/Documents/elastic/elastic-charts/node_modules/globby/node_modules/fast-glob/out/readers/stream.js:14:21)
+5 error     at ProviderAsync.api (/Users/beatrizmalveiro/Documents/elastic/elastic-charts/node_modules/globby/node_modules/fast-glob/out/providers/async.js:23:33)
+5 error     at /Users/beatrizmalveiro/Documents/elastic/elastic-charts/node_modules/globby/node_modules/fast-glob/out/providers/async.js:15:33
+5 error     at new Promise (<anonymous>)
+5 error     at ProviderAsync.read (/Users/beatrizmalveiro/Documents/elastic/elastic-charts/node_modules/globby/node_modules/fast-glob/out/providers/async.js:14:16)

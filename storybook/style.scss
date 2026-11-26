@@ -25,75 +25,57 @@
 html {
   font-size: 14px !important;
 
-  &:not(.legacy) {
-    &.light-theme {
-      @import '~@elastic/charts/src/styles/theme_only_light';
+  &.light-theme {
+    @import '~@elastic/charts/src/styles/theme_only_light';
 
-      body,
-      .echChart {
-        background: #ffffff !important;
-      }
-
-      .euiText {
-        color: $euiTitleColor;
-      }
+    body,
+    .echChart {
+      background: #ffffff !important;
     }
 
-    &.dark-theme {
-      @import '~@elastic/charts/src/styles/theme_only_dark';
+    .euiText {
+      color: $euiTitleColor;
+    }
+  }
 
-      body,
-      .echChart {
-        background: #0b1628 !important;
-      }
+  &.dark-theme {
+    @import '~@elastic/charts/src/styles/theme_only_dark';
 
-      .euiText {
-        color: $euiTitleColor;
-      }
+    body,
+    .echChart {
+      background: #0b1628 !important;
+    }
+
+    .euiText {
+      color: $euiTitleColor;
     }
   }
 
   &.legacy {
     &.light-theme {
-      @import '~@elastic/charts/src/styles/legacy/theme_only_light';
-
       body,
       .echChart {
         background: white !important;
       }
 
       &.amsterdam {
-        @import '~@elastic/eui/src/themes/amsterdam/colors_light';
-
         body,
         .echChart {
-          background: $euiColorEmptyShade !important;
-        }
-
-        .euiText {
-          color: $euiTitleColor;
+          background: #fff !important;
         }
       }
     }
 
     &.dark-theme {
-      @import '~@elastic/charts/src/styles/legacy/theme_only_dark';
-
       body,
       .echChart {
         background: black !important;
       }
 
       &.amsterdam {
-        @import '~@elastic/eui/src/themes/amsterdam/colors_dark';
-
         body,
         .echChart {
-          background: $euiColorEmptyShade !important;
-        }
-
-        .euiText {
-          color: $euiTitleColor;
+          background: #1d1e24 !important;
         }
       }
     }

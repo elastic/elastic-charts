@@ -14,7 +14,7 @@ import {
   LIGHT_DIMMED_COLORS,
   LIGHT_TEXT_COLORS,
 } from './base_colors';
-import { BOREALIS_COLORS_PALETTE } from './borealis_colors';
+import { BOREALIS_LIGHT_COLORS_PALETTE, BOREALIS_LIGHT_DEFAULT_VIS_COLOR } from './borealis_colors';
 import type { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
 import { LIGHT_THEME_BULLET_STYLE } from '../../chart_types/bullet_graph/theme';
@@ -246,8 +246,8 @@ export const LIGHT_THEME: Theme = {
     },
   },
   colors: {
-    vizColors: BOREALIS_COLORS_PALETTE,
-    defaultVizColor: '#16C5C0',
+    vizColors: BOREALIS_LIGHT_COLORS_PALETTE,
+    defaultVizColor: BOREALIS_LIGHT_DEFAULT_VIS_COLOR,
   },
   legend: {
     verticalWidth: 200,

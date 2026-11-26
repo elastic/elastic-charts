@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import euiBorealisDarkVars from '@elastic/eui-theme-borealis/lib/eui_theme_borealis_dark.json';
+import euiBorealisLightVars from '@elastic/eui-theme-borealis/lib/eui_theme_borealis_light.json';
 import type { Dictionary, NumericDictionary } from 'lodash';
 import _ from 'lodash';
 import seedrandom from 'seedrandom';
@@ -242,6 +244,22 @@ export const discreteColor =
 
 export const decreasingOpacityCET2 = (opacity: number) => (d: any, i: number, a: any[]) =>
   hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, opacity]))(i / (a.length + 1));
+
+export function getEuiVisTextPalette(isDarkTheme: boolean): Color[] {
+  const vars = isDarkTheme ? euiBorealisDarkVars : euiBorealisLightVars;
+  return [
+    vars.euiColorVisText0,
+    vars.euiColorVisText1,
+    vars.euiColorVisText2,
+    vars.euiColorVisText3,
+    vars.euiColorVisText4,
+    vars.euiColorVisText5,
+    vars.euiColorVisText6,
+    vars.euiColorVisText7,
+    vars.euiColorVisText8,
+    vars.euiColorVisText9,
+  ];
+}
 
 export function sampleSize<T>(
   collection: Dictionary<T> | NumericDictionary<T> | null | undefined,
