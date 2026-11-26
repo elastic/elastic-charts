@@ -134,6 +134,22 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     font-feature-settings: 'tnum';
     letter-spacing: unset;
     direction: ltr;
+
+    // Reserve space using the rendered font, including its tabular numeral features.
+    > [data-reserved-value] {
+      display: inline-grid;
+
+      &::before,
+      > span {
+        grid-area: 1 / 1;
+      }
+
+      &::before {
+        content: attr(data-reserved-value);
+        visibility: hidden;
+        pointer-events: none;
+      }
+    }
   }
 
   &--vertical {
