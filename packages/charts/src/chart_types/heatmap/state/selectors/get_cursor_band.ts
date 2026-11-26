@@ -7,14 +7,14 @@
  */
 
 import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
-import { getTooltipAnchorSelector } from './get_tooltip_anchor';
-import { getPickedShapes, hasPicketVisibleCells } from './picked_shapes';
+import { getPickedGridCell } from './picked_shapes';
 import type { Rect } from '../../../../geoms/types';
 import { isPointerOverEvent } from '../../../../specs';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getInternalIsBrushingSelector } from '../../../../state/selectors/get_internal_is_brushing';
 import { isNil } from '../../../../utils/common';
+import type { CursorBandTarget } from '../../layout/types/viewmodel_types';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
@@ -23,39 +23,35 @@ export const getCursorBandPositionSelector = createCustomCachedSelector(
   [
     getPerPanelHeatmapGeometries,
     getExternalPointerEventStateSelector,
-    getPickedShapes,
-    getTooltipAnchorSelector,
+    getPickedGridCell,
     getInternalIsBrushingSelector,
   ],
-  (
-    geoms,
-    externalPointerEvent,
-    pickedShapes,
-    tooltipShape,
-    isBrushing,
-  ): (Rect & { fromExternalEvent: boolean }) | undefined => {
-    // block cursor when brusing
+  (geoms, externalPointerEvent, pickedGridCell, isBrushing): (Rect & { fromExternalEvent: boolean }) | undefined => {
+    // block cursor when brushing
     if (isBrushing) return;
 
-    // external pointer events takes precedence over the current mouse pointer
+    const bandFrom = (cell: CursorBandTarget, fromExternalEvent: boolean) => {
+      const band = geoms.pickCursorBand(cell);
+      return band && { ...band, fromExternalEvent };
+    };
+
+    // external pointer events take precedence only when they resolve a column on this chart
     if (isPointerOverEvent(externalPointerEvent)) {
-      const { x } = externalPointerEvent;
+      const { x, smHorizontalValue, smVerticalValue } = externalPointerEvent;
       if (!isNil(x)) {
-        const band = geoms.pickCursorBand(x);
-        if (band) {
-          return {
-            ...band,
-            fromExternalEvent: true,
-          };
-        }
+        const band = bandFrom(
+          {
+            x,
+            // PointerOverEvent uses null where GridCell uses undefined
+            smHorizontalAccessorValue: smHorizontalValue ?? undefined,
+            smVerticalAccessorValue: smVerticalValue ?? undefined,
+          },
+          true,
+        );
+        if (band) return band;
       }
     }
 
-    if (hasPicketVisibleCells(pickedShapes)) {
-      return {
-        ...tooltipShape,
-        fromExternalEvent: false,
-      };
-    }
+    return pickedGridCell ? bandFrom(pickedGridCell, false) : undefined;
   },
 );
