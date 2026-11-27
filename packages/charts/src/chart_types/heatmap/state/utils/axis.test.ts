@@ -200,6 +200,31 @@ describe('Heatmap axis', () => {
       expectRenderedAxis(skip, { ...expected, tickCadence: 2 });
     });
 
+    it('should keep every label rotated exactly to the angle that clears the font height', () => {
+      const boxMeasure: TextMeasure = () => ({ width: 30, height: 12 });
+      const labels = getLabels(10);
+      const yAxisWidth = 100;
+      // the Y axis bounds the left side, so the raised rotation keeps the 22.5px step
+      const step = 22.5;
+      const containerWidth = yAxisWidth + step * labels.length;
+      const minRotation = Math.asin(12 / step);
+      // the rotation is picked so the step projects on the label normal to the label height,
+      // but floating point rounding lands just under it
+      expect(step * Math.sin(minRotation)).toBeLessThan(12);
+
+      const size = getXAxisSize(
+        true,
+        getXStyle(1),
+        formatter,
+        labels,
+        boxMeasure,
+        containerWidth,
+        [yAxisWidth, 0],
+        false,
+      );
+      expectRenderedAxis(size, { left: yAxisWidth, height: axisHeight(30, minRotation), tickCadence: 1, minRotation });
+    });
+
     it('should increase the rotation and skip labels when rotated labels would overlap', () => {
       const style = getXStyle(45);
       const labels = getLabels(200);
@@ -340,30 +365,25 @@ describe('Heatmap axis', () => {
     );
 
     it.each([true, false])(
-      'should raise the rotation and skip rotated labels that still collide regardless of showOverlappingLabels %s',
+      'should raise the rotation but keep every rotated label that still collides regardless of showOverlappingLabels %s',
       (showOverlappingLabels) => {
-        const style = getXStyle(45);
-        const containerWidth = 400;
         const size = getXAxisSize(
           false,
-          style,
+          getXStyle(45),
           formatter,
           labels,
           textMeasure,
-          containerWidth,
+          400,
           [0, 0],
           showOverlappingLabels,
         );
-        // a 4px step is smaller than the font height even with vertical labels
+        // a 4px step is smaller than the font height even with vertical labels, but time labels are not thinned
         expectRenderedAxis(size, {
           left: FONT_SIZE / 2,
           height: axisHeight(timeLabelWidth, Math.PI / 2),
-          tickCadence: 6,
+          tickCadence: 1,
           minRotation: Math.PI / 2,
         });
-        expect((containerWidth / labels.length) * size.tickCadence).toBeGreaterThanOrEqual(
-          FONT_SIZE + horizontalPad(style.padding),
-        );
       },
     );
 

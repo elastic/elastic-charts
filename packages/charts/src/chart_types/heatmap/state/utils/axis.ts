@@ -181,10 +181,10 @@ export function getXAxisSize(
           );
 
     const validCompression = isFiniteNumber(dimension.width);
-    // The flag only applies to categorical scales: time labels are always thinned when they collide.
+    // The flag only applies to categorical scales: rotated time labels are never thinned.
     // A slanted label's horizontal box overlaps its neighbor before the text does, so rotated labels
     // stay visible while their rotated boxes clear each other at the final rotation.
-    const showEveryLabel = isCategoricalScale && showOverlappingLabels;
+    const showEveryLabel = !isCategoricalScale || showOverlappingLabels;
     const rotationClearsLabels =
       isRotated && rotatedLabelsClear(dimension.width / labels.length, minRotation, maxLabelBBox);
     if (!validCompression || showEveryLabel || rotationClearsLabels) {
@@ -232,13 +232,19 @@ export function getXAxisSize(
   return axisSizeFromCompression(fitted.dimension, fitted.tickCadence, rotationRad, containerWidth, surroundingSpace);
 }
 
+/** absorbs the rounding of `step * sin(asin(height / step))`, which can land just under `height` */
+const ROTATED_LABEL_CLEARANCE_EPSILON = 1e-6;
+
 /**
  * True if two equal label boxes, rotated by `rotation` and `step` pixels apart horizontally, don't intersect.
  * The boxes clear each other when the step projected on the label direction exceeds the width,
  * or the step projected on its normal exceeds the height.
  */
 function rotatedLabelsClear(step: number, rotation: Radian, { width, height }: Size): boolean {
-  return step * Math.sin(rotation) >= height || step * Math.cos(rotation) >= width;
+  return (
+    step * Math.sin(rotation) + ROTATED_LABEL_CLEARANCE_EPSILON >= height ||
+    step * Math.cos(rotation) + ROTATED_LABEL_CLEARANCE_EPSILON >= width
+  );
 }
 
 interface FitCompressedScaleArgs {
