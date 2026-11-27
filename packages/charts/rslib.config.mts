@@ -30,6 +30,7 @@ const STAND_INS: Record<string, string> = {
   'react-dom/server': path.join(headless, 'react_stand_in/server.ts'),
   'react-redux': path.join(headless, 'react_stand_in/react_redux.ts'),
   '@popperjs/core': path.join(headless, 'popper_stand_in.ts'),
+  '@reduxjs/toolkit': path.join(headless, 'toolkit_stand_in.ts'),
 };
 
 const { dependencies, peerDependencies } = JSON.parse(readFileSync('./package.json', 'utf8')) as {
