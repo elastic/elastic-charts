@@ -21,14 +21,15 @@ const srcEntry = [
   '!src/utils/data_samples/**',
 ];
 
-const standIn = path.resolve('./src/headless/react_stand_in');
+const headless = path.resolve('./src/headless');
 
-/** The packages that the stand-in is bound in for, in the headless file of the build for Node */
-const REACT_FAMILY: Record<string, string> = {
-  react: path.join(standIn, 'react.ts'),
-  'react-dom': path.join(standIn, 'react_dom.ts'),
-  'react-dom/server': path.join(standIn, 'server.ts'),
-  'react-redux': path.join(standIn, 'react_redux.ts'),
+/** What the headless file of the build for Node has in place of a package: a stand-in that does only what it needs */
+const STAND_INS: Record<string, string> = {
+  react: path.join(headless, 'react_stand_in/react.ts'),
+  'react-dom': path.join(headless, 'react_stand_in/react_dom.ts'),
+  'react-dom/server': path.join(headless, 'react_stand_in/server.ts'),
+  'react-redux': path.join(headless, 'react_stand_in/react_redux.ts'),
+  '@popperjs/core': path.join(headless, 'popper_stand_in.ts'),
 };
 
 const { dependencies, peerDependencies } = JSON.parse(readFileSync('./package.json', 'utf8')) as {
@@ -54,9 +55,9 @@ const forNode = (format: 'esm' | 'cjs') =>
   }) as const;
 
 /**
- * The headless entry for Node is a file that holds all of the chart, with the stand-in in place of React: it
- * renders once, to markup, and needs no more of React than that. So it shares nothing with the main entry's
- * file, and a chart it renders is made of the components it exports itself.
+ * The headless entry for Node is a file that holds all of the chart, with stand-ins in place of React and of
+ * what only a page needs: it renders once, to markup. So it shares nothing with the main entry's file, and a
+ * chart it renders is made of the components it exports itself.
  */
 const headlessForNode = (format: 'esm' | 'cjs') =>
   ({
@@ -65,12 +66,12 @@ const headlessForNode = (format: 'esm' | 'cjs') =>
     dts: false,
     source: { entry: { index: './src/headless/index.ts' } },
     resolve: {
-      alias: Object.fromEntries(Object.entries(REACT_FAMILY).map(([name, file]) => [`${name}$`, file])),
+      alias: Object.fromEntries(Object.entries(STAND_INS).map(([name, file]) => [`${name}$`, file])),
     },
     output: {
       distPath: `./dist/node/${format}/headless`,
       autoExternal: false,
-      externals: imported(dependencyNames.filter((name) => !(name in REACT_FAMILY))),
+      externals: imported(dependencyNames.filter((name) => !(name in STAND_INS))),
     },
   }) as const;
 
