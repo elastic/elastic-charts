@@ -20,7 +20,7 @@ export const clamp = jest.fn(module.clamp);
 /** @internal */
 export const getColorFromVariant = jest.fn(module.getColorFromVariant);
 /** @internal */
-export const htmlIdGenerator = jest.fn(module.htmlIdGenerator);
+export const uniqueChartId = jest.fn(module.uniqueChartId);
 /** @internal */
 export const getPartialValue = jest.fn(module.getPartialValue);
 /** @internal */

@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-// NOTE: to switch implementation just change the imported file (moment,luxon)
 import {
   addTimeToObj,
   timeObjToUnixTimestamp,

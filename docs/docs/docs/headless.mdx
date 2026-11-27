@@ -8,8 +8,7 @@ sidebar_label: Rendering without a browser
 `@elastic/charts/headless` renders a chart to a string in plain Node. It needs no DOM, no jsdom and no canvas.
 
 ```tsx
-import { Chart, Settings, Axis, BarSeries, Position, ScaleType } from '@elastic/charts';
-import { renderChart } from '@elastic/charts/headless';
+import { Chart, Settings, Axis, BarSeries, Position, ScaleType, renderChart } from '@elastic/charts/headless';
 
 const html = renderChart(
   <Chart id="revenue" size={{ width: 600, height: 300 }}>
@@ -27,9 +26,16 @@ numeric width and height in pixels, since there is no container to measure. For 
 `size={[400, 300]}` or `size={{ width: 400, height: 300 }}`. CSS strings such as `"400px"` and `"100%"` are not
 supported. The `renderer` prop is ignored: the chart is always drawn as SVG.
 
-Use the same installed copy and module format of `@elastic/charts` for `renderChart` and every chart component:
-use `import` for both entry points, or `require` for both. The ESM and CommonJS builds have separate chart
-contexts, so mixing components from them can cause an error or produce an empty chart.
+Take `renderChart` and every chart component from `@elastic/charts/headless`, in one module format: `import` for
+all of them, or `require` for all. In Node this entry is a copy of Charts of its own, and `renderChart` refuses a
+chart made of the components of `@elastic/charts`. The ESM and CommonJS builds have separate chart contexts too,
+so mixing components from them can cause an error or produce an empty chart.
+
+In Node that copy renders without React: it loads nothing of `react`, `react-dom` or `react-redux`, and writes
+the markup that React would. The entry exports `createElement` to make the elements of a chart with, so a program
+that only renders headless does not need React installed; for JSX, name that function as the factory of the
+classic JSX transform (`/** @jsx createElement */`). The chart renders once and keeps no state, so a component of
+your own that you pass to it, such as a custom legend, cannot use hooks there.
 
 ## Output
 
@@ -159,7 +165,7 @@ or in a fallback, and one with wider glyphs can cut labels that were measured to
 Two files make a project that renders two charts in Node and writes them, with the stylesheet, into one HTML file
 that any browser shows without running a script.
 
-`package.json`, with the peer dependencies of Charts spelled out:
+`package.json`, with the one peer dependency of Charts that a headless render loads:
 
 ```json
 {
@@ -171,9 +177,7 @@ that any browser shows without running a script.
   },
   "dependencies": {
     "@elastic/charts": "latest",
-    "moment-timezone": "^0.5.32",
-    "react": "^18.0",
-    "react-dom": "^18.0"
+    "moment-timezone": "^0.5.32"
   }
 }
 ```
@@ -192,15 +196,25 @@ Yarn identifies a tarball by its name and version, so a tarball packed again doe
 installed it before. Reinstall from scratch: remove `node_modules`, `yarn.lock`, and the folder of
 `@elastic/charts` in the yarn cache (`yarn cache dir`).
 
-`index.mjs` uses `createElement` in place of JSX, so it needs no build step:
+`index.mjs` uses the `createElement` of the headless entry in place of JSX, so it needs no build step and no
+React:
 
 ```js
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 
-import { Axis, BarSeries, Chart, LineSeries, Metric, Position, ScaleType, Settings } from '@elastic/charts';
-import { renderChart } from '@elastic/charts/headless';
-import { createElement as h } from 'react';
+import {
+  Axis,
+  BarSeries,
+  Chart,
+  LineSeries,
+  Metric,
+  Position,
+  ScaleType,
+  Settings,
+  createElement as h,
+  renderChart,
+} from '@elastic/charts/headless';
 
 const data = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].flatMap((day, i) => [
   { day, visits: [12, 19, 7, 15, 22][i], site: 'docs' },
@@ -357,11 +371,9 @@ no `document`, as in Node. The page adds the rules from [What the stylesheet exp
           "d3-cloud": "https://esm.sh/d3-cloud@1.2.5",
           "d3-scale": "https://esm.sh/d3-scale@3.3.0",
           "d3-shape": "https://esm.sh/d3-shape@2.1.0",
-          "luxon": "https://esm.sh/luxon@1.28.1",
           "moment-timezone": "https://esm.sh/moment-timezone@0.5.35",
           "ts-debounce": "https://esm.sh/ts-debounce@4.0.0",
-          "utility-types": "https://esm.sh/utility-types@3.10.0",
-          "uuid": "https://esm.sh/uuid@14.0.0"
+          "utility-types": "https://esm.sh/utility-types@3.10.0"
         }
       }
     </script>

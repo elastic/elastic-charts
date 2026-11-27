@@ -1,3 +1,10 @@
+/** Nothing of the Charts sources may import from outside of them */
+const OUTSIDE_OF_THE_SOURCES = {
+  target: './packages/charts/src',
+  from: './',
+  except: ['./packages/charts/src', './node_modules', './packages/charts/node_modules'],
+};
+
 module.exports = {
   parser: '@typescript-eslint/parser',
   extends: [
@@ -389,11 +396,7 @@ module.exports = {
                       target: './packages/charts/src',
                       from: './packages/charts/src/index.ts',
                     },
-                    {
-                      target: './packages/charts/src',
-                      from: './',
-                      except: ['./packages/charts/src', './node_modules', './packages/charts/node_modules'],
-                    },
+                    OUTSIDE_OF_THE_SOURCES,
                   ],
                 },
               ]
@@ -436,6 +439,26 @@ module.exports = {
       files: ['packages/charts/src/headless/**/*.test.ts?(x)'],
       rules: {
         'header/header': 0,
+      },
+    },
+    {
+      // an entry of its own on top of the main one, which it exports again and whose `Chart` it renders: of the
+      // sources, it alone may import the main entry
+      files: ['packages/charts/src/headless/**/*.ts?(x)'],
+      rules: {
+        'import/no-restricted-paths':
+          process.env.NODE_ENV === 'production' ? ['error', { zones: [OUTSIDE_OF_THE_SOURCES] }] : 0,
+      },
+    },
+    {
+      // stands in for `react`, `react-dom` and `react-redux`: it has their names, their loose types and their `== null`
+      files: ['packages/charts/src/headless/react_stand_in/!(*.test).ts'],
+      rules: {
+        'elastic-charts/require-tsdocs': 0,
+        '@typescript-eslint/naming-convention': 0,
+        '@typescript-eslint/no-unsafe-argument': 0,
+        'no-underscore-dangle': 0,
+        eqeqeq: ['error', 'always', { null: 'ignore' }],
       },
     },
     {

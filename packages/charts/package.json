@@ -20,6 +20,16 @@
   ],
   "exports": {
     ".": {
+      "node": {
+        "import": {
+          "types": "./dist/esm/index.d.mts",
+          "default": "./dist/node/esm/index.mjs"
+        },
+        "require": {
+          "types": "./dist/cjs/index.d.ts",
+          "default": "./dist/node/cjs/index.js"
+        }
+      },
       "import": {
         "types": "./dist/esm/index.d.mts",
         "default": "./dist/esm/index.mjs"
@@ -30,6 +40,16 @@
       }
     },
     "./headless": {
+      "node": {
+        "import": {
+          "types": "./dist/esm/headless/index.d.mts",
+          "default": "./dist/node/esm/headless/index.mjs"
+        },
+        "require": {
+          "types": "./dist/cjs/headless/index.d.ts",
+          "default": "./dist/node/cjs/headless/index.js"
+        }
+      },
       "import": {
         "types": "./dist/esm/headless/index.d.mts",
         "default": "./dist/esm/headless/index.mjs"
@@ -89,9 +109,7 @@
     "prop-types": "^15.7.2",
     "react-redux": "9.2.0",
     "ts-debounce": "^4.0.0",
-    "utility-types": "^3.10.0",
-    "uuid": "^14.0.0",
-    "luxon": "^1.25.0"
+    "utility-types": "^3.10.0"
   },
   "peerDependencies": {
     "moment": "^2.29.1",

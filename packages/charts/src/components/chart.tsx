@@ -12,7 +12,6 @@ import type { CSSProperties, ReactNode } from 'react';
 import React, { createRef } from 'react';
 import { Provider } from 'react-redux';
 import type { OptionalKeys } from 'utility-types';
-import { v4 as uuidv4 } from 'uuid';
 
 import { ChartBackground } from './chart_background';
 import { ChartContainer } from './chart_container';
@@ -21,6 +20,7 @@ import { ChartResizer } from './chart_resizer';
 import { ChartStatus } from './chart_status';
 import type { HeadlessRender } from './headless_context';
 import { HeadlessContext } from './headless_context';
+import { renderHeadless } from './headless_render';
 import { Legend } from './legend/legend';
 import { getElementZIndex } from './portal/utils';
 import { paintStageToCanvas } from './stage';
@@ -38,7 +38,7 @@ import { getInternalChartStateSelector, chartSelectorsRegistry } from '../state/
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import type { ChartSize } from '../utils/chart_size';
 import { getChartSize, getFixedChartSize } from '../utils/chart_size';
-import { LayoutDirection } from '../utils/common';
+import { LayoutDirection, uniqueChartId } from '../utils/common';
 import { deepEqual } from '../utils/fast_deep_equal';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 
@@ -74,6 +74,12 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   /** @internal */
   static contextType = HeadlessContext;
 
+  /**
+   * How the headless entry, a file of its own, reaches the chart it renders: through the class it is given.
+   * @internal
+   */
+  static renderHeadless = renderHeadless;
+
   private unsubscribeToStore: Unsubscribe;
 
   private chartStore: Store<GlobalChartState>;
@@ -97,7 +103,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
 
     // set up the redux store
-    const id = props.id ?? uuidv4();
+    const id = props.id ?? uniqueChartId();
     this.chartStore = headless?.store ?? createChartStore(id, props.title, props.description, props.renderer);
     if (headless?.collect) {
       headless.charts += 1;

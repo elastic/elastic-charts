@@ -10,24 +10,18 @@ import type { ReactElement } from 'react';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { ChartType } from '../chart_types';
-import { Chart, type ChartProps } from '../components/chart';
-import type { HeadlessRender } from '../components/headless_context';
-import { HeadlessContext } from '../components/headless_context';
-import type { Spec } from '../specs/spec_type';
-import { updateParentDimensions, updateRenderer } from '../state/actions/chart_settings';
-import { specParsed, upsertSpecs } from '../state/actions/specs';
-import { selectorMemos } from '../state/create_selector';
-
-/** these draw on a canvas of their own (word cloud layout, WebGL), which needs a DOM */
-const NEEDS_A_DOM: ReadonlySet<ChartType | null> = new Set([ChartType.Wordcloud, ChartType.Flame, ChartType.Timeslip]);
+// The main entry, and nothing else of the chart: the built headless entry imports the main entry's file, so
+// that the two share one `Chart`. See `mainEntryOnly` in rslib.config.mts.
+import type { ChartProps } from '..';
+import { Chart } from '..';
 
 /**
  * Renders a chart to markup without a DOM: one root element holding the chart drawn as an inline
  * `<svg>` and, as HTML, its legend or its metric panels. Style it with the Charts stylesheet.
  *
  * The element must be a `Chart` with positive numeric width and height in pixels, and its title and description
- * are omitted. Use the same module format and installed copy of Charts for the renderer and every chart component.
+ * are omitted. Take every chart component from this entry too, in the same module format: in Node it is a copy of
+ * Charts of its own, which renders without React and so runs no hook of a component passed to it.
  * Word cloud, flame and timeslip charts are not supported: they draw on a canvas of their own.
  *
  * Where there is no DOM, text is measured with Inter's advance widths, whatever the font of the theme, so
@@ -36,40 +30,7 @@ const NEEDS_A_DOM: ReadonlySet<ChartType | null> = new Set([ChartType.Wordcloud,
  */
 export function renderChart(chart: ReactElement): string {
   if (!React.isValidElement<ChartProps>(chart) || chart.type !== Chart) {
-    throw new Error('renderChart expects a <Chart> element from the same @elastic/charts build');
+    throw new Error('renderChart expects a <Chart> element, of the Chart that @elastic/charts/headless exports');
   }
-
-  // The title and description are HTML outside the measured chart area. Omit them from both
-  // passes so that neither the markup nor chart-specific layout reserves room for them.
-  const headlessChart = React.cloneElement(chart, { title: undefined, description: undefined });
-
-  // effects do not run here, so a first pass gathers what they would have put into the store
-  const specs = new Map<string, Spec>();
-  const collecting: HeadlessRender = { charts: 0, collect: (spec) => specs.set(spec.id, spec) };
-  try {
-    renderToStaticMarkup(<HeadlessContext.Provider value={collecting}>{headlessChart}</HeadlessContext.Provider>);
-
-    const { store, size, charts } = collecting;
-    if (!store || charts !== 1) throw new Error(`renderChart expects one Chart, the element rendered ${charts}`);
-    if (!size || !(size.width > 0 && size.height > 0 && Number.isFinite(size.width + size.height))) {
-      throw new Error('renderChart needs a Chart with positive numeric width and height in pixels');
-    }
-
-    store.dispatch(updateRenderer('svg'));
-    store.dispatch(upsertSpecs([...specs.values()]));
-    store.dispatch(specParsed());
-    store.dispatch(updateParentDimensions({ ...size, top: 0, left: 0 }));
-
-    const { chartType } = store.getState();
-    if (NEEDS_A_DOM.has(chartType)) throw new Error(`renderChart does not support ${chartType} charts`);
-
-    return renderToStaticMarkup(
-      <HeadlessContext.Provider value={{ charts: 1, store }}>{headlessChart}</HeadlessContext.Provider>,
-    );
-  } finally {
-    // The memos of this chart go at once, on every way out. Its states would keep them for a while: React
-    // holds on to the store of a render that threw until it renders again.
-    const key = collecting.store?.getState().uniqueChartKey;
-    if (key) selectorMemos.release(key);
-  }
+  return Chart.renderHeadless(chart, renderToStaticMarkup);
 }
