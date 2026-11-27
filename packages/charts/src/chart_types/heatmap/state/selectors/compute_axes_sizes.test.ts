@@ -158,6 +158,37 @@ describe('computeAxesSizesSelector', () => {
     expect((panelWidth / valuesCount) * insetCadence).toBeGreaterThanOrEqual(timeLabelSpace);
   });
 
+  it('hides the time x axis when the left padding and margin are wider than the chart', () => {
+    const start = Date.UTC(2020, 0, 1);
+    const hour = 60 * 60 * 1000;
+    const store = MockStore.default({ width: 100, height: 300, top: 0, left: 0 });
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settingsNoMargins({
+          showLegend: false,
+          theme: {
+            chartPaddings: { left: 250, right: 0, top: 0, bottom: 0 },
+            chartMargins: { left: 250, right: 0, top: 0, bottom: 0 },
+          },
+        }),
+        MockSeriesSpec.heatmap({
+          xScale: { type: ScaleType.Time, interval: { type: 'fixed', unit: 'h', value: 1 } },
+          yAxisLabelFormatter: () => 'Y',
+          // the 400px left over would fit labels if the negative width were reversed into a positive one
+          data: Array.from({ length: 10 }, (_, i) => ({ x: start + i * hour, y: 'row', value: i })),
+          xAccessor: 'x',
+          yAccessor: 'y',
+          valueAccessor: 'value',
+        }),
+      ],
+      store,
+    );
+    const { xAxisTickCadence, xAxis } = computeChartElementSizesSelector(store.getState());
+
+    expect(xAxisTickCadence).toBeNaN();
+    expect(xAxis.height).toBe(0);
+  });
+
   it('removes the left padding and margin once from small multiples panels', () => {
     const start = Date.UTC(2020, 0, 1);
     const hour = 60 * 60 * 1000;

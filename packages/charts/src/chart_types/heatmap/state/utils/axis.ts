@@ -211,29 +211,31 @@ export function getXAxisSize(
     // A slanted label's horizontal box overlaps its neighbor before the text does, so rotated labels
     // stay visible if a higher rotation clears their rotated boxes on the rendered panel.
     if (isRotated) {
+      const compress = (rotation: Radian) =>
+        rotation === minRotation
+          ? dimension
+          : computeCompressedScale(style, scale, measuredLabels, containerWidth, surroundingSpace, alignment, rotation);
       const panelStep = (containerWidth - surroundingSpace[0] - surroundingSpace[1]) / labels.length;
       const clearingRotation = getClearingRotation(measuredLabels, panelStep, rotationRad);
       if (clearingRotation !== undefined) {
-        const clearing =
-          clearingRotation === minRotation
-            ? dimension
-            : computeCompressedScale(
-                style,
-                scale,
-                measuredLabels,
-                containerWidth,
-                surroundingSpace,
-                alignment,
-                clearingRotation,
-              );
+        const clearing = compress(clearingRotation);
         if (isFiniteNumber(clearing.width)) {
-          const clearingAxis = axisSizeFromCompression(clearing, 1, clearingRotation, containerWidth, surroundingSpace);
           // The panel is shifted right by the axis left offset but keeps its width, so a label protruding past
-          // the surrounding space pushes the last cells off the container. A shallower angle protrudes more:
-          // keep it only if it doesn't shift the panel further than the thinned labels would.
-          if (clearing.left <= surroundingSpace[0]) return clearingAxis;
+          // the surrounding space pushes the last cells off the container.
+          if (clearing.left <= surroundingSpace[0]) {
+            return axisSizeFromCompression(clearing, 1, clearingRotation, containerWidth, surroundingSpace);
+          }
+          // A steeper rotation protrudes less: keep every label at the smallest rotation that clears them
+          // without shifting the panel further than the thinned labels would.
           const thinnedAxis = getThinnedAxis();
-          return clearing.left <= thinnedAxis.left ? clearingAxis : thinnedAxis;
+          const fittingRotation = getFittingRotation(compress, clearingRotation, thinnedAxis.left);
+          const rotation =
+            fittingRotation === undefined ? undefined : getClearingRotation(measuredLabels, panelStep, fittingRotation);
+          const fitting = rotation === undefined ? undefined : compress(rotation);
+          if (rotation !== undefined && fitting && fitsWithin(fitting, thinnedAxis.left)) {
+            return axisSizeFromCompression(fitting, 1, rotation, containerWidth, surroundingSpace);
+          }
+          return thinnedAxis;
         }
       }
     }
@@ -305,6 +307,33 @@ function getClearingRotation(labels: Size[], step: number, rotation: Radian): Ra
         return !previous || rotatedLabelsClear(step, candidate, previous, label);
       }),
     );
+}
+
+const FITTING_ROTATION_BISECTION_STEPS = 16;
+
+function fitsWithin(dimension: CompressedScale, maxLeft: number): boolean {
+  return isFiniteNumber(dimension.width) && dimension.left <= maxLeft;
+}
+
+/**
+ * Returns the smallest rotation, from `rotation` up to 90°, whose compressed scale doesn't start after `maxLeft`,
+ * or `undefined` if not even vertical labels fit. Steeper labels protrude less, so it is found by bisection.
+ */
+function getFittingRotation(
+  compress: (angle: Radian) => CompressedScale,
+  rotation: Radian,
+  maxLeft: number,
+): Radian | undefined {
+  if (fitsWithin(compress(rotation), maxLeft)) return rotation;
+  if (!fitsWithin(compress(Math.PI / 2), maxLeft)) return undefined;
+  let low = rotation;
+  let high = Math.PI / 2;
+  for (let i = 0; i < FITTING_ROTATION_BISECTION_STEPS; i++) {
+    const middle = (low + high) / 2;
+    if (fitsWithin(compress(middle), maxLeft)) high = middle;
+    else low = middle;
+  }
+  return high;
 }
 
 interface FitCompressedScaleArgs {

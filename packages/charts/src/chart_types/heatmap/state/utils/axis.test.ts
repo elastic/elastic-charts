@@ -284,6 +284,24 @@ describe('Heatmap axis', () => {
       });
     });
 
+    it('should raise the rotation instead of skipping labels when the clearing angle pushes the panel', () => {
+      const labels = ['W'.repeat(20), ...'ABCDEFGHI'];
+      const yAxisWidth = 20;
+      const step = 20;
+      const containerWidth = yAxisWidth + step * labels.length;
+      const style = getXStyle(45);
+      // 45° clears the short labels, but the wide first label protrudes past the Y axis
+      expect(rotatedSides(20 * CHAR_WIDTH, degToRad(45))[0]).toBeGreaterThan(yAxisWidth + step / 2);
+      const at45 = getXAxisSize(true, style, formatter, labels, textMeasure, containerWidth, [yAxisWidth, 0], true);
+
+      const size = getXAxisSize(true, style, formatter, labels, textMeasure, containerWidth, [yAxisWidth, 0], false);
+      // a steeper rotation protrudes less, so every label is kept
+      expect(size.tickCadence).toBe(1);
+      expect(size.minRotation).toBeGreaterThan(degToRad(45));
+      expect(size.minRotation).toBeLessThan(Math.PI / 2);
+      expect(size.left).toBeLessThan(at45.left);
+    });
+
     it('should increase the rotation and skip labels when rotated labels would overlap', () => {
       const style = getXStyle(45);
       const labels = getLabels(200);

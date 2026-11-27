@@ -55,7 +55,8 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
     const leftInset = skipsOverlappingLabels ? chartPaddings.left + chartMargins.left : 0;
     const panelWidth = getSmallMultiplesScale(
       smHDomain,
-      container.width - leftInset,
+      // a negative range would be reversed by the band scale, keeping a positive bandwidth
+      Math.max(container.width - leftInset, 0),
       smSpec?.style?.horizontalPanelPadding,
     ).bandwidth;
 
