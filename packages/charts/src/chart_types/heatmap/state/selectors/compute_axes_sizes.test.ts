@@ -189,6 +189,41 @@ describe('computeAxesSizesSelector', () => {
     expect(xAxis.height).toBe(0);
   });
 
+  it('skips rotated x labels when keeping them all leaves no room for the cells', () => {
+    // sorted alphabetically, the widest label is the second one, hidden at a cadence of 2
+    const labels = ['A', `A${'W'.repeat(19)}`, ...'BCDEFGHI'];
+    const state = (height: number) => {
+      const store = MockStore.default({ width: 240, height, top: 0, left: 0 });
+      MockStore.addSpecs(
+        [
+          MockGlobalSpec.settingsNoMargins({
+            showLegend: false,
+            theme: { heatmap: { xAxisLabel: { rotation: 45 } } },
+          }),
+          MockSeriesSpec.heatmap({
+            xScale: { type: ScaleType.Ordinal },
+            xAxisShowOverlappingLabels: false,
+            xAxisLabelFormatter: (value) => `${value}`,
+            yAxisLabelFormatter: () => 'Y',
+            data: labels.map((x, value) => ({ x, y: 'row', value })),
+            xAccessor: 'x',
+            yAccessor: 'y',
+            valueAccessor: 'value',
+          }),
+        ],
+        store,
+      );
+      return store.getState();
+    };
+    const tall = state(400);
+    const tallAxis = computeChartElementSizesSelector(tall);
+    expect(tallAxis.xAxisTickCadence).toBe(1);
+
+    const short = state(tallAxis.xAxis.height);
+    expect(computeChartElementSizesSelector(short).xAxisTickCadence).toBe(2);
+    expect(computeChartDimensionsSelector(short).chartDimensions.height).toBeGreaterThan(0);
+  });
+
   it('removes the left padding and margin once from small multiples panels', () => {
     const start = Date.UTC(2020, 0, 1);
     const hour = 60 * 60 * 1000;

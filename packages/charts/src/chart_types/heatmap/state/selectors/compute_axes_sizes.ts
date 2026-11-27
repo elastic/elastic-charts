@@ -87,6 +87,17 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         'height',
         !smSpec?.splitHorizontally,
       );
+      // the axis must stay shorter than this to leave room for the cells
+      const plotHeight =
+        container.height -
+        xAxisTitleVerticalSize -
+        xAxisPanelTitleVerticalSize -
+        legendHeight -
+        heatmap.grid.stroke.width / 2 -
+        chartPaddings.top -
+        chartPaddings.bottom -
+        chartMargins.top -
+        chartMargins.bottom;
       const xAxis = getXAxisSize(
         isCategoricalScale,
         heatmap.xAxisLabel,
@@ -99,6 +110,7 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
           0, // this can be used if we have a right Y axis
         ],
         xAxisShowOverlappingLabels,
+        plotHeight,
       );
 
       return {

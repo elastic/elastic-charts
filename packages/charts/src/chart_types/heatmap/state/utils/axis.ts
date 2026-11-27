@@ -115,6 +115,7 @@ export function getXAxisSize(
   containerWidth: number,
   surroundingSpace: [left: number, right: number],
   showOverlappingLabels: boolean,
+  maxHeight = Infinity,
 ): Size & { right: number; left: number; tickCadence: number; minRotation: Radian } {
   if (!style.visible) {
     return {
@@ -187,7 +188,9 @@ export function getXAxisSize(
 
     // refit with only the labels kept at each cadence, so a hidden label no longer sets the width or insets.
     // a label that sets the right edge is already inside the fitted bound
+    let thinnedAxis: ReturnType<typeof axisSizeFromCompression> | undefined;
     const getThinnedAxis = () => {
+      if (thinnedAxis) return thinnedAxis;
       const fitted = fitCompressedScaleByCadence({
         style,
         scale,
@@ -199,14 +202,18 @@ export function getXAxisSize(
         dimension,
         hideRightOverflow: false,
       });
-      return axisSizeFromCompression(
+      thinnedAxis = axisSizeFromCompression(
         fitted.dimension,
         fitted.tickCadence,
         minRotation,
         containerWidth,
         surroundingSpace,
       );
+      return thinnedAxis;
     };
+    // The thinned labels keep the first one and can be steeper, so they don't always take less height
+    const leavesRoomForCells = (allLabels: CompressedScale) =>
+      allLabels.height < maxHeight || allLabels.height <= getThinnedAxis().height;
 
     // A slanted label's horizontal box overlaps its neighbor before the text does, so rotated labels
     // stay visible if a higher rotation clears their rotated boxes on the rendered panel.
@@ -222,20 +229,20 @@ export function getXAxisSize(
         if (isFiniteNumber(clearing.width)) {
           // The panel is shifted right by the axis left offset but keeps its width, so a label protruding past
           // the surrounding space pushes the last cells off the container.
-          if (clearing.left <= surroundingSpace[0]) {
+          if (clearing.left <= surroundingSpace[0] && leavesRoomForCells(clearing)) {
             return axisSizeFromCompression(clearing, 1, clearingRotation, containerWidth, surroundingSpace);
           }
           // A steeper rotation protrudes less: keep every label at the smallest rotation that clears them
           // without shifting the panel further than the thinned labels would.
-          const thinnedAxis = getThinnedAxis();
-          const fittingRotation = getFittingRotation(compress, clearingRotation, thinnedAxis.left);
+          const thinned = getThinnedAxis();
+          const fittingRotation = getFittingRotation(compress, clearingRotation, thinned.left);
           const rotation =
             fittingRotation === undefined ? undefined : getClearingRotation(measuredLabels, panelStep, fittingRotation);
           const fitting = rotation === undefined ? undefined : compress(rotation);
-          if (rotation !== undefined && fitting && fitsWithin(fitting, thinnedAxis.left)) {
+          if (rotation !== undefined && fitting && fitsWithin(fitting, thinned.left) && leavesRoomForCells(fitting)) {
             return axisSizeFromCompression(fitting, 1, rotation, containerWidth, surroundingSpace);
           }
-          return thinnedAxis;
+          return thinned;
         }
       }
     }

@@ -302,6 +302,62 @@ describe('Heatmap axis', () => {
       expect(size.left).toBeLessThan(at45.left);
     });
 
+    it.each([
+      ['within the Y axis', ['A', 'W'.repeat(20), ...'BCDEFGHI'], 40],
+      ['protruding past the Y axis', ['W'.repeat(8), 'W'.repeat(20), ...'BCDEFGHI'], 20],
+    ])(
+      'should skip labels when keeping every rotated label leaves no room for the cells, first label %s',
+      (_, labels, yAxisWidth) => {
+        const step = 20;
+        const containerWidth = yAxisWidth + step * labels.length;
+        const getSize = (maxHeight?: number) =>
+          getXAxisSize(
+            true,
+            getXStyle(45),
+            formatter,
+            labels,
+            textMeasure,
+            containerWidth,
+            [yAxisWidth, 0],
+            false,
+            maxHeight,
+          );
+        const allLabels = getSize();
+        expect(allLabels.tickCadence).toBe(1);
+
+        // the second label is the widest and is hidden at a cadence of 2
+        const thinned = getSize(allLabels.height);
+        expect(thinned.tickCadence).toBe(2);
+        expect(thinned.height).toBeLessThan(allLabels.height);
+        expect(getSize(allLabels.height + 1).tickCadence).toBe(1);
+      },
+    );
+
+    it('should keep every rotated label when skipping labels takes no less height', () => {
+      const labels = ['W'.repeat(20), ...'ABCDEFGHI'];
+      const yAxisWidth = 120;
+      const step = 11;
+      const containerWidth = yAxisWidth + step * labels.length;
+      const getSize = (maxHeight?: number) =>
+        getXAxisSize(
+          true,
+          getXStyle(45),
+          formatter,
+          labels,
+          textMeasure,
+          containerWidth,
+          [yAxisWidth, 0],
+          false,
+          maxHeight,
+        );
+      const allLabels = getSize();
+
+      // the widest label is the first one, always kept, and skipping labels makes it vertical
+      const size = getSize(allLabels.height);
+      expect(size.tickCadence).toBe(1);
+      expect(size.height).toBe(allLabels.height);
+    });
+
     it('should increase the rotation and skip labels when rotated labels would overlap', () => {
       const style = getXStyle(45);
       const labels = getLabels(200);
