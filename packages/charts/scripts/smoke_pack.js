@@ -240,12 +240,10 @@ registerHooks({
     return result;
   },
 });
-const element = (type, props, children) => ({
-  $$typeof: Symbol.for('react.element'), type, key: null, ref: null, props: { ...props, children },
-});
-const render = ({ renderChart, Chart, BarSeries, ScaleType }) =>
+// the elements are made with what the entry itself exports: the program has nothing of React
+const render = ({ renderChart, createElement, Chart, BarSeries, ScaleType }) =>
   renderChart(
-    element(Chart, { id: 'pack-cjs', size: 200 }, element(BarSeries, {
+    createElement(Chart, { id: 'pack-cjs', size: 200 }, createElement(BarSeries, {
       id: 'bars', xScaleType: ScaleType.Ordinal, xAccessor: 'x', yAccessors: ['y'], data: [{ x: 'one', y: 1 }],
     })),
   );

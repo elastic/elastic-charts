@@ -103,9 +103,10 @@ const markups = (standIn: boolean) => {
     }
     try {
       /* eslint-disable @typescript-eslint/no-var-requires, global-require */
-      const { createElement, version } = require('react') as typeof ReactModule;
+      const { version } = require('react') as typeof ReactModule;
       const all = require('../..') as Charts;
-      const { renderChart } = require('..') as typeof HeadlessModule;
+      // the elements are made with what the headless entry exports, as a program without React makes them
+      const { renderChart, createElement } = require('..') as typeof HeadlessModule;
       /* eslint-enable @typescript-eslint/no-var-requires, global-require */
       reactVersion = version;
       for (const [name, chart] of Object.entries(charts)) result[name] = renderChart(chart(createElement, all));
