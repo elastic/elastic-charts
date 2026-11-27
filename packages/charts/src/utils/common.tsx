@@ -10,7 +10,6 @@ import type { ComponentType, ReactNode } from 'react';
 import React, { isValidElement } from 'react';
 import type { $Values } from 'utility-types';
 import { isPrimitive } from 'utility-types';
-import { v1 as uuidv1 } from 'uuid';
 
 import type { AdditiveNumber } from './accessor';
 import type { Point } from './point';
@@ -173,18 +172,15 @@ export const degToRad = (angle: Degrees): Radian => (angle / 180) * Math.PI;
 /** @internal */
 export const radToDeg = (radian: Radian): Degrees => (radian * 180) / Math.PI;
 
+const chartIdPrefix = Math.random().toString(36).slice(2, 10);
+let chartIdCount = 0;
+
 /**
- * This function returns a function to generate ids.
- * This can be used to generate unique, but predictable ids to pair labels
- * with their inputs. It takes an optional prefix as a parameter. If you don't
- * specify it, it generates a random id prefix. If you specify a custom prefix
- * it should begin with an letter to be HTML4 compliant.
+ * An ID for a chart that was given none. No other chart of the page has it: this copy of Charts counts the IDs
+ * it makes, after a random part that tells them from those of another copy.
  * @internal
  */
-export function htmlIdGenerator(idPrefix?: string) {
-  const prefix = idPrefix || `i${uuidv1()}`;
-  return (suffix?: string) => `${prefix}_${suffix || uuidv1()}`;
-}
+export const uniqueChartId = () => `chart-${chartIdPrefix}-${(chartIdCount++).toString(36)}`;
 
 /**
  * Helper function to identify never type for conditionals

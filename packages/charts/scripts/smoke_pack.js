@@ -58,8 +58,7 @@ function packCharts() {
   return path.join(chartsDir, result.filename);
 }
 
-// Yarn may hoist a different major of the same package to the repo root
-// (e.g. uuid@3 from Storybook's webpack stack vs uuid@14 for @elastic/charts).
+// Yarn may hoist a different major of the same package to the repo root, for another workspace.
 // Resolve from the charts package so the smoke consumer gets the version a
 // real install of the tarball would get.
 function resolveInstalledPackageDir(fromDir, name) {

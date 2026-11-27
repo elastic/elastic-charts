@@ -110,7 +110,6 @@
     "react-redux": "9.2.0",
     "ts-debounce": "^4.0.0",
     "utility-types": "^3.10.0",
-    "uuid": "^14.0.0",
     "luxon": "^1.25.0"
   },
   "peerDependencies": {

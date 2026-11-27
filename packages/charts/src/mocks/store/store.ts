@@ -8,7 +8,6 @@
 
 import type { Store } from '@reduxjs/toolkit';
 import type { Cancelable } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
 
 import { chartTypeSelectors } from '../../chart_types/chart_type_selectors';
 import type { SettingsSpec } from '../../specs';
@@ -20,7 +19,7 @@ import { upsertSpec, specParsed } from '../../state/actions/specs';
 import { createChartStore, type GlobalChartState } from '../../state/chart_state';
 import { chartSelectorsRegistry } from '../../state/selectors/get_internal_chart_state';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
-import { mergePartial } from '../../utils/common';
+import { mergePartial, uniqueChartId } from '../../utils/common';
 
 chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
 
@@ -28,7 +27,7 @@ chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
 export class MockStore {
   static default(
     { width, height, top, left } = { width: 100, height: 100, top: 0, left: 0 },
-    chartId = uuidv4(),
+    chartId = uniqueChartId(),
   ): Store<GlobalChartState> {
     const store = createChartStore(chartId);
     store.dispatch(updateParentDimensions({ width, height, top, left }));
