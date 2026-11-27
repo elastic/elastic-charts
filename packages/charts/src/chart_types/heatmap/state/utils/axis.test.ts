@@ -176,12 +176,12 @@ describe('Heatmap axis', () => {
       });
     });
 
-    it('should skip rotated labels whose boxes intersect even if the font height fits the step', () => {
+    it('should raise the rotation instead of skipping labels when a higher angle clears the rotated boxes', () => {
       const boxMeasure: TextMeasure = () => ({ width: 14, height: 12 });
       const rotation = degToRad(45);
       const labels = Array.from({ length: 20 }, (_, i) => `${i + 10}`);
       const containerWidth = 330;
-      // a 16.5px step is wider than the label and taller than the font, so no extra rotation is needed.
+      // a 16.5px step is wider than the label and taller than the font.
       // at 45° it projects to 11.7px on both axes of the label box, under its 12px height and 14px width
       const step = containerWidth / labels.length;
       expect(step).toBeGreaterThan(14);
@@ -189,32 +189,30 @@ describe('Heatmap axis', () => {
       expect(step * Math.sin(rotation)).toBeLessThan(12);
       expect(step * Math.cos(rotation)).toBeLessThan(14);
 
-      const expected = {
-        left: protrudingLeft(containerWidth, [rotatedSides(14, rotation, 12)[0], bandCenter(0, labels.length)]),
-        height: axisHeight(14, rotation),
-        minRotation: rotation,
-      };
+      const expected = (minRotation: number) => ({
+        left: protrudingLeft(containerWidth, [rotatedSides(14, minRotation, 12)[0], bandCenter(0, labels.length)]),
+        height: axisHeight(14, minRotation),
+        minRotation,
+      });
       const showAll = getXAxisSize(true, getXStyle(45), formatter, labels, boxMeasure, containerWidth, [0, 0], true);
       const skip = getXAxisSize(true, getXStyle(45), formatter, labels, boxMeasure, containerWidth, [0, 0], false);
-      expectRenderedAxis(showAll, { ...expected, tickCadence: 1 });
-      expectRenderedAxis(skip, { ...expected, tickCadence: 2 });
+      expectRenderedAxis(showAll, { ...expected(rotation), tickCadence: 1 });
+      // the step projects on the label normal to the label height at about 46.7°
+      expectRenderedAxis(skip, { ...expected(Math.asin(12 / step)), tickCadence: 1 });
     });
 
-    it('should keep every label rotated exactly to the angle that clears the font height', () => {
+    it('should keep every label when the step is under the label height by less than the rounding tolerance', () => {
       const boxMeasure: TextMeasure = () => ({ width: 30, height: 12 });
       const labels = getLabels(10);
       const yAxisWidth = 100;
-      // the Y axis bounds the left side, so the raised rotation keeps the 22.5px step
-      const step = 22.5;
+      // vertical labels project the whole step on their normal: it sits under the 12px height by construction,
+      // by less than the tolerance that absorbs the rounding of the projection
+      const step = 12 - 5e-7;
       const containerWidth = yAxisWidth + step * labels.length;
-      const minRotation = Math.asin(12 / step);
-      // the rotation is picked so the step projects on the label normal to the label height,
-      // but floating point rounding lands just under it
-      expect(step * Math.sin(minRotation)).toBeLessThan(12);
 
       const size = getXAxisSize(
         true,
-        getXStyle(1),
+        getXStyle(90),
         formatter,
         labels,
         boxMeasure,
@@ -222,7 +220,41 @@ describe('Heatmap axis', () => {
         [yAxisWidth, 0],
         false,
       );
-      expectRenderedAxis(size, { left: yAxisWidth, height: axisHeight(30, minRotation), tickCadence: 1, minRotation });
+      expectRenderedAxis(size, {
+        left: yAxisWidth,
+        height: axisHeight(30, Math.PI / 2),
+        tickCadence: 1,
+        minRotation: Math.PI / 2,
+      });
+    });
+
+    it('should not skip short rotated labels because of a wide first label', () => {
+      const rotation = degToRad(45);
+      const labels = ['W'.repeat(20), ...'ABCDEFGHI'];
+      const yAxisWidth = 120;
+      // an 11px step is under the font height, but at 45° it projects to 7.8px along the label direction,
+      // more than the 7px of a short label. The wide first label extends backward, toward the Y axis
+      const step = 11;
+      const containerWidth = yAxisWidth + step * labels.length;
+      expect(step * Math.cos(rotation)).toBeGreaterThan(CHAR_WIDTH);
+      expect(rotatedSides(20 * CHAR_WIDTH, rotation)[0]).toBeLessThan(yAxisWidth);
+
+      const size = getXAxisSize(
+        true,
+        getXStyle(45),
+        formatter,
+        labels,
+        textMeasure,
+        containerWidth,
+        [yAxisWidth, 0],
+        false,
+      );
+      expectRenderedAxis(size, {
+        left: yAxisWidth,
+        height: axisHeight(20 * CHAR_WIDTH, rotation),
+        tickCadence: 1,
+        minRotation: rotation,
+      });
     });
 
     it('should increase the rotation and skip labels when rotated labels would overlap', () => {

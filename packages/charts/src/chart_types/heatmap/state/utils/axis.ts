@@ -180,15 +180,33 @@ export function getXAxisSize(
             minRotation,
           );
 
-    const validCompression = isFiniteNumber(dimension.width);
     // The flag only applies to categorical scales: rotated time labels are never thinned.
-    // A slanted label's horizontal box overlaps its neighbor before the text does, so rotated labels
-    // stay visible while their rotated boxes clear each other at the final rotation.
-    const showEveryLabel = !isCategoricalScale || showOverlappingLabels;
-    const rotationClearsLabels =
-      isRotated && rotatedLabelsClear(dimension.width / labels.length, minRotation, maxLabelBBox);
-    if (!validCompression || showEveryLabel || rotationClearsLabels) {
+    if (!isFiniteNumber(dimension.width) || !isCategoricalScale || showOverlappingLabels) {
       return axisSizeFromCompression(dimension, 1, minRotation, containerWidth, surroundingSpace);
+    }
+
+    // A slanted label's horizontal box overlaps its neighbor before the text does, so rotated labels
+    // stay visible if a higher rotation clears their rotated boxes on the rendered panel.
+    if (isRotated) {
+      const panelStep = (containerWidth - surroundingSpace[0] - surroundingSpace[1]) / labels.length;
+      const clearingRotation = getClearingRotation(measuredLabels, panelStep, rotationRad);
+      if (clearingRotation !== undefined) {
+        const clearing =
+          clearingRotation === minRotation
+            ? dimension
+            : computeCompressedScale(
+                style,
+                scale,
+                measuredLabels,
+                containerWidth,
+                surroundingSpace,
+                alignment,
+                clearingRotation,
+              );
+        if (isFiniteNumber(clearing.width)) {
+          return axisSizeFromCompression(clearing, 1, clearingRotation, containerWidth, surroundingSpace);
+        }
+      }
     }
 
     // refit with only the labels kept at each cadence, so a hidden label no longer sets the width or insets.
@@ -236,15 +254,41 @@ export function getXAxisSize(
 const ROTATED_LABEL_CLEARANCE_EPSILON = 1e-6;
 
 /**
- * True if two equal label boxes, rotated by `rotation` and `step` pixels apart horizontally, don't intersect.
- * The boxes clear each other when the step projected on the label direction exceeds the width,
- * or the step projected on its normal exceeds the height.
+ * True if two right aligned label boxes, rotated by `rotation` and `step` pixels apart horizontally, don't intersect.
+ * The boxes clear each other when the step projected on the label direction exceeds the width of the next label,
+ * that extends backward from its anchor, or the step projected on the label normal exceeds their average height.
  */
-function rotatedLabelsClear(step: number, rotation: Radian, { width, height }: Size): boolean {
+function rotatedLabelsClear(step: number, rotation: Radian, previous: Size, next: Size): boolean {
   return (
-    step * Math.sin(rotation) + ROTATED_LABEL_CLEARANCE_EPSILON >= height ||
-    step * Math.cos(rotation) + ROTATED_LABEL_CLEARANCE_EPSILON >= width
+    step * Math.sin(rotation) + ROTATED_LABEL_CLEARANCE_EPSILON >= (previous.height + next.height) / 2 ||
+    step * Math.cos(rotation) + ROTATED_LABEL_CLEARANCE_EPSILON >= next.width
   );
+}
+
+/**
+ * Returns the smallest rotation, from `rotation` up to 90°, that clears every pair of neighboring labels
+ * placed `step` pixels apart, or `undefined` if they collide even when vertical.
+ * Raising the rotation only helps through the label normal, so the candidates are the requested rotation
+ * and the angles where the step projected on the normal reaches the height of a pair.
+ */
+function getClearingRotation(labels: Size[], step: number, rotation: Radian): Radian | undefined {
+  if (!isFiniteNumber(step) || step <= 0) return undefined;
+  const candidates = new Set<Radian>([rotation]);
+  for (let i = 1; i < labels.length; i++) {
+    const previous = labels[i - 1];
+    const next = labels[i];
+    if (!previous || !next) continue;
+    const angle = Math.asin(Math.min((previous.height + next.height) / 2 / step, 1));
+    if (angle > rotation) candidates.add(angle);
+  }
+  return [...candidates]
+    .sort((a, b) => a - b)
+    .find((candidate) =>
+      labels.every((label, i) => {
+        const previous = labels[i - 1];
+        return !previous || rotatedLabelsClear(step, candidate, previous, label);
+      }),
+    );
 }
 
 interface FitCompressedScaleArgs {

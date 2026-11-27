@@ -80,7 +80,7 @@ test.describe('Heatmap stories', () => {
     );
   });
 
-  pwEach.test([[0], [90]])(
+  pwEach.test([[0], [45], [90]])(
     (rotation) => `should skip overlapping categorical axis labels with ${rotation} degree rotation`,
     async (page, rotation) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
