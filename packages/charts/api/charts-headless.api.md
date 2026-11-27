@@ -9,6 +9,7 @@ import type { $Values } from 'utility-types';
 import type { Assign } from 'utility-types';
 import type { ComponentProps } from 'react';
 import type { ComponentType } from 'react';
+import { createElement } from 'react';
 import type { CSSProperties } from 'react';
 import { FC } from 'react';
 import type { LegacyRef } from 'react';
@@ -833,6 +834,8 @@ export interface ControlReceiverCallbacks {
     // (undocumented)
     search: (control: FlameSearchControl) => void;
 }
+
+export { createElement }
 
 // @public (undocumented)
 export interface CrosshairStyle {

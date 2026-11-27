@@ -31,9 +31,11 @@ all of them, or `require` for all. In Node this entry is a copy of Charts of its
 chart made of the components of `@elastic/charts`. The ESM and CommonJS builds have separate chart contexts too,
 so mixing components from them can cause an error or produce an empty chart.
 
-In Node that copy renders without React: it loads neither `react-dom` nor `react-redux`, and writes the markup
-that React would. It renders once and keeps no state, so a component of your own that you pass to the chart, such
-as a custom legend, cannot use hooks there.
+In Node that copy renders without React: it loads nothing of `react`, `react-dom` or `react-redux`, and writes
+the markup that React would. The entry exports `createElement` to make the elements of a chart with, so a program
+that only renders headless does not need React installed; for JSX, name that function as the factory of the
+classic JSX transform (`/** @jsx createElement */`). The chart renders once and keeps no state, so a component of
+your own that you pass to it, such as a custom legend, cannot use hooks there.
 
 ## Output
 
@@ -163,7 +165,7 @@ or in a fallback, and one with wider glyphs can cut labels that were measured to
 Two files make a project that renders two charts in Node and writes them, with the stylesheet, into one HTML file
 that any browser shows without running a script.
 
-`package.json`, with the peer dependencies of Charts spelled out:
+`package.json`, with the one peer dependency of Charts that a headless render loads:
 
 ```json
 {
@@ -175,9 +177,7 @@ that any browser shows without running a script.
   },
   "dependencies": {
     "@elastic/charts": "latest",
-    "moment-timezone": "^0.5.32",
-    "react": "^18.0",
-    "react-dom": "^18.0"
+    "moment-timezone": "^0.5.32"
   }
 }
 ```
@@ -196,7 +196,8 @@ Yarn identifies a tarball by its name and version, so a tarball packed again doe
 installed it before. Reinstall from scratch: remove `node_modules`, `yarn.lock`, and the folder of
 `@elastic/charts` in the yarn cache (`yarn cache dir`).
 
-`index.mjs` uses `createElement` in place of JSX, so it needs no build step:
+`index.mjs` uses the `createElement` of the headless entry in place of JSX, so it needs no build step and no
+React:
 
 ```js
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -211,9 +212,9 @@ import {
   Position,
   ScaleType,
   Settings,
+  createElement as h,
   renderChart,
 } from '@elastic/charts/headless';
-import { createElement as h } from 'react';
 
 const data = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].flatMap((day, i) => [
   { day, visits: [12, 19, 7, 15, 22][i], site: 'docs' },

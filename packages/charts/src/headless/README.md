@@ -1,7 +1,7 @@
 # Charts headless without React
 
 A proof of concept on the branch `react-less`. In Node, `@elastic/charts/headless` renders a chart to the same HTML
-and SVG string as before, but loads no React DOM, no redux and far fewer files. It is not released and the API may
+and SVG string as before, but loads nothing of React, no redux and far fewer files. It is not released and the API may
 still change.
 
 ## How to use it
@@ -20,20 +20,29 @@ still change.
    ```json
    "dependencies": {
      "@elastic/charts": "file:./elastic-charts-73.5.1.tgz",
-     "moment-timezone": "^0.5.32",
-     "react": "^18.0"
+     "moment-timezone": "^0.5.32"
    }
    ```
 
    Yarn 1 caches a `file:` tarball by name and version. After repacking, run `yarn cache clean @elastic/charts`
-   before installing again. `react-dom` is still a declared peer, but the headless entry no longer loads it.
+   before installing again. `react` and `react-dom` are still declared peers, so the install warns that they are
+   missing. A project that only renders headless in Node can ignore that: neither is loaded.
 
-3. **Import everything from the headless entry.** This is the one code change: the chart components now come from
-   `@elastic/charts/headless` too, not from `@elastic/charts`.
+3. **Import everything from the headless entry.** This is the one code change: the chart components come from
+   `@elastic/charts/headless` too, not from `@elastic/charts`, and so does `createElement`, which makes the
+   elements of the chart. Nothing is imported from `react`.
 
    ```js
-   import { createElement as h } from 'react';
-   import { Chart, Settings, Axis, BarSeries, Position, ScaleType, renderChart } from '@elastic/charts/headless';
+   import {
+     createElement as h,
+     Chart,
+     Settings,
+     Axis,
+     BarSeries,
+     Position,
+     ScaleType,
+     renderChart,
+   } from '@elastic/charts/headless';
 
    const html = renderChart(
      h(
@@ -47,8 +56,12 @@ still change.
    );
    ```
 
-   JSX works the same way. `react` is only there to make the elements; nothing else of React is loaded. The
-   stylesheet is used as before (`@elastic/charts/theme_only_light.css`); see `docs/docs/docs/headless.mdx`.
+   For JSX, point the classic JSX transform at that function with `/** @jsx createElement */` at the top of the
+   file, or with the `jsxFactory` setting of your compiler. The stylesheet is used as before
+   (`@elastic/charts/theme_only_light.css`); see `docs/docs/docs/headless.mdx`.
+
+   An element is a plain object, `{ type, props }`, and `createElement` only puts one together. So a chart can
+   also be described as data of your own and turned into elements in a few lines.
 
 4. **Nothing to switch on.** Node picks the new build by itself, through the `node` condition of the package
    exports. To confirm:
@@ -78,7 +91,7 @@ From what a headless render loads in Node:
 
 | No longer loaded                                       | What does the job now                                                       |
 | ------------------------------------------------------ | --------------------------------------------------------------------------- |
-| `react-dom`, `react-dom/server`, `scheduler`           | A stand-in of about 300 lines that walks the elements once and writes markup |
+| `react`, `react-dom`, `react-dom/server`, `scheduler`  | A stand-in of about 300 lines that walks the elements once and writes markup |
 | `react-redux`, `use-sync-external-store`               | Part of the same stand-in: a component reads the store when it renders       |
 | `@reduxjs/toolkit`, `redux`, `redux-thunk`, `reselect` | A small store on immer, which stays                                          |
 | `@popperjs/core`                                       | Nothing: it placed tooltips, which a headless render never shows             |
@@ -98,14 +111,14 @@ One fresh Node process that loads the entry and renders the same chart 700 times
 
 | Measure                           | `main` (ac540e6a25) | This branch |
 | --------------------------------- | ------------------: | ----------: |
-| Heap added by loading             |             14.9 MB |      3.9 MB |
-| Resident memory added by loading  |             44.1 MB |     22.8 MB |
-| Live heap after 700 renders       |             22.8 MB |     11.0 MB |
+| Heap added by loading             |             14.9 MB |      3.8 MB |
+| Resident memory added by loading  |             44.1 MB |     22.5 MB |
+| Live heap after 700 renders       |             22.8 MB |     10.9 MB |
 | Resident memory after 700 renders |              209 MB |      180 MB |
 | Peak resident memory              |              236 MB |      206 MB |
-| Files loaded                      |                 659 |          28 |
+| Files loaded                      |                 659 |          26 |
 | Load time                         |        about 180 ms | about 40 ms |
-| Time for one render               |             0.44 ms |     0.41 ms |
+| Time for one render               |             0.44 ms |     0.38 ms |
 
 The markup is byte for byte the same. The load times were taken on a busy machine, so read them as a ratio. The
 last three rows of memory are mostly garbage that V8 has not collected yet, which is why they move less than the
@@ -113,9 +126,11 @@ first three.
 
 **The bigger lever for peak memory is a cap on the V8 heap.** With
 `node --max-old-space-size=96 --max-semi-space-size=4` the same run on this branch peaks at 132 MB and settles at
-99 MB, for about 5% more time per render. A `Worker` with `resourceLimits` does the same for the rendering thread
-alone.
+99 MB, for a few percent more time per render. A `Worker` with `resourceLimits` does the same for the rendering
+thread alone. The cap does not depend on this branch: it works on the released version too, where the same kind of
+run went from about 310 MB to about 140 MB.
 
-## What comes next
+## What could come next
 
-A way to describe the chart as plain objects, so that your side does not need `react` even to make the elements.
+A form of the chart that is all data, such as JSON, if Charts should own that vocabulary. Today it is a few lines
+on top of `createElement` on your side.
