@@ -20,6 +20,16 @@
   ],
   "exports": {
     ".": {
+      "node": {
+        "import": {
+          "types": "./dist/esm/index.d.mts",
+          "default": "./dist/node/esm/index.mjs"
+        },
+        "require": {
+          "types": "./dist/cjs/index.d.ts",
+          "default": "./dist/node/cjs/index.js"
+        }
+      },
       "import": {
         "types": "./dist/esm/index.d.mts",
         "default": "./dist/esm/index.mjs"
@@ -30,6 +40,16 @@
       }
     },
     "./headless": {
+      "node": {
+        "import": {
+          "types": "./dist/esm/headless/index.d.mts",
+          "default": "./dist/node/esm/headless/index.mjs"
+        },
+        "require": {
+          "types": "./dist/cjs/headless/index.d.ts",
+          "default": "./dist/node/cjs/headless/index.js"
+        }
+      },
       "import": {
         "types": "./dist/esm/headless/index.d.mts",
         "default": "./dist/esm/headless/index.mjs"
