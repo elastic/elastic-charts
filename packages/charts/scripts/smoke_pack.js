@@ -251,8 +251,12 @@ const render = ({ renderChart, Chart, BarSeries, ScaleType }) =>
   );
 (async () => {
   const markups = [render(require('@elastic/charts/headless')), render(await import('@elastic/charts/headless'))];
-  // React and what goes with it, and what only a page needs
-  const absent = ['react', 'react-dom', 'react-redux', 'scheduler', 'use-sync-external-store', '@popperjs/core'];
+  // React and what goes with it, what only a page needs, and the store of the toolkit
+  const absent = [
+    ...['react', 'react-dom', 'react-redux', 'scheduler', 'use-sync-external-store'],
+    '@popperjs/core',
+    ...['@reduxjs/toolkit', 'redux', 'redux-thunk', 'reselect'],
+  ];
   const loaded = resolved.filter((url) => absent.some((name) => url.includes(\`/node_modules/\${name}/\`)));
   if (loaded.length > 0) throw new Error(\`The headless entry must not need what it loaded: \${loaded.join(', ')}\`);
   process.stdout.write(JSON.stringify(markups));
