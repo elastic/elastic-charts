@@ -6,4 +6,7 @@
  * Side Public License, v 1.
  */
 
+// Everything of the main entry too: in Node the headless entry is a copy of Charts of its own, bound to a
+// stand-in for React, and it renders only charts made of its own components
+export * from '..';
 export { renderChart } from './render_chart';

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { readFileSync } from 'fs';
 import path from 'path';
 
 import { pluginReact } from '@rsbuild/plugin-react';
@@ -20,46 +21,56 @@ const srcEntry = [
   '!src/utils/data_samples/**',
 ];
 
-const srcDir = path.resolve('./src');
-const headlessDir = path.join(srcDir, 'headless');
+const standIn = path.resolve('./src/headless/react_stand_in');
 
-/**
- * In the build for Node, the headless entry imports the main entry as the file it is built to, so that the two
- * share one copy of the chart and its module state. Anything else it imported of the chart would be a second
- * copy, bundled into the headless file.
- */
-const mainEntryOnly =
-  (mainEntryFile: string) =>
-  (
-    { context = '', request = '' }: { context?: string; request?: string },
-    callback: (error?: Error, external?: string) => void,
-  ) => {
-    const target = path.resolve(context, request);
-    if (!request.startsWith('.') || !context.startsWith(headlessDir) || target.startsWith(headlessDir)) callback();
-    else if (target === srcDir || target === path.join(srcDir, 'index')) callback(undefined, mainEntryFile);
-    else callback(new Error(`${context} imports ${request}: the headless entry may import only the main entry`));
-  };
+/** The packages that the stand-in is bound in for, in the headless file of the build for Node */
+const REACT_FAMILY: Record<string, string> = {
+  react: path.join(standIn, 'react.ts'),
+  'react-dom': path.join(standIn, 'react_dom.ts'),
+  'react-dom/server': path.join(standIn, 'server.ts'),
+  'react-redux': path.join(standIn, 'react_redux.ts'),
+};
+
+const { dependencies, peerDependencies } = JSON.parse(readFileSync('./package.json', 'utf8')) as {
+  dependencies: Record<string, string>;
+  peerDependencies: Record<string, string>;
+};
+const dependencyNames = [...Object.keys(dependencies), ...Object.keys(peerDependencies)];
+const imported = (names: string[]) => names.map((name) => new RegExp(`^${name}(/.*)?$`));
 
 /**
  * What the `node` condition of the package exports resolves to: one file for each entry. In Node, a module
  * that is a file of its own costs memory and load time that its code alone does not, and nothing there needs
  * the modules apart. Bundlers keep the build with a file for each module, which they can leave out one by one.
- * Dependencies stay imports in both, so the application's copy of each is the one in use.
+ * Dependencies stay imports, so the application's copy of each is the one in use.
  */
-const forNode = (format: 'esm' | 'cjs', mainEntryFile: string) =>
+const forNode = (format: 'esm' | 'cjs') =>
   ({
     format,
     syntax: 'es2022',
     dts: false,
-    source: {
-      entry: {
-        index: './src/index.ts',
-        'headless/index': './src/headless/index.ts',
-      },
+    source: { entry: { index: './src/index.ts' } },
+    output: { distPath: `./dist/node/${format}` },
+  }) as const;
+
+/**
+ * The headless entry for Node is a file that holds all of the chart, with the stand-in in place of React: it
+ * renders once, to markup, and needs no more of React than that. So it shares nothing with the main entry's
+ * file, and a chart it renders is made of the components it exports itself.
+ */
+const headlessForNode = (format: 'esm' | 'cjs') =>
+  ({
+    format,
+    syntax: 'es2022',
+    dts: false,
+    source: { entry: { index: './src/headless/index.ts' } },
+    resolve: {
+      alias: Object.fromEntries(Object.entries(REACT_FAMILY).map(([name, file]) => [`${name}$`, file])),
     },
     output: {
-      distPath: `./dist/node/${format}`,
-      externals: [mainEntryOnly(mainEntryFile)],
+      distPath: `./dist/node/${format}/headless`,
+      autoExternal: false,
+      externals: imported(dependencyNames.filter((name) => !(name in REACT_FAMILY))),
     },
   }) as const;
 
@@ -111,8 +122,10 @@ export default defineConfig({
         distPath: './dist/cjs',
       },
     },
-    forNode('esm', '../index.mjs'),
-    forNode('cjs', '../index.js'),
+    forNode('esm'),
+    forNode('cjs'),
+    headlessForNode('esm'),
+    headlessForNode('cjs'),
   ],
   source: {
     tsconfigPath: './tsconfig.src.json',

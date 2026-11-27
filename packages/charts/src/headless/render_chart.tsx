@@ -20,7 +20,8 @@ import { Chart } from '..';
  * `<svg>` and, as HTML, its legend or its metric panels. Style it with the Charts stylesheet.
  *
  * The element must be a `Chart` with positive numeric width and height in pixels, and its title and description
- * are omitted. Use the same module format and installed copy of Charts for the renderer and every chart component.
+ * are omitted. Take every chart component from this entry too, in the same module format: in Node it is a copy of
+ * Charts of its own, which renders without React and so runs no hook of a component passed to it.
  * Word cloud, flame and timeslip charts are not supported: they draw on a canvas of their own.
  *
  * Where there is no DOM, text is measured with Inter's advance widths, whatever the font of the theme, so
@@ -29,7 +30,7 @@ import { Chart } from '..';
  */
 export function renderChart(chart: ReactElement): string {
   if (!React.isValidElement<ChartProps>(chart) || chart.type !== Chart) {
-    throw new Error('renderChart expects a <Chart> element from the same @elastic/charts build');
+    throw new Error('renderChart expects a <Chart> element, of the Chart that @elastic/charts/headless exports');
   }
   return Chart.renderHeadless(chart, renderToStaticMarkup);
 }
