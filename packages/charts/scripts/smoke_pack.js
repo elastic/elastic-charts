@@ -145,18 +145,29 @@ function main() {
     execFileSync('tar', ['-xzf', tarball, '-C', extractRoot]);
     const extracted = path.join(extractRoot, 'package');
     tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'elastic-charts-smoke-'));
-    const { consumer } = setupConsumer(extracted, tmp);
+    const { consumer, chartsDest } = setupConsumer(extracted, tmp);
+
+    // Node gets one file for each entry: a file for each module costs it memory and load time
+    const nodeBuild = fs
+      .readdirSync(path.join(chartsDest, 'dist/node'), { recursive: true })
+      .filter((file) => /\.m?js$/.test(file))
+      .map((file) => file.replaceAll('\\', '/'))
+      .sort();
+    assert(
+      nodeBuild.join(', ') === 'cjs/headless/index.js, cjs/index.js, esm/headless/index.mjs, esm/index.mjs',
+      `The build for Node must be one file for each entry, got ${nodeBuild.join(', ')}`,
+    );
 
     const requireFromConsumer = createRequire(path.join(consumer, 'package.json'));
     const resolvedEntry = requireFromConsumer.resolve('@elastic/charts');
     assert(
-      resolvedEntry.replaceAll('\\', '/').endsWith('/dist/cjs/index.js'),
-      `CJS resolve expected dist/cjs/index.js, got ${resolvedEntry}`,
+      resolvedEntry.replaceAll('\\', '/').endsWith('/dist/node/cjs/index.js'),
+      `CJS resolve expected dist/node/cjs/index.js, got ${resolvedEntry}`,
     );
     const resolvedHeadless = requireFromConsumer.resolve('@elastic/charts/headless');
     assert(
-      resolvedHeadless.replaceAll('\\', '/').endsWith('/dist/cjs/headless/index.js'),
-      `CJS resolve expected dist/cjs/headless/index.js, got ${resolvedHeadless}`,
+      resolvedHeadless.replaceAll('\\', '/').endsWith('/dist/node/cjs/headless/index.js'),
+      `CJS resolve expected dist/node/cjs/headless/index.js, got ${resolvedHeadless}`,
     );
 
     stylesheetExports.forEach((specifier) => {
@@ -197,6 +208,25 @@ function main() {
     );
     assert(cjsMarkup.includes('echSvgRenderer') && cjsMarkup.includes('<path'), 'CJS headless chart did not render');
 
+    // Bundlers get the build with a file for each module, which Node reaches only by path
+    const perFileCjs = requireFromConsumer(path.join(chartsDest, 'dist/cjs/index.js'));
+    const perFileCjsHeadless = requireFromConsumer(path.join(chartsDest, 'dist/cjs/headless/index.js'));
+    assert(perFileCjs.Chart !== chartsCjs.Chart, 'dist/cjs must not load the build for Node');
+    const perFileCjsMarkup = perFileCjsHeadless.renderChart(
+      createElement(
+        perFileCjs.Chart,
+        { id: 'pack-cjs', size: 200 },
+        createElement(perFileCjs.BarSeries, {
+          id: 'bars',
+          xScaleType: perFileCjs.ScaleType.Ordinal,
+          xAccessor: 'x',
+          yAccessors: ['y'],
+          data: [{ x: 'one', y: 1 }],
+        }),
+      ),
+    );
+    assert(perFileCjsMarkup === cjsMarkup, 'dist/cjs and the build for Node render the chart differently');
+
     writeProbe(
       consumer,
       'probe.mjs',
@@ -206,17 +236,17 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const resolved = require.resolve('@elastic/charts');
-if (!resolved.replaceAll('\\\\', '/').endsWith('/dist/cjs/index.js')) {
+if (!resolved.replaceAll('\\\\', '/').endsWith('/dist/node/cjs/index.js')) {
   throw new Error(\`import.meta consumer resolved CJS unexpectedly: \${resolved}\`);
 }
 
 const esmEntry = await import.meta.resolve('@elastic/charts');
-if (!esmEntry.replaceAll('\\\\', '/').endsWith('/dist/esm/index.mjs')) {
-  throw new Error(\`ESM resolve expected dist/esm/index.mjs, got \${esmEntry}\`);
+if (!esmEntry.replaceAll('\\\\', '/').endsWith('/dist/node/esm/index.mjs')) {
+  throw new Error(\`ESM resolve expected dist/node/esm/index.mjs, got \${esmEntry}\`);
 }
 const esmHeadlessEntry = await import.meta.resolve('@elastic/charts/headless');
-if (!esmHeadlessEntry.replaceAll('\\\\', '/').endsWith('/dist/esm/headless/index.mjs')) {
-  throw new Error(\`ESM resolve expected dist/esm/headless/index.mjs, got \${esmHeadlessEntry}\`);
+if (!esmHeadlessEntry.replaceAll('\\\\', '/').endsWith('/dist/node/esm/headless/index.mjs')) {
+  throw new Error(\`ESM resolve expected dist/node/esm/headless/index.mjs, got \${esmHeadlessEntry}\`);
 }
 
 const charts = await import('@elastic/charts');
@@ -240,6 +270,19 @@ const markup = renderChart(
 if (!markup.includes('echSvgRenderer') || !markup.includes('<path')) throw new Error('ESM headless chart did not render');
 
 const chartsRoot = join(dirname(fileURLToPath(import.meta.url)), 'node_modules/@elastic/charts');
+// Bundlers get the build with a file for each module, which Node reaches only by path
+const perFile = await import(pathToFileURL(join(chartsRoot, 'dist/esm/index.mjs')).href);
+const perFileHeadless = await import(pathToFileURL(join(chartsRoot, 'dist/esm/headless/index.mjs')).href);
+if (perFile.Chart === charts.Chart) throw new Error('dist/esm must not load the build for Node');
+const perFileMarkup = perFileHeadless.renderChart(
+  createElement(perFile.Chart, { id: 'pack-esm', size: 200 },
+    createElement(perFile.BarSeries, {
+      id: 'bars', xScaleType: perFile.ScaleType.Ordinal, xAccessor: 'x', yAccessors: ['y'],
+      data: [{ x: 'one', y: 1 }],
+    }),
+  ),
+);
+if (perFileMarkup !== markup) throw new Error('dist/esm and the build for Node render the chart differently');
 const { WeightFn } = await import(
   pathToFileURL(join(chartsRoot, 'dist/esm/chart_types/wordcloud/layout/types/viewmodel_types.mjs')).href
 );
