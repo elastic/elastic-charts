@@ -109,8 +109,7 @@
     "prop-types": "^15.7.2",
     "react-redux": "9.2.0",
     "ts-debounce": "^4.0.0",
-    "utility-types": "^3.10.0",
-    "luxon": "^1.25.0"
+    "utility-types": "^3.10.0"
   },
   "peerDependencies": {
     "moment": "^2.29.1",

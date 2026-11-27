@@ -24,7 +24,7 @@ export const TimeProp = Object.freeze({
 /** @public */
 export type TimeProp = $Values<typeof TimeProp>;
 
-const zonedDateTimeFromCache: Record<string, [number, number]> = {}; // without caching, even luxon is choppy with zoom and pan
+const zonedDateTimeFromCache: Record<string, [number, number]> = {}; // asked again on every frame of a zoom or pan
 
 interface TemporalArgs {
   timeZone: string;
@@ -49,7 +49,7 @@ export const cachedZonedDateTimeFrom = (temporalArgs: TemporalArgs) => {
   return result;
 };
 
-const deltaTimeCache: Record<string, number> = {}; // without caching, even luxon is choppy with zoom and pan
+const deltaTimeCache: Record<string, number> = {}; // asked again on every frame of a zoom or pan
 
 /** @internal */
 export const cachedTimeDelta = (temporalArgs: TemporalArgs, unit: CalendarUnit, count: number) => {

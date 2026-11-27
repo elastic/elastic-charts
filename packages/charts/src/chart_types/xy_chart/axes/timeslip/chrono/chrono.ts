@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { CalendarObject } from './chrono_luxon/chrono_luxon';
+import type { CalendarObject } from './chrono_intl/chrono_intl';
 import {
   addTimeToObj,
   timeObjFromCalendarObj,
@@ -14,12 +14,11 @@ import {
   timeObjToSeconds,
   timeObjToWeekday,
   timeObjToYear,
-} from './chrono_luxon/chrono_luxon';
-//from './chrono-moment/chrono-moment'
+} from './chrono_intl/chrono_intl';
 //from './chrono-proposal-temporal/chrono-proposal-temporal'
 
 /** @internal */
-export type CalendarUnit = 'days'; // luxon has a lot of others but we don't use them here
+export type CalendarUnit = 'days';
 
 /**
  * library independent part
