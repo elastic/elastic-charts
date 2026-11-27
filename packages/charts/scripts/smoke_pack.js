@@ -190,42 +190,80 @@ function main() {
       'HistogramModeAlignments.Center missing from CJS entry',
     );
     assert(typeof chartsCjs.percentValueGetter === 'function', 'percentValueGetter missing from CJS entry');
-    const { renderChart: renderCjsChart } = requireFromConsumer('@elastic/charts/headless');
-    assert(typeof renderCjsChart === 'function', 'renderChart missing from CJS headless entry');
+    // In Node the headless entry is a copy of Charts of its own, without React: it renders its own components
+    const headlessCjs = requireFromConsumer('@elastic/charts/headless');
+    assert(typeof headlessCjs.renderChart === 'function', 'renderChart missing from CJS headless entry');
+    assert(headlessCjs.Chart && headlessCjs.Chart !== chartsCjs.Chart, 'CJS headless entry must have its own Chart');
     const { createElement } = requireFromConsumer('react');
-    const cjsMarkup = renderCjsChart(
+    const barChart = ({ Chart, BarSeries, ScaleType }) =>
       createElement(
-        chartsCjs.Chart,
+        Chart,
         { id: 'pack-cjs', size: 200 },
-        createElement(chartsCjs.BarSeries, {
+        createElement(BarSeries, {
           id: 'bars',
-          xScaleType: chartsCjs.ScaleType.Ordinal,
+          xScaleType: ScaleType.Ordinal,
           xAccessor: 'x',
           yAccessors: ['y'],
           data: [{ x: 'one', y: 1 }],
         }),
-      ),
-    );
+      );
+    const cjsMarkup = headlessCjs.renderChart(barChart(headlessCjs));
     assert(cjsMarkup.includes('echSvgRenderer') && cjsMarkup.includes('<path'), 'CJS headless chart did not render');
+    let mixed;
+    try {
+      headlessCjs.renderChart(barChart(chartsCjs));
+    } catch (error) {
+      mixed = error;
+    }
+    assert(
+      /@elastic\/charts\/headless/.test(mixed?.message),
+      `A chart of the main entry must be refused with a message that names the headless entry, got ${mixed?.message}`,
+    );
 
     // Bundlers get the build with a file for each module, which Node reaches only by path
     const perFileCjs = requireFromConsumer(path.join(chartsDest, 'dist/cjs/index.js'));
     const perFileCjsHeadless = requireFromConsumer(path.join(chartsDest, 'dist/cjs/headless/index.js'));
     assert(perFileCjs.Chart !== chartsCjs.Chart, 'dist/cjs must not load the build for Node');
-    const perFileCjsMarkup = perFileCjsHeadless.renderChart(
-      createElement(
-        perFileCjs.Chart,
-        { id: 'pack-cjs', size: 200 },
-        createElement(perFileCjs.BarSeries, {
-          id: 'bars',
-          xScaleType: perFileCjs.ScaleType.Ordinal,
-          xAccessor: 'x',
-          yAccessors: ['y'],
-          data: [{ x: 'one', y: 1 }],
-        }),
-      ),
-    );
+    // that build renders with React: the same markup tells that the build for Node, without it, writes what React does
+    const perFileCjsMarkup = perFileCjsHeadless.renderChart(barChart(perFileCjs));
     assert(perFileCjsMarkup === cjsMarkup, 'dist/cjs and the build for Node render the chart differently');
+
+    // a process that loads the headless entry alone, to see what it loads
+    writeProbe(
+      consumer,
+      'probe_headless.cjs',
+      `const { registerHooks } = require('node:module');
+const resolved = [];
+registerHooks({
+  resolve(specifier, context, next) {
+    const result = next(specifier, context);
+    resolved.push(result.url);
+    return result;
+  },
+});
+const element = (type, props, children) => ({
+  $$typeof: Symbol.for('react.element'), type, key: null, ref: null, props: { ...props, children },
+});
+const render = ({ renderChart, Chart, BarSeries, ScaleType }) =>
+  renderChart(
+    element(Chart, { id: 'pack-cjs', size: 200 }, element(BarSeries, {
+      id: 'bars', xScaleType: ScaleType.Ordinal, xAccessor: 'x', yAccessors: ['y'], data: [{ x: 'one', y: 1 }],
+    })),
+  );
+(async () => {
+  const markups = [render(require('@elastic/charts/headless')), render(await import('@elastic/charts/headless'))];
+  const ofReact = /node_modules\\/(react|react-dom|react-redux|scheduler|use-sync-external-store)\\//;
+  const loaded = resolved.filter((url) => ofReact.test(url));
+  if (loaded.length > 0) throw new Error(\`The headless entry loaded \${loaded.join(', ')}: it must not need React\`);
+  process.stdout.write(JSON.stringify(markups));
+})();
+`,
+    );
+    const [aloneCjs, aloneEsm] = JSON.parse(
+      execFileSync(process.execPath, ['probe_headless.cjs'], { cwd: consumer, encoding: 'utf8' }),
+    );
+    assert(aloneCjs === cjsMarkup, 'The CJS headless entry renders differently when loaded alone');
+    assert(aloneEsm === cjsMarkup, 'The ESM headless entry renders differently from the CJS one');
 
     writeProbe(
       consumer,
@@ -256,18 +294,22 @@ if (charts.HistogramModeAlignments?.Center !== 'center') {
   throw new Error('HistogramModeAlignments.Center missing from ESM entry');
 }
 if (typeof charts.percentValueGetter !== 'function') throw new Error('percentValueGetter missing from ESM entry');
-const { renderChart } = await import('@elastic/charts/headless');
+const headless = await import('@elastic/charts/headless');
+const { renderChart } = headless;
 if (typeof renderChart !== 'function') throw new Error('renderChart missing from ESM headless entry');
+if (!headless.Chart || headless.Chart === charts.Chart) throw new Error('ESM headless entry must have its own Chart');
 const { createElement } = await import('react');
 const markup = renderChart(
-  createElement(charts.Chart, { id: 'pack-esm', size: 200 },
-    createElement(charts.BarSeries, {
-      id: 'bars', xScaleType: charts.ScaleType.Ordinal, xAccessor: 'x', yAccessors: ['y'],
+  createElement(headless.Chart, { id: 'pack-esm', size: 200 },
+    createElement(headless.BarSeries, {
+      id: 'bars', xScaleType: headless.ScaleType.Ordinal, xAccessor: 'x', yAccessors: ['y'],
       data: [{ x: 'one', y: 1 }],
     }),
   ),
 );
-if (!markup.includes('echSvgRenderer') || !markup.includes('<path')) throw new Error('ESM headless chart did not render');
+if (!markup.includes('echSvgRenderer') || !markup.includes('<path')) {
+  throw new Error('ESM headless chart did not render');
+}
 
 const chartsRoot = join(dirname(fileURLToPath(import.meta.url)), 'node_modules/@elastic/charts');
 // Bundlers get the build with a file for each module, which Node reaches only by path
