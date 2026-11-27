@@ -27,3 +27,4 @@ export { Example as duplicateTicks } from './12_duplicate_ticks.story';
 export { Example as labelFormatting } from './13_label_formatting.story';
 export { Example as duplicateTicks2 } from './14_duplicate_ticks_2.story';
 export { Example as overflowTickLabels } from './16_overflow_tick_labels.story';
+export { Example as denseLabels } from './17_dense_labels.story';

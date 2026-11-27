@@ -41,13 +41,22 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
     legendSize,
     { yValues, xValues },
     { heatmap, axes: { axisTitle: axisTitleStyle, axisPanelTitle: axisPanelTitleStyle }, chartMargins, chartPaddings },
-    { xAxisTitle, yAxisTitle, xAxisLabelFormatter, yAxisLabelFormatter, xScale },
+    { xAxisTitle, yAxisTitle, xAxisLabelFormatter, yAxisLabelFormatter, xScale, xAxisShowOverlappingLabels },
     smSpec,
     { smHDomain },
   ) => {
+    const isCategoricalScale = !isRasterTimeScale(xScale);
+    // Left padding and margin are applied again as a chart translation. Axes that skip
+    // overlapping labels fit against that narrower width, so the skipped labels match the
+    // rendered panel: categorical axes with the flag off, and horizontal time axes.
+    // The other axes keep the full fit width so their labels stay put.
+    const skipsOverlappingLabels = isCategoricalScale ? !xAxisShowOverlappingLabels : heatmap.xAxisLabel.rotation === 0;
+    // the inset is removed once from the chart, before it is split into panels
+    const leftInset = skipsOverlappingLabels ? chartPaddings.left + chartMargins.left : 0;
     const panelWidth = getSmallMultiplesScale(
       smHDomain,
-      container.width,
+      // a negative range would be reversed by the band scale, keeping a positive bandwidth
+      Math.max(container.width - leftInset, 0),
       smSpec?.style?.horizontalPanelPadding,
     ).bandwidth;
 
@@ -78,8 +87,19 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         'height',
         !smSpec?.splitHorizontally,
       );
+      // the axis must stay shorter than this to leave room for the cells
+      const plotHeight =
+        container.height -
+        xAxisTitleVerticalSize -
+        xAxisPanelTitleVerticalSize -
+        legendHeight -
+        heatmap.grid.stroke.width / 2 -
+        chartPaddings.top -
+        chartPaddings.bottom -
+        chartMargins.top -
+        chartMargins.bottom;
       const xAxis = getXAxisSize(
-        !isRasterTimeScale(xScale),
+        isCategoricalScale,
         heatmap.xAxisLabel,
         xAxisLabelFormatter,
         xValues,
@@ -89,6 +109,8 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
           yAxisTitleHorizontalSize + yAxisPanelTitleHorizontalSize + yAxis.width,
           0, // this can be used if we have a right Y axis
         ],
+        xAxisShowOverlappingLabels,
+        plotHeight,
       );
 
       return {

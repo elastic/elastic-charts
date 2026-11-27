@@ -12,15 +12,29 @@ import type { Radian } from '../../../../common/geometry';
 import { extent } from '../../../../common/math';
 import type { Vec2 } from '../../../../common/vectors';
 import { rotate2, sub2 } from '../../../../common/vectors';
+import type { LabelSpan } from '../../../../solvers/label_overlaps';
+import { hasOverlappingLabels } from '../../../../solvers/label_overlaps';
 import { screenspaceMarkerScaleCompressor } from '../../../../solvers/screenspace_marker_scale_compressor';
 import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isFiniteNumber, degToRad } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
-import { horizontalPad, innerPad, outerPad, pad } from '../../../../utils/dimensions';
+import { horizontalPad, innerPad, outerPad, pad, verticalPad } from '../../../../utils/dimensions';
 import type { HeatmapStyle, AxisStyle } from '../../../../utils/themes/theme';
 import type { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import type { HeatmapSpec } from '../../specs';
 import type { HeatmapTable } from '../selectors/get_heatmap_table';
+
+/** @internal */
+export type MeasuredLabel = Size & { label: NonNullable<PrimitiveValue> };
+
+/** @internal */
+export type CompressedScale = Size & {
+  left: number;
+  right: number;
+  overflow: { left: boolean; right: boolean };
+  /** the horizontal space occupied by each label, padding included, on the compressed scale */
+  labelSpans: LabelSpan[];
+};
 
 /** @internal */
 export function getYAxisHorizontalUsedSpace(
@@ -42,6 +56,24 @@ export function getYAxisHorizontalUsedSpace(
   }, 0);
 
   return style.width === 'auto' ? longestLabelWidth : Math.min(longestLabelWidth, style.width.max);
+}
+
+/**
+ * Returns how many Y rows sit between two visible labels.
+ * The labels are identical and evenly spaced, so the cadence is the label height divided by the row height.
+ * @internal
+ */
+export function getYAxisTickCadence(
+  style: HeatmapStyle['yAxisLabel'],
+  panelHeight: number,
+  valuesCount: number,
+): number {
+  const rowHeight = panelHeight / valuesCount;
+  if (!isFiniteNumber(rowHeight) || rowHeight <= 0) {
+    return 1;
+  }
+  const labelHeight = style.fontSize + verticalPad(style.padding);
+  return Math.min(valuesCount, Math.max(1, Math.ceil(labelHeight / rowHeight)));
 }
 
 /** @internal */
@@ -82,6 +114,8 @@ export function getXAxisSize(
   textMeasure: TextMeasure,
   containerWidth: number,
   surroundingSpace: [left: number, right: number],
+  showOverlappingLabels: boolean,
+  maxHeight = Infinity,
 ): Size & { right: number; left: number; tickCadence: number; minRotation: Radian } {
   if (!style.visible) {
     return {
@@ -103,12 +137,11 @@ export function getXAxisSize(
   // use positive angle from 0 to 90 only
   const rotationRad = degToRad(style.rotation);
 
-  const measuredLabels = labels.map((label) => ({
+  const measuredLabels: MeasuredLabel[] = labels.map((label) => ({
     ...textMeasure(formatter(label), style, style.fontSize),
     label,
   }));
 
-  // don't filter ticks if categorical scale or with rotated labels
   if (isCategoricalScale || isRotated) {
     const maxLabelBBox = measuredLabels.reduce(
       (acc, curr) => {
@@ -134,36 +167,90 @@ export function getXAxisSize(
       scaleStep > maxLabelBBox.width ? 0 : Math.asin(Math.min(maxLabelBBox.height / scaleStep, 1));
     // if the current requested rotation is not at least bigger then the optimal one, recalculate the compression
     // using the optimal one forcing the rotation to be without overlaps
-    const { width, height, left, right, minRotation } = {
-      ...(rotationRad !== 0 && optimalRotation > rotationRad
-        ? computeCompressedScale(
+    const minRotation = isRotated ? Math.max(optimalRotation, rotationRad) : 0;
+    const dimension =
+      minRotation === rotationRad
+        ? compressedScale
+        : computeCompressedScale(
             style,
             scale,
             measuredLabels,
             containerWidth,
             surroundingSpace,
             alignment,
-            optimalRotation,
-          )
-        : compressedScale),
-      minRotation: isRotated ? Math.max(optimalRotation, rotationRad) : 0,
-    };
+            minRotation,
+          );
 
-    const validCompression = isFiniteNumber(width);
-    return {
-      height: validCompression ? height : 0,
-      width: validCompression ? width : Math.max(containerWidth - surroundingSpace[0] - surroundingSpace[1], 0),
-      left: validCompression ? left : surroundingSpace[0],
-      right: validCompression ? right : surroundingSpace[1],
-      tickCadence: validCompression ? 1 : NaN,
-      minRotation,
+    // The flag only applies to categorical scales: rotated time labels are never thinned.
+    if (!isFiniteNumber(dimension.width) || !isCategoricalScale || showOverlappingLabels) {
+      return axisSizeFromCompression(dimension, 1, minRotation, containerWidth, surroundingSpace);
+    }
+
+    // refit with only the labels kept at each cadence, so a hidden label no longer sets the width or insets.
+    // a label that sets the right edge is already inside the fitted bound
+    let thinnedAxis: ReturnType<typeof axisSizeFromCompression> | undefined;
+    const getThinnedAxis = () => {
+      if (thinnedAxis) return thinnedAxis;
+      const fitted = fitCompressedScaleByCadence({
+        style,
+        scale,
+        labels: measuredLabels,
+        containerWidth,
+        surroundingSpace,
+        alignment,
+        rotation: minRotation,
+        dimension,
+        hideRightOverflow: false,
+      });
+      thinnedAxis = axisSizeFromCompression(
+        fitted.dimension,
+        fitted.tickCadence,
+        minRotation,
+        containerWidth,
+        surroundingSpace,
+      );
+      return thinnedAxis;
     };
+    // The thinned labels keep the first one and can be steeper, so they don't always take less height
+    const leavesRoomForCells = (allLabels: CompressedScale) =>
+      allLabels.height < maxHeight || allLabels.height <= getThinnedAxis().height;
+
+    // A slanted label's horizontal box overlaps its neighbor before the text does, so rotated labels
+    // stay visible if a higher rotation clears their rotated boxes on the rendered panel.
+    if (isRotated) {
+      const compress = (rotation: Radian) =>
+        rotation === minRotation
+          ? dimension
+          : computeCompressedScale(style, scale, measuredLabels, containerWidth, surroundingSpace, alignment, rotation);
+      const panelStep = (containerWidth - surroundingSpace[0] - surroundingSpace[1]) / labels.length;
+      const clearingRotation = getClearingRotation(measuredLabels, panelStep, rotationRad);
+      if (clearingRotation !== undefined) {
+        const clearing = compress(clearingRotation);
+        if (isFiniteNumber(clearing.width)) {
+          // The panel is shifted right by the axis left offset but keeps its width, so a label protruding past
+          // the surrounding space pushes the last cells off the container.
+          if (clearing.left <= surroundingSpace[0] && leavesRoomForCells(clearing)) {
+            return axisSizeFromCompression(clearing, 1, clearingRotation, containerWidth, surroundingSpace);
+          }
+          // A steeper rotation protrudes less: keep every label at the smallest rotation that clears them
+          // without shifting the panel further than the thinned labels would.
+          const thinned = getThinnedAxis();
+          const fittingRotation = getFittingRotation(compress, clearingRotation, thinned.left);
+          const rotation =
+            fittingRotation === undefined ? undefined : getClearingRotation(measuredLabels, panelStep, fittingRotation);
+          const fitting = rotation === undefined ? undefined : compress(rotation);
+          if (rotation !== undefined && fitting && fitsWithin(fitting, thinned.left) && leavesRoomForCells(fitting)) {
+            return axisSizeFromCompression(fitting, 1, rotation, containerWidth, surroundingSpace);
+          }
+          return thinned;
+        }
+      }
+    }
+
+    return getThinnedAxis();
   }
 
-  // TODO refactor and move to monotonic hill climber and no mutations
-  // reduce the tick cadence on time scale to avoid overlaps and overflows
-  let tickCadence = 1;
-  let dimension = computeCompressedScale(
+  const compressedScale = computeCompressedScale(
     style,
     scale,
     measuredLabels,
@@ -172,23 +259,156 @@ export function getXAxisSize(
     alignment,
     rotationRad,
   );
+  // a time label that sets the right edge still draws past the container
+  const fitted = fitCompressedScaleByCadence({
+    style,
+    scale,
+    labels: measuredLabels,
+    containerWidth,
+    surroundingSpace,
+    alignment,
+    rotation: rotationRad,
+    dimension: compressedScale,
+    hideRightOverflow: true,
+  });
 
-  for (let i = 1; i < measuredLabels.length; i++) {
-    if ((!dimension.overlaps && !dimension.overflow.right) || !isFiniteNumber(dimension.width)) {
+  return axisSizeFromCompression(fitted.dimension, fitted.tickCadence, rotationRad, containerWidth, surroundingSpace);
+}
+
+/** absorbs the rounding of `step * sin(asin(height / step))`, which can land just under `height` */
+const ROTATED_LABEL_CLEARANCE_EPSILON = 1e-6;
+
+/**
+ * True if two right aligned label boxes, rotated by `rotation` and `step` pixels apart horizontally, don't intersect.
+ * The boxes clear each other when the step projected on the label direction exceeds the width of the next label,
+ * that extends backward from its anchor, or the step projected on the label normal exceeds their average height.
+ */
+function rotatedLabelsClear(step: number, rotation: Radian, previous: Size, next: Size): boolean {
+  return (
+    step * Math.sin(rotation) + ROTATED_LABEL_CLEARANCE_EPSILON >= (previous.height + next.height) / 2 ||
+    step * Math.cos(rotation) + ROTATED_LABEL_CLEARANCE_EPSILON >= next.width
+  );
+}
+
+/**
+ * Returns the smallest rotation, from `rotation` up to 90°, that clears every pair of neighboring labels
+ * placed `step` pixels apart, or `undefined` if they collide even when vertical.
+ * Raising the rotation only helps through the label normal, so the candidates are the requested rotation
+ * and the angles where the step projected on the normal reaches the height of a pair.
+ */
+function getClearingRotation(labels: Size[], step: number, rotation: Radian): Radian | undefined {
+  if (!isFiniteNumber(step) || step <= 0) return undefined;
+  const candidates = new Set<Radian>([rotation]);
+  for (let i = 1; i < labels.length; i++) {
+    const previous = labels[i - 1];
+    const next = labels[i];
+    if (!previous || !next) continue;
+    const angle = Math.asin(Math.min((previous.height + next.height) / 2 / step, 1));
+    if (angle > rotation) candidates.add(angle);
+  }
+  return [...candidates]
+    .sort((a, b) => a - b)
+    .find((candidate) =>
+      labels.every((label, i) => {
+        const previous = labels[i - 1];
+        return !previous || rotatedLabelsClear(step, candidate, previous, label);
+      }),
+    );
+}
+
+const FITTING_ROTATION_BISECTION_STEPS = 16;
+
+function fitsWithin(dimension: CompressedScale, maxLeft: number): boolean {
+  return isFiniteNumber(dimension.width) && dimension.left <= maxLeft;
+}
+
+/**
+ * Returns the smallest rotation, from `rotation` up to 90°, whose compressed scale doesn't start after `maxLeft`,
+ * or `undefined` if not even vertical labels fit. Steeper labels protrude less, so it is found by bisection.
+ */
+function getFittingRotation(
+  compress: (angle: Radian) => CompressedScale,
+  rotation: Radian,
+  maxLeft: number,
+): Radian | undefined {
+  if (fitsWithin(compress(rotation), maxLeft)) return rotation;
+  if (!fitsWithin(compress(Math.PI / 2), maxLeft)) return undefined;
+  let low = rotation;
+  let high = Math.PI / 2;
+  for (let i = 0; i < FITTING_ROTATION_BISECTION_STEPS; i++) {
+    const middle = (low + high) / 2;
+    if (fitsWithin(compress(middle), maxLeft)) high = middle;
+    else low = middle;
+  }
+  return high;
+}
+
+interface FitCompressedScaleArgs {
+  style: HeatmapStyle['xAxisLabel'];
+  scale: (d: NonNullable<PrimitiveValue>) => number;
+  labels: MeasuredLabel[];
+  containerWidth: number;
+  surroundingSpace: [number, number];
+  alignment: 'left' | 'right' | 'center';
+  rotation: Radian;
+  dimension: CompressedScale;
+  /**
+   * Time axes only. A label that sets the right edge still draws past the container.
+   * Categorical axes already treat that edge as the fitted bound.
+   */
+  hideRightOverflow: boolean;
+}
+
+/**
+ * Increases the tick cadence until the visible labels fit in the container.
+ * Each attempt compresses the scale with only the labels that stay visible,
+ * so hidden labels stop taking width and insets.
+ */
+function fitCompressedScaleByCadence({
+  style,
+  scale,
+  labels,
+  containerWidth,
+  surroundingSpace,
+  alignment,
+  rotation,
+  dimension,
+  hideRightOverflow,
+}: FitCompressedScaleArgs): { dimension: CompressedScale; tickCadence: number } {
+  let tickCadence = 1;
+  let fitted = dimension;
+
+  // TODO refactor and move to monotonic hill climber and no mutations
+  for (let i = 1; i < labels.length; i++) {
+    // overflow.right names the label that set the compressed right edge. On a time axis that
+    // label still sticks past the container, so the cadence has to rise. On a categorical axis
+    // the edge is already the fitted bound, and a label that sets it without overlapping stays visible.
+    const exceedsRightBound = hideRightOverflow && fitted.overflow.right;
+    if ((!hasOverlappingLabels(fitted.labelSpans) && !exceedsRightBound) || !isFiniteNumber(fitted.width)) {
       break;
     }
-    dimension = computeCompressedScale(
+    fitted = computeCompressedScale(
       style,
       scale,
-      measuredLabels.filter((_, index) => index % (i + 1) === 0),
+      labels.filter((_, index) => index % (i + 1) === 0),
       containerWidth,
       surroundingSpace,
       alignment,
-      rotationRad,
+      rotation,
     );
     tickCadence++;
   }
 
+  return { dimension: fitted, tickCadence };
+}
+
+function axisSizeFromCompression(
+  dimension: CompressedScale,
+  tickCadence: number,
+  minRotation: Radian,
+  containerWidth: number,
+  surroundingSpace: [number, number],
+): Size & { right: number; left: number; tickCadence: number; minRotation: Radian } {
   // hide the axis because there is no space for labels
   if (!isFiniteNumber(dimension.width)) {
     return {
@@ -199,28 +419,30 @@ export function getXAxisSize(
       right: surroundingSpace[1],
       // hide all ticks
       tickCadence: NaN,
-      minRotation: rotationRad,
+      minRotation,
     };
   }
 
   return {
-    ...dimension,
+    height: dimension.height,
+    width: dimension.width,
+    left: dimension.left,
+    right: dimension.right,
     tickCadence,
-    minRotation: rotationRad,
+    minRotation,
   };
 }
 
 function computeCompressedScale(
   style: HeatmapStyle['xAxisLabel'],
   scale: (d: NonNullable<PrimitiveValue>) => number,
-  labels: Array<Size & { label: number | NonNullable<PrimitiveValue> }>,
+  labels: MeasuredLabel[],
   containerWidth: number,
   surroundingSpace: [number, number],
   alignment: 'left' | 'right' | 'center',
   rotation: Radian,
-): Size & { left: number; right: number; overlaps: boolean; overflow: { left: boolean; right: boolean } } {
+): CompressedScale {
   const { itemsPerSideSize, domainPositions, hMax } = labels.reduce<{
-    wMax: number;
     hMax: number;
     itemsPerSideSize: [number, number][];
     domainPositions: number[];
@@ -242,7 +464,6 @@ function computeCompressedScale(
       // find the rotated bounding box
       const x = extent(rotatedVectors.map((v) => v[0]));
       const y = extent(rotatedVectors.map((v) => v[1]));
-      acc.wMax = Math.max(acc.wMax, Math.abs(x[1] - x[0]));
       acc.hMax = Math.max(acc.hMax, Math.abs(y[1] - y[0]));
 
       // describe the item width as the left and right vector size from the rotation origin
@@ -253,7 +474,7 @@ function computeCompressedScale(
       acc.domainPositions.push(domainPosition);
       return acc;
     },
-    { wMax: -Infinity, hMax: -Infinity, itemsPerSideSize: [], domainPositions: [] },
+    { hMax: -Infinity, itemsPerSideSize: [], domainPositions: [] },
   );
 
   // account for the left and right space (Y axes, overflows etc)
@@ -266,24 +487,16 @@ function computeCompressedScale(
     containerWidth,
   );
 
-  // check label overlaps using the computed compressed scale
-  const overlaps = itemsPerSideSize.some(([, rightSide], i) => {
-    if (i >= itemsPerSideSize.length - 2) {
-      return false;
-    }
-
-    const currentItemRightSide = (domainPositions[i] ?? 0) * scaleMultiplier + rightSide + pad(style.padding, 'right');
-    const nextItemLeftSize =
-      (domainPositions[i + 1] ?? 0) * scaleMultiplier -
-      (itemsPerSideSize[i + 1]?.[0] ?? 0) -
-      pad(style.padding, 'left');
-    return currentItemRightSide > nextItemLeftSize;
-  });
-
   const leftMargin = isFiniteNumber(bounds[0])
     ? (globalItemWidth[bounds[0]]?.[0] ?? 0) - scaleMultiplier * (globalDomainPositions[bounds[0]] ?? 0)
     : 0;
   const rightMargin = isFiniteNumber(bounds[1]) ? globalItemWidth[bounds[1]]?.[1] ?? 0 : 0;
+
+  const labelSpans = itemsPerSideSize.map<LabelSpan>(([leftSide, rightSide], i) => ({
+    position: (domainPositions[i] ?? 0) * scaleMultiplier,
+    before: leftSide + pad(style.padding, 'left'),
+    after: rightSide + pad(style.padding, 'right'),
+  }));
 
   return {
     // the horizontal space
@@ -292,7 +505,7 @@ function computeCompressedScale(
     left: leftMargin,
     // the height represent the height of the max rotated bbox plus the padding and the vertical position of the rotation origin
     height: hMax + pad(style.padding, 'top') + style.fontSize / 2,
-    overlaps,
+    labelSpans,
     overflow: {
       // true if a label exist protrude to the left making the scale shrink from the left
       // the current check is based on the way we construct globalItemWidth and globalDomainPositions
