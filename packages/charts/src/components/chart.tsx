@@ -21,6 +21,7 @@ import { ChartResizer } from './chart_resizer';
 import { ChartStatus } from './chart_status';
 import type { HeadlessRender } from './headless_context';
 import { HeadlessContext } from './headless_context';
+import { renderHeadless } from './headless_render';
 import { Legend } from './legend/legend';
 import { getElementZIndex } from './portal/utils';
 import { paintStageToCanvas } from './stage';
@@ -73,6 +74,12 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   /** @internal */
   static contextType = HeadlessContext;
+
+  /**
+   * How the headless entry, a file of its own, reaches the chart it renders: through the class it is given.
+   * @internal
+   */
+  static renderHeadless = renderHeadless;
 
   private unsubscribeToStore: Unsubscribe;
 
