@@ -257,6 +257,33 @@ describe('Heatmap axis', () => {
       });
     });
 
+    it('should skip labels instead of keeping a rotation that pushes the panel past the container', () => {
+      const labels = ['W'.repeat(20), ...'ABCDEFGHI'];
+      const yAxisWidth = 20;
+      const step = 11;
+      const containerWidth = yAxisWidth + step * labels.length;
+      // 45° clears the short labels, but the wide first label protrudes past the Y axis
+      expect(rotatedSides(20 * CHAR_WIDTH, degToRad(45))[0]).toBeGreaterThan(yAxisWidth);
+
+      const size = getXAxisSize(
+        true,
+        getXStyle(45),
+        formatter,
+        labels,
+        textMeasure,
+        containerWidth,
+        [yAxisWidth, 0],
+        false,
+      );
+      // vertical labels stay within the Y axis, and each takes the font size and its padding, 22px, horizontally
+      expectRenderedAxis(size, {
+        left: yAxisWidth,
+        height: axisHeight(20 * CHAR_WIDTH, Math.PI / 2),
+        tickCadence: 2,
+        minRotation: Math.PI / 2,
+      });
+    });
+
     it('should increase the rotation and skip labels when rotated labels would overlap', () => {
       const style = getXStyle(45);
       const labels = getLabels(200);

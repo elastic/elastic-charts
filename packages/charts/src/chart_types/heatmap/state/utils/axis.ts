@@ -185,6 +185,29 @@ export function getXAxisSize(
       return axisSizeFromCompression(dimension, 1, minRotation, containerWidth, surroundingSpace);
     }
 
+    // refit with only the labels kept at each cadence, so a hidden label no longer sets the width or insets.
+    // a label that sets the right edge is already inside the fitted bound
+    const getThinnedAxis = () => {
+      const fitted = fitCompressedScaleByCadence({
+        style,
+        scale,
+        labels: measuredLabels,
+        containerWidth,
+        surroundingSpace,
+        alignment,
+        rotation: minRotation,
+        dimension,
+        hideRightOverflow: false,
+      });
+      return axisSizeFromCompression(
+        fitted.dimension,
+        fitted.tickCadence,
+        minRotation,
+        containerWidth,
+        surroundingSpace,
+      );
+    };
+
     // A slanted label's horizontal box overlaps its neighbor before the text does, so rotated labels
     // stay visible if a higher rotation clears their rotated boxes on the rendered panel.
     if (isRotated) {
@@ -204,25 +227,18 @@ export function getXAxisSize(
                 clearingRotation,
               );
         if (isFiniteNumber(clearing.width)) {
-          return axisSizeFromCompression(clearing, 1, clearingRotation, containerWidth, surroundingSpace);
+          const clearingAxis = axisSizeFromCompression(clearing, 1, clearingRotation, containerWidth, surroundingSpace);
+          // The panel is shifted right by the axis left offset but keeps its width, so a label protruding past
+          // the surrounding space pushes the last cells off the container. A shallower angle protrudes more:
+          // keep it only if it doesn't shift the panel further than the thinned labels would.
+          if (clearing.left <= surroundingSpace[0]) return clearingAxis;
+          const thinnedAxis = getThinnedAxis();
+          return clearing.left <= thinnedAxis.left ? clearingAxis : thinnedAxis;
         }
       }
     }
 
-    // refit with only the labels kept at each cadence, so a hidden label no longer sets the width or insets.
-    // a label that sets the right edge is already inside the fitted bound
-    const fitted = fitCompressedScaleByCadence({
-      style,
-      scale,
-      labels: measuredLabels,
-      containerWidth,
-      surroundingSpace,
-      alignment,
-      rotation: minRotation,
-      dimension,
-      hideRightOverflow: false,
-    });
-    return axisSizeFromCompression(fitted.dimension, fitted.tickCadence, minRotation, containerWidth, surroundingSpace);
+    return getThinnedAxis();
   }
 
   const compressedScale = computeCompressedScale(

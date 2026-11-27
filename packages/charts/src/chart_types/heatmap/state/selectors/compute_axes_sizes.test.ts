@@ -9,9 +9,12 @@
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeChartElementSizesSelector } from './compute_chart_element_sizes';
 import { getHeatmapTableSelector } from './get_heatmap_table';
+import { Predicate } from '../../../../common/predicate';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
+import type { Spec } from '../../../../specs/spec_type';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { horizontalPad } from '../../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 
@@ -153,5 +156,50 @@ describe('computeAxesSizesSelector', () => {
     expect(plainCadence).toBeGreaterThan(1);
     expect(insetCadence).toBeGreaterThan(plainCadence);
     expect((panelWidth / valuesCount) * insetCadence).toBeGreaterThanOrEqual(timeLabelSpace);
+  });
+
+  it('removes the left padding and margin once from small multiples panels', () => {
+    const start = Date.UTC(2020, 0, 1);
+    const hour = 60 * 60 * 1000;
+    const count = 10;
+    const inset = 150;
+    const timeLabelSpace = String(start).length * CHAR_WIDTH + horizontalPad(LIGHT_THEME.heatmap.xAxisLabel.padding);
+    const store = MockStore.default({ width: 800, height: 300, top: 0, left: 0 });
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settingsNoMargins({
+          showLegend: false,
+          theme: {
+            chartPaddings: { left: inset, right: 0, top: 0, bottom: 0 },
+            chartMargins: { left: inset, right: 0, top: 0, bottom: 0 },
+          },
+        }),
+        MockGlobalSpec.smallMultiple({ splitHorizontally: 'panel' }),
+        MockGlobalSpec.groupBy({
+          id: 'panel',
+          by: (_spec: Spec, datum: { panel: string }) => datum.panel,
+          sort: Predicate.AlphaAsc,
+        }),
+        MockSeriesSpec.heatmap({
+          xScale: { type: ScaleType.Time, interval: { type: 'fixed', unit: 'h', value: 1 } },
+          yAxisLabelFormatter: () => 'Y',
+          data: ['a', 'b'].flatMap((panel) =>
+            Array.from({ length: count }, (_, i) => ({ x: start + i * hour, y: 'row', value: i, panel })),
+          ),
+          xAccessor: 'x',
+          yAccessor: 'y',
+          valueAccessor: 'value',
+        }),
+      ],
+      store,
+    );
+    const state = store.getState();
+    const { xAxisTickCadence, xAxis } = computeChartElementSizesSelector(state);
+    const renderedPanelWidth = computeSmallMultipleScalesSelector(state).horizontal.bandwidth;
+
+    // each panel fits two labels. Removing the 300px inset from each panel, instead of once, hides them all
+    expect(xAxisTickCadence).toBe(5);
+    expect(xAxis.height).toBeGreaterThan(0);
+    expect((renderedPanelWidth / count) * xAxisTickCadence).toBeGreaterThanOrEqual(timeLabelSpace);
   });
 });
