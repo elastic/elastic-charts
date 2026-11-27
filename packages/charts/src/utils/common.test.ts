@@ -25,9 +25,23 @@ import {
   sortNumbers,
   isSorted,
   inRange,
+  uniqueChartId,
 } from './common';
 
 describe('common utilities', () => {
+  test('the IDs made for charts that were given none differ, also from those of another copy of Charts', () => {
+    let ofAnotherCopy: () => string = uniqueChartId;
+    jest.isolateModules(() => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
+      ofAnotherCopy = (require('./common') as { uniqueChartId: () => string }).uniqueChartId;
+    });
+    expect(ofAnotherCopy).not.toBe(uniqueChartId);
+    const ids = Array.from({ length: 1000 }, (_, i) => (i % 2 ? ofAnotherCopy() : uniqueChartId()));
+    expect(new Set(ids).size).toBe(1000);
+    // usable in an element ID and in a CSS selector
+    expect(ids.every((id) => /^[a-z][\da-z-]*$/.test(id))).toBe(true);
+  });
+
   test('return value bounded above', () => {
     expect(clamp(0, 0, 1)).toBe(0);
     expect(clamp(1, 0, 1)).toBe(1);
