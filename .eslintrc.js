@@ -439,6 +439,17 @@ module.exports = {
       },
     },
     {
+      // stands in for `react`, `react-dom` and `react-redux`: it has their names, their loose types and their `== null`
+      files: ['packages/charts/src/headless/react_stand_in/!(*.test).ts'],
+      rules: {
+        'elastic-charts/require-tsdocs': 0,
+        '@typescript-eslint/naming-convention': 0,
+        '@typescript-eslint/no-unsafe-argument': 0,
+        'no-underscore-dangle': 0,
+        eqeqeq: ['error', 'always', { null: 'ignore' }],
+      },
+    },
+    {
       files: ['docs/**/*'],
       rules: {
         'react/react-in-jsx-scope': 0,
